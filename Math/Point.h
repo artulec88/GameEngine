@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Math.h"
+#include "Utility\ISerializable.h"
 #include <string>
 #include <sstream>
 
 namespace Math
 {
-class MATH_API Point 
+class MATH_API Point : public Utility::ISerializable
 {
 public: // constructors and destructors
 	Point() : m_x(0), m_y(0) { };
@@ -17,9 +18,7 @@ public: // public member functions
 	Real GetY() const { return m_y; };
 	void SetX(Real x) { m_x = x; };
 	void SetY(Real y) { m_y = y; };
-	
-	// TODO: Introduce ISerializable interface with ToString() method
-	std::string ToString() const;
+
 	Real Length() const;
 	Real LengthSquared() const;
 	
@@ -35,6 +34,9 @@ public: // public member functions
 	void Normalize();
 	
 	Real Dot(const Point& v) const;
+
+public:
+	virtual std::string ToString() const; // derived from Utility::ISerializable
 
 protected: // member variables
 	Real m_x;
