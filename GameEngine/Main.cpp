@@ -5,11 +5,17 @@
 
 /* UTILITY begin */
 #include "Utility\CommandLine.h"
+#include "Utility\Log.h"
 /* UTILITY end */
+
+/* RENDERING begin */
+#include "Rendering\Renderer.h"
+/* RENDERING end */
 
 using namespace std;
 using namespace Math;
 using namespace Utility;
+using namespace Rendering;
 
 void PrintHelp()
 {
@@ -34,6 +40,8 @@ int main (int argc, char* argv[])
 
 	Point p(4.3, 15.6);
 	cout << p.ToString() << endl;
+
+	ASSERT(value1 > 0.0f);
 	/* Testing end */
 
 	CommandLine commands(argc, argv);
@@ -43,8 +51,10 @@ int main (int argc, char* argv[])
 		system("pause");
 		return 0;
 	}
-	//stdlog.Fill(commands.Get("-log", ""), Debug);
+	stdlog.Fill(commands.Get("-log", ""), Debug);
 	//Config::LoadFromFile(commands.Get("-config", "C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\Robocup\\x64\\Debug\\Config.cfg"));
+
+	Renderer renderer;
 
 	system("pause");
 	return 0;

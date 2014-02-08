@@ -6,6 +6,29 @@
 #define UTILITY_API __declspec(dllimport)
 #endif
 
+#ifdef NDEBUG
+#ifdef LOGMODULE
+#define LOGPLACE LOGMODULE, 0 
+#else
+#define LOGPLACE "unknown-module", 0 
+#endif
+#else
+#define LOGPLACE __FILE__, __LINE__
+#endif
+
+#ifdef _DEBUG
+#define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILE__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
+#define SLOW_ASSERTIONS_ENABLED
+#ifdef SLOW_ASSERTIONS_ENABLED
+#define SLOW_ASSERT(expr) ASSERT(expr)
+#else
+#define SLOW_ASSERT(expr)
+#endif
+#else /* _DEBUG */
+#define ASSERT(expr)
+#define SLOW_ASSERT(expr)
+#endif /* _DEBUG */
+
 namespace Utility
 {
 	enum LogLevel
@@ -21,5 +44,4 @@ namespace Utility
 
 		DevNull = 100
 	}; /* end enum LogLevel */
-
 } /* end namespace Utility */

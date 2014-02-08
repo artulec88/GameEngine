@@ -7,19 +7,9 @@
 #include <string.h>
 #include <string>
 #include <sstream>
-#include <assert.h>
+//#include <assert.h>
 #include <iostream>
 #include <list>
-
-#ifdef NDEBUG
-#ifdef LOGMODULE
-#define LOGPLACE LOGMODULE, 0 
-#else
-#define LOGPLACE "unknown-module", 0 
-#endif
-#else
-#define LOGPLACE __FILE__, __LINE__
-#endif
 
 namespace Utility
 {
