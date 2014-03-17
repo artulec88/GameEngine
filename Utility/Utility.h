@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 #ifdef UTILITY_EXPORTS
 #define UTILITY_API __declspec(dllexport)
 #else
@@ -44,4 +47,17 @@ namespace Utility
 
 		DevNull = 100
 	}; /* end enum LogLevel */
+
+	/**
+	 * @brief Cut the string into tokens.
+	 *
+	 * Tokens in str are separated by some number of spaces. 
+	 * Tokens are added to the end of tokens vector -- it is not cleared at the beginning.
+	 * Notably, if str == "" or "  " there will be no tokens added to vector.
+	 * All the spaces are removed.
+	 * 
+	 * @param str string containing tokens separated by spaces
+	 * @param tokens vector to which the tokes are added
+	 */
+	void CutToTokens(const std::string& str, std::vector<std::string>& tokens);
 } /* end namespace Utility */
