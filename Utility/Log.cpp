@@ -49,7 +49,7 @@ void Log::operator()(LogLevel level, const char *name, int line, const char *for
 	{
 		name = "nowhere";
 	}
-	const char *tmp = strrchr(name, '/');
+	const char *tmp = strrchr(name, '\\');
 	if (tmp != NULL)
 	{
 		name = tmp + 1;
