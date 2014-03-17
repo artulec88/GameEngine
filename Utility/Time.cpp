@@ -56,6 +56,12 @@ int Time::Signum(const Time &arg) const
 
 }
 
+void Time::Reset()
+{
+	seconds = 0;
+	micros = 0;
+}
+
 bool Time::IsInfinite() const
 {
 	return micros == INFINITE;
@@ -178,6 +184,11 @@ Time Time::Eternity()
 Time Time::Chaos()
 {
 	return Time(0, 0);
+}
+
+Time Time::Second()
+{
+	return Time(1, 0);
 }
 
 const Time& Time::operator=(double value)

@@ -21,6 +21,7 @@ namespace Utility
 		static Time Now();
 		static Time Eternity();
 		static Time Chaos();
+		static Time Second();
 
 		static const Time Infinite;
 		static const Time Disabled;
@@ -32,6 +33,7 @@ namespace Utility
 		Time operator-(const Time &arg) const;
 			
 		int Signum(const Time &arg) const;
+		void Reset();
 
 		bool operator<(const Time &arg) const;
 		bool operator>(const Time &arg) const;
