@@ -1,0 +1,3 @@
+1.	Test time needed for the Matrix4D::ToString() method
+2.	Create a floating-point comparer
+3.	Create a nice design for loading 3D models
