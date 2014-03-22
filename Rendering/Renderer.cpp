@@ -95,6 +95,7 @@ void Renderer::InitGraphics()
 	glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
 	glEnable(GL_CULL_FACE); // Cull triangles which normal is not towards the camera
 
+	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 
 	ASSERT(!vao);

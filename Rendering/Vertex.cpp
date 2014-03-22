@@ -6,9 +6,9 @@
 using namespace Rendering;
 using namespace Math;
 
-Vertex::Vertex(Vector3D& position) :
-	pos(position)//,
-	//texCoord(Vector2D(0, 0)),
+Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Math::Vector2D(0.0, 0.0) */) :
+	pos(position),
+	texCoord(texCoord)//,
 	//normal(Vector3D(0, 0, 0))
 {
 }
@@ -26,8 +26,8 @@ std::string Vertex::ToString() const
 
 	ss << "{ pos = ";
 	ss << pos.ToString();
-	//ss << "; texCoord = ";
-	//ss << texCoord.ToString();
+	ss << "; texCoord = ";
+	ss << texCoord.ToString();
 	//ss << "; normal = ";
 	//ss << normal.ToString();
 	ss << " } ";

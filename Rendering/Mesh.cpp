@@ -91,6 +91,10 @@ using namespace std;
 	ASSERT(file.is_open());
 	file.close();
 
+	for (int i = 0; i < vertices.size(); ++i)
+	{
+		cout << i+1 << "): " << vertices[i].ToString() << endl;
+	}
 	mesh.AddVertices(&vertices[0], vertices.size(), &indices[0], indices.size(), false);
 
 	return;
@@ -114,10 +118,13 @@ Mesh::Mesh(const std::string& fileName) :
 	//std::vector<Vertex> vertices;
 	//for (unsigned int i = 0; i < model.positions.size(); ++i)
 	//{
-	//	vertices.push_back(Vertex(model.positions[i], model.texCoords[i], model.normals[i]));
+	//	vertices.push_back(Vertex(model.positions[i], model.texCoords[i]));//, model.normals[i]));
 	//}
-
-	//AddVertices(&vertices[0], vertices.size(), (int*)&model.indices[0], model.indices.size(), false);
+	//for (int i = 0; i < vertices.size(); ++i)
+	//{
+	//	cout << i+1 << "): " << vertices[i].ToString() << endl;
+	//}
+	//AddVertices(&vertices[0], vertices.size(), (unsigned short*)&model.indices[0], model.indices.size(), false);
 
 	LoadFromFile(fileName, *this);
 }
@@ -161,19 +168,19 @@ void Mesh::AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, 
 void Mesh::Draw() const
 {
 	glEnableVertexAttribArray(0);
-	//glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(1);
 	//glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Math::Vector3D));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Math::Vector3D));
 	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glDrawElements(GL_TRIANGLES, this->size, GL_UNSIGNED_SHORT, 0);
 
 	glDisableVertexAttribArray(0);
-	//glDisableVertexAttribArray(1);
+	glDisableVertexAttribArray(1);
 	//glDisableVertexAttribArray(2);
 }
 

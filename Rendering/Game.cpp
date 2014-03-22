@@ -61,6 +61,11 @@ Game::~Game(void)
 		delete camera;
 		camera = NULL;
 	}
+	if (texture != NULL)
+	{
+		delete texture;
+		texture = NULL;
+	}
 }
 
 void Game::Init()
@@ -69,18 +74,21 @@ void Game::Init()
 
 	rootGameNode.Init();
 
-	mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
+	mesh = new Mesh();
+	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
 
-	//Vertex vertex1(Vector3D(-1.0f, -1.0f, 0.0f));
-	//Vertex vertex2(Vector3D(1.0f, -1.0f, 0.0f));
-	//Vertex vertex3(Vector3D(0.0f, 1.0f, 0.0f));
-	//Vertex vertices[] = {vertex1, vertex2, vertex3};
-	//unsigned short indices[] = {0, 1, 3,
-	//						  3, 1, 2,
-	//						  2, 1, 0,
-	//						  0, 2, 3};
-	//unsigned short indices[] = {0, 1, 2};
-	//mesh->AddVertices(vertices, 4, indices, 3, false);
+	Vertex vertex1(Vector3D(-1.0, -1.0, 0.0), Vector2D(0.0, 1.0));
+	Vertex vertex2(Vector3D(1.0, -1.0, 0.0), Vector2D(1.0, 1.0));
+	Vertex vertex3(Vector3D(0.0, 1.0, 0.0), Vector2D(0.5, 0.0));
+	Vertex vertex4(Vector3D(0.0, -1.0, 1.0), Vector2D(0.0, 0.5));
+	Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
+	unsigned short indices[] = {3, 1, 0,
+							  2, 1, 3,
+							  0, 1, 2,
+							  0, 2, 3};
+	mesh->AddVertices(vertices, 4, indices, 12, false);
+
+	texture = new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR);
 
 	shader = new Shader();
 	if (shader == NULL)
@@ -88,8 +96,8 @@ void Game::Init()
 		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
 		exit(INVALID_VALUE);
 	}
-	shader->AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader");
-	shader->AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
+	shader->AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\TextureVertexShader.vshader");
+	shader->AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\TextureFragmentShader.fshader");
 	if (! shader->Compile())
 	{
 		stdlog(Error, LOGPLACE, "Error while compiling shader");
@@ -148,6 +156,12 @@ void Game::Render()
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Remove in the future
+
+	if (texture != NULL)
+	{
+		texture->Bind();
+	}
+
 	if (mesh != NULL)
 	{
 		mesh->Draw();
