@@ -40,7 +40,7 @@ CommandLine::~CommandLine()
 
 void CommandLine::Fill(int argc, char* argv[])
 {
-	ASSERT(argc > 1);
+	ASSERT(argc >= 1);
 	ASSERT(argv != NULL);
 	for (int i = 0; i < argc; ++i)
 	{
