@@ -103,7 +103,10 @@ Mesh::Mesh(void) :
 {
 }
 
-Mesh::Mesh(const std::string& fileName)
+Mesh::Mesh(const std::string& fileName) :
+	vbo(0),
+	ibo(0),
+	size(0)
 {
 	// TODO: Loading a model from the given file
 	//IndexedModel model = OBJModel(fileName).ToIndexedModel();
@@ -162,7 +165,7 @@ void Mesh::Draw() const
 	//glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Math::Vector3D));
 	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D)));
 
