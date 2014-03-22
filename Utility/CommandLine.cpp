@@ -35,14 +35,16 @@ CommandLine::CommandLine(const char* str)
 CommandLine::~CommandLine()
 {
 	stdlog(Delocust, LOGPLACE, "CommandLine object gets destroyed");
+	commands.clear();
 }
 
 void CommandLine::Fill(int argc, char* argv[])
 {
+	ASSERT(argc > 1);
 	ASSERT(argv != NULL);
 	for (int i = 0; i < argc; ++i)
 	{
-		push_back(string(argv[i]));
+		commands.push_back(string(argv[i]));
 	}
 }
 
@@ -69,18 +71,21 @@ bool CommandLine::Read(const string& line)
 		s >> term;
 		if (term != "")
 		{
-			push_back(term);
+			commands.push_back(term);
 			result = true;
 		}
 	}
 	return result;
 }
 
+int CommandLine::Size() const
+{
+	return static_cast<int>(commands.size());
+}
+
 bool CommandLine::IsNumberCorrect(int number) const
 {
-	if (number < 0) return false;
-	if (number >= static_cast<int>(size())) return false;
-	return true;
+	return ( (number >= 0) && (number < Size()) );
 }
 
 template<typename Type>
@@ -90,7 +95,7 @@ Type CommandLine::Get(int number, const Type& defaultValue) const
 		return defaultValue;
 
 	Type value;
-	std::stringstream s(operator[](number));
+	std::stringstream s(commands[number]);
 	s >> value;
 	return value;
 }
@@ -98,13 +103,13 @@ Type CommandLine::Get(int number, const Type& defaultValue) const
 // template specialization
 template<> string CommandLine::Get(int number, const string& defaultValue) const
 {
-	return (IsNumberCorrect(number) ? operator[](number) : defaultValue);
+	return (IsNumberCorrect(number) ? commands[number] : defaultValue);
 }
 
 string CommandLine::Get(const string& opt, const string& defaultValue) const
 {
 	int pos = GetNumber(opt);
-	if ( (pos < 0) || (pos > size() - 2) )
+	if ( (pos < 0) || (pos > Size() - 2) )
 	{
 		return defaultValue;
 	}
@@ -114,7 +119,7 @@ string CommandLine::Get(const string& opt, const string& defaultValue) const
 int CommandLine::Get(const string& opt, int defaultValue) const
 {
 	int pos = GetNumber(opt);
-	if ( (pos < 0) || (pos > size() - 2) )
+	if ( (pos < 0) || (pos > Size() - 2) )
 	{
 		return defaultValue;
 	}
@@ -125,7 +130,7 @@ int CommandLine::GetNumber(const std::string& opt, int first /* = 0*/) const
 {
 	//ASSERT(first >= 0);
 	int number = first;
-	for (const_iterator itr = begin() + first; itr != end(); ++itr, ++number)
+	for (std::vector<std::string>::const_iterator itr = commands.begin() + first; itr != commands.end(); ++itr, ++number)
 	{
 		//ASSERT(number >= first);
 		if ((*itr) == opt)

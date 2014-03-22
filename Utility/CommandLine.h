@@ -1,13 +1,19 @@
 #pragma once
 
+//#pragma warning(disable:4251)
+
 #include <vector>
+#include <string>
 #include "Utility.h"
 
 namespace Utility
 {
 
-	class UTILITY_API CommandLine : public std::vector<std::string>
+	class UTILITY_API CommandLine
 	{
+	protected: // member variables
+		std::vector<std::string> commands;
+
 	public: // constructors and destructors
 		CommandLine();
 		CommandLine(std::istream& stream);
@@ -17,6 +23,7 @@ namespace Utility
 		~CommandLine();
 
 	public:
+		int Size() const;
 		bool IsNumberCorrect(int number) const;
 		bool Read(std::istream& stream);
 		bool Read(const std::string& line);
