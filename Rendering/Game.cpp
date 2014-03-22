@@ -3,6 +3,7 @@
 #include "CoreEngine.h"
 #include "Vertex.h"
 #include "BasicShader.h"
+#include "PhongShader.h"
 #include "Texture.h"
 
 #include "Math\Math.h"
@@ -98,7 +99,7 @@ void Game::Init()
 	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		materialColor, specularIntensity, specularPower);
 
-	shader = new BasicShader();
+	shader = new PhongShader();
 	if (shader == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
