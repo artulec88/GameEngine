@@ -107,21 +107,22 @@ void CoreEngine::Run()
 	isRunning = true;
 
 #ifdef COUNT_FPS
-	double fpsSample = Config::Get("FPS_sample", 1.0); // represents the time after which FPS value is calculated and logged
+	Math::Real fpsSample = static_cast<Math::Real>(Config::Get("FPS_sample", 1.0)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
-	double frameTimeCounter = 0.0;
+	Math::Real frameTimeCounter = 0.0;
 #endif
 
-	double unprocessingTime = 0.0; // used to cap the FPS when it gets too high
-	double previousTime = glfwGetTime();
+	Math::Real unprocessingTime = 0.0; // used to cap the FPS when it gets too high
+	Math::Real previousTime = glfwGetTime();
 
 	while (isRunning)
 	{
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		double currentTime = glfwGetTime();
-		double passedTime = currentTime - previousTime;
+		Math::Real currentTime = glfwGetTime();
+		Math::Real passedTime = currentTime - previousTime;
+
 		previousTime = currentTime;
 		unprocessingTime += passedTime;
 
