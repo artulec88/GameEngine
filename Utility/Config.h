@@ -1,5 +1,7 @@
 #pragma once
 
+//#pragma warning(disable:4251)
+
 #include "Utility.h"
 #include "Log.h"
 #include <string>
