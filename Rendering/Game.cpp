@@ -179,7 +179,7 @@ void Game::CloseWindowEvent(GLFWwindow* window)
  */
 void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	stdlog(Debug, LOGPLACE, "Key event with key = %d", key);
+	stdlog(Delocust, LOGPLACE, "Key event with key = %d", key);
 	if (key == GLFW_KEY_ESCAPE)
 	{
 		CoreEngine::GetCoreEngine()->Stop();
@@ -194,7 +194,7 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	}
 
 	// TODO: Set delta to correct value
-	camera->Input(key, 0.1);
+	camera->Input(key, 0.02);
 }
 
 ///* inline */ GameNode& Game::GetRootGameNode() const
