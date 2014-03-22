@@ -275,7 +275,7 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
 	Vector3D result;
 
-	Real oneperw = 1.0 / (m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3]);
+	Real oneperw = static_cast<Real>(1.0) / (m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3]);
 	result.SetX((m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3]) * oneperw);
 	result.SetY((m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[1][3]) * oneperw);
 	result.SetZ((m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[2][3]) * oneperw);
