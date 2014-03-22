@@ -6,6 +6,11 @@
 #define RENDERING_API __declspec(dllimport)
 #endif
 
+// Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
+#include <GL\glew.h>
+// Include GLFW
+#include <GLFW\glfw3.h>
+
 namespace Rendering
 {
 } /* end namespace Rendering */

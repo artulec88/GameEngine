@@ -20,7 +20,14 @@
 #endif
 
 #ifdef _DEBUG
-#define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILE__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
+#include <string.h>
+#define __FILENAME__ (strrchr(__FILE__, '\\') ? strrchr(__FILE__, '\\') + 1 : __FILE__) // For UNIX change '\\' to '/'
+#else
+#define __FILENAME__ __FILE__
+#endif
+
+#ifdef _DEBUG
+#define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILENAME__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
 #define SLOW_ASSERTIONS_ENABLED
 #ifdef SLOW_ASSERTIONS_ENABLED
 #define SLOW_ASSERT(expr) ASSERT(expr)
@@ -31,6 +38,8 @@
 #define ASSERT(expr)
 #define SLOW_ASSERT(expr)
 #endif /* _DEBUG */
+
+#define INVALID_VALUE 0xFFFFFFFF
 
 namespace Utility
 {
@@ -59,5 +68,5 @@ namespace Utility
 	 * @param str string containing tokens separated by spaces
 	 * @param tokens vector to which the tokes are added
 	 */
-	void CutToTokens(const std::string& str, std::vector<std::string>& tokens);
+	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens);
 } /* end namespace Utility */

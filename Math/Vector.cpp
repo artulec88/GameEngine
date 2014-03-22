@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Vector.h"
+#include "Quaternion.h"
 #include <math.h>
 
 using namespace Math;
@@ -108,6 +109,12 @@ Vector2D& Vector2D::operator=(const Vector2D& v)
 	return *this;
 }
 
+inline bool Vector2D::operator==(const Vector2D& v) const
+{
+	// TODO: Create a floating-point comparer and use it here
+	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) );
+}
+
 
 /* ==================== Vector3D ==================== */
 Vector3D::Vector3D() :
@@ -176,11 +183,28 @@ Vector3D Vector3D::Cross(const Vector3D& v) const
 	return Vector3D(x, y, z);
 }
 
-Vector3D Vector3D::Rotate(Real angleInDegrees)
+Vector3D& Vector3D::Rotate(Real angleInDegrees, const Vector3D& axis)
 {
-	// TODO: Implement this using Quaternions
+	Real angleInRad = ToRad(angleInDegrees);
 
-	return *this; // just for now
+	Real sinHalfAngle = static_cast<Real>(sin(angleInRad / 2));
+	Real cosHalfAngle = static_cast<Real>(cos(angleInRad / 2));
+
+	Real rX = axis.GetX() * sinHalfAngle;
+	Real rY = axis.GetY() * sinHalfAngle;
+	Real rZ = axis.GetZ() * sinHalfAngle;
+	Real rW = cosHalfAngle;
+
+	Quaternion rotation(rX, rY, rZ, rW);
+	Quaternion conjugate(rotation.Conjugate());
+
+	Quaternion w((rotation * (*this)) * conjugate);
+
+	this->m_x = w.GetX();
+	this->m_y = w.GetY();
+	this->m_z = w.GetZ();
+
+	return *this;
 }
 
 Vector3D& Vector3D::operator+=(const Vector3D& v)
@@ -226,4 +250,10 @@ Vector3D& Vector3D::operator=(const Vector3D& v)
 	this->m_z = v.GetZ();
 
 	return *this;
+}
+
+inline bool Vector3D::operator==(const Vector3D& v) const
+{
+	// TODO: Create a floating-point comparer and use it here
+	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) && (this->GetZ() == v.GetZ()) );
 }

@@ -10,7 +10,7 @@ namespace Math
 
 #define MATRIX_SIZE 4
 
-class Matrix4D : public Utility::ISerializable
+class MATH_API Matrix4D : public Utility::ISerializable
 {
 /* ==================== Non-static member variables begin ==================== */
 protected:
@@ -28,13 +28,18 @@ public:
 	static Matrix4D Rotation(Real x, Real y, Real z, Real angleInDegrees);
 	static Matrix4D Rotation(const Vector3D& vec, Real angleInDegrees);
 
+	static Matrix4D Rotation(Real x, Real y, Real z); // TODO: Check all Matrix4D::Rotation(...) functions.
+
+	static Matrix4D InitCamera(const Vector3D& forward, const Vector3D& up);
+
 	static int Signum(int i, int j);
 /* ==================== Static functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Matrix4D(void);
-	~Matrix4D(void);
+	Matrix4D();
+	Matrix4D(const Matrix4D& mat);
+	~Matrix4D();
 /* ==================== Constructors and destructors end ==================== */
 
 
@@ -45,6 +50,10 @@ public:
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
 	bool operator==(const Matrix4D& m) const;
+	Matrix4D& operator=(const Matrix4D& mat);
+
+	const Math::Real* operator[](int index) const;
+	Math::Real* operator[](int index);
 
 	Matrix4D Transposition() const;
 	Matrix4D Inversion() const;

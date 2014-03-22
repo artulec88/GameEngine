@@ -37,6 +37,7 @@ public: // public member functions
 	Vector2D& operator*=(const Vector2D& v);
 	Vector2D& operator/=(const Vector2D& v);
 	Vector2D& operator=(const Vector2D& v);
+	bool operator==(const Vector2D& v) const;
 
 	Vector2D Normalized() const;
 	void Normalize();
@@ -86,11 +87,13 @@ public: // public member functions
 	Vector3D& operator*=(const Vector3D& v);
 	Vector3D& operator/=(const Vector3D& v);
 	Vector3D& operator=(const Vector3D& v);
+	bool operator==(const Vector3D& v) const;
 
 	Vector3D Normalized() const;
 	void Normalize();
 
-	Vector3D Rotate(Real angle);
+	//Vector3D Rotate(Real angle);
+	Vector3D& Rotate(Real angle, const Vector3D& axis);
 	
 	Real Dot(const Vector3D& v) const;
 	Vector3D Cross(const Vector3D& v) const;

@@ -4,12 +4,22 @@
 
 using namespace Math;
 
-Matrix4D::Matrix4D(void)
+Matrix4D::Matrix4D()
 {
 }
 
+Matrix4D::Matrix4D(const Matrix4D& mat)
+{
+	for (int i = 0; i < MATRIX_SIZE; ++i)
+	{
+		for (int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			this->SetElement(i, j, mat.GetElement(i, j));
+		}
+	}
+}
 
-Matrix4D::~Matrix4D(void)
+Matrix4D::~Matrix4D()
 {
 }
 
@@ -31,11 +41,18 @@ Matrix4D::~Matrix4D(void)
 	Real f = static_cast<Real>(1.0 / tan(ToRad(fov / 2)));
 	Real div = static_cast<Real>(1.0 / (nearPlane - farPlane));
 
+	//matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
+	//matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
+	//matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;	matrix.m[2][2] = (farPlane + nearPlane) * div;	matrix.m[2][3] = 2.0 * farPlane * nearPlane * div;
+	//matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = -1.0;							matrix.m[3][3] = 0.0;
+
+	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
 	matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
 	matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;	matrix.m[2][2] = (farPlane + nearPlane) * div;	matrix.m[2][3] = 2.0 * farPlane * nearPlane * div;
-	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = -1.0;							matrix.m[3][3] = 0.0;
-	
+	matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;	matrix.m[2][2] = (-farPlane - nearPlane) * div;	matrix.m[2][3] = static_cast<Real>(2.0) * farPlane * nearPlane * div;
+	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = 1.0;							matrix.m[3][3] = 0.0;
+	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
+
 	return matrix;
 }
 
@@ -70,6 +87,42 @@ Matrix4D::~Matrix4D(void)
 	return Scale(vec.GetX(), vec.GetY(), vec.GetZ());
 }
 
+/**
+ * @see Vector2D::Rotate(Real angle)
+ */
+/* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z)
+{
+	Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
+
+	Real xRad = Math::ToRad(x);
+	Real yRad = Math::ToRad(y);
+	Real zRad = Math::ToRad(z);
+
+	Real xSin = sin(xRad);
+	Real xCos = cos(xRad);
+	Real ySin = sin(yRad);
+	Real yCos = cos(yRad);
+	Real zSin = sin(zRad);
+	Real zCos = cos(zRad);
+
+	rotX.m[0][0] = 1.0;	rotX.m[0][1] = 0.0;		rotX.m[0][2] = 0.0;		rotX.m[0][3] = 0.0;
+	rotX.m[1][0] = 0.0;	rotX.m[1][1] = xCos;	rotX.m[1][2] = -xSin;	rotX.m[1][3] = 0.0;
+	rotX.m[2][0] = 0.0;	rotX.m[2][1] = xSin;	rotX.m[2][2] = xCos;	rotX.m[2][3] = 0.0;
+	rotX.m[3][0] = 0.0;	rotX.m[3][1] = 0.0;		rotX.m[3][2] = 0.0;		rotX.m[3][3] = 1.0;
+
+	rotY.m[0][0] = yCos;	rotY.m[0][1] = 0.0;	rotY.m[0][2] = -ySin;	rotY.m[0][3] = 0.0;
+	rotY.m[1][0] = 0.0;		rotY.m[1][1] = 1.0;	rotY.m[1][2] = 0.0;		rotY.m[1][3] = 0.0;
+	rotY.m[2][0] = ySin;	rotY.m[2][1] = 0.0;	rotY.m[2][2] = yCos;	rotY.m[2][3] = 0.0;
+	rotY.m[3][0] = 0.0;		rotY.m[3][1] = 0.0;	rotY.m[3][2] = 0.0;		rotY.m[3][3] = 1.0;
+
+	rotZ.m[0][0] = zCos;	rotZ.m[0][1] = -zSin;	rotZ.m[0][2] = 0.0;	rotZ.m[0][3] = 0.0;
+	rotZ.m[1][0] = zSin;	rotZ.m[1][1] = zCos;	rotZ.m[1][2] = 0.0;	rotZ.m[1][3] = 0.0;
+	rotZ.m[2][0] = 0.0;		rotZ.m[2][1] = 0.0;		rotZ.m[2][2] = 1.0;	rotZ.m[2][3] = 0.0;
+	rotZ.m[3][0] = 0.0;		rotZ.m[3][1] = 0.0;		rotZ.m[3][2] = 0.0;	rotZ.m[3][3] = 1.0;
+
+	return rotZ * rotY * rotX;
+}
+
 /* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, Real angleInDegrees)
 {
 	Real vecNorm = sqrt(x * x + y * y + z * z);
@@ -101,6 +154,25 @@ Matrix4D::~Matrix4D(void)
 /* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, Real angleInDegrees)
 {
 	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angleInDegrees);
+}
+
+/* static */ Matrix4D Matrix4D::InitCamera(const Vector3D& forward, const Vector3D& up)
+{
+	Vector3D forw = forward;
+	forw.Normalize(); // TODO: Should not be necessary
+	
+	Vector3D right = up;
+	right.Normalize(); // TODO: Should not be necessary
+	right = right.Cross(forw);
+
+	Vector3D newUp = forw.Cross(right);
+
+	Matrix4D matrix;
+	matrix.m[0][0] = right.GetX();	matrix.m[0][1] = right.GetY();	matrix.m[0][2] = right.GetZ();	matrix.m[0][3] = 0.0;
+	matrix.m[1][0] = newUp.GetX();	matrix.m[1][1] = newUp.GetY();	matrix.m[1][2] = newUp.GetZ();	matrix.m[1][3] = 0.0;
+	matrix.m[2][0] = forw.GetX();	matrix.m[2][1] = forw.GetY();	matrix.m[2][2] = forw.GetZ();	matrix.m[2][3] = 0.0;
+	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;			matrix.m[3][2] = 0.0;			matrix.m[3][3] = 1.0;
+	return matrix;
 }
 
 /* static */ int Matrix4D::Signum(int i, int j)
@@ -216,6 +288,22 @@ bool Matrix4D::operator==(const Matrix4D& m) const
 	// TODO: Fix this function
 	return true;
 }
+
+Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
+{
+	for (int i = 0; i < MATRIX_SIZE; ++i)
+	{
+		for (int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			this->SetElement(i, j, mat.GetElement(i, j));
+		}
+	}
+
+	return *this;
+}
+
+const Math::Real* Matrix4D::operator[](int index) const { return m[index]; }
+Math::Real* Matrix4D::operator[](int index) { return m[index]; }
 
 Matrix4D Matrix4D::Transposition() const
 {

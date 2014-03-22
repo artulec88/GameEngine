@@ -77,14 +77,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandLine.h" />
+    <ClInclude Include="Config.h" />
     <ClInclude Include="ISerializable.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Utility.h" />
+    <ClInclude Include="FileNotFoundException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandLine.cpp" />
+    <ClCompile Include="Config.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -101,6 +104,7 @@
     </ClCompile>
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Utility.cpp" />
+    <ClCompile Include="FileNotFoundException.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
