@@ -154,8 +154,8 @@ void CoreEngine::Run()
 		if (isRenderRequired)
 		{
 			//this->renderer->Render();
-			this->renderer->Render(this->game->GetRootGameNode());
-			//game->Render();
+			//this->renderer->Render(this->game->GetRootGameNode());
+			game->Render();
 			this->renderer->SwapBuffers();
 #ifdef COUNT_FPS
 			++framesCount;
