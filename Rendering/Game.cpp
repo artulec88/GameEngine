@@ -63,6 +63,72 @@ Game::~Game(void)
 	}
 }
 
+void Game::Init()
+{
+	stdlog(Delocust, LOGPLACE, "Initalizing game");
+
+	rootGameNode.Init();
+
+	mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
+
+	//Vertex vertex1(Vector3D(-1.0f, -1.0f, 0.0f));
+	//Vertex vertex2(Vector3D(1.0f, -1.0f, 0.0f));
+	//Vertex vertex3(Vector3D(0.0f, 1.0f, 0.0f));
+	//Vertex vertices[] = {vertex1, vertex2, vertex3};
+	//unsigned short indices[] = {0, 1, 3,
+	//						  3, 1, 2,
+	//						  2, 1, 0,
+	//						  0, 2, 3};
+	//unsigned short indices[] = {0, 1, 2};
+	//mesh->AddVertices(vertices, 4, indices, 3, false);
+
+	shader = new Shader();
+	if (shader == NULL)
+	{
+		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
+		exit(INVALID_VALUE);
+	}
+	shader->AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader");
+	shader->AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
+	if (! shader->Compile())
+	{
+		stdlog(Error, LOGPLACE, "Error while compiling shader");
+	}
+	shader->AddUniform("transform");
+
+	camera = new Camera();
+	
+	Transform::SetCamera(*camera);
+	transform = new Transform();
+
+	//GLuint programID = LoadShaders("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader",
+	//	"C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
+	//glUseProgram(programID);
+}
+
+//
+//void Game::CleanUp()
+//{
+//	stdlog(Info, LOGPLACE, "The game is being cleaned up");
+//}
+
+void Game::Input()
+{
+	stdlog(Delocust, LOGPLACE, "Input checked");
+}
+
+void Game::Update()
+{
+	//stdlog(Delocust, LOGPLACE, "Game is being updated");
+	
+	Math::Real temp = static_cast<Math::Real>(glfwGetTime());
+	transform->SetTranslation(sin(temp), 0.0, 2.0);
+	transform->SetRotation(0.0, 0.0, sin(temp) * 180);
+	transform->SetScale(0.5 * sin(temp));
+
+	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
+}
+
 void Game::Render()
 {
 	//stdlog(Debug, LOGPLACE, "One single frame is being rendered");
@@ -77,6 +143,8 @@ void Game::Render()
 	if (shader != NULL)
 	{
 		shader->Bind();
+		// TODO: Remember to set the uniform after binding the shader
+		shader->SetUniform("transform", transform->GetProjectedTransformation());
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Remove in the future
@@ -84,86 +152,6 @@ void Game::Render()
 	{
 		mesh->Draw();
 	}
-}
-//
-//void Game::CleanUp()
-//{
-//	stdlog(Info, LOGPLACE, "The game is being cleaned up");
-//}
-
-void Game::Init()
-{
-	stdlog(Delocust, LOGPLACE, "Initalizing game");
-
-	rootGameNode.Init();
-
-	mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\triangle.obj");
-
-	Vertex vertex1(Vector3D(-1.0f, -1.0f, 0.0f));
-	Vertex vertex2(Vector3D(1.0f, -1.0f, 0.0f));
-	Vertex vertex3(Vector3D(0.0f, 1.0f, 0.0f));
-	Vertex vertices[] = {vertex1, vertex2, vertex3};
-	//unsigned short indices[] = {0, 1, 3,
-	//						  3, 1, 2,
-	//						  2, 1, 0,
-	//						  0, 2, 3};
-	unsigned short indices[] = {0, 1, 2};
-	mesh->AddVertices(vertices, 4, indices, 3, false);
-
-	shader = new Shader();
-	if (shader == NULL)
-	{
-		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
-		exit(INVALID_VALUE);
-	}
-	shader->AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader");
-	shader->AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
-	if (! shader->Compile())
-	{
-		stdlog(Error, LOGPLACE, "Error while compiling shader");
-	}
-	shader->AddUniform("uniformFloat");
-	shader->AddUniform("transform");
-	shader->Bind();
-
-	camera = new Camera();
-	
-	Transform::SetCamera(*camera);
-	transform = new Transform();
-
-	//GLuint programID = LoadShaders("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader",
-	//	"C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
-	//glUseProgram(programID);
-}
-
-void Game::Input()
-{
-	stdlog(Delocust, LOGPLACE, "Input checked");
-}
-
-// TOOD: Remove this temporary variable in the future
-float temp = 0.0f;
-
-void Game::Update()
-{
-	//stdlog(Delocust, LOGPLACE, "Game is being updated");
-
-	temp = static_cast<Math::Real>(glfwGetTime());
-	// TODO: Remember to set the uniform after binding the shader
-	shader->SetUniformf("uniformFloat", abs(sin(temp)));
-	
-	transform->SetTranslation(sin(temp), 0.0, 2.0);
-	transform->SetRotation(0.0, 0.0, sin(temp) * 180);
-	transform->SetScale(0.5 * sin(temp));
-	//shader->SetUniform("transform", Matrix4D::Identity());
-	//Matrix4D transformationMatrix = transform->GetTransformation();
-	//stdlog(Info, LOGPLACE, transformationMatrix.ToString().c_str());
-	//shader->SetUniform("transform", transform->GetTransformation());
-	shader->SetUniform("transform", transform->GetProjectedTransformation());
-
-	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
-
-	//transform->SetTranslation(abs(sin(temp)), 0.0, 0.0);
 }
 
 /* static */ void Game::WindowCloseCallback(GLFWwindow* window)
