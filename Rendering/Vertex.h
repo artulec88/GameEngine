@@ -20,7 +20,7 @@ struct RENDERING_API Vertex
 	Vertex(Math::Vector3D& position);
 	//Vertex(Math::Vector3D& position, Math::Vector2D& texCoord, Math::Vector3D& normal);
 
-	std::string ToString() const; // TODO: Derive this function from Utility::ISerializable interface
+	std::string ToString() const;
 }; /* end struct Vertex */
 
 } /* end namespace Rendering */
