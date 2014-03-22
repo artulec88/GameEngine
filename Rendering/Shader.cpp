@@ -147,7 +147,7 @@ void Shader::SetUniform(const std::string& name, const Math::Matrix4D& matrix)
 	glUniformMatrix4fv(uniforms.at(name), 1, GL_FALSE, &(matrix[0][0]));
 }
 
-void Shader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix)
+void Shader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix, const Material& material)
 {
 	stdlog(Warning, LOGPLACE, "The function is not implemented");
 }

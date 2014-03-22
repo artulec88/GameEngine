@@ -85,11 +85,13 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BasicShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameNode.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="OBJModel.h" />
     <ClInclude Include="Renderer.h" />
@@ -102,6 +104,7 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BasicShader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -115,6 +118,7 @@
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="OBJModel.cpp" />
     <ClCompile Include="Renderer.cpp" />

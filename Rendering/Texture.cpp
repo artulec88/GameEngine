@@ -14,6 +14,14 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 	LoadFromFile(fileName);
 }
 
+Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */) :
+	m_textureID(0),
+	m_textureTarget(textureTarget),
+	m_filter(filter)
+{
+	Init(width, height, data);
+}
+
 Texture::~Texture(void)
 {
 	glDeleteTextures(1, &m_textureID);
@@ -53,7 +61,12 @@ void Texture::LoadFromFile(const std::string& fileName)
 
 void Texture::Init(int width, int height, unsigned char* data)
 {
-	if(width > 0 && height > 0 && data != 0)
+	if (data == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		return;
+	}
+	if(width > 0 && height > 0 && data != NULL)
 	{
 		glGenTextures(1, &m_textureID);
 		glBindTexture(m_textureTarget, m_textureID);

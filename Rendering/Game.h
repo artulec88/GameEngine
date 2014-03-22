@@ -5,7 +5,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Transform.h"
-#include "Texture.h"
+#include "Material.h"
 #include "Camera.h"
 #include "Math\Math.h"
 
@@ -59,7 +59,7 @@ protected:
 	Mesh* mesh;
 	Shader* shader;
 	Transform* transform;
-	Texture* texture;
+	Material* material;
 	Camera* camera;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */

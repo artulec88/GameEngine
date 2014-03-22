@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "CoreEngine.h"
 #include "Vertex.h"
+#include "BasicShader.h"
+#include "Texture.h"
 
 #include "Math\Math.h"
 #include "Math\Vector.h"
@@ -61,10 +63,10 @@ Game::~Game(void)
 		delete camera;
 		camera = NULL;
 	}
-	if (texture != NULL)
+	if (material != NULL)
 	{
-		delete texture;
-		texture = NULL;
+		delete material;
+		material = NULL;
 	}
 }
 
@@ -88,21 +90,20 @@ void Game::Init()
 							  0, 2, 3};
 	mesh->AddVertices(vertices, 4, indices, 12, false);
 
-	texture = new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR);
+	//material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR),
+	//	color, specularIntensity, specularPower);
+	Math::Vector3D materialColor = Math::Vector3D(0.0, 1.0, 1.0);
+	Math::Real specularIntensity = 2.0;
+	Math::Real specularPower = 32.0;
+	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR),
+		materialColor, specularIntensity, specularPower);
 
-	shader = new Shader();
+	shader = new BasicShader();
 	if (shader == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
 		exit(INVALID_VALUE);
 	}
-	shader->AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\TextureVertexShader.vshader");
-	shader->AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\TextureFragmentShader.fshader");
-	if (! shader->Compile())
-	{
-		stdlog(Error, LOGPLACE, "Error while compiling shader");
-	}
-	shader->AddUniform("transform");
 
 	camera = new Camera();
 	
@@ -148,19 +149,20 @@ void Game::Render()
 	{
 		stdlog(Warning, LOGPLACE, "Mesh instance is NULL");
 	}
+
 	if (shader != NULL)
 	{
 		shader->Bind();
 		// TODO: Remember to set the uniform after binding the shader
-		shader->SetUniform("transform", transform->GetProjectedTransformation());
+		if (material == NULL)
+		{
+			stdlog(Emergency, LOGPLACE, "Material is NULL");
+			exit(EXIT_FAILURE);
+		}
+		shader->UpdateUniforms(transform->GetTransformation(), transform->GetProjectedTransformation(), *material);
 	}
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // TODO: Remove in the future
-
-	if (texture != NULL)
-	{
-		texture->Bind();
-	}
 
 	if (mesh != NULL)
 	{
