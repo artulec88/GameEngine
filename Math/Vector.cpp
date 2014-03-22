@@ -32,6 +32,9 @@ std::string Vector2D::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(x=" << m_x << "; y=" << m_y << ")";
+	//Math::Real Vector2D::*px = &Vector2D::m_x;
+	//Math::Real Vector2D::*py = &Vector2D::m_y;
+	//printf("data members: %p, %p, %p\n", px, py);
 	return ss.str();
 }
 
@@ -146,6 +149,10 @@ std::string Vector3D::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << ")";
+	//Math::Real Vector3D::*px = &Vector3D::m_x;
+	//Math::Real Vector3D::*py = &Vector3D::m_y;
+	//Math::Real Vector3D::*pz = &Vector3D::m_z;
+	//printf("data members: %p, %p, %p\n", px, py, pz);
 	return ss.str();
 }
 

@@ -2,13 +2,13 @@
 
 #include "Math.h"
 #include "Vector.h"
-#include "Utility\ISerializable.h"
+//#include "Utility\ISerializable.h"
 #include <string>
 
 namespace Math
 {
 
-class MATH_API Quaternion : public Utility::ISerializable
+class MATH_API Quaternion// : public Utility::ISerializable
 {
 private:
 	Real m_x;
@@ -47,7 +47,7 @@ public: // public member functions
 	void Normalize();
 
 public:
-	virtual std::string ToString() const; // derived from ISerializable interface
+	std::string ToString() const;
 }; /* end class Quaternion */
 
 } /* end namespace Math */

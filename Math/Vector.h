@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Math.h"
-#include "Utility\ISerializable.h"
+//#include "Utility\ISerializable.h"
 #include <string>
 #include <sstream>
 
 namespace Math
 {
-class MATH_API Vector2D : public Utility::ISerializable
+class MATH_API Vector2D
 {
 public: // constructors and destructors
 	Vector2D();
@@ -47,7 +47,7 @@ public: // public member functions
 	Real Dot(const Vector2D& v) const;
 
 public:
-	virtual std::string ToString() const; // derived from Utility::ISerializable
+	std::string ToString() const;
 
 protected: // member variables
 	Real m_x;
@@ -55,7 +55,7 @@ protected: // member variables
 }; /* end class Vector2D */
 
 
-class MATH_API Vector3D : public Utility::ISerializable
+class MATH_API Vector3D// : public Utility::ISerializable
 {
 public: // constructors and destructors
 	Vector3D();
@@ -99,12 +99,13 @@ public: // public member functions
 	Vector3D Cross(const Vector3D& v) const;
 
 public:
-	virtual std::string ToString() const; // derived from Utility::ISerializable
+	std::string ToString() const;
 
 protected: // member variables
 	Real m_x;
 	Real m_y;
 	Real m_z;
+	//Real padding;
 }; /* end class Vector3D */
 
 } /* end namespace Math */

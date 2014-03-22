@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Utility.h"
-#include "ISerializable.h"
+//#include "ISerializable.h"
 #include <time.h>
 #include <string>
 
 namespace Utility
 {
-	class UTILITY_API Time : public ISerializable
+	class UTILITY_API Time// : public ISerializable
 	{
 	public:
 		int seconds;
@@ -50,7 +50,7 @@ namespace Utility
 		void MakeInfinite();
 		void MakeDisabled();
 
-		virtual std::string ToString() const; // derived from ISerializable
+		std::string ToString() const;
 		std::string ToDateString(const char *format = "%Y-%m-%d %H:%M:%S") const;
 	};
 } /* end namespace Utils */

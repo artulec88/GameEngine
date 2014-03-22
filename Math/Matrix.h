@@ -2,7 +2,7 @@
 
 #include "Math.h"
 #include "Vector.h"
-#include "Utility\ISerializable.h"
+//#include "Utility\ISerializable.h"
 #include <string>
 
 namespace Math
@@ -10,7 +10,7 @@ namespace Math
 
 #define MATRIX_SIZE 4
 
-class MATH_API Matrix4D : public Utility::ISerializable
+class MATH_API Matrix4D// : public Utility::ISerializable
 {
 /* ==================== Non-static member variables begin ==================== */
 protected:
@@ -61,7 +61,7 @@ public:
 	
 	bool IsIdentity() const;
 
-	virtual std::string ToString() const; // derived from ISerializable interface
+	std::string ToString() const;
 
 }; /* end class Matrix */
 
