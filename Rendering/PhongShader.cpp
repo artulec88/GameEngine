@@ -1,10 +1,34 @@
 #include "StdAfx.h"
 #include "PhongShader.h"
 #include "Texture.h"
+#include "Transform.h"
 #include "Utility\Log.h"
 
 using namespace Rendering;
 using namespace Utility;
+
+/* static */ Math::Vector3D PhongShader::ambientLight = Math::Vector3D(0.1, 0.1, 0.1);
+/* static */ DirectionalLight PhongShader::directionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.0, Math::Vector3D(0.0, 0.0, 0.0));
+
+/* static */ Math::Vector3D PhongShader::GetAmbientLight()
+{
+	return PhongShader::ambientLight;
+}
+
+/* static */ void PhongShader::SetAmbientLight(const Math::Vector3D& ambientLight)
+{
+	PhongShader::ambientLight = ambientLight;
+}
+
+/* static */ DirectionalLight PhongShader::GetDirectionalLight()
+{
+	return PhongShader::directionalLight;
+}
+
+/* static */ void PhongShader::SetDirectionalLight(const DirectionalLight& directionalLight)
+{
+	PhongShader::directionalLight = directionalLight;
+}
 
 PhongShader::PhongShader(void) :
 	Shader()
@@ -17,7 +41,15 @@ PhongShader::PhongShader(void) :
 		stdlog(Error, LOGPLACE, "Error while compiling shader");
 	}
 	AddUniform("transform");
-	AddUniform("color");
+	AddUniform("projectedTransform");
+	AddUniform("baseColor");
+	AddUniform("ambientLight");
+	AddUniform("specularIntensity");
+	AddUniform("specularPower");
+	AddUniform("eyePos");
+	AddUniform("directionalLight.base.color");
+	AddUniform("directionalLight.base.intensity");
+	AddUniform("directionalLight.direction");
 }
 
 
@@ -40,6 +72,21 @@ void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 		WHITE.Bind();
 	}
 
-	SetUniform("transform", projectedMatrix);
-	SetUniform("color", material.color);
+	SetUniform("transform", worldMatrix);
+	SetUniform("projectedTransform", projectedMatrix);
+	SetUniform("baseColor", material.color);
+	SetUniform("ambientLight", PhongShader::GetAmbientLight());
+	SetUniformLight("directionalLight", directionalLight);
+
+	SetUniformf("specularIntensity", material.GetSpecularIntensity());
+	SetUniformf("specularPower", material.GetSpecularPower());
+
+	SetUniform("eyePos", Transform::GetCamera().GetPos());
+}
+
+void PhongShader::SetUniformLight(const std::string& uniform, const DirectionalLight& directionalLight)
+{
+	SetUniform(uniform + ".base.color", directionalLight.GetColor());
+	SetUniformf(uniform + ".base.intensity", directionalLight.GetIntensity());
+	SetUniform(uniform + ".direction", directionalLight.GetDirection());
 }

@@ -11,7 +11,7 @@
 using namespace Rendering;
 using namespace Utility;
 using namespace std;
-//using namespace Math;
+using namespace Math;
 
 // This function is to be removed in the future once nice model loader is created
 /* static */ void Mesh::LoadFromFile(const std::string& fileName, Mesh& mesh)
@@ -59,10 +59,10 @@ using namespace std;
 		if (tokens[0] == "v")
 		{
 			ASSERT(tokens.size() >= 4);
-			Math::Real x = static_cast<Math::Real>(atof(tokens[1].c_str()));
-			Math::Real y = static_cast<Math::Real>(atof(tokens[2].c_str()));
-			Math::Real z = static_cast<Math::Real>(atof(tokens[3].c_str()));
-			vertices.push_back(Vertex(Math::Vector3D(x, y, z)));
+			Real x = static_cast<Real>(atof(tokens[1].c_str()));
+			Real y = static_cast<Real>(atof(tokens[2].c_str()));
+			Real z = static_cast<Real>(atof(tokens[3].c_str()));
+			vertices.push_back(Vertex(Vector3D(x, y, z)));
 		}
 		else if (tokens[0] == "f")
 		{
@@ -155,7 +155,7 @@ void Mesh::AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, 
 
 	if (calcNormalsEnabled)
 	{
-		//this->CalcNormals(vertices, vertSize, indices, indexSize);
+		this->CalcNormals(vertices, vertSize, indices, indexSize);
 	}
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -169,45 +169,41 @@ void Mesh::Draw() const
 {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	//glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Math::Vector3D));
-	//glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D)));
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D));
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 	glDrawElements(GL_TRIANGLES, this->size, GL_UNSIGNED_SHORT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
-	//glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(2);
 }
 
-//void Mesh::CalcNormals(Vertex* vertices, int vertSize, int* indices, int indexSize)
-//{
-//	for(int i = 0; i < indexSize; i += 3)
-//	{
-//		int i0 = indices[i];
-//		int i1 = indices[i + 1];
-//		int i2 = indices[i + 2];
-//		
-//		Vector3D v1 = vertices[i1].pos - vertices[i0].pos;
-//		Vector3D v2 = vertices[i2].pos - vertices[i0].pos;
-//		Vector3D normal = v1.Cross(v2).Normalized();
-//		
-//		vertices[i0].normal += normal;
-//		vertices[i1].normal += normal;
-//		vertices[i2].normal += normal;
-//	}
-//	
-//	for(int i = 0; i < vertSize; i++)
-//	{
-//		vertices[i].normal = vertices[i].normal.Normalized();
-//	}
-//}
-
-//void Mesh::LoadFromFile(const std::string& fileName)
-//{
-//
-//}
+void Mesh::CalcNormals(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize)
+{
+	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
+	for(int i = 0; i < indexSize; i += iterationStep)
+	{
+		int i0 = indices[i];
+		int i1 = indices[i + 1];
+		int i2 = indices[i + 2];
+		
+		Vector3D v1 = vertices[i1].pos - vertices[i0].pos;
+		Vector3D v2 = vertices[i2].pos - vertices[i0].pos;
+		Vector3D normalVec = v1.Cross(v2).Normalized();
+		
+		vertices[i0].normal += normalVec;
+		vertices[i1].normal += normalVec;
+		vertices[i2].normal += normalVec;
+	}
+	
+	for(int i = 0; i < vertSize; i++)
+	{
+		vertices[i].normal = vertices[i].normal.Normalized();
+	}
+}

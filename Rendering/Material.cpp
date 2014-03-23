@@ -23,3 +23,23 @@ Material::~Material(void)
 		texture = NULL;
 	}
 }
+
+Math::Real Material::GetSpecularIntensity() const
+{
+	return this->specularIntensity;
+}
+
+void Material::SetSpecularIntensity(Math::Real specularIntensity)
+{
+	this->specularIntensity = specularIntensity;
+}
+
+Math::Real Material::GetSpecularPower() const
+{
+	return this->specularPower;
+}
+
+void Material::SetSpecularPower(Math::Real specularPower)
+{
+	this->specularPower = specularPower;
+}

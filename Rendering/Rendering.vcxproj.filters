@@ -31,6 +31,12 @@
     <None Include="..\Shaders\TextureVertexShader.vshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\PhongFragmentShader.fshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\PhongVertexShader.vshader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -87,6 +93,12 @@
     <ClInclude Include="PhongShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BaseLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -141,6 +153,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PhongShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

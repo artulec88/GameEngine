@@ -43,7 +43,7 @@ public:
 	void AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	void Draw() const;
 private:
-	//void CalcNormals(Vertex* vertices, int vertSize, int* indices, int indexSize);
+	void CalcNormals(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize);
 /* ==================== Non-static member functions end ==================== */
 
 }; /* end class Mesh */

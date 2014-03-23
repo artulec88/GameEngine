@@ -89,14 +89,13 @@ void Game::Init()
 							  2, 1, 3,
 							  0, 1, 2,
 							  0, 2, 3};
-	mesh->AddVertices(vertices, 4, indices, 12, false);
+	mesh->AddVertices(vertices, 4, indices, 12, true);
 
-	//material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR),
-	//	color, specularIntensity, specularPower);
-	Math::Vector3D materialColor = Math::Vector3D(0.0, 1.0, 1.0);
+	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
 	Math::Real specularIntensity = 2.0;
 	Math::Real specularPower = 32.0;
-	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR),
+	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
+	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		materialColor, specularIntensity, specularPower);
 
 	shader = new PhongShader();
@@ -105,6 +104,8 @@ void Game::Init()
 		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
 		exit(INVALID_VALUE);
 	}
+	PhongShader::SetAmbientLight(Math::Vector3D(0.1, 0.1, 0.1));
+	PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
 	camera = new Camera();
 	
@@ -133,8 +134,8 @@ void Game::Update()
 	
 	Math::Real temp = static_cast<Math::Real>(glfwGetTime());
 	transform->SetTranslation(sin(temp), 0.0, 2.0);
-	transform->SetRotation(0.0, 0.0, sin(temp) * 180);
-	transform->SetScale(0.5 * sin(temp));
+	transform->SetRotation(0.0, sin(temp) * 180, 0.0);
+	//transform->SetScale(0.5 * sin(temp));
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Renderer.h"
 #include "Game.h"
+#include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
 
@@ -83,20 +84,18 @@ void Renderer::Init(int width, int height, std::string title)
 
 void Renderer::InitGraphics()
 {
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f); // Dark blue background TODO: Do not use hard-coded values. Use Config map instead.
+	glClearColor(Config::Get("ClearColorRed", 0.0f), Config::Get("ClearColorGreen", 0.0f), Config::Get("ClearColorBlue", 0.0f), Config::Get("ClearColorAlpha", 0.0f));
 
 	//glFrontFace(GL_CW); // everything face I draw in clockwise order is a front face
 	//glCullFace(GL_BACK); // cull the back face
-	//glEnable(GL_CULL_FACE); // culling faces enabled
-	//glEnable(GL_DEPTH_TEST); // to enable depth tests
-	//glEnable(GL_DEPTH_CLAMP);
+	//glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
+	glEnable(GL_DEPTH_TEST); // to enable depth tests
+	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
 
-	glEnable(GL_DEPTH_TEST); // Enable depth test
 	glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
-	glEnable(GL_CULL_FACE); // Cull triangles which normal is not towards the camera
 
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
+	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 
 	ASSERT(!vao);
 	glGenVertexArrays(1, &vao);

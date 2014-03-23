@@ -9,6 +9,11 @@ void main()
 {
 	vec4 textureColor = texture2D(sampler, texCoord0.xy);
 	vec4 materialColor = vec4(color, 1.0);
+
+	gl_FragColor = materialColor;
 	
-	gl_FragColor = textureColor * materialColor;
+	if (textureColor != vec4(0.0, 0.0, 0.0, 0.0))
+	{
+		gl_FragColor *= textureColor;
+	}
 }

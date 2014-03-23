@@ -28,7 +28,7 @@ public:
 public:
 	void AddUniform(const std::string& uniform);
 	void SetUniformi(const std::string& name, int value);
-	void SetUniformf(const std::string& name, float value);
+	void SetUniformf(const std::string& name, Math::Real value);
 	void SetUniform(const std::string& name, const Math::Vector3D& vector);
 	void SetUniform(const std::string& name, const Math::Matrix4D& matrix);
 

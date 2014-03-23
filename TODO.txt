@@ -1,3 +1,5 @@
 1.	Test time needed for the Matrix4D::ToString() method
 2.	Create a floating-point comparer
 3.	Create a nice design for loading 3D models
+4.	Config map of values should be refreshed once in a while, so that configuration values 	can be reconfigured during runtime.
+5.	Don't use hard-coded values. Ever!

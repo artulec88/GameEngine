@@ -15,10 +15,11 @@ struct RENDERING_API Vertex
 {
 	Math::Vector3D pos;
 	Math::Vector2D texCoord;
-	//Math::Vector3D normal;
+	Math::Vector3D normal;
 
-	Vertex(const Math::Vector3D& position, const Math::Vector2D& texCoord = Math::Vector2D(0.0, 0.0));
-	//Vertex(Math::Vector3D& position, Math::Vector2D& texCoord, Math::Vector3D& normal);
+	Vertex(const Math::Vector3D& position,
+		const Math::Vector2D& texCoord = Math::Vector2D(0.0, 0.0),
+		const Math::Vector3D& normal = Math::Vector3D(0.0, 0.0, 0.0));
 
 	std::string ToString() const;
 }; /* end struct Vertex */
