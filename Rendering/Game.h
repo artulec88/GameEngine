@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Transform.h"
 #include "Material.h"
+#include "PointLight.h"
 #include "Camera.h"
 #include "Math\Math.h"
 
@@ -61,6 +62,7 @@ protected:
 	Transform* transform;
 	Material* material;
 	Camera* camera;
+	PointLight* pointLights;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

@@ -3,12 +3,6 @@
 
 using namespace Rendering;
 
-BaseLight::BaseLight(void) :
-	color(0.0, 0.0, 0.0),
-	intensity(0.0)
-{
-}
-
 BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
 	color(color),
 	intensity(intensity)

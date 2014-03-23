@@ -114,6 +114,7 @@ bool Shader::CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLe
 
 void Shader::AddUniform(const std::string& uniform)
 {
+	//stdlog(Info, LOGPLACE, "Adding uniform location \"%s\"", uniform.c_str());
 	unsigned int uniformLocation = glGetUniformLocation(program, uniform.c_str());
 	ASSERT(uniformLocation != INVALID_VALUE);
 

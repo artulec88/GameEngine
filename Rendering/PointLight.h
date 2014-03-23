@@ -1,31 +1,34 @@
 #pragma once
 
+#include "Attenuation.h"
+#include "BaseLight.h"
 #include "Math\Vector.h"
 
 namespace Rendering
 {
 
-class BaseLight
+class PointLight : public BaseLight
 {
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Vector3D color;
-	Math::Real intensity;
+	Attenuation attenuation;
+	Math::Vector3D position;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BaseLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0);
-	virtual ~BaseLight(void);
+	PointLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0,
+		const Attenuation& attenuation = Attenuation(0.0, 0.0, 0.0),
+		const Math::Vector3D& position = Math::Vector3D(0.0, 0.0, 0.0));
+	virtual ~PointLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Math::Vector3D GetColor() const;
-	void SetColor(const Math::Vector3D& color);
-	Math::Real GetIntensity() const;
-	void SetIntensity(Math::Real intensity);
+	Attenuation GetAttenuation() const { return this->attenuation; };
+	Math::Vector3D GetPosition() const { return this->position; };
+	void SetPosition(const Math::Vector3D& position);
 /* ==================== Non-static member functions end ==================== */
-}; /* end class BaseLight */
+}; /* end class PointLight */
 
 } /* end namespace Rendering */

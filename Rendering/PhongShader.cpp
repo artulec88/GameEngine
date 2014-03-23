@@ -3,12 +3,15 @@
 #include "Texture.h"
 #include "Transform.h"
 #include "Utility\Log.h"
+#include <sstream>
 
 using namespace Rendering;
 using namespace Utility;
 
 /* static */ Math::Vector3D PhongShader::ambientLight = Math::Vector3D(0.1, 0.1, 0.1);
 /* static */ DirectionalLight PhongShader::directionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.0, Math::Vector3D(0.0, 0.0, 0.0));
+/* static */ int PhongShader::pointLightCount = 0;
+/* static */ PointLight* PhongShader::pointLights = NULL;
 
 /* static */ Math::Vector3D PhongShader::GetAmbientLight()
 {
@@ -28,6 +31,30 @@ using namespace Utility;
 /* static */ void PhongShader::SetDirectionalLight(const DirectionalLight& directionalLight)
 {
 	PhongShader::directionalLight = directionalLight;
+}
+
+/* static */ void PhongShader::SetPointLights(PointLight* pointLights, int arraySize)
+{
+	ASSERT(arraySize > 0);
+	if (arraySize > PhongShader::MAX_POINT_LIGHTS)
+	{
+		stdlog(Error, LOGPLACE, "Passed in too many point lights. Max number allowed is %d, whereas you passed in %d", MAX_POINT_LIGHTS, arraySize);
+		exit(EXIT_FAILURE);
+	}
+
+	//for (int i = 0; i < MAX_POINT_LIGHTS; ++i)
+	//{
+	//	PhongShader::pointLights[i] = pointLights[i];
+	//}
+	PhongShader::pointLightCount = arraySize;
+	PhongShader::pointLights = pointLights;
+
+	ASSERT(PhongShader::pointLights != NULL);
+	if (PhongShader::pointLights == NULL)
+	{
+		stdlog(Error, LOGPLACE, "PhongShader::pointLights have not been successfully initialized");
+		exit(EXIT_FAILURE);
+	}
 }
 
 PhongShader::PhongShader(void) :
@@ -50,6 +77,25 @@ PhongShader::PhongShader(void) :
 	AddUniform("directionalLight.base.color");
 	AddUniform("directionalLight.base.intensity");
 	AddUniform("directionalLight.direction");
+
+	if (PhongShader::pointLights == NULL)
+	{
+		stdlog(Info, LOGPLACE, "No point lights available.");
+		return;
+	}
+	// TODO: Shouldn't MAX_POINT_LIGHTS be changed to PhongShader::pointLightCount?
+	for (int i = 0; i < MAX_POINT_LIGHTS; ++i)
+	{
+		std::stringstream ss("");
+		ss << "pointLights[" << i << "].";
+		std::string pointLightUniformName = ss.str();
+		AddUniform(pointLightUniformName + "base.color");
+		AddUniform(pointLightUniformName + "base.intensity");
+		AddUniform(pointLightUniformName + "attenuation.constant");
+		AddUniform(pointLightUniformName + "attenuation.linear");
+		AddUniform(pointLightUniformName + "attenuation.exponent");
+		AddUniform(pointLightUniformName + "position");
+	}
 }
 
 
@@ -76,17 +122,37 @@ void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 	SetUniform("projectedTransform", projectedMatrix);
 	SetUniform("baseColor", material.color);
 	SetUniform("ambientLight", PhongShader::GetAmbientLight());
-	SetUniformLight("directionalLight", directionalLight);
+	SetUniform("directionalLight.base.color", directionalLight.GetColor());
+	SetUniformf("directionalLight.base.intensity", directionalLight.GetIntensity());
+	SetUniform("directionalLight.direction", directionalLight.GetDirection());
+	
+	if (PhongShader::pointLights != NULL)
+	{
+		// TODO: Shouldn't MAX_POINT_LIGHTS be changed to PhongShader::pointLightCount?
+		for(int i = 0; i < MAX_POINT_LIGHTS; ++i)
+		{
+			std::stringstream ss("");
+			ss << "pointLights[" << i << "]";
+			std::string pointLightName = ss.str();
+			//std::string pointLightName = "pointLights[" + std::to_string(i) + "]";
+
+			Attenuation attenuation = PhongShader::pointLights[i].GetAttenuation();
+
+			SetUniform(pointLightName + ".base.color", PhongShader::pointLights[i].GetColor());
+			SetUniformf(pointLightName + ".base.intensity", PhongShader::pointLights[i].GetIntensity());
+			SetUniformf(pointLightName + ".attenuation.constant", attenuation.GetConstant());
+			SetUniformf(pointLightName + ".attenuation.linear", attenuation.GetLinear());
+			SetUniformf(pointLightName + ".attenuation.exponent", attenuation.GetExponent());
+			SetUniform(pointLightName + ".position", PhongShader::pointLights[i].GetPosition());
+		}
+	}
+	else
+	{
+		stdlog(Warning, LOGPLACE, "Point lights are unavailable");
+	}
 
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
 
 	SetUniform("eyePos", Transform::GetCamera().GetPos());
-}
-
-void PhongShader::SetUniformLight(const std::string& uniform, const DirectionalLight& directionalLight)
-{
-	SetUniform(uniform + ".base.color", directionalLight.GetColor());
-	SetUniformf(uniform + ".base.intensity", directionalLight.GetIntensity());
-	SetUniform(uniform + ".direction", directionalLight.GetDirection());
 }

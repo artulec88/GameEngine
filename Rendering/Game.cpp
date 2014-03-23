@@ -4,6 +4,8 @@
 #include "Vertex.h"
 #include "BasicShader.h"
 #include "PhongShader.h"
+#include "Attenuation.h"
+#include "PointLight.h"
 #include "Texture.h"
 
 #include "Math\Math.h"
@@ -69,6 +71,11 @@ Game::~Game(void)
 		delete material;
 		material = NULL;
 	}
+	if (pointLights != NULL)
+	{
+		delete [] pointLights;
+		pointLights = NULL;
+	}
 }
 
 void Game::Init()
@@ -80,32 +87,53 @@ void Game::Init()
 	mesh = new Mesh();
 	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
 
-	Vertex vertex1(Vector3D(-1.0, -1.0, 0.0), Vector2D(0.0, 1.0));
-	Vertex vertex2(Vector3D(1.0, -1.0, 0.0), Vector2D(1.0, 1.0));
-	Vertex vertex3(Vector3D(0.0, 1.0, 0.0), Vector2D(0.5, 0.0));
-	Vertex vertex4(Vector3D(0.0, -1.0, 1.0), Vector2D(0.0, 0.5));
+	//Vertex vertex1(Vector3D(-1.0, -1.0, 0.5773), Vector2D(0.0, 1.0));
+	//Vertex vertex2(Vector3D(0.0, -1.0, -1.15475), Vector2D(0.5, 0.0));
+	//Vertex vertex3(Vector3D(1.0, -1.0, 0.5773), Vector2D(1.0, 0.0));
+	//Vertex vertex4(Vector3D(0.0, 1.0, 0.0), Vector2D(0.5, 1.0));
+	//Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
+	//unsigned short indices[] = {0, 3, 1,
+	//						  1, 3, 2,
+	//						  2, 3, 0,
+	//						  1, 2, 0};
+	//mesh->AddVertices(vertices, 4, indices, 12, true);
+
+	Math::Real fieldDepth = 10.0;
+	Math::Real fieldWidth = 10.0;
+	Vertex vertex1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
+	Vertex vertex2(Vector3D(-fieldWidth, 0.0, 3 * fieldDepth), Vector2D(0.0, 1.0));
+	Vertex vertex3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
+	Vertex vertex4(Vector3D(3 * fieldWidth, 0.0, 3 * fieldDepth), Vector2D(1.0, 1.0));
 	Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
-	unsigned short indices[] = {3, 1, 0,
-							  2, 1, 3,
-							  0, 1, 2,
-							  0, 2, 3};
-	mesh->AddVertices(vertices, 4, indices, 12, true);
+	unsigned short indices[] = {0, 1, 2,
+							  2, 1, 3};
+	mesh->AddVertices(vertices, 4, indices, 6, true);
 
 	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
-	Math::Real specularIntensity = 2.0;
-	Math::Real specularPower = 32.0;
+	Math::Real specularIntensity = 1.0;
+	Math::Real specularPower = 8.0;
 	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
 	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		materialColor, specularIntensity, specularPower);
 
+	PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
+	//PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	
+	//PointLight pLight1(Math::Vector3D(1.0, 1.0, 1.0), 1.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(-2.0, 0, 3.0));
+	//PointLight pLight2(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
+	//PointLight pLight3(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
+	//PointLight pLight4(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
+	pointLights = new PointLight [2];
+	pointLights[0] = PointLight(Math::Vector3D(1.0, 0.5, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-2.0, 0, 5.0));
+	pointLights[1] = PointLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
+	PhongShader::SetPointLights(pointLights, 2);
+	
 	shader = new PhongShader();
 	if (shader == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
 		exit(INVALID_VALUE);
 	}
-	PhongShader::SetAmbientLight(Math::Vector3D(0.1, 0.1, 0.1));
-	PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
 	camera = new Camera();
 	
@@ -133,9 +161,21 @@ void Game::Update()
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
 	Math::Real temp = static_cast<Math::Real>(glfwGetTime());
-	transform->SetTranslation(sin(temp), 0.0, 2.0);
-	transform->SetRotation(0.0, sin(temp) * 180, 0.0);
+	Math::Real sinTemp = static_cast<Math::Real>(sin(temp));
+	Math::Real cosTemp = static_cast<Math::Real>(cos(temp));
+	//transform->SetTranslation(sin(temp), 0.0, 2.0);
+	//transform->SetRotation(0.0, sin(temp) * 180, 0.0);
 	//transform->SetScale(0.5 * sin(temp));
+
+	if (transform != NULL)
+	{
+		transform->SetTranslation(0.0, -1.0, 5.0);
+	}
+	if (pointLights != NULL)
+	{
+		pointLights[0].SetPosition(Math::Vector3D(3.0, 0.0, 8.0 * (sinTemp + 0.5) + 10.0));
+		pointLights[1].SetPosition(Math::Vector3D(17.0, 0.0, 8.0 * (cosTemp + 0.5) + 10.0));
+	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }

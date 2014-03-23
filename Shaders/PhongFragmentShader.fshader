@@ -1,5 +1,7 @@
 #version 330 core
 
+const int MAX_POINT_LIGHTS = 4;
+
 in vec2 texCoord0;
 in vec3 normal0;
 in vec3 worldPos0;
@@ -18,6 +20,21 @@ struct DirectionalLight
 	vec3 direction;
 };
 
+// defines how quickly the point light fades off with the raising distance between source and target
+struct Attenuation
+{
+	float constant;
+	float linear;
+	float exponent;
+};
+
+struct PointLight
+{
+	BaseLight base;
+	Attenuation attenuation;
+	vec3 position;
+};
+
 uniform sampler2D sampler;
 uniform vec3 eyePos; // camera position
 uniform vec3 baseColor;
@@ -25,6 +42,7 @@ uniform vec3 ambientLight;
 uniform float specularIntensity;
 uniform float specularPower;
 uniform DirectionalLight directionalLight; // maybe create an array so that multiple directional lights can be handled
+uniform PointLight pointLights[MAX_POINT_LIGHTS]; // GLSL does not work well with variable-length tables, so do not use some uniform as the length of the table
 
 vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal)
 {
@@ -58,6 +76,22 @@ vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 normal)
 	return CalcLight(directionalLight.base, -directionalLight.direction, normal);
 }
 
+vec4 CalcPointLight(PointLight pointLight, vec3 normal)
+{
+	vec3 lightDirection = worldPos0 - pointLight.position;
+	float distanceToLightSource = length(lightDirection);
+	lightDirection = normalize(lightDirection);
+	
+	vec4 color = CalcLight(pointLight.base, lightDirection, normal);
+	
+	float atten = pointLight.attenuation.constant +
+					pointLight.attenuation.linear * distanceToLightSource +
+					pointLight.attenuation.exponent * distanceToLightSource * distanceToLightSource +
+					0.00001; // just a small number to prevent from dividing by zero
+	
+	return color / atten; // the bigger the attenuation the smaller the color. TODO: Watch out for attenuation = 0!
+}
+
 void main()
 {
 	vec4 totalLight = vec4(ambientLight, 1.0);
@@ -73,5 +107,26 @@ void main()
 	
 	totalLight += CalcDirectionalLight(directionalLight, normal);
 	
-	fragColor = color * totalLight;
+	vec4 totalLightFromPointSources = vec4(0.0, 0.0, 0.0, 0.0);
+	for (int i = 0; i < MAX_POINT_LIGHTS; ++i)
+	{
+		if(pointLights[i].base.intensity > 0)
+		{
+			totalLightFromPointSources += CalcPointLight(pointLights[i], normal);
+		}
+	}
+	
+	// JUST FOR DEBUGGING
+	totalLight += totalLightFromPointSources; // comment this out once you stop debugging
+	fragColor = color * totalLight; // comment this out once you stop debugging
+
+	/*if (length(totalLightFromPointSources) < 0.4125)
+	{
+		fragColor = vec4(1.0, 1.0, 1.0, 1.0) - totalLight + totalLight;
+	}
+	else
+	{
+		fragColor = vec4(0.0, 0.0, 0.0, 1.0) + color - color;
+		//fragColor = totalLightFromPointSources + color - color;
+	}*/
 }
