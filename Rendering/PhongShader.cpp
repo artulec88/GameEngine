@@ -95,6 +95,7 @@ PhongShader::PhongShader(void) :
 		AddUniform(pointLightUniformName + "attenuation.linear");
 		AddUniform(pointLightUniformName + "attenuation.exponent");
 		AddUniform(pointLightUniformName + "position");
+		AddUniform(pointLightUniformName + "range");
 	}
 }
 
@@ -132,18 +133,19 @@ void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 		for(int i = 0; i < MAX_POINT_LIGHTS; ++i)
 		{
 			std::stringstream ss("");
-			ss << "pointLights[" << i << "]";
+			ss << "pointLights[" << i << "].";
 			std::string pointLightName = ss.str();
 			//std::string pointLightName = "pointLights[" + std::to_string(i) + "]";
 
 			Attenuation attenuation = PhongShader::pointLights[i].GetAttenuation();
 
-			SetUniform(pointLightName + ".base.color", PhongShader::pointLights[i].GetColor());
-			SetUniformf(pointLightName + ".base.intensity", PhongShader::pointLights[i].GetIntensity());
-			SetUniformf(pointLightName + ".attenuation.constant", attenuation.GetConstant());
-			SetUniformf(pointLightName + ".attenuation.linear", attenuation.GetLinear());
-			SetUniformf(pointLightName + ".attenuation.exponent", attenuation.GetExponent());
-			SetUniform(pointLightName + ".position", PhongShader::pointLights[i].GetPosition());
+			SetUniform(pointLightName + "base.color", PhongShader::pointLights[i].GetColor());
+			SetUniformf(pointLightName + "base.intensity", PhongShader::pointLights[i].GetIntensity());
+			SetUniformf(pointLightName + "attenuation.constant", attenuation.GetConstant());
+			SetUniformf(pointLightName + "attenuation.linear", attenuation.GetLinear());
+			SetUniformf(pointLightName + "attenuation.exponent", attenuation.GetExponent());
+			SetUniform(pointLightName + "position", PhongShader::pointLights[i].GetPosition());
+			SetUniformf(pointLightName + "range", PhongShader::pointLights[i].GetRange());
 		}
 	}
 	else

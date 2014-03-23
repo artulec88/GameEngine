@@ -33,6 +33,7 @@ struct PointLight
 	BaseLight base;
 	Attenuation attenuation;
 	vec3 position;
+	float range; // max distance between the source and the point for the light to affect that point
 };
 
 uniform sampler2D sampler;
@@ -80,6 +81,11 @@ vec4 CalcPointLight(PointLight pointLight, vec3 normal)
 {
 	vec3 lightDirection = worldPos0 - pointLight.position;
 	float distanceToLightSource = length(lightDirection);
+	if (distanceToLightSource > pointLight.range)
+	{
+		return vec4(0.0, 0.0, 0.0, 0.0);
+	}
+	
 	lightDirection = normalize(lightDirection);
 	
 	vec4 color = CalcLight(pointLight.base, lightDirection, normal);
@@ -119,14 +125,4 @@ void main()
 	// JUST FOR DEBUGGING
 	totalLight += totalLightFromPointSources; // comment this out once you stop debugging
 	fragColor = color * totalLight; // comment this out once you stop debugging
-
-	/*if (length(totalLightFromPointSources) < 0.4125)
-	{
-		fragColor = vec4(1.0, 1.0, 1.0, 1.0) - totalLight + totalLight;
-	}
-	else
-	{
-		fragColor = vec4(0.0, 0.0, 0.0, 1.0) + color - color;
-		//fragColor = totalLightFromPointSources + color - color;
-	}*/
 }
