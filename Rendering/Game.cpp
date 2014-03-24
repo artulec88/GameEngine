@@ -76,6 +76,11 @@ Game::~Game(void)
 		delete [] pointLights;
 		pointLights = NULL;
 	}
+	if (spotLights != NULL)
+	{
+		delete [] spotLights;
+		spotLights = NULL;
+	}
 }
 
 void Game::Init()
@@ -83,10 +88,7 @@ void Game::Init()
 	stdlog(Delocust, LOGPLACE, "Initalizing game");
 
 	rootGameNode.Init();
-
-	mesh = new Mesh();
-	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
-
+	
 	//Vertex vertex1(Vector3D(-1.0, -1.0, 0.5773), Vector2D(0.0, 1.0));
 	//Vertex vertex2(Vector3D(0.0, -1.0, -1.15475), Vector2D(0.5, 0.0));
 	//Vertex vertex3(Vector3D(1.0, -1.0, 0.5773), Vector2D(1.0, 0.0));
@@ -96,7 +98,6 @@ void Game::Init()
 	//						  1, 3, 2,
 	//						  2, 3, 0,
 	//						  1, 2, 0};
-	//mesh->AddVertices(vertices, 4, indices, 12, true);
 
 	Math::Real fieldDepth = 10.0;
 	Math::Real fieldWidth = 10.0;
@@ -107,7 +108,8 @@ void Game::Init()
 	Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
 	unsigned short indices[] = {0, 1, 2,
 							  2, 1, 3};
-	mesh->AddVertices(vertices, 4, indices, 6, true);
+	mesh = new Mesh(vertices, 4, indices, 6, true);
+	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
 
 	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
 	Math::Real specularIntensity = 1.0;
@@ -117,7 +119,7 @@ void Game::Init()
 		materialColor, specularIntensity, specularPower);
 
 	PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
-	//PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.5, Math::Vector3D(1.0, 1.0, 1.0)));
 	
 	//PointLight pLight1(Math::Vector3D(1.0, 1.0, 1.0), 1.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(-2.0, 0, 3.0));
 	//PointLight pLight2(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
@@ -125,8 +127,17 @@ void Game::Init()
 	//PointLight pLight4(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
 	pointLights = new PointLight [2];
 	pointLights[0] = PointLight(Math::Vector3D(1.0, 0.5, 0.0), 0.8, Attenuation(1.0, 0.0, 1.0), Math::Vector3D(-2.0, 0, 5.0), 6.0);
-	pointLights[1] = PointLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(1.0, 0.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0);
+	pointLights[1] = PointLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0);
 	PhongShader::SetPointLights(pointLights, 2);
+
+	//SpotLight sLight1(Math::Vector3D(1.0, 1.0, 1.0), 1.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(-2.0, 0, 3.0));
+	//SpotLight sLight2(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
+	//SpotLight sLight3(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
+	//SpotLight sLight4(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
+	spotLights = new SpotLight [1];
+	spotLights[0] = SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 1.0f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 30.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
+	//spotLights[1] = SpotLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0, new Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
+	PhongShader::SetSpotLights(spotLights, 1);
 	
 	shader = new PhongShader();
 	if (shader == NULL)
@@ -175,6 +186,18 @@ void Game::Update()
 	{
 		pointLights[0].SetPosition(Math::Vector3D(3.0, 0.0, 8.0 * (sinTemp + 0.5) + 10.0));
 		pointLights[1].SetPosition(Math::Vector3D(17.0, 0.0, 8.0 * (cosTemp + 0.5) + 10.0));
+	}
+	if (spotLights != NULL)
+	{
+		if (camera != NULL)
+		{
+			spotLights[0].SetPosition(camera->GetPos());
+			spotLights[0].SetDirection(camera->GetForward());
+		}
+		else
+		{
+			stdlog(Warning, LOGPLACE, "Camera is not initialized");
+		}
 	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());

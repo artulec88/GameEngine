@@ -24,4 +24,6 @@ void DirectionalLight::SetDirection(const Math::Vector3D& direction)
 {
 	this->direction = direction;
 	this->direction.Normalize(); // just in case
+
+	//ASSERT(this->direction.IsNomalized());
 }

@@ -13,8 +13,50 @@ using namespace Utility;
 using namespace std;
 using namespace Math;
 
+Mesh::Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */) :
+	vbo(0),
+	ibo(0),
+	size(0)
+{
+	AddVertices(vertices, vertSize, indices, indexSize, calcNormalsEnabled);
+}
+
+Mesh::Mesh(const std::string& fileName) :
+	vbo(0),
+	ibo(0),
+	size(0)
+{
+	// TODO: Loading a model from the given file
+	//IndexedModel model = OBJModel(fileName).ToIndexedModel();
+
+	//std::vector<Vertex> vertices;
+	//for (unsigned int i = 0; i < model.positions.size(); ++i)
+	//{
+	//	vertices.push_back(Vertex(model.positions[i], model.texCoords[i]));//, model.normals[i]));
+	//}
+	//for (int i = 0; i < vertices.size(); ++i)
+	//{
+	//	cout << i+1 << "): " << vertices[i].ToString() << endl;
+	//}
+	//AddVertices(&vertices[0], vertices.size(), (unsigned short*)&model.indices[0], model.indices.size(), false);
+
+	LoadFromFile(fileName);
+}
+
+Mesh::~Mesh(void)
+{
+	if (vbo)
+	{
+		glDeleteBuffers(1, &vbo);
+	}
+	if (ibo)
+	{
+		glDeleteBuffers(1, &ibo);
+	}
+}
+
 // This function is to be removed in the future once nice model loader is created
-/* static */ void Mesh::LoadFromFile(const std::string& fileName, Mesh& mesh)
+void Mesh::LoadFromFile(const std::string& fileName)
 {
 	// TODO: Check whether the fileName is a full path or just a fileName. Act accordingly.
 	std::string name = fileName;
@@ -91,54 +133,11 @@ using namespace Math;
 	ASSERT(file.is_open());
 	file.close();
 
-	for (int i = 0; i < vertices.size(); ++i)
-	{
-		cout << i+1 << "): " << vertices[i].ToString() << endl;
-	}
-	mesh.AddVertices(&vertices[0], vertices.size(), &indices[0], indices.size(), false);
-
-	return;
-}
-
-Mesh::Mesh(void) :
-	vbo(0),
-	ibo(0),
-	size(0)
-{
-}
-
-Mesh::Mesh(const std::string& fileName) :
-	vbo(0),
-	ibo(0),
-	size(0)
-{
-	// TODO: Loading a model from the given file
-	//IndexedModel model = OBJModel(fileName).ToIndexedModel();
-
-	//std::vector<Vertex> vertices;
-	//for (unsigned int i = 0; i < model.positions.size(); ++i)
-	//{
-	//	vertices.push_back(Vertex(model.positions[i], model.texCoords[i]));//, model.normals[i]));
-	//}
 	//for (int i = 0; i < vertices.size(); ++i)
 	//{
 	//	cout << i+1 << "): " << vertices[i].ToString() << endl;
 	//}
-	//AddVertices(&vertices[0], vertices.size(), (unsigned short*)&model.indices[0], model.indices.size(), false);
-
-	LoadFromFile(fileName, *this);
-}
-
-Mesh::~Mesh(void)
-{
-	if (vbo)
-	{
-		glDeleteBuffers(1, &vbo);
-	}
-	if (ibo)
-	{
-		glDeleteBuffers(1, &ibo);
-	}
+	AddVertices(&vertices[0], vertices.size(), &indices[0], indices.size(), false);
 }
 
 void Mesh::AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */)

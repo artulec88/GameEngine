@@ -1,6 +1,7 @@
 #version 330 core
 
 const int MAX_POINT_LIGHTS = 4;
+const int MAX_SPOT_LIGHTS = 4;
 
 in vec2 texCoord0;
 in vec3 normal0;
@@ -36,6 +37,13 @@ struct PointLight
 	float range; // max distance between the source and the point for the light to affect that point
 };
 
+struct SpotLight
+{
+	PointLight pointLight;
+	vec3 direction; // general direction of the light
+	float cutoff; // defines the cone of the light. The value must be from the interval (0; 1).
+};
+
 uniform sampler2D sampler;
 uniform vec3 eyePos; // camera position
 uniform vec3 baseColor;
@@ -44,6 +52,7 @@ uniform float specularIntensity;
 uniform float specularPower;
 uniform DirectionalLight directionalLight; // maybe create an array so that multiple directional lights can be handled
 uniform PointLight pointLights[MAX_POINT_LIGHTS]; // GLSL does not work well with variable-length tables, so do not use some uniform as the length of the table
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS]; // GLSL does not work well with variable-length tables, so do not use some uniform as the length of the table
 
 vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal)
 {
@@ -98,6 +107,22 @@ vec4 CalcPointLight(PointLight pointLight, vec3 normal)
 	return color / atten; // the bigger the attenuation the smaller the color. TODO: Watch out for attenuation = 0!
 }
 
+vec4 CalcSpotLight(SpotLight spotLight, vec3 normal)
+{
+	vec3 lightDirection = normalize(worldPos0 - spotLight.pointLight.position); // what direction the light is facing
+	float spotFactor = dot(lightDirection, spotLight.direction);
+	
+	vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
+	
+	if (spotFactor > spotLight.cutoff) // pixel is within cone of light
+	{
+		color = CalcPointLight(spotLight.pointLight, normal);
+		color *= 1.0 - ((1.0 - spotFactor) / (1.0 - spotLight.cutoff)); // when pixel is close to the edge of the cone the light should fade out
+	}
+	
+	return color;
+}
+
 void main()
 {
 	vec4 totalLight = vec4(ambientLight, 1.0);
@@ -113,16 +138,25 @@ void main()
 	
 	totalLight += CalcDirectionalLight(directionalLight, normal);
 	
-	vec4 totalLightFromPointSources = vec4(0.0, 0.0, 0.0, 0.0);
+	vec4 totalLightFromPointLights = vec4(0.0, 0.0, 0.0, 0.0);
 	for (int i = 0; i < MAX_POINT_LIGHTS; ++i)
 	{
 		if(pointLights[i].base.intensity > 0)
 		{
-			totalLightFromPointSources += CalcPointLight(pointLights[i], normal);
+			totalLightFromPointLights += CalcPointLight(pointLights[i], normal);
 		}
 	}
+	totalLight += totalLightFromPointLights;
 	
-	// JUST FOR DEBUGGING
-	totalLight += totalLightFromPointSources; // comment this out once you stop debugging
+	vec4 totalLightFromSpotLights = vec4(0.0, 0.0, 0.0, 0.0);
+	for (int i = 0; i < MAX_SPOT_LIGHTS; ++i)
+	{
+		if(spotLights[i].pointLight.base.intensity > 0)
+		{
+			totalLightFromSpotLights += CalcSpotLight(spotLights[i], normal);
+		}
+	}
+	totalLight += totalLightFromSpotLights;
+	
 	fragColor = color * totalLight; // comment this out once you stop debugging
 }

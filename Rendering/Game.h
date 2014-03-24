@@ -7,6 +7,7 @@
 #include "Transform.h"
 #include "Material.h"
 #include "PointLight.h"
+#include "SpotLight.h"
 #include "Camera.h"
 #include "Math\Math.h"
 
@@ -63,6 +64,7 @@ protected:
 	Material* material;
 	Camera* camera;
 	PointLight* pointLights;
+	SpotLight* spotLights;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

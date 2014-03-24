@@ -24,7 +24,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Mesh(void);
+	Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	Mesh(const std::string& fileName);
 	virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
@@ -34,15 +34,14 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	void Draw() const;
+protected:
 	// TODO: Remove this function in the future. Create a nice design for loading meshes from external files
 	/**
 	 * This is a temporary function. It will be removed once the model loader is finished
 	 */
-	static void LoadFromFile(const std::string& fileName, Mesh& mesh);
-
+	void LoadFromFile(const std::string& fileName);
 	void AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
-	void Draw() const;
-private:
 	void CalcNormals(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize);
 /* ==================== Non-static member functions end ==================== */
 
