@@ -29,7 +29,6 @@ protected:
 	Rendering::Shader* shader;
 	Rendering::Transform* transform;
 	Rendering::Material* material;
-	Rendering::Camera* camera;
 	Rendering::PointLight* pointLights;
 	Rendering::SpotLight* spotLights;
 /* ==================== Non-static member variables end ==================== */

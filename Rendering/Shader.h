@@ -2,6 +2,8 @@
 
 #include "Rendering.h"
 #include "Material.h"
+#include "Renderer.h"
+#include "Transform.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include <map>
@@ -32,7 +34,7 @@ public:
 	void SetUniform(const std::string& name, const Math::Vector3D& vector);
 	void SetUniform(const std::string& name, const Math::Matrix4D& matrix);
 
-	virtual void UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix, const Material& material);
+	virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer);
 
 	void AddVertexShaderFromFile(const std::string& fileName);
 	void AddFragmentShaderFromFile(const std::string& fileName);

@@ -27,7 +27,7 @@ BasicShader::~BasicShader(void)
 
 
 // derived from Shader class
-void BasicShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix, const Material& material)
+void BasicShader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer)
 {
 	if (material.texture != NULL)
 	{
@@ -39,6 +39,8 @@ void BasicShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 		static Texture WHITE(1, 1, whitePixel);
 		WHITE.Bind();
 	}
+
+	Math::Matrix4D projectedMatrix = renderer->GetMainCamera().GetViewProjection() * transform.GetTransformation();
 
 	SetUniform("transform", projectedMatrix);
 	SetUniform("color", material.color);

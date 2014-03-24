@@ -37,11 +37,6 @@ TestGame2::~TestGame2(void)
 		delete transform;
 		transform = NULL;
 	}
-	if (camera != NULL)
-	{
-		delete camera;
-		camera = NULL;
-	}
 	if (material != NULL)
 	{
 		delete material;
@@ -127,9 +122,6 @@ void TestGame2::Init()
 		exit(INVALID_VALUE);
 	}
 
-	camera = new Camera();
-	
-	Transform::SetCamera(*camera);
 	transform = new Transform();
 
 	//GLuint programID = LoadShaders("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader",
@@ -164,15 +156,15 @@ void TestGame2::Update()
 	}
 	if (spotLights != NULL)
 	{
-		if (camera != NULL)
-		{
-			spotLights[0].SetPosition(camera->GetPos());
-			spotLights[0].SetDirection(camera->GetForward());
-		}
-		else
-		{
-			stdlog(Warning, LOGPLACE, "Camera is not initialized");
-		}
+		//if (camera != NULL)
+		//{
+		//	spotLights[0].SetPosition(camera->GetPos());
+		//	spotLights[0].SetDirection(camera->GetForward());
+		//}
+		//else
+		//{
+		//	stdlog(Warning, LOGPLACE, "Camera is not initialized");
+		//}
 	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
@@ -190,17 +182,17 @@ void TestGame2::Render()
 		stdlog(Warning, LOGPLACE, "Mesh instance is NULL");
 	}
 
-	if (shader != NULL)
-	{
-		shader->Bind();
-		// TODO: Remember to set the uniform after binding the shader
-		if (material == NULL)
-		{
-			stdlog(Emergency, LOGPLACE, "Material is NULL");
-			exit(EXIT_FAILURE);
-		}
-		shader->UpdateUniforms(transform->GetTransformation(), transform->GetProjectedTransformation(), *material);
-	}
+	//if (shader != NULL)
+	//{
+	//	shader->Bind();
+	//	// TODO: Remember to set the uniform after binding the shader
+	//	if (material == NULL)
+	//	{
+	//		stdlog(Emergency, LOGPLACE, "Material is NULL");
+	//		exit(EXIT_FAILURE);
+	//	}
+	//	shader->UpdateUniforms(transform, *material, CoreEngine::GetCoreEngine()->GetRenderer());
+	//}
 
 	if (mesh != NULL)
 	{
@@ -218,13 +210,13 @@ void TestGame2::KeyEvent(GLFWwindow* window, int key, int scancode, int action, 
 {
 	Game::KeyEvent(window, key, scancode, action, mods);
 
-	ASSERT(camera != NULL);
-	if (camera == NULL)
-	{
-		stdlog(Error, LOGPLACE, "Camera instance is not initialized");
-		return;
-	}
+	//ASSERT(camera != NULL);
+	//if (camera == NULL)
+	//{
+	//	stdlog(Error, LOGPLACE, "Camera instance is not initialized");
+	//	return;
+	//}
 
 	// TODO: Set delta to correct value
-	camera->Input(key, 0.02);
+	//camera->Input(key, 0.02);
 }

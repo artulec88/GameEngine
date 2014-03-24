@@ -26,9 +26,9 @@ MeshRenderer::~MeshRenderer(void)
 	}
 }
 
-void MeshRenderer::Render(Shader* shader)
+void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 {
 	shader->Bind();
-	shader->UpdateUniforms(GetTransform().GetTransformation(), GetTransform().GetProjectedTransformation(), *material);
+	shader->UpdateUniforms(GetTransform(), *material, renderer);
 	mesh->Draw();
 }

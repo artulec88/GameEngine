@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rendering.h"
+#include "Renderer.h"
 #include "GameNode.h"
 #include "Shader.h"
 
@@ -19,7 +20,7 @@ public:
 public:
 	virtual void Input();
 	virtual void Update();
-	virtual void Render(Shader* shader);
+	virtual void Render(Shader* shader, Renderer* renderer);
 
 	//virtual void AddToRenderingEngine(RenderingEngine* renderingEngine);
 	void SetParent(GameNode* parentGameNode);

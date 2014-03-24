@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "Math\Vector.h"
+#include "Math\Matrix.h"
 #include <string>
 
 namespace Rendering
@@ -19,12 +20,14 @@ private:
 	Math::Vector3D pos;
 	Math::Vector3D forward;
 	Math::Vector3D up;
+	Math::Matrix4D projection;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Camera();
-	Camera(const Math::Vector3D& pos, const Math::Vector3D& forward, const Math::Vector3D& up);
+	Camera(const Math::Vector3D& pos, const Math::Vector3D& forward, const Math::Vector3D& up,
+		Math::Real FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
 	~Camera(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -36,6 +39,8 @@ public:
 	void SetPos(const Math::Vector3D& pos);
 	void SetForward(const Math::Vector3D& forward);
 	void SetUp(const Math::Vector3D& up);
+
+	Math::Matrix4D GetViewProjection() const;
 
 	void Move(const Math::Vector3D& dir, Math::Real amount);
 	void RotateX(Math::Real angleInDegrees);

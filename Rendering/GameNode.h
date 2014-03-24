@@ -9,6 +9,7 @@ namespace Rendering
 
 class GameComponent;
 class Shader;
+class Renderer;
 
 class RENDERING_API GameNode
 {
@@ -24,7 +25,7 @@ public:
 	GameNode* AddComponent(GameComponent* component);
 	void Input();
 	void Update();
-	void Render(Shader* shader);
+	void Render(Shader* shader, Renderer* renderer);
 	//void AddToRenderingEngine(RenderingEngine* engine);
 
 	Transform& GetTransform() { return this->transform; };

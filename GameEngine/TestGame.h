@@ -20,14 +20,12 @@ public:
 	virtual void Init();
 	virtual void Input();
 	virtual void Update();
-	virtual void Render();
 
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Rendering::Camera* camera;
 /* ==================== Non-static member variables end ==================== */
 };
 

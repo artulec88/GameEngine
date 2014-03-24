@@ -12,7 +12,7 @@ public:
 	virtual ~BasicShader(void);
 
 public:
-	void UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix, const Material& material); // derived from Shader class
+	void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer); // derived from Shader class
 }; /* end class BasicShader */
 
 } /* end namespace Rendering */

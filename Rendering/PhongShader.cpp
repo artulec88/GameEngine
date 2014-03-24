@@ -3,6 +3,7 @@
 #include "Texture.h"
 #include "Transform.h"
 #include "Utility\Log.h"
+#include "Math\Matrix.h"
 #include <sstream>
 
 using namespace Rendering;
@@ -155,7 +156,7 @@ PhongShader::~PhongShader(void)
 
 
 // derived from Shader class
-void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::Matrix4D& projectedMatrix, const Material& material)
+void PhongShader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer)
 {
 	if (material.texture != NULL)
 	{
@@ -167,6 +168,9 @@ void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 		static Texture WHITE(1, 1, whitePixel);
 		WHITE.Bind();
 	}
+
+	Math::Matrix4D worldMatrix = transform.GetTransformation();
+	Math::Matrix4D projectedMatrix = renderer->GetMainCamera().GetViewProjection() * worldMatrix;
 
 	SetUniform("transform", worldMatrix);
 	SetUniform("projectedTransform", projectedMatrix);
@@ -234,5 +238,5 @@ void PhongShader::UpdateUniforms(const Math::Matrix4D& worldMatrix, const Math::
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
 
-	SetUniform("eyePos", Transform::GetCamera().GetPos());
+	SetUniform("eyePos", renderer->GetMainCamera().GetPos());
 }

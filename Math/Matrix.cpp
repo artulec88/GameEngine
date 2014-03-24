@@ -35,7 +35,7 @@ Matrix4D::~Matrix4D()
 	return matrix;
 }
 
-/* static */ Matrix4D Matrix4D::Projection(Real fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
+/* static */ Matrix4D Matrix4D::PerspectiveProjection(Real fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
 {
 	Matrix4D matrix;
 	Real f = static_cast<Real>(1.0 / tan(ToRad(fov / 2)));
@@ -53,6 +53,22 @@ Matrix4D::~Matrix4D()
 	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = 1.0;							matrix.m[3][3] = 0.0;
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
 
+	return matrix;
+}
+
+/* static */ Matrix4D Matrix4D::OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
+{
+	Matrix4D matrix;
+
+	Real width = right - left;
+	Real height = top - bottom;
+	Real depth = farPlane - nearPlane;
+	
+	matrix.m[0][0] = 2.0 / width;	matrix.m[0][1] = 0.0;			matrix.m[0][2] = 0.0;			matrix.m[0][3] = -(right + left) / width;
+	matrix.m[1][0] = 0.0;			matrix.m[1][1] = 2.0 / height;	matrix.m[1][2] = 0.0;			matrix.m[1][3] = -(top + bottom) / height;
+	matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;			matrix.m[2][2] = -2.0 / depth;	matrix.m[2][3] = -(farPlane + nearPlane) / depth;
+	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;			matrix.m[3][2] = 0.0;			matrix.m[3][3] = 1.0;
+	
 	return matrix;
 }
 
@@ -156,7 +172,7 @@ Matrix4D::~Matrix4D()
 	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angleInDegrees);
 }
 
-/* static */ Matrix4D Matrix4D::InitCamera(const Vector3D& forward, const Vector3D& up)
+/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up)
 {
 	Vector3D forw = forward;
 	forw.Normalize(); // TODO: Should not be necessary

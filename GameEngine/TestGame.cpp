@@ -15,8 +15,7 @@ using namespace Math;
 using namespace Rendering;
 
 TestGame::TestGame() :
-	Game(),
-	camera(NULL)
+	Game()
 {
 	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -24,11 +23,11 @@ TestGame::TestGame() :
 
 TestGame::~TestGame(void)
 {
-	if (camera != NULL)
-	{
-		delete camera;
-		camera = NULL;
-	}
+	//if (camera != NULL)
+	//{
+	//	delete camera;
+	//	camera = NULL;
+	//}
 	//if (planeObject != NULL)
 	//{
 	//	delete planeObject;
@@ -52,7 +51,7 @@ void TestGame::Init()
 	}
 	//rootGameNode->Init();
 
-	camera = new Camera();
+//	camera = new Camera();
 
 	Math::Real fieldDepth = 10.0;
 	Math::Real fieldWidth = 10.0;
@@ -79,8 +78,7 @@ void TestGame::Init()
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
 	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
 
-	Transform::SetProjection(fov, CoreEngine::GetCoreEngine()->GetWindowWidth(), CoreEngine::GetCoreEngine()->GetWindowHeight(), zNear, zFar);
-	Transform::SetCamera(*camera);
+	//Transform::SetCamera(*camera);
 
 	GameNode* planeObject = new GameNode();
 	planeObject->AddComponent(meshRenderer);
@@ -119,12 +117,6 @@ void TestGame::Update()
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }
 
-void TestGame::Render()
-{
-	//stdlog(Debug, LOGPLACE, "One single frame is being rendered");
-	//rootGameNode->Render(shader);
-}
-
 /**
  * @param key the keyboard key that was pressed or released
  * @param scancode the system-specific scancode of the key
@@ -135,13 +127,13 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 {
 	Game::KeyEvent(window, key, scancode, action, mods);
 
-	ASSERT(camera != NULL);
-	if (camera == NULL)
-	{
-		stdlog(Error, LOGPLACE, "Camera instance is not initialized");
-		return;
-	}
+	//ASSERT(camera != NULL);
+	//if (camera == NULL)
+	//{
+	//	stdlog(Error, LOGPLACE, "Camera instance is not initialized");
+	//	return;
+	//}
 
 	// TODO: Set delta to correct value
-	camera->Input(key, 0.02);
+	//camera->Input(key, 0.02);
 }

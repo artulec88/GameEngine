@@ -17,15 +17,25 @@ Camera::Camera() :
 	forward(GET_CONFIG_VALUE("defaultCameraForward_x", "defaultCameraForward_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_y", "defaultCameraForward_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_z", "defaultCameraForward_zDefault", 1.0)),
 	up(GET_CONFIG_VALUE("defaultCameraUp_x", "defaultCameraUp_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraUp_y", "defaultCameraUp_yDefault", 1.0), GET_CONFIG_VALUE("defaultCameraUp_z", "defaultCameraUp_zDefault", 0.0))
 {
+	forward.Normalize();
+	up.Normalize();
+
+	Real fov = GET_CONFIG_VALUE("defaultCameraFoV", "defaultCameraFoV_Default", 70.0);
+	Real aspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", "defaultCameraAspectRatio_Default", 1.33333333333);
+	Real zNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", "defaultCameraNearPlane_Default", 0.1);
+	Real zFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", "defaultCameraFarPlane_Default", 1000.0);
+	this->projection = Matrix4D::PerspectiveProjection(fov, aspectRatio, zNearPlane, zFarPlane);
 }
 
-Camera::Camera(const Vector3D& pos, const Vector3D& forward, const Vector3D& up) :
+Camera::Camera(const Vector3D& pos, const Vector3D& forward, const Vector3D& up, Real FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
 	pos(pos),
 	forward(forward),
 	up(up)
 {
 	this->forward.Normalize();
 	this->up.Normalize();
+
+	this->projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
 }
 
 
@@ -133,6 +143,14 @@ void Camera::Input(int key, Real delta)
 		stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
 		break;
 	}
+}
+
+Matrix4D Camera::GetViewProjection() const
+{
+	Matrix4D cameraRotation = Matrix4D::Rotation(forward, up);
+	Matrix4D cameraTranslation = Matrix4D::Translation(-GetPos());
+
+	return projection * cameraRotation * cameraTranslation;
 }
 
 std::string Camera::ToString() const

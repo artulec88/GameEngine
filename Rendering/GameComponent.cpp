@@ -27,7 +27,7 @@ void GameComponent::Update()
 {
 }
 
-void GameComponent::Render(Shader* shader)
+void GameComponent::Render(Shader* shader, Renderer* renderingEngine)
 {
 
 }

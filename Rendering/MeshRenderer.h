@@ -17,7 +17,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Render(Shader* shader);
+	virtual void Render(Shader* shader, Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

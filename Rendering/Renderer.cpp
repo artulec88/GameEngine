@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Renderer.h"
 #include "Game.h"
+#include "BasicShader.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
@@ -12,6 +13,7 @@ using namespace Rendering;
 using namespace Utility;
 
 Renderer::Renderer(int width, int height, std::string title) :
+	mainCamera(),
 	window(NULL),
 	vao(0),
 	isFullscreen(false),
@@ -84,7 +86,7 @@ void Renderer::Init(int width, int height, std::string title)
 
 void Renderer::InitGraphics()
 {
-	glClearColor(Config::Get("ClearColorRed", 0.0f), Config::Get("ClearColorGreen", 0.0f), Config::Get("ClearColorBlue", 0.0f), Config::Get("ClearColorAlpha", 0.0f));
+	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
 
 	//glFrontFace(GL_CW); // everything face I draw in clockwise order is a front face
 	//glCullFace(GL_BACK); // cull the back face
@@ -125,12 +127,15 @@ void Renderer::InitGlew() const
 	stdlog(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
 
-void Renderer::Render(GameNode& gameNode, Shader* shader)
+void Renderer::Render(GameNode& gameNode)
 {
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
 
-	gameNode.Render(shader);
+	// TODO: This static variable is horrible. Fix this as soon as you can!
+	static BasicShader shader;
+
+	gameNode.Render(&shader, this);
 }
 
 void Renderer::SwapBuffers()

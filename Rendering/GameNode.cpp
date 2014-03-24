@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "GameNode.h"
 #include "GameComponent.h"
+#include "Renderer.h"
 
 #include "Utility\Log.h"
 
@@ -99,14 +100,14 @@ void GameNode::Update()
 	}
 }
 
-void GameNode::Render(Shader* shader)
+void GameNode::Render(Shader* shader, Renderer* renderer)
 {
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
-		(*gameComponentItr)->Render(shader);
+		(*gameComponentItr)->Render(shader, renderer);
 	}
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Render(shader);
+		(*gameNodeItr)->Render(shader, renderer);
 	}
 }

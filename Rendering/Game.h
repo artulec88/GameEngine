@@ -45,7 +45,6 @@ public:
 	virtual void Init() = 0;
 	virtual void Input() = 0;
 	virtual void Update() = 0;
-	virtual void Render() = 0;
 
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
