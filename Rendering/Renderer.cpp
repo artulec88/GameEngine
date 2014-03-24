@@ -128,14 +128,19 @@ void Renderer::InitGlew() const
 void Renderer::Render(GameNode& gameNode)
 {
 	// TODO: Expand with Stencil buffer once it is used
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ClearScreen();
 
-	gameNode.Render();
+	//gameNode.Render();
 }
 
 void Renderer::SwapBuffers()
 {
 	glfwSwapBuffers(window);
+}
+
+void Renderer::ClearScreen() const
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 std::string Renderer::GetOpenGLVersion()

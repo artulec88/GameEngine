@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Rendering.h"
 #include "Math\Math.h"
 
 namespace Rendering
 {
 
-class Attenuation
+class RENDERING_API Attenuation
 {
 /* ==================== Non-static member variables begin ==================== */
 private:

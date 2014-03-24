@@ -42,29 +42,20 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	GLuint LoadShaders(const char* vertexFilePath, const char* fragmentFilePath); // TODO: Move this function somewhere else in the future
+	virtual void Init() = 0;
+	virtual void Input() = 0;
+	virtual void Update() = 0;
+	virtual void Render() = 0;
 
-	virtual void Render();
-
-	virtual void Init();
-	virtual void Input();
-	virtual void Update();
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-	inline GameNode& GetRootGameNode() { return rootGameNode; }
+	GameNode& GetRootGameNode() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	GameNode rootGameNode;
-	Mesh* mesh;
-	Shader* shader;
-	Transform* transform;
-	Material* material;
-	Camera* camera;
-	PointLight* pointLights;
-	SpotLight* spotLights;
+	GameNode* rootGameNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

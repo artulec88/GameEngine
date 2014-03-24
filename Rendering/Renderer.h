@@ -27,6 +27,7 @@ public: /* constructors and destructors */
 public: /* Non-static, non-virtual member functions */
 	//GLFWwindow* GetWindow() const { return this->window; };
 	void Render(GameNode& node);
+	void ClearScreen() const;
 	void SwapBuffers();
 
 	std::string GetOpenGLVersion();

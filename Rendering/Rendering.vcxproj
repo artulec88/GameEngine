@@ -93,6 +93,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="CoreEngine.h" />
@@ -126,6 +127,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />

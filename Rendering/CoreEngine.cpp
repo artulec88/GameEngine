@@ -118,14 +118,14 @@ void CoreEngine::Run()
 #endif
 
 	Math::Real unprocessingTime = 0.0; // used to cap the FPS when it gets too high
-	Math::Real previousTime = glfwGetTime();
+	Math::Real previousTime = GetTime();
 
 	while (isRunning)
 	{
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
-		Math::Real currentTime = glfwGetTime();
+		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 
 		previousTime = currentTime;
@@ -159,6 +159,7 @@ void CoreEngine::Run()
 		}
 		if (isRenderRequired)
 		{
+			this->renderer->ClearScreen();
 			//this->renderer->Render();
 			//this->renderer->Render(this->game->GetRootGameNode());
 			game->Render();
@@ -187,9 +188,14 @@ bool CoreEngine::IsCloseRequested() const
 	return false;
 }
 
-Time CoreEngine::GetTime() const
+Math::Real CoreEngine::GetTime() const
 {
-	return Time(glfwGetTime());
+	return static_cast<Math::Real>(glfwGetTime());
+	//return Time(glfwGetTime());
 
 	//return Time::Now();
+}
+
+void CoreEngine::ClearScreen() const
+{
 }

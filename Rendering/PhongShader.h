@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Rendering.h"
 #include "Shader.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -10,7 +11,7 @@
 namespace Rendering
 {
 
-class PhongShader : public Shader
+class RENDERING_API PhongShader : public Shader
 {
 private:
 	/**

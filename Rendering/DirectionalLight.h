@@ -1,10 +1,12 @@
 #pragma once
+
+#include "Rendering.h"
 #include "BaseLight.h"
 
 namespace Rendering
 {
 
-class DirectionalLight : public BaseLight
+class RENDERING_API DirectionalLight : public BaseLight
 {
 /* ==================== Non-static member variables begin ==================== */
 private:

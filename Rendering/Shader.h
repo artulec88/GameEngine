@@ -11,7 +11,7 @@
 namespace Rendering
 {
 
-class Shader
+class RENDERING_API Shader
 {
 /* ==================== Static functions begin ==================== */
 //protected:

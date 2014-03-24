@@ -8,7 +8,7 @@
 namespace Rendering
 {
 
-class SpotLight : public PointLight
+class RENDERING_API SpotLight : public PointLight
 {
 /* ==================== Non-static member variables begin ==================== */
 private:

@@ -6,7 +6,7 @@
 namespace Rendering
 {
 
-class Camera
+class RENDERING_API Camera
 {
 /* ==================== Static variables begin ==================== */
 private:

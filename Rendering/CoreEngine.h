@@ -26,7 +26,7 @@ protected:
 
 /* ==================== Static functions begin ==================== */
 public:
-	static CoreEngine* CoreEngine::GetCoreEngine();
+	static CoreEngine* GetCoreEngine();
 /* ==================== Static functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -55,7 +55,8 @@ public:
 	void Stop();
 
 	virtual bool IsCloseRequested() const;
-	virtual Utility::Time GetTime() const;
+	virtual Math::Real GetTime() const;
+	virtual void ClearScreen() const;
 protected:
 	void CreateRenderer();
 	virtual void Run();

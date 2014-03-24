@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Rendering.h"
 #include "Texture.h"
 
 #include "Math\Vector.h"
@@ -7,7 +8,7 @@
 namespace Rendering
 {
 
-struct Material
+struct RENDERING_API Material
 {
 /* ==================== Non-static member variables begin ==================== */
 	Texture* texture;

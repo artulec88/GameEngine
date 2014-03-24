@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Rendering.h"
 #include "Attenuation.h"
 #include "BaseLight.h"
 #include "Math\Vector.h"
@@ -7,7 +8,7 @@
 namespace Rendering
 {
 
-class PointLight : public BaseLight
+class RENDERING_API PointLight : public BaseLight
 {
 /* ==================== Non-static member variables begin ==================== */
 private:
