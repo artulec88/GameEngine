@@ -8,6 +8,12 @@
 #include <sstream>
 #include <map>
 
+#ifdef _DEBUG
+#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Config::Get(cfgName, Config::Get(cfgDefName, defValue))
+#else
+#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Config::Get(cfgName, defValue)
+#endif
+
 namespace Utility
 {
 
