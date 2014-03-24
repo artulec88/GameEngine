@@ -42,7 +42,7 @@ protected:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int maxFrameRate, Game* game);
+	CoreEngine(int width, int height, const std::string& title, int maxFrameRate, Game* game);
 	virtual ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);
@@ -51,13 +51,13 @@ private: // disable copy constructor
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void CreateRenderer(int width, int height, const std::string& title);
 	void Start();
 	void Stop();
 
 	virtual bool IsCloseRequested() const;
 	virtual Utility::Time GetTime() const;
 protected:
+	void CreateRenderer();
 	virtual void Run();
 	void PollEvents();
 /* ==================== Non-static member functions end ==================== */

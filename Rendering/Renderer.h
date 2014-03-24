@@ -26,13 +26,13 @@ public: /* constructors and destructors */
 
 public: /* Non-static, non-virtual member functions */
 	//GLFWwindow* GetWindow() const { return this->window; };
-	void InitGraphics();
 	void Render(GameNode& node);
 	void SwapBuffers();
 
 	std::string GetOpenGLVersion();
 protected:
 	void Init(int width, int height, std::string title);
+	void InitGraphics();
 	void InitGlew() const;
 public: /* public virtual member functions */
 public: /* public static functions */

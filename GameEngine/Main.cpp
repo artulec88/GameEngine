@@ -70,8 +70,8 @@ int main (int argc, char* argv[])
 
 	//Renderer renderer;
 	Game* game = new TestGame();
-	CoreEngine engine(Config::Get("FPS_cap", 30), game);
-	engine.CreateRenderer(Config::Get("windowWidth", 800), Config::Get("windowHeight", 600), Config::Get<string>("windowTitle", "Default window title"));
+	CoreEngine engine(Config::Get("windowWidth", 800), Config::Get("windowHeight", 600),
+		Config::Get<string>("windowTitle", "Default window title"), Config::Get("FPS_cap", 30), game);
 	engine.Start();
 
 	//system("pause");

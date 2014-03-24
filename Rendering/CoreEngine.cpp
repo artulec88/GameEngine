@@ -9,7 +9,6 @@ using namespace Rendering;
 using namespace Utility;
 using namespace std;
 
-
 CoreEngine* CoreEngine::coreEngine = NULL;
 
 /* static */ CoreEngine* CoreEngine::GetCoreEngine()
@@ -17,11 +16,11 @@ CoreEngine* CoreEngine::coreEngine = NULL;
 	return coreEngine;
 }
 
-CoreEngine::CoreEngine(int maxFrameRate, Game* game) :
+CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxFrameRate, Game* game) :
 	isRunning(false),
-	windowWidth(Config::Get("windowWidth", 800)),
-	windowHeight(Config::Get("windowHeight", 600)),
-	windowTitle(Config::Get<string>("windowTitle", "3D game")),
+	windowWidth(width),
+	windowHeight(height),
+	windowTitle(title),
 	frameTime(static_cast<Math::Real>(1.0) / maxFrameRate),
 	game(game),
 	renderer(NULL)
@@ -34,6 +33,9 @@ CoreEngine::CoreEngine(int maxFrameRate, Game* game) :
 		coreEngine = NULL;
 	}
 	coreEngine = this;
+	
+	CreateRenderer();
+	
 	stdlog(Debug, LOGPLACE, "Main application construction finished");
 }
 
@@ -57,9 +59,9 @@ CoreEngine::~CoreEngine(void)
 	stdlog(Debug, LOGPLACE, "Core engine destruction finished");
 }
 
-void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
+void CoreEngine::CreateRenderer()
 {
-	this->renderer = new Renderer(width, height, title);
+	this->renderer = new Renderer(windowWidth, windowHeight, windowTitle);
 
 	if (this->renderer == NULL)
 	{
@@ -68,7 +70,10 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	}
 
 	// TODO: Get this value from the config file
-	Transform::SetProjection(70.0 /* fov */, static_cast<Math::Real>(width), static_cast<Math::Real>(height), 0.1, 1000.0);
+	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
+	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
+	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
+	Transform::SetProjection(fov, static_cast<Math::Real>(windowWidth), static_cast<Math::Real>(windowHeight), zNear, zFar);
 
 	ASSERT(this->renderer != NULL);
 }
