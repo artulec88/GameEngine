@@ -4,6 +4,8 @@
 #include "Utility\Log.h"
 #include "Utility\Config.h"
 
+#include <sstream>
+
 using namespace Rendering;
 using namespace Math;
 using namespace Utility;
@@ -12,8 +14,8 @@ const Vector3D Camera::yAxis = Math::Vector3D(0.0, 1.0, 0.0);
 
 Camera::Camera() :
 	pos(GET_CONFIG_VALUE("defaultCameraPos_x", "defaultCameraPos_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_y", "defaultCameraPos_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_z", "defaultCameraPos_zDefault", 0.0)),
-	forward(0.0, 0.0, 1.0),
-	up(0.0, 1.0, 0.0)
+	forward(GET_CONFIG_VALUE("defaultCameraForward_x", "defaultCameraForward_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_y", "defaultCameraForward_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_z", "defaultCameraForward_zDefault", 1.0)),
+	up(GET_CONFIG_VALUE("defaultCameraUp_x", "defaultCameraUp_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraUp_y", "defaultCameraUp_yDefault", 1.0), GET_CONFIG_VALUE("defaultCameraUp_z", "defaultCameraUp_zDefault", 0.0))
 {
 }
 
@@ -51,7 +53,8 @@ void Camera::SetUp(const Vector3D& up)
 void Camera::Move(const Vector3D& dir, Math::Real amount)
 {
 	this->pos = this->pos + (dir * amount);
-	stdlog(Debug, LOGPLACE, "Camera position = %s", this->pos.ToString().c_str());
+	//stdlog(Debug, LOGPLACE, "Camera position = %s", this->pos.ToString().c_str());
+	stdlog(Debug, LOGPLACE, "%s", ToString().c_str());
 }
 
 Vector3D Camera::GetLeft() const
@@ -130,4 +133,19 @@ void Camera::Input(int key, Real delta)
 		stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
 		break;
 	}
+}
+
+std::string Camera::ToString() const
+{
+	std::stringstream ss("");
+
+	ss << "Camera = { pos = ";
+	ss << pos.ToString();
+	ss << "; forward = ";
+	ss << forward.ToString();
+	ss << "; up = ";
+	ss << up.ToString();
+	ss << " } ";
+
+	return ss.str();
 }

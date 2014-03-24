@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "Math\Vector.h"
+#include <string>
 
 namespace Rendering
 {
@@ -43,6 +44,7 @@ public:
 	Math::Vector3D GetLeft() const;
 	Math::Vector3D GetRight() const;
 	void Input(int key, Math::Real delta);
+	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Camera */
 
