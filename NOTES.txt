@@ -1,0 +1,35 @@
+BIG TOPICS:
+1.	Rendering Engine
+2.	Physics Engine
+
+Other topics:
+1.	Some way to insert game into engine
+2.	Better scratchpad support
+3.	Better textures (reading, blitting, basic image processing)
+4.	Some way to separate game and engine data
+5.	Add higher level rendering constructrs (Shaders, Materials, Meshes, Transforms)
+6.	Add some form of automatic shader selection
+7.	Add some form of primitives (Rectangles, Spheres)
+8.	More flexible transform class (default values for projection and camera)
+9.	Non-perspective views (orthogonal views)
+10.	Texture manipulation (translation, rotation, scale)
+11.	More control over textures (filtering, formatting)
+12.	More friendly constructors
+13.	Window should have more properties (center position, fullscreen, maybe mouse locking)
+14.	Better vector math (normalization, +=, commonly used Vector constants, swizzling support)
+15.	Options class / system, some place to read values that the player chooses
+16.	Centralized "level" or "scene" class that holds the data the game is using
+17.	Game object class
+18.	Make all positioning names "position"
+19.	Make naming more consistent
+20.	Vector swizzling
+21.	Make all time based on seconds rather than nanoseconds
+22.	Give vectors a copy constructor
+23.	Give vectors an interpolation method
+24.	Transparency support
+25.	Sprite support
+26.	Good way to compare vectors
+27.	Vector2D cross product
+28.	Some way to display text
+29.	Eventually, make easier way to generate a mesh
+30.	Eventually, make easier way of generating texture coordinates
