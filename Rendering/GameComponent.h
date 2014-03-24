@@ -1,41 +1,35 @@
 #pragma once
 
 #include "Rendering.h"
-#include "Transform.h"
-#include <vector>
+#include "GameNode.h"
+#include "Shader.h"
 
 namespace Rendering
 {
 
-class GameComponent;
-class Shader;
-
-class RENDERING_API GameNode
+class RENDERING_API GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	GameNode();
-	virtual ~GameNode(void);
+	GameComponent();
+	virtual ~GameComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	GameNode* AddChild(GameNode* child);
-	GameNode* AddComponent(GameComponent* component);
-	void Input();
-	void Update();
-	void Render(Shader* shader);
-	//void AddToRenderingEngine(RenderingEngine* engine);
+	virtual void Input();
+	virtual void Update();
+	virtual void Render(Shader* shader);
 
-	inline Transform& GetTransform() { return this->transform; };
+	//virtual void AddToRenderingEngine(RenderingEngine* renderingEngine);
+	void SetParent(GameNode* parentGameNode);
+	Transform& GetTransform();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	std::vector<GameNode*> childrenGameNodes;
-	std::vector<GameComponent*> components;
-	Transform transform;
+	GameNode* parentGameNode;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class GameNode */
+}; /* end class GameComponent */
 
 } /* end namespace Rendering */
