@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Transform.h"
+#include "Utility\Log.h"
 
 using namespace Rendering;
 using namespace Math;
@@ -18,13 +19,20 @@ Transform::Transform() :
 	rotation(Vector3D(0.0, 0.0 , 0.0)),
 	scale(1.0)
 {
+	//stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (1)");
 }
 
-Transform::Transform(Vector3D& pos, Vector3D& rot, float scale)
+Transform::Transform(Vector3D& pos, Vector3D& rot, float scale) :
+	translation(pos),
+	rotation(rot),
+	scale(scale)
 {
-	translation = pos;
-	rotation = rot;
-	scale = scale;
+	//stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (2)");
+}
+
+Transform::~Transform()
+{
+	//stdlog(Utility::Debug, LOGPLACE, "Transform is being destructed");
 }
 
 Matrix4D Transform::GetTransformation() const

@@ -16,6 +16,7 @@
 ///* RENDERING end */
 
 #include "TestGame.h"
+#include "TestGame2.h"
 
 using namespace std;
 using namespace Math;

@@ -1,18 +1,16 @@
 #pragma once
 
 #include "Rendering\Game.h"
-#include "Rendering\GameNode.h"
-#include "Rendering\Shader.h"
 
-class TestGame : public Rendering::Game
+class TestGame2 : public Rendering::Game
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	TestGame();
-	virtual ~TestGame(void);
+	TestGame2();
+	virtual ~TestGame2(void);
 private:
-	TestGame(TestGame& game);
-	void operator=(TestGame& game);
+	TestGame2(TestGame2& game);
+	void operator=(TestGame2& game);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -27,7 +25,13 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	Rendering::Mesh* mesh;
+	Rendering::Shader* shader;
+	Rendering::Transform* transform;
+	Rendering::Material* material;
 	Rendering::Camera* camera;
+	Rendering::PointLight* pointLights;
+	Rendering::SpotLight* spotLights;
 /* ==================== Non-static member variables end ==================== */
 };
 

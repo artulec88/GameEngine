@@ -69,12 +69,6 @@ void CoreEngine::CreateRenderer()
 		exit(-1);
 	}
 
-	// TODO: Get this value from the config file
-	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
-	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
-	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
-	Transform::SetProjection(fov, static_cast<Math::Real>(windowWidth), static_cast<Math::Real>(windowHeight), zNear, zFar);
-
 	ASSERT(this->renderer != NULL);
 }
 
@@ -159,10 +153,15 @@ void CoreEngine::Run()
 		}
 		if (isRenderRequired)
 		{
-			this->renderer->ClearScreen();
+			//this->renderer->ClearScreen();
 			//this->renderer->Render();
-			//this->renderer->Render(this->game->GetRootGameNode());
-			game->Render();
+			Shader* shader = this->game->GetShader();
+			if (shader == NULL)
+			{
+				stdlog(Error, LOGPLACE, "Shader instance is NULL");
+			}
+			this->renderer->Render(this->game->GetRootGameNode(), this->game->GetShader());
+			//game->Render();
 			this->renderer->SwapBuffers();
 #ifdef COUNT_FPS
 			++framesCount;

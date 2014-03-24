@@ -125,12 +125,12 @@ void Renderer::InitGlew() const
 	stdlog(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
 
-void Renderer::Render(GameNode& gameNode)
+void Renderer::Render(GameNode& gameNode, Shader* shader)
 {
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
 
-	//gameNode.Render();
+	gameNode.Render(shader);
 }
 
 void Renderer::SwapBuffers()

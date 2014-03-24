@@ -5,7 +5,7 @@
 namespace Rendering
 {
 
-class BasicShader : public Shader
+class RENDERING_API BasicShader : public Shader
 {
 public:
 	BasicShader(void);

@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "GameNode.h"
+#include "Shader.h"
 //#include "Utility\Singleton.h"
 
 #include <string>
@@ -26,7 +27,7 @@ public: /* constructors and destructors */
 
 public: /* Non-static, non-virtual member functions */
 	//GLFWwindow* GetWindow() const { return this->window; };
-	void Render(GameNode& node);
+	void Render(GameNode& node, Shader* shader);
 	void ClearScreen() const;
 	void SwapBuffers();
 

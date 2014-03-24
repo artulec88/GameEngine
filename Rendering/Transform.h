@@ -19,6 +19,7 @@ public:
 
 	Transform();
 	Transform(Math::Vector3D& pos, Math::Vector3D& rot, Math::Real scale);
+	~Transform();
 
 	Math::Matrix4D GetTransformation() const;
 	Math::Matrix4D GetProjectedTransformation()const ;

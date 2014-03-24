@@ -2,14 +2,16 @@
 #include "Camera.h"
 
 #include "Utility\Log.h"
+#include "Utility\Config.h"
 
 using namespace Rendering;
 using namespace Math;
+using namespace Utility;
 
 const Vector3D Camera::yAxis = Math::Vector3D(0.0, 1.0, 0.0);
 
 Camera::Camera() :
-	pos(0.0, 0.0, 0.0),
+	pos(GET_CONFIG_VALUE("defaultCameraPos_x", "defaultCameraPos_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_y", "defaultCameraPos_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_z", "defaultCameraPos_zDefault", 0.0)),
 	forward(0.0, 0.0, 1.0),
 	up(0.0, 1.0, 0.0)
 {
@@ -37,16 +39,19 @@ void Camera::SetPos(const Vector3D& pos)
 void Camera::SetForward(const Vector3D& forward)
 {
 	this->forward = forward;
+	this->forward.Normalize();
 }
 
 void Camera::SetUp(const Vector3D& up)
 {
 	this->up = up;
+	this->up.Normalize();
 }
 
 void Camera::Move(const Vector3D& dir, Math::Real amount)
 {
 	this->pos = this->pos + (dir * amount);
+	stdlog(Debug, LOGPLACE, "Camera position = %s", this->pos.ToString().c_str());
 }
 
 Vector3D Camera::GetLeft() const
@@ -122,7 +127,7 @@ void Camera::Input(int key, Real delta)
 		RotateY(rotationAmount);
 		break;
 	default:
-		stdlog(Utility::Warning, LOGPLACE, "Some unknown key pressed");
+		stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
 		break;
 	}
 }

@@ -51,11 +51,13 @@ public:
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	GameNode& GetRootGameNode() const;
+	Shader* GetShader() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	GameNode* rootGameNode;
+	Shader* shader;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

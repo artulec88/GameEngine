@@ -30,6 +30,7 @@ Game* Game::game = NULL;
 
 Game::Game()
 {
+	stdlog(Debug, LOGPLACE, "Game construction started");
 	rootGameNode = new GameNode();
 	ASSERT(rootGameNode != NULL);
 	if (rootGameNode == NULL)
@@ -38,7 +39,6 @@ Game::Game()
 		exit(EXIT_FAILURE);
 	}
 
-	stdlog(Debug, LOGPLACE, "Game construction started");
 	if (game != NULL)
 	{
 		stdlog(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
@@ -56,6 +56,11 @@ Game::~Game(void)
 	{
 		delete rootGameNode;
 		rootGameNode = NULL;
+	}
+	if (shader != NULL)
+	{
+		delete shader;
+		shader = NULL;
 	}
 }
 
@@ -98,7 +103,7 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	}
 }
 
-/* inline */ GameNode& Game::GetRootGameNode() const
+GameNode& Game::GetRootGameNode() const
 {
 	ASSERT(rootGameNode != NULL);
 	if (rootGameNode == NULL)
@@ -110,4 +115,14 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	}
 
 	return *rootGameNode;
+}
+
+Shader* Game::GetShader() const
+{
+	ASSERT(shader != NULL);
+	if (shader == NULL)
+	{
+		stdlog(Error, LOGPLACE, "Shader is NULL");
+	}
+	return shader;
 }

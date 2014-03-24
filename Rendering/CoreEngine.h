@@ -54,6 +54,9 @@ public:
 	void Start();
 	void Stop();
 
+	
+	int GetWindowWidth() const { return this->windowWidth; };
+	int GetWindowHeight() const { return this->windowHeight; };
 	virtual bool IsCloseRequested() const;
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
