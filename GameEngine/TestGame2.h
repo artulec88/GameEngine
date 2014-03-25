@@ -18,7 +18,6 @@ public:
 	virtual void Init();
 	virtual void Input();
 	virtual void Update();
-	virtual void Render();
 
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 /* ==================== Non-static member functions end ==================== */
