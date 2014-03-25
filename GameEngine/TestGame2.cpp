@@ -170,36 +170,6 @@ void TestGame2::Update()
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }
 
-void TestGame2::Render()
-{
-	//stdlog(Debug, LOGPLACE, "One single frame is being rendered");
-	if (shader == NULL)
-	{
-		stdlog(Warning, LOGPLACE, "Shader instance is NULL");
-	}
-	if (mesh == NULL)
-	{
-		stdlog(Warning, LOGPLACE, "Mesh instance is NULL");
-	}
-
-	//if (shader != NULL)
-	//{
-	//	shader->Bind();
-	//	// TODO: Remember to set the uniform after binding the shader
-	//	if (material == NULL)
-	//	{
-	//		stdlog(Emergency, LOGPLACE, "Material is NULL");
-	//		exit(EXIT_FAILURE);
-	//	}
-	//	shader->UpdateUniforms(transform, *material, CoreEngine::GetCoreEngine()->GetRenderer());
-	//}
-
-	if (mesh != NULL)
-	{
-		mesh->Draw();
-	}
-}
-
 /**
  * @param key the keyboard key that was pressed or released
  * @param scancode the system-specific scancode of the key
