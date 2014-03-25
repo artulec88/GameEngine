@@ -53,6 +53,8 @@ private: // disable copy constructor
 public:
 	void Start();
 	void Stop();
+	void NextCamera();
+	void PrevCamera();
 
 	
 	int GetWindowWidth() const { return this->windowWidth; };

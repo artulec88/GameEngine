@@ -24,6 +24,7 @@ Other topics:
 19.	Make naming more consistent
 20.	Vector swizzling
 21.	Make all time based on seconds rather than nanoseconds
+22.	Change the way delta time is passed
 22.	Give vectors a copy constructor
 23.	Give vectors an interpolation method
 24.	Transparency support

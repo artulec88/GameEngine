@@ -175,6 +175,28 @@ void CoreEngine::Run()
 	}
 }
 
+void CoreEngine::NextCamera()
+{
+	ASSERT(renderer != NULL);
+	if (this->renderer == NULL)
+	{
+		stdlog(Error, LOGPLACE, "Renderer is not yet initialized");
+		return;
+	}
+	renderer->NextCamera();
+}
+
+void CoreEngine::PrevCamera()
+{
+	ASSERT(renderer != NULL);
+	if (renderer == NULL)
+	{
+		stdlog(Error, LOGPLACE, "Renderer is not yet initialized");
+		return;
+	}
+	renderer->PrevCamera();
+}
+
 void CoreEngine::PollEvents()
 {
 	glfwPollEvents();

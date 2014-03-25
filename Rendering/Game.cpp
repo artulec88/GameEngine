@@ -101,6 +101,15 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 		CoreEngine::GetCoreEngine()->Stop();
 		return;
 	}
+
+	if ( (key == GLFW_KEY_N) && (action == GLFW_PRESS) )
+	{
+		CoreEngine::GetCoreEngine()->NextCamera();
+	}
+	else if ( (key == GLFW_KEY_P) && (action == GLFW_PRESS) )
+	{
+		CoreEngine::GetCoreEngine()->PrevCamera();
+	}
 }
 
 GameNode& Game::GetRootGameNode() const

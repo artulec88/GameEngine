@@ -44,7 +44,10 @@ public: // public member functions
 
 	Vector2D Rotate(Real angle);
 	
+	Real Cross(const Vector2D& v) const;
 	Real Dot(const Vector2D& v) const;
+
+	Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const;
 
 public:
 	std::string ToString() const;
@@ -98,7 +101,17 @@ public: // public member functions
 	Real Dot(const Vector3D& v) const;
 	Vector3D Cross(const Vector3D& v) const;
 
-public:
+	// vector swizzling
+	Vector2D GetXY() const { return Vector2D(m_x, m_y); };
+	Vector2D GetXZ() const { return Vector2D(m_x, m_z); };
+	Vector2D GetYZ() const { return Vector2D(m_y, m_z); };
+	Vector2D GetYX() const { return Vector2D(m_y, m_x); };
+	Vector2D GetZX() const { return Vector2D(m_z, m_x); };
+	Vector2D GetZY() const { return Vector2D(m_z, m_y); };
+
+	// interpolation LERP
+	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const;
+
 	std::string ToString() const;
 
 protected: // member variables

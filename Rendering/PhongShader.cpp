@@ -170,7 +170,7 @@ void PhongShader::UpdateUniforms(const Transform& transform, const Material& mat
 	}
 
 	Math::Matrix4D worldMatrix = transform.GetTransformation();
-	Math::Matrix4D projectedMatrix = renderer->GetMainCamera().GetViewProjection() * worldMatrix;
+	Math::Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix;
 
 	SetUniform("transform", worldMatrix);
 	SetUniform("projectedTransform", projectedMatrix);
@@ -238,5 +238,5 @@ void PhongShader::UpdateUniforms(const Transform& transform, const Material& mat
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
 
-	SetUniform("eyePos", renderer->GetMainCamera().GetPos());
+	SetUniform("eyePos", renderer->GetCurrentCamera().GetPos());
 }

@@ -58,6 +58,11 @@ void Vector2D::Normalize()
 	(*this) = (*this) / Length();
 }
 
+Real Vector2D::Cross(const Vector2D& v) const
+{
+	return m_x * v.GetY() - m_y * v.GetX();
+}
+
 Real Vector2D::Dot(const Vector2D& v) const
 {
 	return (m_x * v.GetX() + m_y * v.GetY());
@@ -118,6 +123,10 @@ inline bool Vector2D::operator==(const Vector2D& v) const
 	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) );
 }
 
+Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
+{
+	return ((vec - (*this)) * lerpFactor) + (*this);
+}
 
 /* ==================== Vector3D ==================== */
 Vector3D::Vector3D() :
@@ -263,4 +272,9 @@ inline bool Vector3D::operator==(const Vector3D& v) const
 {
 	// TODO: Create a floating-point comparer and use it here
 	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) && (this->GetZ() == v.GetZ()) );
+}
+
+Vector3D Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
+{
+	return ((vec - (*this)) * lerpFactor) + (*this);
 }

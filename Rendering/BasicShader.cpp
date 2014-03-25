@@ -40,7 +40,9 @@ void BasicShader::UpdateUniforms(const Transform& transform, const Material& mat
 		WHITE.Bind();
 	}
 
-	Math::Matrix4D projectedMatrix = renderer->GetMainCamera().GetViewProjection() * transform.GetTransformation();
+	Math::Matrix4D cameraViewProjection = renderer->GetCurrentCamera().GetViewProjection();
+
+	Math::Matrix4D projectedMatrix = cameraViewProjection * transform.GetTransformation();
 
 	SetUniform("transform", projectedMatrix);
 	SetUniform("color", material.color);

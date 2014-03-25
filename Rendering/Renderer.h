@@ -15,7 +15,14 @@ class RENDERING_API Renderer
 {
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Camera mainCamera;
+	static const int MAX_NUMBER_OF_CAMERAS;
+/* ==================== Non-static member variables end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	const int camerasCount;
+	int currentCameraIndex;
+	Camera* cameras;
 	GLFWwindow* window;
 	GLuint vao; // vertex array id
 	bool isFullscreen;
@@ -23,18 +30,22 @@ private:
 /* ==================== Non-static member variables end ==================== */
 
 public: /* constructors and destructors */
-	Renderer(int width, int height, std::string title);
+	Renderer(int width, int height, std::string title, unsigned short camerasCount = 3);
 	~Renderer(void);
 
 public: /* Non-static, non-virtual member functions */
 	//GLFWwindow* GetWindow() const { return this->window; };
 	void Render(GameNode& node);
 	void SwapBuffers();
-	inline Camera& GetMainCamera() { return mainCamera; }
-	inline void SetMainCamera(const Camera& camera) { mainCamera = camera; }
+	
+	inline Camera& GetCurrentCamera() { return cameras[currentCameraIndex]; }
+	inline void SetCurrentCamera(const Camera& camera) { cameras[currentCameraIndex] = camera; }
+	void NextCamera();
+	void PrevCamera();
 
 	std::string GetOpenGLVersion();
 protected:
+	void SetCurrentCameraIndex(int cameraIndex);
 	void Init(int width, int height, std::string title);
 	void InitGraphics();
 	void InitGlew() const;

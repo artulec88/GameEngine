@@ -13,6 +13,12 @@ class RENDERING_API Camera
 /* ==================== Static variables begin ==================== */
 private:
 	static const Math::Vector3D yAxis;
+public:
+	static const Math::Real defaultFoV;
+	static const Math::Real defaultAspectRatio;
+	static const Math::Real defaultNearPlane;
+	static const Math::Real defaultFarPlane;
+	static const Camera defaultCamera;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
