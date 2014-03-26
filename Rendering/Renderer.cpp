@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include "Game.h"
 #include "BasicShader.h"
+#include "PhongShader.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
