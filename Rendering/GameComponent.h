@@ -18,8 +18,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Input();
-	virtual void Update();
+	virtual void Input(Math::Real delta);
+	virtual void Update(Math::Real delta);
 	virtual void Render(Shader* shader, Renderer* renderer);
 
 	//virtual void AddToRenderingEngine(RenderingEngine* renderingEngine);

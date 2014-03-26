@@ -146,20 +146,20 @@ void CoreEngine::Run()
 				Stop();
 				return;
 			}
-			// TODO: Set delta
 			PollEvents();
-			game->Update();
+			game->Input(frameTime);
+			game->Update(frameTime);
 			unprocessingTime -= frameTime;
 		}
 		if (isRenderRequired)
 		{
 			//this->renderer->ClearScreen();
 			//this->renderer->Render();
-			Shader* shader = this->game->GetShader();
-			if (shader == NULL)
-			{
-				stdlog(Error, LOGPLACE, "Shader instance is NULL");
-			}
+			//Shader* shader = this->game->GetShader();
+			//if (shader == NULL)
+			//{
+			//	stdlog(Error, LOGPLACE, "Shader instance is NULL");
+			//}
 			this->renderer->Render(this->game->GetRootGameNode());
 			//game->Render();
 			this->renderer->SwapBuffers();

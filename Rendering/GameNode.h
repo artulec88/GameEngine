@@ -23,8 +23,8 @@ public:
 public:
 	GameNode* AddChild(GameNode* child);
 	GameNode* AddComponent(GameComponent* component);
-	void Input();
-	void Update();
+	void Input(Math::Real delta);
+	void Update(Math::Real delta);
 	void Render(Shader* shader, Renderer* renderer);
 	//void AddToRenderingEngine(RenderingEngine* engine);
 

@@ -57,11 +57,11 @@ Game::~Game(void)
 		delete rootGameNode;
 		rootGameNode = NULL;
 	}
-	if (shader != NULL)
-	{
-		delete shader;
-		shader = NULL;
-	}
+	//if (shader != NULL)
+	//{
+	//	delete shader;
+	//	shader = NULL;
+	//}
 }
 
 //
@@ -126,12 +126,12 @@ GameNode& Game::GetRootGameNode() const
 	return *rootGameNode;
 }
 
-Shader* Game::GetShader() const
-{
-	ASSERT(shader != NULL);
-	if (shader == NULL)
-	{
-		stdlog(Error, LOGPLACE, "Shader is NULL");
-	}
-	return shader;
-}
+//Shader* Game::GetShader() const
+//{
+//	ASSERT(shader != NULL);
+//	if (shader == NULL)
+//	{
+//		stdlog(Error, LOGPLACE, "Shader is NULL");
+//	}
+//	return shader;
+//}

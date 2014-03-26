@@ -216,7 +216,7 @@ void Renderer::SetCurrentCameraIndex(int cameraIndex)
 	}
 	currentCameraIndex = cameraIndex;
 	stdlog(Notice, LOGPLACE, "Switched to camera #%d", currentCameraIndex + 1);
-	stdlog(Debug, LOGPLACE, "%s", cameras[currentCameraIndex].ToString());
+	stdlog(Debug, LOGPLACE, "%s", cameras[currentCameraIndex].ToString().c_str());
 }
 
 std::string Renderer::GetOpenGLVersion()

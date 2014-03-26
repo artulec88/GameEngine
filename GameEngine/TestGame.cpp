@@ -51,8 +51,6 @@ void TestGame::Init()
 	}
 	//rootGameNode->Init();
 
-//	camera = new Camera();
-
 	Math::Real fieldDepth = 10.0;
 	Math::Real fieldWidth = 10.0;
 	Vertex vertex1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
@@ -78,20 +76,18 @@ void TestGame::Init()
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
 	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
 
-	//Transform::SetCamera(*camera);
-
 	GameNode* planeObject = new GameNode();
 	planeObject->AddComponent(meshRenderer);
 	planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 	rootGameNode->AddChild(planeObject);
 
-	shader = new BasicShader();
-	ASSERT(shader != NULL);
-	if (shader == NULL)
-	{
-		stdlog(Critical, LOGPLACE, "Shader construction failed");
-		exit(EXIT_FAILURE);
-	}
+	//shader = new BasicShader();
+	//ASSERT(shader != NULL);
+	//if (shader == NULL)
+	//{
+	//	stdlog(Critical, LOGPLACE, "Shader construction failed");
+	//	exit(EXIT_FAILURE);
+	//}
 }
 
 //
@@ -100,19 +96,19 @@ void TestGame::Init()
 //	stdlog(Info, LOGPLACE, "The game is being cleaned up");
 //}
 
-void TestGame::Input()
+void TestGame::Input(Math::Real delta)
 {
-	rootGameNode->Input();
+	rootGameNode->Input(delta);
 }
 
-void TestGame::Update()
+void TestGame::Update(Math::Real delta)
 {
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
 	//planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
-	rootGameNode->Update();
+	rootGameNode->Update(delta);
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }

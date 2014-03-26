@@ -129,12 +129,12 @@ void TestGame2::Init()
 	//glUseProgram(programID);
 }
 
-void TestGame2::Input()
+void TestGame2::Input(Math::Real delta)
 {
 	stdlog(Delocust, LOGPLACE, "Input checked");
 }
 
-void TestGame2::Update()
+void TestGame2::Update(Math::Real delta)
 {
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	

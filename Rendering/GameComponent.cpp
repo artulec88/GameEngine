@@ -19,11 +19,11 @@ GameComponent::~GameComponent(void)
 	//}
 }
 
-void GameComponent::Input()
+void GameComponent::Input(Math::Real delta)
 {
 }
 
-void GameComponent::Update()
+void GameComponent::Update(Math::Real delta)
 {
 }
 

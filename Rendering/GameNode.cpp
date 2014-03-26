@@ -76,27 +76,27 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	return this;
 }
 
-void GameNode::Input()
+void GameNode::Input(Math::Real delta)
 {
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
-		(*gameComponentItr)->Input();
+		(*gameComponentItr)->Input(delta);
 	}
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Input();
+		(*gameNodeItr)->Input(delta);
 	}
 }
 
-void GameNode::Update()
+void GameNode::Update(Math::Real delta)
 {
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
-		(*gameComponentItr)->Update();
+		(*gameComponentItr)->Update(delta);
 	}
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Update();
+		(*gameNodeItr)->Update(delta);
 	}
 }
 

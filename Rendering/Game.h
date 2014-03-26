@@ -43,20 +43,20 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Init() = 0;
-	virtual void Input() = 0;
-	virtual void Update() = 0;
+	virtual void Input(Math::Real delta) = 0;
+	virtual void Update(Math::Real delta) = 0;
 
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 	GameNode& GetRootGameNode() const;
-	Shader* GetShader() const;
+	//Shader* GetShader() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	GameNode* rootGameNode;
-	Shader* shader;
+	//Shader* shader;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 
