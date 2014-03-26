@@ -409,7 +409,7 @@ bool Matrix4D::IsIdentity() const
 	const FloatingPoint<Real> zeroValue(zero);
 	const FloatingPoint<Real> unitValue(unit);
 	
-	for (int i = 0; i < MATRIX_SIZE: ++i)
+	for (int i = 0; i < MATRIX_SIZE; ++i)
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
