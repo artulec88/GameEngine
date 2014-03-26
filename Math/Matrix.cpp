@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Matrix.h"
+#include "FloatingPoint.h"
 #include <sstream>
 
 using namespace Math;
@@ -391,10 +392,53 @@ Matrix4D Matrix4D::Inversion() const
 	}
 
 	return result;
+	
+	// TODO: Use SLOW_ASSERT(IsIdentity()) for the result of the multiplication M*M^(-1)
 }
 	
 bool Matrix4D::IsIdentity() const
 {
-	// TODO: Fix this function
+	/**
+	 * TODO: This function is rather slow. Maybe before creating FloatingPoint objects compare
+	 * the numbers using simple tools, like epsilon?
+	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
+	 */
+	const Real epsilon = static_cast<Real>(0.1);
+	const Real zero = static_cast<Real>(0.0);
+	const Real unit = static_cast<Real>(1.0);
+	const FloatingPoint<Real> zeroValue(zero);
+	const FloatingPoint<Real> unitValue(unit);
+	
+	for (int i = 0; i < MATRIX_SIZE: ++i)
+	{
+		for (int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			if (i == j)
+			{
+				if (abs(unit - m[i][j]) > epsilon)
+				{
+					return false;
+				}
+				FloatingPoint<Real> matrixValue(m[i][j]);
+				if (! matrixValue.AlmostEqual(unitValue))
+				{
+					return false;
+				}
+			}
+			else /* i != j */
+			{
+				if (abs(zero - m[i][j]) > epsilon)
+				{
+					return false;
+				}
+				FloatingPoint<Real> matrixValue(m[i][j]);
+				if (! matrixValue.AlmostEqual(zeroValue))
+				{
+					return false;
+				}
+			}
+		}
+	}
+	
 	return true;
 }
