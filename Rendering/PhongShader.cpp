@@ -16,6 +16,12 @@ using namespace Utility;
 /* static */ int PhongShader::spotLightCount = 0;
 /* static */ SpotLight* PhongShader::spotLights = NULL;
 
+/* static */ PhongShader* PhongShader::GetInstance()
+{
+	static PhongShader shader;
+	return &shader;
+}
+
 /* static */ Math::Vector3D PhongShader::GetAmbientLight()
 {
 	return PhongShader::ambientLight;

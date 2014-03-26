@@ -115,12 +115,12 @@ void TestGame2::Init()
 	//spotLights[1] = SpotLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0, new Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
 	PhongShader::SetSpotLights(spotLights, 1);
 	
-	shader = new PhongShader();
-	if (shader == NULL)
-	{
-		stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
-		exit(INVALID_VALUE);
-	}
+	//PhongShader shader = PhongShader::GetInstance();
+	//if (shader == NULL)
+	//{
+	//	stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
+	//	exit(INVALID_VALUE);
+	//}
 
 	transform = new Transform();
 

@@ -6,6 +6,12 @@
 using namespace Rendering;
 using namespace Utility;
 
+/* static */ BasicShader* BasicShader::GetInstance()
+{
+	static BasicShader shader;
+	return &shader;
+}
+
 BasicShader::BasicShader(void) :
 	Shader()
 {

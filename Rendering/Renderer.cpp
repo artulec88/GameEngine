@@ -25,7 +25,8 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 	window(NULL),
 	vao(0),
 	isFullscreen(false),
-	isMouseEnabled(true)
+	isMouseEnabled(true),
+	ambientLight(0.1f, 0.1f, 0.1f)
 {
 	stdlog(Debug, LOGPLACE, "Creating Renderer instance started");
 	stdlog(Notice, LOGPLACE, "OpenGL version = %s", GetOpenGLVersion().c_str());
@@ -181,10 +182,10 @@ void Renderer::Render(GameNode& gameNode)
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
 
-	// TODO: This static variable is horrible. Fix this as soon as you can!
-	static BasicShader shader;
+	// Ambient rendering
+	//gameNode.Render(ForwardAmbient::GetInstance(), this);
 
-	gameNode.Render(&shader, this);
+	gameNode.Render(BasicShader::GetInstance(), this);
 }
 
 void Renderer::SwapBuffers()

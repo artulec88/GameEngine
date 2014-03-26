@@ -5,6 +5,8 @@
 #include "Camera.h"
 //#include "Utility\Singleton.h"
 
+#include "Math\Vector.h"
+
 #include <string>
 
 namespace Rendering
@@ -27,6 +29,7 @@ private:
 	GLuint vao; // vertex array id
 	bool isFullscreen;
 	bool isMouseEnabled;
+	Math::Vector3D ambientLight;
 /* ==================== Non-static member variables end ==================== */
 
 public: /* constructors and destructors */
