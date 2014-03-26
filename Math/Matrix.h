@@ -43,7 +43,7 @@ public:
 	~Matrix4D();
 /* ==================== Constructors and destructors end ==================== */
 
-
+/* ==================== Non-static member functions begin ==================== */
 public:
 	void SetElement(int i, int j, Real value);
 	Real GetElement (int i, int j) const;
@@ -63,7 +63,7 @@ public:
 	bool IsIdentity() const;
 
 	std::string ToString() const;
-
+/* ==================== Non-static member functions end ==================== */
 }; /* end class Matrix */
 
 } /* end namespace Math */
