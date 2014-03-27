@@ -186,6 +186,17 @@ void Renderer::Render(GameNode& gameNode)
 	// Ambient rendering
 	gameNode.Render(ForwardAmbientShader::GetInstance(), this);
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+
+	// TODO: Perform any other lighting calculations here
+
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE);
+	glDisable(GL_BLEND);
+
 	//gameNode.Render(BasicShader::GetInstance(), this);
 }
 
