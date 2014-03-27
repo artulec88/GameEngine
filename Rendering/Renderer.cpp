@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "BasicShader.h"
 #include "PhongShader.h"
+#include "ForwardAmbient.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
@@ -183,9 +184,9 @@ void Renderer::Render(GameNode& gameNode)
 	ClearScreen();
 
 	// Ambient rendering
-	//gameNode.Render(ForwardAmbient::GetInstance(), this);
+	gameNode.Render(ForwardAmbientShader::GetInstance(), this);
 
-	gameNode.Render(BasicShader::GetInstance(), this);
+	//gameNode.Render(BasicShader::GetInstance(), this);
 }
 
 void Renderer::SwapBuffers()

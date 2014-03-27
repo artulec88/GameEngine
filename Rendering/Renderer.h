@@ -41,6 +41,7 @@ public: /* Non-static, non-virtual member functions */
 	void Render(GameNode& node);
 	void SwapBuffers();
 	
+	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
 	inline Camera& GetCurrentCamera() { return cameras[currentCameraIndex]; }
 	inline void SetCurrentCamera(const Camera& camera) { cameras[currentCameraIndex] = camera; }
 	void NextCamera();
