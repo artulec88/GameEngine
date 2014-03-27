@@ -37,6 +37,30 @@
     <None Include="..\Shaders\PhongVertexShader.vshader">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="..\Shaders\ForwardAmbient.fshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardAmbient.vshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardDirectional.fshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardDirectional.vshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardPoint.fshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardPoint.vshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardSpot.fshader">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\ForwardSpot.vshader">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -120,6 +144,9 @@
     <ClInclude Include="ForwardPointShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ForwardSpotShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -201,6 +228,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ForwardPointShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardSpotShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

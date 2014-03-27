@@ -80,6 +80,14 @@
   <ItemGroup>
     <None Include="..\Shaders\BasicFragmentShader.fshader" />
     <None Include="..\Shaders\BasicVertexShader.vshader" />
+    <None Include="..\Shaders\ForwardAmbient.fshader" />
+    <None Include="..\Shaders\ForwardAmbient.vshader" />
+    <None Include="..\Shaders\ForwardDirectional.fshader" />
+    <None Include="..\Shaders\ForwardDirectional.vshader" />
+    <None Include="..\Shaders\ForwardPoint.fshader" />
+    <None Include="..\Shaders\ForwardPoint.vshader" />
+    <None Include="..\Shaders\ForwardSpot.fshader" />
+    <None Include="..\Shaders\ForwardSpot.vshader" />
     <None Include="..\Shaders\PhongFragmentShader.fshader" />
     <None Include="..\Shaders\PhongVertexShader.vshader" />
     <None Include="..\Shaders\TextureFragmentShader.fshader" />
@@ -95,6 +103,7 @@
     <ClInclude Include="ForwardAmbientShader.h" />
     <ClInclude Include="ForwardDirectionalShader.h" />
     <ClInclude Include="ForwardPointShader.h" />
+    <ClInclude Include="ForwardSpotShader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
@@ -132,6 +141,7 @@
     <ClCompile Include="ForwardAmbientShader.cpp" />
     <ClCompile Include="ForwardDirectionalShader.cpp" />
     <ClCompile Include="ForwardPointShader.cpp" />
+    <ClCompile Include="ForwardSpotShader.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />

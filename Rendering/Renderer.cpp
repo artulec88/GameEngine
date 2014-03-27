@@ -7,7 +7,7 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "ForwardAmbientShader.h"
-#include "ForwardDirectionalShader.h"
+//#include "ForwardDirectionalShader.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
@@ -31,7 +31,9 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 	vao(0),
 	isFullscreen(false),
 	isMouseEnabled(true),
-	ambientLight(0.1f, 0.1f, 0.1f)
+	ambientLight(GET_CONFIG_VALUE("ambientLight_x", "ambientLight_xDefault", 0.02f),
+		GET_CONFIG_VALUE("ambientLight_y", "ambientLight_yDefault", 0.02f),
+		GET_CONFIG_VALUE("ambientLight_z", "ambientLight_zDefault", 0.02f))
 {
 	stdlog(Debug, LOGPLACE, "Creating Renderer instance started");
 	stdlog(Notice, LOGPLACE, "OpenGL version = %s", GetOpenGLVersion().c_str());
@@ -152,14 +154,24 @@ void Renderer::Init(int width, int height, std::string title)
 	
 	/* ==================== Creating directional lights begin ==================== */
 	// TODO: Do not use hard-coded values ever!
-	lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(16.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(12.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(4.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(0.0, 0.0, 2.0), 10.0));
-	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-4.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(16.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(12.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(4.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(0.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-4.0, 0.0, 2.0), 10.0));
+	
+	lights.push_back(new SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 1.8f, Attenuation(0.0f, 0.5f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.25, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 0.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 5.0), 25.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 10.0), 100.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 1.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 15.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 1.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 20.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 2.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 25.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
+
 	//lights.push_back(new DirectionalLight(Math::Vector3D(1.0, 0.0, 0.0), 0.8, Math::Vector3D(-1.0, 1.0, -1.0)));
 	/* ==================== Creating directional lights end ==================== */
 }
