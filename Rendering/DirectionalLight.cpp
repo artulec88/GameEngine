@@ -1,11 +1,13 @@
 #include "StdAfx.h"
 #include "DirectionalLight.h"
+#include "ForwardDirectionalShader.h"
 
 using namespace Rendering;
 
 DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */,
 		const Math::Vector3D& direction /* = Math::Vector3D(0.0, 0.0, 0.0) */) :
-	BaseLight(color, intensity),
+	BaseLight(ForwardDirectionalShader::GetInstance(), color, intensity),
+	//BaseLight(color, intensity),
 	direction(direction.Normalized())
 {
 }

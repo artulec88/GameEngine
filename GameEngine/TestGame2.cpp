@@ -1,7 +1,6 @@
 #include "TestGame2.h"
 
 #include "Rendering\CoreEngine.h"
-#include "Rendering\PhongShader.h"
 
 //#include "Math\Vector.h"
 
@@ -94,26 +93,26 @@ void TestGame2::Init()
 	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		materialColor, specularIntensity, specularPower);
 
-	PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
-	PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.5, Math::Vector3D(1.0, 1.0, 1.0)));
+	//PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
+	//PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.5, Math::Vector3D(1.0, 1.0, 1.0)));
 	
 	//PointLight pLight1(Math::Vector3D(1.0, 1.0, 1.0), 1.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(-2.0, 0, 3.0));
 	//PointLight pLight2(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
 	//PointLight pLight3(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
 	//PointLight pLight4(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
-	pointLights = new PointLight [2];
-	pointLights[0] = PointLight(Math::Vector3D(1.0, 0.5, 0.0), 0.8, Attenuation(1.0, 0.0, 1.0), Math::Vector3D(-2.0, 0, 5.0), 6.0);
-	pointLights[1] = PointLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0);
-	PhongShader::SetPointLights(pointLights, 2);
+	//pointLights = new PointLight [2];
+	//pointLights[0] = PointLight(Math::Vector3D(1.0, 0.5, 0.0), 0.8, Attenuation(1.0, 0.0, 1.0), Math::Vector3D(-2.0, 0, 5.0), 6.0);
+	//pointLights[1] = PointLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0);
+	//PhongShader::SetPointLights(pointLights, 2);
 
 	//SpotLight sLight1(Math::Vector3D(1.0, 1.0, 1.0), 1.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(-2.0, 0, 3.0));
 	//SpotLight sLight2(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.7, 0.7, 1.0), Math::Vector3D(2.0, 0.0, 7.0));
 	//SpotLight sLight3(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
 	//SpotLight sLight4(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0, 7.0));
-	spotLights = new SpotLight [1];
-	spotLights[0] = SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 1.0f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 30.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
+	//spotLights = new SpotLight [1];
+	//spotLights[0] = SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 1.0f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 30.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
 	//spotLights[1] = SpotLight(Math::Vector3D(0.0, 0.5, 1.0), 0.8, Attenuation(3.0, 1.0, 0.0), Math::Vector3D(2.0, 0.0, 7.0), 12.0, new Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f);
-	PhongShader::SetSpotLights(spotLights, 1);
+	//PhongShader::SetSpotLights(spotLights, 1);
 	
 	//PhongShader shader = PhongShader::GetInstance();
 	//if (shader == NULL)

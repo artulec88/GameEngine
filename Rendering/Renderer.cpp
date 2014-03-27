@@ -2,7 +2,10 @@
 #include "Renderer.h"
 #include "Game.h"
 #include "BasicShader.h"
-#include "PhongShader.h"
+//#include "PhongShader.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 #include "ForwardAmbientShader.h"
 #include "ForwardDirectionalShader.h"
 #include "Utility\Config.h"
@@ -70,12 +73,6 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 		cameras[i] = Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane);
 	}
 	/* ==================== Creating cameras end ==================== */
-
-	/* ==================== Creating directional lights begin ==================== */
-	// TODO: Do not use hard-coded values ever!
-	lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
-	lights.push_back(new DirectionalLight(Math::Vector3D(1.0, 0.0, 0.0), 0.8, Math::Vector3D(-1.0, 1.0, -1.0)));
-	/* ==================== Creating directional lights end ==================== */
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -150,13 +147,28 @@ void Renderer::Init(int width, int height, std::string title)
 	glfwSetTime(0.0);
 
 	InitGraphics();
+
+	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
+	
+	/* ==================== Creating directional lights begin ==================== */
+	// TODO: Do not use hard-coded values ever!
+	lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(16.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(12.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(4.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(0.0, 0.0, 2.0), 10.0));
+	lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-4.0, 0.0, 2.0), 10.0));
+	//lights.push_back(new DirectionalLight(Math::Vector3D(1.0, 0.0, 0.0), 0.8, Math::Vector3D(-1.0, 1.0, -1.0)));
+	/* ==================== Creating directional lights end ==================== */
 }
 
 void Renderer::InitGraphics()
 {
 	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
 
-	//glFrontFace(GL_CW); // everything face I draw in clockwise order is a front face
+	//glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
 	//glCullFace(GL_BACK); // cull the back face
 	//glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	glEnable(GL_DEPTH_TEST); // to enable depth tests
@@ -185,12 +197,15 @@ void Renderer::InitGlew() const
 		return;
 	}
 
-	//if (GLEW_VERSION_2_0) {
-	//	printf("OpenGL 2.0 supported\n");
-	//} else {
-	//	printf("OpenGL 2.0 NOT supported\n");
-	//	exit(0);
-	//}
+	if (GLEW_VERSION_2_0)
+	{
+		stdlog(Info, LOGPLACE, "OpenGL 2.0 supported");
+	}
+	else
+	{
+		stdlog(Info, LOGPLACE, "OpenGL 2.0 NOT supported");
+		exit(EXIT_FAILURE);
+	}
 
 	stdlog(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
@@ -213,7 +228,7 @@ void Renderer::Render(GameNode& gameNode)
 	{
 		currentLight = (*lightItr);
 		// TODO: Get a shader instance from the currentLight object.
-		gameNode.Render(ForwardDirectionalShader::GetInstance(), this);
+		gameNode.Render(currentLight->GetShader(), this);
 	}
 
 	glDepthFunc(GL_LESS);
@@ -259,6 +274,7 @@ void Renderer::SetCurrentCameraIndex(int cameraIndex)
 std::string Renderer::GetOpenGLVersion()
 {
 	// TODO: Fix this function
-	//glGetString(GL_VERSION);
+	//const GLubyte* strVersion = glGetString(GL_VERSION);
+	//return std::string((char*)strVersion);
 	return "OpenGL version: ";
 }

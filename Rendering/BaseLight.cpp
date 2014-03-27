@@ -5,12 +5,25 @@ using namespace Rendering;
 
 BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
 	color(color),
-	intensity(intensity)
+	intensity(intensity),
+	shader(NULL)
+{
+}
+
+BaseLight::BaseLight(Shader* shader, const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
+	color(color),
+	intensity(intensity),
+	shader(shader)
 {
 }
 
 BaseLight::~BaseLight(void)
 {
+	// TODO: Think how to deallocate resources.
+	//if (shader == NULL)
+	//{
+	//	delete shader;
+	//}
 }
 
 Math::Vector3D BaseLight::GetColor() const
