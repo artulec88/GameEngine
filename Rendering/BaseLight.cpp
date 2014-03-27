@@ -1,9 +1,12 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
+#include "Renderer.h"
+#include "Utility\Log.h"
 
 using namespace Rendering;
 
 BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
+	GameComponent(),
 	color(color),
 	intensity(intensity),
 	shader(NULL)
@@ -11,6 +14,7 @@ BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0
 }
 
 BaseLight::BaseLight(Shader* shader, const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
+	GameComponent(),
 	color(color),
 	intensity(intensity),
 	shader(shader)
@@ -44,4 +48,14 @@ Math::Real BaseLight::GetIntensity() const
 void BaseLight::SetIntensity(Math::Real intensity)
 {
 	this->intensity = intensity;
+}
+
+void BaseLight::AddToRenderingEngine(Renderer* renderer)
+{
+	if (renderer == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot add light to the rendering engine. Renderer is NULL");
+		return;
+	}
+	renderer->AddLight(this);
 }

@@ -111,3 +111,15 @@ void GameNode::Render(Shader* shader, Renderer* renderer)
 		(*gameNodeItr)->Render(shader, renderer);
 	}
 }
+
+void GameNode::AddToRenderingEngine(Renderer* renderer)
+{
+	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->AddToRenderingEngine(renderer);
+	}
+	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->AddToRenderingEngine(renderer);
+	}
+}

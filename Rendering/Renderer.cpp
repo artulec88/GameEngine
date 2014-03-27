@@ -91,11 +91,11 @@ Renderer::~Renderer(void)
 		delete [] cameras;
 		cameras = NULL;
 	}
-	if (currentLight != NULL)
-	{
-		delete currentLight;
-		currentLight = NULL;
-	}
+	//if (currentLight != NULL)
+	//{
+	//	delete currentLight;
+	//	currentLight = NULL;
+	//}
 	// TODO: Deallocating the lights member variable
 
 	glfwTerminate();
@@ -164,7 +164,7 @@ void Renderer::Init(int width, int height, std::string title)
 	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(0.0, 0.0, 2.0), 10.0));
 	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-4.0, 0.0, 2.0), 10.0));
 	
-	lights.push_back(new SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 1.8f, Attenuation(0.0f, 0.5f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f));
+	//lights.push_back(new SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 1.8f, Attenuation(0.0f, 0.5f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f));
 	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.25, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 0.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
 	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 5.0), 25.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
 	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 10.0), 100.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
@@ -226,6 +226,10 @@ void Renderer::Render(GameNode& gameNode)
 {
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
+
+	lights.clear();
+
+	gameNode.AddToRenderingEngine(this);
 
 	// Ambient rendering
 	gameNode.Render(ForwardAmbientShader::GetInstance(), this);

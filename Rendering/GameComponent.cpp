@@ -41,3 +41,8 @@ Transform& GameComponent::GetTransform()
 {
 	return parentGameNode->GetTransform();
 }
+
+void GameComponent::AddToRenderingEngine(Renderer* renderer)
+{
+
+}

@@ -2,14 +2,15 @@
 
 //#include "Shader.h"
 #include "Math\Vector.h"
+#include "GameComponent.h"
 
 namespace Rendering
 {
 
 // TODO: Move this to GameComponent class declaration when BaseLight becomes a child of GameComponent class
-class Shader;
+// class Shader;
 
-class BaseLight
+class RENDERING_API BaseLight : public GameComponent
 {
 /* ==================== Non-static member variables begin ==================== */
 protected:
@@ -34,6 +35,7 @@ public:
 	void SetIntensity(Math::Real intensity);
 	//inline void SetShader(Shader* shader) { this->shader = shader; }
 	inline Shader* GetShader() { return this->shader; }
+	virtual void AddToRenderingEngine(Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 }; /* end class BaseLight */
 

@@ -1,12 +1,16 @@
 #pragma once
 
 #include "Rendering.h"
-#include "Renderer.h"
+#include "Transform.h"
+//#include "Renderer.h"
 #include "GameNode.h"
-#include "Shader.h"
+//#include "Shader.h"
 
 namespace Rendering
 {
+
+class Renderer;
+class Shader;
 
 class RENDERING_API GameComponent
 {
@@ -22,7 +26,7 @@ public:
 	virtual void Update(Math::Real delta);
 	virtual void Render(Shader* shader, Renderer* renderer);
 
-	//virtual void AddToRenderingEngine(RenderingEngine* renderingEngine);
+	virtual void AddToRenderingEngine(Renderer* renderer);
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();
 /* ==================== Non-static member functions end ==================== */

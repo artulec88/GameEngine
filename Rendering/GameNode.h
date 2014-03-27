@@ -26,7 +26,7 @@ public:
 	void Input(Math::Real delta);
 	void Update(Math::Real delta);
 	void Render(Shader* shader, Renderer* renderer);
-	//void AddToRenderingEngine(RenderingEngine* engine);
+	void AddToRenderingEngine(Renderer* renderer);
 
 	Transform& GetTransform() { return this->transform; };
 /* ==================== Non-static member functions end ==================== */

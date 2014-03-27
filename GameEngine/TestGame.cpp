@@ -3,6 +3,9 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\BasicShader.h"
 #include "Rendering\MeshRenderer.h"
+#include "Rendering\DirectionalLight.h"
+#include "Rendering\PointLight.h"
+#include "Rendering\SpotLight.h"
 
 //#include "Math\Vector.h"
 
@@ -79,15 +82,25 @@ void TestGame::Init()
 	GameNode* planeObject = new GameNode();
 	planeObject->AddComponent(meshRenderer);
 	planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
-	rootGameNode->AddChild(planeObject);
 
-	//shader = new BasicShader();
-	//ASSERT(shader != NULL);
-	//if (shader == NULL)
-	//{
-	//	stdlog(Critical, LOGPLACE, "Shader construction failed");
-	//	exit(EXIT_FAILURE);
-	//}
+	GameNode* directionalLightObject = new GameNode();
+	directionalLightObject->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+
+	GameNode* pointLightObject = new GameNode();
+	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
+	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(14.0, 0.0, 2.0), 10.0));
+	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
+	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0.0, 2.0), 10.0));
+
+	GameNode* spotLightObject = new GameNode();
+	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 2.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
+	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 8.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
+	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 14.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
+
+	rootGameNode->AddChild(planeObject);
+	//rootGameNode->AddChild(directionalLightObject);
+	//rootGameNode->AddChild(pointLightObject);
+	rootGameNode->AddChild(spotLightObject);
 }
 
 //
