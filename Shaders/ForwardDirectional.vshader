@@ -1,20 +1,19 @@
 #version 330 core
-
-// Input vertex data, different for all executions of this shader
 layout(location = 0) in vec3 vertexPosition_modelspace;
-layout(location = 1) in vec2 vertexUV;
+layout(location = 1) in vec2 texCoord;
+layout(location = 2) in vec3 normal;
 
-// Output data; will be interpolated for each fragment
-out vec2 UV;
+out vec2 texCoord0;
+out vec3 normal0;
+out vec3 worldPos0;
 
-// Values that stay constant for the whole mesh
+uniform mat4 model;
 uniform mat4 MVP;
 
 void main()
 {
-	// Output position of the vertex, in clip space : MVP * position
-	gl_Position = MVP * vec4(vertexPosition_modelspace, 1);
-
-	// UV of the vertex. No special space for this one
-	UV = vertexUV;
+	gl_Position = vec4(vertexPosition_modelspace, 1.0) * MVP;
+	texCoord0 = texCoord;
+	normal0 = (vec4(normal, 0.0) * model).xyz; // this is swizzling :)
+	worldPos0 = (vec4(vertexPosition_modelspace, 1.0) * model).xyz;
 }

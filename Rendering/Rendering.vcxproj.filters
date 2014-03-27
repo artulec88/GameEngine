@@ -114,7 +114,10 @@
     <ClInclude Include="MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardAmbient.h">
+    <ClInclude Include="ForwardAmbientShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ForwardDirectionalShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -194,7 +197,10 @@
     <ClCompile Include="MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ForwardAmbient.cpp">
+    <ClCompile Include="ForwardAmbientShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ForwardDirectionalShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

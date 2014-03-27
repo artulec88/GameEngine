@@ -92,7 +92,8 @@
     <ClInclude Include="BasicShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="ForwardAmbient.h" />
+    <ClInclude Include="ForwardAmbientShader.h" />
+    <ClInclude Include="ForwardDirectionalShader.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
@@ -128,7 +129,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ForwardAmbient.cpp" />
+    <ClCompile Include="ForwardAmbientShader.cpp" />
+    <ClCompile Include="ForwardDirectionalShader.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />

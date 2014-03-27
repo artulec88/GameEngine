@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "ForwardAmbient.h"
+#include "ForwardAmbientShader.h"
 
 #include "Utility\Log.h"
 
@@ -15,7 +15,6 @@ using namespace Utility;
 ForwardAmbientShader::ForwardAmbientShader(void) :
 	Shader()
 {
-	// TODO: I ended up making BasicShader a singleton. That way, you don't load the same shader program onto the graphics card multiple times
 	AddVertexShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\ForwardAmbient.vshader");
 	AddFragmentShaderFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\ForwardAmbient.fshader");
 

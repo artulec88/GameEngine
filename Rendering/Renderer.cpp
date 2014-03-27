@@ -3,7 +3,8 @@
 #include "Game.h"
 #include "BasicShader.h"
 #include "PhongShader.h"
-#include "ForwardAmbient.h"
+#include "ForwardAmbientShader.h"
+#include "ForwardDirectionalShader.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
@@ -34,6 +35,8 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 	
 	Init(width, height, title);
 
+
+	/* ==================== Creating cameras begin ==================== */
 	ASSERT(camerasCount > 0);
 	if (camerasCount > MAX_NUMBER_OF_CAMERAS)
 	{
@@ -66,6 +69,13 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 		Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
 		cameras[i] = Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane);
 	}
+	/* ==================== Creating cameras end ==================== */
+
+	/* ==================== Creating directional lights begin ==================== */
+	// TODO: Do not use hard-coded values ever!
+	lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	lights.push_back(new DirectionalLight(Math::Vector3D(1.0, 0.0, 0.0), 0.8, Math::Vector3D(-1.0, 1.0, -1.0)));
+	/* ==================== Creating directional lights end ==================== */
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -73,7 +83,7 @@ Renderer::Renderer(int width, int height, std::string title, unsigned short came
 
 Renderer::~Renderer(void)
 {
-	stdlog(Debug, LOGPLACE, "Destroying Renderer instance");
+	stdlog(Debug, LOGPLACE, "Destroying rendering engine");
 	
 	glDeleteVertexArrays(1, &vao);
 
@@ -82,8 +92,15 @@ Renderer::~Renderer(void)
 		delete [] cameras;
 		cameras = NULL;
 	}
+	if (currentLight != NULL)
+	{
+		delete currentLight;
+		currentLight = NULL;
+	}
+	// TODO: Deallocating the lights member variable
 
 	glfwTerminate();
+	stdlog(Debug, LOGPLACE, "Rendering engine destroyed");
 }
 
 void Renderer::Init(int width, int height, std::string title)
@@ -192,6 +209,12 @@ void Renderer::Render(GameNode& gameNode)
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
 	// TODO: Perform any other lighting calculations here
+	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
+	{
+		currentLight = (*lightItr);
+		// TODO: Get a shader instance from the currentLight object.
+		gameNode.Render(ForwardDirectionalShader::GetInstance(), this);
+	}
 
 	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);

@@ -3,11 +3,13 @@
 #include "Rendering.h"
 #include "GameNode.h"
 #include "Camera.h"
+#include "BaseLight.h"
 //#include "Utility\Singleton.h"
 
 #include "Math\Vector.h"
 
 #include <string>
+#include <vector>
 
 namespace Rendering
 {
@@ -30,6 +32,8 @@ private:
 	bool isFullscreen;
 	bool isMouseEnabled;
 	Math::Vector3D ambientLight;
+	BaseLight* currentLight;
+	std::vector<BaseLight*> lights;
 /* ==================== Non-static member variables end ==================== */
 
 public: /* constructors and destructors */
@@ -41,6 +45,8 @@ public: /* Non-static, non-virtual member functions */
 	void Render(GameNode& node);
 	void SwapBuffers();
 	
+	inline void AddLight(BaseLight* light) { lights.push_back(light); }
+	inline BaseLight* GetCurrentLight() { return currentLight; }
 	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
 	inline Camera& GetCurrentCamera() { return cameras[currentCameraIndex]; }
 	inline void SetCurrentCamera(const Camera& camera) { cameras[currentCameraIndex] = camera; }
