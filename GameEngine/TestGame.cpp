@@ -3,9 +3,9 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\BasicShader.h"
 #include "Rendering\MeshRenderer.h"
-#include "Rendering\DirectionalLight.h"
-#include "Rendering\PointLight.h"
-#include "Rendering\SpotLight.h"
+//#include "Rendering\DirectionalLight.h"
+//#include "Rendering\PointLight.h"
+//#include "Rendering\SpotLight.h"
 
 //#include "Math\Vector.h"
 
@@ -18,7 +18,10 @@ using namespace Math;
 using namespace Rendering;
 
 TestGame::TestGame() :
-	Game()
+	Game(),
+	directionalLightObject(NULL),
+	pointLightObject(NULL),
+	spotLightObject(NULL)
 {
 	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -83,23 +86,18 @@ void TestGame::Init()
 	planeObject->AddComponent(meshRenderer);
 	planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
-	GameNode* directionalLightObject = new GameNode();
+	directionalLightObject = new GameNode();
 	directionalLightObject->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
-	GameNode* pointLightObject = new GameNode();
-	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
-	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(14.0, 0.0, 2.0), 10.0));
-	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
-	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(2.0, 0.0, 2.0), 10.0));
+	pointLightObject = new GameNode();
+	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0)));
 
-	GameNode* spotLightObject = new GameNode();
-	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 2.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
-	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 8.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
-	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), Math::Vector3D(-2.0, 0, 14.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 7.7f));
+	spotLightObject = new GameNode();
+	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 
 	rootGameNode->AddChild(planeObject);
 	//rootGameNode->AddChild(directionalLightObject);
-	//rootGameNode->AddChild(pointLightObject);
+	rootGameNode->AddChild(pointLightObject);
 	rootGameNode->AddChild(spotLightObject);
 }
 
@@ -114,14 +112,27 @@ void TestGame::Input(Math::Real delta)
 	rootGameNode->Input(delta);
 }
 
+Math::Real temp = 0.0;
+
 void TestGame::Update(Math::Real delta)
 {
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
 	//planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
-	rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+	//rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 	rootGameNode->Update(delta);
+
+	temp += delta;
+	if (temp > 20.0 * Math::M_PI)
+	{
+		temp = 0.0;
+	}
+
+	pointLightObject->GetTransform().SetTranslation(10.0 * abs(sin(temp)), 0.0, 7.0 + 10.0 * abs(cos(temp)));
+
+	//spotLightObject->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
+	spotLightObject->GetTransform().SetTranslation(1.0, -1.0 + 10.0 * abs(cos(temp)), 10.0 * abs(sin(temp)));
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }

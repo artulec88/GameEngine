@@ -2,6 +2,7 @@
 
 #include "Math.h"
 #include "Vector.h"
+#include "Matrix.h"
 //#include "Utility\ISerializable.h"
 #include <string>
 
@@ -45,6 +46,32 @@ public: // public member functions
 
 	Quaternion Normalized() const;
 	void Normalize();
+
+	inline Vector3D GetForward() const
+	{
+		Real x = 2.0f * (GetX() * GetZ() - GetW() * GetY());
+		Real y = 2.0f * (GetY() * GetZ() + GetW() * GetX());
+		Real z = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
+		return Vector3D(x, y, z);
+	}
+
+	inline Vector3D GetUp() const
+	{
+		Real x = 2.0f * (GetX() * GetY() + GetW() * GetZ());
+		Real y = 1.0f - 2.0f * (GetX() * GetX() + GetZ() * GetZ());
+		Real z = 2.0f * (GetY() * GetZ() - GetW() * GetX());
+		return Vector3D(x, y, z);
+	}
+
+	inline Vector3D GetRight() const
+	{
+		Real x = 1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ());
+		Real y = 2.0f * (GetX() * GetY() - GetW() * GetZ());
+		Real z = 2.0f * (GetX() * GetZ() + GetW() * GetY());
+		return Vector3D(x, y, z);
+	}
+
+	inline Matrix4D ToRotationMatrix() const { return Matrix4D::Rotation(GetForward(), GetUp(), GetRight()); }
 
 public:
 	std::string ToString() const;

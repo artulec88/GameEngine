@@ -155,7 +155,7 @@ void Camera::Input(int key, Real delta)
 
 Matrix4D Camera::GetViewProjection() const
 {
-	Matrix4D cameraRotation = Matrix4D::Rotation(forward, up);
+	Matrix4D cameraRotation = Matrix4D::Rotation(forward, up, GetRight());
 	Matrix4D cameraTranslation = Matrix4D::Translation(-GetPos());
 
 	return projection * cameraRotation * cameraTranslation;

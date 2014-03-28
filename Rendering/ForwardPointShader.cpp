@@ -79,6 +79,6 @@ void ForwardPointShader::UpdateUniforms(const Transform& transform, const Materi
 	SetUniformf("pointLight.attenuation.constant", pointLight->GetAttenuation().GetConstant());
 	SetUniformf("pointLight.attenuation.linear", pointLight->GetAttenuation().GetLinear());
 	SetUniformf("pointLight.attenuation.exponent", pointLight->GetAttenuation().GetExponent());
-	SetUniform("pointLight.position", pointLight->GetPosition());
+	SetUniform("pointLight.position", pointLight->GetTransform().GetPos());
 	SetUniformf("pointLight.range", pointLight->GetRange());
 }

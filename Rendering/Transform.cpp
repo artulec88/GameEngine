@@ -7,13 +7,13 @@ using namespace Math;
 
 Transform::Transform() :
 	translation(Vector3D(0.0, 0.0 , 0.0)),
-	rotation(Vector3D(0.0, 0.0 , 0.0)),
+	rotation(Quaternion(0.0, 0.0 , 0.0, 1.0)),
 	scale(1.0)
 {
 	//stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (1)");
 }
 
-Transform::Transform(Vector3D& pos, Vector3D& rot, float scale) :
+Transform::Transform(const Vector3D& pos, const Quaternion& rot, float scale) :
 	translation(pos),
 	rotation(rot),
 	scale(scale)
@@ -29,30 +29,30 @@ Transform::~Transform()
 Matrix4D Transform::GetTransformation() const
 {
 	Matrix4D translationMatrix;
-	Matrix4D rotationMatrix;
+	//Matrix4D rotationMatrix;
 	Matrix4D scaleMatrix;
 
 	translationMatrix = Matrix4D::Translation(translation.GetX(), translation.GetY(), translation.GetZ());
 	//rotationMatrix = Matrix4D::Rotation(rotation.GetX(), rotation.GetY(), rotation.GetZ(), 45.0 /*angleInDegrees*/);
-	rotationMatrix = Matrix4D::Rotation(rotation.GetX(), rotation.GetY(), rotation.GetZ());
+	//rotationMatrix = Matrix4D::Rotation(rotation.GetX(), rotation.GetY(), rotation.GetZ());
 	scaleMatrix = Matrix4D::Scale(scale, scale, scale);
 
 	/**
 	 * Apply SCALING, then ROTATION and TRANSLATION
 	 */
-	Matrix4D result = translationMatrix * rotationMatrix * scaleMatrix;
+	Matrix4D result = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
 	//Matrix4D result = Matrix4D::Identity();
 	//Matrix4D result = rotationMatrix;
 
 	return result;
 }
 
-Math::Vector3D& Transform::GetPos() //TODO: Add const keyword
+Vector3D& Transform::GetPos() //TODO: Add const keyword
 {
 	return translation;
 }
 
-Math::Vector3D& Transform::GetRot() //TODO: Add const keyword
+Quaternion& Transform::GetRot() //TODO: Add const keyword
 {
 	return rotation;
 }
@@ -64,8 +64,8 @@ Real Transform::GetScale() const
 
 void Transform::SetTranslation(const Math::Vector3D& pos) { this->translation = pos; }
 void Transform::SetTranslation(Math::Real x, Math::Real y, Math::Real z) { this->translation = Vector3D(x, y, z); }
-void Transform::SetRotation(const Math::Vector3D& rot) { this->rotation = rot; }
-void Transform::SetRotation(Math::Real x, Math::Real y, Math::Real z) { this->rotation = Vector3D(x, y, z); }
+void Transform::SetRotation(const Quaternion& rot) { this->rotation = rot; }
+//void Transform::SetRotation(Math::Real x, Math::Real y, Math::Real z) { this->rotation = Vector3D(x, y, z); }
 void Transform::SetScale(Real scale) { this->scale = scale; }
 
 //Matrix4D Transform::GetProjectedTransformation(const Camera& camera) const

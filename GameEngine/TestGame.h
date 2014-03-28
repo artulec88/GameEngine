@@ -3,6 +3,9 @@
 #include "Rendering\Game.h"
 #include "Rendering\GameNode.h"
 #include "Rendering\Shader.h"
+#include "Rendering\DirectionalLight.h"
+#include "Rendering\PointLight.h"
+#include "Rendering\SpotLight.h"
 
 class TestGame : public Rendering::Game
 {
@@ -26,6 +29,9 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	Rendering::GameNode* directionalLightObject;
+	Rendering::GameNode* pointLightObject;
+	Rendering::GameNode* spotLightObject;
 /* ==================== Non-static member variables end ==================== */
 };
 

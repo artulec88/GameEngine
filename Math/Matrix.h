@@ -31,7 +31,7 @@ public:
 
 	static Matrix4D Rotation(Real x, Real y, Real z); // TODO: Check all Matrix4D::Rotation(...) functions.
 
-	static Matrix4D Rotation(const Vector3D& forward, const Vector3D& up);
+	static Matrix4D Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 
 	static int Signum(int i, int j);
 /* ==================== Static functions end ==================== */

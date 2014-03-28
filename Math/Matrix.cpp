@@ -173,22 +173,27 @@ Matrix4D::~Matrix4D()
 	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angleInDegrees);
 }
 
-/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up)
+/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
-	Vector3D forw = forward;
-	forw.Normalize(); // TODO: Should not be necessary
-	
-	Vector3D right = up;
-	right.Normalize(); // TODO: Should not be necessary
-	right = right.Cross(forw);
+	Vector3D f = forward;
+	Vector3D u = up;
+	Vector3D r = right;
 
-	Vector3D newUp = forw.Cross(right);
+	f.Normalize(); // TODO: Should not be necessary
+	u.Normalize(); // TODO: Should not be necessary
+	r.Normalize(); // TODO: Should not be necessary
+	
+	//Vector3D right = up;
+	//right.Normalize(); // TODO: Should not be necessary
+	//right = right.Cross(forw);
+
+	//Vector3D newUp = forw.Cross(right);
 
 	Matrix4D matrix;
-	matrix.m[0][0] = right.GetX();	matrix.m[0][1] = right.GetY();	matrix.m[0][2] = right.GetZ();	matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = newUp.GetX();	matrix.m[1][1] = newUp.GetY();	matrix.m[1][2] = newUp.GetZ();	matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = forw.GetX();	matrix.m[2][1] = forw.GetY();	matrix.m[2][2] = forw.GetZ();	matrix.m[2][3] = 0.0;
-	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;			matrix.m[3][2] = 0.0;			matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = r.GetX();	matrix.m[0][1] = r.GetY();	matrix.m[0][2] = r.GetZ();	matrix.m[0][3] = 0.0;
+	matrix.m[1][0] = u.GetX();	matrix.m[1][1] = u.GetY();	matrix.m[1][2] = u.GetZ();	matrix.m[1][3] = 0.0;
+	matrix.m[2][0] = f.GetX();	matrix.m[2][1] = f.GetY();	matrix.m[2][2] = f.GetZ();	matrix.m[2][3] = 0.0;
+	matrix.m[3][0] = 0.0;		matrix.m[3][1] = 0.0;		matrix.m[3][2] = 0.0;		matrix.m[3][3] = 1.0;
 	return matrix;
 }
 

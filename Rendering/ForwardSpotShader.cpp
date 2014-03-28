@@ -91,8 +91,8 @@ void ForwardSpotShader::UpdateUniforms(const Transform& transform, const Materia
 	SetUniformf("spotLight.pointLight.attenuation.constant", spotLight->GetAttenuation().GetConstant());
 	SetUniformf("spotLight.pointLight.attenuation.linear", spotLight->GetAttenuation().GetLinear());
 	SetUniformf("spotLight.pointLight.attenuation.exponent", spotLight->GetAttenuation().GetExponent());
-	SetUniform("spotLight.pointLight.position", spotLight->GetPosition());
+	SetUniform("spotLight.pointLight.position", spotLight->GetTransform().GetPos());
 	SetUniformf("spotLight.pointLight.range", spotLight->GetRange());
-	SetUniform("spotLight.direction", spotLight->GetDirection());
+	SetUniform("spotLight.direction", spotLight->GetTransform().GetRot().GetForward());
 	SetUniformf("spotLight.cutoff", spotLight->GetCutoff());
 }
