@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Camera.h"
-//#include "Renderer.h"
+#include "Renderer.h"
 
 #include "Utility\Log.h"
 #include "Utility\Config.h"
@@ -22,6 +22,7 @@ using namespace Utility;
 	defaultFoV, defaultAspectRatio, defaultNearPlane, defaultFarPlane);
 
 Camera::Camera() :
+	GameComponent(),
 	pos(defaultCamera.GetPos()),
 	forward(defaultCamera.GetForward()),
 	up(defaultCamera.GetUp())
@@ -37,6 +38,7 @@ Camera::Camera() :
 }
 
 Camera::Camera(const Vector3D& pos, const Vector3D& forward, const Vector3D& up, Real FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
+	GameComponent(),
 	pos(pos),
 	forward(forward),
 	up(up)
@@ -93,15 +95,15 @@ Math::Vector3D Camera::GetRight() const
 	return right;
 }
 
-//void Camera::AddToRenderingEngine(Renderer* renderer)
-//{
-//	if (renderer == NULL)
-//	{
-//		stdlog(Utility::Error, LOGPLACE, "Cannot camera to the rendering engine. Renderer is NULL");
-//		return;
-//	}
-//	renderer->AddCamera(this);
-//}
+void Camera::AddToRenderingEngine(Renderer* renderer)
+{
+	if (renderer == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot camera to the rendering engine. Renderer is NULL");
+		return;
+	}
+	renderer->AddCamera(this);
+}
 
 void Camera::RotateX(const Angle& angle)
 {

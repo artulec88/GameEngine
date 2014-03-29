@@ -1,14 +1,15 @@
 #pragma once
 
-//#include "Shader.h"
-#include "Math\Vector.h"
+#include "Rendering.h"
 #include "GameComponent.h"
+#include "Math\Vector.h"
 
 namespace Rendering
 {
 
 // TODO: Move this to GameComponent class declaration when BaseLight becomes a child of GameComponent class
-// class Shader;
+class Shader;
+class Renderer;
 
 class RENDERING_API BaseLight : public GameComponent
 {

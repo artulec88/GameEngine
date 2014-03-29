@@ -1,17 +1,16 @@
 #pragma once
 
 #include "Rendering.h"
-#include "Transform.h"
-//#include "Renderer.h"
-#include "GameNode.h"
-//#include "Shader.h"
 #include "Math\Math.h"
 
 namespace Rendering
 {
 
+// Beware of circular dependencies
 class Renderer;
+class GameNode;
 class Shader;
+class Transform;
 
 class RENDERING_API GameComponent
 {

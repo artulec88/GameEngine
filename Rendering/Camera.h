@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rendering.h"
-//#include "GameComponent.h"
+#include "GameComponent.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
@@ -10,7 +10,9 @@
 namespace Rendering
 {
 
-class RENDERING_API Camera
+class Renderer;
+
+class RENDERING_API Camera : public GameComponent
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -57,7 +59,7 @@ public:
 	//virtual void Input(Math::Real delta);
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-	//virtual void AddToRenderingEngine(Renderer* renderer);
+	virtual void AddToRenderingEngine(Renderer* renderer);
 
 
 	Math::Vector3D GetLeft() const;

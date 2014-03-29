@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
 #include "Renderer.h"
+#include "Shader.h"
 #include "Utility\Log.h"
 
 using namespace Rendering;

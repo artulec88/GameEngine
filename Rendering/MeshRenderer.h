@@ -1,11 +1,12 @@
 #pragma once
 #include "GameComponent.h"
-#include "Mesh.h"
-#include "Material.h"
-#include "Shader.h"
 
 namespace Rendering
 {
+
+class Mesh;
+struct Material;
+class Shader;
 
 class RENDERING_API MeshRenderer : public GameComponent
 {

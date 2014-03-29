@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "MeshRenderer.h"
-#include "BasicShader.h"
+#include "Mesh.h"
+#include "Material.h"
+#include "Shader.h"
 
 using namespace Rendering;
 

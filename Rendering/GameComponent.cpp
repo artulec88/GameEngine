@@ -1,5 +1,9 @@
 #include "StdAfx.h"
 #include "GameComponent.h"
+#include "Transform.h"
+#include "Renderer.h"
+#include "GameNode.h"
+#include "Shader.h"
 
 using namespace Rendering;
 
