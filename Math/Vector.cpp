@@ -204,17 +204,7 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 	// TODO: Test which method is faster and use it instead of the other
 
 	/* ==================== METHOD #1 ==================== */
-	//Real angleInRad = angle.GetAngleInRadians();
-
-	//Real sinHalfAngle = static_cast<Real>(sin(angleInRad / 2));
-	//Real cosHalfAngle = static_cast<Real>(cos(angleInRad / 2));
-
-	//Real rX = axis.GetX() * sinHalfAngle;
-	//Real rY = axis.GetY() * sinHalfAngle;
-	//Real rZ = axis.GetZ() * sinHalfAngle;
-	//Real rW = cosHalfAngle;
-
-	//Quaternion rotation(rX, rY, rZ, rW);
+	//Quaternion rotation(axis, angle);
 	//Quaternion conjugate(rotation.Conjugate());
 
 	//Quaternion w((rotation * (*this)) * conjugate);

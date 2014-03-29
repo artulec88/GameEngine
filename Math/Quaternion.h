@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Angle.h"
 #include "Math.h"
 #include "Vector.h"
 #include "Matrix.h"
@@ -20,6 +21,7 @@ private:
 public: // constructors and destructors
 	Quaternion() : m_x(0.0), m_y(0.0), m_z(0.0), m_w(0.0) { };
 	Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
+	Quaternion(const Vector3D& axis, const Angle& angle);
 
 public: // public member functions
 	Real GetX() const { return m_x; };

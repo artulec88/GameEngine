@@ -4,6 +4,17 @@
 
 using namespace Math;
 
+Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
+{
+	Real sinHalfAngle = static_cast<Real>(sin(angle.GetAngleInRadians() / 2));
+	Real cosHalfAngle = static_cast<Real>(cos(angle.GetAngleInRadians() / 2));
+
+	m_x = axis.GetX() * sinHalfAngle;
+	m_y = axis.GetY() * sinHalfAngle;
+	m_z = axis.GetZ() * sinHalfAngle;
+	m_w = cosHalfAngle;
+}
+
 std::string Quaternion::ToString() const
 {
 	std::stringstream ss("");
