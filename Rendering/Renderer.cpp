@@ -130,12 +130,13 @@ void Renderer::Init(int width, int height, std::string title)
 		exit(EXIT_FAILURE);
 	}
 
-	glfwSetWindowCloseCallback(window, &Game::WindowCloseCallback);
+	glfwSetWindowCloseCallback(window, &Game::WindowCloseEventCallback);
 	//glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
 	glfwSetKeyCallback(window, &Game::KeyEventCallback);
 	//glfwSetCharCallback(window, Game::CharEventCallback);
 	//glfwSetMousePosCallback(window, Game::MouseMotionCallback);
-	//glfwSetMouseButtonCallback(window, Game::MouseInputCallback);
+	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
+	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
 
 	glfwMakeContextCurrent(window);
 

@@ -70,7 +70,7 @@ Game::~Game(void)
 //	stdlog(Info, LOGPLACE, "The game is being cleaned up");
 //}
 
-/* static */ void Game::WindowCloseCallback(GLFWwindow* window)
+/* static */ void Game::WindowCloseEventCallback(GLFWwindow* window)
 {
 	GetGame()->CloseWindowEvent(window);
 }
@@ -78,6 +78,16 @@ Game::~Game(void)
 /* static */ void Game::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	GetGame()->KeyEvent(window, key, scancode, action, mods);
+}
+
+/* static */ void Game::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
+{
+	GetGame()->MouseEvent(window, button, action, mods);
+}
+
+/* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+	GetGame()->ScrollEvent(window, xOffset, yOffset);
 }
 
 void Game::CloseWindowEvent(GLFWwindow* window)
@@ -110,6 +120,34 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	{
 		CoreEngine::GetCoreEngine()->PrevCamera();
 	}
+}
+
+void Game::MouseEvent(GLFWwindow* window, int button, int action, int mods)
+{
+	stdlog(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+
+	/**
+	 * GLFW_MOUSE_BUTTON_1 = left mouse button
+	 * GLFW_MOUSE_BUTTON_2 = right mouse button
+	 * GLFW_MOUSE_BUTTON_3 = middle mouse button
+	 */
+
+	switch (action)
+	{
+	case GLFW_PRESS:
+		stdlog(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		break;
+	case GLFW_RELEASE:
+		stdlog(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		break;
+	default:
+		stdlog(Warning, LOGPLACE, "Unknown action performed with the mouse");
+	}
+}
+
+void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+{
+	stdlog(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
 GameNode& Game::GetRootGameNode() const

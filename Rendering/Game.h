@@ -24,11 +24,12 @@ protected:
 /* ==================== Static functions begin ==================== */
 public:
 	static Game* GetGame();
-	static void WindowCloseCallback(GLFWwindow* window);
+	static void WindowCloseEventCallback(GLFWwindow* window);
 	//static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	//static void CharEventCallback(GLFWwindow* window, unsigned int codepoint);
-	//static void MouseInputCallback(GLFWwindow* window, int button, int action, int mods);
+	static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
+	static void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset);
 /* ==================== Static functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -48,6 +49,8 @@ public:
 
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
+	virtual void MouseEvent(GLFWwindow* window, int button, int action, int mods);
+	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
 	GameNode& GetRootGameNode() const;
 	//Shader* GetShader() const;
