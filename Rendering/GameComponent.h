@@ -5,6 +5,7 @@
 //#include "Renderer.h"
 #include "GameNode.h"
 //#include "Shader.h"
+#include "Math\Math.h"
 
 namespace Rendering
 {

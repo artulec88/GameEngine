@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "GameNode.h"
 #include "GameComponent.h"
-#include "Renderer.h"
+//#include "Renderer.h"
 
 #include "Utility\Log.h"
 

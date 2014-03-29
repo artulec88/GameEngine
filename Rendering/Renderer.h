@@ -17,27 +17,28 @@ namespace Rendering
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class RENDERING_API Renderer
 {
-/* ==================== Non-static member variables begin ==================== */
+/* ==================== Static variables begin ==================== */
 private:
-	static const int MAX_NUMBER_OF_CAMERAS;
-/* ==================== Non-static member variables end ==================== */
+	//static const int MAX_NUMBER_OF_CAMERAS;
+/* ==================== Static variables end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const int camerasCount;
-	int currentCameraIndex;
-	Camera* cameras;
 	GLFWwindow* window;
 	GLuint vao; // vertex array id
 	bool isFullscreen;
 	bool isMouseEnabled;
 	Math::Vector3D ambientLight;
 	BaseLight* currentLight;
+	unsigned int currentCameraIndex;
+	Camera* currentCamera;
+	
 	std::vector<BaseLight*> lights;
+	std::vector<Camera*> cameras;
 /* ==================== Non-static member variables end ==================== */
 
 public: /* constructors and destructors */
-	Renderer(int width, int height, std::string title, unsigned short camerasCount = 3);
+	Renderer(int width, int height, std::string title);
 	~Renderer(void);
 
 public: /* Non-static, non-virtual member functions */
@@ -46,16 +47,16 @@ public: /* Non-static, non-virtual member functions */
 	void SwapBuffers();
 	
 	inline void AddLight(BaseLight* light) { lights.push_back(light); }
+	inline void AddCamera(Camera* camera) { cameras.push_back(camera); }
 	inline BaseLight* GetCurrentLight() { return currentLight; }
 	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
-	inline Camera& GetCurrentCamera() { return cameras[currentCameraIndex]; }
-	inline void SetCurrentCamera(const Camera& camera) { cameras[currentCameraIndex] = camera; }
+	inline Camera& GetCurrentCamera();
 	void NextCamera();
 	void PrevCamera();
 
 	std::string GetOpenGLVersion();
 protected:
-	void SetCurrentCameraIndex(int cameraIndex);
+	void SetCurrentCamera();
 	void Init(int width, int height, std::string title);
 	void InitGraphics();
 	void InitGlew() const;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rendering.h"
+//#include "GameComponent.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
@@ -52,6 +53,12 @@ public:
 	void Move(const Math::Vector3D& dir, Math::Real amount);
 	void RotateX(const Math::Angle& angle);
 	void RotateY(const Math::Angle& angle);
+
+	//virtual void Input(Math::Real delta);
+	//virtual void Update(Math::Real delta);
+	//virtual void Render(Shader* shader, Renderer* renderer);
+	//virtual void AddToRenderingEngine(Renderer* renderer);
+
 
 	Math::Vector3D GetLeft() const;
 	Math::Vector3D GetRight() const;

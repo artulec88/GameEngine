@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "Transform.h"
+#include "Math\Math.h"
 #include <vector>
 
 namespace Rendering

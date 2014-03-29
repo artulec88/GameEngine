@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Camera.h"
+//#include "Renderer.h"
 
 #include "Utility\Log.h"
 #include "Utility\Config.h"
@@ -10,14 +11,14 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ const Vector3D Camera::yAxis = Math::Vector3D(0.0f, 1.0f, 0.0f);
-/* static */ const Real Camera::defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", "defaultCameraFoV_Default", 70.0f);
-/* static */ const Real Camera::defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", "defaultCameraAspectRatio_Default", 1.33333333333f);
-/* static */ const Real Camera::defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", "defaultCameraNearPlane_Default", 0.1f);
-/* static */ const Real Camera::defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", "defaultCameraFarPlane_Default", 1000.0f);
-/* static */ const Camera Camera::defaultCamera(Vector3D(GET_CONFIG_VALUE("defaultCameraPos_x", "defaultCameraPos_xDefault", 0.0f), GET_CONFIG_VALUE("defaultCameraPos_y", "defaultCameraPos_yDefault", 0.0f), GET_CONFIG_VALUE("defaultCameraPos_z", "defaultCameraPos_zDefault", 0.0f)),
-	Vector3D(GET_CONFIG_VALUE("defaultCameraForward_x", "defaultCameraForward_xDefault", 0.0f), GET_CONFIG_VALUE("defaultCameraForward_y", "defaultCameraForward_yDefault", 0.0f), GET_CONFIG_VALUE("defaultCameraForward_z", "defaultCameraForward_zDefault", 1.0f)),
-	Vector3D(GET_CONFIG_VALUE("defaultCameraUp_x", "defaultCameraUp_xDefault", 0.0f), GET_CONFIG_VALUE("defaultCameraUp_y", "defaultCameraUp_yDefault", 1.0f), GET_CONFIG_VALUE("defaultCameraUp_z", "defaultCameraUp_zDefault", 0.0f)),
+/* static */ const Vector3D Camera::yAxis = Vector3D(0.0, 1.0, 0.0);
+/* static */ const Real Camera::defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", "defaultCameraFoV_Default", 70.0);
+/* static */ const Real Camera::defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", "defaultCameraAspectRatio_Default", 1.33333333333);
+/* static */ const Real Camera::defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", "defaultCameraNearPlane_Default", 0.1);
+/* static */ const Real Camera::defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", "defaultCameraFarPlane_Default", 1000.0);
+/* static */ const Camera Camera::defaultCamera(Vector3D(GET_CONFIG_VALUE("defaultCameraPos_x", "defaultCameraPos_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_y", "defaultCameraPos_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraPos_z", "defaultCameraPos_zDefault", 0.0)),
+	Vector3D(GET_CONFIG_VALUE("defaultCameraForward_x", "defaultCameraForward_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_y", "defaultCameraForward_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_z", "defaultCameraForward_zDefault", 1.0)),
+	Vector3D(GET_CONFIG_VALUE("defaultCameraUp_x", "defaultCameraUp_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraUp_y", "defaultCameraUp_yDefault", 1.0), GET_CONFIG_VALUE("defaultCameraUp_z", "defaultCameraUp_zDefault", 0.0)),
 	defaultFoV, defaultAspectRatio, defaultNearPlane, defaultFarPlane);
 
 Camera::Camera() :
@@ -91,6 +92,16 @@ Math::Vector3D Camera::GetRight() const
 	right.Normalize(); // TODO: Check whether Normalize() is necessary
 	return right;
 }
+
+//void Camera::AddToRenderingEngine(Renderer* renderer)
+//{
+//	if (renderer == NULL)
+//	{
+//		stdlog(Utility::Error, LOGPLACE, "Cannot camera to the rendering engine. Renderer is NULL");
+//		return;
+//	}
+//	renderer->AddCamera(this);
+//}
 
 void Camera::RotateX(const Angle& angle)
 {
