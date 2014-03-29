@@ -47,21 +47,6 @@ Matrix4D Transform::GetTransformation() const
 	return result;
 }
 
-Vector3D& Transform::GetPos() //TODO: Add const keyword
-{
-	return translation;
-}
-
-Quaternion& Transform::GetRot() //TODO: Add const keyword
-{
-	return rotation;
-}
-
-Vector3D& Transform::GetScale()
-{
-	return scale;
-}
-
 void Transform::SetTranslation(const Vector3D& pos)
 {
 	this->translation = pos;

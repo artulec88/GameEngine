@@ -13,15 +13,18 @@
 #include "Utility\Log.h"
 #include "Utility\Config.h"
 
+#include <sstream>
+
 using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
 TestGame::TestGame() :
 	Game(),
-	directionalLightObject(NULL),
-	pointLightObject(NULL),
-	spotLightObject(NULL)
+	directionalLightNode(NULL),
+	pointLightNode(NULL),
+	spotLightNode(NULL),
+	cameraCount(4)
 {
 	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -82,23 +85,75 @@ void TestGame::Init()
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
 	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
 
-	GameNode* planeObject = new GameNode();
-	planeObject->AddComponent(meshRenderer);
-	planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+	GameNode* planeNode = new GameNode();
+	planeNode->AddComponent(meshRenderer);
+	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
-	directionalLightObject = new GameNode();
-	directionalLightObject->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	directionalLightNode = new GameNode();
+	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
-	pointLightObject = new GameNode();
-	pointLightObject->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0)));
+	pointLightNode = new GameNode();
+	pointLightNode->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0)));
 
-	spotLightObject = new GameNode();
-	spotLightObject->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+	spotLightNode = new GameNode();
+	spotLightNode->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 
-	rootGameNode->AddChild(planeObject);
+	cameraNodes = new GameNode* [cameraCount];
+	for (int i = 0; i < cameraCount; ++i)
+	{
+		std::stringstream ss("");
+		ss << (i + 1);
+		std::string cameraIndexStr = ss.str();
+
+		cameraNodes[i] = new GameNode();
+		Math::Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCameraPos.GetX());
+		Math::Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCameraPos.GetY());
+		Math::Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCameraPos.GetZ());
+		cameraNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		
+		// TODO: Set forward and up vector for the camera
+		//Quaternion rot();
+		//cameraNodes[i]->GetTransform().SetRotation(rot);
+
+		Math::Real fov = Config::Get("cameraFoV_" + cameraIndexStr, Camera::defaultFoV);
+		Math::Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, Camera::defaultAspectRatio);
+		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, Camera::defaultNearPlane);
+		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, Camera::defaultFarPlane);
+		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
+		rootGameNode->AddChild(cameraNodes[i]);
+	}
+
+	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
+	//std::string tempStr = "camera";
+	//for (int i = 0; i < camerasCount; ++i)
+	//{
+	//	std::stringstream ss("");
+	//	ss << (i + 1);
+	//	std::string cameraIndexStr = ss.str();
+	//	Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetX());
+	//	Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetY());
+	//	Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetZ());
+	//	Real xForward = Config::Get("cameraForward_x_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetX());
+	//	Real yForward = Config::Get("cameraForward_y_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetY());
+	//	Real zForward = Config::Get("cameraForward_z_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetZ());
+	//	Real xUp = Config::Get("cameraUp_x_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetX());
+	//	Real yUp = Config::Get("cameraUp_y_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetY());
+	//	Real zUp = Config::Get("cameraUp_z_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetZ());
+	//	Vector3D cameraPos = Math::Vector3D(xPos, yPos, zPos);
+	//	Vector3D cameraForward = Math::Vector3D(xForward, yForward, zForward);
+	//	Vector3D cameraUp = Math::Vector3D(xUp, yUp, zUp);
+
+	//	Real FoV = Config::Get("cameraFoV_" + ss.str(), Camera::defaultFoV);
+	//	Real aspectRatio = Config::Get("cameraAspectRatio_" + ss.str(), Camera::defaultAspectRatio);
+	//	Real zNearPlane = Config::Get("cameraNearPlane_" + ss.str(), Camera::defaultNearPlane);
+	//	Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
+	//	cameras.push_back(new Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane));
+	//}
+
+	rootGameNode->AddChild(planeNode);
 	//rootGameNode->AddChild(directionalLightObject);
-	rootGameNode->AddChild(pointLightObject);
-	rootGameNode->AddChild(spotLightObject);
+	rootGameNode->AddChild(pointLightNode);
+	rootGameNode->AddChild(spotLightNode);
 }
 
 //
@@ -129,10 +184,10 @@ void TestGame::Update(Math::Real delta)
 		temp = 0.0;
 	}
 
-	pointLightObject->GetTransform().SetTranslation(10.0 * abs(sin(temp)), 0.0, 7.0 + 10.0 * abs(cos(temp)));
+	pointLightNode->GetTransform().SetTranslation(10.0 * abs(sin(temp)), 0.0, 7.0 + 10.0 * abs(cos(temp)));
 
-	//spotLightObject->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
-	spotLightObject->GetTransform().SetTranslation(1.0, -1.0 + 10.0 * abs(cos(temp)), 10.0 * abs(sin(temp)));
+	//spotLightNode->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
+	spotLightNode->GetTransform().SetTranslation(1.0, -1.0 + 10.0 * abs(cos(temp)), 10.0 * abs(sin(temp)));
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }

@@ -46,17 +46,17 @@ public: /* Non-static, non-virtual member functions */
 	void Render(GameNode& node);
 	void SwapBuffers();
 	
-	inline void AddLight(BaseLight* light) { lights.push_back(light); }
-	inline void AddCamera(Camera* camera) { cameras.push_back(camera); }
+	inline void AddLight(BaseLight* light);
+	inline void AddCamera(Camera* camera);
 	inline BaseLight* GetCurrentLight() { return currentLight; }
 	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
 	inline Camera& GetCurrentCamera();
 	void NextCamera();
 	void PrevCamera();
+	void SetCurrentCamera(unsigned int cameraIndex);
 
 	std::string GetOpenGLVersion();
 protected:
-	void SetCurrentCamera();
 	void Init(int width, int height, std::string title);
 	void InitGraphics();
 	void InitGlew() const;

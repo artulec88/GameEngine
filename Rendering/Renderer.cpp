@@ -40,45 +40,45 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 
 	/* ==================== Creating cameras begin ==================== */
-	const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
-	std::string tempStr = "camera";
-	for (int i = 0; i < camerasCount; ++i)
-	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		std::string cameraIndexStr = ss.str();
-		Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetX());
-		Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetY());
-		Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetZ());
-		Real xForward = Config::Get("cameraForward_x_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetX());
-		Real yForward = Config::Get("cameraForward_y_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetY());
-		Real zForward = Config::Get("cameraForward_z_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetZ());
-		Real xUp = Config::Get("cameraUp_x_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetX());
-		Real yUp = Config::Get("cameraUp_y_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetY());
-		Real zUp = Config::Get("cameraUp_z_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetZ());
-		Vector3D cameraPos = Math::Vector3D(xPos, yPos, zPos);
-		Vector3D cameraForward = Math::Vector3D(xForward, yForward, zForward);
-		Vector3D cameraUp = Math::Vector3D(xUp, yUp, zUp);
+	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
+	//std::string tempStr = "camera";
+	//for (int i = 0; i < camerasCount; ++i)
+	//{
+	//	std::stringstream ss("");
+	//	ss << (i + 1);
+	//	std::string cameraIndexStr = ss.str();
+	//	Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetX());
+	//	Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetY());
+	//	Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetZ());
+	//	Real xForward = Config::Get("cameraForward_x_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetX());
+	//	Real yForward = Config::Get("cameraForward_y_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetY());
+	//	Real zForward = Config::Get("cameraForward_z_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetZ());
+	//	Real xUp = Config::Get("cameraUp_x_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetX());
+	//	Real yUp = Config::Get("cameraUp_y_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetY());
+	//	Real zUp = Config::Get("cameraUp_z_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetZ());
+	//	Vector3D cameraPos = Math::Vector3D(xPos, yPos, zPos);
+	//	Vector3D cameraForward = Math::Vector3D(xForward, yForward, zForward);
+	//	Vector3D cameraUp = Math::Vector3D(xUp, yUp, zUp);
 
-		Real FoV = Config::Get("cameraFoV_" + ss.str(), Camera::defaultFoV);
-		Real aspectRatio = Config::Get("cameraAspectRatio_" + ss.str(), Camera::defaultAspectRatio);
-		Real zNearPlane = Config::Get("cameraNearPlane_" + ss.str(), Camera::defaultNearPlane);
-		Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
-		cameras.push_back(new Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane));
-	}
-	ASSERT(cameras.size() > 0);
-	if (cameras.size() < 1)
-	{
-		stdlog(Emergency, LOGPLACE, "No camera added to the rendering engine");
-		exit(EXIT_FAILURE);
-	}
-	ASSERT((currentCameraIndex >= 0) && (currentCameraIndex < cameras.size()));
-	if (currentCameraIndex >= cameras.size())
-	{
-		stdlog(Warning, LOGPLACE, "Current camera index is incorrect. Setting currentCameraIndex to 1");
-		currentCameraIndex = 0;
-	}
-	currentCamera = cameras[currentCameraIndex];
+	//	Real FoV = Config::Get("cameraFoV_" + ss.str(), Camera::defaultFoV);
+	//	Real aspectRatio = Config::Get("cameraAspectRatio_" + ss.str(), Camera::defaultAspectRatio);
+	//	Real zNearPlane = Config::Get("cameraNearPlane_" + ss.str(), Camera::defaultNearPlane);
+	//	Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
+	//	cameras.push_back(new Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane));
+	//}
+	//ASSERT(cameras.size() > 0);
+	//if (cameras.size() < 1)
+	//{
+	//	stdlog(Emergency, LOGPLACE, "No camera added to the rendering engine");
+	//	exit(EXIT_FAILURE);
+	//}
+	//ASSERT((currentCameraIndex >= 0) && (currentCameraIndex < cameras.size()));
+	//if (currentCameraIndex >= cameras.size())
+	//{
+	//	stdlog(Warning, LOGPLACE, "Current camera index is incorrect. Setting currentCameraIndex to 1");
+	//	currentCameraIndex = 0;
+	//}
+	//currentCamera = cameras[currentCameraIndex];
 	/* ==================== Creating cameras end ==================== */
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
@@ -235,8 +235,11 @@ void Renderer::Render(GameNode& gameNode)
 	ClearScreen();
 
 	lights.clear();
+	cameras.clear();
 
 	gameNode.AddToRenderingEngine(this);
+
+	currentCamera = cameras[currentCameraIndex];
 
 	// Ambient rendering
 	gameNode.Render(ForwardAmbientShader::GetInstance(), this);
@@ -287,8 +290,7 @@ void Renderer::NextCamera()
 	{
 		currentCameraIndex = -1;
 	}
-	++currentCameraIndex;
-	SetCurrentCamera();
+	SetCurrentCamera(currentCameraIndex + 1);
 }
 
 void Renderer::PrevCamera()
@@ -297,23 +299,32 @@ void Renderer::PrevCamera()
 	{
 		currentCameraIndex = cameras.size();
 	}
-	--currentCameraIndex;
-	SetCurrentCamera();
+	SetCurrentCamera(currentCameraIndex - 1);
 }
 
-void Renderer::SetCurrentCamera()
+void Renderer::SetCurrentCamera(unsigned int cameraIndex)
 {
-	ASSERT((currentCameraIndex >= 0) && (currentCameraIndex < cameras.size()));
-	if ( (currentCameraIndex < 0) || (currentCameraIndex >= cameras.size()) )
+	ASSERT((cameraIndex >= 0) && (cameraIndex < cameras.size()));
+	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
 	{
-		stdlog(Error, LOGPLACE, "Incorrect current camera index given.");
+		stdlog(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
 		stdlog(Notice, LOGPLACE, "Setting current camera index to 1");
-		currentCameraIndex = 0;
+		this->currentCameraIndex = 0;
 		return;
 	}
-	currentCamera = cameras[currentCameraIndex];
-	stdlog(Notice, LOGPLACE, "Switched to camera #%d", currentCameraIndex + 1);
-	stdlog(Debug, LOGPLACE, "%s", currentCamera->ToString().c_str());
+	this->currentCameraIndex = cameraIndex;
+	stdlog(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
+	stdlog(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+}
+
+inline void Renderer::AddLight(BaseLight* light)
+{
+	lights.push_back(light);
+}
+
+inline void Renderer::AddCamera(Camera* camera)
+{
+	cameras.push_back(camera);
 }
 
 std::string Renderer::GetOpenGLVersion()

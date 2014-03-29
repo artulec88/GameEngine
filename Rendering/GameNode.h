@@ -30,6 +30,7 @@ public:
 	void AddToRenderingEngine(Renderer* renderer);
 
 	Transform& GetTransform() { return this->transform; };
+	const Transform& GetTransform() const { return this->transform; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
