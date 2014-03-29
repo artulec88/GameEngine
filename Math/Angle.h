@@ -8,7 +8,7 @@
 namespace Math
 {
 
-  class Angle
+  class MATH_API Angle
   {
   public: // constructors and destructors
     Angle(Real angle, bool isInDegrees = true);

@@ -34,7 +34,7 @@ public: // public member functions
 	Real Length() const;
 	Real LengthSquared() const;
 	
-	Quaternion Conjugate() { return Quaternion(-m_x, -m_y, -m_z, m_w); }; // creates negation vector
+	Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); }; // creates negation vector
 	
 	//Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
 	//Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
@@ -47,31 +47,11 @@ public: // public member functions
 	Quaternion Normalized() const;
 	void Normalize();
 
-	inline Vector3D GetForward() const
-	{
-		Real x = 2.0f * (GetX() * GetZ() - GetW() * GetY());
-		Real y = 2.0f * (GetY() * GetZ() + GetW() * GetX());
-		Real z = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
-		return Vector3D(x, y, z);
-	}
+	inline Vector3D GetForward() const;
+	inline Vector3D GetUp() const;
+	inline Vector3D GetRight() const;
 
-	inline Vector3D GetUp() const
-	{
-		Real x = 2.0f * (GetX() * GetY() + GetW() * GetZ());
-		Real y = 1.0f - 2.0f * (GetX() * GetX() + GetZ() * GetZ());
-		Real z = 2.0f * (GetY() * GetZ() - GetW() * GetX());
-		return Vector3D(x, y, z);
-	}
-
-	inline Vector3D GetRight() const
-	{
-		Real x = 1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ());
-		Real y = 2.0f * (GetX() * GetY() - GetW() * GetZ());
-		Real z = 2.0f * (GetX() * GetZ() + GetW() * GetY());
-		return Vector3D(x, y, z);
-	}
-
-	inline Matrix4D ToRotationMatrix() const { return Matrix4D::Rotation(GetForward(), GetUp(), GetRight()); }
+	inline Matrix4D ToRotationMatrix() const;
 
 public:
 	std::string ToString() const;

@@ -1,3 +1,4 @@
+#include "StdAfx.h"
 #include "Angle.h"
 
 using namespace Math;

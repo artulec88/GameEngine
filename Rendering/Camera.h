@@ -3,6 +3,7 @@
 #include "Rendering.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
+#include "Math\Angle.h"
 #include <string>
 
 namespace Rendering
@@ -49,8 +50,8 @@ public:
 	Math::Matrix4D GetViewProjection() const;
 
 	void Move(const Math::Vector3D& dir, Math::Real amount);
-	void RotateX(Math::Real angleInDegrees);
-	void RotateY(Math::Real angleInDegrees);
+	void RotateX(const Math::Angle& angle);
+	void RotateY(const Math::Angle& angle);
 
 	Math::Vector3D GetLeft() const;
 	Math::Vector3D GetRight() const;

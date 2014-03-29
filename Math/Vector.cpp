@@ -68,9 +68,9 @@ Real Vector2D::Dot(const Vector2D& v) const
 	return (m_x * v.GetX() + m_y * v.GetY());
 }
 
-Vector2D Vector2D::Rotate(Real angleInDegrees)
+Vector2D Vector2D::Rotate(const Angle& angle)
 {
-	Real rad = Math::ToRad(angleInDegrees);
+	Real rad = angle.GetAngleInRadians();
 	Real cosine = cos(rad);
 	Real sine = sin(rad);
 
@@ -199,28 +199,47 @@ Vector3D Vector3D::Cross(const Vector3D& v) const
 	return Vector3D(x, y, z);
 }
 
-Vector3D& Vector3D::Rotate(Real angleInDegrees, const Vector3D& axis)
+Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 {
-	Real angleInRad = ToRad(angleInDegrees);
+	// TODO: Test which method is faster and use it instead of the other
 
-	Real sinHalfAngle = static_cast<Real>(sin(angleInRad / 2));
-	Real cosHalfAngle = static_cast<Real>(cos(angleInRad / 2));
+	/* ==================== METHOD #1 ==================== */
+	//Real angleInRad = angle.GetAngleInRadians();
 
-	Real rX = axis.GetX() * sinHalfAngle;
-	Real rY = axis.GetY() * sinHalfAngle;
-	Real rZ = axis.GetZ() * sinHalfAngle;
-	Real rW = cosHalfAngle;
+	//Real sinHalfAngle = static_cast<Real>(sin(angleInRad / 2));
+	//Real cosHalfAngle = static_cast<Real>(cos(angleInRad / 2));
 
-	Quaternion rotation(rX, rY, rZ, rW);
-	Quaternion conjugate(rotation.Conjugate());
+	//Real rX = axis.GetX() * sinHalfAngle;
+	//Real rY = axis.GetY() * sinHalfAngle;
+	//Real rZ = axis.GetZ() * sinHalfAngle;
+	//Real rW = cosHalfAngle;
 
-	Quaternion w((rotation * (*this)) * conjugate);
+	//Quaternion rotation(rX, rY, rZ, rW);
+	//Quaternion conjugate(rotation.Conjugate());
 
-	this->m_x = w.GetX();
-	this->m_y = w.GetY();
-	this->m_z = w.GetZ();
+	//Quaternion w((rotation * (*this)) * conjugate);
 
-	return *this;
+	//this->m_x = w.GetX();
+	//this->m_y = w.GetY();
+	//this->m_z = w.GetZ();
+
+	//return *this;
+
+	/* ==================== METHOD #2 ==================== */
+	Real sinAngle = static_cast<Real>(sin(-angle.GetAngleInRadians()));
+	Real cosAngle = static_cast<Real>(cos(-angle.GetAngleInRadians()));
+
+	return this->Cross(axis * sinAngle) + // rotation on local X
+		((*this * cosAngle) + // rotation on local Z
+		(axis * (this->Dot(axis * (1.0 - cosAngle))))); // rotation on local Y
+}
+
+Vector3D Vector3D::Rotate(const Quaternion& rotation)
+{
+	Quaternion conjugate = rotation.Conjugate();
+	Quaternion w = rotation * (*this) * conjugate;
+
+	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
 
 Vector3D& Vector3D::operator+=(const Vector3D& v)

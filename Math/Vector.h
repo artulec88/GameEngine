@@ -1,12 +1,15 @@
 #pragma once
 
 #include "Math.h"
+#include "Angle.h"
 //#include "Utility\ISerializable.h"
 #include <string>
 #include <sstream>
 
 namespace Math
 {
+class Quaternion;
+
 class MATH_API Vector2D
 {
 public: // constructors and destructors
@@ -42,7 +45,7 @@ public: // public member functions
 	Vector2D Normalized() const;
 	void Normalize();
 
-	Vector2D Rotate(Real angle);
+	Vector2D Rotate(const Angle& angle);
 	
 	Real Cross(const Vector2D& v) const;
 	Real Dot(const Vector2D& v) const;
@@ -96,7 +99,8 @@ public: // public member functions
 	void Normalize();
 
 	//Vector3D Rotate(Real angle);
-	Vector3D& Rotate(Real angle, const Vector3D& axis);
+	Vector3D Rotate(const Vector3D& axis, const Angle& angle);
+	Vector3D Rotate(const Quaternion& rotation);
 	
 	Real Dot(const Vector3D& v) const;
 	Vector3D Cross(const Vector3D& v) const;
