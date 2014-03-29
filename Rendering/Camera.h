@@ -15,7 +15,7 @@ class Renderer;
 class RENDERING_API Camera : public GameComponent
 {
 /* ==================== Static variables begin ==================== */
-private:
+public:
 	static const Math::Vector3D xAxis;
 	static const Math::Vector3D yAxis;
 public:
@@ -27,13 +27,11 @@ public:
 	static const Math::Vector3D defaultCameraForward;
 	static const Math::Vector3D defaultCameraUp;
 	//static const Camera defaultCamera;
+	static const Math::Real sensitivity;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	//Math::Vector3D pos;
-	//Math::Vector3D forward;
-	//Math::Vector3D up;
 	Math::Matrix4D projection;
 /* ==================== Non-static member variables end ==================== */
 
@@ -46,20 +44,11 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	//Math::Vector3D GetPos() const { return this->pos; };
-	//Math::Vector3D GetForward() const { return this->forward; };
-	//Math::Vector3D GetUp() const { return this->up; };
-	//void SetPos(const Math::Vector3D& pos);
-	//void SetForward(const Math::Vector3D& forward);
-	//void SetUp(const Math::Vector3D& up);
-
 	Math::Matrix4D GetViewProjection() const;
 
 	void Move(const Math::Vector3D& dir, Math::Real amount);
-	//void RotateX(const Math::Angle& angle);
-	//void RotateY(const Math::Angle& angle);
 
-	//virtual void Input(Math::Real delta);
+	virtual void Input(Math::Real delta);
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
 	virtual void AddToRenderingEngine(Renderer* renderer);
@@ -67,7 +56,9 @@ public:
 
 	//Math::Vector3D GetLeft() const;
 	//Math::Vector3D GetRight() const;
-	void Input(int key, Math::Real delta);
+	//void Input(Math::Real delta);
+	//void Deactivate();
+	//void Activate();
 	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Camera */

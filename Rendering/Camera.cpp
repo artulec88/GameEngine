@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "Transform.h"
+#include "Input.h"
 
 #include "Math\Quaternion.h"
 
@@ -36,6 +37,8 @@ using namespace Utility;
 //	Vector3D(GET_CONFIG_VALUE("defaultCameraForward_x", "defaultCameraForward_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_y", "defaultCameraForward_yDefault", 0.0), GET_CONFIG_VALUE("defaultCameraForward_z", "defaultCameraForward_zDefault", 1.0)),
 //	Vector3D(GET_CONFIG_VALUE("defaultCameraUp_x", "defaultCameraUp_xDefault", 0.0), GET_CONFIG_VALUE("defaultCameraUp_y", "defaultCameraUp_yDefault", 1.0), GET_CONFIG_VALUE("defaultCameraUp_z", "defaultCameraUp_zDefault", 0.0)),
 //	defaultFoV, defaultAspectRatio, defaultNearPlane, defaultFarPlane);
+
+/* static */ const Real Camera::sensitivity = GET_CONFIG_VALUE("CameraSensitivity", "CameraSensitivityDefault", 0.5);
 
 Camera::Camera() :
 	GameComponent()
@@ -77,9 +80,11 @@ Camera::~Camera(void)
 
 void Camera::Move(const Vector3D& dir, Math::Real amount)
 {
-	GetTransform().SetTranslation(GetTransform().GetPos() + (dir * amount));
-	//stdlog(Debug, LOGPLACE, "Camera position = %s", this->pos.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "%s", ToString().c_str());
+	Transform& t = GetTransform();
+	stdlog(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+	t.SetTranslation(t.GetPos() + (dir * amount));
+	stdlog(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+	stdlog(Delocust, LOGPLACE, "%s", ToString().c_str());
 }
 
 //Vector3D Camera::GetLeft() const
@@ -133,43 +138,78 @@ void Camera::AddToRenderingEngine(Renderer* renderer)
 //	up.Normalize(); // TODO: Check whether Normalize() is necessary
 //}
 
-void Camera::Input(int key, Real delta)
-{
-	Real moveAmount = static_cast<Real>(10 * delta);
-	Real rotationAmount = static_cast<Real>(100 * delta);
+//void Camera::Deactivate()
+//{
+//	if (! isActive)
+//	{
+//		stdlog(Warning, LOGPLACE, "Deactivating camera which is already deactivated");
+//	}
+//	isActive = false;
+//}
 
-	switch (key)
-	{
-	case GLFW_KEY_W: // move forward
-		Move(GetTransform().GetRot().GetForward(), moveAmount);
-		break;
-	case GLFW_KEY_S: // move backward
-		Move(GetTransform().GetRot().GetForward(), -moveAmount);
-		break;
-	case GLFW_KEY_A: // move left
-		Move(GetTransform().GetRot().GetRight(), -moveAmount);
-		break;
-	case GLFW_KEY_D: // move right
-		Move(GetTransform().GetRot().GetRight(), moveAmount);
-		break;
-	case GLFW_KEY_UP: // rotation around X axis
-		GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(rotationAmount))));
-		//RotateX(Angle(-rotationAmount));
-		break;
-	case GLFW_KEY_DOWN: // rotation around X axis
-		GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(-rotationAmount))));
-		//RotateX(Angle(rotationAmount));
-		break;
-	case GLFW_KEY_LEFT: // rotation around Y axis
-		GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(rotationAmount))));
-		break;
-	case GLFW_KEY_RIGHT: // rotation around Y axis
-		GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(-rotationAmount))));
-		break;
-	default:
-		stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
-		break;
-	}
+//void Camera::Activate()
+//{
+//	isActive = true;
+//}
+
+void Camera::Input(Real delta)
+{
+	//if (!isActive)
+	//	return;
+
+	//Real moveAmount = static_cast<Real>(100 * delta);
+	//Real rotationAmount = static_cast<Real>(10 * delta);
+
+	//Transform& t = GetTransform();
+	//if (Input::IsKeyPressed(GLFW_KEY_W)) // move forward
+	//{
+	//	Move(t.GetRot().GetForward(), moveAmount);
+	//}
+	//if (Input::IsKeyPressed(GLFW_KEY_S)) // move backward
+	//{
+	//	Move(t.GetRot().GetForward(), -moveAmount);
+	//}
+	//if (Input::IsKeyPressed(GLFW_KEY_A)) // move left
+	//{
+	//	Move(t.GetRot().GetRight(), -moveAmount);
+	//}
+	//if (Input::IsKeyPressed(GLFW_KEY_D)) // move right
+	//{
+	//	Move(t.GetRot().GetRight(), moveAmount);
+	//}
+
+	//switch (key)
+	//{
+	//case GLFW_KEY_W: // move forward
+	//	Move(GetTransform().GetRot().GetForward(), moveAmount);
+	//	break;
+	//case GLFW_KEY_S: // move backward
+	//	Move(GetTransform().GetRot().GetForward(), -moveAmount);
+	//	break;
+	//case GLFW_KEY_A: // move left
+	//	Move(GetTransform().GetRot().GetRight(), -moveAmount);
+	//	break;
+	//case GLFW_KEY_D: // move right
+	//	Move(GetTransform().GetRot().GetRight(), moveAmount);
+	//	break;
+	//case GLFW_KEY_UP: // rotation around X axis
+	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(rotationAmount))));
+	//	//RotateX(Angle(-rotationAmount));
+	//	break;
+	//case GLFW_KEY_DOWN: // rotation around X axis
+	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(-rotationAmount))));
+	//	//RotateX(Angle(rotationAmount));
+	//	break;
+	//case GLFW_KEY_LEFT: // rotation around Y axis
+	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(rotationAmount))));
+	//	break;
+	//case GLFW_KEY_RIGHT: // rotation around Y axis
+	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(-rotationAmount))));
+	//	break;
+	//default:
+	//	stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
+	//	break;
+	//}
 }
 
 Matrix4D Camera::GetViewProjection() const

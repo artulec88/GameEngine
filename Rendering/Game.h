@@ -47,6 +47,8 @@ public:
 	virtual void Input(Math::Real delta) = 0;
 	virtual void Update(Math::Real delta) = 0;
 
+	virtual void InitializeCameras(); // TODO: Consider deleting this function. Otherwise, implement it
+
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void MouseEvent(GLFWwindow* window, int button, int action, int mods);

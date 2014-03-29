@@ -34,6 +34,7 @@ protected:
 	Rendering::GameNode* spotLightNode;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
+	unsigned int currentCameraIndex; // TODO: this value should always be the same as the Renderer::currentCameraIndex. Match them.
 /* ==================== Non-static member variables end ==================== */
 };
 

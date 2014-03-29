@@ -51,9 +51,11 @@ public: /* Non-static, non-virtual member functions */
 	inline BaseLight* GetCurrentLight() { return currentLight; }
 	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
 	inline Camera& GetCurrentCamera();
-	void NextCamera();
-	void PrevCamera();
-	void SetCurrentCamera(unsigned int cameraIndex);
+	unsigned int NextCamera();
+	unsigned int PrevCamera();
+	unsigned int SetCurrentCamera(unsigned int cameraIndex);
+
+	bool IsCloseRequested() const;
 
 	std::string GetOpenGLVersion();
 protected:

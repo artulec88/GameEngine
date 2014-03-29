@@ -240,6 +240,7 @@ void Renderer::Render(GameNode& gameNode)
 	gameNode.AddToRenderingEngine(this);
 
 	currentCamera = cameras[currentCameraIndex];
+	//currentCamera->Activate();
 
 	// Ambient rendering
 	gameNode.Render(ForwardAmbientShader::GetInstance(), this);
@@ -284,37 +285,42 @@ inline Camera& Renderer::GetCurrentCamera()
 	return *currentCamera;
 }
 
-void Renderer::NextCamera()
+unsigned int Renderer::NextCamera()
 {
 	if (currentCameraIndex == cameras.size() - 1)
 	{
 		currentCameraIndex = -1;
 	}
-	SetCurrentCamera(currentCameraIndex + 1);
+	return SetCurrentCamera(currentCameraIndex + 1);
 }
 
-void Renderer::PrevCamera()
+unsigned int Renderer::PrevCamera()
 {
 	if (currentCameraIndex == 0)
 	{
 		currentCameraIndex = cameras.size();
 	}
-	SetCurrentCamera(currentCameraIndex - 1);
+	return SetCurrentCamera(currentCameraIndex - 1);
 }
 
-void Renderer::SetCurrentCamera(unsigned int cameraIndex)
+unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 {
+	//currentCamera->Deactivate();
 	ASSERT((cameraIndex >= 0) && (cameraIndex < cameras.size()));
 	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
 	{
 		stdlog(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
 		stdlog(Notice, LOGPLACE, "Setting current camera index to 1");
 		this->currentCameraIndex = 0;
-		return;
 	}
-	this->currentCameraIndex = cameraIndex;
+	else
+	{
+		this->currentCameraIndex = cameraIndex;
+	}
 	stdlog(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
 	stdlog(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	//cameras[this->currentCameraIndex]->Activate();
+	return this->currentCameraIndex;
 }
 
 inline void Renderer::AddLight(BaseLight* light)
@@ -333,4 +339,9 @@ std::string Renderer::GetOpenGLVersion()
 	//const GLubyte* strVersion = glGetString(GL_VERSION);
 	//return std::string((char*)strVersion);
 	return "OpenGL version: ";
+}
+
+bool Renderer::IsCloseRequested() const
+{
+	return glfwWindowShouldClose(window);
 }

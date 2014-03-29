@@ -1,7 +1,8 @@
 #include "TestGame.h"
 
 #include "Rendering\CoreEngine.h"
-#include "Rendering\BasicShader.h"
+#include "Rendering\Camera.h"
+//#include "Rendering\BasicShader.h"
 #include "Rendering\MeshRenderer.h"
 //#include "Rendering\DirectionalLight.h"
 //#include "Rendering\PointLight.h"
@@ -24,7 +25,8 @@ TestGame::TestGame() :
 	directionalLightNode(NULL),
 	pointLightNode(NULL),
 	spotLightNode(NULL),
-	cameraCount(4)
+	cameraCount(4),
+	currentCameraIndex(0)
 {
 	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -210,5 +212,49 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	//}
 
 	// TODO: Set delta to correct value
-	//camera->Input(key, 0.02);
+	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+	const Real sensitivity = static_cast<Real>(0.2);
+	switch (key)
+	{
+	case GLFW_KEY_W:
+		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
+		break;
+	case GLFW_KEY_S:
+		transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
+		break;
+	case GLFW_KEY_A:
+		transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
+		break;
+	case GLFW_KEY_D:
+		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
+		break;
+	case GLFW_KEY_UP: // rotation around X axis
+		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(sensitivity))));
+		//RotateX(Angle(-rotationAmount));
+		break;
+	case GLFW_KEY_DOWN: // rotation around X axis
+		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(-sensitivity))));
+		//RotateX(Angle(rotationAmount));
+		break;
+	case GLFW_KEY_LEFT: // rotation around Y axis
+		transform.SetRotation(transform.GetRot() * (Quaternion(Camera::yAxis, Angle(sensitivity))));
+		stdlog(Debug, LOGPLACE, "Transform.Pos = %s", transform.GetPos().ToString().c_str());
+		stdlog(Debug, LOGPLACE, "Transform.Rot = %s", transform.GetRot().ToString().c_str());
+		break;
+	case GLFW_KEY_RIGHT: // rotation around Y axis
+		transform.SetRotation(transform.GetRot() * (Quaternion(Camera::yAxis, Angle(-sensitivity))));
+		break;
+	case GLFW_KEY_N: // next camera
+		if (action == GLFW_PRESS)
+		{
+			currentCameraIndex = CoreEngine::GetCoreEngine()->NextCamera();
+		}
+		break;
+	case GLFW_KEY_P: // prev camera
+		if (action == GLFW_PRESS)
+		{
+			currentCameraIndex = CoreEngine::GetCoreEngine()->PrevCamera();
+		}
+		break;
+	}
 }

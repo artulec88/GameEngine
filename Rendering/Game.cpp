@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "CoreEngine.h"
 #include "Vertex.h"
+#include "Input.h"
 #include "BasicShader.h"
 //#include "PhongShader.h"
 #include "Attenuation.h"
@@ -64,11 +65,10 @@ Game::~Game(void)
 	//}
 }
 
-//
-//void Game::CleanUp()
-//{
-//	stdlog(Info, LOGPLACE, "The game is being cleaned up");
-//}
+// TODO: Implement this function or consider deleting it
+void Game::InitializeCameras()
+{
+}
 
 /* static */ void Game::WindowCloseEventCallback(GLFWwindow* window)
 {
@@ -94,7 +94,6 @@ void Game::CloseWindowEvent(GLFWwindow* window)
 {
 	stdlog(Notice, LOGPLACE, "Close window event");
 	glfwSetWindowShouldClose(window, GL_TRUE);
-	CoreEngine::GetCoreEngine()->Stop();
 }
 
 /**
@@ -106,19 +105,12 @@ void Game::CloseWindowEvent(GLFWwindow* window)
 void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	stdlog(Delocust, LOGPLACE, "Key event with key = %d", key);
+
+	//Input::UpdateKey(window, key, scancode, action, mods);
 	if (key == GLFW_KEY_ESCAPE)
 	{
-		CoreEngine::GetCoreEngine()->Stop();
+		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;
-	}
-
-	if ( (key == GLFW_KEY_N) && (action == GLFW_PRESS) )
-	{
-		CoreEngine::GetCoreEngine()->NextCamera();
-	}
-	else if ( (key == GLFW_KEY_P) && (action == GLFW_PRESS) )
-	{
-		CoreEngine::GetCoreEngine()->PrevCamera();
 	}
 }
 

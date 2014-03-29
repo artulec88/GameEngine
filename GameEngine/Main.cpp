@@ -1,6 +1,8 @@
 /* MATH begin */
 #include "Math\Math.h"
 #include "Math\Vector.h"
+#include "Math\Angle.h"
+#include "Math\Quaternion.h"
 /* MATH end */
 
 /* UTILITY begin */
@@ -58,6 +60,22 @@ int main (int argc, char* argv[])
 
 	//ASSERT(value1 > 0.0f);
 	/* Testing end */
+
+	//Quaternion q(0.3, -0.8, 0.4, 1.0);
+	//cout << q.GetForward().ToString() << endl;
+
+	//Angle angleX(0.0f);
+	//Angle angleY(0.0f);
+	//Angle angleZ(180.0f);
+	//Quaternion qX(Vector3D(1, 0, 0), angleX);
+	//Quaternion qY(Vector3D(0, 1, 0), angleY);
+	//Quaternion qZ(Vector3D(0, 0, 1), angleZ);
+	//Quaternion r = qX * qY * qZ;
+	//cout << qX.ToString() << endl;
+	//cout << qY.ToString() << endl;
+	//cout << qZ.ToString() << endl;
+	//cout << r.ToString() << endl;
+	//return 0;
 
 	CommandLine commandLine(argc, argv);
 	if (commandLine.IsPresent("-help"))

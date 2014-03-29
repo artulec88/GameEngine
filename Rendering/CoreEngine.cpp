@@ -141,13 +141,14 @@ void CoreEngine::Run()
 		while (unprocessingTime > frameTime)
 		{
 			isRenderRequired = true;
-			if (IsCloseRequested())
+			if (renderer->IsCloseRequested())
 			{
 				Stop();
 				return;
 			}
 			PollEvents();
 			game->Input(frameTime);
+			//Input::Update();
 			game->Update(frameTime);
 			unprocessingTime -= frameTime;
 		}
@@ -175,38 +176,31 @@ void CoreEngine::Run()
 	}
 }
 
-void CoreEngine::NextCamera()
+unsigned int CoreEngine::NextCamera()
 {
 	ASSERT(renderer != NULL);
 	if (this->renderer == NULL)
 	{
-		stdlog(Error, LOGPLACE, "Renderer is not yet initialized");
-		return;
+		stdlog(Critical, LOGPLACE, "Renderer is not yet initialized");
+		exit(EXIT_FAILURE);
 	}
-	renderer->NextCamera();
+	return renderer->NextCamera();
 }
 
-void CoreEngine::PrevCamera()
+unsigned int CoreEngine::PrevCamera()
 {
 	ASSERT(renderer != NULL);
 	if (renderer == NULL)
 	{
-		stdlog(Error, LOGPLACE, "Renderer is not yet initialized");
-		return;
+		stdlog(Critical, LOGPLACE, "Renderer is not yet initialized");
+		exit(EXIT_FAILURE);
 	}
-	renderer->PrevCamera();
+	return renderer->PrevCamera();
 }
 
 void CoreEngine::PollEvents()
 {
 	glfwPollEvents();
-}
-
-bool CoreEngine::IsCloseRequested() const
-{
-	// TODO: Create Input class and check whether the user pressed Escape or Alt+F4 combination. Return true if so and false otherwise.
-	//return Input::IsLeftAltPressed(renderer.GetWindow());
-	return false;
 }
 
 Math::Real CoreEngine::GetTime() const
