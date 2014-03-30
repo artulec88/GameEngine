@@ -66,6 +66,7 @@ GameNode::~GameNode(void)
 GameNode* GameNode::AddChild(GameNode* child)
 {
 	childrenGameNodes.push_back(child);
+	child->GetTransform().SetParent(&transform);
 	return this;
 }
 

@@ -6,6 +6,7 @@
 #include "Math\Vector.h"
 #include "Math\Quaternion.h"
 #include "Math\Matrix.h"
+#include "Math\Matrix.h"
 
 namespace Rendering
 {
@@ -33,12 +34,18 @@ public:
 	void SetRotation(const Math::Quaternion& rot);
 	//void SetRotation(Math::Real x, Math::Real y, Math::Real z, Math::Real w);
 	void SetScale(const Math::Vector3D& scaleVec);
+
+	inline void SetParent(Transform* t) { parentTransform = t; }
+	bool IsChanged() const;
 protected:
 private:
 	Math::Vector3D translation;
 	Math::Quaternion rotation;
 	Math::Vector3D scale;
-	//Math::Vector3f m_scale;
+	
+	Transform* parentTransform;
+	mutable Math::Matrix4D transformation;
+	mutable bool isChanged;
 }; /* end class Transform */
 
 } /* end namespace Rendering */

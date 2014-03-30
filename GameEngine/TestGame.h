@@ -30,8 +30,8 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	Rendering::GameNode* directionalLightNode;
-	Rendering::GameNode* pointLightNode;
-	Rendering::GameNode* spotLightNode;
+	Rendering::GameNode** pointLightNode;
+	Rendering::GameNode** spotLightNode;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
 	unsigned int currentCameraIndex; // TODO: this value should always be the same as the Renderer::currentCameraIndex. Match them.

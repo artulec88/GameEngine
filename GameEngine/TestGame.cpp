@@ -64,15 +64,24 @@ void TestGame::Init()
 
 	Math::Real fieldDepth = 10.0;
 	Math::Real fieldWidth = 10.0;
-	Vertex vertex1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
-	Vertex vertex2(Vector3D(-fieldWidth, 0.0, 3 * fieldDepth), Vector2D(0.0, 1.0));
-	Vertex vertex3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
-	Vertex vertex4(Vector3D(3 * fieldWidth, 0.0, 3 * fieldDepth), Vector2D(1.0, 1.0));
-	Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
-	unsigned short indices[] = {0, 1, 2,
+	Vertex vertex1_1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
+	Vertex vertex1_2(Vector3D(-fieldWidth, 0.0, 3 * fieldDepth), Vector2D(0.0, 1.0));
+	Vertex vertex1_3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
+	Vertex vertex1_4(Vector3D(3 * fieldWidth, 0.0, 3 * fieldDepth), Vector2D(1.0, 1.0));
+	Vertex vertices1[] = {vertex1_1, vertex1_2, vertex1_3, vertex1_4};
+	unsigned short indices1[] = {0, 1, 2,
 							  2, 1, 3};
-	Mesh* mesh = new Mesh(vertices, 4, indices, 6, true);
+	Mesh* mesh1 = new Mesh(vertices1, 4, indices1, 6, true);
 	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
+
+	Vertex vertex2_1(Vector3D(-fieldWidth / 10.0, 0.0, -fieldDepth / 10.0), Vector2D(0.0, 0.0));
+	Vertex vertex2_2(Vector3D(-fieldWidth / 10.0, 0.0, 3 * fieldDepth / 10.0), Vector2D(0.0, 1.0));
+	Vertex vertex2_3(Vector3D(3 * fieldWidth / 10.0, 0.0, -fieldDepth / 10.0), Vector2D(1.0, 0.0));
+	Vertex vertex2_4(Vector3D(3 * fieldWidth / 10.0, 0.0, 3 * fieldDepth / 10.0), Vector2D(1.0, 1.0));
+	Vertex vertices2[] = {vertex2_1, vertex2_2, vertex2_3, vertex2_4};
+	unsigned short indices2[] = {0, 1, 2,
+							  2, 1, 3};
+	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
 	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
 	Math::Real specularIntensity = 1.0;
@@ -81,7 +90,7 @@ void TestGame::Init()
 	Material* material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		materialColor, specularIntensity, specularPower);
 
-	MeshRenderer* meshRenderer = new MeshRenderer(mesh, material);
+	MeshRenderer* meshRenderer = new MeshRenderer(mesh1, material);
 	
 	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
@@ -94,11 +103,25 @@ void TestGame::Init()
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
-	pointLightNode = new GameNode();
-	pointLightNode->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0)));
+	srand((unsigned int)time(NULL));
+	pointLightNode = new GameNode* [3];
+	for (int i = 0; i < 3; ++i)
+	{
+		pointLightNode[i] = new GameNode();
+		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
+		pointLightNode[i]->GetTransform().SetTranslation(rand() % 5, 0.5, rand() % 5);
+		std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
+		rootGameNode->AddChild(pointLightNode[i]);
+	}
 
-	spotLightNode = new GameNode();
-	spotLightNode->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+	spotLightNode = new GameNode* [1];
+	for (int i = 0; i < 1; ++i)
+	{
+		spotLightNode[i] = new GameNode();
+		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
+		rootGameNode->AddChild(spotLightNode[i]);
+	}
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -153,9 +176,17 @@ void TestGame::Init()
 	//}
 
 	rootGameNode->AddChild(planeNode);
-	//rootGameNode->AddChild(directionalLightObject);
-	rootGameNode->AddChild(pointLightNode);
-	rootGameNode->AddChild(spotLightNode);
+	//rootGameNode->AddChild(directionalLightNode);
+
+	GameNode* testMesh1 = new GameNode();
+	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
+	GameNode* testMesh2 = new GameNode();
+	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
+	testMesh1->AddComponent(new MeshRenderer(mesh2, material));
+	testMesh2->AddComponent(new MeshRenderer(mesh2, material));
+	testMesh1->AddChild(testMesh2);
+
+	rootGameNode->AddChild(testMesh1);
 }
 
 //
@@ -169,6 +200,7 @@ void TestGame::Input(Math::Real delta)
 	rootGameNode->Input(delta);
 }
 
+// TODO: Remove in the future
 Math::Real temp = 0.0;
 
 void TestGame::Update(Math::Real delta)
@@ -186,10 +218,20 @@ void TestGame::Update(Math::Real delta)
 		temp = 0.0;
 	}
 
-	pointLightNode->GetTransform().SetTranslation(10.0 * abs(sin(temp)), 0.0, 7.0 + 10.0 * abs(cos(temp)));
+	for (int i = 0; i < 3; ++i)
+	{
+		Transform& t = pointLightNode[i]->GetTransform();
+		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
+		t.SetTranslation(t.GetPos() + (Math::Vector3D(sin(temp) / 1000, 0.0, sin(temp) / 1000)));
+		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
+	}
 
 	//spotLightNode->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
-	spotLightNode->GetTransform().SetTranslation(1.0, -1.0 + 10.0 * abs(cos(temp)), 10.0 * abs(sin(temp)));
+	for (int i = 0; i < 1; ++i)
+	{
+		Transform& t = spotLightNode[i]->GetTransform();
+		t.SetTranslation(Math::Vector3D(1.0, 5.0 * abs(cos(temp)), 5.0 + 10.0 * abs(sin(temp))));
+	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }
@@ -213,7 +255,7 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 
 	// TODO: Set delta to correct value
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-	const Real sensitivity = static_cast<Real>(0.2);
+	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
 	switch (key)
 	{
 	case GLFW_KEY_W:
@@ -229,11 +271,14 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_UP: // rotation around X axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(sensitivity))));
+		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(sensitivity))).Normalized());
 		//RotateX(Angle(-rotationAmount));
 		break;
+	case GLFW_KEY_SPACE: // move up
+		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
+		break;
 	case GLFW_KEY_DOWN: // rotation around X axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(-sensitivity))));
+		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(-sensitivity))).Normalized());
 		//RotateX(Angle(rotationAmount));
 		break;
 	case GLFW_KEY_LEFT: // rotation around Y axis

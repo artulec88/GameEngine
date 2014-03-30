@@ -17,6 +17,7 @@ Material::Material(Texture* texture /* = NULL */,
 
 Material::~Material(void)
 {
+	// TODO: Deallocate textures
 	if (texture != NULL)
 	{
 		delete texture;

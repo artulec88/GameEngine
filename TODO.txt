@@ -3,5 +3,6 @@
 3.	Create a nice design for loading 3D models
 4.	Config map of values should be refreshed once in a while, so that configuration values can be reconfigured during runtime.
 5.	Don't use hard-coded values. Ever!
-6.  Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actuall algorithm and logging.
-7.  Create a struct Angle which has two member variables. A floating point number- angle, and one additional boolean variable- isInRadians. Create two methods which converts from radians to degrees.
+6.	Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actuall algorithm and logging.
+7.	Create a struct Angle which has two member variables. A floating point number- angle, and one additional boolean variable- isInRadians. Create two methods which converts from radians to degrees.
+8.	Memory deallocation
