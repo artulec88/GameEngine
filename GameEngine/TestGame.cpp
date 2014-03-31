@@ -114,8 +114,8 @@ void TestGame::Init()
 		rootGameNode->AddChild(pointLightNode[i]);
 	}
 
-	spotLightNode = new GameNode* [1];
-	for (int i = 0; i < 1; ++i)
+	spotLightNode = new GameNode* [3];
+	for (int i = 0; i < 3; ++i)
 	{
 		spotLightNode[i] = new GameNode();
 		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
@@ -227,7 +227,7 @@ void TestGame::Update(Math::Real delta)
 	}
 
 	//spotLightNode->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
-	for (int i = 0; i < 1; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		Transform& t = spotLightNode[i]->GetTransform();
 		t.SetTranslation(Math::Vector3D(1.0, 5.0 * abs(cos(temp)), 5.0 + 10.0 * abs(sin(temp))));

@@ -35,7 +35,7 @@ protected:
 	int windowWidth;
 	int windowHeight;
 	std::string windowTitle;
-	Math::Real frameTime;
+	const Math::Real frameTime;
 	Game* game;
 	Renderer* renderer;
 /* ==================== Non-static member variables end ==================== */
