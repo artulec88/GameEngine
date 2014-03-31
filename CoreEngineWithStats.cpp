@@ -85,34 +85,88 @@ void CoreEngine::Start()
 	Run();
 }
 
+#define MIN_MAX_STATS_COUNT 3
+
+struct minMaxTime
+{
+	double minTime[MIN_MAX_STATS_COUNT];
+	double maxTime[MIN_MAX_STATS_COUNT];
+	void Init()
+	{
+		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+		{
+			minTime[i] = 99999999.9;
+			maxTime[i] = 0.0;
+		}
+	}
+	void ProcessTime(double elapsedTime)
+	{
+		bool maxFound = false;
+		bool minFound = false;
+		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+		{
+			if ( (minFound) && (maxFound) )
+				return;
+			if ( (!minFound) && (elapsedTime < minTime[i]) )
+			{
+				for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
+				{
+					minTime[j + 1] = minTime[j];
+				}
+				minTime[i] = elapsedTime;
+				minFound = true;
+			}
+			if ( (!maxFound) && (elapsedTime > maxTime[i]) )
+			{
+				for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
+				{
+					maxTime[j + 1] = maxTime[j];
+				}
+				maxTime[i] = elapsedTime;
+				maxFound = true;
+			}
+		}
+	}
+	std::string ToString()
+	{
+		std::stringstream ss("");
+		ss << "minTimes = { ";
+		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+		{
+			ss << std::setprecision(3) << minTime[i] << "[us]; ";
+		}
+		ss << " } maxTimes = { "
+		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+		{
+			ss << std::setprecision(3) << maxTime[i] << "[us]; ";
+		}
+		ss << " }";
+		return ss.str();
+	}
+};
+
 long countStats1 = 0;
-double minTime1 = 9999999.99;
-double maxTime1 = 0.0;
+minMaxTime minMaxTime1;
 double timeSum1 = 0.0;
 
 long countStats2 = 0;
-double minTime2 = 9999999.99;
-double maxTime2 = 0.0;
+minMaxTime minMaxTime2;
 double timeSum2 = 0.0;
 
 long countStats2_1 = 0;
-double minTime2_1 = 9999999.99;
-double maxTime2_1 = 0.0;
+minMaxTime minMaxTime2_1;
 double timeSum2_1 = 0.0;
 
 long countStats2_2 = 0;
-double minTime2_2 = 9999999.99;
-double maxTime2_2 = 0.0;
+minMaxTime minMaxTime2_2;
 double timeSum2_2 = 0.0;
 
 long countStats2_3 = 0;
-double minTime2_3 = 9999999.99;
-double maxTime2_3 = 0.0;
+minMaxTime minMaxTime2_3;
 double timeSum2_3 = 0.0;
 
 long countStats3 = 0;
-double minTime3 = 9999999.99;
-double maxTime3 = 0.0;
+minMaxTime minMaxTime3;
 double timeSum3 = 0.0;
 
 void CoreEngine::Stop()
@@ -128,17 +182,24 @@ void CoreEngine::Stop()
 	stdlog(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
-	stdlog(Debug, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats1, timeSum1, 1000.0 * timeSum1 / countStats1, 1000.0 * minTime1, 1000.0 * maxTime1);
-	stdlog(Debug, LOGPLACE, "The region #2 was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats2, timeSum2, 1000.0 * timeSum2 / countStats2, 1000.0 * minTime2, 1000.0 * maxTime2);
-	stdlog(Debug, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats2_1, timeSum2_1, 1000.0 * timeSum2_1 / countStats2_1, 1000.0 * minTime2_1, 1000.0 * maxTime2_1);
-	stdlog(Debug, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats2_2, timeSum2_2, 1000.0 * timeSum2_2 / countStats2_2, 1000.0 * minTime2_2, 1000.0 * maxTime2_2);
-	stdlog(Debug, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats2_3, timeSum2_3, 1000.0 * timeSum2_3 / countStats2_3, 1000.0 * minTime2_3, 1000.0 * maxTime2_3);
-	stdlog(Debug, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us],\t max time=%.4f [us],\t min time=%.4f [us]", countStats3, timeSum3, 1000.0 * timeSum3 / countStats3, 1000.0 * minTime3, 1000.0 * maxTime3);
+	stdlog(Debug, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats1, timeSum1, 1000.0 * timeSum1 / countStats1, minMaxTime1.ToString().c_str();
+	stdlog(Debug, LOGPLACE, "The region #2 was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats2, timeSum2, 1000.0 * timeSum2 / countStats2, minMaxTime2.ToString().c_str());
+	stdlog(Debug, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats2_1, timeSum2_1, 1000.0 * timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
+	stdlog(Debug, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats2_2, timeSum2_2, 1000.0 * timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
+	stdlog(Debug, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats2_3, timeSum2_3, 1000.0 * timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
+	stdlog(Debug, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.4f [ms]. The average time=%.4f [us]. %s", countStats3, timeSum3, 1000.0 * timeSum3 / countStats3, minMaxTime3.ToString().c_str());
 	/* ==================== Printing stats end ==================== */
 }
 
 void CoreEngine::Run()
 {
+	minMaxTime1.Init();
+	minMaxTime2.Init();
+	minMaxTime2_1.Init();
+	minMaxTime2_2.Init();
+	minMaxTime2_3.Init();
+	minMaxTime3.Init();
+	
 	stdlog(Notice, LOGPLACE, "The game started running");
 	ASSERT(!isRunning);
 
@@ -183,14 +244,7 @@ void CoreEngine::Run()
 		clock_t end = clock();
 		countStats1++;
 		double elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-		if (elapsedTime > maxTime1)
-		{
-			maxTime1 = elapsedTime;
-		}
-		else if (elapsedTime < minTime1)
-		{
-			minTime1 = elapsedTime;
-		}
+		minMaxTime1.ProcessTime(elapsedTime);
 		timeSum1 += elapsedTime;
 		/* ==================== REGION #1 end ====================*/
 
@@ -210,14 +264,7 @@ void CoreEngine::Run()
 			clock_t innerEnd = clock();
 			countStats2_1++;
 			elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-			if (elapsedTime > maxTime2_1)
-			{
-				maxTime2_1 = elapsedTime;
-			}
-			else if (elapsedTime < minTime2_1)
-			{
-				minTime2_1 = elapsedTime;
-			}
+			minMaxTime2_1.ProcessTime(elapsedTime);
 			timeSum2_1 += elapsedTime;
 			/* ==================== REGION #2_1 end ====================*/
 			
@@ -227,14 +274,7 @@ void CoreEngine::Run()
 			innerEnd = clock();
 			countStats2_2++;
 			elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-			if (elapsedTime > maxTime2_2)
-			{
-				maxTime2_2 = elapsedTime;
-			}
-			else if (elapsedTime < minTime2_2)
-			{
-				minTime2_2 = elapsedTime;
-			}
+			minMaxTime2_2.ProcessTime(elapsedTime);
 			timeSum2_2 += elapsedTime;
 			/* ==================== REGION #2_2 end ====================*/
 			
@@ -246,14 +286,7 @@ void CoreEngine::Run()
 			innerEnd = clock();
 			countStats2_3++;
 			elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-			if (elapsedTime > maxTime2_3)
-			{
-				maxTime2_3 = elapsedTime;
-			}
-			else if (elapsedTime < minTime2_3)
-			{
-				minTime2_3 = elapsedTime;
-			}
+			minMaxTime2_3.ProcessTime(elapsedTime);
 			timeSum2_3 += elapsedTime;
 			/* ==================== REGION #2_3 end ====================*/
 			
@@ -262,14 +295,7 @@ void CoreEngine::Run()
 		end = clock();
 		countStats2++;
 		elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-		if (elapsedTime > maxTime2)
-		{
-			maxTime2 = elapsedTime;
-		}
-		else if (elapsedTime < minTime2)
-		{
-			minTime2 = elapsedTime;
-		}
+		minMaxTime2.ProcessTime(elapsedTime);
 		timeSum2 += elapsedTime; // in [ms]
 		/* ==================== REGION #2 end ====================*/
 		
@@ -299,14 +325,7 @@ void CoreEngine::Run()
 		end = clock();
 		countStats3++;
 		elapsedTime = static_cast<double>(1000.0 * (end - begin)) / CLOCKS_PER_SEC; // in [ms]
-		if (elapsedTime > maxTime3)
-		{
-			maxTime3 = elapsedTime;
-		}
-		else if (elapsedTime < minTime3)
-		{
-			minTime3 = elapsedTime;
-		}
+		minMaxTime3.ProcessTime(elapsedTime);
 		timeSum3 += elapsedTime; // in [ms]
 		/* ==================== REGION #3 end ====================*/
 	}
