@@ -104,8 +104,8 @@ void TestGame::Init()
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
 	srand((unsigned int)time(NULL));
-	pointLightNode = new GameNode* [3];
-	for (int i = 0; i < 3; ++i)
+	pointLightNode = new GameNode* [33];
+	for (int i = 0; i < 33; ++i)
 	{
 		pointLightNode[i] = new GameNode();
 		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
@@ -218,7 +218,7 @@ void TestGame::Update(Math::Real delta)
 		temp = 0.0;
 	}
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 33; ++i)
 	{
 		Transform& t = pointLightNode[i]->GetTransform();
 		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;

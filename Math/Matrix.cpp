@@ -1,11 +1,13 @@
 #include "StdAfx.h"
 #include "Matrix.h"
 #include "FloatingPoint.h"
+
+#include "Utility\Utility.h"
+
 #include <sstream>
 
-// TODO: Link Utility library to the Math library
-
 using namespace Math;
+using namespace Utility;
 
 Matrix4D::Matrix4D()
 {
@@ -43,7 +45,7 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	SLOW_ASSERT(this == mat);
+	SLOW_ASSERT((*this) == mat);
 }
 
 Matrix4D::~Matrix4D()
@@ -59,7 +61,7 @@ Matrix4D::~Matrix4D()
 	matrix.m[2][0] = 0.0;	matrix.m[2][1] = 0.0;	matrix.m[2][2] = 1.0;	matrix.m[2][3] = 0.0;
 	matrix.m[3][0] = 0.0;	matrix.m[3][1] = 0.0;	matrix.m[3][2] = 0.0;	matrix.m[3][3] = 1.0;
 	
-	SLOW_ASSERT(IsIdentity());
+	SLOW_ASSERT(matrix.IsIdentity());
 	
 	return matrix;
 }
@@ -171,15 +173,14 @@ Matrix4D::~Matrix4D()
 	return rotZ * rotY * rotX;
 }
 
-// TODO: Define last parameter as Angle instance
-/* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, Real angleInDegrees)
+/* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
 {
 	Real vecNorm = sqrt(x * x + y * y + z * z);
 	x /= vecNorm;
 	y /= vecNorm;
 	z /= vecNorm;
 				
-	Real angleInRadians = Math::ToRad(angleInDegrees);
+	Real angleInRadians = angle.GetAngleInRadians();
 
 	Matrix4D matrix;
 	Real c = cos(angleInRadians);
@@ -200,9 +201,9 @@ Matrix4D::~Matrix4D()
 	return matrix;
 }
 
-/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, Real angleInDegrees)
+/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, const Angle& angle)
 {
-	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angleInDegrees);
+	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angle);
 }
 
 /* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
@@ -303,9 +304,37 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 	return result;
 }
 
-bool Matrix4D::operator==(const Matrix4D& m) const
+/**
+ * @see Matrix4D::IsIdentity
+ */
+bool Matrix4D::operator==(const Matrix4D& matrix) const
 {
-	// TODO: Fix this function
+	/**
+	 * TODO: This function is rather slow. Maybe before creating FloatingPoint objects compare
+	 * the numbers using simple tools, like epsilon?
+	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
+	 */
+	const Real epsilon = static_cast<Real>(0.1);
+	Real value;
+	
+	for (int i = 0; i < MATRIX_SIZE; ++i)
+	{
+		for (int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			value = matrix.GetElement(i, j);
+			if (abs(value - m[i][j]) > epsilon)
+			{
+				return false;
+			}
+			FloatingPoint<Real> matrixValue(m[i][j]);
+			FloatingPoint<Real> fpValue(value);
+			if (! matrixValue.AlmostEqual(fpValue))
+			{
+				return false;
+			}
+		}
+	}
+	
 	return true;
 }
 
@@ -340,7 +369,7 @@ Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	SLOW_ASSERT(this == mat);
+	SLOW_ASSERT((*this) == mat);
 	
 	return *this;
 }
@@ -359,7 +388,7 @@ Matrix4D Matrix4D::Transposition() const
 
 	// TODO: According to wikipedia (http://en.wikipedia.org/wiki/Transpose) (A^T)^T = A, so
 	// check this condition here. Use SLOW_ASSERT
-	SLOW_ASSERT(matrix.Transposition() == *this)
+	SLOW_ASSERT(matrix.Transposition() == (*this));
 
 	return matrix;
 }
@@ -422,11 +451,14 @@ Matrix4D Matrix4D::Inversion() const
 	}
 	
 	// TODO: Use SLOW_ASSERT(IsIdentity()) for the result of the multiplication M*M^(-1)
-	SLOW_ASSERT((this * result).IsIdentity());
+	SLOW_ASSERT(((*this) * result).IsIdentity());
 
 	return result;
 }
-	
+
+/**
+ * @see Matrix4D::operator ==
+ */
 bool Matrix4D::IsIdentity() const
 {
 	/**
