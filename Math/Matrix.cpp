@@ -3,21 +3,47 @@
 #include "FloatingPoint.h"
 #include <sstream>
 
+// TODO: Link Utility library to the Math library
+
 using namespace Math;
 
 Matrix4D::Matrix4D()
 {
+	// TODO: Load identity matrix
 }
 
 Matrix4D::Matrix4D(const Matrix4D& mat)
 {
-	for (int i = 0; i < MATRIX_SIZE; ++i)
-	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
-		{
-			this->SetElement(i, j, mat.GetElement(i, j));
-		}
-	}
+	// TODO: Check which of the three solution is faster
+	
+	/* ==================== SOLUTION #1 begin ==================== */
+	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
+	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
+	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
+	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+	/* ==================== SOLUTION #1 end ==================== */
+	
+	/* ==================== SOLUTION #2 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		m[i][j] = mat[i][j];
+	//	}
+	//}
+	/* ==================== SOLUTION #2 end ==================== */
+	
+	/* ==================== SOLUTION #3 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		this->SetElement(i, j, mat.GetElement(i, j));
+	//	}
+	//}
+	/* ==================== SOLUTION #3 end ==================== */
+	
+	SLOW_ASSERT(this == mat);
 }
 
 Matrix4D::~Matrix4D()
@@ -32,6 +58,8 @@ Matrix4D::~Matrix4D()
 	matrix.m[1][0] = 0.0;	matrix.m[1][1] = 1.0;	matrix.m[1][2] = 0.0;	matrix.m[1][3] = 0.0;
 	matrix.m[2][0] = 0.0;	matrix.m[2][1] = 0.0;	matrix.m[2][2] = 1.0;	matrix.m[2][3] = 0.0;
 	matrix.m[3][0] = 0.0;	matrix.m[3][1] = 0.0;	matrix.m[3][2] = 0.0;	matrix.m[3][3] = 1.0;
+	
+	SLOW_ASSERT(IsIdentity());
 	
 	return matrix;
 }
@@ -122,6 +150,9 @@ Matrix4D::~Matrix4D()
 	Real zSin = sin(zRad);
 	Real zCos = cos(zRad);
 
+	// TODO: Can't we define rotation using just one matrix and not three?
+	// This way we prevent the hard-computing multiplications of three matrices.
+
 	rotX.m[0][0] = 1.0;	rotX.m[0][1] = 0.0;		rotX.m[0][2] = 0.0;		rotX.m[0][3] = 0.0;
 	rotX.m[1][0] = 0.0;	rotX.m[1][1] = xCos;	rotX.m[1][2] = -xSin;	rotX.m[1][3] = 0.0;
 	rotX.m[2][0] = 0.0;	rotX.m[2][1] = xSin;	rotX.m[2][2] = xCos;	rotX.m[2][3] = 0.0;
@@ -140,6 +171,7 @@ Matrix4D::~Matrix4D()
 	return rotZ * rotY * rotX;
 }
 
+// TODO: Define last parameter as Angle instance
 /* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, Real angleInDegrees)
 {
 	Real vecNorm = sqrt(x * x + y * y + z * z);
@@ -279,14 +311,37 @@ bool Matrix4D::operator==(const Matrix4D& m) const
 
 Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
 {
-	for (int i = 0; i < MATRIX_SIZE; ++i)
-	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
-		{
-			this->SetElement(i, j, mat.GetElement(i, j));
-		}
-	}
-
+	// TODO: Check which of the three solution is faster
+	
+	/* ==================== SOLUTION #1 begin ==================== */
+	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
+	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
+	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
+	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+	/* ==================== SOLUTION #1 end ==================== */
+	
+	/* ==================== SOLUTION #2 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		m[i][j] = mat[i][j];
+	//	}
+	//}
+	/* ==================== SOLUTION #2 end ==================== */
+	
+	/* ==================== SOLUTION #3 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		this->SetElement(i, j, mat.GetElement(i, j));
+	//	}
+	//}
+	/* ==================== SOLUTION #3 end ==================== */
+	
+	SLOW_ASSERT(this == mat);
+	
 	return *this;
 }
 
@@ -301,6 +356,10 @@ Matrix4D Matrix4D::Transposition() const
 			matrix.m[i][j] = m[j][i];
 		}
 	}
+
+	// TODO: According to wikipedia (http://en.wikipedia.org/wiki/Transpose) (A^T)^T = A, so
+	// check this condition here. Use SLOW_ASSERT
+	SLOW_ASSERT(matrix.Transposition() == *this)
 
 	return matrix;
 }
@@ -333,6 +392,9 @@ Real Matrix4D::Det(int p, int q) const
 		result += m[i[k]][j[0]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[2]];
 		result -= m[i[k]][j[2]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[0]];
 	}
+	
+	// TODO: Consider creating some asserts here.
+	
 	return result;
 }
 
@@ -358,10 +420,11 @@ Matrix4D Matrix4D::Inversion() const
 			result.m[j][i] = Signum(i,j) * Det(i,j) / det;
 		}
 	}
-
-	return result;
 	
 	// TODO: Use SLOW_ASSERT(IsIdentity()) for the result of the multiplication M*M^(-1)
+	SLOW_ASSERT((this * result).IsIdentity());
+
+	return result;
 }
 	
 bool Matrix4D::IsIdentity() const
