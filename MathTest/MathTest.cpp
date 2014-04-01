@@ -38,6 +38,11 @@ void TimeReport(const std::string& reportStr, double elapsedSecs)
 
 int main (int argc, char* argv[])
 {
+	bool vectorTestEnabled = true;
+	bool matrixTestEnabled = true;
+	bool quaternionTestEnabled = true;
+	bool otherTestEnabled = true;
+	
 	unsigned int innerLoops = 200;
 	unsigned int outerLoops = 200;
 	clock_t outerBegin, outerEnd;
@@ -52,22 +57,46 @@ int main (int argc, char* argv[])
 	//}
 	stdlog.Fill(commandLine.Get("-log", ""), Debug);
 
+	Matrix4D identityMatrix1 = Matrix4D::Identity();
+	Matrix4D identityMatrix2 = Matrix4D::Identity();
+
 	/* ==================== MATRIX TEST #1 begin ==================== */
-	Matrix4D matrix1 = Matrix4D::Identity();
-	TestReport(! matrix1.IsIdentity(), "Matrix is not a identity matrix");
-	
-	outerBegin = clock();
-	for (int i = 0; i < outerLoops; ++i)
+	if (matrixTestEnabled)
 	{
-		for (int j = 0; j < innerLoops; ++j)
+		Matrix4D matrix1 = Matrix4D::Identity();
+		TestReport(! matrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
+		
+		outerBegin = clock();
+		for (int i = 0; i < outerLoops; ++i)
 		{
-			Matrix4D matrix2 = Matrix4D::Identity();
+			for (int j = 0; j < innerLoops; ++j)
+			{
+				Matrix4D matrix2 = Matrix4D::Identity();
+			}
 		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (CLOCKS_PER_SEC * innerLoops * outerLoops);
+		TimeReport("Average time for identity matrix creation:\t", elapsedSecs);
 	}
-	outerEnd = clock();
-	elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (CLOCKS_PER_SEC * innerLoops * outerLoops);
-	TimeReport("Average time for identity matrix creation:\t", elapsedSecs);
 	/* ==================== MATRIX TEST #1 end ==================== */
+
+	/* ==================== MATRIX TEST #2 begin ==================== */
+	if (matrixTestEnabled)
+	{
+		outerBegin = clock();
+		for (int i = 0; i < outerLoops; ++i)
+		{
+			for (int j = 0; j < innerLoops; ++j)
+			{
+				Matrix4D result = identityMatrix1 * identityMatrix2;
+				ASSERT(result == identityMatrix1 * identityMatrix2);
+			}
+		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (CLOCKS_PER_SEC * innerLoops * outerLoops);
+		TimeReport("Average time for identity matrices multiplication:\t", elapsedSecs);
+	}
+	/* ==================== MATRIX TEST #2 end ==================== */
 
 	return 0;
 }

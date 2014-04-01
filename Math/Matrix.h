@@ -46,7 +46,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void SetElement(int i, int j, Real value);
-	Real GetElement (int i, int j) const;
+	Real GetElement (int i, int j) const { };
 	
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
@@ -60,10 +60,68 @@ public:
 	Matrix4D Inversion() const;
 	Real Det(int p, int q) const;
 	
+	/**
+	 * Checks whether the matrix is an identity matrix or not.
+	 * 
+	 * @brief Used only during tests
+	 */
 	bool IsIdentity() const;
 
 	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Matrix */
+
+inline Real Matrix4D::GetElement (int i, int j) const
+{
+#ifdef _DEBUG
+	if ((i < 0) || (i >= MATRIX_SIZE))
+	{
+		fprintf(stderr, "Incorrect row index given (%d)", i);
+		exit(-1);
+	}
+	if ((j < 0) || (j >= MATRIX_SIZE))
+	{
+		fprintf(stderr, "Incorrect column index given (%d)", j);
+		exit(-1);
+	}
+#endif
+	return m[i][j];
+}
+
+inline void Matrix4D::SetElement(int i, int j, Real value)
+{
+#ifdef _DEBUG
+	if ((i < 0) || (i >= 3))
+	{
+		fprintf(stderr, "Incorrect row index given (%d)", i);
+		exit(-1);
+	}
+	if ((j < 0) || (j >= 3))
+	{
+		fprintf(stderr, "Incorrect column index given (%d)", j);
+		exit(-1);
+	}
+#endif
+	m[i][j] = value;
+}
+
+inline const Math::Real* Matrix4D::operator[](int index) const
+{
+	if ((index < 0) || (index >= MATRIX_SIZE))
+	{
+		fprintf(stderr, "Incorrect row index given (%d)", index);
+		exit(-1);
+	}
+	return m[index];
+}
+inline Math::Real* Matrix4D::operator[](int index)
+{
+	if ((index < 0) || (index >= MATRIX_SIZE))
+	{
+		fprintf(stderr, "Incorrect row index given (%d)", index);
+		exit(-1);
+	}
+	return m[index];
+}
 
 } /* end namespace Math */
