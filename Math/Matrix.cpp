@@ -231,40 +231,6 @@ std::string Matrix4D::ToString() const
 
 	return s.str();
 }
-
-void Matrix4D::SetElement(int i, int j, Real value)
-{
-#ifdef _DEBUG
-	if ((i < 0) || (i > 3))
-	{
-		fprintf(stderr, "Incorrect row index given (%d)", i);
-		exit(-1);
-	}
-	if ((j < 0) || (j > 3))
-	{
-		fprintf(stderr, "Incorrect column index given (%d)", j);
-		exit(-1);
-	}
-#endif
-	m[i][j] = value;
-}
-
-Real Matrix4D::GetElement (int i, int j) const
-{
-#ifdef _DEBUG
-	if ((i < 0) || (i > 3))
-	{
-		fprintf(stderr, "Incorrect row index given (%d)", i);
-		exit(-1);
-	}
-	if ((j < 0) || (j > 3))
-	{
-		fprintf(stderr, "Incorrect column index given (%d)", j);
-		exit(-1);
-	}
-#endif
-	return m[i][j];
-}
 	
 Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 {
@@ -323,9 +289,6 @@ Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
 
 	return *this;
 }
-
-const Math::Real* Matrix4D::operator[](int index) const { return m[index]; }
-Math::Real* Matrix4D::operator[](int index) { return m[index]; }
 
 Matrix4D Matrix4D::Transposition() const
 {
