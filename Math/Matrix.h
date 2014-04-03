@@ -20,6 +20,7 @@ protected:
 /* ==================== Static functions begin ==================== */
 public:
 	static Matrix4D Identity();
+	// TODO: Replace "Real fov" with the "const Angle& fov"
 	static Matrix4D PerspectiveProjection(Real fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */);
 	static Matrix4D OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 	static Matrix4D Translation(Real x, Real y, Real z);
