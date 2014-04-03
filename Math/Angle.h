@@ -18,7 +18,8 @@ namespace Math
     Real GetAngleInDegrees() const;
     Real GetAngleInRadians() const;
     bool IsInDegrees() const { return isInDegrees; }
-    bool operator==(const Angle& v) const;
+    bool operator==(const Angle& angle) const;
+    bool operator!=(const Angle& angle) const;
     
   private: // non-static member variables
     Real angle;
