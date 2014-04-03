@@ -21,13 +21,16 @@ public:
 	Math::Matrix4D GetTransformation() const;
 	//Math::Matrix4D GetProjectedTransformation(const Camera& camera) const;
 
-	Math::Vector3D& GetPos() { return translation; } //TODO: Add const keyword
+	Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
 	Math::Quaternion& GetRot() { return rotation; }
 	Math::Vector3D& GetScale() { return scale; }
-	const Math::Vector3D& GetPos() const { return translation; }
+	const Math::Vector3D& GetPos() const { return pos; }
 	const Math::Quaternion& GetRot() const { return rotation; }
 	const Math::Vector3D& GetScale() const { return scale; }
-	//inline Vector3f& GetScale() { return m_scale; }
+
+	Math::Vector3D GetTransformedPos() const { return GetTransformation().Transform(pos); }
+	//const Math::Vector3D& GetTransformedPos() const { return GetTransformation().Transform(pos); }
+	//const Math::Vector3D& GetTransformedPos() const { return GetTransformation().Transform(pos); }
 
 	void SetTranslation(const Math::Vector3D& pos);
 	void SetTranslation(Math::Real x, Math::Real y, Math::Real z);
@@ -42,7 +45,7 @@ public:
 	//bool IsHierarchyChanged() const;
 protected:
 private:
-	Math::Vector3D translation;
+	Math::Vector3D pos;
 	Math::Quaternion rotation;
 	Math::Vector3D scale;
 	

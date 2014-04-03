@@ -104,8 +104,8 @@ void TestGame::Init()
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
 
 	srand((unsigned int)time(NULL));
-	pointLightNode = new GameNode* [33];
-	for (int i = 0; i < 33; ++i)
+	pointLightNode = new GameNode* [3];
+	for (int i = 0; i < 3; ++i)
 	{
 		pointLightNode[i] = new GameNode();
 		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
@@ -122,6 +122,19 @@ void TestGame::Init()
 		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
 		rootGameNode->AddChild(spotLightNode[i]);
 	}
+
+	rootGameNode->AddChild(planeNode);
+	//rootGameNode->AddChild(directionalLightNode);
+
+	GameNode* testMesh1 = new GameNode();
+	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
+	GameNode* testMesh2 = new GameNode();
+	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
+	testMesh1->AddComponent(new MeshRenderer(mesh2, material));
+	testMesh2->AddComponent(new MeshRenderer(mesh2, material));
+	testMesh1->AddChild(testMesh2);
+
+	rootGameNode->AddChild(testMesh1);
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -145,7 +158,7 @@ void TestGame::Init()
 		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, Camera::defaultNearPlane);
 		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, Camera::defaultFarPlane);
 		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
-		rootGameNode->AddChild(cameraNodes[i]);
+		testMesh2->AddChild(cameraNodes[i]);
 	}
 
 	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
@@ -174,19 +187,6 @@ void TestGame::Init()
 	//	Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
 	//	cameras.push_back(new Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane));
 	//}
-
-	rootGameNode->AddChild(planeNode);
-	//rootGameNode->AddChild(directionalLightNode);
-
-	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
-	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
-	testMesh1->AddComponent(new MeshRenderer(mesh2, material));
-	testMesh2->AddComponent(new MeshRenderer(mesh2, material));
-	testMesh1->AddChild(testMesh2);
-
-	rootGameNode->AddChild(testMesh1);
 }
 
 //
@@ -218,7 +218,7 @@ void TestGame::Update(Math::Real delta)
 		temp = 0.0;
 	}
 
-	for (int i = 0; i < 33; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		Transform& t = pointLightNode[i]->GetTransform();
 		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;

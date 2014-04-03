@@ -60,6 +60,8 @@ public:
 	const Math::Real* operator[](int index) const;
 	Math::Real* operator[](int index);
 
+	Vector3D Transform(const Vector3D& vec);
+	
 	Matrix4D Transposition() const;
 	Matrix4D Inversion() const;
 	Real Det(int p, int q) const;

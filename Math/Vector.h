@@ -81,6 +81,7 @@ public: // public member functions
 	Real LengthSquared() const;
 	
 	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; }; // creates negation vector
+	Vector3D& Negated() { Negate(); return *this; }
 	
 	Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); };
 	Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };

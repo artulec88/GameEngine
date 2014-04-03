@@ -485,3 +485,10 @@ bool Matrix4D::IsIdentity() const
 	
 	return true;
 }
+
+Vector3D Matrix4D::Transform(const Vector3D& vec)
+{
+	return Vector3D(m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3],
+					m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[0][3],
+					m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[0][3]);
+}

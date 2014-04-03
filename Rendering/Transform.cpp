@@ -6,7 +6,7 @@ using namespace Rendering;
 using namespace Math;
 
 Transform::Transform() :
-	translation(Vector3D(0.0, 0.0 , 0.0)),
+	pos(Vector3D(0.0, 0.0 , 0.0)),
 	rotation(Quaternion(0.0, 0.0 , 0.0, 1.0)),
 	scale(Vector3D(1.0, 1.0, 1.0)),
 	parentTransform(NULL),
@@ -16,7 +16,7 @@ Transform::Transform() :
 }
 
 Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D& scale) :
-	translation(pos),
+	pos(pos),
 	rotation(rot),
 	scale(scale),
 	parentTransform(NULL),
@@ -52,12 +52,12 @@ Matrix4D Transform::GetTransformation() const
 	if (isChanged)
 	{
 		isChangedCount++; // TODO: just temporary. Remove in the future
-		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 2000 == 0))
+		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
 		{
 			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		}
 
-		Matrix4D translationMatrix = Matrix4D::Translation(translation.GetX(), translation.GetY(), translation.GetZ());;
+		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());;
 		Matrix4D scaleMatrix = Matrix4D::Scale(scale.GetX(), scale.GetY(), scale.GetZ());
 
 		transformation = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
@@ -66,7 +66,7 @@ Matrix4D Transform::GetTransformation() const
 	else /* if (! IsHierarchyChanged()) */
 	{
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
-		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 2000 == 0))
+		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
 		{
 			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		}
@@ -87,13 +87,13 @@ Matrix4D Transform::GetTransformation() const
 
 void Transform::SetTranslation(const Vector3D& pos)
 {
-	this->translation = pos;
+	this->pos = pos;
 	isChanged = true;
 }
 
 void Transform::SetTranslation(Real x, Real y, Real z)
 {
-	this->translation = Vector3D(x, y, z);
+	this->pos = Vector3D(x, y, z);
 	isChanged = true;
 }
 
