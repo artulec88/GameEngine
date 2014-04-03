@@ -31,7 +31,7 @@ Real Angle::GetAngleInRadians() const
 
 bool Angle::operator==(const Angle& angle) const
 {
-  /**
+	/**
 	 * TODO: This function is rather slow. Maybe before creating FloatingPoint objects compare
 	 * the numbers using simple tools, like epsilon?
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
@@ -41,9 +41,14 @@ bool Angle::operator==(const Angle& angle) const
 	const Real rad = this->GetAngleInRadians();
 	if (abs(angleRad - rad) > epsilon)
 	{
-	  return false;
-  }
+		return false;
+	}
 	const FloatingPoint<Real> fpAngleRad(angleRad);
 	const FloatingPoint<Real> fpRad(rad);
 	return (fpAngleRad.AlmostEqual(fpRad));
+}
+
+bool Angle::operator!=(const Angle& angle) const
+{
+	return (!((*this) == angle));
 }
