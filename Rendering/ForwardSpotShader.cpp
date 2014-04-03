@@ -67,7 +67,7 @@ void ForwardSpotShader::UpdateUniforms(const Transform& transform, const Materia
 	SetUniform("MVP", projectedMatrix);
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
-	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetPos());
+	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetTransformedPos());
 
 	SpotLight* spotLight = dynamic_cast<SpotLight*>(renderer->GetCurrentLight());
 	if (spotLight == NULL)
@@ -91,8 +91,8 @@ void ForwardSpotShader::UpdateUniforms(const Transform& transform, const Materia
 	SetUniformf("spotLight.pointLight.attenuation.constant", spotLight->GetAttenuation().GetConstant());
 	SetUniformf("spotLight.pointLight.attenuation.linear", spotLight->GetAttenuation().GetLinear());
 	SetUniformf("spotLight.pointLight.attenuation.exponent", spotLight->GetAttenuation().GetExponent());
-	SetUniform("spotLight.pointLight.position", spotLight->GetTransform().GetPos());
+	SetUniform("spotLight.pointLight.position", spotLight->GetTransform().GetTransformedPos());
 	SetUniformf("spotLight.pointLight.range", spotLight->GetRange());
-	SetUniform("spotLight.direction", spotLight->GetTransform().GetRot().GetForward());
+	SetUniform("spotLight.direction", spotLight->GetDirection());
 	SetUniformf("spotLight.cutoff", spotLight->GetCutoff());
 }

@@ -65,7 +65,7 @@ void ForwardPointShader::UpdateUniforms(const Transform& transform, const Materi
 	SetUniform("MVP", projectedMatrix);
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
-	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetPos());
+	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetTransformedPos());
 
 	PointLight* pointLight = dynamic_cast<PointLight*>(renderer->GetCurrentLight());
 	if (pointLight == NULL)
@@ -79,6 +79,6 @@ void ForwardPointShader::UpdateUniforms(const Transform& transform, const Materi
 	SetUniformf("pointLight.attenuation.constant", pointLight->GetAttenuation().GetConstant());
 	SetUniformf("pointLight.attenuation.linear", pointLight->GetAttenuation().GetLinear());
 	SetUniformf("pointLight.attenuation.exponent", pointLight->GetAttenuation().GetExponent());
-	SetUniform("pointLight.position", pointLight->GetTransform().GetPos());
+	SetUniform("pointLight.position", pointLight->GetTransform().GetTransformedPos());
 	SetUniformf("pointLight.range", pointLight->GetRange());
 }

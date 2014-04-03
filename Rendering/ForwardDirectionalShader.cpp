@@ -61,7 +61,7 @@ void ForwardDirectionalShader::UpdateUniforms(const Transform& transform, const 
 	SetUniform("MVP", projectedMatrix);
 	SetUniformf("specularIntensity", material.GetSpecularIntensity());
 	SetUniformf("specularPower", material.GetSpecularPower());
-	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetPos());
+	SetUniform("eyePos", renderer->GetCurrentCamera().GetTransform().GetTransformedPos());
 
 	DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(renderer->GetCurrentLight());
 	if (directionalLight == NULL)

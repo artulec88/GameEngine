@@ -2,6 +2,7 @@
 
 #include "PointLight.h"
 #include "Attenuation.h"
+#include "Transform.h"
 
 #include "Math\Vector.h"
 
@@ -12,7 +13,6 @@ class RENDERING_API SpotLight : public PointLight
 {
 /* ==================== Non-static member variables begin ==================== */
 private:
-	//Math::Vector3D direction;
 	Math::Real cutoff;
 /* ==================== Non-static member variables end ==================== */
 
@@ -25,7 +25,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	//Math::Vector3D GetDirection() const { return this->direction; };
+	Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 	//void SetDirection(const Math::Vector3D& direction);
 	Math::Real GetCutoff() const { return this->cutoff; };
 	void SetCutoff(Math::Real cutoff);
