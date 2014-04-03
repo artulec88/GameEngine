@@ -30,17 +30,17 @@ Transform::~Transform()
 	//stdlog(Utility::Debug, LOGPLACE, "Transform is being destructed");
 }
 
-bool Transform::IsChanged() const
-{
-	// TODO: Fix this function
-	if ((parentTransform == NULL) || isChanged)
-	{
-		return isChanged;
-	}
-
-	// parentTransform != NULL && isChanged == false
-	return parentTransform->IsChanged();
-}
+//bool Transform::IsHierarchyChanged() const
+//{
+//	// TODO: Check this function
+//	if ((parentTransform == NULL) || isChanged)
+//	{
+//		return isChanged;
+//	}
+//
+//	// parentTransform != NULL && isChanged == false
+//	return parentTransform->IsHierarchyChanged();
+//}
 
 // TODO: Just temporary. Remove in the future
 int isChangedCount = 0;
@@ -49,40 +49,28 @@ int isNotChangedCount = 0;
 Matrix4D Transform::GetTransformation() const
 {
 	// TODO: Fix this function
-	if (! IsChanged())
+	if (isChanged)
+	{
+		isChangedCount++; // TODO: just temporary. Remove in the future
+		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 2000 == 0))
+		{
+			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		}
+
+		Matrix4D translationMatrix = Matrix4D::Translation(translation.GetX(), translation.GetY(), translation.GetZ());;
+		Matrix4D scaleMatrix = Matrix4D::Scale(scale.GetX(), scale.GetY(), scale.GetZ());
+
+		transformation = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
+		isChanged = false;
+	}
+	else /* if (! IsHierarchyChanged()) */
 	{
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
 		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 2000 == 0))
 		{
 			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		}
-		if (parentTransform == NULL)
-		{
-			return transformation;
-		}
-		else
-		{
-			return parentTransform->GetTransformation() * transformation;
-		}
 	}
-
-	isChangedCount++; // TODO: just temporary. Remove in the future
-	if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 2000 == 0))
-	{
-		stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
-	}
-
-	Matrix4D translationMatrix = Matrix4D::Translation(translation.GetX(), translation.GetY(), translation.GetZ());;
-	//rotationMatrix = Matrix4D::Rotation(rotation.GetX(), rotation.GetY(), rotation.GetZ(), 45.0 /*angleInDegrees*/);
-	//rotationMatrix = Matrix4D::Rotation(rotation.GetX(), rotation.GetY(), rotation.GetZ());
-	Matrix4D scaleMatrix = Matrix4D::Scale(scale.GetX(), scale.GetY(), scale.GetZ());
-
-	transformation = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
-	isChanged = false;
-	//if (parentTransform != NULL)
-	//{
-	//	parentMatrix = parentTransform->GetTransformation();
-	//}
 
 	/**
 	 * Apply SCALING, then ROTATION and TRANSLATION

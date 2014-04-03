@@ -36,7 +36,10 @@ public:
 	void SetScale(const Math::Vector3D& scaleVec);
 
 	inline void SetParent(Transform* t) { parentTransform = t; }
-	bool IsChanged() const;
+	/**
+	 * @brief returns true if the transformation itself or any parent transformation is changed
+	 */
+	//bool IsHierarchyChanged() const;
 protected:
 private:
 	Math::Vector3D translation;
