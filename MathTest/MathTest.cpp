@@ -28,7 +28,7 @@ void TestReport(bool error, const std::string& reportErrorStr)
 	{
 		ReportError(reportErrorStr);
 	}
-	stdlog(Info, LOGPLACE, "Test #%d passed", testNumber);
+	stdlog(Info, LOGPLACE, "Test #%d passed", testNumber++);
 }
 
 void TimeReport(const std::string& reportStr, double elapsedSecs)
@@ -38,6 +38,7 @@ void TimeReport(const std::string& reportStr, double elapsedSecs)
 
 int main (int argc, char* argv[])
 {
+	bool angleTestEnabled = true;
 	bool vectorTestEnabled = true;
 	bool matrixTestEnabled = true;
 	bool quaternionTestEnabled = true;
@@ -59,6 +60,22 @@ int main (int argc, char* argv[])
 
 	Matrix4D identityMatrix1 = Matrix4D::Identity();
 	Matrix4D identityMatrix2 = Matrix4D::Identity();
+
+	/* ==================== ANGLE TEST #1 begin ==================== */
+	if (angleTestEnabled)
+	{
+		Angle angle1(90.0);
+		Angle angle2(90.0, true);
+		Angle angle3(M_PI / 2.0, false); // angle1 == angle2 == angle3
+		Angle angle4(M_PI / 2.0, true); // angle4 is different than angle1, angle2, angle3
+		TestReport(angle1 != angle2, "The comparison operators of the Angle class are incorrect. angle1 != angle2");
+		TestReport(angle1 != angle3, "The comparison operators of the Angle class are incorrect. angle1 != angle3");
+		TestReport(angle2 != angle3, "The comparison operators of the Angle class are incorrect. angle2 != angle3");
+		TestReport(angle1 != angle4, "The comparison operators of the Angle class are incorrect. angle1 == angle4");
+		TestReport(angle2 != angle4, "The comparison operators of the Angle class are incorrect. angle2 == angle4");
+		TestReport(angle3 != angle4, "The comparison operators of the Angle class are incorrect. angle3 == angle4");
+	}
+	/* ==================== ANGLE TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
 	if (matrixTestEnabled)
