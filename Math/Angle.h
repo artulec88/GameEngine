@@ -12,11 +12,13 @@ namespace Math
   {
   public: // constructors and destructors
     Angle(Real angle, bool isInDegrees = true);
+    Angle(const Angle& angle); // copy constructor
 
   public: // non-static member functions
     Real GetAngleInDegrees() const;
     Real GetAngleInRadians() const;
     bool IsInDegrees() const { return isInDegrees; }
+    bool operator==(const Angle& v) const;
     
   private: // non-static member variables
     Real angle;
