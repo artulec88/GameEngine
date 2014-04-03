@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Angle.h"
+#include "FloatingPoint.h"
 
 using namespace Math;
 
@@ -31,21 +32,9 @@ Real Angle::GetAngleInRadians() const
 
 bool Angle::operator==(const Angle& angle) const
 {
-	/**
-	 * TODO: This function is rather slow. Maybe before creating FloatingPoint objects compare
-	 * the numbers using simple tools, like epsilon?
-	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
-	 */
-	const Real epsilon = static_cast<Real>(0.1);
 	const Real angleRad = angle.GetAngleInRadians();
 	const Real rad = this->GetAngleInRadians();
-	if (abs(angleRad - rad) > epsilon)
-	{
-		return false;
-	}
-	const FloatingPoint<Real> fpAngleRad(angleRad);
-	const FloatingPoint<Real> fpRad(rad);
-	return (fpAngleRad.AlmostEqual(fpRad));
+	return (AlmostEqual(angleRad, rad));
 }
 
 bool Angle::operator!=(const Angle& angle) const

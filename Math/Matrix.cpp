@@ -66,10 +66,10 @@ Matrix4D::~Matrix4D()
 	return matrix;
 }
 
-/* static */ Matrix4D Matrix4D::PerspectiveProjection(Real fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
+/* static */ Matrix4D Matrix4D::PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
 {
 	Matrix4D matrix;
-	Real f = static_cast<Real>(1.0 / tan(ToRad(fov / 2)));
+	Real f = static_cast<Real>(1.0 / tan(fov.GetAngleInRadians() / 2.0));
 	Real div = static_cast<Real>(1.0 / (nearPlane - farPlane));
 
 	//matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
@@ -314,21 +314,11 @@ bool Matrix4D::operator==(const Matrix4D& matrix) const
 	 * the numbers using simple tools, like epsilon?
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
-	const Real epsilon = static_cast<Real>(0.1);
-	Real value;
-	
 	for (int i = 0; i < MATRIX_SIZE; ++i)
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
-			value = matrix.GetElement(i, j);
-			if (abs(value - m[i][j]) > epsilon)
-			{
-				return false;
-			}
-			FloatingPoint<Real> matrixValue(m[i][j]);
-			FloatingPoint<Real> fpValue(value);
-			if (! matrixValue.AlmostEqual(fpValue))
+			if (! AlmostEqual(matrix.GetElement(i, j), m[i][j]))
 			{
 				return false;
 			}
@@ -478,24 +468,14 @@ bool Matrix4D::IsIdentity() const
 		{
 			if (i == j)
 			{
-				if (abs(unit - m[i][j]) > epsilon)
-				{
-					return false;
-				}
-				FloatingPoint<Real> matrixValue(m[i][j]);
-				if (! matrixValue.AlmostEqual(unitValue))
+				if (! AlmostEqual(unit, m[i][j]))
 				{
 					return false;
 				}
 			}
 			else /* i != j */
 			{
-				if (abs(zero - m[i][j]) > epsilon)
-				{
-					return false;
-				}
-				FloatingPoint<Real> matrixValue(m[i][j]);
-				if (! matrixValue.AlmostEqual(zeroValue))
+				if (! AlmostEqual(zero, m[i][j]))
 				{
 					return false;
 				}

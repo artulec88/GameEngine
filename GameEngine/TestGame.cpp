@@ -140,7 +140,7 @@ void TestGame::Init()
 		//Quaternion rot();
 		//cameraNodes[i]->GetTransform().SetRotation(rot);
 
-		Math::Real fov = Config::Get("cameraFoV_" + cameraIndexStr, Camera::defaultFoV);
+		Angle fov(Config::Get("cameraFoV_" + cameraIndexStr, Camera::defaultFoV), true);
 		Math::Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, Camera::defaultAspectRatio);
 		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, Camera::defaultNearPlane);
 		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, Camera::defaultFarPlane);

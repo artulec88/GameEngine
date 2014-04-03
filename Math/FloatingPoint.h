@@ -154,4 +154,17 @@ private:
 	FloatingPointUnion u_;
 }; /* end class FloatingPoint */
 
+template <typename T>
+inline bool AlmostEqual(T value1, T value2)
+{
+	const Real epsilon = static_cast<Real>(0.1);
+	if (abs(value1 - value2) > epsilon)
+	{
+		return false;
+	}
+	FloatingPoint<Real> fpValue1(value1);
+	FloatingPoint<Real> fpValue2(value2);
+	return (fpValue1.AlmostEqual(fpValue2));
+}
+
 } /* end namespace Math */

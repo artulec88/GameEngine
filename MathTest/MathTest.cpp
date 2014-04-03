@@ -15,7 +15,7 @@ using namespace Math;
 using namespace Utility;
 using namespace std;
 
-unsigned int testNumber = 1;
+unsigned int testNumber = 0;
 
 void ReportError(const std::string& reportStr)
 {
@@ -24,11 +24,12 @@ void ReportError(const std::string& reportStr)
 
 void TestReport(bool error, const std::string& reportErrorStr)
 {
+	testNumber++;
 	if (error == true)
 	{
 		ReportError(reportErrorStr);
 	}
-	stdlog(Info, LOGPLACE, "Test #%d passed", testNumber++);
+	stdlog(Info, LOGPLACE, "Test #%d passed", testNumber);
 }
 
 void TimeReport(const std::string& reportStr, double elapsedSecs)
@@ -66,14 +67,14 @@ int main (int argc, char* argv[])
 	{
 		Angle angle1(90.0);
 		Angle angle2(90.0, true);
-		Angle angle3(M_PI / 2.0, false); // angle1 == angle2 == angle3
-		Angle angle4(M_PI / 2.0, true); // angle4 is different than angle1, angle2, angle3
+		Angle angle3(static_cast<Real>(M_PI / 2.0), false); // angle1 == angle2 == angle3
+		Angle angle4(static_cast<Real>(M_PI / 2.0), true); // angle4 is different than angle1, angle2, angle3
 		TestReport(angle1 != angle2, "The comparison operators of the Angle class are incorrect. angle1 != angle2");
 		TestReport(angle1 != angle3, "The comparison operators of the Angle class are incorrect. angle1 != angle3");
 		TestReport(angle2 != angle3, "The comparison operators of the Angle class are incorrect. angle2 != angle3");
-		TestReport(angle1 != angle4, "The comparison operators of the Angle class are incorrect. angle1 == angle4");
-		TestReport(angle2 != angle4, "The comparison operators of the Angle class are incorrect. angle2 == angle4");
-		TestReport(angle3 != angle4, "The comparison operators of the Angle class are incorrect. angle3 == angle4");
+		TestReport(angle1 == angle4, "The comparison operators of the Angle class are incorrect. angle1 == angle4");
+		TestReport(angle2 == angle4, "The comparison operators of the Angle class are incorrect. angle2 == angle4");
+		TestReport(angle3 == angle4, "The comparison operators of the Angle class are incorrect. angle3 == angle4");
 	}
 	/* ==================== ANGLE TEST #1 end ==================== */
 
@@ -84,9 +85,9 @@ int main (int argc, char* argv[])
 		TestReport(! matrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 		
 		outerBegin = clock();
-		for (int i = 0; i < outerLoops; ++i)
+		for (unsigned int i = 0; i < outerLoops; ++i)
 		{
-			for (int j = 0; j < innerLoops; ++j)
+			for (unsigned int j = 0; j < innerLoops; ++j)
 			{
 				Matrix4D matrix2 = Matrix4D::Identity();
 			}
@@ -101,9 +102,9 @@ int main (int argc, char* argv[])
 	if (matrixTestEnabled)
 	{
 		outerBegin = clock();
-		for (int i = 0; i < outerLoops; ++i)
+		for (unsigned int i = 0; i < outerLoops; ++i)
 		{
-			for (int j = 0; j < innerLoops; ++j)
+			for (unsigned int j = 0; j < innerLoops; ++j)
 			{
 				Matrix4D result = identityMatrix1 * identityMatrix2;
 				ASSERT(result == identityMatrix1 * identityMatrix2);

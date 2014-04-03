@@ -38,7 +38,7 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Camera();
-	Camera(Math::Real FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
 	~Camera(void);
 /* ==================== Constructors and destructors end ==================== */
 

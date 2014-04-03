@@ -43,14 +43,10 @@ using namespace Utility;
 Camera::Camera() :
 	GameComponent()
 {
-	Real fov = Camera::defaultFoV;
-	Real aspectRatio = Camera::defaultAspectRatio;
-	Real zNearPlane = Camera::defaultNearPlane;
-	Real zFarPlane = Camera::defaultFarPlane;
-	this->projection = Matrix4D::PerspectiveProjection(fov, aspectRatio, zNearPlane, zFarPlane);
+	this->projection = Matrix4D::PerspectiveProjection(Angle(Camera::defaultFoV, true /* is in degrees */), Camera::defaultAspectRatio, Camera::defaultNearPlane, Camera::defaultFarPlane);
 }
 
-Camera::Camera(Real FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
+Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
 	GameComponent()
 {
 	this->projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
