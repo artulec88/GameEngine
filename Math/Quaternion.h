@@ -49,9 +49,20 @@ public: // public member functions
 	Quaternion Normalized() const;
 	void Normalize();
 
-	inline Vector3D GetForward() const;
-	inline Vector3D GetUp() const;
-	inline Vector3D GetRight() const;
+	inline Vector3D GetForward() const
+	{
+		return Vector3D(0, 0, 1).Rotate(*this);
+	}
+	
+	inline Vector3D GetUp() const
+	{
+		return Vector3D(0, 1, 0).Rotate(*this);
+	}
+
+	inline Vector3D GetRight() const
+	{
+		return Vector3D(1, 0, 0).Rotate(*this);
+	}
 
 	inline Matrix4D ToRotationMatrix() const;
 

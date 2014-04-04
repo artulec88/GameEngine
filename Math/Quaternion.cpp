@@ -71,37 +71,41 @@ Quaternion Quaternion::operator*(const Vector3D& vec) const
 	return Quaternion(x, y, z, w);
 }
 
-inline Vector3D Quaternion::GetForward() const
-{
-	Real x = 2.0f * (GetX() * GetZ() - GetW() * GetY());
-	Real y = 2.0f * (GetY() * GetZ() + GetW() * GetX());
-	Real z = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
-	return Vector3D(x, y, z);
-
-	//return Vector3D(0.0, 0.0, 1.0).Rotate(*this);
-}
-
-inline Vector3D Quaternion::GetUp() const
-{
-	Real x = 2.0f * (GetX() * GetY() + GetW() * GetZ());
-	Real y = 1.0f - 2.0f * (GetX() * GetX() + GetZ() * GetZ());
-	Real z = 2.0f * (GetY() * GetZ() - GetW() * GetX());
-	return Vector3D(x, y, z);
-
-	//return Vector3D(0.0, 1.0, 0.0).Rotate(*this);
-}
-
-inline Vector3D Quaternion::GetRight() const
-{
-	Real x = 1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ());
-	Real y = 2.0f * (GetX() * GetY() - GetW() * GetZ());
-	Real z = 2.0f * (GetX() * GetZ() + GetW() * GetY());
-	return Vector3D(x, y, z);
-
-	//return Vector3D(1.0, 0.0, 0.0).Rotate(*this);
-}
+//inline Vector3D Quaternion::GetForward() const
+//{
+//	Real x = 2.0f * (GetX() * GetZ() - GetW() * GetY());
+//	Real y = 2.0f * (GetY() * GetZ() + GetW() * GetX());
+//	Real z = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
+//	return Vector3D(x, y, z);
+//
+//	//return Vector3D(0.0, 0.0, 1.0).Rotate(*this);
+//}
+//
+//inline Vector3D Quaternion::GetUp() const
+//{
+//	Real x = 2.0f * (GetX() * GetY() + GetW() * GetZ());
+//	Real y = 1.0f - 2.0f * (GetX() * GetX() + GetZ() * GetZ());
+//	Real z = 2.0f * (GetY() * GetZ() - GetW() * GetX());
+//	return Vector3D(x, y, z);
+//
+//	//return Vector3D(0.0, 1.0, 0.0).Rotate(*this);
+//}
+//
+//inline Vector3D Quaternion::GetRight() const
+//{
+//	Real x = 1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ());
+//	Real y = 2.0f * (GetX() * GetY() - GetW() * GetZ());
+//	Real z = 2.0f * (GetX() * GetZ() + GetW() * GetY());
+//	return Vector3D(x, y, z);
+//
+//	//return Vector3D(1.0, 0.0, 0.0).Rotate(*this);
+//}
 
 inline Matrix4D Quaternion::ToRotationMatrix() const
 {
-	return Matrix4D::Rotation(GetForward(), GetUp(), GetRight());
+	Vector3D forward(2.0f * (GetX() * GetZ() - GetW() * GetY()), 2.0f * (GetY() * GetZ() + GetW() * GetX()), 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY()));
+	Vector3D up(2.0f * (GetX() * GetY() + GetW() * GetZ()), 1.0f - 2.0f * (GetX() * GetX() + GetZ() * GetZ()), 2.0f * (GetY() * GetZ() - GetW() * GetX()));
+	Vector3D right(1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ()), 2.0f * (GetX() * GetY() - GetW() * GetZ()), 2.0f * (GetX() * GetZ() + GetW() * GetY()));
+
+	return Matrix4D::Rotation(forward, up, right);
 }

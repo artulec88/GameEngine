@@ -101,7 +101,8 @@ void TestGame::Init()
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	directionalLightNode = new GameNode();
-	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
+	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));
+	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(45)));
 
 	srand((unsigned int)time(NULL));
 	pointLightNode = new GameNode* [3];
@@ -120,6 +121,7 @@ void TestGame::Init()
 		spotLightNode[i] = new GameNode();
 		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
+		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(90)));
 		rootGameNode->AddChild(spotLightNode[i]);
 	}
 
@@ -270,24 +272,20 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	case GLFW_KEY_D:
 		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
 		break;
-	case GLFW_KEY_UP: // rotation around X axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(sensitivity))).Normalized());
-		//RotateX(Angle(-rotationAmount));
-		break;
 	case GLFW_KEY_SPACE: // move up
 		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
 		break;
+	case GLFW_KEY_UP: // rotation around X axis
+		transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
+		break;
 	case GLFW_KEY_DOWN: // rotation around X axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(transform.GetRot().GetRight(), Angle(-sensitivity))).Normalized());
-		//RotateX(Angle(rotationAmount));
+		transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
 		break;
 	case GLFW_KEY_LEFT: // rotation around Y axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(Camera::yAxis, Angle(sensitivity))));
-		stdlog(Debug, LOGPLACE, "Transform.Pos = %s", transform.GetPos().ToString().c_str());
-		stdlog(Debug, LOGPLACE, "Transform.Rot = %s", transform.GetRot().ToString().c_str());
+		transform.Rotate(/*transform.GetTransformedRot().GetUp()*/ Camera::yAxis, Angle(-sensitivity));
 		break;
 	case GLFW_KEY_RIGHT: // rotation around Y axis
-		transform.SetRotation(transform.GetRot() * (Quaternion(Camera::yAxis, Angle(-sensitivity))));
+		transform.Rotate(/*transform.GetTransformedRot().GetUp()*/ Camera::yAxis, Angle(sensitivity));
 		break;
 	case GLFW_KEY_N: // next camera
 		if (action == GLFW_PRESS)

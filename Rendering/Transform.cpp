@@ -81,7 +81,9 @@ Matrix4D Transform::GetTransformation() const
 	}
 	else
 	{
-		return parentTransform->GetTransformation() * transformation;
+		CalculateParentTransformation();
+		//parentTransformation = parentTransform->GetTransformation();
+		return parentTransformation * transformation;
 	}
 }
 
@@ -118,3 +120,10 @@ void Transform::SetScale(const Vector3D& scaleVec)
 //
 //	return result;
 //}
+
+void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
+{
+	Quaternion qRot(axis, angle);
+	//rotation = (rotation * qRot).Normalized();
+	rotation = (qRot * rotation).Normalized();
+}

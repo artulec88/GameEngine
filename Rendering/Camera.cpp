@@ -212,7 +212,8 @@ Matrix4D Camera::GetViewProjection() const
 {
 	Vector3D cameraPos = GetTransform().GetTransformedPos();
 	Matrix4D cameraTranslation = Matrix4D::Translation(cameraPos.Negated());
-	Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
+	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
+	Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 
 	return projection * cameraRotation * cameraTranslation;
 }
