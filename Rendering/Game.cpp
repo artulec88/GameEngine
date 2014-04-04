@@ -64,6 +64,16 @@ Game::~Game(void)
 	//}
 }
 
+void Game::Init()
+{
+	if (rootGameNode == NULL)
+	{
+		stdlog(Critical, LOGPLACE, "Root game node is not initialized");
+		exit(EXIT_FAILURE);
+	}
+	//rootGameNode->Init();
+}
+
 // TODO: Implement this function or consider deleting it
 void Game::InitializeCameras()
 {
@@ -164,3 +174,18 @@ GameNode& Game::GetRootGameNode() const
 //	}
 //	return shader;
 //}
+
+void Game::AddToSceneRoot(GameNode* child)
+{
+	GetRootGameNode().AddChild(child);
+}
+
+void Game::Render(Renderer* renderer)
+{
+	if (renderer == NULL)
+	{
+		stdlog(Critical, LOGPLACE, "Rendering engine is NULL");
+		exit(EXIT_FAILURE);
+	}
+	renderer->Render(GetRootGameNode());
+}

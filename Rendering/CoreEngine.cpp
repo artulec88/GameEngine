@@ -321,8 +321,8 @@ void CoreEngine::Run()
 			//{
 			//	stdlog(Error, LOGPLACE, "Shader instance is NULL");
 			//}
-			this->renderer->Render(this->game->GetRootGameNode());
-			//game->Render();
+			//this->renderer->Render(this->game->GetRootGameNode());
+			game->Render(renderer);
 			this->renderer->SwapBuffers();
 #ifdef COUNT_FPS
 			++framesCount;

@@ -57,12 +57,7 @@ void TestGame2::Init()
 {
 	stdlog(Notice, LOGPLACE, "Initalizing test game");
 
-	if (rootGameNode == NULL)
-	{
-		stdlog(Critical, LOGPLACE, "Root game node is not initialized");
-		exit(EXIT_FAILURE);
-	}
-	//rootGameNode->Init();
+	Game::Init();
 	
 	//Vertex vertex1(Vector3D(-1.0, -1.0, 0.5773), Vector2D(0.0, 1.0));
 	//Vertex vertex2(Vector3D(0.0, -1.0, -1.15475), Vector2D(0.5, 0.0));

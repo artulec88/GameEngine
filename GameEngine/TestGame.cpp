@@ -54,12 +54,7 @@ void TestGame::Init()
 {
 	stdlog(Notice, LOGPLACE, "Initalizing test game");
 
-	if (rootGameNode == NULL)
-	{
-		stdlog(Critical, LOGPLACE, "Root game node is not initialized");
-		exit(EXIT_FAILURE);
-	}
-	//rootGameNode->Init();
+	Game::Init();
 
 	Math::Real fieldDepth = 10.0;
 	Math::Real fieldWidth = 10.0;
@@ -111,7 +106,7 @@ void TestGame::Init()
 		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
 		pointLightNode[i]->GetTransform().SetTranslation(rand() % 5, 0.5, rand() % 5);
 		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
-		rootGameNode->AddChild(pointLightNode[i]);
+		AddToSceneRoot(pointLightNode[i]);
 	}
 
 	spotLightNode = new GameNode* [3];
@@ -121,10 +116,10 @@ void TestGame::Init()
 		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.5f, 0.0f), 0.7f));
 		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
 		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(90)));
-		rootGameNode->AddChild(spotLightNode[i]);
+		AddToSceneRoot(spotLightNode[i]);
 	}
 
-	rootGameNode->AddChild(planeNode);
+	AddToSceneRoot(planeNode);
 	//rootGameNode->AddChild(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
@@ -135,7 +130,7 @@ void TestGame::Init()
 	testMesh2->AddComponent(new MeshRenderer(mesh2, material));
 	testMesh1->AddChild(testMesh2);
 
-	rootGameNode->AddChild(testMesh1);
+	AddToSceneRoot(testMesh1);
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -198,7 +193,7 @@ void TestGame::Init()
 
 void TestGame::Input(Math::Real delta)
 {
-	rootGameNode->Input(delta);
+	GetRootGameNode().Input(delta);
 }
 
 // TODO: Remove in the future
@@ -211,7 +206,7 @@ void TestGame::Update(Math::Real delta)
 	//planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	//rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
-	rootGameNode->Update(delta);
+	GetRootGameNode().Update(delta);
 
 	temp += delta;
 	if (temp > 20.0 * Math::M_PI)

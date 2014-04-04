@@ -8,6 +8,7 @@
 #include "Material.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "Renderer.h"
 #include "Camera.h"
 #include "Math\Math.h"
 
@@ -43,9 +44,12 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Init() = 0;
+	virtual void Init();
 	virtual void Input(Math::Real delta) = 0;
 	virtual void Update(Math::Real delta) = 0;
+	void Render(Renderer* renderer);
+
+	void AddToSceneRoot(GameNode* child);
 
 	virtual void InitializeCameras(); // TODO: Consider deleting this function. Otherwise, implement it
 
@@ -54,12 +58,13 @@ public:
 	virtual void MouseEvent(GLFWwindow* window, int button, int action, int mods);
 	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
+protected:
 	GameNode& GetRootGameNode() const;
 	//Shader* GetShader() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	GameNode* rootGameNode;
 	//Shader* shader;
 /* ==================== Non-static member variables end ==================== */
