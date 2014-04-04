@@ -2,7 +2,6 @@
 
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"
-//#include "Rendering\BasicShader.h"
 #include "Rendering\MeshRenderer.h"
 //#include "Rendering\DirectionalLight.h"
 //#include "Rendering\PointLight.h"
@@ -83,12 +82,12 @@ void TestGame::Init()
 							  2, 1, 3};
 	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
-	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
+	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
-	Math::Real specularPower = 8.0;
+	Math::Real specularPower = 32.0;
 	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
 	Material* material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		materialColor, specularIntensity, specularPower);
+		specularIntensity, specularPower);
 
 	MeshRenderer* meshRenderer = new MeshRenderer(mesh1, material);
 	
@@ -111,7 +110,7 @@ void TestGame::Init()
 		pointLightNode[i] = new GameNode();
 		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
 		pointLightNode[i]->GetTransform().SetTranslation(rand() % 5, 0.5, rand() % 5);
-		std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
+		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
 		rootGameNode->AddChild(pointLightNode[i]);
 	}
 
@@ -119,7 +118,7 @@ void TestGame::Init()
 	for (int i = 0; i < 3; ++i)
 	{
 		spotLightNode[i] = new GameNode();
-		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.5f, 0.0f), 0.7f));
 		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
 		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(90)));
 		rootGameNode->AddChild(spotLightNode[i]);

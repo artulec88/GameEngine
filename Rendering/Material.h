@@ -2,47 +2,54 @@
 
 #include "Rendering.h"
 #include "Texture.h"
+#include "MappedValues.h"
 
 #include "Math\Vector.h"
+
+#include <map>
 
 namespace Rendering
 {
 
-struct RENDERING_API Material
+class RENDERING_API Material : public MappedValues
 {
 /* ==================== Non-static member variables begin ==================== */
-	Texture* texture;
-	Math::Vector3D color;
+private:
+	//Texture* texture;
+	//Math::Vector3D color;
 	/**
 	 * @brief Specular intensity
 	 *
 	 * Measures the intensity of the reflection from the material (metal reflects more light, whereas wood reflects almost no light)
 	 */
-	Math::Real specularIntensity;
+	//Math::Real specularIntensity;
 	/**
 	 * @brief Specular power
 	 *
 	 * Defines the "width" of the reflection, in common sense.
 	 * When small it is just a tiny focused beam and otherwise a wide-spreaded reflection
 	 */
-	Math::Real specularPower;
+	//Math::Real specularPower;
+	std::map<std::string, Texture*> textureMap;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
-	Material(Texture* texture = NULL,
-		const Math::Vector3D& color = Math::Vector3D(1.0, 1.0, 1.0),
-		Math::Real specularIntensity = 2,
-		Math::Real specularPower = 32);
-
-	~Material(void);
+public:
+	Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8); // TODO: Do not use hard-coded values
+	virtual ~Material(void);
+private:
+	Material(const Material& material) {}
+	void operator=(const Material& material) {}
 /* ==================== Constructors and destructors end ==================== */
 
 
 /* ==================== Non-static member functions begin ==================== */
-	Math::Real GetSpecularIntensity() const;
-	void SetSpecularIntensity(Math::Real specularIntensity);
-	Math::Real GetSpecularPower() const;
-	void SetSpecularPower(Math::Real specularPower);
+public:
+	Texture* GetDiffuseTexture() const { return GetTexture("diffuse"); }
+	Math::Real GetSpecularIntensity() const { return GetReal("specularIntensity"); }
+	Math::Real GetSpecularPower() const { return GetReal("specularPower"); }
+	void AddTexture(const std::string& textureName, Texture* texture);
+	Texture* GetTexture(const std::string& textureName) const;
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Material */
 

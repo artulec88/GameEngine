@@ -49,12 +49,14 @@ ForwardSpotShader::~ForwardSpotShader(void)
 
 void ForwardSpotShader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer)
 {
-	if (material.texture != NULL)
+	Texture* diffuseTexture = material.GetDiffuseTexture();
+	if (diffuseTexture != NULL)
 	{
-		material.texture->Bind();
+		diffuseTexture->Bind();
 	}
 	else
 	{
+		stdlog(Warning, LOGPLACE, "Diffuse texture is not available");
 		static unsigned char whitePixel[] = {0xFF, 0xFF, 0xFF, 0xFF};
 		static Texture WHITE(1, 1, whitePixel);
 		WHITE.Bind();

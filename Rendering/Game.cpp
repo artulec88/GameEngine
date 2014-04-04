@@ -3,7 +3,6 @@
 #include "CoreEngine.h"
 #include "Vertex.h"
 #include "Input.h"
-#include "BasicShader.h"
 //#include "PhongShader.h"
 #include "Attenuation.h"
 #include "PointLight.h"

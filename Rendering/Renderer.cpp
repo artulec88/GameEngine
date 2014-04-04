@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "Renderer.h"
 #include "Game.h"
-#include "BasicShader.h"
 //#include "PhongShader.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"

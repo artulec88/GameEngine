@@ -3,44 +3,50 @@
 
 using namespace Rendering;
 
-Material::Material(Texture* texture /* = NULL */,
-	const Math::Vector3D& color /* = Math::Vector3D(1.0, 1.0, 1.0) */,
+Material::Material(Texture* diffuseTexture /* = NULL */,
 	Math::Real specularIntensity /* = 2 */,
-	Math::Real specularPower /* = 32 */) :
-	texture(texture),
-	color(color),
-	specularIntensity(specularIntensity),
-	specularPower(specularPower)
+	Math::Real specularPower /* = 32 */)
 {
+	if (diffuseTexture == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "The material is given the NULL diffuse texture");
+	}
+	AddTexture("diffuse", diffuseTexture);
+	AddReal("specularIntensity", specularIntensity);
+	AddReal("specularPower", specularPower);
 }
 
 
 Material::~Material(void)
 {
 	// TODO: Deallocate textures
-	if (texture != NULL)
+	std::map<std::string, Texture*>::iterator itr = textureMap.begin();
+	while (itr != textureMap.end())
 	{
-		delete texture;
-		texture = NULL;
+		if (itr->second != NULL) // if texture is not NULL
+		{
+			delete itr->second;
+		}
+		++itr;
 	}
 }
 
-Math::Real Material::GetSpecularIntensity() const
+void Material::AddTexture(const std::string& textureName, Texture* texture)
 {
-	return this->specularIntensity;
+	if (texture == NULL)
+	{
+		stdlog(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
+	}
+	textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
 }
 
-void Material::SetSpecularIntensity(Math::Real specularIntensity)
+Texture* Material::GetTexture(const std::string& textureName) const
 {
-	this->specularIntensity = specularIntensity;
-}
-
-Math::Real Material::GetSpecularPower() const
-{
-	return this->specularPower;
-}
-
-void Material::SetSpecularPower(Math::Real specularPower)
-{
-	this->specularPower = specularPower;
+	std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
+	if (itr == textureMap.end()) // texture not found
+	{
+		stdlog(Utility::Warning, LOGPLACE, "Texture with name \"%s\" has not been found", textureName.c_str());
+		return NULL;
+	}
+	return itr->second;
 }

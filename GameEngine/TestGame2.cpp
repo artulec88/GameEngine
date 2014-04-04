@@ -86,12 +86,11 @@ void TestGame2::Init()
 	mesh = new Mesh(vertices, 4, indices, 6, true);
 	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
 
-	Math::Vector3D materialColor = Math::Vector3D(1.0, 1.0, 1.0);
+	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
 	Math::Real specularPower = 8.0;
-	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
 	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		materialColor, specularIntensity, specularPower);
+		specularIntensity, specularPower);
 
 	//PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
 	//PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.5, Math::Vector3D(1.0, 1.0, 1.0)));

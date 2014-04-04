@@ -52,10 +52,10 @@ Matrix4D Transform::GetTransformation() const
 	if (isChanged)
 	{
 		isChangedCount++; // TODO: just temporary. Remove in the future
-		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
-		{
-			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
-		}
+		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
+		//{
+		//	stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//}
 
 		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());;
 		Matrix4D scaleMatrix = Matrix4D::Scale(scale.GetX(), scale.GetY(), scale.GetZ());
@@ -66,10 +66,10 @@ Matrix4D Transform::GetTransformation() const
 	else /* if (! IsHierarchyChanged()) */
 	{
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
-		if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
-		{
-			stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
-		}
+		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
+		//{
+		//	stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//}
 	}
 
 	/**
