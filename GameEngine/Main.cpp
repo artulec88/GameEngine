@@ -85,7 +85,7 @@ int main (int argc, char* argv[])
 		return 0;
 	}
 	stdlog.Fill(commandLine.Get("-log", ""), Debug);
-	Config::LoadFromFile(commandLine.Get("-config", "C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Config\\Config.cfg"));
+	Config::LoadFromFile(commandLine.Get("-config", "..\\Config\\Config.cfg"));
 
 	//Renderer renderer;
 	Game* game = new TestGame();

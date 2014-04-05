@@ -61,11 +61,11 @@ public:
 			//std::string fileName;
 			//std::cout << "Specify the configuration file to read:\t";
 			// TODO: If the user gives just a filename concatenate it with the string
-			// "C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Config\\"
+			// "..\\Config\\"
 			// If the user gives whole path use it instead.
 			// TODO: Second thing to do is to make stream read the whole line and not stop at first white space.
 			//std::cin >> fileName;
-			LoadFromFile("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Config\\Config.cfg");
+			LoadFromFile("..\\Config\\Config.cfg");
 		}
 
 		ValuesMap::iterator valueMapIt = cfgValues.find(name);

@@ -79,12 +79,12 @@ void TestGame2::Init()
 	unsigned short indices[] = {0, 1, 2,
 							  2, 1, 3};
 	mesh = new Mesh(vertices, 4, indices, 6, true);
-	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
+	//mesh = new Mesh("..\\Models\\box.obj");
 
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
 	Math::Real specularPower = 8.0;
-	material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
+	material = new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		specularIntensity, specularPower);
 
 	//PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
@@ -117,8 +117,8 @@ void TestGame2::Init()
 
 	transform = new Transform();
 
-	//GLuint programID = LoadShaders("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicVertexShader.vshader",
-	//	"C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Shaders\\BasicFragmentShader.fshader");
+	//GLuint programID = LoadShaders("..\\Shaders\\BasicVertexShader.vshader",
+	//	"..\\Shaders\\BasicFragmentShader.fshader");
 	//glUseProgram(programID);
 }
 
