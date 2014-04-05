@@ -80,6 +80,7 @@
     <ClInclude Include="Config.h" />
     <ClInclude Include="ISerializable.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="ReferenceCounter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Utility.h" />
@@ -98,6 +99,7 @@
     </ClCompile>
     <ClCompile Include="ISerializable.cpp" />
     <ClCompile Include="Log.cpp" />
+    <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

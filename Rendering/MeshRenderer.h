@@ -5,7 +5,7 @@ namespace Rendering
 {
 
 class Mesh;
-struct Material;
+class Material;
 class Shader;
 
 class RENDERING_API MeshRenderer : public GameComponent

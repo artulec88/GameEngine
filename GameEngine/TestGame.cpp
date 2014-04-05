@@ -77,9 +77,9 @@ void TestGame::Init()
 	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
 	GameNode* boxNode = new GameNode();
-	Mesh* boxMesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
-	boxNode->AddComponent(new MeshRenderer(boxMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		2, 32)));
+	//Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
+	Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
+	boxNode->AddComponent(new MeshRenderer(boxMesh, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
 	boxNode->GetTransform().SetTranslation(5.0, 0.5, 6.0);
 	AddToSceneRoot(boxNode);
 
@@ -87,7 +87,7 @@ void TestGame::Init()
 	Math::Real specularIntensity = 1.0;
 	Math::Real specularPower = 32.0;
 	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
-	Material* material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
+	Material* material = new Material(new Texture("..\\Textures\\bricks3.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		specularIntensity, specularPower);
 	
 	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
@@ -98,12 +98,18 @@ void TestGame::Init()
 	planeNode->AddComponent(new MeshRenderer(mesh1, material));
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
-	Mesh* monkeyMesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\monkey.obj");
+	Mesh* monkeyMesh = new Mesh("..\\Models\\monkey.obj");
 	GameNode* monkeyNode = new GameNode();
-	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		1, 8)));
-	monkeyNode->GetTransform().SetTranslation(5.0, 1.5, 15.0);
+	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
+	monkeyNode->GetTransform().SetTranslation(5.0, 1.0, 15.0);
 	AddToSceneRoot(monkeyNode);
+	
+	Mesh* monkeyMesh2 = new Mesh("..\\Models\\monkey.obj"); // this texture should already be loaded
+	GameNode* monkeyNode2 = new GameNode();
+	monkeyNode2->AddComponent(new MeshRenderer(monkeyMesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
+		2, 32)));
+	monkeyNode2->GetTransform().SetTranslation(5.0, 3.0, 15.0);
+	AddToSceneRoot(monkeyNode2);
 
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));
@@ -131,14 +137,14 @@ void TestGame::Init()
 	}
 
 	AddToSceneRoot(planeNode);
-	//AddToSceneRoot(directionalLightNode);
+	AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
-	testMesh1->AddComponent(new MeshRenderer(mesh2, material));
-	testMesh2->AddComponent(new MeshRenderer(mesh2, material));
+	testMesh1->AddComponent(new MeshRenderer(mesh2, new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->AddComponent(new MeshRenderer(mesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh1->AddChild(testMesh2);
 
 	AddToSceneRoot(testMesh1);

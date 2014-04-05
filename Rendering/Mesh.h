@@ -1,49 +1,45 @@
 #pragma once
 
 #include "Rendering.h"
+#include "MeshData.h"
 #include "Vertex.h"
 #include <string>
+#include <map>
 
 namespace Rendering
 {
 
 class RENDERING_API Mesh
 {
+/* ==================== Static variables begin ==================== */
 private:
-	/**
-	 * @brief Vertex buffer object
-	 */
-	unsigned int vbo;
-	/**
-	 * @brief Index buffer objects
-	 *
-	 * An array of integers.
-	 */
-	unsigned int ibo; // index buffer object
-	int size; // the size
+	static std::map<std::string, MeshData*> meshResourceMap;
+/* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	Mesh(const std::string& fileName);
+	Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
-	Mesh(Mesh& mesh);
-	void operator=(Mesh& mesh);
+	Mesh(const Mesh& mesh);
+	void operator=(const Mesh& mesh);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void Draw() const;
 protected:
-	// TODO: Remove this function in the future. Create a nice design for loading meshes from external files
-	/**
-	 * This is a temporary function. It will be removed once the model loader is finished
-	 */
-	void LoadFromFile(const std::string& fileName);
 	void AddVertices(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	void CalcNormals(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize);
 /* ==================== Non-static member functions end ==================== */
+
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	std::string fileName;
+	MeshData* meshData;
+/* ==================== Non-static member variables end ==================== */
 
 }; /* end class Mesh */
 

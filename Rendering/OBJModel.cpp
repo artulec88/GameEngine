@@ -15,16 +15,6 @@ using namespace std;
 OBJModel::OBJModel(const string& fileName)
 {
 	// TODO: Check whether the fileName is a full path or just a fileName. Act accordingly.
-	std::string name = fileName;
-	const char *tmp = strrchr(name.c_str(), '\\');
-	if (tmp != NULL)
-	{
-		name.assign(tmp + 1);
-	}
-	//stdlog(Utility::Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
-	//std::string extension = name.substr(name.find_last_of(".") + 1);
-	//stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
-
 	hasUVs = false;
 	hasNormals = false;
     std::ifstream file;
