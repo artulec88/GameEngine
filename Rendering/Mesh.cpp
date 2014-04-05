@@ -87,19 +87,22 @@ Mesh::Mesh(const std::string& fileName) :
 
 Mesh::~Mesh(void)
 {
-	if (meshData != NULL)
+	ASSERT(meshData != NULL);
+	if (meshData == NULL)
 	{
-		meshData->RemoveReference();
-		if (! meshData->IsReferenced())
+		stdlog(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
+		return;
+	}
+	meshData->RemoveReference();
+	if (! meshData->IsReferenced())
+	{
+		if (fileName.length() > 0)
 		{
-			if (fileName.length() > 0)
-			{
-				meshResourceMap.erase(fileName);
-			}
-
-			delete meshData;
-			meshData = NULL;
+			meshResourceMap.erase(fileName);
 		}
+
+		delete meshData;
+		meshData = NULL;
 	}
 }
 

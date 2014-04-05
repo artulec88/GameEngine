@@ -4,8 +4,7 @@
 using namespace Rendering;
 using namespace Utility;
 
-MeshData::MeshData(int indexSize) :
-	ReferenceCounter()
+MeshData::MeshData(int indexSize)
 {
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ibo);

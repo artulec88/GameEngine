@@ -106,10 +106,15 @@ void TestGame::Init()
 	
 	Mesh* monkeyMesh2 = new Mesh("..\\Models\\monkey.obj"); // this texture should already be loaded
 	GameNode* monkeyNode2 = new GameNode();
-	monkeyNode2->AddComponent(new MeshRenderer(monkeyMesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		2, 32)));
+	monkeyNode2->AddComponent(new MeshRenderer(monkeyMesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
 	monkeyNode2->GetTransform().SetTranslation(5.0, 3.0, 15.0);
 	AddToSceneRoot(monkeyNode2);
+
+	Mesh* humanMesh = new Mesh("..\\Models\\BodyMesh.obj");
+	GameNode* humanNode = new GameNode();
+	humanNode->AddComponent(new MeshRenderer(humanMesh, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+	humanNode->GetTransform().SetTranslation(3.0, 0.5, 3.0);
+	AddToSceneRoot(humanNode);
 
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));
