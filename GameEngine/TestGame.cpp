@@ -66,7 +66,6 @@ void TestGame::Init()
 	unsigned short indices1[] = {0, 1, 2,
 							  2, 1, 3};
 	Mesh* mesh1 = new Mesh(vertices1, 4, indices1, 6, true);
-	//mesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
 
 	Vertex vertex2_1(Vector3D(-fieldWidth / 10.0, 0.0, -fieldDepth / 10.0), Vector2D(0.0, 0.0));
 	Vertex vertex2_2(Vector3D(-fieldWidth / 10.0, 0.0, 3 * fieldDepth / 10.0), Vector2D(0.0, 1.0));
@@ -77,30 +76,47 @@ void TestGame::Init()
 							  2, 1, 3};
 	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
+	Vertex vertex3_1(Vector3D(-1.0, -1.0, 0.0), Vector2D(0.0, 0.0));
+	Vertex vertex3_2(Vector3D(1.0, -1.0, 0.0), Vector2D(0.0, 1.0));
+	Vertex vertex3_3(Vector3D(0.0, 1.0, 0.0), Vector2D(1.0, 0.0));
+	Vertex vertices3[] = {vertex3_1, vertex3_2, vertex3_3};
+	unsigned short indices3[] = {0, 1, 2};
+	Mesh* mesh3 = new Mesh(vertices3, 3, indices3, 3, false);
+	GameNode* triangleNode = new GameNode();
+	triangleNode->AddComponent(new MeshRenderer(mesh3, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
+		1, 8)));
+	triangleNode->GetTransform().SetTranslation(5.0, 0.5, 6.0);
+	AddToSceneRoot(triangleNode);
+
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
 	Math::Real specularPower = 32.0;
 	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
 	Material* material = new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		specularIntensity, specularPower);
-
-	MeshRenderer* meshRenderer = new MeshRenderer(mesh1, material);
 	
 	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
 	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
 
 	GameNode* planeNode = new GameNode();
-	planeNode->AddComponent(meshRenderer);
+	planeNode->AddComponent(new MeshRenderer(mesh1, material));
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+
+	Mesh* monkeyMesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\monkey.obj");
+	GameNode* boxNode = new GameNode();
+	boxNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
+		1, 8)));
+	boxNode->GetTransform().SetTranslation(5.0, 1.5, 15.0);
+	AddToSceneRoot(boxNode);
 
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));
-	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(45)));
+	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(-45)));
 
 	srand((unsigned int)time(NULL));
-	pointLightNode = new GameNode* [3];
-	for (int i = 0; i < 3; ++i)
+	pointLightNode = new GameNode* [1];
+	for (int i = 0; i < 1; ++i)
 	{
 		pointLightNode[i] = new GameNode();
 		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
@@ -109,8 +125,8 @@ void TestGame::Init()
 		AddToSceneRoot(pointLightNode[i]);
 	}
 
-	spotLightNode = new GameNode* [3];
-	for (int i = 0; i < 3; ++i)
+	spotLightNode = new GameNode* [1];
+	for (int i = 0; i < 1; ++i)
 	{
 		spotLightNode[i] = new GameNode();
 		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.5f, 0.0f), 0.7f));
@@ -120,7 +136,7 @@ void TestGame::Init()
 	}
 
 	AddToSceneRoot(planeNode);
-	//rootGameNode->AddChild(directionalLightNode);
+	//AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
@@ -214,7 +230,7 @@ void TestGame::Update(Math::Real delta)
 		temp = 0.0;
 	}
 
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		Transform& t = pointLightNode[i]->GetTransform();
 		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
@@ -223,7 +239,7 @@ void TestGame::Update(Math::Real delta)
 	}
 
 	//spotLightNode->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
-	for (int i = 0; i < 3; ++i)
+	for (int i = 0; i < 1; ++i)
 	{
 		Transform& t = spotLightNode[i]->GetTransform();
 		t.SetTranslation(Math::Vector3D(1.0, 5.0 * abs(cos(temp)), 5.0 + 10.0 * abs(sin(temp))));

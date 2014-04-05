@@ -26,21 +26,31 @@ Mesh::Mesh(const std::string& fileName) :
 	ibo(0),
 	size(0)
 {
+	// TODO: Create a system which prevents from loading the same model more than once
 	// TODO: Loading a model from the given file
-	//IndexedModel model = OBJModel(fileName).ToIndexedModel();
+	IndexedModel model = OBJModel(fileName).ToIndexedModel();
 
-	//std::vector<Vertex> vertices;
-	//for (unsigned int i = 0; i < model.positions.size(); ++i)
-	//{
-	//	vertices.push_back(Vertex(model.positions[i], model.texCoords[i]));//, model.normals[i]));
-	//}
-	//for (int i = 0; i < vertices.size(); ++i)
-	//{
-	//	cout << i+1 << "): " << vertices[i].ToString() << endl;
-	//}
-	//AddVertices(&vertices[0], vertices.size(), (unsigned short*)&model.indices[0], model.indices.size(), false);
+	ASSERT(model.positions.size() == model.texCoords.size());
+	ASSERT(model.positions.size() == model.normals.size());
+	if (model.positions.size() != model.texCoords.size())
+	{
+		stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and texture coordinates (%d and %d respectively)",
+			model.positions.size(), model.texCoords.size());
+	}
+	if (model.positions.size() != model.normals.size())
+	{
+		stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and normals (%d and %d respectively)",
+			model.positions.size(), model.normals.size());
+	}
 
-	LoadFromFile(fileName);
+	std::vector<Vertex> vertices;
+	for (unsigned int i = 0; i < model.positions.size(); ++i)
+	{
+		vertices.push_back(Vertex(model.positions[i], model.texCoords[i], model.normals[i]));
+	}
+	AddVertices(&vertices[0], vertices.size(), &model.indices[0], model.indices.size(), false);
+
+	//LoadFromFile(fileName);
 }
 
 Mesh::~Mesh(void)

@@ -12,17 +12,28 @@ using namespace std;
 
 OBJModel::OBJModel(const string& fileName)
 {
+	// TODO: Check whether the fileName is a full path or just a fileName. Act accordingly.
+	std::string name = fileName;
+	const char *tmp = strrchr(name.c_str(), '\\');
+	if (tmp != NULL)
+	{
+		name.assign(tmp + 1);
+	}
+	stdlog(Utility::Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
+	std::string extension = name.substr(name.find_last_of(".") + 1);
+	stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
+
 	hasUVs = false;
 	hasNormals = false;
     std::ifstream file;
     file.open(fileName.c_str());
-
-    std::string line;
     if(!file.is_open())
 	{
 		stdlog(Utility::Error, LOGPLACE, "Unable to load model \"%s\"", fileName.c_str());
 		return;
 	}
+
+    std::string line;
     while(file.good())
     {
         getline(file, line);
@@ -43,9 +54,15 @@ OBJModel::OBJModel(const string& fileName)
                 this->normals.push_back(ParseOBJVec3(line));
             else if(lineCStr[1] == ' ' || lineCStr[1] == '\t')
                 this->vertices.push_back(ParseOBJVec3(line));
+			else
+			{
+				stdlog(Utility::Error, LOGPLACE, "Line \"%s\" cannot be processed correctly", lineCStr);
+			}
 			break;
 		case 'f':
 			CreateOBJFace(line);
+			break;
+		case '#': // comment
 			break;
 		default:
 			stdlog(Utility::Delocust, LOGPLACE, "line = \"%s\"", lineCStr);
@@ -148,28 +165,6 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
     return (unsigned int)-1;
 }
 
-void IndexedModel::CalcNormals()
-{
-    for(unsigned int i = 0; i < indices.size(); i += 3)
-    {
-        unsigned int i0 = indices[i];
-        unsigned int i1 = indices[i + 1];
-        unsigned int i2 = indices[i + 2];
-
-        Math::Vector3D v1 = positions[i1] - positions[i0];
-        Math::Vector3D v2 = positions[i2] - positions[i0];
-        
-        Math::Vector3D normal = v1.Cross(v2).Normalized();// glm::normalize(glm::cross(v1, v2));
-            
-        normals[i0] += normal;
-        normals[i1] += normal;
-        normals[i2] += normal;
-    }
-    
-    for(unsigned int i = 0; i < normals.size(); i++)
-        normals[i] = normals[i].Normalized();//glm::normalize(normals[i]);
-}
-
 IndexedModel OBJModel::ToIndexedModel()
 {
     IndexedModel result;
@@ -184,8 +179,8 @@ IndexedModel OBJModel::ToIndexedModel()
     
     sort(indexLookup.begin(), indexLookup.end(), CompareOBJIndexPtr);
     
-    map<OBJIndex, unsigned int> normalModelIndexMap;
-    map<unsigned int, unsigned int> indexMap;
+    map<OBJIndex, unsigned short> normalModelIndexMap;
+    map<unsigned short, unsigned short> indexMap;
     
     for(unsigned int i = 0; i < numIndices; i++)
     {
@@ -196,38 +191,48 @@ IndexedModel OBJModel::ToIndexedModel()
         Math::Vector3D currentNormal;
         
         if(hasUVs)
+		{
             currentTexCoord = uvs[currentIndex->uvIndex];
+		}
         else
+		{
             currentTexCoord = Math::Vector2D(0.0, 0.0);
+		}
             
         if(hasNormals)
+		{
             currentNormal = normals[currentIndex->normalIndex];
+		}
         else
+		{
             currentNormal = Math::Vector3D(0.0, 0.0, 0.0);
+		}
         
-        unsigned int normalModelIndex;
-        unsigned int resultModelIndex;
+        unsigned short normalModelIndex;
+        unsigned short resultModelIndex;
         
         //Create model to properly generate normals on
-        std::map<OBJIndex, unsigned int>::iterator it = normalModelIndexMap.find(*currentIndex);
+        std::map<OBJIndex, unsigned short>::iterator it = normalModelIndexMap.find(*currentIndex);
         if(it == normalModelIndexMap.end())
         {
-            normalModelIndex = (unsigned int)normalModel.positions.size();
+            normalModelIndex = static_cast<unsigned short>(normalModel.positions.size());
         
-            normalModelIndexMap.insert(std::pair<OBJIndex, unsigned int>(*currentIndex, normalModelIndex));
+            normalModelIndexMap.insert(std::pair<OBJIndex, unsigned short>(*currentIndex, normalModelIndex));
             normalModel.positions.push_back(currentPosition);
             normalModel.texCoords.push_back(currentTexCoord);
             normalModel.normals.push_back(currentNormal);
         }
         else
+		{
             normalModelIndex = it->second;
+		}
         
         //Create model which properly separates texture coordinates
         unsigned int previousVertexLocation = FindLastVertexIndex(indexLookup, currentIndex, result);
         
-        if(previousVertexLocation == (unsigned int)-1)
+        if(previousVertexLocation == static_cast<unsigned int>(-1))
         {
-            resultModelIndex = (unsigned int)result.positions.size();
+            resultModelIndex = static_cast<unsigned short>(result.positions.size());
         
             result.positions.push_back(currentPosition);
             result.texCoords.push_back(currentTexCoord);
@@ -238,7 +243,7 @@ IndexedModel OBJModel::ToIndexedModel()
         
         normalModel.indices.push_back(normalModelIndex);
         result.indices.push_back(resultModelIndex);
-        indexMap.insert(std::pair<unsigned int, unsigned int>(resultModelIndex, normalModelIndex));
+        indexMap.insert(std::pair<unsigned short, unsigned short>(resultModelIndex, normalModelIndex));
     }
     
     if(!hasNormals)
@@ -272,12 +277,12 @@ IndexedModel OBJModel::ToIndexedModel()
 
 /* static */ inline float OBJModel::ParseOBJFloatValue(const std::string& token, unsigned int start, unsigned int end)
 {
-	return (float)atof(token.substr(start, end - start).c_str());
+	return static_cast<float>(atof(token.substr(start, end - start).c_str()));
 }
 
 /* static */ Math::Vector2D OBJModel::ParseOBJVec2(const std::string& line)
 {
-    unsigned int tokenLength = (unsigned int)line.length();
+    unsigned int tokenLength = static_cast<unsigned int>(line.length());
     const char* tokenString = line.c_str();
     
     unsigned int vertIndexStart = 3;
@@ -303,7 +308,7 @@ IndexedModel OBJModel::ToIndexedModel()
 
 /* static */ Math::Vector3D OBJModel::ParseOBJVec3(const std::string& line)
 {
-    unsigned int tokenLength = (unsigned int)line.length();
+    unsigned int tokenLength = static_cast<unsigned int>(line.length());
     const char* tokenString = line.c_str();
     
     unsigned int vertIndexStart = 2;
@@ -334,43 +339,9 @@ IndexedModel OBJModel::ToIndexedModel()
     //glm::vec3(atof(tokens[1].c_str()), atof(tokens[2].c_str()), atof(tokens[3].c_str()))
 }
 
-/* static */ OBJIndex OBJModel::ParseOBJIndex(const std::string& token, bool* hasUVs, bool* hasNormals)
-{
-    unsigned int tokenLength = (unsigned int)token.length();
-    const char* tokenString = token.c_str();
-    
-    unsigned int vertIndexStart = 0;
-    unsigned int vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
-    
-    OBJIndex result;
-    result.vertexIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
-    result.uvIndex = 0;
-    result.normalIndex = 0;
-    
-    if(vertIndexEnd >= tokenLength)
-        return result;
-    
-    vertIndexStart = vertIndexEnd + 1;
-    vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
-    
-    result.uvIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
-    *hasUVs = true;
-    
-    if(vertIndexEnd >= tokenLength)
-        return result;
-    
-    vertIndexStart = vertIndexEnd + 1;
-    vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
-    
-    result.normalIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
-    *hasNormals = true;
-    
-    return result;
-}
-
 /* static */ inline unsigned int OBJModel::ParseOBJIndexValue(const std::string& token, unsigned int start, unsigned int end)
 {
-	return (unsigned int)(atoi(token.substr(start, end - start).c_str()) - 1);
+	return static_cast<unsigned int>(atoi(token.substr(start, end - start).c_str()) - 1);
 }
 
 /* static */ inline std::vector<std::string> OBJModel::SplitString(const std::string &s, char delim)
@@ -378,7 +349,7 @@ IndexedModel OBJModel::ToIndexedModel()
     std::vector<std::string> elems;
         
     const char* cstr = s.c_str();
-    unsigned int strLength = (unsigned int)s.length();
+    unsigned int strLength = static_cast<unsigned int>(s.length());
     unsigned int start = 0;
     unsigned int end = 0;
         
@@ -403,10 +374,44 @@ void OBJModel::CreateOBJFace(const std::string& line)
 {
 	std::vector<std::string> tokens = SplitString(line, ' ');
 
-	for(size_t i = 0; i < tokens.size() - 3; i++)
+	for(size_t i = 0; i < tokens.size() - 3; ++i)
 	{
-		this->OBJIndices.push_back(ParseOBJIndex(tokens[1], &this->hasUVs, &this->hasNormals));
-		this->OBJIndices.push_back(ParseOBJIndex(tokens[2 + i], &this->hasUVs, &this->hasNormals));
-		this->OBJIndices.push_back(ParseOBJIndex(tokens[3 + i], &this->hasUVs, &this->hasNormals));
+		this->OBJIndices.push_back(ParseOBJIndex(tokens[1]));
+		this->OBJIndices.push_back(ParseOBJIndex(tokens[2 + i]));
+		this->OBJIndices.push_back(ParseOBJIndex(tokens[3 + i]));
 	}
+}
+
+OBJIndex OBJModel::ParseOBJIndex(const std::string& token)
+{
+    unsigned int tokenLength = static_cast<unsigned int>(token.length());
+    const char* tokenString = token.c_str();
+    
+    unsigned int vertIndexStart = 0;
+    unsigned int vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
+    
+    OBJIndex result;
+    result.vertexIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    result.uvIndex = 0;
+    result.normalIndex = 0;
+    
+    if(vertIndexEnd >= tokenLength)
+        return result;
+    
+    vertIndexStart = vertIndexEnd + 1;
+    vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
+    
+    result.uvIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    hasUVs = true;
+    
+    if(vertIndexEnd >= tokenLength)
+        return result;
+    
+    vertIndexStart = vertIndexEnd + 1;
+    vertIndexEnd = FindNextChar(vertIndexStart, tokenString, tokenLength, '/');
+    
+    result.normalIndex = ParseOBJIndexValue(token, vertIndexStart, vertIndexEnd);
+    hasNormals = true;
+    
+    return result;
 }

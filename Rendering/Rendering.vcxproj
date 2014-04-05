@@ -106,6 +106,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
+    <ClInclude Include="IndexedModel.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="MappedValues.h" />
@@ -144,6 +145,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />
+    <ClCompile Include="IndexedModel.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="Material.cpp" />
