@@ -41,8 +41,8 @@ protected:
 	 * This is a temporary function. It will be removed once the model loader is finished
 	 */
 	void LoadFromFile(const std::string& fileName);
-	void AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
-	void CalcNormals(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize);
+	void AddVertices(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
+	void CalcNormals(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize);
 /* ==================== Non-static member functions end ==================== */
 
 }; /* end class Mesh */

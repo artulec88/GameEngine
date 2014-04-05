@@ -136,11 +136,11 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
                     else
                         currentNormal = Math::Vector3D(0,0,0);
                     
-                    for(unsigned int j = 0; j < result.positions.size(); j++)
+                    for(unsigned int j = 0; j < result.PositionsSize(); j++)
                     {
-                        if(currentPosition == result.positions[j]
-                            && ((!hasUVs || currentTexCoord == result.texCoords[j])
-                            && (!hasNormals || currentNormal == result.normals[j])))
+                        if(currentPosition == result.GetPosition(j)
+                            && ((!hasUVs || currentTexCoord == result.GetTexCoord(j))
+                            && (!hasNormals || currentNormal == result.GetNormal(j))))
                         {
                             return j;
                         }
@@ -215,12 +215,12 @@ IndexedModel OBJModel::ToIndexedModel()
         std::map<OBJIndex, unsigned short>::iterator it = normalModelIndexMap.find(*currentIndex);
         if(it == normalModelIndexMap.end())
         {
-            normalModelIndex = static_cast<unsigned short>(normalModel.positions.size());
+            normalModelIndex = static_cast<unsigned short>(normalModel.PositionsSize());
         
             normalModelIndexMap.insert(std::pair<OBJIndex, unsigned short>(*currentIndex, normalModelIndex));
-            normalModel.positions.push_back(currentPosition);
-            normalModel.texCoords.push_back(currentTexCoord);
-            normalModel.normals.push_back(currentNormal);
+            normalModel.AddPosition(currentPosition);
+            normalModel.AddTexCoord(currentTexCoord);
+            normalModel.AddNormal(currentNormal);
         }
         else
 		{
@@ -232,17 +232,17 @@ IndexedModel OBJModel::ToIndexedModel()
         
         if(previousVertexLocation == static_cast<unsigned int>(-1))
         {
-            resultModelIndex = static_cast<unsigned short>(result.positions.size());
+            resultModelIndex = static_cast<unsigned short>(result.PositionsSize());
         
-            result.positions.push_back(currentPosition);
-            result.texCoords.push_back(currentTexCoord);
-            result.normals.push_back(currentNormal);
+            result.AddPosition(currentPosition);
+			result.AddTexCoord(currentTexCoord);
+            result.AddNormal(currentNormal);
         }
         else
             resultModelIndex = previousVertexLocation;
         
-        normalModel.indices.push_back(normalModelIndex);
-        result.indices.push_back(resultModelIndex);
+		normalModel.AddIndex(normalModelIndex);
+        result.AddIndex(resultModelIndex);
         indexMap.insert(std::pair<unsigned short, unsigned short>(resultModelIndex, normalModelIndex));
     }
     
@@ -250,8 +250,8 @@ IndexedModel OBJModel::ToIndexedModel()
     {
         normalModel.CalcNormals();
         
-        for(unsigned int i = 0; i < result.positions.size(); i++)
-            result.normals[i] = normalModel.normals[indexMap[i]];
+        for(unsigned int i = 0; i < result.PositionsSize(); i++)
+			result.SetNormal(i, normalModel.GetNormal(indexMap[i]));
     }
     
     return result;

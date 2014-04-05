@@ -30,25 +30,25 @@ Mesh::Mesh(const std::string& fileName) :
 	// TODO: Loading a model from the given file
 	IndexedModel model = OBJModel(fileName).ToIndexedModel();
 
-	ASSERT(model.positions.size() == model.texCoords.size());
-	ASSERT(model.positions.size() == model.normals.size());
-	if (model.positions.size() != model.texCoords.size())
+	ASSERT(model.PositionsSize() == model.TexCoordsSize());
+	ASSERT(model.PositionsSize() == model.NormalsSize());
+	if (model.PositionsSize() != model.TexCoordsSize())
 	{
 		stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and texture coordinates (%d and %d respectively)",
-			model.positions.size(), model.texCoords.size());
+			model.PositionsSize(), model.TexCoordsSize());
 	}
-	if (model.positions.size() != model.normals.size())
+	if (model.PositionsSize() != model.NormalsSize())
 	{
 		stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and normals (%d and %d respectively)",
-			model.positions.size(), model.normals.size());
+			model.PositionsSize(), model.NormalsSize());
 	}
 
 	std::vector<Vertex> vertices;
-	for (unsigned int i = 0; i < model.positions.size(); ++i)
+	for (unsigned int i = 0; i < model.PositionsSize(); ++i)
 	{
-		vertices.push_back(Vertex(model.positions[i], model.texCoords[i], model.normals[i]));
+		vertices.push_back(Vertex(model.GetPosition(i), model.GetTexCoord(i), model.GetNormal(i)));
 	}
-	AddVertices(&vertices[0], vertices.size(), &model.indices[0], model.indices.size(), false);
+	AddVertices(&vertices[0], vertices.size(), model.GetIndices(), model.IndicesSize(), false);
 
 	//LoadFromFile(fileName);
 }
@@ -150,7 +150,7 @@ void Mesh::LoadFromFile(const std::string& fileName)
 	AddVertices(&vertices[0], vertices.size(), &indices[0], indices.size(), false);
 }
 
-void Mesh::AddVertices(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */)
+void Mesh::AddVertices(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */)
 {
 	if (!vbo)
 	{
@@ -193,7 +193,7 @@ void Mesh::Draw() const
 	glDisableVertexAttribArray(2);
 }
 
-void Mesh::CalcNormals(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize)
+void Mesh::CalcNormals(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize)
 {
 	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
 	for(int i = 0; i < indexSize; i += iterationStep)
