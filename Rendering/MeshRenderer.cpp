@@ -11,13 +11,24 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
 	mesh(mesh),
 	material(material)
 {
+	//if (this->mesh != NULL)
+	//{
+	//	this->mesh->AddReference();
+	//}
 }
 
 
 MeshRenderer::~MeshRenderer(void)
 {
+	// TODO: Fix dangling pointers
 	if (mesh != NULL)
 	{
+		//mesh->RemoveReference();
+		//if (! mesh->IsReferenced())
+		//{
+		//	delete mesh;
+		//	mesh = NULL;
+		//}
 		delete mesh;
 		mesh = NULL;
 	}

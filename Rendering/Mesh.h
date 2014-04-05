@@ -3,13 +3,16 @@
 #include "Rendering.h"
 #include "MeshData.h"
 #include "Vertex.h"
+
+//#include "Utility\ReferenceCounter.h"
+
 #include <string>
 #include <map>
 
 namespace Rendering
 {
 
-class RENDERING_API Mesh
+class RENDERING_API Mesh// : public Utility::ReferenceCounter
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -22,8 +25,8 @@ public:
 	Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
 	virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
-	Mesh(const Mesh& mesh);
-	void operator=(const Mesh& mesh);
+	Mesh(Mesh& mesh) {}
+	void operator=(Mesh& mesh) {}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

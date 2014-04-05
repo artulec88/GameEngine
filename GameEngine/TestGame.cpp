@@ -74,7 +74,6 @@ void TestGame::Init()
 	Vertex vertices2[] = {vertex2_1, vertex2_2, vertex2_3, vertex2_4};
 	unsigned short indices2[] = {0, 1, 2,
 							  2, 1, 3};
-	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
 	GameNode* boxNode = new GameNode();
 	//Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
@@ -98,9 +97,9 @@ void TestGame::Init()
 	planeNode->AddComponent(new MeshRenderer(mesh1, material));
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
-	Mesh* monkeyMesh = new Mesh("..\\Models\\monkey.obj");
+	Mesh* monkeyMesh1 = new Mesh("..\\Models\\monkey.obj");
 	GameNode* monkeyNode = new GameNode();
-	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
+	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh1, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
 	monkeyNode->GetTransform().SetTranslation(5.0, 1.0, 15.0);
 	AddToSceneRoot(monkeyNode);
 	
@@ -148,8 +147,8 @@ void TestGame::Init()
 	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
-	testMesh1->AddComponent(new MeshRenderer(mesh2, new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh2->AddComponent(new MeshRenderer(mesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh1->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh1->AddChild(testMesh2);
 
 	AddToSceneRoot(testMesh1);
