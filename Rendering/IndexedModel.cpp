@@ -7,7 +7,7 @@ using namespace Rendering;
 
 void IndexedModel::CalcNormals()
 {
-    for(unsigned int i = 0; i < indices.size(); i += 3)
+    for(unsigned int i = 0; i < indices.size(); i += 3 /* number of vertices in one triangle face */)
     {
         unsigned short i0 = indices[i];
         unsigned short i1 = indices[i + 1];
