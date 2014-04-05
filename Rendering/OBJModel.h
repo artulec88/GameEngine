@@ -8,14 +8,16 @@
 namespace Rendering
 {
 
-struct OBJIndex
+class OBJIndex
 {
+public:
     unsigned int vertexIndex;
     unsigned int uvIndex;
     unsigned int normalIndex;
     
+	bool operator==(const OBJIndex& r) const { return vertexIndex == r.vertexIndex; }
     bool operator<(const OBJIndex& r) const { return vertexIndex < r.vertexIndex; }
-}; /* end struct OBJIndex */
+}; /* end class OBJIndex */
 
 // TODO: Create a base class for all models (OBJModel class should inherit from this base class)
 class OBJModel

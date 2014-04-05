@@ -6,6 +6,8 @@
 #include <fstream>
 #include <algorithm>
 #include <map>
+//#include <hash_map>
+#include <unordered_map>
 
 using namespace Rendering;
 using namespace std;
@@ -19,9 +21,9 @@ OBJModel::OBJModel(const string& fileName)
 	{
 		name.assign(tmp + 1);
 	}
-	stdlog(Utility::Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
-	std::string extension = name.substr(name.find_last_of(".") + 1);
-	stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
+	//stdlog(Utility::Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
+	//std::string extension = name.substr(name.find_last_of(".") + 1);
+	//stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
 
 	hasUVs = false;
 	hasNormals = false;
@@ -165,96 +167,100 @@ unsigned int OBJModel::FindLastVertexIndex(const std::vector<OBJIndex*>& indexLo
     return (unsigned int)-1;
 }
 
+template <class T>
+struct Hash;
+
+template<>
+struct Hash<OBJIndex>
+{
+	std::size_t operator()(OBJIndex const& objIndex) const
+	{
+		const int BASE = 17;
+		const int MULTIPLIER = 31;
+		size_t result = BASE;
+		result = MULTIPLIER * result + objIndex.vertexIndex;
+		result = MULTIPLIER * result + objIndex.uvIndex;
+		result = MULTIPLIER * result + objIndex.normalIndex;
+
+		return result;
+	}
+};
+
 IndexedModel OBJModel::ToIndexedModel()
 {
-    IndexedModel result;
+	IndexedModel result;
     IndexedModel normalModel;
     
-    size_t numIndices = OBJIndices.size();
-    
-    std::vector<OBJIndex*> indexLookup;
-    
-    for(unsigned int i = 0; i < numIndices; i++)
-        indexLookup.push_back(&OBJIndices[i]);
-    
-    sort(indexLookup.begin(), indexLookup.end(), CompareOBJIndexPtr);
-    
-    map<OBJIndex, unsigned short> normalModelIndexMap;
-    map<unsigned short, unsigned short> indexMap;
-    
-    for(unsigned int i = 0; i < numIndices; i++)
-    {
-        OBJIndex* currentIndex = &OBJIndices[i];
-        
-        Math::Vector3D currentPosition = vertices[currentIndex->vertexIndex];
-        Math::Vector2D currentTexCoord;
-        Math::Vector3D currentNormal;
-        
-        if(hasUVs)
+	unordered_map<OBJIndex, unsigned short, Hash<OBJIndex>> resultIndexMap;
+	unordered_map<unsigned short, unsigned short> normalIndexMap;
+	unordered_map<unsigned short, unsigned short> indexMap;
+
+	for (int i = 0; i < OBJIndices.size(); ++i)
+	{
+		OBJIndex currentIndex = OBJIndices[i];
+		Math::Vector3D currentPosition = vertices[currentIndex.vertexIndex];
+		Math::Vector2D currentTexCoord(0, 0);
+		Math::Vector3D currentNormal(0, 0, 0);
+		if (hasUVs)
 		{
-            currentTexCoord = uvs[currentIndex->uvIndex];
+			currentTexCoord = uvs[currentIndex.uvIndex];
 		}
-        else
+		if (hasNormals)
 		{
-            currentTexCoord = Math::Vector2D(0.0, 0.0);
+			currentNormal = normals[currentIndex.normalIndex];
 		}
-            
-        if(hasNormals)
+
+		unsigned short modelVertexIndex;
+		unordered_map<OBJIndex, unsigned short>::iterator itr = resultIndexMap.find(currentIndex);
+		if (itr == resultIndexMap.end())
 		{
-            currentNormal = normals[currentIndex->normalIndex];
-		}
-        else
-		{
-            currentNormal = Math::Vector3D(0.0, 0.0, 0.0);
-		}
-        
-        unsigned short normalModelIndex;
-        unsigned short resultModelIndex;
-        
-        //Create model to properly generate normals on
-        std::map<OBJIndex, unsigned short>::iterator it = normalModelIndexMap.find(*currentIndex);
-        if(it == normalModelIndexMap.end())
-        {
-            normalModelIndex = static_cast<unsigned short>(normalModel.PositionsSize());
-        
-            normalModelIndexMap.insert(std::pair<OBJIndex, unsigned short>(*currentIndex, normalModelIndex));
-            normalModel.AddPosition(currentPosition);
-            normalModel.AddTexCoord(currentTexCoord);
-            normalModel.AddNormal(currentNormal);
-        }
-        else
-		{
-            normalModelIndex = it->second;
-		}
-        
-        //Create model which properly separates texture coordinates
-        unsigned int previousVertexLocation = FindLastVertexIndex(indexLookup, currentIndex, result);
-        
-        if(previousVertexLocation == static_cast<unsigned int>(-1))
-        {
-            resultModelIndex = static_cast<unsigned short>(result.PositionsSize());
-        
-            result.AddPosition(currentPosition);
+			modelVertexIndex = result.PositionsSize();
+			resultIndexMap.insert(std::pair<OBJIndex, unsigned short>(currentIndex, modelVertexIndex));
+			result.AddPosition(currentPosition);
 			result.AddTexCoord(currentTexCoord);
-            result.AddNormal(currentNormal);
-        }
-        else
-            resultModelIndex = previousVertexLocation;
-        
+			if (hasNormals)
+			{
+				result.AddNormal(currentNormal);
+			}
+		}
+		else
+		{
+			modelVertexIndex = itr->second;
+		}
+		
+		unsigned short normalModelIndex;
+		unordered_map<unsigned short, unsigned short>::iterator normalItr = normalIndexMap.find(currentIndex.vertexIndex);
+		if (normalItr == normalIndexMap.end())
+		{
+			normalModelIndex = normalModel.PositionsSize();
+			normalIndexMap.insert(std::pair<unsigned short, unsigned short>(currentIndex.vertexIndex, normalModelIndex));
+			
+			normalModel.AddPosition(currentPosition);
+			normalModel.AddTexCoord(currentTexCoord);
+			normalModel.AddNormal(currentNormal);
+		}
+		else
+		{
+			normalModelIndex = normalItr->second;
+		}
+
+		result.AddIndex(modelVertexIndex);
 		normalModel.AddIndex(normalModelIndex);
-        result.AddIndex(resultModelIndex);
-        indexMap.insert(std::pair<unsigned short, unsigned short>(resultModelIndex, normalModelIndex));
-    }
-    
-    if(!hasNormals)
-    {
-        normalModel.CalcNormals();
-        
-        for(unsigned int i = 0; i < result.PositionsSize(); i++)
-			result.SetNormal(i, normalModel.GetNormal(indexMap[i]));
-    }
-    
-    return result;
+		indexMap.insert(std::pair<unsigned short, unsigned short>(modelVertexIndex, normalModelIndex));
+	}
+
+	if (!hasNormals)
+	{
+		normalModel.CalcNormals();
+
+		for (int i = 0; i < result.PositionsSize(); ++i)
+		{
+			//result.SetNormal(i, normalModel.GetNormal(indexMap[i]));
+			result.AddNormal(normalModel.GetNormal(indexMap[i]));
+		}
+	}
+
+	return result;
 }
 
 /* static */ bool OBJModel::CompareOBJIndexPtr(const OBJIndex* a, const OBJIndex* b)

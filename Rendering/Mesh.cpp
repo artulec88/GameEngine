@@ -6,6 +6,9 @@
 #include "Utility\Utility.h"
 #include "Utility\Log.h"
 
+#ifdef MEASURE_TIME_ENABLED
+#include <time.h>
+#endif
 #include <fstream>
 
 using namespace Rendering;
@@ -28,6 +31,9 @@ Mesh::Mesh(const std::string& fileName) :
 {
 	// TODO: Create a system which prevents from loading the same model more than once
 	// TODO: Loading a model from the given file
+#ifdef MEASURE_TIME_ENABLED
+	clock_t begin = clock();
+#endif
 	IndexedModel model = OBJModel(fileName).ToIndexedModel();
 
 	ASSERT(model.PositionsSize() == model.TexCoordsSize());
@@ -49,6 +55,10 @@ Mesh::Mesh(const std::string& fileName) :
 		vertices.push_back(Vertex(model.GetPosition(i), model.GetTexCoord(i), model.GetNormal(i)));
 	}
 	AddVertices(&vertices[0], vertices.size(), model.GetIndices(), model.IndicesSize(), false);
+#ifdef MEASURE_TIME_ENABLED
+	clock_t end = clock();
+	stdlog(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+#endif
 
 	//LoadFromFile(fileName);
 }

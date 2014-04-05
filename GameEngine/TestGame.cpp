@@ -76,17 +76,12 @@ void TestGame::Init()
 							  2, 1, 3};
 	Mesh* mesh2 = new Mesh(vertices2, 4, indices2, 6, true);
 
-	Vertex vertex3_1(Vector3D(-1.0, -1.0, 0.0), Vector2D(0.0, 0.0));
-	Vertex vertex3_2(Vector3D(1.0, -1.0, 0.0), Vector2D(0.0, 1.0));
-	Vertex vertex3_3(Vector3D(0.0, 1.0, 0.0), Vector2D(1.0, 0.0));
-	Vertex vertices3[] = {vertex3_1, vertex3_2, vertex3_3};
-	unsigned short indices3[] = {0, 1, 2};
-	Mesh* mesh3 = new Mesh(vertices3, 3, indices3, 3, false);
-	GameNode* triangleNode = new GameNode();
-	triangleNode->AddComponent(new MeshRenderer(mesh3, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		1, 8)));
-	triangleNode->GetTransform().SetTranslation(5.0, 0.5, 6.0);
-	AddToSceneRoot(triangleNode);
+	GameNode* boxNode = new GameNode();
+	Mesh* boxMesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\box.obj");
+	boxNode->AddComponent(new MeshRenderer(boxMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
+		2, 32)));
+	boxNode->GetTransform().SetTranslation(5.0, 0.5, 6.0);
+	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
@@ -104,11 +99,11 @@ void TestGame::Init()
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	Mesh* monkeyMesh = new Mesh("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Models\\monkey.obj");
-	GameNode* boxNode = new GameNode();
-	boxNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
+	GameNode* monkeyNode = new GameNode();
+	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh, new Material(new Texture("C:\\Users\\Artur\\Documents\\Visual Studio 2010\\Projects\\GameEngine\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		1, 8)));
-	boxNode->GetTransform().SetTranslation(5.0, 1.5, 15.0);
-	AddToSceneRoot(boxNode);
+	monkeyNode->GetTransform().SetTranslation(5.0, 1.5, 15.0);
+	AddToSceneRoot(monkeyNode);
 
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));

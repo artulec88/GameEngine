@@ -26,6 +26,10 @@
 #define __FILENAME__ __FILE__
 #endif
 
+//#ifdef _DEBUG
+#define MEASURE_TIME_ENABLED
+//#endif
+
 #ifdef _DEBUG
 #define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILENAME__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
 #define SLOW_ASSERTIONS_ENABLED
