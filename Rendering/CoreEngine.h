@@ -10,9 +10,9 @@
 
 #include <string>
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 #define COUNT_FPS
-#endif
+//#endif
 
 namespace Rendering
 {

@@ -1,0 +1,77 @@
+uniform vec3 eyePos; // camera position
+uniform float specularIntensity;
+uniform float specularPower;
+
+struct BaseLight
+{
+	vec3 color;
+	float intensity;
+};
+
+// defines how quickly the point light fades off with the raising distance between source and target
+struct Attenuation
+{
+	float constant;
+	float linear;
+	float exponent;
+};
+
+struct PointLight
+{
+	BaseLight base;
+	Attenuation attenuation;
+	vec3 position;
+	float range; // max distance between the source and the point for the light to affect that point
+};
+
+vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
+{
+	vec4 diffuseColor = vec4(0.0, 0.0, 0.0, 0.0);
+	vec4 specularColor = vec4(0.0, 0.0, 0.0, 0.0);
+	
+	float diffuseFactor = dot(normal, -direction); // attenuation
+	if (diffuseFactor > 0.0)
+	{
+		diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
+		
+		// specular reflection calculation begin
+		vec3 directionToEye = normalize(eyePos - worldPos);
+		vec3 reflectDirection = normalize(reflect(direction, normal));
+		
+		//vec3 halfDirection = normalize(directionToEye - direction);
+		//float specularFactor = dot(halfDirection, normal);
+		
+		// compare two vectors to find the specular
+		float specularFactor = dot(directionToEye, reflectDirection); // 1 if directionToEye = reflectDirection
+		specularFactor = pow(specularFactor, specularPower); // TODO: consider moving this inside "if" condition below
+		
+		if (specularFactor > 0)
+		{
+			specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
+		}
+		// specular reflection calculation end
+	}
+	
+	return diffuseColor + specularColor;
+}
+
+vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPos)
+{
+	vec3 lightDirection = worldPos - pointLight.position;
+	float distanceToLightSource = length(lightDirection);
+	if (distanceToLightSource > pointLight.range)
+	{
+		return vec4(0.0, 0.0, 0.0, 0.0);
+	}
+
+	lightDirection = normalize(lightDirection);
+
+	vec4 color = CalcLight(pointLight.base, lightDirection, normal, worldPos);
+
+	float atten = pointLight.attenuation.constant +
+					pointLight.attenuation.linear * distanceToLightSource +
+					pointLight.attenuation.exponent * distanceToLightSource * distanceToLightSource +
+					0.00001; // just a small number to prevent from dividing by zero
+
+	return color / atten; // the bigger the attenuation the smaller the color. TODO: Watch out for attenuation = 0!
+}

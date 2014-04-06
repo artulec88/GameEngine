@@ -89,12 +89,20 @@ bool Shader::CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLe
 	return (success == GL_FALSE); // means that an error has occurred
 }
 
-/* static */ string Shader::LoadShader(const std::string& fileName) const
+string Shader::LoadShader(const std::string& fileName) const
 {
-	ifstream file(fileName.c_str());
+	string name = fileName;
+	const char *tmp = strrchr(name.c_str(), '\\');
+	if (tmp != NULL)
+	{
+		name.assign(tmp + 1);
+	}
+	stdlog(Info, LOGPLACE, "Loading shader from file \"%s\"", name.c_str());
+
+	ifstream file(("..\\Shaders\\" + fileName).c_str());
 	if (!file.is_open())
 	{
-		stdlog(Error, LOGPLACE, "Unable to open shader file \"%s\". Check the path.", fileName.c_str());
+		stdlog(Error, LOGPLACE, "Unable to open shader file \"%s\". Check the path.", name.c_str());
 		return ""; // TODO: Double-check it in the future. It's better to just throw an error I guess.
 	}
 
@@ -104,7 +112,31 @@ bool Shader::CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLe
 	while (file.good())
 	{
 		getline(file, line);
-		output.append(line + "\n");
+		if (line.find("#include") == std::string::npos)
+		{
+			output.append(line + "\n");
+		}
+		else
+		{
+			// TODO: This will not work with circular includes (i.e. File1 includes File2 and File2 includes File1)
+			//stdlog(Debug, LOGPLACE, "#Include directive found in Line = \"%s\"", line.c_str());
+
+			std::vector<std::string> tokens;
+			CutToTokens(line, tokens);
+			ASSERT(tokens.size() > 1);
+			if (tokens.size() <= 1)
+			{
+				stdlog(Error, LOGPLACE, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
+				continue;
+			}
+			std::string includeFileName = tokens[1];
+			//stdlog(Debug, LOGPLACE, "Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
+			includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
+			//stdlog(Debug, LOGPLACE, "Loading an include shader file \"%s\"", includeFileName.c_str());
+
+			string fragmentToAppend = LoadShader(includeFileName);
+			output.append(fragmentToAppend + "\n");
+		}
 	}
 
 	ASSERT(file.is_open());

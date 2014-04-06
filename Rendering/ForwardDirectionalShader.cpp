@@ -15,8 +15,8 @@ using namespace Utility;
 ForwardDirectionalShader::ForwardDirectionalShader(void) :
 	Shader()
 {
-	AddVertexShaderFromFile("..\\Shaders\\ForwardDirectional.vshader");
-	AddFragmentShaderFromFile("..\\Shaders\\ForwardDirectional.fshader");
+	AddVertexShaderFromFile("ForwardDirectional.vshader");
+	AddFragmentShaderFromFile("ForwardDirectional.fshader");
 
 	// Must use it to bind attributes, but only if earlier versions of the GL.
 	//glBindAttribLocation(program, 0, "...");

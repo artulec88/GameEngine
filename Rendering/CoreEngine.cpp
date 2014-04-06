@@ -262,7 +262,7 @@ void CoreEngine::Run()
 		QueryPerformanceCounter(&t1); // start timer
 		while (unprocessingTime > frameTime)
 		{
-			previousTime = GetTime();
+			//previousTime = GetTime();
 			isRenderRequired = true;
 			if (renderer->IsCloseRequested())
 			{

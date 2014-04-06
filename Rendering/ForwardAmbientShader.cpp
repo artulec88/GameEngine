@@ -15,8 +15,8 @@ using namespace Utility;
 ForwardAmbientShader::ForwardAmbientShader(void) :
 	Shader()
 {
-	AddVertexShaderFromFile("..\\Shaders\\ForwardAmbient.vshader");
-	AddFragmentShaderFromFile("..\\Shaders\\ForwardAmbient.fshader");
+	AddVertexShaderFromFile("ForwardAmbient.vshader");
+	AddFragmentShaderFromFile("ForwardAmbient.fshader");
 
 	// Must use it to bind attributes, but only if earlier versions of the GL.
 	//glBindAttribLocation(program, 0, "");

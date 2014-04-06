@@ -279,18 +279,18 @@ void TestGame::Update(Math::Real delta)
 	{
 		acceleration += transform.GetRot().GetRight().Normalized();
 	}
-	velocity += acceleration * delta * sensitivity * 0.1;
+	velocity += acceleration * delta * sensitivity * 0.01;
 	if (AlmostEqual(acceleration.GetX(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachX(0.5, 0.0);
+		velocity.ApproachX(0.1, 0.0);
 	}
 	if (AlmostEqual(acceleration.GetY(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachY(0.5, 0.0);
+		velocity.ApproachY(0.1, 0.0);
 	}
 	if (AlmostEqual(acceleration.GetZ(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachZ(0.5, 0.0);
+		velocity.ApproachZ(0.1, 0.0);
 	}
 	velocity.Threshold(maxSpeed);
 	//velocity += acceleration * delta;

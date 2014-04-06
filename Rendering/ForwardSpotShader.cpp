@@ -15,8 +15,8 @@ using namespace Utility;
 ForwardSpotShader::ForwardSpotShader(void) :
 	Shader()
 {
-	AddVertexShaderFromFile("..\\Shaders\\ForwardSpot.vshader");
-	AddFragmentShaderFromFile("..\\Shaders\\ForwardSpot.fshader");
+	AddVertexShaderFromFile("ForwardSpot.vshader");
+	AddFragmentShaderFromFile("ForwardSpot.fshader");
 
 	// Must use it to bind attributes, but only if earlier versions of the GL.
 	//glBindAttribLocation(program, 0, "...");
