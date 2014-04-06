@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "SpotLight.h"
+#include "ForwardSpotShader.h"
 
 using namespace Rendering;
 using namespace Math;
@@ -8,10 +9,12 @@ SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
 		Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/,
 		Real cutoff /*= 0.0*/) :
-	PointLight(color, intensity, attenuation),
+	PointLight(ForwardSpotShader::GetInstance(), color, intensity, attenuation),
 	//direction(direction.Normalized()),
 	cutoff(cutoff)
 {
+	//SetShader(ForwardSpotShader::GetInstance());
+	//SetShader(ForwardPointShader::GetInstance());
 }
 
 

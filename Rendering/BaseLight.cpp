@@ -14,14 +14,6 @@ BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0
 {
 }
 
-BaseLight::BaseLight(Shader* shader, const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
-	GameComponent(),
-	color(color),
-	intensity(intensity),
-	shader(shader)
-{
-}
-
 BaseLight::~BaseLight(void)
 {
 	// TODO: Think how to deallocate resources.
@@ -29,6 +21,16 @@ BaseLight::~BaseLight(void)
 	//{
 	//	delete shader;
 	//}
+}
+
+void BaseLight::SetShader(Shader* shader)
+{
+	if (this->shader != NULL)
+	{
+		delete this->shader;
+		this->shader = NULL;
+	}
+	this->shader = shader;
 }
 
 Math::Vector3D BaseLight::GetColor() const

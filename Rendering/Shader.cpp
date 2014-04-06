@@ -23,14 +23,14 @@ Shader::Shader(void)
 
 Shader::~Shader(void)
 {
-	stdlog(Debug, LOGPLACE, "Destroying shader instance");
-	for (vector<int>::iterator it = shaders.begin(); it != shaders.end(); ++it)
-	{
-		glDetachShader(program, *it);
-		glDeleteShader(*it);
-	}
+	//stdlog(Debug, LOGPLACE, "Destroying shader instance");
+	//for (vector<int>::iterator it = shaders.begin(); it != shaders.end(); ++it)
+	//{
+	//	glDetachShader(program, *it);
+	//	glDeleteShader(*it);
+	//}
 
-	glDeleteProgram(program);
+	//glDeleteProgram(program);
 }
 
 void Shader::Bind()

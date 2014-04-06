@@ -8,12 +8,21 @@ using namespace Utility;
 
 PointLight::PointLight(const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/) :
-	BaseLight(ForwardPointShader::GetInstance(), color, intensity),
+	BaseLight(color, intensity),
 	attenuation(attenuation)
 {
 	CalculateRange();
+	SetShader(ForwardPointShader::GetInstance());
 }
 
+PointLight::PointLight(Shader* shader, const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
+		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/) :
+	BaseLight(color, intensity),
+	attenuation(attenuation)
+{
+	CalculateRange();
+	SetShader(shader);
+}
 
 PointLight::~PointLight(void)
 {

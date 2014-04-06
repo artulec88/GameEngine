@@ -24,8 +24,6 @@ protected:
 public:
 	BaseLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0);
 	virtual ~BaseLight(void);
-protected:
-	BaseLight(Shader* shader, const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -34,7 +32,7 @@ public:
 	void SetColor(const Math::Vector3D& color);
 	Math::Real GetIntensity() const;
 	void SetIntensity(Math::Real intensity);
-	//inline void SetShader(Shader* shader) { this->shader = shader; }
+	inline void SetShader(Shader* shader);
 	inline Shader* GetShader() { return this->shader; }
 	virtual void AddToRenderingEngine(Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */

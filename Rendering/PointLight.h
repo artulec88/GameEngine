@@ -22,6 +22,9 @@ public:
 	PointLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0,
 		const Attenuation& attenuation = Attenuation(0.0, 0.0, 0.0));
 	virtual ~PointLight(void);
+protected:
+	PointLight(Shader* shader, const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0,
+		const Attenuation& attenuation = Attenuation(0.0, 0.0, 0.0));
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
