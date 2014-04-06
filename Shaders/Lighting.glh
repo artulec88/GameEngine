@@ -50,12 +50,12 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
 		// specular reflection calculation begin
 		vec3 directionToEye = normalize(eyePos - worldPos);
 		
-		vec3 halfDirection = normalize(directionToEye - direction);
-		float specularFactor = dot(halfDirection, normal);
+		//vec3 halfDirection = normalize(directionToEye - direction);
+		//float specularFactor = dot(halfDirection, normal);
 		
 		// compare two vectors to find the specular
-		//vec3 reflectDirection = normalize(reflect(direction, normal));
-		//float specularFactor = dot(directionToEye, reflectDirection); // 1 if directionToEye = reflectDirection
+		vec3 reflectDirection = normalize(reflect(direction, normal));
+		float specularFactor = dot(directionToEye, reflectDirection); // 1 if directionToEye = reflectDirection
 		
 		specularFactor = pow(specularFactor, specularPower); // TODO: consider moving this inside "if" condition below
 		
