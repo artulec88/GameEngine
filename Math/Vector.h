@@ -114,6 +114,11 @@ public: // public member functions
 	Vector2D GetZX() const { return Vector2D(m_z, m_x); };
 	Vector2D GetZY() const { return Vector2D(m_z, m_y); };
 
+	void ApproachX(Real step, Real approachedValue);
+	void ApproachY(Real step, Real approachedValue);
+	void ApproachZ(Real step, Real approachedValue);
+	void Threshold(Real MaxLength);
+
 	// interpolation LERP
 	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const;
 

@@ -91,7 +91,12 @@ void Game::InitializeCameras()
 
 /* static */ void Game::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	GetGame()->MouseEvent(window, button, action, mods);
+	GetGame()->MouseButtonEvent(window, button, action, mods);
+}
+
+/* static */ void Game::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
+{
+	GetGame()->MousePosEvent(window, xPos, yPos);
 }
 
 /* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
@@ -123,7 +128,7 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	}
 }
 
-void Game::MouseEvent(GLFWwindow* window, int button, int action, int mods)
+void Game::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	stdlog(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
@@ -144,6 +149,11 @@ void Game::MouseEvent(GLFWwindow* window, int button, int action, int mods)
 	default:
 		stdlog(Warning, LOGPLACE, "Unknown action performed with the mouse");
 	}
+}
+
+void Game::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+{
+
 }
 
 void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)

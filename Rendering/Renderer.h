@@ -54,6 +54,7 @@ public: /* Non-static, non-virtual member functions */
 	unsigned int NextCamera();
 	unsigned int PrevCamera();
 	unsigned int SetCurrentCamera(unsigned int cameraIndex);
+	void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
 
 	bool IsCloseRequested() const;
 

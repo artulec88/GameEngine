@@ -30,6 +30,7 @@ public:
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	//static void CharEventCallback(GLFWwindow* window, unsigned int codepoint);
 	static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
+	static void MousePosCallback(GLFWwindow* window, double xPos, double yPos);
 	static void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset);
 /* ==================== Static functions end ==================== */
 
@@ -55,7 +56,8 @@ public:
 
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
-	virtual void MouseEvent(GLFWwindow* window, int button, int action, int mods);
+	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
 protected:

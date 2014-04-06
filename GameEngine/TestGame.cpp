@@ -7,6 +7,7 @@
 //#include "Rendering\PointLight.h"
 //#include "Rendering\SpotLight.h"
 
+#include "Math\FloatingPoint.h"
 //#include "Math\Vector.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
@@ -111,7 +112,7 @@ void TestGame::Init()
 
 	Mesh* humanMesh = new Mesh("..\\Models\\BodyMesh.obj");
 	GameNode* humanNode = new GameNode();
-	humanNode->AddComponent(new MeshRenderer(humanMesh, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+	humanNode->AddComponent(new MeshRenderer(humanMesh, new Material(new Texture("..\\Textures\\HumanSkin.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
 	humanNode->GetTransform().SetTranslation(3.0, 0.5, 3.0);
 	AddToSceneRoot(humanNode);
 
@@ -219,6 +220,13 @@ void TestGame::Input(Math::Real delta)
 
 // TODO: Remove in the future
 Math::Real temp = 0.0;
+bool forward = false;
+bool backward = false;
+bool left = false;
+bool right = false;
+Math::Vector3D velocity;
+Math::Real maxSpeed = 0.02;
+bool isMouseLocked = false;
 
 void TestGame::Update(Math::Real delta)
 {
@@ -251,6 +259,45 @@ void TestGame::Update(Math::Real delta)
 	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
+
+	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+	Math::Vector3D acceleration;
+	if (forward)
+	{
+		acceleration += transform.GetRot().GetForward().Normalized();
+	}
+	if (backward)
+	{
+		acceleration -= transform.GetRot().GetForward().Normalized();
+	}
+	if (left)
+	{
+		acceleration -= transform.GetRot().GetRight().Normalized();
+	}
+	if (right)
+	{
+		acceleration += transform.GetRot().GetRight().Normalized();
+	}
+	velocity += acceleration * delta * sensitivity * 0.1;
+	if (AlmostEqual(acceleration.GetX(), static_cast<Real>(0.0)))
+	{
+		velocity.ApproachX(0.5, 0.0);
+	}
+	if (AlmostEqual(acceleration.GetY(), static_cast<Real>(0.0)))
+	{
+		velocity.ApproachY(0.5, 0.0);
+	}
+	if (AlmostEqual(acceleration.GetZ(), static_cast<Real>(0.0)))
+	{
+		velocity.ApproachZ(0.5, 0.0);
+	}
+	velocity.Threshold(maxSpeed);
+	//velocity += acceleration * delta;
+	//velocity -= slowDownVec;
+	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
+
+	transform.SetTranslation(transform.GetPos() + velocity);
 }
 
 /**
@@ -276,19 +323,39 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	switch (key)
 	{
 	case GLFW_KEY_W:
-		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
+		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//stdlog(Debug, LOGPLACE, "Forward = %d", forward);
+
+		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_S:
-		transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
+		backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//stdlog(Debug, LOGPLACE, "Backward = %d", backward);
+
+		//direction -= transform.GetRot().GetForward().Normalized();
+		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_A:
-		transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
+		left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//stdlog(Debug, LOGPLACE, "Left = %d", left);
+
+		//direction -= transform.GetRot().GetRight().Normalized();
+		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_D:
-		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
+		right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//stdlog(Debug, LOGPLACE, "Right = %d", right);
+
+		//direction += transform.GetRot().GetRight().Normalized();
+		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_SPACE: // move up
-		transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
+		//direction += transform.GetRot().GetUp().Normalized();
+		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
+		break;
+	case GLFW_KEY_LEFT_CONTROL: // move down
+		//direction -= transform.GetRot().GetUp().Normalized();
+		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
 		break;
 	case GLFW_KEY_UP: // rotation around X axis
 		transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
@@ -314,5 +381,66 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 			currentCameraIndex = CoreEngine::GetCoreEngine()->PrevCamera();
 		}
 		break;
+	}
+}
+
+void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+{
+	stdlog(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+
+	/**
+	 * GLFW_MOUSE_BUTTON_1 = left mouse button
+	 * GLFW_MOUSE_BUTTON_2 = right mouse button
+	 * GLFW_MOUSE_BUTTON_3 = middle mouse button
+	 */
+
+	switch (action)
+	{
+	case GLFW_PRESS:
+		isMouseLocked = ! isMouseLocked;
+		stdlog(Info, LOGPLACE, "Mouse is locked");
+		stdlog(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		break;
+	case GLFW_RELEASE:
+		stdlog(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		break;
+	default:
+		stdlog(Warning, LOGPLACE, "Unknown action performed with the mouse");
+	}
+}
+
+void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+{
+	if (! isMouseLocked)
+	{
+		return;
+	}
+	//stdlog(Debug, LOGPLACE, "Cursor position = %.2f, %.2f", xPos, yPos);
+
+	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
+	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
+	Vector2D centerPosition(static_cast<Real>(width) / 2, static_cast<Real>(height) / 2);
+	Vector2D deltaPosition(static_cast<Real>(xPos), static_cast<Real>(yPos));
+	deltaPosition -= centerPosition;
+	
+	bool rotX = ! AlmostEqual(deltaPosition.GetX(), static_cast<Real>(0.0));
+	bool rotY = ! AlmostEqual(deltaPosition.GetY(), static_cast<Real>(0.0));
+
+	if (rotX)
+	{
+		const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+		transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));
+	}
+	if (rotY)
+	{
+		const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+		transform.Rotate(transform.GetRot().GetRight(), Angle(deltaPosition.GetY() * sensitivity));
+	}
+
+	if (rotX || rotY)
+	{
+		CoreEngine::GetCoreEngine()->SetCursorPos(centerPosition.GetX(), centerPosition.GetY());
 	}
 }

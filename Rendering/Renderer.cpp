@@ -140,6 +140,7 @@ void Renderer::Init(int width, int height, std::string title)
 	glfwSetKeyCallback(window, &Game::KeyEventCallback);
 	//glfwSetCharCallback(window, Game::CharEventCallback);
 	//glfwSetMousePosCallback(window, Game::MouseMotionCallback);
+	glfwSetCursorPosCallback(window, &Game::MousePosCallback);
 	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
 	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
 

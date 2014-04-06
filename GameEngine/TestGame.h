@@ -25,6 +25,8 @@ public:
 	virtual void Update(Math::Real delta);
 
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
+	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

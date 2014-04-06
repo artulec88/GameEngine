@@ -59,6 +59,7 @@ public:
 	
 	int GetWindowWidth() const { return this->windowWidth; };
 	int GetWindowHeight() const { return this->windowHeight; };
+	void SetCursorPos(Math::Real xPos, Math::Real yPos) { this->renderer->SetCursorPos(xPos, yPos); }
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
 protected:

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Vector.h"
 #include "Quaternion.h"
+#include "FloatingPoint.h"
 #include <math.h>
 
 using namespace Math;
@@ -50,12 +51,22 @@ Real Vector2D::LengthSquared() const
 
 Vector2D Vector2D::Normalized() const
 {
-	return (*this) / Length();
+	Real length = LengthSquared();
+	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	{
+		return (*this);
+	}
+	return (*this) / static_cast<Real>(sqrt(length));
 }
 
 void Vector2D::Normalize()
 {
-	(*this) = (*this) / Length();
+	Real length = LengthSquared();
+	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	{
+		return;
+	}
+	*this = (*this) / static_cast<Real>(sqrt(length));
 }
 
 Real Vector2D::Cross(const Vector2D& v) const
@@ -177,12 +188,22 @@ Real Vector3D::LengthSquared() const
 
 Vector3D Vector3D::Normalized() const
 {
-	return (*this) / Length();
+	Real length = LengthSquared();
+	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	{
+		return (*this);
+	}
+	return (*this) / static_cast<Real>(sqrt(length));
 }
 
 void Vector3D::Normalize()
 {
-	(*this) = (*this) / Length();
+	Real length = LengthSquared();
+	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	{
+		return;
+	}
+	(*this) = (*this) / static_cast<Real>(sqrt(length));
 }
 
 Real Vector3D::Dot(const Vector3D& v) const
@@ -286,4 +307,76 @@ inline bool Vector3D::operator==(const Vector3D& v) const
 Vector3D Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
 {
 	return ((vec - (*this)) * lerpFactor) + (*this);
+}
+
+void Vector3D::ApproachX(Real step, Real approachedValue)
+{
+	if (m_x > approachedValue)
+	{
+		m_x -= step;
+		if (m_x < approachedValue)
+		{
+			m_x = approachedValue;
+		}
+	}
+	else
+	{
+		m_x += step;
+		if (m_x > approachedValue)
+		{
+			m_x = approachedValue;
+		}
+	}
+}
+
+void Vector3D::ApproachY(Real step, Real approachedValue)
+{
+	if (m_y > approachedValue)
+	{
+		m_y -= step;
+		if (m_y < approachedValue)
+		{
+			m_y = approachedValue;
+		}
+	}
+	else
+	{
+		m_y += step;
+		if (m_y > approachedValue)
+		{
+			m_y = approachedValue;
+		}
+	}
+}
+
+void Vector3D::ApproachZ(Real step, Real approachedValue)
+{
+	if (m_z > approachedValue)
+	{
+		m_z -= step;
+		if (m_z < approachedValue)
+		{
+			m_z = approachedValue;
+		}
+	}
+	else
+	{
+		m_z += step;
+		if (m_z > approachedValue)
+		{
+			m_z = approachedValue;
+		}
+	}
+}
+
+void Vector3D::Threshold(Real maxLength)
+{
+	Real length = Length();
+	if (length > maxLength)
+	{
+		Real quotient = length / maxLength;
+		m_x /= quotient;
+		m_y /= quotient;
+		m_z /= quotient;
+	}
 }
