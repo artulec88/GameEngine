@@ -135,14 +135,14 @@ void TestGame::Init()
 	for (int i = 0; i < 1; ++i)
 	{
 		spotLightNode[i] = new GameNode();
-		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(1.0, 1.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(0.0, 0.0f, 1.0f), 0.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
 		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2, 1, 0), Angle(90)));
 		AddToSceneRoot(spotLightNode[i]);
 	}
 
 	AddToSceneRoot(planeNode);
-	//AddToSceneRoot(directionalLightNode);
+	AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetTranslation(2.0, 2.0, 2.0);
