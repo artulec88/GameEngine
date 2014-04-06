@@ -31,8 +31,12 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	const int humanCount;
+	Rendering::GameNode** humanNodes;
 	Rendering::GameNode* directionalLightNode;
+	const int pointLightCount;
 	Rendering::GameNode** pointLightNode;
+	const int spotLightCount;
 	Rendering::GameNode** spotLightNode;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
