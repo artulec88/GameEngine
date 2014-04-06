@@ -8,6 +8,12 @@ struct BaseLight
 	float intensity;
 };
 
+struct DirectionalLight
+{
+	BaseLight base;
+	vec3 direction;
+};
+
 // defines how quickly the point light fades off with the raising distance between source and target
 struct Attenuation
 {
@@ -97,4 +103,9 @@ vec4 CalcSpotLight(SpotLight spotLight, vec3 normal, vec3 worldPos)
 	}
 	
 	return color;
+}
+
+vec4 CalcDirectionalLight(DirectionalLight directionalLight, vec3 normal, vec3 worldPos)
+{
+	return CalcLight(directionalLight.base, -directionalLight.direction, normal, worldPos);
 }
