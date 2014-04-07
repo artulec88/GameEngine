@@ -41,3 +41,23 @@ bool Angle::operator!=(const Angle& angle) const
 {
 	return (!((*this) == angle));
 }
+
+bool Angle::operator>(const Angle& angle) const
+{
+	return (GetAngleInDegrees() > angle.GetAngleInDegrees());
+}
+
+bool Angle::operator>=(const Angle& angle) const
+{
+	return (! (GetAngleInDegrees() < angle.GetAngleInDegrees()));
+}
+
+bool Angle::operator<(const Angle& angle) const
+{
+	return (GetAngleInDegrees() < angle.GetAngleInDegrees());
+}
+
+bool Angle::operator<=(const Angle& angle) const
+{
+	return (! (GetAngleInDegrees() > angle.GetAngleInDegrees()));
+}
