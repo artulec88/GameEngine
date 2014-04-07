@@ -20,6 +20,10 @@ namespace Math
     bool IsInDegrees() const { return isInDegrees; }
     bool operator==(const Angle& angle) const;
     bool operator!=(const Angle& angle) const;
+    bool operator>(const Angle& angle) const;
+    bool operator>=(const Angle& angle) const;
+    bool operator<(const Angle& angle) const;
+    bool operator<=(const Angle& angle) const;
     
   private: // non-static member variables
     Real angle;
