@@ -13,6 +13,18 @@
 namespace Rendering
 {
 
+struct TypedData
+{
+	std::string name;
+	std::string type;
+};
+
+struct UniformStruct
+{
+	std::string name;
+	std::vector<TypedData> memberNames;
+};
+
 class RENDERING_API Shader
 {
 /* ==================== Static functions begin ==================== */
@@ -28,6 +40,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	void AddAllUniforms(const std::string& shaderText);
 	void AddUniform(const std::string& uniform);
 	void SetUniformi(const std::string& name, int value);
 	void SetUniformf(const std::string& name, Math::Real value);
@@ -36,6 +49,8 @@ public:
 
 	virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer);
 
+	void AddVertexShader(const std::string& vertexShaderText);
+	void AddFragmentShader(const std::string& fragmentShaderText);
 	void AddVertexShaderFromFile(const std::string& fileName);
 	void AddFragmentShaderFromFile(const std::string& fileName);
 	//void AddGeometryShaderFromFile(const std::string& fileName);
@@ -47,11 +62,19 @@ public:
 protected:
 	std::string LoadShader(const std::string& fileName) const; // TODO: Consider making this function static
 	void AddProgram(const std::string& text, GLenum type);
+private:
+	void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
+	std::vector<UniformStruct> FindUniformStructs(const std::string& shaderText) const;
+	std::string FindUniformStructName(const std::string& structStartToOpeningBrace) const;
+	std::vector<TypedData> FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
+	bool IsUniformPresent(const std::string& uniformName, std::map<std::string, unsigned int>::const_iterator& itr) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	int program;
+	std::vector<std::string> uniformNames;
+	std::vector<std::string> uniformTypes;
 	std::map<std::string, unsigned int> uniforms;
 	std::vector<int> shaders;
 /* ==================== Non-static member variables end ==================== */

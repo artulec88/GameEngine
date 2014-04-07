@@ -122,7 +122,11 @@ string Shader::LoadShader(const std::string& fileName) const
 			//stdlog(Debug, LOGPLACE, "#Include directive found in Line = \"%s\"", line.c_str());
 
 			std::vector<std::string> tokens;
-			CutToTokens(line, tokens);
+			CutToTokens(line, tokens, ' ');
+			for (int i = 0; i < tokens.size(); ++i)
+			{
+				std::cout << i << "):\t" << tokens[i] << std::endl;
+			}
 			ASSERT(tokens.size() > 1);
 			if (tokens.size() <= 1)
 			{
@@ -145,6 +149,141 @@ string Shader::LoadShader(const std::string& fileName) const
 	return output;
 }
 
+void Shader::AddAllUniforms(const std::string& shaderText)
+{
+	const std::string UNIFORM_KEY = "uniform";
+	std::vector<UniformStruct> structs = FindUniformStructs(shaderText);
+	
+	unsigned int uniformLocation = shaderText.find(UNIFORM_KEY);
+	while(uniformLocation != std::string::npos)
+	{
+		bool isCommented = false;
+		unsigned int lastLineEnd = shaderText.rfind(";", uniformLocation);
+		if(lastLineEnd != std::string::npos)
+		{
+			std::string potentialCommentSection = shaderText.substr(lastLineEnd,uniformLocation - lastLineEnd);
+			isCommented = potentialCommentSection.find("//") != std::string::npos;
+		}
+		if(!isCommented)
+		{
+			unsigned int begin = uniformLocation + UNIFORM_KEY.length();
+			unsigned int end = shaderText.find(";", begin);
+			std::string uniformLine = shaderText.substr(begin + 1, end-begin - 1);
+			
+			begin = uniformLine.find(" ");
+			std::string uniformName = uniformLine.substr(begin + 1);
+			std::string uniformType = uniformLine.substr(0, begin);
+			
+			uniformNames.push_back(uniformName);
+			uniformTypes.push_back(uniformType);
+			AddUniform(uniformName, uniformType, structs);
+		}
+		uniformLocation = shaderText.find(UNIFORM_KEY, uniformLocation + UNIFORM_KEY.length());
+	}
+}
+
+std::vector<UniformStruct> Shader::FindUniformStructs(const std::string& shaderText) const
+{
+	const std::string STRUCT_KEY = "struct";
+	std::vector<UniformStruct> result;
+	
+	unsigned int structLocation = shaderText.find(STRUCT_KEY);
+	while(structLocation != std::string::npos)
+	{
+		structLocation += STRUCT_KEY.length() + 1; //Ignore the struct keyword and space
+		
+		unsigned int braceOpening = shaderText.find("{", structLocation);
+		unsigned int braceClosing = shaderText.find("}", braceOpening);
+		
+		UniformStruct newStruct;
+		newStruct.name = FindUniformStructName(shaderText.substr(structLocation, braceOpening - structLocation));
+		newStruct.memberNames = FindUniformStructComponents(shaderText.substr(braceOpening, braceClosing - braceOpening));
+		
+		result.push_back(newStruct);
+		structLocation = shaderText.find(STRUCT_KEY, structLocation);
+	}
+	return result;
+}
+
+std::string Shader::FindUniformStructName(const std::string& structStartToOpeningBrace) const
+{
+	std::vector<std::string> tokens;
+	Utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
+	return tokens[0];
+
+	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
+}
+
+std::vector<TypedData> Shader::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
+{
+	const char charsToIgnore[] = {' ', '\n', '\t', '{'};
+	const size_t UNSIGNED_NEG_ONE = (size_t)-1;
+	
+	std::vector<TypedData> result;
+	std::vector<std::string> structLines;
+	Utility::CutToTokens(openingBraceToClosingBrace, structLines, ';');
+	
+	for(unsigned int i = 0; i < structLines.size(); ++i)
+	{
+		size_t nameBegin = UNSIGNED_NEG_ONE;
+		size_t nameEnd = UNSIGNED_NEG_ONE;
+		for(unsigned int j = 0; j < structLines[i].length(); ++j)
+		{
+			bool isIgnoreableCharacter = false;
+			for(unsigned int k = 0; k < sizeof(charsToIgnore) / sizeof(char); ++k)
+			{
+				if(structLines[i][j] == charsToIgnore[k])
+				{
+					isIgnoreableCharacter = true;
+					break;
+				}
+			}
+			if(nameBegin == UNSIGNED_NEG_ONE && isIgnoreableCharacter == false)
+			{
+				nameBegin = j;
+			}
+			else if(nameBegin != UNSIGNED_NEG_ONE && isIgnoreableCharacter)
+			{
+				nameEnd = j;
+				break;
+			}
+		}
+		if(nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
+			continue;
+		
+		TypedData newData;
+		newData.type = structLines[i].substr(nameBegin, nameEnd - nameBegin);
+		newData.name = structLines[i].substr(nameEnd + 1);
+		
+		result.push_back(newData);
+	}
+	return result;
+}
+
+void Shader::AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs)
+{
+	bool addThis = true;
+	for(unsigned int i = 0; i < structs.size(); ++i)
+	{
+		if(structs[i].name.compare(uniformType) == 0)
+		{
+			addThis = false;
+			for(unsigned int j = 0; j < structs[i].memberNames.size(); ++j)
+			{
+				AddUniform(uniformName + "." + structs[i].memberNames[j].name, structs[i].memberNames[j].type, structs);
+			}
+		}
+	}
+	if(! addThis)
+	{
+		return;
+	}
+	
+	unsigned int location = glGetUniformLocation(program, uniformName.c_str());
+	ASSERT(location != INVALID_VALUE);
+	uniforms.insert(std::pair<std::string, unsigned int>(uniformName, location));
+}
+
 void Shader::AddUniform(const std::string& uniform)
 {
 	//stdlog(Info, LOGPLACE, "Adding uniform location \"%s\"", uniform.c_str());
@@ -154,36 +293,72 @@ void Shader::AddUniform(const std::string& uniform)
 	if (uniformLocation == INVALID_VALUE)
 	{
 		stdlog(Error, LOGPLACE, "Could not find uniform \"%s\"", uniform.c_str());
-		return; // TODO: Throw an exception?
+		exit(EXIT_FAILURE); // TODO: Throw an exception?
 	}
 
 	uniforms.insert(std::pair<std::string, unsigned int>(uniform, uniformLocation));
 }
 
+bool Shader::IsUniformPresent(const std::string& uniformName, std::map<std::string, unsigned int>::const_iterator& itr) const
+{
+	itr = uniforms.find(uniformName);
+	if (itr == uniforms.end())
+	{
+		stdlog(Error, LOGPLACE, "Uniform \"%s\" has not been found", uniformName.c_str());
+		return false;
+	}
+	return true;
+}
+
 void Shader::SetUniformi(const std::string& name, int value)
 {
-	glUniform1i(uniforms.at(name), value);
+	std::map<std::string, unsigned int>::const_iterator itr;
+	if (IsUniformPresent(name, itr))
+	{
+		glUniform1i(itr->second, value);
+	}
 }
 
 void Shader::SetUniformf(const std::string& name, float value)
 {
-	glUniform1f(uniforms.at(name), value);
+	std::map<std::string, unsigned int>::const_iterator itr;
+	if (IsUniformPresent(name, itr))
+	{
+		glUniform1f(itr->second, value);
+	}
 }
 
 void Shader::SetUniform(const std::string& name, const Math::Vector3D& vector)
 {
-	glUniform3f(uniforms.at(name), vector.GetX(), vector.GetY(), vector.GetZ());
+	std::map<std::string, unsigned int>::const_iterator itr;
+	if (IsUniformPresent(name, itr))
+	{
+		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
+	}
 }
 
 void Shader::SetUniform(const std::string& name, const Math::Matrix4D& matrix)
 {
-	//stdlog(Warning, LOGPLACE, "This function does not work for the moment");
-	glUniformMatrix4fv(uniforms.at(name), 1, GL_FALSE, &(matrix[0][0]));
+	std::map<std::string, unsigned int>::const_iterator itr;
+	if (IsUniformPresent(name, itr))
+	{
+		glUniformMatrix4fv(itr->second, 1, GL_FALSE, &(matrix[0][0]));
+	}
 }
 
 void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer)
 {
 	stdlog(Warning, LOGPLACE, "The function is not implemented");
+}
+
+void Shader::AddVertexShader(const std::string& vertexShaderText)
+{
+	AddProgram(vertexShaderText, GL_VERTEX_SHADER);
+}
+
+void Shader::AddFragmentShader(const std::string& fragmentShaderText)
+{
+	AddProgram(fragmentShaderText, GL_FRAGMENT_SHADER);
 }
 
 void Shader::AddVertexShaderFromFile(const std::string& fileName)

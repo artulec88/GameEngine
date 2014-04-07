@@ -72,5 +72,6 @@ namespace Utility
 	 * @param str string containing tokens separated by spaces
 	 * @param tokens vector to which the tokes are added
 	 */
-	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens);
+	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, char delim);
+	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, char* delim, int delimCount);
 } /* end namespace Utility */

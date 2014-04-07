@@ -15,17 +15,28 @@ using namespace Utility;
 ForwardDirectionalShader::ForwardDirectionalShader(void) :
 	Shader()
 {
-	AddVertexShaderFromFile("ForwardDirectional.vshader");
-	AddFragmentShaderFromFile("ForwardDirectional.fshader");
+	std::string vertexShaderText = LoadShader("ForwardDirectional.vshader");
+	std::string fragmentShaderText = LoadShader("ForwardDirectional.fshader");
+
+	AddVertexShader(vertexShaderText);
+	AddFragmentShader(fragmentShaderText);
 
 	// Must use it to bind attributes, but only if earlier versions of the GL.
-	//glBindAttribLocation(program, 0, "...");
-	//glBindAttribLocation(program, 1, "...");
+	//glBindAttribLocation(program, 0, "");
+	//glBindAttribLocation(program, 1, "");
 
 	if (! Compile())
 	{
 		stdlog(Error, LOGPLACE, "Error while compiling ForwardDirectionalShader shader");
 	}
+
+	//AddAllUniforms(vertexShaderText);
+	//AddAllUniforms(fragmentShaderText);
+
+	// Must use it to bind attributes, but only if earlier versions of the GL.
+	//glBindAttribLocation(program, 0, "...");
+	//glBindAttribLocation(program, 1, "...");
+
 	AddUniform("model");
 	AddUniform("MVP");
 	AddUniform("specularIntensity");

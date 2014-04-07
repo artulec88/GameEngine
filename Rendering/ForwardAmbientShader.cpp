@@ -15,8 +15,11 @@ using namespace Utility;
 ForwardAmbientShader::ForwardAmbientShader(void) :
 	Shader()
 {
-	AddVertexShaderFromFile("ForwardAmbient.vshader");
-	AddFragmentShaderFromFile("ForwardAmbient.fshader");
+	std::string vertexShaderText = LoadShader("ForwardAmbient.vshader");
+	std::string fragmentShaderText = LoadShader("ForwardAmbient.fshader");
+	
+	AddVertexShader(vertexShaderText);
+	AddFragmentShader(fragmentShaderText);
 
 	// Must use it to bind attributes, but only if earlier versions of the GL.
 	//glBindAttribLocation(program, 0, "");
@@ -26,8 +29,12 @@ ForwardAmbientShader::ForwardAmbientShader(void) :
 	{
 		stdlog(Error, LOGPLACE, "Error while compiling ForwardAmbientShader shader");
 	}
-	AddUniform("MVP");
-	AddUniform("ambientIntensity");
+
+	AddAllUniforms(vertexShaderText);
+	AddAllUniforms(fragmentShaderText);
+
+	//AddUniform("MVP");
+	//AddUniform("ambientIntensity");
 }
 
 
