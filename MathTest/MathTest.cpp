@@ -22,10 +22,10 @@ void ReportError(const std::string& reportStr)
 	stdlog(Error, LOGPLACE, "Test #%d FAILED. %s", testNumber, reportStr.c_str());
 }
 
-void TestReport(bool error, const std::string& reportErrorStr)
+void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
 {
 	testNumber++;
-	if (error == true)
+	if (statusCode == false)
 	{
 		ReportError(reportErrorStr);
 	}
@@ -69,12 +69,27 @@ int main (int argc, char* argv[])
 		Angle angle2(90.0, true);
 		Angle angle3(static_cast<Real>(M_PI / 2.0), false); // angle1 == angle2 == angle3
 		Angle angle4(static_cast<Real>(M_PI / 2.0), true); // angle4 is different than angle1, angle2, angle3
-		TestReport(angle1 != angle2, "The comparison operators of the Angle class are incorrect. angle1 != angle2");
-		TestReport(angle1 != angle3, "The comparison operators of the Angle class are incorrect. angle1 != angle3");
-		TestReport(angle2 != angle3, "The comparison operators of the Angle class are incorrect. angle2 != angle3");
-		TestReport(angle1 == angle4, "The comparison operators of the Angle class are incorrect. angle1 == angle4");
-		TestReport(angle2 == angle4, "The comparison operators of the Angle class are incorrect. angle2 == angle4");
-		TestReport(angle3 == angle4, "The comparison operators of the Angle class are incorrect. angle3 == angle4");
+		TestReport(angle1 == angle2, "The comparison operators of the Angle class are incorrect. angle1 == angle2");
+		TestReport(angle1 == angle3, "The comparison operators of the Angle class are incorrect. angle1 == angle3");
+		TestReport(angle2 == angle3, "The comparison operators of the Angle class are incorrect. angle2 == angle3");
+		TestReport(angle1 != angle4, "The comparison operators of the Angle class are incorrect. angle1 != angle4");
+		TestReport(angle2 != angle4, "The comparison operators of the Angle class are incorrect. angle2 != angle4");
+		TestReport(angle3 != angle4, "The comparison operators of the Angle class are incorrect. angle3 != angle4");
+		Angle angle5(45.0);
+		Angle angle6(static_cast<Real>(M_PI / 4.0), false); // angle5 is equal to angle6
+		TestReport(angle1 > angle5, "The comparison operators of the Angle class are incorrect. angle1 > angle5");
+		TestReport(angle1 > angle6, "The comparison operators of the Angle class are incorrect. angle1 > angle6");
+		TestReport(angle1 >= angle5, "The comparison operators of the Angle class are incorrect. angle1 >= angle5");
+		TestReport(angle1 >= angle6, "The comparison operators of the Angle class are incorrect. angle1 >= angle6");
+		TestReport(angle5 < angle1, "The comparison operators of the Angle class are incorrect. angle5 < angle1");
+		TestReport(angle6 < angle1, "The comparison operators of the Angle class are incorrect. angle6 < angle1");
+		TestReport(angle5 <= angle1, "The comparison operators of the Angle class are incorrect. angle5 <= angle1");
+		TestReport(angle6 <= angle1, "The comparison operators of the Angle class are incorrect. angle6 <= angle1");
+		TestReport(angle5 == angle6, "The comparison operators of the Angle class are incorrect. angle5 == angle6");
+		TestReport(angle5 >= angle6, "The comparison operator of the Angle class are incorrect. angle5 >= angle6");
+		TestReport(angle5 <= angle6, "The comparison operator of the Angle class are incorrect. angle5 <= angle6");
+		TestReport(angle6 >= angle5, "The comparison operator of the Angle class are incorrect. angle6 >= angle5");
+		TestReport(angle6 <= angle5, "The comparison operator of the Angle class are incorrect. angle6 <= angle5");
 	}
 	/* ==================== ANGLE TEST #1 end ==================== */
 
