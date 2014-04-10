@@ -132,18 +132,6 @@
     <ClInclude Include="MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ForwardAmbientShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ForwardDirectionalShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ForwardPointShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ForwardSpotShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MappedValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -225,18 +213,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForwardAmbientShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForwardDirectionalShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForwardPointShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ForwardSpotShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IndexedModel.cpp">

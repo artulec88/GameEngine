@@ -29,8 +29,6 @@ public:
 	virtual void AddToRenderingEngine(Renderer* renderer);
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();
-
-protected:
 	const Transform& GetTransform() const;
 /* ==================== Non-static member functions end ==================== */
 

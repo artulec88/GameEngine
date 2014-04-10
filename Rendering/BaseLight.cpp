@@ -16,6 +16,7 @@ BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0
 
 BaseLight::~BaseLight(void)
 {
+	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
 	//if (shader == NULL)
 	//{
@@ -25,6 +26,7 @@ BaseLight::~BaseLight(void)
 
 void BaseLight::SetShader(Shader* shader)
 {
+	// TODO: delete shader if it's not referenced by any other object
 	if (this->shader != NULL)
 	{
 		delete this->shader;

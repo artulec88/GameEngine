@@ -4,18 +4,23 @@
 #include "GameNode.h"
 #include "Camera.h"
 #include "BaseLight.h"
+#include "MappedValues.h"
+#include "Material.h"
+#include "Transform.h"
+#include "Shader.h"
 //#include "Utility\Singleton.h"
 
 #include "Math\Vector.h"
 
 #include <string>
 #include <vector>
+#include <map>
 
 namespace Rendering
 {
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit
-class RENDERING_API Renderer
+class RENDERING_API Renderer : public MappedValues
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -33,13 +38,18 @@ private:
 	unsigned int currentCameraIndex;
 	Camera* currentCamera;
 	
+	Shader* defaultShader;
 	std::vector<BaseLight*> lights;
 	std::vector<Camera*> cameras;
+	std::map<std::string, unsigned int> samplerMap;
 /* ==================== Non-static member variables end ==================== */
 
 public: /* constructors and destructors */
 	Renderer(int width, int height, std::string title);
-	~Renderer(void);
+	virtual ~Renderer(void);
+private:
+	Renderer(const Renderer& renderer) {} // don't implement
+	void operator=(const Renderer& renderer) {} // don't implement
 
 public: /* Non-static, non-virtual member functions */
 	//GLFWwindow* GetWindow() const { return this->window; };
@@ -55,6 +65,9 @@ public: /* Non-static, non-virtual member functions */
 	unsigned int PrevCamera();
 	unsigned int SetCurrentCamera(unsigned int cameraIndex);
 	void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
+	
+	unsigned int GetSamplerSlot(const std::string& samplerName) { /* TODO: Add assertions and checks */ return samplerMap[samplerName]; }
+	void UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType);
 
 	bool IsCloseRequested() const;
 

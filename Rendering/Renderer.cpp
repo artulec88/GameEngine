@@ -5,7 +5,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "ForwardAmbientShader.h"
+//#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
@@ -30,13 +30,16 @@ Renderer::Renderer(int width, int height, std::string title) :
 		GET_CONFIG_VALUE("ambientLight_z", "ambientLight_zDefault", 0.02f)),
 	currentLight(NULL),
 	currentCameraIndex(0),
-	currentCamera(NULL)
+	currentCamera(NULL),
+	defaultShader(NULL)
 {
 	stdlog(Debug, LOGPLACE, "Creating Renderer instance started");
 	stdlog(Notice, LOGPLACE, "OpenGL version = %s", GetOpenGLVersion().c_str());
 	
 	Init(width, height, title);
 
+	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
+	AddVector3D("ambientIntensity", ambientLight);
 
 	/* ==================== Creating cameras begin ==================== */
 	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
@@ -157,6 +160,8 @@ void Renderer::Init(int width, int height, std::string title)
 
 	InitGraphics();
 
+	defaultShader = new Shader("ForwardAmbient");
+
 	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
 	
 	/* ==================== Creating directional lights begin ==================== */
@@ -243,7 +248,7 @@ void Renderer::Render(GameNode& gameNode)
 	//currentCamera->Activate();
 
 	// Ambient rendering
-	gameNode.Render(ForwardAmbientShader::GetInstance(), this);
+	gameNode.Render(defaultShader, this);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
@@ -344,4 +349,10 @@ std::string Renderer::GetOpenGLVersion()
 bool Renderer::IsCloseRequested() const
 {
 	return glfwWindowShouldClose(window);
+}
+
+void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType)
+{
+	//throw uniformType + " is not supported by the rendering engine";
+	stdlog(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName, uniformType);
 }

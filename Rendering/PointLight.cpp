@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "PointLight.h"
-#include "ForwardPointShader.h"
+#include "Shader.h"
 #include "Utility\Config.h"
 
 using namespace Rendering;
@@ -12,7 +12,7 @@ PointLight::PointLight(const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 
 	attenuation(attenuation)
 {
 	CalculateRange();
-	SetShader(ForwardPointShader::GetInstance());
+	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "pointLightShader_default", "ForwardPoint")));
 }
 
 PointLight::PointLight(Shader* shader, const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,

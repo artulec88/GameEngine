@@ -1,5 +1,5 @@
 #include "StdAfx.h"
-#include "ForwardSpotShader.h"
+//#include "ForwardSpotShader.h"
 #include "SpotLight.h"
 #include "Utility\Log.h"
 

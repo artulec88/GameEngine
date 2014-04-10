@@ -2,6 +2,10 @@
 
 #include <vector>
 #include <string>
+#include <algorithm> 
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 #ifdef UTILITY_EXPORTS
 #define UTILITY_API __declspec(dllexport)
@@ -61,6 +65,17 @@ namespace Utility
 		DevNull = 100
 	}; /* end enum LogLevel */
 
+
+	// trim from start
+	//void UTILITY_API LeftTrim(const std::string& s, std::string& result);
+	std::string& LeftTrim(std::string& s);
+	// trim from end
+	//void UTILITY_API RightTrim(const std::string& s, std::string& result);
+	std::string& RightTrim(std::string& s);
+	// trim from both ends
+	//void UTILITY_API Trim(const std::string& s, std::string& result);
+	std::string& Trim(std::string& s);
+
 	/**
 	 * @brief Cut the string into tokens.
 	 *
@@ -72,6 +87,6 @@ namespace Utility
 	 * @param str string containing tokens separated by spaces
 	 * @param tokens vector to which the tokes are added
 	 */
-	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, char delim);
-	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, char* delim, int delimCount);
+	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim);
+	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, int delimCount);
 } /* end namespace Utility */

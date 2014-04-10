@@ -1,4 +1,4 @@
-uniform vec3 eyePos; // camera position
+uniform vec3 C_eyePos; // camera position
 uniform float specularIntensity;
 uniform float specularPower;
 
@@ -48,7 +48,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
 		diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
 		
 		// specular reflection calculation begin
-		vec3 directionToEye = normalize(eyePos - worldPos);
+		vec3 directionToEye = normalize(C_eyePos - worldPos);
 		
 		//vec3 halfDirection = normalize(directionToEye - direction);
 		//float specularFactor = dot(halfDirection, normal);

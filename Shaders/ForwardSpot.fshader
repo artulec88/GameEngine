@@ -7,11 +7,11 @@ in vec3 worldPos0;
 
 out vec4 fragColor;
 
-uniform sampler2D diffuseSampler;
-uniform SpotLight spotLight;
+uniform sampler2D diffuse;
+uniform SpotLight R_spotLight;
 
 void main()
 {
-	fragColor = texture2D(diffuseSampler, texCoord0.xy) *
-		CalcSpotLight(spotLight, normalize(normal0), worldPos0);
+	fragColor = texture2D(diffuse, texCoord0.xy) *
+		CalcSpotLight(R_spotLight, normalize(normal0), worldPos0);
 }

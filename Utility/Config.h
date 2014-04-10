@@ -9,9 +9,11 @@
 #include <map>
 
 #ifdef _DEBUG
-#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Config::Get(cfgName, Config::Get(cfgDefName, defValue))
+#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Utility::Config::Get(cfgName, Utility::Config::Get(cfgDefName, defValue))
+#define GET_CONFIG_VALUE_STR(cfgName, cfgDefName, defValue) Utility::Config::Get<std::string>(cfgName, Utility::Config::Get<std::string>(cfgDefName, defValue))
 #else
-#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Config::Get(cfgName, defValue)
+#define GET_CONFIG_VALUE(cfgName, cfgDefName, defValue) Utility::Config::Get(cfgName, defValue)
+#define GET_CONFIG_VALUE_STR(cfgName, cfgDefName, defValue) Utility::Config::Get<std::string>(cfgName, defValue)
 #endif
 
 namespace Utility
