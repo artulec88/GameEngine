@@ -3,9 +3,7 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
-//#include "Rendering\DirectionalLight.h"
-//#include "Rendering\PointLight.h"
-//#include "Rendering\SpotLight.h"
+#include "Rendering\LookAtComponent.h"
 
 #include "Math\FloatingPoint.h"
 //#include "Math\Vector.h"
@@ -121,10 +119,13 @@ void TestGame::Init()
 	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	Mesh* monkeyMesh1 = new Mesh("..\\Models\\monkey.obj");
-	GameNode* monkeyNode = new GameNode();
-	monkeyNode->AddComponent(new MeshRenderer(monkeyMesh1, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
-	monkeyNode->GetTransform().SetTranslation(5.0, 1.0, 15.0);
-	AddToSceneRoot(monkeyNode);
+	GameNode* monkeyNode1 = new GameNode();
+	monkeyNode1->AddComponent(new MeshRenderer(monkeyMesh1, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
+	monkeyNode1->GetTransform().SetTranslation(5.0, 1.0, 15.0);
+	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
+	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
+	monkeyNode1->AddComponent(new LookAtComponent());
+	AddToSceneRoot(monkeyNode1);
 	
 	Mesh* monkeyMesh2 = new Mesh("..\\Models\\monkey.obj"); // this texture should already be loaded
 	GameNode* monkeyNode2 = new GameNode();
@@ -202,7 +203,8 @@ void TestGame::Init()
 		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, Camera::defaultNearPlane);
 		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, Camera::defaultFarPlane);
 		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
-		testMesh2->AddChild(cameraNodes[i]);
+		//testMesh2->AddChild(cameraNodes[i]);
+		AddToSceneRoot(cameraNodes[i]);
 	}
 
 	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
@@ -241,7 +243,7 @@ void TestGame::Init()
 
 void TestGame::Input(Math::Real delta)
 {
-	GetRootGameNode().Input(delta);
+	//GetRootGameNode().Input(delta);
 }
 
 // TODO: Remove in the future
@@ -250,6 +252,8 @@ bool forward = false;
 bool backward = false;
 bool left = false;
 bool right = false;
+bool up = false;
+bool down = false;
 Math::Vector3D velocity;
 Math::Real maxSpeed = 0.02;
 bool isMouseLocked = false;
@@ -304,6 +308,14 @@ void TestGame::Update(Math::Real delta)
 	if (right)
 	{
 		acceleration += transform.GetRot().GetRight().Normalized();
+	}
+	if (up)
+	{
+		acceleration += transform.GetRot().GetUp().Normalized();
+	}
+	if (down)
+	{
+		acceleration -= transform.GetRot().GetUp().Normalized();
 	}
 	velocity += acceleration * delta * sensitivity * 0.01;
 	if (AlmostEqual(acceleration.GetX(), static_cast<Real>(0.0)))
@@ -376,10 +388,12 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_SPACE: // move up
+		up = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//direction += transform.GetRot().GetUp().Normalized();
 		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
 		break;
 	case GLFW_KEY_LEFT_CONTROL: // move down
+		down = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//direction -= transform.GetRot().GetUp().Normalized();
 		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
 		break;

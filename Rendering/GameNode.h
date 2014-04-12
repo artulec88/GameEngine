@@ -15,6 +15,11 @@ class CoreEngine;
 
 class RENDERING_API GameNode
 {
+/* ==================== Static variables begin ==================== */
+private:
+	static int gameNodeCount; // just for easier debugging purposes
+/* ==================== Static variables end ==================== */
+
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	GameNode();
@@ -23,6 +28,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	int GetID() const { return this->ID; }; // just for easier debugging purposes
 	GameNode* AddChild(GameNode* child);
 	GameNode* AddComponent(GameComponent* component);
 	void Input(Math::Real delta);
@@ -37,6 +43,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	int ID; // just for easier debugging purposes
 	std::vector<GameNode*> childrenGameNodes;
 	std::vector<GameComponent*> components;
 	Transform transform;

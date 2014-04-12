@@ -6,7 +6,6 @@
 #include "Math\Vector.h"
 #include "Math\Quaternion.h"
 #include "Math\Matrix.h"
-#include "Math\Matrix.h"
 
 namespace Rendering
 {
@@ -21,9 +20,9 @@ public:
 	Math::Matrix4D GetTransformation() const;
 	//Math::Matrix4D GetProjectedTransformation(const Camera& camera) const;
 
-	Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
-	Math::Quaternion& GetRot() { return rotation; }
-	Math::Vector3D& GetScale() { return scale; }
+	//Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
+	//Math::Quaternion& GetRot() { return rotation; }
+	//Math::Vector3D& GetScale() { return scale; }
 	const Math::Vector3D& GetPos() const { return pos; }
 	const Math::Quaternion& GetRot() const { return rotation; }
 	const Math::Vector3D& GetScale() const { return scale; }
@@ -53,6 +52,9 @@ public:
 	void SetScale(const Math::Vector3D& scaleVec);
 
 	void Rotate(const Math::Vector3D& axis, const Math::Angle& angle);
+
+	void LookAt(const Math::Vector3D& point, const Math::Vector3D& up);
+	Math::Quaternion GetLookAtDirection(const Math::Vector3D& point, const Math::Vector3D& up) const;
 
 	void SetParent(Transform* t) { parentTransform = t; }
 	void CalculateParentTransformation() const

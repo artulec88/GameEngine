@@ -105,6 +105,7 @@
     <ClInclude Include="IndexedModel.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="IndexedModel.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshData.cpp" />

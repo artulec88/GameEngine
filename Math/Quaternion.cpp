@@ -176,7 +176,7 @@ Quaternion Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortes
 		fixedQ = -q;
 	}
 
-	return (fixedQ - *this * nlerpFactor + *this).Normalized();
+	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();
 }
 
 Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
@@ -204,7 +204,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 	Real srcFactor = static_cast<Real>(sin((static_cast<Real>(1.0) - slerpFactor) * angle)) * invSinus;
 	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
 
-	return *this * srcFactor + (fixedQ * destFactor);
+	return (*this * srcFactor) + (fixedQ * destFactor);
 }
 
 Quaternion& Quaternion::operator=(const Quaternion& q)

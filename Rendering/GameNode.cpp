@@ -10,7 +10,10 @@ using namespace Rendering;
 using namespace Utility;
 using namespace std;
 
+/* static */ int GameNode::gameNodeCount = 0;
+
 GameNode::GameNode(void) :
+	ID(GameNode::gameNodeCount++),
 	coreEngine(NULL)
 {
 	//stdlog(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
@@ -113,6 +116,19 @@ void GameNode::Input(Math::Real delta)
 
 void GameNode::Update(Math::Real delta)
 {
+	if (this->ID == 3)
+	{
+		//stdlog(Debug, LOGPLACE, "1) transform=\"%s\"", GetTransform().GetRot().ToString().c_str());
+		for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
+		{
+			(*gameComponentItr)->Update(delta);
+		}
+		for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+		{
+			(*gameNodeItr)->Update(delta);
+		}
+		return;
+	}
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Update(delta);

@@ -12,7 +12,7 @@ Transform::Transform() :
 	parentTransform(NULL),
 	isChanged(true)
 {
-	//stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (1)");
+	//stdlog(Utility::Delocust, LOGPLACE, "Transform is being constructed (1)");
 }
 
 Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D& scale) :
@@ -22,7 +22,7 @@ Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D&
 	parentTransform(NULL),
 	isChanged(true)
 {
-	//stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (2)");
+	stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (2)");
 }
 
 Transform::~Transform()
@@ -101,6 +101,7 @@ void Transform::SetTranslation(Real x, Real y, Real z)
 
 void Transform::SetRotation(const Quaternion& rot)
 {
+	//stdlog(Utility::Debug, LOGPLACE, "Started...");
 	this->rotation = rot;
 	isChanged = true;
 }
@@ -126,4 +127,28 @@ void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
 	Quaternion qRot(axis, angle);
 	//rotation = (rotation * qRot).Normalized();
 	rotation = (qRot * rotation).Normalized();
+	isChanged = true;
+}
+
+void Transform::LookAt(const Math::Vector3D& point, const Math::Vector3D& up)
+{
+	rotation = GetLookAtDirection(point, up);
+	isChanged = true;
+}
+
+Math::Quaternion Transform::GetLookAtDirection(const Math::Vector3D& point, const Math::Vector3D& up) const
+{
+	Math::Vector3D forward = point - pos;
+	forward.Normalize();
+	
+	//Math::Vector3D right = forward.Cross(up);
+	Math::Vector3D right = (up.Normalized());
+	right = right.Cross(forward);
+	right.Normalize();
+
+	Math::Vector3D u = forward.Cross(right);
+	u.Normalize();
+
+	Math::Matrix4D rotMatrix = Math::Matrix4D::Rotation(forward, u, right);
+	return Math::Quaternion(rotMatrix);
 }
