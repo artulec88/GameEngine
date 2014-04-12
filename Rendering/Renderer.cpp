@@ -239,11 +239,6 @@ void Renderer::Render(GameNode& gameNode)
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
 
-	lights.clear();
-	cameras.clear();
-
-	gameNode.AddToRenderingEngine(this);
-
 	currentCamera = cameras[currentCameraIndex];
 	//currentCamera->Activate();
 
@@ -266,8 +261,6 @@ void Renderer::Render(GameNode& gameNode)
 	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
-
-	//gameNode.Render(BasicShader::GetInstance(), this);
 }
 
 void Renderer::SwapBuffers()

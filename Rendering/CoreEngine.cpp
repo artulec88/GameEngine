@@ -30,6 +30,7 @@ CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxF
 	game(game),
 	renderer(NULL)
 {
+	// TODO: Fix singleton initialization
 	stdlog(Debug, LOGPLACE, "Main application construction started");
 	if (coreEngine != NULL)
 	{
@@ -39,6 +40,8 @@ CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxF
 	}
 	coreEngine = this;
 	
+	game->SetEngine(this);
+
 	CreateRenderer();
 	
 	stdlog(Debug, LOGPLACE, "Main application construction finished");

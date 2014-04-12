@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "GameComponent.h"
 #include "Transform.h"
+#include "CoreEngine.h"
 #include "Renderer.h"
 #include "GameNode.h"
 #include "Shader.h"
@@ -51,7 +52,7 @@ const Transform& GameComponent::GetTransform() const
 	return parentGameNode->GetTransform();
 }
 
-void GameComponent::AddToRenderingEngine(Renderer* renderer)
+void GameComponent::AddToEngine(CoreEngine* engine)
 {
 
 }

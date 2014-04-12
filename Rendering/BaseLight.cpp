@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
+#include "CoreEngine.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Utility\Log.h"
@@ -55,12 +56,12 @@ void BaseLight::SetIntensity(Math::Real intensity)
 	this->intensity = intensity;
 }
 
-void BaseLight::AddToRenderingEngine(Renderer* renderer)
+void BaseLight::AddToEngine(CoreEngine* coreEngine)
 {
-	if (renderer == NULL)
+	if (coreEngine == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot add light to the rendering engine. Renderer is NULL");
+		stdlog(Utility::Error, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
 		return;
 	}
-	renderer->AddLight(this);
+	coreEngine->GetRenderer()->AddLight(this);
 }

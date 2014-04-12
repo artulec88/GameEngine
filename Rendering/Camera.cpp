@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Camera.h"
+#include "CoreEngine.h"
 #include "Renderer.h"
 #include "Transform.h"
 #include "Input.h"
@@ -100,14 +101,14 @@ void Camera::Move(const Vector3D& dir, Math::Real amount)
 //	return right;
 //}
 
-void Camera::AddToRenderingEngine(Renderer* renderer)
+void Camera::AddToEngine(CoreEngine* coreEngine)
 {
-	if (renderer == NULL)
+	if (coreEngine == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot camera to the rendering engine. Renderer is NULL");
+		stdlog(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
 		return;
 	}
-	renderer->AddCamera(this);
+	coreEngine->GetRenderer()->AddCamera(this);
 }
 
 //void Camera::RotateX(const Angle& angle)

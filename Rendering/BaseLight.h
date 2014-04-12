@@ -34,7 +34,7 @@ public:
 	void SetIntensity(Math::Real intensity);
 	inline void SetShader(Shader* shader);
 	inline Shader* GetShader() { return this->shader; }
-	virtual void AddToRenderingEngine(Renderer* renderer);
+	virtual void AddToEngine(CoreEngine* coreEngine);
 /* ==================== Non-static member functions end ==================== */
 }; /* end class BaseLight */
 

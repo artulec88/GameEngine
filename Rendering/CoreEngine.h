@@ -55,6 +55,7 @@ public:
 	void Stop();
 	unsigned int NextCamera();
 	unsigned int PrevCamera();
+	Renderer* GetRenderer() const { return renderer; }
 
 	
 	int GetWindowWidth() const { return this->windowWidth; };

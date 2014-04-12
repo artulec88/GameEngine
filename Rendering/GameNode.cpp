@@ -2,6 +2,7 @@
 #include "GameNode.h"
 #include "GameComponent.h"
 //#include "Renderer.h"
+#include "CoreEngine.h"
 
 #include "Utility\Log.h"
 
@@ -9,7 +10,8 @@ using namespace Rendering;
 using namespace Utility;
 using namespace std;
 
-GameNode::GameNode(void)
+GameNode::GameNode(void) :
+	coreEngine(NULL)
 {
 	//stdlog(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//stdlog(Info, LOGPLACE, "Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
@@ -67,7 +69,27 @@ GameNode* GameNode::AddChild(GameNode* child)
 {
 	childrenGameNodes.push_back(child);
 	child->GetTransform().SetParent(&transform);
+	child->SetEngine(coreEngine);
 	return this;
+}
+
+void GameNode::SetEngine(CoreEngine* coreEngine)
+{
+	if (this->coreEngine == coreEngine)
+	{
+		stdlog(Debug, LOGPLACE, "Core engine already set for the game node");
+		return;
+	}
+
+	this->coreEngine = coreEngine;
+	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->AddToEngine(coreEngine);
+	}
+	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->SetEngine(coreEngine);
+	}
 }
 
 GameNode* GameNode::AddComponent(GameComponent* child)
@@ -110,17 +132,5 @@ void GameNode::Render(Shader* shader, Renderer* renderer)
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->Render(shader, renderer);
-	}
-}
-
-void GameNode::AddToRenderingEngine(Renderer* renderer)
-{
-	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
-	{
-		(*gameComponentItr)->AddToRenderingEngine(renderer);
-	}
-	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
-	{
-		(*gameNodeItr)->AddToRenderingEngine(renderer);
 	}
 }

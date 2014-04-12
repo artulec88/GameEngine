@@ -10,7 +10,7 @@
 namespace Rendering
 {
 
-class Renderer;
+class CoreEngine;
 
 class RENDERING_API Camera : public GameComponent
 {
@@ -51,7 +51,7 @@ public:
 	virtual void Input(Math::Real delta);
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-	virtual void AddToRenderingEngine(Renderer* renderer);
+	virtual void AddToEngine(CoreEngine* coreEngine);
 
 
 	//Math::Vector3D GetLeft() const;

@@ -11,6 +11,7 @@ namespace Rendering
 class GameComponent;
 class Shader;
 class Renderer;
+class CoreEngine;
 
 class RENDERING_API GameNode
 {
@@ -27,7 +28,8 @@ public:
 	void Input(Math::Real delta);
 	void Update(Math::Real delta);
 	void Render(Shader* shader, Renderer* renderer);
-	void AddToRenderingEngine(Renderer* renderer);
+
+	void SetEngine(CoreEngine* coreEngine);
 
 	Transform& GetTransform() { return this->transform; };
 	const Transform& GetTransform() const { return this->transform; }
@@ -38,6 +40,7 @@ protected:
 	std::vector<GameNode*> childrenGameNodes;
 	std::vector<GameComponent*> components;
 	Transform transform;
+	CoreEngine* coreEngine;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
 

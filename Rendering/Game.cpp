@@ -64,6 +64,16 @@ Game::~Game(void)
 	//}
 }
 
+void Game::SetEngine(CoreEngine* coreEngine)
+{
+	if (rootGameNode == NULL)
+	{
+		stdlog(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
+		exit(EXIT_FAILURE);
+	}
+	rootGameNode->SetEngine(coreEngine);
+}
+
 void Game::Init()
 {
 	if (rootGameNode == NULL)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rendering.h"
+//#include "CoreEngine.h"
 #include "Math\Math.h"
 
 namespace Rendering
@@ -11,6 +12,7 @@ class Renderer;
 class GameNode;
 class Shader;
 class Transform;
+class CoreEngine;
 
 class RENDERING_API GameComponent
 {
@@ -26,7 +28,7 @@ public:
 	virtual void Update(Math::Real delta);
 	virtual void Render(Shader* shader, Renderer* renderer);
 
-	virtual void AddToRenderingEngine(Renderer* renderer);
+	virtual void AddToEngine(CoreEngine* coreEngine);
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();
 	const Transform& GetTransform() const;

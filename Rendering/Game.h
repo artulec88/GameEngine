@@ -51,6 +51,7 @@ public:
 	void Render(Renderer* renderer);
 
 	void AddToSceneRoot(GameNode* child);
+	void SetEngine(CoreEngine* coreEngine);
 
 	virtual void InitializeCameras(); // TODO: Consider deleting this function. Otherwise, implement it
 
