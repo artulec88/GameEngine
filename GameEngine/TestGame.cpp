@@ -243,7 +243,7 @@ void TestGame::Init()
 
 void TestGame::Input(Math::Real delta)
 {
-	//GetRootGameNode().Input(delta);
+	GetRootGameNode().Input(delta);
 }
 
 // TODO: Remove in the future
