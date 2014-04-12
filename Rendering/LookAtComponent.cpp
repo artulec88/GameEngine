@@ -26,8 +26,8 @@ void LookAtComponent::Update(Math::Real delta)
 		return;
 	}
 
-	Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
-	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetTransformedPos();
+	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
+	Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetTransformedPos();
 
 	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
 

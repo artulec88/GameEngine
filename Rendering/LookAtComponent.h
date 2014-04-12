@@ -25,6 +25,6 @@ public:
 protected:
 	Renderer* renderer;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class GameComponent */
+}; /* end class LookAtComponent */
 
 } /* end namespace Rendering */
