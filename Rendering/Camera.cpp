@@ -16,8 +16,8 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ const Vector3D Camera::xAxis = Vector3D(1.0, 0.0, 0.0);
-/* static */ const Vector3D Camera::yAxis = Vector3D(0.0, 1.0, 0.0);
+/* static */ const Vector3D Camera::xAxis(1.0, 0.0, 0.0);
+/* static */ const Vector3D Camera::yAxis(0.0, 1.0, 0.0);
 /* static */ const Real Camera::defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", "defaultCameraFoV_Default", 70.0);
 /* static */ const Real Camera::defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", "defaultCameraAspectRatio_Default", 1.33333333333);
 /* static */ const Real Camera::defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", "defaultCameraNearPlane_Default", 0.1);
