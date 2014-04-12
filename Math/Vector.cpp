@@ -242,7 +242,7 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 
 	return this->Cross(axis * sinAngle) + // rotation on local X
 		((*this * cosAngle) + // rotation on local Z
-		(axis * (this->Dot(axis * (1.0 - cosAngle))))); // rotation on local Y
+		(axis * (this->Dot(axis * (static_cast<Real>(1.0) - cosAngle))))); // rotation on local Y
 }
 
 Vector3D Vector3D::Rotate(const Quaternion& rotation)

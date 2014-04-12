@@ -22,6 +22,8 @@ public: // constructors and destructors
 	Quaternion() : m_x(0.0), m_y(0.0), m_z(0.0), m_w(0.0) { };
 	Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
 	Quaternion(const Vector3D& axis, const Angle& angle);
+	Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW()) { };
+	Quaternion(const Matrix4D& rotMatrix);
 
 public: // public member functions
 	Real GetX() const { return m_x; };
@@ -38,16 +40,23 @@ public: // public member functions
 	
 	Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); }; // creates negation vector
 	
-	//Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
-	//Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
-	//Quaternion operator-(const Quaternion& q) const { return Quaternion(m_x - q.GetX(), m_y - q.GetY(), m_z - q.GetZ(), m_w - q.GetW()); };
-	//Quaternion operator*(Real s) const { return Quaternion(s * m_x, s * m_y, s * m_z, s * m_w); };
+	Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
+	Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
+	Quaternion operator-(const Quaternion& q) const { return Quaternion(m_x - q.GetX(), m_y - q.GetY(), m_z - q.GetZ(), m_w - q.GetW()); };
+	Quaternion operator*(Real s) const { return Quaternion(s * m_x, s * m_y, s * m_z, s * m_w); };
 	Quaternion operator*(const Quaternion& q) const;
 	Quaternion operator*(const Vector3D& vec) const;
 	//Quaternion operator/(Real s) const { return Quaternion(m_x / s, m_y / s, m_z / s, m_w / s); };
+	Quaternion& operator=(const Quaternion& v);
+	bool operator==(const Quaternion& v) const;
 
 	Quaternion Normalized() const;
 	void Normalize();
+
+	Real Dot(const Quaternion& q) const;
+
+	Quaternion Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const;
+	Quaternion Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const;
 
 	inline Vector3D GetForward() const
 	{

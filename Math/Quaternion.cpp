@@ -15,6 +15,58 @@ Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 	m_w = cosHalfAngle;
 }
 
+// From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
+Quaternion::Quaternion(const Matrix4D& rotMatrix)
+{
+	Real m00 = rotMatrix.GetElement(0, 0);
+	Real m11 = rotMatrix.GetElement(1, 1);
+	Real m22 = rotMatrix.GetElement(2, 2);
+
+	Real trace = m00 + m11 + m22;
+
+	if (trace > 0)
+	{
+		Real s = static_cast<Real>(0.5) / static_cast<Real>(sqrt(trace + 1.0));
+		m_w = static_cast<Real>(0.25) / s;
+		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
+		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
+		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
+	}
+	else /* trace <= 0 */
+	{
+		if ( (m00 > m11) && (m00 > m22) )
+		{
+			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m00 - m11 - m22));
+			m_w = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) / s;
+			m_x = static_cast<Real>(0.25) * s;
+			m_y = (rotMatrix.GetElement(1, 0) + rotMatrix.GetElement(0, 1)) / s;
+			m_z = (rotMatrix.GetElement(2, 0) + rotMatrix.GetElement(0, 2)) / s;
+		}
+		else if (m11 > m22)
+		{
+			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m11 - m00 - m22));
+			m_w = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) / s;
+			m_x = (rotMatrix.GetElement(1, 0) + rotMatrix.GetElement(0, 1)) / s;
+			m_y = static_cast<Real>(0.25) * s;
+			m_z = (rotMatrix.GetElement(2, 1) + rotMatrix.GetElement(1, 2)) / s;
+		}
+		else
+		{
+			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m22 - m00 - m11));
+			m_w = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) / s;
+			m_x = (rotMatrix.GetElement(2, 0) + rotMatrix.GetElement(0, 2)) / s;
+			m_y = (rotMatrix.GetElement(1, 2) + rotMatrix.GetElement(2, 1)) / s;
+			m_z = static_cast<Real>(0.25) * s;
+		}
+	}
+
+	Real length = static_cast<Real>(sqrt(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w));
+	m_x /= length;
+	m_y /= length;
+	m_z /= length;
+	m_w /= length;
+}
+
 std::string Quaternion::ToString() const
 {
 	std::stringstream ss("");
@@ -108,4 +160,65 @@ inline Matrix4D Quaternion::ToRotationMatrix() const
 	Vector3D right(1.0f - 2.0f * (GetY() * GetY() + GetZ() * GetZ()), 2.0f * (GetX() * GetY() - GetW() * GetZ()), 2.0f * (GetX() * GetZ() + GetW() * GetY()));
 
 	return Matrix4D::Rotation(forward, up, right);
+}
+
+Real Quaternion::Dot(const Quaternion& q) const
+{
+	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
+}
+
+Quaternion Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const
+{
+	Quaternion fixedQ(q);
+
+	if (shortest && (this->Dot(q) < 0))
+	{
+		fixedQ = -q;
+	}
+
+	return (fixedQ - *this * nlerpFactor + *this).Normalized();
+}
+
+Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
+{
+	const Real EPSILON = 1e3f;
+
+	Real cos = this->Dot(q);
+	Quaternion fixedQ(q);
+
+	if (shortest && cos < 0)
+	{
+		cos = -cos;
+		fixedQ = -q;
+	}
+
+	if (abs(cos) >= 1 - EPSILON)
+	{
+		return Nlerp(fixedQ, slerpFactor, false);
+	}
+
+	Real sinus = static_cast<Real>(sqrt(static_cast<Real>(1.0) - cos * cos));
+	Real angle = atan2(sinus, cos);
+	Real invSinus = static_cast<Real>(1.0) / sinus;
+
+	Real srcFactor = static_cast<Real>(sin((static_cast<Real>(1.0) - slerpFactor) * angle)) * invSinus;
+	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
+
+	return *this * srcFactor + (fixedQ * destFactor);
+}
+
+Quaternion& Quaternion::operator=(const Quaternion& q)
+{
+	this->m_x = q.GetX();
+	this->m_y = q.GetY();
+	this->m_z = q.GetZ();
+	this->m_w = q.GetW();
+
+	return *this;
+}
+
+bool Quaternion::operator==(const Quaternion& q) const
+{
+	// TODO: Create a floating-point comparer and use it here
+	return ( (this->GetX() == q.GetX()) && (this->GetY() == q.GetY()) && (this->GetZ() == q.GetZ()) && (this->GetW() == q.GetW()) );
 }
