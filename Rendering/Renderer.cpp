@@ -41,48 +41,6 @@ Renderer::Renderer(int width, int height, std::string title) :
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	AddVector3D("ambientIntensity", ambientLight);
 
-	/* ==================== Creating cameras begin ==================== */
-	//const int camerasCount = GET_CONFIG_VALUE("CamerasCount", "CamerasCountDefault", 5);
-	//std::string tempStr = "camera";
-	//for (int i = 0; i < camerasCount; ++i)
-	//{
-	//	std::stringstream ss("");
-	//	ss << (i + 1);
-	//	std::string cameraIndexStr = ss.str();
-	//	Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetX());
-	//	Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetY());
-	//	Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCamera.GetPos().GetZ());
-	//	Real xForward = Config::Get("cameraForward_x_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetX());
-	//	Real yForward = Config::Get("cameraForward_y_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetY());
-	//	Real zForward = Config::Get("cameraForward_z_" + cameraIndexStr, Camera::defaultCamera.GetForward().GetZ());
-	//	Real xUp = Config::Get("cameraUp_x_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetX());
-	//	Real yUp = Config::Get("cameraUp_y_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetY());
-	//	Real zUp = Config::Get("cameraUp_z_" + cameraIndexStr, Camera::defaultCamera.GetUp().GetZ());
-	//	Vector3D cameraPos = Math::Vector3D(xPos, yPos, zPos);
-	//	Vector3D cameraForward = Math::Vector3D(xForward, yForward, zForward);
-	//	Vector3D cameraUp = Math::Vector3D(xUp, yUp, zUp);
-
-	//	Real FoV = Config::Get("cameraFoV_" + ss.str(), Camera::defaultFoV);
-	//	Real aspectRatio = Config::Get("cameraAspectRatio_" + ss.str(), Camera::defaultAspectRatio);
-	//	Real zNearPlane = Config::Get("cameraNearPlane_" + ss.str(), Camera::defaultNearPlane);
-	//	Real zFarPlane = Config::Get("cameraFarPlane_" + ss.str(), Camera::defaultFarPlane);
-	//	cameras.push_back(new Camera(cameraPos, cameraForward, cameraUp, FoV, aspectRatio, zNearPlane, zFarPlane));
-	//}
-	//ASSERT(cameras.size() > 0);
-	//if (cameras.size() < 1)
-	//{
-	//	stdlog(Emergency, LOGPLACE, "No camera added to the rendering engine");
-	//	exit(EXIT_FAILURE);
-	//}
-	//ASSERT((currentCameraIndex >= 0) && (currentCameraIndex < cameras.size()));
-	//if (currentCameraIndex >= cameras.size())
-	//{
-	//	stdlog(Warning, LOGPLACE, "Current camera index is incorrect. Setting currentCameraIndex to 1");
-	//	currentCameraIndex = 0;
-	//}
-	//currentCamera = cameras[currentCameraIndex];
-	/* ==================== Creating cameras end ==================== */
-
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
 
@@ -112,13 +70,14 @@ Renderer::~Renderer(void)
 
 void Renderer::Init(int width, int height, std::string title)
 {
-	stdlog(Debug, LOGPLACE, "Initializing Renderer started");
+	stdlog(Info, LOGPLACE, "Initializing Renderer started");
 	// Initialise GLFW
 	if( !glfwInit() )
 	{
 		stdlog(Critical, LOGPLACE, "Failed to initalize GLFW");
+		exit(EXIT_FAILURE);
 		// TODO: throw another exception in the future
-		throw FileNotFoundException();
+		//throw FileNotFoundException();
 	}
 	glfwWindowHint(GLFW_SAMPLES, 4); // TODO: Do not hard-code any values
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
@@ -130,7 +89,8 @@ void Renderer::Init(int width, int height, std::string title)
 #endif
 
 	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+	//window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+	window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
 	if (window == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
@@ -163,29 +123,6 @@ void Renderer::Init(int width, int height, std::string title)
 	defaultShader = new Shader("ForwardAmbient");
 
 	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
-	
-	/* ==================== Creating directional lights begin ==================== */
-	// TODO: Do not use hard-coded values ever!
-	//lights.push_back(new DirectionalLight(Math::Vector3D(0.0, 0.0, 1.0), 0.8, Math::Vector3D(1.0, 1.0, 1.0)));
-	
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(20.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(16.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(12.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(8.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(4.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(0.0, 0.0, 2.0), 10.0));
-	//lights.push_back(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 2.8, Attenuation(0.0, 0.0, 1.0), Math::Vector3D(-4.0, 0.0, 2.0), 10.0));
-	
-	//lights.push_back(new SpotLight(Math::Vector3D(0.0, 1.0f, 1.0f), 1.8f, Attenuation(0.0f, 0.5f, 0.0f), Math::Vector3D(-2.0, 0, 5.0), 120.0, Math::Vector3D(1.0f, 1.0f, 1.0f), 0.7f));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.25, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 0.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 5.0), 25.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 0.5, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 10.0), 100.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 1.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 15.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 1.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 20.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-	//lights.push_back(new SpotLight(Math::Vector3D(1.0, 0.0, 0.0), 2.0, Attenuation(0.0, 0.0, 0.1), Math::Vector3D(0.0, 0.0, 25.0), 5.0, Math::Vector3D(0.0, 1.0, 1.0), 1.0));
-
-	//lights.push_back(new DirectionalLight(Math::Vector3D(1.0, 0.0, 0.0), 0.8, Math::Vector3D(-1.0, 1.0, -1.0)));
-	/* ==================== Creating directional lights end ==================== */
 }
 
 void Renderer::InitGraphics()

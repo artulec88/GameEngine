@@ -34,6 +34,10 @@
 #define MEASURE_TIME_ENABLED
 //#endif
 
+#define SAFE_DELETE(p) if(p) { delete p; p = NULL; }
+//#define SAFE_DELETE_WHOLE_TABLE(p, c) for(int i = 0; i < c; ++i) { if (p[i] != NULL) { delete p[i]; p[i] = NULL; } } delete [] p; p = NULL;
+#define SAFE_DELETE_JUST_TABLE(p) if (p) { delete [] p; p = NULL; }
+
 #ifdef _DEBUG
 #define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILENAME__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
 #define SLOW_ASSERTIONS_ENABLED

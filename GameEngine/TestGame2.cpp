@@ -21,36 +21,7 @@ TestGame2::TestGame2() :
 
 TestGame2::~TestGame2(void)
 {
-	if (mesh != NULL)
-	{
-		delete mesh;
-		mesh = NULL;
-	}
-	if (shader != NULL)
-	{
-		delete shader;
-		shader = NULL;
-	}
-	if (transform != NULL)
-	{
-		delete transform;
-		transform = NULL;
-	}
-	if (material != NULL)
-	{
-		delete material;
-		material = NULL;
-	}
-	if (pointLights != NULL)
-	{
-		delete [] pointLights;
-		pointLights = NULL;
-	}
-	if (spotLights != NULL)
-	{
-		delete [] spotLights;
-		spotLights = NULL;
-	}
+	// TODO: Deallocation
 }
 
 void TestGame2::Init()

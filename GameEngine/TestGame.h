@@ -35,9 +35,9 @@ protected:
 	Rendering::GameNode** humanNodes;
 	Rendering::GameNode* directionalLightNode;
 	const int pointLightCount;
-	Rendering::GameNode** pointLightNode;
+	Rendering::GameNode** pointLightNodes;
 	const int spotLightCount;
-	Rendering::GameNode** spotLightNode;
+	Rendering::GameNode** spotLightNodes;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
 	unsigned int currentCameraIndex; // TODO: this value should always be the same as the Renderer::currentCameraIndex. Match them.
