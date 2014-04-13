@@ -31,6 +31,11 @@ public:
 	int GetID() const { return this->ID; }; // just for easier debugging purposes
 	GameNode* AddChild(GameNode* child);
 	GameNode* AddComponent(GameComponent* component);
+
+	void InputAll(Math::Real delta);
+	void UpdateAll(Math::Real delta);
+	void RenderAll(Shader* shader, Renderer* renderer);
+
 	void Input(Math::Real delta);
 	void Update(Math::Real delta);
 	void Render(Shader* shader, Renderer* renderer);
@@ -39,6 +44,8 @@ public:
 
 	Transform& GetTransform() { return this->transform; };
 	const Transform& GetTransform() const { return this->transform; }
+
+	std::vector<GameNode*> GetAllDescendants() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

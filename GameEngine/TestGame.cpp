@@ -243,7 +243,7 @@ void TestGame::Init()
 
 void TestGame::Input(Math::Real delta)
 {
-	GetRootGameNode().Input(delta);
+	GetRootGameNode().InputAll(delta);
 }
 
 // TODO: Remove in the future
@@ -265,7 +265,7 @@ void TestGame::Update(Math::Real delta)
 	//planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
 
 	//rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
-	GetRootGameNode().Update(delta);
+	GetRootGameNode().UpdateAll(delta);
 
 	temp += delta;
 	if (temp > 20.0 * Math::M_PI)

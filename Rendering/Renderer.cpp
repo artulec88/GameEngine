@@ -243,7 +243,7 @@ void Renderer::Render(GameNode& gameNode)
 	//currentCamera->Activate();
 
 	// Ambient rendering
-	gameNode.Render(defaultShader, this);
+	gameNode.RenderAll(defaultShader, this);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
@@ -255,7 +255,7 @@ void Renderer::Render(GameNode& gameNode)
 	{
 		currentLight = (*lightItr);
 		// TODO: Get a shader instance from the currentLight object.
-		gameNode.Render(currentLight->GetShader(), this);
+		gameNode.RenderAll(currentLight->GetShader(), this);
 	}
 
 	glDepthFunc(GL_LESS);

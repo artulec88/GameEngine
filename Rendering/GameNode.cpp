@@ -102,40 +102,49 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	return this;
 }
 
+void GameNode::InputAll(Math::Real delta)
+{
+	Input(delta);
+
+	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->InputAll(delta);
+	}
+}
+
 void GameNode::Input(Math::Real delta)
 {
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Input(delta);
 	}
+}
+
+void GameNode::UpdateAll(Math::Real delta)
+{
+	Update(delta);
+
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Input(delta);
+		(*gameNodeItr)->UpdateAll(delta);
 	}
 }
 
 void GameNode::Update(Math::Real delta)
 {
-	if (this->ID == 3)
-	{
-		//stdlog(Debug, LOGPLACE, "1) transform=\"%s\"", GetTransform().GetRot().ToString().c_str());
-		for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
-		{
-			(*gameComponentItr)->Update(delta);
-		}
-		for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
-		{
-			(*gameNodeItr)->Update(delta);
-		}
-		return;
-	}
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Update(delta);
 	}
+}
+
+void GameNode::RenderAll(Shader* shader, Renderer* renderer)
+{
+	Render(shader, renderer);
+
 	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->Update(delta);
+		(*gameNodeItr)->RenderAll(shader, renderer);
 	}
 }
 
@@ -145,8 +154,19 @@ void GameNode::Render(Shader* shader, Renderer* renderer)
 	{
 		(*gameComponentItr)->Render(shader, renderer);
 	}
-	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+}
+
+std::vector<GameNode*> GameNode::GetAllDescendants() const
+{
+	std::vector<GameNode*> descendants;
+	
+	for (std::vector<GameNode*>::const_iterator itr = childrenGameNodes.begin(); itr != childrenGameNodes.end(); ++itr)
 	{
-		(*gameNodeItr)->Render(shader, renderer);
+		descendants.push_back(*itr);
+		std::vector<GameNode*> itrDescendants = (*itr)->GetAllDescendants();
+		descendants.insert(descendants.end(), itrDescendants.begin(), itrDescendants.end());
 	}
+
+	//descendants.push_back(this);
+	return descendants;
 }
