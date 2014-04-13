@@ -15,9 +15,9 @@ namespace Math
 {
 	typedef float Real;
 
-	const Real M_PI = static_cast<Real>(3.1415926536);
-	const Real DegToRadFactor = static_cast<Real>(M_PI) / 180;
-	const Real RadToDegFactor = static_cast<Real>(180) / M_PI;
+	const Real M_PI = 3.14159265358979323846f;
+	const Real DegToRadFactor = M_PI / 180;
+	const Real RadToDegFactor = 180 / M_PI;
 
 	template<typename Type>
 	Type Absolute(Type v)

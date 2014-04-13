@@ -153,60 +153,6 @@ void Camera::Input(Real delta)
 {
 	//if (!isActive)
 	//	return;
-
-	//Real moveAmount = static_cast<Real>(100 * delta);
-	//Real rotationAmount = static_cast<Real>(10 * delta);
-
-	//Transform& t = GetTransform();
-	//if (Input::IsKeyPressed(GLFW_KEY_W)) // move forward
-	//{
-	//	Move(t.GetRot().GetForward(), moveAmount);
-	//}
-	//if (Input::IsKeyPressed(GLFW_KEY_S)) // move backward
-	//{
-	//	Move(t.GetRot().GetForward(), -moveAmount);
-	//}
-	//if (Input::IsKeyPressed(GLFW_KEY_A)) // move left
-	//{
-	//	Move(t.GetRot().GetRight(), -moveAmount);
-	//}
-	//if (Input::IsKeyPressed(GLFW_KEY_D)) // move right
-	//{
-	//	Move(t.GetRot().GetRight(), moveAmount);
-	//}
-
-	//switch (key)
-	//{
-	//case GLFW_KEY_W: // move forward
-	//	Move(GetTransform().GetRot().GetForward(), moveAmount);
-	//	break;
-	//case GLFW_KEY_S: // move backward
-	//	Move(GetTransform().GetRot().GetForward(), -moveAmount);
-	//	break;
-	//case GLFW_KEY_A: // move left
-	//	Move(GetTransform().GetRot().GetRight(), -moveAmount);
-	//	break;
-	//case GLFW_KEY_D: // move right
-	//	Move(GetTransform().GetRot().GetRight(), moveAmount);
-	//	break;
-	//case GLFW_KEY_UP: // rotation around X axis
-	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(rotationAmount))));
-	//	//RotateX(Angle(-rotationAmount));
-	//	break;
-	//case GLFW_KEY_DOWN: // rotation around X axis
-	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(xAxis, Angle(-rotationAmount))));
-	//	//RotateX(Angle(rotationAmount));
-	//	break;
-	//case GLFW_KEY_LEFT: // rotation around Y axis
-	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(rotationAmount))));
-	//	break;
-	//case GLFW_KEY_RIGHT: // rotation around Y axis
-	//	GetTransform().SetRotation(GetTransform().GetRot() * (Quaternion(yAxis, Angle(-rotationAmount))));
-	//	break;
-	//default:
-	//	stdlog(Utility::Info, LOGPLACE, "Some unknown key pressed");
-	//	break;
-	//}
 }
 
 Matrix4D Camera::GetViewProjection() const

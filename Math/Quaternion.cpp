@@ -26,8 +26,8 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 	if (trace > 0)
 	{
-		Real s = static_cast<Real>(0.5) / static_cast<Real>(sqrt(trace + 1.0));
-		m_w = static_cast<Real>(0.25) / s;
+		Real s = 0.5f / static_cast<Real>(sqrt(trace + 1.0));
+		m_w = 0.25f / s;
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
@@ -36,27 +36,27 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 	{
 		if ( (m00 > m11) && (m00 > m22) )
 		{
-			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m00 - m11 - m22));
+			Real s = 2.0f * static_cast<Real>(sqrt(1.0 + m00 - m11 - m22));
 			m_w = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) / s;
-			m_x = static_cast<Real>(0.25) * s;
+			m_x = 0.25f * s;
 			m_y = (rotMatrix.GetElement(1, 0) + rotMatrix.GetElement(0, 1)) / s;
 			m_z = (rotMatrix.GetElement(2, 0) + rotMatrix.GetElement(0, 2)) / s;
 		}
 		else if (m11 > m22)
 		{
-			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m11 - m00 - m22));
+			Real s = 2.0f * static_cast<Real>(sqrt(1.0 + m11 - m00 - m22));
 			m_w = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) / s;
 			m_x = (rotMatrix.GetElement(1, 0) + rotMatrix.GetElement(0, 1)) / s;
-			m_y = static_cast<Real>(0.25) * s;
+			m_y = 0.25f * s;
 			m_z = (rotMatrix.GetElement(2, 1) + rotMatrix.GetElement(1, 2)) / s;
 		}
 		else
 		{
-			Real s = static_cast<Real>(2.0) * static_cast<Real>(sqrt(1.0 + m22 - m00 - m11));
+			Real s = 2.0f * static_cast<Real>(sqrt(1.0 + m22 - m00 - m11));
 			m_w = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) / s;
 			m_x = (rotMatrix.GetElement(2, 0) + rotMatrix.GetElement(0, 2)) / s;
 			m_y = (rotMatrix.GetElement(1, 2) + rotMatrix.GetElement(2, 1)) / s;
-			m_z = static_cast<Real>(0.25) * s;
+			m_z = 0.25f * s;
 		}
 	}
 
@@ -197,11 +197,11 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 		return Nlerp(fixedQ, slerpFactor, false);
 	}
 
-	Real sinus = static_cast<Real>(sqrt(static_cast<Real>(1.0) - cos * cos));
+	Real sinus = static_cast<Real>(sqrt(1.0f - cos * cos));
 	Real angle = atan2(sinus, cos);
-	Real invSinus = static_cast<Real>(1.0) / sinus;
+	Real invSinus = 1.0f / sinus;
 
-	Real srcFactor = static_cast<Real>(sin((static_cast<Real>(1.0) - slerpFactor) * angle)) * invSinus;
+	Real srcFactor = static_cast<Real>(sin((1.0f - slerpFactor) * angle)) * invSinus;
 	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
 
 	return (*this * srcFactor) + (fixedQ * destFactor);

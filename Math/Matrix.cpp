@@ -95,7 +95,7 @@ Matrix4D::~Matrix4D()
 	Real height = top - bottom;
 	Real depth = farPlane - nearPlane;
 
-	const Real temp = static_cast<Real>(2.0);
+	const Real temp = 2.0f;
 	
 	matrix.m[0][0] = temp / width;	matrix.m[0][1] = 0.0;			matrix.m[0][2] = 0.0;			matrix.m[0][3] = -(right + left) / width;
 	matrix.m[1][0] = 0.0;			matrix.m[1][1] = temp / height;	matrix.m[1][2] = 0.0;			matrix.m[1][3] = -(top + bottom) / height;
@@ -298,7 +298,7 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
 	Vector3D result;
 
-	Real oneperw = static_cast<Real>(1.0) / (m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3]);
+	Real oneperw = 1.0f / (m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3]);
 	result.SetX((m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3]) * oneperw);
 	result.SetY((m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[1][3]) * oneperw);
 	result.SetZ((m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[2][3]) * oneperw);
@@ -458,11 +458,8 @@ bool Matrix4D::IsIdentity() const
 	 * the numbers using simple tools, like epsilon?
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
-	const Real epsilon = static_cast<Real>(0.1);
-	const Real zero = static_cast<Real>(0.0);
-	const Real unit = static_cast<Real>(1.0);
-	const FloatingPoint<Real> zeroValue(zero);
-	const FloatingPoint<Real> unitValue(unit);
+	const Real zero = 0.0f;
+	const Real unit = 1.0f;
 	
 	for (int i = 0; i < MATRIX_SIZE; ++i)
 	{

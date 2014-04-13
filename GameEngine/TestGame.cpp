@@ -122,9 +122,8 @@ void TestGame::Init()
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		pointLightNodes[i] = new GameNode();
-		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(static_cast<Real>(0.0), static_cast<Real>(1.0), static_cast<Real>(0.0)),
-			static_cast<Real>(0.8), Attenuation(static_cast<Real>(0.0), static_cast<Real>(0.0), static_cast<Real>(1.0))));
-		pointLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), static_cast<Real>(0.5), static_cast<Real>(rand() % 5));
+		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(0.0f, 1.0f, 0.0f), 0.8f, Attenuation(0.0f, 0.0f, 1.0f)));
+		pointLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), 0.5f, static_cast<Real>(rand() % 5));
 		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
 		AddToSceneRoot(pointLightNodes[i]);
 	}
@@ -133,10 +132,9 @@ void TestGame::Init()
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		spotLightNodes[i] = new GameNode();
-		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(static_cast<Real>(0.0), static_cast<Real>(0.0f), static_cast<Real>(1.0f)),
-			static_cast<Real>(5.8), Attenuation(static_cast<Real>(0.0), static_cast<Real>(0.1), static_cast<Real>(0.0)), static_cast<Real>(0.7)));
+		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(0.0f, 0.0f, 1.0f), 5.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 		spotLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5 - 2), static_cast<Real>(abs(rand() % 5 - 3)), static_cast<Real>((rand() % 5) - 2));
-		spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(static_cast<Real>(0.2), static_cast<Real>(1), static_cast<Real>(0)), Angle(static_cast<Real>(90))));
+		spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
 		AddToSceneRoot(spotLightNodes[i]);
 	}
 
@@ -144,9 +142,9 @@ void TestGame::Init()
 	AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(static_cast<Real>(2.0), static_cast<Real>(2.5), static_cast<Real>(2.0));
+	testMesh1->GetTransform().SetTranslation(2.0f, 2.5f, 2.0f);
 	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(static_cast<Real>(2.0), static_cast<Real>(0.0), static_cast<Real>(5.0));
+	testMesh2->GetTransform().SetTranslation(2.0f, 0.0f, 5.0f);
 	testMesh1->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh2->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh1->AddChild(testMesh2);
@@ -200,7 +198,7 @@ bool right = false;
 bool up = false;
 bool down = false;
 Math::Vector3D velocity;
-Math::Real maxSpeed = static_cast<Real>(0.02);
+Math::Real maxSpeed = 0.02f;
 bool isMouseLocked = false;
 
 void TestGame::Update(Math::Real delta)
@@ -226,22 +224,11 @@ void TestGame::Update(Math::Real delta)
 		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
 	}
 
-	//spotLightNode->GetTransform().SetTranslation(1.0, 10.0 * abs(cos(static_cast<Math::Real>(rand() % 90) / 11)), 5.0 + 10.0 * abs(sin(temp)));
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		Transform& t = spotLightNodes[i]->GetTransform();
-		t.SetTranslation(Math::Vector3D(static_cast<Real>(1.0),
-			static_cast<Real>(0.0) /*static_cast<Real>(5.0) * abs(cos(temp))*/,
-			static_cast<Real>(5.0) + static_cast<Real>(10.0) * abs(sin(temp))));
+		t.SetTranslation(Math::Vector3D(1.0f, 0.0f /*5.0f * abs(cos(temp))*/, 5.0f + 10.0f * abs(sin(temp))));
 	}
-
-	//for (int i = 0; i < humanCount / 2; ++i)
-	//{
-	//	Transform& t = humanNodes[i]->GetTransform();
-	//	t.SetTranslation(t.GetPos() + Math::Vector3D(static_cast<Real>(sin(temp) / 5000), static_cast<Real>(cos(temp) / 1000), static_cast<Real>(sin(temp) / 1000)));
-	//}
-
-	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
@@ -270,18 +257,18 @@ void TestGame::Update(Math::Real delta)
 	{
 		acceleration -= transform.GetRot().GetUp().Normalized();
 	}
-	velocity += acceleration * delta * sensitivity * static_cast<Real>(0.01);
-	const Real step = static_cast<Real>(0.1);
-	const Real approachedValue = static_cast<Real>(0.0);
-	if (AlmostEqual(acceleration.GetX(), static_cast<Real>(0.0)))
+	velocity += acceleration * delta * sensitivity * 0.01f;
+	const Real step = 0.1f;
+	const Real approachedValue = 0.0f; // must be ZERO!
+	if (AlmostEqual(acceleration.GetX(), approachedValue))
 	{
 		velocity.ApproachX(step, approachedValue);
 	}
-	if (AlmostEqual(acceleration.GetY(), static_cast<Real>(0.0)))
+	if (AlmostEqual(acceleration.GetY(), approachedValue))
 	{
 		velocity.ApproachY(step, approachedValue);
 	}
-	if (AlmostEqual(acceleration.GetZ(), static_cast<Real>(0.0)))
+	if (AlmostEqual(acceleration.GetZ(), approachedValue))
 	{
 		velocity.ApproachZ(step, approachedValue);
 	}
@@ -418,8 +405,8 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 	Vector2D deltaPosition(static_cast<Real>(xPos), static_cast<Real>(yPos));
 	deltaPosition -= centerPosition;
 	
-	bool rotX = ! AlmostEqual(deltaPosition.GetX(), static_cast<Real>(0.0));
-	bool rotY = ! AlmostEqual(deltaPosition.GetY(), static_cast<Real>(0.0));
+	bool rotX = ! AlmostEqual(deltaPosition.GetX(), 0.0f);
+	bool rotY = ! AlmostEqual(deltaPosition.GetY(), 0.0f);
 
 	if (rotX)
 	{

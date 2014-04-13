@@ -26,7 +26,7 @@ CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxF
 	windowWidth(width),
 	windowHeight(height),
 	windowTitle(title),
-	frameTime(static_cast<Math::Real>(1.0) / maxFrameRate),
+	frameTime(1.0f / maxFrameRate),
 	game(game),
 	renderer(NULL)
 {
@@ -214,7 +214,7 @@ void CoreEngine::Run()
 	isRunning = true;
 
 #ifdef COUNT_FPS
-	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", "FPSsample_default", 1.0)); // represents the time after which FPS value is calculated and logged
+	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", "FPSsample_default", 1.0f)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	Math::Real frameTimeCounter = 0.0;
 #endif

@@ -52,7 +52,7 @@ Real Vector2D::LengthSquared() const
 Vector2D Vector2D::Normalized() const
 {
 	Real length = LengthSquared();
-	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	if (AlmostEqual(length, 0.0f))
 	{
 		return (*this);
 	}
@@ -62,7 +62,7 @@ Vector2D Vector2D::Normalized() const
 void Vector2D::Normalize()
 {
 	Real length = LengthSquared();
-	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	if (AlmostEqual(length, 0.0f))
 	{
 		return;
 	}
@@ -189,7 +189,7 @@ Real Vector3D::LengthSquared() const
 Vector3D Vector3D::Normalized() const
 {
 	Real length = LengthSquared();
-	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	if (AlmostEqual(length, 0.0f))
 	{
 		return (*this);
 	}
@@ -199,7 +199,7 @@ Vector3D Vector3D::Normalized() const
 void Vector3D::Normalize()
 {
 	Real length = LengthSquared();
-	if (AlmostEqual(length, static_cast<Real>(0.0)))
+	if (AlmostEqual(length, 0.0f))
 	{
 		return;
 	}
@@ -242,7 +242,7 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 
 	return this->Cross(axis * sinAngle) + // rotation on local X
 		((*this * cosAngle) + // rotation on local Z
-		(axis * (this->Dot(axis * (static_cast<Real>(1.0) - cosAngle))))); // rotation on local Y
+		(axis * (this->Dot(axis * (1.0f - cosAngle))))); // rotation on local Y
 }
 
 Vector3D Vector3D::Rotate(const Quaternion& rotation)
