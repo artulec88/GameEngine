@@ -77,8 +77,8 @@ void TestGame::Init()
 
 	Game::Init();
 
-	Math::Real fieldDepth = 10.0;
-	Math::Real fieldWidth = 10.0;
+	Math::Real fieldDepth = static_cast<Real>(10.0);
+	Math::Real fieldWidth = static_cast<Real>(10.0);
 	Vertex vertex1_1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
 	Vertex vertex1_2(Vector3D(-fieldWidth, 0.0, 3 * fieldDepth), Vector2D(0.0, 1.0));
 	Vertex vertex1_3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
@@ -88,10 +88,10 @@ void TestGame::Init()
 							  2, 1, 3};
 	Mesh* mesh1 = new Mesh(vertices1, 4, indices1, 6, true);
 
-	Vertex vertex2_1(Vector3D(-fieldWidth / 10.0, 0.0, -fieldDepth / 10.0), Vector2D(0.0, 0.0));
-	Vertex vertex2_2(Vector3D(-fieldWidth / 10.0, 0.0, 3 * fieldDepth / 10.0), Vector2D(0.0, 1.0));
-	Vertex vertex2_3(Vector3D(3 * fieldWidth / 10.0, 0.0, -fieldDepth / 10.0), Vector2D(1.0, 0.0));
-	Vertex vertex2_4(Vector3D(3 * fieldWidth / 10.0, 0.0, 3 * fieldDepth / 10.0), Vector2D(1.0, 1.0));
+	Vertex vertex2_1(Vector3D(-fieldWidth / fieldWidth, 0.0, -fieldDepth / fieldDepth), Vector2D(0.0, 0.0));
+	Vertex vertex2_2(Vector3D(-fieldWidth / fieldWidth, 0.0, 3 * fieldDepth / fieldDepth), Vector2D(0.0, 1.0));
+	Vertex vertex2_3(Vector3D(3 * fieldWidth / fieldWidth, 0.0, -fieldDepth / fieldDepth), Vector2D(1.0, 0.0));
+	Vertex vertex2_4(Vector3D(3 * fieldWidth / fieldWidth, 0.0, 3 * fieldDepth / fieldDepth), Vector2D(1.0, 1.0));
 	Vertex vertices2[] = {vertex2_1, vertex2_2, vertex2_3, vertex2_4};
 	unsigned short indices2[] = {0, 1, 2,
 							  2, 1, 3};
@@ -100,28 +100,28 @@ void TestGame::Init()
 	//Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
 	Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
 	boxNode->AddComponent(new MeshRenderer(boxMesh, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
-	boxNode->GetTransform().SetTranslation(5.0, 0.5, 6.0);
+	boxNode->GetTransform().SetTranslation(static_cast<Real>(5.0), static_cast<Real>(0.5), static_cast<Real>(6.0));
 	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
-	Math::Real specularIntensity = 1.0;
-	Math::Real specularPower = 32.0;
+	Math::Real specularIntensity = 1;
+	Math::Real specularPower = 32;
 	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
 	Material* material = new Material(new Texture("..\\Textures\\bricks3.jpg", GL_TEXTURE_2D, GL_LINEAR),
 		specularIntensity, specularPower);
 	
-	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0);
-	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1);
-	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 0.1);
+	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", static_cast<Real>(70.0));
+	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", static_cast<Real>(0.1));
+	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", static_cast<Real>(0.1));
 
 	GameNode* planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(mesh1, material));
-	planeNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+	planeNode->GetTransform().SetTranslation(static_cast<Real>(0.0), static_cast<Real>(-1.0), static_cast<Real>(5.0));
 
 	Mesh* monkeyMesh1 = new Mesh("..\\Models\\monkey.obj");
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(monkeyMesh1, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
-	monkeyNode1->GetTransform().SetTranslation(5.0, 1.0, 15.0);
+	monkeyNode1->GetTransform().SetTranslation(static_cast<Real>(5.0), static_cast<Real>(1.0), static_cast<Real>(15.0));
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	monkeyNode1->AddComponent(new LookAtComponent());
@@ -139,21 +139,22 @@ void TestGame::Init()
 	{
 		humanNodes[i] = new GameNode();
 		humanNodes[i]->AddComponent(new MeshRenderer(humanMesh, new Material(new Texture("..\\Textures\\HumanSkin.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
-		humanNodes[i]->GetTransform().SetTranslation(rand() % 20, 0.65, rand() % 20);
+		humanNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 20), static_cast<Real>(0.65), static_cast<Real>(rand() % 20));
 		AddToSceneRoot(humanNodes[i]);
 	}
 
 	directionalLightNode = new GameNode();
-	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.8));
-	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(-45)));
+	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(static_cast<Real>(1.0), static_cast<Real>(1.0), static_cast<Real>(1.0)), static_cast<Real>(0.8)));
+	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(static_cast<Real>(1), static_cast<Real>(0), static_cast<Real>(0)), Angle(static_cast<Real>(-45))));
 
 	srand((unsigned int)time(NULL));
 	pointLightNode = new GameNode* [pointLightCount];
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		pointLightNode[i] = new GameNode();
-		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(0.0, 1.0, 0.0), 0.8, Attenuation(0.0, 0.0, 1.0)));
-		pointLightNode[i]->GetTransform().SetTranslation(rand() % 5, 0.5, rand() % 5);
+		pointLightNode[i]->AddComponent(new PointLight(Math::Vector3D(static_cast<Real>(0.0), static_cast<Real>(1.0), static_cast<Real>(0.0)),
+			static_cast<Real>(0.8), Attenuation(static_cast<Real>(0.0), static_cast<Real>(0.0), static_cast<Real>(1.0))));
+		pointLightNode[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), static_cast<Real>(0.5), static_cast<Real>(rand() % 5));
 		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
 		AddToSceneRoot(pointLightNode[i]);
 	}
@@ -162,9 +163,10 @@ void TestGame::Init()
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		spotLightNode[i] = new GameNode();
-		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(0.0, 0.0f, 1.0f), 5.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
-		spotLightNode[i]->GetTransform().SetTranslation(rand() % 5 - 2, abs(rand() % 5 - 3), (rand() % 5) - 2);
-		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2, 1, 0), Angle(90)));
+		spotLightNode[i]->AddComponent(new SpotLight(Math::Vector3D(static_cast<Real>(0.0), static_cast<Real>(0.0f), static_cast<Real>(1.0f)),
+			static_cast<Real>(5.8), Attenuation(static_cast<Real>(0.0), static_cast<Real>(0.1), static_cast<Real>(0.0)), static_cast<Real>(0.7)));
+		spotLightNode[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5 - 2), static_cast<Real>(abs(rand() % 5 - 3)), static_cast<Real>((rand() % 5) - 2));
+		spotLightNode[i]->GetTransform().SetRotation(Quaternion(Vector3D(static_cast<Real>(0.2), static_cast<Real>(1), static_cast<Real>(0)), Angle(static_cast<Real>(90))));
 		AddToSceneRoot(spotLightNode[i]);
 	}
 
@@ -172,9 +174,9 @@ void TestGame::Init()
 	AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(2.0, 2.5, 2.0);
+	testMesh1->GetTransform().SetTranslation(static_cast<Real>(2.0), static_cast<Real>(2.5), static_cast<Real>(2.0));
 	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(2.0, 0.0, 5.0);
+	testMesh2->GetTransform().SetTranslation(static_cast<Real>(2.0), static_cast<Real>(0.0), static_cast<Real>(5.0));
 	testMesh1->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh2->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh1->AddChild(testMesh2);
@@ -255,7 +257,7 @@ bool right = false;
 bool up = false;
 bool down = false;
 Math::Vector3D velocity;
-Math::Real maxSpeed = 0.02;
+Math::Real maxSpeed = static_cast<Real>(0.02);
 bool isMouseLocked = false;
 
 void TestGame::Update(Math::Real delta)
@@ -285,7 +287,9 @@ void TestGame::Update(Math::Real delta)
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		Transform& t = spotLightNode[i]->GetTransform();
-		t.SetTranslation(Math::Vector3D(1.0, 0.0 /*5.0 * abs(cos(temp))*/, 5.0 + 10.0 * abs(sin(temp))));
+		t.SetTranslation(Math::Vector3D(static_cast<Real>(1.0),
+			static_cast<Real>(0.0) /*static_cast<Real>(5.0) * abs(cos(temp))*/,
+			static_cast<Real>(5.0) + static_cast<Real>(10.0) * abs(sin(temp))));
 	}
 
 	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
@@ -317,18 +321,20 @@ void TestGame::Update(Math::Real delta)
 	{
 		acceleration -= transform.GetRot().GetUp().Normalized();
 	}
-	velocity += acceleration * delta * sensitivity * 0.01;
+	velocity += acceleration * delta * sensitivity * static_cast<Real>(0.01);
+	const Real step = static_cast<Real>(0.1);
+	const Real approachedValue = static_cast<Real>(0.0);
 	if (AlmostEqual(acceleration.GetX(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachX(0.1, 0.0);
+		velocity.ApproachX(step, approachedValue);
 	}
 	if (AlmostEqual(acceleration.GetY(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachY(0.1, 0.0);
+		velocity.ApproachY(step, approachedValue);
 	}
 	if (AlmostEqual(acceleration.GetZ(), static_cast<Real>(0.0)))
 	{
-		velocity.ApproachZ(0.1, 0.0);
+		velocity.ApproachZ(step, approachedValue);
 	}
 	velocity.Threshold(maxSpeed);
 	//velocity += acceleration * delta;
