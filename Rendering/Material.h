@@ -35,7 +35,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8); // TODO: Do not use hard-coded values
+	Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8, Texture* normalMap = NULL); // TODO: Do not use hard-coded values
 	virtual ~Material(void);
 private:
 	Material(const Material& material) {}

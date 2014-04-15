@@ -3,9 +3,10 @@
 
 using namespace Rendering;
 
-Material::Material(Texture* diffuseTexture /* = NULL */,
+Material::Material(Texture* diffuseTexture,
 	Math::Real specularIntensity /* = 2 */,
-	Math::Real specularPower /* = 32 */)
+	Math::Real specularPower /* = 32 */,
+	Texture* normalMap /* = NULL */)
 {
 	if (diffuseTexture == NULL)
 	{
@@ -14,6 +15,15 @@ Material::Material(Texture* diffuseTexture /* = NULL */,
 	AddTexture("diffuse", diffuseTexture);
 	AddReal("specularIntensity", specularIntensity);
 	AddReal("specularPower", specularPower);
+	if (normalMap != NULL)
+	{
+		stdlog(Utility::Info, LOGPLACE, "Adding normal map to the material");
+		AddTexture("normalMap", normalMap);
+	}
+	else /* (normalMap == NULL) */
+	{
+		stdlog(Utility::Debug, LOGPLACE, "The material is not using any normal maps");
+	}
 }
 
 
@@ -26,6 +36,7 @@ Material::~Material(void)
 		if (itr->second != NULL) // if texture is not NULL
 		{
 			delete itr->second;
+			itr->second = NULL;
 		}
 		++itr;
 	}
