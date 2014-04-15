@@ -13,7 +13,6 @@ class RENDERING_API Texture
 /* ==================== Static variables begin ==================== */
 private:
 	static std::map<std::string, TextureData*> textureResourceMap;
-	static const TextureData* lastBindTexture;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

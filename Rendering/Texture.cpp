@@ -6,7 +6,6 @@
 
 using namespace Rendering;
 
-/* static */ const TextureData* Texture::lastBindTexture = 0;
 /* static */ std::map<std::string, TextureData*> Texture::textureResourceMap;
 
 Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */) :
@@ -110,11 +109,7 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 		stdlog(Utility::Emergency, LOGPLACE, "Cannot bind the texture. Texture data is NULL");
 		return;
 	}
-
-	if (lastBindTexture != textureData)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-		glBindTexture(textureData->GetTextureTarget(), textureData->GetTextureID());
-		lastBindTexture = textureData;
-	}
+	
+	glActiveTexture(GL_TEXTURE0 + unit);
+	glBindTexture(textureData->GetTextureTarget(), textureData->GetTextureID());
 }
