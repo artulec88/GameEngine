@@ -18,15 +18,6 @@ class RENDERING_API Camera : public GameComponent
 public:
 	static const Math::Vector3D xAxis;
 	static const Math::Vector3D yAxis;
-public:
-	static const Math::Real defaultFoV;
-	static const Math::Real defaultAspectRatio;
-	static const Math::Real defaultNearPlane;
-	static const Math::Real defaultFarPlane;
-	static const Math::Vector3D defaultCameraPos;
-	static const Math::Vector3D defaultCameraForward;
-	static const Math::Vector3D defaultCameraUp;
-	//static const Camera defaultCamera;
 	static const Math::Real sensitivity;
 /* ==================== Static variables end ==================== */
 
@@ -37,7 +28,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Camera();
+	//Camera();
 	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
 	~Camera(void);
 /* ==================== Constructors and destructors end ==================== */

@@ -18,16 +18,18 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
+#define RENDER_LIGHT_MESHES
+
 TestGame::TestGame() :
 	Game(),
 	humanCount(22),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
-	pointLightCount(1),
+	pointLightCount(Config::Get("pointLightCount", 1)),
 	pointLightNodes(NULL),
-	spotLightCount(1),
+	spotLightCount(Config::Get("spotLightCount", 1)),
 	spotLightNodes(NULL),
-	cameraCount(4),
+	cameraCount(Config::Get("cameraCount", 3)),
 	currentCameraIndex(0)
 {
 	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
@@ -59,10 +61,6 @@ void TestGame::Init()
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1;
 	Math::Real specularPower = 32;
-	
-	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0f);
-	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1f);
-	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 1000.0f);
 
 	GameNode* planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(
@@ -72,6 +70,20 @@ void TestGame::Init()
 			new Texture("..\\Textures\\bricks2_normal.jpg", GL_TEXTURE_2D, GL_LINEAR))));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Math::Vector3D(4.0f, 4.0f, 4.0f));
+
+	AddToSceneRoot(planeNode);
+
+	GameNode* testMesh1 = new GameNode();
+	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
+	GameNode* testMesh2 = new GameNode();
+	testMesh2->GetTransform().SetTranslation(-12.0f, 0.5f, -3.0f);
+	testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
+	testMesh1->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane.obj"), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane2.obj"), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh1->AddChild(testMesh2);
+
+	AddToSceneRoot(testMesh1);
 
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(
@@ -110,39 +122,158 @@ void TestGame::Init()
 	AddToSceneRoot(directionalLightNode);
 
 	srand((unsigned int)time(NULL));
+	if (pointLightCount > 0)
+	{
+		stdlog(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
+		AddPointLights();
+	}
+	if (spotLightCount > 0)
+	{
+		stdlog(Notice, LOGPLACE, "Creating %d spot lights", spotLightCount);
+		AddSpotLights();
+	}
+	if (cameraCount > 0)
+	{
+		stdlog(Notice, LOGPLACE, "Creating %d cameras", cameraCount);
+		AddCameras();
+	}
+	else
+	{
+		stdlog(Error, LOGPLACE, "No cameras defined.");
+		exit(EXIT_FAILURE);
+	}
+}
+
+void TestGame::AddPointLights()
+{
+	if (pointLightCount < 1)
+	{
+		return;
+	}
+
+	const Math::Vector3D defaultPointLightPos(Config::Get("defaultPointLightPosX", 0.0), Config::Get("defaultPointLightPosY", 0.0), Config::Get("defaultPointLightPosZ", 0.0));
+	const Math::Vector3D defaultPointLightColor(Config::Get("defaultPointLightColorRed", 0.0), Config::Get("defaultPointLightColorGreen", 0.0), Config::Get("defaultPointLightColorBlue", 1.0));
+	const Math::Real defaultPointLightIntensity(Config::Get("defaultPointLightIntensity", 10.0));
+	const Attenuation defaultPointLightAttenuation(Config::Get("defaultPointLightAttenuationConstant", 0.0), Config::Get("defaultPointLightAttenuationLinear", 0.1), Config::Get("defaultPointLightAttenuationExponent", 0.0));
 	pointLightNodes = new GameNode* [pointLightCount];
 	for (int i = 0; i < pointLightCount; ++i)
 	{
+		std::stringstream ss("");
+		ss << (i + 1);
+		std::string pointLightIndexStr = ss.str();
+
 		pointLightNodes[i] = new GameNode();
-		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(0.0f, 1.0f, 0.0f), 12.8f, Attenuation(0.0f, 0.0f, 1.0f)));
-		pointLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), 0.5f, static_cast<Real>(rand() % 5));
-		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
+		
+		Math::Real xPos = Config::Get("pointLightPosX_" + pointLightIndexStr, defaultPointLightPos.GetX());
+		Math::Real yPos = Config::Get("pointLightPosY_" + pointLightIndexStr, defaultPointLightPos.GetY());
+		Math::Real zPos = Config::Get("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
+		pointLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		
+		// TODO: Set forward and up vector for the spot light
+		//Quaternion rot();
+		//spotLightNodes[i]->GetTransform().SetRotation(rot);
+		//pointLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
+
+		Math::Real red = Config::Get("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
+		Math::Real green = Config::Get("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
+		Math::Real blue = Config::Get("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetZ() /* Blue */);
+		Math::Vector3D color(red, green, blue);
+		
+		Math::Real intensity = Config::Get("pointLightIntensity_" + pointLightIndexStr, defaultPointLightIntensity);
+		
+		Math::Real constant = Config::Get("pointLightAttenuationConstant_" + pointLightIndexStr, defaultPointLightAttenuation.GetConstant());
+		Math::Real linear = Config::Get("pointLightAttenuationLinear_" + pointLightIndexStr, defaultPointLightAttenuation.GetLinear());
+		Math::Real exponent = Config::Get("pointLightAttenuationExponent_" + pointLightIndexStr, defaultPointLightAttenuation.GetExponent());
+		Attenuation attenuation(constant, linear, exponent);
+
+		pointLightNodes[i]->AddComponent(new PointLight(color, intensity, attenuation));
+		
+		// Rendering a small box around point light node position to let the user see the source
+#ifdef RENDER_LIGHT_MESHES
+		pointLightNodes[i]->AddComponent(new MeshRenderer(
+			new Mesh("..\\Models\\PointLight.obj"),
+			new Material(new Texture("..\\Textures\\PointLight.png"), 1, 8)));
+		pointLightNodes[i]->GetTransform().SetScale(Math::Vector3D(0.1f, 0.1f, 0.1f));
+#endif
+		
 		AddToSceneRoot(pointLightNodes[i]);
 	}
+}
 
+void TestGame::AddSpotLights()
+{
+	if (spotLightCount < 1)
+	{
+		return;
+	}
+	const Math::Vector3D defaultSpotLightPos(Config::Get("defaultSpotLightPosX", 0.0f), Config::Get("defaultSpotLightPosY", 0.0f), Config::Get("defaultSpotLightPosZ", 0.0f));
+	const Math::Vector3D defaultSpotLightColor(Config::Get("defaultSpotLightColorRed", 0.0f), Config::Get("defaultSpotLightColorGreen", 0.0f), Config::Get("defaultSpotLightColorBlue", 1.0f));
+	const Math::Real defaultSpotLightIntensity(Config::Get("defaultSpotLightIntensity", 4.0f));
+	const Attenuation defaultSpotLightAttenuation(Config::Get("defaultSpotLightAttenuationConstant", 0.5f), Config::Get("defaultSpotLightAttenuationLinear", 0.1f), Config::Get("defaultSpotLightAttenuationExponent", 0.05f));
+	const Math::Real defaultSpotLightCutoff(Config::Get("defaultSpotLightCutoff", 0.45f));
 	spotLightNodes = new GameNode* [spotLightCount];
 	for (int i = 0; i < spotLightCount; ++i)
 	{
+		std::stringstream ss("");
+		ss << (i + 1);
+		std::string spotLightIndexStr = ss.str();
+
 		spotLightNodes[i] = new GameNode();
-		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(0.0f, 0.0f, 1.0f), 15.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
-		spotLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5 - 2), static_cast<Real>(abs(rand() % 5 - 3)), static_cast<Real>((rand() % 5) - 2));
-		spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
+		
+		Math::Real xPos = Config::Get("spotLightPosX_" + spotLightIndexStr, defaultSpotLightPos.GetX());
+		Math::Real yPos = Config::Get("spotLightPosY_" + spotLightIndexStr, defaultSpotLightPos.GetY());
+		Math::Real zPos = Config::Get("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
+		spotLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		
+		// TODO: Set forward and up vector for the spot light
+		//Quaternion rot();
+		//spotLightNodes[i]->GetTransform().SetRotation(rot);
+		//spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
+
+		Math::Real red = Config::Get("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
+		Math::Real green = Config::Get("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);
+		Math::Real blue = Config::Get("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetZ() /* Blue */);
+		Math::Vector3D color(red, green, blue);
+		
+		Math::Real intensity = Config::Get("spotLightIntensity_" + spotLightIndexStr, defaultSpotLightIntensity);
+		
+		Math::Real constant = Config::Get("spotLightAttenuationConstant_" + spotLightIndexStr, defaultSpotLightAttenuation.GetConstant());
+		Math::Real linear = Config::Get("spotLightAttenuationLinear_" + spotLightIndexStr, defaultSpotLightAttenuation.GetLinear());
+		Math::Real exponent = Config::Get("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
+		Attenuation attenuation(constant, linear, exponent);
+
+		Math::Real cutoff = Config::Get("spotLightCutoff_" + spotLightIndexStr, defaultSpotLightCutoff);
+
+		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, cutoff));
+		
+		// Rendering a small box around spot light node position to let the user see the source
+#ifdef RENDER_LIGHT_MESHES
+		spotLightNodes[i]->AddComponent(new MeshRenderer(
+			new Mesh("..\\Models\\SpotLight.obj"),
+			new Material(new Texture("..\\Textures\\SpotLight.png"), 1, 8)));
+		spotLightNodes[i]->GetTransform().SetScale(Math::Vector3D(0.1f, 0.1f, 0.1f));
+#endif
+		
 		AddToSceneRoot(spotLightNodes[i]);
 	}
+}
 
-	AddToSceneRoot(planeNode);
+void TestGame::AddCameras()
+{
+	if (cameraCount < 1)
+	{
+		stdlog(Error, LOGPLACE, "No cameras defined.");
+		exit(EXIT_FAILURE);
+	}
 
-	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
-	testMesh1->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
-	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(-12.0f, 0.5f, -3.0f);
-	testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
-	testMesh1->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane.obj"), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane2.obj"), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh1->AddChild(testMesh2);
-
-	AddToSceneRoot(testMesh1);
+	const Real defaultFoV = Config::Get("defaultCameraFoV", 70.0);
+	const Real defaultAspectRatio = Config::Get("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
+	const Real defaultNearPlane = Config::Get("defaultCameraNearPlane", 0.1);
+	const Real defaultFarPlane = Config::Get("defaultCameraFarPlane", 1000.0);
+	
+	const Vector3D defaultCameraPos(Config::Get("defaultCameraPosX", 0.0), Config::Get("defaultCameraPosY", 0.0), Config::Get("defaultCameraPosZ", 0.0));
+	const Vector3D defaultCameraForward(Config::Get("defaultCameraForwardX", 0.0), Config::Get("defaultCameraForwardY", 0.0), Config::Get("defaultCameraForwardZ", 0.0));
+	const Vector3D defaultCameraUp(Config::Get("defaultCameraUpX", 0.0), Config::Get("defaultCameraUpY", 0.0), Config::Get("defaultCameraUpZ", 0.0));
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -152,19 +283,19 @@ void TestGame::Init()
 		std::string cameraIndexStr = ss.str();
 
 		cameraNodes[i] = new GameNode();
-		Math::Real xPos = Config::Get("cameraPos_x_" + cameraIndexStr, Camera::defaultCameraPos.GetX());
-		Math::Real yPos = Config::Get("cameraPos_y_" + cameraIndexStr, Camera::defaultCameraPos.GetY());
-		Math::Real zPos = Config::Get("cameraPos_z_" + cameraIndexStr, Camera::defaultCameraPos.GetZ());
+		Math::Real xPos = Config::Get("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
+		Math::Real yPos = Config::Get("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
+		Math::Real zPos = Config::Get("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
 		cameraNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
 		// TODO: Set forward and up vector for the camera
 		//Quaternion rot();
 		//cameraNodes[i]->GetTransform().SetRotation(rot);
 
-		Angle fov(Config::Get("cameraFoV_" + cameraIndexStr, Camera::defaultFoV), true);
-		Math::Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, Camera::defaultAspectRatio);
-		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, Camera::defaultNearPlane);
-		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, Camera::defaultFarPlane);
+		Angle fov(Config::Get("cameraFoV_" + cameraIndexStr, defaultFoV), true);
+		Math::Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
+		Math::Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
+		Math::Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
 		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
@@ -212,15 +343,13 @@ void TestGame::Update(Math::Real delta)
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		Transform& t = pointLightNodes[i]->GetTransform();
-		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
-		t.SetTranslation(t.GetPos() + (Math::Vector3D(sin(temp) / 1000, 0.0, sin(temp) / 1000)));
-		//std::cout << i << ")" << t.GetPos().ToString() << std::endl;
+		t.SetTranslation(t.GetPos() + (Math::Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
 	}
 
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		Transform& t = spotLightNodes[i]->GetTransform();
-		t.SetTranslation(Math::Vector3D(1.0f, 0.0f /*5.0f * abs(cos(temp))*/, 5.0f + 10.0f * abs(sin(temp))));
+		t.SetTranslation(t.GetPos() + (Math::Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
 	}
 
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
