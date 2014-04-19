@@ -17,12 +17,13 @@ void main()
 	texCoord0 = texCoord;
 	worldPos0 = (vec4(vertexPosition_modelspace, 1.0) * T_model).xyz;
 	
-	//normal0 = (vec4(normal, 0.0) * T_model).xyz; // this is swizzling :)
+	vec3 n = normalize((vec4(normal, 0.0) * T_model).xyz); // this is swizzling :)
+	vec3 t = normalize((vec4(tangent, 0.0) * T_model).xyz); // this is swizzling :)
 	
-    vec3 n = normalize((vec4(normal, 0.0) * T_model).xyz);
-    vec3 t = normalize((vec4(tangent, 0.0) * T_model).xyz);
-    t = normalize(t - dot(t, n) * n);
-    
-    vec3 biTangent = cross(t, n);
-    tbnMatrix = mat3(t, biTangent, n);
+	// Gramm-Schmidt orthogonalization
+	t = normalize(t - dot(t, n) * n);
+	
+	vec3 bitangent = cross(t, n);
+	
+	tbnMatrix = mat3(t, bitangent, n);
 }
