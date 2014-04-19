@@ -114,10 +114,10 @@ void TestGame::Init()
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		pointLightNodes[i] = new GameNode();
-		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(0.0f, 1.0f, 0.0f), 0.8f, Attenuation(0.0f, 0.0f, 1.0f)));
+		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(0.0f, 1.0f, 0.0f), 12.8f, Attenuation(0.0f, 0.0f, 1.0f)));
 		pointLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), 0.5f, static_cast<Real>(rand() % 5));
 		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
-		//AddToSceneRoot(pointLightNodes[i]);
+		AddToSceneRoot(pointLightNodes[i]);
 	}
 
 	spotLightNodes = new GameNode* [spotLightCount];
@@ -127,7 +127,7 @@ void TestGame::Init()
 		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(0.0f, 0.0f, 1.0f), 15.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 		spotLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5 - 2), static_cast<Real>(abs(rand() % 5 - 3)), static_cast<Real>((rand() % 5) - 2));
 		spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
-		//AddToSceneRoot(spotLightNodes[i]);
+		AddToSceneRoot(spotLightNodes[i]);
 	}
 
 	AddToSceneRoot(planeNode);
