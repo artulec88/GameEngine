@@ -6,10 +6,12 @@
 using namespace Rendering;
 using namespace Math;
 
-Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Vector2D(0.0, 0.0) */, const Vector3D& normal /* = Vector3D(0.0, 0.0, 0.0) */) :
+Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Vector2D(0.0, 0.0) */, const Vector3D& normal /* = Vector3D(0.0, 0.0, 0.0) */,
+	const Math::Vector3D& tangent /* = Math::Vector3D(0, 0, 0) */) :
 	pos(position),
 	texCoord(texCoord),
-	normal(normal)
+	normal(normal),
+	tangent(tangent)
 {
 }
 

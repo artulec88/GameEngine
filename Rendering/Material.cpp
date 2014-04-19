@@ -15,15 +15,14 @@ Material::Material(Texture* diffuseTexture,
 	AddTexture("diffuse", diffuseTexture);
 	AddReal("specularIntensity", specularIntensity);
 	AddReal("specularPower", specularPower);
-	if (normalMap != NULL)
-	{
-		stdlog(Utility::Info, LOGPLACE, "Adding normal map to the material");
-		AddTexture("normalMap", normalMap);
-	}
-	else /* (normalMap == NULL) */
+	if (normalMap == NULL)
 	{
 		stdlog(Utility::Debug, LOGPLACE, "The material is not using any normal maps");
+		normalMap = new Texture("..\\Textures\\defaultNormalMap.jpg");
+		//stdlog(Utility::Info, LOGPLACE, "Adding normal map to the material");
 	}
+	ASSERT(normalMap != NULL);
+	AddTexture("normalMap", normalMap);
 }
 
 

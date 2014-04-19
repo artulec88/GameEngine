@@ -212,6 +212,7 @@ IndexedModel OBJModel::ToIndexedModel()
 			{
 				result.AddNormal(currentNormal);
 			}
+			result.AddTangent(Math::Vector3D(0.0f, 0.0f, 0.0f));
 		}
 		else
 		{
@@ -228,6 +229,7 @@ IndexedModel OBJModel::ToIndexedModel()
 			normalModel.AddPosition(currentPosition);
 			normalModel.AddTexCoord(currentTexCoord);
 			normalModel.AddNormal(currentNormal);
+			normalModel.AddTangent(Math::Vector3D(0.0f, 0.0f, 0.0f));
 		}
 		else
 		{
@@ -248,6 +250,12 @@ IndexedModel OBJModel::ToIndexedModel()
 			//result.SetNormal(i, normalModel.GetNormal(indexMap[i]));
 			result.AddNormal(normalModel.GetNormal(indexMap[i]));
 		}
+	}
+
+	normalModel.CalcTangents();
+	for (int i = 0; i < result.PositionsSize(); ++i)
+	{
+		result.AddTangent(normalModel.GetTangent(indexMap[i]));
 	}
 
 	return result;

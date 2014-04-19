@@ -6,6 +6,10 @@
 #include "Utility\Utility.h"
 #include "Utility\Log.h"
 
+#include <assimp\Importer.hpp>
+#include <assimp\scene.h>
+#include <assimp\postprocess.h>
+
 #ifdef MEASURE_TIME_ENABLED
 #include <time.h>
 #endif
@@ -18,11 +22,11 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
-Mesh::Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */) :
+Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */) :
 	fileName(),
 	meshData(NULL)
 {
-	AddVertices(vertices, vertSize, indices, indexSize, calcNormalsEnabled);
+	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
 Mesh::Mesh(const std::string& fileName) :
@@ -46,27 +50,56 @@ Mesh::Mesh(const std::string& fileName) :
 #endif
 
 		stdlog(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
-		IndexedModel model = OBJModel(fileName).ToIndexedModel();
 
-		ASSERT(model.PositionsSize() == model.TexCoordsSize());
-		ASSERT(model.PositionsSize() == model.NormalsSize());
-		if (model.PositionsSize() != model.TexCoordsSize())
+		Assimp::Importer importer;
+		const aiScene* scene = importer.ReadFile(fileName.c_str(),
+			aiProcess_Triangulate |
+			aiProcess_GenSmoothNormals |
+			aiProcess_FlipUVs |
+			aiProcess_CalcTangentSpace);
+
+		if (scene == NULL)
 		{
-			stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and texture coordinates (%d and %d respectively)",
-				model.PositionsSize(), model.TexCoordsSize());
-		}
-		if (model.PositionsSize() != model.NormalsSize())
-		{
-			stdlog(Error, LOGPLACE, "Created model does not have an identical number of positions and normals (%d and %d respectively)",
-				model.PositionsSize(), model.NormalsSize());
+			stdlog(Error, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
+			exit(EXIT_FAILURE);
 		}
 
+		const aiMesh* model = scene->mMeshes[0];
 		std::vector<Vertex> vertices;
-		for (unsigned int i = 0; i < model.PositionsSize(); ++i)
+		std::vector<int> indices;
+
+		const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
+		for (unsigned int i = 0; i < model->mNumVertices; ++i)
 		{
-			vertices.push_back(Vertex(model.GetPosition(i), model.GetTexCoord(i), model.GetNormal(i)));
+			const aiVector3D* pPos = &(model->mVertices[i]);
+			const aiVector3D* pNormal = &(model->mNormals[i]);
+			const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
+			const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
+			if (pTangent == NULL)
+			{
+				stdlog(Critical, LOGPLACE, "Tangent calculated incorrectly");
+				pTangent = &aiZeroVector;
+			}
+
+			Math::Vector3D vertexPos(pPos->x, pPos->y, pPos->z);
+			Math::Vector2D vertexTexCoord(pTexCoord->x, pTexCoord->y);
+			Math::Vector3D vertexNormal(pNormal->x, pNormal->y, pNormal->z);
+			Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
+
+			Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
+
+			vertices.push_back(vertex);
 		}
-		AddVertices(&vertices[0], vertices.size(), model.GetIndices(), model.IndicesSize(), false);
+
+		for (unsigned int i = 0; i < model->mNumFaces; ++i)
+		{
+			const aiFace& face = model->mFaces[i];
+			ASSERT(face.mNumIndices == 3);
+			indices.push_back(face.mIndices[0]);
+			indices.push_back(face.mIndices[1]);
+			indices.push_back(face.mIndices[2]);
+		}
+		AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
 
 		meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
 
@@ -106,14 +139,18 @@ Mesh::~Mesh(void)
 	}
 }
 
-void Mesh::AddVertices(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize, bool calcNormalsEnabled /* = true */)
+void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled /* = true */)
 {
-	meshData = new MeshData(indexSize);
+	meshData = new MeshData(indicesCount);
 
 	if (calcNormalsEnabled)
 	{
-		this->CalcNormals(vertices, vertSize, indices, indexSize);
+		this->CalcNormals(vertices, verticesCount, indices, indicesCount);
 	}
+	//if (calcTangents)
+	//{
+	//	this->CalcTangents(vertices, verticesCount);
+	//}
 
 	ASSERT(meshData != NULL);
 	if (meshData == NULL)
@@ -122,10 +159,10 @@ void Mesh::AddVertices(Vertex* vertices, int vertSize, const unsigned short* ind
 		exit(EXIT_FAILURE);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
-	glBufferData(GL_ARRAY_BUFFER, vertSize * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize * sizeof(unsigned short), indices, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
 void Mesh::Draw() const
@@ -140,24 +177,27 @@ void Mesh::Draw() const
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
 
 	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D));
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D)));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
-	glDrawElements(GL_TRIANGLES, meshData->GetSize(), GL_UNSIGNED_SHORT, 0);
+	glDrawElements(GL_TRIANGLES, meshData->GetSize(), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
 }
 
-void Mesh::CalcNormals(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize)
+void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const
 {
 	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
-	for(int i = 0; i < indexSize; i += iterationStep)
+	for(int i = 0; i < indicesCount; i += iterationStep)
 	{
 		int i0 = indices[i];
 		int i1 = indices[i + 1];
@@ -172,8 +212,61 @@ void Mesh::CalcNormals(Vertex* vertices, int vertSize, const unsigned short* ind
 		vertices[i2].normal += normalVec;
 	}
 	
-	for(int i = 0; i < vertSize; i++)
+	for(int i = 0; i < verticesCount; i++)
 	{
 		vertices[i].normal = vertices[i].normal.Normalized();
 	}
+}
+
+void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
+{
+	const int iterationStep = 3; // each face has three vertices
+	for (int i = 0; i < verticesCount - iterationStep + 1; i += iterationStep)
+	{
+		// shortcut for vertices
+		Vertex& v0 = vertices[i];
+		Vertex& v1 = vertices[i + 1];
+		Vertex& v2 = vertices[i + 2];
+
+		// Edges of the triangle: position delta
+		Math::Vector3D deltaPos1 = v1.pos - v0.pos;
+		Math::Vector3D deltaPos2 = v2.pos - v0.pos;
+
+		// UV delta
+		Math::Vector2D deltaUV1 = v1.texCoord - v0.texCoord;
+		Math::Vector2D deltaUV2 = v2.texCoord - v0.texCoord;
+
+		Math::Real r = static_cast<Math::Real>(1.0f) / (deltaUV1.GetX() * deltaUV2.GetY() - deltaUV1.GetY() * deltaUV2.GetX());
+		Math::Vector3D tangent = (deltaPos1 * deltaUV2.GetY() - deltaPos2 * deltaUV1.GetY()) * r;
+		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.GetX() - deltaPos1 * deltaUV2.GetX()) * r;
+
+		// Set the same tangent for all three vertices of the triangle. They will be merged later, during indexing.
+		v0.tangent = tangent;
+		v1.tangent = tangent;
+		v2.tangent = tangent;
+
+		// Set the same bitangent for all three vertices of the triangle. They will be merged later, during indexing.
+		//v0.bitangent = bitangent;
+		//v1.bitangent = bitangent;
+		//v2.bitangent = bitangent;
+	}
+
+	// See "http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#Going_further"
+	//for (int i = 0; i < verticesCount; ++i)
+	//{
+	//	Math::Vector3D& normal = vertices[i].normal;
+	//	Math::Vector3D& tangent = vertices[i].tangent;
+	//	//Math::Vector3D& bitangent = vertices[i].bitangent;
+
+	//	// Gram-Schmidt orthogonalization
+	//	tangent -= normal * normal.Dot(tangent);
+	//	tangent.Normalize();
+
+	//	// Calculate handedness
+	//	//Math::Vector3D cross = normal.Cross(tangent);
+	//	//if (cross.Dot(bitangent) < 0)
+	//	//{
+	//	//	tangent.Negate();
+	//	//}
+	//}
 }

@@ -39,6 +39,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	Init(width, height, title);
 
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
+	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
 	AddVector3D("ambientIntensity", ambientLight);
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
@@ -49,7 +50,7 @@ Renderer::~Renderer(void)
 {
 	stdlog(Debug, LOGPLACE, "Destroying rendering engine");
 	
-	glDeleteVertexArrays(1, &vao);
+	//glDeleteVertexArrays(1, &vao);
 
 	//if (cameras != NULL)
 	//{
@@ -89,8 +90,8 @@ void Renderer::Init(int width, int height, std::string title)
 #endif
 
 	// Open a window and create its OpenGL context
-	//window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-	window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
+	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+	//window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL); // fullscreen
 	if (window == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
@@ -129,20 +130,20 @@ void Renderer::InitGraphics()
 {
 	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
 
-	//glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
-	//glCullFace(GL_BACK); // cull the back face
-	//glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
+	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
+	glCullFace(GL_BACK); // cull the back face
+	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	glEnable(GL_DEPTH_TEST); // to enable depth tests
 	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
 
-	glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
+	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
 
-	glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_TEXTURE_2D);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 
-	ASSERT(!vao);
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
+	//ASSERT(!vao);
+	//glGenVertexArrays(1, &vao);
+	//glBindVertexArray(vao);
 }
 
 void Renderer::InitGlew() const
@@ -195,8 +196,8 @@ void Renderer::Render(GameNode& gameNode)
 		gameNode.RenderAll(currentLight->GetShader(), this);
 	}
 
-	glDepthFunc(GL_LESS);
 	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
 	glDisable(GL_BLEND);
 }
 

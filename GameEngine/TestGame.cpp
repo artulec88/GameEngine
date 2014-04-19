@@ -48,60 +48,51 @@ void TestGame::Init()
 
 	Game::Init();
 
-	Math::Real fieldDepth = 10.0f;
-	Math::Real fieldWidth = 10.0f;
-	Vertex vertex1_1(Vector3D(-fieldWidth, 0.0, -fieldDepth), Vector2D(0.0, 0.0));
-	Vertex vertex1_2(Vector3D(-fieldWidth, 0.0, 3 * fieldDepth), Vector2D(0.0, 1.0));
-	Vertex vertex1_3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
-	Vertex vertex1_4(Vector3D(3 * fieldWidth, 0.0, 3 * fieldDepth), Vector2D(1.0, 1.0));
-	Vertex vertices1[] = {vertex1_1, vertex1_2, vertex1_3, vertex1_4};
-	unsigned short indices1[] = {0, 1, 2,
-							  2, 1, 3};
-	Mesh* mesh1 = new Mesh(vertices1, 4, indices1, 6, true);
-
-	Vertex vertex2_1(Vector3D(-fieldWidth / fieldWidth, 0.0, -fieldDepth / fieldDepth), Vector2D(0.0, 0.0));
-	Vertex vertex2_2(Vector3D(-fieldWidth / fieldWidth, 0.0, 3 * fieldDepth / fieldDepth), Vector2D(0.0, 1.0));
-	Vertex vertex2_3(Vector3D(3 * fieldWidth / fieldWidth, 0.0, -fieldDepth / fieldDepth), Vector2D(1.0, 0.0));
-	Vertex vertex2_4(Vector3D(3 * fieldWidth / fieldWidth, 0.0, 3 * fieldDepth / fieldDepth), Vector2D(1.0, 1.0));
-	Vertex vertices2[] = {vertex2_1, vertex2_2, vertex2_3, vertex2_4};
-	unsigned short indices2[] = {0, 1, 2,
-							  2, 1, 3};
-
 	GameNode* boxNode = new GameNode();
-	//Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
-	Mesh* boxMesh = new Mesh("..\\Models\\box.obj");
-	boxNode->AddComponent(new MeshRenderer(boxMesh, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
-	boxNode->GetTransform().SetTranslation(5.0f, 0.5f, 6.0f);
+	boxNode->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\box2.obj"),
+		new Material(
+			new Texture("..\\Textures\\crateBox2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
 	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1;
 	Math::Real specularPower = 32;
-	//material = new Material(NULL, materialColor, specularIntensity, specularPower);
-	Material* material = new Material(new Texture("..\\Textures\\bricks3.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		specularIntensity, specularPower);
 	
 	Math::Real fov = GET_CONFIG_VALUE("FieldOfView", "FieldOfViewDefault", 70.0f);
 	Math::Real zNear = GET_CONFIG_VALUE("zNearClippingPlane", "zNearClippingPlaneDefault", 0.1f);
 	Math::Real zFar = GET_CONFIG_VALUE("zFarClippingPlane", "zFarClippingPlaneDefault", 1000.0f);
 
 	GameNode* planeNode = new GameNode();
-	planeNode->AddComponent(new MeshRenderer(mesh1, material));
+	planeNode->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\plane3.obj"),
+		new Material(
+			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
+			new Texture("..\\Textures\\bricks2_normal.jpg", GL_TEXTURE_2D, GL_LINEAR))));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
+	planeNode->GetTransform().SetScale(Math::Vector3D(4.0f, 4.0f, 4.0f));
 
-	Mesh* monkeyMesh1 = new Mesh("..\\Models\\monkey.obj");
 	GameNode* monkeyNode1 = new GameNode();
-	monkeyNode1->AddComponent(new MeshRenderer(monkeyMesh1, new Material(new Texture("..\\Textures\\crateBox.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
-	monkeyNode1->GetTransform().SetTranslation(5.0f, 1.0f, 15.0f);
+	monkeyNode1->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\monkey3.obj"),
+		new Material(
+			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
+			//new Texture("..\\Textures\\bricks_normal.jpg"))));
+	monkeyNode1->GetTransform().SetTranslation(15.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
-	monkeyNode1->AddComponent(new LookAtComponent());
+	//monkeyNode1->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode1);
-	
-	Mesh* monkeyMesh2 = new Mesh("..\\Models\\monkey.obj"); // this texture should already be loaded
+
 	GameNode* monkeyNode2 = new GameNode();
-	monkeyNode2->AddComponent(new MeshRenderer(monkeyMesh2, new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+	monkeyNode2->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\monkey3.obj"),
+		new Material(
+			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+			//new Texture("..\\Textures\\bricks_normal.jpg"))));
 	monkeyNode2->GetTransform().SetTranslation(5.0, 3.0, 15.0);
+	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
 
 	humanNodes = new GameNode* [humanCount];
@@ -115,7 +106,8 @@ void TestGame::Init()
 
 	directionalLightNode = new GameNode();
 	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0f, 1.0f, 1.0f), 0.8f));
-	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1.0f, 0.0f, 0.0f), Angle(-45.0f)));
+	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1.0f, 1.0f, 0.0f), Angle(45.0f)));
+	AddToSceneRoot(directionalLightNode);
 
 	srand((unsigned int)time(NULL));
 	pointLightNodes = new GameNode* [pointLightCount];
@@ -125,28 +117,29 @@ void TestGame::Init()
 		pointLightNodes[i]->AddComponent(new PointLight(Math::Vector3D(0.0f, 1.0f, 0.0f), 0.8f, Attenuation(0.0f, 0.0f, 1.0f)));
 		pointLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5), 0.5f, static_cast<Real>(rand() % 5));
 		//std::cout << i << ")" << pointLightNode[i]->GetTransform().GetPos().ToString() << std::endl;
-		AddToSceneRoot(pointLightNodes[i]);
+		//AddToSceneRoot(pointLightNodes[i]);
 	}
 
 	spotLightNodes = new GameNode* [spotLightCount];
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		spotLightNodes[i] = new GameNode();
-		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(0.0f, 0.0f, 1.0f), 5.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
+		spotLightNodes[i]->AddComponent(new SpotLight(Math::Vector3D(0.0f, 0.0f, 1.0f), 15.8f, Attenuation(0.0f, 0.1f, 0.0f), 0.7f));
 		spotLightNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 5 - 2), static_cast<Real>(abs(rand() % 5 - 3)), static_cast<Real>((rand() % 5) - 2));
 		spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
-		AddToSceneRoot(spotLightNodes[i]);
+		//AddToSceneRoot(spotLightNodes[i]);
 	}
 
 	AddToSceneRoot(planeNode);
-	AddToSceneRoot(directionalLightNode);
 
 	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
 	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(2.0f, 0.0f, 5.0f);
-	testMesh1->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh2->AddComponent(new MeshRenderer(new Mesh(vertices2, 4, indices2, 6, true), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->GetTransform().SetTranslation(-12.0f, 0.5f, -3.0f);
+	testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
+	testMesh1->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane.obj"), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane2.obj"), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	testMesh1->AddChild(testMesh2);
 
 	AddToSceneRoot(testMesh1);

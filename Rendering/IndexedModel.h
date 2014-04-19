@@ -20,6 +20,7 @@ private:
     std::vector<Math::Vector3D> positions;
     std::vector<Math::Vector2D> texCoords;
     std::vector<Math::Vector3D> normals;
+	std::vector<Math::Vector3D> tangents;
     std::vector<unsigned short> indices;
 /* ==================== Non-static member variables end ==================== */
 
@@ -29,16 +30,19 @@ public:
 	unsigned int PositionsSize() const { return positions.size(); }
 	unsigned int TexCoordsSize() const { return texCoords.size(); }
 	unsigned int NormalsSize() const { return normals.size(); }
+	unsigned int TangentsSize() const { return tangents.size(); }
 	unsigned int IndicesSize() const { return indices.size(); }
 	
 	void AddPosition(const Math::Vector3D& pos) { positions.push_back(pos); }
 	void AddTexCoord(const Math::Vector2D& texCoord) { texCoords.push_back(texCoord); }
 	void AddNormal(const Math::Vector3D& normal) { normals.push_back(normal); }
+	void AddTangent(const Math::Vector3D& tangent) { tangents.push_back(tangent); }
 	void AddIndex(unsigned short index) { indices.push_back(index); }
 	
 	Math::Vector3D GetPosition(int i) const { return positions[i]; }
 	Math::Vector2D GetTexCoord(int i) const { return texCoords[i]; }
 	Math::Vector3D GetNormal(int i) const { return normals[i]; }
+	Math::Vector3D GetTangent(int i) const { return tangents[i]; }
 	unsigned short GetIndex(int i) const { return indices[i]; }
 	const unsigned short* GetIndices() const { return &indices[0]; }
 	
@@ -60,8 +64,15 @@ public:
 		ASSERT(i < static_cast<int>(normals.size()));
 		normals[i] = normal;
 	}
+	void SetTangent(int i, const Math::Vector3D& tangent)
+	{
+		ASSERT(i >= 0);
+		ASSERT(i < static_cast<int>(tangents.size()));
+		tangents[i] = tangent;
+	}
 
 	void CalcNormals();
+	void CalcTangents();
 /* ==================== Non-static member functions end ==================== */
 }; /* end class IndexedModel */
 

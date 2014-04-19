@@ -47,8 +47,7 @@ void TestGame2::Init()
 	Vertex vertex3(Vector3D(3 * fieldWidth, 0.0, -fieldDepth), Vector2D(1.0, 0.0));
 	Vertex vertex4(Vector3D(3 * fieldWidth, 0.0, 3 * fieldDepth), Vector2D(1.0, 1.0));
 	Vertex vertices[] = {vertex1, vertex2, vertex3, vertex4};
-	unsigned short indices[] = {0, 1, 2,
-							  2, 1, 3};
+	int indices[] = {0, 1, 2, 2, 1, 3};
 	mesh = new Mesh(vertices, 4, indices, 6, true);
 	//mesh = new Mesh("..\\Models\\box.obj");
 

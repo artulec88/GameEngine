@@ -22,7 +22,7 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Mesh(const std::string& fileName);
-	Mesh(Vertex* vertices, int vertSize, unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
+	Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true);
 	virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
 	Mesh(Mesh& mesh) {}
@@ -33,8 +33,9 @@ private: // disable copy constructor and assignment operator
 public:
 	void Draw() const;
 protected:
-	void AddVertices(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize, bool calcNormalsEnabled = true);
-	void CalcNormals(Vertex* vertices, int vertSize, const unsigned short* indices, int indexSize);
+	void AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled = true);
+	void CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const;
+	void CalcTangents(Vertex* vertices, int verticesCount) const;
 /* ==================== Non-static member functions end ==================== */
 
 

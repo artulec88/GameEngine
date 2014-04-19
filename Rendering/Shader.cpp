@@ -88,10 +88,10 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 
 			std::vector<std::string> tokens;
 			CutToTokens(line, tokens, ' ');
-			for (int i = 0; i < tokens.size(); ++i)
-			{
-				std::cout << i << "):\t" << tokens[i] << std::endl;
-			}
+			//for (int i = 0; i < tokens.size(); ++i)
+			//{
+			//	std::cout << i << "):\t" << tokens[i] << std::endl;
+			//}
 			ASSERT(tokens.size() > 1);
 			if (tokens.size() <= 1)
 			{
@@ -219,11 +219,11 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	int temp = 0;
 	for (std::vector<UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
 	{
-		stdlog(Debug, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
+		stdlog(Delocust, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
 		int innerTemp = 0;
 		for (std::vector<TypedData>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
 		{
-			stdlog(Debug, LOGPLACE, "\t .memberName[%d].name = \"%s\"\t .memberName[%d].type = \"%s\"", innerTemp, innerItr->name.c_str(), innerTemp, innerItr->type.c_str());
+			stdlog(Delocust, LOGPLACE, "\t .memberName[%d].name = \"%s\"\t .memberName[%d].type = \"%s\"", innerTemp, innerItr->name.c_str(), innerTemp, innerItr->type.c_str());
 			++innerTemp;
 		}
 		++temp;
@@ -257,7 +257,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	}
 	for (std::map<std::string, unsigned int>::const_iterator it = uniformMap.begin(); it != uniformMap.end(); ++it)
 	{
-		stdlog(Debug, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
+		stdlog(Delocust, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
 	}
 }
 
@@ -289,7 +289,7 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 	{
 		stdlog(Warning, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
 	}
-	stdlog(Debug, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
+	stdlog(Delocust, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
 	uniformMap.insert(std::pair<std::string, unsigned int>(uniformName, location));
 }
 
