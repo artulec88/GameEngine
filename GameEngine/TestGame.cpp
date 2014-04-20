@@ -53,15 +53,16 @@ void TestGame::Init()
 
 	GameNode* boxNode = new GameNode();
 	boxNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\box2.obj"),
+		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"),
 		new Material(
-			new Texture("..\\Textures\\crateBox2.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+			new Texture("..\\Textures\\crateBox2.jpg", GL_TEXTURE_2D, GL_LINEAR), 1.0f, 2.0f)));
 	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
+	boxNode->GetTransform().SetScale(Vector3D(0.05f, 0.05f, 0.05f));
 	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
-	Math::Real specularIntensity = 1;
-	Math::Real specularPower = 32;
+	Math::Real specularIntensity = Config::Get("defaultSpecularIntensity", 1.0f);
+	Math::Real specularPower = Config::Get("defaultSpecularPower", 8.0f);
 
 	GameNode* planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(
@@ -80,11 +81,17 @@ void TestGame::Init()
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetTranslation(-12.0f, 0.5f, -3.0f);
 	testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
-	testMesh1->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane.obj"), new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane2.obj"), new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
-	testMesh1->AddChild(testMesh2);
-
+	testMesh1->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\plane.obj"),
+		new Material(
+			new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+	testMesh2->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\plane.obj"),
+		new Material(
+			new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	AddToSceneRoot(testMesh1);
+	//AddToSceneRoot(testMesh2);
+	testMesh1->AddChild(testMesh2);
 
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(
@@ -117,12 +124,55 @@ void TestGame::Init()
 		AddToSceneRoot(humanNodes[i]);
 	}
 
-	directionalLightNode = new GameNode();
-	directionalLightNode->AddComponent(new DirectionalLight(Math::Vector3D(1.0f, 1.0f, 1.0f), 0.8f));
-	directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1.0f, 1.0f, 0.0f), Angle(45.0f)));
-	AddToSceneRoot(directionalLightNode);
-
 	srand((unsigned int)time(NULL));
+
+	/* ==================== Adding directional light begin ==================== */
+	bool directionalLightEnabled = Config::Get("directionalLightEnabled", true);
+	if (directionalLightEnabled)
+	{
+		stdlog(Notice, LOGPLACE, "Directional light enabled");
+		directionalLightNode = new GameNode();
+
+		const Math::Vector3D defaultDirectionalLightPos(Config::Get("defaultDirectionalLightPosX", 0.0), Config::Get("defaultDirectionalLightPosY", 0.0), Config::Get("defaultDirectionalLightPosZ", 0.0));
+		const Math::Vector3D defaultDirectionalLightColor(Config::Get("defaultDirectionalLightColorRed", 1.0), Config::Get("defaultDirectionalLightColorGreen", 1.0), Config::Get("defaultDirectionalLightColorBlue", 1.0));
+		const Math::Real defaultDirectionalLightIntensity(Config::Get("defaultDirectionalLightIntensity", 1.0));
+		const Angle defaultDirectionalLightRotationX(Config::Get("defaultDirectionalLightAngleX", -45.0f));
+		const Angle defaultDirectionalLightRotationY(Config::Get("defaultDirectionalLightAngleY", 0.0f));
+		const Angle defaultDirectionalLightRotationZ(Config::Get("defaultDirectionalLightAngleZ", 0.0f));
+
+		Math::Real xPos = Config::Get("directionalLightPosX", defaultDirectionalLightPos.GetX());
+		Math::Real yPos = Config::Get("directionalLightPosY", defaultDirectionalLightPos.GetY());
+		Math::Real zPos = Config::Get("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
+		directionalLightNode->GetTransform().SetTranslation(xPos, yPos, zPos);
+
+		Angle angleX(Config::Get("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
+		Angle angleY(Config::Get("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(Config::Get("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
+		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Quaternion rot(rotMatrix);
+		directionalLightNode->GetTransform().SetRotation(rot);
+		//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1.0f, 1.0f, 0.0f), Angle(45.0f)));
+
+		Math::Real red = Config::Get("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
+		Math::Real green = Config::Get("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
+		Math::Real blue = Config::Get("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
+		Math::Vector3D color(red, green, blue);
+		
+		Math::Real intensity = Config::Get("directionalLightIntensity", defaultDirectionalLightIntensity);
+
+		directionalLightNode->AddComponent(new DirectionalLight(color, intensity));
+		AddToSceneRoot(directionalLightNode);
+
+		// Rendering a small box around point light node position to let the user see the source
+#ifdef RENDER_LIGHT_MESHES
+		directionalLightNode->AddComponent(new MeshRenderer(
+			new Mesh("..\\Models\\DirectionalLight.obj"),
+			new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1, 8)));
+		directionalLightNode->GetTransform().SetScale(Math::Vector3D(0.1f, 0.1f, 0.1f));
+#endif
+	}
+	/* ==================== Adding directional light end ==================== */
+
 	if (pointLightCount > 0)
 	{
 		stdlog(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
@@ -153,6 +203,9 @@ void TestGame::AddPointLights()
 	}
 
 	const Math::Vector3D defaultPointLightPos(Config::Get("defaultPointLightPosX", 0.0), Config::Get("defaultPointLightPosY", 0.0), Config::Get("defaultPointLightPosZ", 0.0));
+	const Angle defaultPointLightRotationX(Config::Get("defaultPointLightAngleX", -45.0f));
+	const Angle defaultPointLightRotationY(Config::Get("defaultPointLightAngleY", 0.0f));
+	const Angle defaultPointLightRotationZ(Config::Get("defaultPointLightAngleZ", 0.0f));
 	const Math::Vector3D defaultPointLightColor(Config::Get("defaultPointLightColorRed", 0.0), Config::Get("defaultPointLightColorGreen", 0.0), Config::Get("defaultPointLightColorBlue", 1.0));
 	const Math::Real defaultPointLightIntensity(Config::Get("defaultPointLightIntensity", 10.0));
 	const Attenuation defaultPointLightAttenuation(Config::Get("defaultPointLightAttenuationConstant", 0.0), Config::Get("defaultPointLightAttenuationLinear", 0.1), Config::Get("defaultPointLightAttenuationExponent", 0.0));
@@ -170,10 +223,12 @@ void TestGame::AddPointLights()
 		Math::Real zPos = Config::Get("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
 		pointLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		// TODO: Set forward and up vector for the spot light
-		//Quaternion rot();
-		//spotLightNodes[i]->GetTransform().SetRotation(rot);
-		//pointLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
+		Angle angleX(Config::Get("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
+		Angle angleY(Config::Get("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(Config::Get("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
+		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Quaternion rot(rotMatrix);
+		pointLightNodes[i]->GetTransform().SetRotation(rot);
 
 		Math::Real red = Config::Get("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
 		Math::Real green = Config::Get("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
@@ -208,6 +263,9 @@ void TestGame::AddSpotLights()
 		return;
 	}
 	const Math::Vector3D defaultSpotLightPos(Config::Get("defaultSpotLightPosX", 0.0f), Config::Get("defaultSpotLightPosY", 0.0f), Config::Get("defaultSpotLightPosZ", 0.0f));
+	const Angle defaultSpotLightRotationX(Config::Get("defaultSpotLightAngleX", -45.0f));
+	const Angle defaultSpotLightRotationY(Config::Get("defaultSpotLightAngleY", 0.0f));
+	const Angle defaultSpotLightRotationZ(Config::Get("defaultSpotLightAngleZ", 0.0f));
 	const Math::Vector3D defaultSpotLightColor(Config::Get("defaultSpotLightColorRed", 0.0f), Config::Get("defaultSpotLightColorGreen", 0.0f), Config::Get("defaultSpotLightColorBlue", 1.0f));
 	const Math::Real defaultSpotLightIntensity(Config::Get("defaultSpotLightIntensity", 4.0f));
 	const Attenuation defaultSpotLightAttenuation(Config::Get("defaultSpotLightAttenuationConstant", 0.5f), Config::Get("defaultSpotLightAttenuationLinear", 0.1f), Config::Get("defaultSpotLightAttenuationExponent", 0.05f));
@@ -226,10 +284,12 @@ void TestGame::AddSpotLights()
 		Math::Real zPos = Config::Get("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
 		spotLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		// TODO: Set forward and up vector for the spot light
-		//Quaternion rot();
-		//spotLightNodes[i]->GetTransform().SetRotation(rot);
-		//spotLightNodes[i]->GetTransform().SetRotation(Quaternion(Vector3D(0.2f, 1.0f, 0.0f), Angle(90.0f)));
+		Angle angleX(Config::Get("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
+		Angle angleY(Config::Get("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(Config::Get("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
+		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Quaternion rot(rotMatrix);
+		spotLightNodes[i]->GetTransform().SetRotation(rot);
 
 		Math::Real red = Config::Get("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
 		Math::Real green = Config::Get("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);

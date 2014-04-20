@@ -67,6 +67,8 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos)
 	}
 	
 	return diffuseColor + specularColor;
+	//return diffuseColor;
+	//return specularColor;
 }
 
 vec4 CalcPointLight(PointLight pointLight, vec3 normal, vec3 worldPos)
