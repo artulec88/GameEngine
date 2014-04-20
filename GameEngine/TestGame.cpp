@@ -6,6 +6,7 @@
 #include "Rendering\LookAtComponent.h"
 
 #include "Math\FloatingPoint.h"
+#include "Math\Quaternion.h"
 //#include "Math\Vector.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
@@ -271,9 +272,10 @@ void TestGame::AddCameras()
 	const Real defaultNearPlane = Config::Get("defaultCameraNearPlane", 0.1);
 	const Real defaultFarPlane = Config::Get("defaultCameraFarPlane", 1000.0);
 	
-	const Vector3D defaultCameraPos(Config::Get("defaultCameraPosX", 0.0), Config::Get("defaultCameraPosY", 0.0), Config::Get("defaultCameraPosZ", 0.0));
-	const Vector3D defaultCameraForward(Config::Get("defaultCameraForwardX", 0.0), Config::Get("defaultCameraForwardY", 0.0), Config::Get("defaultCameraForwardZ", 0.0));
-	const Vector3D defaultCameraUp(Config::Get("defaultCameraUpX", 0.0), Config::Get("defaultCameraUpY", 0.0), Config::Get("defaultCameraUpZ", 0.0));
+	const Vector3D defaultCameraPos(Config::Get("defaultCameraPosX", 0.0f), Config::Get("defaultCameraPosY", 0.0), Config::Get("defaultCameraPosZ", 0.0));
+	const Angle defaultCameraRotationX(Config::Get("defaultCameraAngleX", -45.0f));
+	const Angle defaultCameraRotationY(Config::Get("defaultCameraAngleY", 0.0));
+	const Angle defaultCameraRotationZ(Config::Get("defaultCameraAngleZ", 0.0));
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -288,9 +290,12 @@ void TestGame::AddCameras()
 		Math::Real zPos = Config::Get("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
 		cameraNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		// TODO: Set forward and up vector for the camera
-		//Quaternion rot();
-		//cameraNodes[i]->GetTransform().SetRotation(rot);
+		Angle angleX(Config::Get("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
+		Angle angleY(Config::Get("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
+		Angle angleZ(Config::Get("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
+		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Quaternion rot(rotMatrix);
+		cameraNodes[i]->GetTransform().SetRotation(rot);
 
 		Angle fov(Config::Get("cameraFoV_" + cameraIndexStr, defaultFoV), true);
 		Math::Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
