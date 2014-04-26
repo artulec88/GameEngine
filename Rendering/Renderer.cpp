@@ -40,6 +40,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
+	samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
 	AddVector3D("ambientIntensity", ambientLight);
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");

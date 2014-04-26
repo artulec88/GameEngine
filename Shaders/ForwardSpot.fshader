@@ -1,5 +1,6 @@
 #version 330 core
 #include "Lighting.glh"
+#include "Sampling.glh"
 
 in vec2 texCoord0;
 in mat3 tbnMatrix;
@@ -9,11 +10,17 @@ out vec4 fragColor;
 
 uniform sampler2D diffuse;
 uniform sampler2D normalMap;
+uniform sampler2D displacementMap;
+uniform float displacementScale;
+uniform float displacementBias;
 uniform SpotLight R_spotLight;
 
 void main()
 {
-	vec3 normal = (255.0 / 128.0 * texture2D(normalMap, texCoord0.xy).xyz - 1) * tbnMatrix; // 255/128 may be switched to just "2", but it may prove to be better
-	fragColor = texture2D(diffuse, texCoord0.xy) *
+	vec3 directionToEye = normalize(C_eyePos - worldPos0);
+	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
+	
+	vec3 normal = (255.0 / 128.0 * texture2D(normalMap, texCoords).xyz - 1) * tbnMatrix; // 255/128 may be switched to just "2", but it may prove to be better
+	fragColor = texture2D(diffuse, texCoords) *
 		CalcSpotLight(R_spotLight, normalize(normal), worldPos0);
 }

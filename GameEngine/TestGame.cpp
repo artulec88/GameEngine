@@ -23,7 +23,7 @@ using namespace Rendering;
 
 TestGame::TestGame() :
 	Game(),
-	humanCount(22),
+	humanCount(2),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
 	pointLightCount(Config::Get("pointLightCount", 1)),
@@ -68,8 +68,9 @@ void TestGame::Init()
 	planeNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane3.obj"),
 		new Material(
-			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
-			new Texture("..\\Textures\\bricks2_normal.jpg", GL_TEXTURE_2D, GL_LINEAR))));
+			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
+			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
+			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.25f)));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Math::Vector3D(4.0f, 4.0f, 4.0f));
 
@@ -79,16 +80,18 @@ void TestGame::Init()
 	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
 	testMesh1->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
 	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(-12.0f, 0.5f, -3.0f);
-	testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
+	testMesh2->GetTransform().SetTranslation(9.0f, 0.0f, 0.0f);
+	//testMesh2->GetTransform().SetScale(Math::Vector3D(0.5f, 0.5f, 0.5f));
 	testMesh1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
 		new Material(
-			new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
+			new Texture("..\\Textures\\bricks2_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
+			new Texture("..\\Textures\\bricks2_disp.jpg", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -1.0f)));
 	testMesh2->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
 		new Material(
-			new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
@@ -97,7 +100,7 @@ void TestGame::Init()
 	monkeyNode1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey3.obj"),
 		new Material(
-			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
+			new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
 			//new Texture("..\\Textures\\bricks_normal.jpg"))));
 	monkeyNode1->GetTransform().SetTranslation(15.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));

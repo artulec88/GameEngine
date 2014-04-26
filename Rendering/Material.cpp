@@ -6,7 +6,10 @@ using namespace Rendering;
 Material::Material(Texture* diffuseTexture,
 	Math::Real specularIntensity /* = 2 */,
 	Math::Real specularPower /* = 32 */,
-	Texture* normalMap /* = NULL */)
+	Texture* normalMap /* = NULL */,
+	Texture* displacementMap /* = NULL */,
+	Math::Real displacementScale /* = 0.0f */,
+	Math::Real displacementOffset /* = 0.0f */)
 {
 	if (diffuseTexture == NULL)
 	{
@@ -23,6 +26,19 @@ Material::Material(Texture* diffuseTexture,
 	}
 	ASSERT(normalMap != NULL);
 	AddTexture("normalMap", normalMap);
+
+	if (displacementMap == NULL)
+	{
+		stdlog(Utility::Debug, LOGPLACE, "The material is not using any displacement maps");
+		displacementMap = new Texture("..\\Textures\\defaultDisplacementMap.jpg");
+		//stdlog(Utility::Info, LOGPLACE, "Adding displacement map to the material");
+	}
+	ASSERT(displacementMap != NULL);
+	AddTexture("displacementMap", displacementMap);
+
+	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f);
+	AddReal("displacementScale", displacementScale);
+	AddReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
 

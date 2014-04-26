@@ -1,0 +1,4 @@
+vec2 CalcParallaxTexCoords(sampler2D displacementMap, mat3 tbnMatrix, vec3 directionToEye, vec2 texCoords, float displacementScale, float displacementBias)
+{
+	return texCoords + (directionToEye * tbnMatrix).xy * (texture2D(displacementMap, texCoords).r * displacementScale + displacementBias);
+}
