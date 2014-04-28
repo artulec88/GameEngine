@@ -24,13 +24,15 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 	Real trace = m00 + m11 + m22;
 
+	stdlog(Utility::Debug, LOGPLACE, "trace = %.3f", trace);
 	if (trace > 0)
 	{
-		Real s = 0.5f / static_cast<Real>(sqrt(trace + 1.0));
+		Real s = 0.5f / static_cast<Real>(sqrt(trace + 1.0f));
 		m_w = 0.25f / s;
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
+		stdlog(Utility::Debug, LOGPLACE, "s = %.3f; (x, y, z, w) = (%.3f, %.3f, %.3f, %.3f)", s, m_x, m_y, m_z, m_w);
 	}
 	else /* trace <= 0 */
 	{
