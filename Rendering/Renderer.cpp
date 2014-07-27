@@ -20,6 +20,15 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
+/* ==================== Temporary variables for testing render to texture technique begin ==================== */
+//static Texture* g_tempTarget = 0;
+//static Mesh* g_mesh = NULL;
+//static Transform g_transform;
+//static Material* g_material;
+//static Camera* g_camera = 0;
+//static GameNode* g_cameraObject = NULL;
+/* ==================== Temporary variables for testing render to texture technique end ==================== */
+
 Renderer::Renderer(int width, int height, std::string title) :
 	window(NULL),
 	vao(0),
@@ -38,6 +47,26 @@ Renderer::Renderer(int width, int height, std::string title) :
 	
 	Init(width, height, title);
 
+/* ==================== Temporary variables initialization begin ==================== */
+	//if (g_mesh) delete g_mesh;
+	//if (g_material) delete g_material;
+	//if (g_cameraObject) delete g_cameraObject;
+	//int tempWidth = width / 3;
+	//int tempHeight = height / 3;
+	//int dataSize = tempWidth * tempHeight * 4;
+	//unsigned char* data = new unsigned char[dataSize];
+	//memset(data, 0, dataSize);
+	//g_tempTarget = new Texture(tempWidth, tempHeight, data, GL_TEXTURE_2D, GL_NEAREST, GL_COLOR_ATTACHMENT0);
+	//delete [] data;
+
+	//g_material = new Material(g_tempTarget, 1, 8);
+	//g_transform.SetScale(Vector3D(0.9f, 0.9f, 0.9f));
+	//g_mesh = new Mesh("..\\Models\\plane.obj");
+	//g_camera = new Camera(Angle(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
+	//g_cameraObject = (new GameNode())->AddComponent(g_camera);
+	//g_camera->GetTransform().Rotate(Vector3D(0,1,0), Angle(180));
+/* ==================== Temporary variables initialization end ==================== */
+
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
 	samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
@@ -49,6 +78,11 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 Renderer::~Renderer(void)
 {
+	/* ==================== Temporary variables deallocation begin ==================== */
+	//if (g_mesh) delete g_mesh;
+	//if (g_material) delete g_material;
+	//if (g_cameraObject) delete g_cameraObject;
+	/* ==================== Temporary variables deallocation end ==================== */
 	stdlog(Debug, LOGPLACE, "Destroying rendering engine");
 	
 	//glDeleteVertexArrays(1, &vao);
@@ -179,6 +213,9 @@ void Renderer::InitGlew() const
 void Renderer::Render(GameNode& gameNode)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0 /*framebuffer*/);
+	/* ==================== Render to texture technique begin ==================== */
+	//g_tempTarget->BindAsRenderTarget();
+	/* ==================== Render to texture technique end ==================== */
 
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
