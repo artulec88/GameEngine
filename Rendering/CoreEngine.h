@@ -11,7 +11,7 @@
 #include <string>
 
 //#ifdef _DEBUG
-#define COUNT_FPS
+//#define COUNT_FPS
 //#endif
 
 namespace Rendering

@@ -34,7 +34,6 @@ void GameComponent::Update(Math::Real delta)
 
 void GameComponent::Render(Shader* shader, Renderer* renderingEngine)
 {
-
 }
 
 void GameComponent::SetParent(GameNode* parentGameNode)

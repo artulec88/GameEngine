@@ -12,12 +12,17 @@ class TextureData : public Utility::ReferenceCounter
 /* ==================== Non-static member variables begin ==================== */
 private:
 	GLenum textureTarget;
-	GLuint textureID;
+	int texturesCount;
+	GLuint* textureID;
+	int width;
+	int height;
+	GLuint framebuffer;
+	GLuint renderbuffer;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	TextureData(GLenum textureTarget);
+	TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* attachments);
 	virtual ~TextureData(void);
 private:
 	TextureData(const TextureData& textureData) {} // don't implement
@@ -26,8 +31,11 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	GLenum GetTextureTarget() const;
-	GLuint GetTextureID() const;
+	void Bind(int textureIndex);
+	void BindAsRenderTarget();
+private:
+	void InitTextures(unsigned char** data, GLfloat* filters);
+	void InitRenderTargets(GLenum* attachments);
 /* ==================== Non-static member functions end ==================== */
 }; /* end class TextureData */
 

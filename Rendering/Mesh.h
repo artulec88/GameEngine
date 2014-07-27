@@ -21,8 +21,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Mesh(const std::string& fileName);
-	Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true);
+	Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+	Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
 	virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
 	Mesh(Mesh& mesh) {}
@@ -42,6 +42,7 @@ protected:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::string fileName;
+	GLenum mode;
 	MeshData* meshData;
 /* ==================== Non-static member variables end ==================== */
 

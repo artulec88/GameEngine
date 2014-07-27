@@ -22,15 +22,17 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
-Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */) :
+Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
 	fileName(),
+	mode(mode),
 	meshData(NULL)
 {
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Mesh::Mesh(const std::string& fileName) :
+Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	fileName(fileName),
+	mode(mode),
 	meshData(NULL)
 {
 	std::string name = fileName;
@@ -186,7 +188,7 @@ void Mesh::Draw() const
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D)));
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
-	glDrawElements(GL_TRIANGLES, meshData->GetSize(), GL_UNSIGNED_INT, 0);
+	glDrawElements(mode /* GL_TRIANGLES / GL_LINES */, meshData->GetSize(), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -196,6 +198,8 @@ void Mesh::Draw() const
 
 void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const
 {
+	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
+	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
 	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
 	for(int i = 0; i < indicesCount; i += iterationStep)
 	{
@@ -220,6 +224,8 @@ void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, 
 
 void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 {
+	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
+	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
 	const int iterationStep = 3; // each face has three vertices
 	for (int i = 0; i < verticesCount - iterationStep + 1; i += iterationStep)
 	{

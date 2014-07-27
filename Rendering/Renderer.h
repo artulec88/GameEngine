@@ -30,6 +30,7 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	GLFWwindow* window;
+	GLuint framebuffer;
 	GLuint vao; // vertex array id
 	bool isFullscreen;
 	bool isMouseEnabled;
@@ -44,14 +45,17 @@ private:
 	std::map<std::string, unsigned int> samplerMap;
 /* ==================== Non-static member variables end ==================== */
 
-public: /* constructors and destructors */
+/* ==================== Constructors and destructors begin ==================== */
+public:
 	Renderer(int width, int height, std::string title);
 	virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer) {} // don't implement
 	void operator=(const Renderer& renderer) {} // don't implement
+/* ==================== Constructors and destructors end ==================== */
 
-public: /* Non-static, non-virtual member functions */
+/* ==================== Non-static, non-virtual member functions begin ==================== */
+public:
 	//GLFWwindow* GetWindow() const { return this->window; };
 	void Render(GameNode& node);
 	void SwapBuffers();
@@ -77,8 +81,9 @@ protected:
 	void InitGraphics();
 	void InitGlew() const;
 	void ClearScreen() const;
-public: /* public virtual member functions */
-public: /* public static functions */
+private:
+	void BindAsRenderTarget();
+/* ==================== Non-static, non-virtual member functions end ==================== */
 }; /* end class Renderer */
 
 } /* end namespace Rendering */

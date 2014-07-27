@@ -28,6 +28,9 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	//virtual void Update(Math::Real delta);
+	//virtual void Render(Shader* shader, Renderer* renderer);
+
 	Math::Vector3D GetColor() const;
 	void SetColor(const Math::Vector3D& color);
 	Math::Real GetIntensity() const;

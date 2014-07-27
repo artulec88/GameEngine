@@ -23,8 +23,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR);
-	Texture(int width = 0, int height = 0, unsigned char* data = 0, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR);
+	Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum attachment = GL_NONE);
+	Texture(int width = 0, int height = 0, unsigned char* data = 0, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum attachment = GL_NONE);
 	virtual ~Texture(void);
 private:
 	Texture(const Texture& texture) {}
@@ -34,9 +34,7 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void Bind(unsigned int unit = 0) const;
-
-protected:
-	void Init(int width, int height, unsigned char* data, GLenum textureTarget, GLfloat filter);
+	void BindAsRenderTarget();
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Texture */
 

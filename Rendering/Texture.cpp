@@ -8,7 +8,7 @@ using namespace Rendering;
 
 /* static */ std::map<std::string, TextureData*> Texture::textureResourceMap;
 
-Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */) :
+Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */, GLenum attachment /*= GL_NONE*/) :
 	textureData(NULL),
 	fileName(fileName)
 {
@@ -35,8 +35,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 			stdlog(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
 			return;
 		}
-
-		Init(x, y, data, textureTarget, filter);
+		textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &attachment);
 		stbi_image_free(data);
 		ASSERT(textureData);
 		textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, textureData));
@@ -50,11 +49,25 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 	//LoadFromFile(fileName);
 }
 
-Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */) :
+Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */, GLenum attachment /*= GL_NONE*/) :
 	textureData(NULL),
 	fileName()
 {
-	Init(width, height, data, textureTarget, filter);
+	ASSERT(data != NULL);
+	ASSERT(width > 0);
+	ASSERT(height > 0);
+	if (data == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		return;
+	}
+	if ((width <= 0) || (height <= 0))
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
+		return;
+	}
+	textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &attachment);
+	ASSERT(textureData != NULL);
 }
 
 Texture::~Texture(void)
@@ -78,28 +91,6 @@ Texture::~Texture(void)
 	}
 }
 
-void Texture::Init(int width, int height, unsigned char* data, GLenum textureTarget, GLfloat filter)
-{
-	ASSERT(data != NULL);
-	ASSERT(width > 0);
-	ASSERT(height > 0);
-	if (data == NULL)
-	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
-		return;
-	}
-	if ((width <= 0) || (height <= 0))
-	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
-		return;
-	}
-	textureData = new TextureData(textureTarget);
-	glBindTexture(textureTarget, textureData->GetTextureID());
-	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filter);
-	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filter);
-	glTexImage2D(textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-}
-
 void Texture::Bind(unsigned int unit /* = 0 */) const
 {
 	ASSERT(textureData != NULL);
@@ -111,5 +102,15 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 	}
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
-	glBindTexture(textureData->GetTextureTarget(), textureData->GetTextureID());
+	textureData->Bind(0);
+}
+
+void Texture::BindAsRenderTarget()
+{
+	if (textureData == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Cannot bind the texture data as render target. Texture data is NULL.");
+		return;
+	}
+	textureData->BindAsRenderTarget();
 }

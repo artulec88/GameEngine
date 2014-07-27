@@ -58,6 +58,13 @@ void TestGame::Init()
 			new Texture("..\\Textures\\crateBox2.jpg", GL_TEXTURE_2D, GL_LINEAR), 1.0f, 2.0f)));
 	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
 	boxNode->GetTransform().SetScale(Vector3D(0.05f, 0.05f, 0.05f));
+	
+	//Math::Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
+	//Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };
+	//int indices [] = { 0, 1 };
+	//boxNode->AddComponent(new MeshRenderer(
+	//	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
+	//	new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
 	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
@@ -146,12 +153,14 @@ void TestGame::Init()
 		Math::Real xPos = Config::Get("directionalLightPosX", defaultDirectionalLightPos.GetX());
 		Math::Real yPos = Config::Get("directionalLightPosY", defaultDirectionalLightPos.GetY());
 		Math::Real zPos = Config::Get("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
-		directionalLightNode->GetTransform().SetTranslation(xPos, yPos, zPos);
+		Math::Vector3D position(xPos, yPos, zPos);
+		directionalLightNode->GetTransform().SetTranslation(position);
 
 		Angle angleX(Config::Get("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
 		Angle angleY(Config::Get("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(Config::Get("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		stdlog(Debug, LOGPLACE, "rotMatrix =\n%s", rotMatrix.ToString().c_str());
 		Quaternion rot(rotMatrix);
 		directionalLightNode->GetTransform().SetRotation(rot);
 		//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1.0f, 1.0f, 0.0f), Angle(45.0f)));
@@ -168,10 +177,24 @@ void TestGame::Init()
 
 		// Rendering a small box around point light node position to let the user see the source
 #ifdef RENDER_LIGHT_MESHES
+		directionalLightNode->GetTransform().SetScale(Math::Vector3D(0.04f, 0.04f, 0.04f));
 		directionalLightNode->AddComponent(new MeshRenderer(
 			new Mesh("..\\Models\\DirectionalLight.obj"),
 			new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1, 8)));
-		directionalLightNode->GetTransform().SetScale(Math::Vector3D(0.1f, 0.1f, 0.1f));
+		
+		Math::Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
+		Math::Vector3D rayEndPosition = forwardVec * 2.0f;
+		stdlog(Debug, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
+			position.ToString().c_str(),
+			directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
+			forwardVec.ToString().c_str(),
+			(position + rayEndPosition).ToString().c_str());
+		//exit(EXIT_FAILURE);
+		Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
+		int indices [] = { 0, 1 };
+		directionalLightNode->AddComponent(new MeshRenderer(
+			new Mesh(vertices, 2, indices, 2, false, GL_LINES),
+			new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
 #endif
 	}
 	/* ==================== Adding directional light end ==================== */
@@ -492,6 +515,9 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
 	switch (key)
 	{
+	case GLFW_KEY_C:
+		stdlog(Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
+		break;
 	case GLFW_KEY_W:
 		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//stdlog(Debug, LOGPLACE, "Forward = %d", forward);

@@ -131,9 +131,9 @@ void Renderer::InitGraphics()
 {
 	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
 
-	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
-	glCullFace(GL_BACK); // cull the back face
-	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
+	//glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
+	//glCullFace(GL_BACK); // cull the back face
+	//glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	glEnable(GL_DEPTH_TEST); // to enable depth tests
 	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
 
@@ -145,6 +145,9 @@ void Renderer::InitGraphics()
 	//ASSERT(!vao);
 	//glGenVertexArrays(1, &vao);
 	//glBindVertexArray(vao);
+
+	//ASSERT(!framebuffer);
+	//glGenFramebuffers(1, &framebuffer);
 }
 
 void Renderer::InitGlew() const
@@ -175,6 +178,8 @@ void Renderer::InitGlew() const
 
 void Renderer::Render(GameNode& gameNode)
 {
+	glBindFramebuffer(GL_FRAMEBUFFER, 0 /*framebuffer*/);
+
 	// TODO: Expand with Stencil buffer once it is used
 	ClearScreen();
 
@@ -287,4 +292,12 @@ void Renderer::UpdateUniformStruct(const Transform& transform, const Material& m
 {
 	//throw uniformType + " is not supported by the rendering engine";
 	stdlog(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName, uniformType);
+}
+
+void Renderer::BindAsRenderTarget()
+{
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glViewport(0, 0, width, height);
 }
