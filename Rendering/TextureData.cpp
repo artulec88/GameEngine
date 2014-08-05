@@ -99,7 +99,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 		return;
 	}
 
-	GLenum* drawBuffers = new GLenum[texturesCount];
+	GLenum* drawBuffers= new GLenum[texturesCount];
 	bool hasDepth = false;
 
 	for (int i = 0; i < texturesCount; ++i)
@@ -123,13 +123,14 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 		if (framebuffer == 0)
 		{
 			glGenFramebuffers(1, &framebuffer);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 		}
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, attachments[i], textureTarget, textureID[0], 0); // associate framebuffer with texture
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], textureTarget, textureID[0], 0); // associate framebuffer with texture
 	}
 
 	if (framebuffer == 0)
 	{
+		stdlog(Utility::Debug, LOGPLACE, "Framebuffer is 0");
 		return;
 	}
 	if (!hasDepth)
@@ -140,8 +141,8 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer);
 	}
 	glDrawBuffers(texturesCount, drawBuffers);
-	delete [] drawBuffers;
-	drawBuffers = NULL;
+	//delete [] drawBuffers;
+	//drawBuffers = NULL;
 
 	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -153,6 +154,6 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 
 void TextureData::BindAsRenderTarget()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, width, height);
 }

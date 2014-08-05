@@ -16,6 +16,8 @@
 #include <vector>
 #include <map>
 
+//#define RENDER_TO_TEXTURE_ENABLED
+
 namespace Rendering
 {
 
