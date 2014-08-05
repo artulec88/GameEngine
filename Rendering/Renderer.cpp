@@ -59,7 +59,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	int dataSize = tempWidth * tempHeight * 4;
 	unsigned char* data = new unsigned char[dataSize];
 	memset(data, 0, dataSize);
-	g_tempTarget = new Texture(tempWidth, tempHeight, data, GL_TEXTURE_2D, GL_NEAREST, GL_COLOR_ATTACHMENT0);
+	g_tempTarget = new Texture(tempWidth, tempHeight, data, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	delete [] data;
 
 	g_material = new Material(g_tempTarget, 1, 8);
@@ -74,7 +74,13 @@ Renderer::Renderer(int width, int height, std::string title) :
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
 	samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
-	AddVector3D("ambientIntensity", ambientLight);
+#ifdef _DEBUG
+	for (std::map<std::string, unsigned int>::const_iterator mapItr = samplerMap.begin(); mapItr != samplerMap.end(); ++mapItr)
+	{
+		stdlog(Utility::Delocust, LOGPLACE, "SamplerMap[\"%s\"] = %d", mapItr->first.c_str(), mapItr->second);
+	}
+#endif
+	SetVector3D("ambientIntensity", ambientLight);
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -355,4 +361,15 @@ void Renderer::BindAsRenderTarget()
 	glfwGetWindowSize(window, &width, &height);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glViewport(0, 0, width, height);
+}
+
+unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
+{
+	/* TODO: Add assertions and checks */
+	if (samplerMap.find(samplerName) == samplerMap.end())
+	{
+		stdlog(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.");
+		exit(EXIT_FAILURE);
+	}
+	return samplerMap.find(samplerName)->second;
 }

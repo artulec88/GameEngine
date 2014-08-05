@@ -22,7 +22,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* attachments);
+	TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments);
 	virtual ~TextureData(void);
 private:
 	TextureData(const TextureData& textureData) {} // don't implement
@@ -34,7 +34,7 @@ public:
 	void Bind(int textureIndex);
 	void BindAsRenderTarget();
 private:
-	void InitTextures(unsigned char** data, GLfloat* filters);
+	void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled);
 	void InitRenderTargets(GLenum* attachments);
 /* ==================== Non-static member functions end ==================== */
 }; /* end class TextureData */

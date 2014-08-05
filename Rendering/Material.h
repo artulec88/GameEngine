@@ -30,7 +30,7 @@ private:
 	 * When small it is just a tiny focused beam and otherwise a wide-spreaded reflection
 	 */
 	//Math::Real specularPower;
-	std::map<std::string, Texture*> textureMap;
+
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -38,7 +38,7 @@ public:
 	Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8,
 		Texture* normalMap = NULL,
 		Texture* displacementMap = NULL, Math::Real displacementScale = 0.0f, Math::Real displacementOffset = 0.0f); // TODO: Do not use hard-coded values
-	virtual ~Material(void);
+	virtual ~Material(void) { };
 private:
 	Material(const Material& material) {}
 	void operator=(const Material& material) {}
@@ -50,8 +50,6 @@ public:
 	Texture* GetDiffuseTexture() const { return GetTexture("diffuse"); }
 	Math::Real GetSpecularIntensity() const { return GetReal("specularIntensity"); }
 	Math::Real GetSpecularPower() const { return GetReal("specularPower"); }
-	void AddTexture(const std::string& textureName, Texture* texture);
-	Texture* GetTexture(const std::string& textureName) const;
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Material */
 

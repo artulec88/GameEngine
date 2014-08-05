@@ -4,7 +4,7 @@
 
 using namespace Rendering;
 
-TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount /* = 1 */, unsigned char** data, GLfloat* filters, GLenum* attachments) :
+TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount /* = 1 */, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments) :
 	textureTarget(textureTarget),
 	texturesCount(texturesCount),
 	framebuffer(0),
@@ -20,7 +20,7 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 	this->width = width;
 	this->height = height;
 
-	InitTextures(data, filters);
+	InitTextures(data, filters, internalFormat, format, clampEnabled);
 	InitRenderTargets(attachments);
 }
 
@@ -46,10 +46,12 @@ TextureData::~TextureData(void)
 	}
 }
 
-void TextureData::InitTextures(unsigned char** data, GLfloat* filters)
+void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled)
 {
 	//ASSERT(data.size == texturesCount);
 	//ASSERT(filter.size == texturesCount);
+	//ASSERT(internalFormat.size == texturesCount);
+	//ASSERT(format.size == texturesCount);
 	ASSERT(data != NULL);
 	ASSERT(filter != NULL);
 	if (data == NULL)
@@ -74,7 +76,14 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters)
 		glBindTexture(textureTarget, textureID[i]);
 		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
 		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filters[i]);
-		glTexImage2D(textureTarget, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data[i]);
+
+		if (clampEnabled)
+		{
+			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+			glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		}
+
+		glTexImage2D(textureTarget, 0, internalFormat[i], width, height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
 	}
 }
 

@@ -475,32 +475,23 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 
 		const std::string uniformSubstr = uniformName.substr(0, 2);
 
-		if (uniformType == "sampler2D")
-		{
-			int samplerSlot = renderer->GetSamplerSlot(uniformName);
-			material.GetTexture(uniformName)->Bind(samplerSlot);
-			SetUniformi(uniformName, samplerSlot);
-		}
-		else if (uniformSubstr == "T_") // tranform uniform
-		{
-			if (uniformName == "T_MVP")
-			{
-				SetUniformMatrix(uniformName, projectedMatrix);
-			}
-			else if (uniformName == "T_model")
-			{
-				SetUniformMatrix(uniformName, worldMatrix);
-			}
-			else
-			{
-				//throw "Invalid Transform Uniform: " + uniformName;
-				stdlog(Error, LOGPLACE, "Invalid transform uniform \"%s\"", uniformName.c_str());
-			}
-		}
-		else if (uniformSubstr == "R_")
+		if (uniformSubstr == "R_")
 		{
 			std::string unprefixedName = uniformName.substr(2, uniformName.length());
-			if (uniformType == "vec3")
+			if (uniformType == "sampler2D")
+			{
+				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
+				Texture* texture = renderer->GetTexture(unprefixedName);
+				ASSERT(texture != NULL);
+				if (texture == NULL)
+				{
+					stdlog(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
+					exit(EXIT_FAILURE);
+				}
+				texture->Bind(samplerSlot);
+				SetUniformi(uniformName, samplerSlot);
+			}
+			else if (uniformType == "vec3")
 			{
 				SetUniformVector3D(uniformName, renderer->GetVec3D(unprefixedName));
 			}
@@ -541,6 +532,35 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else
 			{
 				renderer->UpdateUniformStruct(transform, material, this, uniformName, uniformType);
+			}
+		}
+		else if (uniformType == "sampler2D")
+		{
+			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
+			Texture* texture = material.GetTexture(uniformName);
+			ASSERT(texture != NULL);
+			if (texture == NULL)
+			{
+				stdlog(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
+				exit(EXIT_FAILURE);
+			}
+			texture->Bind(samplerSlot);
+			SetUniformi(uniformName, samplerSlot);
+		}
+		else if (uniformSubstr == "T_") // tranform uniform
+		{
+			if (uniformName == "T_MVP")
+			{
+				SetUniformMatrix(uniformName, projectedMatrix);
+			}
+			else if (uniformName == "T_model")
+			{
+				SetUniformMatrix(uniformName, worldMatrix);
+			}
+			else
+			{
+				//throw "Invalid Transform Uniform: " + uniformName;
+				stdlog(Error, LOGPLACE, "Invalid transform uniform \"%s\"", uniformName.c_str());
 			}
 		}
 		else if (uniformSubstr == "C_")

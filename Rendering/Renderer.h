@@ -72,7 +72,7 @@ public:
 	unsigned int SetCurrentCamera(unsigned int cameraIndex);
 	void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
 	
-	unsigned int GetSamplerSlot(const std::string& samplerName) { /* TODO: Add assertions and checks */ return samplerMap[samplerName]; }
+	unsigned int GetSamplerSlot(const std::string& samplerName) const;
 	void UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType);
 
 	bool IsCloseRequested() const;
