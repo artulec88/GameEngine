@@ -16,10 +16,10 @@
 #include <vector>
 #include <map>
 
-//#define RENDER_TO_TEXTURE_ENABLED
-
 namespace Rendering
 {
+
+class Mesh;
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class RENDERING_API Renderer : public MappedValues
@@ -27,6 +27,7 @@ class RENDERING_API Renderer : public MappedValues
 /* ==================== Static variables begin ==================== */
 private:
 	//static const int MAX_NUMBER_OF_CAMERAS;
+	static const Math::Matrix4D s_biasMatrix;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -41,10 +42,20 @@ private:
 	unsigned int currentCameraIndex;
 	Camera* currentCamera;
 	
+	Camera	altCamera; // alternative camera for shadow mapping, rendering to texture etc.
+	GameNode* altCameraNode;
+	Material* planeMaterial;
+	Transform planeTransform;
+	Mesh* planeMesh;
+	Texture* tempTarget;
+	
 	Shader* defaultShader;
+	Shader* shadowMapShader;
 	std::vector<BaseLight*> lights;
 	std::vector<Camera*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
+	Math::Matrix4D lightMatrix;
+
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -52,7 +63,7 @@ public:
 	Renderer(int width, int height, std::string title);
 	virtual ~Renderer(void);
 private:
-	Renderer(const Renderer& renderer) {} // don't implement
+	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity()) {} // don't implement
 	void operator=(const Renderer& renderer) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
@@ -77,14 +88,17 @@ public:
 
 	bool IsCloseRequested() const;
 
+	inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
+
 	std::string GetOpenGLVersion();
 protected:
-	void Init(int width, int height, std::string title);
-	void InitGraphics();
-	void InitGlew() const;
+	void InitGraphics(int width, int height, const std::string& title);
 	void ClearScreen() const;
 private:
 	void BindAsRenderTarget();
+	void InitGlfw(int width, int height, const std::string& title);
+	void InitGlew() const;
+	void SetGlfwCallbacks();
 /* ==================== Non-static, non-virtual member functions end ==================== */
 }; /* end class Renderer */
 

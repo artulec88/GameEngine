@@ -478,7 +478,11 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 		if (uniformSubstr == "R_")
 		{
 			std::string unprefixedName = uniformName.substr(2, uniformName.length());
-			if (uniformType == "sampler2D")
+			if (unprefixedName == "lightMatrix")
+			{
+				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix);
+			}
+			else if (uniformType == "sampler2D")
 			{
 				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
 				Texture* texture = renderer->GetTexture(unprefixedName);

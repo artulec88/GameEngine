@@ -2,3 +2,18 @@ vec2 CalcParallaxTexCoords(sampler2D displacementMap, mat3 tbnMatrix, vec3 direc
 {
 	return texCoords + (directionToEye * tbnMatrix).xy * (texture2D(displacementMap, texCoords).r * displacementScale + displacementBias);
 }
+
+// Returns 0 for the pixels in shadow
+// Returns 1 for the pixels NOT in shadow
+float SampleShadowMap(sampler2D shadowMap, vec2 coords, float compare)
+{
+	/*if (texture2D(shadowMap, shadowMapCoords.xy).r < compare)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}*/
+	return step(compare, texture2D(shadowMap, coords.xy).r); // The step function gives the same functionality as the code snippet above
+}

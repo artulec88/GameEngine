@@ -27,6 +27,12 @@ using namespace Utility;
 //	this->projection = Matrix4D::PerspectiveProjection(Angle(Camera::defaultFoV, true /* is in degrees */), Camera::defaultAspectRatio, Camera::defaultNearPlane, Camera::defaultFarPlane);
 //}
 
+Camera::Camera(const Matrix4D& projectionMatrix) :
+	GameComponent(),
+	projection(projectionMatrix)
+{
+}
+
 Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
 	GameComponent()
 {

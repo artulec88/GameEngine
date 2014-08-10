@@ -1,26 +1,11 @@
 #version 330 core
-#include "Lighting.glh"
-#include "Sampling.glh"
+#include "Lighting.fshader"
 
-in vec2 texCoord0;
-in mat3 tbnMatrix;
-in vec3 worldPos0;
-
-out vec4 fragColor;
-
-uniform sampler2D diffuse;
-uniform sampler2D normalMap;
-uniform sampler2D displacementMap;
-uniform float displacementScale;
-uniform float displacementBias;
 uniform SpotLight R_spotLight;
 
-void main()
+vec4 CalcLightingEffect(vec3 normal, vec3 worldPos)
 {
-	vec3 directionToEye = normalize(C_eyePos - worldPos0);
-	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
-	
-	vec3 normal = (255.0 / 128.0 * texture2D(normalMap, texCoords).xyz - 1) * tbnMatrix; // 255/128 may be switched to just "2", but it may prove to be better
-	fragColor = texture2D(diffuse, texCoords) *
-		CalcSpotLight(R_spotLight, normalize(normal), worldPos0);
+	return CalcSpotLight(R_spotLight, normal, worldPos);
 }
+
+#include "LightingMain.fshader"

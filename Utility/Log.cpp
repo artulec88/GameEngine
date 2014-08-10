@@ -24,7 +24,8 @@ Log stdlog;
 	
 Log::Log(FILE *first) :
 	m_level(Notice),
-	m_modified(false)
+	m_modified(false),
+	m_indentDepth(0)
 {
 	if (first)
 	{

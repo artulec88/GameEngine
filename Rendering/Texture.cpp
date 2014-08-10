@@ -53,13 +53,13 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	textureData(NULL),
 	fileName()
 {
-	ASSERT(data != NULL);
+	//ASSERT(data != NULL);
 	ASSERT(width > 0);
 	ASSERT(height > 0);
 	if (data == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
-		return;
+		stdlog(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		//return;
 	}
 	if ((width <= 0) || (height <= 0))
 	{
@@ -68,6 +68,10 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	}
 	textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 	ASSERT(textureData != NULL);
+	if (textureData == NULL)
+	{
+		stdlog(Utility::Error, LOGPLACE, "Texture data creation error. Texture data is NULL.");
+	}
 }
 
 Texture::~Texture(void)

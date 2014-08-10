@@ -7,6 +7,7 @@
 #include "SpotLight.h"
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
+#include "ShadowInfo.h"
 #include "Utility\Config.h"
 #include "Utility\Log.h"
 #include "Utility\FileNotFoundException.h"
@@ -20,16 +21,7 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
-/* ==================== Render to texture technique begin ==================== */
-#ifdef RENDER_TO_TEXTURE_ENABLED
-static Texture* g_tempTarget = 0;
-static Mesh* g_mesh = NULL;
-static Transform g_transform;
-static Material* g_material;
-static Camera* g_camera = 0;
-static GameNode* g_cameraObject = NULL;
-#endif
-/* ==================== Render to texture technique end ==================== */
+/* static */ const Matrix4D Renderer::s_biasMatrix(Matrix4D::Scale(0.5, 0.5, 0.5) * Matrix4D::Translation(1.0, 1.0, 1.0));
 
 Renderer::Renderer(int width, int height, std::string title) :
 	window(NULL),
@@ -42,45 +34,39 @@ Renderer::Renderer(int width, int height, std::string title) :
 	currentLight(NULL),
 	currentCameraIndex(0),
 	currentCamera(NULL),
-	defaultShader(NULL)
+	altCamera(Matrix4D::Identity()),
+	altCameraNode(NULL),
+	defaultShader(NULL),
+	shadowMapShader(NULL)
 {
 	stdlog(Debug, LOGPLACE, "Creating Renderer instance started");
 	stdlog(Notice, LOGPLACE, "OpenGL version = %s", GetOpenGLVersion().c_str());
-	
-	Init(width, height, title);
-
-	/* ==================== Render to texture technique begin ==================== */
-#ifdef RENDER_TO_TEXTURE_ENABLED
-	if (g_mesh) delete g_mesh;
-	if (g_material) delete g_material;
-	if (g_cameraObject) delete g_cameraObject;
-	int tempWidth = width / 3;
-	int tempHeight = height / 3;
-	int dataSize = tempWidth * tempHeight * 4;
-	unsigned char* data = new unsigned char[dataSize];
-	memset(data, 0, dataSize);
-	g_tempTarget = new Texture(tempWidth, tempHeight, data, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	delete [] data;
-
-	g_material = new Material(g_tempTarget, 1, 8);
-	g_transform.SetScale(Vector3D(0.9f, 0.9f, 0.9f));
-	g_mesh = new Mesh("..\\Models\\plane.obj");
-	g_camera = new Camera(Angle(45.0f), 4.0f / 3.0f, 0.1f, 1000.0f);
-	g_cameraObject = (new GameNode())->AddComponent(g_camera);
-	g_camera->GetTransform().Rotate(Vector3D(0,1,0), Angle(180));
-#endif
-	/* ==================== Render to texture technique end ==================== */
 
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
 	samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
-#ifdef _DEBUG
-	for (std::map<std::string, unsigned int>::const_iterator mapItr = samplerMap.begin(); mapItr != samplerMap.end(); ++mapItr)
-	{
-		stdlog(Utility::Delocust, LOGPLACE, "SamplerMap[\"%s\"] = %d", mapItr->first.c_str(), mapItr->second);
-	}
-#endif
+	samplerMap.insert(std::pair<std::string, unsigned int>("shadowMap", 3));
+
 	SetVector3D("ambientIntensity", ambientLight);
+
+	InitGraphics(width, height, title);
+
+	SetTexture("shadowMap", new Texture(Config::Get("shadowMapWidth", 1024), Config::Get("shadowMapHeight", 1024), NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
+	defaultShader = new Shader("ForwardAmbient");
+	shadowMapShader = new Shader("ShadowMapGenerator");
+	altCameraNode = new GameNode();
+	altCameraNode->AddComponent(&altCamera);
+	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
+
+	int tempWidth = width;
+	int tempHeight = height;
+	tempTarget = new Texture(tempWidth, tempHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+
+	planeMaterial = new Material(tempTarget, 1, 8);
+	planeTransform.SetScale(Vector3D(1, 1, 1));
+	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
+	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
+	planeMesh = new Mesh("..\\Models\\plane.obj");
 
 	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -88,14 +74,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 Renderer::~Renderer(void)
 {
-	/* ==================== Render to texture technique begin ==================== */
-#ifdef RENDER_TO_TEXTURE_ENABLED
-	if (g_mesh) delete g_mesh;
-	if (g_material) delete g_material;
-	if (g_cameraObject) delete g_cameraObject;
-#endif
-	/* ==================== Render to texture technique end ==================== */
-	stdlog(Debug, LOGPLACE, "Destroying rendering engine");
+	stdlog(Notice, LOGPLACE, "Destroying rendering engine...");
 	
 	//glDeleteVertexArrays(1, &vao);
 
@@ -112,20 +91,44 @@ Renderer::~Renderer(void)
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
 
+	SAFE_DELETE(defaultShader);
+	//SAFE_DELETE(altCameraNode);
+	SAFE_DELETE(planeMaterial);
+	SAFE_DELETE(planeMesh);
+
 	glfwTerminate();
-	stdlog(Debug, LOGPLACE, "Rendering engine destroyed");
+	stdlog(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 
-void Renderer::Init(int width, int height, std::string title)
+void Renderer::InitGraphics(int width, int height, const std::string& title)
 {
 	stdlog(Info, LOGPLACE, "Initializing Renderer started");
-	// Initialise GLFW
+	InitGlfw(width, height, title);
+	SetGlfwCallbacks();
+	InitGlew();
+
+	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
+
+	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
+	glCullFace(GL_BACK); // cull the back face
+	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
+	glEnable(GL_DEPTH_TEST); // to enable depth tests
+	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
+
+	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
+	//glEnable(GL_TEXTURE_2D);
+	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
+
+	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
+}
+
+void Renderer::InitGlfw(int width, int height, const std::string& title)
+{
 	if( !glfwInit() )
 	{
 		stdlog(Critical, LOGPLACE, "Failed to initalize GLFW");
 		exit(EXIT_FAILURE);
-		// TODO: throw another exception in the future
-		//throw FileNotFoundException();
+		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
 	glfwWindowHint(GLFW_SAMPLES, 4); // TODO: Do not hard-code any values
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
@@ -135,17 +138,22 @@ void Renderer::Init(int width, int height, std::string title)
 #else
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
-
-	// Open a window and create its OpenGL context
-	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
-	//window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL); // fullscreen
+	window = glfwCreateWindow(width, height, title.c_str(), NULL /* glfwGetPrimaryMonitor()- for fullscreen */, NULL); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{
 		stdlog(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
+	glfwSetCursorPos(window, width / 2, height / 2); // Set cursor position to the middle point
+	//glfwSwapInterval(1);
+	glfwSetTime(0.0);
+}
 
+void Renderer::SetGlfwCallbacks()
+{
 	glfwSetWindowCloseCallback(window, &Game::WindowCloseEventCallback);
 	//glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
 	glfwSetKeyCallback(window, &Game::KeyEventCallback);
@@ -154,46 +162,6 @@ void Renderer::Init(int width, int height, std::string title)
 	glfwSetCursorPosCallback(window, &Game::MousePosCallback);
 	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
 	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
-
-	glfwMakeContextCurrent(window);
-
-	InitGlew();
-
-	// Ensure we can capture the escape key being pressed below
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
-	glfwSetCursorPos(window, width / 2, height / 2);
-
-	//glfwSwapInterval(1);
-	glfwSetTime(0.0);
-
-	InitGraphics();
-
-	defaultShader = new Shader("ForwardAmbient");
-
-	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
-}
-
-void Renderer::InitGraphics()
-{
-	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
-
-	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
-	glCullFace(GL_BACK); // cull the back face
-	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
-	glEnable(GL_DEPTH_TEST); // to enable depth tests
-	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
-
-	glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
-
-	//glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
-
-	//ASSERT(!vao);
-	//glGenVertexArrays(1, &vao);
-	//glBindVertexArray(vao);
-
-	//ASSERT(!framebuffer);
-	//glGenFramebuffers(1, &framebuffer);
 }
 
 void Renderer::InitGlew() const
@@ -207,7 +175,6 @@ void Renderer::InitGlew() const
 		stdlog(Error, LOGPLACE, "Error while initializing GLEW: %s", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
-
 	if (GLEW_VERSION_2_0)
 	{
 		stdlog(Info, LOGPLACE, "OpenGL 2.0 supported");
@@ -223,49 +190,46 @@ void Renderer::InitGlew() const
 
 void Renderer::Render(GameNode& gameNode)
 {
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0 /*framebuffer*/);
-	/* ==================== Render to texture technique begin ==================== */
-#ifdef RENDER_TO_TEXTURE_ENABLED
-	g_tempTarget->BindAsRenderTarget();
-#endif
-	/* ==================== Render to texture technique end ==================== */
-
 	// TODO: Expand with Stencil buffer once it is used
+	BindAsRenderTarget();
 	ClearScreen();
-
 	currentCamera = cameras[currentCameraIndex];
-	//currentCamera->Activate();
+	gameNode.RenderAll(defaultShader, this); // Ambient rendering
 
-	// Ambient rendering
-	gameNode.RenderAll(defaultShader, this);
-
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
-	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
-	// TODO: Perform any other lighting calculations here
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
 		currentLight = (*lightItr);
-		// TODO: Get a shader instance from the currentLight object.
+		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
+		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
+		glClear(GL_DEPTH_BUFFER_BIT);
+		if (shadowInfo != NULL) // The currentLight casts shadows
+		{
+			altCamera.SetProjection(shadowInfo->GetProjection());
+			altCamera.GetTransform().SetTranslation(currentLight->GetTransform().GetTransformedPos());
+			altCamera.GetTransform().SetRotation(currentLight->GetTransform().GetTransformedRot());
+
+			lightMatrix = s_biasMatrix * altCamera.GetViewProjection();
+
+			Camera* temp = currentCamera;
+			currentCamera = &altCamera;
+
+			gameNode.RenderAll(shadowMapShader, this);
+
+			currentCamera = temp;
+		}
+		BindAsRenderTarget();
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+		glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+
 		gameNode.RenderAll(currentLight->GetShader(), this);
+
+		glDepthMask(GL_TRUE);
+		glDepthFunc(GL_LESS);
+		glDisable(GL_BLEND);
 	}
-
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LESS);
-	glDisable(GL_BLEND);
-
-	/* ==================== Render to texture technique begin ==================== */
-#ifdef RENDER_TO_TEXTURE_ENABLED
-	BindAsRenderTarget();
-	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	defaultShader->Bind();
-	defaultShader->UpdateUniforms(g_transform, *g_material, this);
-	g_mesh->Draw();
-#endif
-	/* ==================== Render to texture technique end ==================== */
 }
 
 void Renderer::SwapBuffers()
@@ -275,6 +239,7 @@ void Renderer::SwapBuffers()
 
 void Renderer::ClearScreen() const
 {
+	//glClearColor();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -352,7 +317,7 @@ bool Renderer::IsCloseRequested() const
 void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType)
 {
 	//throw uniformType + " is not supported by the rendering engine";
-	stdlog(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName, uniformType);
+	stdlog(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
 }
 
 void Renderer::BindAsRenderTarget()

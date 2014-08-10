@@ -30,8 +30,8 @@ public:
 	static Matrix4D Translation(const Vector3D& vec);
 	static Matrix4D Scale(Real x, Real y, Real z);
 	static Matrix4D Scale(const Vector3D& vec);
-	static Matrix4D Rotation(Real x, Real y, Real z, const Angle& angle);
-	static Matrix4D Rotation(const Vector3D& vec, const Angle& angle);
+	//static Matrix4D Rotation(Real x, Real y, Real z, const Angle& angle);
+	//static Matrix4D Rotation(const Vector3D& vec, const Angle& angle);
 
 	static Matrix4D Rotation(const Angle& angleX, const Angle& angleY, const Angle& angleZ); // TODO: Check all Matrix4D::Rotation(...) functions.
 

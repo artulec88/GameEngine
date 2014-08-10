@@ -68,6 +68,7 @@ Matrix4D::~Matrix4D()
 
 /* static */ Matrix4D Matrix4D::PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
 {
+	// CHECKED
 	Matrix4D matrix;
 	Real f = static_cast<Real>(1.0 / tan(fov.GetAngleInRadians() / 2.0));
 	Real div = static_cast<Real>(1.0 / (nearPlane - farPlane));
@@ -89,6 +90,7 @@ Matrix4D::~Matrix4D()
 
 /* static */ Matrix4D Matrix4D::OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
 {
+	// CHECKED
 	Matrix4D matrix;
 
 	Real width = right - left;
@@ -141,6 +143,7 @@ Matrix4D::~Matrix4D()
  */
 /* static */ Matrix4D Matrix4D::Rotation(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
 {
+	// CHECKED
 	Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
 
 	Real xRad = angleX.GetAngleInRadians();
@@ -172,44 +175,46 @@ Matrix4D::~Matrix4D()
 	rotZ.m[2][0] = 0.0;		rotZ.m[2][1] = 0.0;		rotZ.m[2][2] = 1.0;		rotZ.m[2][3] = 0.0;
 	rotZ.m[3][0] = 0.0;		rotZ.m[3][1] = 0.0;		rotZ.m[3][2] = 0.0;		rotZ.m[3][3] = 1.0;
 
-	return rotX * rotY * rotZ;
+	//return rotX * rotY * rotZ;
+	return rotZ * rotY * rotX;
 }
 
-/* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
-{
-	Real vecNorm = sqrt(x * x + y * y + z * z);
-	x /= vecNorm;
-	y /= vecNorm;
-	z /= vecNorm;
-				
-	Real angleInRadians = angle.GetAngleInRadians();
+///* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
+//{
+//	Real vecNorm = sqrt(x * x + y * y + z * z);
+//	x /= vecNorm;
+//	y /= vecNorm;
+//	z /= vecNorm;
+//				
+//	Real angleInRadians = angle.GetAngleInRadians();
+//
+//	Matrix4D matrix;
+//	Real c = cos(angleInRadians);
+//	Real s = sin(angleInRadians);
+//	Real omc = 1 - c;
+//	Real xs = x * s;
+//	Real ys = y * s;
+//	Real zs = z * s;
+//	Real xy = x*y;
+//	Real xz = x*z;
+//	Real yz = y*z;
+//
+//	matrix.m[0][0] = x*x*omc+c;	matrix.m[0][1] = xy*omc-zs;	matrix.m[0][2] = xz*omc+ys;	matrix.m[0][3] = 0.0;
+//	matrix.m[1][0] = xy*omc+zs;	matrix.m[1][1] = y*y*omc+c;	matrix.m[1][2] = yz*omc-xs;	matrix.m[1][3] = 0.0;
+//	matrix.m[2][0] = xz*omc-ys;	matrix.m[2][1] = yz*omc+xs;	matrix.m[2][2] = z*z*omc+c;	matrix.m[2][3] = 0.0;
+//	matrix.m[3][0] = 0.0;		matrix.m[3][1] = 0.0;		matrix.m[3][2] = 0.0;		matrix.m[3][3] = 1.0;
+//	
+//	return matrix;
+//}
 
-	Matrix4D matrix;
-	Real c = cos(angleInRadians);
-	Real s = sin(angleInRadians);
-	Real omc = 1 - c;
-	Real xs = x * s;
-	Real ys = y * s;
-	Real zs = z * s;
-	Real xy = x*y;
-	Real xz = x*z;
-	Real yz = y*z;
-
-	matrix.m[0][0] = x*x*omc+c;	matrix.m[0][1] = xy*omc-zs;	matrix.m[0][2] = xz*omc+ys;	matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = xy*omc+zs;	matrix.m[1][1] = y*y*omc+c;	matrix.m[1][2] = yz*omc-xs;	matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = xz*omc-ys;	matrix.m[2][1] = yz*omc+xs;	matrix.m[2][2] = z*z*omc+c;	matrix.m[2][3] = 0.0;
-	matrix.m[3][0] = 0.0;		matrix.m[3][1] = 0.0;		matrix.m[3][2] = 0.0;		matrix.m[3][3] = 1.0;
-	
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, const Angle& angle)
-{
-	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angle);
-}
+///* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, const Angle& angle)
+//{
+//	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angle);
+//}
 
 /* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
+	// CHECKED
 	Vector3D f = forward;
 	Vector3D u = up;
 	Vector3D r = right;

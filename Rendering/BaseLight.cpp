@@ -3,6 +3,7 @@
 #include "CoreEngine.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "ShadowInfo.h"
 #include "Utility\Log.h"
 
 using namespace Rendering;
@@ -11,7 +12,8 @@ BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0
 	GameComponent(),
 	color(color),
 	intensity(intensity),
-	shader(NULL)
+	shader(NULL),
+	shadowInfo(NULL)
 {
 }
 
@@ -19,10 +21,16 @@ BaseLight::~BaseLight(void)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
-	//if (shader == NULL)
-	//{
-	//	delete shader;
-	//}
+	if (shader != NULL)
+	{
+		delete shader;
+		shader = NULL;
+	}
+	if (shadowInfo != NULL)
+	{
+		delete shadowInfo;
+		shadowInfo = NULL;
+	}
 }
 
 void BaseLight::SetShader(Shader* shader)
@@ -34,6 +42,16 @@ void BaseLight::SetShader(Shader* shader)
 		this->shader = NULL;
 	}
 	this->shader = shader;
+}
+
+void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
+{
+	if (this->shadowInfo != NULL)
+	{
+		delete this->shadowInfo;
+		this->shadowInfo = NULL;
+	}
+	this->shadowInfo = shadowInfo;
 }
 
 Math::Vector3D BaseLight::GetColor() const

@@ -5,6 +5,7 @@
 #include "Renderer.h"
 #include "GameNode.h"
 #include "Shader.h"
+#include "Utility\Log.h"
 
 using namespace Rendering;
 
@@ -43,11 +44,21 @@ void GameComponent::SetParent(GameNode* parentGameNode)
 
 Transform& GameComponent::GetTransform()
 {
+	if (parentGameNode == NULL)
+	{
+		stdlog(Utility::Emergency, LOGPLACE, "Cannot get transformation for a given component. Parent game node is NULL.");
+		exit(EXIT_FAILURE);
+	}
 	return parentGameNode->GetTransform();
 }
 
 const Transform& GameComponent::GetTransform() const
 {
+	if (parentGameNode == NULL)
+	{
+		stdlog(Utility::Emergency, LOGPLACE, "Cannot get transformation for a given component. Parent game node is NULL.");
+		exit(EXIT_FAILURE);
+	}
 	return parentGameNode->GetTransform();
 }
 

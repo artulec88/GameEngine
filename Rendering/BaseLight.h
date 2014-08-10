@@ -9,6 +9,7 @@ namespace Rendering
 
 // TODO: Move this to GameComponent class declaration when BaseLight becomes a child of GameComponent class
 class Shader;
+class ShadowInfo;
 class Renderer;
 
 class RENDERING_API BaseLight : public GameComponent
@@ -18,6 +19,7 @@ protected:
 	Math::Vector3D color;
 	Math::Real intensity;
 	Shader* shader;
+	ShadowInfo* shadowInfo;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -35,9 +37,12 @@ public:
 	void SetColor(const Math::Vector3D& color);
 	Math::Real GetIntensity() const;
 	void SetIntensity(Math::Real intensity);
-	inline void SetShader(Shader* shader);
 	inline Shader* GetShader() { return this->shader; }
+	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
 	virtual void AddToEngine(CoreEngine* coreEngine);
+protected:
+	inline void SetShader(Shader* shader);
+	inline void SetShadowInfo(ShadowInfo* shadowInfo);
 /* ==================== Non-static member functions end ==================== */
 }; /* end class BaseLight */
 

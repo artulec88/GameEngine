@@ -245,8 +245,9 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 		(axis * (this->Dot(axis * (1.0f - cosAngle))))); // rotation on local Y
 }
 
-Vector3D Vector3D::Rotate(const Quaternion& rotation)
+Vector3D Vector3D::Rotate(const Quaternion& rotation) const
 {
+	//CHECKED
 	Quaternion conjugate = rotation.Conjugate();
 	Quaternion w = rotation * (*this) * conjugate;
 

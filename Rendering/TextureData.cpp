@@ -52,26 +52,27 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 	//ASSERT(filter.size == texturesCount);
 	//ASSERT(internalFormat.size == texturesCount);
 	//ASSERT(format.size == texturesCount);
-	ASSERT(data != NULL);
-	ASSERT(filter != NULL);
+	
+	//ASSERT(data != NULL);
+	//ASSERT(filter != NULL);
 	if (data == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
-		return;
+		stdlog(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		//return;
 	}
 	if (filters != NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "The filter array is NULL.");
+		stdlog(Utility::Warning, LOGPLACE, "The filter array is NULL.");
 	}
 	
 	glGenTextures(texturesCount, textureID);
 	for (int i = 0; i < texturesCount; ++i)
 	{
-		ASSERT(data[i] != NULL)
+		//ASSERT(data[i] != NULL)
 		if (data[i] == NULL)
 		{
-			stdlog(Utility::Error, LOGPLACE, "The texture data array is invalid. Incorrect array size.");
-			return;
+			stdlog(Utility::Warning, LOGPLACE, "The texture data array is invalid. Texture data[%d] is NULL.", i);
+			//return;
 		}
 		glBindTexture(textureTarget, textureID[i]);
 		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);

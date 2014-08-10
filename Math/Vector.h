@@ -101,7 +101,7 @@ public: // public member functions
 
 	//Vector3D Rotate(Real angle);
 	Vector3D Rotate(const Vector3D& axis, const Angle& angle);
-	Vector3D Rotate(const Quaternion& rotation);
+	Vector3D Rotate(const Quaternion& rotation) const;
 	
 	Real Dot(const Vector3D& v) const;
 	Vector3D Cross(const Vector3D& v) const;

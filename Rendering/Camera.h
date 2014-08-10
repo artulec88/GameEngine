@@ -29,12 +29,14 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	//Camera();
+	Camera(const Math::Matrix4D& projectionMatrix);
 	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
 	~Camera(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	inline void SetProjection(const Math::Matrix4D& projection) { this->projection = projection; }
 	Math::Matrix4D GetViewProjection() const;
 
 	void Move(const Math::Vector3D& dir, Math::Real amount);

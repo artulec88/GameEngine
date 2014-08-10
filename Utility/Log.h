@@ -25,6 +25,7 @@ namespace Utility
 		LogLevel m_level;
 		Outs m_outs;
 		bool m_modified;
+		int m_indentDepth;
 	public:
 		Log(FILE *first = stdout);
 		~Log();
