@@ -128,10 +128,14 @@ Vector2D& Vector2D::operator=(const Vector2D& v)
 	return *this;
 }
 
-inline bool Vector2D::operator==(const Vector2D& v) const
+bool Vector2D::operator==(const Vector2D& v) const
 {
-	// TODO: Create a floating-point comparer and use it here
-	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) );
+	return ( AlmostEqual(this->GetX(), v.GetX()) && AlmostEqual(this->GetY(), v.GetY()) );
+}
+
+bool Vector2D::operator!=(const Vector2D& v) const
+{
+	return (!((*this) == v));
 }
 
 Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const

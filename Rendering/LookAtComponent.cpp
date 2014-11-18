@@ -2,7 +2,7 @@
 #include "LookAtComponent.h"
 #include "Transform.h"
 #include "Renderer.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 #include "Math\Quaternion.h"
 
 using namespace Rendering;
@@ -22,7 +22,7 @@ void LookAtComponent::Update(Math::Real delta)
 {
 	if (renderer == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "LookAtComponent does not have a renderer set up.");
+		LOG(Utility::Warning, LOGPLACE, "LookAtComponent does not have a renderer set up.");
 		return;
 	}
 
@@ -34,7 +34,7 @@ void LookAtComponent::Update(Math::Real delta)
 	Math::Quaternion newRot = GetTransform().GetLookAtDirection(currentCameraPos, Math::Vector3D(0, 1, 0));
 	Math::Quaternion interpolatedRotation = GetTransform().GetRot().Nlerp(newRot, delta * 5, true);
 	GetTransform().SetRotation(interpolatedRotation);
-	//stdlog(Utility::Debug, LOGPLACE, "LookAtComponent has just set a new rotation");
+	//LOG(Utility::Debug, LOGPLACE, "LookAtComponent has just set a new rotation");
 }
 
 void LookAtComponent::Render(Shader* shader, Renderer* renderer)

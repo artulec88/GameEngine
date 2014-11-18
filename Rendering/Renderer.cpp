@@ -8,8 +8,8 @@
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
 #include "ShadowInfo.h"
-#include "Utility\Config.h"
-#include "Utility\Log.h"
+#include "Utility\IConfig.h"
+#include "Utility\ILogger.h"
 #include "Utility\FileNotFoundException.h"
 
 #include <sstream>
@@ -28,9 +28,9 @@ Renderer::Renderer(int width, int height, std::string title) :
 	vao(0),
 	isFullscreen(false),
 	isMouseEnabled(true),
-	ambientLight(GET_CONFIG_VALUE("ambientLight_x", "ambientLight_xDefault", 0.02f),
-		GET_CONFIG_VALUE("ambientLight_y", "ambientLight_yDefault", 0.02f),
-		GET_CONFIG_VALUE("ambientLight_z", "ambientLight_zDefault", 0.02f)),
+	ambientLight(GET_CONFIG_VALUE("ambientLight_x", 0.02f),
+		GET_CONFIG_VALUE("ambientLight_y", 0.02f),
+		GET_CONFIG_VALUE("ambientLight_z", 0.02f)),
 	currentLight(NULL),
 	currentCameraIndex(0),
 	currentCamera(NULL),
@@ -39,8 +39,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader(NULL),
 	shadowMapShader(NULL)
 {
-	stdlog(Debug, LOGPLACE, "Creating Renderer instance started");
-	stdlog(Notice, LOGPLACE, "OpenGL version = %s", GetOpenGLVersion().c_str());
+	LOG(Debug, LOGPLACE, "Creating Renderer instance started");
 
 	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
 	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
@@ -50,8 +49,9 @@ Renderer::Renderer(int width, int height, std::string title) :
 	SetVector3D("ambientIntensity", ambientLight);
 
 	InitGraphics(width, height, title);
+	PrintGlReport();
 
-	SetTexture("shadowMap", new Texture(Config::Get("shadowMapWidth", 1024), Config::Get("shadowMapHeight", 1024), NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
+	SetTexture("shadowMap", new Texture(GET_CONFIG_VALUE("shadowMapWidth", 1024), GET_CONFIG_VALUE("shadowMapHeight", 1024), NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
 	altCameraNode = new GameNode();
@@ -68,13 +68,13 @@ Renderer::Renderer(int width, int height, std::string title) :
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
 	planeMesh = new Mesh("..\\Models\\plane.obj");
 
-	stdlog(Delocust, LOGPLACE, "Creating Renderer instance finished");
+	LOG(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
 
 
 Renderer::~Renderer(void)
 {
-	stdlog(Notice, LOGPLACE, "Destroying rendering engine...");
+	LOG(Notice, LOGPLACE, "Destroying rendering engine...");
 	
 	//glDeleteVertexArrays(1, &vao);
 
@@ -97,17 +97,17 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(planeMesh);
 
 	glfwTerminate();
-	stdlog(Notice, LOGPLACE, "Rendering engine destroyed");
+	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 
 void Renderer::InitGraphics(int width, int height, const std::string& title)
 {
-	stdlog(Info, LOGPLACE, "Initializing Renderer started");
+	LOG(Info, LOGPLACE, "Initializing Renderer started");
 	InitGlfw(width, height, title);
 	SetGlfwCallbacks();
 	InitGlew();
 
-	glClearColor(GET_CONFIG_VALUE("ClearColorRed", "ClearColorRedDefault", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", "ClearColorGreenDefault", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", "ClearColorBlueDefault", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", "ClearColorAlphaDefault", 0.0f));
+	glClearColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", 0.0f));
 
 	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
 	glCullFace(GL_BACK); // cull the back face
@@ -119,29 +119,30 @@ void Renderer::InitGraphics(int width, int height, const std::string& title)
 	//glEnable(GL_TEXTURE_2D);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 
-	stdlog(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
+	//LOG(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
 }
 
 void Renderer::InitGlfw(int width, int height, const std::string& title)
 {
+	LOG(Debug, LOGPLACE, "Initializing GLFW started");
 	if( !glfwInit() )
 	{
-		stdlog(Critical, LOGPLACE, "Failed to initalize GLFW");
+		LOG(Critical, LOGPLACE, "Failed to initalize GLFW");
 		exit(EXIT_FAILURE);
 		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
 	glfwWindowHint(GLFW_SAMPLES, 4); // TODO: Do not hard-code any values
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // TODO: Do not hard-code any values
+	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
+	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
 #ifdef _DEBUG
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // So that glBegin / glEnd etc. work
+	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // So that glBegin / glEnd etc. work
 #else
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
 	window = glfwCreateWindow(width, height, title.c_str(), NULL /* glfwGetPrimaryMonitor()- for fullscreen */, NULL); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
+		LOG(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -150,6 +151,7 @@ void Renderer::InitGlfw(int width, int height, const std::string& title)
 	glfwSetCursorPos(window, width / 2, height / 2); // Set cursor position to the middle point
 	//glfwSwapInterval(1);
 	glfwSetTime(0.0);
+	LOG(Debug, LOGPLACE, "Initializing GLFW finished successfully");
 }
 
 void Renderer::SetGlfwCallbacks()
@@ -166,26 +168,26 @@ void Renderer::SetGlfwCallbacks()
 
 void Renderer::InitGlew() const
 {
-	stdlog(Info, LOGPLACE, "Initializing GLEW...");
+	LOG(Info, LOGPLACE, "Initializing GLEW...");
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
 	if (GLEW_OK != err)
 	{
-		stdlog(Error, LOGPLACE, "Error while initializing GLEW: %s", glewGetErrorString(err));
+		LOG(Error, LOGPLACE, "Error while initializing GLEW: %s", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 	if (GLEW_VERSION_2_0)
 	{
-		stdlog(Info, LOGPLACE, "OpenGL 2.0 supported");
+		LOG(Info, LOGPLACE, "OpenGL 2.0 supported");
 	}
 	else
 	{
-		stdlog(Info, LOGPLACE, "OpenGL 2.0 NOT supported");
+		LOG(Info, LOGPLACE, "OpenGL 2.0 NOT supported");
 		exit(EXIT_FAILURE);
 	}
 
-	stdlog(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
+	LOG(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
 
 void Renderer::Render(GameNode& gameNode)
@@ -247,7 +249,7 @@ inline Camera& Renderer::GetCurrentCamera()
 {
 	if (currentCamera == NULL)
 	{
-		stdlog(Emergency, LOGPLACE, "Current camera is NULL");
+		LOG(Emergency, LOGPLACE, "Current camera is NULL");
 		exit(EXIT_FAILURE);
 	}
 	return *currentCamera;
@@ -277,16 +279,16 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	ASSERT((cameraIndex >= 0) && (cameraIndex < cameras.size()));
 	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
 	{
-		stdlog(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
-		stdlog(Notice, LOGPLACE, "Setting current camera index to 1");
+		LOG(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
+		LOG(Notice, LOGPLACE, "Setting current camera index to 1");
 		this->currentCameraIndex = 0;
 	}
 	else
 	{
 		this->currentCameraIndex = cameraIndex;
 	}
-	stdlog(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
-	stdlog(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
+	LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
 	//cameras[this->currentCameraIndex]->Activate();
 	return this->currentCameraIndex;
 }
@@ -301,23 +303,25 @@ inline void Renderer::AddCamera(Camera* camera)
 	cameras.push_back(camera);
 }
 
-std::string Renderer::GetOpenGLVersion()
+void Renderer::PrintGlReport()
 {
 	// TODO: Fix this function
-	//const GLubyte* strVersion = glGetString(GL_VERSION);
-	//return std::string((char*)strVersion);
-	return "OpenGL version: ";
+	LOG(Info, LOGPLACE, "Vendor:\t%s", (const char*)glGetString(GL_VENDOR));
+	LOG(Info, LOGPLACE, "Renderer name:\t%s", (const char*)glGetString(GL_RENDERER));
+	LOG(Info, LOGPLACE, "OpenGL version:\t%s", (const char*)glGetString(GL_VERSION));
+	LOG(Info, LOGPLACE, "GLSL version:\t%s", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+	//LOG(Error, LOGPLACE, "OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
 }
 
 bool Renderer::IsCloseRequested() const
 {
-	return glfwWindowShouldClose(window);
+	return glfwWindowShouldClose(window) != 0;
 }
 
 void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType)
 {
 	//throw uniformType + " is not supported by the rendering engine";
-	stdlog(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
+	LOG(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
 }
 
 void Renderer::BindAsRenderTarget()
@@ -333,7 +337,7 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 	/* TODO: Add assertions and checks */
 	if (samplerMap.find(samplerName) == samplerMap.end())
 	{
-		stdlog(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.");
+		LOG(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.");
 		exit(EXIT_FAILURE);
 	}
 	return samplerMap.find(samplerName)->second;

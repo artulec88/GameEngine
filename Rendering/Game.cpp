@@ -12,7 +12,7 @@
 #include "Math\Vector.h"
 
 #include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
 #include <fstream>
@@ -30,23 +30,23 @@ Game* Game::game = NULL;
 
 Game::Game()
 {
-	stdlog(Debug, LOGPLACE, "Game construction started");
+	LOG(Debug, LOGPLACE, "Game construction started");
 	rootGameNode = new GameNode();
 	ASSERT(rootGameNode != NULL);
 	if (rootGameNode == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Root game node construction failed");
+		LOG(Critical, LOGPLACE, "Root game node construction failed");
 		exit(EXIT_FAILURE);
 	}
 
 	if (game != NULL)
 	{
-		stdlog(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
+		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
 		delete game;
 		game = NULL;
 	}
 	game = this;
-	stdlog(Debug, LOGPLACE, "Game construction finished");
+	LOG(Debug, LOGPLACE, "Game construction finished");
 }
 
 
@@ -68,7 +68,7 @@ void Game::SetEngine(CoreEngine* coreEngine)
 {
 	if (rootGameNode == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
+		LOG(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
 		exit(EXIT_FAILURE);
 	}
 	rootGameNode->SetEngine(coreEngine);
@@ -78,7 +78,7 @@ void Game::Init()
 {
 	if (rootGameNode == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Root game node is not initialized");
+		LOG(Critical, LOGPLACE, "Root game node is not initialized");
 		exit(EXIT_FAILURE);
 	}
 	//rootGameNode->Init();
@@ -116,7 +116,7 @@ void Game::InitializeCameras()
 
 void Game::CloseWindowEvent(GLFWwindow* window)
 {
-	stdlog(Notice, LOGPLACE, "Close window event");
+	LOG(Notice, LOGPLACE, "Close window event");
 	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
@@ -128,7 +128,7 @@ void Game::CloseWindowEvent(GLFWwindow* window)
  */
 void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	stdlog(Delocust, LOGPLACE, "Key event with key = %d", key);
+	LOG(Delocust, LOGPLACE, "Key event with key = %d", key);
 
 	//Input::UpdateKey(window, key, scancode, action, mods);
 	if (key == GLFW_KEY_ESCAPE)
@@ -140,7 +140,7 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 
 void Game::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	stdlog(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	LOG(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	/**
 	 * GLFW_MOUSE_BUTTON_1 = left mouse button
@@ -151,13 +151,13 @@ void Game::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods
 	switch (action)
 	{
 	case GLFW_PRESS:
-		stdlog(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
-		stdlog(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		LOG(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
 		break;
 	default:
-		stdlog(Warning, LOGPLACE, "Unknown action performed with the mouse");
+		LOG(Warning, LOGPLACE, "Unknown action performed with the mouse");
 	}
 }
 
@@ -168,7 +168,7 @@ void Game::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 
 void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
-	stdlog(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
+	LOG(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
 GameNode& Game::GetRootGameNode() const
@@ -176,7 +176,7 @@ GameNode& Game::GetRootGameNode() const
 	ASSERT(rootGameNode != NULL);
 	if (rootGameNode == NULL)
 	{
-		stdlog(Emergency, LOGPLACE, "Root game node is NULL.");
+		LOG(Emergency, LOGPLACE, "Root game node is NULL.");
 		exit(EXIT_FAILURE);
 	//	// TODO: throw another exception in the future
 	//	throw FileNotFoundException();
@@ -190,7 +190,7 @@ GameNode& Game::GetRootGameNode() const
 //	ASSERT(shader != NULL);
 //	if (shader == NULL)
 //	{
-//		stdlog(Error, LOGPLACE, "Shader is NULL");
+//		LOG(Error, LOGPLACE, "Shader is NULL");
 //	}
 //	return shader;
 //}
@@ -204,7 +204,7 @@ void Game::Render(Renderer* renderer)
 {
 	if (renderer == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Rendering engine is NULL");
+		LOG(Critical, LOGPLACE, "Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
 	renderer->Render(GetRootGameNode());

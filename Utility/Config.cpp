@@ -4,14 +4,14 @@
 
 using namespace Utility;
 
-Config::ValuesMap Config::cfgValues;
-Config::ValuesMap Config::cfgNotDefinedValues;
-bool Config::isInitialized = false;
+//Config::ValuesMap Config::cfgValues;
+//Config::ValuesMap Config::cfgNotDefinedValues;
+//bool Config::isInitialized = false;
 
-//Config::Config(void) :
-//{
-//}
-//
+Config::Config() : isInitialized(false)
+{
+}
+
 //Config::Config(const std::string& fileName)
 //{
 //	LoadFromFile(fileName);
@@ -28,11 +28,11 @@ bool Config::isInitialized = false;
 	std::ifstream file(fileName.c_str());
 	if (!file.is_open())
 	{
-		stdlog(Error, LOGPLACE, "Could not open configuration file \"%s\"", fileName.c_str());
+		LOG(Error, LOGPLACE, "Could not open configuration file \"%s\"", fileName.c_str());
 		return;
 	}
 	cfgValues.clear();
-	cfgNotDefinedValues.clear();
+	//cfgNotDefinedValues.clear();
 
 	std::string name, value;
 	std::string separator;
@@ -44,7 +44,7 @@ bool Config::isInitialized = false;
 		file >> name;
 		if (file.fail())
 		{
-			stdlog(Warning, LOGPLACE, "Fail occured in the stream while reading the configuration file");
+			LOG(Warning, LOGPLACE, "Fail occured in the stream while reading the configuration file");
 			break;
 		}
 		std::getline(file, line);
@@ -62,7 +62,7 @@ bool Config::isInitialized = false;
 		stream >> separator >> value;
 		if (stream.fail() || separator != "=")
 		{
-			stdlog(Warning, LOGPLACE, "Stream fail while reading configuration file");
+			LOG(Warning, LOGPLACE, "Stream fail while reading configuration file");
 			value = "0";
 		}
 
@@ -72,13 +72,37 @@ bool Config::isInitialized = false;
 	isInitialized = true;
 }
 
-/* static */ std::string Config::ReportUndefined()
+std::string Config::GetArg(const std::string& name, const std::string& defValue) const
 {
-	std::stringstream stream;
-	for (ValuesMap::iterator it = cfgNotDefinedValues.begin(); it != cfgNotDefinedValues.end(); ++it)
+	ASSERT(isInitialized);
+	if (!isInitialized)
 	{
-		stream << it->first << " = " << it->second << "\n";
+		LOG(Error, LOGPLACE, "The Config instance is not initalized.");
+		exit(EXIT_FAILURE);
+		//std::string fileName = "";
+		//std::cout << "Specify the configuration file to read:\t";
+		//std::cin >> fileName;
+		//LoadFromFile(fileName);
 	}
 
-	return stream.str();
+	ValuesMap::const_iterator valueMapIt = cfgValues.find(name);
+	if (valueMapIt == cfgValues.end())
+	{
+		LOG(Notice, LOGPLACE, "The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
+		//cfgNotDefinedValues[name] = defValue;
+		return defValue;
+	}
+
+	return valueMapIt->second;
 }
+
+//std::string Config::ReportUndefined()
+//{
+//	std::stringstream stream;
+//	for (ValuesMap::iterator it = cfgNotDefinedValues.begin(); it != cfgNotDefinedValues.end(); ++it)
+//	{
+//		stream << it->first << " = " << it->second << "\n";
+//	}
+//
+//	return stream.str();
+//}

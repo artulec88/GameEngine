@@ -90,7 +90,7 @@ public:
 
 	inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
 
-	std::string GetOpenGLVersion();
+	void PrintGlReport();
 protected:
 	void InitGraphics(int width, int height, const std::string& title);
 	void ClearScreen() const;

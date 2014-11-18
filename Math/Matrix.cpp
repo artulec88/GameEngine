@@ -175,8 +175,8 @@ Matrix4D::~Matrix4D()
 	rotZ.m[2][0] = 0.0;		rotZ.m[2][1] = 0.0;		rotZ.m[2][2] = 1.0;		rotZ.m[2][3] = 0.0;
 	rotZ.m[3][0] = 0.0;		rotZ.m[3][1] = 0.0;		rotZ.m[3][2] = 0.0;		rotZ.m[3][3] = 1.0;
 
-	//return rotX * rotY * rotZ;
-	return rotZ * rotY * rotX;
+	return rotX * rotY * rotZ;
+	//return rotZ * rotY * rotX;
 }
 
 ///* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
@@ -384,8 +384,9 @@ Matrix4D Matrix4D::Transposition() const
 	}
 
 	// TODO: According to wikipedia (http://en.wikipedia.org/wiki/Transpose) (A^T)^T = A, so
-	// check this condition here. Use SLOW_ASSERT
-	SLOW_ASSERT(matrix.Transposition() == (*this));
+	// check this condition here. Use SLOW_ASSERT, but use it wisely just once not to cause a runtime stack overflow
+	// (due to recursive calls on all control paths).
+	// SLOW_ASSERT(matrix.Transposition() == (*this));
 
 	return matrix;
 }

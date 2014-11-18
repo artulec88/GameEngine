@@ -13,12 +13,12 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
 {
 	if (this->mesh == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot create a MeshRenderer instance. Mesh is NULL");
+		LOG(Utility::Error, LOGPLACE, "Cannot create a MeshRenderer instance. Mesh is NULL");
 		exit(EXIT_FAILURE);
 	}
 	if (this->material == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "The material given to the mesh renderer is NULL");
+		LOG(Utility::Warning, LOGPLACE, "The material given to the mesh renderer is NULL");
 	}
 	//if (this->mesh != NULL)
 	//{
@@ -52,17 +52,17 @@ void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 {
 	if (shader == NULL)
 	{
-		stdlog(Utility::Emergency, LOGPLACE, "Rendering a mesh failed. Shader instance is NULL");
+		LOG(Utility::Emergency, LOGPLACE, "Rendering a mesh failed. Shader instance is NULL");
 		return;
 	}
 	if (renderer == NULL)
 	{
-		stdlog(Utility::Critical, LOGPLACE, "Rendering a mesh failed. Rendering engine is NULL");
+		LOG(Utility::Critical, LOGPLACE, "Rendering a mesh failed. Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
 	if (this->material == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Rendering a mesh failed. Material instance is NULL");
+		LOG(Utility::Warning, LOGPLACE, "Rendering a mesh failed. Material instance is NULL");
 		return;
 	}
 	shader->Bind();

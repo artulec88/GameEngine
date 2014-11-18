@@ -10,8 +10,8 @@
 //#include "Math\Vector.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
-#include "Utility\Log.h"
-#include "Utility\Config.h"
+#include "Utility\ILogger.h"
+#include "Utility\IConfig.h"
 
 #include <sstream>
 
@@ -26,14 +26,14 @@ TestGame::TestGame() :
 	humanCount(2),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
-	pointLightCount(Config::Get("pointLightCount", 1)),
+	pointLightCount(GET_CONFIG_VALUE("pointLightCount", 1)),
 	pointLightNodes(NULL),
-	spotLightCount(Config::Get("spotLightCount", 1)),
+	spotLightCount(GET_CONFIG_VALUE("spotLightCount", 1)),
 	spotLightNodes(NULL),
-	cameraCount(Config::Get("cameraCount", 3)),
+	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	currentCameraIndex(0)
 {
-	stdlog(Debug, LOGPLACE, "TestGame is being constructed");
+	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 }
 
 
@@ -47,7 +47,7 @@ TestGame::~TestGame(void)
 
 void TestGame::Init()
 {
-	stdlog(Notice, LOGPLACE, "Initalizing test game");
+	LOG(Notice, LOGPLACE, "Initalizing test game");
 
 	Game::Init();
 
@@ -68,18 +68,18 @@ void TestGame::Init()
 	AddToSceneRoot(boxNode);
 
 	// TODO: Do not use hard-coded values
-	Real specularIntensity = Config::Get("defaultSpecularIntensity", 1.0f);
-	Real specularPower = Config::Get("defaultSpecularPower", 8.0f);
+	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
+	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
 
 	GameNode* planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\plane3.obj"),
+		new Mesh("..\\Models\\plane4.obj"),
 		new Material(
 			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
 			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
 			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.25f)));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
-	planeNode->GetTransform().SetScale(Vector3D(4.0f, 4.0f, 4.0f));
+	planeNode->GetTransform().SetScale(Vector3D(10.0f, 10.0f, 10.0f));
 
 	AddToSceneRoot(planeNode);
 
@@ -137,33 +137,33 @@ void TestGame::Init()
 	srand((unsigned int)time(NULL));
 
 	/* ==================== Adding directional light begin ==================== */
-	bool directionalLightEnabled = Config::Get("directionalLightEnabled", true);
+	bool directionalLightEnabled = GET_CONFIG_VALUE("directionalLightEnabled", true);
 	if (directionalLightEnabled)
 	{
-		stdlog(Info, LOGPLACE, "Directional light enabled");
+		LOG(Info, LOGPLACE, "Directional light enabled");
 		directionalLightNode = new GameNode();
 
-		const Vector3D defaultDirectionalLightPos(Config::Get("defaultDirectionalLightPosX", 0.0), Config::Get("defaultDirectionalLightPosY", 0.0), Config::Get("defaultDirectionalLightPosZ", 0.0));
-		const Vector3D defaultDirectionalLightColor(Config::Get("defaultDirectionalLightColorRed", 1.0), Config::Get("defaultDirectionalLightColorGreen", 1.0), Config::Get("defaultDirectionalLightColorBlue", 1.0));
-		const Real defaultDirectionalLightIntensity(Config::Get("defaultDirectionalLightIntensity", 1.0));
-		const Angle defaultDirectionalLightRotationX(Config::Get("defaultDirectionalLightAngleX", -45.0f));
-		const Angle defaultDirectionalLightRotationY(Config::Get("defaultDirectionalLightAngleY", 0.0f));
-		const Angle defaultDirectionalLightRotationZ(Config::Get("defaultDirectionalLightAngleZ", 0.0f));
+		const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
+		const Vector3D defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
+		const Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", 1.0f));
+		const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
+		const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
+		const Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", 0.0f));
 
-		Real xPos = Config::Get("directionalLightPosX", defaultDirectionalLightPos.GetX());
-		Real yPos = Config::Get("directionalLightPosY", defaultDirectionalLightPos.GetY());
-		Real zPos = Config::Get("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
+		Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
+		Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
+		Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
 		Vector3D position(xPos, yPos, zPos);
 		directionalLightNode->GetTransform().SetTranslation(position);
 
-		Angle angleX(Config::Get("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
-		Angle angleY(Config::Get("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(Config::Get("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
+		Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
+		Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
-		stdlog(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
+		LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		stdlog(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+		LOG(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
 			rotMatrix.ToString().c_str(),
 			rot.ToString().c_str(),
 			rot.ToRotationMatrix().ToString().c_str(),
@@ -172,12 +172,12 @@ void TestGame::Init()
 		//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 		//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
 
-		Real red = Config::Get("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
-		Real green = Config::Get("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
-		Real blue = Config::Get("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
+		Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
+		Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
+		Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
 		Vector3D color(red, green, blue);
 		
-		Real intensity = Config::Get("directionalLightIntensity", defaultDirectionalLightIntensity);
+		Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
 
 		directionalLightNode->AddComponent(new DirectionalLight(color, intensity));
 		AddToSceneRoot(directionalLightNode);
@@ -191,7 +191,7 @@ void TestGame::Init()
 		
 		Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 		Vector3D rayEndPosition = forwardVec * 2.0f;
-		//stdlog(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
+		//LOG(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
 		//	position.ToString().c_str(),
 		//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
 		//	forwardVec.ToString().c_str(),
@@ -207,29 +207,29 @@ void TestGame::Init()
 
 	if (pointLightCount > 0)
 	{
-		stdlog(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
+		LOG(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
 		AddPointLights();
-		stdlog(Debug, LOGPLACE, "%d point lights created", pointLightCount);
+		LOG(Debug, LOGPLACE, "%d point lights created", pointLightCount);
 	}
 	if (spotLightCount > 0)
 	{
-		stdlog(Notice, LOGPLACE, "Creating %d spot lights...", spotLightCount);
+		LOG(Notice, LOGPLACE, "Creating %d spot lights...", spotLightCount);
 		AddSpotLights();
-		stdlog(Debug, LOGPLACE, "%d spot lights created", spotLightCount);
+		LOG(Debug, LOGPLACE, "%d spot lights created", spotLightCount);
 	}
 	if (cameraCount > 0)
 	{
-		stdlog(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
+		LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
 		AddCameras();
-		stdlog(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
+		LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
 	}
 	else
 	{
-		stdlog(Error, LOGPLACE, "No cameras defined.");
+		LOG(Error, LOGPLACE, "No cameras defined.");
 		exit(EXIT_FAILURE);
 	}
 
-	stdlog(Notice, LOGPLACE, "Initalizing test game finished");
+	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
 
 void TestGame::AddPointLights()
@@ -239,13 +239,13 @@ void TestGame::AddPointLights()
 		return;
 	}
 
-	const Vector3D defaultPointLightPos(Config::Get("defaultPointLightPosX", 0.0), Config::Get("defaultPointLightPosY", 0.0), Config::Get("defaultPointLightPosZ", 0.0));
-	const Angle defaultPointLightRotationX(Config::Get("defaultPointLightAngleX", -45.0f));
-	const Angle defaultPointLightRotationY(Config::Get("defaultPointLightAngleY", 0.0f));
-	const Angle defaultPointLightRotationZ(Config::Get("defaultPointLightAngleZ", 0.0f));
-	const Vector3D defaultPointLightColor(Config::Get("defaultPointLightColorRed", 0.0), Config::Get("defaultPointLightColorGreen", 0.0), Config::Get("defaultPointLightColorBlue", 1.0));
-	const Real defaultPointLightIntensity(Config::Get("defaultPointLightIntensity", 10.0));
-	const Attenuation defaultPointLightAttenuation(Config::Get("defaultPointLightAttenuationConstant", 0.0), Config::Get("defaultPointLightAttenuationLinear", 0.1), Config::Get("defaultPointLightAttenuationExponent", 0.0));
+	const Vector3D defaultPointLightPos(GET_CONFIG_VALUE("defaultPointLightPosX", 0.0f), GET_CONFIG_VALUE("defaultPointLightPosY", 0.0f), GET_CONFIG_VALUE("defaultPointLightPosZ", 0.0f));
+	const Angle defaultPointLightRotationX(GET_CONFIG_VALUE("defaultPointLightAngleX", -45.0f));
+	const Angle defaultPointLightRotationY(GET_CONFIG_VALUE("defaultPointLightAngleY", 0.0f));
+	const Angle defaultPointLightRotationZ(GET_CONFIG_VALUE("defaultPointLightAngleZ", 0.0f));
+	const Vector3D defaultPointLightColor(GET_CONFIG_VALUE("defaultPointLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorBlue", 1.0f));
+	const Real defaultPointLightIntensity(GET_CONFIG_VALUE("defaultPointLightIntensity", 10.0f));
+	const Attenuation defaultPointLightAttenuation(GET_CONFIG_VALUE("defaultPointLightAttenuationConstant", 0.0f), GET_CONFIG_VALUE("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultPointLightAttenuationExponent", 0.0f));
 	pointLightNodes = new GameNode* [pointLightCount];
 	for (int i = 0; i < pointLightCount; ++i)
 	{
@@ -255,28 +255,28 @@ void TestGame::AddPointLights()
 
 		pointLightNodes[i] = new GameNode();
 		
-		Real xPos = Config::Get("pointLightPosX_" + pointLightIndexStr, defaultPointLightPos.GetX());
-		Real yPos = Config::Get("pointLightPosY_" + pointLightIndexStr, defaultPointLightPos.GetY());
-		Real zPos = Config::Get("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
+		Real xPos = GET_CONFIG_VALUE("pointLightPosX_" + pointLightIndexStr, defaultPointLightPos.GetX());
+		Real yPos = GET_CONFIG_VALUE("pointLightPosY_" + pointLightIndexStr, defaultPointLightPos.GetY());
+		Real zPos = GET_CONFIG_VALUE("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
 		pointLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		Angle angleX(Config::Get("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
-		Angle angleY(Config::Get("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(Config::Get("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
+		Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
+		Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
 		pointLightNodes[i]->GetTransform().SetRotation(rot);
 
-		Real red = Config::Get("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
-		Real green = Config::Get("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
-		Real blue = Config::Get("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetZ() /* Blue */);
+		Real red = GET_CONFIG_VALUE("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
+		Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
+		Real blue = GET_CONFIG_VALUE("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetZ() /* Blue */);
 		Vector3D color(red, green, blue);
 		
-		Real intensity = Config::Get("pointLightIntensity_" + pointLightIndexStr, defaultPointLightIntensity);
+		Real intensity = GET_CONFIG_VALUE("pointLightIntensity_" + pointLightIndexStr, defaultPointLightIntensity);
 		
-		Real constant = Config::Get("pointLightAttenuationConstant_" + pointLightIndexStr, defaultPointLightAttenuation.GetConstant());
-		Real linear = Config::Get("pointLightAttenuationLinear_" + pointLightIndexStr, defaultPointLightAttenuation.GetLinear());
-		Real exponent = Config::Get("pointLightAttenuationExponent_" + pointLightIndexStr, defaultPointLightAttenuation.GetExponent());
+		Real constant = GET_CONFIG_VALUE("pointLightAttenuationConstant_" + pointLightIndexStr, defaultPointLightAttenuation.GetConstant());
+		Real linear = GET_CONFIG_VALUE("pointLightAttenuationLinear_" + pointLightIndexStr, defaultPointLightAttenuation.GetLinear());
+		Real exponent = GET_CONFIG_VALUE("pointLightAttenuationExponent_" + pointLightIndexStr, defaultPointLightAttenuation.GetExponent());
 		Attenuation attenuation(constant, linear, exponent);
 
 		pointLightNodes[i]->AddComponent(new PointLight(color, intensity, attenuation));
@@ -299,14 +299,14 @@ void TestGame::AddSpotLights()
 	{
 		return;
 	}
-	const Vector3D defaultSpotLightPos(Config::Get("defaultSpotLightPosX", 0.0f), Config::Get("defaultSpotLightPosY", 0.0f), Config::Get("defaultSpotLightPosZ", 0.0f));
-	const Angle defaultSpotLightRotationX(Config::Get("defaultSpotLightAngleX", -45.0f));
-	const Angle defaultSpotLightRotationY(Config::Get("defaultSpotLightAngleY", 0.0f));
-	const Angle defaultSpotLightRotationZ(Config::Get("defaultSpotLightAngleZ", 0.0f));
-	const Vector3D defaultSpotLightColor(Config::Get("defaultSpotLightColorRed", 0.0f), Config::Get("defaultSpotLightColorGreen", 0.0f), Config::Get("defaultSpotLightColorBlue", 1.0f));
-	const Real defaultSpotLightIntensity(Config::Get("defaultSpotLightIntensity", 4.0f));
-	const Attenuation defaultSpotLightAttenuation(Config::Get("defaultSpotLightAttenuationConstant", 0.5f), Config::Get("defaultSpotLightAttenuationLinear", 0.1f), Config::Get("defaultSpotLightAttenuationExponent", 0.05f));
-	const Real defaultSpotLightCutoff(Config::Get("defaultSpotLightCutoff", 0.45f));
+	const Vector3D defaultSpotLightPos(GET_CONFIG_VALUE("defaultSpotLightPosX", 0.0f), GET_CONFIG_VALUE("defaultSpotLightPosY", 0.0f), GET_CONFIG_VALUE("defaultSpotLightPosZ", 0.0f));
+	const Angle defaultSpotLightRotationX(GET_CONFIG_VALUE("defaultSpotLightAngleX", -45.0f));
+	const Angle defaultSpotLightRotationY(GET_CONFIG_VALUE("defaultSpotLightAngleY", 0.0f));
+	const Angle defaultSpotLightRotationZ(GET_CONFIG_VALUE("defaultSpotLightAngleZ", 0.0f));
+	const Vector3D defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
+	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
+	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
+	const Real defaultSpotLightCutoff(GET_CONFIG_VALUE("defaultSpotLightCutoff", 0.45f));
 	spotLightNodes = new GameNode* [spotLightCount];
 	for (int i = 0; i < spotLightCount; ++i)
 	{
@@ -316,31 +316,31 @@ void TestGame::AddSpotLights()
 
 		spotLightNodes[i] = new GameNode();
 		
-		Real xPos = Config::Get("spotLightPosX_" + spotLightIndexStr, defaultSpotLightPos.GetX());
-		Real yPos = Config::Get("spotLightPosY_" + spotLightIndexStr, defaultSpotLightPos.GetY());
-		Real zPos = Config::Get("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
+		Real xPos = GET_CONFIG_VALUE("spotLightPosX_" + spotLightIndexStr, defaultSpotLightPos.GetX());
+		Real yPos = GET_CONFIG_VALUE("spotLightPosY_" + spotLightIndexStr, defaultSpotLightPos.GetY());
+		Real zPos = GET_CONFIG_VALUE("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
 		spotLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		Angle angleX(Config::Get("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
-		Angle angleY(Config::Get("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(Config::Get("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
+		Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
+		Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
+		Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
 		spotLightNodes[i]->GetTransform().SetRotation(rot);
 
-		Real red = Config::Get("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
-		Real green = Config::Get("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);
-		Real blue = Config::Get("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetZ() /* Blue */);
+		Real red = GET_CONFIG_VALUE("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
+		Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);
+		Real blue = GET_CONFIG_VALUE("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetZ() /* Blue */);
 		Vector3D color(red, green, blue);
 		
-		Real intensity = Config::Get("spotLightIntensity_" + spotLightIndexStr, defaultSpotLightIntensity);
+		Real intensity = GET_CONFIG_VALUE("spotLightIntensity_" + spotLightIndexStr, defaultSpotLightIntensity);
 		
-		Real constant = Config::Get("spotLightAttenuationConstant_" + spotLightIndexStr, defaultSpotLightAttenuation.GetConstant());
-		Real linear = Config::Get("spotLightAttenuationLinear_" + spotLightIndexStr, defaultSpotLightAttenuation.GetLinear());
-		Real exponent = Config::Get("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
+		Real constant = GET_CONFIG_VALUE("spotLightAttenuationConstant_" + spotLightIndexStr, defaultSpotLightAttenuation.GetConstant());
+		Real linear = GET_CONFIG_VALUE("spotLightAttenuationLinear_" + spotLightIndexStr, defaultSpotLightAttenuation.GetLinear());
+		Real exponent = GET_CONFIG_VALUE("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
 		Attenuation attenuation(constant, linear, exponent);
 
-		Real cutoff = Config::Get("spotLightCutoff_" + spotLightIndexStr, defaultSpotLightCutoff);
+		Real cutoff = GET_CONFIG_VALUE("spotLightCutoff_" + spotLightIndexStr, defaultSpotLightCutoff);
 
 		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, cutoff));
 		
@@ -360,19 +360,19 @@ void TestGame::AddCameras()
 {
 	if (cameraCount < 1)
 	{
-		stdlog(Error, LOGPLACE, "No cameras defined.");
+		LOG(Error, LOGPLACE, "No cameras defined.");
 		exit(EXIT_FAILURE);
 	}
 
-	const Real defaultFoV = Config::Get("defaultCameraFoV", 70.0);
-	const Real defaultAspectRatio = Config::Get("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
-	const Real defaultNearPlane = Config::Get("defaultCameraNearPlane", 0.1);
-	const Real defaultFarPlane = Config::Get("defaultCameraFarPlane", 1000.0);
+	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
+	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
+	const Real defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f);
+	const Real defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f);
 	
-	const Vector3D defaultCameraPos(Config::Get("defaultCameraPosX", 0.0f), Config::Get("defaultCameraPosY", 0.0), Config::Get("defaultCameraPosZ", 0.0));
-	const Angle defaultCameraRotationX(Config::Get("defaultCameraAngleX", -45.0f));
-	const Angle defaultCameraRotationY(Config::Get("defaultCameraAngleY", 0.0));
-	const Angle defaultCameraRotationZ(Config::Get("defaultCameraAngleZ", 0.0));
+	const Vector3D defaultCameraPos(GET_CONFIG_VALUE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE("defaultCameraPosZ", 0.0f));
+	const Angle defaultCameraRotationX(GET_CONFIG_VALUE("defaultCameraAngleX", -45.0f));
+	const Angle defaultCameraRotationY(GET_CONFIG_VALUE("defaultCameraAngleY", 0.0f));
+	const Angle defaultCameraRotationZ(GET_CONFIG_VALUE("defaultCameraAngleZ", 0.0f));
 
 	cameraNodes = new GameNode* [cameraCount];
 	for (int i = 0; i < cameraCount; ++i)
@@ -382,29 +382,29 @@ void TestGame::AddCameras()
 		std::string cameraIndexStr = ss.str();
 
 		cameraNodes[i] = new GameNode();
-		Real xPos = Config::Get("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
-		Real yPos = Config::Get("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
-		Real zPos = Config::Get("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
+		Real xPos = GET_CONFIG_VALUE("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
+		Real yPos = GET_CONFIG_VALUE("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
+		Real zPos = GET_CONFIG_VALUE("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
 		cameraNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
 		
-		Angle angleX(Config::Get("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
-		Angle angleY(Config::Get("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
-		Angle angleZ(Config::Get("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
+		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
+		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
+		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
-		stdlog(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
+		LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		stdlog(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+		LOG(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
 			rotMatrix.ToString().c_str(),
 			rot.ToString().c_str(),
 			rot.ToRotationMatrix().ToString().c_str(),
 			rot2.ToRotationMatrix().ToString().c_str());
 		cameraNodes[i]->GetTransform().SetRotation(rot);
 
-		Angle fov(Config::Get("cameraFoV_" + cameraIndexStr, defaultFoV), true);
-		Real aspectRatio = Config::Get("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
-		Real zNearPlane = Config::Get("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
-		Real zFarPlane = Config::Get("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
+		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), true);
+		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
+		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
+		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
 		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
@@ -462,7 +462,7 @@ void TestGame::Update(Real delta)
 	}
 
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 	Vector3D acceleration;
 	if (forward)
 	{
@@ -524,41 +524,41 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	//ASSERT(camera != NULL);
 	//if (camera == NULL)
 	//{
-	//	stdlog(Error, LOGPLACE, "Camera instance is not initialized");
+	//	LOG(Error, LOGPLACE, "Camera instance is not initialized");
 	//	return;
 	//}
 
 	// TODO: Set delta to correct value
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-	const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 	switch (key)
 	{
 	case GLFW_KEY_C:
-		stdlog(Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
+		LOG(Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
 		break;
 	case GLFW_KEY_W:
 		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//stdlog(Debug, LOGPLACE, "Forward = %d", forward);
+		//LOG(Debug, LOGPLACE, "Forward = %d", forward);
 
 		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_S:
 		backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//stdlog(Debug, LOGPLACE, "Backward = %d", backward);
+		//LOG(Debug, LOGPLACE, "Backward = %d", backward);
 
 		//direction -= transform.GetRot().GetForward().Normalized();
 		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_A:
 		left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//stdlog(Debug, LOGPLACE, "Left = %d", left);
+		//LOG(Debug, LOGPLACE, "Left = %d", left);
 
 		//direction -= transform.GetRot().GetRight().Normalized();
 		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_D:
 		right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//stdlog(Debug, LOGPLACE, "Right = %d", right);
+		//LOG(Debug, LOGPLACE, "Right = %d", right);
 
 		//direction += transform.GetRot().GetRight().Normalized();
 		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
@@ -602,7 +602,7 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 
 void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	stdlog(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	LOG(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	/**
 	 * GLFW_MOUSE_BUTTON_1 = left mouse button
@@ -614,14 +614,14 @@ void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int 
 	{
 	case GLFW_PRESS:
 		isMouseLocked = ! isMouseLocked;
-		stdlog(Info, LOGPLACE, "Mouse is locked");
-		stdlog(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		LOG(Info, LOGPLACE, "Mouse is locked");
+		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
-		stdlog(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		LOG(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
 		break;
 	default:
-		stdlog(Warning, LOGPLACE, "Unknown action performed with the mouse");
+		LOG(Warning, LOGPLACE, "Unknown action performed with the mouse");
 	}
 }
 
@@ -644,14 +644,14 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 
 	if (rotX)
 	{
-		const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 		transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));
 		//transform.Rotate(transform.GetTransformedRot().GetUp(), Angle(deltaPosition.GetX() * sensitivity));
 	}
 	if (rotY)
 	{
-		const Real sensitivity = static_cast<Real>(Camera::sensitivity);
+		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 		transform.Rotate(transform.GetRot().GetRight(), Angle(deltaPosition.GetY() * sensitivity));
 	}

@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "OBJModel.h"
 
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 #include <fstream>
 #include <algorithm>
@@ -21,7 +21,7 @@ OBJModel::OBJModel(const string& fileName)
     file.open(fileName.c_str());
     if(!file.is_open())
 	{
-		stdlog(Utility::Error, LOGPLACE, "Unable to load model \"%s\"", fileName.c_str());
+		LOG(Utility::Error, LOGPLACE, "Unable to load model \"%s\"", fileName.c_str());
 		return;
 	}
 
@@ -48,7 +48,7 @@ OBJModel::OBJModel(const string& fileName)
                 this->vertices.push_back(ParseOBJVec3(line));
 			else
 			{
-				stdlog(Utility::Error, LOGPLACE, "Line \"%s\" cannot be processed correctly", lineCStr);
+				LOG(Utility::Error, LOGPLACE, "Line \"%s\" cannot be processed correctly", lineCStr);
 			}
 			break;
 		case 'f':
@@ -57,7 +57,7 @@ OBJModel::OBJModel(const string& fileName)
 		case '#': // comment
 			break;
 		default:
-			stdlog(Utility::Delocust, LOGPLACE, "line = \"%s\"", lineCStr);
+			LOG(Utility::Delocust, LOGPLACE, "line = \"%s\"", lineCStr);
 			break;
         };
     }
@@ -185,7 +185,7 @@ IndexedModel OBJModel::ToIndexedModel()
 	unordered_map<unsigned short, unsigned short> normalIndexMap;
 	unordered_map<unsigned short, unsigned short> indexMap;
 
-	for (int i = 0; i < OBJIndices.size(); ++i)
+	for (unsigned int i = 0; i < OBJIndices.size(); ++i)
 	{
 		OBJIndex currentIndex = OBJIndices[i];
 		Math::Vector3D currentPosition = vertices[currentIndex.vertexIndex];
@@ -245,7 +245,7 @@ IndexedModel OBJModel::ToIndexedModel()
 	{
 		normalModel.CalcNormals();
 
-		for (int i = 0; i < result.PositionsSize(); ++i)
+		for (unsigned int i = 0; i < result.PositionsSize(); ++i)
 		{
 			//result.SetNormal(i, normalModel.GetNormal(indexMap[i]));
 			result.AddNormal(normalModel.GetNormal(indexMap[i]));
@@ -253,7 +253,7 @@ IndexedModel OBJModel::ToIndexedModel()
 	}
 
 	normalModel.CalcTangents();
-	for (int i = 0; i < result.PositionsSize(); ++i)
+	for (unsigned int i = 0; i < result.PositionsSize(); ++i)
 	{
 		result.AddTangent(normalModel.GetTangent(indexMap[i]));
 	}

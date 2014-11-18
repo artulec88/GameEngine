@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "IndexedModel.h"
 
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering\Game.h"
+#include <Rendering\Game.h>
 
 class TestGame2 : public Rendering::Game
 {

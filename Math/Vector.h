@@ -40,6 +40,7 @@ public: // public member functions
 	Vector2D& operator*=(const Vector2D& v);
 	Vector2D& operator/=(const Vector2D& v);
 	Vector2D& operator=(const Vector2D& v);
+	bool operator!=(const Vector2D& v) const;
 	bool operator==(const Vector2D& v) const;
 
 	Vector2D Normalized() const;

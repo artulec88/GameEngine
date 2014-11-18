@@ -13,25 +13,25 @@ Material::Material(Texture* diffuseTexture,
 {
 	if (diffuseTexture == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "The material is given the NULL diffuse texture");
+		LOG(Utility::Error, LOGPLACE, "The material is given the NULL diffuse texture");
 	}
 	SetTexture("diffuse", diffuseTexture);
 	SetReal("specularIntensity", specularIntensity);
 	SetReal("specularPower", specularPower);
 	if (normalMap == NULL)
 	{
-		stdlog(Utility::Debug, LOGPLACE, "The material is not using any normal maps");
+		LOG(Utility::Debug, LOGPLACE, "The material is not using any normal maps");
 		normalMap = new Texture("..\\Textures\\defaultNormalMap.jpg");
-		//stdlog(Utility::Info, LOGPLACE, "Adding normal map to the material");
+		//LOG(Utility::Info, LOGPLACE, "Adding normal map to the material");
 	}
 	ASSERT(normalMap != NULL);
 	SetTexture("normalMap", normalMap);
 
 	if (displacementMap == NULL)
 	{
-		stdlog(Utility::Debug, LOGPLACE, "The material is not using any displacement maps");
+		LOG(Utility::Debug, LOGPLACE, "The material is not using any displacement maps");
 		displacementMap = new Texture("..\\Textures\\defaultDisplacementMap.jpg");
-		//stdlog(Utility::Info, LOGPLACE, "Adding displacement map to the material");
+		//LOG(Utility::Info, "Adding displacement map to the material");
 	}
 	ASSERT(displacementMap != NULL);
 	SetTexture("displacementMap", displacementMap);

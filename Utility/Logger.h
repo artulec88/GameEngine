@@ -2,7 +2,6 @@
 
 //#pragma warning(disable:4251)
 
-#include "Utility.h"
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,33 +11,26 @@
 //#include <assert.h>
 #include <iostream>
 #include <list>
+#include "Utility.h"
+#include "ILogger.h"
 
 namespace Utility
 {
-	class UTILITY_API Log
+	class Logger : public ILogger
 	{
-	public:
-		typedef std::list<FILE *> Outs;
-		static const char *LevelNames[];
-
+	typedef std::list<FILE *> Outs;
 	protected:
-		LogLevel m_level;
 		Outs m_outs;
 		bool m_modified;
 		int m_indentDepth;
 	public:
-		Log(FILE *first = stdout);
-		~Log();
+		Logger(FILE *first = stdout);
+		~Logger();
 
-		LogLevel GetLevel() const;
 		void operator()(LogLevel level, const char *name, int line, const char *format, ...);
-
+		void Log(LogLevel level, const char *name, int line, const char *format, ...);
 		void Fill(const std::string& strLevel, LogLevel level);
 		void AddFile(const char *name);
-	private:
-		void SetLevel(LogLevel level);
-	};
+	}; /* end class Logger */
 
-} /* end namespace Utils */
-
-UTILITY_API extern Utility::Log stdlog;
+} /* end namespace Utility */

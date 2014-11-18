@@ -4,7 +4,7 @@
 //#include "Renderer.h"
 #include "CoreEngine.h"
 
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 using namespace Utility;
@@ -16,15 +16,15 @@ GameNode::GameNode(void) :
 	ID(GameNode::gameNodeCount++),
 	coreEngine(NULL)
 {
-	//stdlog(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
-	//stdlog(Info, LOGPLACE, "Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
-	//stdlog(Info, LOGPLACE, "Transform.GetScale() = \"%f\"", transform.GetScale());
+	//LOG(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
+	//LOG(Info, LOGPLACE, "Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
+	//LOG(Info, LOGPLACE, "Transform.GetScale() = \"%f\"", transform.GetScale());
 }
 
 
 GameNode::~GameNode(void)
 {
-	stdlog(Debug, LOGPLACE, "Game node destruction started");
+	LOG(Debug, LOGPLACE, "Game node destruction started");
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
 	//	if ((*itr) != NULL)
@@ -38,10 +38,10 @@ GameNode::~GameNode(void)
 	//{
 	//	if ((*itr) != NULL)
 	//	{
-	//		stdlog(Debug, LOGPLACE, "Destroying child game node started");
+	//		LOG(Debug, LOGPLACE, "Destroying child game node started");
 	//		delete *itr;
 	//		//*itr = NULL;
-	//		stdlog(Debug, LOGPLACE, "Destroying child game node finished");
+	//		LOG(Debug, LOGPLACE, "Destroying child game node finished");
 	//	}
 	//}
 	//childrenGameNodes.clear();
@@ -65,7 +65,7 @@ GameNode::~GameNode(void)
 		}
 	}
 	childrenGameNodes.clear();
-	stdlog(Debug, LOGPLACE, "Game node destroyed");
+	LOG(Debug, LOGPLACE, "Game node destroyed");
 }
 
 GameNode* GameNode::AddChild(GameNode* child)
@@ -80,7 +80,7 @@ void GameNode::SetEngine(CoreEngine* coreEngine)
 {
 	if (this->coreEngine == coreEngine)
 	{
-		stdlog(Debug, LOGPLACE, "Core engine already set for the game node");
+		LOG(Debug, LOGPLACE, "Core engine already set for the game node");
 		return;
 	}
 

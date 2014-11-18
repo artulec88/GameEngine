@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Rendering\Game.h"
-#include "Rendering\GameNode.h"
-#include "Rendering\Shader.h"
-#include "Rendering\DirectionalLight.h"
-#include "Rendering\PointLight.h"
-#include "Rendering\SpotLight.h"
+#include <Rendering\Game.h>
+#include <Rendering\GameNode.h>
+#include <Rendering\Shader.h>
+#include <Rendering\DirectionalLight.h>
+#include <Rendering\PointLight.h>
+#include <Rendering\SpotLight.h>
 
 class TestGame : public Rendering::Game
 {

@@ -1,29 +1,14 @@
 #include "stdafx.h"
-#include "Log.h"
-//#include "CommandLine.h"
+#include "Logger.h"
+//#include "Command.h"
 #include <string>
 #include "Time.h"
 
 using namespace Utility;
 using namespace std;
-
-const char *Log::LevelNames[] = 
-{
-	"critical",
-	"emergency",
-	"error",
-	"warning",
-	"notice",
-	"info",
-	"debug",
-	"delocust",
-	NULL
-};
-
-Log stdlog;
 	
-Log::Log(FILE *first) :
-	m_level(Notice),
+Logger::Logger(FILE *first) :
+	ILogger(),
 	m_modified(false),
 	m_indentDepth(0)
 {
@@ -33,14 +18,14 @@ Log::Log(FILE *first) :
 	}
 }
 
-Log::~Log()
+Logger::~Logger()
 {
 
 }
 
-void Log::operator()(LogLevel level, const char *name, int line, const char *format, ...)
+void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)
 {
-	if (this->m_level < level)
+	if (this->level < level)
 	{
 		return;
 	}
@@ -79,24 +64,48 @@ void Log::operator()(LogLevel level, const char *name, int line, const char *for
 	//mutex.Unlock();
 }
 
-LogLevel Log::GetLevel() const
+void Logger::Log(LogLevel level, const char *name, int line, const char *format, ...)
 {
-	return this->m_level;
-}
-
-void Log::SetLevel(LogLevel level)
-{
-	//mutex.Lock();
-	if ((!m_modified) || (level > this->m_level))
+	if (this->level < level)
 	{
-		this->m_level = level;
+		return;
 	}
-	m_modified = true;
+
+	va_list args;
+	if (name == NULL)
+	{
+		name = "nowhere";
+	}
+	const char *tmp = strrchr(name, '\\');
+	if (tmp != NULL)
+	{
+		name = tmp + 1;
+	}
+	Utility::Time now = Utility::Time::Now();
+	std::string date = now.ToDateString();
+
+	//mutex.Lock();
+	//iterate through all the targets of logging
+	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
+	{
+		va_start(args, format);
+		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
+		if (line)
+		{
+			fprintf(*o, "(%d)", line);
+		}
+		fprintf(*o, " : ");
+			
+		vfprintf(*o, format, args);
+		va_end(args);
+		
+		fprintf(*o, "\n");
+		fflush(*o);
+	}
 	//mutex.Unlock();
 }
-			
 
-void Log::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)
+void Logger::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
@@ -116,10 +125,11 @@ void Log::Fill(const std::string& strLevel /* = EmptyString */, LogLevel default
 		}
 		++i;
 	}
+	SetLevel(defaultLogLevel);
 }
 
 
-void Log::AddFile(const char *name)
+void Logger::AddFile(const char *name)
 {
 	//mutex.Lock();
 	FILE *file;

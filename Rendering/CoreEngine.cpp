@@ -2,7 +2,7 @@
 #include "CoreEngine.h"
 #include "Input.h"
 
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 #include "Utility\Config.h"
 
 #include <ctime>
@@ -31,10 +31,10 @@ CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxF
 	renderer(NULL)
 {
 	// TODO: Fix singleton initialization
-	stdlog(Debug, LOGPLACE, "Main application construction started");
+	LOG(Debug, LOGPLACE, "Main application construction started");
 	if (coreEngine != NULL)
 	{
-		stdlog(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
+		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
 		delete coreEngine;
 		coreEngine = NULL;
 	}
@@ -44,13 +44,13 @@ CoreEngine::CoreEngine(int width, int height, const std::string& title, int maxF
 
 	CreateRenderer();
 	
-	stdlog(Debug, LOGPLACE, "Main application construction finished");
+	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
 
 
 CoreEngine::~CoreEngine(void)
 {
-	stdlog(Debug, LOGPLACE, "Core engine destruction started");
+	LOG(Debug, LOGPLACE, "Core engine destruction started");
 
 	// TODO: Expand this with additional resources deallocation
 	if (this->game != NULL)
@@ -64,7 +64,7 @@ CoreEngine::~CoreEngine(void)
 		this->renderer = NULL;
 	}
 
-	stdlog(Debug, LOGPLACE, "Core engine destruction finished");
+	LOG(Debug, LOGPLACE, "Core engine destruction finished");
 }
 
 void CoreEngine::CreateRenderer()
@@ -73,7 +73,7 @@ void CoreEngine::CreateRenderer()
 
 	if (this->renderer == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Failed to create a Renderer");
+		LOG(Critical, LOGPLACE, "Failed to create a Renderer");
 		exit(-1);
 	}
 
@@ -84,10 +84,10 @@ void CoreEngine::Start()
 {
 	if (isRunning)
 	{
-		stdlog(Warning, LOGPLACE, "The core engine instance is already running");
+		LOG(Warning, LOGPLACE, "The core engine instance is already running");
 		return;
 	}
-	stdlog(Notice, LOGPLACE, "The core engine starts");
+	LOG(Notice, LOGPLACE, "The core engine starts");
 	Run();
 }
 
@@ -179,21 +179,21 @@ void CoreEngine::Stop()
 {
 	if (!isRunning)
 	{
-		stdlog(Warning, LOGPLACE, "The core engine instance is not running");
+		LOG(Warning, LOGPLACE, "The core engine instance is not running");
 		return;
 	}
 	
 	isRunning = false;
 	ASSERT(!isRunning);
-	stdlog(Notice, LOGPLACE, "The core engine has stopped");
+	LOG(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
-	stdlog(Debug, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats1, timeSum1, timeSum1 / countStats1, minMaxTime1.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2, timeSum2, timeSum2 / countStats2, minMaxTime2.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_1, timeSum2_1, timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
-	stdlog(Debug, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
+	LOG(Debug, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats1, timeSum1, timeSum1 / countStats1, minMaxTime1.ToString().c_str());
+	LOG(Debug, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2, timeSum2, timeSum2 / countStats2, minMaxTime2.ToString().c_str());
+	LOG(Debug, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_1, timeSum2_1, timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
+	LOG(Debug, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
+	LOG(Debug, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
+	LOG(Debug, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
 	/* ==================== Printing stats end ==================== */
 }
 
@@ -206,7 +206,7 @@ void CoreEngine::Run()
 	minMaxTime2_3.Init();
 	minMaxTime3.Init();
 	
-	stdlog(Notice, LOGPLACE, "The game started running");
+	LOG(Notice, LOGPLACE, "The game started running");
 	ASSERT(!isRunning);
 
 	game->Init();
@@ -249,7 +249,7 @@ void CoreEngine::Run()
 		{
 			int fps = framesCount / fpsSample; // Frames Per Second
 			Math::Real spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
-			stdlog(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = 0.0;
 		}
@@ -322,7 +322,7 @@ void CoreEngine::Run()
 			//Shader* shader = this->game->GetShader();
 			//if (shader == NULL)
 			//{
-			//	stdlog(Error, LOGPLACE, "Shader instance is NULL");
+			//	LOG(Error, LOGPLACE, "Shader instance is NULL");
 			//}
 			//this->renderer->Render(this->game->GetRootGameNode());
 			game->Render(renderer);
@@ -333,7 +333,7 @@ void CoreEngine::Run()
 		}
 		else
 		{
-			//stdlog(Info, LOGPLACE, "Rendering is not required. Moving on...");
+			//LOG(Info, LOGPLACE, "Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 		}
 		QueryPerformanceCounter(&t2);
@@ -350,7 +350,7 @@ unsigned int CoreEngine::NextCamera()
 	ASSERT(renderer != NULL);
 	if (this->renderer == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Renderer is not yet initialized");
+		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
 		exit(EXIT_FAILURE);
 	}
 	return renderer->NextCamera();
@@ -361,7 +361,7 @@ unsigned int CoreEngine::PrevCamera()
 	ASSERT(renderer != NULL);
 	if (renderer == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Renderer is not yet initialized");
+		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
 		exit(EXIT_FAILURE);
 	}
 	return renderer->PrevCamera();

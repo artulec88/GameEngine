@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Transform.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 using namespace Math;
@@ -12,7 +12,7 @@ Transform::Transform() :
 	parentTransform(NULL),
 	isChanged(true)
 {
-	//stdlog(Utility::Delocust, LOGPLACE, "Transform is being constructed (1)");
+	//LOG(Utility::Delocust, LOGPLACE, "Transform is being constructed (1)");
 }
 
 Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D& scale) :
@@ -22,12 +22,12 @@ Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D&
 	parentTransform(NULL),
 	isChanged(true)
 {
-	stdlog(Utility::Debug, LOGPLACE, "Transform is being constructed (2)");
+	LOG(Utility::Debug, LOGPLACE, "Transform is being constructed (2)");
 }
 
 Transform::~Transform()
 {
-	//stdlog(Utility::Debug, LOGPLACE, "Transform is being destructed");
+	//LOG(Utility::Debug, LOGPLACE, "Transform is being destructed");
 }
 
 //bool Transform::IsHierarchyChanged() const
@@ -54,7 +54,7 @@ Matrix4D Transform::GetTransformation() const
 		isChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
 		//{
-		//	stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	LOG(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
 		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());;
@@ -68,7 +68,7 @@ Matrix4D Transform::GetTransformation() const
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
 		//{
-		//	stdlog(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	LOG(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 	}
 
@@ -101,7 +101,7 @@ void Transform::SetTranslation(Real x, Real y, Real z)
 
 void Transform::SetRotation(const Quaternion& rot)
 {
-	//stdlog(Utility::Debug, LOGPLACE, "Started...");
+	//LOG(Utility::Debug, LOGPLACE, "Started...");
 	this->rotation = rot;
 	isChanged = true;
 }

@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "Utility.h"
 #include <sstream>
+#include "ILogger.h"
+#include "Logger.h"
 
 using namespace std;
 

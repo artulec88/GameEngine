@@ -4,7 +4,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 
@@ -78,7 +78,7 @@ void BaseLight::AddToEngine(CoreEngine* coreEngine)
 {
 	if (coreEngine == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
+		LOG(Utility::Error, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
 		return;
 	}
 	coreEngine->GetRenderer()->AddLight(this);

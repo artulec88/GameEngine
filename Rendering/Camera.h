@@ -14,12 +14,16 @@ class CoreEngine;
 
 class RENDERING_API Camera : public GameComponent
 {
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 public:
 	static const Math::Vector3D xAxis;
 	static const Math::Vector3D yAxis;
-	static const Math::Real sensitivity;
-/* ==================== Static variables end ==================== */
+private:
+	static Math::Real sensitivity;
+public:
+	static Math::Real GetSensitivity();
+	static void InitializeCameraSensitivity();
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:

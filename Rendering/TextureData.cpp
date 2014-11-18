@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "TextureData.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 
@@ -13,7 +13,7 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 	ASSERT(texturesCount > 0);
 	if (texturesCount < 1)
 	{
-		stdlog(Utility::Emergency, LOGPLACE, "Incorrect number of textures specified");
+		LOG(Utility::Emergency, LOGPLACE, "Incorrect number of textures specified");
 		exit(EXIT_FAILURE);
 	}
 	textureID = new GLuint[texturesCount];
@@ -57,12 +57,12 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 	//ASSERT(filter != NULL);
 	if (data == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		LOG(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
 		//return;
 	}
 	if (filters != NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "The filter array is NULL.");
+		LOG(Utility::Warning, LOGPLACE, "The filter array is NULL.");
 	}
 	
 	glGenTextures(texturesCount, textureID);
@@ -71,7 +71,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 		//ASSERT(data[i] != NULL)
 		if (data[i] == NULL)
 		{
-			stdlog(Utility::Warning, LOGPLACE, "The texture data array is invalid. Texture data[%d] is NULL.", i);
+			LOG(Utility::Warning, LOGPLACE, "The texture data array is invalid. Texture data[%d] is NULL.", i);
 			//return;
 		}
 		glBindTexture(textureTarget, textureID[i]);
@@ -94,7 +94,7 @@ void TextureData::Bind(int textureIndex)
 	ASSERT(textureIndex < texturesCount);
 	if ((textureIndex < 0) || (textureIndex >= texturesCount))
 	{
-		stdlog(Utility::Error, LOGPLACE,
+		LOG(Utility::Error, LOGPLACE,
 			"Cannot bind the texture with textureID=%d. The value is out of range (%d, %d)", textureIndex, 0, texturesCount);
 		return;
 	}
@@ -105,7 +105,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 {
 	if (attachments == NULL)
 	{
-		stdlog(Utility::Debug, LOGPLACE, "No attachments used");
+		LOG(Utility::Debug, LOGPLACE, "No attachments used");
 		return;
 	}
 
@@ -140,7 +140,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 
 	if (framebuffer == 0)
 	{
-		stdlog(Utility::Debug, LOGPLACE, "Framebuffer is 0");
+		LOG(Utility::Debug, LOGPLACE, "Framebuffer is 0");
 		return;
 	}
 	if (!hasDepth)
@@ -157,7 +157,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		stdlog(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE.");
+		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE.");
 		exit(-1);
 	}
 }

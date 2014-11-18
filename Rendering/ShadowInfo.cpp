@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "ShadowInfo.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 using namespace Utility;

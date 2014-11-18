@@ -6,15 +6,16 @@
 /* MATH end */
 
 /* UTILITY begin */
-#include "Utility\CommandLine.h"
-#include "Utility\Config.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
+#include "Utility\ICommand.h"
+#include "Utility\IConfig.h"
 /* UTILITY end */
 
 ///* RENDERING begin */
 //#include "Rendering\Renderer.h"
 #include "Rendering\CoreEngine.h"
-#include "Rendering\Vertex.h"
+#include "Rendering\Camera.h"
+//#include "Rendering\Vertex.h"
 ///* RENDERING end */
 
 #include "TestGame.h"
@@ -36,22 +37,25 @@ void PrintHelp()
 int main (int argc, char* argv[])
 {
 	/* ==================== Reading settings and parameters begin ==================== */
-	CommandLine* commandLine = new CommandLine(argc, argv);
-	if (commandLine->IsPresent("-help"))
+	ICommand::SetCommand(argc, argv);
+	if (ICommand::GetCommand().IsPresent("-help"))
 	{
 		PrintHelp();
 		system("pause");
 		return 0;
 	}
-	stdlog.Fill(commandLine->Get("-log", ""), Debug);
-	Config::LoadFromFile(commandLine->Get("-config", "..\\Config\\Config.cfg"));
-	SAFE_DELETE(commandLine);
+	//stdlog.Fill(Command->Get("-log", ""), Debug);
+	IConfig::GetConfig().LoadFromFile(ICommand::GetCommand().Get("-config", "..\\Config\\Config.cfg"));
+	const std::string logLevel = GET_CONFIG_VALUE_STR("LoggingLevel", "Info");
+	ILogger::GetLogger().Fill(logLevel, Debug);
+	Camera::InitializeCameraSensitivity();
+	ICommand::DeleteCommand();
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
 	Game* game = new TestGame();
-	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", "windowWidth_default", 800), GET_CONFIG_VALUE("windowHeight", "windowHeight_default", 600),
-		GET_CONFIG_VALUE_STR("windowTitle", "windowTitle_default", "Default window title"), GET_CONFIG_VALUE("FPScap", "FPScap_default", 30), game);
+	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 800), GET_CONFIG_VALUE("windowHeight", 600),
+		GET_CONFIG_VALUE_STR("windowTitle", "Default window title"), GET_CONFIG_VALUE("FPScap", 30), game);
 	engine.Start();
 	return 0;
 }

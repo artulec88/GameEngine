@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Input.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 using namespace Utility;
@@ -50,17 +50,17 @@ void Input::UpdateKey(GLFWwindow* window, int key, int scancode, int action, int
 	switch (action)
 	{
 	case GLFW_PRESS:
-		stdlog(Delocust, LOGPLACE, "Pressed key %d", key);
+		LOG(Delocust, LOGPLACE, "Pressed key %d", key);
 		//inputs[key] = true;
 		downKeys.push_back(key);
 		break;
 	case GLFW_RELEASE:
-		stdlog(Delocust, LOGPLACE, "Released key %d", key);
+		LOG(Delocust, LOGPLACE, "Released key %d", key);
 		//inputs[key] = false;
 		upKeys.push_back(key);
 		break;
 	case GLFW_REPEAT:
-		stdlog(Delocust, LOGPLACE, "Repeated key %d", key);
+		LOG(Delocust, LOGPLACE, "Repeated key %d", key);
 		//inputs[key] = true;
 		repeatedKeys.push_back(key);
 		break;
@@ -72,7 +72,7 @@ void Input::UpdateKey(GLFWwindow* window, int key, int scancode, int action, int
 
 /* static */ Input::KeyValue Input::GetKey(int keyCode)
 {
-	//stdlog(Debug, LOGPLACE, "Number of pressed, released, repeated keys = %d; %d; %d", downKeys.size(), upKeys.size(), repeatedKeys.size());
+	//LOG(Debug, LOGPLACE, "Number of pressed, released, repeated keys = %d; %d; %d", downKeys.size(), upKeys.size(), repeatedKeys.size());
 	for (std::list<int>::const_iterator it = downKeys.begin(); it != downKeys.end(); ++it)
 	{
 		if ((*it) == keyCode)

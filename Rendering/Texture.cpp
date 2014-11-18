@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include "stb_image.h"
 #include "Utility\Utility.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Rendering;
 
@@ -23,16 +23,16 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 	std::map<std::string, TextureData*>::const_iterator itr = textureResourceMap.find(fileName);
 	if (itr == textureResourceMap.end()) // texture has not been loaded yet
 	{
-		stdlog(Utility::Info, LOGPLACE, "Loading texture from file \"%s\"", name.c_str());
+		LOG(Utility::Info, LOGPLACE, "Loading texture from file \"%s\"", name.c_str());
 		//std::string extension = name.substr(name.find_last_of(".") + 1);
-		//stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
+		//LOG(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
 
 		int x, y, bytesPerPixel;
 		unsigned char* data = stbi_load(fileName.c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 
 		if (data == NULL)
 		{
-			stdlog(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+			LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
 			return;
 		}
 		textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
@@ -58,19 +58,19 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	ASSERT(height > 0);
 	if (data == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		LOG(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
 		//return;
 	}
 	if ((width <= 0) || (height <= 0))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
+		LOG(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
 		return;
 	}
 	textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 	ASSERT(textureData != NULL);
 	if (textureData == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Texture data creation error. Texture data is NULL.");
+		LOG(Utility::Error, LOGPLACE, "Texture data creation error. Texture data is NULL.");
 	}
 }
 
@@ -79,7 +79,7 @@ Texture::~Texture(void)
 	ASSERT(textureData != NULL);
 	if (textureData == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Texture data is already NULL");
+		LOG(Utility::Warning, LOGPLACE, "Texture data is already NULL");
 		return;
 	}
 	
@@ -101,7 +101,7 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 	ASSERT((unit >= 0) && (unit < 32));
 	if (textureData == NULL)
 	{
-		stdlog(Utility::Emergency, LOGPLACE, "Cannot bind the texture. Texture data is NULL");
+		LOG(Utility::Emergency, LOGPLACE, "Cannot bind the texture. Texture data is NULL");
 		return;
 	}
 	
@@ -113,7 +113,7 @@ void Texture::BindAsRenderTarget()
 {
 	if (textureData == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot bind the texture data as render target. Texture data is NULL.");
+		LOG(Utility::Error, LOGPLACE, "Cannot bind the texture data as render target. Texture data is NULL.");
 		return;
 	}
 	textureData->BindAsRenderTarget();

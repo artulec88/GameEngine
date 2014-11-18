@@ -4,7 +4,7 @@
 #include "Math\Vector.h"
 
 #include "Utility\Utility.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 #include <assimp\Importer.hpp>
 #include <assimp\scene.h>
@@ -42,7 +42,7 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 		name.assign(tmp + 1);
 	}
 	//std::string extension = name.substr(name.find_last_of(".") + 1);
-	//stdlog(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
+	//LOG(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
 
 	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(fileName);
 	if (itr == meshResourceMap.end()) // the mesh has not been loaded yet
@@ -51,7 +51,7 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 		clock_t begin = clock();
 #endif
 
-		stdlog(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
+		LOG(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
 
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(fileName.c_str(),
@@ -62,7 +62,13 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 
 		if (scene == NULL)
 		{
-			stdlog(Error, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
+			LOG(Error, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
+			exit(EXIT_FAILURE);
+		}
+		if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
+		{
+			LOG(Error, LOGPLACE, "Incorrect number of meshes loaded (%d). Check the model.", scene->mNumMeshes);
+			LOG(Info, LOGPLACE, "One of the possible solutions is to check whether the model has an additional line at the end");
 			exit(EXIT_FAILURE);
 		}
 
@@ -79,7 +85,7 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 			const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
 			if (pTangent == NULL)
 			{
-				stdlog(Critical, LOGPLACE, "Tangent calculated incorrectly");
+				LOG(Critical, LOGPLACE, "Tangent calculated incorrectly");
 				pTangent = &aiZeroVector;
 			}
 
@@ -107,12 +113,12 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 
 #ifdef MEASURE_TIME_ENABLED
 		clock_t end = clock();
-		stdlog(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+		LOG(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 	}
 	else // (itr != meshResourceMap.end()) // the mesh has already been loaded
 	{
-		stdlog(Info, LOGPLACE, "Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
+		LOG(Info, LOGPLACE, "Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
 		meshData = itr->second;
 		meshData->AddReference();
 	}
@@ -125,7 +131,7 @@ Mesh::~Mesh(void)
 	ASSERT(meshData != NULL);
 	if (meshData == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
+		LOG(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
 		return;
 	}
 	meshData->RemoveReference();
@@ -157,7 +163,7 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	ASSERT(meshData != NULL);
 	if (meshData == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Mesh data instance is NULL");
+		LOG(Critical, LOGPLACE, "Mesh data instance is NULL");
 		exit(EXIT_FAILURE);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
@@ -172,7 +178,7 @@ void Mesh::Draw() const
 	ASSERT(meshData != NULL);
 	if (meshData == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Mesh data instance is NULL");
+		LOG(Critical, LOGPLACE, "Mesh data instance is NULL");
 		exit(EXIT_FAILURE);
 	}
 

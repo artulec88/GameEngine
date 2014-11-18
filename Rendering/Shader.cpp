@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "Utility\Utility.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 #include <fstream>
 
@@ -20,7 +20,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (programID == 0)
 	{
-		stdlog(Error, LOGPLACE, "Error while creating shader program");
+		LOG(Error, LOGPLACE, "Error while creating shader program");
 		// TODO: Throw an exception
 		exit(EXIT_FAILURE);
 	}
@@ -35,7 +35,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (! Compile())
 	{
-		stdlog(Error, LOGPLACE, "Error while compiling shader program %d", programID);
+		LOG(Error, LOGPLACE, "Error while compiling shader program %d", programID);
 		exit(EXIT_FAILURE);
 	}
 
@@ -45,7 +45,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 ShaderData::~ShaderData()
 {
-	stdlog(Debug, LOGPLACE, "Destroying shader data for shader program %d", programID);
+	LOG(Debug, LOGPLACE, "Destroying shader data for shader program %d", programID);
 	for (std::vector<int>::iterator itr = shaders.begin(); itr != shaders.end(); ++itr)
 	{
 		glDetachShader(programID, *itr);
@@ -62,12 +62,12 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 	{
 		name.assign(tmp + 1);
 	}
-	stdlog(Info, LOGPLACE, "Loading shader data from file \"%s\"", name.c_str());
+	LOG(Info, LOGPLACE, "Loading shader data from file \"%s\"", name.c_str());
 
 	ifstream file(("..\\Shaders\\" + fileName).c_str());
 	if (!file.is_open())
 	{
-		stdlog(Error, LOGPLACE, "Unable to open shader file \"%s\". Check the path.", name.c_str());
+		LOG(Error, LOGPLACE, "Unable to open shader file \"%s\". Check the path.", name.c_str());
 		return ""; // TODO: Double-check it in the future. It's better to just throw an error I guess.
 	}
 
@@ -84,7 +84,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 		else
 		{
 			// TODO: This will not work with circular includes (i.e. File1 includes File2 and File2 includes File1)
-			//stdlog(Debug, LOGPLACE, "#Include directive found in Line = \"%s\"", line.c_str());
+			//LOG(Debug, LOGPLACE, "#Include directive found in Line = \"%s\"", line.c_str());
 
 			std::vector<std::string> tokens;
 			CutToTokens(line, tokens, ' ');
@@ -95,13 +95,13 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 			ASSERT(tokens.size() > 1);
 			if (tokens.size() <= 1)
 			{
-				stdlog(Error, LOGPLACE, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
+				LOG(Error, LOGPLACE, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
 				continue;
 			}
 			std::string includeFileName = tokens[1];
-			//stdlog(Debug, LOGPLACE, "Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
+			//LOG(Debug, LOGPLACE, "Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
 			includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
-			//stdlog(Debug, LOGPLACE, "Loading an include shader file \"%s\"", includeFileName.c_str());
+			//LOG(Debug, LOGPLACE, "Loading an include shader file \"%s\"", includeFileName.c_str());
 
 			string fragmentToAppend = LoadShaderData(includeFileName);
 			output.append(fragmentToAppend + "\n");
@@ -125,7 +125,7 @@ bool ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
 		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		stdlog(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
+		LOG(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
 	}
 
 	glValidateProgram(programID);
@@ -134,16 +134,16 @@ bool ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
 		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		stdlog(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
+		LOG(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
 	}
 
 	if (!compileSuccess)
 	{
-		stdlog(Warning, LOGPLACE, "Shader program %d compilation error occurred. Investigate the problem.", programID);
+		LOG(Warning, LOGPLACE, "Shader program %d compilation error occurred. Investigate the problem.", programID);
 	}
 	else
 	{
-		stdlog(Notice, LOGPLACE, "Shader program %d compiled successfully", programID);
+		LOG(Notice, LOGPLACE, "Shader program %d compiled successfully", programID);
 	}
 	return compileSuccess;
 }
@@ -187,7 +187,7 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 
 	if (shader == 0)
 	{
-		stdlog(Emergency, LOGPLACE, "Error creating shader type %d", type);
+		LOG(Emergency, LOGPLACE, "Error creating shader type %d", type);
 		return;
 	}
 
@@ -204,7 +204,7 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 	{
 		std::vector<char> errorMessage(infoLogLength + 1);
 		glGetShaderInfoLog(shader, infoLogLength, NULL, &errorMessage[0]);
-		stdlog(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
+		LOG(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
 		//return;
 	}
 
@@ -219,11 +219,11 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	int temp = 0;
 	for (std::vector<UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
 	{
-		stdlog(Delocust, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
+		LOG(Delocust, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
 		int innerTemp = 0;
 		for (std::vector<TypedData>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
 		{
-			stdlog(Delocust, LOGPLACE, "\t .memberName[%d].name = \"%s\"\t .memberName[%d].type = \"%s\"", innerTemp, innerItr->name.c_str(), innerTemp, innerItr->type.c_str());
+			LOG(Delocust, LOGPLACE, "\t .memberName[%d].name = \"%s\"\t .memberName[%d].type = \"%s\"", innerTemp, innerItr->name.c_str(), innerTemp, innerItr->type.c_str());
 			++innerTemp;
 		}
 		++temp;
@@ -257,7 +257,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	}
 	for (std::map<std::string, unsigned int>::const_iterator it = uniformMap.begin(); it != uniformMap.end(); ++it)
 	{
-		stdlog(Delocust, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
+		LOG(Delocust, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
 	}
 }
 
@@ -279,7 +279,7 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 
 	if (! addThis)
 	{
-		//stdlog(Info, LOGPLACE, "addThis == false");
+		//LOG(Info, LOGPLACE, "addThis == false");
 		return;
 	}
 
@@ -287,9 +287,9 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 	ASSERT(location != INVALID_VALUE);
 	if (location == INVALID_VALUE)
 	{
-		stdlog(Warning, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
+		LOG(Warning, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
 	}
-	stdlog(Delocust, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
+	LOG(Delocust, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
 	uniformMap.insert(std::pair<std::string, unsigned int>(uniformName, location));
 }
 
@@ -322,7 +322,7 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 	Utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
 	//std::string result;
 	//Utility::RightTrim(tokens[0], result);
-	//stdlog(Delocust, LOGPLACE, "tokens[0] = \"%s\"", tokens[0].c_str());
+	//LOG(Delocust, LOGPLACE, "tokens[0] = \"%s\"", tokens[0].c_str());
 	return tokens[0];
 
 	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
@@ -340,7 +340,7 @@ std::vector<TypedData> ShaderData::FindUniformStructComponents(const std::string
 	
 	for(unsigned int i = 0; i < structLines.size(); ++i)
 	{
-		//stdlog(Debug, LOGPLACE, "structLines[%d] = \"%s\"", i, structLines[i].c_str());
+		//LOG(Debug, LOGPLACE, "structLines[%d] = \"%s\"", i, structLines[i].c_str());
 		if (structLines[i].substr(0, 2) == "//")
 		{
 			continue;
@@ -386,7 +386,7 @@ bool ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::
 	itr = uniformMap.find(uniformName);
 	if (itr == uniformMap.end())
 	{
-		stdlog(Error, LOGPLACE, "Uniform \"%s\" has not been found", uniformName.c_str());
+		LOG(Error, LOGPLACE, "Uniform \"%s\" has not been found", uniformName.c_str());
 		exit(EXIT_FAILURE);
 		return false;
 	}
@@ -417,7 +417,7 @@ Shader::~Shader(void)
 	ASSERT(shaderData != NULL);
 	if (shaderData == NULL)
 	{
-		stdlog(Utility::Warning, LOGPLACE, "Shader data is already NULL");
+		LOG(Utility::Warning, LOGPLACE, "Shader data is already NULL");
 		return;
 	}
 	
@@ -438,7 +438,7 @@ void Shader::Bind()
 	ASSERT(shaderData != NULL);
 	if (shaderData == NULL)
 	{
-		stdlog(Utility::Critical, LOGPLACE, "Cannot bind the shader. Shader data is NULL");
+		LOG(Utility::Critical, LOGPLACE, "Cannot bind the shader. Shader data is NULL");
 		exit(EXIT_FAILURE);
 	}
 	glUseProgram(shaderData->GetProgram());
@@ -449,19 +449,19 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	ASSERT(renderer != NULL);
 	if (renderer == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Cannot update uniforms. Rendering engine is NULL.");
+		LOG(Critical, LOGPLACE, "Cannot update uniforms. Rendering engine is NULL.");
 		exit(EXIT_FAILURE);
 	}
 	ASSERT(shaderData != NULL);
 	if (shaderData == NULL)
 	{
-		stdlog(Critical, LOGPLACE, "Cannot update uniforms. Shader data is NULL.");
+		LOG(Critical, LOGPLACE, "Cannot update uniforms. Shader data is NULL.");
 		exit(EXIT_FAILURE);
 	}
 	ASSERT(shaderData->GetUniformNames().size() == shaderData->GetUniformTypes().size());
 	if (shaderData->GetUniformNames().size() != shaderData->GetUniformTypes().size())
 	{
-		stdlog(Error, LOGPLACE, "Shader data is incorrect. There are %d uniform names and %d uniform types",
+		LOG(Error, LOGPLACE, "Shader data is incorrect. There are %d uniform names and %d uniform types",
 			shaderData->GetUniformNames().size(), shaderData->GetUniformTypes().size());
 	}
 
@@ -489,7 +489,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				ASSERT(texture != NULL);
 				if (texture == NULL)
 				{
-					stdlog(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
+					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
 					exit(EXIT_FAILURE);
 				}
 				texture->Bind(samplerSlot);
@@ -508,7 +508,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(renderer->GetCurrentLight());
 				if (directionalLight == NULL)
 				{
-					stdlog(Error, LOGPLACE, "Cannot update directional light uniform. Directional light instance is NULL.");
+					LOG(Error, LOGPLACE, "Cannot update directional light uniform. Directional light instance is NULL.");
 					continue;
 				}
 				SetUniformDirectionalLight(uniformName, *directionalLight);
@@ -518,7 +518,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				PointLight* pointLight = dynamic_cast<PointLight*>(renderer->GetCurrentLight());
 				if (pointLight == NULL)
 				{
-					stdlog(Error, LOGPLACE, "Cannot update point light uniform. Point light instance is NULL.");
+					LOG(Error, LOGPLACE, "Cannot update point light uniform. Point light instance is NULL.");
 					continue;
 				}
 				SetUniformPointLight(uniformName, *pointLight);
@@ -528,7 +528,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				SpotLight* spotLight = dynamic_cast<SpotLight*>(renderer->GetCurrentLight());
 				if (spotLight == NULL)
 				{
-					stdlog(Error, LOGPLACE, "Cannot update spot light uniform. Spot light instance is NULL.");
+					LOG(Error, LOGPLACE, "Cannot update spot light uniform. Spot light instance is NULL.");
 					continue;
 				}
 				SetUniformSpotLight(uniformName, *spotLight);
@@ -545,7 +545,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			ASSERT(texture != NULL);
 			if (texture == NULL)
 			{
-				stdlog(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
+				LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
 				exit(EXIT_FAILURE);
 			}
 			texture->Bind(samplerSlot);
@@ -564,7 +564,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else
 			{
 				//throw "Invalid Transform Uniform: " + uniformName;
-				stdlog(Error, LOGPLACE, "Invalid transform uniform \"%s\"", uniformName.c_str());
+				LOG(Error, LOGPLACE, "Invalid transform uniform \"%s\"", uniformName.c_str());
 			}
 		}
 		else if (uniformSubstr == "C_")
@@ -576,7 +576,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else
 			{
 				//throw "Invalid Transform Uniform: " + uniformName;
-				stdlog(Error, LOGPLACE, "Invalid camera uniform \"%s\"", uniformName.c_str());
+				LOG(Error, LOGPLACE, "Invalid camera uniform \"%s\"", uniformName.c_str());
 			}
 		}
 		else
@@ -592,7 +592,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else
 			{
 				//throw "Invalid Transform Uniform: " + uniformName;
-				stdlog(Error, LOGPLACE, "The uniform \"%s\" of type \"%s\" is not supported by the Material class", uniformName.c_str(), uniformType.c_str());
+				LOG(Error, LOGPLACE, "The uniform \"%s\" of type \"%s\" is not supported by the Material class", uniformName.c_str(), uniformType.c_str());
 			}
 		}
 	}
@@ -600,13 +600,13 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 
 //void Shader::AddUniform(const std::string& uniform)
 //{
-//	//stdlog(Info, LOGPLACE, "Adding uniform location \"%s\"", uniform.c_str());
+//	//LOG(Info, LOGPLACE, "Adding uniform location \"%s\"", uniform.c_str());
 //	unsigned int uniformLocation = glGetUniformLocation(program, uniform.c_str());
 //	ASSERT(uniformLocation != INVALID_VALUE);
 //
 //	if (uniformLocation == INVALID_VALUE)
 //	{
-//		stdlog(Error, LOGPLACE, "Could not find uniform \"%s\"", uniform.c_str());
+//		LOG(Error, LOGPLACE, "Could not find uniform \"%s\"", uniform.c_str());
 //		exit(EXIT_FAILURE); // TODO: Throw an exception?
 //	}
 //
@@ -626,7 +626,7 @@ void Shader::SetUniformf(const std::string& name, Math::Real value)
 {
 	//for (std::map<std::string, unsigned int>::const_iterator it = shaderData->GetUniformMap().begin(); it != shaderData->GetUniformMap().end(); ++it)
 	//{
-	//	stdlog(Debug, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
+	//	LOG(Debug, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
 	//}
 	std::map<std::string, unsigned int>::const_iterator itr;
 	if (shaderData->IsUniformPresent(name, itr))

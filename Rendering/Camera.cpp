@@ -7,8 +7,8 @@
 
 #include "Math\Quaternion.h"
 
-#include "Utility\Log.h"
-#include "Utility\Config.h"
+#include "Utility\ILogger.h"
+#include "Utility\IConfig.h"
 
 #include <sstream>
 
@@ -19,7 +19,19 @@ using namespace Utility;
 /* static */ const Vector3D Camera::xAxis(1.0, 0.0, 0.0);
 /* static */ const Vector3D Camera::yAxis(0.0, 1.0, 0.0);
 
-/* static */ const Real Camera::sensitivity = Config::Get("cameraSensitivity", 0.5);
+/* static */ Real Camera::sensitivity = 0.5;
+
+/* static */
+Real Camera::GetSensitivity()
+{
+	return Camera::sensitivity;
+}
+
+/* static */
+void Camera::InitializeCameraSensitivity()
+{
+	Camera::sensitivity = GET_CONFIG_VALUE("cameraSensitivity", 0.5f);
+}
 
 //Camera::Camera() :
 //	GameComponent()
@@ -64,10 +76,10 @@ Camera::~Camera(void)
 void Camera::Move(const Vector3D& dir, Math::Real amount)
 {
 	Transform& t = GetTransform();
-	stdlog(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
 	t.SetTranslation(t.GetPos() + (dir * amount));
-	stdlog(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
-	stdlog(Delocust, LOGPLACE, "%s", ToString().c_str());
+	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+	LOG(Delocust, LOGPLACE, "%s", ToString().c_str());
 }
 
 //Vector3D Camera::GetLeft() const
@@ -91,7 +103,7 @@ void Camera::AddToEngine(CoreEngine* coreEngine)
 {
 	if (coreEngine == NULL)
 	{
-		stdlog(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
+		LOG(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
 		return;
 	}
 	coreEngine->GetRenderer()->AddCamera(this);
@@ -125,7 +137,7 @@ void Camera::AddToEngine(CoreEngine* coreEngine)
 //{
 //	if (! isActive)
 //	{
-//		stdlog(Warning, LOGPLACE, "Deactivating camera which is already deactivated");
+//		LOG(Warning, LOGPLACE, "Deactivating camera which is already deactivated");
 //	}
 //	isActive = false;
 //}

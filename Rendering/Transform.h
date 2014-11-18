@@ -62,7 +62,7 @@ public:
 		ASSERT(parentTransform != NULL);
 		if (parentTransform == NULL)
 		{
-			stdlog(Utility::Error, LOGPLACE, "Parent transform is NULL");
+			LOG(Utility::Error, LOGPLACE, "Parent transform is NULL");
 			return;
 		}
 		parentTransformation = parentTransform->GetTransformation();

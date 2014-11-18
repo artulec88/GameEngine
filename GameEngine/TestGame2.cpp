@@ -5,7 +5,7 @@
 //#include "Math\Vector.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 using namespace Utility;
 using namespace Math;
@@ -14,8 +14,8 @@ using namespace Rendering;
 TestGame2::TestGame2() :
 	Game()
 {
-	stdlog(Debug, LOGPLACE, "TestGame2 construction started");
-	stdlog(Debug, LOGPLACE, "TestGame2 construction finished");
+	LOG(Debug, LOGPLACE, "TestGame2 construction started");
+	LOG(Debug, LOGPLACE, "TestGame2 construction finished");
 }
 
 
@@ -26,7 +26,7 @@ TestGame2::~TestGame2(void)
 
 void TestGame2::Init()
 {
-	stdlog(Notice, LOGPLACE, "Initalizing test game");
+	LOG(Notice, LOGPLACE, "Initalizing test game");
 
 	Game::Init();
 	
@@ -81,7 +81,7 @@ void TestGame2::Init()
 	//PhongShader shader = PhongShader::GetInstance();
 	//if (shader == NULL)
 	//{
-	//	stdlog(Critical, LOGPLACE, "Shader has not been initialized correctly");
+	//	LOG(Critical, LOGPLACE, "Shader has not been initialized correctly");
 	//	exit(INVALID_VALUE);
 	//}
 
@@ -94,12 +94,12 @@ void TestGame2::Init()
 
 void TestGame2::Input(Math::Real delta)
 {
-	stdlog(Delocust, LOGPLACE, "Input checked");
+	LOG(Delocust, LOGPLACE, "Input checked");
 }
 
 void TestGame2::Update(Math::Real delta)
 {
-	//stdlog(Delocust, LOGPLACE, "Game is being updated");
+	//LOG(Delocust, LOGPLACE, "Game is being updated");
 	
 	Math::Real temp = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetTime());
 	Math::Real sinTemp = static_cast<Math::Real>(sin(temp));
@@ -126,11 +126,11 @@ void TestGame2::Update(Math::Real delta)
 		//}
 		//else
 		//{
-		//	stdlog(Warning, LOGPLACE, "Camera is not initialized");
+		//	LOG(Warning, LOGPLACE, "Camera is not initialized");
 		//}
 	}
 
-	//stdlog(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
+	//LOG(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }
 
 /**
@@ -146,7 +146,7 @@ void TestGame2::KeyEvent(GLFWwindow* window, int key, int scancode, int action, 
 	//ASSERT(camera != NULL);
 	//if (camera == NULL)
 	//{
-	//	stdlog(Error, LOGPLACE, "Camera instance is not initialized");
+	//	LOG(Error, LOGPLACE, "Camera instance is not initialized");
 	//	return;
 	//}
 

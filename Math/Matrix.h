@@ -5,7 +5,7 @@
 #include "Vector.h"
 
 //#include "Utility\ISerializable.h"
-#include "Utility\Log.h"
+#include "Utility\ILogger.h"
 
 #include <string>
 
@@ -82,12 +82,12 @@ inline Real Matrix4D::GetElement (int i, int j) const
 #ifdef _DEBUG
 	if ((i < 0) || (i >= MATRIX_SIZE))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
+		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
 		exit(EXIT_FAILURE);
 	}
 	if ((j < 0) || (j >= MATRIX_SIZE))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
+		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
 		exit(EXIT_FAILURE);
 	}
 #endif
@@ -99,12 +99,12 @@ inline void Matrix4D::SetElement(int i, int j, Real value)
 #ifdef _DEBUG
 	if ((i < 0) || (i >= 3))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
+		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
 		exit(EXIT_FAILURE);
 	}
 	if ((j < 0) || (j >= 3))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
+		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
 		exit(EXIT_FAILURE);
 	}
 #endif
@@ -115,7 +115,7 @@ inline const Math::Real* Matrix4D::operator[](int index) const
 {
 	if ((index < 0) || (index >= MATRIX_SIZE))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
+		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
 		exit(EXIT_FAILURE);
 	}
 	return m[index];
@@ -124,7 +124,7 @@ inline Math::Real* Matrix4D::operator[](int index)
 {
 	if ((index < 0) || (index >= MATRIX_SIZE))
 	{
-		stdlog(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
+		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
 		exit(EXIT_FAILURE);
 	}
 	return m[index];

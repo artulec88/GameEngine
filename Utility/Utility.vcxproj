@@ -76,10 +76,13 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommandLine.h" />
+    <ClInclude Include="Command.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="ICommand.h" />
+    <ClInclude Include="IConfig.h" />
     <ClInclude Include="ISerializable.h" />
-    <ClInclude Include="Log.h" />
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="ILogger.h" />
     <ClInclude Include="ReferenceCounter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time.h" />
@@ -87,7 +90,7 @@
     <ClInclude Include="FileNotFoundException.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommandLine.cpp" />
+    <ClCompile Include="Command.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -97,8 +100,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ICommand.cpp" />
+    <ClCompile Include="IConfig.cpp" />
     <ClCompile Include="ISerializable.cpp" />
-    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="ILogger.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
