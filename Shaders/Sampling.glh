@@ -39,3 +39,20 @@ float SampleShadowMapLinear(sampler2D shadowMap, vec2 coords, float compare, vec
 	
 	return mix(mixA, mixB, fracPart.x); // now, we are interpolating on X axis
 }
+
+// PCF (Percentage Closer Filtering)
+float SampleShadowMapPCF(sampler2D shadowMap, vec2 coords, float compare, vec2 texelSize)
+{
+	float result = 0.0;
+	// TODO: Consider replacing hard-coded values (-1, 1 and 9 at the end) with some parameters
+	for (float y = -1.0; y <= 1.0; y += 1.0)
+	{
+		for (float x = -1.0; x <= 1.0; x += 1.0)
+		{
+			vec2 coordsOffset = vec2(x, y) * texelSize;
+			result += SampleShadowMap(shadowMap, coords + coordsOffset, compare);
+		}
+	}
+	
+	return result / 9.0; // we divide by 9 because we average over 9 pixels we analyzed in the for loops above
+}
