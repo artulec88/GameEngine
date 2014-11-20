@@ -13,5 +13,6 @@ uniform float displacementBias;
 
 uniform sampler2D R_shadowMap;
 uniform float R_shadowBias;
+uniform vec3 R_shadowTexelSize;
 
 #include "Lighting.glh"
