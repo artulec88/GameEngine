@@ -12,5 +12,6 @@ uniform float displacementScale;
 uniform float displacementBias;
 
 uniform sampler2D R_shadowMap;
+uniform float R_shadowBias;
 
 #include "Lighting.glh"
