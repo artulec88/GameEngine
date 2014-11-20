@@ -51,6 +51,8 @@ private:
 	
 	Shader* defaultShader;
 	Shader* shadowMapShader;
+	int shadowMapWidth;
+	int shadowMapHeight;
 	std::vector<BaseLight*> lights;
 	std::vector<Camera*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
