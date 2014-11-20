@@ -53,7 +53,13 @@ Renderer::Renderer(int width, int height, std::string title) :
 	InitGraphics(width, height, title);
 	PrintGlReport();
 
-	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
+#ifdef BASIC_SHADOW_MAPPING_ENABLED
+	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT /* we're going to render depth information */));
+#else
+#ifdef VARIANCE_SHADOW_MAPPING_ENABLED
+	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
+#endif
+#endif
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
 	altCameraNode = new GameNode();

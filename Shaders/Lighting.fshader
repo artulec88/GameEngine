@@ -12,7 +12,7 @@ uniform float displacementScale;
 uniform float displacementBias;
 
 uniform sampler2D R_shadowMap;
-uniform float R_shadowBias;
-uniform vec3 R_shadowTexelSize;
+//uniform float R_shadowBias; // used in basic, linear, PCF shadow mapping (not used in variance shadow mapping)
+//uniform vec3 R_shadowTexelSize; // used in basic, linear, PCF shadow mapping (not used in variance shadow mapping)
 
 #include "Lighting.glh"

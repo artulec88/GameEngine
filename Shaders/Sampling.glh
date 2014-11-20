@@ -59,3 +59,25 @@ float SampleShadowMapPCF(sampler2D shadowMap, vec2 coords, float compare, vec2 t
 	
 	return result / NUM_SAMPLES_SQUARED; // average over all samples
 }
+
+// TODO: Write comment
+float linstep(float low, float high, float compareValue)
+{
+	return clamp((compareValue - low) / (high - low), 0.0, 1.0);
+}
+
+// Variance shadow mapping (check Chebyshev inequality)
+float SampleVarianceShadowMap(sampler2D shadowMap, vec2 coords, float compare)
+{
+	vec2 moments = texture2D(shadowMap, coords.xy).xy;
+	float p = step(compare, moments.x); // if pixel if completely in light then p = 1
+	float variance = max(moments.y - moments.x * moments.x /* in the beginning it is zero */, 0.00002);
+	
+	float d = compare - moments.x; // the distance from the mean
+	/* pMax = the maximum percentage of values that are greater than or equal to our compare value. Cannot be greater than 0.5 */
+	float pMax = linstep(0.2, 1.0, variance / (variance + d * d));
+	
+	return min(max(p, pMax), 1.0); // in case pMax is greater than 1.0
+	
+	//return step(compare, texture2D(shadowMap, coords.xy).r); // The step function gives the same functionality as the code snippet above
+}
