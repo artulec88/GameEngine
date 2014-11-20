@@ -218,7 +218,7 @@ void Renderer::Render(GameNode& gameNode)
 			currentCamera = &altCamera;
 
 			SetVector3D("shadowTexelSize", Vector3D(static_cast<Real>(1.0f) / 1024, static_cast<Real>(1.0f) / 1024, static_cast<Real>(0.0f)));
-			SetFloat("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
+			SetReal("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
 
 			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
