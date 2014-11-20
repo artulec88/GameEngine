@@ -33,9 +33,9 @@ public:
 	//static Matrix4D Rotation(Real x, Real y, Real z, const Angle& angle);
 	//static Matrix4D Rotation(const Vector3D& vec, const Angle& angle);
 
-	static Matrix4D Rotation(const Angle& angleX, const Angle& angleY, const Angle& angleZ); // TODO: Check all Matrix4D::Rotation(...) functions.
-
-	static Matrix4D Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
+	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ); // TODO: Check all Matrix4D::Rotation(...) functions.
+	static Matrix4D RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
+	static Matrix4D RotationFromDirection(const Vector3D& forward, const Vector3D& up);
 
 	static int Signum(int i, int j);
 /* ==================== Static functions end ==================== */
@@ -60,10 +60,10 @@ public:
 	const Math::Real* operator[](int index) const;
 	Math::Real* operator[](int index);
 
-	Vector3D Transform(const Vector3D& vec);
+	Vector3D Transform(const Vector3D& vec); // Write tests
 	
 	Matrix4D Transposition() const;
-	Matrix4D Inversion() const;
+	Matrix4D Inversion() const; // TODO: Write tests
 	Real Det(int p, int q) const;
 	
 	/**

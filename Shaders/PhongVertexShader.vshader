@@ -12,8 +12,8 @@ uniform mat4 projectedTransform;
 
 void main()
 {
-	gl_Position = vec4(vertexPosition_modelspace, 1.0) * projectedTransform;
+	gl_Position = projectedTransform * vec4(vertexPosition_modelspace, 1.0);
 	texCoord0 = texCoord;
-	normal0 = (vec4(normal, 0.0) * transform).xyz; // this is swizzling :)
-	worldPos0 = (vec4(vertexPosition_modelspace, 1.0) * transform).xyz;
+	normal0 = (transform * vec4(normal, 0.0)).xyz; // this is swizzling :)
+	worldPos0 = (transform * vec4(vertexPosition_modelspace, 1.0)).xyz;
 }

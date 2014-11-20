@@ -6,6 +6,10 @@
 #define MATH_API __declspec(dllimport)
 #endif
 
+#define EPSILON		1e3
+#define REAL_ZERO	static_cast<Real>(0)
+#define REAL_ONE	static_cast<Real>(1)
+
 #include <math.h>
 #include <cmath>
 #include <iostream>
@@ -33,5 +37,12 @@ namespace Math
 	template<typename Type> Type ToDeg(Type angleInRadians)
 	{
 		return static_cast<Type>(Math::RadToDegFactor * angleInRadians);
+	}
+
+	template<typename Type> Type Clamp(const Type& a, const Type& min, const Type& max)
+	{
+		if (a < min) return min;
+		else if (a > max) return max;
+		else return a;
 	}
 } /* end namespace Math */

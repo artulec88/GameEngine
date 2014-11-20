@@ -5,5 +5,5 @@ uniform mat4 T_MVP;
 
 void main()
 {
-	gl_Position = vec4(vertexPosition_modelspace, 1.0) * T_MVP;
+	gl_Position = T_MVP * vec4(vertexPosition_modelspace, 1.0);
 }

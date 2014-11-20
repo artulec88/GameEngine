@@ -56,10 +56,10 @@ Matrix4D::~Matrix4D()
 {
 	Matrix4D matrix;
 	
-	matrix.m[0][0] = 1.0;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;	matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = 0.0;	matrix.m[1][1] = 1.0;	matrix.m[1][2] = 0.0;	matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = 0.0;	matrix.m[2][1] = 0.0;	matrix.m[2][2] = 1.0;	matrix.m[2][3] = 0.0;
-	matrix.m[3][0] = 0.0;	matrix.m[3][1] = 0.0;	matrix.m[3][2] = 0.0;	matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = REAL_ONE;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = REAL_ONE;	matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = REAL_ONE;	matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
 	
 	SLOW_ASSERT(matrix.IsIdentity());
 	
@@ -70,8 +70,8 @@ Matrix4D::~Matrix4D()
 {
 	// CHECKED
 	Matrix4D matrix;
-	Real f = static_cast<Real>(1.0 / tan(fov.GetAngleInRadians() / 2.0));
-	Real div = static_cast<Real>(1.0 / (nearPlane - farPlane));
+	Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
+	Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
 
 	//matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
 	//matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
@@ -79,10 +79,10 @@ Matrix4D::~Matrix4D()
 	//matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = -1.0;							matrix.m[3][3] = 0.0;
 
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
-	matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;	matrix.m[2][2] = (-farPlane - nearPlane) * div;	matrix.m[2][3] = static_cast<Real>(2.0) * farPlane * nearPlane * div;
-	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = 1.0;							matrix.m[3][3] = 0.0;
+	matrix.m[0][0] = f / aspect;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;												matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = REAL_ZERO;		matrix.m[1][1] = f;			matrix.m[1][2] = REAL_ZERO;												matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = REAL_ZERO;		matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = (-nearPlane - farPlane) * div;							matrix.m[2][3] = REAL_ONE;
+	matrix.m[3][0] = REAL_ZERO;		matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	matrix.m[3][3] = REAL_ZERO;
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
 
 	return matrix;
@@ -97,12 +97,12 @@ Matrix4D::~Matrix4D()
 	Real height = top - bottom;
 	Real depth = farPlane - nearPlane;
 
-	const Real temp = 2.0f;
+	const Real temp = static_cast<Real>(2);
 	
-	matrix.m[0][0] = temp / width;	matrix.m[0][1] = 0.0;			matrix.m[0][2] = 0.0;			matrix.m[0][3] = -(right + left) / width;
-	matrix.m[1][0] = 0.0;			matrix.m[1][1] = temp / height;	matrix.m[1][2] = 0.0;			matrix.m[1][3] = -(top + bottom) / height;
-	matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;			matrix.m[2][2] = -temp / depth;	matrix.m[2][3] = -(farPlane + nearPlane) / depth;
-	matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;			matrix.m[3][2] = 0.0;			matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = temp / width;				matrix.m[0][1] = REAL_ZERO;					matrix.m[0][2] = REAL_ZERO;							matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = REAL_ZERO;					matrix.m[1][1] = temp / height;				matrix.m[1][2] = REAL_ZERO;							matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = REAL_ZERO;					matrix.m[2][1] = REAL_ZERO;					matrix.m[2][2] = -temp / depth;						matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = -(right + left) / width;	matrix.m[3][1] = -(top + bottom) / height;	matrix.m[3][2] = -(farPlane + nearPlane) / depth;	matrix.m[3][3] = REAL_ONE;
 	
 	return matrix;
 }
@@ -110,10 +110,10 @@ Matrix4D::~Matrix4D()
 /* static */ Matrix4D Matrix4D::Translation(Real x, Real y, Real z)
 {
 	Matrix4D matrix;
-	matrix.m[0][0] = 1.0;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;	matrix.m[0][3] = x;
-	matrix.m[1][0] = 0.0;	matrix.m[1][1] = 1.0;	matrix.m[1][2] = 0.0;	matrix.m[1][3] = y;
-	matrix.m[2][0] = 0.0;	matrix.m[2][1] = 0.0;	matrix.m[2][2] = 1.0;	matrix.m[2][3] = z;
-	matrix.m[3][0] = 0.0;	matrix.m[3][1] = 0.0;	matrix.m[3][2] = 0.0;	matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = REAL_ONE;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = REAL_ONE;	matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = REAL_ONE;	matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = x;			matrix.m[3][1] = y;			matrix.m[3][2] = z;			matrix.m[3][3] = REAL_ONE;
 	return matrix;
 }
 
@@ -125,10 +125,10 @@ Matrix4D::~Matrix4D()
 /* static */ Matrix4D Matrix4D::Scale(Real x, Real y, Real z)
 {
 	Matrix4D matrix;
-	matrix.m[0][0] = x;		matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;	matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = 0.0;	matrix.m[1][1] = y;		matrix.m[1][2] = 0.0;	matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = 0.0;	matrix.m[2][1] = 0.0;	matrix.m[2][2] = z;		matrix.m[2][3] = 0.0;
-	matrix.m[3][0] = 0.0;	matrix.m[3][1] = 0.0;	matrix.m[3][2] = 0.0;	matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = x;			matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = y;			matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = z;			matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
 
 	return matrix;
 }
@@ -141,7 +141,7 @@ Matrix4D::~Matrix4D()
 /**
  * @see Vector2D::Rotate(Real angle)
  */
-/* static */ Matrix4D Matrix4D::Rotation(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
+/* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
 {
 	// CHECKED
 	Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
@@ -160,23 +160,23 @@ Matrix4D::~Matrix4D()
 	// TODO: Can't we define rotation using just one matrix and not three?
 	// This way we prevent the hard-computing multiplications of three matrices.
 
-	rotX.m[0][0] = 1.0;		rotX.m[0][1] = 0.0;		rotX.m[0][2] = 0.0;		rotX.m[0][3] = 0.0;
-	rotX.m[1][0] = 0.0;		rotX.m[1][1] = xCos;	rotX.m[1][2] = -xSin;	rotX.m[1][3] = 0.0;
-	rotX.m[2][0] = 0.0;		rotX.m[2][1] = xSin;	rotX.m[2][2] = xCos;	rotX.m[2][3] = 0.0;
-	rotX.m[3][0] = 0.0;		rotX.m[3][1] = 0.0;		rotX.m[3][2] = 0.0;		rotX.m[3][3] = 1.0;
+	rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
+	rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
+	rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
+	rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
 
-	rotY.m[0][0] = yCos;	rotY.m[0][1] = 0.0;		rotY.m[0][2] = -ySin;	rotY.m[0][3] = 0.0;
-	rotY.m[1][0] = 0.0;		rotY.m[1][1] = 1.0;		rotY.m[1][2] = 0.0;		rotY.m[1][3] = 0.0;
-	rotY.m[2][0] = ySin;	rotY.m[2][1] = 0.0;		rotY.m[2][2] = yCos;	rotY.m[2][3] = 0.0;
-	rotY.m[3][0] = 0.0;		rotY.m[3][1] = 0.0;		rotY.m[3][2] = 0.0;		rotY.m[3][3] = 1.0;
+	rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
+	rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
+	rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
+	rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
 
-	rotZ.m[0][0] = zCos;	rotZ.m[0][1] = -zSin;	rotZ.m[0][2] = 0.0;		rotZ.m[0][3] = 0.0;
-	rotZ.m[1][0] = zSin;	rotZ.m[1][1] = zCos;	rotZ.m[1][2] = 0.0;		rotZ.m[1][3] = 0.0;
-	rotZ.m[2][0] = 0.0;		rotZ.m[2][1] = 0.0;		rotZ.m[2][2] = 1.0;		rotZ.m[2][3] = 0.0;
-	rotZ.m[3][0] = 0.0;		rotZ.m[3][1] = 0.0;		rotZ.m[3][2] = 0.0;		rotZ.m[3][3] = 1.0;
+	rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
+	rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
+	rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
+	rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
 
-	return rotX * rotY * rotZ;
-	//return rotZ * rotY * rotX;
+	//return rotX * rotY * rotZ;
+	return rotZ * rotY * rotX;
 }
 
 ///* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
@@ -212,9 +212,8 @@ Matrix4D::~Matrix4D()
 //	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angle);
 //}
 
-/* static */ Matrix4D Matrix4D::Rotation(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+/* static */ Matrix4D Matrix4D::RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
-	// CHECKED
 	Vector3D f = forward;
 	Vector3D u = up;
 	Vector3D r = right;
@@ -230,11 +229,20 @@ Matrix4D::~Matrix4D()
 	//Vector3D newUp = forw.Cross(right);
 
 	Matrix4D matrix;
-	matrix.m[0][0] = r.GetX();	matrix.m[0][1] = r.GetY();	matrix.m[0][2] = r.GetZ();	matrix.m[0][3] = 0.0;
-	matrix.m[1][0] = u.GetX();	matrix.m[1][1] = u.GetY();	matrix.m[1][2] = u.GetZ();	matrix.m[1][3] = 0.0;
-	matrix.m[2][0] = f.GetX();	matrix.m[2][1] = f.GetY();	matrix.m[2][2] = f.GetZ();	matrix.m[2][3] = 0.0;
-	matrix.m[3][0] = 0.0;		matrix.m[3][1] = 0.0;		matrix.m[3][2] = 0.0;		matrix.m[3][3] = 1.0;
+	matrix.m[0][0] = r.GetX();	matrix.m[0][1] = u.GetX();	matrix.m[0][2] = f.GetX();	matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = r.GetY();	matrix.m[1][1] = u.GetY();	matrix.m[1][2] = f.GetY();	matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = r.GetZ();	matrix.m[2][1] = u.GetZ();	matrix.m[2][2] = f.GetZ();	matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
 	return matrix;
+}
+
+/* static */ Matrix4D Matrix4D::RotationFromDirection(const Vector3D& forward, const Vector3D& up)
+{
+	Vector3D n = forward.Normalized();
+	Vector3D u = up.Normalized().Cross(n);
+	Vector3D v = n.Cross(u);
+
+	return RotationFromVectors(n, v, u);
 }
 
 /* static */ int Matrix4D::Signum(int i, int j)
@@ -276,25 +284,37 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 {
 	Matrix4D matrix;
 
-	matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[0][1] * mat.m[1][0] + m[0][2] * mat.m[2][0] + m[0][3] * mat.m[3][0];
-	matrix.m[0][1] = m[0][0] * mat.m[0][1] + m[0][1] * mat.m[1][1] + m[0][2] * mat.m[2][1] + m[0][3] * mat.m[3][1];
-	matrix.m[0][2] = m[0][0] * mat.m[0][2] + m[0][1] * mat.m[1][2] + m[0][2] * mat.m[2][2] + m[0][3] * mat.m[3][2];
-	matrix.m[0][3] = m[0][0] * mat.m[0][3] + m[0][1] * mat.m[1][3] + m[0][2] * mat.m[2][3] + m[0][3] * mat.m[3][3];
+	//matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[0][1] * mat.m[1][0] + m[0][2] * mat.m[2][0] + m[0][3] * mat.m[3][0];
+	//matrix.m[0][1] = m[0][0] * mat.m[0][1] + m[0][1] * mat.m[1][1] + m[0][2] * mat.m[2][1] + m[0][3] * mat.m[3][1];
+	//matrix.m[0][2] = m[0][0] * mat.m[0][2] + m[0][1] * mat.m[1][2] + m[0][2] * mat.m[2][2] + m[0][3] * mat.m[3][2];
+	//matrix.m[0][3] = m[0][0] * mat.m[0][3] + m[0][1] * mat.m[1][3] + m[0][2] * mat.m[2][3] + m[0][3] * mat.m[3][3];
 
-	matrix.m[1][0] = m[1][0] * mat.m[0][0] + m[1][1] * mat.m[1][0] + m[1][2] * mat.m[2][0] + m[1][3] * mat.m[3][0];
-	matrix.m[1][1] = m[1][0] * mat.m[0][1] + m[1][1] * mat.m[1][1] + m[1][2] * mat.m[2][1] + m[1][3] * mat.m[3][1];
-	matrix.m[1][2] = m[1][0] * mat.m[0][2] + m[1][1] * mat.m[1][2] + m[1][2] * mat.m[2][2] + m[1][3] * mat.m[3][2];
-	matrix.m[1][3] = m[1][0] * mat.m[0][3] + m[1][1] * mat.m[1][3] + m[1][2] * mat.m[2][3] + m[1][3] * mat.m[3][3];
-			
-	matrix.m[2][0] = m[2][0] * mat.m[0][0] + m[2][1] * mat.m[1][0] + m[2][2] * mat.m[2][0] + m[2][3] * mat.m[3][0];
-	matrix.m[2][1] = m[2][0] * mat.m[0][1] + m[2][1] * mat.m[1][1] + m[2][2] * mat.m[2][1] + m[2][3] * mat.m[3][1];
-	matrix.m[2][2] = m[2][0] * mat.m[0][2] + m[2][1] * mat.m[1][2] + m[2][2] * mat.m[2][2] + m[2][3] * mat.m[3][2];
-	matrix.m[2][3] = m[2][0] * mat.m[0][3] + m[2][1] * mat.m[1][3] + m[2][2] * mat.m[2][3] + m[2][3] * mat.m[3][3];
-			                                                                                                                          
-	matrix.m[3][0] = m[3][0] * mat.m[0][0] + m[3][1] * mat.m[1][0] + m[3][2] * mat.m[2][0] + m[3][3] * mat.m[3][0];
-	matrix.m[3][1] = m[3][0] * mat.m[0][1] + m[3][1] * mat.m[1][1] + m[3][2] * mat.m[2][1] + m[3][3] * mat.m[3][1];
-	matrix.m[3][2] = m[3][0] * mat.m[0][2] + m[3][1] * mat.m[1][2] + m[3][2] * mat.m[2][2] + m[3][3] * mat.m[3][2];
-	matrix.m[3][3] = m[3][0] * mat.m[0][3] + m[3][1] * mat.m[1][3] + m[3][2] * mat.m[2][3] + m[3][3] * mat.m[3][3];
+	//matrix.m[1][0] = m[1][0] * mat.m[0][0] + m[1][1] * mat.m[1][0] + m[1][2] * mat.m[2][0] + m[1][3] * mat.m[3][0];
+	//matrix.m[1][1] = m[1][0] * mat.m[0][1] + m[1][1] * mat.m[1][1] + m[1][2] * mat.m[2][1] + m[1][3] * mat.m[3][1];
+	//matrix.m[1][2] = m[1][0] * mat.m[0][2] + m[1][1] * mat.m[1][2] + m[1][2] * mat.m[2][2] + m[1][3] * mat.m[3][2];
+	//matrix.m[1][3] = m[1][0] * mat.m[0][3] + m[1][1] * mat.m[1][3] + m[1][2] * mat.m[2][3] + m[1][3] * mat.m[3][3];
+	//		
+	//matrix.m[2][0] = m[2][0] * mat.m[0][0] + m[2][1] * mat.m[1][0] + m[2][2] * mat.m[2][0] + m[2][3] * mat.m[3][0];
+	//matrix.m[2][1] = m[2][0] * mat.m[0][1] + m[2][1] * mat.m[1][1] + m[2][2] * mat.m[2][1] + m[2][3] * mat.m[3][1];
+	//matrix.m[2][2] = m[2][0] * mat.m[0][2] + m[2][1] * mat.m[1][2] + m[2][2] * mat.m[2][2] + m[2][3] * mat.m[3][2];
+	//matrix.m[2][3] = m[2][0] * mat.m[0][3] + m[2][1] * mat.m[1][3] + m[2][2] * mat.m[2][3] + m[2][3] * mat.m[3][3];
+	//
+	//matrix.m[3][0] = m[3][0] * mat.m[0][0] + m[3][1] * mat.m[1][0] + m[3][2] * mat.m[2][0] + m[3][3] * mat.m[3][0];
+	//matrix.m[3][1] = m[3][0] * mat.m[0][1] + m[3][1] * mat.m[1][1] + m[3][2] * mat.m[2][1] + m[3][3] * mat.m[3][1];
+	//matrix.m[3][2] = m[3][0] * mat.m[0][2] + m[3][1] * mat.m[1][2] + m[3][2] * mat.m[2][2] + m[3][3] * mat.m[3][2];
+	//matrix.m[3][3] = m[3][0] * mat.m[0][3] + m[3][1] * mat.m[1][3] + m[3][2] * mat.m[2][3] + m[3][3] * mat.m[3][3];
+
+	for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
+	{
+		for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			matrix.m[i][j] = REAL_ZERO;
+			for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
+			{
+				matrix.m[i][j] += m[k][j] * mat.m[i][k];
+			}
+		}
+	}
 
 	return matrix;
 }
@@ -493,7 +513,17 @@ bool Matrix4D::IsIdentity() const
 
 Vector3D Matrix4D::Transform(const Vector3D& vec)
 {
-	return Vector3D(m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3],
-					m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[1][3],
-					m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[2][3]);
+	return Vector3D(m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0],
+					m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1],
+					m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]);
+
+	//Vector3D ret(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+
+	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		ret.opera
+	//	}
+	//}
 }

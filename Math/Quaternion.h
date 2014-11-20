@@ -19,7 +19,7 @@ private:
 	Real m_w;
 
 public: // constructors and destructors
-	Quaternion() : m_x(0.0), m_y(0.0), m_z(0.0), m_w(0.0) { };
+	Quaternion() : m_x(REAL_ZERO), m_y(REAL_ZERO), m_z(REAL_ZERO), m_w(REAL_ONE) { };
 	Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
 	Quaternion(const Vector3D& axis, const Angle& angle);
 	Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW()) { };
@@ -60,17 +60,32 @@ public: // public member functions
 
 	inline Vector3D GetForward() const
 	{
-		return Vector3D(0, 0, 1).Rotate(*this);
+		return Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE).Rotate(*this);
+	}
+
+	inline Vector3D GetBack() const
+	{
+		return Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE).Rotate(*this);
 	}
 	
 	inline Vector3D GetUp() const
 	{
-		return Vector3D(0, 1, 0).Rotate(*this);
+		return Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO).Rotate(*this);
+	}
+
+	inline Vector3D GetDown() const
+	{
+		return Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO).Rotate(*this);
 	}
 
 	inline Vector3D GetRight() const
 	{
-		return Vector3D(1, 0, 0).Rotate(*this);
+		return Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
+	}
+
+	inline Vector3D GetLeft() const
+	{
+		return Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 	}
 
 	inline Matrix4D ToRotationMatrix() const;

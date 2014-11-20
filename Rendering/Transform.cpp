@@ -149,6 +149,6 @@ Math::Quaternion Transform::GetLookAtDirection(const Math::Vector3D& point, cons
 	Math::Vector3D u = forward.Cross(right);
 	u.Normalize();
 
-	Math::Matrix4D rotMatrix = Math::Matrix4D::Rotation(forward, u, right);
+	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationFromVectors(forward, u, right);
 	return Math::Quaternion(rotMatrix);
 }

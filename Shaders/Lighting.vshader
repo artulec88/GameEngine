@@ -14,13 +14,13 @@ uniform mat4 R_lightMatrix;
 
 void main()
 {
-	gl_Position = vec4(vertexPosition_modelspace, 1.0) * T_MVP;
+	gl_Position = T_MVP * vec4(vertexPosition_modelspace, 1.0);
 	texCoord0 = texCoord;
-	shadowMapCoord0 = vec4(vertexPosition_modelspace, 1.0) * R_lightMatrix;
-	worldPos0 = (vec4(vertexPosition_modelspace, 1.0) * T_model).xyz;
+	shadowMapCoord0 = R_lightMatrix * vec4(vertexPosition_modelspace, 1.0);
+	worldPos0 = (T_model * vec4(vertexPosition_modelspace, 1.0)).xyz;
 	
-	vec3 n = normalize((vec4(normal, 0.0) * T_model).xyz); // this is swizzling :)
-	vec3 t = normalize((vec4(tangent, 0.0) * T_model).xyz); // this is swizzling :)
+	vec3 n = normalize((T_model * vec4(normal, 0.0)).xyz); // this is swizzling :)
+	vec3 t = normalize((T_model * vec4(tangent, 0.0)).xyz); // this is swizzling :)
 	
 	// Gramm-Schmidt orthogonalization
 	t = normalize(t - dot(t, n) * n);

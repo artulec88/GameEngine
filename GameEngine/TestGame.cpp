@@ -159,7 +159,7 @@ void TestGame::Init()
 		Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);
@@ -263,7 +263,7 @@ void TestGame::AddPointLights()
 		Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
 		pointLightNodes[i]->GetTransform().SetRotation(rot);
 
@@ -324,7 +324,7 @@ void TestGame::AddSpotLights()
 		Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
 		spotLightNodes[i]->GetTransform().SetRotation(rot);
 
@@ -390,7 +390,7 @@ void TestGame::AddCameras()
 		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::Rotation(angleX, angleY, angleZ);
+		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);

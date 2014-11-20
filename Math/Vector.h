@@ -24,8 +24,8 @@ public: // public member functions
 	void SetX(Real x) { m_x = x; };
 	void SetY(Real y) { m_y = y; };
 
-	Real Length() const;
-	Real LengthSquared() const;
+	Real Length() const; // CHECKED!
+	Real LengthSquared() const; // CHECKED!
 	
 	void Negate() { m_x = -m_x; m_y = -m_y; }; // creates negation vector
 	
@@ -38,6 +38,7 @@ public: // public member functions
 	Vector2D& operator+=(const Vector2D& v);
 	Vector2D& operator-=(const Vector2D& v);
 	Vector2D& operator*=(const Vector2D& v);
+	Vector2D& operator/=(Real s);
 	Vector2D& operator/=(const Vector2D& v);
 	Vector2D& operator=(const Vector2D& v);
 	bool operator!=(const Vector2D& v) const;
@@ -48,10 +49,10 @@ public: // public member functions
 
 	Vector2D Rotate(const Angle& angle);
 	
-	Real Cross(const Vector2D& v) const;
-	Real Dot(const Vector2D& v) const;
+	Real Cross(const Vector2D& v) const; // CHECKED!
+	Real Dot(const Vector2D& v) const; // CHECKED!
 
-	Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const;
+	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 public:
 	std::string ToString() const;
@@ -78,8 +79,8 @@ public: // public member functions
 	void SetY(Real y) { m_y = y; };
 	void SetZ(Real z) { m_z = z; };
 
-	Real Length() const;
-	Real LengthSquared() const;
+	Real Length() const; // CHECKED!
+	Real LengthSquared() const; // CHECKED!
 	
 	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; }; // creates negation vector
 	Vector3D& Negated() { Negate(); return *this; }
@@ -88,23 +89,24 @@ public: // public member functions
 	Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
 	Vector3D operator-(const Vector3D& v) const { return Vector3D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); };
 	Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
-	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); };
+	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); }; // CHECKED!
 
 	Vector3D& operator+=(const Vector3D& v);
 	Vector3D& operator-=(const Vector3D& v);
 	Vector3D& operator*=(const Vector3D& v);
+	Vector3D& operator/=(Real s);
 	Vector3D& operator/=(const Vector3D& v);
 	Vector3D& operator=(const Vector3D& v);
 	bool operator==(const Vector3D& v) const;
 
-	Vector3D Normalized() const;
-	void Normalize();
+	Vector3D Normalized() const; // CHECKED!
+	void Normalize(); // CHECKED!
 
 	//Vector3D Rotate(Real angle);
 	Vector3D Rotate(const Vector3D& axis, const Angle& angle);
 	Vector3D Rotate(const Quaternion& rotation) const;
 	
-	Real Dot(const Vector3D& v) const;
+	Real Dot(const Vector3D& v) const; // CHECKED!
 	Vector3D Cross(const Vector3D& v) const;
 
 	// vector swizzling
@@ -121,7 +123,7 @@ public: // public member functions
 	void Threshold(Real MaxLength);
 
 	// interpolation LERP
-	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const;
+	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 	std::string ToString() const;
 

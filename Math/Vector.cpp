@@ -54,6 +54,7 @@ Vector2D Vector2D::Normalized() const
 	Real length = LengthSquared();
 	if (AlmostEqual(length, 0.0f))
 	{
+		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		return (*this);
 	}
 	return (*this) / static_cast<Real>(sqrt(length));
@@ -66,7 +67,7 @@ void Vector2D::Normalize()
 	{
 		return;
 	}
-	*this = (*this) / static_cast<Real>(sqrt(length));
+	*this /= static_cast<Real>(sqrt(length));
 }
 
 Real Vector2D::Cross(const Vector2D& v) const
@@ -108,6 +109,14 @@ Vector2D& Vector2D::operator*=(const Vector2D& v)
 {
 	this->m_x *= v.GetX();
 	this->m_y *= v.GetY();
+
+	return *this;
+}
+
+Vector2D& Vector2D::operator/=(Real s)
+{
+	this->m_x /= s;
+	this->m_y /= s;
 
 	return *this;
 }
@@ -195,6 +204,7 @@ Vector3D Vector3D::Normalized() const
 	Real length = LengthSquared();
 	if (AlmostEqual(length, 0.0f))
 	{
+		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		return (*this);
 	}
 	return (*this) / static_cast<Real>(sqrt(length));
@@ -205,9 +215,11 @@ void Vector3D::Normalize()
 	Real length = LengthSquared();
 	if (AlmostEqual(length, 0.0f))
 	{
+		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		return;
 	}
-	(*this) = (*this) / static_cast<Real>(sqrt(length));
+
+	(*this) /= static_cast<Real>(sqrt(length));
 }
 
 Real Vector3D::Dot(const Vector3D& v) const
@@ -245,8 +257,8 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 	Real cosAngle = static_cast<Real>(cos(-angle.GetAngleInRadians()));
 
 	return this->Cross(axis * sinAngle) + // rotation on local X
-		((*this * cosAngle) + // rotation on local Z
-		(axis * (this->Dot(axis * (1.0f - cosAngle))))); // rotation on local Y
+		(*this * cosAngle) + // rotation on local Z
+		(axis * (this->Dot(axis * (static_cast<Real>(1) - cosAngle)))); // rotation on local Y
 }
 
 Vector3D Vector3D::Rotate(const Quaternion& rotation) const
@@ -281,6 +293,15 @@ Vector3D& Vector3D::operator*=(const Vector3D& v)
 	this->m_x *= v.GetX();
 	this->m_y *= v.GetY();
 	this->m_z *= v.GetZ();
+
+	return *this;
+}
+
+Vector3D& Vector3D::operator/=(Real s)
+{
+	this->m_x /= s;
+	this->m_y /= s;
+	this->m_z /= s;
 
 	return *this;
 }
