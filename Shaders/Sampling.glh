@@ -11,8 +11,9 @@ float SampleShadowMap(sampler2D shadowMap, vec2 coords, float compare)
 	return step(compare, texture2D(shadowMap, coords.xy).r); // The step function gives the same functionality as the code snippet above
 }
 
-// Returns 0 for the pixels in shadow
+// Returns 0 for the pixels COMPLETELY in shadow
 // Returns 1 for the pixels NOT in shadow
+// Returns some number in range [0;1] for other pixels
 float SampleShadowMapLinear(sampler2D shadowMap, vec2 coords, float compare, vec2 texelSize)
 {
 	/**
@@ -22,7 +23,7 @@ float SampleShadowMapLinear(sampler2D shadowMap, vec2 coords, float compare, vec
 	 * It's also useful for the floor function used later to round the results.
 	 */ 
 	vec2 pixelPos = coords / texelSize + vec2(0.5);
-	vec2 fracPart = fract(pixelPos); // fractional part of the pixel position (for further use in PCF method)
+	vec2 fracPart = fract(pixelPos); // fractional part of the pixel position (for further use in linear interpolation method)
 	vec2 startTexel = (pixelPos - fracPart) * texelSize; // getting back to the normalized position in range [0;1]
 	
 	// Remember [0;0] is the bottom left corner!
