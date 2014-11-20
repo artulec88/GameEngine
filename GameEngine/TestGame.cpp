@@ -67,6 +67,17 @@ void TestGame::Init()
 	//	new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
 	AddToSceneRoot(boxNode);
 
+	GameNode* boxNode2 = new GameNode();
+	boxNode2->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\cube.obj"),
+		new Material(
+			new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
+			new Texture("..\\Textures\\bricks2_normal.jpg"),
+			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
+	boxNode2->GetTransform().SetTranslation(14.0f, 0.0f, 5.0f);
+	boxNode2->GetTransform().SetRotation(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
+	AddToSceneRoot(boxNode2);
+
 	// TODO: Do not use hard-coded values
 	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -77,9 +88,9 @@ void TestGame::Init()
 		new Material(
 			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
 			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.25f)));
+			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.07f, -0.25f)));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
-	planeNode->GetTransform().SetScale(Vector3D(10.0f, 10.0f, 10.0f));
+	planeNode->GetTransform().SetScale(Vector3D(20.0f, 20.0f, 20.0f));
 
 	AddToSceneRoot(planeNode);
 
@@ -136,75 +147,28 @@ void TestGame::Init()
 
 	srand((unsigned int)time(NULL));
 
-	/* ==================== Adding directional light begin ==================== */
-	bool directionalLightEnabled = GET_CONFIG_VALUE("directionalLightEnabled", true);
-	if (directionalLightEnabled)
+	AddLights(); // Adding all kinds of light (directional, point, spot)
+
+	/* ==================== Adding cameras begin ==================== */
+	if (cameraCount > 0)
 	{
-		LOG(Info, LOGPLACE, "Directional light enabled");
-		directionalLightNode = new GameNode();
-
-		const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
-		const Vector3D defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
-		const Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", 1.0f));
-		const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
-		const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
-		const Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", 0.0f));
-
-		Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
-		Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
-		Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
-		Vector3D position(xPos, yPos, zPos);
-		directionalLightNode->GetTransform().SetTranslation(position);
-
-		Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
-		Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
-		LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
-		Quaternion rot(rotMatrix);
-		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		LOG(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-			rotMatrix.ToString().c_str(),
-			rot.ToString().c_str(),
-			rot.ToRotationMatrix().ToString().c_str(),
-			rot2.ToRotationMatrix().ToString().c_str());
-		directionalLightNode->GetTransform().SetRotation(rot);
-		//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
-		//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
-
-		Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
-		Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
-		Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
-		Vector3D color(red, green, blue);
-		
-		Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
-
-		directionalLightNode->AddComponent(new DirectionalLight(color, intensity));
-		AddToSceneRoot(directionalLightNode);
-
-		// Rendering a small box around point light node position to let the user see the source
-#ifdef RENDER_LIGHT_MESHES
-		directionalLightNode->GetTransform().SetScale(Vector3D(0.04f, 0.04f, 0.04f));
-		directionalLightNode->AddComponent(new MeshRenderer(
-			new Mesh("..\\Models\\DirectionalLight.obj"),
-			new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1, 8)));
-		
-		Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
-		Vector3D rayEndPosition = forwardVec * 2.0f;
-		//LOG(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
-		//	position.ToString().c_str(),
-		//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
-		//	forwardVec.ToString().c_str(),
-		//	(position + rayEndPosition).ToString().c_str());
-		Vertex vertices [] = { Vertex(Vector3D()), Vertex(rayEndPosition) };
-		int indices [] = { 0, 1 };
-		directionalLightNode->AddComponent(new MeshRenderer(
-			new Mesh(vertices, 2, indices, 2, false, GL_LINES),
-			new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
-#endif
+		LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
+		AddCameras();
+		LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
 	}
-	/* ==================== Adding directional light end ==================== */
+	else
+	{
+		LOG(Error, LOGPLACE, "No cameras defined.");
+		exit(EXIT_FAILURE);
+	}
+	/* ==================== Adding cameras end ==================== */
 
+	LOG(Notice, LOGPLACE, "Initalizing test game finished");
+}
+
+void TestGame::AddLights()
+{
+	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
 		LOG(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
@@ -217,19 +181,78 @@ void TestGame::Init()
 		AddSpotLights();
 		LOG(Debug, LOGPLACE, "%d spot lights created", spotLightCount);
 	}
-	if (cameraCount > 0)
-	{
-		LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
-		AddCameras();
-		LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
-	}
-	else
-	{
-		LOG(Error, LOGPLACE, "No cameras defined.");
-		exit(EXIT_FAILURE);
-	}
+}
 
-	LOG(Notice, LOGPLACE, "Initalizing test game finished");
+void TestGame::AddDirectionalLight()
+{
+	bool directionalLightEnabled = GET_CONFIG_VALUE("directionalLightEnabled", true);
+	if (!directionalLightEnabled)
+	{
+		LOG(Notice, LOGPLACE, "Directional light disabled");
+		return;
+	}
+	LOG(Info, LOGPLACE, "Directional light enabled");
+	directionalLightNode = new GameNode();
+
+	const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
+	const Vector3D defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
+	const Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", 1.0f));
+	const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
+	const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
+	const Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", 0.0f));
+
+	Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
+	Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
+	Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
+	Vector3D position(xPos, yPos, zPos);
+	directionalLightNode->GetTransform().SetTranslation(position);
+
+	Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
+	Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
+	Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
+	Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
+	LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
+	Quaternion rot(rotMatrix);
+	Quaternion rot2(Vector3D(1, 0, 0), angleX);
+	LOG(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+		rotMatrix.ToString().c_str(),
+		rot.ToString().c_str(),
+		rot.ToRotationMatrix().ToString().c_str(),
+		rot2.ToRotationMatrix().ToString().c_str());
+	directionalLightNode->GetTransform().SetRotation(rot);
+	//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
+	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
+
+	Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
+	Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
+	Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
+	Vector3D color(red, green, blue);
+		
+	Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
+
+	directionalLightNode->AddComponent(new DirectionalLight(color, intensity));
+	AddToSceneRoot(directionalLightNode);
+
+	// Rendering a small box around point light node position to let the user see the source
+#ifdef RENDER_LIGHT_MESHES
+	directionalLightNode->GetTransform().SetScale(Vector3D(0.04f, 0.04f, 0.04f));
+	directionalLightNode->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\DirectionalLight.obj"),
+		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1, 8)));
+		
+	Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
+	Vector3D rayEndPosition = forwardVec * 2.0f;
+	//LOG(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
+	//	position.ToString().c_str(),
+	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
+	//	forwardVec.ToString().c_str(),
+	//	(position + rayEndPosition).ToString().c_str());
+	Vertex vertices [] = { Vertex(Vector3D()), Vertex(rayEndPosition) };
+	int indices [] = { 0, 1 };
+	directionalLightNode->AddComponent(new MeshRenderer(
+		new Mesh(vertices, 2, indices, 2, false, GL_LINES),
+		new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
+#endif
 }
 
 void TestGame::AddPointLights()
@@ -448,6 +471,9 @@ void TestGame::Update(Real delta)
 	{
 		temp = 0.0;
 	}
+
+	//Transform& t = directionalLightNode->GetTransform();
+	//t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
 
 	for (int i = 0; i < pointLightCount; ++i)
 	{

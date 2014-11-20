@@ -29,6 +29,8 @@ public:
 	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 
 private:
+	void AddLights();
+	void AddDirectionalLight();
 	void AddPointLights();
 	void AddSpotLights();
 	void AddCameras();
