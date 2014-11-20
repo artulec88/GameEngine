@@ -74,7 +74,7 @@ void TestGame::Init()
 			new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
 			new Texture("..\\Textures\\bricks2_normal.jpg"),
 			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
-	boxNode2->GetTransform().SetTranslation(14.0f, 0.0f, 5.0f);
+	boxNode2->GetTransform().SetTranslation(-5.0f, 0.0f, 5.0f);
 	boxNode2->GetTransform().SetRotation(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
 	AddToSceneRoot(boxNode2);
 
@@ -88,9 +88,9 @@ void TestGame::Init()
 		new Material(
 			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
 			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.07f, -0.25f)));
+			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.02f, -0.25f)));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
-	planeNode->GetTransform().SetScale(Vector3D(20.0f, 20.0f, 20.0f));
+	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
 
 	AddToSceneRoot(planeNode);
 
