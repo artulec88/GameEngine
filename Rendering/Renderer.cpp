@@ -37,7 +37,9 @@ Renderer::Renderer(int width, int height, std::string title) :
 	altCamera(Matrix4D::Identity()),
 	altCameraNode(NULL),
 	defaultShader(NULL),
-	shadowMapShader(NULL)
+	shadowMapShader(NULL),
+	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
+	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
 {
 	LOG(Debug, LOGPLACE, "Creating Renderer instance started");
 
@@ -51,7 +53,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	InitGraphics(width, height, title);
 	PrintGlReport();
 
-	SetTexture("shadowMap", new Texture(GET_CONFIG_VALUE("shadowMapWidth", 1024), GET_CONFIG_VALUE("shadowMapHeight", 1024), NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
+	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT));
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
 	altCameraNode = new GameNode();
@@ -215,7 +217,11 @@ void Renderer::Render(GameNode& gameNode)
 			Camera* temp = currentCamera;
 			currentCamera = &altCamera;
 
+			SetFloat("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
+
+			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
+			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_BACK); }
 
 			currentCamera = temp;
 		}
