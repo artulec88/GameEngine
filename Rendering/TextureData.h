@@ -33,6 +33,8 @@ private:
 public:
 	void Bind(int textureIndex);
 	void BindAsRenderTarget();
+	inline int GetWidth() const { return this->width; }
+	inline int GetHeight() const { return this->height; }
 private:
 	void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled);
 	void InitRenderTargets(GLenum* attachments);
