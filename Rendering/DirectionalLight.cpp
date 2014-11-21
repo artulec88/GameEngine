@@ -10,7 +10,7 @@ DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector
 	BaseLight(color, intensity)
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "ForwardDirectional")));
-	ShadowInfo* shadowInfo = new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), static_cast<Math::Real>(1.0), true);
+	ShadowInfo* shadowInfo = new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), true);
 	ASSERT(shadowInfo != NULL);
 	SetShadowInfo(shadowInfo);
 }
