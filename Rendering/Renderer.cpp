@@ -38,15 +38,22 @@ Renderer::Renderer(int width, int height, std::string title) :
 	altCameraNode(NULL),
 	defaultShader(NULL),
 	shadowMapShader(NULL),
+	nullFilterShader(NULL),
 	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
 	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
 {
-	LOG(Debug, LOGPLACE, "Creating Renderer instance started");
+	LOG(Info, LOGPLACE, "Creating Renderer instance started");
 
-	samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
-	samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
-	samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
-	samplerMap.insert(std::pair<std::string, unsigned int>("shadowMap", 3));
+	//samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
+	//samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
+	//samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
+	//samplerMap.insert(std::pair<std::string, unsigned int>("shadowMap", 3));
+	//samplerMap.insert(std::pair<std::string, unsigned int>("filterTexture", 0));
+	SetSamplerSlot("diffuse", 0);
+	SetSamplerSlot("normalMap", 1);
+	SetSamplerSlot("displacementMap", 2);
+	SetSamplerSlot("shadowMap", 3);
+	//SetSamplerSlot("filterTexture", 0);
 
 	SetVector3D("ambientIntensity", ambientLight);
 
@@ -60,8 +67,10 @@ Renderer::Renderer(int width, int height, std::string title) :
 	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 #endif
 #endif
+	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
+	nullFilterShader = new Shader("Filter-null");
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -100,6 +109,8 @@ Renderer::~Renderer(void)
 	// TODO: Deallocating the cameras member variable
 
 	SAFE_DELETE(defaultShader);
+	SAFE_DELETE(shadowMapShader);
+	SAFE_DELETE(nullFilterShader);
 	//SAFE_DELETE(altCameraNode);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
@@ -223,15 +234,22 @@ void Renderer::Render(GameNode& gameNode)
 			Camera* temp = currentCamera;
 			currentCamera = &altCamera;
 
-			SetVector3D("shadowTexelSize", Vector3D(static_cast<Real>(1.0f) / 1024, static_cast<Real>(1.0f) / 1024, static_cast<Real>(0.0f)));
-			SetReal("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
+			//SetVector3D("shadowTexelSize", Vector3D(static_cast<Real>(1.0f) / 1024, static_cast<Real>(1.0f) / 1024, static_cast<Real>(0.0f)));
+			//SetReal("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
 
 			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
 			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_BACK); }
 
 			currentCamera = temp;
+
+			ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+			ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 		}
+		BindAsRenderTarget();
+		BindAsRenderTarget();
+BindAsRenderTarget();
+BindAsRenderTarget();
 		BindAsRenderTarget();
 
 		glEnable(GL_BLEND);
@@ -245,6 +263,57 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
 	}
+}
+
+// You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
+void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
+{
+	if (filterShader == NULL)
+	{
+		LOG(Error, LOGPLACE, "Cannot apply a filter. Filtering shader is NULL.");
+		return;
+	}
+	ASSERT(source != NULL);
+	if (source == NULL)
+	{
+		LOG(Emergency, LOGPLACE, "Cannot apply a filter. Source texture is NULL.");
+		return;
+	}
+	ASSERT(source != dest);
+	if (source == dest)
+	{
+		LOG(Error, LOGPLACE, "Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
+		return;
+	}
+	if (dest == NULL)
+	{
+		LOG(Debug, LOGPLACE, "Binding window as a render target for filtering");
+		BindAsRenderTarget();
+	}
+	else
+	{
+		LOG(Debug, LOGPLACE, "Binding texture as a render target for filtering");
+		dest->BindAsRenderTarget();
+	}
+
+	LOG(Info, LOGPLACE, "Applying a filter to the source texture");
+	
+	SetTexture("filterTexture", source);
+
+	altCamera.SetProjection(Matrix4D::Identity());
+	altCamera.GetTransform().SetTranslation(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
+	altCamera.GetTransform().SetRotation(Quaternion(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f), static_cast<Real>(0.0f)), Angle(static_cast<Real>(180.0f))));
+
+	Camera* temp = currentCamera;
+	currentCamera = &altCamera;
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+	filterShader->Bind();
+	filterShader->UpdateUniforms(planeTransform, *planeMaterial, this);
+	planeMesh->Draw();
+
+	currentCamera = temp;
+	SetTexture("filterTexture", NULL);
 }
 
 void Renderer::SwapBuffers()
@@ -348,10 +417,12 @@ void Renderer::BindAsRenderTarget()
 unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 {
 	/* TODO: Add assertions and checks */
-	if (samplerMap.find(samplerName) == samplerMap.end())
+	std::map<std::string, unsigned int>::const_iterator samplerItr = samplerMap.find(samplerName);
+	if (samplerItr == samplerMap.end())
 	{
-		LOG(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.");
-		exit(EXIT_FAILURE);
+		LOG(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
+		return 0;
+		//exit(EXIT_FAILURE);
 	}
-	return samplerMap.find(samplerName)->second;
+	return samplerItr->second;
 }

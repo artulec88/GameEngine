@@ -79,10 +79,10 @@ public:
 	
 	inline void SetTexture(const std::string& textureName, Texture* texture)
 	{
-		if (texture == NULL)
-		{
-			LOG(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
-		}
+		//if (texture == NULL)
+		//{
+		//	LOG(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
+		//}
 		if (textureMap.find(textureName) == textureMap.end())
 		{
 			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());

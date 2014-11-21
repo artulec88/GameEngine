@@ -66,11 +66,13 @@ public:
 protected:
 	void InitGraphics(int width, int height, const std::string& title);
 	void ClearScreen() const;
+	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
 	void BindAsRenderTarget();
 	void InitGlfw(int width, int height, const std::string& title);
 	void InitGlew() const;
 	void SetGlfwCallbacks();
+	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -94,6 +96,7 @@ private:
 	
 	Shader* defaultShader;
 	Shader* shadowMapShader;
+	Shader* nullFilterShader;
 	int shadowMapWidth;
 	int shadowMapHeight;
 	std::vector<BaseLight*> lights;

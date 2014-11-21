@@ -88,7 +88,7 @@ void TestGame::Init()
 		new Material(
 			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
 			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.02f, -0.25f)));
+			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.5f)));
 	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
 
