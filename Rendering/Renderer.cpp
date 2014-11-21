@@ -61,13 +61,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	InitGraphics(width, height, title);
 	PrintGlReport();
 
-#ifdef BASIC_SHADOW_MAPPING_ENABLED
-	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_DEPTH_COMPONENT16 /* for shadow mapping we only need depth */, GL_DEPTH_COMPONENT, true, GL_DEPTH_ATTACHMENT /* we're going to render depth information */));
-#else
-#ifdef VARIANCE_SHADOW_MAPPING_ENABLED
 	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
-#endif
-#endif
 	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
@@ -237,8 +231,8 @@ void Renderer::Render(GameNode& gameNode)
 			Camera* temp = currentCamera;
 			currentCamera = &altCamera;
 
-			//SetVector3D("shadowTexelSize", Vector3D(static_cast<Real>(1.0f) / 1024, static_cast<Real>(1.0f) / 1024, static_cast<Real>(0.0f)));
-			//SetReal("shadowBias", shadowInfo->GetBias() / shadowMapWidth);
+			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 
 			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
@@ -249,12 +243,8 @@ void Renderer::Render(GameNode& gameNode)
 			//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
 			//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 			
-			BlurShadowMap(GetTexture("shadowMap"), static_cast<Real>(1.0f));
+			BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
 		}
-		BindAsRenderTarget();
-		BindAsRenderTarget();
-BindAsRenderTarget();
-BindAsRenderTarget();
 		BindAsRenderTarget();
 
 		glEnable(GL_BLEND);
