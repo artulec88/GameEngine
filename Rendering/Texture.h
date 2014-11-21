@@ -35,6 +35,8 @@ private:
 public:
 	void Bind(unsigned int unit = 0) const;
 	void BindAsRenderTarget();
+	inline int GetWidth() const { return textureData->GetWidth(); }
+	inline int GetHeight() const { return textureData->GetHeight(); }
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Texture */
 
