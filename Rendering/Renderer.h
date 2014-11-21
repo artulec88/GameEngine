@@ -72,7 +72,7 @@ private:
 	void InitGlfw(int width, int height, const std::string& title);
 	void InitGlew() const;
 	void SetGlfwCallbacks();
-	void BlurShadowMap(Texture* shadowMap, float blurAmount);
+	void BlurShadowMap(Texture* shadowMap, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
