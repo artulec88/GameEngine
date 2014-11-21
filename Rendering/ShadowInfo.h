@@ -17,7 +17,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance = static_cast<Real>(0.00002f) );
+	ShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, Math::Real shadowSoftness = static_cast<Real>(1.0f), Math::Real lightBleedingReductionAmount = static_cast<Real>(0.2f), Math::Real minVariance = static_cast<Real>(0.00002f) );
 	virtual ~ShadowInfo();
 private:
 	ShadowInfo(const ShadowInfo& shadowInfo) {}
