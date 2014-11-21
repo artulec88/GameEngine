@@ -98,6 +98,7 @@ private:
 	Shader* defaultShader;
 	Shader* shadowMapShader;
 	Shader* nullFilterShader;
+	Shader* gaussBlurFilterShader;
 	int shadowMapWidth;
 	int shadowMapHeight;
 	std::vector<BaseLight*> lights;
