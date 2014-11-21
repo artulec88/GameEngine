@@ -67,15 +67,15 @@ float linstep(float low, float high, float compareValue)
 }
 
 // Variance shadow mapping (check Chebyshev inequality)
-float SampleVarianceShadowMap(sampler2D shadowMap, vec2 coords, float compare)
+float SampleVarianceShadowMap(sampler2D shadowMap, vec2 coords, float compare, float varianceMin, float lightBleedingReductionAmount)
 {
 	vec2 moments = texture2D(shadowMap, coords.xy).xy;
 	float p = step(compare, moments.x); // if pixel if completely in light then p = 1
-	float variance = max(moments.y - moments.x * moments.x /* in the beginning it is zero */, 0.00002);
+	float variance = max(moments.y - moments.x * moments.x /* in the beginning it is zero */, varianceMin);
 	
 	float d = compare - moments.x; // the distance from the mean
 	/* pMax = the maximum percentage of values that are greater than or equal to our compare value. Cannot be greater than 0.5 */
-	float pMax = linstep(0.2, 1.0, variance / (variance + d * d));
+	float pMax = linstep(lightBleedingReductionAmount, 1.0, variance / (variance + d * d));
 	
 	return min(max(p, pMax), 1.0); // in case pMax is greater than 1.0
 	
