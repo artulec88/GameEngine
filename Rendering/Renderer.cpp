@@ -39,6 +39,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader(NULL),
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
+	gaussBlurFilterShader(NULL),
 	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
 	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
 {
@@ -71,6 +72,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader = new Shader("ForwardAmbient");
 	shadowMapShader = new Shader("ShadowMapGenerator");
 	nullFilterShader = new Shader("Filter-null");
+	gaussBlurFilterShader = new Shader("Filter-gaussBlur7x1");
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -111,6 +113,7 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(defaultShader);
 	SAFE_DELETE(shadowMapShader);
 	SAFE_DELETE(nullFilterShader);
+	SAFE_DELETE(gaussBlurFilterShader);
 	//SAFE_DELETE(altCameraNode);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
@@ -243,8 +246,10 @@ void Renderer::Render(GameNode& gameNode)
 
 			currentCamera = temp;
 
-			ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-			ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+			//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+			//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+			
+			BlurShadowMap(GetTexture("shadowMap"), static_cast<Real>(1.0f));
 		}
 		BindAsRenderTarget();
 		BindAsRenderTarget();
@@ -263,6 +268,16 @@ BindAsRenderTarget();
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
 	}
+}
+
+void Renderer::BlurShadowMap(Texture* shadowMap, Real blurAmount)
+{
+	// TODO: Check if texture is ok
+	SetVector3D("blurScale", Vector3D(static_cast<Real>(1.0f) / (shadowMap->GetWidth() * blurAmount), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
+	ApplyFilter(gaussBlurFilterShader, shadowMap, GetTexture("shadowMapTempTarget"));
+	
+	SetVector3D("blurScale", Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f) / (shadowMap->GetHeight() * blurAmount), static_cast<Real>(0.0f)));
+	ApplyFilter(gaussBlurFilterShader, GetTexture("shadowMapTempTarget"), shadowMap);
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
