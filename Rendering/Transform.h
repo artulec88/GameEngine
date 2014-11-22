@@ -50,6 +50,7 @@ public:
 	void SetRotation(const Math::Quaternion& rot);
 	//void SetRotation(Math::Real x, Math::Real y, Math::Real z, Math::Real w);
 	void SetScale(const Math::Vector3D& scaleVec);
+	void SetScale(Math::Real scale);
 
 	void Rotate(const Math::Vector3D& axis, const Math::Angle& angle);
 

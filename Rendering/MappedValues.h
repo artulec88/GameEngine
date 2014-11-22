@@ -82,19 +82,22 @@ public:
 		//if (texture == NULL)
 		//{
 		//	LOG(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
+		//	//return;
 		//}
-		if (textureMap.find(textureName) == textureMap.end())
-		{
-			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
-			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
-		}
-		else
-		{
-#ifdef _DEBUG
-			LOG(Utility::Delocust, LOGPLACE, "Modifying the texture with name \"%s\".", textureName.c_str());
-#endif
-			textureMap[textureName] = texture;
-		}
+//		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(textureName);
+//		if (textureItr == textureMap.end())
+//		{
+//			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
+//			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
+//		}
+//		else
+//		{
+//#ifdef _DEBUG
+//			LOG(Utility::Delocust, LOGPLACE, "Modifying the texture with name \"%s\".", textureName.c_str());
+//#endif
+//			textureMap[textureName] = texture;
+//		}
+		textureMap[textureName] = texture;
 	}
 
 	inline Math::Vector3D GetVec3D(const std::string& name) const

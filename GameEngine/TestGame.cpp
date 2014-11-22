@@ -48,8 +48,22 @@ TestGame::~TestGame(void)
 void TestGame::Init()
 {
 	LOG(Notice, LOGPLACE, "Initalizing test game");
-
 	Game::Init();
+
+	// TODO: Do not use hard-coded values
+	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
+	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
+
+	GameNode* planeNode = new GameNode();
+	planeNode->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\plane4.obj"),
+		new Material(
+			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
+			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
+			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.5f)));
+	planeNode->GetTransform().SetTranslation(0.0f, 0.0f, 5.0f);
+	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
+	AddToSceneRoot(planeNode);
 
 	GameNode* boxNode = new GameNode();
 	boxNode->AddComponent(new MeshRenderer(
@@ -74,25 +88,10 @@ void TestGame::Init()
 			new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
 			new Texture("..\\Textures\\bricks2_normal.jpg"),
 			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
-	boxNode2->GetTransform().SetTranslation(-5.0f, 0.0f, 5.0f);
+	boxNode2->GetTransform().SetTranslation(8.0f, 0.5f, 5.0f);
 	boxNode2->GetTransform().SetRotation(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
+	boxNode2->GetTransform().SetScale(0.5f);
 	AddToSceneRoot(boxNode2);
-
-	// TODO: Do not use hard-coded values
-	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
-	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
-
-	GameNode* planeNode = new GameNode();
-	planeNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\plane4.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
-			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.5f)));
-	planeNode->GetTransform().SetTranslation(0.0f, -1.0f, 5.0f);
-	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
-
-	AddToSceneRoot(planeNode);
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
@@ -141,7 +140,7 @@ void TestGame::Init()
 	{
 		humanNodes[i] = new GameNode();
 		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
-		humanNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 20), 0.7f, static_cast<Real>(rand() % 20));
+		humanNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
 		AddToSceneRoot(humanNodes[i]);
 	}
 

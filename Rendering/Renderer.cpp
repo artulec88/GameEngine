@@ -54,7 +54,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	SetSamplerSlot("normalMap", 1);
 	SetSamplerSlot("displacementMap", 2);
 	SetSamplerSlot("shadowMap", 3);
-	//SetSamplerSlot("filterTexture", 0);
+	SetSamplerSlot("filterTexture", 0);
 
 	SetVector3D("ambientIntensity", ambientLight);
 
@@ -63,10 +63,10 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	defaultShader = new Shader("ForwardAmbient");
-	shadowMapShader = new Shader("ShadowMapGenerator");
-	nullFilterShader = new Shader("Filter-null");
-	gaussBlurFilterShader = new Shader("Filter-gaussBlur7x1");
+	defaultShader = new Shader((GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient")));
+	shadowMapShader = new Shader((GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator")));
+	nullFilterShader = new Shader((GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null")));
+	gaussBlurFilterShader = new Shader((GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "Filter-gaussBlur7x1")));
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -219,7 +219,8 @@ void Renderer::Render(GameNode& gameNode)
 		currentLight = (*lightItr);
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
 		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
-		glClear(GL_DEPTH_BUFFER_BIT);
+		//glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+		ClearScreen();
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
@@ -240,10 +241,10 @@ void Renderer::Render(GameNode& gameNode)
 
 			currentCamera = temp;
 
-			//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-			//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+			ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+			ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 			
-			BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
+			//BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
 		}
 		BindAsRenderTarget();
 

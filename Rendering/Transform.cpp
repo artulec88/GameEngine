@@ -113,6 +113,11 @@ void Transform::SetScale(const Vector3D& scaleVec)
 	isChanged = true;
 }
 
+void Transform::SetScale(Math::Real scale)
+{
+	SetScale(Vector3D(scale, scale, scale));
+}
+
 //Matrix4D Transform::GetProjectedTransformation(const Camera& camera) const
 //{
 //	Matrix4D transformationMatrix = GetTransformation();
