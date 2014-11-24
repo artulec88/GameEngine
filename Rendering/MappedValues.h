@@ -20,22 +20,24 @@ private:
 	std::map<std::string, Math::Vector3D> vec3DMap;
 	std::map<std::string, Math::Real> realMap;
 	std::map<std::string, Texture*> textureMap;
+	Texture* defaultTexture;
+	Math::Vector3D defaultVector3D;
 /* ==================== Non-static member variables end ==================== */
 
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MappedValues(void) { }
+	MappedValues(void) :
+		defaultTexture(new Texture("..\\Textures\\defaultTexture.png")),
+		defaultVector3D(Math::Vector3D(0.0f, 0.0f, 0.0f)) {}
 	virtual ~MappedValues(void)
 	{
-		// TODO: Deallocate textures
 		std::map<std::string, Texture*>::iterator itr = textureMap.begin();
 		while (itr != textureMap.end())
 		{
 			if (itr->second != NULL) // if texture is not NULL
 			{
-				delete itr->second;
-				itr->second = NULL;
+				SAFE_DELETE(itr->second);
 			}
 			++itr;
 		}
@@ -84,29 +86,29 @@ public:
 		//	LOG(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
 		//	//return;
 		//}
-//		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(textureName);
-//		if (textureItr == textureMap.end())
-//		{
-//			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
-//			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
-//		}
-//		else
-//		{
-//#ifdef _DEBUG
-//			LOG(Utility::Delocust, LOGPLACE, "Modifying the texture with name \"%s\".", textureName.c_str());
-//#endif
-//			textureMap[textureName] = texture;
-//		}
-		textureMap[textureName] = texture;
+		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(textureName);
+		if (textureItr == textureMap.end())
+		{
+			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
+			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
+		}
+		else
+		{
+#ifdef _DEBUG
+			LOG(Utility::Delocust, LOGPLACE, "Modifying the texture with name \"%s\".", textureName.c_str());
+#endif
+			textureMap[textureName] = texture;
+		}
+		//textureMap[textureName] = texture;
 	}
 
-	inline Math::Vector3D GetVec3D(const std::string& name) const
+	inline const Math::Vector3D GetVec3D(const std::string& name) const
 	{
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
-			LOG(Utility::Warning, LOGPLACE, "Vector with name \"%s\" has not been found", name.c_str());
-			return Math::Vector3D(0, 0, 0);
+			LOG(Utility::Warning, LOGPLACE, "Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			return defaultVector3D;
 		}
 		return itr->second;
 	}
@@ -127,8 +129,8 @@ public:
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
-			LOG(Utility::Warning, LOGPLACE, "Texture with name \"%s\" has not been found", textureName.c_str());
-			return NULL;
+			LOG(Utility::Warning, LOGPLACE, "Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			return defaultTexture;
 		}
 		return itr->second;
 	}

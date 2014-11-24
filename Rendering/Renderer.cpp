@@ -21,7 +21,7 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
-/* static */ const Matrix4D Renderer::s_biasMatrix(Matrix4D::Scale(0.5, 0.5, 0.5) * Matrix4D::Translation(1.0, 1.0, 1.0));
+/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
 Renderer::Renderer(int width, int height, std::string title) :
 	window(NULL),
@@ -227,7 +227,7 @@ void Renderer::Render(GameNode& gameNode)
 			altCamera.GetTransform().SetTranslation(currentLight->GetTransform().GetTransformedPos());
 			altCamera.GetTransform().SetRotation(currentLight->GetTransform().GetTransformedRot());
 
-			lightMatrix = s_biasMatrix * altCamera.GetViewProjection();
+			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
 
 			Camera* temp = currentCamera;
 			currentCamera = &altCamera;
@@ -406,7 +406,7 @@ bool Renderer::IsCloseRequested() const
 	return glfwWindowShouldClose(window) != 0;
 }
 
-void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType)
+void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType)
 {
 	//throw uniformType + " is not supported by the rendering engine";
 	LOG(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());

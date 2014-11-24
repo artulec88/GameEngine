@@ -31,6 +31,12 @@ struct UniformStruct
 
 class ShaderData : public Utility::ReferenceCounter
 {
+/* ==================== Static variables begin ==================== */
+private:
+	static int supportedOpenGLLevel;
+	static std::string glslVersion;
+/* ==================== Static variables end ==================== */
+
 /* ==================== Non-static member variables begin ==================== */
 private:
 	int programID;
@@ -64,7 +70,7 @@ private:
 	//void AddGeometryShader(const std::string& geometryShaderText);
 	void AddProgram(const std::string& shaderText, GLenum type);
 
-	//void AddAllAttributes(const std::string& vertexShaderText);
+	void AddAllAttributes(const std::string& vertexShaderText, const std::string& attributeKeyword);
 	void AddShaderUniforms(const std::string& shaderText);
 	void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
 
@@ -92,13 +98,13 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Bind();
-	virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer);
+	void Bind() const;
+	virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
-	void SetUniformi(const std::string& uniformName, int value);
-	void SetUniformf(const std::string& uniformName, Math::Real value);
-	void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector);
-	void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix);
+	void SetUniformi(const std::string& uniformName, int value) const;
+	void SetUniformf(const std::string& uniformName, Math::Real value) const;
+	void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
+	void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 
 	//void AddAllUniforms(const std::string& shaderText);
 	//void AddUniform(const std::string& uniform);
@@ -120,9 +126,9 @@ protected:
 	//std::string LoadShader(const std::string& fileName) const; // TODO: Consider making this function static
 	//void AddProgram(const std::string& text, GLenum type);
 private:
-	void SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight);
-	void SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight);
-	void SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight);
+	void SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight) const;
+	void SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight) const;
+	void SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight) const;
 
 	//void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
 	//std::vector<UniformStruct> FindUniformStructs(const std::string& shaderText) const;

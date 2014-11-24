@@ -54,8 +54,7 @@ void TestGame2::Init()
 	// TODO: Do not use hard-coded values
 	Math::Real specularIntensity = 1.0;
 	Math::Real specularPower = 8.0;
-	material = new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR),
-		specularIntensity, specularPower);
+	material = new Material(new Texture("..\\Textures\\chessboard2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower);
 
 	//PhongShader::SetAmbientLight(Math::Vector3D(0.02, 0.02, 0.02));
 	//PhongShader::SetDirectionalLight(DirectionalLight(Math::Vector3D(1.0, 1.0, 1.0), 0.5, Math::Vector3D(1.0, 1.0, 1.0)));

@@ -27,7 +27,7 @@ class RENDERING_API Renderer : public MappedValues
 /* ==================== Static variables begin ==================== */
 private:
 	//static const int MAX_NUMBER_OF_CAMERAS;
-	static const Math::Matrix4D s_biasMatrix;
+	static const Math::Matrix4D BIAS_MATRIX;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -56,7 +56,7 @@ public:
 	void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
 	
 	unsigned int GetSamplerSlot(const std::string& samplerName) const;
-	void UpdateUniformStruct(const Transform& transform, const Material& material, Shader* shader, const std::string& uniformName, const std::string& uniformType);
+	void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
 
 	bool IsCloseRequested() const;
 

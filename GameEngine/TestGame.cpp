@@ -20,6 +20,7 @@ using namespace Math;
 using namespace Rendering;
 
 #define RENDER_LIGHT_MESHES
+//#define SIMULATE_SUN_BEHAVIOR
 
 TestGame::TestGame() :
 	Game(),
@@ -54,13 +55,14 @@ void TestGame::Init()
 	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
 
+	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
+	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
+	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
+
 	GameNode* planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane4.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
-			new Texture("..\\Textures\\bricks_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks_disp.png", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -0.5f)));
+		new Material(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f)));
 	planeNode->GetTransform().SetTranslation(0.0f, 0.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
 	AddToSceneRoot(planeNode);
@@ -68,24 +70,22 @@ void TestGame::Init()
 	GameNode* boxNode = new GameNode();
 	boxNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"),
-		new Material(
-			new Texture("..\\Textures\\crateBox2.jpg", GL_TEXTURE_2D, GL_LINEAR), 1.0f, 2.0f)));
+		new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
 	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
 	boxNode->GetTransform().SetScale(Vector3D(0.05f, 0.05f, 0.05f));
-	
-	//Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
-	//Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };
-	//int indices [] = { 0, 1 };
-	//boxNode->AddComponent(new MeshRenderer(
-	//	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
-	//	new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
 	AddToSceneRoot(boxNode);
+
+	////Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
+	////Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };
+	////int indices [] = { 0, 1 };
+	////boxNode->AddComponent(new MeshRenderer(
+	////	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
+	////	new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
 
 	GameNode* boxNode2 = new GameNode();
 	boxNode2->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\cube.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
+		new Material(new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
 			new Texture("..\\Textures\\bricks2_normal.jpg"),
 			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
 	boxNode2->GetTransform().SetTranslation(8.0f, 0.5f, 5.0f);
@@ -101,14 +101,10 @@ void TestGame::Init()
 	//testMesh2->GetTransform().SetScale(Vector3D(0.5f, 0.5f, 0.5f));
 	testMesh1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower,
-			new Texture("..\\Textures\\bricks2_normal.jpg", GL_TEXTURE_2D, GL_LINEAR),
-			new Texture("..\\Textures\\bricks2_disp.jpg", GL_TEXTURE_2D, GL_LINEAR), 0.03f, -1.0f)));
+		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, new Texture("..\\Textures\\bricks2_normal.jpg"), new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
 	testMesh2->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks2.jpg", GL_TEXTURE_2D, GL_LINEAR), specularIntensity, specularPower)));
+		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0)));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
@@ -116,10 +112,8 @@ void TestGame::Init()
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey3.obj"),
-		new Material(
-			new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), 1, 8)));
-			//new Texture("..\\Textures\\bricks_normal.jpg"))));
-	monkeyNode1->GetTransform().SetTranslation(15.0f, 3.75f, 4.0f);
+		new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), 1.0f, 8.0f)));
+	monkeyNode1->GetTransform().SetTranslation(-5.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
@@ -128,9 +122,7 @@ void TestGame::Init()
 	GameNode* monkeyNode2 = new GameNode();
 	monkeyNode2->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey3.obj"),
-		new Material(
-			new Texture("..\\Textures\\bricks.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
-			//new Texture("..\\Textures\\bricks_normal.jpg"))));
+		new Material(new Texture("..\\Textures\\bricks.jpg"), 2.0f, 32.0f)));
 	monkeyNode2->GetTransform().SetTranslation(5.0, 3.0, 15.0);
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
@@ -139,7 +131,7 @@ void TestGame::Init()
 	for (int i = 0; i < humanCount; ++i)
 	{
 		humanNodes[i] = new GameNode();
-		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg", GL_TEXTURE_2D, GL_LINEAR), 2, 32)));
+		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 2.0f, 32.0f)));
 		humanNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
 		AddToSceneRoot(humanNodes[i]);
 	}
@@ -148,7 +140,7 @@ void TestGame::Init()
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
-	/* ==================== Adding cameras begin ==================== */
+	///* ==================== Adding cameras begin ==================== */
 	if (cameraCount > 0)
 	{
 		LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
@@ -160,7 +152,7 @@ void TestGame::Init()
 		LOG(Error, LOGPLACE, "No cameras defined.");
 		exit(EXIT_FAILURE);
 	}
-	/* ==================== Adding cameras end ==================== */
+	///* ==================== Adding cameras end ==================== */
 
 	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
@@ -234,10 +226,13 @@ void TestGame::AddDirectionalLight()
 
 	// Rendering a small box around point light node position to let the user see the source
 #ifdef RENDER_LIGHT_MESHES
+	//Material directionalLightMaterial("directionalLight_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
+	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
+
 	directionalLightNode->GetTransform().SetScale(Vector3D(0.04f, 0.04f, 0.04f));
 	directionalLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\DirectionalLight.obj"),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1, 8)));
+		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
 		
 	Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -250,7 +245,7 @@ void TestGame::AddDirectionalLight()
 	int indices [] = { 0, 1 };
 	directionalLightNode->AddComponent(new MeshRenderer(
 		new Mesh(vertices, 2, indices, 2, false, GL_LINES),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
+		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
 #endif
 }
 
@@ -307,7 +302,7 @@ void TestGame::AddPointLights()
 #ifdef RENDER_LIGHT_MESHES
 		pointLightNodes[i]->AddComponent(new MeshRenderer(
 			new Mesh("..\\Models\\PointLight.obj"),
-			new Material(new Texture("..\\Textures\\PointLight.png"), 1, 8)));
+			new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
 		pointLightNodes[i]->GetTransform().SetScale(Vector3D(0.1f, 0.1f, 0.1f));
 #endif
 		
@@ -370,7 +365,7 @@ void TestGame::AddSpotLights()
 #ifdef RENDER_LIGHT_MESHES
 		spotLightNodes[i]->AddComponent(new MeshRenderer(
 			new Mesh("..\\Models\\SpotLight.obj"),
-			new Material(new Texture("..\\Textures\\SpotLight.png"), 1, 8)));
+			new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));
 		spotLightNodes[i]->GetTransform().SetScale(Vector3D(0.1f, 0.1f, 0.1f));
 #endif
 		
@@ -471,17 +466,33 @@ void TestGame::Update(Real delta)
 		temp = 0.0;
 	}
 
-	//Transform& t = directionalLightNode->GetTransform();
-	//t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
+#ifdef SIMULATE_SUN_BEHAVIOR
+	if (directionalLightNode != NULL)
+	{
+		Transform& t = directionalLightNode->GetTransform();
+		//t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
+		t.SetRotation(t.GetRot() * Quaternion(sin(temp) / 20000.0f, cos(temp) / 10000.0f, 0.0f, 1.0f));
+	}
+#endif
 
 	for (int i = 0; i < pointLightCount; ++i)
 	{
+		if (pointLightNodes[i] == NULL)
+		{
+			LOG(Error, LOGPLACE, "Point light node #%d is NULL while the number of created point lights should be equal to %d.", i, pointLightCount);
+			continue;
+		}
 		Transform& t = pointLightNodes[i]->GetTransform();
 		t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
 	}
 
 	for (int i = 0; i < spotLightCount; ++i)
 	{
+		if (spotLightNodes[i] == NULL)
+		{
+			LOG(Error, LOGPLACE, "Spot light node #%d is NULL while the number of created spot lights should be equal to %d.", i, spotLightCount);
+			continue;
+		}
 		Transform& t = spotLightNodes[i]->GetTransform();
 		t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
 	}

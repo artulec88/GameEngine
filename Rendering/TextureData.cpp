@@ -16,6 +16,11 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 		LOG(Utility::Emergency, LOGPLACE, "Incorrect number of textures specified");
 		exit(EXIT_FAILURE);
 	}
+	if (texturesCount > MAX_BOUND_TEXTURES_COUNT) //Assert to be sure no buffer overrun should occur
+	{
+		LOG(Utility::Error, LOGPLACE, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
+		exit(EXIT_FAILURE);
+	}
 	textureID = new GLuint[texturesCount];
 	this->width = width;
 	this->height = height;
@@ -60,7 +65,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 		LOG(Utility::Warning, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
 		//return;
 	}
-	if (filters != NULL)
+	if (filters == NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "The filter array is NULL.");
 	}
@@ -85,17 +90,33 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 		}
 
 		glTexImage2D(textureTarget, 0, internalFormat[i], width, height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
+
+		//if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
+		//	filters[i] == GL_NEAREST_MIPMAP_LINEAR ||
+		//	filters[i] == GL_LINEAR_MIPMAP_NEAREST ||
+		//	filters[i] == GL_LINEAR_MIPMAP_LINEAR)
+		//{
+		//	glGenerateMipmap(m_textureTarget);
+		//	GLfloat maxAnisotropy;
+		//	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+		//	glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Clamp(0.0f, 8.0f, maxAnisotropy));
+		//}
+		//else
+		//{
+		//	glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
+		//	glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
+		//}
 	}
 }
 
-void TextureData::Bind(int textureIndex)
+void TextureData::Bind(int textureIndex) const
 {
 	ASSERT(textureIndex >= 0);
 	ASSERT(textureIndex < texturesCount);
 	if ((textureIndex < 0) || (textureIndex >= texturesCount))
 	{
 		LOG(Utility::Error, LOGPLACE,
-			"Cannot bind the texture with textureID=%d. The value is out of range (%d, %d)", textureIndex, 0, texturesCount);
+			"Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, texturesCount);
 		return;
 	}
 	glBindTexture(textureTarget, textureID[textureIndex]);
@@ -107,6 +128,11 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	{
 		LOG(Utility::Debug, LOGPLACE, "No attachments used");
 		return;
+	}
+	if (texturesCount > MAX_BOUND_TEXTURES_COUNT) //Assert to be sure no buffer overrun should occur
+	{
+		LOG(Utility::Error, LOGPLACE, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
+		exit(EXIT_FAILURE);
 	}
 
 	GLenum* drawBuffers= new GLenum[texturesCount];
@@ -158,12 +184,15 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
 		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE.");
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void TextureData::BindAsRenderTarget()
+void TextureData::BindAsRenderTarget() const
 {
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, width, height);
 }

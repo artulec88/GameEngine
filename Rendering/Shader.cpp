@@ -11,6 +11,8 @@ using namespace Utility;
 using namespace Math;
 using namespace std;
 
+/* static */ int ShaderData::supportedOpenGLLevel = 0;
+/* static */ std::string ShaderData::glslVersion = "";
 /* static */ std::map<std::string, ShaderData*> Shader::shaderResourceMap;
 
 ShaderData::ShaderData(const std::string& fileName) :
@@ -25,13 +27,63 @@ ShaderData::ShaderData(const std::string& fileName) :
 		exit(EXIT_FAILURE);
 	}
 
-	std::string vertexShaderText = LoadShaderData(fileName + ".vshader");
-	std::string fragmentShaderText = LoadShaderData(fileName + ".fshader");
+    if(supportedOpenGLLevel == 0)
+    {
+		int majorVersion;
+		int minorVersion;
+		
+		glGetIntegerv(GL_MAJOR_VERSION, &majorVersion); 
+		glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+		
+		supportedOpenGLLevel = majorVersion * 100 + minorVersion * 10;
+		
+		if(supportedOpenGLLevel >= 330)
+		{
+			std::ostringstream convert;
+			convert << supportedOpenGLLevel;
+		
+			glslVersion = convert.str();
+		}
+		else if(supportedOpenGLLevel >= 320)
+		{
+			glslVersion = "150";
+		}
+		else if(supportedOpenGLLevel >= 310)
+		{
+			glslVersion = "140";
+		}
+		else if(supportedOpenGLLevel >= 300)
+		{
+			glslVersion = "130";
+		}
+		else if(supportedOpenGLLevel >= 210)
+		{
+			glslVersion = "120";
+		}
+		else if(supportedOpenGLLevel >= 200)
+		{
+			glslVersion = "110";
+		}
+		else
+		{
+			LOG(Emergency, LOGPLACE, "OpenGL Version %d.%d does not support shaders.\n", majorVersion, minorVersion);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	std::string shaderText = LoadShaderData(fileName + ".glsl");
+
+	//std::string vertexShaderText = LoadShaderData(fileName + ".vshader");
+	//std::string fragmentShaderText = LoadShaderData(fileName + ".fshader");
+
+	std::string vertexShaderText = "#version " + glslVersion + "\n#define VS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
+	std::string fragmentShaderText = "#version " + glslVersion + "\n#define FS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 
 	AddVertexShader(vertexShaderText);
 	AddFragmentShader(fragmentShaderText);
 
-	//AddAllAttributes();
+	std::string attributeKeyword = "attribute"; // TODO: make it const
+	AddAllAttributes(vertexShaderText, attributeKeyword);
 
 	if (! Compile())
 	{
@@ -210,6 +262,40 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 
 	glAttachShader(programID, shader);
 	shaders.push_back(shader);
+}
+
+void ShaderData::AddAllAttributes(const std::string& vertexShaderText, const std::string& attributeKeyword)
+{
+	int currentAttribLocation = 0;
+	size_t attributeLocation = vertexShaderText.find(attributeKeyword);
+	while(attributeLocation != std::string::npos)
+	{
+ 		bool isCommented = false;
+		size_t lastLineEnd = vertexShaderText.rfind("\n", attributeLocation);
+		
+		if(lastLineEnd != std::string::npos)
+		{
+			std::string potentialCommentSection = vertexShaderText.substr(lastLineEnd,attributeLocation - lastLineEnd);
+			
+			//Potential false positives are both in comments, and in macros.
+			isCommented = potentialCommentSection.find("//") != std::string::npos || potentialCommentSection.find("#") != std::string::npos;
+		}
+		
+		if(!isCommented)
+		{
+			size_t begin = attributeLocation + attributeKeyword.length();
+			size_t end = vertexShaderText.find(";", begin);
+			
+			std::string attributeLine = vertexShaderText.substr(begin + 1, end-begin - 1);
+			
+			begin = attributeLine.find(" ");
+			std::string attributeName = attributeLine.substr(begin + 1);
+				
+			glBindAttribLocation(programID, currentAttribLocation, attributeName.c_str());
+			currentAttribLocation++;
+		}
+		attributeLocation = vertexShaderText.find(attributeKeyword, attributeLocation + attributeKeyword.length());
+	}
 }
 
 void ShaderData::AddShaderUniforms(const std::string& shaderText)
@@ -433,7 +519,7 @@ Shader::~Shader(void)
 	}
 }
 
-void Shader::Bind()
+void Shader::Bind() const
 {
 	ASSERT(shaderData != NULL);
 	if (shaderData == NULL)
@@ -444,7 +530,7 @@ void Shader::Bind()
 	glUseProgram(shaderData->GetProgram());
 }
 
-void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer)
+void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const
 {
 	ASSERT(renderer != NULL);
 	if (renderer == NULL)
@@ -535,7 +621,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			}
 			else
 			{
-				renderer->UpdateUniformStruct(transform, material, this, uniformName, uniformType);
+				renderer->UpdateUniformStruct(transform, material, *this, uniformName, uniformType);
 			}
 		}
 		else if (uniformType == "sampler2D")
@@ -613,7 +699,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 //	uniforms.insert(std::pair<std::string, unsigned int>(uniform, uniformLocation));
 //}
 
-void Shader::SetUniformi(const std::string& name, int value)
+void Shader::SetUniformi(const std::string& name, int value) const
 {
 	std::map<std::string, unsigned int>::const_iterator itr;
 	if (shaderData->IsUniformPresent(name, itr))
@@ -622,7 +708,7 @@ void Shader::SetUniformi(const std::string& name, int value)
 	}
 }
 
-void Shader::SetUniformf(const std::string& name, Math::Real value)
+void Shader::SetUniformf(const std::string& name, Math::Real value) const
 {
 	//for (std::map<std::string, unsigned int>::const_iterator it = shaderData->GetUniformMap().begin(); it != shaderData->GetUniformMap().end(); ++it)
 	//{
@@ -635,7 +721,7 @@ void Shader::SetUniformf(const std::string& name, Math::Real value)
 	}
 }
 
-void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector)
+void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
 {
 	std::map<std::string, unsigned int>::const_iterator itr;
 	if (shaderData->IsUniformPresent(name, itr))
@@ -644,7 +730,7 @@ void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& v
 	}
 }
 
-void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix)
+void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
 	std::map<std::string, unsigned int>::const_iterator itr;
 	if (shaderData->IsUniformPresent(name, itr))
@@ -653,14 +739,14 @@ void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& mat
 	}
 }
 
-void Shader::SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight)
+void Shader::SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight) const
 {
 	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());
 	SetUniformVector3D(uniformName + ".base.color", directionalLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", directionalLight.GetIntensity());
 }
 
-void Shader::SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight)
+void Shader::SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight) const
 {
 	SetUniformVector3D(uniformName + ".base.color", pointLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", pointLight.GetIntensity());
@@ -671,7 +757,7 @@ void Shader::SetUniformPointLight(const std::string& uniformName, const PointLig
 	SetUniformf(uniformName + ".range", pointLight.GetRange());
 }
 
-void Shader::SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight)
+void Shader::SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight) const
 {
 	SetUniformVector3D(uniformName + ".pointLight.base.color", spotLight.GetColor());
 	SetUniformf(uniformName + ".pointLight.base.intensity", spotLight.GetIntensity());

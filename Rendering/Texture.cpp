@@ -98,7 +98,7 @@ Texture::~Texture(void)
 void Texture::Bind(unsigned int unit /* = 0 */) const
 {
 	ASSERT(textureData != NULL);
-	ASSERT((unit >= 0) && (unit < 32));
+	ASSERT((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT));
 	if (textureData == NULL)
 	{
 		LOG(Utility::Emergency, LOGPLACE, "Cannot bind the texture. Texture data is NULL");
@@ -109,7 +109,7 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 	textureData->Bind(0);
 }
 
-void Texture::BindAsRenderTarget()
+void Texture::BindAsRenderTarget() const
 {
 	if (textureData == NULL)
 	{

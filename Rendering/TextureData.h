@@ -9,6 +9,11 @@ namespace Rendering
 
 class TextureData : public Utility::ReferenceCounter
 {
+/* ==================== Static variables and functions begin ==================== */
+public:
+	static const int MAX_BOUND_TEXTURES_COUNT = 32; // The max number of bound textures in OpenGL
+/* ==================== Static variables and functions end ==================== */
+
 /* ==================== Non-static member variables begin ==================== */
 private:
 	GLenum textureTarget;
@@ -31,8 +36,8 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Bind(int textureIndex);
-	void BindAsRenderTarget();
+	void Bind(int textureIndex) const;
+	void BindAsRenderTarget() const;
 	inline int GetWidth() const { return this->width; }
 	inline int GetHeight() const { return this->height; }
 private:

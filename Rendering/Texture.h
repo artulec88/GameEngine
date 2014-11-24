@@ -34,7 +34,7 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void Bind(unsigned int unit = 0) const;
-	void BindAsRenderTarget();
+	void BindAsRenderTarget() const;
 	inline int GetWidth() const { return textureData->GetWidth(); }
 	inline int GetHeight() const { return textureData->GetHeight(); }
 /* ==================== Non-static member functions end ==================== */
