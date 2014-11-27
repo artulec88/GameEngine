@@ -127,6 +127,8 @@ void TestGame::Init()
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
 
+	srand((unsigned int)time(NULL));
+
 	humanNodes = new GameNode* [humanCount];
 	for (int i = 0; i < humanCount; ++i)
 	{
@@ -136,7 +138,10 @@ void TestGame::Init()
 		AddToSceneRoot(humanNodes[i]);
 	}
 
-	srand((unsigned int)time(NULL));
+	//castleNode = new GameNode();
+	//castleNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\castle.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 0.5f, 8.0f)));
+	//castleNode->GetTransform().SetTranslation(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
+	//AddToSceneRoot(castleNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
