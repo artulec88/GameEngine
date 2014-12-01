@@ -24,6 +24,11 @@ using namespace Math;
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
 Renderer::Renderer(int width, int height, std::string title) :
+	applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
+	backgroundColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f),
+		GET_CONFIG_VALUE("ClearColorGreen", 0.0f),
+		GET_CONFIG_VALUE("ClearColorBlue", 0.0f),
+		GET_CONFIG_VALUE("ClearColorAlpha", 1.0f)),
 	window(NULL),
 	vao(0),
 	isFullscreen(false),
@@ -41,7 +46,8 @@ Renderer::Renderer(int width, int height, std::string title) :
 	nullFilterShader(NULL),
 	gaussBlurFilterShader(NULL),
 	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
-	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
+	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024)),
+	propertiesBar(NULL)
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
 
@@ -56,10 +62,22 @@ Renderer::Renderer(int width, int height, std::string title) :
 	SetSamplerSlot("shadowMap", 3);
 	SetSamplerSlot("filterTexture", 0);
 
-	SetVector3D("ambientIntensity", ambientLight);
-
 	InitGraphics(width, height, title);
 	PrintGlReport();
+
+	/* ==================== Initializing AntTweakBar library begin ==================== */
+	TwInit(TW_OPENGL, NULL);
+	TwWindowSize(width, height);
+
+	propertiesBar = TwNewBar("PropertiesBar");
+	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &backgroundColor, " label='Background color' ");
+	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
+	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOL32, &applyFilterEnabled, " label='Apply filter' ");
+	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &ambientLight, " label='Ambient light' group=Lights");
+	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOL8, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
+	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOL8, PointLight::GetPointLightsEnabled(), " label='Point lights' group=Lights");
+	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOL8, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
+	/* ==================== Initializing AntTweakBar library end ==================== */
 
 	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
@@ -112,7 +130,8 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
 
-	glfwTerminate();
+	TwTerminate(); // Terminate AntTweakBar
+	glfwTerminate(); // Terminate GLFW
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 
@@ -123,7 +142,7 @@ void Renderer::InitGraphics(int width, int height, const std::string& title)
 	SetGlfwCallbacks();
 	InitGlew();
 
-	glClearColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f), GET_CONFIG_VALUE("ClearColorGreen", 0.0f), GET_CONFIG_VALUE("ClearColorBlue", 0.0f), GET_CONFIG_VALUE("ClearColorAlpha", 0.0f));
+	glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
 
 	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
 	glCullFace(GL_BACK); // cull the back face
@@ -134,8 +153,6 @@ void Renderer::InitGraphics(int width, int height, const std::string& title)
 	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
 	//glEnable(GL_TEXTURE_2D);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
-
-	//LOG(Notice, LOGPLACE, "Using OpenGL version %s", GetOpenGLVersion().c_str());
 }
 
 void Renderer::InitGlfw(int width, int height, const std::string& title)
@@ -209,6 +226,12 @@ void Renderer::InitGlew() const
 void Renderer::Render(GameNode& gameNode)
 {
 	// TODO: Expand with Stencil buffer once it is used
+	//LOG(Warning, LOGPLACE, "\ndirectionalLightsEnabled =\t%p\npointLightsEnabled =\t\t%d \nspotLightsEnabled =\t\t%d",
+	//	DirectionalLight::GetDirectionalLightsEnabled(),
+	//	PointLight::GetPointLightsEnabled(),
+	//	SpotLight::GetSpotLightsEnabled());
+	//LOG(Warning, LOGPLACE, "directionalLightsEnabled =\t%d\npointLightsEnabled =\t\t%d\nspotLightsEnabled =\t\t%d", BaseLight::directionalLightsEnabled, BaseLight::pointLightsEnabled, BaseLight::spotLightsEnabled);
+	SetVector3D("ambientIntensity", ambientLight);
 	BindAsRenderTarget();
 	ClearScreen();
 	currentCamera = cameras[currentCameraIndex];
@@ -217,6 +240,10 @@ void Renderer::Render(GameNode& gameNode)
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
 		currentLight = (*lightItr);
+		if (!currentLight->IsEnabled())
+		{
+			continue;
+		}
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
 		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
 		//glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
@@ -241,10 +268,12 @@ void Renderer::Render(GameNode& gameNode)
 
 			currentCamera = temp;
 
-			ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-			ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-			
-			//BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
+			if (applyFilterEnabled)
+			{
+				ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+				ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+				//BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
+			}
 		}
 		BindAsRenderTarget();
 
@@ -259,6 +288,9 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
 	}
+	TwDraw();
+
+	SwapBuffers();
 }
 
 void Renderer::BlurShadowMap(Texture* shadowMap, Real blurAmount)
@@ -329,7 +361,7 @@ void Renderer::SwapBuffers()
 
 void Renderer::ClearScreen() const
 {
-	//glClearColor();
+	glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -389,6 +421,9 @@ inline void Renderer::AddLight(BaseLight* light)
 inline void Renderer::AddCamera(Camera* camera)
 {
 	cameras.push_back(camera);
+	//TwSetParam(propertiesBar, "current camera", "min", TW_PARAM_INT32, 1, 0);
+	//TwSetParam(propertiesBar, "current camera", "max", TW_PARAM_INT32, 1, 3);
+	TwDefine(" PropertiesBar/currentCamera  min=0 max=2 ");
 }
 
 void Renderer::PrintGlReport()

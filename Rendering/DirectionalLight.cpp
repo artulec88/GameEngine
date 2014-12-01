@@ -1,10 +1,13 @@
 #include "StdAfx.h"
 #include "DirectionalLight.h"
+#include "CoreEngine.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
 using namespace Rendering;
+
+/* static */ bool DirectionalLight::directionalLightsEnabled = true;
 
 DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
 	BaseLight(color, intensity)
@@ -18,4 +21,13 @@ DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector
 
 DirectionalLight::~DirectionalLight(void)
 {
+}
+
+bool DirectionalLight::IsEnabled() const
+{
+	if (!directionalLightsEnabled)
+	{
+		return false;
+	}
+	return BaseLight::IsEnabled();
 }

@@ -13,7 +13,8 @@ BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0
 	color(color),
 	intensity(intensity),
 	shader(NULL),
-	shadowInfo(NULL)
+	shadowInfo(NULL),
+	isEnabled(true)
 {
 }
 

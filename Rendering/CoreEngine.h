@@ -53,8 +53,9 @@ private: // disable copy constructor
 public:
 	void Start();
 	void Stop();
-	unsigned int NextCamera();
-	unsigned int PrevCamera();
+	unsigned int GetCurrentCameraIndex() const;
+	unsigned int NextCamera() const;
+	unsigned int PrevCamera() const;
 	Renderer* GetRenderer() const { return renderer; }
 
 	

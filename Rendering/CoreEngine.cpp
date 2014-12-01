@@ -345,7 +345,18 @@ void CoreEngine::Run()
 	}
 }
 
-unsigned int CoreEngine::NextCamera()
+unsigned int CoreEngine::GetCurrentCameraIndex() const
+{
+	ASSERT(renderer != NULL);
+	if (this->renderer == NULL)
+	{
+		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
+		exit(EXIT_FAILURE);
+	}
+	return renderer->GetCurrentCameraIndex();
+}
+
+unsigned int CoreEngine::NextCamera() const
 {
 	ASSERT(renderer != NULL);
 	if (this->renderer == NULL)
@@ -356,7 +367,7 @@ unsigned int CoreEngine::NextCamera()
 	return renderer->NextCamera();
 }
 
-unsigned int CoreEngine::PrevCamera()
+unsigned int CoreEngine::PrevCamera() const
 {
 	ASSERT(renderer != NULL);
 	if (renderer == NULL)

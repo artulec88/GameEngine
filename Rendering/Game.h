@@ -8,12 +8,13 @@
 #include "Material.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "Renderer.h"
 #include "Camera.h"
 #include "Math\Math.h"
 
 namespace Rendering
 {
+
+class Renderer;
 
 class RENDERING_API Game
 {

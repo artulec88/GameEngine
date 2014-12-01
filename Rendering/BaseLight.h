@@ -14,13 +14,8 @@ class Renderer;
 
 class RENDERING_API BaseLight : public GameComponent
 {
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	Math::Vector3D color;
-	Math::Real intensity;
-	Shader* shader;
-	ShadowInfo* shadowInfo;
-/* ==================== Non-static member variables end ==================== */
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -32,7 +27,6 @@ public:
 public:
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-
 	Math::Vector3D GetColor() const;
 	void SetColor(const Math::Vector3D& color);
 	Math::Real GetIntensity() const;
@@ -40,10 +34,20 @@ public:
 	inline Shader* GetShader() { return this->shader; }
 	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
 	virtual void AddToEngine(CoreEngine* coreEngine);
+	virtual bool IsEnabled() const { return isEnabled; }
 protected:
 	inline void SetShader(Shader* shader);
 	inline void SetShadowInfo(ShadowInfo* shadowInfo);
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	Math::Vector3D color;
+	Math::Real intensity;
+	Shader* shader;
+	ShadowInfo* shadowInfo;
+	bool isEnabled;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class BaseLight */
 
 } /* end namespace Rendering */

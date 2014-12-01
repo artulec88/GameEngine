@@ -10,12 +10,12 @@ namespace Rendering
 
 class RENDERING_API PointLight : public BaseLight
 {
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Attenuation attenuation;
-	//Math::Vector3D position;
-	Math::Real range;
-/* ==================== Non-static member variables end ==================== */
+/* ==================== Static variables and functions begin ==================== */
+public:
+	static bool pointLightsEnabled;
+public:
+	static bool* GetPointLightsEnabled() { return &pointLightsEnabled; }
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -34,9 +34,17 @@ public:
 	//void SetPosition(const Math::Vector3D& position);
 	Math::Real GetRange() const { return this->range; };
 	//void SetRange(Math::Real range);
+	virtual bool IsEnabled() const;
 protected:
 	void CalculateRange();
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	Attenuation attenuation;
+	//Math::Vector3D position;
+	Math::Real range;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class PointLight */
 
 } /* end namespace Rendering */

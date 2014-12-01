@@ -1,10 +1,13 @@
 #include "StdAfx.h"
 #include "PointLight.h"
+#include "CoreEngine.h"
 #include "Shader.h"
 #include "Utility\IConfig.h"
 
 using namespace Rendering;
 using namespace Utility;
+
+/* static */ bool PointLight::pointLightsEnabled = true;
 
 PointLight::PointLight(const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/) :
@@ -42,4 +45,13 @@ void PointLight::CalculateRange()
 	Math::Real c = this->attenuation.GetConstant() - colorDepth * intensity * maxColorElement;
 
 	this->range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
+}
+
+bool PointLight::IsEnabled() const
+{
+	if (!pointLightsEnabled)
+	{
+		return false;
+	}
+	return BaseLight::IsEnabled();
 }

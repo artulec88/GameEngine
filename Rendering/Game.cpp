@@ -3,7 +3,7 @@
 #include "CoreEngine.h"
 #include "Vertex.h"
 #include "Input.h"
-//#include "PhongShader.h"
+#include "Renderer.h"
 #include "Attenuation.h"
 #include "PointLight.h"
 #include "Texture.h"
@@ -14,6 +14,8 @@
 #include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
+
+#include "AntTweakBar\include\AntTweakBar.h"
 
 #include <fstream>
 
@@ -96,22 +98,36 @@ void Game::InitializeCameras()
 
 /* static */ void Game::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	GetGame()->KeyEvent(window, key, scancode, action, mods);
+	if( !TwEventKeyGLFW(key, action) )  // send event to AntTweakBar
+    {
+		// event has not been handled by AntTweakBar
+		// your code here to handle the event
+		GetGame()->KeyEvent(window, key, scancode, action, mods);
+    }
 }
 
 /* static */ void Game::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	GetGame()->MouseButtonEvent(window, button, action, mods);
+	if ( !TwEventMouseButtonGLFW(button, action) )
+	{
+		GetGame()->MouseButtonEvent(window, button, action, mods);
+	}
 }
 
 /* static */ void Game::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
-	GetGame()->MousePosEvent(window, xPos, yPos);
+	if (!TwEventMousePosGLFW(xPos, yPos))
+	{
+		GetGame()->MousePosEvent(window, xPos, yPos);
+	}
 }
 
 /* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
-	GetGame()->ScrollEvent(window, xOffset, yOffset);
+	if ( !TwEventMouseWheelGLFW(yOffset) ) // TODO: Check if yOffset here is ok
+	{
+		GetGame()->ScrollEvent(window, xOffset, yOffset);
+	}
 }
 
 void Game::CloseWindowEvent(GLFWwindow* window)

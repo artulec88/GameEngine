@@ -27,12 +27,11 @@ TestGame::TestGame() :
 	humanCount(2),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
-	pointLightCount(GET_CONFIG_VALUE("pointLightCount", 1)),
+	pointLightCount(GET_CONFIG_VALUE("pointLightsCount", 1)),
 	pointLightNodes(NULL),
-	spotLightCount(GET_CONFIG_VALUE("spotLightCount", 1)),
+	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
 	spotLightNodes(NULL),
-	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
-	currentCameraIndex(0)
+	cameraCount(GET_CONFIG_VALUE("cameraCount", 3))
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -181,13 +180,13 @@ void TestGame::AddLights()
 
 void TestGame::AddDirectionalLight()
 {
-	bool directionalLightEnabled = GET_CONFIG_VALUE("directionalLightEnabled", true);
-	if (!directionalLightEnabled)
+	bool directionalLightsEnabled = GET_CONFIG_VALUE("directionalLightsEnabled", true);
+	if (!directionalLightsEnabled)
 	{
-		LOG(Notice, LOGPLACE, "Directional light disabled");
+		LOG(Notice, LOGPLACE, "Directional lights disabled");
 		return;
 	}
-	LOG(Info, LOGPLACE, "Directional light enabled");
+	LOG(Info, LOGPLACE, "Directional lights enabled");
 	directionalLightNode = new GameNode();
 
 	const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
@@ -502,6 +501,7 @@ void TestGame::Update(Real delta)
 		t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
 	}
 
+	unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 	Vector3D acceleration;
@@ -570,6 +570,7 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	//}
 
 	// TODO: Set delta to correct value
+	unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 	switch (key)
@@ -629,13 +630,13 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	case GLFW_KEY_N: // next camera
 		if (action == GLFW_PRESS)
 		{
-			currentCameraIndex = CoreEngine::GetCoreEngine()->NextCamera();
+			CoreEngine::GetCoreEngine()->NextCamera();
 		}
 		break;
 	case GLFW_KEY_P: // prev camera
 		if (action == GLFW_PRESS)
 		{
-			currentCameraIndex = CoreEngine::GetCoreEngine()->PrevCamera();
+			CoreEngine::GetCoreEngine()->PrevCamera();
 		}
 		break;
 	}
@@ -683,22 +684,19 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 	bool rotX = ! AlmostEqual(deltaPosition.GetX(), 0.0f);
 	bool rotY = ! AlmostEqual(deltaPosition.GetY(), 0.0f);
 
-	if (rotX)
-	{
-		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
-		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-		transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));
-		//transform.Rotate(transform.GetTransformedRot().GetUp(), Angle(deltaPosition.GetX() * sensitivity));
-	}
-	if (rotY)
-	{
-		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
-		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-		transform.Rotate(transform.GetRot().GetRight(), Angle(deltaPosition.GetY() * sensitivity));
-	}
-
 	if (rotX || rotY)
 	{
+		unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
+		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
+		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+		if (rotX)
+		{
+			transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));
+		}
+		if (rotY)
+		{
+			transform.Rotate(transform.GetRot().GetRight(), Angle(deltaPosition.GetY() * sensitivity));
+		}
 		CoreEngine::GetCoreEngine()->SetCursorPos(centerPosition.GetX(), centerPosition.GetY());
 	}
 }

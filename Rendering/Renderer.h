@@ -8,9 +8,12 @@
 #include "Material.h"
 #include "Transform.h"
 #include "Shader.h"
+#include "Color.h"
 //#include "Utility\Singleton.h"
 
 #include "Math\Vector.h"
+
+#include "AntTweakBar\include\AntTweakBar.h"
 
 #include <string>
 #include <vector>
@@ -50,6 +53,7 @@ public:
 	inline BaseLight* GetCurrentLight() { return currentLight; }
 	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
 	inline Camera& GetCurrentCamera();
+	unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
 	unsigned int NextCamera();
 	unsigned int PrevCamera();
 	unsigned int SetCurrentCamera(unsigned int cameraIndex);
@@ -78,6 +82,8 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	bool applyFilterEnabled;
+	Color backgroundColor;
 	GLFWwindow* window;
 	GLuint framebuffer;
 	GLuint vao; // vertex array id
@@ -106,6 +112,7 @@ private:
 	std::map<std::string, unsigned int> samplerMap;
 	Math::Matrix4D lightMatrix;
 
+	TwBar* propertiesBar;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Renderer */
 
