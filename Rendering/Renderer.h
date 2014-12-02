@@ -47,6 +47,8 @@ public:
 	//GLFWwindow* GetWindow() const { return this->window; };
 	void Render(GameNode& node);
 	void SwapBuffers();
+
+	void InitializeTweakBars();
 	
 	inline void AddLight(BaseLight* light);
 	inline void AddCamera(Camera* camera);
@@ -82,8 +84,10 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	unsigned int cameraCount;
 	bool applyFilterEnabled;
 	Color backgroundColor;
+	bool shadowsEnabled;
 	GLFWwindow* window;
 	GLuint framebuffer;
 	GLuint vao; // vertex array id
@@ -113,6 +117,7 @@ private:
 	Math::Matrix4D lightMatrix;
 
 	TwBar* propertiesBar;
+	TwBar* selectedCameraBar;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Renderer */
 

@@ -210,6 +210,7 @@ void CoreEngine::Run()
 	ASSERT(!isRunning);
 
 	game->Init();
+	renderer->InitializeTweakBars();
 
 	isRunning = true;
 
