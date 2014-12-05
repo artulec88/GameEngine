@@ -7,3 +7,5 @@
 7.	Create a macro for pointer safe deleting (something like #define SAFE_DELETE(p) if(p) { delete p; p = NULL; }
 8.	Filename class member variable in several resource-related classes should be moved to their base class (which for now is called ReferenceCounter, but should be renamed to e.g. Resource)
 9.	Create a possibility to display a light direction (current solution does not work correctly)s
+10.	Create a script probing the application and creating a report on how much CPU and memory it uses.
+11.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.

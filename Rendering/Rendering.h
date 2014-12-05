@@ -11,12 +11,7 @@
 // Include GLFW
 #include <GLFW\glfw3.h>
 
-#define BASIC_SHADOW_MAPPING_ENABLED
-#define VARIANCE_SHADOW_MAPPING_ENABLED
-
-#ifdef VARIANCE_SHADOW_MAPPING_ENABLED
-#undef BASIC_SHADOW_MAPPING_ENABLED
-#endif
+#define ANT_TWEAK_BAR_ENABLED
 
 namespace Rendering
 {

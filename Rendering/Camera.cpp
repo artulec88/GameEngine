@@ -6,6 +6,9 @@
 #include "Input.h"
 
 #include "Math\Quaternion.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "Math\FloatingPoint.h"
+#endif
 
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
@@ -47,6 +50,16 @@ Camera::Camera(const Matrix4D& projectionMatrix) :
 
 Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
 	GameComponent()
+#ifdef ANT_TWEAK_BAR_ENABLED
+	,prevFov(FoV),
+	fov(FoV),
+	prevAspectRatio(aspectRatio),
+	aspectRatio(aspectRatio),
+	prevNearPlane(zNearPlane),
+	nearPlane(zNearPlane),
+	prevFarPlane(zFarPlane),
+	farPlane(zFarPlane)
+#endif
 {
 	this->projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
 }
@@ -151,6 +164,19 @@ void Camera::Input(Real delta)
 {
 	//if (!isActive)
 	//	return;
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if ( (prevFov != fov) || (!AlmostEqual(prevAspectRatio, aspectRatio)) || (!AlmostEqual(prevNearPlane, nearPlane)) || (!AlmostEqual(prevFarPlane, farPlane)) )
+	{
+		LOG(Info, LOGPLACE, "Recalculating the projection matrix for the selected camera");
+
+		projection = Math::Matrix4D::PerspectiveProjection(fov, aspectRatio, nearPlane, farPlane);
+
+		prevFov = fov;
+		prevAspectRatio = aspectRatio;
+		prevNearPlane = nearPlane;
+		prevFarPlane = farPlane;
+	}
+#endif
 }
 
 Matrix4D Camera::GetViewProjection() const

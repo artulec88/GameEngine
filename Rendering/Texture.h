@@ -15,12 +15,6 @@ private:
 	static std::map<std::string, TextureData*> textureResourceMap;
 /* ==================== Static variables end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	TextureData* textureData;
-	std::string fileName;
-/* ==================== Non-static member variables end ==================== */
-
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
@@ -38,6 +32,12 @@ public:
 	inline int GetWidth() const { return textureData->GetWidth(); }
 	inline int GetHeight() const { return textureData->GetHeight(); }
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	TextureData* textureData;
+	std::string fileName;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Texture */
 
 } /* end namespace Rendering */

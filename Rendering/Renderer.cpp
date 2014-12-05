@@ -7,6 +7,9 @@
 #include "SpotLight.h"
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "AntTweakBarTypes.h"
+#endif
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
@@ -21,31 +24,6 @@
 using namespace Rendering;
 using namespace Utility;
 using namespace Math;
-
-//class TempMatrix
-//{
-//private:
-//	Math::Real m[MATRIX_SIZE][MATRIX_SIZE];
-//public:
-//	TempMatrix(const Math::Angle& fov, Math::Real aspect, Math::Real nearPlane, Math::Real farPlane)
-//	{
-//		Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
-//		Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
-//		m[0][0] = f / aspect;	m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;											m[0][3] = REAL_ZERO;
-//		m[1][0] = REAL_ZERO;	m[1][1] = f;			m[1][2] = REAL_ZERO;											m[1][3] = REAL_ZERO;
-//		m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = (-nearPlane - farPlane) * div;						m[2][3] = REAL_ONE;
-//		m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[3][3] = REAL_ZERO;
-//		for (int i = 0; i < MATRIX_SIZE; ++i)
-//		{
-//			for (int j = 0; j < MATRIX_SIZE; ++j)
-//			{
-//				LOG(Warning, LOGPLACE, "[%d][%d] = %p", i, j, &m[i][j]);
-//			}
-//		}
-//	}
-//};
-//TempMatrix tempMatrix(Angle(75.0f), 1.33333333333333f, 0.1f, 1000.0f);
-Math::Matrix4D tempMatrix = Math::Matrix4D::PerspectiveProjection(Angle(75.0f), 1.33333333333333f, 0.1f, 1000.0f);
 
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
@@ -74,9 +52,12 @@ Renderer::Renderer(int width, int height, std::string title) :
 	nullFilterShader(NULL),
 	gaussBlurFilterShader(NULL),
 	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
-	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024)),
-	propertiesBar(NULL),
-	selectedCameraBar(NULL)
+	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
+#ifdef ANT_TWEAK_BAR_ENABLED
+	,propertiesBar(NULL),
+	cameraBar(NULL),
+	previousFrameCameraIndex(0)
+#endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
 
@@ -93,6 +74,10 @@ Renderer::Renderer(int width, int height, std::string title) :
 
 	InitGraphics(width, height, title);
 	PrintGlReport();
+
+#ifndef ANT_TWEAK_BAR_ENABLED
+	SetVector3D("ambientIntensity", ambientLight);
+#endif
 
 	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
@@ -145,7 +130,9 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
+#endif
 	glfwTerminate(); // Terminate GLFW
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
@@ -154,7 +141,7 @@ void Renderer::InitGraphics(int width, int height, const std::string& title)
 {
 	LOG(Info, LOGPLACE, "Initializing Renderer started");
 	InitGlfw(width, height, title);
-	SetGlfwCallbacks();
+	SetCallbacks();
 	InitGlew();
 
 	glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
@@ -202,10 +189,10 @@ void Renderer::InitGlfw(int width, int height, const std::string& title)
 	LOG(Debug, LOGPLACE, "Initializing GLFW finished successfully");
 }
 
-void Renderer::SetGlfwCallbacks()
+void Renderer::SetCallbacks()
 {
 	glfwSetWindowCloseCallback(window, &Game::WindowCloseEventCallback);
-	//glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
+	glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
 	glfwSetKeyCallback(window, &Game::KeyEventCallback);
 	//glfwSetCharCallback(window, Game::CharEventCallback);
 	//glfwSetMousePosCallback(window, Game::MouseMotionCallback);
@@ -241,12 +228,10 @@ void Renderer::InitGlew() const
 void Renderer::Render(GameNode& gameNode)
 {
 	// TODO: Expand with Stencil buffer once it is used
-	//LOG(Warning, LOGPLACE, "\ndirectionalLightsEnabled =\t%p\npointLightsEnabled =\t\t%d \nspotLightsEnabled =\t\t%d",
-	//	DirectionalLight::GetDirectionalLightsEnabled(),
-	//	PointLight::GetPointLightsEnabled(),
-	//	SpotLight::GetSpotLightsEnabled());
-	//LOG(Warning, LOGPLACE, "directionalLightsEnabled =\t%d\npointLightsEnabled =\t\t%d\nspotLightsEnabled =\t\t%d", BaseLight::directionalLightsEnabled, BaseLight::pointLightsEnabled, BaseLight::spotLightsEnabled);
+#ifdef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientIntensity", ambientLight);
+	CheckCameraIndexChange();
+#endif
 	BindAsRenderTarget();
 	ClearScreen();
 	currentCamera = cameras[currentCameraIndex];
@@ -303,7 +288,9 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
 	}
+#ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
+#endif
 	SwapBuffers();
 }
 
@@ -414,15 +401,17 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
 	{
 		LOG(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
-		LOG(Notice, LOGPLACE, "Setting current camera index to 1");
+		LOG(Notice, LOGPLACE, "Setting current camera index to 0 (i.e. first camera)");
 		this->currentCameraIndex = 0;
 	}
 	else
 	{
 		this->currentCameraIndex = cameraIndex;
 	}
+#ifndef ANT_TWEAK_BAR_ENABLED
 	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
 	LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+#endif
 	//cameras[this->currentCameraIndex]->Activate();
 	return this->currentCameraIndex;
 }
@@ -480,10 +469,25 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 	return samplerItr->second;
 }
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 void Renderer::InitializeTweakBars()
 {
 	/* ==================== Initializing AntTweakBar library begin ==================== */
 	TwInit(TW_OPENGL, NULL);
+
+	AntTweakBarTypes::InitializeTweakBarTypes();
+
+	LOG(Warning, LOGPLACE, "Sizeof(Matrix) = %d", sizeof(Math::Matrix4D));
+	LOG(Warning, LOGPLACE, "Sizeof(Angle) = %d", sizeof(Math::Angle));
+	LOG(Warning, LOGPLACE, "Sizeof(Real) = %d", sizeof(Math::Real));
+	LOG(Warning, LOGPLACE, "Sizeof(Camera) = %d", sizeof(Camera));
+
+	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
+	cameraMembers[0].Name = "Projection"; cameraMembers[1].Name = "FoV"; cameraMembers[2].Name = "AspectRatio"; cameraMembers[3].Name = "NearPlane"; cameraMembers[4].Name = "FarPlane";
+	cameraMembers[0].Type = matrix4DType; cameraMembers[1].Type = angleType; cameraMembers[2].Type = TW_TYPE_FLOAT; cameraMembers[3].Type = TW_TYPE_FLOAT; cameraMembers[4].Type = TW_TYPE_FLOAT;
+	cameraMembers[0].Offset = 8; cameraMembers[1].Offset = 80; cameraMembers[2].Offset = 92; cameraMembers[3].Offset = 100; cameraMembers[4].Offset = 108;
+	cameraMembers[0].DefString = ""; cameraMembers[1].DefString = ""; cameraMembers[2].DefString = " step=0.01 "; cameraMembers[3].DefString = ""; cameraMembers[4].DefString = "";
+	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -499,73 +503,43 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &shadowsEnabled, " label='Render shadows' group=Shadows");
 
-	//TwSetParam(propertiesBar, "current camera", "min", TW_PARAM_INT32, 1, 0);
-	int result = TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
-	//char def[256];
-	//_snprintf(def, 255, "PropertiesBar/currentCamera min=0 max=%d", cameras.size());
-    //int result = TwDefine(def); // min and max are defined using a definition string
-	//TwDefine(" PropertiesBar/currentCamera  min=0 max=2 ");
-	if (result == 0)
-	{
-		LOG(Error, LOGPLACE, "Error while setting \"max\" parameter for the PropertiesBar/currentCamera attribute (\"%s\")", TwGetLastError());
-	}
+	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
 
-	selectedCameraBar = TwNewBar("SelectedCameraBar");
-//cameraAngleX_2 = 60.0
-//cameraAngleY_2 = -45.0
-//cameraAngleZ_2 = 0.0
-//cameraFoV_2 = 70.0
-//cameraAspectRatio_2 = 1.33333333333333
-//cameraNearPlane_2 = 0.1
-//cameraFarPlane_2 = 100.0;
-	// Description of the structure (note that you are not required to describe all members, and that members can be reordered)
-	TwStructMember vector3DMembers[] = {
-		{ "X", TW_TYPE_FLOAT, 0, "" },
-		{ "Y", TW_TYPE_FLOAT, 4, "" },
-		{ "Z", TW_TYPE_FLOAT, 8, "" }
-	};
-	TwType vector3DType = TwDefineStruct("Vector", vector3DMembers, 3, sizeof(Math::Vector3D), NULL, NULL);  // create a new TwType associated to the class defined by the vector3DMembers array;
-	TwStructMember matrix4DRowMembers[] = {
-		{ "[0]", TW_TYPE_FLOAT, 0, "" },
-		{ "[1]", TW_TYPE_FLOAT, 16, "" },
-		{ "[2]", TW_TYPE_FLOAT, 32, "" },
-		{ "[3]", TW_TYPE_FLOAT, 48, "" }
-	};
-	TwType matrix4DRowType = TwDefineStruct("Matrix4DRow", matrix4DRowMembers, 4, sizeof(Math::Matrix4D), NULL, NULL);
-	TwStructMember matrix4DMembers[] = {
-		{ "[0]", matrix4DRowType, 0, "" },
-		{ "[1]", matrix4DRowType, 4, "" },
-		{ "[2]", matrix4DRowType, 8, "" },
-		{ "[3]", matrix4DRowType, 12, "" }
-	};
-	TwType matrix4DType = TwDefineStruct("Matrix4D", matrix4DMembers, 4, sizeof(Math::Matrix4D) / 4, NULL, NULL);
-	TwStructMember cameraMembers[] = {
-		{ "Position", vector3DType, 0, "" }, // TODO: Position is not displayed correctly, because at 0 address lies the pointer to parentGameNode
-		{ "Projection", matrix4DType, 8, "" }
-	};
-	TwType cameraType = TwDefineStruct("Camera", cameraMembers, 2, sizeof(Rendering::Camera), NULL, NULL);
-
-	currentCamera = cameras[this->currentCameraIndex];
-	TwAddVarRW(selectedCameraBar, "camera", cameraType,  currentCamera, " label='Camera' ");
-
-    // Define a new enum type for the tweak bar
- //   TwEnumVal modeEV[] = // array used to describe the Scene::AnimMode enum values
- //   {
- //       { TempLight::ANIM_FIXED,    "Fixed"     }, 
- //       { TempLight::ANIM_BOUNCE,   "Bounce"    }, 
- //       { TempLight::ANIM_ROTATE,   "Rotate"    }, 
- //       { TempLight::ANIM_COMBINED, "Combined"  }
- //   };
- //   TwType modeType = TwDefineEnum("Mode", modeEV, 4);  // create a new TwType associated to the enum defined by the modeEV array
- //   TwStructMember tempLightMembers[] = // array used to describe tweakable variables of the Light structure
- //   {
- //       { "Active",    TW_TYPE_BOOLCPP, offsetof(TempLight, Active),    " help='Enable/disable the light.' " },   // Light::Active is a C++ boolean value
- //       { "Color",     TW_TYPE_COLOR4F, offsetof(TempLight, Color),     " noalpha help='Light color.' " },        // Light::Color is represented by 4 floats, but alpha channel should be ignored
- //       { "Radius",    TW_TYPE_FLOAT,   offsetof(TempLight, Radius),    " min=0 max=4 step=0.02 help='Light radius.' " },
- //       { "Animation", modeType,        offsetof(TempLight, Animation), " help='Change the animation mode.' " },  // use the enum 'modeType' created before to tweak the Light::Animation variable
- //       { "Speed",     TW_TYPE_FLOAT,   offsetof(TempLight, Speed0),    " readonly=true help='Light moving speed.' " } // Light::Speed is made read-only
- //   };
- //   TwType tempLightType = TwDefineStruct("TempLight", tempLightMembers, 5, sizeof(TempLight), NULL, NULL);  // create a new TwType associated to the struct defined by the lightMembers array
-	//TwAddVarRW(propertiesBar, "cameraPos", tempLightType, &tempLight, " label='Camera position' ");
+	cameraBar = TwNewBar("CamerasBar");
+	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
+	char cameraIndexStr[256];
+	char cameraDefStr[256];
+	_snprintf(cameraIndexStr, 255, "camera[%d].Pos", currentCameraIndex);
+	_snprintf(cameraDefStr, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
+	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+	_snprintf(cameraIndexStr, 255, "camera[%d].Rot", currentCameraIndex);
+	_snprintf(cameraDefStr, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
+	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
+	TwDefine(" CamerasBar/Camera opened=true ");
 	/* ==================== Initializing AntTweakBar library end ==================== */
 }
+
+void Renderer::CheckCameraIndexChange()
+{
+	if (previousFrameCameraIndex == currentCameraIndex)
+	{
+		return;
+	}
+	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
+	LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+
+	TwRemoveAllVars(cameraBar);
+	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
+	char cameraIndexStr[256];
+	char cameraDefStr[256];
+	_snprintf(cameraIndexStr, 255, "camera[%d].Pos", currentCameraIndex);
+	_snprintf(cameraDefStr, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
+	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", currentCameraIndex);
+	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", currentCameraIndex);
+	//TwAddVarRW(cameraBar, cameraIndexStr, angleType, &tempAngle, cameraDefStr);
+	TwDefine(" CamerasBar/Camera opened=true ");
+
+	previousFrameCameraIndex = currentCameraIndex;
+}
+#endif

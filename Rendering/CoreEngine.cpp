@@ -210,7 +210,10 @@ void CoreEngine::Run()
 	ASSERT(!isRunning);
 
 	game->Init();
+#ifdef ANT_TWEAK_BAR_ENABLED
 	renderer->InitializeTweakBars();
+	game->InitializeTweakBars();
+#endif
 
 	isRunning = true;
 

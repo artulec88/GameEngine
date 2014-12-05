@@ -25,11 +25,6 @@ public:
 	static void InitializeCameraSensitivity();
 /* ==================== Static variables and functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Math::Matrix4D projection;
-/* ==================== Non-static member variables end ==================== */
-
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	//Camera();
@@ -58,6 +53,16 @@ public:
 	//void Activate();
 	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	Math::Matrix4D projection;
+#ifdef ANT_TWEAK_BAR_ENABLED
+	Math::Angle prevFov, fov;
+	Math::Real prevAspectRatio, aspectRatio;
+	Math::Real prevNearPlane, nearPlane, prevFarPlane, farPlane;
+#endif
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Camera */
 
 } /* end namespace Rendering */

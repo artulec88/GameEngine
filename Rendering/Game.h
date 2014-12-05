@@ -27,7 +27,7 @@ protected:
 public:
 	static Game* GetGame();
 	static void WindowCloseEventCallback(GLFWwindow* window);
-	//static void WindowResizeCallback(GLFWwindow* window, int width, int height);
+	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	//static void CharEventCallback(GLFWwindow* window, unsigned int codepoint);
 	static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
@@ -55,7 +55,11 @@ public:
 	void SetEngine(CoreEngine* coreEngine);
 
 	virtual void InitializeCameras(); // TODO: Consider deleting this function. Otherwise, implement it
+#ifdef ANT_TWEAK_BAR_ENABLED
+	virtual void InitializeTweakBars();
+#endif
 
+	virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	virtual void CloseWindowEvent(GLFWwindow* window);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);

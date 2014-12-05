@@ -15,7 +15,9 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar\include\AntTweakBar.h"
+#endif
 
 #include <fstream>
 
@@ -96,38 +98,73 @@ void Game::InitializeCameras()
 	GetGame()->CloseWindowEvent(window);
 }
 
+/* static */ void Game::WindowResizeCallback(GLFWwindow* window, int width, int height)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if ( !TwWindowSize(width, height) )
+	{
+		GetGame()->WindowResizeEvent(window, width, height);
+	}
+#else
+	GetGame()->CloseWindowEvent(window);
+#endif
+}
+
 /* static */ void Game::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+#ifdef ANT_TWEAK_BAR_ENABLED
 	if( !TwEventKeyGLFW(key, action) )  // send event to AntTweakBar
     {
 		// event has not been handled by AntTweakBar
-		// your code here to handle the event
 		GetGame()->KeyEvent(window, key, scancode, action, mods);
     }
+#else
+	GetGame()->KeyEvent(window, key, scancode, action, mods);
+#endif
 }
 
 /* static */ void Game::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
+#ifdef ANT_TWEAK_BAR_ENABLED
 	if ( !TwEventMouseButtonGLFW(button, action) )
 	{
+		// event has not been handled by AntTweakBar
 		GetGame()->MouseButtonEvent(window, button, action, mods);
 	}
+#else
+	GetGame()->MouseButtonEvent(window, button, action, mods);
+#endif
 }
 
 /* static */ void Game::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
+#ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMousePosGLFW(xPos, yPos))
 	{
+		// event has not been handled by AntTweakBar
 		GetGame()->MousePosEvent(window, xPos, yPos);
 	}
+#else
+	GetGame()->MousePosEvent(window, xPos, yPos);
+#endif
 }
 
 /* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
+#ifdef ANT_TWEAK_BAR_ENABLED
 	if ( !TwEventMouseWheelGLFW(yOffset) ) // TODO: Check if yOffset here is ok
 	{
+		// event has not been handled by AntTweakBar
 		GetGame()->ScrollEvent(window, xOffset, yOffset);
 	}
+#else
+	GetGame()->ScrollEvent(window, xOffset, yOffset);
+#endif
+}
+
+void Game::WindowResizeEvent(GLFWwindow* window, int width, int height)
+{
+	LOG(Notice, LOGPLACE, "Window resize event (width = %d, height = %d)", width, height);
 }
 
 void Game::CloseWindowEvent(GLFWwindow* window)
@@ -225,3 +262,9 @@ void Game::Render(Renderer* renderer)
 	}
 	renderer->Render(GetRootGameNode());
 }
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void Game::InitializeTweakBars()
+{
+}
+#endif

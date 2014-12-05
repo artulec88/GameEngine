@@ -1,33 +1,57 @@
 #include "StdAfx.h"
 #include "Angle.h"
 #include "FloatingPoint.h"
+#include "Utility\ILogger.h"
 
 using namespace Math;
 
-Angle::Angle(Real angle, bool isInDegrees /* = true */) :
-  angle(angle),
-  isInDegrees(isInDegrees)
+Angle::Angle(Real angle /* = REAL_ZERO */, Unit unit /* = DEGREE */) :
+	angle(angle),
+	unit(unit)
 {
 }
 
 Angle::Angle(const Angle& angle) :
-  angle(angle.GetAngleInRadians()),
-  isInDegrees(false)
+	angle(angle.GetAngleInRadians()),
+	unit(RADIAN)
 {
 }
-
 
 // TODO: move this function to *.h file as an inline function
 Real Angle::GetAngleInDegrees() const
 {
-  return (isInDegrees) ? angle : ToDeg(angle);
+	switch (unit)
+	{
+	case DEGREE:
+		return angle;
+		break;
+	case RADIAN:
+		return ToDeg(angle);
+		break;
+	default:
+		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
+		return angle;
+		break;
+	}
 }
 
 
 // TODO: move this function to *.h file as an inline function
 Real Angle::GetAngleInRadians() const
 {
-  return (isInDegrees) ? ToRad(angle) : angle;
+	switch (unit)
+	{
+	case DEGREE:
+		return ToRad(angle);
+		break;
+	case RADIAN:
+		return angle;
+		break;
+	default:
+		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
+		return angle;
+		break;
+	}
 }
 
 bool Angle::operator==(const Angle& angle) const

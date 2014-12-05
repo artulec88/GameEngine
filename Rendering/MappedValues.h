@@ -9,22 +9,16 @@
 #include "Utility\ILogger.h"
 
 #include "Texture.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "AntTweakBar\include\AntTweakBar.h"
+#include "AntTweakBarTypes.h"
+#endif
 
 namespace Rendering
 {
 
 class RENDERING_API MappedValues
 {
-/* ==================== Non-static member variables begin ==================== */
-private:
-	std::map<std::string, Math::Vector3D> vec3DMap;
-	std::map<std::string, Math::Real> realMap;
-	std::map<std::string, Texture*> textureMap;
-	Texture* defaultTexture;
-	Math::Vector3D defaultVector3D;
-/* ==================== Non-static member variables end ==================== */
-
-
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	MappedValues(void) :
@@ -134,7 +128,23 @@ public:
 		}
 		return itr->second;
 	}
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+	virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
+#endif
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
+	typedef std::map<std::string, Math::Real> StrToRealMap;
+	typedef std::map<std::string, Texture*> StrToTextureMap;
+	StrToVec3DMap vec3DMap;
+	StrToRealMap realMap;
+	StrToTextureMap textureMap;
+	Texture* defaultTexture;
+	Math::Vector3D defaultVector3D;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class MappedValues */
 
 } /* end namespace Rendering */

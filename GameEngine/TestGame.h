@@ -24,10 +24,13 @@ public:
 	virtual void Input(Math::Real delta);
 	virtual void Update(Math::Real delta);
 
+	virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
 	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
-
+#ifdef ANT_TWEAK_BAR_ENABLED
+	virtual void InitializeTweakBars();
+#endif
 private:
 	void AddLights();
 	void AddDirectionalLight();
@@ -38,6 +41,14 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	Rendering::GameNode* planeNode;
+#ifdef ANT_TWEAK_BAR_ENABLED
+	Rendering::Material* planeMaterial;
+
+	Math::Real planeSpecularIntensity, planeSpecularPower;
+	Math::Real planeDisplacementScale, planeDisplacementOffset;
+#endif
+
 	const int humanCount;
 	Rendering::GameNode** humanNodes;
 	Rendering::GameNode* directionalLightNode;

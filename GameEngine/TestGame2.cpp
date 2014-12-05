@@ -132,6 +132,11 @@ void TestGame2::Update(Math::Real delta)
 	//LOG(Delocust, LOGPLACE, "Transform = \n%s", transform->GetTransformation().ToString().c_str());
 }
 
+void TestGame2::WindowResizeEvent(GLFWwindow* window, int width, int height)
+{
+	Game::WindowResizeEvent(window, width, height);
+}
+
 /**
  * @param key the keyboard key that was pressed or released
  * @param scancode the system-specific scancode of the key

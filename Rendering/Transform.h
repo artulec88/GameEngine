@@ -20,8 +20,10 @@ public:
 	Math::Matrix4D GetTransformation() const;
 	//Math::Matrix4D GetProjectedTransformation(const Camera& camera) const;
 
-	//Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
-	//Math::Quaternion& GetRot() { return rotation; }
+#ifdef ANT_TWEAK_BAR_ENABLED
+	Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
+	Math::Quaternion& GetRot() { return rotation; }
+#endif
 	//Math::Vector3D& GetScale() { return scale; }
 	const Math::Vector3D& GetPos() const { return pos; }
 	const Math::Quaternion& GetRot() const { return rotation; }

@@ -13,7 +13,9 @@
 
 #include "Math\Vector.h"
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar\include\AntTweakBar.h"
+#endif
 
 #include <string>
 #include <vector>
@@ -48,7 +50,10 @@ public:
 	void Render(GameNode& node);
 	void SwapBuffers();
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 	void InitializeTweakBars();
+	void CheckCameraIndexChange();
+#endif
 	
 	inline void AddLight(BaseLight* light);
 	inline void AddCamera(Camera* camera);
@@ -77,7 +82,7 @@ private:
 	void BindAsRenderTarget();
 	void InitGlfw(int width, int height, const std::string& title);
 	void InitGlew() const;
-	void SetGlfwCallbacks();
+	void SetCallbacks();
 	void BlurShadowMap(Texture* shadowMap, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
@@ -116,8 +121,13 @@ private:
 	std::map<std::string, unsigned int> samplerMap;
 	Math::Matrix4D lightMatrix;
 
+#ifdef ANT_TWEAK_BAR_ENABLED
+	unsigned int previousFrameCameraIndex;
 	TwBar* propertiesBar;
-	TwBar* selectedCameraBar;
+	TwBar* cameraBar;
+	TwStructMember cameraMembers[5];
+	TwType cameraType;
+#endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Renderer */
 

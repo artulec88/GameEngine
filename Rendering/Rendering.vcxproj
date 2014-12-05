@@ -95,6 +95,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AntTweakBarTypes.h" />
     <ClInclude Include="Attenuation.h" />
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="Camera.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AntTweakBarTypes.cpp" />
     <ClCompile Include="Attenuation.cpp" />
     <ClCompile Include="BaseLight.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -146,6 +148,7 @@
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
+    <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshData.cpp" />

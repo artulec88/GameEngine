@@ -24,6 +24,12 @@ using namespace Rendering;
 
 TestGame::TestGame() :
 	Game(),
+	planeNode(NULL),
+	planeMaterial(NULL),
+	planeSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),
+	planeSpecularPower(GET_CONFIG_VALUE("defaultSpecularPower", 8.0f)),
+	planeDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
+	planeDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
 	humanCount(2),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
@@ -43,6 +49,7 @@ TestGame::~TestGame(void)
 	SAFE_DELETE_JUST_TABLE(pointLightNodes);
 	SAFE_DELETE_JUST_TABLE(spotLightNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
+	//SAFE_DELETE(planeNode);
 }
 
 void TestGame::Init()
@@ -50,18 +57,14 @@ void TestGame::Init()
 	LOG(Notice, LOGPLACE, "Initalizing test game");
 	Game::Init();
 
-	// TODO: Do not use hard-coded values
-	Real specularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
-	Real specularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
-
 	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
-	GameNode* planeNode = new GameNode();
-	planeNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\plane4.obj"),
-		new Material(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f)));
+	planeMaterial = new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
+		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
+	planeNode = new GameNode();
+	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane4.obj"), planeMaterial));
 	planeNode->GetTransform().SetTranslation(0.0f, 0.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
 	AddToSceneRoot(planeNode);
@@ -422,7 +425,7 @@ void TestGame::AddCameras()
 			rot2.ToRotationMatrix().ToString().c_str());
 		cameraNodes[i]->GetTransform().SetRotation(rot);
 
-		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), true);
+		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Angle::Unit::DEGREE);
 		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
 		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
 		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
@@ -550,6 +553,11 @@ void TestGame::Update(Real delta)
 	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 
 	transform.SetTranslation(transform.GetPos() + velocity);
+}
+
+void TestGame::WindowResizeEvent(GLFWwindow* window, int width, int height)
+{
+	Game::WindowResizeEvent(window, width, height);
 }
 
 /**
@@ -700,3 +708,15 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 		CoreEngine::GetCoreEngine()->SetCursorPos(centerPosition.GetX(), centerPosition.GetY());
 	}
 }
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void TestGame::InitializeTweakBars()
+{
+	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
+	//TwAddVarRW(testGamePropertiesBar, "planeSpecularIntensity", TW_TYPE_FLOAT, &planeSpecularIntensity, " label='Plane specular intensity' group=Plane ");
+	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
+	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementScale", TW_TYPE_FLOAT, &planeDisplacementScale, " label='Plane displacement scale' group=Plane ");
+	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementOffset", TW_TYPE_FLOAT, &planeDisplacementOffset, " label='Plane displacement offset' group=Plane ");
+	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
+}
+#endif
