@@ -139,7 +139,7 @@ void Game::InitializeCameras()
 /* static */ void Game::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
-	if (!TwEventMousePosGLFW(xPos, yPos))
+	if (!TwEventMousePosGLFW(static_cast<int>(xPos), static_cast<int>(yPos)))
 	{
 		// event has not been handled by AntTweakBar
 		GetGame()->MousePosEvent(window, xPos, yPos);
@@ -152,7 +152,7 @@ void Game::InitializeCameras()
 /* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
-	if ( !TwEventMouseWheelGLFW(yOffset) ) // TODO: Check if yOffset here is ok
+	if ( !TwEventMouseWheelGLFW(static_cast<int>(yOffset)) ) // TODO: Check if yOffset here is ok
 	{
 		// event has not been handled by AntTweakBar
 		GetGame()->ScrollEvent(window, xOffset, yOffset);

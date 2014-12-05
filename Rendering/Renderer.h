@@ -27,7 +27,7 @@ namespace Rendering
 class Mesh;
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit
-class RENDERING_API Renderer : public MappedValues
+class Renderer : public MappedValues
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -37,8 +37,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Renderer(int width, int height, std::string title);
-	virtual ~Renderer(void);
+	RENDERING_API Renderer(int width, int height, std::string title);
+	RENDERING_API virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity()) {} // don't implement
 	void operator=(const Renderer& renderer) {} // don't implement
@@ -47,33 +47,33 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	//GLFWwindow* GetWindow() const { return this->window; };
-	void Render(GameNode& node);
-	void SwapBuffers();
+	RENDERING_API void Render(GameNode& node);
+	RENDERING_API void SwapBuffers();
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	void InitializeTweakBars();
-	void CheckCameraIndexChange();
+	RENDERING_API void InitializeTweakBars();
+	RENDERING_API void CheckCameraIndexChange();
 #endif
 	
-	inline void AddLight(BaseLight* light);
-	inline void AddCamera(Camera* camera);
-	inline BaseLight* GetCurrentLight() { return currentLight; }
-	inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
-	inline Camera& GetCurrentCamera();
-	unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
-	unsigned int NextCamera();
-	unsigned int PrevCamera();
-	unsigned int SetCurrentCamera(unsigned int cameraIndex);
-	void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
+	RENDERING_API inline void AddLight(BaseLight* light);
+	RENDERING_API inline void AddCamera(Camera* camera);
+	RENDERING_API inline BaseLight* GetCurrentLight() { return currentLight; }
+	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
+	RENDERING_API inline Camera& GetCurrentCamera();
+	RENDERING_API unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
+	RENDERING_API unsigned int NextCamera();
+	RENDERING_API unsigned int PrevCamera();
+	RENDERING_API unsigned int SetCurrentCamera(unsigned int cameraIndex);
+	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
 	
-	unsigned int GetSamplerSlot(const std::string& samplerName) const;
-	void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
+	RENDERING_API unsigned int GetSamplerSlot(const std::string& samplerName) const;
+	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
 
-	bool IsCloseRequested() const;
+	RENDERING_API bool IsCloseRequested() const;
 
-	inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
+	RENDERING_API inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
 
-	void PrintGlReport();
+	RENDERING_API void PrintGlReport();
 protected:
 	void InitGraphics(int width, int height, const std::string& title);
 	void ClearScreen() const;

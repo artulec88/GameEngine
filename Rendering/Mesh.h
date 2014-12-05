@@ -12,7 +12,7 @@
 namespace Rendering
 {
 
-class RENDERING_API Mesh// : public Utility::ReferenceCounter
+class Mesh// : public Utility::ReferenceCounter
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -21,9 +21,9 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-	Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-	virtual ~Mesh(void);
+	RENDERING_API Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API virtual ~Mesh(void);
 private: // disable copy constructor and assignment operator
 	Mesh(Mesh& mesh) {}
 	void operator=(Mesh& mesh) {}
@@ -31,11 +31,11 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Draw() const;
+	RENDERING_API void Draw() const;
 protected:
-	void AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled = true);
-	void CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const;
-	void CalcTangents(Vertex* vertices, int verticesCount) const;
+	RENDERING_API void AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled = true);
+	RENDERING_API void CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const;
+	RENDERING_API void CalcTangents(Vertex* vertices, int verticesCount) const;
 /* ==================== Non-static member functions end ==================== */
 
 

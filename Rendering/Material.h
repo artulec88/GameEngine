@@ -11,7 +11,7 @@
 namespace Rendering
 {
 
-class RENDERING_API Material : public MappedValues
+class Material : public MappedValues
 {
 /* ==================== Non-static member variables begin ==================== */
 private:
@@ -35,10 +35,10 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8,
+	RENDERING_API Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8,
 		Texture* normalMap = NULL,
 		Texture* displacementMap = NULL, Math::Real displacementScale = 0.0f, Math::Real displacementOffset = 0.0f); // TODO: Do not use hard-coded values
-	virtual ~Material(void) { };
+	RENDERING_API virtual ~Material(void) { };
 private:
 	Material(const Material& material) {}
 	void operator=(const Material& material) {}
@@ -47,9 +47,9 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Texture* GetDiffuseTexture() const { return GetTexture("diffuse"); }
-	Math::Real GetSpecularIntensity() const { return GetReal("specularIntensity"); }
-	Math::Real GetSpecularPower() const { return GetReal("specularPower"); }
+	RENDERING_API Texture* GetDiffuseTexture() const { return GetTexture("diffuse"); }
+	RENDERING_API Math::Real GetSpecularIntensity() const { return GetReal("specularIntensity"); }
+	RENDERING_API Math::Real GetSpecularPower() const { return GetReal("specularPower"); }
 /* ==================== Non-static member functions end ==================== */
 }; /* end class Material */
 

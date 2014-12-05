@@ -8,6 +8,8 @@
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 
+#define TW_TYPE_REAL TW_TYPE_FLOAT // change it to TW_TYPE_DOUBLE if we decide to change Math::Real definition to double
+
 namespace Rendering
 {
 	// create a new TwType associated to the enum defined by the modeEV array

@@ -34,7 +34,7 @@ protected:
 	bool isRunning;
 	int windowWidth;
 	int windowHeight;
-	std::string windowTitle;
+	const char* windowTitle;
 	const Math::Real frameTime;
 	Game* game;
 	Renderer* renderer;
@@ -42,7 +42,7 @@ protected:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int width, int height, const std::string& title, int maxFrameRate, Game* game);
+	CoreEngine(int width, int height, const char* title, int maxFrameRate, Game* game);
 	virtual ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);

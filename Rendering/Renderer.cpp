@@ -477,11 +477,6 @@ void Renderer::InitializeTweakBars()
 
 	AntTweakBarTypes::InitializeTweakBarTypes();
 
-	LOG(Warning, LOGPLACE, "Sizeof(Matrix) = %d", sizeof(Math::Matrix4D));
-	LOG(Warning, LOGPLACE, "Sizeof(Angle) = %d", sizeof(Math::Angle));
-	LOG(Warning, LOGPLACE, "Sizeof(Real) = %d", sizeof(Math::Real));
-	LOG(Warning, LOGPLACE, "Sizeof(Camera) = %d", sizeof(Camera));
-
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
 	cameraMembers[0].Name = "Projection"; cameraMembers[1].Name = "FoV"; cameraMembers[2].Name = "AspectRatio"; cameraMembers[3].Name = "NearPlane"; cameraMembers[4].Name = "FarPlane";
 	cameraMembers[0].Type = matrix4DType; cameraMembers[1].Type = angleType; cameraMembers[2].Type = TW_TYPE_FLOAT; cameraMembers[3].Type = TW_TYPE_FLOAT; cameraMembers[4].Type = TW_TYPE_FLOAT;
@@ -509,11 +504,11 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
 	char cameraIndexStr[256];
 	char cameraDefStr[256];
-	_snprintf(cameraIndexStr, 255, "camera[%d].Pos", currentCameraIndex);
-	_snprintf(cameraDefStr, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
+	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
+	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
-	_snprintf(cameraIndexStr, 255, "camera[%d].Rot", currentCameraIndex);
-	_snprintf(cameraDefStr, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
+	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", currentCameraIndex);
+	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
 	/* ==================== Initializing AntTweakBar library end ==================== */
@@ -532,8 +527,8 @@ void Renderer::CheckCameraIndexChange()
 	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
 	char cameraIndexStr[256];
 	char cameraDefStr[256];
-	_snprintf(cameraIndexStr, 255, "camera[%d].Pos", currentCameraIndex);
-	_snprintf(cameraDefStr, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
+	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
+	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
 	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", currentCameraIndex);
 	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", currentCameraIndex);

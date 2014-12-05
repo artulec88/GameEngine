@@ -83,7 +83,7 @@ private:
 /* ==================== Non-static member functions end ==================== */
 }; /* end class ShaderData */
 
-class RENDERING_API Shader
+class Shader
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -92,19 +92,19 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Shader(const std::string& fileName);
-	virtual ~Shader(void);
+	RENDERING_API Shader(const std::string& fileName);
+	RENDERING_API virtual ~Shader(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Bind() const;
-	virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
+	RENDERING_API void Bind() const;
+	RENDERING_API virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
-	void SetUniformi(const std::string& uniformName, int value) const;
-	void SetUniformf(const std::string& uniformName, Math::Real value) const;
-	void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
-	void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
+	RENDERING_API void SetUniformi(const std::string& uniformName, int value) const;
+	RENDERING_API void SetUniformf(const std::string& uniformName, Math::Real value) const;
+	RENDERING_API void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
+	RENDERING_API void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 
 	//void AddAllUniforms(const std::string& shaderText);
 	//void AddUniform(const std::string& uniform);

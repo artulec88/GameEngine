@@ -16,7 +16,7 @@ using namespace Rendering;
 		}
 		const char* tweakBarName = TwGetBarName(tweakBar);
 		char defStr[256];
-		_snprintf(defStr, 255, " %s/Floats group=%s \n %s/Vectors group=%s ", tweakBarName, groupName, tweakBarName, groupName);
+		_snprintf_s(defStr, 256, 255, " %s/Floats group=%s \n %s/Vectors group=%s ", tweakBarName, groupName, tweakBarName, groupName);
 		TwDefine(defStr);
 	}
 #endif

@@ -8,7 +8,7 @@
 namespace Rendering
 {
 
-class RENDERING_API Texture
+class Texture
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -17,9 +17,9 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
-	Texture(int width = 0, int height = 0, unsigned char* data = 0, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
-	virtual ~Texture(void);
+	RENDERING_API Texture(const std::string& fileName, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
+	RENDERING_API Texture(int width = 0, int height = 0, unsigned char* data = 0, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
+	RENDERING_API virtual ~Texture(void);
 private:
 	Texture(const Texture& texture) {}
 	void operator=(const Texture& texture) {}
@@ -27,10 +27,10 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Bind(unsigned int unit = 0) const;
-	void BindAsRenderTarget() const;
-	inline int GetWidth() const { return textureData->GetWidth(); }
-	inline int GetHeight() const { return textureData->GetHeight(); }
+	RENDERING_API void Bind(unsigned int unit = 0) const;
+	RENDERING_API void BindAsRenderTarget() const;
+	RENDERING_API inline int GetWidth() const { return textureData->GetWidth(); }
+	RENDERING_API inline int GetHeight() const { return textureData->GetHeight(); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -13,7 +13,7 @@ class Shader;
 class Renderer;
 class CoreEngine;
 
-class RENDERING_API GameNode
+class GameNode
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -22,30 +22,30 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	GameNode();
-	virtual ~GameNode(void);
+	RENDERING_API GameNode();
+	RENDERING_API virtual ~GameNode(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	int GetID() const { return this->ID; }; // just for easier debugging purposes
-	GameNode* AddChild(GameNode* child);
-	GameNode* AddComponent(GameComponent* component);
+	RENDERING_API int GetID() const { return this->ID; }; // just for easier debugging purposes
+	RENDERING_API GameNode* AddChild(GameNode* child);
+	RENDERING_API GameNode* AddComponent(GameComponent* component);
 
-	void InputAll(Math::Real delta);
-	void UpdateAll(Math::Real delta);
-	void RenderAll(Shader* shader, Renderer* renderer);
+	RENDERING_API void InputAll(Math::Real delta);
+	RENDERING_API void UpdateAll(Math::Real delta);
+	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer);
 
-	void Input(Math::Real delta);
-	void Update(Math::Real delta);
-	void Render(Shader* shader, Renderer* renderer);
+	RENDERING_API void Input(Math::Real delta);
+	RENDERING_API void Update(Math::Real delta);
+	RENDERING_API void Render(Shader* shader, Renderer* renderer);
 
-	void SetEngine(CoreEngine* coreEngine);
+	RENDERING_API void SetEngine(CoreEngine* coreEngine);
 
-	Transform& GetTransform() { return this->transform; };
-	const Transform& GetTransform() const { return this->transform; }
+	RENDERING_API Transform& GetTransform() { return this->transform; };
+	RENDERING_API const Transform& GetTransform() const { return this->transform; }
 
-	std::vector<GameNode*> GetAllDescendants() const;
+	RENDERING_API std::vector<GameNode*> GetAllDescendants() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -17,14 +17,14 @@
 namespace Rendering
 {
 
-class RENDERING_API MappedValues
+class MappedValues
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MappedValues(void) :
+	RENDERING_API MappedValues(void) :
 		defaultTexture(new Texture("..\\Textures\\defaultTexture.png")),
 		defaultVector3D(Math::Vector3D(0.0f, 0.0f, 0.0f)) {}
-	virtual ~MappedValues(void)
+	RENDERING_API virtual ~MappedValues(void)
 	{
 		std::map<std::string, Texture*>::iterator itr = textureMap.begin();
 		while (itr != textureMap.end())
@@ -41,7 +41,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	inline void SetVector3D(const std::string& name, const Math::Vector3D& vec)
+	RENDERING_API inline void SetVector3D(const std::string& name, const Math::Vector3D& vec)
 	{
 		if (vec3DMap.find(name) == vec3DMap.end())
 		{
@@ -57,7 +57,7 @@ public:
 		}
 	}
 
-	inline void SetReal(const std::string& name, const Math::Real value)
+	RENDERING_API inline void SetReal(const std::string& name, const Math::Real value)
 	{
 		if (realMap.find(name) == realMap.end())
 		{
@@ -73,7 +73,7 @@ public:
 		}
 	}
 	
-	inline void SetTexture(const std::string& textureName, Texture* texture)
+	RENDERING_API inline void SetTexture(const std::string& textureName, Texture* texture)
 	{
 		//if (texture == NULL)
 		//{
@@ -96,7 +96,7 @@ public:
 		//textureMap[textureName] = texture;
 	}
 
-	inline const Math::Vector3D GetVec3D(const std::string& name) const
+	RENDERING_API inline const Math::Vector3D GetVec3D(const std::string& name) const
 	{
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
@@ -107,7 +107,7 @@ public:
 		return itr->second;
 	}
 
-	inline Math::Real GetReal(const std::string& name) const
+	RENDERING_API inline Math::Real GetReal(const std::string& name) const
 	{
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
@@ -118,7 +118,7 @@ public:
 		return itr->second;
 	}
 
-	inline Texture* GetTexture(const std::string& textureName) const
+	RENDERING_API inline Texture* GetTexture(const std::string& textureName) const
 	{
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
@@ -130,7 +130,7 @@ public:
 	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
+	RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif
 /* ==================== Non-static member functions end ==================== */
 

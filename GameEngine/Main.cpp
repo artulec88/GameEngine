@@ -54,8 +54,9 @@ int main (int argc, char* argv[])
 
 	/* ==================== Creating game instance and run ==================== */
 	Game* game = new TestGame();
+	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 800), GET_CONFIG_VALUE("windowHeight", 600),
-		GET_CONFIG_VALUE_STR("windowTitle", "Default window title"), GET_CONFIG_VALUE("FPScap", 30), game);
+		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 30), game);
 	engine.Start();
 	return 0;
 }

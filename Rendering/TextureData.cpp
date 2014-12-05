@@ -187,12 +187,12 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 		exit(EXIT_FAILURE);
 	}
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void TextureData::BindAsRenderTarget() const
 {
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindTexture(GL_TEXTURE_2D, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glViewport(0, 0, width, height);
 }
