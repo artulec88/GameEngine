@@ -5,17 +5,7 @@
 using namespace Rendering;
 using namespace Math;
 
-Transform::Transform() :
-	pos(Vector3D(0.0, 0.0 , 0.0)),
-	rotation(Quaternion(0.0, 0.0 , 0.0, 1.0)),
-	scale(Vector3D(1.0, 1.0, 1.0)),
-	parentTransform(NULL),
-	isChanged(true)
-{
-	//LOG(Utility::Delocust, LOGPLACE, "Transform is being constructed (1)");
-}
-
-Transform::Transform(const Vector3D& pos, const Quaternion& rot, const Vector3D& scale) :
+Transform::Transform(const Vector3D& pos /* = Vector3D(0.0, 0.0, 0.0) */, const Quaternion& rot /* = Quaternion(0.0, 0.0, 0.0, 1.0) */, Math::Real scale /* = 1.0 */) :
 	pos(pos),
 	rotation(rot),
 	scale(scale),
@@ -57,8 +47,8 @@ Matrix4D Transform::GetTransformation() const
 		//	LOG(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
-		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());;
-		Matrix4D scaleMatrix = Matrix4D::Scale(scale.GetX(), scale.GetY(), scale.GetZ());
+		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());
+		Matrix4D scaleMatrix = Matrix4D::Scale(scale, scale, scale);
 
 		transformation = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
 		isChanged = false;
@@ -73,7 +63,7 @@ Matrix4D Transform::GetTransformation() const
 	}
 
 	/**
-	 * Apply SCALING, then ROTATION and TRANSLATION
+	 * Apply TRANSLATION, then ROTATION and SCALING
 	 */
 	if (parentTransform == NULL)
 	{
@@ -87,37 +77,6 @@ Matrix4D Transform::GetTransformation() const
 	}
 }
 
-void Transform::SetTranslation(const Vector3D& pos)
-{
-	this->pos = pos;
-	isChanged = true;
-}
-
-void Transform::SetTranslation(Real x, Real y, Real z)
-{
-	this->pos = Vector3D(x, y, z);
-	isChanged = true;
-}
-
-void Transform::SetRotation(const Quaternion& rot)
-{
-	//LOG(Utility::Debug, LOGPLACE, "Started...");
-	this->rotation = rot;
-	isChanged = true;
-}
-
-//void Transform::SetRotation(Real x, Real y, Real z, Real w) { this->rotation = Quaternion(x, y, z, w); }
-void Transform::SetScale(const Vector3D& scaleVec)
-{
-	this->scale = scaleVec;
-	isChanged = true;
-}
-
-void Transform::SetScale(Math::Real scale)
-{
-	SetScale(Vector3D(scale, scale, scale));
-}
-
 //Matrix4D Transform::GetProjectedTransformation(const Camera& camera) const
 //{
 //	Matrix4D transformationMatrix = GetTransformation();
@@ -129,31 +88,37 @@ void Transform::SetScale(Math::Real scale)
 
 void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
 {
-	Quaternion qRot(axis, angle);
-	//rotation = (rotation * qRot).Normalized();
-	rotation = (qRot * rotation).Normalized();
+	Rotate(Quaternion(axis, angle));
+	isChanged = true;
+}
+
+void Transform::Rotate(const Quaternion& rot)
+{
+	//LOG(Utility::Debug, LOGPLACE, "Started...");
+	this->rotation = (rot * this->rotation).Normalized();
 	isChanged = true;
 }
 
 void Transform::LookAt(const Math::Vector3D& point, const Math::Vector3D& up)
 {
-	rotation = GetLookAtDirection(point, up);
+	rotation = GetLookAtRotation(point, up);
 	isChanged = true;
 }
 
-Math::Quaternion Transform::GetLookAtDirection(const Math::Vector3D& point, const Math::Vector3D& up) const
+Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const Math::Vector3D& up) const
 {
-	Math::Vector3D forward = point - pos;
-	forward.Normalize();
-	
-	//Math::Vector3D right = forward.Cross(up);
-	Math::Vector3D right = (up.Normalized());
-	right = right.Cross(forward);
-	right.Normalize();
+	return Quaternion(Math::Matrix4D::RotationFromDirection((point - pos).Normalized(), up));
+	//Math::Vector3D forward = point - pos;
+	//forward.Normalize();
+	//
+	////Math::Vector3D right = forward.Cross(up);
+	//Math::Vector3D right = (up.Normalized());
+	//right = right.Cross(forward);
+	//right.Normalize();
 
-	Math::Vector3D u = forward.Cross(right);
-	u.Normalize();
+	//Math::Vector3D u = forward.Cross(right);
+	//u.Normalize();
 
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationFromVectors(forward, u, right);
-	return Math::Quaternion(rotMatrix);
+	//Math::Matrix4D rotMatrix = Math::Matrix4D::RotationFromVectors(forward, u, right);
+	//return Math::Quaternion(rotMatrix);
 }

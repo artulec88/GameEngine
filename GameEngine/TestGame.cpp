@@ -79,8 +79,8 @@ void TestGame::Init()
 		new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
 #endif
-	planeNode->GetTransform().SetTranslation(0.0f, 0.0f, 5.0f);
-	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
+	planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
+	planeNode->GetTransform().SetScale(15.0f);
 	AddToSceneRoot(planeNode);
 
 	boxNode = new GameNode();
@@ -92,8 +92,8 @@ void TestGame::Init()
 	boxNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
 #endif
-	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
-	boxNode->GetTransform().SetScale(Vector3D(0.05f, 0.05f, 0.05f));
+	boxNode->GetTransform().SetPos(12.0f, 3.5f, 9.0f);
+	boxNode->GetTransform().SetScale(0.05f);
 	AddToSceneRoot(boxNode);
 
 	////Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
@@ -109,17 +109,17 @@ void TestGame::Init()
 		new Material(new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
 			new Texture("..\\Textures\\bricks2_normal.jpg"),
 			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
-	boxNode2->GetTransform().SetTranslation(8.0f, 0.5f, 5.0f);
-	boxNode2->GetTransform().SetRotation(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
+	boxNode2->GetTransform().SetPos(8.0f, 0.5f, 5.0f);
+	boxNode2->GetTransform().Rotate(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
 	boxNode2->GetTransform().SetScale(0.5f);
 	AddToSceneRoot(boxNode2);
 
 	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetTranslation(-2.0f, 2.5f, 2.0f);
-	testMesh1->GetTransform().SetScale(Vector3D(0.5f, 0.5f, 0.5f));
+	testMesh1->GetTransform().SetPos(-2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetScale(0.5f);
 	GameNode* testMesh2 = new GameNode();
-	testMesh2->GetTransform().SetTranslation(9.0f, 0.0f, 0.0f);
-	//testMesh2->GetTransform().SetScale(Vector3D(0.5f, 0.5f, 0.5f));
+	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
+	//testMesh2->GetTransform().SetScale(0.5f);
 	testMesh1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
 		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, new Texture("..\\Textures\\bricks2_normal.jpg"), new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
@@ -134,7 +134,7 @@ void TestGame::Init()
 	monkeyNode1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey3.obj"),
 		new Material(new Texture("..\\Textures\\chessboard.jpg", GL_TEXTURE_2D, GL_LINEAR), 1.0f, 8.0f)));
-	monkeyNode1->GetTransform().SetTranslation(-5.0f, 3.75f, 4.0f);
+	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
@@ -144,7 +144,7 @@ void TestGame::Init()
 	monkeyNode2->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey3.obj"),
 		new Material(new Texture("..\\Textures\\bricks.jpg"), 2.0f, 32.0f)));
-	monkeyNode2->GetTransform().SetTranslation(5.0, 3.0, 15.0);
+	monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
 
@@ -155,13 +155,13 @@ void TestGame::Init()
 	{
 		humanNodes[i] = new GameNode();
 		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 2.0f, 32.0f)));
-		humanNodes[i]->GetTransform().SetTranslation(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
+		humanNodes[i]->GetTransform().SetPos(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
 		AddToSceneRoot(humanNodes[i]);
 	}
 
 	//castleNode = new GameNode();
 	//castleNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\castle.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 0.5f, 8.0f)));
-	//castleNode->GetTransform().SetTranslation(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
+	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
@@ -224,7 +224,7 @@ void TestGame::AddDirectionalLight()
 	Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
 	Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
 	Vector3D position(xPos, yPos, zPos);
-	directionalLightNode->GetTransform().SetTranslation(position);
+	directionalLightNode->GetTransform().SetPos(position);
 
 	Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
 	Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
@@ -238,8 +238,8 @@ void TestGame::AddDirectionalLight()
 		rot.ToString().c_str(),
 		rot.ToRotationMatrix().ToString().c_str(),
 		rot2.ToRotationMatrix().ToString().c_str());
-	directionalLightNode->GetTransform().SetRotation(rot);
-	//directionalLightNode->GetTransform().SetRotation(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
+	directionalLightNode->GetTransform().SetRot(rot);
+	//directionalLightNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
 
 	Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
@@ -257,7 +257,7 @@ void TestGame::AddDirectionalLight()
 	//Material directionalLightMaterial("directionalLight_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
 
-	directionalLightNode->GetTransform().SetScale(Vector3D(0.04f, 0.04f, 0.04f));
+	directionalLightNode->GetTransform().SetScale(0.4f);
 	directionalLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\DirectionalLight.obj"),
 		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
@@ -303,14 +303,14 @@ void TestGame::AddPointLights()
 		Real xPos = GET_CONFIG_VALUE("pointLightPosX_" + pointLightIndexStr, defaultPointLightPos.GetX());
 		Real yPos = GET_CONFIG_VALUE("pointLightPosY_" + pointLightIndexStr, defaultPointLightPos.GetY());
 		Real zPos = GET_CONFIG_VALUE("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
-		pointLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		pointLightNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
 		
 		Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
-		pointLightNodes[i]->GetTransform().SetRotation(rot);
+		pointLightNodes[i]->GetTransform().SetRot(rot);
 
 		Real red = GET_CONFIG_VALUE("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
 		Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
@@ -331,7 +331,7 @@ void TestGame::AddPointLights()
 		pointLightNodes[i]->AddComponent(new MeshRenderer(
 			new Mesh("..\\Models\\PointLight.obj"),
 			new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
-		pointLightNodes[i]->GetTransform().SetScale(Vector3D(0.1f, 0.1f, 0.1f));
+		pointLightNodes[i]->GetTransform().SetScale(0.1f);
 #endif
 		
 		AddToSceneRoot(pointLightNodes[i]);
@@ -364,14 +364,14 @@ void TestGame::AddSpotLights()
 		Real xPos = GET_CONFIG_VALUE("spotLightPosX_" + spotLightIndexStr, defaultSpotLightPos.GetX());
 		Real yPos = GET_CONFIG_VALUE("spotLightPosY_" + spotLightIndexStr, defaultSpotLightPos.GetY());
 		Real zPos = GET_CONFIG_VALUE("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
-		spotLightNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		spotLightNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
 		
 		Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
 		Quaternion rot(rotMatrix);
-		spotLightNodes[i]->GetTransform().SetRotation(rot);
+		spotLightNodes[i]->GetTransform().SetRot(rot);
 
 		Real red = GET_CONFIG_VALUE("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
 		Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);
@@ -394,7 +394,7 @@ void TestGame::AddSpotLights()
 		spotLightNodes[i]->AddComponent(new MeshRenderer(
 			new Mesh("..\\Models\\SpotLight.obj"),
 			new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));
-		spotLightNodes[i]->GetTransform().SetScale(Vector3D(0.1f, 0.1f, 0.1f));
+		spotLightNodes[i]->GetTransform().SetScale(0.1f);
 #endif
 		
 		AddToSceneRoot(spotLightNodes[i]);
@@ -430,7 +430,7 @@ void TestGame::AddCameras()
 		Real xPos = GET_CONFIG_VALUE("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
 		Real yPos = GET_CONFIG_VALUE("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
 		Real zPos = GET_CONFIG_VALUE("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
-		cameraNodes[i]->GetTransform().SetTranslation(xPos, yPos, zPos);
+		cameraNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
 		
 		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
@@ -444,7 +444,7 @@ void TestGame::AddCameras()
 			rot.ToString().c_str(),
 			rot.ToRotationMatrix().ToString().c_str(),
 			rot2.ToRotationMatrix().ToString().c_str());
-		cameraNodes[i]->GetTransform().SetRotation(rot);
+		cameraNodes[i]->GetTransform().SetRot(rot);
 
 		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Angle::DEGREE);
 		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
@@ -483,9 +483,9 @@ void TestGame::Update(Real delta)
 {
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
-	//planeObject->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+	//planeObject->GetTransform().SetPos(0.0, -1.0, 5.0);
 
-	//rootGameNode->GetTransform().SetTranslation(0.0, -1.0, 5.0);
+	//rootGameNode->GetTransform().SetPos(0.0, -1.0, 5.0);
 	GetRootGameNode().UpdateAll(delta);
 
 	temp += delta;
@@ -498,7 +498,7 @@ void TestGame::Update(Real delta)
 	if (directionalLightNode != NULL)
 	{
 		Transform& t = directionalLightNode->GetTransform();
-		//t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
+		//t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
 		t.SetRotation(t.GetRot() * Quaternion(sin(temp) / 20000.0f, cos(temp) / 10000.0f, 0.0f, 1.0f));
 	}
 #endif
@@ -511,7 +511,7 @@ void TestGame::Update(Real delta)
 			continue;
 		}
 		Transform& t = pointLightNodes[i]->GetTransform();
-		t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
+		t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
 	}
 
 	for (int i = 0; i < spotLightCount; ++i)
@@ -522,7 +522,7 @@ void TestGame::Update(Real delta)
 			continue;
 		}
 		Transform& t = spotLightNodes[i]->GetTransform();
-		t.SetTranslation(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
+		t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
 	}
 
 	unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
@@ -573,7 +573,7 @@ void TestGame::Update(Real delta)
 	//velocity -= slowDownVec;
 	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 
-	transform.SetTranslation(transform.GetPos() + velocity);
+	transform.SetPos(transform.GetPos() + velocity);
 }
 
 void TestGame::WindowResizeEvent(GLFWwindow* window, int width, int height)
@@ -611,38 +611,38 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//LOG(Debug, LOGPLACE, "Forward = %d", forward);
 
-		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_S:
 		backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//LOG(Debug, LOGPLACE, "Backward = %d", backward);
 
 		//direction -= transform.GetRot().GetForward().Normalized();
-		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_A:
 		left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//LOG(Debug, LOGPLACE, "Left = %d", left);
 
 		//direction -= transform.GetRot().GetRight().Normalized();
-		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_D:
 		right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//LOG(Debug, LOGPLACE, "Right = %d", right);
 
 		//direction += transform.GetRot().GetRight().Normalized();
-		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_SPACE: // move up
 		up = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//direction += transform.GetRot().GetUp().Normalized();
-		//transform.SetTranslation(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
 		break;
 	case GLFW_KEY_LEFT_CONTROL: // move down
 		down = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
 		//direction -= transform.GetRot().GetUp().Normalized();
-		//transform.SetTranslation(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
 		break;
 	case GLFW_KEY_UP: // rotation around X axis
 		transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));

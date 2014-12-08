@@ -24,48 +24,40 @@ GameNode::GameNode(void) :
 
 GameNode::~GameNode(void)
 {
-	LOG(Debug, LOGPLACE, "Game node destruction started");
+	LOG(Info, LOGPLACE, "Game node (ID=%d) destruction started", this->ID);
+	//LOG(Debug, LOGPLACE, "Destroying components started for game node with ID=%d", this->ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
-	//	if ((*itr) != NULL)
-	//	{
-	//		delete *itr;
-	//		*itr = NULL;
-	//	}
+	//	SAFE_DELETE(*itr);
 	//}
+	//LOG(Debug, LOGPLACE, "Destroying components finished for game node with ID=%d", this->ID);
 
+	//LOG(Debug, LOGPLACE, "Started recursive destruction of game nodes for game node with ID=%d", this->ID);
 	//for (std::vector<GameNode*>::iterator itr = childrenGameNodes.begin(); itr != childrenGameNodes.end(); ++itr)
 	//{
 	//	if ((*itr) != NULL)
 	//	{
-	//		LOG(Debug, LOGPLACE, "Destroying child game node started");
+	//		LOG(Delocust, LOGPLACE, "Destroying child game node started");
 	//		delete *itr;
-	//		//*itr = NULL;
-	//		LOG(Debug, LOGPLACE, "Destroying child game node finished");
+	//		*itr = NULL;
+	//		LOG(Delocust, LOGPLACE, "Destroying child game node finished");
 	//	}
 	//}
+	//LOG(Debug, LOGPLACE, "Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
 	//childrenGameNodes.clear();
 
 	// TODO: Fix dangling pointers
 	for (unsigned int i = 0; i < components.size(); ++i)
 	{
-		if (components[i] != NULL)
-		{
-			delete components[i];
-			components[i] = NULL;
-		}
+		SAFE_DELETE(components[i]);
 	}
 	components.clear();
 	for (unsigned int i = 0; i < childrenGameNodes.size(); ++i)
 	{
-		if (childrenGameNodes[i] != NULL)
-		{
-			delete childrenGameNodes[i];
-			childrenGameNodes[i] = NULL;
-		}
+		SAFE_DELETE(childrenGameNodes[i]);
 	}
 	childrenGameNodes.clear();
-	LOG(Debug, LOGPLACE, "Game node destroyed");
+	LOG(Info, LOGPLACE, "Game node (ID=%d) destruction finished", this->ID);
 }
 
 GameNode* GameNode::AddChild(GameNode* child)
@@ -80,7 +72,7 @@ void GameNode::SetEngine(CoreEngine* coreEngine)
 {
 	if (this->coreEngine == coreEngine)
 	{
-		LOG(Debug, LOGPLACE, "Core engine already set for the game node");
+		LOG(Warning, LOGPLACE, "Core engine already set for the game node");
 		return;
 	}
 
@@ -114,6 +106,8 @@ void GameNode::InputAll(Math::Real delta)
 
 void GameNode::Input(Math::Real delta)
 {
+	//transform.Update();
+
 	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Input(delta);

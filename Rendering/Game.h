@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 
 #include "Rendering.h"
 #include "GameNode.h"
@@ -40,8 +41,8 @@ public:
 	Game();
 	virtual ~Game(void);
 private:
-	Game(Game& game);
-	void operator=(Game& game);
+	Game(Game& game) {}
+	void operator=(Game& game) {}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -51,10 +52,10 @@ public:
 	virtual void Update(Math::Real delta) = 0;
 	void Render(Renderer* renderer);
 
-	void AddToSceneRoot(GameNode* child);
+	inline GameNode& GetRootGameNode() { return rootGameNode; }
+
 	void SetEngine(CoreEngine* coreEngine);
 
-	virtual void InitializeCameras(); // TODO: Consider deleting this function. Otherwise, implement it
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void InitializeTweakBars();
 #endif
@@ -67,15 +68,15 @@ public:
 	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
 protected:
-	GameNode& GetRootGameNode() const;
-	//Shader* GetShader() const;
+	void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-private:
-	GameNode* rootGameNode;
-	//Shader* shader;
+protected:
+	GameNode rootGameNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 
 } /* end namespace Rendering */
+
+#endif

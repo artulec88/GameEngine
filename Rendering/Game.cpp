@@ -35,62 +35,48 @@ Game* Game::game = NULL;
 Game::Game()
 {
 	LOG(Debug, LOGPLACE, "Game construction started");
-	rootGameNode = new GameNode();
-	ASSERT(rootGameNode != NULL);
-	if (rootGameNode == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Root game node construction failed");
-		exit(EXIT_FAILURE);
-	}
+	//rootGameNode = new GameNode();
+	//ASSERT(rootGameNode != NULL);
+	//if (rootGameNode == NULL)
+	//{
+	//	LOG(Critical, LOGPLACE, "Root game node construction failed");
+	//	exit(EXIT_FAILURE);
+	//}
 
-	if (game != NULL)
+	if (Game::game != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
-		delete game;
-		game = NULL;
+		SAFE_DELETE(Game::game);
 	}
-	game = this;
+	Game::game = this;
 	LOG(Debug, LOGPLACE, "Game construction finished");
 }
 
 
 Game::~Game(void)
 {
-	if (rootGameNode != NULL)
-	{
-		delete rootGameNode;
-		rootGameNode = NULL;
-	}
-	//if (shader != NULL)
-	//{
-	//	delete shader;
-	//	shader = NULL;
-	//}
+	//SAFE_DELETE(rootGameNode);
+	//SAFE_DELETE(shader);
 }
 
 void Game::SetEngine(CoreEngine* coreEngine)
 {
-	if (rootGameNode == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
-		exit(EXIT_FAILURE);
-	}
-	rootGameNode->SetEngine(coreEngine);
+	//if (rootGameNode == NULL)
+	//{
+	//	LOG(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
+	//	exit(EXIT_FAILURE);
+	//}
+	rootGameNode.SetEngine(coreEngine);
 }
 
 void Game::Init()
 {
-	if (rootGameNode == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Root game node is not initialized");
-		exit(EXIT_FAILURE);
-	}
+	//if (rootGameNode == NULL)
+	//{
+	//	LOG(Critical, LOGPLACE, "Root game node is not initialized");
+	//	exit(EXIT_FAILURE);
+	//}
 	//rootGameNode->Init();
-}
-
-// TODO: Implement this function or consider deleting it
-void Game::InitializeCameras()
-{
 }
 
 /* static */ void Game::WindowCloseEventCallback(GLFWwindow* window)
@@ -224,19 +210,19 @@ void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 	LOG(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
-GameNode& Game::GetRootGameNode() const
-{
-	ASSERT(rootGameNode != NULL);
-	if (rootGameNode == NULL)
-	{
-		LOG(Emergency, LOGPLACE, "Root game node is NULL.");
-		exit(EXIT_FAILURE);
-	//	// TODO: throw another exception in the future
-	//	throw FileNotFoundException();
-	}
-
-	return *rootGameNode;
-}
+//GameNode& Game::GetRootGameNode() const
+//{
+//	ASSERT(rootGameNode != NULL);
+//	if (rootGameNode == NULL)
+//	{
+//		LOG(Emergency, LOGPLACE, "Root game node is NULL.");
+//		exit(EXIT_FAILURE);
+//	//	// TODO: throw another exception in the future
+//	//	throw FileNotFoundException();
+//	}
+//
+//	return *rootGameNode;
+//}
 
 //Shader* Game::GetShader() const
 //{
@@ -250,7 +236,7 @@ GameNode& Game::GetRootGameNode() const
 
 void Game::AddToSceneRoot(GameNode* child)
 {
-	GetRootGameNode().AddChild(child);
+	rootGameNode.AddChild(child);
 }
 
 void Game::Render(Renderer* renderer)
@@ -260,7 +246,7 @@ void Game::Render(Renderer* renderer)
 		LOG(Critical, LOGPLACE, "Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
-	renderer->Render(GetRootGameNode());
+	renderer->Render(rootGameNode);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

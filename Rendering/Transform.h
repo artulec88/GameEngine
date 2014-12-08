@@ -13,21 +13,23 @@ namespace Rendering
 class RENDERING_API Transform
 {
 public:
-	Transform();
-	Transform(const Math::Vector3D& pos, const Math::Quaternion& rot, const Math::Vector3D& scale);
+	Transform(const Math::Vector3D& pos = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), const Math::Quaternion& rot = Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real scale = REAL_ONE);
 	~Transform();
 
 	Math::Matrix4D GetTransformation() const;
 	//Math::Matrix4D GetProjectedTransformation(const Camera& camera) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Math::Vector3D& GetPos() { return pos; } //TODO: Add const keyword
+	Math::Vector3D& GetPos() { return pos; }
 	Math::Quaternion& GetRot() { return rotation; }
 #endif
 	//Math::Vector3D& GetScale() { return scale; }
 	const Math::Vector3D& GetPos() const { return pos; }
 	const Math::Quaternion& GetRot() const { return rotation; }
-	const Math::Vector3D& GetScale() const { return scale; }
+	Math::Real GetScale() const { return scale; }
+
+	void LookAt(const Math::Vector3D& point, const Math::Vector3D& up);
+	Math::Quaternion GetLookAtRotation(const Math::Vector3D& point, const Math::Vector3D& up) const;
 
 	Math::Vector3D GetTransformedPos() const
 	{
@@ -47,19 +49,17 @@ public:
 		return parentTransform->GetTransformedRot() * rotation;
 	}
 
-	void SetTranslation(const Math::Vector3D& pos);
-	void SetTranslation(Math::Real x, Math::Real y, Math::Real z);
-	void SetRotation(const Math::Quaternion& rot);
-	//void SetRotation(Math::Real x, Math::Real y, Math::Real z, Math::Real w);
-	void SetScale(const Math::Vector3D& scaleVec);
-	void SetScale(Math::Real scale);
-
-	void Rotate(const Math::Vector3D& axis, const Math::Angle& angle);
-
-	void LookAt(const Math::Vector3D& point, const Math::Vector3D& up);
-	Math::Quaternion GetLookAtDirection(const Math::Vector3D& point, const Math::Vector3D& up) const;
+	void SetPos(const Math::Vector3D& pos) { this->pos = pos; isChanged = true; }
+	void SetPos(Math::Real x, Math::Real y, Math::Real z) { this->pos = Math::Vector3D(x, y, z); isChanged = true; }
+	void SetRot(const Math::Quaternion& rot) { this->rotation = rot; isChanged = true; }
+	void SetScale(Math::Real scale) { this->scale = scale; isChanged = true; }
 
 	void SetParent(Transform* t) { parentTransform = t; }
+
+	void Rotate(const Math::Vector3D& axis, const Math::Angle& angle);
+	void Rotate(const Math::Quaternion& rot);
+	//void SetRotation(Math::Real x, Math::Real y, Math::Real z, Math::Real w);
+
 	void CalculateParentTransformation() const
 	{
 		ASSERT(parentTransform != NULL);
@@ -78,7 +78,7 @@ protected:
 private:
 	Math::Vector3D pos;
 	Math::Quaternion rotation;
-	Math::Vector3D scale;
+	Math::Real scale;
 	
 	Transform* parentTransform;
 	mutable Math::Matrix4D transformation;

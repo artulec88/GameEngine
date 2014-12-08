@@ -39,6 +39,11 @@ void GameComponent::Render(Shader* shader, Renderer* renderingEngine)
 
 void GameComponent::SetParent(GameNode* parentGameNode)
 {
+	if (parentGameNode == NULL)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot assign a parent to the game component. Parent game node is NULL.");
+		exit(EXIT_FAILURE);
+	}
 	this->parentGameNode = parentGameNode;
 }
 

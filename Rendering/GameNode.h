@@ -15,10 +15,10 @@ class CoreEngine;
 
 class GameNode
 {
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 private:
 	static int gameNodeCount; // just for easier debugging purposes
-/* ==================== Static variables end ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -36,16 +36,16 @@ public:
 	RENDERING_API void UpdateAll(Math::Real delta);
 	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer);
 
-	RENDERING_API void Input(Math::Real delta);
-	RENDERING_API void Update(Math::Real delta);
-	RENDERING_API void Render(Shader* shader, Renderer* renderer);
-
 	RENDERING_API void SetEngine(CoreEngine* coreEngine);
 
 	RENDERING_API Transform& GetTransform() { return this->transform; };
 	RENDERING_API const Transform& GetTransform() const { return this->transform; }
 
 	RENDERING_API std::vector<GameNode*> GetAllDescendants() const;
+private:
+	void Input(Math::Real delta);
+	void Update(Math::Real delta);
+	void Render(Shader* shader, Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

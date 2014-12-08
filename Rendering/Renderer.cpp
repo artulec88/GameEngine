@@ -94,7 +94,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	tempTarget = new Texture(tempWidth, tempHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	planeMaterial = new Material(tempTarget, 1, 8);
-	planeTransform.SetScale(Vector3D(1, 1, 1));
+	planeTransform.SetScale(REAL_ONE);
 	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
 	planeMesh = new Mesh("..\\Models\\plane.obj");
@@ -251,8 +251,8 @@ void Renderer::Render(GameNode& gameNode)
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
-			altCamera.GetTransform().SetTranslation(currentLight->GetTransform().GetTransformedPos());
-			altCamera.GetTransform().SetRotation(currentLight->GetTransform().GetTransformedRot());
+			altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
+			altCamera.GetTransform().SetRot(currentLight->GetTransform().GetTransformedRot());
 
 			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
 
@@ -340,8 +340,8 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	SetTexture("filterTexture", source);
 
 	altCamera.SetProjection(Matrix4D::Identity());
-	altCamera.GetTransform().SetTranslation(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
-	altCamera.GetTransform().SetRotation(Quaternion(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f), static_cast<Real>(0.0f)), Angle(static_cast<Real>(180.0f))));
+	altCamera.GetTransform().SetPos(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
+	altCamera.GetTransform().SetRot(Quaternion(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f), static_cast<Real>(0.0f)), Angle(static_cast<Real>(180.0f))));
 
 	Camera* temp = currentCamera;
 	currentCamera = &altCamera;

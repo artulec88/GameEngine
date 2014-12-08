@@ -31,9 +31,9 @@ void LookAtComponent::Update(Math::Real delta)
 
 	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
 
-	Math::Quaternion newRot = GetTransform().GetLookAtDirection(currentCameraPos, Math::Vector3D(0, 1, 0));
+	Math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, Math::Vector3D(0, 1, 0));
 	Math::Quaternion interpolatedRotation = GetTransform().GetRot().Nlerp(newRot, delta * 5, true);
-	GetTransform().SetRotation(interpolatedRotation);
+	GetTransform().Rotate(interpolatedRotation);
 	//LOG(Utility::Debug, LOGPLACE, "LookAtComponent has just set a new rotation");
 }
 

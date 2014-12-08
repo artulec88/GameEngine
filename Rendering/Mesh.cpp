@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Mesh.h"
-#include "OBJModel.h"
+//#include "OBJModel.h"
 #include "Math\Vector.h"
 
 #include "Utility\Utility.h"
@@ -45,84 +45,82 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	//LOG(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
 
 	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(fileName);
-	if (itr == meshResourceMap.end()) // the mesh has not been loaded yet
-	{
-#ifdef MEASURE_TIME_ENABLED
-		clock_t begin = clock();
-#endif
-
-		LOG(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
-
-		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(fileName.c_str(),
-			aiProcess_Triangulate |
-			aiProcess_GenSmoothNormals |
-			aiProcess_FlipUVs |
-			aiProcess_CalcTangentSpace);
-
-		if (scene == NULL)
-		{
-			LOG(Error, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
-			exit(EXIT_FAILURE);
-		}
-		if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
-		{
-			LOG(Error, LOGPLACE, "Incorrect number of meshes loaded (%d). Check the model.", scene->mNumMeshes);
-			LOG(Info, LOGPLACE, "One of the possible solutions is to check whether the model has an additional line at the end");
-			exit(EXIT_FAILURE);
-		}
-
-		const aiMesh* model = scene->mMeshes[0];
-		std::vector<Vertex> vertices;
-		std::vector<int> indices;
-
-		const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
-		for (unsigned int i = 0; i < model->mNumVertices; ++i)
-		{
-			const aiVector3D* pPos = &(model->mVertices[i]);
-			const aiVector3D* pNormal = &(model->mNormals[i]);
-			const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
-			const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
-			if (pTangent == NULL)
-			{
-				LOG(Critical, LOGPLACE, "Tangent calculated incorrectly");
-				pTangent = &aiZeroVector;
-			}
-
-			Math::Vector3D vertexPos(pPos->x, pPos->y, pPos->z);
-			Math::Vector2D vertexTexCoord(pTexCoord->x, pTexCoord->y);
-			Math::Vector3D vertexNormal(pNormal->x, pNormal->y, pNormal->z);
-			Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
-
-			Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
-
-			vertices.push_back(vertex);
-		}
-
-		for (unsigned int i = 0; i < model->mNumFaces; ++i)
-		{
-			const aiFace& face = model->mFaces[i];
-			ASSERT(face.mNumIndices == 3);
-			indices.push_back(face.mIndices[0]);
-			indices.push_back(face.mIndices[1]);
-			indices.push_back(face.mIndices[2]);
-		}
-		AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
-
-		meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
-
-#ifdef MEASURE_TIME_ENABLED
-		clock_t end = clock();
-		LOG(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
-#endif
-	}
-	else // (itr != meshResourceMap.end()) // the mesh has already been loaded
+	if (itr != meshResourceMap.end()) // the mesh has been already loaded
 	{
 		LOG(Info, LOGPLACE, "Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
 		meshData = itr->second;
 		meshData->AddReference();
+		return;
 	}
 
+#ifdef MEASURE_TIME_ENABLED
+	clock_t begin = clock();
+#endif
+
+	LOG(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(fileName.c_str(),
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
+		aiProcess_FlipUVs |
+		aiProcess_CalcTangentSpace);
+
+	if (scene == NULL)
+	{
+		LOG(Critical, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+	if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
+	{
+		LOG(Emergency, LOGPLACE, "Incorrect number of meshes loaded (%d). Check the model.", scene->mNumMeshes);
+		LOG(Info, LOGPLACE, "One of the possible solutions is to check whether the model has an additional line at the end");
+		exit(EXIT_FAILURE);
+	}
+
+	const aiMesh* model = scene->mMeshes[0];
+	std::vector<Vertex> vertices;
+	std::vector<int> indices;
+
+	const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
+	for (unsigned int i = 0; i < model->mNumVertices; ++i)
+	{
+		const aiVector3D* pPos = &(model->mVertices[i]);
+		const aiVector3D* pNormal = &(model->mNormals[i]);
+		const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
+		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
+		if (pTangent == NULL)
+		{
+			LOG(Error, LOGPLACE, "Tangent calculated incorrectly");
+			pTangent = &aiZeroVector;
+		}
+
+		Math::Vector3D vertexPos(pPos->x, pPos->y, pPos->z);
+		Math::Vector2D vertexTexCoord(pTexCoord->x, pTexCoord->y);
+		Math::Vector3D vertexNormal(pNormal->x, pNormal->y, pNormal->z);
+		Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
+
+		Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
+
+		vertices.push_back(vertex);
+	}
+
+	for (unsigned int i = 0; i < model->mNumFaces; ++i)
+	{
+		const aiFace& face = model->mFaces[i];
+		ASSERT(face.mNumIndices == 3);
+		indices.push_back(face.mIndices[0]);
+		indices.push_back(face.mIndices[1]);
+		indices.push_back(face.mIndices[2]);
+	}
+	AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
+
+	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
+
+#ifdef MEASURE_TIME_ENABLED
+	clock_t end = clock();
+	LOG(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+#endif
 	//LoadFromFile(fileName);
 }
 

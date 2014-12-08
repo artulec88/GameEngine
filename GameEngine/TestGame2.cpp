@@ -109,7 +109,7 @@ void TestGame2::Update(Math::Real delta)
 
 	if (transform != NULL)
 	{
-		transform->SetTranslation(0.0, -1.0, 5.0);
+		transform->SetPos(0.0f, -1.0f, 5.0f);
 	}
 	if (pointLights != NULL)
 	{
