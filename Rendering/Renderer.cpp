@@ -521,7 +521,7 @@ void Renderer::CheckCameraIndexChange()
 		return;
 	}
 	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
-	LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	//LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
 
 	TwRemoveAllVars(cameraBar);
 	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");

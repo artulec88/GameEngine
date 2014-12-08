@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AntTweakBarTypes.h"
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 #include <stddef.h>
 
 TwType Rendering::angleUnitType;
@@ -40,3 +41,5 @@ TwType Rendering::matrix4DType;
 	};
 	matrix4DType = TwDefineStruct("Matrix4D", matrix4DMembers, 4, sizeof(Math::Matrix4D) / 4, NULL, NULL);
 }
+
+#endif

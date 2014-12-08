@@ -82,12 +82,12 @@ inline Real Matrix4D::GetElement (int i, int j) const
 #ifdef _DEBUG
 	if ((i < 0) || (i >= MATRIX_SIZE))
 	{
-		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
+		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
 		exit(EXIT_FAILURE);
 	}
 	if ((j < 0) || (j >= MATRIX_SIZE))
 	{
-		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
+		LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
 		exit(EXIT_FAILURE);
 	}
 #endif
@@ -99,12 +99,12 @@ inline void Matrix4D::SetElement(int i, int j, Real value)
 #ifdef _DEBUG
 	if ((i < 0) || (i >= 3))
 	{
-		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
+		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
 		exit(EXIT_FAILURE);
 	}
 	if ((j < 0) || (j >= 3))
 	{
-		Utility::LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
+		LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
 		exit(EXIT_FAILURE);
 	}
 #endif

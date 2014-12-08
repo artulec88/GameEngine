@@ -10,21 +10,12 @@ using namespace Utility;
 /* static */ bool PointLight::pointLightsEnabled = true;
 
 PointLight::PointLight(const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
-		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/) :
+		const Attenuation& attenuation /*= Attenuation()*/) :
 	BaseLight(color, intensity),
 	attenuation(attenuation)
 {
 	CalculateRange();
-	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "ForwardPoint")));
-}
-
-PointLight::PointLight(Shader* shader, const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
-		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/) :
-	BaseLight(color, intensity),
-	attenuation(attenuation)
-{
-	CalculateRange();
-	SetShader(shader);
+	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
 }
 
 PointLight::~PointLight(void)

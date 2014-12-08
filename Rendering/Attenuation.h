@@ -8,16 +8,12 @@ namespace Rendering
 
 class RENDERING_API Attenuation
 {
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Math::Real constant;
-	Math::Real linear;
-	Math::Real exponent;
-/* ==================== Non-static member variables end ==================== */
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Attenuation(Math::Real constant = 0.0, Math::Real linear = 0.0, Math::Real exponent = 0.0);
+	Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE);
 	~Attenuation(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -26,6 +22,13 @@ public:
 	Math::Real GetConstant() const { return this->constant; };
 	Math::Real GetLinear() const { return this->linear; };
 	Math::Real GetExponent() const { return this->exponent; };
+/* ==================== Non-static member variables end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	Math::Real constant;
+	Math::Real linear;
+	Math::Real exponent;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Attenuation */
 

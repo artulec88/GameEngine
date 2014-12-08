@@ -22,23 +22,17 @@ BaseLight::~BaseLight(void)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
-	if (shader != NULL)
-	{
-		delete shader;
-		shader = NULL;
-	}
-	if (shadowInfo != NULL)
-	{
-		delete shadowInfo;
-		shadowInfo = NULL;
-	}
+	SAFE_DELETE(shader);
+	SAFE_DELETE(shadowInfo);
 }
 
 void BaseLight::SetShader(Shader* shader)
 {
 	// TODO: delete shader if it's not referenced by any other object
+	//SAFE_DELETE(this->shader);
 	if (this->shader != NULL)
 	{
+		LOG(Utility::Warning, LOGPLACE, "Setting new shader for the light seems dubious.");
 		delete this->shader;
 		this->shader = NULL;
 	}
@@ -47,39 +41,21 @@ void BaseLight::SetShader(Shader* shader)
 
 void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
 {
+	//SAFE_DELETE(this->shadowInfo);
 	if (this->shadowInfo != NULL)
 	{
+		LOG(Utility::Warning, LOGPLACE, "Setting new shadow info for the light seems dubious.");
 		delete this->shadowInfo;
 		this->shadowInfo = NULL;
 	}
 	this->shadowInfo = shadowInfo;
 }
 
-Math::Vector3D BaseLight::GetColor() const
-{
-	return this->color;
-}
-
-void BaseLight::SetColor(const Math::Vector3D& color)
-{
-	this->color = color;
-}
-
-Math::Real BaseLight::GetIntensity() const
-{
-	return this->intensity;
-}
-
-void BaseLight::SetIntensity(Math::Real intensity)
-{
-	this->intensity = intensity;
-}
-
 void BaseLight::AddToEngine(CoreEngine* coreEngine)
 {
 	if (coreEngine == NULL)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
+		LOG(Utility::Critical, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
 		return;
 	}
 	coreEngine->GetRenderer()->AddLight(this);

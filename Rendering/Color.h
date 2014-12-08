@@ -9,7 +9,7 @@ class Color
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Color(void) : red(0.0f), green(0.0f), blue(0.0f), alpha(1.0f) { }
+	Color(void) : red(REAL_ZERO), green(REAL_ZERO), blue(REAL_ZERO), alpha(REAL_ONE) { }
 	Color(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = 1.0f) : red(red), green(green), blue(blue), alpha(alpha) { };
 /* ==================== Constructors and destructors end ==================== */
 

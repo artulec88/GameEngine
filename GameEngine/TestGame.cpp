@@ -25,11 +25,15 @@ using namespace Rendering;
 TestGame::TestGame() :
 	Game(),
 	planeNode(NULL),
+	boxNode(NULL),
+#ifdef ANT_TWEAK_BAR_ENABLED
 	planeMaterial(NULL),
+	boxMaterial(NULL),
 	planeSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),
 	planeSpecularPower(GET_CONFIG_VALUE("defaultSpecularPower", 8.0f)),
 	planeDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
 	planeDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
+#endif
 	humanCount(2),
 	humanNodes(NULL),
 	directionalLightNode(NULL),
@@ -61,18 +65,33 @@ void TestGame::Init()
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
+	planeNode = new GameNode();
+#ifdef ANT_TWEAK_BAR_ENABLED
 	planeMaterial = new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
-	planeNode = new GameNode();
 	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane4.obj"), planeMaterial));
+#else
+	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
+	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
+	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
+	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
+	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane4.obj"),
+		new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
+		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
+#endif
 	planeNode->GetTransform().SetTranslation(0.0f, 0.0f, 5.0f);
 	planeNode->GetTransform().SetScale(Vector3D(15.0f, 15.0f, 15.0f));
 	AddToSceneRoot(planeNode);
 
-	GameNode* boxNode = new GameNode();
+	boxNode = new GameNode();
+#ifdef ANT_TWEAK_BAR_ENABLED
+	boxMaterial = new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f);
 	boxNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"),
-		new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
+		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), boxMaterial));
+#else
+	boxNode->AddComponent(new MeshRenderer(
+		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
+#endif
 	boxNode->GetTransform().SetTranslation(12.0f, 3.5f, 9.0f);
 	boxNode->GetTransform().SetScale(Vector3D(0.05f, 0.05f, 0.05f));
 	AddToSceneRoot(boxNode);
@@ -183,8 +202,10 @@ void TestGame::AddLights()
 
 void TestGame::AddDirectionalLight()
 {
-	bool directionalLightsEnabled = GET_CONFIG_VALUE("directionalLightsEnabled", true);
-	if (!directionalLightsEnabled)
+	// TODO: For now we only check if directionalLightsCount is zero or not.
+	// In the future there might be many directional lights enabled (?)
+	int directionalLightsCount = GET_CONFIG_VALUE("directionalLightsCount", 0);
+	if (directionalLightsCount == 0)
 	{
 		LOG(Notice, LOGPLACE, "Directional lights disabled");
 		return;
@@ -717,6 +738,9 @@ void TestGame::InitializeTweakBars()
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementScale", TW_TYPE_FLOAT, &planeDisplacementScale, " label='Plane displacement scale' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementOffset", TW_TYPE_FLOAT, &planeDisplacementOffset, " label='Plane displacement offset' group=Plane ");
+	planeMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
 	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
+	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
+	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
 }
 #endif

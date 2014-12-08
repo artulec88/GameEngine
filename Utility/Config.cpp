@@ -34,11 +34,7 @@ Config::Config() : isInitialized(false)
 	cfgValues.clear();
 	//cfgNotDefinedValues.clear();
 
-	std::string name, value;
-	std::string separator;
-	std::string line;
-	std::stringstream stream;
-
+	std::string name, value, line;
 	while (!file.eof())
 	{
 		file >> name;
@@ -53,17 +49,15 @@ Config::Config() : isInitialized(false)
 			continue;
 		}
 
-		//std::vector<std::string> tokens;
-		//CutToTokens(line, tokens);
-
-		stream.clear();
-		stream.str(line);
-		// TODO: Fix the problem with reading values divided by white spaces (e.g. strings containing spaces)
-		stream >> separator >> value;
-		if (stream.fail() || separator != "=")
+		std::vector<std::string> tokens;
+		CutToTokens(line, tokens, ' ');
+		value = tokens[2];
+		if (tokens.size() > 3)
 		{
-			LOG(Warning, LOGPLACE, "Stream fail while reading configuration file");
-			value = "0";
+			for (unsigned int i = 3; i < tokens.size(); ++i)
+			{
+				value += " " + tokens[i];
+			}
 		}
 
 		cfgValues[name] = value;

@@ -10,14 +10,12 @@ using namespace Math;
 
 SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
 		Real intensity /*= 0.0*/,
-		const Attenuation& attenuation /*= Attenuation(0.0, 0.0, 0.0)*/,
+		const Attenuation& attenuation /*= Attenuation() */,
 		Real cutoff /*= 0.0*/) :
-	PointLight(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "ForwardSpot")), color, intensity, attenuation),
-	//direction(direction.Normalized()),
+	PointLight(color, intensity, attenuation),
 	cutoff(cutoff)
 {
-	//SetShader(ForwardSpotShader::GetInstance());
-	//SetShader(ForwardPointShader::GetInstance());
+	SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
 }
 
 
@@ -32,11 +30,6 @@ SpotLight::~SpotLight(void)
 //	//ASSERT(this->direction.IsNormalized());
 //	this->direction.Normalize();
 //}
-
-void SpotLight::SetCutoff(Math::Real cutoff)
-{
-	this->cutoff = cutoff;
-}
 
 bool SpotLight::IsEnabled() const
 {

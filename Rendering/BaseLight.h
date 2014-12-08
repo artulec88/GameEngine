@@ -19,25 +19,26 @@ class RENDERING_API BaseLight : public GameComponent
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BaseLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0);
+	BaseLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
 	virtual ~BaseLight(void);
+private:
+	BaseLight(const BaseLight& baseLight) {} // Copy constructor disabled
+	void operator=(BaseLight& baseLight) {} // Assignment operator disabled
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-	Math::Vector3D GetColor() const;
-	void SetColor(const Math::Vector3D& color);
-	Math::Real GetIntensity() const;
-	void SetIntensity(Math::Real intensity);
+	Math::Vector3D GetColor() const { return this->color; }
+	Math::Real GetIntensity() const { return this->intensity; }
 	inline Shader* GetShader() { return this->shader; }
 	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
 	virtual void AddToEngine(CoreEngine* coreEngine);
 	virtual bool IsEnabled() const { return isEnabled; }
 protected:
-	inline void SetShader(Shader* shader);
-	inline void SetShadowInfo(ShadowInfo* shadowInfo);
+	void SetShader(Shader* shader);
+	void SetShadowInfo(ShadowInfo* shadowInfo);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

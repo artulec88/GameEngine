@@ -19,10 +19,10 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ const Vector3D Camera::xAxis(1.0, 0.0, 0.0);
-/* static */ const Vector3D Camera::yAxis(0.0, 1.0, 0.0);
+/* static */ const Vector3D Camera::xAxis(REAL_ONE, REAL_ZERO, REAL_ZERO);
+/* static */ const Vector3D Camera::yAxis(REAL_ZERO, REAL_ONE, REAL_ZERO);
 
-/* static */ Real Camera::sensitivity = 0.5;
+/* static */ Real Camera::sensitivity = 0.5f;
 
 /* static */
 Real Camera::GetSensitivity()
@@ -86,14 +86,14 @@ Camera::~Camera(void)
 //	this->up.Normalize();
 //}
 
-void Camera::Move(const Vector3D& dir, Math::Real amount)
-{
-	Transform& t = GetTransform();
-	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
-	t.SetTranslation(t.GetPos() + (dir * amount));
-	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
-	LOG(Delocust, LOGPLACE, "%s", ToString().c_str());
-}
+//void Camera::Move(const Vector3D& dir, Math::Real amount)
+//{
+//	Transform& t = GetTransform();
+//	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+//	t.SetTranslation(t.GetPos() + (dir * amount));
+//	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+//	LOG(Delocust, LOGPLACE, "%s", ToString().c_str());
+//}
 
 //Vector3D Camera::GetLeft() const
 //{
@@ -160,11 +160,9 @@ void Camera::AddToEngine(CoreEngine* coreEngine)
 //	isActive = true;
 //}
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 void Camera::Input(Real delta)
 {
-	//if (!isActive)
-	//	return;
-#ifdef ANT_TWEAK_BAR_ENABLED
 	if ( (prevFov != fov) || (!AlmostEqual(prevAspectRatio, aspectRatio)) || (!AlmostEqual(prevNearPlane, nearPlane)) || (!AlmostEqual(prevFarPlane, farPlane)) )
 	{
 		LOG(Info, LOGPLACE, "Recalculating the projection matrix for the selected camera");
@@ -176,8 +174,8 @@ void Camera::Input(Real delta)
 		prevNearPlane = nearPlane;
 		prevFarPlane = farPlane;
 	}
-#endif
 }
+#endif
 
 Matrix4D Camera::GetViewProjection() const
 {
@@ -189,17 +187,17 @@ Matrix4D Camera::GetViewProjection() const
 	return projection * cameraRotation * cameraTranslation;
 }
 
-std::string Camera::ToString() const
-{
-	std::stringstream ss("");
-
-	ss << "Camera = { pos = ";
-	ss << GetTransform().GetPos().ToString();
-	ss << "; forward = ";
-	ss << GetTransform().GetRot().GetForward().ToString();
-	ss << "; up = ";
-	ss << GetTransform().GetRot().GetUp().ToString();
-	ss << " } ";
-
-	return ss.str();
-}
+//std::string Camera::ToString() const
+//{
+//	std::stringstream ss("");
+//
+//	ss << "Camera = { pos = ";
+//	ss << GetTransform().GetPos().ToString();
+//	ss << "; forward = ";
+//	ss << GetTransform().GetRot().GetForward().ToString();
+//	ss << "; up = ";
+//	ss << GetTransform().GetRot().GetUp().ToString();
+//	ss << " } ";
+//
+//	return ss.str();
+//}

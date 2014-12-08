@@ -12,10 +12,20 @@ using namespace Rendering;
 DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
 	BaseLight(color, intensity)
 {
-	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "ForwardDirectional")));
-	ShadowInfo* shadowInfo = new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), true);
+	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
+	ASSERT(shader != NULL);
+	if (shader == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL");
+		exit(EXIT_FAILURE);
+	}
+	SetShadowInfo(new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), true));
 	ASSERT(shadowInfo != NULL);
-	SetShadowInfo(shadowInfo);
+	if (shadowInfo == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shadow info is NULL");
+		exit(EXIT_FAILURE);
+	}
 }
 
 

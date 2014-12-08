@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "CoreEngine.h"
 #include "Input.h"
+#include "tinythread.h"
 
 #include "Utility\ILogger.h"
 #include "Utility\Config.h"
@@ -339,6 +340,8 @@ void CoreEngine::Run()
 		{
 			//LOG(Info, LOGPLACE, "Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
+			//this_thread::sleep_for(chrono::milliseconds(100));
+			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(10));
 		}
 		QueryPerformanceCounter(&t2);
 		countStats3++;

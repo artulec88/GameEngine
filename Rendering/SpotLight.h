@@ -20,17 +20,15 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	SpotLight(const Math::Vector3D& color = Math::Vector3D(0.0, 0.0, 0.0), Math::Real intensity = 0.0,
-		const Attenuation& attenuation = Attenuation(0.0, 0.0, 0.0), Math::Real cutoff = 0.0);
+	SpotLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
+		const Attenuation& attenuation = Attenuation(), Math::Real cutoff = REAL_ZERO);
 	virtual ~SpotLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
-	//void SetDirection(const Math::Vector3D& direction);
+	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 	Math::Real GetCutoff() const { return this->cutoff; };
-	void SetCutoff(Math::Real cutoff);
 	virtual bool IsEnabled() const;
 /* ==================== Non-static member functions end ==================== */
 

@@ -42,8 +42,10 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	Rendering::GameNode* planeNode;
+	Rendering::GameNode* boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::Material* planeMaterial;
+	Rendering::Material* boxMaterial;
 
 	Math::Real planeSpecularIntensity, planeSpecularPower;
 	Math::Real planeDisplacementScale, planeDisplacementOffset;

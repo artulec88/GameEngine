@@ -38,9 +38,11 @@ public:
 	inline void SetProjection(const Math::Matrix4D& projection) { this->projection = projection; }
 	Math::Matrix4D GetViewProjection() const;
 
-	void Move(const Math::Vector3D& dir, Math::Real amount);
+	//void Move(const Math::Vector3D& dir, Math::Real amount);
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void Input(Math::Real delta);
+#endif
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
 	virtual void AddToEngine(CoreEngine* coreEngine);
@@ -51,7 +53,7 @@ public:
 	//void Input(Math::Real delta);
 	//void Deactivate();
 	//void Activate();
-	std::string ToString() const;
+	//std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

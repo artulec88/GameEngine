@@ -7,8 +7,8 @@
 #endif
 
 #define EPSILON		1e3
-#define REAL_ZERO	static_cast<Real>(0)
-#define REAL_ONE	static_cast<Real>(1)
+#define REAL_ZERO	static_cast<Math::Real>(0)
+#define REAL_ONE	static_cast<Math::Real>(1)
 
 #include <math.h>
 #include <cmath>

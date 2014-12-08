@@ -10,7 +10,7 @@ namespace Rendering
 class RENDERING_API DirectionalLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
-public:
+private:
 	static bool directionalLightsEnabled;
 public:
 	static bool* GetDirectionalLightsEnabled() { return &directionalLightsEnabled; }
@@ -18,13 +18,13 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	DirectionalLight(const Math::Vector3D& color = Math::Vector3D(1.0, 1.0, 1.0), Math::Real intensity = 0.0);
+	DirectionalLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
 	virtual ~DirectionalLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
+	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 	virtual bool IsEnabled() const;
 /* ==================== Non-static member functions end ==================== */
 
