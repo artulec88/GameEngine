@@ -127,6 +127,7 @@ private:
 	TwBar* cameraBar;
 	TwStructMember cameraMembers[5];
 	TwType cameraType;
+	bool renderToTextureTestingEnabled;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Renderer */

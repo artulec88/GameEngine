@@ -21,6 +21,10 @@
 #include "TestGame.h"
 #include "TestGame2.h"
 
+#ifdef _DEBUG
+#include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
+#endif
+
 using namespace std;
 using namespace Math;
 using namespace Utility;
@@ -29,7 +33,6 @@ using namespace Rendering;
 void PrintHelp()
 {
 	cout << "usage: GameEngine.exe [OPTIONS]" << endl;
-	cout << "\t-log [Critical, Emergency, Error, Warning, Notice, Info, Debug, Delocust]" << endl;
 	cout << "\t-config ConfigFilePath" << endl;
 	cout << endl;
 }
@@ -42,7 +45,7 @@ int main (int argc, char* argv[])
 	{
 		PrintHelp();
 		system("pause");
-		return 0;
+		return EXIT_SUCCESS;
 	}
 	//stdlog.Fill(Command->Get("-log", ""), Debug);
 	IConfig::GetConfig().LoadFromFile(ICommand::GetCommand().Get("-config", "..\\Config\\Config.cfg"));
@@ -58,5 +61,5 @@ int main (int argc, char* argv[])
 	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 800), GET_CONFIG_VALUE("windowHeight", 600),
 		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 30), game);
 	engine.Start();
-	return 0;
+	return EXIT_SUCCESS;
 }

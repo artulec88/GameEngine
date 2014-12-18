@@ -56,7 +56,8 @@ Renderer::Renderer(int width, int height, std::string title) :
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
-	previousFrameCameraIndex(0)
+	previousFrameCameraIndex(0),
+	renderToTextureTestingEnabled(false)
 #endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
@@ -84,7 +85,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader = new Shader((GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient")));
 	shadowMapShader = new Shader((GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator")));
 	nullFilterShader = new Shader((GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null")));
-	gaussBlurFilterShader = new Shader((GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "Filter-gaussBlur7x1")));
+	gaussBlurFilterShader = new Shader((GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1")));
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -97,7 +98,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 	planeTransform.SetScale(REAL_ONE);
 	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
-	planeMesh = new Mesh("..\\Models\\plane.obj");
+	planeMesh = new Mesh("..\\Models\\plane4.obj");
 
 	LOG(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -256,27 +257,43 @@ void Renderer::Render(GameNode& gameNode)
 
 			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
 
+			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
+			bool flipFacesEnabled = shadowInfo->IsFlipFacesEnabled();
+
 			Camera* temp = currentCamera;
 			currentCamera = &altCamera;
 
-			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
-			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
-
-			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_FRONT); }
+			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
-			if (shadowInfo->IsFlipFacesEnabled()) { glCullFace(GL_BACK); }
+			if (flipFacesEnabled) { glCullFace(GL_BACK); }
 
 			currentCamera = temp;
 
 			if (applyFilterEnabled)
 			{
-				ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-				ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-				//BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
+				//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+				//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+				BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
 			}
 		}
 		BindAsRenderTarget();
+	}
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (renderToTextureTestingEnabled)
+	{
+		Camera* temp = currentCamera;
+		currentCamera = &altCamera;
+		glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		defaultShader->Bind();
+		defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
+		planeMesh->Draw();
 
+		currentCamera = temp;
+	}
+	else
+	{
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
@@ -288,8 +305,18 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
 	}
-#ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
+#else
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+
+	gameNode.RenderAll(currentLight->GetShader(), this);
+
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LESS);
+	glDisable(GL_BLEND);
 #endif
 	SwapBuffers();
 }
@@ -340,8 +367,8 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	SetTexture("filterTexture", source);
 
 	altCamera.SetProjection(Matrix4D::Identity());
-	altCamera.GetTransform().SetPos(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
-	altCamera.GetTransform().SetRot(Quaternion(Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f), static_cast<Real>(0.0f)), Angle(static_cast<Real>(180.0f))));
+	altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
 
 	Camera* temp = currentCamera;
 	currentCamera = &altCamera;
@@ -497,6 +524,7 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::GetPointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &shadowsEnabled, " label='Render shadows' group=Shadows");
+	TwAddVarRW(propertiesBar, "renderToTexture", TW_TYPE_BOOLCPP, &renderToTextureTestingEnabled, " label='Display shadow map' group=Shadows ");
 
 	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
 
@@ -511,6 +539,12 @@ void Renderer::InitializeTweakBars()
 	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
+
+	//TwBar* altCameraBar = TwNewBar("AltCameraBar");
+	//TwAddVarRW(altCameraBar, "cameraVar", cameraType,  &altCamera, " label='Camera' group=Camera ");
+	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
+	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
+	//TwDefine(" AltCameraBar/Camera opened=true ");
 	/* ==================== Initializing AntTweakBar library end ==================== */
 }
 
