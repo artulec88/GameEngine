@@ -19,7 +19,7 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
-#define RENDER_LIGHT_MESHES
+//#define RENDER_LIGHT_MESHES
 //#define SIMULATE_SUN_BEHAVIOR
 
 TestGame::TestGame() :
@@ -499,7 +499,7 @@ void TestGame::Update(Real delta)
 	{
 		Transform& t = directionalLightNode->GetTransform();
 		//t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
-		t.SetRotation(t.GetRot() * Quaternion(sin(temp) / 20000.0f, cos(temp) / 10000.0f, 0.0f, 1.0f));
+		t.SetRot(t.GetRot() * Quaternion(sin(temp) / 20000.0f, cos(temp) / 10000.0f, 0.0f, 1.0f));
 	}
 #endif
 

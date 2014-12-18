@@ -120,7 +120,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 	if (!file.is_open())
 	{
 		LOG(Error, LOGPLACE, "Unable to open shader file \"%s\". Check the path.", name.c_str());
-		return ""; // TODO: Double-check it in the future. It's better to just throw an error I guess.
+		exit(EXIT_FAILURE); // TODO: Double-check it in the future. It's better to just throw an error I guess.
 	}
 
 	string output;
@@ -492,6 +492,7 @@ Shader::Shader(const std::string& fileName) :
 	}
 	else
 	{
+		LOG(Info, LOGPLACE, "Shader data \"%s\" already present in the resource manager", fileName.c_str());
 		shaderData = itr->second;
 		shaderData->AddReference();
 	}

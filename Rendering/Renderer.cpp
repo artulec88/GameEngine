@@ -437,7 +437,7 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	}
 #ifndef ANT_TWEAK_BAR_ENABLED
 	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
-	LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	//LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
 #endif
 	//cameras[this->currentCameraIndex]->Activate();
 	return this->currentCameraIndex;
