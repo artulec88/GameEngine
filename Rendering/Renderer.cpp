@@ -247,7 +247,8 @@ void Renderer::Render(GameNode& gameNode)
 		}
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
 		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
-		glClear(GL_DEPTH_BUFFER_BIT);
+		glClearColor(1.0f /* completely in light */, 0.0f, 0.0f, 0.0f); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());

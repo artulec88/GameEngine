@@ -5,6 +5,7 @@
 #include "Transform.h"
 
 #include "Math\Vector.h"
+#include "Math\Angle.h"
 
 namespace Rendering
 {
@@ -21,7 +22,10 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	SpotLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
-		const Attenuation& attenuation = Attenuation(), Math::Real cutoff = REAL_ZERO);
+		const Attenuation& attenuation = Attenuation(), const Math::Angle& viewAngle = Math::Angle(179.0f),
+		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
+		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
+		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );
 	virtual ~SpotLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -34,6 +38,13 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	/**
+	 * Stores a value of a cosine (from range between -1 and +1).
+	 * If the value of the cosine between a light direction and spot light direction vectors is
+	 * smaller than cutoff then the point is not in the spot light cone.
+	 * If cutoff = 0 then FoV = 180 degrees.
+	 * If cutoff = 1 then FoV = 0 degrees.
+	 */
 	Math::Real cutoff;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class SpotLight */

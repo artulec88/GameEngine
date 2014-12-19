@@ -1,7 +1,9 @@
 #include "StdAfx.h"
 #include "SpotLight.h"
 #include "Shader.h"
+#include "ShadowInfo.h"
 #include "Utility\IConfig.h"
+#include "Math\Matrix.h"
 
 using namespace Rendering;
 using namespace Math;
@@ -11,11 +13,27 @@ using namespace Math;
 SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
 		Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation() */,
-		Real cutoff /*= 0.0*/) :
+		const Angle& viewAngle /*= Angle(179.0f) */,
+		int shadowMapSizeAsPowerOf2 /* = 0 */,
+		Math::Real shadowSoftness /* = REAL_ONE */,
+		Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
+		Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) ) */) :
 	PointLight(color, intensity, attenuation),
-	cutoff(cutoff)
+	cutoff(cos(viewAngle.GetAngleInRadians() / 2.0f))
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
+
+	if (shadowMapSizeAsPowerOf2 != 0)
+	{
+		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f, this->range);
+		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowSoftness, lightBleedingReductionAmount, minVariance));
+		ASSERT(shadowInfo != NULL);
+		if (shadowInfo == NULL)
+		{
+			LOG(Utility::Critical, LOGPLACE, "Cannot initialize spot light. Shadow info is NULL");
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 

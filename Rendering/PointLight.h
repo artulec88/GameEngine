@@ -34,7 +34,7 @@ protected:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-private:
+protected:
 	Attenuation attenuation;
 	Math::Real range;
 /* ==================== Non-static member variables end ==================== */
