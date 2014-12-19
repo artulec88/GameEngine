@@ -19,7 +19,7 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
-//#define RENDER_LIGHT_MESHES
+#define RENDER_LIGHT_MESHES
 //#define SIMULATE_SUN_BEHAVIOR
 
 TestGame::TestGame() :
@@ -351,7 +351,7 @@ void TestGame::AddSpotLights()
 	const Vector3D defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
 	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
 	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
-	const Real defaultSpotLightCutoff(GET_CONFIG_VALUE("defaultSpotLightCutoff", 0.45f));
+	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Angle::DEGREE);
 	spotLightNodes = new GameNode* [spotLightCount];
 	for (int i = 0; i < spotLightCount; ++i)
 	{
@@ -385,9 +385,9 @@ void TestGame::AddSpotLights()
 		Real exponent = GET_CONFIG_VALUE("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
 		Attenuation attenuation(constant, linear, exponent);
 
-		Real cutoff = GET_CONFIG_VALUE("spotLightCutoff_" + spotLightIndexStr, defaultSpotLightCutoff);
+		Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + spotLightIndexStr, defaultSpotLightViewAngle.GetAngleInRadians()), Angle::RADIAN);
 
-		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, cutoff));
+		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, viewAngle, 10));
 		
 		// Rendering a small box around spot light node position to let the user see the source
 #ifdef RENDER_LIGHT_MESHES
@@ -514,16 +514,16 @@ void TestGame::Update(Real delta)
 		t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
 	}
 
-	for (int i = 0; i < spotLightCount; ++i)
-	{
-		if (spotLightNodes[i] == NULL)
-		{
-			LOG(Error, LOGPLACE, "Spot light node #%d is NULL while the number of created spot lights should be equal to %d.", i, spotLightCount);
-			continue;
-		}
-		Transform& t = spotLightNodes[i]->GetTransform();
-		t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
-	}
+	//for (int i = 0; i < spotLightCount; ++i)
+	//{
+	//	if (spotLightNodes[i] == NULL)
+	//	{
+	//		LOG(Error, LOGPLACE, "Spot light node #%d is NULL while the number of created spot lights should be equal to %d.", i, spotLightCount);
+	//		continue;
+	//	}
+	//	Transform& t = spotLightNodes[i]->GetTransform();
+	//	t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
+	//}
 
 	unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();

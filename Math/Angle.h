@@ -13,6 +13,7 @@ class MATH_API Angle
 public:
 	enum Unit { DEGREE = 0, RADIAN };
 public: // constructors and destructors
+	// TODO: explicit constructors, so that Real cannot be easily cast to Angle
 	Angle(Real angle = REAL_ZERO, Unit unit = DEGREE);
 	Angle(const Angle& angle); // copy constructor
 
