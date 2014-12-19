@@ -247,8 +247,7 @@ void Renderer::Render(GameNode& gameNode)
 		}
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
 		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
-		//glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
-		ClearScreen();
+		glClear(GL_DEPTH_BUFFER_BIT);
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
@@ -278,22 +277,33 @@ void Renderer::Render(GameNode& gameNode)
 			}
 		}
 		BindAsRenderTarget();
-	}
 #ifdef ANT_TWEAK_BAR_ENABLED
-	if (renderToTextureTestingEnabled)
-	{
-		Camera* temp = currentCamera;
-		currentCamera = &altCamera;
-		glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		defaultShader->Bind();
-		defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
-		planeMesh->Draw();
+		if (renderToTextureTestingEnabled)
+		{
+			Camera* temp = currentCamera;
+			currentCamera = &altCamera;
+			glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			defaultShader->Bind();
+			defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
+			planeMesh->Draw();
 
-		currentCamera = temp;
-	}
-	else
-	{
+			currentCamera = temp;
+		}
+		else
+		{
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+			glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+			glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+
+			gameNode.RenderAll(currentLight->GetShader(), this);
+
+			glDepthMask(GL_TRUE);
+			glDepthFunc(GL_LESS);
+			glDisable(GL_BLEND);
+		}
+#else
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
@@ -304,19 +314,10 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
+#endif
 	}
+#ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
-#else
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
-	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
-	gameNode.RenderAll(currentLight->GetShader(), this);
-
-	glDepthMask(GL_TRUE);
-	glDepthFunc(GL_LESS);
-	glDisable(GL_BLEND);
 #endif
 	SwapBuffers();
 }

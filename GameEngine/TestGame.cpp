@@ -204,7 +204,7 @@ void TestGame::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
-	int directionalLightsCount = GET_CONFIG_VALUE("directionalLightsCount", 0);
+	int directionalLightsCount = GET_CONFIG_VALUE("directionalLightsCount", 1);
 	if (directionalLightsCount == 0)
 	{
 		LOG(Notice, LOGPLACE, "Directional lights disabled");
