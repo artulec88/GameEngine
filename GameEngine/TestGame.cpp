@@ -352,6 +352,10 @@ void TestGame::AddSpotLights()
 	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
 	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
 	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Angle::DEGREE);
+	const int defaultSpotLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("defaultSpotLightShadowMapSizeAsPowerOf2", 10); // 2 ^ 10 = 1024
+	const Real defaultSpotLightShadowSoftness(GET_CONFIG_VALUE("defaultSpotLightShadowSoftness", 1.0f));
+	const Real defaultSpotLightLightBleedingReductionAmount(GET_CONFIG_VALUE("defaultSpotLightLightBleedingReductionAmount", 0.2f));
+	const Real defaultSpotLightMinVariance(GET_CONFIG_VALUE("defaultSpotLightMinVariance", 0.00002f));
 	spotLightNodes = new GameNode* [spotLightCount];
 	for (int i = 0; i < spotLightCount; ++i)
 	{
@@ -386,8 +390,13 @@ void TestGame::AddSpotLights()
 		Attenuation attenuation(constant, linear, exponent);
 
 		Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + spotLightIndexStr, defaultSpotLightViewAngle.GetAngleInRadians()), Angle::RADIAN);
+		
+		int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("spotLightShadowMapSizeAsPowerOf2_" + spotLightIndexStr, 10); // 2 ^ 10 = 1024
+		Real shadowSoftness = GET_CONFIG_VALUE("spotLightShadowSoftness_" + spotLightIndexStr, defaultSpotLightShadowSoftness);
+		Real lightBleedingReductionAmount = GET_CONFIG_VALUE("spotLightLightBleedingReductionAmount_" + spotLightIndexStr, defaultSpotLightLightBleedingReductionAmount);
+		Real minVariance = GET_CONFIG_VALUE("spotLightMinVariance_" + spotLightIndexStr, defaultSpotLightMinVariance);
 
-		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, viewAngle, 10));
+		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, viewAngle, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
 		
 		// Rendering a small box around spot light node position to let the user see the source
 #ifdef RENDER_LIGHT_MESHES
