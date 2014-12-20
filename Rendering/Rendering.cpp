@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Rendering.h"
 #include "Utility\ILogger.h"
+#include "Utility\IConfig.h"
 
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title)
 {
@@ -32,7 +33,8 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 		exit(EXIT_FAILURE);
 		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
-	glfwWindowHint(GLFW_SAMPLES, 4); // TODO: Do not hard-code any values
+	int antiAliastingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); // 4x anti-aliasing by default
+	glfwWindowHint(GLFW_SAMPLES, antiAliastingSamples);
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
 	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
 #ifdef _DEBUG
