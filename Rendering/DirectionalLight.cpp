@@ -19,7 +19,7 @@ DirectionalLight::DirectionalLight(const Math::Vector3D& color /* = Math::Vector
 		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL");
 		exit(EXIT_FAILURE);
 	}
-	SetShadowInfo(new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), true));
+	SetShadowInfo(new ShadowInfo(Math::Matrix4D::OrtographicProjection(-40, 40, -40, 40, -40, 40), true, 10 /* temporary */));
 	ASSERT(shadowInfo != NULL);
 	if (shadowInfo == NULL)
 	{

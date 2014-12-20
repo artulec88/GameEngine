@@ -31,7 +31,7 @@ class Renderer : public MappedValues
 {
 /* ==================== Static variables begin ==================== */
 private:
-	//static const int MAX_NUMBER_OF_CAMERAS;
+	static const int SHADOW_MAPS_COUNT = 10;
 	static const Math::Matrix4D BIAS_MATRIX;
 /* ==================== Static variables end ==================== */
 
@@ -83,7 +83,7 @@ private:
 	void InitGlfw(int width, int height, const std::string& title);
 	void InitGlew() const;
 	void SetCallbacks();
-	void BlurShadowMap(Texture* shadowMap, Math::Real blurAmount);
+	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
@@ -109,13 +109,14 @@ private:
 	Transform planeTransform;
 	Mesh* planeMesh;
 	Texture* tempTarget;
+
+	Texture* shadowMaps[SHADOW_MAPS_COUNT];
+	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];
 	
 	Shader* defaultShader;
 	Shader* shadowMapShader;
 	Shader* nullFilterShader;
 	Shader* gaussBlurFilterShader;
-	int shadowMapWidth;
-	int shadowMapHeight;
 	std::vector<BaseLight*> lights;
 	std::vector<Camera*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
@@ -125,8 +126,11 @@ private:
 	unsigned int previousFrameCameraIndex;
 	TwBar* propertiesBar;
 	TwBar* cameraBar;
+	TwBar* lightsBar;
 	TwStructMember cameraMembers[5];
+	TwStructMember shadowInfoMembers[6];
 	TwType cameraType;
+	TwType shadowInfoType;
 	bool renderToTextureTestingEnabled;
 #endif
 /* ==================== Non-static member variables end ==================== */

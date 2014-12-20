@@ -13,7 +13,7 @@ using namespace Math;
 SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
 		Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation() */,
-		const Angle& viewAngle /*= Angle(179.0f) */,
+		const Angle& viewAngle /*= Angle(170.0f) */,
 		int shadowMapSizeAsPowerOf2 /* = 0 */,
 		Math::Real shadowSoftness /* = REAL_ONE */,
 		Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
@@ -23,10 +23,10 @@ SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
 
-	if (shadowMapSizeAsPowerOf2 != 0)
+	if (shadowMapSizeAsPowerOf2 != 0) // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows at all
 	{
 		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f, this->range);
-		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowSoftness, lightBleedingReductionAmount, minVariance));
+		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
 		ASSERT(shadowInfo != NULL);
 		if (shadowInfo == NULL)
 		{

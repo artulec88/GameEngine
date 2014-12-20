@@ -22,7 +22,7 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	SpotLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
-		const Attenuation& attenuation = Attenuation(), const Math::Angle& viewAngle = Math::Angle(179.0f),
+		const Attenuation& attenuation = Attenuation(), const Math::Angle& viewAngle = Math::Angle(170.0f),
 		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
 		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );

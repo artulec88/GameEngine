@@ -14,6 +14,7 @@
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Utility\FileNotFoundException.h"
+#include "Math\FloatingPoint.h"
 
 #include <stddef.h>
 #include <sstream>
@@ -50,23 +51,16 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader(NULL),
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
-	gaussBlurFilterShader(NULL),
-	shadowMapWidth(GET_CONFIG_VALUE("shadowMapWidth", 1024)),
-	shadowMapHeight(GET_CONFIG_VALUE("shadowMapHeight", 1024))
+	gaussBlurFilterShader(NULL)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
+	lightsBar(NULL),
 	previousFrameCameraIndex(0),
 	renderToTextureTestingEnabled(false)
 #endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
-
-	//samplerMap.insert(std::pair<std::string, unsigned int>("diffuse", 0));
-	//samplerMap.insert(std::pair<std::string, unsigned int>("normalMap", 1));
-	//samplerMap.insert(std::pair<std::string, unsigned int>("displacementMap", 2));
-	//samplerMap.insert(std::pair<std::string, unsigned int>("shadowMap", 3));
-	//samplerMap.insert(std::pair<std::string, unsigned int>("filterTexture", 0));
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
 	SetSamplerSlot("displacementMap", 2);
@@ -80,8 +74,11 @@ Renderer::Renderer(int width, int height, std::string title) :
 	SetVector3D("ambientIntensity", ambientLight);
 #endif
 
-	SetTexture("shadowMap", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
-	SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
+	//SetTexture("shadowMap",
+	//	new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR,
+	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
+	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
+	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	defaultShader = new Shader((GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient")));
 	shadowMapShader = new Shader((GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator")));
 	nullFilterShader = new Shader((GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null")));
@@ -99,6 +96,15 @@ Renderer::Renderer(int width, int height, std::string title) :
 	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
 	planeMesh = new Mesh("..\\Models\\plane4.obj");
+
+	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
+	{
+		int shadowMapSize = 1 << (i + 1);
+		shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+		shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+	}
 
 	LOG(Delocust, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -130,6 +136,13 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
+
+	SetTexture("shadowMap", NULL);
+	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
+	{
+		SAFE_DELETE(shadowMaps[i]);
+		SAFE_DELETE(shadowMapTempTargets[i]);
+	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
@@ -246,11 +259,20 @@ void Renderer::Render(GameNode& gameNode)
 			continue;
 		}
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
-		GetTexture("shadowMap")->BindAsRenderTarget(); // rendering to texture
-		glClearColor(1.0f /* completely in light */, 0.0f, 0.0f, 0.0f); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
+			int shadowMapIndex = shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+			ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
+			if (shadowMapIndex >= SHADOW_MAPS_COUNT)
+			{
+				LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+				shadowMapIndex = 0;
+			}
+			SetTexture("shadowMap", shadowMaps[shadowMapIndex]);
+			shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+			glClearColor(REAL_ONE /* completely in light */, REAL_ZERO, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
 			altCamera.SetProjection(shadowInfo->GetProjection());
 			altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
 			altCamera.GetTransform().SetRot(currentLight->GetTransform().GetTransformedRot());
@@ -274,8 +296,19 @@ void Renderer::Render(GameNode& gameNode)
 			{
 				//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
 				//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-				BlurShadowMap(GetTexture("shadowMap"), shadowInfo->GetShadowSoftness());
+				Real shadowSoftness = shadowInfo->GetShadowSoftness();
+				if (!AlmostEqual(shadowSoftness, REAL_ZERO))
+				{
+					BlurShadowMap(shadowMapIndex, shadowSoftness);
+				}
 			}
+		}
+		else /* shadowInfo == NULL */
+		{
+			SetTexture("shadowMap", shadowMaps[0]);
+			shadowMaps[0]->BindAsRenderTarget();
+			glClearColor(REAL_ONE /* completely in light */, REAL_ZERO, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		}
 		BindAsRenderTarget();
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -323,14 +356,26 @@ void Renderer::Render(GameNode& gameNode)
 	SwapBuffers();
 }
 
-void Renderer::BlurShadowMap(Texture* shadowMap, Real blurAmount)
+void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
 {
-	// TODO: Check if texture is ok
-	SetVector3D("blurScale", Vector3D(static_cast<Real>(1.0f) / (shadowMap->GetWidth() * blurAmount), static_cast<Real>(0.0f), static_cast<Real>(0.0f)));
-	ApplyFilter(gaussBlurFilterShader, shadowMap, GetTexture("shadowMapTempTarget"));
+	Texture* shadowMap = shadowMaps[shadowMapIndex];
+	Texture* shadowMapTempTarget = shadowMapTempTargets[shadowMapIndex];
+	if (shadowMap == NULL)
+	{
+		LOG(Error, LOGPLACE, "Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		return;
+	}
+	if (shadowMapTempTarget == NULL)
+	{
+		LOG(Error, LOGPLACE, "Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		return;
+	}
+
+	SetVector3D("blurScale", Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
+	ApplyFilter(gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
 	
-	SetVector3D("blurScale", Vector3D(static_cast<Real>(0.0f), static_cast<Real>(1.0f) / (shadowMap->GetHeight() * blurAmount), static_cast<Real>(0.0f)));
-	ApplyFilter(gaussBlurFilterShader, GetTexture("shadowMapTempTarget"), shadowMap);
+	SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
+	ApplyFilter(gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
@@ -513,6 +558,12 @@ void Renderer::InitializeTweakBars()
 	cameraMembers[0].DefString = ""; cameraMembers[1].DefString = ""; cameraMembers[2].DefString = " step=0.01 "; cameraMembers[3].DefString = ""; cameraMembers[4].DefString = "";
 	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
 
+	shadowInfoMembers[0].Name = "Projection"; shadowInfoMembers[1].Name = "Flip faces"; shadowInfoMembers[2].Name = "Map size"; shadowInfoMembers[3].Name = "Softness"; shadowInfoMembers[4].Name = "Bleeding reduction amount"; shadowInfoMembers[5].Name = "Min variance";
+	shadowInfoMembers[0].Type = matrix4DType; shadowInfoMembers[1].Type = TW_TYPE_BOOLCPP; shadowInfoMembers[2].Type = TW_TYPE_INT32; shadowInfoMembers[3].Type = TW_TYPE_FLOAT; shadowInfoMembers[4].Type = TW_TYPE_FLOAT; shadowInfoMembers[5].Type = TW_TYPE_FLOAT;
+	shadowInfoMembers[0].Offset = 4; shadowInfoMembers[1].Offset = 68; shadowInfoMembers[2].Offset = 72; shadowInfoMembers[3].Offset = 76; shadowInfoMembers[4].Offset = 80; shadowInfoMembers[5].Offset = 84;
+	shadowInfoMembers[0].DefString = ""; shadowInfoMembers[1].DefString = ""; shadowInfoMembers[2].DefString = ""; shadowInfoMembers[3].DefString = " min=0.0 step=0.01 "; shadowInfoMembers[4].DefString = " min=0.0 step=0.01 "; shadowInfoMembers[5].DefString = " min=0.0 step=0.000002 ";
+	shadowInfoType = TwDefineStruct("ShadowInfo", shadowInfoMembers, 6, sizeof(Rendering::ShadowInfo), NULL, NULL);
+
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	TwWindowSize(width, height);
@@ -541,6 +592,12 @@ void Renderer::InitializeTweakBars()
 	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
+
+	lightsBar = TwNewBar("LightsBar");
+	TwAddVarRW(lightsBar, "lightPos", vector3DType, &lights[0]->GetTransform().GetPos(), " label='Pos' group='Spot lights' ");
+	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &lights[0]->GetTransform().GetRot(), " label='Rot' group='Spot lights' ");
+	TwAddVarRW(lightsBar, "lightShadowInfo", shadowInfoType, &(*lights[0]->GetShadowInfo()), " label='Shadow info' group='Spot lights' ");
+	//TwAddVarRW(lightsBar, 
 
 	//TwBar* altCameraBar = TwNewBar("AltCameraBar");
 	//TwAddVarRW(altCameraBar, "cameraVar", cameraType,  &altCamera, " label='Camera' group=Camera ");
