@@ -69,7 +69,7 @@ void TestGame::Init()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	planeMaterial = new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
-	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane4.obj"), planeMaterial));
+	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane.obj"), planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
