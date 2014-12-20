@@ -139,9 +139,7 @@ Mesh::~Mesh(void)
 		{
 			meshResourceMap.erase(fileName);
 		}
-
-		delete meshData;
-		meshData = NULL;
+		SAFE_DELETE(meshData);
 	}
 }
 

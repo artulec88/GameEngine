@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AntTweakBarTypes.h"
+#include "ShadowInfo.h"
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include <stddef.h>
@@ -9,6 +10,7 @@ TwType Rendering::angleType;
 TwType Rendering::vector3DType;
 TwType Rendering::matrix4DRowType;
 TwType Rendering::matrix4DType;
+TwType Rendering::shadowInfoType;
 
 /* static */ void Rendering::AntTweakBarTypes::InitializeTweakBarTypes()
 {
@@ -40,6 +42,16 @@ TwType Rendering::matrix4DType;
 		{ "[3]", matrix4DRowType, 12, "" }
 	};
 	matrix4DType = TwDefineStruct("Matrix4D", matrix4DMembers, 4, sizeof(Math::Matrix4D) / 4, NULL, NULL);
+
+	TwStructMember shadowInfoMembers[6] = {
+		{ "Projection", matrix4DType, 4, "" },
+		{ "Flip faces", TW_TYPE_BOOLCPP, 68, "" },
+		{ "Map size", TW_TYPE_INT32, 72, "" },
+		{ "Softness", TW_TYPE_REAL, 76, " min=0.0 step=0.01 " },
+		{ "Bleeding reduction amount", TW_TYPE_REAL, 80, " min=0.0 step=0.01 " },
+		{ "Min variance", TW_TYPE_REAL, 84, " min=0.0 step=0.000002 " }
+	};
+	shadowInfoType = TwDefineStruct("ShadowInfo", shadowInfoMembers, 6, sizeof(Rendering::ShadowInfo), NULL, NULL);
 }
 
 #endif

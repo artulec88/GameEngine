@@ -4,6 +4,10 @@
 #include "GameComponent.h"
 #include "ShadowInfo.h"
 #include "Math\Vector.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "AntTweakBarTypes.h"
+#include "AntTweakBar\include\AntTweakBar.h"
+#endif
 
 namespace Rendering
 {
@@ -38,6 +42,9 @@ public:
 	virtual bool IsEnabled() const { return isEnabled; }
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+#ifdef ANT_TWEAK_BAR_ENABLED
+	virtual void InitializeTweakBar(TwBar* lightsBar);
+#endif
 protected:
 	void SetShader(Shader* shader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);

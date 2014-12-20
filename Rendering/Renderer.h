@@ -125,9 +125,7 @@ private:
 	TwBar* cameraBar;
 	TwBar* lightsBar;
 	TwStructMember cameraMembers[5];
-	TwStructMember shadowInfoMembers[6];
 	TwType cameraType;
-	TwType shadowInfoType;
 	bool renderToTextureTestingEnabled;
 #endif
 /* ==================== Non-static member variables end ==================== */

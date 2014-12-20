@@ -10,3 +10,6 @@
 10.	Create a script probing the application and creating a report on how much CPU and memory it uses.
 11.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.
 12.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
+13.	HUD/GUI
+14.	Rendering text
+15.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)

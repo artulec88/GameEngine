@@ -67,3 +67,10 @@ ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D&
 	shadowCameraTransform.rot = GetTransform().GetTransformedRot();
 	return shadowCameraTransform;
 }
+
+void BaseLight::InitializeTweakBar(TwBar* lightsBar)
+{
+	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightShadowInfo", shadowInfoType, &(*GetShadowInfo()), " label='Shadow info' group='Base lights' ");
+}

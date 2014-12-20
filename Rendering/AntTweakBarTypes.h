@@ -24,6 +24,7 @@ namespace Rendering
 	extern TwType vector3DType;
 	extern TwType matrix4DRowType;
 	extern TwType matrix4DType;
+	extern TwType shadowInfoType;
 }
 
 #endif

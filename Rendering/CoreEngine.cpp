@@ -221,7 +221,7 @@ void CoreEngine::Run()
 	isRunning = true;
 
 #ifdef COUNT_FPS
-	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", "FPSsample_default", 1.0f)); // represents the time after which FPS value is calculated and logged
+	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	Math::Real frameTimeCounter = 0.0;
 #endif

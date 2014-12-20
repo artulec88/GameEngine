@@ -492,12 +492,6 @@ void Renderer::InitializeTweakBars()
 	cameraMembers[0].DefString = ""; cameraMembers[1].DefString = ""; cameraMembers[2].DefString = " step=0.01 "; cameraMembers[3].DefString = ""; cameraMembers[4].DefString = "";
 	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
 
-	shadowInfoMembers[0].Name = "Projection"; shadowInfoMembers[1].Name = "Flip faces"; shadowInfoMembers[2].Name = "Map size"; shadowInfoMembers[3].Name = "Softness"; shadowInfoMembers[4].Name = "Bleeding reduction amount"; shadowInfoMembers[5].Name = "Min variance";
-	shadowInfoMembers[0].Type = matrix4DType; shadowInfoMembers[1].Type = TW_TYPE_BOOLCPP; shadowInfoMembers[2].Type = TW_TYPE_INT32; shadowInfoMembers[3].Type = TW_TYPE_FLOAT; shadowInfoMembers[4].Type = TW_TYPE_FLOAT; shadowInfoMembers[5].Type = TW_TYPE_FLOAT;
-	shadowInfoMembers[0].Offset = 4; shadowInfoMembers[1].Offset = 68; shadowInfoMembers[2].Offset = 72; shadowInfoMembers[3].Offset = 76; shadowInfoMembers[4].Offset = 80; shadowInfoMembers[5].Offset = 84;
-	shadowInfoMembers[0].DefString = ""; shadowInfoMembers[1].DefString = ""; shadowInfoMembers[2].DefString = ""; shadowInfoMembers[3].DefString = " min=0.0 step=0.01 "; shadowInfoMembers[4].DefString = " min=0.0 step=0.01 "; shadowInfoMembers[5].DefString = " min=0.0 step=0.000002 ";
-	shadowInfoType = TwDefineStruct("ShadowInfo", shadowInfoMembers, 6, sizeof(Rendering::ShadowInfo), NULL, NULL);
-
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 	TwWindowSize(width, height);
@@ -528,10 +522,11 @@ void Renderer::InitializeTweakBars()
 	TwDefine(" CamerasBar/Camera opened=true ");
 
 	lightsBar = TwNewBar("LightsBar");
-	TwAddVarRW(lightsBar, "lightPos", vector3DType, &lights[0]->GetTransform().GetPos(), " label='Pos' group='Spot lights' ");
-	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &lights[0]->GetTransform().GetRot(), " label='Rot' group='Spot lights' ");
-	TwAddVarRW(lightsBar, "lightShadowInfo", shadowInfoType, &(*lights[0]->GetShadowInfo()), " label='Shadow info' group='Spot lights' ");
-	//TwAddVarRW(lightsBar, 
+	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
+	{
+		currentLight = *lightItr;
+		currentLight->InitializeTweakBar(lightsBar);
+	}
 
 	//TwBar* altCameraBar = TwNewBar("AltCameraBar");
 	//TwAddVarRW(altCameraBar, "cameraVar", cameraType,  &altCamera, " label='Camera' group=Camera ");
