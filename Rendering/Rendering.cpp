@@ -13,6 +13,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	glEnable(GL_DEPTH_TEST); // to enable depth tests
 	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
+	glEnable(GL_MULTISAMPLE); // enable multisampling
 
 	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
 	//glEnable(GL_TEXTURE_2D);
