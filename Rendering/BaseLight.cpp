@@ -3,7 +3,6 @@
 #include "CoreEngine.h"
 #include "Renderer.h"
 #include "Shader.h"
-#include "ShadowInfo.h"
 #include "Utility\ILogger.h"
 
 using namespace Rendering;
@@ -59,4 +58,12 @@ void BaseLight::AddToEngine(CoreEngine* coreEngine)
 		return;
 	}
 	coreEngine->GetRenderer()->AddLight(this);
+}
+
+ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+{
+	ShadowCameraTransform shadowCameraTransform;
+	shadowCameraTransform.pos = GetTransform().GetTransformedPos();
+	shadowCameraTransform.rot = GetTransform().GetTransformedRot();
+	return shadowCameraTransform;
 }

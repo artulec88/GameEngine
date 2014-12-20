@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "GameComponent.h"
+#include "ShadowInfo.h"
 #include "Math\Vector.h"
 
 namespace Rendering
@@ -9,7 +10,6 @@ namespace Rendering
 
 // TODO: Move this to GameComponent class declaration when BaseLight becomes a child of GameComponent class
 class Shader;
-class ShadowInfo;
 class Renderer;
 
 class RENDERING_API BaseLight : public GameComponent
@@ -36,6 +36,8 @@ public:
 	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
 	virtual void AddToEngine(CoreEngine* coreEngine);
 	virtual bool IsEnabled() const { return isEnabled; }
+
+	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 protected:
 	void SetShader(Shader* shader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);

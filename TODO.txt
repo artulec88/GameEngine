@@ -9,3 +9,4 @@
 9.	Create a possibility to display a light direction (current solution does not work correctly)s
 10.	Create a script probing the application and creating a report on how much CPU and memory it uses.
 11.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.
+12.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)

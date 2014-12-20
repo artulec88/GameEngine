@@ -51,7 +51,8 @@ Renderer::Renderer(int width, int height, std::string title) :
 	defaultShader(NULL),
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
-	gaussBlurFilterShader(NULL)
+	gaussBlurFilterShader(NULL),
+	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO))
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
@@ -259,23 +260,25 @@ void Renderer::Render(GameNode& gameNode)
 			continue;
 		}
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
+		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+		ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
+		if (shadowMapIndex >= SHADOW_MAPS_COUNT)
+		{
+			LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+			shadowMapIndex = 0;
+		}
+		SetTexture("shadowMap", shadowMaps[shadowMapIndex]);
+		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+		glClearColor(REAL_ONE /* completely in light */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
-			int shadowMapIndex = shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-			ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
-			if (shadowMapIndex >= SHADOW_MAPS_COUNT)
-			{
-				LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-				shadowMapIndex = 0;
-			}
-			SetTexture("shadowMap", shadowMaps[shadowMapIndex]);
-			shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-			glClearColor(REAL_ONE /* completely in light */, REAL_ZERO, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
 			altCamera.SetProjection(shadowInfo->GetProjection());
-			altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
-			altCamera.GetTransform().SetRot(currentLight->GetTransform().GetTransformedRot());
+			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(currentCamera->GetTransform().GetTransformedPos(), currentCamera->GetTransform().GetTransformedRot());
+			altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
+			altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
+			//altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
+			//altCamera.GetTransform().SetRot(currentLight->GetTransform().GetTransformedRot());
 
 			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
 
@@ -303,12 +306,13 @@ void Renderer::Render(GameNode& gameNode)
 				}
 			}
 		}
-		else /* shadowInfo == NULL */
+		else // shadowInfo == NULL
 		{
-			SetTexture("shadowMap", shadowMaps[0]);
-			shadowMaps[0]->BindAsRenderTarget();
-			glClearColor(REAL_ONE /* completely in light */, REAL_ZERO, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+			// we set the light matrix this way so that, if no shadow should be cast
+			// everything in the scene will be mapped to the same point
+			lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+			SetReal("shadowVarianceMin", 0.00002f);
 		}
 		BindAsRenderTarget();
 #ifdef ANT_TWEAK_BAR_ENABLED

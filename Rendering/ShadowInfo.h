@@ -1,8 +1,18 @@
+#pragma once
+
 #include "Rendering.h"
+#include "Math\Vector.h"
+#include "Math\Quaternion.h"
 #include "Math\Matrix.h"
 
 namespace Rendering
 {
+
+struct ShadowCameraTransform
+{
+	Math::Vector3D pos;
+	Math::Quaternion rot;
+};
 
 class RENDERING_API ShadowInfo
 {

@@ -42,7 +42,7 @@ float CalcShadowAmount(sampler2D shadowMap, vec4 initialShadowMapCoords)
 	}
 	else
 	{
-		return 1.0;
+		return 1.0; // point is outside the range, so we render it in light
 	}
 }
 
