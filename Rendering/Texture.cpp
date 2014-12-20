@@ -8,7 +8,7 @@ using namespace Rendering;
 
 /* static */ std::map<std::string, TextureData*> Texture::textureResourceMap;
 
-Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
+Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
 	textureData(NULL),
 	fileName(fileName)
 {
@@ -39,6 +39,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		stbi_image_free(data);
 		ASSERT(textureData);
 		textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, textureData));
+		LOG(Utility::Debug, LOGPLACE, "Loading texture from file \"%s\" finished successfully", name.c_str());
 	}
 	else // (itr != textureResourceMap.end()) // texture has already been loaded
 	{
@@ -49,7 +50,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 	//LoadFromFile(fileName);
 }
 
-Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
+Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
 	textureData(NULL),
 	fileName()
 {

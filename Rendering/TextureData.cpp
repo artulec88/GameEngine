@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "TextureData.h"
 #include "Utility\ILogger.h"
+#include "Math\Math.h"
 
 using namespace Rendering;
 
@@ -71,6 +72,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 	}
 	
 	glGenTextures(texturesCount, textureID);
+	CheckErrorCode(__FUNCTION__, "Generating textures");
 	for (int i = 0; i < texturesCount; ++i)
 	{
 		//ASSERT(data[i] != NULL)
@@ -81,7 +83,17 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 		}
 		glBindTexture(textureTarget, textureID[i]);
 		glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
-		glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filters[i]);
+		CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_MIN_FILTER");
+		if (filters[i] == GL_NEAREST)
+		{
+			/**
+			 * GL_TEXTURE_MAG_FILTER only accepts two possible values: GL_NEAREST and GL_LINEAR (default).
+			 * We cannot use GL_*_MIPMAP_* values as they give errors GL_INVALID_ENUM.
+			 * See link https://www.opengl.org/wiki/GLAPI/glTexParameter (search for GL_TEXTURE_MAG_FILTER)
+			 */
+			glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, filters[i] /* GL_NEAREST */);
+			CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_MAG_FILTER");
+		}
 
 		if (clampEnabled)
 		{
@@ -91,21 +103,22 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 
 		glTexImage2D(textureTarget, 0, internalFormat[i], width, height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
 
-		//if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
-		//	filters[i] == GL_NEAREST_MIPMAP_LINEAR ||
-		//	filters[i] == GL_LINEAR_MIPMAP_NEAREST ||
-		//	filters[i] == GL_LINEAR_MIPMAP_LINEAR)
-		//{
-		//	glGenerateMipmap(m_textureTarget);
-		//	GLfloat maxAnisotropy;
-		//	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-		//	glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Clamp(0.0f, 8.0f, maxAnisotropy));
-		//}
-		//else
-		//{
-		//	glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
-		//	glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
-		//}
+		if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
+			filters[i] == GL_NEAREST_MIPMAP_LINEAR ||
+			filters[i] == GL_LINEAR_MIPMAP_NEAREST ||
+			filters[i] == GL_LINEAR_MIPMAP_LINEAR) // do we use mipmapping?
+		{
+			glGenerateMipmap(textureTarget);
+			CheckErrorCode(__FUNCTION__, "Generating mipmaps");
+			GLfloat maxAnisotropy; // the maximum number of samples per pixel used for mipmapping filtering
+			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+			glTexParameterf(textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math::Clamp(0.0f, 8.0f, maxAnisotropy));
+		}
+		else
+		{
+			glTexParameteri(textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
+			glTexParameteri(textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
+		}
 	}
 }
 

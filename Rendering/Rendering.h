@@ -10,9 +10,14 @@
 #include <GL\glew.h>
 // Include GLFW
 #include <GLFW\glfw3.h>
+#include <string>
 
 #define ANT_TWEAK_BAR_ENABLED
 
 namespace Rendering
 {
+	GLFWwindow* InitGraphics(int width, int height, const std::string& title);
+	GLFWwindow* InitGlfw(int width, int height, const std::string& title);
+	void InitGlew();
+	void CheckErrorCode(const char* functionName, const char* comment);
 } /* end namespace Rendering */

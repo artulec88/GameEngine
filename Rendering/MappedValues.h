@@ -23,7 +23,7 @@ class MappedValues
 public:
 	RENDERING_API MappedValues(void) :
 		defaultTexture(new Texture("..\\Textures\\defaultTexture.png")),
-		defaultVector3D(Math::Vector3D(0.0f, 0.0f, 0.0f)) {}
+		defaultVector3D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO)) {}
 	RENDERING_API virtual ~MappedValues(void)
 	{
 		std::map<std::string, Texture*>::iterator itr = textureMap.begin();

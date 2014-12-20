@@ -28,7 +28,7 @@ using namespace Math;
 
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
-Renderer::Renderer(int width, int height, std::string title) :
+Renderer::Renderer(GLFWwindow* window) :
 	cameraCount(-1),
 	applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
 	backgroundColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f),
@@ -36,7 +36,7 @@ Renderer::Renderer(int width, int height, std::string title) :
 		GET_CONFIG_VALUE("ClearColorBlue", 0.0f),
 		GET_CONFIG_VALUE("ClearColorAlpha", 1.0f)),
 	shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
-	window(NULL),
+	window(window),
 	vao(0),
 	isFullscreen(false),
 	isMouseEnabled(true),
@@ -62,14 +62,14 @@ Renderer::Renderer(int width, int height, std::string title) :
 #endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
+	PrintGlReport();
+	SetCallbacks();
+
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
 	SetSamplerSlot("displacementMap", 2);
 	SetSamplerSlot("shadowMap", 3);
 	SetSamplerSlot("filterTexture", 0);
-
-	InitGraphics(width, height, title);
-	PrintGlReport();
 
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientIntensity", ambientLight);
@@ -88,9 +88,9 @@ Renderer::Renderer(int width, int height, std::string title) :
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
 
-	int tempWidth = width;
-	int tempHeight = height;
-	tempTarget = new Texture(tempWidth, tempHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	tempTarget = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	planeMaterial = new Material(tempTarget, 1, 8);
 	planeTransform.SetScale(REAL_ONE);
@@ -152,60 +152,14 @@ Renderer::~Renderer(void)
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 
-void Renderer::InitGraphics(int width, int height, const std::string& title)
-{
-	LOG(Info, LOGPLACE, "Initializing Renderer started");
-	InitGlfw(width, height, title);
-	SetCallbacks();
-	InitGlew();
-
-	glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
-
-	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
-	glCullFace(GL_BACK); // cull the back face
-	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
-	glEnable(GL_DEPTH_TEST); // to enable depth tests
-	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
-
-	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
-	//glEnable(GL_TEXTURE_2D);
-	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
-}
-
-void Renderer::InitGlfw(int width, int height, const std::string& title)
-{
-	LOG(Debug, LOGPLACE, "Initializing GLFW started");
-	if( !glfwInit() )
-	{
-		LOG(Critical, LOGPLACE, "Failed to initalize GLFW");
-		exit(EXIT_FAILURE);
-		// throw FileNotFoundException(); // TODO: throw another exception in the future
-	}
-	glfwWindowHint(GLFW_SAMPLES, 4); // TODO: Do not hard-code any values
-	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
-	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
-#ifdef _DEBUG
-	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // So that glBegin / glEnd etc. work
-#else
-	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
-	window = glfwCreateWindow(width, height, title.c_str(), NULL /* glfwGetPrimaryMonitor()- for fullscreen */, NULL); // Open a window and create its OpenGL context
-	if (window == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
-	glfwSetCursorPos(window, width / 2, height / 2); // Set cursor position to the middle point
-	//glfwSwapInterval(1);
-	glfwSetTime(0.0);
-	LOG(Debug, LOGPLACE, "Initializing GLFW finished successfully");
-}
-
 void Renderer::SetCallbacks()
 {
+	ASSERT(window != NULL);
+	if (window == NULL)
+	{
+		LOG(Critical, LOGPLACE, "Setting GLFW callbacks failed. Window is NULL.");
+		exit(EXIT_FAILURE);
+	}
 	glfwSetWindowCloseCallback(window, &Game::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
 	glfwSetKeyCallback(window, &Game::KeyEventCallback);
@@ -214,30 +168,6 @@ void Renderer::SetCallbacks()
 	glfwSetCursorPosCallback(window, &Game::MousePosCallback);
 	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
 	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
-}
-
-void Renderer::InitGlew() const
-{
-	LOG(Info, LOGPLACE, "Initializing GLEW...");
-	glewExperimental = true; // Needed in core profile
-	GLenum err = glewInit();
-
-	if (GLEW_OK != err)
-	{
-		LOG(Error, LOGPLACE, "Error while initializing GLEW: %s", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	if (GLEW_VERSION_2_0)
-	{
-		LOG(Info, LOGPLACE, "OpenGL 2.0 supported");
-	}
-	else
-	{
-		LOG(Info, LOGPLACE, "OpenGL 2.0 NOT supported");
-		exit(EXIT_FAILURE);
-	}
-
-	LOG(Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
 
 void Renderer::Render(GameNode& gameNode)

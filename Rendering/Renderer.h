@@ -37,7 +37,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API Renderer(int width, int height, std::string title);
+	RENDERING_API Renderer(GLFWwindow* window);
 	RENDERING_API virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity()) {} // don't implement
@@ -75,14 +75,11 @@ public:
 
 	RENDERING_API void PrintGlReport();
 protected:
-	void InitGraphics(int width, int height, const std::string& title);
+	void SetCallbacks();
 	void ClearScreen() const;
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
 	void BindAsRenderTarget();
-	void InitGlfw(int width, int height, const std::string& title);
-	void InitGlew() const;
-	void SetCallbacks();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */

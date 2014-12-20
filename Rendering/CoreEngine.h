@@ -65,7 +65,7 @@ public:
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
 protected:
-	void CreateRenderer();
+	void CreateRenderer(int width, int height, const std::string& title);
 	virtual void Run();
 	void PollEvents();
 /* ==================== Non-static member functions end ==================== */

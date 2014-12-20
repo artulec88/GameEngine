@@ -10,6 +10,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+//#include <GLFW\glfw3.h>
 
 using namespace Rendering;
 using namespace Utility;
@@ -43,7 +44,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	
 	game->SetEngine(this);
 
-	CreateRenderer();
+	CreateRenderer(width, height, title);
 	
 	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
@@ -68,9 +69,10 @@ CoreEngine::~CoreEngine(void)
 	LOG(Debug, LOGPLACE, "Core engine destruction finished");
 }
 
-void CoreEngine::CreateRenderer()
+void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
-	this->renderer = new Renderer(windowWidth, windowHeight, windowTitle);
+	GLFWwindow* window = Rendering::InitGraphics(width, height, title);
+	this->renderer = new Renderer(window);
 
 	if (this->renderer == NULL)
 	{

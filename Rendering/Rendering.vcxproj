@@ -153,6 +153,7 @@
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowInfo.cpp" />
     <ClCompile Include="SpotLight.cpp" />

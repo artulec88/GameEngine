@@ -38,6 +38,7 @@ Config::Config() : isInitialized(false)
 	while (!file.eof())
 	{
 		file >> name;
+		LOG(Delocust, LOGPLACE, "Reading \"%s\"", name.c_str());
 		if (file.fail())
 		{
 			LOG(Warning, LOGPLACE, "Fail occured in the stream while reading the configuration file");
