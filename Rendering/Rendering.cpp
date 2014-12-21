@@ -3,6 +3,8 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
+Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::AntiAliasingMethod::MSAA;
+
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title)
 {
 	LOG(Utility::Info, LOGPLACE, "Initializing graphics started");
@@ -14,7 +16,22 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	glEnable(GL_DEPTH_TEST); // to enable depth tests
 	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
-	glEnable(GL_MULTISAMPLE); // enable multisampling
+
+	switch (Rendering::antiAliasingMethod)
+	{
+	case NONE:
+		glDisable(GL_MULTISAMPLE); // disable multisampling
+		break;
+	case FXAA:
+		glDisable(GL_MULTISAMPLE); // disable multisampling
+		break;
+	case MSAA:
+		glEnable(GL_MULTISAMPLE);
+		break;
+	default:
+		LOG(Utility::Warning, LOGPLACE, "Unknown anti-aliasing algorithm chosen");
+		glEnable(GL_MULTISAMPLE);
+	}
 
 	//glDepthFunc(GL_LESS); // Accept fragment if it closer to the camera than the former one
 	//glEnable(GL_TEXTURE_2D);
@@ -33,8 +50,24 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 		exit(EXIT_FAILURE);
 		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
-	int antiAliastingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); // 4x anti-aliasing by default
-	glfwWindowHint(GLFW_SAMPLES, antiAliastingSamples);
+	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
+	switch (Rendering::antiAliasingMethod)
+	{
+	case NONE:
+		glfwWindowHint(GLFW_SAMPLES, 2);
+		LOG(Utility::Notice, LOGPLACE, "No anti-aliasing algorithm chosen");
+		break;
+	case FXAA:
+		LOG(Utility::Notice, LOGPLACE, "FXAA anti-aliasing algorithm chosen");
+		break;
+	case MSAA:
+		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
+		LOG(Utility::Notice, LOGPLACE, "%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		break;
+	default:
+		LOG(Utility::Warning, LOGPLACE, "Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
+		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
+	}
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
 	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
 #ifdef _DEBUG

@@ -107,7 +107,9 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	LOG(Delocust, LOGPLACE, "Creating Renderer instance finished");
+	//SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+
+	LOG(Debug, LOGPLACE, "Creating Renderer instance finished");
 }
 
 

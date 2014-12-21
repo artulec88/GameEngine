@@ -16,8 +16,17 @@
 
 namespace Rendering
 {
+	enum AntiAliasingMethod
+	{
+		NONE = 0,
+		MSAA,
+		FXAA
+	};
+
 	GLFWwindow* InitGraphics(int width, int height, const std::string& title);
 	GLFWwindow* InitGlfw(int width, int height, const std::string& title);
 	void InitGlew();
 	void CheckErrorCode(const char* functionName, const char* comment);
+
+	extern AntiAliasingMethod antiAliasingMethod;
 } /* end namespace Rendering */
