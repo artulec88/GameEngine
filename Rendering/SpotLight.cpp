@@ -10,7 +10,7 @@ using namespace Math;
 
 /* static */ bool SpotLight::spotLightsEnabled = true;
 
-SpotLight::SpotLight(const Vector3D& color /*= Vector3D(0.0, 0.0, 0.0)*/,
+SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZERO)*/,
 		Real intensity /*= 0.0*/,
 		const Attenuation& attenuation /*= Attenuation() */,
 		const Angle& viewAngle /*= Angle(170.0f) */,

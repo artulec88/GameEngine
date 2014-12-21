@@ -5,12 +5,12 @@
 namespace Rendering
 {
 
-class Color
+class RENDERING_API Color
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Color(void) : red(REAL_ZERO), green(REAL_ZERO), blue(REAL_ZERO), alpha(REAL_ONE) { }
-	Color(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = 1.0f) : red(red), green(green), blue(blue), alpha(alpha) { };
+	Color(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = REAL_ONE) : red(red), green(green), blue(blue), alpha(alpha) { };
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */

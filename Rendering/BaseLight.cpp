@@ -7,7 +7,7 @@
 
 using namespace Rendering;
 
-BaseLight::BaseLight(const Math::Vector3D& color /* = Math::Vector3D(0.0, 0.0, 0.0) */, Math::Real intensity /* = 0.0 */) :
+BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, Math::Real intensity /* = REAL_ZERO */) :
 	GameComponent(),
 	color(color),
 	intensity(intensity),
@@ -73,4 +73,7 @@ void BaseLight::InitializeTweakBar(TwBar* lightsBar)
 	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightShadowInfo", shadowInfoType, &(*GetShadowInfo()), " label='Shadow info' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightColor", TW_TYPE_COLOR4F, &color, " label='Color' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightIntensity", TW_TYPE_REAL, &intensity, " label='Intensity' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightEnabled", TW_TYPE_BOOLCPP, &isEnabled, " label='Enabled' group='Base lights' ");
 }

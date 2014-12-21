@@ -4,6 +4,7 @@
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
 #include "Rendering\LookAtComponent.h"
+#include "Rendering\Color.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -214,7 +215,7 @@ void TestGame::AddDirectionalLight()
 	directionalLightNode = new GameNode();
 
 	const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
-	const Vector3D defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
+	const Color defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
 	const Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", 1.0f));
 	const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
 	const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
@@ -247,10 +248,10 @@ void TestGame::AddDirectionalLight()
 	//directionalLightNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
 
-	Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetX() /* Red */);
-	Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetY() /* Green */);
-	Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetZ() /* Blue */);
-	Vector3D color(red, green, blue);
+	Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetRed());
+	Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetGreen());
+	Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetBlue());
+	Color color(red, green, blue);
 		
 	Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
 
@@ -299,7 +300,7 @@ void TestGame::AddPointLights()
 	const Angle defaultPointLightRotationX(GET_CONFIG_VALUE("defaultPointLightAngleX", -45.0f));
 	const Angle defaultPointLightRotationY(GET_CONFIG_VALUE("defaultPointLightAngleY", 0.0f));
 	const Angle defaultPointLightRotationZ(GET_CONFIG_VALUE("defaultPointLightAngleZ", 0.0f));
-	const Vector3D defaultPointLightColor(GET_CONFIG_VALUE("defaultPointLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorBlue", 1.0f));
+	const Color defaultPointLightColor(GET_CONFIG_VALUE("defaultPointLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorBlue", 1.0f));
 	const Real defaultPointLightIntensity(GET_CONFIG_VALUE("defaultPointLightIntensity", 10.0f));
 	const Attenuation defaultPointLightAttenuation(GET_CONFIG_VALUE("defaultPointLightAttenuationConstant", 0.0f), GET_CONFIG_VALUE("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultPointLightAttenuationExponent", 0.0f));
 	pointLightNodes = new GameNode* [pointLightCount];
@@ -323,10 +324,10 @@ void TestGame::AddPointLights()
 		Quaternion rot(rotMatrix);
 		pointLightNodes[i]->GetTransform().SetRot(rot);
 
-		Real red = GET_CONFIG_VALUE("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetX() /* Red */);
-		Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetY() /* Green */);
-		Real blue = GET_CONFIG_VALUE("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetZ() /* Blue */);
-		Vector3D color(red, green, blue);
+		Real red = GET_CONFIG_VALUE("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetRed());
+		Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetGreen());
+		Real blue = GET_CONFIG_VALUE("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetBlue());
+		Color color(red, green, blue);
 		
 		Real intensity = GET_CONFIG_VALUE("pointLightIntensity_" + pointLightIndexStr, defaultPointLightIntensity);
 		
@@ -359,7 +360,7 @@ void TestGame::AddSpotLights()
 	const Angle defaultSpotLightRotationX(GET_CONFIG_VALUE("defaultSpotLightAngleX", -45.0f));
 	const Angle defaultSpotLightRotationY(GET_CONFIG_VALUE("defaultSpotLightAngleY", 0.0f));
 	const Angle defaultSpotLightRotationZ(GET_CONFIG_VALUE("defaultSpotLightAngleZ", 0.0f));
-	const Vector3D defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
+	const Color defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
 	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
 	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
 	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Angle::DEGREE);
@@ -388,10 +389,10 @@ void TestGame::AddSpotLights()
 		Quaternion rot(rotMatrix);
 		spotLightNodes[i]->GetTransform().SetRot(rot);
 
-		Real red = GET_CONFIG_VALUE("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetX() /* Red */);
-		Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetY() /* Green */);
-		Real blue = GET_CONFIG_VALUE("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetZ() /* Blue */);
-		Vector3D color(red, green, blue);
+		Real red = GET_CONFIG_VALUE("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetRed());
+		Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetGreen());
+		Real blue = GET_CONFIG_VALUE("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetBlue());
+		Color color(red, green, blue);
 		
 		Real intensity = GET_CONFIG_VALUE("spotLightIntensity_" + spotLightIndexStr, defaultSpotLightIntensity);
 		

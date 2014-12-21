@@ -3,7 +3,7 @@
 #include "Rendering.h"
 #include "Attenuation.h"
 #include "BaseLight.h"
-#include "Math\Vector.h"
+#include "Color.h"
 
 namespace Rendering
 {
@@ -19,7 +19,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PointLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
+	PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
 		const Attenuation& attenuation = Attenuation());
 	virtual ~PointLight(void);
 /* ==================== Constructors and destructors end ==================== */

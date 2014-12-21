@@ -9,8 +9,8 @@ using namespace Utility;
 
 /* static */ bool PointLight::pointLightsEnabled = true;
 
-PointLight::PointLight(const Math::Vector3D& color /*= Math::Vector3D(0.0, 0.0, 0.0)*/, Math::Real intensity /*= 0.0*/,
-		const Attenuation& attenuation /*= Attenuation()*/) :
+PointLight::PointLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, Math::Real intensity /* = REAL_ZERO */,
+		const Attenuation& attenuation /* = Attenuation() */) :
 	BaseLight(color, intensity),
 	attenuation(attenuation)
 {
@@ -27,10 +27,10 @@ void PointLight::CalculateRange()
 	Math::Real a = this->attenuation.GetExponent();
 	Math::Real b = this->attenuation.GetLinear();
 
-	Math::Real maxColorElement = (color.GetX() > color.GetY()) ? color.GetX() : color.GetY();
-	if (color.GetZ() > maxColorElement)
+	Math::Real maxColorElement = (color.GetRed() > color.GetGreen()) ? color.GetRed() : color.GetGreen();
+	if (color.GetBlue() > maxColorElement)
 	{
-		maxColorElement = color.GetZ();
+		maxColorElement = color.GetBlue();
 	}
 	const int colorDepth = GET_CONFIG_VALUE("ColorDepth", 256);
 	Math::Real c = this->attenuation.GetConstant() - colorDepth * intensity * maxColorElement;

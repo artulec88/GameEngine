@@ -3,6 +3,7 @@
 #include "Rendering.h"
 #include "GameComponent.h"
 #include "ShadowInfo.h"
+#include "Color.h"
 #include "Math\Vector.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBarTypes.h"
@@ -23,7 +24,7 @@ class RENDERING_API BaseLight : public GameComponent
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BaseLight(const Math::Vector3D& color = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
+	BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
 	virtual ~BaseLight(void);
 private:
 	BaseLight(const BaseLight& baseLight) {} // Copy constructor disabled
@@ -34,7 +35,7 @@ private:
 public:
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-	Math::Vector3D GetColor() const { return this->color; }
+	Color GetColor() const { return this->color; }
 	Math::Real GetIntensity() const { return this->intensity; }
 	inline Shader* GetShader() { return this->shader; }
 	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
@@ -52,7 +53,7 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Math::Vector3D color;
+	Color color;
 	Math::Real intensity;
 	Shader* shader;
 	ShadowInfo* shadowInfo;

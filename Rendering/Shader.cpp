@@ -731,6 +731,17 @@ void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& v
 	}
 }
 
+void Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
+{
+	LOG(Warning, LOGPLACE, "uniformName = \"%s\"", uniformName.c_str());
+	std::map<std::string, unsigned int>::const_iterator itr;
+	if (shaderData->IsUniformPresent(uniformName, itr))
+	{
+		//glUniform4f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha());
+		glUniform3f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue());
+	}
+}
+
 void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
 	std::map<std::string, unsigned int>::const_iterator itr;
@@ -743,13 +754,13 @@ void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& mat
 void Shader::SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight) const
 {
 	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());
-	SetUniformVector3D(uniformName + ".base.color", directionalLight.GetColor());
+	SetUniformColor(uniformName + ".base.color", directionalLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", directionalLight.GetIntensity());
 }
 
 void Shader::SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight) const
 {
-	SetUniformVector3D(uniformName + ".base.color", pointLight.GetColor());
+	SetUniformColor(uniformName + ".base.color", pointLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", pointLight.GetIntensity());
 	SetUniformf(uniformName + ".attenuation.constant", pointLight.GetAttenuation().GetConstant());
 	SetUniformf(uniformName + ".attenuation.linear", pointLight.GetAttenuation().GetLinear());
@@ -760,7 +771,7 @@ void Shader::SetUniformPointLight(const std::string& uniformName, const PointLig
 
 void Shader::SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight) const
 {
-	SetUniformVector3D(uniformName + ".pointLight.base.color", spotLight.GetColor());
+	SetUniformColor(uniformName + ".pointLight.base.color", spotLight.GetColor());
 	SetUniformf(uniformName + ".pointLight.base.intensity", spotLight.GetIntensity());
 	SetUniformf(uniformName + ".pointLight.attenuation.constant", spotLight.GetAttenuation().GetConstant());
 	SetUniformf(uniformName + ".pointLight.attenuation.linear", spotLight.GetAttenuation().GetLinear());
