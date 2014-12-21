@@ -334,16 +334,16 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	}
 	if (dest == NULL)
 	{
-		LOG(Debug, LOGPLACE, "Binding window as a render target for filtering");
+		LOG(Delocust, LOGPLACE, "Binding window as a render target for filtering");
 		BindAsRenderTarget();
 	}
 	else
 	{
-		LOG(Debug, LOGPLACE, "Binding texture as a render target for filtering");
+		LOG(Delocust, LOGPLACE, "Binding texture as a render target for filtering");
 		dest->BindAsRenderTarget();
 	}
 
-	LOG(Info, LOGPLACE, "Applying a filter to the source texture");
+	LOG(Debug, LOGPLACE, "Applying a filter to the source texture");
 	
 	SetTexture("filterTexture", source);
 

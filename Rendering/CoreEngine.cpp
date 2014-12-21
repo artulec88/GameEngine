@@ -191,12 +191,12 @@ void CoreEngine::Stop()
 	LOG(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
-	LOG(Debug, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats1, timeSum1, timeSum1 / countStats1, minMaxTime1.ToString().c_str());
-	LOG(Debug, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2, timeSum2, timeSum2 / countStats2, minMaxTime2.ToString().c_str());
-	LOG(Debug, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_1, timeSum2_1, timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
-	LOG(Debug, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
-	LOG(Debug, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
-	LOG(Debug, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats1, timeSum1, timeSum1 / countStats1, minMaxTime1.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2, timeSum2, timeSum2 / countStats2, minMaxTime2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_1, timeSum2_1, timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
 	/* ==================== Printing stats end ==================== */
 }
 
@@ -256,7 +256,7 @@ void CoreEngine::Run()
 		{
 			int fps = framesCount / fpsSample; // Frames Per Second
 			Math::Real spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
-			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			LOG(Info, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = 0.0;
 		}

@@ -68,6 +68,7 @@ ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D&
 	return shadowCameraTransform;
 }
 
+#ifdef ANT_TWEAK_BAR_ENABLED
 void BaseLight::InitializeTweakBar(TwBar* lightsBar)
 {
 	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
@@ -77,3 +78,4 @@ void BaseLight::InitializeTweakBar(TwBar* lightsBar)
 	TwAddVarRW(lightsBar, "lightIntensity", TW_TYPE_REAL, &intensity, " label='Intensity' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightEnabled", TW_TYPE_BOOLCPP, &isEnabled, " label='Enabled' group='Base lights' ");
 }
+#endif

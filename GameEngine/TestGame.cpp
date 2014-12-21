@@ -76,7 +76,7 @@ void TestGame::Init()
 	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
 	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
 	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
-	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\plane4.obj"),
+	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"),
 		new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
 #endif
