@@ -3,7 +3,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
-Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::AntiAliasingMethod::MSAA;
+Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::AntiAliasingMethod::FXAA;
 
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title)
 {
@@ -54,10 +54,19 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 	switch (Rendering::antiAliasingMethod)
 	{
 	case NONE:
-		glfwWindowHint(GLFW_SAMPLES, 2);
+		/**
+		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
+		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
+		 */
+		glfwWindowHint(GLFW_SAMPLES, 0);
 		LOG(Utility::Notice, LOGPLACE, "No anti-aliasing algorithm chosen");
 		break;
 	case FXAA:
+		/**
+		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
+		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
+		 */
+		glfwWindowHint(GLFW_SAMPLES, 0);
 		LOG(Utility::Notice, LOGPLACE, "FXAA anti-aliasing algorithm chosen");
 		break;
 	case MSAA:
@@ -75,6 +84,11 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 #else
 	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #endif
+
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+	//glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
+
 	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL /* glfwGetPrimaryMonitor()- for fullscreen */, NULL); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{

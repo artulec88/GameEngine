@@ -52,7 +52,11 @@ Renderer::Renderer(GLFWwindow* window) :
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
 	gaussBlurFilterShader(NULL),
-	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO))
+	fxaaFilterShader(NULL),
+	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
+	fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
+	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
+	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f))
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
@@ -84,6 +88,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	shadowMapShader = new Shader((GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator")));
 	nullFilterShader = new Shader((GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null")));
 	gaussBlurFilterShader = new Shader((GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1")));
+	fxaaFilterShader = new Shader((GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa")));
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -107,7 +112,12 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	//SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+#ifndef ANT_TWEAK_BAR_ENABLED
+	SetReal("fxaaSpanMax", fxaaSpanMax);
+	SetReal("fxaaReduceMin", fxaaReduceMin);
+	SetReal("fxaaReduceMul", fxaaReduceMul);
+#endif
 
 	LOG(Debug, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -136,6 +146,7 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(shadowMapShader);
 	SAFE_DELETE(nullFilterShader);
 	SAFE_DELETE(gaussBlurFilterShader);
+	SAFE_DELETE(fxaaFilterShader);
 	//SAFE_DELETE(altCameraNode);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
@@ -177,9 +188,14 @@ void Renderer::Render(GameNode& gameNode)
 	// TODO: Expand with Stencil buffer once it is used
 #ifdef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientIntensity", ambientLight);
+	SetReal("fxaaSpanMax", fxaaSpanMax);
+	SetReal("fxaaReduceMin", fxaaReduceMin);
+	SetReal("fxaaReduceMul", fxaaReduceMul);
 	CheckCameraIndexChange();
 #endif
-	BindAsRenderTarget();
+	GetTexture("displayTexture")->BindAsRenderTarget();
+	//BindAsRenderTarget();
+
 	ClearScreen();
 	currentCamera = cameras[currentCameraIndex];
 	gameNode.RenderAll(defaultShader, this); // Ambient rendering
@@ -246,34 +262,8 @@ void Renderer::Render(GameNode& gameNode)
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", 0.00002f);
 		}
-		BindAsRenderTarget();
-#ifdef ANT_TWEAK_BAR_ENABLED
-		if (renderToTextureTestingEnabled)
-		{
-			Camera* temp = currentCamera;
-			currentCamera = &altCamera;
-			glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			defaultShader->Bind();
-			defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
-			planeMesh->Draw();
-
-			currentCamera = temp;
-		}
-		else
-		{
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
-			glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-			glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
-			gameNode.RenderAll(currentLight->GetShader(), this);
-
-			glDepthMask(GL_TRUE);
-			glDepthFunc(GL_LESS);
-			glDisable(GL_BLEND);
-		}
-#else
+		GetTexture("displayTexture")->BindAsRenderTarget();
+		//BindAsRenderTarget();
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
@@ -284,12 +274,29 @@ void Renderer::Render(GameNode& gameNode)
 		glDepthMask(GL_TRUE);
 		glDepthFunc(GL_LESS);
 		glDisable(GL_BLEND);
-#endif
+
+		/* ==================== Rendering to texture begin ==================== */
+		//if (renderToTextureTestingEnabled)
+		//{
+		//	Camera* temp = currentCamera;
+		//	currentCamera = &altCamera;
+		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
+		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		//	defaultShader->Bind();
+		//	defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
+		//	planeMesh->Draw();
+
+		//	currentCamera = temp;
+		//}
+		/* ==================== Rendering to texture end ==================== */
 	}
+	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
 #endif
-	SwapBuffers();
+//	SwapBuffers();
 }
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
@@ -507,7 +514,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::GetPointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &shadowsEnabled, " label='Render shadows' group=Shadows");
-	TwAddVarRW(propertiesBar, "renderToTexture", TW_TYPE_BOOLCPP, &renderToTextureTestingEnabled, " label='Display shadow map' group=Shadows ");
+	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
+	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
+	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
 	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
 

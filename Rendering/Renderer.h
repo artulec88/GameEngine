@@ -114,10 +114,15 @@ private:
 	Shader* shadowMapShader;
 	Shader* nullFilterShader;
 	Shader* gaussBlurFilterShader;
+	Shader* fxaaFilterShader;
 	std::vector<BaseLight*> lights;
 	std::vector<Camera*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
 	Math::Matrix4D lightMatrix;
+
+	Math::Real fxaaSpanMax;
+	Math::Real fxaaReduceMin;
+	Math::Real fxaaReduceMul;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int previousFrameCameraIndex;
