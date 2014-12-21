@@ -16,7 +16,7 @@
 
 struct BaseLight
 {
-    vec3 color;
+    vec4 color;
     float intensity;
 };
 
@@ -56,7 +56,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos,
     vec4 diffuseColor = vec4(0,0,0,0);
     vec4 specularColor = vec4(0,0,0,0);
     
-    diffuseColor = vec4(base.color, 1.0) * base.intensity * diffuseFactor;
+    diffuseColor = base.color * base.intensity * diffuseFactor;
         
     vec3 directionToEye = normalize(eyePos - worldPos);
     vec3 reflectDirection = normalize(reflect(direction, normal));
@@ -66,7 +66,7 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos,
         
     if(specularFactor > 0)
     {
-        specularColor = vec4(base.color, 1.0) * specularIntensity * specularFactor;
+        specularColor = base.color * specularIntensity * specularFactor;
     }
     
     return diffuseColor + specularColor;

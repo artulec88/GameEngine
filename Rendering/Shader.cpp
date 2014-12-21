@@ -733,12 +733,11 @@ void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& v
 
 void Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
-	LOG(Warning, LOGPLACE, "uniformName = \"%s\"", uniformName.c_str());
 	std::map<std::string, unsigned int>::const_iterator itr;
 	if (shaderData->IsUniformPresent(uniformName, itr))
 	{
-		//glUniform4f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha());
-		glUniform3f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue());
+		glUniform4f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha());
+		//glUniform3f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue());
 	}
 }
 
