@@ -236,6 +236,23 @@ Vector3D Vector3D::Cross(const Vector3D& v) const
 	return Vector3D(x, y, z);
 }
 
+Real Vector3D::Max() const
+{
+	Real maxComponent = (m_x > m_y) ? m_x : m_y;
+	maxComponent = (maxComponent > m_z) ? maxComponent : m_z;
+	return maxComponent;
+}
+
+Vector3D Vector3D::Max(const Vector3D& v) const
+{
+	Vector3D maxResult;
+	maxResult.SetX(m_x > v.GetX() ? m_x : v.GetX());
+	maxResult.SetY(m_y > v.GetY() ? m_y : v.GetY());
+	maxResult.SetZ(m_z > v.GetZ() ? m_z : v.GetZ());
+
+	return maxResult;
+}
+
 Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 {
 	// TODO: Test which method is faster and use it instead of the other

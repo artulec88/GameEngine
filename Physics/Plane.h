@@ -2,38 +2,41 @@
 
 #include "Physics.h"
 #include "IntersectInfo.h"
-#include "Collider.h"
+#include "BoundingSphere.h"
 #include "Math\Vector.h"
 
 namespace Physics
 {
 
-class PHYSICS_API BoundingSphere : public Collider
+class PHYSICS_API Plane
 {
 /* ==================== Static variables begin ==================== */
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BoundingSphere(const Math::Vector3D& center, Math::Real radius);
-	~BoundingSphere(void);
+	Plane(const Math::Vector3D& normal, Math::Real distance);
+	~Plane(void);
 private:
-	//BoundingSphere(const BoundingSphere& boundingSphere) {} // don't implement
-	//void operator=(const BoundingSphere& boundingSphere) {} // don't implement
+	//Plane(const Plane& plane) {} // don't implement
+	//void operator=(const Plane& plane) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	IntersectInfo IntersectBoundingSphere(const BoundingSphere& boundingSphere) const;
-	inline const Math::Vector3D& GetCenter() const { return m_center; }
-	inline const Math::Real GetRadius() const { return m_radius; }
+
+	Plane Normalized() const;
+
+	inline const Math::Vector3D& GetNormal() const { return m_normal; }
+	inline Math::Real GetDistance() const { return m_distance; }
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Math::Vector3D m_center;
-	const Math::Real m_radius;
+	const Math::Vector3D m_normal; // represents the normal vector of the infinite plane
+	const Math::Real m_distance; // represents how far along the normal vector the plane lies
 /* ==================== Non-static member variables end ==================== */
-}; /* end class BoundingSphere */
+}; /* end class Plane */
 
 } /* end namespace Physics */

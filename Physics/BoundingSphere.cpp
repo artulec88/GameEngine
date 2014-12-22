@@ -4,6 +4,7 @@
 using namespace Physics;
 
 BoundingSphere::BoundingSphere(const Math::Vector3D& center, Math::Real radius) :
+	Collider(Collider::TYPE_SPHERE),
 	m_center(center),
 	m_radius(radius)
 {

@@ -2,38 +2,47 @@
 
 #include "Physics.h"
 #include "IntersectInfo.h"
-#include "Collider.h"
-#include "Math\Vector.h"
 
 namespace Physics
 {
 
-class PHYSICS_API BoundingSphere : public Collider
+/**
+ * The collider
+ */
+class Collider
 {
+public:
+enum ColliderType
+{
+	TYPE_SPHERE,
+	TYPE_AABB,
+
+	TYPE_SIZE
+};
+private:
+
 /* ==================== Static variables begin ==================== */
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BoundingSphere(const Math::Vector3D& center, Math::Real radius);
-	~BoundingSphere(void);
+	Collider(ColliderType type);
+	virtual ~Collider(void);
 private:
-	//BoundingSphere(const BoundingSphere& boundingSphere) {} // don't implement
-	//void operator=(const BoundingSphere& boundingSphere) {} // don't implement
+	Collider(const Collider& collider) {} // don't implement
+	void operator=(const Collider& collider) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	IntersectInfo IntersectBoundingSphere(const BoundingSphere& boundingSphere) const;
-	inline const Math::Vector3D& GetCenter() const { return m_center; }
-	inline const Math::Real GetRadius() const { return m_radius; }
+	inline ColliderType GetType() const { return m_type; }
+	virtual IntersectInfo Intersect(const Collider& collider) const;
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Math::Vector3D m_center;
-	const Math::Real m_radius;
+	ColliderType m_type;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class BoundingSphere */
+}; /* end class Collider */
 
 } /* end namespace Physics */

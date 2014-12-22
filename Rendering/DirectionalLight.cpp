@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "DirectionalLight.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"

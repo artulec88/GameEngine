@@ -109,6 +109,9 @@ public: // public member functions
 	Real Dot(const Vector3D& v) const; // CHECKED!
 	Vector3D Cross(const Vector3D& v) const;
 
+	Real Max() const;
+	Vector3D Max(const Vector3D& v) const;
+
 	// vector swizzling
 	Vector2D GetXY() const { return Vector2D(m_x, m_y); };
 	Vector2D GetXZ() const { return Vector2D(m_x, m_z); };

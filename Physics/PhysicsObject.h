@@ -1,39 +1,41 @@
 #pragma once
 
 #include "Physics.h"
-#include "IntersectInfo.h"
-#include "Collider.h"
 #include "Math\Vector.h"
 
 namespace Physics
 {
 
-class PHYSICS_API BoundingSphere : public Collider
+/**
+ * The representation of the physics object
+ */
+class PHYSICS_API PhysicsObject
 {
 /* ==================== Static variables begin ==================== */
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BoundingSphere(const Math::Vector3D& center, Math::Real radius);
-	~BoundingSphere(void);
+	PhysicsObject(const Math::Vector3D& postion, const Math::Vector3D& velocity);
+	~PhysicsObject(void);
 private:
-	//BoundingSphere(const BoundingSphere& boundingSphere) {} // don't implement
-	//void operator=(const BoundingSphere& boundingSphere) {} // don't implement
+	//PhysicsObject(const PhysicsObject& physicObject) {} // don't implement
+	//void operator=(const PhysicsObject& physicObject) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	IntersectInfo IntersectBoundingSphere(const BoundingSphere& boundingSphere) const;
-	inline const Math::Vector3D& GetCenter() const { return m_center; }
-	inline const Math::Real GetRadius() const { return m_radius; }
+	void Integrate(Math::Real delta);
+	inline const Math::Vector3D& GetPosition() const { return m_position; }
+	inline const Math::Vector3D& GetVelocity() const { return m_velocity; }
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Math::Vector3D m_center;
-	const Math::Real m_radius;
+	Math::Vector3D m_position;
+	Math::Vector3D m_velocity;
+	Math::Real radius;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class BoundingSphere */
+}; /* end class PhysicsObject */
 
 } /* end namespace Physics */

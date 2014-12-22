@@ -29,6 +29,13 @@ class Mesh;
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class Renderer : public MappedValues
 {
+public:
+	enum RendererState
+	{
+		RENDERING_MENU,
+		RENDERING_GAME
+	};
+
 /* ==================== Static variables begin ==================== */
 private:
 	static const int SHADOW_MAPS_COUNT = 10;
@@ -123,6 +130,8 @@ private:
 	Math::Real fxaaSpanMax;
 	Math::Real fxaaReduceMin;
 	Math::Real fxaaReduceMul;
+
+
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int previousFrameCameraIndex;
