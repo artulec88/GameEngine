@@ -9,7 +9,6 @@
 #include "Transform.h"
 #include "Shader.h"
 #include "Color.h"
-//#include "Utility\Singleton.h"
 
 #include "Math\Vector.h"
 
@@ -25,6 +24,7 @@ namespace Rendering
 {
 
 class Mesh;
+class TextRenderer;
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class Renderer : public MappedValues
@@ -116,7 +116,7 @@ private:
 
 	Texture* shadowMaps[SHADOW_MAPS_COUNT];
 	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];
-	
+
 	Shader* defaultShader;
 	Shader* shadowMapShader;
 	Shader* nullFilterShader;
@@ -131,7 +131,8 @@ private:
 	Math::Real fxaaReduceMin;
 	Math::Real fxaaReduceMul;
 
-
+	Texture* fontTexture;
+	TextRenderer* textRenderer;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int previousFrameCameraIndex;

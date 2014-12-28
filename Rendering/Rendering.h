@@ -12,7 +12,7 @@
 #include <GLFW\glfw3.h>
 #include <string>
 
-#define ANT_TWEAK_BAR_ENABLED
+//#define ANT_TWEAK_BAR_ENABLED
 
 namespace Rendering
 {

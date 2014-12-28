@@ -5,6 +5,7 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "TextRenderer.h"
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -49,10 +50,13 @@ Renderer::Renderer(GLFWwindow* window) :
 	altCamera(Matrix4D::Identity()),
 	altCameraNode(NULL),
 	defaultShader(NULL),
+	//textShader(NULL),
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
 	gaussBlurFilterShader(NULL),
 	fxaaFilterShader(NULL),
+	fontTexture(NULL),
+	textRenderer(NULL),
 	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
 	fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
 	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
@@ -112,6 +116,11 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
+	fontTexture = new Texture("..\\Textures\\font1.bmp", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	//SetSamplerSlot("fontTexture", 4);
+	//SetTexture("fontTexture", fontTexture);
+	textRenderer = new TextRenderer(fontTexture);
+
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", fxaaSpanMax);
@@ -150,6 +159,10 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
+
+	//SetTexture("fontTexture", NULL);
+	//SAFE_DELETE(fontTexture);
+	SAFE_DELETE(textRenderer);
 
 	SetTexture("shadowMap", NULL);
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
@@ -292,6 +305,11 @@ void Renderer::Render(GameNode& gameNode)
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+
+	double time = glfwGetTime();
+	std::stringstream ss;
+	ss << "This is string: " << time << " [ms]";
+	textRenderer->DrawString(0, 580, "T" /*ss.str()*/);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
