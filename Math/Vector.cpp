@@ -343,8 +343,19 @@ Vector3D& Vector3D::operator=(const Vector3D& v)
 
 inline bool Vector3D::operator==(const Vector3D& v) const
 {
-	// TODO: Create a floating-point comparer and use it here
-	return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) && (this->GetZ() == v.GetZ()) );
+	if (!AlmostEqual(m_x, v.GetX()))
+		return false;
+	if (!AlmostEqual(m_y, v.GetY()))
+		return false;
+	if (!AlmostEqual(m_z, v.GetZ()))
+		return false;
+	return true;
+	//return ( (this->GetX() == v.GetX()) && (this->GetY() == v.GetY()) && (this->GetZ() == v.GetZ()) );
+}
+
+bool Vector3D::operator!=(const Vector3D& v) const
+{
+	return (!((*this) == v));
 }
 
 Vector3D Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const

@@ -97,6 +97,7 @@ public: // public member functions
 	Vector3D& operator/=(Real s);
 	Vector3D& operator/=(const Vector3D& v);
 	Vector3D& operator=(const Vector3D& v);
+	bool operator!=(const Vector3D& v) const;
 	bool operator==(const Vector3D& v) const;
 
 	Vector3D Normalized() const; // CHECKED!
