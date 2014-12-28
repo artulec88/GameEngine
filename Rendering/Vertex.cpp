@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Vertex.h"
+#include "Math\FloatingPoint.h"
 
 #include <sstream>
 
@@ -21,6 +22,16 @@ Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Vector2D(
 //	normal(normal)
 //{
 //}
+
+bool Vertex::operator==(const Vertex& vertex) const
+{
+	return ((this->pos == vertex.pos) && (this->texCoord == vertex.texCoord) && (this->normal == vertex.normal));
+}
+
+bool Vertex::operator!=(const Vertex& vertex) const
+{
+	return (!((*this) == vertex));
+}
 
 std::string Vertex::ToString() const
 {
