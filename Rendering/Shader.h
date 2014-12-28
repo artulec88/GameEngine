@@ -100,6 +100,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API void Bind() const;
+	RENDERING_API void Unbind() const;
 	RENDERING_API virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
 	RENDERING_API void SetUniformi(const std::string& uniformName, int value) const;

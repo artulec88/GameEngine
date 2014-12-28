@@ -349,6 +349,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 
 void ShaderData::AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs)
 {
+	LOG(Utility::Debug, LOGPLACE, "Adding uniform \"%s\" of type \"%s\"", uniformName.c_str(), uniformType.c_str());
 	bool addThis = true;
 
 	for (unsigned int i = 0; i < structs.size(); ++i)
@@ -373,7 +374,8 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 	ASSERT(location != INVALID_VALUE);
 	if (location == INVALID_VALUE)
 	{
-		LOG(Warning, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
+		LOG(Emergency, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
+		exit(EXIT_FAILURE);
 	}
 	LOG(Delocust, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
 	uniformMap.insert(std::pair<std::string, unsigned int>(uniformName, location));
@@ -531,6 +533,12 @@ void Shader::Bind() const
 	glUseProgram(shaderData->GetProgram());
 }
 
+void Shader::Unbind() const
+{
+	//LOG(Utility::Delocust, LOGPLACE, "The shader is being unbound");
+	glUseProgram(0);
+}
+
 void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const
 {
 	ASSERT(renderer != NULL);
@@ -553,7 +561,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	}
 
 	Matrix4D worldMatrix = transform.GetTransformation();
-	Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix;
+	Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter
 
 	for (unsigned int i = 0; i < shaderData->GetUniformNames().size(); ++i)
 	{
