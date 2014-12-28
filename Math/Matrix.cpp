@@ -308,11 +308,13 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 	{
 		for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
 		{
-			matrix.m[i][j] = REAL_ZERO;
+			//matrix.m[i][j] = REAL_ZERO;
+			Real sum = REAL_ZERO;
 			for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
 			{
-				matrix.m[i][j] += m[k][j] * mat.m[i][k];
+				sum += m[k][j] * mat.m[i][k];
 			}
+			matrix.m[i][j] = sum;
 		}
 	}
 
