@@ -28,5 +28,21 @@ namespace Rendering
 	void InitGlew();
 	void CheckErrorCode(const char* functionName, const char* comment);
 
+
+	void ReadAlphaTestParameter();
+	void ReadBlendParameter();
+	void ReadCullFaceParameter();
+	void ReadDepthTestParameter();
+	void ReadDitherParameter();
+	void ReadFrontFaceParameter();
+	void ReadHistogramParameter();
+	void ReadIndexLogicOperationParameter();
+	void ReadMinmaxParameter();
+	void ReadMultisampleParameter();
+	void ReadScissorTestParameter();
+	void ReadStencilTestParameter();
+	void ReadTextureParameters();
+
+
 	extern AntiAliasingMethod antiAliasingMethod;
 } /* end namespace Rendering */

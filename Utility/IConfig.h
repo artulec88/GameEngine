@@ -55,12 +55,12 @@ public:
 		ss << defValue;
 		const std::string resultStr = GetArg(name, ss.str());
 
-		LOG(Debug, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultStr.c_str());
+		//LOG(Delocust, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultStr.c_str());
 
 		Type result;
 		std::stringstream resultSS;
 		resultSS << resultStr;
-		LOG(Debug, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultSS.str().c_str());
+		LOG(Delocust, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultSS.str().c_str());
 		resultSS >> result;
 		return result;
 	}

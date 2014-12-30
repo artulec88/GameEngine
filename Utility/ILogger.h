@@ -50,6 +50,7 @@ public:
 	virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
 	virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 	virtual void AddFile(const char *name) = 0;
+	void ResetConsoleColor() const;
 protected:
 	inline void SetLevel(LogLevel level);
 	inline void SetConsoleColor(LogLevel level) const;

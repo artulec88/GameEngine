@@ -21,7 +21,6 @@ Logger::Logger(FILE *first) :
 
 Logger::~Logger()
 {
-
 }
 
 void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)

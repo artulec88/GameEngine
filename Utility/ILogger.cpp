@@ -38,7 +38,6 @@ ILogger::ILogger(void) :
 
 ILogger::~ILogger(void)
 {
-	SetConsoleTextAttribute(console, 15); // set color back to normal
 }
 
 void ILogger::ReadConsoleColorsFromConfigFile()
@@ -79,4 +78,9 @@ void ILogger::SetConsoleColor(LogLevel level) const
 		LOG(Error, LOGPLACE, "Incorrect logging level set");
 		break;
 	}
+}
+
+void ILogger::ResetConsoleColor() const
+{
+	SetConsoleTextAttribute(console, 15); // set color back to normal
 }

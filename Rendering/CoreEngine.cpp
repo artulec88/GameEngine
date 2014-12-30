@@ -66,7 +66,9 @@ CoreEngine::~CoreEngine(void)
 		this->renderer = NULL;
 	}
 
-	LOG(Debug, LOGPLACE, "Core engine destruction finished");
+	LOG(Notice, LOGPLACE, "Core engine destruction finished");
+	ILogger::GetLogger().ResetConsoleColor();
+	std::cout << "Bye!" << std::endl;
 }
 
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
