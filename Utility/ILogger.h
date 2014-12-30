@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Utility.h"
+#include <Windows.h>
 
 // TODO: Doesn't work. The #define keyword cannot replace parts of the expression.
 #define LOG Utility::ILogger::GetLogger().Log
@@ -51,11 +52,15 @@ public:
 	virtual void AddFile(const char *name) = 0;
 protected:
 	inline void SetLevel(LogLevel level);
+	inline void SetConsoleColor(LogLevel level) const;
+	void ReadConsoleColorsFromConfigFile();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	LogLevel level;
+	HANDLE console;
+	// TODO: Store console colors from configuration file
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ILogger */
 

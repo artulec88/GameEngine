@@ -3,6 +3,7 @@
 //#include "Command.h"
 #include <string>
 #include "Time.h"
+//#include <Windows.h>
 
 using namespace Utility;
 using namespace std;
@@ -89,6 +90,7 @@ void Logger::Log(LogLevel level, const char *name, int line, const char *format,
 	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
 	{
 		va_start(args, format);
+		SetConsoleColor(level);
 		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
 		if (line)
 		{
