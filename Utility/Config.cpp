@@ -38,11 +38,10 @@ Config::Config() : isInitialized(false)
 	while (!file.eof())
 	{
 		file >> name;
-		LOG(Delocust, LOGPLACE, "Reading \"%s\"", name.c_str());
 		if (file.fail())
 		{
-			LOG(Warning, LOGPLACE, "Fail occured in the stream while reading the configuration file");
-			break;
+			LOG(Emergency, LOGPLACE, "Fail occured in the stream while reading the configuration file");
+			exit(EXIT_FAILURE);
 		}
 		std::getline(file, line);
 		if ((name.empty()) || (name[0] == '#')) // ignore comment lines
@@ -50,6 +49,8 @@ Config::Config() : isInitialized(false)
 			continue;
 		}
 
+		line = RightTrim(line.substr(0, line.find_first_of('#')));
+		LOG(Delocust, LOGPLACE, "Line after = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		CutToTokens(line, tokens, ' ');
 		value = tokens[2];
@@ -57,10 +58,15 @@ Config::Config() : isInitialized(false)
 		{
 			for (unsigned int i = 3; i < tokens.size(); ++i)
 			{
+				if (tokens[i] == "#")
+				{
+					LOG(Warning, LOGPLACE, "Comment sign '#' found when it should be already removed");
+					break;
+				}
 				value += " " + tokens[i];
 			}
 		}
-
+		LOG(Debug, LOGPLACE, "Configuration parameter \"%s\" = \"%s\"", name.c_str(), value.c_str());
 		cfgValues[name] = value;
 	}
 
