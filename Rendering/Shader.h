@@ -40,7 +40,7 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	int programID;
+	GLuint programID;
 	std::vector<int> shaders;
 	std::vector<std::string> uniformNames;
 	std::vector<std::string> uniformTypes;
@@ -58,7 +58,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	int GetProgram() const { return programID; }
+	GLuint GetProgram() const { return programID; }
 	std::vector<int>& GetShaders() { return shaders; }
 	std::vector<std::string>& GetUniformNames() { return uniformNames; }
 	std::vector<std::string>& GetUniformTypes() { return uniformTypes; }
@@ -99,6 +99,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	GLuint GetProgramID() const { return shaderData->GetProgram(); }
 	RENDERING_API void Bind() const;
 	RENDERING_API void Unbind() const;
 	RENDERING_API virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
