@@ -60,6 +60,16 @@ namespace Rendering
 	extern GLenum glBlendSfactor, glBlendDfactor, glBlendSfactorOld, glBlendDfactorOld;
 	/* ==================== Blending parameters end ==================== */
 
+	/* ==================== Color logic operation parameters begin ==================== */
+	extern bool glColorLogicOperationEnabled, glColorLogicOperationEnabledOld;
+	extern GLenum glColorLogicOperationCode, glColorLogicOperationCodeOld;
+	/* ==================== Color logic operation parameters end ==================== */
+
+	/* ==================== Cull face parameters begin ==================== */
+	extern bool glCullFaceEnabled, glCullFaceEnabledOld;
+	extern GLenum glCullFaceMode, glCullFaceModeOld;
+	/* ==================== Cull face parameters end ==================== */
+
 	/* ==================== Scissor test parameters begin ==================== */
 	extern bool glScissorTestEnabled, glScissorTestEnabledOld;
 	extern GLint glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerXOld;
@@ -72,6 +82,9 @@ namespace Rendering
 	void InitializeTweakBars();
 	void CheckChangesAndUpdateGLState();
 	void UpdateBlendParameters();
+	void UpdateColorLogicOperationParameters();
+	void UpdateCullFaceParameters();
+
 	void UpdateScissorTestParameters();
 #endif
 } /* end namespace Rendering */

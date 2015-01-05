@@ -16,6 +16,16 @@ GLenum Rendering::glBlendSfactor, Rendering::glBlendSfactorOld;
 GLenum Rendering::glBlendDfactor, Rendering::glBlendDfactorOld;
 /* ==================== Blending parameters end ==================== */
 
+/* ==================== Color logic operation parameters begin ==================== */
+bool Rendering::glColorLogicOperationEnabled, Rendering::glColorLogicOperationEnabledOld;
+GLenum Rendering::glColorLogicOperationCode, Rendering::glColorLogicOperationCodeOld;
+/* ==================== Color logic operation parameters end ==================== */
+
+/* ==================== Color logic operation parameters begin ==================== */
+bool Rendering::glCullFaceEnabled, Rendering::glCullFaceEnabledOld;
+GLenum Rendering::glCullFaceMode, Rendering::glCullFaceModeOld;
+/* ==================== Color logic operation parameters end ==================== */
+
 /* ==================== Scissor test parameters begin ==================== */
 bool Rendering::glScissorTestEnabled, Rendering::glScissorTestEnabledOld;
 GLint Rendering::glScissorBoxLowerLeftCornerX, Rendering::glScissorBoxLowerLeftCornerXOld;
@@ -276,8 +286,9 @@ void Rendering::ReadBlendParameter()
  */
 void Rendering::ReadColorLogicOperationParameter()
 {
-	int colorLogicOperationEnabled = GET_CONFIG_VALUE("GL_COLOR_LOGIC_OP_ENABLED", 0);
-	if (colorLogicOperationEnabled == 0)
+	glColorLogicOperationEnabled = GET_CONFIG_VALUE("GL_COLOR_LOGIC_OP_ENABLED", false);
+	glColorLogicOperationEnabledOld = glColorLogicOperationEnabled;
+	if (!glColorLogicOperationEnabled)
 	{
 		glDisable(GL_COLOR_LOGIC_OP);
 		LOG(Utility::Debug, LOGPLACE, "GL_COLOR_LOGIC_OP disabled");
@@ -286,27 +297,32 @@ void Rendering::ReadColorLogicOperationParameter()
 
 	glEnable(GL_COLOR_LOGIC_OP);
 	std::string logicalOperationStr = GET_CONFIG_VALUE_STR("GL_COLOR_LOGIC_OPERATION", "GL_COPY");
-	if (logicalOperationStr == "GL_CLEAR") { glLogicOp(GL_CLEAR); }
-	else if (logicalOperationStr == "GL_SET") { glLogicOp(GL_SET); }
-	else if (logicalOperationStr == "GL_COPY") { glLogicOp(GL_COPY); }
-	else if (logicalOperationStr == "GL_COPY_INVERTED") { glLogicOp(GL_COPY_INVERTED); }
-	else if (logicalOperationStr == "GL_NOOP") { glLogicOp(GL_NOOP); }
-	else if (logicalOperationStr == "GL_INVERT") { glLogicOp(GL_INVERT); }
-	else if (logicalOperationStr == "GL_NAND") { glLogicOp(GL_NAND); }
-	else if (logicalOperationStr == "GL_OR") { glLogicOp(GL_OR); }
-	else if (logicalOperationStr == "GL_NOR") { glLogicOp(GL_NOR); }
-	else if (logicalOperationStr == "GL_XOR") { glLogicOp(GL_XOR); }
-	else if (logicalOperationStr == "GL_EQUIV") { glLogicOp(GL_EQUIV); }
-	else if (logicalOperationStr == "GL_AND_REVERSE") { glLogicOp(GL_AND_REVERSE); }
-	else if (logicalOperationStr == "GL_AND_INVERTED") { glLogicOp(GL_AND_INVERTED); }
-	else if (logicalOperationStr == "GL_OR_REVERSE") { glLogicOp(GL_OR_REVERSE); }
-	else if (logicalOperationStr == "GL_OR_INVERTED") { glLogicOp(GL_OR_INVERTED); }
+	if (logicalOperationStr == "GL_CLEAR") { glColorLogicOperationCode = GL_CLEAR; }
+	else if (logicalOperationStr == "GL_SET") { glColorLogicOperationCode = GL_SET; }
+	else if (logicalOperationStr == "GL_COPY") { glColorLogicOperationCode = GL_COPY; }
+	else if (logicalOperationStr == "GL_COPY_INVERTED") { glColorLogicOperationCode = GL_COPY_INVERTED; }
+	else if (logicalOperationStr == "GL_NOOP") { glColorLogicOperationCode = GL_NOOP; }
+	else if (logicalOperationStr == "GL_INVERT") { glColorLogicOperationCode = GL_INVERT; }
+	else if (logicalOperationStr == "GL_AND") { glColorLogicOperationCode = GL_AND; }
+	else if (logicalOperationStr == "GL_NAND") { glColorLogicOperationCode = GL_NAND; }
+	else if (logicalOperationStr == "GL_OR") { glColorLogicOperationCode = GL_OR; }
+	else if (logicalOperationStr == "GL_NOR") { glColorLogicOperationCode = GL_NOR; }
+	else if (logicalOperationStr == "GL_XOR") { glColorLogicOperationCode = GL_XOR; }
+	else if (logicalOperationStr == "GL_EQUIV") { glColorLogicOperationCode = GL_EQUIV; }
+	else if (logicalOperationStr == "GL_AND_REVERSE") { glColorLogicOperationCode = GL_AND_REVERSE; }
+	else if (logicalOperationStr == "GL_AND_INVERTED") { glColorLogicOperationCode = GL_AND_INVERTED; }
+	else if (logicalOperationStr == "GL_OR_REVERSE") { glColorLogicOperationCode = GL_OR_REVERSE; }
+	else if (logicalOperationStr == "GL_OR_INVERTED") { glColorLogicOperationCode = GL_OR_INVERTED; }
 	else /* GL_COPY is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the color logic operation parameter. Using default GL_COPY", logicalOperationStr.c_str());
 		logicalOperationStr = "GL_COPY";
-		glLogicOp(GL_COPY);
+		glColorLogicOperationCode = GL_COPY;
 	}
+
+	glColorLogicOperationCodeOld = glColorLogicOperationCode;
+
+	glLogicOp(glColorLogicOperationCode);
 
 	LOG(Utility::Info, LOGPLACE, "GL_COLOR_LOGIC_OP enabled in \"%s\" mode", logicalOperationStr.c_str());
 }
@@ -317,8 +333,9 @@ void Rendering::ReadColorLogicOperationParameter()
  */
 void Rendering::ReadCullFaceParameter()
 {
-	int cullFaceEnabled = GET_CONFIG_VALUE("GL_CULL_FACE_ENABLED", 0);
-	if (cullFaceEnabled == 0)
+	glCullFaceEnabled = GET_CONFIG_VALUE("GL_CULL_FACE_ENABLED", false);
+	glCullFaceEnabledOld = glCullFaceEnabled;
+	if (!glCullFaceEnabled)
 	{
 		glDisable(GL_CULL_FACE);
 		LOG(Utility::Debug, LOGPLACE, "GL_CULL_FACE disabled");
@@ -327,15 +344,19 @@ void Rendering::ReadCullFaceParameter()
 
 	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	std::string cullFaceModeStr = GET_CONFIG_VALUE_STR("GL_CULL_FACE_MODE", "GL_BACK");
-	if (cullFaceModeStr == "GL_FRONT") { glCullFace(GL_FRONT); } // cull the front face
-	else if (cullFaceModeStr == "GL_BACK") { glCullFace(GL_BACK); } // cull the back face
-	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFace(GL_FRONT_AND_BACK ); } // cull both back and front faces (only lines, points are rendered)
+	if (cullFaceModeStr == "GL_FRONT") { glCullFaceMode = GL_FRONT; } // cull the front face
+	else if (cullFaceModeStr == "GL_BACK") { glCullFaceMode = GL_BACK; } // cull the back face
+	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFaceMode = GL_FRONT_AND_BACK; } // cull both back and front faces (only lines, points are rendered)
 	else /* GL_BACK is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the face culling parameter. Using default GL_BACK", cullFaceModeStr.c_str());
 		cullFaceModeStr = "GL_BACK";
-		glCullFace(GL_BACK);
+		glCullFaceMode = GL_BACK;
 	}
+
+	glCullFaceModeOld = glCullFaceMode;
+
+	glCullFace(glCullFaceMode);
 
 	LOG(Utility::Info, LOGPLACE, "GL_CULL_FACE enabled in \"%s\" mode", cullFaceModeStr.c_str());
 }
@@ -670,9 +691,7 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Rendering::InitializeTweakBars()
 {
-	/* ==================== Initializing AntTweakBar library begin ==================== */
-	TwInit(TW_OPENGL, NULL);
-	/* ==================== Initializing AntTweakBar library end ==================== */
+	TwInit(TW_OPENGL, NULL); // Initializing AntTweakBar library
 
 	TwEnumVal blendSFactorEV[] = { { GL_ZERO, "GL_ZERO" }, { GL_ONE, "GL_ONE" }, { GL_SRC_COLOR, "GL_SRC_COLOR" }, { GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR" },
 		{ GL_DST_COLOR, "GL_DST_COLOR" }, { GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR" }, { GL_SRC_ALPHA, "GL_SRC_ALPHA" }, { GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" },
@@ -687,12 +706,28 @@ void Rendering::InitializeTweakBars()
 		{ GL_CONSTANT_ALPHA, "GL_CONSTANT_ALPHA" }, { GL_ONE_MINUS_CONSTANT_ALPHA, "GL_ONE_MINUS_CONSTANT_ALPHA" } };
 	TwType glBlendDFactorEnumType = TwDefineEnum("Blending D Factor", blendDFactorEV, 14);
 
-	TwBar* glPropertiesBar = TwNewBar("OpenGLPropertiesBar");
-	TwAddVarRW(glPropertiesBar, "blendEnabled", TW_TYPE_BOOLCPP, &glBlendEnabled, " label='Blend enabled' group='Blending' ");
-	TwAddVarRW(glPropertiesBar, "blendSFactor", glBlendSFactorEnumType, &glBlendSfactor, " label='Blend S factor' group='Blending' ");
-	TwAddVarRW(glPropertiesBar, "blendDFactor", glBlendDFactorEnumType, &glBlendDfactor, " label='Blend D factor' group='Blending' ");
+	TwEnumVal colorLogicOperationCodeEV[] = { { GL_CLEAR, "GL_CLEAR" }, { GL_SET, "GL_SET" }, { GL_COPY, "GL_COPY" }, { GL_COPY_INVERTED, "GL_COPY_INVERTED" },
+		{ GL_NOOP, "GL_NOOP" }, { GL_INVERT, "GL_INVERT" }, { GL_AND, "GL_AND" }, { GL_NAND, "GL_NAND" }, { GL_OR, "GL_OR" }, { GL_NOR, "GL_NOR" },
+		{ GL_XOR, "GL_XOR" }, { GL_EQUIV, "GL_EQUIV" }, { GL_AND_REVERSE, "GL_AND_REVERSE" }, { GL_AND_INVERTED, "GL_AND_INVERTED" },
+		{ GL_OR_REVERSE, "GL_OR_REVERSE" }, { GL_OR_INVERTED, "GL_OR_INVERTED" } };
+	TwType glColorLogicOperationCodeEnumType = TwDefineEnum("Logic operation code", colorLogicOperationCodeEV, 16);
 
-	TwAddVarRW(glPropertiesBar, "scissorTestEnabled", TW_TYPE_BOOLCPP, &glScissorTestEnabled, " label='Scissor test enabled' group='Scissor test' ");
+	TwEnumVal cullFaceModeEV[] = { { GL_FRONT, "GL_FRONT" }, { GL_BACK, "GL_BACK" }, { GL_FRONT_AND_BACK, "GL_FRONT_AND_BACK" } };
+	TwType glCullFaceModeEnumType = TwDefineEnum("Cull face mode", cullFaceModeEV, 3);
+
+
+	TwBar* glPropertiesBar = TwNewBar("OpenGLPropertiesBar");
+	TwAddVarRW(glPropertiesBar, "blendEnabled", TW_TYPE_BOOLCPP, &glBlendEnabled, " label='Enabled' group='Blending' ");
+	TwAddVarRW(glPropertiesBar, "blendSFactor", glBlendSFactorEnumType, &glBlendSfactor, " label='S factor' group='Blending' ");
+	TwAddVarRW(glPropertiesBar, "blendDFactor", glBlendDFactorEnumType, &glBlendDfactor, " label='D factor' group='Blending' ");
+
+	TwAddVarRW(glPropertiesBar, "logicOperationEnabled", TW_TYPE_BOOLCPP, &glColorLogicOperationEnabled, " label='Enabled' group='Color logic operation' ");
+	TwAddVarRW(glPropertiesBar, "logicOperationCode", glColorLogicOperationCodeEnumType, &glColorLogicOperationCode, " label='Code' group='Color logic operation' ");
+
+	TwAddVarRW(glPropertiesBar, "cullFaceEnabled", TW_TYPE_BOOLCPP, &glCullFaceEnabled, " label='Enabled' group='Face culling' ");
+	TwAddVarRW(glPropertiesBar, "cullFaceMode", glCullFaceModeEnumType, &glCullFaceMode, " label='Mode' group='Face culling' ");
+
+	TwAddVarRW(glPropertiesBar, "scissorTestEnabled", TW_TYPE_BOOLCPP, &glScissorTestEnabled, " label='Enabled' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerX", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerX, " label='Left corner X' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerY", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerY, " label='Left corner Y' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' ");
@@ -702,10 +737,73 @@ void Rendering::InitializeTweakBars()
 void Rendering::CheckChangesAndUpdateGLState()
 {
 	UpdateBlendParameters(); /* ==================== Checking blending parameters ==================== */
-
+	UpdateColorLogicOperationParameters(); /* ==================== Checking color logic operation parameters ==================== */
+	UpdateCullFaceParameters(); /* ==================== Checking face culling parameters ==================== */
 
 
 	UpdateScissorTestParameters(); /* ==================== Checking scissor test parameters ==================== */
+}
+
+void Rendering::UpdateColorLogicOperationParameters()
+{
+	if ((glColorLogicOperationEnabled == glColorLogicOperationEnabledOld) && (glColorLogicOperationCode == glColorLogicOperationCodeOld))
+	{
+		return;
+	}
+
+	const GLenum glPropertyEnum = GL_COLOR_LOGIC_OP;
+	if (glColorLogicOperationEnabled)
+	{
+		glEnable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_COLOR_LOGIC_OP is now enabled");
+	}
+	else
+	{
+		glDisable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_COLOR_LOGIC_OP is now disabled");
+	}
+	glColorLogicOperationEnabledOld = glColorLogicOperationEnabled;
+
+	// Now we check if logic operation code has been changed
+	if (glColorLogicOperationCode != glColorLogicOperationCodeOld)
+	{
+		glLogicOp(glColorLogicOperationCode);
+		LOG(Utility::Notice, LOGPLACE, "Color logic operation %d is chosen", glColorLogicOperationCode);
+		glColorLogicOperationCodeOld = glColorLogicOperationCode;
+	}
+}
+
+void Rendering::UpdateCullFaceParameters()
+{
+	if ((glCullFaceEnabled == glCullFaceEnabledOld) && (glCullFaceMode == glCullFaceModeOld))
+	{
+		return;
+	}
+
+	const GLenum glPropertyEnum = GL_CULL_FACE;
+	if (glCullFaceEnabled)
+	{
+		glEnable(glPropertyEnum);
+		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Enabling GL_CULL_FACE");
+		LOG(Utility::Notice, LOGPLACE, "GL_CULL_FACE is now enabled");
+	}
+	else
+	{
+		glDisable(glPropertyEnum);
+		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Disabling GL_CULL_FACE");
+		LOG(Utility::Notice, LOGPLACE, "GL_CULL_FACE is now disabled");
+	}
+	glCullFaceEnabledOld = glCullFaceEnabled;
+
+	// Now we must check if cull face mode has been changed
+	if (glCullFaceMode != glCullFaceModeOld)
+	{
+		glCullFace(glCullFaceMode);
+		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Setting the cull face mode");
+		LOG(Utility::Notice, LOGPLACE, "Face culling mode is %d", glCullFaceMode);
+		glCullFaceModeOld = glCullFaceMode;
+	}
+
 }
 
 void Rendering::UpdateBlendParameters()
