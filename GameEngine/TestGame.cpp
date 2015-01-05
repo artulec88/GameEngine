@@ -42,7 +42,9 @@ TestGame::TestGame() :
 	pointLightNodes(NULL),
 	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
 	spotLightNodes(NULL),
-	cameraCount(GET_CONFIG_VALUE("cameraCount", 3))
+	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
+	cameraNodes(NULL),
+	skyboxNode(NULL)
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -164,6 +166,11 @@ void TestGame::Init()
 	//castleNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\castle.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 0.5f, 8.0f)));
 	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
+
+	skyboxNode = new GameNode();
+	skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\skybox.jpg"))));
+	skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	AddToSceneRoot(skyboxNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 

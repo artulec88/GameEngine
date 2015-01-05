@@ -60,7 +60,9 @@ protected:
 	Rendering::GameNode** spotLightNodes;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
+	Rendering::GameNode* skyboxNode;
 	//Rendering::GameNode* castleNode;
+
 /* ==================== Non-static member variables end ==================== */
 };
 
