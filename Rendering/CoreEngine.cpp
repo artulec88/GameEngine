@@ -216,6 +216,7 @@ void CoreEngine::Run()
 
 	game->Init();
 #ifdef ANT_TWEAK_BAR_ENABLED
+	Rendering::InitializeTweakBars();
 	renderer->InitializeTweakBars();
 	game->InitializeTweakBars();
 #endif
@@ -312,6 +313,10 @@ void CoreEngine::Run()
 			minMaxTime2_3.ProcessTime(elapsedTime);
 			timeSum2_3 += elapsedTime;
 			/* ==================== REGION #2_3 end ====================*/
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+			Rendering::CheckChangesAndUpdateGLState();
+#endif
 			
 			unprocessingTime -= frameTime;
 		}

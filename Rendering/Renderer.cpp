@@ -8,9 +8,6 @@
 #include "TextRenderer.h"
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
-#ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBarTypes.h"
-#endif
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
@@ -309,7 +306,7 @@ void Renderer::Render(GameNode& gameNode)
 	double time = glfwGetTime();
 	std::stringstream ss;
 	ss << "This is string: " << time << " [ms]";
-	textRenderer->DrawString(0, 580, "T" /*ss.str()*/);
+	textRenderer->DrawString(0, 580, ss.str());
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwDraw();
@@ -505,11 +502,12 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+/**
+ * This function must be called after AntTweakBar library is initalized.
+ * See Rendering::InitializeTweakBars()
+ */
 void Renderer::InitializeTweakBars()
 {
-	/* ==================== Initializing AntTweakBar library begin ==================== */
-	TwInit(TW_OPENGL, NULL);
-
 	AntTweakBarTypes::InitializeTweakBarTypes();
 
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
@@ -562,7 +560,6 @@ void Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
-	/* ==================== Initializing AntTweakBar library end ==================== */
 }
 
 void Renderer::CheckCameraIndexChange()

@@ -21,7 +21,7 @@ using namespace Math;
 using namespace Rendering;
 
 #define RENDER_LIGHT_MESHES
-#define SIMULATE_SUN_BEHAVIOR
+//#define SIMULATE_SUN_BEHAVIOR
 
 TestGame::TestGame() :
 	Game(),

@@ -3,8 +3,28 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 #include "Math\Math.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+//#include "AntTweakBarTypes.h"
+#include "AntTweakBar\include\AntTweakBar.h"
+#endif
 
 Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::AntiAliasingMethod::FXAA;
+
+/* ==================== Blending parameters begin ==================== */
+bool Rendering::glBlendEnabled, Rendering::glBlendEnabledOld;
+GLenum Rendering::glBlendSfactor, Rendering::glBlendSfactorOld;
+GLenum Rendering::glBlendDfactor, Rendering::glBlendDfactorOld;
+/* ==================== Blending parameters end ==================== */
+
+/* ==================== Scissor test parameters begin ==================== */
+bool Rendering::glScissorTestEnabled, Rendering::glScissorTestEnabledOld;
+GLint Rendering::glScissorBoxLowerLeftCornerX, Rendering::glScissorBoxLowerLeftCornerXOld;
+GLint Rendering::glScissorBoxLowerLeftCornerY, Rendering::glScissorBoxLowerLeftCornerYOld;
+GLsizei Rendering::glScissorBoxWidth, Rendering::glScissorBoxWidthOld;
+GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
+/* ==================== Scissor test parameters end ==================== */
+
+using namespace Math;
 
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title)
 {
@@ -13,23 +33,24 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	InitGlew();
 
 
-	ReadAlphaTestParameter();
+	//ReadAlphaTestParameter();
 	ReadBlendParameter();
+	ReadColorLogicOperationParameter();
 	ReadCullFaceParameter();
+	ReadDepthClampParameter();
 	ReadDepthTestParameter();
 	ReadDitherParameter();
 	ReadFrontFaceParameter();
 	ReadHistogramParameter();
-	//ReadIndexLogicOperationParameter();
 	//ReadMinmaxParameter();
 	//ReadMultisampleParameter();
-	//ReadScissorTestParameter();
-	//ReadStencilTestParameter();
+	ReadScissorTestParameter(width, height);
+	ReadStencilTestParameter();
 	//ReadTextureParameters();
 
-	glFrontFace(GL_CW); // every face I draw in clockwise order is a front face
-	//glCullFace(GL_BACK); // cull the back face
-	//glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
+	//glFrontFace(GL_CW);
+	//glCullFace(GL_BACK);
+	//glEnable(GL_DEPTH_CLAMP);
 
 	switch (Rendering::antiAliasingMethod)
 	{
@@ -143,49 +164,50 @@ void Rendering::InitGlew()
 }
 
 /**
- * If enabled, do alpha testing.
+ * If enabled, do alpha testing. Deprecated in OpenGL 3.*
  * See https://www.opengl.org/sdk/docs/man2/xhtml/glAlphaFunc.xml
  */
-void Rendering::ReadAlphaTestParameter()
-{
-	int alphaTestEnabled = GET_CONFIG_VALUE("GL_ALPHA_TEST_ENABLED", 0);
-	if (alphaTestEnabled == 0)
-	{
-		glDisable(GL_ALPHA_TEST);
-		LOG(Utility::Debug, LOGPLACE, "GL_ALPHA_TEST disabled");
-		return;
-	}
-
-	glEnable(GL_ALPHA_TEST); // Perform ALPHA testing
-
-	std::string alphaFuncStr = GET_CONFIG_VALUE_STR("GL_ALPHA_TEST_FUNC", "GL_LESS");
-	Math::Real alphaFuncRefValue = GET_CONFIG_VALUE("GL_ALPHA_TEST_REF", 0.1f);
-	if (alphaFuncStr == "GL_NEVER") { glAlphaFunc(GL_NEVER, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_LESS") { glAlphaFunc(GL_LESS, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_EQUAL") { glAlphaFunc(GL_EQUAL, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_LEQUAL") { glAlphaFunc(GL_LEQUAL, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_GREATER") { glAlphaFunc(GL_GREATER, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_NOTEQUAL") { glAlphaFunc(GL_NOTEQUAL, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_GEQUAL") { glAlphaFunc(GL_GEQUAL, alphaFuncRefValue); }
-	else if (alphaFuncStr == "GL_ALWAYS") { glAlphaFunc(GL_ALWAYS, alphaFuncRefValue); }
-	else /* GL_ALWAYS is default */
-	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the alpha test function. Using default GL_ALWAYS", alphaFuncStr.c_str());
-		alphaFuncStr = "GL_ALWAYS";
-		glAlphaFunc(GL_ALWAYS, alphaFuncRefValue);
-	}
-
-	LOG(Utility::Info, LOGPLACE, "GL_ALPHA_TEST enabled with function \"%s\" and reference value = %.2f", alphaFuncStr.c_str(), alphaFuncRefValue);
-}
+//void Rendering::ReadAlphaTestParameter()
+//{
+//	int alphaTestEnabled = GET_CONFIG_VALUE("GL_ALPHA_TEST_ENABLED", 0);
+//	if (alphaTestEnabled == 0)
+//	{
+//		glDisable(GL_ALPHA_TEST);
+//		LOG(Utility::Debug, LOGPLACE, "GL_ALPHA_TEST disabled");
+//		return;
+//	}
+//
+//	glEnable(GL_ALPHA_TEST); // Perform ALPHA testing
+//
+//	std::string alphaFuncStr = GET_CONFIG_VALUE_STR("GL_ALPHA_TEST_FUNC", "GL_LESS");
+//	Math::Real alphaFuncRefValue = GET_CONFIG_VALUE("GL_ALPHA_TEST_REF", 0.1f);
+//	if (alphaFuncStr == "GL_NEVER") { glAlphaFunc(GL_NEVER, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_LESS") { glAlphaFunc(GL_LESS, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_EQUAL") { glAlphaFunc(GL_EQUAL, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_LEQUAL") { glAlphaFunc(GL_LEQUAL, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_GREATER") { glAlphaFunc(GL_GREATER, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_NOTEQUAL") { glAlphaFunc(GL_NOTEQUAL, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_GEQUAL") { glAlphaFunc(GL_GEQUAL, alphaFuncRefValue); }
+//	else if (alphaFuncStr == "GL_ALWAYS") { glAlphaFunc(GL_ALWAYS, alphaFuncRefValue); }
+//	else /* GL_ALWAYS is default */
+//	{
+//		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the alpha test function. Using default GL_ALWAYS", alphaFuncStr.c_str());
+//		alphaFuncStr = "GL_ALWAYS";
+//		glAlphaFunc(GL_ALWAYS, alphaFuncRefValue);
+//	}
+//
+//	LOG(Utility::Info, LOGPLACE, "GL_ALPHA_TEST enabled with function \"%s\" and reference value = %.2f", alphaFuncStr.c_str(), alphaFuncRefValue);
+//}
 
 /**
  * If enabled, blen the computed fragment color values with the values in the color buffers.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glBlendFunc.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glBlendFunc.xml
  */
 void Rendering::ReadBlendParameter()
 {
-	int blendingEnabled = GET_CONFIG_VALUE("GL_BLEND_ENABLED", 0);
-	if (blendingEnabled == 0)
+	glBlendEnabled = GET_CONFIG_VALUE("GL_BLEND_ENABLED", false);
+	glBlendEnabledOld = glBlendEnabled;
+	if (!glBlendEnabled)
 	{
 		glDisable(GL_BLEND);
 		LOG(Utility::Debug, LOGPLACE, "GL_BLEND disabled");
@@ -195,58 +217,103 @@ void Rendering::ReadBlendParameter()
 	glEnable(GL_BLEND);
 	std::string blendSFactorStr = GET_CONFIG_VALUE_STR("GL_BLEND_SFACTOR", "GL_ONE");
 	std::string blendDFactorStr = GET_CONFIG_VALUE_STR("GL_BLEND_DFACTOR", "GL_ZERO");
-	GLenum sFactor, dFactor;
-	if (blendSFactorStr == "GL_ZERO") { sFactor = GL_ZERO; }
-	else if (blendSFactorStr == "GL_ONE") { sFactor = GL_ONE; }
-	else if (blendSFactorStr == "GL_SRC_COLOR") { sFactor = GL_SRC_COLOR; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_SRC_COLOR") { sFactor = GL_ONE_MINUS_SRC_COLOR; }
-	else if (blendSFactorStr == "GL_DST_COLOR") { sFactor = GL_DST_COLOR; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_DST_COLOR") { sFactor = GL_ONE_MINUS_DST_COLOR; }
-	else if (blendSFactorStr == "GL_SRC_ALPHA") { sFactor = GL_SRC_ALPHA; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_SRC_ALPHA") { sFactor = GL_ONE_MINUS_SRC_ALPHA; }
-	else if (blendSFactorStr == "GL_DST_ALPHA") { sFactor = GL_DST_ALPHA; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_DST_ALPHA") { sFactor = GL_ONE_MINUS_DST_ALPHA; }
-	else if (blendSFactorStr == "GL_CONSTANT_COLOR") { sFactor = GL_CONSTANT_COLOR; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_CONSTANT_COLOR") { sFactor = GL_ONE_MINUS_CONSTANT_COLOR; }
-	else if (blendSFactorStr == "GL_CONSTANT_ALPHA") { sFactor = GL_CONSTANT_ALPHA; }
-	else if (blendSFactorStr == "GL_ONE_MINUS_CONSTANT_ALPHA") { sFactor = GL_ONE_MINUS_CONSTANT_ALPHA; }
-	else if (blendSFactorStr == "GL_SRC_ALPHA_SATURATE") { sFactor = GL_SRC_ALPHA_SATURATE; }
+	if (blendSFactorStr == "GL_ZERO") { glBlendSfactor = GL_ZERO; }
+	else if (blendSFactorStr == "GL_ONE") { glBlendSfactor = GL_ONE; }
+	else if (blendSFactorStr == "GL_SRC_COLOR") { glBlendSfactor = GL_SRC_COLOR; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_SRC_COLOR") { glBlendSfactor = GL_ONE_MINUS_SRC_COLOR; }
+	else if (blendSFactorStr == "GL_DST_COLOR") { glBlendSfactor = GL_DST_COLOR; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_DST_COLOR") { glBlendSfactor = GL_ONE_MINUS_DST_COLOR; }
+	else if (blendSFactorStr == "GL_SRC_ALPHA") { glBlendSfactor = GL_SRC_ALPHA; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_SRC_ALPHA") { glBlendSfactor = GL_ONE_MINUS_SRC_ALPHA; }
+	else if (blendSFactorStr == "GL_DST_ALPHA") { glBlendSfactor = GL_DST_ALPHA; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_DST_ALPHA") { glBlendSfactor = GL_ONE_MINUS_DST_ALPHA; }
+	else if (blendSFactorStr == "GL_CONSTANT_COLOR") { glBlendSfactor = GL_CONSTANT_COLOR; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_CONSTANT_COLOR") { glBlendSfactor = GL_ONE_MINUS_CONSTANT_COLOR; }
+	else if (blendSFactorStr == "GL_CONSTANT_ALPHA") { glBlendSfactor = GL_CONSTANT_ALPHA; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_CONSTANT_ALPHA") { glBlendSfactor = GL_ONE_MINUS_CONSTANT_ALPHA; }
+	else if (blendSFactorStr == "GL_SRC_ALPHA_SATURATE") { glBlendSfactor = GL_SRC_ALPHA_SATURATE; }
+	else if (blendSFactorStr == "GL_SRC1_COLOR") { glBlendSfactor = GL_SRC1_COLOR; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_SRC1_COLOR") { glBlendSfactor = GL_ONE_MINUS_SRC1_COLOR; }
+	else if (blendSFactorStr == "GL_SRC1_ALPHA") { glBlendSfactor = GL_SRC1_ALPHA; }
+	else if (blendSFactorStr == "GL_ONE_MINUS_SRC1_ALPHA") { glBlendSfactor = GL_ONE_MINUS_SRC1_ALPHA; }
 	else /* GL_ONE is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the blend sFactor. Using default GL_ONE", blendSFactorStr.c_str());
 		blendSFactorStr = "GL_ONE";
-		sFactor = GL_ONE;
+		glBlendSfactor = GL_ONE;
 	}
 
-	if (blendDFactorStr == "GL_ZERO") { dFactor = GL_ZERO; }
-	else if (blendDFactorStr == "GL_ONE") { dFactor = GL_ONE; }
-	else if (blendDFactorStr == "GL_SRC_COLOR") { dFactor = GL_SRC_COLOR; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_SRC_COLOR") { dFactor = GL_ONE_MINUS_SRC_COLOR; }
-	else if (blendDFactorStr == "GL_DST_COLOR") { dFactor = GL_DST_COLOR; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_DST_COLOR") { dFactor = GL_ONE_MINUS_DST_COLOR; }
-	else if (blendDFactorStr == "GL_SRC_ALPHA") { dFactor = GL_SRC_ALPHA; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_SRC_ALPHA") { dFactor = GL_ONE_MINUS_SRC_ALPHA; }
-	else if (blendDFactorStr == "GL_DST_ALPHA") { dFactor = GL_DST_ALPHA; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_DST_ALPHA") { dFactor = GL_ONE_MINUS_DST_ALPHA; }
-	else if (blendDFactorStr == "GL_CONSTANT_COLOR") { dFactor = GL_CONSTANT_COLOR; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_CONSTANT_COLOR") { dFactor = GL_ONE_MINUS_CONSTANT_COLOR; }
-	else if (blendDFactorStr == "GL_CONSTANT_ALPHA") { dFactor = GL_CONSTANT_ALPHA; }
-	else if (blendDFactorStr == "GL_ONE_MINUS_CONSTANT_ALPHA") { dFactor = GL_ONE_MINUS_CONSTANT_ALPHA; }
-	else if (blendDFactorStr == "GL_SRC_ALPHA_SATURATE") { LOG(Utility::Error, LOGPLACE, "GL_SRC_ALPHA_SATURATE is not a valid dFactor value for blending operation. Using default GL_ZERO instead"); dFactor = GL_ZERO; }
+	if (blendDFactorStr == "GL_ZERO") { glBlendDfactor = GL_ZERO; }
+	else if (blendDFactorStr == "GL_ONE") { glBlendDfactor = GL_ONE; }
+	else if (blendDFactorStr == "GL_SRC_COLOR") { glBlendDfactor = GL_SRC_COLOR; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_SRC_COLOR") { glBlendDfactor = GL_ONE_MINUS_SRC_COLOR; }
+	else if (blendDFactorStr == "GL_DST_COLOR") { glBlendDfactor = GL_DST_COLOR; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_DST_COLOR") { glBlendDfactor = GL_ONE_MINUS_DST_COLOR; }
+	else if (blendDFactorStr == "GL_SRC_ALPHA") { glBlendDfactor = GL_SRC_ALPHA; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_SRC_ALPHA") { glBlendDfactor = GL_ONE_MINUS_SRC_ALPHA; }
+	else if (blendDFactorStr == "GL_DST_ALPHA") { glBlendDfactor = GL_DST_ALPHA; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_DST_ALPHA") { glBlendDfactor = GL_ONE_MINUS_DST_ALPHA; }
+	else if (blendDFactorStr == "GL_CONSTANT_COLOR") { glBlendDfactor = GL_CONSTANT_COLOR; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_CONSTANT_COLOR") { glBlendDfactor = GL_ONE_MINUS_CONSTANT_COLOR; }
+	else if (blendDFactorStr == "GL_CONSTANT_ALPHA") { glBlendDfactor = GL_CONSTANT_ALPHA; }
+	else if (blendDFactorStr == "GL_ONE_MINUS_CONSTANT_ALPHA") { glBlendDfactor = GL_ONE_MINUS_CONSTANT_ALPHA; }
 	else /* GL_ZERO is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the blend dFactor. Using default GL_ZERO", blendDFactorStr.c_str());
 		blendDFactorStr = "GL_ZERO";
-		dFactor = GL_ZERO;
+		glBlendDfactor = GL_ZERO;
 	}
 
-	glBlendFunc(sFactor, dFactor);
+	glBlendSfactorOld = glBlendSfactor;
+	glBlendDfactorOld = glBlendDfactor;
+	glBlendFunc(glBlendSfactor, glBlendDfactor);
 	LOG(Utility::Info, LOGPLACE, "GL_BLEND enabled with sFactor = \"%s\" and dFactor = \"%s\"", blendSFactorStr.c_str(), blendDFactorStr.c_str());
 }
 
 /**
+ * If enabled, apply the currently selected logical operation to the computed fragment color and color buffer values.
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glLogicOp.xml
+ */
+void Rendering::ReadColorLogicOperationParameter()
+{
+	int colorLogicOperationEnabled = GET_CONFIG_VALUE("GL_COLOR_LOGIC_OP_ENABLED", 0);
+	if (colorLogicOperationEnabled == 0)
+	{
+		glDisable(GL_COLOR_LOGIC_OP);
+		LOG(Utility::Debug, LOGPLACE, "GL_COLOR_LOGIC_OP disabled");
+		return;
+	}
+
+	glEnable(GL_COLOR_LOGIC_OP);
+	std::string logicalOperationStr = GET_CONFIG_VALUE_STR("GL_COLOR_LOGIC_OPERATION", "GL_COPY");
+	if (logicalOperationStr == "GL_CLEAR") { glLogicOp(GL_CLEAR); }
+	else if (logicalOperationStr == "GL_SET") { glLogicOp(GL_SET); }
+	else if (logicalOperationStr == "GL_COPY") { glLogicOp(GL_COPY); }
+	else if (logicalOperationStr == "GL_COPY_INVERTED") { glLogicOp(GL_COPY_INVERTED); }
+	else if (logicalOperationStr == "GL_NOOP") { glLogicOp(GL_NOOP); }
+	else if (logicalOperationStr == "GL_INVERT") { glLogicOp(GL_INVERT); }
+	else if (logicalOperationStr == "GL_NAND") { glLogicOp(GL_NAND); }
+	else if (logicalOperationStr == "GL_OR") { glLogicOp(GL_OR); }
+	else if (logicalOperationStr == "GL_NOR") { glLogicOp(GL_NOR); }
+	else if (logicalOperationStr == "GL_XOR") { glLogicOp(GL_XOR); }
+	else if (logicalOperationStr == "GL_EQUIV") { glLogicOp(GL_EQUIV); }
+	else if (logicalOperationStr == "GL_AND_REVERSE") { glLogicOp(GL_AND_REVERSE); }
+	else if (logicalOperationStr == "GL_AND_INVERTED") { glLogicOp(GL_AND_INVERTED); }
+	else if (logicalOperationStr == "GL_OR_REVERSE") { glLogicOp(GL_OR_REVERSE); }
+	else if (logicalOperationStr == "GL_OR_INVERTED") { glLogicOp(GL_OR_INVERTED); }
+	else /* GL_COPY is default */
+	{
+		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the color logic operation parameter. Using default GL_COPY", logicalOperationStr.c_str());
+		logicalOperationStr = "GL_COPY";
+		glLogicOp(GL_COPY);
+	}
+
+	LOG(Utility::Info, LOGPLACE, "GL_COLOR_LOGIC_OP enabled in \"%s\" mode", logicalOperationStr.c_str());
+}
+
+/**
  * If enabled, cull polygons based on their winding in window coordinates.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glCullFace.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glCullFace.xml
  */
 void Rendering::ReadCullFaceParameter()
 {
@@ -260,9 +327,9 @@ void Rendering::ReadCullFaceParameter()
 
 	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	std::string cullFaceModeStr = GET_CONFIG_VALUE_STR("GL_CULL_FACE_MODE", "GL_BACK");
-	if (cullFaceModeStr == "GL_FRONT") { glCullFace(GL_FRONT); }
-	else if (cullFaceModeStr == "GL_BACK") { glCullFace(GL_BACK); }
-	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFace(GL_FRONT_AND_BACK ); }
+	if (cullFaceModeStr == "GL_FRONT") { glCullFace(GL_FRONT); } // cull the front face
+	else if (cullFaceModeStr == "GL_BACK") { glCullFace(GL_BACK); } // cull the back face
+	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFace(GL_FRONT_AND_BACK ); } // cull both back and front faces (only lines, points are rendered)
 	else /* GL_BACK is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the face culling parameter. Using default GL_BACK", cullFaceModeStr.c_str());
@@ -274,10 +341,30 @@ void Rendering::ReadCullFaceParameter()
 }
 
 /**
+ * If enabled, the -wc <= zc <= wc plane equation is ignored by view volume clipping.
+ * This effectively means that there is no near or far plane clipping.
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthRange.xml
+ */
+void Rendering::ReadDepthClampParameter()
+{
+	int depthClampEnabled = GET_CONFIG_VALUE("GL_DEPTH_CLAMP_ENABLED", 0);
+	if (depthClampEnabled == 0)
+	{
+		glDisable(GL_DEPTH_CLAMP);
+		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_CLAMP disabled");
+		return;
+	}
+
+	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
+
+	LOG(Utility::Info, LOGPLACE, "GL_DEPTH_CLAMP enabled");
+}
+
+/**
  * If enabled, do depth comparisons and update the depth buffer. Note that even if the depth buffer
  * exists and the depth mask is non-zero, the depth buffer is not updated if the depth test is disabled.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glDepthFunc.xml
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glDepthRange.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthFunc.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glDepthRange.xml
  */
 void Rendering::ReadDepthTestParameter()
 {
@@ -333,14 +420,14 @@ void Rendering::ReadDitherParameter()
 
 /**
  * Defines front- and back-facing polygons
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glFrontFace.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glFrontFace.xml
  */
 void Rendering::ReadFrontFaceParameter()
 {
 	std::string frontFaceStr = GET_CONFIG_VALUE_STR("GL_FRONT_FACE", "GL_CW");
 	GLenum frontFaceMode;
-	if (frontFaceStr == "GL_CW") { frontFaceMode = GL_CW; }
-	else if (frontFaceStr == "GL_CCW") { frontFaceMode = GL_CCW; }
+	if (frontFaceStr == "GL_CW") { frontFaceMode = GL_CW; } // every face I draw in clockwise order is a front face
+	else if (frontFaceStr == "GL_CCW") { frontFaceMode = GL_CCW; } // every face I draw in counter-clockwise order is a front face
 	else /* GL_CCW is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the front face mode. Using default GL_CCW", frontFaceStr.c_str());
@@ -354,7 +441,7 @@ void Rendering::ReadFrontFaceParameter()
 
 /**
  * If enabled, histogram incoming RGBA color values.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glHistogram.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glHistogram.xml
  */
 void Rendering::ReadHistogramParameter()
 {
@@ -439,49 +526,95 @@ void Rendering::ReadHistogramParameter()
 }
 
 /**
- * If enabled, apply the currently selected logical operation to the incoming index and color buffer indices.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glLogicOp.xml
- */
-void Rendering::ReadIndexLogicOperationParameter()
-{
-	// TODO: Not yet implemented
-}
-
-/**
  * If enabled, compute the minimum and maximum values of incoming RGBA color values.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glMinmax.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glMinmax.xml
  */
-void Rendering::ReadMinmaxParameter()
-{
-	// TODO: Not yet implemented
-}
+//void Rendering::ReadMinmaxParameter()
+//{
+//	// TODO: Not yet implemented
+//}
 
 /**
  * If enabled, use multiple fragment samples in computing the final color of a pixel.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glSampleCoverage.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glSampleCoverage.xml
  */
-void Rendering::ReadMultisampleParameter()
-{
-	// TODO: Not yet implemented
-}
+//void Rendering::ReadMultisampleParameter()
+//{
+//	// TODO: Not yet implemented
+//}
 
 /**
  * If enabled, discard fragments that are outside the scissor rectangle.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glScissor.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glScissor.xml
  */
-void Rendering::ReadScissorTestParameter()
+void Rendering::ReadScissorTestParameter(int width, int height)
 {
-	// TODO: Not yet implemented
+	glScissorTestEnabled = GET_CONFIG_VALUE("GL_SCISSOR_TEST_ENABLED", false);
+	glScissorTestEnabledOld = glScissorTestEnabled;
+	if (!glScissorTestEnabled)
+	{
+		glDisable(GL_SCISSOR_TEST);
+		LOG(Utility::Debug, LOGPLACE, "GL_SCISSOR_TEST disabled");
+		return;
+	}
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissorBoxLowerLeftCornerX = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_X", 0);
+	glScissorBoxLowerLeftCornerY = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_Y", 0);
+	glScissorBoxWidth = GET_CONFIG_VALUE("GL_SCISSOR_BOX_WIDTH", width);
+	glScissorBoxHeight = GET_CONFIG_VALUE("GL_SCISSOR_BOX_HEIGHT", height);
+	
+	glScissorBoxLowerLeftCornerXOld = glScissorBoxLowerLeftCornerX;
+	glScissorBoxLowerLeftCornerYOld = glScissorBoxLowerLeftCornerY;
+	glScissorBoxWidthOld = glScissorBoxWidth;
+	glScissorBoxHeightOld = glScissorBoxHeight;
+	glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+
+	LOG(Utility::Info, LOGPLACE, "GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
+		glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
 }
 
 /**
  * If enabled, do stencil testing and update the stencil buffer.
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glStencilFunc.xml
- * See https://www.opengl.org/sdk/docs/man2/xhtml/glStencilOp.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glStencilFunc.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glStencilFuncSeparate.xml
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glStencilOp.xml
  */
 void Rendering::ReadStencilTestParameter()
 {
-	// TODO: Not yet implemented
+	int stencilTestEnabled = GET_CONFIG_VALUE("GL_STENCIL_TEST_ENABLED", 0);
+	if (stencilTestEnabled == 0)
+	{
+		glDisable(GL_STENCIL_TEST);
+		LOG(Utility::Debug, LOGPLACE, "GL_STENCIL_TEST_ENABLED disabled");
+		return;
+	}
+
+	glEnable(GL_STENCIL_TEST);
+
+	std::string stencilTestFuncStr = GET_CONFIG_VALUE_STR("GL_STENCIL_TEST_FUNC", "GL_ALWAYS");
+	GLenum stencilTestFunc;
+	if (stencilTestFuncStr == "GL_NEVER") { stencilTestFunc = GL_NEVER; }
+	else if (stencilTestFuncStr == "GL_LESS") { stencilTestFunc = GL_LESS; }
+	else if (stencilTestFuncStr == "GL_LEQUAL") { stencilTestFunc = GL_LEQUAL; }
+	else if (stencilTestFuncStr == "GL_GREATER") { stencilTestFunc = GL_GREATER; }
+	else if (stencilTestFuncStr == "GL_GEQUAL") { stencilTestFunc = GL_GEQUAL; }
+	else if (stencilTestFuncStr == "GL_EQUAL") { stencilTestFunc = GL_EQUAL; }
+	else if (stencilTestFuncStr == "GL_NOTEQUAL") { stencilTestFunc = GL_NOTEQUAL; }
+	else if (stencilTestFuncStr == "GL_ALWAYS") { stencilTestFunc = GL_ALWAYS; }
+	else /* GL_ALWAYS is default */
+	{
+		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the stencil test function. Using default GL_ALWAYS", stencilTestFuncStr.c_str());
+		stencilTestFuncStr = "GL_ALWAYS";
+		stencilTestFunc = GL_ALWAYS;
+	}
+
+	GLint stencilTestRefValue = GET_CONFIG_VALUE("GL_STENCIL_TEST_REF", 0);
+	GLuint stencilTestMask = GET_CONFIG_VALUE("GL_STENCIL_TEST_MASK", 1);
+
+	glStencilFunc(stencilTestFunc, stencilTestRefValue, stencilTestMask);
+	LOG(Utility::Info, LOGPLACE, "GL_STENCIL_TEST enabled with function \"%s\", reference value = %d and the mask = %d",
+		stencilTestFuncStr.c_str(), stencilTestRefValue, stencilTestMask);
 }
 
 /**
@@ -533,3 +666,111 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 		exit(EXIT_FAILURE);
 	}
 }
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void Rendering::InitializeTweakBars()
+{
+	/* ==================== Initializing AntTweakBar library begin ==================== */
+	TwInit(TW_OPENGL, NULL);
+	/* ==================== Initializing AntTweakBar library end ==================== */
+
+	TwEnumVal blendSFactorEV[] = { { GL_ZERO, "GL_ZERO" }, { GL_ONE, "GL_ONE" }, { GL_SRC_COLOR, "GL_SRC_COLOR" }, { GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR" },
+		{ GL_DST_COLOR, "GL_DST_COLOR" }, { GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR" }, { GL_SRC_ALPHA, "GL_SRC_ALPHA" }, { GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" },
+		{ GL_DST_ALPHA, "GL_DST_ALPHA" }, { GL_ONE_MINUS_DST_ALPHA, "GL_ONE_MINUS_DST_ALPHA" }, { GL_CONSTANT_COLOR, "GL_CONSTANT_COLOR" }, { GL_ONE_MINUS_CONSTANT_COLOR, "GL_ONE_MINUS_CONSTANT_COLOR" },
+		{ GL_CONSTANT_ALPHA, "GL_CONSTANT_ALPHA" }, { GL_ONE_MINUS_CONSTANT_ALPHA, "GL_ONE_MINUS_CONSTANT_ALPHA" }, { GL_SRC_ALPHA_SATURATE, "GL_SRC_ALPHA_SATURATE" },
+		{ GL_SRC1_COLOR, "GL_SRC1_COLOR" }, { GL_ONE_MINUS_SRC1_COLOR, "GL_ONE_MINUS_SRC1_COLOR" }, { GL_SRC1_ALPHA, "GL_SRC1_ALPHA" }, { GL_ONE_MINUS_SRC1_ALPHA, "GL_ONE_MINUS_SRC1_ALPHA" }};
+	TwType glBlendSFactorEnumType = TwDefineEnum("Blending S Factor", blendSFactorEV, 19);
+
+	TwEnumVal blendDFactorEV[] = { { GL_ZERO, "GL_ZERO" }, { GL_ONE, "GL_ONE" }, { GL_SRC_COLOR, "GL_SRC_COLOR" }, { GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR" },
+		{ GL_DST_COLOR, "GL_DST_COLOR" }, { GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR" }, { GL_SRC_ALPHA, "GL_SRC_ALPHA" }, { GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" },
+		{ GL_DST_ALPHA, "GL_DST_ALPHA" }, { GL_ONE_MINUS_DST_ALPHA, "GL_ONE_MINUS_DST_ALPHA" }, { GL_CONSTANT_COLOR, "GL_CONSTANT_COLOR" }, { GL_ONE_MINUS_CONSTANT_COLOR, "GL_ONE_MINUS_CONSTANT_COLOR" },
+		{ GL_CONSTANT_ALPHA, "GL_CONSTANT_ALPHA" }, { GL_ONE_MINUS_CONSTANT_ALPHA, "GL_ONE_MINUS_CONSTANT_ALPHA" } };
+	TwType glBlendDFactorEnumType = TwDefineEnum("Blending D Factor", blendDFactorEV, 14);
+
+	TwBar* glPropertiesBar = TwNewBar("OpenGLPropertiesBar");
+	TwAddVarRW(glPropertiesBar, "blendEnabled", TW_TYPE_BOOLCPP, &glBlendEnabled, " label='Blend enabled' group='Blending' ");
+	TwAddVarRW(glPropertiesBar, "blendSFactor", glBlendSFactorEnumType, &glBlendSfactor, " label='Blend S factor' group='Blending' ");
+	TwAddVarRW(glPropertiesBar, "blendDFactor", glBlendDFactorEnumType, &glBlendDfactor, " label='Blend D factor' group='Blending' ");
+
+	TwAddVarRW(glPropertiesBar, "scissorTestEnabled", TW_TYPE_BOOLCPP, &glScissorTestEnabled, " label='Scissor test enabled' group='Scissor test' ");
+	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerX", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerX, " label='Left corner X' group='Scissor test' ");
+	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerY", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerY, " label='Left corner Y' group='Scissor test' ");
+	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' ");
+	TwAddVarRW(glPropertiesBar, "scissorTestBoxHeight", TW_TYPE_INT32, &glScissorBoxHeight, " label='Box height' group='Scissor test' ");
+}
+
+void Rendering::CheckChangesAndUpdateGLState()
+{
+	UpdateBlendParameters(); /* ==================== Checking blending parameters ==================== */
+
+
+
+	UpdateScissorTestParameters(); /* ==================== Checking scissor test parameters ==================== */
+}
+
+void Rendering::UpdateBlendParameters()
+{
+	if ((glBlendEnabled == glBlendEnabledOld) && (glBlendSfactor == glBlendSfactorOld) && (glBlendDfactor == glBlendDfactorOld))
+	{
+		return;
+	}
+
+	const GLenum glPropertyEnum = GL_BLEND;
+	if (glBlendEnabled)
+	{
+		glEnable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now enabled");
+	}
+	else
+	{
+		glDisable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now disabled");
+	}
+	glBlendEnabledOld = glBlendEnabled;
+
+	// Now we check if any of blending factors have been changed.
+	if ((glBlendSfactor != glBlendSfactorOld) || (glBlendDfactor != glBlendDfactorOld))
+	{
+		glBlendFunc(glBlendSfactor, glBlendDfactor);
+		LOG(Utility::Notice, LOGPLACE, "Blending is now performed with the following parameters: sFactor = %d, dFactor = %d", glBlendSfactor, glBlendDfactor);
+		glBlendSfactorOld = glBlendSfactor;
+		glBlendDfactorOld = glBlendDfactor;
+	}
+}
+
+void Rendering::UpdateScissorTestParameters()
+{
+	const GLenum glPropertyEnum = GL_SCISSOR_TEST;
+	if (glScissorTestEnabled != glScissorTestEnabledOld)
+	{
+		if (glScissorTestEnabled)
+		{
+			glEnable(glPropertyEnum);
+			LOG(Utility::Notice, LOGPLACE, "GL_SCISSOR_TEST is now enabled");
+		}
+		else
+		{
+			glDisable(glPropertyEnum);
+			LOG(Utility::Notice, LOGPLACE, "GL_SCISSOR_TEST is now disabled");
+		}
+		glScissorTestEnabledOld = glScissorTestEnabled;
+	}
+
+	// Now we check if any of scissor test parameters have been changed.
+	if ((glScissorBoxLowerLeftCornerX != glScissorBoxLowerLeftCornerXOld) || (glScissorBoxLowerLeftCornerY != glScissorBoxLowerLeftCornerYOld) ||
+		(glScissorBoxWidth != glScissorBoxWidthOld) || (glScissorBoxHeight != glScissorBoxHeightOld))
+	{
+		// TODO: Clear whole screen
+		//glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
+		glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+		LOG(Utility::Notice, LOGPLACE, "Scissor test is now performed with the following parameters: left corner position = (%d; %d), box width = %d, box height = %d",
+			glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+
+		glScissorBoxLowerLeftCornerXOld = glScissorBoxLowerLeftCornerX;
+		glScissorBoxLowerLeftCornerYOld = glScissorBoxLowerLeftCornerY;
+		glScissorBoxWidthOld = glScissorBoxWidth;
+		glScissorBoxHeightOld = glScissorBoxHeight;
+	}
+}
+
+#endif
