@@ -740,9 +740,9 @@ void Rendering::UpdateBlendParameters()
 
 void Rendering::UpdateScissorTestParameters()
 {
-	const GLenum glPropertyEnum = GL_SCISSOR_TEST;
 	if (glScissorTestEnabled != glScissorTestEnabledOld)
 	{
+		const GLenum glPropertyEnum = GL_SCISSOR_TEST;
 		if (glScissorTestEnabled)
 		{
 			glEnable(glPropertyEnum);
