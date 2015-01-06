@@ -11,6 +11,7 @@
 // Include GLFW
 #include <GLFW\glfw3.h>
 #include <string>
+#include "Math\Math.h"
 
 #define ANT_TWEAK_BAR_ENABLED
 
@@ -70,6 +71,25 @@ namespace Rendering
 	extern GLenum glCullFaceMode, glCullFaceModeOld;
 	/* ==================== Cull face parameters end ==================== */
 
+	/* ==================== Depth clamping parameters begin ==================== */
+	extern bool glDepthClampEnabled, glDepthClampEnabledOld;
+	/* ==================== Depth clamping parameters end ==================== */
+
+	/* ==================== Depth test parameters begin ==================== */
+	extern bool glDepthTestEnabled, glDepthTestEnabledOld;
+	extern GLenum glDepthTestFunc, glDepthTestFuncOld;
+	extern Math::Real glDepthRangeNearValue, glDepthRangeNearValueOld;
+	extern Math::Real glDepthRangeFarValue, glDepthRangeFarValueOld;
+	/* ==================== Depth test parameters end ==================== */
+
+	/* ==================== Dithering parameters begin ==================== */
+	extern bool glDitheringEnabled, glDitheringEnabledOld;
+	/* ==================== Dithering parameters end ==================== */
+
+	/* ==================== Front face parameters begin ==================== */
+	extern GLenum glFrontFaceMode, glFrontFaceModeOld;
+	/* ==================== Front face parameters end ==================== */
+
 	/* ==================== Scissor test parameters begin ==================== */
 	extern bool glScissorTestEnabled, glScissorTestEnabledOld;
 	extern GLint glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerXOld;
@@ -84,6 +104,10 @@ namespace Rendering
 	void UpdateBlendParameters();
 	void UpdateColorLogicOperationParameters();
 	void UpdateCullFaceParameters();
+	void UpdateDepthClampParameters();
+	void UpdateDepthTestParameters();
+	void UpdateDitheringParameters();
+	void UpdateFrontFaceParameters();
 
 	void UpdateScissorTestParameters();
 #endif

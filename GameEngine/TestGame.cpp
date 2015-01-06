@@ -167,11 +167,11 @@ void TestGame::Init()
 	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
 
-	skyboxNode = new GameNode();
-	skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\skybox.jpg", GL_TEXTURE_CUBE_MAP, GL_LINEAR, GL_RGB, GL_RGBA, true))));
-	skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	skyboxNode->GetTransform().SetScale(10.0f);
-	AddToSceneRoot(skyboxNode);
+	//skyboxNode = new GameNode();
+	//skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\skybox.jpg", GL_TEXTURE_CUBE_MAP, GL_LINEAR, GL_RGB, GL_RGBA, true))));
+	//skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	//skyboxNode->GetTransform().SetScale(10.0f);
+	//AddToSceneRoot(skyboxNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 

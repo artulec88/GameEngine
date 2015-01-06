@@ -2,9 +2,8 @@
 #include "Rendering.h"
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
-#include "Math\Math.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
-//#include "AntTweakBarTypes.h"
+#include "AntTweakBarTypes.h"
 #include "AntTweakBar\include\AntTweakBar.h"
 #endif
 
@@ -25,6 +24,25 @@ GLenum Rendering::glColorLogicOperationCode, Rendering::glColorLogicOperationCod
 bool Rendering::glCullFaceEnabled, Rendering::glCullFaceEnabledOld;
 GLenum Rendering::glCullFaceMode, Rendering::glCullFaceModeOld;
 /* ==================== Color logic operation parameters end ==================== */
+
+/* ==================== Depth clamping parameters begin ==================== */
+bool Rendering::glDepthClampEnabled, Rendering::glDepthClampEnabledOld;
+/* ==================== Depth clamping parameters end ==================== */
+
+/* ==================== Depth test parameters begin ==================== */
+bool Rendering::glDepthTestEnabled, Rendering::glDepthTestEnabledOld;
+GLenum Rendering::glDepthTestFunc, Rendering::glDepthTestFuncOld;
+Math::Real Rendering::glDepthRangeNearValue, Rendering::glDepthRangeNearValueOld;
+Math::Real Rendering::glDepthRangeFarValue, Rendering::glDepthRangeFarValueOld;
+/* ==================== Depth test parameters end ==================== */
+
+/* ==================== Dithering parameters begin ==================== */
+bool Rendering::glDitheringEnabled, Rendering::glDitheringEnabledOld;
+/* ==================== Dithering parameters end ==================== */
+
+/* ==================== Front face parameters begin ==================== */
+GLenum Rendering::glFrontFaceMode, Rendering::glFrontFaceModeOld;
+/* ==================== Front face parameters end ==================== */
 
 /* ==================== Scissor test parameters begin ==================== */
 bool Rendering::glScissorTestEnabled, Rendering::glScissorTestEnabledOld;
@@ -368,8 +386,9 @@ void Rendering::ReadCullFaceParameter()
  */
 void Rendering::ReadDepthClampParameter()
 {
-	int depthClampEnabled = GET_CONFIG_VALUE("GL_DEPTH_CLAMP_ENABLED", 0);
-	if (depthClampEnabled == 0)
+	glDepthClampEnabled = GET_CONFIG_VALUE("GL_DEPTH_CLAMP_ENABLED", false);
+	glDepthClampEnabledOld = glDepthClampEnabled;
+	if (!glDepthClampEnabled)
 	{
 		glDisable(GL_DEPTH_CLAMP);
 		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_CLAMP disabled");
@@ -389,8 +408,9 @@ void Rendering::ReadDepthClampParameter()
  */
 void Rendering::ReadDepthTestParameter()
 {
-	int depthTestEnabled = GET_CONFIG_VALUE("GL_DEPTH_TEST_ENABLED", 0);
-	if (depthTestEnabled == 0)
+	glDepthTestEnabled = GET_CONFIG_VALUE("GL_DEPTH_TEST_ENABLED", false);
+	glDepthTestEnabledOld = glDepthTestEnabled;
+	if (!glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
 		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_TEST disabled");
@@ -400,26 +420,32 @@ void Rendering::ReadDepthTestParameter()
 	glEnable(GL_DEPTH_TEST);
 
 	std::string depthTestFuncStr = GET_CONFIG_VALUE_STR("GL_DEPTH_TEST_FUNC", "GL_LESS");
-	if (depthTestFuncStr == "GL_NEVER") { glDepthFunc(GL_NEVER); }
-	else if (depthTestFuncStr == "GL_LESS") { glDepthFunc(GL_LESS); } // Accept fragment if it closer to the camera than the former one
-	else if (depthTestFuncStr == "GL_EQUAL") { glDepthFunc(GL_EQUAL); }
-	else if (depthTestFuncStr == "GL_LEQUAL") { glDepthFunc(GL_LEQUAL); }
-	else if (depthTestFuncStr == "GL_GREATER") { glDepthFunc(GL_GREATER); }
-	else if (depthTestFuncStr == "GL_NOTEQUAL") { glDepthFunc(GL_NOTEQUAL); }
-	else if (depthTestFuncStr == "GL_GEQUAL") { glDepthFunc(GL_GEQUAL); }
-	else if (depthTestFuncStr == "GL_ALWAYS ") { glDepthFunc(GL_ALWAYS ); }
+	if (depthTestFuncStr == "GL_NEVER") { glDepthTestFunc = GL_NEVER; }
+	else if (depthTestFuncStr == "GL_LESS") { glDepthTestFunc = GL_LESS; } // Accept fragment if it closer to the camera than the former one
+	else if (depthTestFuncStr == "GL_EQUAL") { glDepthTestFunc = GL_EQUAL; }
+	else if (depthTestFuncStr == "GL_LEQUAL") { glDepthTestFunc = GL_LEQUAL; }
+	else if (depthTestFuncStr == "GL_GREATER") { glDepthTestFunc = GL_GREATER; }
+	else if (depthTestFuncStr == "GL_NOTEQUAL") { glDepthTestFunc = GL_NOTEQUAL; }
+	else if (depthTestFuncStr == "GL_GEQUAL") { glDepthTestFunc = GL_GEQUAL; }
+	else if (depthTestFuncStr == "GL_ALWAYS ") { glDepthTestFunc = GL_ALWAYS; }
 	else /* GL_LESS is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the depth test parameter. Using default GL_LESS", depthTestFuncStr.c_str());
 		depthTestFuncStr = "GL_LESS";
-		glDepthFunc(GL_LESS);
+		glDepthTestFunc = GL_LESS;
 	}
 
-	Math::Real depthTestRangeNearValue = GET_CONFIG_VALUE("GL_DEPTH_TEST_RANGE_NEAR", REAL_ZERO);
-	Math::Real depthTestRangeFarValue = GET_CONFIG_VALUE("GL_DEPTH_TEST_RANGE_FAR", REAL_ONE);
-	glDepthRange(depthTestRangeNearValue, depthTestRangeFarValue);
+	glDepthTestFuncOld = glDepthTestFunc;
+	glDepthFunc(glDepthTestFunc);
+
+
+	glDepthRangeNearValue = GET_CONFIG_VALUE("GL_DEPTH_RANGE_NEAR", REAL_ZERO);
+	glDepthRangeFarValue = GET_CONFIG_VALUE("GL_DEPTH_RANGE_FAR", REAL_ONE);
+	glDepthRangeNearValueOld = glDepthRangeNearValue;
+	glDepthRangeFarValueOld = glDepthRangeFarValue;
+	glDepthRange(glDepthRangeNearValue, glDepthRangeFarValue);
 	LOG(Utility::Info, LOGPLACE, "GL_DEPTH_TEST enabled with function \"%s\" and the range [%.2f; %.2f]",
-		depthTestFuncStr.c_str(), depthTestRangeNearValue, depthTestRangeFarValue);
+		depthTestFuncStr.c_str(), glDepthRangeNearValue, glDepthRangeFarValue);
 }
 
 /**
@@ -427,8 +453,9 @@ void Rendering::ReadDepthTestParameter()
  */
 void Rendering::ReadDitherParameter()
 {
-	int ditheringEnabled = GET_CONFIG_VALUE("GL_DITHER_ENABLED", 0);
-	if (ditheringEnabled == 0)
+	glDitheringEnabled = GET_CONFIG_VALUE("GL_DITHER_ENABLED", false);
+	glDitheringEnabledOld = glDitheringEnabled;
+	if (!glDitheringEnabled)
 	{
 		glDisable(GL_DITHER);
 		LOG(Utility::Debug, LOGPLACE, "GL_DITHER disabled");
@@ -446,17 +473,17 @@ void Rendering::ReadDitherParameter()
 void Rendering::ReadFrontFaceParameter()
 {
 	std::string frontFaceStr = GET_CONFIG_VALUE_STR("GL_FRONT_FACE", "GL_CW");
-	GLenum frontFaceMode;
-	if (frontFaceStr == "GL_CW") { frontFaceMode = GL_CW; } // every face I draw in clockwise order is a front face
-	else if (frontFaceStr == "GL_CCW") { frontFaceMode = GL_CCW; } // every face I draw in counter-clockwise order is a front face
+	if (frontFaceStr == "GL_CW") { glFrontFaceMode = GL_CW; } // every face I draw in clockwise order is a front face
+	else if (frontFaceStr == "GL_CCW") { glFrontFaceMode = GL_CCW; } // every face I draw in counter-clockwise order is a front face
 	else /* GL_CCW is default */
 	{
 		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the front face mode. Using default GL_CCW", frontFaceStr.c_str());
 		frontFaceStr = "GL_CCW";
-		frontFaceMode = GL_CCW;
+		glFrontFaceMode = GL_CCW;
 	}
 
-	glFrontFace(frontFaceMode);
+	glFrontFaceModeOld = glFrontFaceMode;
+	glFrontFace(glFrontFaceMode);
 	LOG(Utility::Info, LOGPLACE, "\"%s\" mode specified for the glFrontFace", frontFaceStr.c_str());
 }
 
@@ -572,14 +599,16 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 {
 	glScissorTestEnabled = GET_CONFIG_VALUE("GL_SCISSOR_TEST_ENABLED", false);
 	glScissorTestEnabledOld = glScissorTestEnabled;
-	if (!glScissorTestEnabled)
+	if (glScissorTestEnabled)
+	{
+		glEnable(GL_SCISSOR_TEST);
+	}
+	else
 	{
 		glDisable(GL_SCISSOR_TEST);
 		LOG(Utility::Debug, LOGPLACE, "GL_SCISSOR_TEST disabled");
-		return;
 	}
-
-	glEnable(GL_SCISSOR_TEST);
+	
 	glScissorBoxLowerLeftCornerX = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_X", 0);
 	glScissorBoxLowerLeftCornerY = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_Y", 0);
 	glScissorBoxWidth = GET_CONFIG_VALUE("GL_SCISSOR_BOX_WIDTH", width);
@@ -589,10 +618,12 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 	glScissorBoxLowerLeftCornerYOld = glScissorBoxLowerLeftCornerY;
 	glScissorBoxWidthOld = glScissorBoxWidth;
 	glScissorBoxHeightOld = glScissorBoxHeight;
-	glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
-
-	LOG(Utility::Info, LOGPLACE, "GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
-		glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+	if (glScissorTestEnabled)
+	{
+		glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+		LOG(Utility::Info, LOGPLACE, "GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
+			glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+	}
 }
 
 /**
@@ -715,6 +746,13 @@ void Rendering::InitializeTweakBars()
 	TwEnumVal cullFaceModeEV[] = { { GL_FRONT, "GL_FRONT" }, { GL_BACK, "GL_BACK" }, { GL_FRONT_AND_BACK, "GL_FRONT_AND_BACK" } };
 	TwType glCullFaceModeEnumType = TwDefineEnum("Cull face mode", cullFaceModeEV, 3);
 
+	TwEnumVal depthTestFuncEV[] = { { GL_NEVER, "GL_NEVER" }, { GL_LESS, "GL_LESS" }, { GL_EQUAL, "GL_EQUAL" }, { GL_LEQUAL, "GL_LEQUAL" },
+		{ GL_GREATER, "GL_GREATER" }, { GL_NOTEQUAL, "GL_NOTEQUAL" }, { GL_GEQUAL, "GL_GEQUAL" }, { GL_ALWAYS, "GL_ALWAYS" } };
+	TwType glDepthTestFuncEnumType = TwDefineEnum("Depth test function", depthTestFuncEV, 8);
+
+	TwEnumVal frontFaceEV[] = { { GL_CW, "GL_CW" }, { GL_CCW, "GL_CCW" } };
+	TwType glFrontFaceEnumType = TwDefineEnum("Front face", frontFaceEV, 2);
+
 
 	TwBar* glPropertiesBar = TwNewBar("OpenGLPropertiesBar");
 	TwAddVarRW(glPropertiesBar, "blendEnabled", TW_TYPE_BOOLCPP, &glBlendEnabled, " label='Enabled' group='Blending' ");
@@ -727,11 +765,22 @@ void Rendering::InitializeTweakBars()
 	TwAddVarRW(glPropertiesBar, "cullFaceEnabled", TW_TYPE_BOOLCPP, &glCullFaceEnabled, " label='Enabled' group='Face culling' ");
 	TwAddVarRW(glPropertiesBar, "cullFaceMode", glCullFaceModeEnumType, &glCullFaceMode, " label='Mode' group='Face culling' ");
 
+	TwAddVarRW(glPropertiesBar, "depthClampingEnabled", TW_TYPE_BOOLCPP, &glDepthClampEnabled, " label='Enabled' group='Depth clamp' ");
+
+	TwAddVarRW(glPropertiesBar, "depthTestEnabled", TW_TYPE_BOOLCPP, &glDepthTestEnabled, " label='Enabled' group='Depth test' ");
+	TwAddVarRW(glPropertiesBar, "depthTestFunction", glDepthTestFuncEnumType, &glDepthTestFunc, " label='Function' group='Depth test' ");
+	TwAddVarRW(glPropertiesBar, "depthRangeNearValue", TW_TYPE_REAL, &glDepthRangeNearValue, " label='Range near value' group='Depth test' step=0.01 min=0.0 max=1.0 ");
+	TwAddVarRW(glPropertiesBar, "depthRangeFarValue", TW_TYPE_REAL, &glDepthRangeFarValue, " label='Range far value' group='Depth test' step=0.01 min=0.0 max=1.0 ");
+
+	TwAddVarRW(glPropertiesBar, "ditheringEnabled", TW_TYPE_BOOLCPP, &glDitheringEnabled, " label='Enabled' group='Dithering' ");
+
+	TwAddVarRW(glPropertiesBar, "frontFace", glFrontFaceEnumType, &glFrontFaceMode, " label='Front face' ");
+
 	TwAddVarRW(glPropertiesBar, "scissorTestEnabled", TW_TYPE_BOOLCPP, &glScissorTestEnabled, " label='Enabled' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerX", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerX, " label='Left corner X' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerY", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerY, " label='Left corner Y' group='Scissor test' ");
-	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' ");
-	TwAddVarRW(glPropertiesBar, "scissorTestBoxHeight", TW_TYPE_INT32, &glScissorBoxHeight, " label='Box height' group='Scissor test' ");
+	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' min=50");
+	TwAddVarRW(glPropertiesBar, "scissorTestBoxHeight", TW_TYPE_INT32, &glScissorBoxHeight, " label='Box height' group='Scissor test' min=50");
 }
 
 void Rendering::CheckChangesAndUpdateGLState()
@@ -739,9 +788,43 @@ void Rendering::CheckChangesAndUpdateGLState()
 	UpdateBlendParameters(); /* ==================== Checking blending parameters ==================== */
 	UpdateColorLogicOperationParameters(); /* ==================== Checking color logic operation parameters ==================== */
 	UpdateCullFaceParameters(); /* ==================== Checking face culling parameters ==================== */
+	UpdateDepthClampParameters(); /* ==================== Depth clamp parameters ==================== */
+	UpdateDepthTestParameters(); /* ==================== Depth test parameters ==================== */
+	UpdateDitheringParameters(); /* ==================== Dithering parameters ==================== */
+	UpdateFrontFaceParameters(); /* ==================== Front face parameters ==================== */
 
 
 	UpdateScissorTestParameters(); /* ==================== Checking scissor test parameters ==================== */
+}
+
+void Rendering::UpdateBlendParameters()
+{
+	if ((glBlendEnabled == glBlendEnabledOld) && (glBlendSfactor == glBlendSfactorOld) && (glBlendDfactor == glBlendDfactorOld))
+	{
+		return;
+	}
+
+	const GLenum glPropertyEnum = GL_BLEND;
+	if (glBlendEnabled)
+	{
+		glEnable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now enabled");
+	}
+	else
+	{
+		glDisable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now disabled");
+	}
+	glBlendEnabledOld = glBlendEnabled;
+
+	// Now we check if any of blending factors have been changed.
+	if ((glBlendSfactor != glBlendSfactorOld) || (glBlendDfactor != glBlendDfactorOld))
+	{
+		glBlendFunc(glBlendSfactor, glBlendDfactor);
+		LOG(Utility::Notice, LOGPLACE, "Blending is now performed with the following parameters: sFactor = %d, dFactor = %d", glBlendSfactor, glBlendDfactor);
+		glBlendSfactorOld = glBlendSfactor;
+		glBlendDfactorOld = glBlendDfactor;
+	}
 }
 
 void Rendering::UpdateColorLogicOperationParameters()
@@ -806,34 +889,91 @@ void Rendering::UpdateCullFaceParameters()
 
 }
 
-void Rendering::UpdateBlendParameters()
+void Rendering::UpdateDepthClampParameters()
 {
-	if ((glBlendEnabled == glBlendEnabledOld) && (glBlendSfactor == glBlendSfactorOld) && (glBlendDfactor == glBlendDfactorOld))
+	if (glDepthClampEnabled == glDepthClampEnabledOld)
 	{
 		return;
 	}
 
-	const GLenum glPropertyEnum = GL_BLEND;
-	if (glBlendEnabled)
+	const GLenum glPropertyEnum = GL_DEPTH_CLAMP;
+	glDepthClampEnabledOld = glDepthClampEnabled;
+	if (glDepthClampEnabled)
 	{
 		glEnable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now enabled");
+		CheckErrorCode("Rendering::UpdateDepthClampParameters", "Enabling GL_DEPTH_CLAMP");
+		LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_CLAMP is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now disabled");
+		CheckErrorCode("Rendering::UpdateDepthClampParameters", "Disabling GL_DEPTH_CLAMP");
+		LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_CLAMP is now disabled");
 	}
-	glBlendEnabledOld = glBlendEnabled;
+}
 
-	// Now we check if any of blending factors have been changed.
-	if ((glBlendSfactor != glBlendSfactorOld) || (glBlendDfactor != glBlendDfactorOld))
+void Rendering::UpdateDepthTestParameters()
+{
+	if (glDepthTestEnabled != glDepthTestEnabledOld)
 	{
-		glBlendFunc(glBlendSfactor, glBlendDfactor);
-		LOG(Utility::Notice, LOGPLACE, "Blending is now performed with the following parameters: sFactor = %d, dFactor = %d", glBlendSfactor, glBlendDfactor);
-		glBlendSfactorOld = glBlendSfactor;
-		glBlendDfactorOld = glBlendDfactor;
+		if (glDepthTestEnabled)
+		{
+			glEnable(GL_DEPTH_TEST);
+			CheckErrorCode("Rendering::UpdateDepthTestParameters", "Enabling GL_DEPTH_TEST");
+			LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_TEST is now enabled");
+		}
+		else
+		{
+			glDisable(GL_DEPTH_TEST);
+			CheckErrorCode("Rendering::UpdateDepthTestParameters", "Disabling GL_DEPTH_TEST");
+			LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_TEST is now disabled");
+		}
+		glDepthTestEnabledOld = glDepthTestEnabled;
 	}
+
+	if (glDepthTestFunc != glDepthTestFuncOld)
+	{
+		glDepthFunc(glDepthTestFunc);
+		CheckErrorCode("Rendering::UpdateDepthTestParameters", "Depth function change");
+		LOG(Utility::Notice, LOGPLACE, "Depth function changed from %d to %d", glDepthTestFuncOld, glDepthTestFunc);
+		glDepthTestFuncOld = glDepthTestFunc;
+	}
+
+	//TODO: if (glDepthRangeNearValue
+}
+
+void Rendering::UpdateDitheringParameters()
+{
+	if (glDitheringEnabled == glDitheringEnabledOld)
+	{
+		return;
+	}
+
+	glDitheringEnabledOld = glDitheringEnabled;
+	const GLenum glPropertyEnum = GL_DITHER;
+	if (glDitheringEnabled)
+	{
+		glEnable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_DITHER is now enabled");
+	}
+	else
+	{
+		glDisable(glPropertyEnum);
+		LOG(Utility::Notice, LOGPLACE, "GL_DITHER is now disabled");
+	}
+}
+
+void Rendering::UpdateFrontFaceParameters()
+{
+	if (glFrontFaceMode == glFrontFaceModeOld)
+	{
+		return;
+	}
+
+	glFrontFaceModeOld = glFrontFaceMode;
+	glFrontFace(glFrontFaceMode);
+	CheckErrorCode("Rendering::UpdateFrontFaceParameters", "Change front face parameter");
+	LOG(Utility::Notice, LOGPLACE, "%d value has been chosen for the front face parameter", glFrontFaceMode);
 }
 
 void Rendering::UpdateScissorTestParameters()
