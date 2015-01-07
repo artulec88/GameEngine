@@ -81,7 +81,10 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Started drawing a string");
 
-	glDisable(GL_DEPTH_TEST);
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
 	//glCullFace(GL_FRONT);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
@@ -150,7 +153,10 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	//glCullFace(GL_BACK);
-	glEnable(GL_DEPTH_TEST);
+	if (Rendering::glDepthTestEnabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Finishing drawing a string");
 	//exit(EXIT_FAILURE);
 }

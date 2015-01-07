@@ -39,7 +39,7 @@ void main()
 }
 
 #elif defined(FS_BUILD)
-uniform sampler2D diffuse;
+uniform sampler2D diffuse; // font texture
 //uniform bool selected;
 
 DeclareFragOutput(0, vec4);

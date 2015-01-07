@@ -147,7 +147,13 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 	//glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
-	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), NULL /* glfwGetPrimaryMonitor()- for fullscreen */, NULL); // Open a window and create its OpenGL context
+	GLFWmonitor* monitor = NULL;
+	bool fullscreenEnabled = GET_CONFIG_VALUE("fullscreenEnabled", false);
+	if (fullscreenEnabled)
+	{
+		monitor = glfwGetPrimaryMonitor();
+	}
+	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{
 		LOG(Utility::Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
