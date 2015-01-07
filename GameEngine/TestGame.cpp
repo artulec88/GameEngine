@@ -762,6 +762,9 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 #ifdef ANT_TWEAK_BAR_ENABLED
 void TestGame::InitializeTweakBars()
 {
+#ifdef GAME_PROPERTIES_TWEAK_BAR
+	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
+
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularIntensity", TW_TYPE_FLOAT, &planeSpecularIntensity, " label='Plane specular intensity' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
@@ -771,5 +774,6 @@ void TestGame::InitializeTweakBars()
 	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
 	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
+#endif
 }
 #endif

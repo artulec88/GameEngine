@@ -19,6 +19,7 @@
 #define RENDERER_PROPERTIES_BAR
 #define CAMERA_TWEAK_BAR
 //#define LIGHTS_TWEAK_BAR
+#define GAME_PROPERTIES_TWEAK_BAR
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBarTypes.h"
@@ -28,6 +29,7 @@
 #undef RENDERER_PROPERTIES_BAR
 #undef CAMERA_TWEAK_BAR
 #undef LIGHTS_TWEAK_BAR
+#undef GAME_PROPERTIES_TWEAK_BAR
 #endif
 
 namespace Rendering

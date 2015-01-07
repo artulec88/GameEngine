@@ -2,6 +2,7 @@
 
 #include "Rendering.h"
 #include "Renderer.h"
+#include "TextRenderer.h"
 #include "Game.h"
 
 #include "Math\Math.h"
@@ -38,6 +39,7 @@ protected:
 	const Math::Real frameTime;
 	Game* game;
 	Renderer* renderer;
+	TextRenderer* fpsTextRenderer;
 /* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

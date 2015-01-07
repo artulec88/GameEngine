@@ -2,6 +2,7 @@
 #include "Mesh.h"
 //#include "OBJModel.h"
 #include "Math\Vector.h"
+#include "Math\FloatingPoint.h"
 
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
@@ -28,6 +29,27 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 	meshData(NULL)
 {
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
+}
+
+Mesh::Mesh(Vertex* vertices, int verticesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
+	fileName(),
+	mode(mode),
+	meshData(NULL)
+{
+	std::vector<Vertex> indexedVerticesVector;
+	std::vector<int> indicesVector;
+	CalcIndices(vertices, verticesCount, indexedVerticesVector, indicesVector);
+	if (indexedVerticesVector.empty())
+	{
+		LOG(Emergency, LOGPLACE, "The vector with indexed vertices is empty");
+		exit(EXIT_FAILURE);
+	}
+	if (indicesVector.empty())
+	{
+		LOG(Emergency, LOGPLACE, "The vector with vertices indices is empty");
+		exit(EXIT_FAILURE);
+	}
+	AddVertices(&indexedVerticesVector[0], indexedVerticesVector.size(), &indicesVector[0], indicesVector.size(), calcNormalsEnabled);
 }
 
 Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
@@ -169,6 +191,46 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
+void Mesh::CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
+{
+	/**
+	 * TODO: Improve this code as described here:
+	 * http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
+	 * and in the Tutorial9 solution.
+	 */
+	for (int i = 0; i < verticesCount; ++i)
+	{
+		int index;
+		bool found = GetSimilarVertexIndex(vertices[i], indexedVertices, index);
+		if (found)
+		{
+			indices.push_back(index);
+		}
+		else
+		{
+			indexedVertices.push_back(Vertex(vertices[i]));
+			indices.push_back(static_cast<int>(indexedVertices.size() - 1));
+		}
+	}
+}
+
+bool Mesh::GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const
+{
+	// Lame linear search
+	for (unsigned int i = 0; i < indexedVertices.size(); ++i)
+	{
+		if (vertex == indexedVertices[i])
+		{
+			index = i;
+			return true;
+		}
+	}
+
+	// No other vertex could be used instead.
+	// Looks like we'll have to add it to the VBO.
+	return false;
+}
+
 void Mesh::Draw() const
 {
 	ASSERT(meshData != NULL);
@@ -201,7 +263,7 @@ void Mesh::Draw() const
 void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
-	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
+	// For different modes (GL_QUADS, GL_LINES) this iterationStep variable will be incorrect
 	const int iterationStep = 3; // we are iterating through faces which are triangles (each triangle has 3 vertices)
 	for(int i = 0; i < indicesCount; i += iterationStep)
 	{

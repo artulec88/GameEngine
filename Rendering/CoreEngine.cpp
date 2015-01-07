@@ -30,7 +30,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	windowTitle(title),
 	frameTime(1.0f / maxFrameRate),
 	game(game),
-	renderer(NULL)
+	renderer(NULL),
+	fpsTextRenderer(NULL)
 {
 	// TODO: Fix singleton initialization
 	LOG(Debug, LOGPLACE, "Main application construction started");
@@ -45,6 +46,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	game->SetEngine(this);
 
 	CreateRenderer(width, height, title);
+
+	fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f);
 	
 	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
@@ -65,6 +68,7 @@ CoreEngine::~CoreEngine(void)
 		delete this->renderer;
 		this->renderer = NULL;
 	}
+	SAFE_DELETE(fpsTextRenderer);
 
 	LOG(Notice, LOGPLACE, "Core engine destruction finished");
 	ILogger::GetLogger().ResetConsoleColor();
@@ -227,6 +231,8 @@ void CoreEngine::Run()
 	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	Math::Real frameTimeCounter = 0.0;
+	int fps;
+	Math::Real spf;
 #endif
 
 	Math::Real unprocessingTime = 0.0; // used to cap the FPS when it gets too high
@@ -258,8 +264,8 @@ void CoreEngine::Run()
 		// Counting FPS and logging
 		if (frameTimeCounter >= fpsSample)
 		{
-			int fps = framesCount / fpsSample; // Frames Per Second
-			Math::Real spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
+			fps = framesCount / fpsSample; // Frames Per Second
+			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
 			LOG(Info, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = 0.0;
@@ -343,7 +349,15 @@ void CoreEngine::Run()
 			game->Render(renderer);
 #ifdef COUNT_FPS
 			++framesCount;
+			//double time = glfwGetTime();
+			std::stringstream ss;
+			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
+			fpsTextRenderer->DrawString(0, 570, ss.str(), renderer);
 #endif
+#ifdef ANT_TWEAK_BAR_ENABLED
+			TwDraw();
+#endif
+			this->renderer->SwapBuffers();
 		}
 		else
 		{

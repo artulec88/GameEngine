@@ -114,10 +114,8 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	//SetSamplerSlot("fontTexture", 25);
-	//SetTexture("fontTexture", fontTexture);
-	textRenderer = new TextRenderer(fontTexture);
+	//fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	//textRenderer = new TextRenderer(fontTexture);
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
@@ -309,16 +307,7 @@ void Renderer::Render(GameNode& gameNode)
 	//std::stringstream ss;
 	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
 	//textRenderer->DrawString(0, 5800, ss.str(), this);
-	textRenderer->DrawString(0, 570, "Hello world", this);
-
-#ifdef ANT_TWEAK_BAR_ENABLED
-	//Rendering::CheckErrorCode("Renderer::Render", "1");
-	TwDraw();
-	//Rendering::CheckErrorCode("Renderer::Render", "2");
-#endif
-	//Rendering::CheckErrorCode("Renderer::Render", "3");
-	SwapBuffers();
-	//Rendering::CheckErrorCode("Renderer::Render", "Finished the Render function");
+	//textRenderer->DrawString(0, 50, "Hello world", this);
 }
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
