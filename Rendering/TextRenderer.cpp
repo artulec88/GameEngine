@@ -145,10 +145,23 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
-	glEnable(GL_BLEND);
+	/**
+	 * TODO: We should first save the blend-specific parameters and restore them once glDrawArrays function is finished.
+	 * See how it is done for GL_DEPTH_TEST here, in this function.
+	 */
+	 // Save the current blending state
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);	
+	}
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-	glDisable(GL_BLEND);
+	// Now restore the blending state
+	glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
