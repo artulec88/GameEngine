@@ -15,6 +15,7 @@
 #include "Math\FloatingPoint.h"
 
 #include <stddef.h>
+#include <iomanip>
 #include <sstream>
 
 // Include GLM- a library for 3D mathematics
@@ -113,8 +114,8 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	fontTexture = new Texture("..\\Textures\\font1.bmp", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	//SetSamplerSlot("fontTexture", 4);
+	fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	//SetSamplerSlot("fontTexture", 25);
 	//SetTexture("fontTexture", fontTexture);
 	textRenderer = new TextRenderer(fontTexture);
 
@@ -195,6 +196,7 @@ void Renderer::SetCallbacks()
 
 void Renderer::Render(GameNode& gameNode)
 {
+	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
 	// TODO: Expand with Stencil buffer once it is used
 #ifdef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientIntensity", ambientLight);
@@ -303,15 +305,20 @@ void Renderer::Render(GameNode& gameNode)
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
 
-	double time = glfwGetTime();
-	std::stringstream ss;
-	ss << "This is string: " << time << " [ms]";
-	textRenderer->DrawString(0, 580, ss.str());
+	//double time = glfwGetTime();
+	//std::stringstream ss;
+	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
+	//textRenderer->DrawString(0, 5800, ss.str(), this);
+	textRenderer->DrawString(0, 570, "Hello world", this);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+	//Rendering::CheckErrorCode("Renderer::Render", "1");
 	TwDraw();
+	//Rendering::CheckErrorCode("Renderer::Render", "2");
 #endif
-//	SwapBuffers();
+	//Rendering::CheckErrorCode("Renderer::Render", "3");
+	SwapBuffers();
+	//Rendering::CheckErrorCode("Renderer::Render", "Finished the Render function");
 }
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
@@ -510,16 +517,17 @@ void Renderer::InitializeTweakBars()
 {
 	AntTweakBarTypes::InitializeTweakBarTypes();
 
+	int width, height;
+	glfwGetWindowSize(window, &width, &height);
+	TwWindowSize(width, height);
+
+#ifdef RENDERER_PROPERTIES_BAR
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
 	cameraMembers[0].Name = "Projection"; cameraMembers[1].Name = "FoV"; cameraMembers[2].Name = "AspectRatio"; cameraMembers[3].Name = "NearPlane"; cameraMembers[4].Name = "FarPlane";
 	cameraMembers[0].Type = matrix4DType; cameraMembers[1].Type = angleType; cameraMembers[2].Type = TW_TYPE_FLOAT; cameraMembers[3].Type = TW_TYPE_FLOAT; cameraMembers[4].Type = TW_TYPE_FLOAT;
 	cameraMembers[0].Offset = 8; cameraMembers[1].Offset = 80; cameraMembers[2].Offset = 92; cameraMembers[3].Offset = 100; cameraMembers[4].Offset = 108;
 	cameraMembers[0].DefString = ""; cameraMembers[1].DefString = ""; cameraMembers[2].DefString = " step=0.01 "; cameraMembers[3].DefString = ""; cameraMembers[4].DefString = "";
 	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
-
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-	TwWindowSize(width, height);
 
 	propertiesBar = TwNewBar("PropertiesBar");
 	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &backgroundColor, " label='Background color' ");
@@ -535,7 +543,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
 	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
+#endif
 
+#ifdef CAMERA_TWEAK_BAR
 	cameraBar = TwNewBar("CamerasBar");
 	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
 	char cameraIndexStr[256];
@@ -547,13 +557,17 @@ void Renderer::InitializeTweakBars()
 	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
+#endif
 
+#ifdef LIGHTS_TWEAK_BAR
+	//TODO: Doesn't work yet.
 	lightsBar = TwNewBar("LightsBar");
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
 		currentLight = *lightItr;
 		currentLight->InitializeTweakBar(lightsBar);
 	}
+#endif
 
 	//TwBar* altCameraBar = TwNewBar("AltCameraBar");
 	//TwAddVarRW(altCameraBar, "cameraVar", cameraType,  &altCamera, " label='Camera' group=Camera ");
@@ -564,6 +578,7 @@ void Renderer::InitializeTweakBars()
 
 void Renderer::CheckCameraIndexChange()
 {
+#ifdef CAMERA_TWEAK_BAR
 	if (previousFrameCameraIndex == currentCameraIndex)
 	{
 		return;
@@ -584,5 +599,6 @@ void Renderer::CheckCameraIndexChange()
 	TwDefine(" CamerasBar/Camera opened=true ");
 
 	previousFrameCameraIndex = currentCameraIndex;
+#endif
 }
 #endif

@@ -15,6 +15,21 @@
 
 #define ANT_TWEAK_BAR_ENABLED
 
+#define OPEN_GL_PROPERTIES_TWEAK_BAR
+#define RENDERER_PROPERTIES_BAR
+#define CAMERA_TWEAK_BAR
+//#define LIGHTS_TWEAK_BAR
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "AntTweakBarTypes.h"
+#include "AntTweakBar\include\AntTweakBar.h"
+#else
+#undef OPEN_GL_PROPERTIES_TWEAK_BAR
+#undef RENDERER_PROPERTIES_BAR
+#undef CAMERA_TWEAK_BAR
+#undef LIGHTS_TWEAK_BAR
+#endif
+
 namespace Rendering
 {
 	enum AntiAliasingMethod
@@ -99,6 +114,8 @@ namespace Rendering
 	/* ==================== Scissor test parameters end ==================== */
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+	void TW_CALL TweakBarErrorHandler(const char* errorMessage);
+
 	void InitializeTweakBars();
 	void CheckChangesAndUpdateGLState();
 	void UpdateBlendParameters();

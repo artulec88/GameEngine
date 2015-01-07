@@ -8,7 +8,8 @@
 namespace Rendering
 {
 
-class Texture;
+class Material;
+class Renderer;
 
 class TextRenderer
 {
@@ -20,12 +21,12 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void DrawString(Math::Real x, Math::Real y, const std::string& str);
+	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Texture* fontTexture;
+	Material* fontMaterial;
 	Math::Real fontSize;
 	Shader* textShader;
 

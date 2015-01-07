@@ -2,10 +2,6 @@
 #include "Rendering.h"
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
-#ifdef ANT_TWEAK_BAR_ENABLED
-#include "AntTweakBarTypes.h"
-#include "AntTweakBar\include\AntTweakBar.h"
-#endif
 
 Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::AntiAliasingMethod::FXAA;
 
@@ -720,10 +716,17 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+void TW_CALL Rendering::TweakBarErrorHandler(const char* errorMessage)
+{
+	LOG(Utility::Error, LOGPLACE, "TweakBar error: \"%s\"", errorMessage);
+}
+
 void Rendering::InitializeTweakBars()
 {
 	TwInit(TW_OPENGL, NULL); // Initializing AntTweakBar library
+	TwHandleErrors(Rendering::TweakBarErrorHandler);
 
+#ifdef OPEN_GL_PROPERTIES_TWEAK_BAR
 	TwEnumVal blendSFactorEV[] = { { GL_ZERO, "GL_ZERO" }, { GL_ONE, "GL_ONE" }, { GL_SRC_COLOR, "GL_SRC_COLOR" }, { GL_ONE_MINUS_SRC_COLOR, "GL_ONE_MINUS_SRC_COLOR" },
 		{ GL_DST_COLOR, "GL_DST_COLOR" }, { GL_ONE_MINUS_DST_COLOR, "GL_ONE_MINUS_DST_COLOR" }, { GL_SRC_ALPHA, "GL_SRC_ALPHA" }, { GL_ONE_MINUS_SRC_ALPHA, "GL_ONE_MINUS_SRC_ALPHA" },
 		{ GL_DST_ALPHA, "GL_DST_ALPHA" }, { GL_ONE_MINUS_DST_ALPHA, "GL_ONE_MINUS_DST_ALPHA" }, { GL_CONSTANT_COLOR, "GL_CONSTANT_COLOR" }, { GL_ONE_MINUS_CONSTANT_COLOR, "GL_ONE_MINUS_CONSTANT_COLOR" },
@@ -781,10 +784,12 @@ void Rendering::InitializeTweakBars()
 	TwAddVarRW(glPropertiesBar, "scissorTestLeftCornerY", TW_TYPE_INT32, &glScissorBoxLowerLeftCornerY, " label='Left corner Y' group='Scissor test' ");
 	TwAddVarRW(glPropertiesBar, "scissorTestBoxWidth", TW_TYPE_INT32, &glScissorBoxWidth, " label='Box width' group='Scissor test' min=50");
 	TwAddVarRW(glPropertiesBar, "scissorTestBoxHeight", TW_TYPE_INT32, &glScissorBoxHeight, " label='Box height' group='Scissor test' min=50");
+#endif
 }
 
 void Rendering::CheckChangesAndUpdateGLState()
 {
+#ifdef OPEN_GL_PROPERTIES_TWEAK_BAR
 	UpdateBlendParameters(); /* ==================== Checking blending parameters ==================== */
 	UpdateColorLogicOperationParameters(); /* ==================== Checking color logic operation parameters ==================== */
 	UpdateCullFaceParameters(); /* ==================== Checking face culling parameters ==================== */
@@ -795,6 +800,7 @@ void Rendering::CheckChangesAndUpdateGLState()
 
 
 	UpdateScissorTestParameters(); /* ==================== Checking scissor test parameters ==================== */
+#endif
 }
 
 void Rendering::UpdateBlendParameters()

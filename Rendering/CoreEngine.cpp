@@ -237,6 +237,7 @@ void CoreEngine::Run()
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 
 	while (isRunning)
+
 	{
 		/* ==================== REGION #1 begin ====================*/
 		QueryPerformanceCounter(&t1); // start timer
@@ -340,7 +341,6 @@ void CoreEngine::Run()
 			//}
 			//this->renderer->Render(this->game->GetRootGameNode());
 			game->Render(renderer);
-			this->renderer->SwapBuffers();
 #ifdef COUNT_FPS
 			++framesCount;
 #endif
