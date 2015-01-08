@@ -353,6 +353,9 @@ void CoreEngine::Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			fpsTextRenderer->DrawString(0, 570, ss.str(), renderer);
+			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2 + 100, "Start", renderer, 64.0f);
+			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2, "Options", renderer, 64.0f);
+			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2 - 100, "Exit", renderer, 64.0f);
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();

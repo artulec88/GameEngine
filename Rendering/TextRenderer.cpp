@@ -10,9 +10,9 @@ using namespace Rendering;
 const int vertexTempID = 0;
 const int uvTempID = 1;
 
-TextRenderer::TextRenderer(Texture* fontTexture, Math::Real fontSize /* = 32.0f */) :
+TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* = 32.0f */) :
 	fontMaterial(NULL),
-	fontSize(fontSize),
+	defaultFontSize(defaultFontSize),
 	textShader(NULL)
 {
 	//fontTexture = new Texture("..\\Textures\\font1.bmp");
@@ -75,7 +75,12 @@ TextRenderer::~TextRenderer(void)
 	LOG(Utility::Debug, LOGPLACE, "Text renderer destruction finished");
 }
 
-void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer)
+void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const
+{
+	DrawString(x, y, str, renderer, defaultFontSize);
+}
+
+void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
 {
 	LOG(Utility::Debug, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
 

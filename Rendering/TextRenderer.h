@@ -15,19 +15,21 @@ class TextRenderer
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	TextRenderer(Texture* fontTexture, Math::Real fontSize = 32.0f);
+	TextRenderer(Texture* fontTexture, Math::Real defaultFontSize = 32.0f);
 	virtual ~TextRenderer(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer);
+	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const;
+	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
+	void SetFontSize(Math::Real fontSize);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 	Material* fontMaterial;
-	Math::Real fontSize;
+	Math::Real defaultFontSize;
 	Shader* textShader;
 
 	Math::Matrix4D projection;

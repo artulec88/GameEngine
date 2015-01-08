@@ -274,7 +274,10 @@ void Renderer::Render(GameNode& gameNode)
 		}
 		GetTexture("displayTexture")->BindAsRenderTarget();
 		//BindAsRenderTarget();
-		glEnable(GL_BLEND);
+		if (!Rendering::glBlendEnabled)
+		{
+			glEnable(GL_BLEND);
+		}
 		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
 		glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
@@ -282,8 +285,15 @@ void Renderer::Render(GameNode& gameNode)
 		gameNode.RenderAll(currentLight->GetShader(), this);
 
 		glDepthMask(GL_TRUE);
-		glDepthFunc(GL_LESS);
-		glDisable(GL_BLEND);
+		glDepthFunc(Rendering::glDepthTestFunc);
+		if (!Rendering::glBlendEnabled)
+		{
+			glDisable(GL_BLEND);
+		}
+		else
+		{
+			glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+		}
 
 		/* ==================== Rendering to texture begin ==================== */
 		//if (renderToTextureTestingEnabled)
