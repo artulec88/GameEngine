@@ -132,9 +132,6 @@
     <ClInclude Include="MappedValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeshData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LookAtComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -219,9 +216,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LookAtComponent.cpp">

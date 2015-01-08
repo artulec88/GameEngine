@@ -266,7 +266,7 @@ void CoreEngine::Run()
 		// Counting FPS and logging
 		if (frameTimeCounter >= fpsSample)
 		{
-			fps = framesCount / fpsSample; // Frames Per Second
+			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
 			LOG(Info, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
@@ -355,9 +355,9 @@ void CoreEngine::Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			fpsTextRenderer->DrawString(0, 570, ss.str(), renderer);
-			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2 + 100, "Start", renderer, 64.0f);
-			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2, "Options", renderer, 64.0f);
-			fpsTextRenderer->DrawString(windowWidth / 4, windowHeight / 2 - 100, "Exit", renderer, 64.0f);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", renderer, 64.0f);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", renderer, 64.0f);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", renderer, 64.0f);
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();

@@ -23,6 +23,26 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
+MeshData::MeshData(int indexSize)
+{
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ibo);
+	size = indexSize;
+}
+
+
+MeshData::~MeshData(void)
+{
+	if (vbo)
+	{
+		glDeleteBuffers(1, &vbo);
+	}
+	if (ibo)
+	{
+		glDeleteBuffers(1, &ibo);
+	}
+}
+
 Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
 	fileName(),
 	mode(mode),
