@@ -208,6 +208,8 @@ void CoreEngine::Stop()
 
 void CoreEngine::Run()
 {
+	const Math::Real ONE_MILLION = static_cast<Math::Real>(1000000.0);
+
 	minMaxTime1.Init();
 	minMaxTime2.Init();
 	minMaxTime2_1.Init();
@@ -273,7 +275,7 @@ void CoreEngine::Run()
 #endif
 		QueryPerformanceCounter(&t2); // stop timer
 		countStats1++;
-		double elapsedTime = static_cast<double>(1000000.0 * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
+		double elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 		minMaxTime1.ProcessTime(elapsedTime);
 		timeSum1 += elapsedTime;
 		/* ==================== REGION #1 end ====================*/
@@ -294,7 +296,7 @@ void CoreEngine::Run()
 			PollEvents();
 			QueryPerformanceCounter(&innerT2);
 			countStats2_1++;
-			elapsedTime = static_cast<double>(1000000.0 * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
+			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
 			minMaxTime2_1.ProcessTime(elapsedTime);
 			timeSum2_1 += elapsedTime;
 			/* ==================== REGION #2_1 end ====================*/
@@ -304,7 +306,7 @@ void CoreEngine::Run()
 			game->Input(frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_2++;
-			elapsedTime = static_cast<double>(1000000.0 * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
+			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
 			minMaxTime2_2.ProcessTime(elapsedTime);
 			timeSum2_2 += elapsedTime;
 			/* ==================== REGION #2_2 end ====================*/
@@ -316,7 +318,7 @@ void CoreEngine::Run()
 			game->Update(frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_3++;
-			elapsedTime = static_cast<double>(1000000.0 * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
+			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
 			minMaxTime2_3.ProcessTime(elapsedTime);
 			timeSum2_3 += elapsedTime;
 			/* ==================== REGION #2_3 end ====================*/
@@ -329,7 +331,7 @@ void CoreEngine::Run()
 		}
 		QueryPerformanceCounter(&t2); // start timer
 		countStats2++;
-		elapsedTime = static_cast<double>(1000000.0 * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
+		elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 		minMaxTime2.ProcessTime(elapsedTime);
 		timeSum2 += elapsedTime; // in [ms]
 		/* ==================== REGION #2 end ====================*/
@@ -371,7 +373,7 @@ void CoreEngine::Run()
 		}
 		QueryPerformanceCounter(&t2);
 		countStats3++;
-		elapsedTime = static_cast<double>(1000000.0 * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
+		elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 		minMaxTime3.ProcessTime(elapsedTime);
 		timeSum3 += elapsedTime; // in [ms]
 		/* ==================== REGION #3 end ====================*/
