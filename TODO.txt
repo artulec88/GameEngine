@@ -2,14 +2,13 @@
 2.	Create a nice design for loading 3D models
 3.	Config map of values should be refreshed once in a while, so that configuration values can be reconfigured during runtime.
 4.	Don't use hard-coded values. Ever!
-5.	Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actuall algorithm and logging.
+5.	Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actual algorithm and logging.
 6.	Memory deallocation
-7.	Create a macro for pointer safe deleting (something like #define SAFE_DELETE(p) if(p) { delete p; p = NULL; }
-8.	Filename class member variable in several resource-related classes should be moved to their base class (which for now is called ReferenceCounter, but should be renamed to e.g. Resource)
-9.	Create a possibility to display a light direction (current solution does not work correctly)s
-10.	Create a script probing the application and creating a report on how much CPU and memory it uses.
-11.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.
-12.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
-13.	HUD/GUI
-14.	Text alignment
-15.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)
+7.	Filename class member variable in several resource-related classes should be moved to their base class (which for now is called ReferenceCounter, but should be renamed to e.g. Resource)
+8.	Create a possibility to display a light direction (current solution does not work correctly)
+9.	Create a script probing the application and creating a report on how much CPU and memory it uses.
+10.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.
+11.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
+12.	HUD/GUI
+13.	Text alignment
+14.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)

@@ -159,6 +159,11 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	{
 		glEnable(GL_BLEND);	
 	}
+	/**
+	 * This effectively means:
+	 * newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
+	 * (1 - currentAlphaInFramebuffer) * shader's output color
+	 */
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	// Now restore the blending state

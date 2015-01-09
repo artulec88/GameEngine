@@ -100,8 +100,9 @@ private:
 	GLFWwindow* window;
 	GLuint framebuffer;
 	GLuint vao; // vertex array id
-	bool isFullscreen;
 	bool isMouseEnabled;
+	Math::Real ambientLightFogStart;
+	Math::Real ambientLightFogEnd;
 	Math::Vector3D ambientLight;
 	BaseLight* currentLight;
 	unsigned int currentCameraIndex;

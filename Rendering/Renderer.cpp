@@ -37,8 +37,9 @@ Renderer::Renderer(GLFWwindow* window) :
 	shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	window(window),
 	vao(0),
-	isFullscreen(false),
 	isMouseEnabled(true),
+	ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
+	ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
 	ambientLight(GET_CONFIG_VALUE("ambientLight_x", 0.02f),
 		GET_CONFIG_VALUE("ambientLight_y", 0.02f),
 		GET_CONFIG_VALUE("ambientLight_z", 0.02f)),
@@ -77,7 +78,11 @@ Renderer::Renderer(GLFWwindow* window) :
 	SetSamplerSlot("shadowMap", 3);
 	SetSamplerSlot("filterTexture", 0);
 
+	glGenVertexArrays(1, &vao);
+
 #ifndef ANT_TWEAK_BAR_ENABLED
+	SetReal("ambientFogStart", ambientLightFogStart);
+	SetReal("ambientFogEnd", ambientLightFogEnd);
 	SetVector3D("ambientIntensity", ambientLight);
 #endif
 
@@ -132,7 +137,7 @@ Renderer::~Renderer(void)
 {
 	LOG(Notice, LOGPLACE, "Destroying rendering engine...");
 	
-	//glDeleteVertexArrays(1, &vao);
+	glDeleteVertexArrays(1, &vao);
 
 	//if (cameras != NULL)
 	//{
@@ -197,6 +202,8 @@ void Renderer::Render(GameNode& gameNode)
 	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
 	// TODO: Expand with Stencil buffer once it is used
 #ifdef ANT_TWEAK_BAR_ENABLED
+	SetReal("ambientFogStart", ambientLightFogStart);
+	SetReal("ambientFogEnd", ambientLightFogEnd);
 	SetVector3D("ambientIntensity", ambientLight);
 	SetReal("fxaaSpanMax", fxaaSpanMax);
 	SetReal("fxaaReduceMin", fxaaReduceMin);
@@ -532,7 +539,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &backgroundColor, " label='Background color' ");
 	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
 	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &applyFilterEnabled, " label='Apply filter' ");
-	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &ambientLight, " label='Ambient light' group=Lights");
+	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
+	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
 	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
 	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::GetPointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
