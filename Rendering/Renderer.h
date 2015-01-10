@@ -115,6 +115,10 @@ private:
 	Mesh* planeMesh;
 	Texture* tempTarget;
 
+	GameNode* cubeMapNode;
+	Shader* cubeMapShader;
+	Texture* cubeMapTexture;
+
 	Texture* shadowMaps[SHADOW_MAPS_COUNT];
 	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];
 

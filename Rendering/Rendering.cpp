@@ -70,7 +70,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	//ReadMultisampleParameter();
 	ReadScissorTestParameter(width, height);
 	ReadStencilTestParameter();
-	//ReadTextureParameters();
+	ReadTextureParameters();
 
 	//glFrontFace(GL_CW);
 	//glCullFace(GL_BACK);
@@ -359,10 +359,12 @@ void Rendering::ReadCullFaceParameter()
 	{
 		glDisable(GL_CULL_FACE);
 		LOG(Utility::Debug, LOGPLACE, "GL_CULL_FACE disabled");
-		return;
+	}
+	else
+	{
+		glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	}
 
-	glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	std::string cullFaceModeStr = GET_CONFIG_VALUE_STR("GL_CULL_FACE_MODE", "GL_BACK");
 	if (cullFaceModeStr == "GL_FRONT") { glCullFaceMode = GL_FRONT; } // cull the front face
 	else if (cullFaceModeStr == "GL_BACK") { glCullFaceMode = GL_BACK; } // cull the back face
@@ -416,10 +418,12 @@ void Rendering::ReadDepthTestParameter()
 	{
 		glDisable(GL_DEPTH_TEST);
 		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_TEST disabled");
-		return;
 	}
-
-	glEnable(GL_DEPTH_TEST);
+	else
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	
 
 	std::string depthTestFuncStr = GET_CONFIG_VALUE_STR("GL_DEPTH_TEST_FUNC", "GL_LESS");
 	if (depthTestFuncStr == "GL_NEVER") { glDepthTestFunc = GL_NEVER; }
@@ -677,6 +681,10 @@ void Rendering::ReadStencilTestParameter()
 void Rendering::ReadTextureParameters()
 {
 	// TODO: Not yet implemented
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_CUBE_MAP);
+	glEnable(GL_TEXTURE_CUBE_MAP_EXT);
+	glEnable(GL_TEXTURE_3D);
 }
 
 /**

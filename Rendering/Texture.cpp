@@ -53,6 +53,7 @@ TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int heig
 		}
 	}
 	
+	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(texturesCount, textureID);
 	CheckErrorCode(__FUNCTION__, "Generating textures");
 	Bind(0);
@@ -75,6 +76,9 @@ TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int heig
 	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	// Init textures end
+
+	InitRenderTargets(GL_NONE);
 }
 
 TextureData::~TextureData(void)
@@ -402,8 +406,8 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 		}
 	}
 
-	int width = 0;
-	int height = 0;
+	int width = x[0];
+	int height = y[0];
 	int depth = 0;
 	textureData = new TextureData(cubeMapData, width, height, depth);
 }
@@ -453,7 +457,7 @@ Texture::~Texture(void)
 	}
 }
 
-void Texture::Bind(unsigned int unit /* = 0 */) const
+void Texture::Bind(unsigned int unit /* = 0 */, bool is3DTexture /* = false */) const
 {
 	ASSERT(textureData != NULL);
 	ASSERT((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT));
@@ -463,7 +467,14 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 		return;
 	}
 	
-	glActiveTexture(GL_TEXTURE0 + unit);
+	if (is3DTexture)
+	{
+		glActiveTexture(GL_TEXTURE3);
+	}
+	else
+	{
+		glActiveTexture(GL_TEXTURE0 + unit);
+	}
 	textureData->Bind(0);
 }
 

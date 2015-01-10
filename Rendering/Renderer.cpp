@@ -9,6 +9,7 @@
 //#include "ForwardAmbientShader.h"
 //#include "ForwardDirectionalShader.h"
 #include "ShadowInfo.h"
+#include "MeshRenderer.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Utility\FileNotFoundException.h"
@@ -48,6 +49,9 @@ Renderer::Renderer(GLFWwindow* window) :
 	currentCamera(NULL),
 	altCamera(Matrix4D::Identity()),
 	altCameraNode(NULL),
+	cubeMapNode(NULL),
+	cubeMapShader(NULL),
+	cubeMapTexture(NULL),
 	defaultShader(NULL),
 	//textShader(NULL),
 	shadowMapShader(NULL),
@@ -76,6 +80,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	SetSamplerSlot("normalMap", 1);
 	SetSamplerSlot("displacementMap", 2);
 	SetSamplerSlot("shadowMap", 3);
+	SetSamplerSlot("cubeMap", 0);
 	SetSamplerSlot("filterTexture", 0);
 
 	glGenVertexArrays(1, &vao);
@@ -109,6 +114,20 @@ Renderer::Renderer(GLFWwindow* window) :
 	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
 	planeMesh = new Mesh("..\\Models\\plane4.obj");
+
+	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
+	cubeMapTexture = new Texture("..\\Textures\\right.jpg", "..\\Textures\\left.jpg", "..\\Textures\\up.jpg", "..\\Textures\\down.jpg", "..\\Textures\\front.jpg", "..\\Textures\\back.jpg");
+	if (cubeMapTexture == NULL)
+	{
+		LOG(Error, LOGPLACE, "Cube map texture is NULL");
+		exit(EXIT_FAILURE);
+	}
+	SetTexture("cubeMap", cubeMapTexture);
+	cubeMapNode = new GameNode();
+	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(cubeMapTexture)));
+	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	cubeMapNode->GetTransform().SetScale(100.0f);
+	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
@@ -158,6 +177,8 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(gaussBlurFilterShader);
 	SAFE_DELETE(fxaaFilterShader);
 	//SAFE_DELETE(altCameraNode);
+	//SAFE_DELETE(cubeMapNode);
+	SAFE_DELETE(cubeMapShader);
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
 
@@ -291,8 +312,8 @@ void Renderer::Render(GameNode& gameNode)
 
 		gameNode.RenderAll(currentLight->GetShader(), this);
 
-		glDepthMask(GL_TRUE);
 		glDepthFunc(Rendering::glDepthTestFunc);
+		glDepthMask(GL_TRUE);
 		if (!Rendering::glBlendEnabled)
 		{
 			glDisable(GL_BLEND);
@@ -318,6 +339,28 @@ void Renderer::Render(GameNode& gameNode)
 		/* ==================== Rendering to texture end ==================== */
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+
+//#ifdef ANT_TWEAK_BAR_ENABLED
+//	TwDraw();
+//#endif
+
+	/* ==================== Rendering skybox begin ==================== */
+	//glDisable(GL_DEPTH_TEST);
+	glCullFace(GL_FRONT);
+	/**
+	 * By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
+	 * However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
+	 * To make it part of the scene we change the depth function to "less than or equal".
+	 */
+	glDepthFunc(GL_LEQUAL);
+	cubeMapNode->GetTransform().SetPos(currentCamera->GetTransform().GetTransformedPos());
+	cubeMapNode->RenderAll(cubeMapShader, this);
+	glDepthFunc(Rendering::glDepthTestFunc);
+	glCullFace(Rendering::glCullFaceMode);
+	//glEnable(GL_DEPTH_TEST);
+	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
+	/* ==================== Rendering skybox end ==================== */
+
 	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
 
 	//double time = glfwGetTime();

@@ -18,7 +18,8 @@
 	#define DeclareFragOutput(locationNumber, type) out type outputLocation##locationNumber
 	#define SetFragOutput(locationNumber, val) outputLocation##locationNumber = val
 	
-	#define texture2D(tex, coord) texture(tex, coord)
+	//#define texture2D(tex, coord) texture(tex, coord)
+	//#define cubeTexture(tex, coord) textureCube(tex, coord)
 	
 	#if defined(VS_BUILD)
 		#define varying out

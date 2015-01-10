@@ -87,7 +87,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (! Compile())
 	{
-		LOG(Error, LOGPLACE, "Error while compiling shader program %d", programID);
+		LOG(Critical, LOGPLACE, "Error while compiling shader program %d", programID);
 		exit(EXIT_FAILURE);
 	}
 
@@ -590,6 +590,19 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				texture->Bind(samplerSlot);
 				SetUniformi(uniformName, samplerSlot);
 			}
+			else if (uniformType == "samplerCube")
+			{
+				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
+				Texture* texture = renderer->GetTexture(unprefixedName);
+				ASSERT(texture != NULL);
+				if (texture == NULL)
+				{
+					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", unprefixedName.c_str());
+					exit(EXIT_FAILURE);
+				}
+				texture->Bind(samplerSlot, true);
+				SetUniformi(uniformName, samplerSlot);
+			}
 			else if (uniformType == "vec3")
 			{
 				SetUniformVector3D(uniformName, renderer->GetVec3D(unprefixedName));
@@ -644,6 +657,19 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				exit(EXIT_FAILURE);
 			}
 			texture->Bind(samplerSlot);
+			SetUniformi(uniformName, samplerSlot);
+		}
+		else if (uniformType == "samplerCube")
+		{
+			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
+			Texture* texture = material.GetTexture(uniformName);
+			ASSERT(texture != NULL);
+			if (texture == NULL)
+			{
+				LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
+				exit(EXIT_FAILURE);
+			}
+			texture->Bind(samplerSlot, true);
 			SetUniformi(uniformName, samplerSlot);
 		}
 		else if (uniformSubstr == "T_") // tranform uniform
