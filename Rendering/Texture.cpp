@@ -32,6 +32,50 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 	InitRenderTargets(attachments);
 }
 
+TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth) :
+	textureTarget(GL_TEXTURE_CUBE_MAP),
+	texturesCount(1),
+	width(width),
+	height(height),
+	framebuffer(0),
+	renderbuffer(0)
+{
+	textureID = new GLuint[texturesCount];
+
+	// Init textures begin
+	const int NUMBER_OF_CUBE_MAP_FACES = 6;
+	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+	{
+		if (cubeMapTextureData[i] == NULL)
+		{
+			LOG(Utility::Debug, LOGPLACE, "Cannot initialize texture. Passed cube map texture data is NULL (face %d)", i);
+			//return;
+		}
+	}
+	
+	glGenTextures(texturesCount, textureID);
+	CheckErrorCode(__FUNCTION__, "Generating textures");
+	Bind(0);
+
+	const GLuint targets[] = {
+		GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+		GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+		GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+		GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+		GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+		GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+	};
+	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+	{
+		glTexImage2D(targets[i], 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapTextureData[i]);
+		stbi_image_free(cubeMapTextureData[i]);
+	}
+	glTexParameterf(textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameterf(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
 
 TextureData::~TextureData(void)
 {
@@ -256,6 +300,114 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 	//LoadFromFile(fileName);
 }
 
+Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName)
+{
+	const int NUMBER_OF_CUBE_MAP_FACES = 6;
+
+	unsigned char* cubeMapData [NUMBER_OF_CUBE_MAP_FACES];
+	int x[NUMBER_OF_CUBE_MAP_FACES], y[NUMBER_OF_CUBE_MAP_FACES], bytesPerPixel[NUMBER_OF_CUBE_MAP_FACES];
+	unsigned int index = 0;
+	cubeMapData[index] = stbi_load(posXFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = posXFileName;
+		const char *tmp = strrchr(posXFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	index++;
+	cubeMapData[index] = stbi_load(negXFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = negXFileName;
+		const char *tmp = strrchr(negXFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	index++;
+	cubeMapData[index] = stbi_load(posYFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = posYFileName;
+		const char *tmp = strrchr(posYFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	index++;
+	cubeMapData[index] = stbi_load(negYFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = negYFileName;
+		const char *tmp = strrchr(negYFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	index++;
+	cubeMapData[index] = stbi_load(posZFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = posZFileName;
+		const char *tmp = strrchr(posZFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	index++;
+	cubeMapData[index] = stbi_load(negZFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
+	if (cubeMapData[index] == NULL)
+	{
+		std::string name = negZFileName;
+		const char *tmp = strrchr(negZFileName.c_str(), '\\');
+		if (tmp != NULL)
+		{
+			name.assign(tmp + 1);
+		}
+		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES - 1; ++i)
+	{
+		if (x[i] != x[i+1])
+		{
+			LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same width, but face %d has width=%d and face %d has width=%d", i, x[i], i+1, x[i+1]);
+		}
+		if (y[i] != y[i+1])
+		{
+			LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same height, but face %d has height=%d and face %d has height=%d", i, x[i], i+1, x[i+1]);
+		}
+	}
+
+	int width = 0;
+	int height = 0;
+	int depth = 0;
+	textureData = new TextureData(cubeMapData, width, height, depth);
+}
+
 Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
 	textureData(NULL),
 	fileName()
@@ -324,3 +476,12 @@ void Texture::BindAsRenderTarget() const
 	}
 	textureData->BindAsRenderTarget();
 }
+
+//CubeMapTexture::CubeMapTexture(const Texture& posXTexture, const Texture& negXTexture, const Texture& posYTexture, const Texture& negYTexture, const Texture& posZTexture, const Texture& negZTexture)
+//{
+//	textureData = new TextureData(GL_TEXTURE_CUBE_MAP, posYTexture.GetWidth(), posXTexture.GetHeight(), 1, NULL, NULL, NULL, NULL, true, NULL);
+//}
+//
+//CubeMapTexture::~CubeMapTexture(void)
+//{
+//}

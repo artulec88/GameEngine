@@ -70,7 +70,7 @@ void TestGame::Init()
 
 	planeNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
-	planeMaterial = new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
+	planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
 	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
 #else
@@ -79,7 +79,7 @@ void TestGame::Init()
 	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
 	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
 	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"),
-		new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
+		new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
 #endif
 	planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -168,9 +168,9 @@ void TestGame::Init()
 	//AddToSceneRoot(castleNode);
 
 	//skyboxNode = new GameNode();
-	//skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\skybox.jpg", GL_TEXTURE_CUBE_MAP, GL_LINEAR, GL_RGB, GL_RGBA, true))));
+	//skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\left.jpg", "..\\Textures\\right.jpg", "..\\Textures\\up.jpg", "..\\Textures\\down.jpg", "..\\Textures\\front.jpg", "..\\Textures\\back.jpg"))));
 	//skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	//skyboxNode->GetTransform().SetScale(10.0f);
+	//skyboxNode->GetTransform().SetScale(20.0f);
 	//AddToSceneRoot(skyboxNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
