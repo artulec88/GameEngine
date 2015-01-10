@@ -82,6 +82,7 @@ public:
 
 	RENDERING_API void PrintGlReport();
 protected:
+	void RenderSkybox();
 	void SetCallbacks();
 	void ClearScreen() const;
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }

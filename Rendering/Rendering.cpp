@@ -737,7 +737,7 @@ void TW_CALL Rendering::TweakBarErrorHandler(const char* errorMessage)
 
 void Rendering::InitializeTweakBars()
 {
-	TwInit(TW_OPENGL, NULL); // Initializing AntTweakBar library
+	TwInit(TW_OPENGL_CORE, NULL); // Initializing AntTweakBar library
 	TwHandleErrors(Rendering::TweakBarErrorHandler);
 
 #ifdef OPEN_GL_PROPERTIES_TWEAK_BAR

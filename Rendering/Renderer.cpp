@@ -344,6 +344,19 @@ void Renderer::Render(GameNode& gameNode)
 //	TwDraw();
 //#endif
 
+	RenderSkybox();
+
+	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+
+	//double time = glfwGetTime();
+	//std::stringstream ss;
+	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
+	//textRenderer->DrawString(0, 5800, ss.str(), this);
+	//textRenderer->DrawString(0, 50, "Hello world", this);
+}
+
+void Renderer::RenderSkybox()
+{
 	/* ==================== Rendering skybox begin ==================== */
 	//glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
@@ -360,14 +373,6 @@ void Renderer::Render(GameNode& gameNode)
 	//glEnable(GL_DEPTH_TEST);
 	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
 	/* ==================== Rendering skybox end ==================== */
-
-	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
-
-	//double time = glfwGetTime();
-	//std::stringstream ss;
-	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
-	//textRenderer->DrawString(0, 5800, ss.str(), this);
-	//textRenderer->DrawString(0, 50, "Hello world", this);
 }
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)

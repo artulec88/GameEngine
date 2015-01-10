@@ -360,9 +360,7 @@ void CoreEngine::Run()
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", renderer, 64.0f);
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
-			glDisable(GL_DEPTH_TEST);
 			TwDraw();
-			glEnable(GL_DEPTH_TEST);
 #endif
 			this->renderer->SwapBuffers();
 		}
