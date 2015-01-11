@@ -600,7 +600,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", unprefixedName.c_str());
 					exit(EXIT_FAILURE);
 				}
-				texture->Bind(samplerSlot, true);
+				texture->Bind(samplerSlot);
 				SetUniformi(uniformName, samplerSlot);
 			}
 			else if (uniformType == "vec3")
@@ -669,7 +669,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
 				exit(EXIT_FAILURE);
 			}
-			texture->Bind(samplerSlot, true);
+			texture->Bind(samplerSlot);
 			SetUniformi(uniformName, samplerSlot);
 		}
 		else if (uniformSubstr == "T_") // tranform uniform

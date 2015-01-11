@@ -51,12 +51,18 @@ struct SpotLight
 vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos, 
                float specularIntensity, float specularPower, vec3 eyePos)
 {
-    float diffuseFactor = clamp(dot(normal, -direction), 0.0, 1.0);
+	float cosine = dot(normal, -direction);
+    float diffuseFactor = clamp(cosine, 0.0, 1.0);
     
-    vec4 diffuseColor = vec4(0,0,0,0);
+    //vec4 diffuseColor = vec4(0,0,0,0);
     vec4 specularColor = vec4(0,0,0,0);
     
-    diffuseColor = base.color * base.intensity * diffuseFactor;
+    vec4 diffuseColor = (base.color * base.intensity * diffuseFactor);
+	/* ==================== Cartoon shading begin ==================== */
+	//const int levels = 3;
+	//const float scaleFactor = 1.0 / levels;
+	//vec4 diffuseColor = (base.color * base.intensity * diffuseFactor) * floor(cosine * levels) * scaleFactor;
+	/* ==================== Cartoon shading end ==================== */
         
     vec3 directionToEye = normalize(eyePos - worldPos);
     vec3 reflectDirection = normalize(reflect(direction, normal));

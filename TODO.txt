@@ -12,3 +12,4 @@
 12.	HUD/GUI
 13.	Text alignment
 14.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)
+15.	Skybox is not seamless

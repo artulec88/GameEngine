@@ -86,16 +86,6 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Started drawing a string");
 
-	if (Rendering::glDepthTestEnabled)
-	{
-		glDisable(GL_DEPTH_TEST);
-	}
-	//glCullFace(GL_FRONT);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
-	//glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-	//glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
 	for (std::string::size_type i = 0; i < str.size(); ++i)
@@ -150,6 +140,15 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	glCullFace(GL_FRONT);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+	//glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	//glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 	/**
 	 * TODO: We should first save the blend-specific parameters and restore them once glDrawArrays function is finished.
 	 * See how it is done for GL_DEPTH_TEST here, in this function.
@@ -172,6 +171,7 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	{
 		glDisable(GL_BLEND);
 	}
+	glCullFace(Rendering::glCullFaceMode);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

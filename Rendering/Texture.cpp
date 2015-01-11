@@ -457,7 +457,7 @@ Texture::~Texture(void)
 	}
 }
 
-void Texture::Bind(unsigned int unit /* = 0 */, bool is3DTexture /* = false */) const
+void Texture::Bind(unsigned int unit /* = 0 */) const
 {
 	ASSERT(textureData != NULL);
 	ASSERT((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT));
@@ -467,14 +467,7 @@ void Texture::Bind(unsigned int unit /* = 0 */, bool is3DTexture /* = false */) 
 		return;
 	}
 	
-	if (is3DTexture)
-	{
-		glActiveTexture(GL_TEXTURE3);
-	}
-	else
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-	}
+	glActiveTexture(GL_TEXTURE0 + unit);
 	textureData->Bind(0);
 }
 

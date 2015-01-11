@@ -141,6 +141,10 @@ private:
 	TextRenderer* textRenderer;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+//#ifdef CARTOON_SHADING_ENABLED // cartoon shading is included in the Lighting.glh file (probably commented out)
+//	bool cartoonShadingEnabled;
+//	Shader* cartoonShader;
+//#endif
 	unsigned int previousFrameCameraIndex;
 	TwBar* propertiesBar;
 	TwBar* cameraBar;

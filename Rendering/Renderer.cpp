@@ -116,7 +116,13 @@ Renderer::Renderer(GLFWwindow* window) :
 	planeMesh = new Mesh("..\\Models\\plane4.obj");
 
 	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
-	cubeMapTexture = new Texture("..\\Textures\\right.jpg", "..\\Textures\\left.jpg", "..\\Textures\\up.jpg", "..\\Textures\\down.jpg", "..\\Textures\\front.jpg", "..\\Textures\\back.jpg");
+	std::string cubeMapPosXFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxRightFaceFileName", "right.jpg");
+	std::string cubeMapNegXFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxLeftFaceFileName", "left.jpg");
+	std::string cubeMapPosYFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxUpFileName", "up.jpg");
+	std::string cubeMapNegYFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDownFileName", "down.jpg");
+	std::string cubeMapPosZFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxFrontFileName", "front.jpg");
+	std::string cubeMapNegZFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxBackFileName", "back.jpg");
+	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
 		LOG(Error, LOGPLACE, "Cube map texture is NULL");
@@ -124,9 +130,9 @@ Renderer::Renderer(GLFWwindow* window) :
 	}
 	SetTexture("cubeMap", cubeMapTexture);
 	cubeMapNode = new GameNode();
-	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(cubeMapTexture)));
+	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(cubeMapTexture)));
 	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	cubeMapNode->GetTransform().SetScale(100.0f);
+	cubeMapNode->GetTransform().SetScale(50.0f);
 	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)

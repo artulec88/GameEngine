@@ -70,8 +70,11 @@ void TestGame::Init()
 
 	planeNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
+	//planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
+	//	new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
+	//planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
 	planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
-		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
+		new Texture("..\\Textures\\grass_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
 	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
@@ -167,11 +170,10 @@ void TestGame::Init()
 	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
 
-	//skyboxNode = new GameNode();
-	//skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\cube.obj"), new Material(new Texture("..\\Textures\\left.jpg", "..\\Textures\\right.jpg", "..\\Textures\\up.jpg", "..\\Textures\\down.jpg", "..\\Textures\\front.jpg", "..\\Textures\\back.jpg"))));
-	//skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	//skyboxNode->GetTransform().SetScale(20.0f);
-	//AddToSceneRoot(skyboxNode);
+	GameNode* teapotNode = new GameNode();
+	teapotNode->GetTransform().SetPos(3.0f, 4.0f, REAL_ONE);
+	teapotNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\teapot.obj"), new Material(new Texture("..\\Textures\\chessboard3.jpg"))));
+	AddToSceneRoot(teapotNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
