@@ -67,8 +67,8 @@ public:
 private:
 	std::string LoadShaderData(const std::string& fileName) const;
 	void AddVertexShader(const std::string& vertexShaderText);
+	void AddGeometryShader(const std::string& geometryShaderText);
 	void AddFragmentShader(const std::string& fragmentShaderText);
-	//void AddGeometryShader(const std::string& geometryShaderText);
 	void AddProgram(const std::string& shaderText, GLenum type);
 
 	void AddAllAttributes(const std::string& vertexShaderText, const std::string& attributeKeyword);

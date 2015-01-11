@@ -89,7 +89,7 @@ std::string Config::GetArg(const std::string& name, const std::string& defValue)
 	ValuesMap::const_iterator valueMapIt = cfgValues.find(name);
 	if (valueMapIt == cfgValues.end())
 	{
-		LOG(Notice, LOGPLACE, "The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
+		LOG(Warning, LOGPLACE, "The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
 		//cfgNotDefinedValues[name] = defValue;
 		return defValue;
 	}

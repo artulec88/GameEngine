@@ -130,7 +130,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	}
 	SetTexture("cubeMap", cubeMapTexture);
 	cubeMapNode = new GameNode();
-	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(cubeMapTexture)));
+	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), new Material(cubeMapTexture)));
 	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	cubeMapNode->GetTransform().SetScale(50.0f);
 	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));

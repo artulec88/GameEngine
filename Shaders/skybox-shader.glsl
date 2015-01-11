@@ -38,9 +38,37 @@ uniform samplerCube R_cubeMap; // cube map texture
 DeclareFragOutput(0, vec4);
 void main()
 {
-	//SetFragOutput(0, textureCube(R_cubeMap, texCoord0));
-	//SetFragOutput(0, texture(R_cubeMap, normalize(texCoord0)));
-	SetFragOutput(0, textureCube(R_cubeMap, texCoord0));
+	const int size = 128;
+	const float sizeFactor = 1.0 / size;
+	//vec3 fixedTexCoords = clamp(texCoord0, 1.0 / 1024, 1.0 - 1.0 / 1024);
+	
+	vec3 fixedTexCoords = texCoord0;
+	if (texCoord0.x == 0.0)
+	{
+		fixedTexCoords.x = sizeFactor;
+	}
+	if (texCoord0.y == 0.0)
+	{
+		fixedTexCoords.y = sizeFactor;
+	}
+	if (texCoord0.z == 0.0)
+	{
+		fixedTexCoords.z = sizeFactor;
+	}
+	if (texCoord0.x == 1.0)
+	{
+		fixedTexCoords.x = 1.0 - sizeFactor;
+	}
+	if (texCoord0.y == 1.0)
+	{
+		fixedTexCoords.y = 1.0 - sizeFactor;
+	}
+	if (texCoord0.z == 1.0)
+	{
+		fixedTexCoords.z = 1.0 - sizeFactor;
+	}
+	
+	SetFragOutput(0, texture(R_cubeMap, fixedTexCoords));
 	//SetFragOutput(0, vec4(1.0, 0.0, 0.0, 1.0));
 }
 #endif

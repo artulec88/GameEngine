@@ -22,7 +22,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (programID == 0)
 	{
-		LOG(Error, LOGPLACE, "Error while creating shader program");
+		LOG(Critical, LOGPLACE, "Error while creating shader program");
 		// TODO: Throw an exception
 		exit(EXIT_FAILURE);
 	}
@@ -66,23 +66,29 @@ ShaderData::ShaderData(const std::string& fileName) :
 		}
 		else
 		{
-			LOG(Emergency, LOGPLACE, "OpenGL Version %d.%d does not support shaders.\n", majorVersion, minorVersion);
+			LOG(Critical, LOGPLACE, "OpenGL Version %d.%d does not support shaders.\n", majorVersion, minorVersion);
 			exit(EXIT_FAILURE);
 		}
 	}
 
 	std::string shaderText = LoadShaderData(fileName + ".glsl");
+	bool geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
 
-	//std::string vertexShaderText = LoadShaderData(fileName + ".vshader");
-	//std::string fragmentShaderText = LoadShaderData(fileName + ".fshader");
+	LOG(Info, LOGPLACE, "Shader \"%s\" text loaded", fileName.c_str());
 
 	std::string vertexShaderText = "#version " + glslVersion + "\n#define VS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
+	std::string geometryShaderText = "#version " + glslVersion + "\n#define GS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 	std::string fragmentShaderText = "#version " + glslVersion + "\n#define FS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 
 	AddVertexShader(vertexShaderText);
+	if (geometryShaderPresent)
+	{
+		LOG(Debug, LOGPLACE, "Geometry shader found in file \"%s\"", fileName.c_str());
+		AddGeometryShader(geometryShaderText);
+	}
 	AddFragmentShader(fragmentShaderText);
 
-	std::string attributeKeyword = "attribute"; // TODO: make it const
+	const std::string attributeKeyword = "attribute"; // TODO: What about geometry shader? Check if we should analyze geometry shader too to find all attributes
 	AddAllAttributes(vertexShaderText, attributeKeyword);
 
 	if (! Compile())
@@ -92,6 +98,10 @@ ShaderData::ShaderData(const std::string& fileName) :
 	}
 
 	AddShaderUniforms(vertexShaderText);
+	if (geometryShaderPresent)
+	{
+		AddShaderUniforms(geometryShaderText);
+	}
 	AddShaderUniforms(fragmentShaderText);
 }
 
@@ -191,7 +201,7 @@ bool ShaderData::Compile()
 
 	if (!compileSuccess)
 	{
-		LOG(Warning, LOGPLACE, "Shader program %d compilation error occurred. Investigate the problem.", programID);
+		LOG(Error, LOGPLACE, "Shader program %d compilation error occurred. Investigate the problem.", programID);
 	}
 	else
 	{
@@ -220,6 +230,11 @@ bool ShaderData::CheckForErrors(int shader, int flag, bool isProgram, int& infoL
 void ShaderData::AddVertexShader(const std::string& vertexShaderText)
 {
 	AddProgram(vertexShaderText, GL_VERTEX_SHADER);
+}
+
+void ShaderData::AddGeometryShader(const std::string& geometryShaderText)
+{
+	AddProgram(geometryShaderText, GL_GEOMETRY_SHADER);
 }
 
 void ShaderData::AddFragmentShader(const std::string& fragmentShaderText)
