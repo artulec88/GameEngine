@@ -406,9 +406,10 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 		}
 	}
 
+	// TODO: Pass correct values for width, height and depth. The values below will only work for square textures with each face having the same size.
 	int width = x[0];
-	int height = y[0];
-	int depth = 0;
+	int height = x[0];
+	int depth = x[0];
 	textureData = new TextureData(cubeMapData, width, height, depth);
 }
 
@@ -480,12 +481,3 @@ void Texture::BindAsRenderTarget() const
 	}
 	textureData->BindAsRenderTarget();
 }
-
-//CubeMapTexture::CubeMapTexture(const Texture& posXTexture, const Texture& negXTexture, const Texture& posYTexture, const Texture& negYTexture, const Texture& posZTexture, const Texture& negZTexture)
-//{
-//	textureData = new TextureData(GL_TEXTURE_CUBE_MAP, posYTexture.GetWidth(), posXTexture.GetHeight(), 1, NULL, NULL, NULL, NULL, true, NULL);
-//}
-//
-//CubeMapTexture::~CubeMapTexture(void)
-//{
-//}

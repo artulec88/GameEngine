@@ -48,34 +48,6 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TextureData */
 
-//class CubeMapTextureData : public TextureData
-//{
-///* ==================== Static variables and functions begin ==================== */
-///* ==================== Static variables and functions end ==================== */
-//
-///* ==================== Non-static member variables begin ==================== */
-//private:
-//	int depth;
-///* ==================== Non-static member variables end ==================== */
-//
-///* ==================== Constructors and destructors begin ==================== */
-//public:
-//	CubeMapTextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments);
-//	virtual ~CubeMapTextureData(void);
-//private:
-//	CubeMapTextureData(const CubeMapTextureData& cubeMapTextureData) {} // don't implement
-//	void operator=(const CubeMapTextureData& cubeMapTextureData) {} // don't implement
-///* ==================== Constructors and destructors end ==================== */
-//
-///* ==================== Non-static member functions begin ==================== */
-//public:
-//	inline int GetDepth() const { return this->depth; }
-//private:
-//	void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled);
-//	void InitRenderTargets(GLenum* attachments);
-///* ==================== Non-static member functions end ==================== */
-//}; /* end class TextureData */
-
 class Texture
 {
 /* ==================== Static variables begin ==================== */
@@ -111,26 +83,5 @@ private:
 	std::string fileName;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Texture */
-
-class CubeMapTexture : public Texture
-{
-/* ==================== Static variables begin ==================== */
-/* ==================== Static variables end ==================== */
-
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	RENDERING_API CubeMapTexture(const Texture& posXTexture, const Texture& negXTexture, const Texture& posYTexture, const Texture& negYTexture, const Texture& posZTexture, const Texture& negZTexture);
-	RENDERING_API virtual ~CubeMapTexture(void);
-private:
-	CubeMapTexture(const CubeMapTexture& cubeMapTexture) {}
-	void operator=(const CubeMapTexture& cubeMapTexture) {}
-/* ==================== Constructors and destructors end ==================== */
-
-/* ==================== Non-static member functions begin ==================== */
-/* ==================== Non-static member functions end ==================== */
-
-/* ==================== Non-static member variables begin ==================== */
-/* ==================== Non-static member variables end ==================== */
-}; /* end class CubeMapTexture */
 
 } /* end namespace Rendering */
