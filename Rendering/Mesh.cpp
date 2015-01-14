@@ -23,11 +23,13 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
-MeshData::MeshData(int indexSize)
+MeshData::MeshData(int indexSize) :
+	vbo(0),
+	ibo(0),
+	size(indexSize)
 {
 	glGenBuffers(1, &vbo);
 	glGenBuffers(1, &ibo);
-	size = indexSize;
 }
 
 
@@ -51,32 +53,66 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Mesh::Mesh(Vertex* vertices, int verticesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	fileName(),
-	mode(mode),
-	meshData(NULL)
-{
-	std::vector<Vertex> indexedVerticesVector;
-	std::vector<int> indicesVector;
-	CalcIndices(vertices, verticesCount, indexedVerticesVector, indicesVector);
-	if (indexedVerticesVector.empty())
-	{
-		LOG(Emergency, LOGPLACE, "The vector with indexed vertices is empty");
-		exit(EXIT_FAILURE);
-	}
-	if (indicesVector.empty())
-	{
-		LOG(Emergency, LOGPLACE, "The vector with vertices indices is empty");
-		exit(EXIT_FAILURE);
-	}
-	AddVertices(&indexedVerticesVector[0], indexedVerticesVector.size(), &indicesVector[0], indicesVector.size(), calcNormalsEnabled);
-}
+//Mesh::Mesh(Vertex* vertices, int verticesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
+//	fileName(),
+//	mode(mode),
+//	meshData(NULL)
+//{
+//	std::vector<Vertex> indexedVerticesVector;
+//	std::vector<int> indicesVector;
+//	CalcIndices(vertices, verticesCount, indexedVerticesVector, indicesVector);
+//	if (indexedVerticesVector.empty())
+//	{
+//		LOG(Emergency, LOGPLACE, "The vector with indexed vertices is empty");
+//		exit(EXIT_FAILURE);
+//	}
+//	if (indicesVector.empty())
+//	{
+//		LOG(Emergency, LOGPLACE, "The vector with vertices indices is empty");
+//		exit(EXIT_FAILURE);
+//	}
+//	AddVertices(&indexedVerticesVector[0], indexedVerticesVector.size(), &indicesVector[0], indicesVector.size(), calcNormalsEnabled);
+//}
 
 Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	fileName(fileName),
 	mode(mode),
 	meshData(NULL)
 {
+}
+
+Mesh::~Mesh(void)
+{
+	ASSERT(meshData != NULL);
+	if (meshData == NULL)
+	{
+		LOG(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
+		return;
+	}
+	meshData->RemoveReference();
+	if (! meshData->IsReferenced())
+	{
+		if (fileName.length() > 0)
+		{
+			meshResourceMap.erase(fileName);
+		}
+		SAFE_DELETE(meshData);
+	}
+}
+
+void Mesh::Initialize()
+{
+	if (meshData != NULL)
+	{
+		LOG(Utility::Debug, LOGPLACE, "Mesh data already initialized");
+		return;
+	}
+
+	if (fileName.empty())
+	{
+		LOG(Utility::Error, LOGPLACE, "Mesh data cannot be initialized. File name is not specified");
+	}
+
 	std::string name = fileName;
 	const char *tmp = strrchr(name.c_str(), '\\');
 	if (tmp != NULL)
@@ -143,7 +179,6 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 		Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
 
 		Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
-
 		vertices.push_back(vertex);
 	}
 
@@ -155,34 +190,15 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
 	}
+	SavePositions(vertices); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store these positions
 	AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
 
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Debug, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	LOG(Info, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
-	//LoadFromFile(fileName);
-}
-
-Mesh::~Mesh(void)
-{
-	ASSERT(meshData != NULL);
-	if (meshData == NULL)
-	{
-		LOG(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
-		return;
-	}
-	meshData->RemoveReference();
-	if (! meshData->IsReferenced())
-	{
-		if (fileName.length() > 0)
-		{
-			meshResourceMap.erase(fileName);
-		}
-		SAFE_DELETE(meshData);
-	}
 }
 
 void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled /* = true */)
@@ -211,45 +227,45 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
-void Mesh::CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
-{
-	/**
-	 * TODO: Improve this code as described here:
-	 * http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
-	 * and in the Tutorial9 solution.
-	 */
-	for (int i = 0; i < verticesCount; ++i)
-	{
-		int index;
-		bool found = GetSimilarVertexIndex(vertices[i], indexedVertices, index);
-		if (found)
-		{
-			indices.push_back(index);
-		}
-		else
-		{
-			indexedVertices.push_back(Vertex(vertices[i]));
-			indices.push_back(static_cast<int>(indexedVertices.size() - 1));
-		}
-	}
-}
+//void Mesh::CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
+//{
+//	/**
+//	 * TODO: Improve this code as described here:
+//	 * http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-9-vbo-indexing/
+//	 * and in the Tutorial9 solution.
+//	 */
+//	for (int i = 0; i < verticesCount; ++i)
+//	{
+//		int index;
+//		bool found = GetSimilarVertexIndex(vertices[i], indexedVertices, index);
+//		if (found)
+//		{
+//			indices.push_back(index);
+//		}
+//		else
+//		{
+//			indexedVertices.push_back(Vertex(vertices[i]));
+//			indices.push_back(static_cast<int>(indexedVertices.size() - 1));
+//		}
+//	}
+//}
 
-bool Mesh::GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const
-{
-	// Lame linear search
-	for (unsigned int i = 0; i < indexedVertices.size(); ++i)
-	{
-		if (vertex == indexedVertices[i])
-		{
-			index = i;
-			return true;
-		}
-	}
-
-	// No other vertex could be used instead.
-	// Looks like we'll have to add it to the VBO.
-	return false;
-}
+//bool Mesh::GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const
+//{
+//	// Lame linear search
+//	for (unsigned int i = 0; i < indexedVertices.size(); ++i)
+//	{
+//		if (vertex == indexedVertices[i])
+//		{
+//			index = i;
+//			return true;
+//		}
+//	}
+//
+//	// No other vertex could be used instead.
+//	// Looks like we'll have to add it to the VBO.
+//	return false;
+//}
 
 void Mesh::Draw() const
 {
@@ -359,4 +375,139 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 	//	//	tangent.Negate();
 	//	//}
 	//}
+}
+
+TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
+	Mesh(fileName, mode),
+	positions(NULL),
+	positionsCount(0),
+	lastX(REAL_ZERO),
+	lastY(REAL_ZERO),
+	lastZ(REAL_ZERO)
+{
+}
+
+TerrainMesh::~TerrainMesh(void)
+{
+	SAFE_DELETE_JUST_TABLE(positions);
+}
+
+/**
+ * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
+ * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
+ */
+Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
+{
+//#ifdef MEASURE_TIME_ENABLED
+//	clock_t begin = clock();
+//#endif
+	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
+	{
+		return lastY;
+	}
+
+	/**
+	 * TODO: Calculate the y value. Add additional parameter to GetHeightAt function which indicates the interpolation method.
+	 * This interpolation method would be used for situations when the pair (x, z) is not found in the this->positions table.
+	 */
+	/**
+	 * TODO: Optimization!!!
+	 */
+	const int SAMPLES = 4;
+	Math::Vector3D closestPositions [SAMPLES];
+	Math::Real closestPositionsDistances [SAMPLES];
+	for (int i = 0; i < SAMPLES; ++i)
+	{
+		// TODO: Create a Macro REAL_MAX in Math.h
+		closestPositions[i].SetX(9999999999999.9f);
+		closestPositions[i].SetY(9999999999999.9f);
+		closestPositions[i].SetZ(9999999999999.9f);
+		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
+	}
+	Math::Real y = REAL_ZERO;
+	bool foundPerfectMatch = false;
+	for (int i = 0; i < positionsCount; ++i)
+	{
+		//if (i % 10000 == 0)
+		//{
+		//	LOG(Utility::Debug, LOGPLACE, "i = %d", i);
+		//}
+
+
+		/**
+		 * Checking the closestPositions table and adding new position if distance(positions[i], (x, z)) < closestPositions[SAMPLES]
+		 */
+		Math::Real distance = (positions[i].GetXZ() - xz).LengthSquared();
+		//LOG(Utility::Info, LOGPLACE, "distance = %.2f", distance);
+		if (AlmostEqual(distance, REAL_ZERO))
+		{
+			y = positions[i].GetY();
+			foundPerfectMatch = true;
+			break;
+		}
+		int index = SAMPLES;
+		for (; index > 0; --index)
+		{
+			if (distance >= closestPositionsDistances[index - 1])
+			{
+				break;
+			}
+		}
+		//LOG(Utility::Info, LOGPLACE, "index = %d", index);
+		if (index < SAMPLES)
+		{
+			for (int j = SAMPLES - 1; j > index; --j)
+			{
+				closestPositionsDistances[j] = closestPositionsDistances[j - 1];
+				closestPositions[j] = closestPositions[j - 1];
+			}
+			closestPositionsDistances[index] = distance;
+			closestPositions[index] = positions[i];
+		}
+	}
+
+	//LOG(Utility::Info, LOGPLACE, "closestPositions = { %s, %s, %s, %s }", closestPositions[0].ToString().c_str(),
+	//	closestPositions[1].ToString().c_str(), closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
+
+	if (!foundPerfectMatch)
+	{
+		y = REAL_ZERO;
+		for (int i = 0; i < SAMPLES; ++i)
+		{
+			y += closestPositions[i].GetY();
+		}
+		y /= static_cast<Math::Real>(SAMPLES);
+	}
+
+	lastX = xz.GetX();
+	lastZ = xz.GetY(); // in this case GetY() returns Z
+
+	y += 2.0f; // head position
+	lastY = y;
+
+	//LOG(Utility::Notice, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+
+//#ifdef MEASURE_TIME_ENABLED
+//	clock_t end = clock();
+//	LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+//#endif
+
+	return y;
+}
+
+void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
+{
+	positionsCount = vertices.size();
+	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", positionsCount);
+	positions = new Math::Vector3D[positionsCount];
+	for (unsigned int i = 0; i < positionsCount; ++i)
+	{
+		positions[i] = vertices[i].pos;
+	}
+
+	/**
+	 * TODO: Think of a nice way to store positions so that access time in GetHeightAt(x, z) is optimized. Maybe a Binary Tree?
+	 * Maybe find the minimum and maximum value for "Y" component of all positions and then use bucket sort (http://en.wikipedia.org/wiki/Bucket_sort)
+	 * based on "Y" values?
+	 */
 }

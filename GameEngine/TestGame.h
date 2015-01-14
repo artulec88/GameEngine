@@ -42,6 +42,7 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	Rendering::GameNode* planeNode;
+	Rendering::TerrainMesh* planeMesh;
 	Rendering::GameNode* boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::Material* planeMaterial;

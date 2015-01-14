@@ -114,6 +114,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
 	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
 	planeMesh = new Mesh("..\\Models\\plane4.obj");
+	planeMesh->Initialize();
 
 	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
 	std::string cubeMapPosXFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxRightFaceFileName", "right.jpg");

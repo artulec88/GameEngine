@@ -26,6 +26,7 @@ using namespace Rendering;
 TestGame::TestGame() :
 	Game(),
 	planeNode(NULL),
+	planeMesh(NULL),
 	boxNode(NULL),
 #ifdef ANT_TWEAK_BAR_ENABLED
 	planeMaterial(NULL),
@@ -70,12 +71,13 @@ void TestGame::Init()
 
 	planeNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
+	planeMesh = new TerrainMesh("..\\Models\\terrain02.obj");
 	//planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
 	//	new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
 	//planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
 	planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\grass_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
-	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
+	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -558,6 +560,28 @@ void TestGame::Update(Real delta)
 
 	unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+	
+	/* ==================== Adjusting camera vertical position begin ==================== */
+	//const int NUMBER_OF_TEST_ITERATIONS = 1000;
+	//const Math::Real lowX = -30.0f;
+	//const Math::Real highX = 30.0f;
+	//const Math::Real lowZ = -30.0f;
+	//const Math::Real highZ = 30.0f;
+	//clock_t begin = clock();
+	//for (int i = 0; i < NUMBER_OF_TEST_ITERATIONS; ++i)
+	//{
+	//	Math::Real x = lowX + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highX - lowX));
+	//	Math::Real z = lowZ + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highZ - lowZ));
+	//	Math::Real height = planeMesh->GetHeightAt(Math::Vector2D(x, z));
+	//	transform.GetPos().SetY(height);
+	//}
+	//clock_t end = clock();
+	//LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
+
+	Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
+	transform.GetPos().SetY(height);
+	/* ==================== Adjusting camera vertical position begin ==================== */
+
 	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
 	Vector3D acceleration;
 	if (forward)

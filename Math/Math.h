@@ -9,11 +9,13 @@
 #define EPSILON		1e3
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)
+#include <iostream>
+#include <limits>
+//#define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<float /* replace with double when needed */>::max());
+
 
 #include <math.h>
 #include <cmath>
-#include <iostream>
-#include <limits>
 
 namespace Math
 {
