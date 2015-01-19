@@ -117,12 +117,13 @@ Renderer::Renderer(GLFWwindow* window) :
 	planeMesh->Initialize();
 
 	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
-	std::string cubeMapPosXFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxRightFaceFileName", "right.jpg");
-	std::string cubeMapNegXFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxLeftFaceFileName", "left.jpg");
-	std::string cubeMapPosYFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxUpFileName", "up.jpg");
-	std::string cubeMapNegYFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDownFileName", "down.jpg");
-	std::string cubeMapPosZFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxFrontFileName", "front.jpg");
-	std::string cubeMapNegZFaceFileName = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxBackFileName", "back.jpg");
+	std::string cubeMapDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDirectory", "SkyboxDebug");
+	std::string cubeMapPosXFaceFileName = cubeMapDirectory + "\\right.jpg";
+	std::string cubeMapNegXFaceFileName = cubeMapDirectory + "\\left.jpg";
+	std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\up.jpg";
+	std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\down.jpg";
+	std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\front.jpg";
+	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back.jpg";
 	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{

@@ -268,7 +268,7 @@ void CoreEngine::Run()
 		{
 			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
-			LOG(Info, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = 0.0;
 		}

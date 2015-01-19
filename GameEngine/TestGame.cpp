@@ -87,8 +87,9 @@ void TestGame::Init()
 		new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
 #endif
-	planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
+	//planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	planeNode->GetTransform().SetScale(15.0f);
+	planeMesh->TransformPositions(planeNode->GetTransform().GetTransformation());
 	AddToSceneRoot(planeNode);
 
 	boxNode = new GameNode();
@@ -573,13 +574,12 @@ void TestGame::Update(Real delta)
 	//	Math::Real x = lowX + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highX - lowX));
 	//	Math::Real z = lowZ + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highZ - lowZ));
 	//	Math::Real height = planeMesh->GetHeightAt(Math::Vector2D(x, z));
-	//	transform.GetPos().SetY(height);
 	//}
 	//clock_t end = clock();
 	//LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
 
-	Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
-	transform.GetPos().SetY(height);
+	//Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
+	//transform.GetPos().SetY(height);
 	/* ==================== Adjusting camera vertical position begin ==================== */
 
 	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());

@@ -3,6 +3,7 @@
 #include "Rendering.h"
 #include "Vertex.h"
 
+#include "Math\Matrix.h"
 #include "Utility\ReferenceCounter.h"
 
 #include <string>
@@ -104,6 +105,7 @@ private: // disable copy constructor and assignment operator
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz);
+	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Vertex>& vertices);
 /* ==================== Non-static member functions end ==================== */
