@@ -416,4 +416,4 @@ void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortin
 		return;
 	}
 }
-/* ==================== RadixSort class implementation end ==================== */
+/* ==================== BucketSort class implementation end ==================== */
