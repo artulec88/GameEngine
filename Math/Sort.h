@@ -269,4 +269,25 @@ public:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class RadixSort */
 
+class BucketSort : public ISort
+{
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	BucketSort();
+	virtual ~BucketSort(void);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+/* ==================== Non-static member variables end ==================== */
+}; /* end class BucketSort */
+
 } /* end namespace Math */
