@@ -391,7 +391,7 @@ void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sorting
 /* ==================== RadixSort class implementation end ==================== */
 
 /* ==================== BucketSort class implementation begin ==================== */
-BucketSort::BucketSort() : ISort(ISort::RADIX_SORT)
+BucketSort::BucketSort() : ISort(ISort::BUCKET_SORT)
 {
 }
 
