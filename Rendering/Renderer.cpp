@@ -118,12 +118,13 @@ Renderer::Renderer(GLFWwindow* window) :
 
 	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
 	std::string cubeMapDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDirectory", "SkyboxDebug");
-	std::string cubeMapPosXFaceFileName = cubeMapDirectory + "\\right.jpg";
-	std::string cubeMapNegXFaceFileName = cubeMapDirectory + "\\left.jpg";
-	std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\up.jpg";
-	std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\down.jpg";
-	std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\front.jpg";
-	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back.jpg";
+	std::string cubeMapFileExtension = GET_CONFIG_VALUE_STR("skyboxFileExtensions", "jpg");
+	std::string cubeMapPosXFaceFileName = cubeMapDirectory + "\\right." + cubeMapFileExtension;
+	std::string cubeMapNegXFaceFileName = cubeMapDirectory + "\\left." + cubeMapFileExtension;
+	std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\up." + cubeMapFileExtension;
+	std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\down." + cubeMapFileExtension;
+	std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\front." + cubeMapFileExtension;
+	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back." + cubeMapFileExtension; // TODO: Get the filenames programmatically (http://msdn.microsoft.com/en-us/library/aa365200(v=vs.85).aspx)
 	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
