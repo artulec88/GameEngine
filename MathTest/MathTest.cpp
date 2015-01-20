@@ -154,9 +154,9 @@ void SortTest()
 	const int chosenSortingMethodIndices[] = { 0, 1, 2, 3 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
 		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
-		ISort::COUNTING_SORT, ISort::RADIX_SORT };
+		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
 	std::string sortingMethodsStr[] = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
-		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort" };
+		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 
 	const int NUMBER_OF_MICROSECONDS_IN_MILISECOND = 1000;
 	const int NUMBER_OF_TIME_TESTS_ITERATION = 10;
