@@ -389,3 +389,31 @@ void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sorting
 	}
 }
 /* ==================== RadixSort class implementation end ==================== */
+
+/* ==================== BucketSort class implementation begin ==================== */
+BucketSort::BucketSort() : ISort(ISort::RADIX_SORT)
+{
+}
+
+BucketSort::~BucketSort(void)
+{
+}
+
+void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+{
+	if (vectors == NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
+		return;
+	}
+}
+
+void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+{
+	if (vectors == NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
+		return;
+	}
+}
+/* ==================== RadixSort class implementation end ==================== */
