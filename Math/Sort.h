@@ -5,6 +5,7 @@
 //#include <sstream>
 //#include <map>
 #include "ISort.h"
+#include <vector>
 
 namespace Math
 {
@@ -407,6 +408,45 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+private:
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		if (vectors == NULL)
+		{
+			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
+			return;
+		}
+		const int LAST_CONST_INDEX = 701;
+		const Math::Real RECURSIVE_INDEX_STEP = 2.25f;
+		int constIndices[] = {1, 4, 10, 23, 57, 132, 301, LAST_CONST_INDEX};
+		std::vector<int> indices(constIndices, constIndices + sizeof(constIndices) / sizeof(int));
+		int nextIndex = LAST_CONST_INDEX;
+		while (nextIndex < vectorSize)
+		{
+			// TODO: use floor function instead of static_cast<int>
+			nextIndex = static_cast<int>(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
+			indices.push_back(nextIndex);
+		}
+		
+		/*bool swapOccured = false;
+		do
+		{
+			for ()
+			int index = 1;
+			int indexStep = indices.back();
+			for (int j = index; j < vectorSize; j += indexStep)
+			{
+				int i = j - 1;
+				while ( (i >= 0) && (NeedSwapping(vectors[i], vectors[j], sortingKey, sortingDirection)) )
+				{
+					vectors[i + 1] = vectors[i];
+					--i;
+				}
+				vectors[i + 1] = vectors[j];
+			}
+		} while ((index != 1) && swapOccured);*/
+	}
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
