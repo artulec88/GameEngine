@@ -412,21 +412,59 @@ private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
 	{
+		const int QUARTER_VECTOR_SIZE = vectorSize / 4;
 		if (vectors == NULL)
 		{
 			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
 			return;
 		}
+		const int FIRST_CONST_INDEX = 1;
 		const int LAST_CONST_INDEX = 701;
 		const Math::Real RECURSIVE_INDEX_STEP = 2.25f;
-		int constIndices[] = {1, 4, 10, 23, 57, 132, 301, LAST_CONST_INDEX};
+		int constIndices[] = {FIRST_CONST_INDEX, 4, 10, 23, 57, 132, 301, LAST_CONST_INDEX};
 		std::vector<int> indices(constIndices, constIndices + sizeof(constIndices) / sizeof(int));
-		int nextIndex = LAST_CONST_INDEX;
-		while (nextIndex < vectorSize)
+		if (indices.back() >= QUARTER_VECTOR_SIZE)
 		{
-			// TODO: use floor function instead of static_cast<int>
-			nextIndex = static_cast<int>(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
-			indices.push_back(nextIndex);
+			do
+			{
+				indices.pop_back();
+			} while (indices.back() >= QUARTER_VECTOR_SIZE);
+		}
+		else
+		{
+			int nextIndex = Floor(static_cast<Math::Real>(LAST_CONST_INDEX) * RECURSIVE_INDEX_STEP);
+			while (nextIndex < QUARTER_VECTOR_SIZE)
+			{
+				indices.push_back(nextIndex);
+				nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
+			}
+		}
+		ASSERT(indices.back() < QUARTER_VECTOR_SIZE);
+		ASSERT(indices.front() == FIRST_CONST_INDEX);
+		if (indices.back() >= QUARTER_VECTOR_SIZE)
+		{
+			LOG(Utility::Error, LOGPLACE, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = %d and the gap = %d", vectorSize, indices.back());
+		}
+		if (indices.front() != FIRST_CONST_INDEX)
+		{
+			LOG(Utility::Error, LOGPLACE, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to %d, but is equal to %d", FIRST_CONST_INDEX, indices.front());
+		}
+
+		while (!indices.empty())
+		{
+			int gap = indices.back();
+			for (int j = vectorSize - gap - 1; j >= 0; --j)
+			{
+				T vec = vectors[j];
+				int i = j + gap;
+				while ( (i < vectorSize) && (NeedSwapping(vec, vectors[i], sortingKey, sortingDirection)) )
+				{
+					vectors[i - gap] = vectors[i];
+					i += gap;
+				}
+				vectors[i - gap] = vec;
+			}
+			indices.pop_back();
 		}
 		
 		/*bool swapOccured = false;

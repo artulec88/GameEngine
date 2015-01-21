@@ -15,13 +15,13 @@ using namespace Math;
 	SAFE_DELETE(ISort::sortObject);
 	switch (sortingMethod)
 	{
-	case ISort::BUBBLE_SORT: LOG(Utility::Notice, LOGPLACE, "Bubble sort specified as the sorting algorithm."); sortObject = new BubbleSort(); break;
+	case ISort::BUBBLE_SORT: LOG(Utility::Notice, LOGPLACE, "Bubble sort specified as the sorting algorithm"); sortObject = new BubbleSort(); break;
 	case ISort::INSERTION_SORT: LOG(Utility::Notice, LOGPLACE, "Insertion sort specified as the sorting algorithm"); sortObject = new InsertionSort(); break;
-	case ISort::SELECTION_SORT: LOG(Utility::Notice, LOGPLACE, "Selection sort specified as the sorting algorithm."); sortObject = new SelectionSort(); break;
-	case ISort::MERGE_SORT: LOG(Utility::Notice, LOGPLACE, "Merge sort specified as the sorting algorithm."); sortObject = new MergeSort(); break;
-	case ISort::HEAP_SORT: LOG(Utility::Notice, LOGPLACE, "Heap sort specified as the sorting algorithm."); sortObject = new HeapSort(); break;
+	case ISort::SELECTION_SORT: LOG(Utility::Notice, LOGPLACE, "Selection sort specified as the sorting algorithm"); sortObject = new SelectionSort(); break;
+	case ISort::MERGE_SORT: LOG(Utility::Notice, LOGPLACE, "Merge sort specified as the sorting algorithm"); sortObject = new MergeSort(); break;
+	case ISort::HEAP_SORT: LOG(Utility::Notice, LOGPLACE, "Heap sort specified as the sorting algorithm"); sortObject = new HeapSort(); break;
 	case ISort::QUICK_SORT: LOG(Utility::Notice, LOGPLACE, "Quick sort specified as the sorting algorithm"); sortObject = new QuickSort(); break;
-	case ISort::SHELL_SORT: LOG(Utility::Error, LOGPLACE, "Shell sort is not yet supported by the Game engine. Insertion sort will be used instead."); sortObject = new InsertionSort(); break;
+	case ISort::SHELL_SORT: LOG(Utility::Notice, LOGPLACE, "Shell sort specified as the sorting algorihtm"); sortObject = new ShellSort(); break;
 	case ISort::COMB_SORT: LOG(Utility::Error, LOGPLACE, "Comb sort is not yet supported by the Game engine. Insertion sort will be used instead."); sortObject = new InsertionSort(); break;
 	case ISort::COUNTING_SORT: LOG(Utility::Error, LOGPLACE, "Counting sort is not yet supported by the Game engine. Insertion sort will be used instead."); sortObject = new InsertionSort(); break;
 	case ISort::RADIX_SORT: LOG(Utility::Error, LOGPLACE, "Radix sort is not yet supported by the Game engine. Insertion sort will be used instead."); sortObject = new InsertionSort(); break;

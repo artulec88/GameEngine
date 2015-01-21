@@ -136,7 +136,7 @@ void SortTest()
 
 	LOG (Notice, LOGPLACE, "Sorting test started");
 	srand((unsigned int)time(NULL));
-	const int NUMBER_OF_VECTORS = 10000;
+	const int NUMBER_OF_VECTORS = 10;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
 	const Real LOWER_BOUND_Y = -20.0f;
@@ -150,8 +150,8 @@ void SortTest()
 		LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
 	}
 
-	const int NUMBER_OF_SORTING_METHODS = 4; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 0, 1, 2, 3 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
+	const int chosenSortingMethodIndices[] = { 6 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
 		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
 		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
@@ -159,7 +159,7 @@ void SortTest()
 		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 
 	const int NUMBER_OF_MICROSECONDS_IN_MILISECOND = 1000;
-	const int NUMBER_OF_TIME_TESTS_ITERATION = 10;
+	const int NUMBER_OF_TIME_TESTS_ITERATION = 1;
 	/**
 	 * TODO: Instead of measuring the time needed to perform NUMBER_OF_TIME_TESTS_ITERATION sorts it should be more efficient to count the number of successful sorts within given period of time.
 	 * If this time limit is passed then sorting is stopped no matter if it's finished or not.

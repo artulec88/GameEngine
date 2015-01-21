@@ -135,20 +135,12 @@ ShellSort::~ShellSort(void)
 
 void ShellSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the shell sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
 void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the shell sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 /* ==================== ShellSort class implementation end ==================== */
 

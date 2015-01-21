@@ -41,6 +41,11 @@ namespace Math
 		return static_cast<Type>(Math::RadToDegFactor * angleInRadians);
 	}
 
+	template<typename Type> int Floor(Type value)
+	{
+		return static_cast<int>(floor(value));
+	}
+
 	template<typename Type> Type Clamp(const Type& a, const Type& min, const Type& max)
 	{
 		if (a < min) return min;
