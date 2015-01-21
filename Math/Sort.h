@@ -356,7 +356,7 @@ private:
 				++i;
 				//LOG(Utility::Debug, LOGPLACE, "i = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s",
 				//	i, left, right, i, vectors[i].ToString().c_str(), pivot.ToString().c_str());
-			} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingKey, sortingDirection));
+			} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingKey, sortingDirection)); // TODO: Check this condition more thoroughly
 			do
 			{
 				if (j <= left)
@@ -364,7 +364,7 @@ private:
 				--j;
 				//LOG(Utility::Debug, LOGPLACE, "j = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s",
 				//	j, left, right, j, vectors[j].ToString().c_str(), pivot.ToString().c_str());
-			} while(!NeedSwapping(pivot, vectors[j], sortingKey, sortingDirection));
+			} while(!NeedSwapping(pivot, vectors[j], sortingKey, sortingDirection)); // TODO: Check this condition more thoroughly
 			if (i < j)
 			{
 				//LOG(Utility::Debug, LOGPLACE, "Swapping vectors[%d] (%s) with vectors[%d] (%s)", i, vectors[i].ToString().c_str(), j, vectors[j].ToString().c_str());
