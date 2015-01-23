@@ -9,10 +9,15 @@
 #define EPSILON		1e3
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)
+
+//#define NOMINMAX
 #include <iostream>
 #include <limits>
-//#define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<float /* replace with double when needed */>::max());
 
+#undef min
+#undef max
+#define REAL_MIN	static_cast<Math::Real>(std::numeric_limits<Math::Real>::min())
+#define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<Math::Real>::max())
 
 #include <math.h>
 #include <cmath>
@@ -45,6 +50,12 @@ namespace Math
 	{
 		return static_cast<int>(floor(value));
 	}
+
+//	Math::Real RealMin()
+//	{
+//#undef max
+//		return static_cast<Math::Real>(std::numeric_limits<float>::max());
+//	}
 
 	template<typename Type> Type Clamp(const Type& a, const Type& min, const Type& max)
 	{

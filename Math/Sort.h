@@ -82,15 +82,21 @@ private:
 			return;
 		}
 
-		for (int j = 1; j < vectorSize; j++)
+		for (int i = 1; i < vectorSize; ++i)
 		{
-			int i = j - 1;
-			while ( (i >= 0) && (NeedSwapping(vectors[i], vectors[j], sortingKey, sortingDirection)) )
+			//for (int k = 0; k < vectorSize; ++k)
+			//{
+			//	LOG(Utility::Debug, LOGPLACE, "i = %d) vectors[%d] = %s", i, k, vectors[k].ToString().c_str());
+			//}
+			T key(vectors[i]);
+			int j = i - 1;
+			while ( (j >= 0) && (NeedSwapping(vectors[j], key, sortingKey, sortingDirection)) )
 			{
-				vectors[i + 1] = vectors[i];
-				i--;
+				vectors[j + 1] = vectors[j];
+				vectors[j] = key;
+				--j;
 			}
-			vectors[i + 1] = vectors[j];
+			//vectors[i + 1] = vectors[j];
 		}
 	}
 /* ==================== Non-static member functions end ==================== */
@@ -509,6 +515,40 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
+private:
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		if (vectors == NULL)
+		{
+			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			return;
+		}
+
+		int gap = vectorSize;
+		Math::Real shrink = 1.3f; // a value set by the rule of thumb (see http://en.wikipedia.org/wiki/Comb_sort)
+
+		bool swapOccured = false;
+		while (gap != 1 || swapOccured)
+		{
+			gap = static_cast<int>(gap / shrink);
+			if (gap < 1)
+			{
+				gap = 1;
+			}
+			
+			int i = 0;
+			swapOccured = false;
+			for (int i = 0; i + gap < vectorSize; ++i)
+			{
+				if (NeedSwapping(vectors[i], vectors[i + gap], sortingKey, sortingDirection))
+				{
+					Swap(vectors[i], vectors[i + gap]);
+					swapOccured = true;
+				}
+			}
+		}
+	}
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CombSort */
 
@@ -559,6 +599,30 @@ public:
 
 class BucketSort : public ISort
 {
+	template <typename T>
+	class Bucket
+	{
+	public:
+		Bucket() : lowBound(REAL_MIN), highBound(REAL_MAX)
+		{
+		}
+		Bucket(Math::Real lowBound, Math::Real highBound) : lowBound(lowBound), highBound(highBound)
+		{
+		}
+	public:
+		Math::Real GetLowBound() const { return lowBound; }
+		Math::Real GetHighBound() const { return highBound; }
+		void SetLowBound(Math::Real lowBound) { this->lowBound = lowBound; }
+		void SetHighBound(Math::Real highBound) { this->highBound = highBound; }
+		void PushVector(const T& vector) { this->vectors.push_back(vector); }
+		T* GetVectors() { return &vectors[0]; }
+		T GetVector(int i) const { return vectors[i]; }
+		int GetVectorsSize() const { return vectors.size(); }
+	private:
+		std::vector<T> vectors;
+		Math::Real lowBound; // TODO: Remove this member variable in the future. It is not used anywhere
+		Math::Real highBound; // TODO: Remove this member variable in the future. It is not used anywhere.
+	};
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
@@ -572,6 +636,188 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+private:
+	void FindMinMax(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection, Math::Real& minValue, Math::Real& maxValue)
+	{
+		if (vectors == NULL)
+		{
+			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			return;
+		}
+
+		Vector2D minVector = vectors[0];
+		Vector2D maxVector = vectors[0];
+		for (int i = 1; i < vectorSize; ++i)
+		{
+			if (NeedSwapping(minVector, vectors[i], sortingKey, sortingDirection))
+			{
+				minVector = vectors[i];
+			}
+			else if (NeedSwapping(vectors[i], maxVector, sortingKey, sortingDirection))
+			{
+				maxVector = vectors[i];
+			}
+		}
+		switch (sortingKey)
+		{
+		case COMPONENT_X:
+			minValue = minVector.GetX();
+			maxValue = maxVector.GetX();
+			break;
+		case COMPONENT_Y:
+			minValue = minVector.GetY();
+			maxValue = maxVector.GetY();
+			break;
+		case COMPONENT_Z:
+			LOG(Utility::Critical, LOGPLACE, "Cannot determine the min and max values for the specified vectors. The Z component for the 2D vectors is not accessible.");
+			minValue = REAL_MIN;
+			maxValue = REAL_MAX;
+			break;
+		case SUM_OF_SQUARED_COMPONENTS:
+			minValue = minVector.LengthSquared();
+			maxValue = maxVector.LengthSquared();
+			break;
+		case SUM_OF_COMPONENTS:
+			LOG(Utility::Critical, LOGPLACE, "Find min and max sum of components in 2D vectors is not yet supported by the Math library");
+			minValue = REAL_MIN;
+			maxValue = REAL_MAX;
+			break;
+		default:
+			LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified");
+			minValue = REAL_MIN;
+			maxValue = REAL_MAX;
+		}
+		ASSERT(!(maxValue < minValue));
+		if (maxValue < minValue)
+		{
+			LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
+		}
+	}
+
+	void FindMinMax(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection, Math::Real& minValue, Math::Real& maxValue)
+	{
+		if (vectors == NULL)
+		{
+			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			return;
+		}
+
+		Vector3D minVector = vectors[0];
+		Vector3D maxVector = vectors[0];
+		for (int i = 1; i < vectorSize; ++i)
+		{
+			if (NeedSwapping(minVector, vectors[i], sortingKey, sortingDirection))
+			{
+				minVector = vectors[i];
+			}
+			else if (NeedSwapping(vectors[i], maxVector, sortingKey, sortingDirection))
+			{
+				maxVector = vectors[i];
+			}
+		}
+		switch (sortingKey)
+		{
+		case COMPONENT_X:
+			minValue = minVector.GetX();
+			maxValue = maxVector.GetX();
+			break;
+		case COMPONENT_Y:
+			minValue = minVector.GetY();
+			maxValue = maxVector.GetY();
+			break;
+		case COMPONENT_Z:
+			minValue = minVector.GetZ();
+			maxValue = maxVector.GetZ();
+			break;
+		case SUM_OF_SQUARED_COMPONENTS:
+			minValue = minVector.LengthSquared();
+			maxValue = maxVector.LengthSquared();
+			break;
+		case SUM_OF_COMPONENTS:
+			LOG(Utility::Critical, LOGPLACE, "Find min and max sum of components in 2D vectors is not yet supported by the Math library");
+			minValue = REAL_MIN;
+			maxValue = REAL_MAX;
+			break;
+		default:
+			LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified");
+			minValue = REAL_MIN;
+			maxValue = REAL_MAX;
+		}
+		ASSERT(!(maxValue < minValue));
+		if (maxValue < minValue)
+		{
+			LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
+		}
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		Math::Real minValue, maxValue;
+		FindMinMax(vectors, vectorSize, sortingKey, sortingDirection, minValue, maxValue);
+		LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
+
+		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
+		const int NUMBER_OF_BUCKETS = sqrtf(vectorSize);
+		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
+		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
+		Math::Real bucketLowBound = minValue;
+		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		{
+			buckets[i].SetLowBound(bucketLowBound);
+			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
+			LOG(Utility::Debug, LOGPLACE, "Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
+			bucketLowBound += bucketWidth;
+		}
+
+		for (int i = 0; i < vectorSize; ++i)
+		{
+			Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+			//LOG(Utility::Debug, LOGPLACE, "vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
+			
+			// Calculate the index of the bucket to which we will add the vector
+			int bucketIndex = static_cast<int>(NUMBER_OF_BUCKETS * ((value - minValue) / (maxValue - minValue))); // TODO: Is it possible for minValue == maxValue? If so, then we have a division by 0 problem.
+			if (bucketIndex == NUMBER_OF_BUCKETS)
+			{
+				--bucketIndex;
+			}
+
+			ASSERT((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS));
+
+			if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
+			{
+				LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
+			}
+			buckets[bucketIndex].PushVector(vectors[i]);
+		}
+		ISort* insertionSorter = ISort::GetSortingObject(ISort::INSERTION_SORT);
+		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		{
+			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+			{
+				LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			}
+			insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingDirection);
+		}
+		SAFE_DELETE(insertionSorter);
+
+		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		{
+			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+			{
+				LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			}
+		}
+
+		int index = 0;
+		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		{
+			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+			{
+				vectors[index] = buckets[i].GetVector(j);
+			}
+		}
+	}
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

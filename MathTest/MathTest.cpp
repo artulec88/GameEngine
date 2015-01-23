@@ -151,7 +151,7 @@ void SortTest()
 	}
 
 	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 6 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const int chosenSortingMethodIndices[] = { 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
 		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
 		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
@@ -166,6 +166,7 @@ void SortTest()
 	 */
 	for (int sortingMethodIndex = 0; sortingMethodIndex < NUMBER_OF_SORTING_METHODS; ++sortingMethodIndex)
 	{
+		ISort* sorter = ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]);
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending begin ==================== */
 		bool sortingTestCasePassed = true;
 		ISort::SortingKey sortingKey = ISort::COMPONENT_X;
@@ -177,7 +178,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -212,7 +213,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -247,7 +248,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -282,7 +283,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -317,7 +318,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -352,7 +353,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]).Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -375,6 +376,8 @@ void SortTest()
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of squared components failed.");
 		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of squared components descending end ==================== */
+		delete sorter;
+		sorter = NULL;
 	}
 
 	delete [] initialVectors;
@@ -391,7 +394,7 @@ int main (int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
+	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Debug);
 
 	Matrix4D identityMatrix1 = Matrix4D::Identity();
 	Matrix4D identityMatrix2 = Matrix4D::Identity();

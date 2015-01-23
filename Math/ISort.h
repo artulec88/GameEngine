@@ -14,10 +14,7 @@ public:
 	enum MATH_API SortingKey { COMPONENT_X, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
 	enum MATH_API SortingDirection { ASCENDING = 0, DESCENDING };
 /* ==================== Static variables and functions begin ==================== */
-protected:
-	MATH_API static ISort* sortObject;
-public:
-	MATH_API static ISort& GetSortingObject(SortingMethod sortingMethod);
+	MATH_API static ISort* GetSortingObject(SortingMethod sortingMethod);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -189,6 +186,47 @@ protected:
 			LOG(Utility::Critical, LOGPLACE, "Unknown sorting direction specified.");
 			return false;
 			break;
+		}
+	}
+
+	Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
+	{
+		switch (sortingKey)
+		{
+		case COMPONENT_X:
+			return v.GetX();
+		case COMPONENT_Y:
+			return v.GetY();
+		case COMPONENT_Z:
+			LOG(Utility::Critical, LOGPLACE, "Cannot determine the value of the Z component for the 2D vector.");
+			exit(EXIT_FAILURE);
+		case SUM_OF_SQUARED_COMPONENTS:
+			return v.LengthSquared();
+		case SUM_OF_COMPONENTS:
+			return v.GetX() + v.GetY();
+		default:
+			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
+			return v.GetX();
+		}
+	}
+
+	Math::Real CollectValueByKey(const Math::Vector3D& v, SortingKey sortingKey)
+	{
+		switch (sortingKey)
+		{
+		case COMPONENT_X:
+			return v.GetX();
+		case COMPONENT_Y:
+			return v.GetY();
+		case COMPONENT_Z:
+			return v.GetZ();
+		case SUM_OF_SQUARED_COMPONENTS:
+			return v.LengthSquared();
+		case SUM_OF_COMPONENTS:
+			return v.GetX() + v.GetY() + v.GetZ();
+		default:
+			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
+			return v.GetX();
 		}
 	}
 	

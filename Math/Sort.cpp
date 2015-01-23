@@ -155,20 +155,12 @@ CombSort::~CombSort(void)
 
 void CombSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the comb sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
 void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the comb sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 /* ==================== CombSort class implementation end ==================== */
 
@@ -183,20 +175,14 @@ CountingSort::~CountingSort(void)
 
 void CountingSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the counting sort algorithm. The specified table is NULL");
-		return;
-	}
+	LOG(Utility::Emergency, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	return;
 }
 
 void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the counting sort algorithm. The specified table is NULL");
-		return;
-	}
+	LOG(Utility::Emergency, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	return;
 }
 /* ==================== CountingSort class implementation end ==================== */
 
@@ -211,20 +197,14 @@ RadixSort::~RadixSort(void)
 
 void RadixSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
-		return;
-	}
+	LOG(Utility::Emergency, LOGPLACE, "Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	return;
 }
 
 void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
-		return;
-	}
+	LOG(Utility::Emergency, LOGPLACE, "Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	return;
 }
 /* ==================== RadixSort class implementation end ==================== */
 
@@ -239,19 +219,11 @@ BucketSort::~BucketSort(void)
 
 void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
 void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	if (vectors == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the radix sort algorithm. The specified table is NULL");
-		return;
-	}
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 /* ==================== BucketSort class implementation end ==================== */
