@@ -11,6 +11,8 @@
 
 #include <ctime>
 #include <string>
+//#include <iostream>
+//#include <fstream>
 
 using namespace Math;
 using namespace Utility;
@@ -134,15 +136,29 @@ void SortTest()
 		return;
 	}
 
+	ILogger::GetLogger().AddFile("sortingOutput.txt");
+	//ofstream sortingOutputFile;
+	//sortingOutputFile.open("sortingOutput.txt");
+
 	LOG (Notice, LOGPLACE, "Sorting test started");
 	srand((unsigned int)time(NULL));
 	const int NUMBER_OF_VECTORS = 10;
-	const Real LOWER_BOUND_X = -20.0f;
-	const Real HIGHER_BOUND_X = 20.0f;
-	const Real LOWER_BOUND_Y = -20.0f;
-	const Real HIGHER_BOUND_Y = 20.0f;	
+	const Real LOWER_BOUND_X = -5.0f;
+	const Real HIGHER_BOUND_X = 5.0f;
+	const Real LOWER_BOUND_Y = -5.0f;
+	const Real HIGHER_BOUND_Y = 5.0f;	
 	Vector2D* initialVectors = new Vector2D[NUMBER_OF_VECTORS];
 	Vector2D* vectors = new Vector2D[NUMBER_OF_VECTORS];
+	//initialVectors[0].SetX(0.0f); initialVectors[0].SetY(1.0f);
+	//initialVectors[1].SetX(0.0f); initialVectors[1].SetY(2.0f);
+	//initialVectors[2].SetX(0.0f); initialVectors[2].SetY(3.0f);
+	//initialVectors[3].SetX(0.0f); initialVectors[3].SetY(4.0f);
+	//initialVectors[4].SetX(0.0f); initialVectors[4].SetY(5.0f);
+	//initialVectors[5].SetX(1.0f); initialVectors[5].SetY(1.0f);
+	//initialVectors[6].SetX(1.0f); initialVectors[6].SetY(2.0f);
+	//initialVectors[7].SetX(1.0f); initialVectors[7].SetY(3.0f);
+	//initialVectors[8].SetX(1.0f); initialVectors[8].SetY(4.0f);
+	//initialVectors[9].SetX(1.0f); initialVectors[9].SetY(5.0f);
 	for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 	{
 		initialVectors[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
@@ -150,8 +166,8 @@ void SortTest()
 		LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
 	}
 
-	const int NUMBER_OF_SORTING_METHODS = 2; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 9, 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
+	const int chosenSortingMethodIndices[] = { 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
 		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
 		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
@@ -170,6 +186,7 @@ void SortTest()
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending begin ==================== */
 		bool sortingTestCasePassed = true;
 		SortingParametersChain sortingParameters(COMPONENT_X, ASCENDING);
+		sortingParameters.AddChainLink(new SortingParametersChain(COMPONENT_Y, DESCENDING));
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -185,7 +202,7 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].GetX() < vectors[i].GetX())
+			if ((vectors[i + 1].GetX() < vectors[i].GetX()) || ((AlmostEqual(vectors[i + 1].GetX(), vectors[i].GetX())) && (vectors[i + 1].GetY() > vectors[i].GetY())))
 			{
 				LOG(Error, LOGPLACE, "%s in ASCENDING order by X component failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
@@ -220,7 +237,7 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].GetX() > vectors[i].GetX())
+			if ((vectors[i + 1].GetX() > vectors[i].GetX()) || ((AlmostEqual(vectors[i + 1].GetX(), vectors[i].GetX())) && (vectors[i + 1].GetY() > vectors[i].GetY())))
 			{
 				LOG(Error, LOGPLACE, "%s in DESCENDING order by X component failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
@@ -238,8 +255,10 @@ void SortTest()
 
 		/* ==================== SORTING TEST #3- sorting Vector2D objects by Y component ascending begin ==================== */
 		sortingTestCasePassed = true;
+		sortingParameters.ResetChainLink();
 		sortingParameters.SetSortingKey(COMPONENT_Y);
 		sortingParameters.SetSortingDirection(ASCENDING);
+		sortingParameters.AddChainLink(new SortingParametersChain(COMPONENT_X, DESCENDING));
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -255,7 +274,7 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].GetY() < vectors[i].GetY())
+			if ((vectors[i + 1].GetY() < vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
 				LOG(Error, LOGPLACE, "%s in ASCENDING order by Y component failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
@@ -290,7 +309,7 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].GetY() > vectors[i].GetY())
+			if ((vectors[i + 1].GetY() > vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
 				LOG(Error, LOGPLACE, "%s in DESCENDING order by Y component failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
@@ -325,8 +344,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].SumOfComponents() < vectors[i].SumOfComponents())
+			Math::Real sumOfComponents1 = vectors[i].SumOfComponents();
+			Math::Real sumOfComponents2 = vectors[i + 1].SumOfComponents();
+			if ((sumOfComponents2 < sumOfComponents1) || ((AlmostEqual(sumOfComponents2, sumOfComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(sumOfComponents2, sumOfComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -360,8 +382,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].SumOfComponents() > vectors[i].SumOfComponents())
+			Math::Real sumOfComponents1 = vectors[i].SumOfComponents();
+			Math::Real sumOfComponents2 = vectors[i + 1].SumOfComponents();
+			if ((sumOfComponents2 > sumOfComponents1) || ((AlmostEqual(sumOfComponents2, sumOfComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(sumOfComponents2, sumOfComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -395,8 +420,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].SumOfAbsoluteComponents() < vectors[i].SumOfAbsoluteComponents())
+			Math::Real sumOfAbsoluteComponents1 = vectors[i].SumOfAbsoluteComponents();
+			Math::Real sumOfAbsoluteComponents2 = vectors[i + 1].SumOfAbsoluteComponents();
+			if ((sumOfAbsoluteComponents2 < sumOfAbsoluteComponents1) || ((AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of absolute components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -430,8 +458,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].SumOfAbsoluteComponents() > vectors[i].SumOfAbsoluteComponents())
+			Math::Real sumOfAbsoluteComponents1 = vectors[i].SumOfAbsoluteComponents();
+			Math::Real sumOfAbsoluteComponents2 = vectors[i + 1].SumOfAbsoluteComponents();
+			if ((sumOfAbsoluteComponents2 > sumOfAbsoluteComponents1) || ((AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of absolute components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -465,8 +496,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].LengthSquared() < vectors[i].LengthSquared())
+			Math::Real lengthSquared1 = vectors[i].LengthSquared();
+			Math::Real lengthSquared2 = vectors[i + 1].LengthSquared();
+			if ((lengthSquared2 < lengthSquared1) || ((AlmostEqual(lengthSquared2, lengthSquared1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(lengthSquared2, lengthSquared1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of squared components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -500,8 +534,11 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if (vectors[i + 1].LengthSquared() > vectors[i].LengthSquared())
+			Math::Real lengthSquared1 = vectors[i].LengthSquared();
+			Math::Real lengthSquared2 = vectors[i + 1].LengthSquared();
+			if ((lengthSquared2 > lengthSquared1) || ((AlmostEqual(lengthSquared2, lengthSquared1)) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
+				//bool almostEqual = ((AlmostEqual(lengthSquared2, lengthSquared1)) && (vectors[i + 1].GetX() > vectors[i].GetX()));
 				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of squared components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
 				sortingTestCasePassed = false;
@@ -533,7 +570,7 @@ int main (int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Debug);
+	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
 
 	Matrix4D identityMatrix1 = Matrix4D::Identity();
 	Matrix4D identityMatrix2 = Matrix4D::Identity();

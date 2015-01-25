@@ -26,10 +26,11 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	MATH_API void ResetChainLink();
 	MATH_API void AddChainLink(SortingParametersChain* sortingChainParameters);
 	MATH_API SortingKey GetSortingKey() const { return m_sortingKey; }
 	MATH_API SortingDirection GetSortingDirection() const { return m_sortingDirection; }
-	MATH_API void SetSortingKey(SortingKey sortingKey) { m_sortingKey = sortingKey; }
+	MATH_API void SetSortingKey(SortingKey sortingKey);
 	MATH_API void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
 	MATH_API const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
 /* ==================== Non-static member functions end ==================== */

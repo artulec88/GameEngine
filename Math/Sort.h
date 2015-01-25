@@ -678,6 +678,7 @@ class BucketSort : public ISort
 		{
 		}
 	public:
+		bool IsEmpty() const { return vectors.empty(); }
 		Math::Real GetLowBound() const { return lowBound; }
 		Math::Real GetHighBound() const { return highBound; }
 		void SetLowBound(Math::Real lowBound) { this->lowBound = lowBound; }
@@ -812,7 +813,10 @@ private:
 			//{
 			//	LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 			//}
-			insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingDirection);
+			if (!buckets[i].IsEmpty())
+			{
+				insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingDirection);
+			}
 		}
 		SAFE_DELETE(insertionSorter);
 
@@ -898,7 +902,10 @@ private:
 			//{
 			//	LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 			//}
-			insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingParameters);
+			if (!buckets[i].IsEmpty())
+			{
+				insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingParameters);
+			}
 		}
 		SAFE_DELETE(insertionSorter);
 
