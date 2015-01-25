@@ -22,6 +22,16 @@ void BubbleSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortin
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
+
+void BubbleSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void BubbleSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
+}
 /* ==================== BubbleSort class implementation end ==================== */
 
 /* ==================== InsertionSort class implementation begin ==================== */
@@ -41,6 +51,16 @@ void InsertionSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sor
 void InsertionSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
+}
+
+void InsertionSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void InsertionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
 /* ==================== InsertionSort class implementation end ==================== */
 
@@ -62,6 +82,16 @@ void SelectionSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sor
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
+
+void SelectionSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void SelectionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
+}
 /* ==================== SelectionSort class implementation end ==================== */
 
 /* ==================== MergeSort class implementation begin ==================== */
@@ -81,6 +111,16 @@ void MergeSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sorting
 void MergeSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
+}
+
+void MergeSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void MergeSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
 /* ==================== MergeSort class implementation end ==================== */
 
@@ -102,6 +142,16 @@ void HeapSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingK
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
+
+void HeapSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void HeapSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
+}
 /* ==================== HeapSort class implementation end ==================== */
 
 /* ==================== QuickSort class implementation begin ==================== */
@@ -121,6 +171,16 @@ void QuickSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sorting
 void QuickSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
+}
+
+void QuickSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void QuickSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
 /* ==================== QuickSort class implementation end ==================== */
 
@@ -142,6 +202,16 @@ void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sorting
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
+
+void ShellSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
+}
 /* ==================== ShellSort class implementation end ==================== */
 
 /* ==================== CombSort class implementation begin ==================== */
@@ -162,6 +232,16 @@ void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingK
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
+
+void CombSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
+}
 /* ==================== CombSort class implementation end ==================== */
 
 /* ==================== CountingSort class implementation begin ==================== */
@@ -175,13 +255,25 @@ CountingSort::~CountingSort(void)
 
 void CountingSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	LOG(Utility::Emergency, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	LOG(Utility::Critical, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
 void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	LOG(Utility::Emergency, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	LOG(Utility::Critical, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	return;
+}
+
+void CountingSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	LOG(Utility::Critical, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
+	return;
+}
+
+void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	LOG(Utility::Critical, LOGPLACE, "Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 /* ==================== CountingSort class implementation end ==================== */
@@ -206,6 +298,18 @@ void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sorting
 	LOG(Utility::Emergency, LOGPLACE, "Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
+
+void RadixSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	LOG(Utility::Emergency, LOGPLACE, "Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	return;
+}
+
+void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	LOG(Utility::Emergency, LOGPLACE, "Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	return;
+}
 /* ==================== RadixSort class implementation end ==================== */
 
 /* ==================== BucketSort class implementation begin ==================== */
@@ -225,5 +329,15 @@ void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortin
 void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
+}
+
+void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
+}
+
+void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+{
+	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
 /* ==================== BucketSort class implementation end ==================== */

@@ -10,6 +10,10 @@
 #include <map>
 #include <vector>
 
+//#define HEIGHTMAP_BRUTE_FORCE
+#define HEIGHTMAP_SORT_TABLE
+//#define HEIGHTMAP_KNN
+
 namespace Rendering
 {
 
@@ -116,6 +120,9 @@ private:
 	Math::Vector3D* positions;
 	int positionsCount;
 	Math::Real lastX, lastY, lastZ;
+#ifdef HEIGHTMAP_SORT_TABLE
+	int lastClosestPositionIndex;
+#endif
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class TerrainMesh */

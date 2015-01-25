@@ -150,8 +150,8 @@ void SortTest()
 		LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
 	}
 
-	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const int NUMBER_OF_SORTING_METHODS = 2; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
+	const int chosenSortingMethodIndices[] = { 9, 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
 		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
 		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
@@ -169,8 +169,7 @@ void SortTest()
 		ISort* sorter = ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]);
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending begin ==================== */
 		bool sortingTestCasePassed = true;
-		ISort::SortingKey sortingKey = ISort::COMPONENT_X;
-		ISort::SortingDirection sortingDirection = ISort::ASCENDING;
+		SortingParametersChain sortingParameters(COMPONENT_X, ASCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -178,7 +177,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -204,8 +203,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #2- sorting Vector2D objects by X component descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingKey = ISort::COMPONENT_X;
-		sortingDirection = ISort::DESCENDING;
+		sortingParameters.SetSortingKey(COMPONENT_X);
+		sortingParameters.SetSortingDirection(DESCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -213,7 +212,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -239,8 +238,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #3- sorting Vector2D objects by Y component ascending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingKey = ISort::COMPONENT_Y;
-		sortingDirection = ISort::ASCENDING;
+		sortingParameters.SetSortingKey(COMPONENT_Y);
+		sortingParameters.SetSortingDirection(ASCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -248,7 +247,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -274,8 +273,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #4- sorting Vector2D objects by Y component descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingKey = ISort::COMPONENT_Y;
-		sortingDirection = ISort::DESCENDING;
+		sortingParameters.SetSortingKey(COMPONENT_Y);
+		sortingParameters.SetSortingDirection(DESCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -283,7 +282,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -307,10 +306,10 @@ void SortTest()
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by Y component failed.");
 		/* ==================== SORTING TEST #4- sorting Vector2D objects by Y component descending end ==================== */
 
-		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of squared components ascending begin ==================== */
+		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of components ascending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingKey = ISort::SUM_OF_SQUARED_COMPONENTS;
-		sortingDirection = ISort::ASCENDING;
+		sortingParameters.SetSortingKey(SUM_OF_COMPONENTS);
+		sortingParameters.SetSortingDirection(ASCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -318,7 +317,147 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", elapsedSecs, "[ms]");
+
+		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
+		{
+			if (vectors[i + 1].SumOfComponents() < vectors[i].SumOfComponents())
+			{
+				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
+					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
+				sortingTestCasePassed = false;
+				break;
+			}
+		}
+		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+		{
+			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+		}
+		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of components failed.");
+		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of components ascending end ==================== */
+
+		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of components descending begin ==================== */
+		sortingTestCasePassed = true;
+		sortingParameters.SetSortingKey(SUM_OF_COMPONENTS);
+		sortingParameters.SetSortingDirection(DESCENDING);
+		outerBegin = clock();
+		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
+		{
+			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+			{
+				vectors[i] = initialVectors[i];
+			}
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", elapsedSecs, "[ms]");
+
+		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
+		{
+			if (vectors[i + 1].SumOfComponents() > vectors[i].SumOfComponents())
+			{
+				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
+					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
+				sortingTestCasePassed = false;
+				break;
+			}
+		}
+		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+		{
+			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+		}
+		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of components failed.");
+		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of components descending end ==================== */
+
+		/* ==================== SORTING TEST #7- sorting Vector2D objects by sum of absolute components ascending begin ==================== */
+		sortingTestCasePassed = true;
+		sortingParameters.SetSortingKey(SUM_OF_ABSOLUTE_COMPONENTS);
+		sortingParameters.SetSortingDirection(ASCENDING);
+		outerBegin = clock();
+		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
+		{
+			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+			{
+				vectors[i] = initialVectors[i];
+			}
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", elapsedSecs, "[ms]");
+
+		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
+		{
+			if (vectors[i + 1].SumOfAbsoluteComponents() < vectors[i].SumOfAbsoluteComponents())
+			{
+				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of absolute components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
+					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
+				sortingTestCasePassed = false;
+				break;
+			}
+		}
+		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+		{
+			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+		}
+		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of absolute components failed.");
+		/* ==================== SORTING TEST #7- sorting Vector2D objects by sum of absolute components ascending end ==================== */
+
+		/* ==================== SORTING TEST #8- sorting Vector2D objects by sum of absolute components descending begin ==================== */
+		sortingTestCasePassed = true;
+		sortingParameters.SetSortingKey(SUM_OF_ABSOLUTE_COMPONENTS);
+		sortingParameters.SetSortingDirection(DESCENDING);
+		outerBegin = clock();
+		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
+		{
+			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+			{
+				vectors[i] = initialVectors[i];
+			}
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+		}
+		outerEnd = clock();
+		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", elapsedSecs, "[ms]");
+
+		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
+		{
+			if (vectors[i + 1].SumOfAbsoluteComponents() > vectors[i].SumOfAbsoluteComponents())
+			{
+				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of absolute components failed. Vectors[%d] (%s) should precede Vectors[%d] (%s)",
+					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), i, vectors[i].ToString().c_str());
+				sortingTestCasePassed = false;
+				break;
+			}
+		}
+		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+		{
+			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+		}
+		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of absolute components failed.");
+		/* ==================== SORTING TEST #8- sorting Vector2D objects by sum of absolute components descending end ==================== */
+
+		/* ==================== SORTING TEST #9- sorting Vector2D objects by sum of squared components ascending begin ==================== */
+		sortingTestCasePassed = true;
+		sortingParameters.SetSortingKey(SUM_OF_SQUARED_COMPONENTS);
+		sortingParameters.SetSortingDirection(ASCENDING);
+		outerBegin = clock();
+		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
+		{
+			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
+			{
+				vectors[i] = initialVectors[i];
+			}
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -340,12 +479,12 @@ void SortTest()
 			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of squared components failed.");
-		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of squared components ascending end ==================== */
+		/* ==================== SORTING TEST #9- sorting Vector2D objects by sum of squared components ascending end ==================== */
 
-		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of squared components descending begin ==================== */
+		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingKey = ISort::SUM_OF_SQUARED_COMPONENTS;
-		sortingDirection = ISort::DESCENDING;
+		sortingParameters.SetSortingKey(SUM_OF_SQUARED_COMPONENTS);
+		sortingParameters.SetSortingDirection(DESCENDING);
 		outerBegin = clock();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATION; ++k)
 		{
@@ -353,7 +492,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingKey, sortingDirection);
+			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
 		elapsedSecs = static_cast<double>((outerEnd - outerBegin)) / (NUMBER_OF_MICROSECONDS_IN_MILISECOND * CLOCKS_PER_SEC * NUMBER_OF_TIME_TESTS_ITERATION);
@@ -375,7 +514,7 @@ void SortTest()
 			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of squared components failed.");
-		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of squared components descending end ==================== */
+		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending end ==================== */
 		delete sorter;
 		sorter = NULL;
 	}
@@ -443,6 +582,9 @@ int main (int argc, char* argv[])
 
 	SortTest();
 	//SortTestTime();
+
+	ILogger::GetLogger().ResetConsoleColor();
+	std::cout << "Bye!" << std::endl;
 
 	return 0;
 }

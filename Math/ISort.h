@@ -2,7 +2,9 @@
 
 #include "Math.h"
 #include "Vector.h"
+#include "FloatingPoint.h"
 #include "Utility\ILogger.h"
+#include "SortingParameters.h"
 
 namespace Math
 {
@@ -11,8 +13,6 @@ class ISort
 {
 public:
 	enum MATH_API SortingMethod { BUBBLE_SORT = 0, INSERTION_SORT, SELECTION_SORT, MERGE_SORT, HEAP_SORT, QUICK_SORT, SHELL_SORT, COMB_SORT, COUNTING_SORT, RADIX_SORT, BUCKET_SORT };
-	enum MATH_API SortingKey { COMPONENT_X, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
-	enum MATH_API SortingDirection { ASCENDING = 0, DESCENDING };
 /* ==================== Static variables and functions begin ==================== */
 	MATH_API static ISort* GetSortingObject(SortingMethod sortingMethod);
 /* ==================== Static variables and functions end ==================== */
@@ -30,48 +30,25 @@ private:
 public:
 	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
+	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
 	MATH_API SortingMethod GetSortingMethod() const { return sortingMethod; }
 protected:
 	template <typename T>
+	bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
+	{
+		return NeedSwapping<T>(v1, v2, sortingParameters.GetSortingKey(), sortingParameters.GetSortingDirection());
+	}
+
+	template <typename T>
 	bool NeedSwapping(const T& v1, const T& v2, SortingKey sortingKey, SortingDirection sortingDirection)
 	{
-		/* Checking parameters */
-		if (sortingKey == SUM_OF_COMPONENTS)
-		{
-			LOG(Utility::Critical, LOGPLACE, "Template sorting by sum of components is yet supported by the Math library");
-			return false;
-		}
-
 		switch (sortingDirection)
 		{
 		case ASCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-			case COMPONENT_Y:
-			case COMPONENT_Z:
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (v2 < v1);
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key given.");
-				return false;
-			}
-			break;
+			return (v2 < v1);
 		case DESCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-			case COMPONENT_Y:
-			case COMPONENT_Z:
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (v2 > v1);
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key given.");
-				return false;
-			}
-			break;
+			return (v2 > v1);
 		default:
 			LOG(Utility::Critical, LOGPLACE, "Unknown sorting direction specified.");
 			return false;
@@ -80,113 +57,54 @@ protected:
 	}
 
 	template <>
-	bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, SortingKey sortingKey, SortingDirection sortingDirection)
+	bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const SortingParametersChain& sortingParameters)
 	{
 		/* Checking parameters */
+		SortingDirection sortingDirection = sortingParameters.GetSortingDirection();
+		SortingKey sortingKey = sortingParameters.GetSortingKey();
 		if (sortingKey == COMPONENT_Z)
 		{
 			LOG(Utility::Critical, LOGPLACE, "Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 			return false;
 		}
-		if (sortingKey == SUM_OF_COMPONENTS)
-		{
-			LOG(Utility::Critical, LOGPLACE, "Sorting 2D vectors by sum of components is not yet supported by the Math library");
-			return false;
-		}
 
-		switch (sortingDirection)
+		Math::Real v1 = CollectValueByKey(vec1, sortingKey);
+		Math::Real v2 = CollectValueByKey(vec2, sortingKey);
+
+		if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != NULL)
 		{
-		case ASCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-				return (vec2.GetX() < vec1.GetX());
-			case COMPONENT_Y:
-				return (vec2.GetY() < vec1.GetY());
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (vec2.LengthSquared() < vec1.LengthSquared());
-			case COMPONENT_Z:
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key given.");
-				return false;
-			}
-			break;
-		case DESCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-				return (vec2.GetX() > vec1.GetX());
-			case COMPONENT_Y:
-				return (vec2.GetY() > vec1.GetY());
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (vec2.LengthSquared() > vec1.LengthSquared());
-			case COMPONENT_Z:
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified.");
-				return false;
-			}
-			break;
-		default:
-			LOG(Utility::Critical, LOGPLACE, "Unknown sorting direction specified.");
-			return false;
-			break;
+			return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 		}
+		return NeedSwapping(v1, v2, sortingKey, sortingDirection);
+	}
+
+	template <>
+	bool NeedSwapping(const Math::Vector3D& vec1, const Math::Vector3D& vec2, const SortingParametersChain& sortingParameters)
+	{
+		SortingDirection sortingDirection = sortingParameters.GetSortingDirection();
+		SortingKey sortingKey = sortingParameters.GetSortingKey();
+
+		Math::Real v1 = CollectValueByKey(vec1, sortingKey);
+		Math::Real v2 = CollectValueByKey(vec2, sortingKey);
+
+		if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != NULL)
+		{
+			return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
+		}
+		return NeedSwapping(v1, v2, sortingKey, sortingDirection);
+	}
+
+	template <>
+	bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		return NeedSwapping(vec1, vec2, SortingParametersChain(sortingKey, sortingDirection));
 	}
 
 
 	template <>
 	bool NeedSwapping(const Math::Vector3D& vec1, const Math::Vector3D& vec2, SortingKey sortingKey, SortingDirection sortingDirection)
 	{
-		/* Checking parameters */
-		if (sortingKey == SUM_OF_COMPONENTS)
-		{
-			LOG(Utility::Critical, LOGPLACE, "Sorting 2D vectors by sum of components is not yet supported by the Math library");
-			return false;
-		}
-
-		switch (sortingDirection)
-		{
-		case ASCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-				return (vec2.GetX() < vec1.GetX());
-			case COMPONENT_Y:
-				return (vec2.GetY() < vec1.GetY());
-			case COMPONENT_Z:
-				return (vec2.GetZ() < vec1.GetZ());
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (vec2.LengthSquared() < vec1.LengthSquared());
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key given.");
-				return false;
-			}
-			break;
-		case DESCENDING:
-			switch (sortingKey)
-			{
-			case COMPONENT_X:
-				return (vec2.GetX() > vec1.GetX());
-			case COMPONENT_Y:
-				return (vec2.GetY() > vec1.GetY());
-			case COMPONENT_Z:
-				return (vec2.GetZ() > vec1.GetZ());
-			case SUM_OF_SQUARED_COMPONENTS:
-				return (vec2.LengthSquared() > vec1.LengthSquared());
-			case SUM_OF_COMPONENTS:
-			default:
-				LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified.");
-				return false;
-			}
-			break;
-		default:
-			LOG(Utility::Critical, LOGPLACE, "Unknown sorting direction specified.");
-			return false;
-			break;
-		}
+		return NeedSwapping(vec1, vec2, SortingParametersChain(sortingKey, sortingDirection));
 	}
 
 	Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
@@ -203,7 +121,9 @@ protected:
 		case SUM_OF_SQUARED_COMPONENTS:
 			return v.LengthSquared();
 		case SUM_OF_COMPONENTS:
-			return v.GetX() + v.GetY();
+			return v.SumOfComponents();
+		case SUM_OF_ABSOLUTE_COMPONENTS:
+			return v.SumOfAbsoluteComponents();
 		default:
 			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
 			return v.GetX();
@@ -223,7 +143,9 @@ protected:
 		case SUM_OF_SQUARED_COMPONENTS:
 			return v.LengthSquared();
 		case SUM_OF_COMPONENTS:
-			return v.GetX() + v.GetY() + v.GetZ();
+			return v.SumOfComponents();
+		case SUM_OF_ABSOLUTE_COMPONENTS:
+			return v.SumOfAbsoluteComponents();
 		default:
 			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
 			return v.GetX();

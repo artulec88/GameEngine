@@ -25,9 +25,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
@@ -42,7 +50,7 @@ private:
 			swapOccured = false;
 			for (int i = 1; i < n; ++i)
 			{
-				if (NeedSwapping(vectors[i - 1], vectors[i], sortingKey, sortingDirection))
+				if (NeedSwapping(vectors[i - 1], vectors[i], sortingParameters))
 				{
 					Swap(vectors[i - 1], vectors[i]);
 					swapOccured = true;
@@ -72,9 +80,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
@@ -90,7 +106,7 @@ private:
 			//}
 			T key(vectors[i]);
 			int j = i - 1;
-			while ( (j >= 0) && (NeedSwapping(vectors[j], key, sortingKey, sortingDirection)) )
+			while ( (j >= 0) && (NeedSwapping(vectors[j], key, sortingParameters)) )
 			{
 				vectors[j + 1] = vectors[j];
 				vectors[j] = key;
@@ -120,9 +136,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
@@ -141,13 +165,13 @@ private:
 			T vecToSwap = vectors[indexToSwap];
 			for (int i = k + 2; i < vectorSize; ++i)
 			{
-				if (NeedSwapping(vecToSwap, vectors[i], sortingKey, sortingDirection))
+				if (NeedSwapping(vecToSwap, vectors[i], sortingParameters))
 				{
 					indexToSwap = i;
 					vecToSwap = vectors[indexToSwap];
 				}
 			}
-			if (NeedSwapping(vectors[k], vectors[indexToSwap], sortingKey, sortingDirection))
+			if (NeedSwapping(vectors[k], vectors[indexToSwap], sortingParameters))
 			{
 				Swap(vectors[k], vectors[indexToSwap]);
 			}
@@ -174,9 +198,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
@@ -184,25 +216,25 @@ private:
 			return;
 		}
 		T* auxiliaryTable = new T [vectorSize];
-		Sort<T>(vectors, 0, vectorSize - 1, sortingKey, sortingDirection, auxiliaryTable);
+		Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable);
 		delete [] auxiliaryTable;
 	}
 
 	template <typename T>
-	void Sort(T* values, int left, int right, SortingKey sortingKey, SortingDirection sortingDirection, T* auxiliaryTable)
+	void Sort(T* values, int left, int right, const SortingParametersChain& sortingParameters, T* auxiliaryTable)
 	{
 		if (left >= right)
 		{
 			return;
 		}
 		int pivot = (left + right) / 2;
-		Sort(values, left, pivot, sortingKey, sortingDirection, auxiliaryTable);
-		Sort(values, pivot + 1, right, sortingKey, sortingDirection, auxiliaryTable);
-		Merge(values, left, pivot, right, sortingKey, sortingDirection, auxiliaryTable);
+		Sort(values, left, pivot, sortingParameters, auxiliaryTable);
+		Sort(values, pivot + 1, right, sortingParameters, auxiliaryTable);
+		Merge(values, left, pivot, right, sortingParameters, auxiliaryTable);
 	}
 
 	template <typename T>
-	void Merge(T* values, int left, int pivot, int right, SortingKey sortingKey, SortingDirection sortingDirection, T* auxiliaryTable)
+	void Merge(T* values, int left, int pivot, int right, const SortingParametersChain& sortingParameters, T* auxiliaryTable)
 	{
 		int i, j, q;
 		//Math::Vector2D* t = new Math::Vector2D [right - left + 1];
@@ -216,7 +248,7 @@ private:
 		q = left;
 		while ( (i <= pivot - left) && (j <= right - left) ) // transferring the data with sorting from auxiliary tables to the result table
 		{
-			if (NeedSwapping(auxiliaryTable[j], auxiliaryTable[i], sortingKey, sortingDirection))
+			if (NeedSwapping(auxiliaryTable[j], auxiliaryTable[i], sortingParameters))
 			{
 				values[q] = auxiliaryTable[i++];
 			}
@@ -255,9 +287,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		int j = vectorSize - 1;
 		int heapHeight = 0;
@@ -272,7 +312,7 @@ private:
 			while (i > 0)
 			{
 				int k = i / 2; // the heap is started being constructed here in the input vector
-				if (NeedSwapping(vectors[i], vectors[k], sortingKey, sortingDirection)) // checking the condition of heap existance in the input vector
+				if (NeedSwapping(vectors[i], vectors[k], sortingParameters)) // checking the condition of heap existance in the input vector
 				{
 					Swap(vectors[i], vectors[k]);
 				}
@@ -285,9 +325,9 @@ private:
 			bool swap = true;
 			while (swap)
 			{
-				if ( (2 * i + 1 <= j) && (NeedSwapping(vectors[2 * i + 1], vectors[2 * i], sortingKey, sortingDirection)) )
+				if ( (2 * i + 1 <= j) && (NeedSwapping(vectors[2 * i + 1], vectors[2 * i], sortingParameters)) )
 				{
-					if (NeedSwapping(vectors[2 * i + 1], vectors[i], sortingKey, sortingDirection))
+					if (NeedSwapping(vectors[2 * i + 1], vectors[i], sortingParameters))
 					{
 						Swap(vectors[i], vectors[2 * i + 1]);
 						i = 2 * i + 1;
@@ -297,7 +337,7 @@ private:
 						swap = false;
 					}
 				}
-				else if ( (2 * i <= j) && (NeedSwapping(vectors[2 * i], vectors[i], sortingKey, sortingDirection)) )
+				else if ( (2 * i <= j) && (NeedSwapping(vectors[2 * i], vectors[i], sortingParameters)) )
 				{
 					Swap(vectors[i], vectors[2 * i]);
 					i = 2 * i;
@@ -331,20 +371,28 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
 			LOG(Utility::Emergency, LOGPLACE, "Cannot sort the table using the quick sort algorithm. The specified table is NULL");
 			return;
 		}
-		Sort<T>(vectors, 0, vectorSize - 1, sortingKey, sortingDirection);
+		Sort<T>(vectors, 0, vectorSize - 1, sortingParameters);
 	}
 
 	template <typename T>
-	void Sort(T* vectors, int left, int right, SortingKey sortingKey, SortingDirection sortingDirection)
+	void Sort(T* vectors, int left, int right, const SortingParametersChain& sortingParameters)
 	{
 		if (left >= right)
 		{
@@ -363,7 +411,7 @@ private:
 				++i;
 				//LOG(Utility::Debug, LOGPLACE, "i = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s",
 				//	i, left, right, i, vectors[i].ToString().c_str(), pivot.ToString().c_str());
-			} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingKey, sortingDirection)); // TODO: Check this condition more thoroughly
+			} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingParameters)); // TODO: Check this condition more thoroughly
 			do
 			{
 				if (j <= left)
@@ -371,7 +419,7 @@ private:
 				--j;
 				//LOG(Utility::Debug, LOGPLACE, "j = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s",
 				//	j, left, right, j, vectors[j].ToString().c_str(), pivot.ToString().c_str());
-			} while(!NeedSwapping(pivot, vectors[j], sortingKey, sortingDirection)); // TODO: Check this condition more thoroughly
+			} while(!NeedSwapping(pivot, vectors[j], sortingParameters)); // TODO: Check this condition more thoroughly
 			if (i < j)
 			{
 				//LOG(Utility::Debug, LOGPLACE, "Swapping vectors[%d] (%s) with vectors[%d] (%s)", i, vectors[i].ToString().c_str(), j, vectors[j].ToString().c_str());
@@ -384,14 +432,14 @@ private:
 		//	LOG(Utility::Critical, LOGPLACE, "Calling the quick sort with the same indices. Stack overflow exception will occur.");
 		//	exit(EXIT_FAILURE);
 		//}
-		Sort(vectors, left, j, sortingKey, sortingDirection);
+		Sort(vectors, left, j, sortingParameters);
 		//LOG(Utility::Debug, LOGPLACE, "left2 = %d; right2 = %d", i, right);
 		//if (i == left)
 		//{
 		//	LOG(Utility::Critical, LOGPLACE, "Calling the quick sort with the same indices. Stack overflow exception will occur.");
 		//	exit(EXIT_FAILURE);
 		//}
-		Sort(vectors, i, right, sortingKey, sortingDirection);
+		Sort(vectors, i, right, sortingParameters);
 	}
 /* ==================== Non-static member functions end ==================== */
 
@@ -414,9 +462,17 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		const int QUARTER_VECTOR_SIZE = vectorSize / 4;
 		if (vectors == NULL)
@@ -463,7 +519,7 @@ private:
 			{
 				T vec = vectors[j];
 				int i = j + gap;
-				while ( (i < vectorSize) && (NeedSwapping(vec, vectors[i], sortingKey, sortingDirection)) )
+				while ( (i < vectorSize) && (NeedSwapping(vec, vectors[i], sortingParameters)) )
 				{
 					vectors[i - gap] = vectors[i];
 					i += gap;
@@ -512,12 +568,20 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+	{
+		Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
 	{
 		if (vectors == NULL)
 		{
@@ -541,7 +605,7 @@ private:
 			swapOccured = false;
 			for (int i = 0; i + gap < vectorSize; ++i)
 			{
-				if (NeedSwapping(vectors[i], vectors[i + gap], sortingKey, sortingDirection))
+				if (NeedSwapping(vectors[i], vectors[i + gap], sortingParameters))
 				{
 					Swap(vectors[i], vectors[i + gap]);
 					swapOccured = true;
@@ -570,6 +634,8 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -591,6 +657,8 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -636,8 +704,10 @@ public:
 public:
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
-	void FindMinMax(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection, Math::Real& minValue, Math::Real& maxValue)
+	void FindMinMax(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
 	{
 		if (vectors == NULL)
 		{
@@ -645,47 +715,19 @@ private:
 			return;
 		}
 
-		Vector2D minVector = vectors[0];
-		Vector2D maxVector = vectors[0];
-		for (int i = 1; i < vectorSize; ++i)
+		minValue = REAL_MAX;
+		maxValue = REAL_MIN;
+		for (int i = 0; i < vectorSize; ++i)
 		{
-			if (NeedSwapping(minVector, vectors[i], sortingKey, sortingDirection))
+			Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+			if (minValue > value)
 			{
-				minVector = vectors[i];
+				minValue = value;
 			}
-			else if (NeedSwapping(vectors[i], maxVector, sortingKey, sortingDirection))
+			else if (maxValue < value)
 			{
-				maxVector = vectors[i];
+				maxValue = value;
 			}
-		}
-		switch (sortingKey)
-		{
-		case COMPONENT_X:
-			minValue = minVector.GetX();
-			maxValue = maxVector.GetX();
-			break;
-		case COMPONENT_Y:
-			minValue = minVector.GetY();
-			maxValue = maxVector.GetY();
-			break;
-		case COMPONENT_Z:
-			LOG(Utility::Critical, LOGPLACE, "Cannot determine the min and max values for the specified vectors. The Z component for the 2D vectors is not accessible.");
-			minValue = REAL_MIN;
-			maxValue = REAL_MAX;
-			break;
-		case SUM_OF_SQUARED_COMPONENTS:
-			minValue = minVector.LengthSquared();
-			maxValue = maxVector.LengthSquared();
-			break;
-		case SUM_OF_COMPONENTS:
-			LOG(Utility::Critical, LOGPLACE, "Find min and max sum of components in 2D vectors is not yet supported by the Math library");
-			minValue = REAL_MIN;
-			maxValue = REAL_MAX;
-			break;
-		default:
-			LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified");
-			minValue = REAL_MIN;
-			maxValue = REAL_MAX;
 		}
 		ASSERT(!(maxValue < minValue));
 		if (maxValue < minValue)
@@ -694,7 +736,7 @@ private:
 		}
 	}
 
-	void FindMinMax(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection, Math::Real& minValue, Math::Real& maxValue)
+	void FindMinMax(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
 	{
 		if (vectors == NULL)
 		{
@@ -702,60 +744,33 @@ private:
 			return;
 		}
 
-		Vector3D minVector = vectors[0];
-		Vector3D maxVector = vectors[0];
-		for (int i = 1; i < vectorSize; ++i)
+		minValue = REAL_MAX;
+		maxValue = REAL_MIN;
+		for (int i = 0; i < vectorSize; ++i)
 		{
-			if (NeedSwapping(minVector, vectors[i], sortingKey, sortingDirection))
+			Math::Real value = CollectValueByKey(vectors[i], sortingKey);
+			if (minValue > value)
 			{
-				minVector = vectors[i];
+				minValue = value;
 			}
-			else if (NeedSwapping(vectors[i], maxVector, sortingKey, sortingDirection))
+			else if (maxValue < value)
 			{
-				maxVector = vectors[i];
+				maxValue = value;
 			}
-		}
-		switch (sortingKey)
-		{
-		case COMPONENT_X:
-			minValue = minVector.GetX();
-			maxValue = maxVector.GetX();
-			break;
-		case COMPONENT_Y:
-			minValue = minVector.GetY();
-			maxValue = maxVector.GetY();
-			break;
-		case COMPONENT_Z:
-			minValue = minVector.GetZ();
-			maxValue = maxVector.GetZ();
-			break;
-		case SUM_OF_SQUARED_COMPONENTS:
-			minValue = minVector.LengthSquared();
-			maxValue = maxVector.LengthSquared();
-			break;
-		case SUM_OF_COMPONENTS:
-			LOG(Utility::Critical, LOGPLACE, "Find min and max sum of components in 2D vectors is not yet supported by the Math library");
-			minValue = REAL_MIN;
-			maxValue = REAL_MAX;
-			break;
-		default:
-			LOG(Utility::Critical, LOGPLACE, "Unknown sorting key specified");
-			minValue = REAL_MIN;
-			maxValue = REAL_MAX;
 		}
 		ASSERT(!(maxValue < minValue));
-		if (maxValue < minValue)
-		{
-			LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
-		}
+		//if (maxValue < minValue)
+		//{
+		//	LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
+		//}
 	}
 
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
 	{
 		Math::Real minValue, maxValue;
-		FindMinMax(vectors, vectorSize, sortingKey, sortingDirection, minValue, maxValue);
-		LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
+		FindMinMax(vectors, vectorSize, sortingKey, minValue, maxValue);
+		//LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
 
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
 		const int NUMBER_OF_BUCKETS = sqrtf(vectorSize);
@@ -766,7 +781,7 @@ private:
 		{
 			buckets[i].SetLowBound(bucketLowBound);
 			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
-			LOG(Utility::Debug, LOGPLACE, "Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
+			//LOG(Utility::Debug, LOGPLACE, "Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
 			bucketLowBound += bucketWidth;
 		}
 
@@ -784,38 +799,141 @@ private:
 
 			ASSERT((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS));
 
-			if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
-			{
-				LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
-			}
+			//if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
+			//{
+			//	LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
+			//}
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		ISort* insertionSorter = ISort::GetSortingObject(ISort::INSERTION_SORT);
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
-			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
-			{
-				LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
-			}
+			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+			//{
+			//	LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			//}
 			insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingDirection);
 		}
 		SAFE_DELETE(insertionSorter);
 
-		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
-		{
-			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
-			{
-				LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
-			}
-		}
+		//for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		//{
+		//	for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+		//	{
+		//		LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+		//	}
+		//}
 
 		int index = 0;
+		switch (sortingDirection)
+		{
+		case ASCENDING:
+			for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+			{
+				for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+				{
+					vectors[index] = buckets[i].GetVector(j);
+				}
+			}
+			break;
+		case DESCENDING:
+			for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
+			{
+				for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+				{
+					vectors[index] = buckets[i].GetVector(j);
+				}
+			}
+			break;
+		default:
+			LOG(Utility::Error, LOGPLACE, "");
+			break;
+		}
+	}
+
+	template <typename T>
+	void Sort(T* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+	{
+		Math::Real minValue, maxValue;
+		FindMinMax(vectors, vectorSize, sortingParameters.GetSortingKey(), minValue, maxValue);
+		//LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
+
+		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
+		const int NUMBER_OF_BUCKETS = sqrtf(vectorSize);
+		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
+		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
+		Math::Real bucketLowBound = minValue;
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
-			for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+			buckets[i].SetLowBound(bucketLowBound);
+			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
+			//LOG(Utility::Debug, LOGPLACE, "Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
+			bucketLowBound += bucketWidth;
+		}
+
+		for (int i = 0; i < vectorSize; ++i)
+		{
+			Math::Real value = CollectValueByKey(vectors[i], sortingParameters.GetSortingKey());
+			//LOG(Utility::Debug, LOGPLACE, "vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
+			
+			// Calculate the index of the bucket to which we will add the vector
+			int bucketIndex = static_cast<int>(NUMBER_OF_BUCKETS * ((value - minValue) / (maxValue - minValue))); // TODO: Is it possible for minValue == maxValue? If so, then we have a division by 0 problem.
+			if (bucketIndex == NUMBER_OF_BUCKETS)
 			{
-				vectors[index] = buckets[i].GetVector(j);
+				--bucketIndex;
 			}
+
+			ASSERT((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS));
+
+			//if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
+			//{
+			//	LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
+			//}
+			buckets[bucketIndex].PushVector(vectors[i]);
+		}
+		ISort* insertionSorter = ISort::GetSortingObject(ISort::INSERTION_SORT);
+		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		{
+			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+			//{
+			//	LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			//}
+			insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingParameters);
+		}
+		SAFE_DELETE(insertionSorter);
+
+		//for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+		//{
+		//	for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
+		//	{
+		//		LOG(Utility::Debug, LOGPLACE, "buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+		//	}
+		//}
+
+		int index = 0;
+		switch (sortingParameters.GetSortingDirection())
+		{
+		case ASCENDING:
+			for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
+			{
+				for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+				{
+					vectors[index] = buckets[i].GetVector(j);
+				}
+			}
+			break;
+		case DESCENDING:
+			for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
+			{
+				for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
+				{
+					vectors[index] = buckets[i].GetVector(j);
+				}
+			}
+			break;
+		default:
+			LOG(Utility::Error, LOGPLACE, "");
+			break;
 		}
 	}
 /* ==================== Non-static member functions end ==================== */

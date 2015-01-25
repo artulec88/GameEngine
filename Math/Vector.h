@@ -24,6 +24,9 @@ public: // public member functions
 	void SetX(Real x) { m_x = x; };
 	void SetY(Real y) { m_y = y; };
 
+	Real SumOfComponents() const { return m_x + m_y; }
+	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y); }
+
 	Real Length() const; // CHECKED!
 	Real LengthSquared() const; // CHECKED!
 	
@@ -78,6 +81,9 @@ public: // public member functions
 	void SetX(Real x) { m_x = x; };
 	void SetY(Real y) { m_y = y; };
 	void SetZ(Real z) { m_z = z; };
+
+	Real SumOfComponents() const { return m_x + m_y + m_z; }
+	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z); }
 
 	Real Length() const; // CHECKED!
 	Real LengthSquared() const; // CHECKED!

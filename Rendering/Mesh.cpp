@@ -22,10 +22,6 @@ using namespace Utility;
 using namespace std;
 using namespace Math;
 
-//#define HEIGHTMAP_BRUTE_FORCE
-#define HEIGHTMAP_SORT_TABLE
-//#define HEIGHTMAP_KNN
-
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
 MeshData::MeshData(int indexSize) :
@@ -389,6 +385,9 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 	lastX(REAL_ZERO),
 	lastY(REAL_ZERO),
 	lastZ(REAL_ZERO)
+#ifdef HEIGHTMAP_SORT_TABLE
+	,lastClosestPositionIndex(0)
+#endif
 {
 }
 
@@ -424,10 +423,9 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	Math::Real closestPositionsDistances [SAMPLES];
 	for (int i = 0; i < SAMPLES; ++i)
 	{
-		// TODO: Create a Macro REAL_MAX in Math.h
-		closestPositions[i].SetX(9999999999999.9f);
-		closestPositions[i].SetY(9999999999999.9f);
-		closestPositions[i].SetZ(9999999999999.9f);
+		closestPositions[i].SetX(REAL_MAX);
+		closestPositions[i].SetY(REAL_MAX);
+		closestPositions[i].SetZ(REAL_MAX);
 		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
 	}
 	Math::Real y = REAL_ZERO;
@@ -510,71 +508,26 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	Math::Real closestPositionsDistances [SAMPLES];
 	for (int i = 0; i < SAMPLES; ++i)
 	{
-		// TODO: Create a Macro REAL_MAX in Math.h
-		closestPositions[i].SetX(9999999999999.9f);
-		closestPositions[i].SetY(9999999999999.9f);
-		closestPositions[i].SetZ(9999999999999.9f);
+		closestPositions[i].SetX(REAL_MAX);
+		closestPositions[i].SetY(REAL_MAX);
+		closestPositions[i].SetZ(REAL_MAX);
 		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
 	}
 	Math::Real y = REAL_ZERO;
-	bool foundPerfectMatch = false;
-	for (int i = 0; i < positionsCount; ++i)
+
+	int lowIndex = lastClosestPositionIndex, highIndex = lastClosestPositionIndex + 1;
+	while (true)
 	{
-		//if (i % 10000 == 0)
-		//{
-		//	LOG(Utility::Debug, LOGPLACE, "i = %d", i);
-		//}
-
-
-		/**
-		 * Checking the closestPositions table and adding new position if distance(positions[i], (x, z)) < closestPositions[SAMPLES]
-		 */
-		Math::Real distance = (positions[i].GetXZ() - xz).LengthSquared();
-		//LOG(Utility::Info, LOGPLACE, "distance = %.2f", distance);
-		if (AlmostEqual(distance, REAL_ZERO))
-		{
-			y = positions[i].GetY();
-			foundPerfectMatch = true;
-			break;
-		}
-		int index = SAMPLES;
-		for (; index > 0; --index)
-		{
-			if (distance >= closestPositionsDistances[index - 1])
-			{
-				break;
-			}
-		}
-		//LOG(Utility::Info, LOGPLACE, "index = %d", index);
-		if (index < SAMPLES)
-		{
-			for (int j = SAMPLES - 1; j > index; --j)
-			{
-				closestPositionsDistances[j] = closestPositionsDistances[j - 1];
-				closestPositions[j] = closestPositions[j - 1];
-			}
-			closestPositionsDistances[index] = distance;
-			closestPositions[index] = positions[i];
-		}
-	}
-
-	//LOG(Utility::Info, LOGPLACE, "Closest positions for location %s = { %s, %s, %s, %s }", xz.ToString().c_str(), closestPositions[0].ToString().c_str(),
-	//	closestPositions[1].ToString().c_str(), closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
-
-	if (!foundPerfectMatch)
-	{
-		y = REAL_ZERO;
-		for (int i = 0; i < SAMPLES; ++i)
-		{
-			y += closestPositions[i].GetY();
-		}
-		y /= static_cast<Math::Real>(SAMPLES);
+		Math::Real distanceForLowIndex = positions[lowIndex].LengthSquared();
+		Math::Real distanceForHighIndex = positions[highIndex].LengthSquared();
+		--lowIndex;
+		++highIndex;
 	}
 
 	lastX = xz.GetX();
 	lastZ = xz.GetY(); // in this case GetY() returns Z
 
-	y += 1.5f; // head position
+	y += 1.5f; // head position adjustment
 	lastY = y;
 
 	//LOG(Utility::Notice, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
@@ -622,7 +575,7 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 
 	//std::sort
 
-	//ISort::GetSortingObject(ISort::BUBBLE_SORT).Sort(
+	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
 
 	positionsCount = uniquePositions.size();;
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
@@ -634,7 +587,7 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 #endif
 
 	/**
-	 * TODO: Think of a nice way to store positions so that access time in GetHeightAt(x, z) is optimized. Maybe a Binary Tree?
+	 * TODO: Think of a nice way to store positions so that access time in GetHeightAt(x, z) is optimized. Maybe a Binary Tree? Maybe a k-d tree?
 	 * Maybe find the minimum and maximum value for "Y" component of all positions and then use bucket sort (http://en.wikipedia.org/wiki/Bucket_sort)
 	 * based on "Y" values?
 	 */
