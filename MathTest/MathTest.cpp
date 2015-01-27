@@ -4,6 +4,7 @@
 #include "Math\Quaternion.h"
 #include "Math\Vector.h"
 #include "Math\ISort.h"
+#include "Math\KDTree.h"
 
 #include "Utility\ICommand.h"
 #include "Utility\ILogger.h"
@@ -24,11 +25,12 @@ clock_t outerBegin, outerEnd;
 double elapsedSecs;
 
 unsigned int testNumber = 0;
-bool angleTestEnabled = true;
-bool vectorTestEnabled = true;
-bool matrixTestEnabled = true;
-bool quaternionTestEnabled = true;
-bool sortingTestEnabled = true;
+bool angleTestEnabled = false;
+bool vectorTestEnabled = false;
+bool matrixTestEnabled = false;
+bool quaternionTestEnabled = false;
+bool sortingTestEnabled = false;
+bool kdTreeTestEnabled = true;
 bool otherTestEnabled = true;
 
 void ReportError(const std::string& reportStr)
@@ -141,7 +143,6 @@ void SortTest()
 	//sortingOutputFile.open("sortingOutput.txt");
 
 	LOG (Notice, LOGPLACE, "Sorting test started");
-	srand((unsigned int)time(NULL));
 	const int NUMBER_OF_VECTORS = 1000000;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
@@ -561,8 +562,49 @@ void SortTest()
 	LOG (Notice, LOGPLACE, "Sorting test finished");
 }
 
+void KDTreeTest()
+{
+	if (!kdTreeTestEnabled)
+	{
+		return;
+	}
+
+	LOG (Notice, LOGPLACE, "K-d tree test started");
+	const int NUMBER_OF_POSITIONS = 6;
+	//const Real LOWER_BOUND_X = -20.0f;
+	//const Real HIGHER_BOUND_X = 20.0f;
+	//const Real LOWER_BOUND_Y = -20.0f;
+	//const Real HIGHER_BOUND_Y = 20.0f;
+	Vector3D* positions = new Vector3D[NUMBER_OF_POSITIONS];
+	//Vector2D* vectors = new Vector2D[NUMBER_OF_VECTORS];
+	positions[0].SetX(2.0f); positions[0].SetY(3.0f); positions[0].SetZ(2.0f);
+	positions[1].SetX(5.0f); positions[1].SetY(4.0f); positions[1].SetZ(4.0f);
+	positions[2].SetX(9.0f); positions[2].SetY(6.0f); positions[2].SetZ(-2.0f);
+	positions[3].SetX(4.0f); positions[3].SetY(7.0f); positions[3].SetZ(1.0f);
+	positions[4].SetX(8.0f); positions[4].SetY(1.0f); positions[4].SetZ(12.0f);
+	positions[5].SetX(7.0f); positions[5].SetY(2.0f); positions[5].SetZ(6.0f);
+	//initialVectors[6].SetX(6.0f); initialVectors[6].SetY(2.0f);
+	//initialVectors[7].SetX(7.0f); initialVectors[7].SetY(3.0f);
+	//initialVectors[8].SetX(8.0f); initialVectors[8].SetY(4.0f);
+	//initialVectors[9].SetX(9.0f); initialVectors[9].SetY(5.0f);
+	//for (int i = 0; i < NUMBER_OF_POSITIONS; ++i)
+	//{
+	//	initialVectors[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
+	//	initialVectors[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
+	//	LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
+	//}
+
+	KDTree* kdTree = new KDTree(positions, NUMBER_OF_POSITIONS);
+
+	LOG(Utility::Info, LOGPLACE, "K-d tree structure:\n%s", kdTree->ToString().c_str());
+
+	delete kdTree;
+	delete [] positions;
+}
+
 int main (int argc, char* argv[])
 {
+	srand((unsigned int)time(NULL));
 	ICommand::SetCommand(argc, argv);
 	//if (Command.IsPresent("-help"))
 	//{
@@ -619,6 +661,8 @@ int main (int argc, char* argv[])
 
 	SortTest();
 	//SortTestTime();
+
+	KDTreeTest();
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

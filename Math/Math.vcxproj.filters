@@ -42,9 +42,6 @@
     <ClInclude Include="KDTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KDTreeNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ISort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="KDTree.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="KDTreeNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ISort.cpp">

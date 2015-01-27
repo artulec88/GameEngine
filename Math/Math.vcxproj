@@ -81,7 +81,6 @@
     <ClInclude Include="FloatingPoint.h" />
     <ClInclude Include="ISort.h" />
     <ClInclude Include="KDTree.h" />
-    <ClInclude Include="KDTreeNode.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Quaternion.h" />
@@ -102,7 +101,6 @@
     </ClCompile>
     <ClCompile Include="ISort.cpp" />
     <ClCompile Include="KDTree.cpp" />
-    <ClCompile Include="KDTreeNode.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Quaternion.cpp" />
