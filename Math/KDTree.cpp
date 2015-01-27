@@ -69,6 +69,12 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 	}
 }
 
+Real KDTree::SearchNearestValue(const Vector3D& position, int numberOfSamples = 1) const
+{
+	// TODO: Finish this function
+	return m_value;
+}
+
 std::string KDTree::ToString() const
 {
 	return ToString(0);
