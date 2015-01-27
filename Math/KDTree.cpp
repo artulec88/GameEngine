@@ -71,35 +71,54 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 
 std::string KDTree::ToString() const
 {
+	return ToString(0);
+}
+
+std::string KDTree::ToString(int depth) const
+{
 	std::stringstream s("");
-	s << "Parent: " << m_position.ToString() << " with value " << m_value << " has following children:";
-	s << std::endl;
+	for (int i = 0; i < depth; ++i)
+	{
+		s << "  "; // TODO: create a const static field representing the indentation string
+	}
+	s << "Parent: " << m_position.ToString() << " with value " << m_value << " has following children:" << std::endl;
+	for (int i = 0; i < depth; ++i)
+	{
+		s << "  "; // TODO: create a const static field representing the indentation string
+	}
 	if (m_leftTree == NULL)
 	{
+		//s << "\t1. NULL" << std::endl;
 		s << "\t1. NULL" << std::endl;
 	}
 	else
 	{
-		s << "\t1. " << m_leftTree->GetPosition().ToString() << " with value " << m_leftTree->GetValue() << std::endl;
+		//s << "\t1. " << m_leftTree->GetPosition().ToString() << " with value " << m_leftTree->GetValue() << std::endl;
+		s << m_leftTree->ToString(depth + 1) << std::endl;
+	}
+	for (int i = 0; i < depth; ++i)
+	{
+		s << "  "; // TODO: create a const static field representing the indentation string
 	}
 	if (m_rightTree == NULL)
 	{
-		s << "\t2. NULL" << std::endl;
+		//s << "\t2. NULL" << std::endl;
+		s << "2. NULL" << std::endl;
 	}
 	else
 	{
-		s << "\t2. " << m_rightTree->GetPosition().ToString() << " with value " << m_rightTree->GetValue() << std::endl;
-	}
-	s << std::endl;
-
-	if (m_leftTree != NULL)
-	{
-		s << m_leftTree->ToString();
-	}
-	if (m_rightTree != NULL)
-	{
-		s << m_rightTree->ToString();
+		s << m_rightTree->ToString(depth + 1) << std::endl;
+		//s << "\t2. " << m_rightTree->GetPosition().ToString() << " with value " << m_rightTree->GetValue() << std::endl;
 	}
 
-	return s.str();
+	//if (m_leftTree != NULL)
+	//{
+	//	s << m_leftTree->ToString();
+	//}
+	//if (m_rightTree != NULL)
+	//{
+	//	s << m_rightTree->ToString();
+	//}
+
+	return s.str();	
 }
