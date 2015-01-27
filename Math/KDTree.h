@@ -27,6 +27,7 @@ public:
 	MATH_API std::string ToString() const;
 private:
 	void BuildTree(Math::Vector3D* positions, int positionsCount, int depth);
+	std::string ToString(int depth) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
