@@ -22,6 +22,13 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	/**
+	 * \brief Searches the tree to find the numberOfSamples closest tree nodes to the specified position.
+	 * Then it interpolates their values based on their distances to the specified position. Finally it returns the interpolated value.
+	 * 
+	 * TODO: Add additional parameter to represent how to interpolate the nodes (average, weighted average, some other interpolation?)
+	 */
+	MATH_API Real SearchNearestValue(const Vector3D& position, int numberOfSamples = 1) const;
 	MATH_API const Vector2D& GetPosition() const { return m_position; }
 	MATH_API Real GetValue() const { return m_value; }
 	MATH_API std::string ToString() const;
