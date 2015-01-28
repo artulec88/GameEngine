@@ -69,10 +69,85 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 	}
 }
 
-Real KDTree::SearchNearestValue(const Vector3D& position, int numberOfSamples = 1) const
+Real KDTree::SearchNearestValue(const Vector2D& position, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples */) const
+{
+	minDistance = REAL_MAX;
+	SearchNearestValue(position, 0, minDistancePosition, minDistance);
+	return minDistancePosition.GetY();
+}
+
+void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples */) const
 {
 	// TODO: Finish this function
-	return m_value;
+	Real distance = (position - m_position).LengthSquared();
+	if (minDistance > distance)
+	{
+		minDistancePosition = Math::Vector3D(m_position.GetX(), m_value, m_position.GetY());
+		minDistance = distance;
+		//if (AlmostEqual(minDistance, REAL_ZERO))
+		//{
+		//	return minDistance;
+		//}
+	}
+	if (HasChildren())
+	{
+		//switch (depth % 2)
+		//{
+		//case 0:
+		//	sortingKey = COMPONENT_X;
+		//	break;
+		//case 1:
+		//	sortingKey = COMPONENT_Z;
+		//	break;
+		//default: // shouldn't occur at all
+		//	LOG(Utility::Warning, LOGPLACE, "Cannot determine the sorting key for the process of constructing the k-d tree");
+		//	sortingKey = COMPONENT_X;
+		//	break;
+		//}
+
+		Real positionComponentValue = ((depth % 2) == 0) ? position.GetX() : position.GetY();
+		Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.GetX() : m_position.GetY();
+		bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
+
+		if (searchLeftTreeFirst)
+		{
+			if (((m_leftTree != NULL)) && (positionComponentValue - minDistance <= nodePositionComponentValue))
+			{
+				m_leftTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
+			}
+			else if (m_leftTree != NULL)
+			{
+				LOG(Utility::Debug, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
+			}
+			if ((m_rightTree != NULL) && ((positionComponentValue + minDistance) > nodePositionComponentValue))
+			{
+				m_rightTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
+			}
+			else if (m_rightTree != NULL)
+			{
+				LOG(Utility::Debug, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
+			}
+		}
+		else
+		{
+			if ((m_rightTree != NULL) && ((positionComponentValue + minDistance) > nodePositionComponentValue))
+			{
+				m_rightTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
+			}
+			else if (m_rightTree != NULL)
+			{
+				LOG(Utility::Debug, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
+			}
+			if ((m_leftTree != NULL) && ((positionComponentValue - minDistance) <= nodePositionComponentValue))
+			{
+				m_leftTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
+			}
+			else if (m_leftTree != NULL)
+			{
+				LOG(Utility::Debug, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
+			}
+		}
+	}
 }
 
 std::string KDTree::ToString() const
@@ -88,21 +163,21 @@ std::string KDTree::ToString(int depth) const
 		s << "  "; // TODO: create a const static field representing the indentation string
 	}
 	s << "Parent: " << m_position.ToString() << " with value " << m_value << " has following children:" << std::endl;
-	for (int i = 0; i < depth; ++i)
+	for (int i = 0; i < depth + 1; ++i)
 	{
 		s << "  "; // TODO: create a const static field representing the indentation string
 	}
 	if (m_leftTree == NULL)
 	{
 		//s << "\t1. NULL" << std::endl;
-		s << "\t1. NULL" << std::endl;
+		s << "1. NULL" << std::endl;
 	}
 	else
 	{
 		//s << "\t1. " << m_leftTree->GetPosition().ToString() << " with value " << m_leftTree->GetValue() << std::endl;
-		s << m_leftTree->ToString(depth + 1) << std::endl;
+		s << "1. " << m_leftTree->ToString(depth + 1) << std::endl;
 	}
-	for (int i = 0; i < depth; ++i)
+	for (int i = 0; i < depth + 1; ++i)
 	{
 		s << "  "; // TODO: create a const static field representing the indentation string
 	}
@@ -113,7 +188,7 @@ std::string KDTree::ToString(int depth) const
 	}
 	else
 	{
-		s << m_rightTree->ToString(depth + 1) << std::endl;
+		s << "2. " << m_rightTree->ToString(depth + 1) << std::endl;
 		//s << "\t2. " << m_rightTree->GetPosition().ToString() << " with value " << m_rightTree->GetValue() << std::endl;
 	}
 

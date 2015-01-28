@@ -571,6 +571,7 @@ void KDTreeTest()
 
 	LOG (Notice, LOGPLACE, "K-d tree test started");
 	const int NUMBER_OF_POSITIONS = 6;
+	const int NUMBER_OF_SEARCH_POSITIONS = 1;
 	//const Real LOWER_BOUND_X = -20.0f;
 	//const Real HIGHER_BOUND_X = 20.0f;
 	//const Real LOWER_BOUND_Y = -20.0f;
@@ -598,7 +599,28 @@ void KDTreeTest()
 
 	LOG(Utility::Info, LOGPLACE, "K-d tree structure:\n%s", kdTree->ToString().c_str());
 
+	Math::Vector2D* searchPositions = new Math::Vector2D[NUMBER_OF_SEARCH_POSITIONS];
+	searchPositions[0].SetX(2.0f); searchPositions[0].SetY(3.0f);
+	//searchPositions[1].SetX(5.0f); searchPositions[1].SetY(4.0f);
+	//searchPositions[2].SetX(9.0f); searchPositions[2].SetY(6.0f);
+	//searchPositions[3].SetX(4.0f); searchPositions[3].SetY(7.0f);
+	//searchPositions[4].SetX(8.0f); searchPositions[4].SetY(1.0f);
+	//searchPositions[5].SetX(7.0f); searchPositions[5].SetY(2.0f);
+	//searchPositions[6].SetX(6.0f); searchPositions[6].SetY(2.0f);
+	//searchPositions[7].SetX(7.0f); searchPositions[7].SetY(3.0f);
+	//searchPositions[8].SetX(8.0f); searchPositions[8].SetY(4.0f);
+	//searchPositions[9].SetX(9.0f); searchPositions[9].SetY(5.0f);
+	for (int i = 0; i < NUMBER_OF_SEARCH_POSITIONS; ++i)
+	{
+		Math::Vector3D minDistancePosition;
+		Real minDistance;
+		Real height = kdTree->SearchNearestValue(searchPositions[i], minDistancePosition, minDistance);
+		LOG(Utility::Info, LOGPLACE, "The nearest point for search point (%s) is (%s). The minimum distance equals %.2f and returned height is %.2f",
+			searchPositions[i].ToString().c_str(), minDistancePosition.ToString().c_str(), minDistance, height);
+	}
+
 	delete kdTree;
+	delete [] searchPositions;
 	delete [] positions;
 }
 
@@ -612,7 +634,7 @@ int main (int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
+	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Debug);
 
 	Matrix4D identityMatrix1 = Matrix4D::Identity();
 	Matrix4D identityMatrix2 = Matrix4D::Identity();
