@@ -22,25 +22,13 @@ class RENDERING_API CoreEngine
 {
 /* ==================== Static variables begin ==================== */
 protected:
-	static CoreEngine* coreEngine;
+	static CoreEngine* s_coreEngine;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Static functions begin ==================== */
 public:
 	static CoreEngine* GetCoreEngine();
 /* ==================== Static functions end ==================== */
-
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	bool isRunning;
-	int windowWidth;
-	int windowHeight;
-	const char* windowTitle;
-	const Math::Real frameTime;
-	Game* game;
-	Renderer* renderer;
-	TextRenderer* fpsTextRenderer;
-/* ==================== Non-static member variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -58,12 +46,12 @@ public:
 	unsigned int GetCurrentCameraIndex() const;
 	unsigned int NextCamera() const;
 	unsigned int PrevCamera() const;
-	Renderer* GetRenderer() const { return renderer; }
+	Renderer* GetRenderer() const { return m_renderer; }
 
 	
-	int GetWindowWidth() const { return this->windowWidth; };
-	int GetWindowHeight() const { return this->windowHeight; };
-	void SetCursorPos(Math::Real xPos, Math::Real yPos) { this->renderer->SetCursorPos(xPos, yPos); }
+	int GetWindowWidth() const { return m_windowWidth; };
+	int GetWindowHeight() const { return m_windowHeight; };
+	void SetCursorPos(Math::Real xPos, Math::Real yPos);
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
 protected:
@@ -71,6 +59,18 @@ protected:
 	virtual void Run();
 	void PollEvents();
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	bool m_isRunning;
+	int m_windowWidth;
+	int m_windowHeight;
+	const char* m_windowTitle;
+	const Math::Real m_frameTime;
+	Game* m_game;
+	Renderer* m_renderer;
+	TextRenderer* m_fpsTextRenderer;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class CoreEngine */
 
 } /* end namespace Rendering */

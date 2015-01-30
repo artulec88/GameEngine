@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Quaternion.h"
+#include "FloatingPoint.h"
 #include <sstream>
 
 using namespace Math;
@@ -251,6 +252,5 @@ Quaternion& Quaternion::operator=(const Quaternion& q)
 
 bool Quaternion::operator==(const Quaternion& q) const
 {
-	// TODO: Create a floating-point comparer and use it here
-	return ( (this->GetX() == q.GetX()) && (this->GetY() == q.GetY()) && (this->GetZ() == q.GetZ()) && (this->GetW() == q.GetW()) );
+	return ( AlmostEqual(m_x, q.GetX()) && AlmostEqual(m_y, q.GetY()) && AlmostEqual(m_z, q.GetZ()) && AlmostEqual(m_w, q.GetW()) );
 }

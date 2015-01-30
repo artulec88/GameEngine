@@ -24,7 +24,7 @@ class RENDERING_API BaseLight : public GameComponent
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
+	explicit BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
 	virtual ~BaseLight(void);
 private:
 	BaseLight(const BaseLight& baseLight) {} // Copy constructor disabled

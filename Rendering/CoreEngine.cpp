@@ -16,38 +16,37 @@ using namespace Rendering;
 using namespace Utility;
 using namespace std;
 
-CoreEngine* CoreEngine::coreEngine = NULL;
+CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ CoreEngine* CoreEngine::GetCoreEngine()
 {
-	return coreEngine;
+	return s_coreEngine;
 }
 
 CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, Game* game) :
-	isRunning(false),
-	windowWidth(width),
-	windowHeight(height),
-	windowTitle(title),
-	frameTime(1.0f / maxFrameRate),
-	game(game),
-	renderer(NULL),
-	fpsTextRenderer(NULL)
+	m_isRunning(false),
+	m_windowWidth(width),
+	m_windowHeight(height),
+	m_windowTitle(title),
+	m_frameTime(1.0f / maxFrameRate),
+	m_game(game),
+	m_renderer(NULL),
+	m_fpsTextRenderer(NULL)
 {
 	// TODO: Fix singleton initialization
 	LOG(Debug, LOGPLACE, "Main application construction started");
-	if (coreEngine != NULL)
+	if (s_coreEngine != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
-		delete coreEngine;
-		coreEngine = NULL;
+		SAFE_DELETE(s_coreEngine);
 	}
-	coreEngine = this;
+	s_coreEngine = this;
 	
-	game->SetEngine(this);
+	m_game->SetEngine(this);
 
 	CreateRenderer(width, height, title);
 
-	fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f);
+	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f);
 	
 	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
@@ -58,17 +57,9 @@ CoreEngine::~CoreEngine(void)
 	LOG(Debug, LOGPLACE, "Core engine destruction started");
 
 	// TODO: Expand this with additional resources deallocation
-	if (this->game != NULL)
-	{
-		delete this->game;
-		this->game = NULL;
-	}
-	if (this->renderer != NULL)
-	{
-		delete this->renderer;
-		this->renderer = NULL;
-	}
-	SAFE_DELETE(fpsTextRenderer);
+	SAFE_DELETE(m_game);
+	SAFE_DELETE(m_renderer);
+	SAFE_DELETE(m_fpsTextRenderer);
 
 	LOG(Notice, LOGPLACE, "Core engine destruction finished");
 	ILogger::GetLogger().ResetConsoleColor();
@@ -78,20 +69,20 @@ CoreEngine::~CoreEngine(void)
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
 	GLFWwindow* window = Rendering::InitGraphics(width, height, title);
-	this->renderer = new Renderer(window);
+	m_renderer = new Renderer(window);
 
-	if (this->renderer == NULL)
+	if (m_renderer == NULL)
 	{
 		LOG(Critical, LOGPLACE, "Failed to create a Renderer");
-		exit(-1);
+		exit(EXIT_FAILURE);
 	}
 
-	ASSERT(this->renderer != NULL);
+	ASSERT(m_renderer != NULL);
 }
 
 void CoreEngine::Start()
 {
-	if (isRunning)
+	if (m_isRunning)
 	{
 		LOG(Warning, LOGPLACE, "The core engine instance is already running");
 		return;
@@ -186,14 +177,14 @@ double timeSum3 = 0.0;
 
 void CoreEngine::Stop()
 {
-	if (!isRunning)
+	if (!m_isRunning)
 	{
 		LOG(Warning, LOGPLACE, "The core engine instance is not running");
 		return;
 	}
 	
-	isRunning = false;
-	ASSERT(!isRunning);
+	m_isRunning = false;
+	ASSERT(!m_isRunning);
 	LOG(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
@@ -220,14 +211,14 @@ void CoreEngine::Run()
 	LOG(Notice, LOGPLACE, "The game started running");
 	ASSERT(!isRunning);
 
-	game->Init();
+	m_game->Init();
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
-	renderer->InitializeTweakBars();
-	game->InitializeTweakBars();
+	m_renderer->InitializeTweakBars();
+	m_game->InitializeTweakBars();
 #endif
 
-	isRunning = true;
+	m_isRunning = true;
 
 #ifdef COUNT_FPS
 	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
@@ -244,7 +235,7 @@ void CoreEngine::Run()
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 
-	while (isRunning)
+	while (m_isRunning)
 
 	{
 		/* ==================== REGION #1 begin ====================*/
@@ -282,11 +273,11 @@ void CoreEngine::Run()
 
 		/* ==================== REGION #2 begin ====================*/
 		QueryPerformanceCounter(&t1); // start timer
-		while (unprocessingTime > frameTime)
+		while (unprocessingTime > m_frameTime)
 		{
 			//previousTime = GetTime();
 			isRenderRequired = true;
-			if (renderer->IsCloseRequested())
+			if (m_renderer->IsCloseRequested())
 			{
 				Stop();
 				return;
@@ -303,7 +294,7 @@ void CoreEngine::Run()
 			
 			/* ==================== REGION #2_2 begin ====================*/
 			QueryPerformanceCounter(&innerT1);
-			game->Input(frameTime);
+			m_game->Input(m_frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_2++;
 			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
@@ -315,7 +306,7 @@ void CoreEngine::Run()
 			
 			/* ==================== REGION #2_3 begin ====================*/
 			QueryPerformanceCounter(&innerT1);
-			game->Update(frameTime);
+			m_game->Update(m_frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_3++;
 			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
@@ -327,7 +318,7 @@ void CoreEngine::Run()
 			Rendering::CheckChangesAndUpdateGLState();
 #endif
 			
-			unprocessingTime -= frameTime;
+			unprocessingTime -= m_frameTime;
 		}
 		QueryPerformanceCounter(&t2); // start timer
 		countStats2++;
@@ -340,29 +331,29 @@ void CoreEngine::Run()
 		QueryPerformanceCounter(&t1);
 		if (isRenderRequired)
 		{
-			//this->renderer->ClearScreen();
-			//this->renderer->Render();
-			//Shader* shader = this->game->GetShader();
+			//m_renderer->ClearScreen();
+			//m_renderer->Render();
+			//Shader* shader = m_game->GetShader();
 			//if (shader == NULL)
 			//{
 			//	LOG(Error, LOGPLACE, "Shader instance is NULL");
 			//}
-			//this->renderer->Render(this->game->GetRootGameNode());
-			game->Render(renderer);
+			//m_renderer->Render(m_game->GetRootGameNode());
+			m_game->Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
 			//double time = glfwGetTime();
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
-			fpsTextRenderer->DrawString(0, 570, ss.str(), renderer);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", renderer, 64.0f);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", renderer, 64.0f);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", renderer, 64.0f);
+			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", m_renderer, 64.0f);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", m_renderer, 64.0f);
+			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", m_renderer, 64.0f);
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();
 #endif
-			this->renderer->SwapBuffers();
+			m_renderer->SwapBuffers();
 		}
 		else
 		{
@@ -382,35 +373,35 @@ void CoreEngine::Run()
 
 unsigned int CoreEngine::GetCurrentCameraIndex() const
 {
-	ASSERT(renderer != NULL);
-	if (this->renderer == NULL)
+	ASSERT(m_renderer != NULL);
+	if (m_renderer == NULL)
 	{
 		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
 		exit(EXIT_FAILURE);
 	}
-	return renderer->GetCurrentCameraIndex();
+	return m_renderer->GetCurrentCameraIndex();
 }
 
 unsigned int CoreEngine::NextCamera() const
 {
-	ASSERT(renderer != NULL);
-	if (this->renderer == NULL)
+	ASSERT(m_renderer != NULL);
+	if (m_renderer == NULL)
 	{
 		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
 		exit(EXIT_FAILURE);
 	}
-	return renderer->NextCamera();
+	return m_renderer->NextCamera();
 }
 
 unsigned int CoreEngine::PrevCamera() const
 {
-	ASSERT(renderer != NULL);
-	if (renderer == NULL)
+	ASSERT(m_renderer != NULL);
+	if (m_renderer == NULL)
 	{
 		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
 		exit(EXIT_FAILURE);
 	}
-	return renderer->PrevCamera();
+	return m_renderer->PrevCamera();
 }
 
 void CoreEngine::PollEvents()
@@ -428,4 +419,14 @@ Math::Real CoreEngine::GetTime() const
 
 void CoreEngine::ClearScreen() const
 {
+}
+
+void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
+{
+	if (m_renderer == NULL)
+	{
+		LOG(Critical, LOGPLACE, "Cannot set cursor position. The rendering engine is NULL.");
+		return;
+	}
+	m_renderer->SetCursorPos(xPos, yPos);
 }

@@ -8,22 +8,22 @@ using namespace Rendering;
 
 MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
 	GameComponent(),
-	mesh(mesh),
-	material(material)
+	m_mesh(mesh),
+	m_material(material)
 {
-	if (this->mesh == NULL)
+	if (m_mesh == NULL)
 	{
 		LOG(Utility::Error, LOGPLACE, "Cannot create a MeshRenderer instance. Mesh is NULL");
 		exit(EXIT_FAILURE);
 	}
-	this->mesh->Initialize();
-	if (this->material == NULL)
+	m_mesh->Initialize();
+	if (m_material == NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "The material given to the mesh renderer is NULL");
 	}
-	//if (this->mesh != NULL)
+	//if (m_mesh != NULL)
 	//{
-	//	this->mesh->AddReference();
+	//	m_mesh->AddReference();
 	//}
 }
 
@@ -31,22 +31,8 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
 MeshRenderer::~MeshRenderer(void)
 {
 	// TODO: Fix dangling pointers
-	if (mesh != NULL)
-	{
-		//mesh->RemoveReference();
-		//if (! mesh->IsReferenced())
-		//{
-		//	delete mesh;
-		//	mesh = NULL;
-		//}
-		delete mesh;
-		mesh = NULL;
-	}
-	if (material != NULL)
-	{
-		delete material;
-		material = NULL;
-	}
+	SAFE_DELETE(m_mesh);
+	SAFE_DELETE(m_material);
 }
 
 void MeshRenderer::Render(Shader* shader, Renderer* renderer)
@@ -61,7 +47,7 @@ void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 		LOG(Utility::Critical, LOGPLACE, "Rendering a mesh failed. Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
-	if (this->material == NULL)
+	if (m_material == NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "Rendering a mesh failed. Material instance is NULL");
 		return;
@@ -78,6 +64,6 @@ void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 	//	renderer->GetCurrentCamera().GetTransform().SetPos(cameraPos.GetX(), height, cameraPos.GetZ());
 	//}
 	shader->Bind();
-	shader->UpdateUniforms(GetTransform(), *material, renderer);
-	mesh->Draw();
+	shader->UpdateUniforms(GetTransform(), *m_material, renderer);
+	m_mesh->Draw();
 }

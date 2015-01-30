@@ -23,8 +23,8 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Mesh* mesh;
-	Material* material;
+	Mesh* m_mesh;
+	Material* m_material;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MeshRenderer */
 

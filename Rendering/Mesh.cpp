@@ -387,6 +387,8 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 	lastZ(REAL_ZERO)
 #ifdef HEIGHTMAP_SORT_TABLE
 	,lastClosestPositionIndex(0)
+#elif defined HEIGHTMAP_KD_TREE
+	,kdTree(NULL)
 #endif
 {
 }
@@ -394,6 +396,9 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 TerrainMesh::~TerrainMesh(void)
 {
 	SAFE_DELETE_JUST_TABLE(positions);
+#ifdef HEIGHTMAP_KD_TREE
+	SAFE_DELETE(kdTree);
+#endif
 }
 
 /**
@@ -552,6 +557,39 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 		positions[i] = vertices[i].pos;
 	}
 #elif defined HEIGHTMAP_SORT_TABLE
+	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
+	std::vector<Math::Vector3D> uniquePositions;
+	for (unsigned int i = 0; i < vertices.size(); ++i)
+	{
+		bool isPositionUnique = true;
+		for (unsigned int j = 0; j < uniquePositions.size(); ++j)
+		{
+			if (uniquePositions[j] == vertices[i].pos)
+			{
+				isPositionUnique = false;
+				break;
+				//LOG(Utility::Emergency, LOGPLACE, "Positions %d and %d are equal (%s == %s)",
+				//	i, j, positions[i].ToString().c_str(), positions[j].ToString().c_str());
+			}
+		}
+		if (isPositionUnique)
+		{
+			uniquePositions.push_back(vertices[i].pos);
+		}
+	}
+
+	//std::sort
+
+	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
+
+	positionsCount = uniquePositions.size();;
+	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
+	positions = new Math::Vector3D[positionsCount];
+	for (unsigned int i = 0; i < positionsCount; ++i)
+	{
+		positions[i] = uniquePositions[i];
+	}
+#elif defined HEIGHTMAP_KD_TREE
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
 	std::vector<Math::Vector3D> uniquePositions;
 	for (unsigned int i = 0; i < vertices.size(); ++i)

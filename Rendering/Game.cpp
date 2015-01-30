@@ -25,11 +25,11 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
-Game* Game::game = NULL;
+Game* Game::s_game = NULL;
 
 /* static */ Game* Game::GetGame()
 {
-	return game;
+	return s_game;
 }
 
 Game::Game()
@@ -43,12 +43,12 @@ Game::Game()
 	//	exit(EXIT_FAILURE);
 	//}
 
-	if (Game::game != NULL)
+	if (Game::s_game != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
-		SAFE_DELETE(Game::game);
+		SAFE_DELETE(Game::s_game);
 	}
-	Game::game = this;
+	Game::s_game = this;
 	LOG(Debug, LOGPLACE, "Game construction finished");
 }
 
@@ -66,7 +66,7 @@ void Game::SetEngine(CoreEngine* coreEngine)
 	//	LOG(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
 	//	exit(EXIT_FAILURE);
 	//}
-	rootGameNode.SetEngine(coreEngine);
+	m_rootGameNode.SetEngine(coreEngine);
 }
 
 void Game::Init()
@@ -236,7 +236,7 @@ void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 
 void Game::AddToSceneRoot(GameNode* child)
 {
-	rootGameNode.AddChild(child);
+	m_rootGameNode.AddChild(child);
 }
 
 void Game::Render(Renderer* renderer)
@@ -246,7 +246,7 @@ void Game::Render(Renderer* renderer)
 		LOG(Critical, LOGPLACE, "Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
-	renderer->Render(rootGameNode);
+	renderer->Render(m_rootGameNode);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

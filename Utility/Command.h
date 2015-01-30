@@ -30,7 +30,7 @@ public:
 	//bool Read(const std::string& line);
 	std::string Get(const std::string& opt, const std::string& defaultValue) const;
 	//int Get(const std::string& opt, int defaultValue) const;
-	int GetArgPosition(const std::string& opt, int first = 0) const;
+	bool GetArgPosition(const std::string& opt, int& argPos, int first = 0) const;
 	bool IsPresent(const std::string& opt) const;
 	void Fill(int argc, char* argv[]);
 

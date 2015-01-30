@@ -24,14 +24,11 @@ Real Angle::GetAngleInDegrees() const
 	{
 	case DEGREE:
 		return angle;
-		break;
 	case RADIAN:
 		return ToDeg(angle);
-		break;
 	default:
 		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
 		return angle;
-		break;
 	}
 }
 
@@ -43,14 +40,11 @@ Real Angle::GetAngleInRadians() const
 	{
 	case DEGREE:
 		return ToRad(angle);
-		break;
 	case RADIAN:
 		return angle;
-		break;
 	default:
 		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
 		return angle;
-		break;
 	}
 }
 

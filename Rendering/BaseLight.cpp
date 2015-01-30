@@ -32,8 +32,7 @@ void BaseLight::SetShader(Shader* shader)
 	if (this->shader != NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "Setting new shader for the light seems dubious.");
-		delete this->shader;
-		this->shader = NULL;
+		SAFE_DELETE(this->shader);
 	}
 	this->shader = shader;
 }

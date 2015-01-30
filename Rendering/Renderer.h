@@ -71,7 +71,7 @@ public:
 	RENDERING_API unsigned int NextCamera();
 	RENDERING_API unsigned int PrevCamera();
 	RENDERING_API unsigned int SetCurrentCamera(unsigned int cameraIndex);
-	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) { glfwSetCursorPos(window, xPos, yPos); }
+	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const { glfwSetCursorPos(window, xPos, yPos); }
 	
 	RENDERING_API unsigned int GetSamplerSlot(const std::string& samplerName) const;
 	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);

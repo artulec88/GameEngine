@@ -26,6 +26,7 @@ public:
 	 * \brief Searches the tree to find the numberOfSamples closest tree nodes to the specified position.
 	 * Then it interpolates their values based on their distances to the specified position. Finally it returns the interpolated value.
 	 * 
+	 * \param position position in 2D space
 	 * TODO: Add additional parameter to represent the number of closest positions maintained at all times
 	 * TODO: Add additional parameter to represent how to interpolate the nodes (average, weighted average, some other interpolation?)
 	 */

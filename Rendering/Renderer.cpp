@@ -124,7 +124,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\up." + cubeMapFileExtension;
 	std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\down." + cubeMapFileExtension;
 	std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\front." + cubeMapFileExtension;
-	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back." + cubeMapFileExtension; // TODO: Get the filenames programmatically (http://msdn.microsoft.com/en-us/library/aa365200(v=vs.85).aspx)
+	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back." + cubeMapFileExtension; // TODO: Get the filenames extensions programmatically (http://msdn.microsoft.com/en-us/library/aa365200(v=vs.85).aspx)
 	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
@@ -531,7 +531,6 @@ inline void Renderer::AddCamera(Camera* camera)
 
 void Renderer::PrintGlReport()
 {
-	// TODO: Fix this function
 	LOG(Info, LOGPLACE, "Vendor:\t%s", (const char*)glGetString(GL_VENDOR));
 	LOG(Info, LOGPLACE, "Renderer name:\t%s", (const char*)glGetString(GL_RENDERER));
 	LOG(Info, LOGPLACE, "OpenGL version:\t%s", (const char*)glGetString(GL_VERSION));

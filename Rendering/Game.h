@@ -21,7 +21,7 @@ class RENDERING_API Game
 {
 /* ==================== Static variables begin ==================== */
 protected:
-	static Game* game;
+	static Game* s_game;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Static functions begin ==================== */
@@ -52,7 +52,7 @@ public:
 	virtual void Update(Math::Real delta) = 0;
 	void Render(Renderer* renderer);
 
-	inline GameNode& GetRootGameNode() { return rootGameNode; }
+	inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 
 	void SetEngine(CoreEngine* coreEngine);
 
@@ -73,7 +73,7 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	GameNode rootGameNode;
+	GameNode m_rootGameNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

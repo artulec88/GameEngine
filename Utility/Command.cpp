@@ -103,8 +103,8 @@ bool Command::IsArgPosCorrect(int number) const
 
 string Command::Get(const string& opt, const string& defaultValue) const
 {
-	int pos = GetArgPosition(opt);
-	if ( (pos < 0) || (pos > Size() - 2) )
+	int pos;
+	if ( !GetArgPosition(opt, pos) || (pos < 0) || (pos > Size() - 2) )
 	{
 		return defaultValue;
 	}
@@ -123,7 +123,10 @@ string Command::Get(const string& opt, const string& defaultValue) const
 //	return Get<int>(pos + 1, defaultValue);
 //}
 
-int Command::GetArgPosition(const std::string& opt, int first /* = 0*/) const
+/**
+ * \return True when the argument opt is found in the commands vector and False otherwise
+ */
+bool Command::GetArgPosition(const std::string& opt, int& argPos, int first /* = 0*/) const
 {
 	//ASSERT(first >= 0);
 	int number = first;
@@ -132,13 +135,16 @@ int Command::GetArgPosition(const std::string& opt, int first /* = 0*/) const
 		//ASSERT(number >= first);
 		if ((*itr) == opt)
 		{
-			return number;
+			argPos = number;
+			return true;
 		}
 	}
-	return -1; // TODO: this should not return -1, but rather INVALID_VALUE constant
+	argPos = -1;
+	return false;
 }
 
 bool Command::IsPresent(const std::string& opt) const
 {
-	return GetArgPosition(opt) != -1; // TODO: this should be compared to INVALID_VALUE and not -1
+	int pos;
+	return GetArgPosition(opt, pos);
 }
