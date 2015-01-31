@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef RENDERING_GAME_H
+#define RENDERING_GAME_H
 
 #include "Rendering.h"
 #include "GameNode.h"
@@ -79,4 +79,4 @@ protected:
 
 } /* end namespace Rendering */
 
-#endif
+#endif // RENDERING_GAME_H

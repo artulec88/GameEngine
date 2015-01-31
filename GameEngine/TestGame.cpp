@@ -141,7 +141,7 @@ void TestGame::Init()
 
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\monkey3.obj"),
+		new Mesh("..\\Models\\monkey4.obj"),
 		new Material(new Texture("..\\Textures\\chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
 	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
@@ -156,6 +156,11 @@ void TestGame::Init()
 	monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
+
+	GameNode* earthNode = new GameNode();
+	earthNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\earth.obj"), new Material(new Texture("..\\Textures\\earth.jpg"))));
+	earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
+	AddToSceneRoot(earthNode);
 
 	srand((unsigned int)time(NULL));
 

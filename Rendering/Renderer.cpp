@@ -12,12 +12,14 @@
 #include "MeshRenderer.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
+#include "Utility\FileManager.h"
 #include "Utility\FileNotFoundException.h"
 #include "Math\FloatingPoint.h"
 
 #include <stddef.h>
 #include <iomanip>
 #include <sstream>
+#include <algorithm>
 
 // Include GLM- a library for 3D mathematics
 //#include <glm/glm.hpp>
@@ -116,27 +118,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	planeMesh = new Mesh("..\\Models\\plane4.obj");
 	planeMesh->Initialize();
 
-	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
-	std::string cubeMapDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDirectory", "SkyboxDebug");
-	std::string cubeMapFileExtension = GET_CONFIG_VALUE_STR("skyboxFileExtensions", "jpg");
-	std::string cubeMapPosXFaceFileName = cubeMapDirectory + "\\right." + cubeMapFileExtension;
-	std::string cubeMapNegXFaceFileName = cubeMapDirectory + "\\left." + cubeMapFileExtension;
-	std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\up." + cubeMapFileExtension;
-	std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\down." + cubeMapFileExtension;
-	std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\front." + cubeMapFileExtension;
-	std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\back." + cubeMapFileExtension; // TODO: Get the filenames extensions programmatically (http://msdn.microsoft.com/en-us/library/aa365200(v=vs.85).aspx)
-	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
-	if (cubeMapTexture == NULL)
-	{
-		LOG(Error, LOGPLACE, "Cube map texture is NULL");
-		exit(EXIT_FAILURE);
-	}
-	SetTexture("cubeMap", cubeMapTexture);
-	cubeMapNode = new GameNode();
-	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), new Material(cubeMapTexture)));
-	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	cubeMapNode->GetTransform().SetScale(50.0f);
-	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
+	InitializeCubeMap();
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
@@ -225,6 +207,103 @@ void Renderer::SetCallbacks()
 	glfwSetCursorPosCallback(window, &Game::MousePosCallback);
 	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
 	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
+}
+
+void Renderer::InitializeCubeMap()
+{
+	//cubeMapTexture = new Texture("..\\Textures\\rightDebug.jpg", "..\\Textures\\leftDebug.jpg", "..\\Textures\\upDebug.jpg", "..\\Textures\\downDebug.jpg", "..\\Textures\\frontDebug.jpg", "..\\Textures\\backDebug.jpg");
+	std::string cubeMapDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDirectory", "SkyboxDebug");
+	FileManager fileManager;
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(cubeMapDirectory);
+	//std::find(vector.begin(), vector.end(), item)!=vector.end()
+	//std::string cubeMapFileExtension = GET_CONFIG_VALUE_STR("skyboxFileExtensions", "jpg");
+	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapDirectory + "\\"; // + "\\right." + cubeMapFileExtension;
+	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapDirectory + "\\"; // + "\\left." + cubeMapFileExtension;
+	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapDirectory + "\\"; // + "\\up." + cubeMapFileExtension;
+	bool cubeMapNegYFaceFileFound = false; std::string cubeMapNegYFaceFileName = cubeMapDirectory + "\\"; // + "\\down." + cubeMapFileExtension;
+	bool cubeMapPosZFaceFileFound = false; std::string cubeMapPosZFaceFileName = cubeMapDirectory + "\\"; // + "\\front." + cubeMapFileExtension;
+	bool cubeMapNegZFaceFileFound = false; std::string cubeMapNegZFaceFileName = cubeMapDirectory + "\\"; // + "\\back." + cubeMapFileExtension;
+	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
+	{
+		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find("right") != std::string::npos))
+		{
+			cubeMapPosXFaceFileFound = true;
+			cubeMapPosXFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find("left") != std::string::npos))
+		{
+			cubeMapNegXFaceFileFound = true;
+			cubeMapNegXFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find("up") != std::string::npos))
+		{
+			cubeMapPosYFaceFileFound = true;
+			cubeMapPosYFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find("down") != std::string::npos))
+		{
+			cubeMapNegYFaceFileFound = true;
+			cubeMapNegYFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find("front") != std::string::npos))
+		{
+			cubeMapPosZFaceFileFound = true;
+			cubeMapPosZFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find("back") != std::string::npos))
+		{
+			cubeMapNegZFaceFileFound = true;
+			cubeMapNegZFaceFileName += (*filenameItr);
+		}
+	}
+	if (!cubeMapPosXFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the right face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	if (!cubeMapNegXFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the left face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	if (!cubeMapPosYFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the up face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	if (!cubeMapNegYFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the down face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	if (!cubeMapPosZFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the front face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	if (!cubeMapNegZFaceFileFound)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot locate the back face of the cube map");
+		// TODO: Set default texture for the missing face instead of just exiting
+		exit(EXIT_FAILURE);
+	}
+	cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
+	if (cubeMapTexture == NULL)
+	{
+		LOG(Error, LOGPLACE, "Cube map texture is NULL");
+		exit(EXIT_FAILURE);
+	}
+	SetTexture("cubeMap", cubeMapTexture);
+	cubeMapNode = new GameNode();
+	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), new Material(cubeMapTexture)));
+	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	cubeMapNode->GetTransform().SetScale(50.0f);
+	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 }
 
 void Renderer::Render(GameNode& gameNode)

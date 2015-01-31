@@ -87,6 +87,7 @@ protected:
 	void ClearScreen() const;
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
+	void InitializeCubeMap();
 	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);

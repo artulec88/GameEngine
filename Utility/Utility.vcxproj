@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClInclude Include="Command.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="IConfig.h" />
     <ClInclude Include="ISerializable.h" />
@@ -100,6 +101,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IConfig.cpp" />
     <ClCompile Include="ISerializable.cpp" />
