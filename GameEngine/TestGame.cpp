@@ -78,7 +78,7 @@ void TestGame::Init()
 	//	new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
 	//planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
 	planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
-		new Texture("..\\Textures\\grass_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
+		new Texture("..\\Textures\\grass_normal.jpg"), new Texture("..\\Textures\\grass_disp.png"), planeDisplacementScale, planeDisplacementOffset);
 	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);

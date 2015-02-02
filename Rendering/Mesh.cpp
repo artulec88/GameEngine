@@ -629,7 +629,7 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 	positionsCount = uniquePositions.size();;
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
 	positions = new Math::Vector3D[positionsCount];
-	for (unsigned int i = 0; i < positionsCount; ++i)
+	for (int i = 0; i < positionsCount; ++i)
 	{
 		positions[i] = uniquePositions[i];
 	}
@@ -645,15 +645,15 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 
 void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
+	LOG(Utility::Debug, LOGPLACE, "Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 	for (int i = 0; i < positionsCount; ++i)
 	{
-		std::string oldPos = positions[i].ToString();
+		//std::string oldPos = positions[i].ToString();
 		positions[i] = transformationMatrix * positions[i];
-		if ((i % 1000 == 0) || (i == positionsCount - 1))
-		{
-			LOG(Utility::Info, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
-		}
+		//if ((i % 1000 == 0) || (i == positionsCount - 1))
+		//{
+		//	LOG(Utility::Delocust, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
+		//}
 	}
 	kdTree = new KDTree(positions, positionsCount, 1);
-	LOG(Utility::Info, LOGPLACE, "Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 }
