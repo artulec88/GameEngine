@@ -14,10 +14,10 @@ class KDTree
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API KDTree(Vector3D* positions, int positionsCount);
+	MATH_API KDTree(Vector3D* positions, int positionsCount, int numberOfSamples = 1);
 	MATH_API ~KDTree(void);
 private:
-	KDTree(Vector3D* positions, int positionsCount, int depth);
+	KDTree(Vector3D* positions, int positionsCount, int numberOfSamples, int depth);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -30,7 +30,7 @@ public:
 	 * TODO: Add additional parameter to represent the number of closest positions maintained at all times
 	 * TODO: Add additional parameter to represent how to interpolate the nodes (average, weighted average, some other interpolation?)
 	 */
-	MATH_API Real SearchNearestValue(const Vector2D& position, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples = 1*/) const;
+	MATH_API Real SearchNearestValue(const Vector2D& position) const;
 	MATH_API bool IsLeaf() const { return ((m_leftTree == NULL) && (m_rightTree == NULL)); }
 	MATH_API bool HasChildren() const { return !IsLeaf(); }
 
@@ -39,7 +39,7 @@ public:
 	MATH_API std::string ToString() const;
 private:
 	void BuildTree(Math::Vector3D* positions, int positionsCount, int depth);
-	void SearchNearestValue(const Vector2D& position, int depth, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples = 1*/) const;
+	void SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
 	std::string ToString(int depth) const;
 /* ==================== Non-static member functions end ==================== */
 
@@ -49,6 +49,9 @@ private:
 	KDTree* m_rightTree;
 	Vector2D m_position;
 	Real m_value;
+	int m_numberOfSamples;
+	Vector3D* m_minDistancePositions; // only root node should allocate memory for this variable
+	Real* m_minDistances; // only root node should allocate memory for this variable
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class KDTree */

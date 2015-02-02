@@ -11,8 +11,8 @@
 #include <vector>
 
 //#define HEIGHTMAP_BRUTE_FORCE
-#define HEIGHTMAP_SORT_TABLE
-//#define HEIGHTMAP_KD_TREE
+//#define HEIGHTMAP_SORT_TABLE
+#define HEIGHTMAP_KD_TREE
 
 #ifdef HEIGHTMAP_KD_TREE
 #include "Math\KDTree.h"
@@ -126,7 +126,7 @@ private:
 	Math::Real lastX, lastY, lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int lastClosestPositionIndex;
-#elif HEIGHTMAP_KD_TREE
+#elif defined HEIGHTMAP_KD_TREE
 	Math::KDTree* kdTree;
 #endif
 /* ==================== Non-static member variables end ==================== */

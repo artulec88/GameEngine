@@ -571,52 +571,47 @@ void KDTreeTest()
 
 	LOG (Notice, LOGPLACE, "K-d tree test started");
 	const int NUMBER_OF_POSITIONS = 6;
-	const int NUMBER_OF_SEARCH_POSITIONS = 1;
-	//const Real LOWER_BOUND_X = -20.0f;
-	//const Real HIGHER_BOUND_X = 20.0f;
-	//const Real LOWER_BOUND_Y = -20.0f;
-	//const Real HIGHER_BOUND_Y = 20.0f;
+	const int NUMBER_OF_SEARCH_POSITIONS = 10;
+	const int NUMBER_OF_INTERPOLATED_NEAREST_POINTS = 1; // number of nearest points which will be used for calculating the final result
+	const Real LOWER_BOUND_X = -20.0f; const Real HIGHER_BOUND_X = 20.0f;
+	const Real LOWER_BOUND_Y = -20.0f; const Real HIGHER_BOUND_Y = 20.0f;
+	const Real LOWER_BOUND_Z = -20.0f; const Real HIGHER_BOUND_Z = 20.0f;
 	Vector3D* positions = new Vector3D[NUMBER_OF_POSITIONS];
-	//Vector2D* vectors = new Vector2D[NUMBER_OF_VECTORS];
 	positions[0].SetX(2.0f); positions[0].SetY(3.0f); positions[0].SetZ(2.0f);
 	positions[1].SetX(5.0f); positions[1].SetY(4.0f); positions[1].SetZ(4.0f);
 	positions[2].SetX(9.0f); positions[2].SetY(6.0f); positions[2].SetZ(-2.0f);
 	positions[3].SetX(4.0f); positions[3].SetY(7.0f); positions[3].SetZ(1.0f);
 	positions[4].SetX(8.0f); positions[4].SetY(1.0f); positions[4].SetZ(12.0f);
 	positions[5].SetX(7.0f); positions[5].SetY(2.0f); positions[5].SetZ(6.0f);
-	//initialVectors[6].SetX(6.0f); initialVectors[6].SetY(2.0f);
-	//initialVectors[7].SetX(7.0f); initialVectors[7].SetY(3.0f);
-	//initialVectors[8].SetX(8.0f); initialVectors[8].SetY(4.0f);
-	//initialVectors[9].SetX(9.0f); initialVectors[9].SetY(5.0f);
 	//for (int i = 0; i < NUMBER_OF_POSITIONS; ++i)
 	//{
-	//	initialVectors[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
-	//	initialVectors[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
-	//	LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
+	//	positions[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
+	//	positions[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
+	//	positions[i].SetZ(LOWER_BOUND_Z + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Z - LOWER_BOUND_Z)));
+	//	LOG(Debug, LOGPLACE, "positions[%d] = %s", i, positions[i].ToString().c_str());
 	//}
 
-	KDTree* kdTree = new KDTree(positions, NUMBER_OF_POSITIONS);
+	KDTree* kdTree = new KDTree(positions, NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
 
-	LOG(Utility::Info, LOGPLACE, "K-d tree structure:\n%s", kdTree->ToString().c_str());
+	//LOG(Utility::Debug, LOGPLACE, "K-d tree structure:\n%s", kdTree->ToString().c_str());
 
 	Math::Vector2D* searchPositions = new Math::Vector2D[NUMBER_OF_SEARCH_POSITIONS];
 	searchPositions[0].SetX(2.0f); searchPositions[0].SetY(3.0f);
-	//searchPositions[1].SetX(5.0f); searchPositions[1].SetY(4.0f);
-	//searchPositions[2].SetX(9.0f); searchPositions[2].SetY(6.0f);
-	//searchPositions[3].SetX(4.0f); searchPositions[3].SetY(7.0f);
-	//searchPositions[4].SetX(8.0f); searchPositions[4].SetY(1.0f);
-	//searchPositions[5].SetX(7.0f); searchPositions[5].SetY(2.0f);
-	//searchPositions[6].SetX(6.0f); searchPositions[6].SetY(2.0f);
-	//searchPositions[7].SetX(7.0f); searchPositions[7].SetY(3.0f);
-	//searchPositions[8].SetX(8.0f); searchPositions[8].SetY(4.0f);
-	//searchPositions[9].SetX(9.0f); searchPositions[9].SetY(5.0f);
+	searchPositions[1].SetX(5.0f); searchPositions[1].SetY(4.0f);
+	searchPositions[2].SetX(9.0f); searchPositions[2].SetY(6.0f);
+	searchPositions[3].SetX(4.0f); searchPositions[3].SetY(7.0f);
+	searchPositions[4].SetX(8.0f); searchPositions[4].SetY(1.0f);
+	searchPositions[5].SetX(7.0f); searchPositions[5].SetY(2.0f);
+	searchPositions[6].SetX(6.0f); searchPositions[6].SetY(2.0f);
+	searchPositions[7].SetX(7.0f); searchPositions[7].SetY(3.0f);
+	searchPositions[8].SetX(8.0f); searchPositions[8].SetY(4.0f);
+	searchPositions[9].SetX(9.0f); searchPositions[9].SetY(5.0f);
 	for (int i = 0; i < NUMBER_OF_SEARCH_POSITIONS; ++i)
 	{
-		Math::Vector3D minDistancePosition;
-		Real minDistance;
-		Real height = kdTree->SearchNearestValue(searchPositions[i], minDistancePosition, minDistance);
-		LOG(Utility::Info, LOGPLACE, "The nearest point for search point (%s) is (%s). The minimum distance equals %.2f and returned height is %.2f",
-			searchPositions[i].ToString().c_str(), minDistancePosition.ToString().c_str(), minDistance, height);
+		Real height = kdTree->SearchNearestValue(searchPositions[i]);
+		//LOG(Utility::Info, LOGPLACE, "The nearest point for search point (%s) is (%s). The minimum distance equals %.2f and returned height is %.2f",
+		//	searchPositions[i].ToString().c_str(), minDistancePositions[0].ToString().c_str(), minDistances[0], height);
+		LOG(Utility::Info, LOGPLACE, "The final result for position (%s) in k-d tree search is %.3f", searchPositions[i].ToString().c_str(), height);
 	}
 
 	delete kdTree;
@@ -634,7 +629,7 @@ int main (int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Debug);
+	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
 
 	Matrix4D identityMatrix1 = Matrix4D::Identity();
 	Matrix4D identityMatrix2 = Matrix4D::Identity();

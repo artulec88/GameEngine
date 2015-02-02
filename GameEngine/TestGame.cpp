@@ -27,6 +27,8 @@ TestGame::TestGame() :
 	Game(),
 	planeNode(NULL),
 	planeMesh(NULL),
+	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
+	timeToUpdateCameraHeight(REAL_ZERO),
 	boxNode(NULL),
 #ifdef ANT_TWEAK_BAR_ENABLED
 	planeMaterial(NULL),
@@ -583,8 +585,13 @@ void TestGame::Update(Real delta)
 	//clock_t end = clock();
 	//LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
 
-	//Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
-	//transform.GetPos().SetY(height);
+	timeToUpdateCameraHeight += delta;
+	if (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL)
+	{
+		Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
+		transform.GetPos().SetY(height);
+		timeToUpdateCameraHeight = REAL_ZERO;
+	}
 	/* ==================== Adjusting camera vertical position begin ==================== */
 
 	const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());

@@ -6,22 +6,34 @@
 
 using namespace Math;
 
-KDTree::KDTree(Math::Vector3D* positions, int positionsCount) :
+KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int numberOfSamples /* = 1 */) :
 	m_leftTree(NULL),
-	m_rightTree(NULL)
+	m_rightTree(NULL),
+	m_numberOfSamples(numberOfSamples),
+	m_minDistancePositions(NULL),
+	m_minDistances(NULL)
 {
+	m_minDistancePositions = new Vector3D[m_numberOfSamples];
+	m_minDistances = new Real[m_numberOfSamples];
 	BuildTree(positions, positionsCount, 0);
 }
 
-KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int depth) :
+KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int numberOfSamples, int depth) :
 	m_leftTree(NULL),
-	m_rightTree(NULL)
+	m_rightTree(NULL),
+	m_numberOfSamples(numberOfSamples),
+	m_minDistancePositions(NULL),
+	m_minDistances(NULL)
 {
+	//m_minDistancePositions = new Vector3D[m_numberOfSamples];
+	//m_minDistances = new Real[m_numberOfSamples];
 	BuildTree(positions, positionsCount, depth);
 }
 
 KDTree::~KDTree(void)
 {
+	SAFE_DELETE_JUST_TABLE(m_minDistancePositions);
+	SAFE_DELETE_JUST_TABLE(m_minDistances);
 	SAFE_DELETE(m_leftTree);
 	SAFE_DELETE(m_rightTree);
 }
@@ -42,18 +54,18 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 		sortingKey = COMPONENT_X;
 		break;
 	}
-	LOG(Utility::Notice, LOGPLACE, "Before sorting: depth = %d", depth);
-	for (int i = 0; i < positionsCount; ++i)
-	{
-		LOG(Utility::Info, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
-	}
+	//LOG(Utility::Debug, LOGPLACE, "Before sorting: depth = %d", depth);
+	//for (int i = 0; i < positionsCount; ++i)
+	//{
+	//	LOG(Utility::Debug, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
+	//}
 	SortingParametersChain sortingParameters(sortingKey, ASCENDING);
 	ISort::GetSortingObject(ISort::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
-	LOG(Utility::Notice, LOGPLACE, "After sorting: depth = %d", depth);
-	for (int i = 0; i < positionsCount; ++i)
-	{
-		LOG(Utility::Info, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
-	}
+	//LOG(Utility::Debug, LOGPLACE, "After sorting: depth = %d", depth);
+	//for (int i = 0; i < positionsCount; ++i)
+	//{
+	//	LOG(Utility::Debug, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
+	//}
 
 	int medianIndex = positionsCount / 2;
 	m_position = Vector2D(positions[medianIndex].GetXZ());
@@ -61,91 +73,143 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 
 	if (medianIndex > 0)
 	{
-		m_leftTree = new KDTree(positions, medianIndex, depth + 1);
+		m_leftTree = new KDTree(positions, medianIndex, m_numberOfSamples, depth + 1);
 	}
 	if (positionsCount - medianIndex - 1 > 0)
 	{
-		m_rightTree = new KDTree(&positions[medianIndex + 1], positionsCount - medianIndex - 1, depth + 1);
+		m_rightTree = new KDTree(&positions[medianIndex + 1], positionsCount - medianIndex - 1, m_numberOfSamples, depth + 1);
 	}
 }
 
-Real KDTree::SearchNearestValue(const Vector2D& position, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples */) const
+//int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
+
+Real KDTree::SearchNearestValue(const Vector2D& position) const
 {
-	minDistance = REAL_MAX;
-	SearchNearestValue(position, 0, minDistancePosition, minDistance);
-	return minDistancePosition.GetY();
+	// The numberOfSamples must be less than the number of nodes. We assume that it is.
+	// If we wanted to check that condition we would have to store the number of nodes in the separate member variable.
+	if (m_minDistancePositions == NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "The table for storing the nearest positions is NULL. Creating a new one.");
+	}
+	if (m_minDistances == NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "The table for storing the minimum distances is NULL. Creating a new one.");
+	}
+	for (int i = 0; i < m_numberOfSamples; ++i)
+	{
+		//minDistancePositions[i] = 
+		m_minDistances[i] = REAL_MAX;
+	}
+	
+	//numberOfPositionsChecked = 0;
+	SearchNearestValue(position, 0, m_minDistancePositions, m_minDistances);
+	//LOG(Utility::Debug, LOGPLACE, "Number of positions checked during the search for the nearest positions = %d", numberOfPositionsChecked);
+
+	//return minDistancePositions[0].GetY(); // return the nearest position's Y component
+
+	// Calculate the weighted average where weights are in inverse proportion to distances
+	if (AlmostEqual(m_minDistances[0], REAL_ZERO))
+	{
+		Real result = m_minDistancePositions[0].GetY();
+		return result;
+	}
+	Real sumOfDistances = REAL_ZERO;
+	for (int i = 0; i < m_numberOfSamples; ++i)
+	{
+		sumOfDistances += m_minDistances[i];
+	}
+	Real result = REAL_ZERO;
+	Real sumOfWeights = REAL_ZERO;
+	for (int i = 0; i < m_numberOfSamples; ++i)
+	{
+		Real weight = sumOfDistances / m_minDistances[i];
+		sumOfWeights += weight;
+		result += m_minDistancePositions[i].GetY() * weight;
+	}
+	result /= sumOfWeights;
+	return result;
 }
 
-void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D& minDistancePosition, Real& minDistance /*, int numberOfSamples */) const
+void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const
 {
-	// TODO: Finish this function
+	//++numberOfPositionsChecked;
+	LOG(Utility::Debug, LOGPLACE, "Visiting the node with position (%s) and value %.2f", m_position.ToString().c_str(), m_value);
 	Real distance = (position - m_position).LengthSquared();
-	if (minDistance > distance)
+	int j = m_numberOfSamples - 1;
+	while ( (j >= 0) && (minDistances[j] > distance) )
 	{
-		minDistancePosition = Math::Vector3D(m_position.GetX(), m_value, m_position.GetY());
-		minDistance = distance;
-		//if (AlmostEqual(minDistance, REAL_ZERO))
-		//{
-		//	return minDistance;
-		//}
-	}
-	if (HasChildren())
-	{
-		//switch (depth % 2)
-		//{
-		//case 0:
-		//	sortingKey = COMPONENT_X;
-		//	break;
-		//case 1:
-		//	sortingKey = COMPONENT_Z;
-		//	break;
-		//default: // shouldn't occur at all
-		//	LOG(Utility::Warning, LOGPLACE, "Cannot determine the sorting key for the process of constructing the k-d tree");
-		//	sortingKey = COMPONENT_X;
-		//	break;
-		//}
-
-		Real positionComponentValue = ((depth % 2) == 0) ? position.GetX() : position.GetY();
-		Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.GetX() : m_position.GetY();
-		bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
-
-		if (searchLeftTreeFirst)
+		if (j + 1 < m_numberOfSamples)
 		{
-			if (((m_leftTree != NULL)) && (positionComponentValue - minDistance <= nodePositionComponentValue))
-			{
-				m_leftTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
-			}
-			else if (m_leftTree != NULL)
-			{
-				LOG(Utility::Debug, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
-			}
-			if ((m_rightTree != NULL) && ((positionComponentValue + minDistance) > nodePositionComponentValue))
-			{
-				m_rightTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
-			}
-			else if (m_rightTree != NULL)
-			{
-				LOG(Utility::Debug, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
-			}
+			minDistances[j + 1] = minDistances[j];
+			minDistancePositions[j + 1] = minDistancePositions[j];
 		}
-		else
+		minDistances[j] = distance;
+		minDistancePositions[j] = Math::Vector3D(m_position.GetX(), m_value, m_position.GetY());
+		--j;
+	}
+	//for (int i = 0; i < numberOfSamples; ++i)
+	//{
+	//	LOG(Utility::Info, LOGPLACE, "minDistancePositions[%d] = (%s)\tminDistances[%d] = %.2f", i, minDistancePositions[i].ToString().c_str(), i, minDistances[i]);
+	//}
+	if (IsLeaf())
+	{
+		LOG(Utility::Debug, LOGPLACE, "The node with position (%s) and value %.2f is a leaf", m_position.ToString().c_str(), m_value);
+		return;
+	}
+	//switch (depth % 2)
+	//{
+	//case 0:
+	//	sortingKey = COMPONENT_X;
+	//	break;
+	//case 1:
+	//	sortingKey = COMPONENT_Z;
+	//	break;
+	//default: // shouldn't occur at all
+	//	LOG(Utility::Warning, LOGPLACE, "Cannot determine the sorting key for the process of constructing the k-d tree");
+	//	sortingKey = COMPONENT_X;
+	//	break;
+	//}
+
+	Real positionComponentValue = ((depth % 2) == 0) ? position.GetX() : position.GetY();
+	Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.GetX() : m_position.GetY();
+	bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
+
+	if (searchLeftTreeFirst)
+	{
+		if (((m_leftTree != NULL)) && (positionComponentValue - minDistances[m_numberOfSamples - 1] <= nodePositionComponentValue))
 		{
-			if ((m_rightTree != NULL) && ((positionComponentValue + minDistance) > nodePositionComponentValue))
-			{
-				m_rightTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
-			}
-			else if (m_rightTree != NULL)
-			{
-				LOG(Utility::Debug, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
-			}
-			if ((m_leftTree != NULL) && ((positionComponentValue - minDistance) <= nodePositionComponentValue))
-			{
-				m_leftTree->SearchNearestValue(position, depth + 1, minDistancePosition, minDistance);
-			}
-			else if (m_leftTree != NULL)
-			{
-				LOG(Utility::Debug, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
-			}
+			m_leftTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+		}
+		else if (m_leftTree != NULL)
+		{
+			LOG(Utility::Delocust, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
+		}
+		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
+		{
+			m_rightTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+		}
+		else if (m_rightTree != NULL)
+		{
+			LOG(Utility::Delocust, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
+		}
+	}
+	else
+	{
+		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
+		{
+			m_rightTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+		}
+		else if (m_rightTree != NULL)
+		{
+			LOG(Utility::Delocust, LOGPLACE, "Right tree of node (%s) pruned", m_position.ToString().c_str());
+		}
+		if ((m_leftTree != NULL) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
+		{
+			m_leftTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+		}
+		else if (m_leftTree != NULL)
+		{
+			LOG(Utility::Delocust, LOGPLACE, "Left tree of node (%s) pruned", m_position.ToString().c_str());
 		}
 	}
 }

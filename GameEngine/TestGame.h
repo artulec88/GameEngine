@@ -42,7 +42,11 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	Rendering::GameNode* planeNode;
+	
 	Rendering::TerrainMesh* planeMesh;
+	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
+	Math::Real timeToUpdateCameraHeight;
+	
 	Rendering::GameNode* boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::Material* planeMaterial;

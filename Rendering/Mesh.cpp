@@ -407,9 +407,9 @@ TerrainMesh::~TerrainMesh(void)
  */
 Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 {
-//#ifdef MEASURE_TIME_ENABLED
-//	clock_t begin = clock();
-//#endif
+#ifdef MEASURE_TIME_ENABLED
+	clock_t begin = clock();
+#endif
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
 	{
@@ -535,13 +535,24 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	y += 1.5f; // head position adjustment
 	lastY = y;
 
-	//LOG(Utility::Notice, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+	//LOG(Utility::Info, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+#elif defined HEIGHTMAP_KD_TREE
+	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
+	{
+		return lastY;
+	}
+	Math::Real y = kdTree->SearchNearestValue(xz);
+	lastX = xz.GetX();
+	lastZ = xz.GetY(); // in this case GetY() returns Z
+	y += 2.5f; // head position adjustment
+	lastY = y;
+	//LOG(Utility::Debug, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
-//#ifdef MEASURE_TIME_ENABLED
-//	clock_t end = clock();
-//	LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
-//#endif
+#ifdef MEASURE_TIME_ENABLED
+	clock_t end = clock();
+	LOG(Debug, LOGPLACE, "Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+#endif
 
 	return y;
 }
@@ -622,6 +633,7 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 	{
 		positions[i] = uniquePositions[i];
 	}
+	
 #endif
 
 	/**
@@ -642,5 +654,6 @@ void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 			LOG(Utility::Info, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		}
 	}
+	kdTree = new KDTree(positions, positionsCount, 1);
 	LOG(Utility::Info, LOGPLACE, "Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 }
