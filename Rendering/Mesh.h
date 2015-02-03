@@ -83,7 +83,7 @@ protected:
 	void CalcTangents(Vertex* vertices, int verticesCount) const;
 	//void CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
-	virtual void SavePositions(const std::vector<Vertex>& vertices) { /* does nothing*/ };
+	virtual void SavePositions(const std::vector<Math::Vector3D>& vertices) { /* does nothing*/ };
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -115,19 +115,19 @@ public:
 	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz);
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
-	virtual void SavePositions(const std::vector<Vertex>& vertices);
+	virtual void SavePositions(const std::vector<Math::Vector3D>& vertices);
 /* ==================== Non-static member functions end ==================== */
 
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Vector3D* positions;
-	int positionsCount;
-	Math::Real lastX, lastY, lastZ;
+	Math::Vector3D* m_positions;
+	int m_positionsCount;
+	Math::Real m_lastX, m_lastY, m_lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
-	int lastClosestPositionIndex;
+	int m_lastClosestPositionIndex;
 #elif defined HEIGHTMAP_KD_TREE
-	Math::KDTree* kdTree;
+	Math::KDTree* m_kdTree;
 #endif
 /* ==================== Non-static member variables end ==================== */
 

@@ -161,6 +161,7 @@ void Mesh::Initialize()
 
 	const aiMesh* model = scene->mMeshes[0];
 	std::vector<Vertex> vertices;
+	std::vector<Math::Vector3D> positions;
 	std::vector<int> indices;
 
 	const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
@@ -177,6 +178,7 @@ void Mesh::Initialize()
 		}
 
 		Math::Vector3D vertexPos(pPos->x, pPos->y, pPos->z);
+		positions.push_back(vertexPos);
 		Math::Vector2D vertexTexCoord(pTexCoord->x, pTexCoord->y);
 		Math::Vector3D vertexNormal(pNormal->x, pNormal->y, pNormal->z);
 		Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
@@ -193,7 +195,7 @@ void Mesh::Initialize()
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
 	}
-	SavePositions(vertices); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store these positions
+	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store these positions
 	AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
@@ -382,24 +384,24 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 
 TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
-	positions(NULL),
-	positionsCount(0),
-	lastX(REAL_ZERO),
-	lastY(REAL_ZERO),
-	lastZ(REAL_ZERO)
+	m_positions(NULL),
+	m_positionsCount(0),
+	m_lastX(REAL_ZERO),
+	m_lastY(REAL_ZERO),
+	m_lastZ(REAL_ZERO)
 #ifdef HEIGHTMAP_SORT_TABLE
-	,lastClosestPositionIndex(0)
+	,m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
-	,kdTree(NULL)
+	,m_kdTree(NULL)
 #endif
 {
 }
 
 TerrainMesh::~TerrainMesh(void)
 {
-	SAFE_DELETE_JUST_TABLE(positions);
+	SAFE_DELETE_JUST_TABLE(m_positions);
 #ifdef HEIGHTMAP_KD_TREE
-	SAFE_DELETE(kdTree);
+	SAFE_DELETE(m_kdTree);
 #endif
 }
 
@@ -539,15 +541,15 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 
 	//LOG(Utility::Info, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_KD_TREE
-	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
+	if (AlmostEqual(xz.GetX(), m_lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
 	{
-		return lastY;
+		return m_lastY;
 	}
-	Math::Real y = kdTree->SearchNearestValue(xz);
-	lastX = xz.GetX();
-	lastZ = xz.GetY(); // in this case GetY() returns Z
+	Math::Real y = m_kdTree->SearchNearestValue(xz);
+	m_lastX = xz.GetX();
+	m_lastZ = xz.GetY(); // in this case GetY() returns Z
 	y += 2.5f; // head position adjustment
-	lastY = y;
+	m_lastY = y;
 	//LOG(Utility::Debug, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
@@ -563,7 +565,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
  * TODO: See this page for a possible ways to optimize this function
  * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
  */
-void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
+void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& vertices)
 {
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	positionsCount = vertices.size();
@@ -612,12 +614,13 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 #endif
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
 	std::vector<Math::Vector3D> uniquePositions;
-	for (unsigned int i = 0; i < vertices.size(); ++i)
+	for (std::vector<Math::Vector3D>::const_iterator verticesItr = vertices.begin(); verticesItr != vertices.end(); ++verticesItr)
 	{
+		Math::Vector3D currentPos = *verticesItr;
 		bool isPositionUnique = true;
-		for (unsigned int j = 0; j < uniquePositions.size(); ++j)
+		for (std::vector<Math::Vector3D>::const_iterator uniquePosItr = uniquePositions.begin(); uniquePosItr != uniquePositions.end(); ++uniquePosItr)
 		{
-			if (uniquePositions[j] == vertices[i].pos)
+			if ((*uniquePosItr) == currentPos)
 			{
 				isPositionUnique = false;
 				break;
@@ -627,7 +630,7 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 		}
 		if (isPositionUnique)
 		{
-			uniquePositions.push_back(vertices[i].pos);
+			uniquePositions.push_back(currentPos);
 		}
 	}
 #ifdef MEASURE_TIME_ENABLED
@@ -637,12 +640,12 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 
 	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
 
-	positionsCount = uniquePositions.size();
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
-	positions = new Math::Vector3D[positionsCount];
-	for (int i = 0; i < positionsCount; ++i)
+	m_positionsCount = uniquePositions.size();
+	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", m_positionsCount);
+	m_positions = new Math::Vector3D[m_positionsCount];
+	for (int i = 0; i < m_positionsCount; ++i)
 	{
-		positions[i] = uniquePositions[i];
+		m_positions[i] = uniquePositions[i];
 	}
 #endif
 
@@ -656,14 +659,14 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
 	LOG(Utility::Debug, LOGPLACE, "Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
-	for (int i = 0; i < positionsCount; ++i)
+	for (int i = 0; i < m_positionsCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
-		positions[i] = transformationMatrix * positions[i];
+		m_positions[i] = transformationMatrix * m_positions[i];
 		//if ((i % 1000 == 0) || (i == positionsCount - 1))
 		//{
 		//	LOG(Utility::Delocust, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	kdTree = new KDTree(positions, positionsCount, 1);
+	m_kdTree = new KDTree(m_positions, m_positionsCount, 1);
 }
