@@ -105,6 +105,18 @@ public: // public member functions
 	Vector3D& operator=(const Vector3D& v);
 	bool operator!=(const Vector3D& v) const;
 	bool operator==(const Vector3D& v) const;
+	
+	/**
+	 * Type cast operator created to allow using std::unordered_set in the TerrainMesh::SavePositions function
+	 * See the following links:
+	 * http://stackoverflow.com/questions/8157937/how-to-specialize-stdhashkeyoperator-for-user-defined-type-in-unordered
+	 * http://stackoverflow.com/questions/6585077/size-t-an-operator-and-a-way-to-use-unordered-set
+	 * http://stackoverflow.com/questions/13485979/hash-function-of-unordered-set
+	 */
+	operator size_t () const
+	{
+		return static_cast<size_t>(m_x * 31 + m_y);
+	}
 
 	Vector3D Normalized() const; // CHECKED!
 	void Normalize(); // CHECKED!

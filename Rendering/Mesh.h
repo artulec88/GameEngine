@@ -83,7 +83,7 @@ protected:
 	void CalcTangents(Vertex* vertices, int verticesCount) const;
 	//void CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
-	virtual void SavePositions(const std::vector<Math::Vector3D>& vertices) { /* does nothing*/ };
+	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ };
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -115,7 +115,7 @@ public:
 	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz);
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
-	virtual void SavePositions(const std::vector<Math::Vector3D>& vertices);
+	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
 /* ==================== Non-static member functions end ==================== */
 
 

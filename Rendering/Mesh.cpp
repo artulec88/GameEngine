@@ -12,7 +12,7 @@
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
 
-#include <set>
+#include <unordered_set>
 
 #ifdef MEASURE_TIME_ENABLED
 #include <time.h>
@@ -565,7 +565,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
  * TODO: See this page for a possible ways to optimize this function
  * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
  */
-void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& vertices)
+void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 {
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	positionsCount = vertices.size();
@@ -612,27 +612,14 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& vertices)
 #ifdef MEASURE_TIME_ENABLED
 	clock_t begin = clock();
 #endif
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
-	std::vector<Math::Vector3D> uniquePositions;
-	for (std::vector<Math::Vector3D>::const_iterator verticesItr = vertices.begin(); verticesItr != vertices.end(); ++verticesItr)
+	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", positions.size());
+	std::unordered_set<Math::Vector3D> verticesSet;
+	for (unsigned int i = 0; i < positions.size(); ++i)
 	{
-		Math::Vector3D currentPos = *verticesItr;
-		bool isPositionUnique = true;
-		for (std::vector<Math::Vector3D>::const_iterator uniquePosItr = uniquePositions.begin(); uniquePosItr != uniquePositions.end(); ++uniquePosItr)
-		{
-			if ((*uniquePosItr) == currentPos)
-			{
-				isPositionUnique = false;
-				break;
-				//LOG(Utility::Emergency, LOGPLACE, "Positions %d and %d are equal (%s == %s)",
-				//	i, j, positions[i].ToString().c_str(), positions[j].ToString().c_str());
-			}
-		}
-		if (isPositionUnique)
-		{
-			uniquePositions.push_back(currentPos);
-		}
+		verticesSet.insert(positions[i]);
 	}
+	std::vector<Math::Vector3D> uniquePositions;
+	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
 	LOG(Info, LOGPLACE, "Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
