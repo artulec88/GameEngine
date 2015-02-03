@@ -592,7 +592,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			{
 				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix);
 			}
-			else if (uniformType == "sampler2D")
+			else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
 			{
 				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
 				Texture* texture = renderer->GetTexture(unprefixedName);
@@ -600,19 +600,6 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				if (texture == NULL)
 				{
 					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
-					exit(EXIT_FAILURE);
-				}
-				texture->Bind(samplerSlot);
-				SetUniformi(uniformName, samplerSlot);
-			}
-			else if (uniformType == "samplerCube")
-			{
-				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
-				Texture* texture = renderer->GetTexture(unprefixedName);
-				ASSERT(texture != NULL);
-				if (texture == NULL)
-				{
-					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", unprefixedName.c_str());
 					exit(EXIT_FAILURE);
 				}
 				texture->Bind(samplerSlot);
@@ -661,20 +648,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				renderer->UpdateUniformStruct(transform, material, *this, uniformName, uniformType);
 			}
 		}
-		else if (uniformType == "sampler2D")
-		{
-			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
-			Texture* texture = material.GetTexture(uniformName);
-			ASSERT(texture != NULL);
-			if (texture == NULL)
-			{
-				LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
-				exit(EXIT_FAILURE);
-			}
-			texture->Bind(samplerSlot);
-			SetUniformi(uniformName, samplerSlot);
-		}
-		else if (uniformType == "samplerCube")
+		else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
 		{
 			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
 			Texture* texture = material.GetTexture(uniformName);

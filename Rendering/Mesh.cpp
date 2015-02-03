@@ -12,6 +12,8 @@
 #include <assimp\scene.h>
 #include <assimp\postprocess.h>
 
+#include <set>
+
 #ifdef MEASURE_TIME_ENABLED
 #include <time.h>
 #endif
@@ -557,6 +559,10 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	return y;
 }
 
+/**
+ * TODO: See this page for a possible ways to optimize this function
+ * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
+ */
 void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 {
 #ifdef HEIGHTMAP_BRUTE_FORCE
@@ -601,6 +607,9 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 		positions[i] = uniquePositions[i];
 	}
 #elif defined HEIGHTMAP_KD_TREE
+#ifdef MEASURE_TIME_ENABLED
+	clock_t begin = clock();
+#endif
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
 	std::vector<Math::Vector3D> uniquePositions;
 	for (unsigned int i = 0; i < vertices.size(); ++i)
@@ -621,19 +630,20 @@ void TerrainMesh::SavePositions(const std::vector<Vertex>& vertices)
 			uniquePositions.push_back(vertices[i].pos);
 		}
 	}
-
-	//std::sort
+#ifdef MEASURE_TIME_ENABLED
+	clock_t end = clock();
+	LOG(Info, LOGPLACE, "Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+#endif
 
 	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
 
-	positionsCount = uniquePositions.size();;
+	positionsCount = uniquePositions.size();
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
 	positions = new Math::Vector3D[positionsCount];
 	for (int i = 0; i < positionsCount; ++i)
 	{
 		positions[i] = uniquePositions[i];
 	}
-	
 #endif
 
 	/**

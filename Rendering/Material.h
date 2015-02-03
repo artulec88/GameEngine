@@ -13,8 +13,24 @@ namespace Rendering
 
 class Material : public MappedValues
 {
-/* ==================== Non-static member variables begin ==================== */
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	RENDERING_API Material(Texture* diffuseTexture, Math::Real specularIntensity = REAL_ONE, Math::Real specularPower = 8.0f,
+		Texture* normalMap = NULL, Texture* displacementMap = NULL, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+	RENDERING_API virtual ~Material(void) { };
 private:
+	Material(const Material& material) {}
+	void operator=(const Material& material) {}
+/* ==================== Constructors and destructors end ==================== */
+
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	RENDERING_API void SetAdditionalTexture(Texture* texture);
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+//private:
 	//Texture* texture;
 	//Math::Vector3D color;
 	/**
@@ -32,25 +48,6 @@ private:
 	//Math::Real specularPower;
 
 /* ==================== Non-static member variables end ==================== */
-
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	RENDERING_API Material(Texture* diffuse, Math::Real specularIntensity = 1, Math::Real specularPower = 8,
-		Texture* normalMap = NULL,
-		Texture* displacementMap = NULL, Math::Real displacementScale = 0.0f, Math::Real displacementOffset = 0.0f); // TODO: Do not use hard-coded values
-	RENDERING_API virtual ~Material(void) { };
-private:
-	Material(const Material& material) {}
-	void operator=(const Material& material) {}
-/* ==================== Constructors and destructors end ==================== */
-
-
-/* ==================== Non-static member functions begin ==================== */
-public:
-	RENDERING_API Texture* GetDiffuseTexture() const { return GetTexture("diffuse"); }
-	RENDERING_API Math::Real GetSpecularIntensity() const { return GetReal("specularIntensity"); }
-	RENDERING_API Math::Real GetSpecularPower() const { return GetReal("specularPower"); }
-/* ==================== Non-static member functions end ==================== */
 }; /* end class Material */
 
 } /* end namespace Rendering */

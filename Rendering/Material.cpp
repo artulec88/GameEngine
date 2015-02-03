@@ -4,12 +4,12 @@
 using namespace Rendering;
 
 Material::Material(Texture* diffuseTexture,
-	Math::Real specularIntensity /* = 2 */,
-	Math::Real specularPower /* = 32 */,
+	Math::Real specularIntensity /* = REAL_ONE */,
+	Math::Real specularPower /* = 8.0f */,
 	Texture* normalMap /* = NULL */,
 	Texture* displacementMap /* = NULL */,
-	Math::Real displacementScale /* = 0.0f */,
-	Math::Real displacementOffset /* = 0.0f */)
+	Math::Real displacementScale /* = REAL_ZERO */,
+	Math::Real displacementOffset /* = REAL_ZERO */)
 {
 	if (diffuseTexture == NULL)
 	{
@@ -39,4 +39,14 @@ Material::Material(Texture* diffuseTexture,
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f);
 	SetReal("displacementScale", displacementScale);
 	SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
+}
+
+void Material::SetAdditionalTexture(Texture* texture)
+{
+	if (texture == NULL)
+	{
+		LOG(Utility::Warning, LOGPLACE, "Cannot set the additional texture for material. The texture is NULL.");
+		return;
+	}
+	SetTexture("diffuse2", texture);
 }

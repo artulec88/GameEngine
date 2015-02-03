@@ -29,8 +29,8 @@ private:
 public:
 	void Bind(int textureIndex) const;
 	void BindAsRenderTarget() const;
-	inline int GetWidth() const { return this->width; }
-	inline int GetHeight() const { return this->height; }
+	inline int GetWidth() const { return m_width; }
+	inline int GetHeight() const { return m_height; }
 private:
 	void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled);
 	void InitRenderTargets(GLenum* attachments);
@@ -38,13 +38,13 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	GLenum textureTarget;
-	int texturesCount;
-	GLuint* textureID;
-	int width;
-	int height;
-	GLuint framebuffer;
-	GLuint renderbuffer;
+	GLenum m_textureTarget;
+	int m_texturesCount;
+	GLuint* m_textureID;
+	int m_width;
+	int m_height;
+	GLuint m_framebuffer;
+	GLuint m_renderbuffer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TextureData */
 
@@ -52,7 +52,7 @@ class Texture
 {
 /* ==================== Static variables begin ==================== */
 protected:
-	static std::map<std::string, TextureData*> textureResourceMap;
+	static std::map<std::string, TextureData*> s_textureResourceMap;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -72,15 +72,15 @@ private:
 public:
 	RENDERING_API void Bind(unsigned int unit = 0) const;
 	RENDERING_API void BindAsRenderTarget() const;
-	RENDERING_API inline int GetWidth() const { return textureData->GetWidth(); }
-	RENDERING_API inline int GetHeight() const { return textureData->GetHeight(); }
+	RENDERING_API inline int GetWidth() const { return m_textureData->GetWidth(); }
+	RENDERING_API inline int GetHeight() const { return m_textureData->GetHeight(); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	TextureData* textureData;
+	TextureData* m_textureData;
 private:
-	std::string fileName;
+	std::string m_fileName;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Texture */
 

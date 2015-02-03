@@ -22,7 +22,7 @@ class MappedValues
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MappedValues(void) :
-		defaultTexture(new Texture("..\\Textures\\defaultTexture.png")),
+		defaultTexture(new Texture("..\\Textures\\defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 		defaultVector3D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO)) {}
 	RENDERING_API virtual ~MappedValues(void)
 	{
@@ -101,7 +101,7 @@ public:
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
-			LOG(Utility::Warning, LOGPLACE, "Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			LOG(Utility::Debug, LOGPLACE, "Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return defaultVector3D;
 		}
 		return itr->second;
@@ -112,7 +112,7 @@ public:
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
 		{
-			LOG(Utility::Warning, LOGPLACE, "Real number with name \"%s\" has not been found", name.c_str());
+			LOG(Utility::Debug, LOGPLACE, "Real number with name \"%s\" has not been found", name.c_str());
 			return 0;
 		}
 		return itr->second;
@@ -123,7 +123,7 @@ public:
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
-			LOG(Utility::Warning, LOGPLACE, "Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			LOG(Utility::Debug, LOGPLACE, "Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
 			return defaultTexture;
 		}
 		return itr->second;

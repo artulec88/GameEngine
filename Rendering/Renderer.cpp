@@ -84,6 +84,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	SetSamplerSlot("shadowMap", 3);
 	SetSamplerSlot("cubeMap", 0);
 	SetSamplerSlot("filterTexture", 0);
+	SetSamplerSlot("diffuse2", 4);
 
 	glGenVertexArrays(1, &vao);
 

@@ -50,6 +50,7 @@ uniform float R_ambientFogEnd;
 uniform vec3 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
+uniform sampler2D diffuse2;
 uniform sampler2D displacementMap;
 
 uniform float displacementScale;
@@ -63,6 +64,11 @@ void main()
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
-	SetFragOutput(0, fogFactor * texture2D(diffuse, texCoords) * vec4(R_ambientIntensity, 1));
+	
+	vec4 diffuseTexColor = texture2D(diffuse, texCoords);
+	vec4 diffuse2TexColor = texture2D(diffuse2, texCoords);
+	vec4 texColor = mix(diffuseTexColor, diffuse2TexColor, diffuse2TexColor.r + diffuse2TexColor.g + diffuse2TexColor.b);
+	
+	SetFragOutput(0, fogFactor * texColor * vec4(R_ambientIntensity, 1));
 }
 #endif
