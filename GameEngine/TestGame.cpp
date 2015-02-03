@@ -74,12 +74,10 @@ void TestGame::Init()
 	planeNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
 	planeMesh = new TerrainMesh("..\\Models\\terrain02.obj");
-	//planeMaterial = new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
-	//	new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
-	//planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"), planeMaterial));
-	planeMaterial = new Material(new Texture("..\\Textures\\bricks.jpg"), planeSpecularIntensity, planeSpecularPower,
-		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset);
-	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\moss.png"));
+	planeMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass.jpg")), planeSpecularIntensity, planeSpecularPower,
+		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
+		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), planeDisplacementScale, planeDisplacementOffset);
+	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks.jpg")));
 	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);

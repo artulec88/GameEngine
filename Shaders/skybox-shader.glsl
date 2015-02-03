@@ -67,8 +67,8 @@ void main()
 	{
 		fixedTexCoords.z = 1.0 - sizeFactor;
 	}
-	
+
+	//SetFragOutput(0, vec4(R_ambientFogColor, 1.0) * vec4(R_ambientIntensity, 1)); // if fog is enabled we do not see the skybox at all
 	SetFragOutput(0, texture(R_cubeMap, fixedTexCoords));
-	//SetFragOutput(0, vec4(1.0, 0.0, 0.0, 1.0));
 }
 #endif

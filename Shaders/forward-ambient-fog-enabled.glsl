@@ -45,6 +45,9 @@ void main()
 #elif defined(FS_BUILD)
 #include "sampling.glh"
 
+uniform vec3 R_ambientFogColor;
+uniform float R_ambientFogStart;
+uniform float R_ambientFogEnd;
 uniform vec3 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
@@ -56,7 +59,10 @@ uniform float displacementBias;
 
 DeclareFragOutput(0, vec4);
 void main()
-{	
+{
+	float distance = length(C_eyePos - worldPos0);
+	float fogFactor = 1.0 - clamp((R_ambientFogEnd - distance) / (R_ambientFogEnd - R_ambientFogStart), 0.0, 1.0);
+	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
 	
@@ -76,6 +82,6 @@ void main()
 	//vec4 diffuse2TexColor = texture2D(diffuse2, texCoords);
 	//vec4 texColor = mix(diffuseTexColor, diffuse2TexColor, diffuse2TexColor.r + diffuse2TexColor.g + diffuse2TexColor.b);
 	
-	SetFragOutput(0, texColor * vec4(R_ambientIntensity, 1));
+	SetFragOutput(0, mix(texColor, vec4(R_ambientFogColor, 1.0), fogFactor) * vec4(R_ambientIntensity, 1));
 }
 #endif

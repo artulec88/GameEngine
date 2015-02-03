@@ -41,6 +41,10 @@ Renderer::Renderer(GLFWwindow* window) :
 	window(window),
 	vao(0),
 	isMouseEnabled(true),
+	ambientLightFogEnabled(GET_CONFIG_VALUE("ambientLightFogEnabled", true)),
+	ambientLightFogColor(GET_CONFIG_VALUE("ambientLightFogColor_x", 0.7f),
+		GET_CONFIG_VALUE("ambientLightFogColor_y", 0.7f),
+		GET_CONFIG_VALUE("ambientLightFogColor_z", 0.7f)),
 	ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
 	ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
 	ambientLight(GET_CONFIG_VALUE("ambientLight_x", 0.02f),
@@ -55,6 +59,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	cubeMapShader(NULL),
 	cubeMapTexture(NULL),
 	defaultShader(NULL),
+	defaultShaderFogEnabled(NULL),
 	//textShader(NULL),
 	shadowMapShader(NULL),
 	nullFilterShader(NULL),
@@ -89,6 +94,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	glGenVertexArrays(1, &vao);
 
 #ifndef ANT_TWEAK_BAR_ENABLED
+	SetVector3D("ambientFogColor", ambientLightFogColor);
 	SetReal("ambientFogStart", ambientLightFogStart);
 	SetReal("ambientFogEnd", ambientLightFogEnd);
 	SetVector3D("ambientIntensity", ambientLight);
@@ -99,11 +105,12 @@ Renderer::Renderer(GLFWwindow* window) :
 	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	defaultShader = new Shader((GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient")));
-	shadowMapShader = new Shader((GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator")));
-	nullFilterShader = new Shader((GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null")));
-	gaussBlurFilterShader = new Shader((GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1")));
-	fxaaFilterShader = new Shader((GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa")));
+	defaultShader = new Shader(GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient"));
+	defaultShaderFogEnabled = new Shader(GET_CONFIG_VALUE_STR("defaultShaderFogEnabled", "ForwardAmbientFogEnabled"));
+	shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
+	nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
+	gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
+	fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
 	altCameraNode = new GameNode();
 	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
@@ -164,6 +171,7 @@ Renderer::~Renderer(void)
 	// TODO: Deallocating the cameras member variable
 
 	SAFE_DELETE(defaultShader);
+	SAFE_DELETE(defaultShaderFogEnabled);
 	SAFE_DELETE(shadowMapShader);
 	SAFE_DELETE(nullFilterShader);
 	SAFE_DELETE(gaussBlurFilterShader);
@@ -320,6 +328,7 @@ void Renderer::Render(GameNode& gameNode)
 	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
 	// TODO: Expand with Stencil buffer once it is used
 #ifdef ANT_TWEAK_BAR_ENABLED
+	SetVector3D("ambientFogColor", ambientLightFogColor);
 	SetReal("ambientFogStart", ambientLightFogStart);
 	SetReal("ambientFogEnd", ambientLightFogEnd);
 	SetVector3D("ambientIntensity", ambientLight);
@@ -333,7 +342,14 @@ void Renderer::Render(GameNode& gameNode)
 
 	ClearScreen();
 	currentCamera = cameras[currentCameraIndex];
-	gameNode.RenderAll(defaultShader, this); // Ambient rendering
+	if (ambientLightFogEnabled)
+	{
+		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
+	}
+	else
+	{
+		gameNode.RenderAll(defaultShader, this); // Ambient rendering with disabled fog
+	}
 
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
@@ -403,7 +419,7 @@ void Renderer::Render(GameNode& gameNode)
 		{
 			glEnable(GL_BLEND);
 		}
-		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
 		glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
@@ -454,6 +470,12 @@ void Renderer::Render(GameNode& gameNode)
 
 void Renderer::RenderSkybox()
 {
+	cubeMapNode->GetTransform().SetPos(currentCamera->GetTransform().GetTransformedPos());
+	if (ambientLightFogEnabled)
+	{
+		return;
+	}
+
 	/* ==================== Rendering skybox begin ==================== */
 	//glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
@@ -463,7 +485,6 @@ void Renderer::RenderSkybox()
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	glDepthFunc(GL_LEQUAL);
-	cubeMapNode->GetTransform().SetPos(currentCamera->GetTransform().GetTransformedPos());
 	cubeMapNode->RenderAll(cubeMapShader, this);
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glCullFace(Rendering::glCullFaceMode);
@@ -552,7 +573,15 @@ void Renderer::SwapBuffers()
 
 void Renderer::ClearScreen() const
 {
-	glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
+	if (ambientLightFogEnabled)
+	{
+		Vector3D fogColor = ambientLightFogColor * ambientLight;
+		glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
+	}
+	else
+	{
+		glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
+	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -684,6 +713,8 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
 	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &applyFilterEnabled, " label='Apply filter' ");
 	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
+	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &ambientLightFogColor, " label='Fog color' group='Ambient light' ");
 	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
 	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
 	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");

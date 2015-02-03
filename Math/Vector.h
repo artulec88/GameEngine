@@ -91,10 +91,11 @@ public: // public member functions
 	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; }; // creates negation vector
 	Vector3D& Negated() { Negate(); return *this; }
 	
-	Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); };
+	Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); }
 	Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
-	Vector3D operator-(const Vector3D& v) const { return Vector3D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); };
+	Vector3D operator-(const Vector3D& v) const { return Vector3D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); }
 	Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
+	Vector3D operator*(const Vector3D& v) const { return Vector3D(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ()); }
 	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); }; // CHECKED!
 
 	Vector3D& operator+=(const Vector3D& v);

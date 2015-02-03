@@ -13,4 +13,4 @@
 13.	Text alignment
 14.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)
 15.	Skybox is not seamless
-16.	Check why merge sort is slower than insertion sort. Check why insertion sort is so fast.
+16.	Skybox day/night cycles. Smooth transition between one cubemap (representing daytime) and the other (representing nightime). Read http://stackoverflow.com/questions/11118186/procedural-dynamic-colouring-of-a-skybox-in-opengl

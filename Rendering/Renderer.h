@@ -103,6 +103,8 @@ private:
 	GLuint framebuffer;
 	GLuint vao; // vertex array id
 	bool isMouseEnabled;
+	bool ambientLightFogEnabled;
+	Math::Vector3D ambientLightFogColor;
 	Math::Real ambientLightFogStart;
 	Math::Real ambientLightFogEnd;
 	Math::Vector3D ambientLight;
@@ -125,6 +127,7 @@ private:
 	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];
 
 	Shader* defaultShader;
+	Shader* defaultShaderFogEnabled;
 	Shader* shadowMapShader;
 	Shader* nullFilterShader;
 	Shader* gaussBlurFilterShader;

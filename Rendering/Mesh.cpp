@@ -612,7 +612,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 #ifdef MEASURE_TIME_ENABLED
 	clock_t begin = clock();
 #endif
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", positions.size());
+	LOG(Utility::Debug, LOGPLACE, "Terrain consists of %d positions", positions.size());
 	std::unordered_set<Math::Vector3D> verticesSet;
 	for (unsigned int i = 0; i < positions.size(); ++i)
 	{
@@ -622,10 +622,12 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Info, LOGPLACE, "Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	LOG(Debug, LOGPLACE, "Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 
-	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
+	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_Y);
+	//LOG(Info, LOGPLACE, "The minimum value is %s", uniquePositions[0].ToString().c_str());
+	//LOG(Info, LOGPLACE, "The maximum value is %s", uniquePositions[uniquePositions.size() - 1].ToString().c_str());
 
 	m_positionsCount = uniquePositions.size();
 	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", m_positionsCount);
@@ -655,5 +657,5 @@ void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 		//	LOG(Utility::Delocust, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	m_kdTree = new KDTree(m_positions, m_positionsCount, 1);
+	m_kdTree = new KDTree(m_positions, m_positionsCount, 8);
 }
