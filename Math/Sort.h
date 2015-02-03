@@ -774,7 +774,7 @@ private:
 		//LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
 
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
-		const int NUMBER_OF_BUCKETS = sqrtf(vectorSize);
+		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
 		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
 		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
 		Math::Real bucketLowBound = minValue;
@@ -863,7 +863,7 @@ private:
 		//LOG(Utility::Debug, LOGPLACE, "minValue = %.4f; maxValue = %.4f", minValue, maxValue);
 
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
-		const int NUMBER_OF_BUCKETS = sqrtf(vectorSize);
+		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
 		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
 		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
 		Math::Real bucketLowBound = minValue;
