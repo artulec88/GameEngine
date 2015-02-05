@@ -58,6 +58,9 @@ protected:
 	void CreateRenderer(int width, int height, const std::string& title);
 	virtual void Run();
 	void PollEvents();
+private:
+	Math::Real CoreEngine::GetCurrentLocalTime() const;
+	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -67,6 +70,11 @@ protected:
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
+	const Math::Real SECONDS_PER_MINUTE; // the number of seconds during one minute
+	const Math::Real SECONDS_PER_HOUR; // the number of seconds during one hour
+	const Math::Real SECONDS_PER_DAY; // the number of seconds during one day
+	Math::Real m_timeOfDay;
+	const Math::Real m_clockSpeed;
 	Game* m_game;
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;

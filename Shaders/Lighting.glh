@@ -57,11 +57,11 @@ vec4 CalcLight(BaseLight base, vec3 direction, vec3 normal, vec3 worldPos,
     //vec4 diffuseColor = vec4(0,0,0,0);
     vec4 specularColor = vec4(0,0,0,0);
     
-    vec4 diffuseColor = (base.color * base.intensity * diffuseFactor);
+    //vec4 diffuseColor = (base.color * base.intensity * diffuseFactor);
 	/* ==================== Cartoon shading begin ==================== */
-	//const int levels = 3;
-	//const float scaleFactor = 1.0 / levels;
-	//vec4 diffuseColor = (base.color * base.intensity * diffuseFactor) * floor(cosine * levels) * scaleFactor;
+	const int levels = 3;
+	const float scaleFactor = 1.0 / levels;
+	vec4 diffuseColor = (base.color * base.intensity * diffuseFactor) * floor(cosine * levels) * scaleFactor;
 	/* ==================== Cartoon shading end ==================== */
         
     vec3 directionToEye = normalize(eyePos - worldPos);

@@ -88,6 +88,7 @@ protected:
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
 	void InitializeCubeMap();
+	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
 	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
@@ -121,7 +122,8 @@ private:
 
 	GameNode* cubeMapNode;
 	Shader* cubeMapShader;
-	Texture* cubeMapTexture;
+	Texture* cubeMapTextureDay;
+	Texture* cubeMapTextureNight;
 
 	Texture* shadowMaps[SHADOW_MAPS_COUNT];
 	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];

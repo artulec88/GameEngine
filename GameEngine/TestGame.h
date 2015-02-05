@@ -66,6 +66,7 @@ protected:
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
 	Rendering::GameNode* skyboxNode;
+	bool heightMapCalculationEnabled;
 	//Rendering::GameNode* castleNode;
 
 /* ==================== Non-static member variables end ==================== */

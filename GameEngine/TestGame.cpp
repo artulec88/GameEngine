@@ -47,7 +47,8 @@ TestGame::TestGame() :
 	spotLightNodes(NULL),
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
-	skyboxNode(NULL)
+	skyboxNode(NULL),
+	heightMapCalculationEnabled(true)
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -77,7 +78,7 @@ void TestGame::Init()
 	planeMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass.jpg")), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), planeDisplacementScale, planeDisplacementOffset);
-	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks.jpg")));
+	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks.jpg")), "diffuse2");
 	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
 #else
 	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
@@ -585,7 +586,7 @@ void TestGame::Update(Real delta)
 	//LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
 
 	timeToUpdateCameraHeight += delta;
-	if (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL)
+	if ((heightMapCalculationEnabled) && (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL))
 	{
 		Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
 		transform.GetPos().SetY(height);
@@ -803,6 +804,7 @@ void TestGame::InitializeTweakBars()
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
 
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
+	TwAddVarRW(testGamePropertiesBar, "heightMapCalculationEnabled", TW_TYPE_BOOLCPP, &heightMapCalculationEnabled, " label='Heightmap calculation enabled' ");
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularIntensity", TW_TYPE_FLOAT, &planeSpecularIntensity, " label='Plane specular intensity' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementScale", TW_TYPE_FLOAT, &planeDisplacementScale, " label='Plane displacement scale' group=Plane ");

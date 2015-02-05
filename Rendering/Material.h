@@ -26,7 +26,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API void SetAdditionalTexture(Texture* texture);
+	RENDERING_API void SetAdditionalTexture(Texture* texture, const std::string& textureName);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

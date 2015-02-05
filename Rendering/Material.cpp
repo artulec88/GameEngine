@@ -41,12 +41,12 @@ Material::Material(Texture* diffuseTexture,
 	SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
-void Material::SetAdditionalTexture(Texture* texture)
+void Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
 	if (texture == NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "Cannot set the additional texture for material. The texture is NULL.");
 		return;
 	}
-	SetTexture("diffuse2", texture);
+	SetTexture(textureName, texture);
 }

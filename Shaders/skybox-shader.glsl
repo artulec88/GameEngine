@@ -33,7 +33,9 @@ void main()
 #elif defined(FS_BUILD)
 #include "sampling.glh"
 
-uniform samplerCube R_cubeMap; // cube map texture
+uniform samplerCube R_cubeMapDay; // cube map texture by day
+uniform samplerCube R_cubeMapNight; // cube map texture by night
+uniform float R_timeOfDay;
 
 DeclareFragOutput(0, vec4);
 void main()
@@ -69,6 +71,6 @@ void main()
 	}
 
 	//SetFragOutput(0, vec4(R_ambientFogColor, 1.0) * vec4(R_ambientIntensity, 1)); // if fog is enabled we do not see the skybox at all
-	SetFragOutput(0, texture(R_cubeMap, fixedTexCoords));
+	SetFragOutput(0, texture(R_cubeMapDay, fixedTexCoords));
 }
 #endif

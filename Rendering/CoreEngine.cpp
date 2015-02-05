@@ -6,6 +6,8 @@
 #include "Utility\ILogger.h"
 #include "Utility\Config.h"
 
+#include "Math\FloatingPoint.h"
+
 #include <ctime>
 #include <iostream>
 #include <iomanip>
@@ -29,6 +31,11 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_windowHeight(height),
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
+	SECONDS_PER_MINUTE(60),
+	SECONDS_PER_HOUR(3600),
+	SECONDS_PER_DAY(86400),
+	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
+	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE)),
 	m_game(game),
 	m_renderer(NULL),
 	m_fpsTextRenderer(NULL)
@@ -46,8 +53,19 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	CreateRenderer(width, height, title);
 
-	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f);
-	
+	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
+
+	//while (m_timeOfDay > SECONDS_PER_DAY)
+	//{
+	//	m_timeOfDay -= static_cast<int>(m_timeOfDay) % SECONDS_PER_DAY;
+	//}
+	// return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
+	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY);
+	if (Math::AlmostEqual(m_timeOfDay, REAL_ZERO))
+	{
+		m_timeOfDay = GetCurrentLocalTime();
+	}
+
 	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
 
@@ -230,6 +248,7 @@ void CoreEngine::Run()
 
 	Math::Real unprocessingTime = 0.0; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
+	int inGameHours, inGameMinutes, inGameSeconds;
 
 	LARGE_INTEGER frequency; // ticks per second
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
@@ -245,6 +264,13 @@ void CoreEngine::Run()
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
+		
+		m_timeOfDay += (passedTime / m_clockSpeed); // adjusting in-game time
+		if (m_timeOfDay > SECONDS_PER_DAY)
+		{
+			m_timeOfDay -= SECONDS_PER_DAY;
+		}
+		ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
 
 		previousTime = currentTime;
 		
@@ -346,6 +372,16 @@ void CoreEngine::Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
+			ss.str(std::string());
+			// TODO: Leading zeros (setfill('0') << setw(5))
+			if (inGameHours < 10) { ss << "Time: 0"; }
+			else { ss << "Time: "; }
+			if (inGameMinutes < 10) { ss << inGameHours << ":0"; }
+			else { ss << inGameHours << ":"; }
+			if (inGameSeconds < 10) { ss << inGameMinutes << ":0"; }
+			else { ss << inGameMinutes << ":"; }
+			ss << inGameSeconds;
+			m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", m_renderer, 64.0f);
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", m_renderer, 64.0f);
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", m_renderer, 64.0f);
@@ -369,6 +405,14 @@ void CoreEngine::Run()
 		timeSum3 += elapsedTime; // in [ms]
 		/* ==================== REGION #3 end ====================*/
 	}
+}
+
+void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
+{
+	inGameHours = static_cast<int>(m_timeOfDay) / SECONDS_PER_HOUR;
+	Math::Real temp = fmod(m_timeOfDay, SECONDS_PER_HOUR);
+	inGameMinutes = static_cast<int>(temp) / SECONDS_PER_MINUTE;
+	inGameSeconds = static_cast<int>(fmod(temp, SECONDS_PER_MINUTE));
 }
 
 unsigned int CoreEngine::GetCurrentCameraIndex() const
@@ -407,6 +451,25 @@ unsigned int CoreEngine::PrevCamera() const
 void CoreEngine::PollEvents()
 {
 	glfwPollEvents();
+}
+
+/**
+ * See http://www.cplusplus.com/reference/ctime/localtime/
+ * http://www.cplusplus.com/reference/ctime/strftime/
+ */
+Math::Real CoreEngine::GetCurrentLocalTime() const
+{
+	time_t rawtime;
+	struct tm* timeinfo;
+	time(&rawtime);
+	timeinfo = localtime(&rawtime);
+	Math::Real result = SECONDS_PER_HOUR * timeinfo->tm_hour + SECONDS_PER_MINUTE * timeinfo->tm_min + timeinfo->tm_sec;
+	if (result > SECONDS_PER_DAY)
+	{
+		LOG(Utility::Error, LOGPLACE, "Incorrect local time");
+		result = REAL_ZERO;
+	}
+	return result;
 }
 
 Math::Real CoreEngine::GetTime() const
