@@ -6,6 +6,7 @@
 
 #include "Math\Vector.h"
 
+#include <string>
 #include <map>
 
 namespace Rendering
@@ -15,8 +16,9 @@ class Material : public MappedValues
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API Material(Texture* diffuseTexture, Math::Real specularIntensity = REAL_ONE, Math::Real specularPower = 8.0f,
-		Texture* normalMap = NULL, Texture* displacementMap = NULL, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+	RENDERING_API Material(Texture* diffuseTexture, Math::Real specularIntensity = REAL_ONE, Math::Real specularPower = 8.0f, Texture* normalMap = NULL,
+		Texture* displacementMap = NULL, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+	RENDERING_API Material(Texture* texture, const std::string& textureName);
 	RENDERING_API virtual ~Material(void) { };
 private:
 	Material(const Material& material) {}

@@ -61,7 +61,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	//}
 	// return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY);
-	if (Math::AlmostEqual(m_timeOfDay, REAL_ZERO))
+	if (m_timeOfDay < REAL_ZERO)
 	{
 		m_timeOfDay = GetCurrentLocalTime();
 	}
@@ -365,6 +365,7 @@ void CoreEngine::Run()
 			//	LOG(Error, LOGPLACE, "Shader instance is NULL");
 			//}
 			//m_renderer->Render(m_game->GetRootGameNode());
+			m_renderer->SetReal("timeOfDay", m_timeOfDay);
 			m_game->Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;

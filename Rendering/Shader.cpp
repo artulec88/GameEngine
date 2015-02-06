@@ -333,6 +333,13 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	unsigned int uniformLocation = shaderText.find(UNIFORM_KEY);
 	while(uniformLocation != std::string::npos)
 	{
+		/**
+		 * TODO: When uniform is declared as follows:
+		 * "uniform someType uniformName; // this is a comment for uniform"
+		 * then errors with ignoring successive uniforms occurs. This is critical to check and fix!!!
+		 * When the comment is removed all comes back to normal.
+		 * It seems there is a problem with the isCommented variable in this function.
+		 */
 		bool isCommented = false;
 		unsigned int lastLineEnd = shaderText.rfind(";", uniformLocation);
 		if(lastLineEnd != std::string::npos)

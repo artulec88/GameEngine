@@ -21,9 +21,6 @@
 #include <sstream>
 #include <algorithm>
 
-// Include GLM- a library for 3D mathematics
-//#include <glm/glm.hpp>
-
 using namespace Rendering;
 using namespace Utility;
 using namespace Math;
@@ -227,10 +224,10 @@ void Renderer::InitializeCubeMap()
 	cubeMapTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
 	cubeMapTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
 
-	SetTexture("cubeMapDay", cubeMapTextureDay);
-	SetTexture("cubeMapNight", cubeMapTextureNight);
+	//SetTexture("cubeMapDay", cubeMapTextureDay);
+	//SetTexture("cubeMapNight", cubeMapTextureNight);
 
-	Material* cubeMapMaterial = new Material(cubeMapTextureDay);
+	Material* cubeMapMaterial = new Material(cubeMapTextureDay, "cubeMapDay");
 	cubeMapMaterial->SetAdditionalTexture(cubeMapTextureNight, "cubeMapNight");
 
 	cubeMapNode = new GameNode();

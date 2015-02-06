@@ -41,6 +41,15 @@ Material::Material(Texture* diffuseTexture,
 	SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
+Material::Material(Texture* texture, const std::string& textureName)
+{
+	if (texture == NULL)
+	{
+		LOG(Utility::Error, LOGPLACE, "The material is given the NULL main texture");
+	}
+	SetTexture(textureName, texture);
+}
+
 void Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
 	if (texture == NULL)

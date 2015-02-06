@@ -33,13 +33,18 @@ void main()
 #elif defined(FS_BUILD)
 #include "sampling.glh"
 
-uniform samplerCube R_cubeMapDay; // cube map texture by day
-uniform samplerCube R_cubeMapNight; // cube map texture by night
-uniform float R_timeOfDay;
+uniform float R_timeOfDay; // current daytime in seconds [0; 86400)
+uniform samplerCube cubeMapDay;
+uniform samplerCube cubeMapNight;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
+	const float sunriseStartsAt = 21600; // the exact time of the moment when the sun starts rising in seconds [0; 86400)
+	const float sunriseFinishesAt = 22800; // the exact time of the moment when the sun finishes rising in seconds [0; 86400)
+	const float sunsetStartsAt = 64800; // the exact time of the moment when the sun starts setting in seconds [0; 86400)
+	const float sunsetFinishesAt = 66000; // the exact time of the moment when the sun finishes setting in seconds [0; 86400)
+
 	const int size = 128;
 	const float sizeFactor = 1.0 / size;
 	//vec3 fixedTexCoords = clamp(texCoord0, 1.0 / 1024, 1.0 - 1.0 / 1024);
@@ -69,8 +74,24 @@ void main()
 	{
 		fixedTexCoords.z = 1.0 - sizeFactor;
 	}
-
-	//SetFragOutput(0, vec4(R_ambientFogColor, 1.0) * vec4(R_ambientIntensity, 1)); // if fog is enabled we do not see the skybox at all
-	SetFragOutput(0, texture(R_cubeMapDay, fixedTexCoords));
+	
+	float mixFactor;
+	if ((R_timeOfDay >= sunriseFinishesAt) && (R_timeOfDay < sunsetStartsAt))
+	{
+		mixFactor = 1.0;
+	}
+	else if ((R_timeOfDay >= sunsetFinishesAt) || (R_timeOfDay < sunriseStartsAt))
+	{
+		mixFactor = 0.0;
+	}
+	else if ((R_timeOfDay >= sunriseStartsAt) && (R_timeOfDay < sunriseFinishesAt)) // night to day conversion
+	{
+		mixFactor = mix(0.0, 1.0, (R_timeOfDay - sunriseStartsAt) / (sunriseFinishesAt - sunriseStartsAt));
+	}
+	else /* day to night conversion */
+	{
+		mixFactor = mix(1.0, 0.0, (R_timeOfDay - sunsetStartsAt) / (sunsetFinishesAt - sunsetStartsAt));
+	}
+	SetFragOutput(0, mix(texture(cubeMapNight, fixedTexCoords), texture(cubeMapDay, fixedTexCoords), mixFactor));
 }
 #endif
