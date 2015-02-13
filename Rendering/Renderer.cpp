@@ -44,9 +44,12 @@ Renderer::Renderer(GLFWwindow* window) :
 		GET_CONFIG_VALUE("ambientLightFogColor_z", 0.7f)),
 	ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
 	ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
-	ambientLight(GET_CONFIG_VALUE("ambientLight_x", 0.02f),
-		GET_CONFIG_VALUE("ambientLight_y", 0.02f),
-		GET_CONFIG_VALUE("ambientLight_z", 0.02f)),
+	m_ambientDayLight(GET_CONFIG_VALUE("ambientDayLight_x", 0.2f),
+		GET_CONFIG_VALUE("ambientDayLight_y", 0.2f),
+		GET_CONFIG_VALUE("ambientDayLight_z", 0.2f)),
+	m_ambientNightLight(GET_CONFIG_VALUE("ambientNightLight_x", 0.02f),
+		GET_CONFIG_VALUE("ambientNightLight_y", 0.02f),
+		GET_CONFIG_VALUE("ambientNightLight_z", 0.02f)),
 	currentLight(NULL),
 	currentCameraIndex(0),
 	currentCamera(NULL),
@@ -68,7 +71,11 @@ Renderer::Renderer(GLFWwindow* window) :
 	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
 	fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
 	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
-	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f))
+	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
+	m_timeSunriseStarts(GET_CONFIG_VALUE("timeSunriseStarts", 21600)),
+	m_timeSunriseFinishes(GET_CONFIG_VALUE("timeSunriseFinishes", 22800)),
+	m_timeSunsetStarts(GET_CONFIG_VALUE("timeSunsetStarts", 64800)),
+	m_timeSunsetFinishes(GET_CONFIG_VALUE("timeSunsetFinishes", 66000))
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
@@ -96,7 +103,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	SetVector3D("ambientFogColor", ambientLightFogColor);
 	SetReal("ambientFogStart", ambientLightFogStart);
 	SetReal("ambientFogEnd", ambientLightFogEnd);
-	SetVector3D("ambientIntensity", ambientLight);
+	SetVector3D("ambientIntensity", m_ambientLight);
 #endif
 
 	//SetTexture("shadowMap",
@@ -337,11 +344,14 @@ void Renderer::Render(GameNode& gameNode)
 {
 	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
 	// TODO: Expand with Stencil buffer once it is used
+
+	AdjustAmbientLightAccordingToCurrentTime();
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientFogColor", ambientLightFogColor);
 	SetReal("ambientFogStart", ambientLightFogStart);
 	SetReal("ambientFogEnd", ambientLightFogEnd);
-	SetVector3D("ambientIntensity", ambientLight);
+	SetVector3D("ambientIntensity", m_ambientLight);
 	SetReal("fxaaSpanMax", fxaaSpanMax);
 	SetReal("fxaaReduceMin", fxaaReduceMin);
 	SetReal("fxaaReduceMul", fxaaReduceMul);
@@ -478,6 +488,43 @@ void Renderer::Render(GameNode& gameNode)
 	//textRenderer->DrawString(0, 50, "Hello world", this);
 }
 
+void Renderer::AdjustAmbientLightAccordingToCurrentTime()
+{
+	/* ==================== Adjusting the time variables begin ==================== */
+	//SetReal("timeSunriseStarts", m_timeSunriseStarts);
+	//SetReal("timeSunriseFinishes", m_timeSunriseFinishes);
+	//SetReal("timeSunsetStarts", m_timeSunsetStarts);
+	//SetReal("timeSunsetFinishes", m_timeSunsetFinishes);
+	Math::Real timeOfDay = GetReal("timeOfDay"); // within range [0; 86400)
+	Math::Real dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day
+	if ((timeOfDay > m_timeSunriseStarts) && (timeOfDay < m_timeSunriseFinishes))
+	{
+		// sun is rising
+		dayNightMixFactor = Lerp(REAL_ZERO, REAL_ONE, (timeOfDay - m_timeSunriseStarts) / (m_timeSunriseFinishes - m_timeSunriseStarts));
+		m_ambientLight = m_ambientNightLight.Lerp(m_ambientDayLight, dayNightMixFactor);
+	}
+	else if ((timeOfDay > m_timeSunsetStarts) && (timeOfDay < m_timeSunsetFinishes))
+	{
+		// sun is setting
+		dayNightMixFactor = Lerp(REAL_ONE, REAL_ZERO, (timeOfDay - m_timeSunsetStarts) / (m_timeSunsetFinishes - m_timeSunsetStarts));
+		m_ambientLight = m_ambientDayLight.Lerp(m_ambientNightLight, dayNightMixFactor);
+	}
+	else if ((timeOfDay > m_timeSunriseFinishes) && (timeOfDay < m_timeSunsetStarts))
+	{
+		dayNightMixFactor = REAL_ONE;
+		m_ambientLight = m_ambientDayLight;
+	}
+	else if ((timeOfDay > m_timeSunsetFinishes) || (timeOfDay < m_timeSunriseStarts))
+	{
+		dayNightMixFactor = REAL_ZERO;
+		m_ambientLight = m_ambientNightLight;
+	}
+	//LOG(Utility::Debug, LOGPLACE, "Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
+	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());
+	SetReal("dayNightMixFactor", dayNightMixFactor);
+	/* ==================== Adjusting the time variables end ==================== */
+}
+
 void Renderer::RenderSkybox()
 {
 	cubeMapNode->GetTransform().SetPos(currentCamera->GetTransform().GetTransformedPos());
@@ -585,7 +632,7 @@ void Renderer::ClearScreen() const
 {
 	if (ambientLightFogEnabled)
 	{
-		Vector3D fogColor = ambientLightFogColor * ambientLight;
+		Vector3D fogColor = ambientLightFogColor * m_ambientLight;
 		glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
 	}
 	else
@@ -722,7 +769,7 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &backgroundColor, " label='Background color' ");
 	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
 	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &applyFilterEnabled, " label='Apply filter' ");
-	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
 	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
 	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &ambientLightFogColor, " label='Fog color' group='Ambient light' ");
 	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");

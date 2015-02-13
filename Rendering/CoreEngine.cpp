@@ -265,7 +265,7 @@ void CoreEngine::Run()
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 		
-		m_timeOfDay += (passedTime / m_clockSpeed); // adjusting in-game time
+		m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
 		if (m_timeOfDay > SECONDS_PER_DAY)
 		{
 			m_timeOfDay -= SECONDS_PER_DAY;
@@ -377,11 +377,19 @@ void CoreEngine::Run()
 			// TODO: Leading zeros (setfill('0') << setw(5))
 			if (inGameHours < 10) { ss << "Time: 0"; }
 			else { ss << "Time: "; }
-			if (inGameMinutes < 10) { ss << inGameHours << ":0"; }
-			else { ss << inGameHours << ":"; }
-			if (inGameSeconds < 10) { ss << inGameMinutes << ":0"; }
-			else { ss << inGameMinutes << ":"; }
-			ss << inGameSeconds;
+			if (inGameMinutes < 10) { ss << inGameHours << ":0" << inGameMinutes; }
+			else { ss << inGameHours << ":" << inGameMinutes; }
+			if (m_clockSpeed < 12.0f)
+			{
+				if (inGameSeconds < 10)
+				{
+					ss << ":0" << inGameSeconds;
+				}
+				else
+				{
+					ss << ":" << inGameSeconds;
+				}
+			}
 			m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", m_renderer, 64.0f);
 			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", m_renderer, 64.0f);
@@ -410,7 +418,12 @@ void CoreEngine::Run()
 
 void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
 {
-	inGameHours = static_cast<int>(m_timeOfDay) / SECONDS_PER_HOUR;
+	ConvertTimeOfDay(m_timeOfDay, inGameHours, inGameMinutes, inGameSeconds);
+}
+
+void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
+{
+	inGameHours = static_cast<int>(timeOfDay) / SECONDS_PER_HOUR;
 	Math::Real temp = fmod(m_timeOfDay, SECONDS_PER_HOUR);
 	inGameMinutes = static_cast<int>(temp) / SECONDS_PER_MINUTE;
 	inGameSeconds = static_cast<int>(fmod(temp, SECONDS_PER_MINUTE));

@@ -6,29 +6,29 @@
 using namespace Math;
 
 Angle::Angle(Real angle /* = REAL_ZERO */, Unit unit /* = DEGREE */) :
-	angle(angle),
-	unit(unit)
+	m_angle(angle),
+	m_unit(unit)
 {
 }
 
 Angle::Angle(const Angle& angle) :
-	angle(angle.GetAngleInRadians()),
-	unit(RADIAN)
+	m_angle(angle.GetAngleInRadians()),
+	m_unit(RADIAN)
 {
 }
 
 // TODO: move this function to *.h file as an inline function
 Real Angle::GetAngleInDegrees() const
 {
-	switch (unit)
+	switch (m_unit)
 	{
 	case DEGREE:
-		return angle;
+		return m_angle;
 	case RADIAN:
-		return ToDeg(angle);
+		return ToDeg(m_angle);
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
-		return angle;
+		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		return m_angle;
 	}
 }
 
@@ -36,15 +36,15 @@ Real Angle::GetAngleInDegrees() const
 // TODO: move this function to *.h file as an inline function
 Real Angle::GetAngleInRadians() const
 {
-	switch (unit)
+	switch (m_unit)
 	{
 	case DEGREE:
-		return ToRad(angle);
+		return ToRad(m_angle);
 	case RADIAN:
-		return angle;
+		return m_angle;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", angle, unit);
-		return angle;
+		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		return m_angle;
 	}
 }
 

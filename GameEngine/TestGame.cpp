@@ -21,7 +21,6 @@ using namespace Math;
 using namespace Rendering;
 
 #define RENDER_LIGHT_MESHES
-//#define SIMULATE_SUN_BEHAVIOR
 
 TestGame::TestGame() :
 	Game(),
@@ -48,7 +47,7 @@ TestGame::TestGame() :
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
 	skyboxNode(NULL),
-	heightMapCalculationEnabled(true)
+	heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 }
@@ -534,15 +533,6 @@ void TestGame::Update(Real delta)
 	{
 		temp = 0.0;
 	}
-
-#ifdef SIMULATE_SUN_BEHAVIOR
-	if (directionalLightNode != NULL)
-	{
-		Transform& t = directionalLightNode->GetTransform();
-		//t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 200, cos(temp) / 1000)));
-		t.SetRot(t.GetRot() * Quaternion(sin(temp) / 20000.0f, cos(temp) / 10000.0f, 0.0f, 1.0f));
-	}
-#endif
 
 	for (int i = 0; i < pointLightCount; ++i)
 	{

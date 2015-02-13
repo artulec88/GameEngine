@@ -6,7 +6,7 @@
 #define MATH_API __declspec(dllimport)
 #endif
 
-#define EPSILON		1e3
+#define EPSILON		static_cast<Math::Real>(1e-5)
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)
 
@@ -62,5 +62,10 @@ namespace Math
 		if (a < min) return min;
 		else if (a > max) return max;
 		else return a;
+	}
+
+	template<typename Type> Type Lerp(const Type& a, const Type& b, const Type& mixFactor)
+	{
+		return ((1 - mixFactor) * a) + (mixFactor * b);
 	}
 } /* end namespace Math */

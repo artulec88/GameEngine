@@ -65,7 +65,9 @@ public:
 	RENDERING_API inline void AddLight(BaseLight* light);
 	RENDERING_API inline void AddCamera(Camera* camera);
 	RENDERING_API inline BaseLight* GetCurrentLight() { return currentLight; }
-	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return ambientLight; }
+	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return m_ambientLight; }
+	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDayLight; }
+	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNightLight; }
 	RENDERING_API inline Camera& GetCurrentCamera();
 	RENDERING_API unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
 	RENDERING_API unsigned int NextCamera();
@@ -89,6 +91,7 @@ protected:
 private:
 	void InitializeCubeMap();
 	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
+	void AdjustAmbientLightAccordingToCurrentTime();
 	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
@@ -108,7 +111,9 @@ private:
 	Math::Vector3D ambientLightFogColor;
 	Math::Real ambientLightFogStart;
 	Math::Real ambientLightFogEnd;
-	Math::Vector3D ambientLight;
+	const Math::Vector3D m_ambientDayLight;
+	const Math::Vector3D m_ambientNightLight;
+	Math::Vector3D m_ambientLight;
 	BaseLight* currentLight;
 	unsigned int currentCameraIndex;
 	Camera* currentCamera;
@@ -142,6 +147,11 @@ private:
 	Math::Real fxaaSpanMax;
 	Math::Real fxaaReduceMin;
 	Math::Real fxaaReduceMul;
+
+	Math::Real m_timeSunriseStarts;
+	Math::Real m_timeSunriseFinishes;
+	Math::Real m_timeSunsetStarts;
+	Math::Real m_timeSunsetFinishes;
 
 	Texture* fontTexture;
 	TextRenderer* textRenderer;

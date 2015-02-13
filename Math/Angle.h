@@ -19,7 +19,40 @@ public: // constructors and destructors
 public: // non-static member functions
 	Real GetAngleInDegrees() const;
 	Real GetAngleInRadians() const;
-	bool IsInDegrees() const { return (unit == DEGREE); }
+	bool IsInDegrees() const { return (m_unit == DEGREE); }
+
+	void SetAngleInDegrees(Real angle) { m_angle = angle; m_unit = DEGREE; }
+	void SetAngleInRadians(Real angle) { m_angle = angle; m_unit = RADIAN; }
+
+	Real Sin() const
+	{
+		switch(m_unit)
+		{
+		case DEGREE:
+			return sin(ToRad(m_angle));
+			break;
+		case RADIAN:
+		default:
+			return sin(m_angle);
+			break;
+		}
+	}
+	
+	Real Cos() const
+	{
+		switch(m_unit)
+		{
+		case DEGREE:
+			return cos(ToRad(m_angle));
+			break;
+		case RADIAN:
+		default:
+			return cos(m_angle);
+			break;
+		}
+	}
+
+	Angle operator-() const { return Angle(-m_angle, m_unit); };
 	bool operator==(const Angle& angle) const;
 	bool operator!=(const Angle& angle) const;
 	bool operator>(const Angle& angle) const;
@@ -28,8 +61,8 @@ public: // non-static member functions
 	bool operator<=(const Angle& angle) const;
     
 private: // non-static member variables
-	Real angle;
-	Unit unit;
+	Real m_angle;
+	Unit m_unit;
 }; /* end class Angle */
   
 } /* end namespace Math */

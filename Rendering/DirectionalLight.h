@@ -3,6 +3,9 @@
 #include "Rendering.h"
 #include "BaseLight.h"
 #include "Transform.h"
+#include "Math\Angle.h"
+
+#define SIMULATE_SUN_BEHAVIOR
 
 namespace Rendering
 {
@@ -30,11 +33,27 @@ public:
 	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 	virtual bool IsEnabled() const;
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+
+#ifdef SIMULATE_SUN_BEHAVIOR
+	virtual void Update(Math::Real delta);
+private:
+	/**
+	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
+	 */
+	void CalculateSunElevationAndAzimuth(Math::Real timeOfDay, Math::Angle& sunElevation, Math::Angle& sunAzimuth) const;
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Real halfShadowArea;
+	const Math::Real m_maxIntensity;
+	const Color m_sunlightDaytimeColor;
+	const Color m_sunNearHorizonColor;
+	const Color m_sunlightNighttimeColor;
+	const Math::Angle m_firstElevationLevel;
+	const Math::Angle m_secondElevationLevel;
+	const Math::Angle m_thirdElevationLevel;
+	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLight */
 

@@ -6,6 +6,7 @@
 #include "Game.h"
 
 #include "Math\Math.h"
+#include "Math\Angle.h"
 
 #include "Utility\Time.h"
 
@@ -54,13 +55,15 @@ public:
 	void SetCursorPos(Math::Real xPos, Math::Real yPos);
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
+	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
+	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
+	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 protected:
 	void CreateRenderer(int width, int height, const std::string& title);
 	virtual void Run();
 	void PollEvents();
 private:
-	Math::Real CoreEngine::GetCurrentLocalTime() const;
-	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
+	Math::Real GetCurrentLocalTime() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
