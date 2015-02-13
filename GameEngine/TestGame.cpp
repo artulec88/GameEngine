@@ -29,7 +29,7 @@ TestGame::TestGame() :
 	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
 	timeToUpdateCameraHeight(REAL_ZERO),
 	boxNode(NULL),
-#ifdef ANT_TWEAK_BAR_ENABLED
+#ifdef ANT_TWEAK_BAR_ENABLED` 
 	planeMaterial(NULL),
 	boxMaterial(NULL),
 	planeSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),

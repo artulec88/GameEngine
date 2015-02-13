@@ -56,6 +56,9 @@ public:
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
 	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
+	Math::Angle GetSunElevation() const { return m_sunElevation; }
+	Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
+	Rendering::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 protected:
@@ -64,6 +67,10 @@ protected:
 	void PollEvents();
 private:
 	Math::Real GetCurrentLocalTime() const;
+	/**
+	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
+	 */
+	void CalculateSunElevationAndAzimuth();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -77,6 +84,12 @@ protected:
 	const Math::Real SECONDS_PER_HOUR; // the number of seconds during one hour
 	const Math::Real SECONDS_PER_DAY; // the number of seconds during one day
 	Math::Real m_timeOfDay;
+	Rendering::Daytime m_daytime;
+	Math::Angle m_sunElevation;
+	Math::Angle m_sunAzimuth;
+	const Math::Angle M_FIRST_ELEVATION_LEVEL;
+	const Math::Angle M_SECOND_ELEVATION_LEVEL;
+	const Math::Angle M_THIRD_ELEVATION_LEVEL;
 	const Math::Real m_clockSpeed;
 	Game* m_game;
 	Renderer* m_renderer;

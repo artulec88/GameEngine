@@ -35,6 +35,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
 	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
+	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
+	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
+	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE)),
 	m_game(game),
 	m_renderer(NULL),
@@ -270,6 +273,7 @@ void CoreEngine::Run()
 		{
 			m_timeOfDay -= SECONDS_PER_DAY;
 		}
+		CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
 		ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
 
 		previousTime = currentTime;
@@ -506,4 +510,96 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 		return;
 	}
 	m_renderer->SetCursorPos(xPos, yPos);
+}
+
+void CoreEngine::CalculateSunElevationAndAzimuth()
+{
+	const int dayNumber = 172;
+	const Math::Angle LATITUDE(52.0f);
+	const Math::Angle LONGITUDE(-16.0f);
+	const int timeGMTdifference = -1;
+	
+	const Math::Angle b((360.0f / 365.0f) * (dayNumber -81));
+	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Angle::RADIAN);
+	const Math::Angle tropicOfCancer(23.45f);
+
+	const Math::Real equationOfTime = 9.87f * doubleB.Sin() - 7.53f * b.Cos() - 1.5f * b.Sin(); // EoT
+	const Math::Real declinationSin = tropicOfCancer.Sin() * b.Sin();
+	const Math::Angle declinationAngle(asin(declinationSin), Math::Angle::RADIAN);
+	LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
+
+	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
+	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
+	LOG(Utility::Debug, LOGPLACE, "Time correction in seconds = %.5f", timeCorrectionInSeconds);
+	LOG(Utility::Debug, LOGPLACE, "Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
+	
+	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
+	LOG(Utility::Debug, LOGPLACE, "Hour angle = %.5f", hourAngle.GetAngleInDegrees());
+
+	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
+	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
+	LOG(Utility::Debug, LOGPLACE, "Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
+
+	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
+	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
+	bool isAfternoon = (localSolarTime > 12.0f * SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
+	if (isAfternoon)
+	{
+		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
+	}
+
+	Daytime prevDaytime = m_daytime;
+	if (m_sunElevation < M_FIRST_ELEVATION_LEVEL)
+	{
+		m_daytime = Rendering::NIGHT;
+	}
+	else if (m_sunElevation < M_SECOND_ELEVATION_LEVEL)
+	{
+		m_daytime = (isAfternoon) ? Rendering::AFTER_DUSK : Rendering::BEFORE_DAWN;
+	}
+	else if (m_sunElevation < M_THIRD_ELEVATION_LEVEL)
+	{
+		m_daytime = (isAfternoon) ? Rendering::SUNSET : Rendering::SUNRISE;
+	}
+	else
+	{
+		m_daytime = Rendering::DAY;
+	}
+	if (prevDaytime != m_daytime)
+	{
+		LOG(Utility::Info, LOGPLACE, "m_daytime = %d at %.1f", m_daytime, m_timeOfDay);
+	}
+
+
+	LOG(Utility::Debug, LOGPLACE, "Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
+}
+
+Rendering::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
+{
+	switch (m_daytime)
+	{
+	case Rendering::NIGHT:
+	case Rendering::DAY:
+		daytimeTransitionFactor = REAL_ZERO;
+		break;
+	case Rendering::BEFORE_DAWN:
+		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
+			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
+		break;
+	case Rendering::SUNRISE:
+		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
+			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
+		break;
+	case Rendering::SUNSET:
+		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
+			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
+		break;
+	case Rendering::AFTER_DUSK:
+		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
+			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
+		break;
+	default:
+		LOG(Utility::Error, LOGPLACE, "Incorrect daytime");
+	}
+	return m_daytime;
 }

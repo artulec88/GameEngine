@@ -36,11 +36,6 @@ public:
 
 #ifdef SIMULATE_SUN_BEHAVIOR
 	virtual void Update(Math::Real delta);
-private:
-	/**
-	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
-	 */
-	void CalculateSunElevationAndAzimuth(Math::Real timeOfDay, Math::Angle& sunElevation, Math::Angle& sunAzimuth) const;
 #endif
 /* ==================== Non-static member functions end ==================== */
 
@@ -50,9 +45,6 @@ private:
 	const Color m_sunlightDaytimeColor;
 	const Color m_sunNearHorizonColor;
 	const Color m_sunlightNighttimeColor;
-	const Math::Angle m_firstElevationLevel;
-	const Math::Angle m_secondElevationLevel;
-	const Math::Angle m_thirdElevationLevel;
 	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLight */

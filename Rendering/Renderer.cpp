@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Renderer.h"
 #include "Game.h"
-//#include "PhongShader.h"
+#include "CoreEngine.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -44,12 +44,15 @@ Renderer::Renderer(GLFWwindow* window) :
 		GET_CONFIG_VALUE("ambientLightFogColor_z", 0.7f)),
 	ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
 	ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
-	m_ambientDayLight(GET_CONFIG_VALUE("ambientDayLight_x", 0.2f),
-		GET_CONFIG_VALUE("ambientDayLight_y", 0.2f),
-		GET_CONFIG_VALUE("ambientDayLight_z", 0.2f)),
-	m_ambientNightLight(GET_CONFIG_VALUE("ambientNightLight_x", 0.02f),
-		GET_CONFIG_VALUE("ambientNightLight_y", 0.02f),
-		GET_CONFIG_VALUE("ambientNightLight_z", 0.02f)),
+	m_ambientDaytimeColor(GET_CONFIG_VALUE("ambientDaytimeColorRed", 0.2f),
+		GET_CONFIG_VALUE("ambientDaytimeColorGreen", 0.2f),
+		GET_CONFIG_VALUE("ambientDaytimeColorBlue", 0.2f)),
+	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE("ambientSunNearHorizonColorRed", 0.1f),
+		GET_CONFIG_VALUE("ambientSunNearHorizonColorGreen", 0.1f),
+		GET_CONFIG_VALUE("ambientSunNearHorizonColorBlue", 0.1f)),
+	m_ambientNighttimeColor(GET_CONFIG_VALUE("ambientNighttimeColorRed", 0.02f),
+		GET_CONFIG_VALUE("ambientNighttimeColorGreen", 0.02f),
+		GET_CONFIG_VALUE("ambientNighttimeColorBlue", 0.02f)),
 	currentLight(NULL),
 	currentCameraIndex(0),
 	currentCamera(NULL),
@@ -71,11 +74,7 @@ Renderer::Renderer(GLFWwindow* window) :
 	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
 	fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
 	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
-	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
-	m_timeSunriseStarts(GET_CONFIG_VALUE("timeSunriseStarts", 21600)),
-	m_timeSunriseFinishes(GET_CONFIG_VALUE("timeSunriseFinishes", 22800)),
-	m_timeSunsetStarts(GET_CONFIG_VALUE("timeSunsetStarts", 64800)),
-	m_timeSunsetFinishes(GET_CONFIG_VALUE("timeSunsetFinishes", 66000))
+	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f))
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,propertiesBar(NULL),
 	cameraBar(NULL),
@@ -491,33 +490,35 @@ void Renderer::Render(GameNode& gameNode)
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 {
 	/* ==================== Adjusting the time variables begin ==================== */
-	//SetReal("timeSunriseStarts", m_timeSunriseStarts);
-	//SetReal("timeSunriseFinishes", m_timeSunriseFinishes);
-	//SetReal("timeSunsetStarts", m_timeSunsetStarts);
-	//SetReal("timeSunsetFinishes", m_timeSunsetFinishes);
-	Math::Real timeOfDay = GetReal("timeOfDay"); // within range [0; 86400)
-	Math::Real dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day
-	if ((timeOfDay > m_timeSunriseStarts) && (timeOfDay < m_timeSunriseFinishes))
+	Math::Real daytimeTransitionFactor, dayNightMixFactor;
+	Rendering::Daytime daytime = CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
+
+	switch (daytime)
 	{
-		// sun is rising
-		dayNightMixFactor = Lerp(REAL_ZERO, REAL_ONE, (timeOfDay - m_timeSunriseStarts) / (m_timeSunriseFinishes - m_timeSunriseStarts));
-		m_ambientLight = m_ambientNightLight.Lerp(m_ambientDayLight, dayNightMixFactor);
-	}
-	else if ((timeOfDay > m_timeSunsetStarts) && (timeOfDay < m_timeSunsetFinishes))
-	{
-		// sun is setting
-		dayNightMixFactor = Lerp(REAL_ONE, REAL_ZERO, (timeOfDay - m_timeSunsetStarts) / (m_timeSunsetFinishes - m_timeSunsetStarts));
-		m_ambientLight = m_ambientDayLight.Lerp(m_ambientNightLight, dayNightMixFactor);
-	}
-	else if ((timeOfDay > m_timeSunriseFinishes) && (timeOfDay < m_timeSunsetStarts))
-	{
-		dayNightMixFactor = REAL_ONE;
-		m_ambientLight = m_ambientDayLight;
-	}
-	else if ((timeOfDay > m_timeSunsetFinishes) || (timeOfDay < m_timeSunriseStarts))
-	{
+	case NIGHT:
 		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNightLight;
+		m_ambientLight = m_ambientNighttimeColor;
+		break;
+	case BEFORE_DAWN:
+		dayNightMixFactor = REAL_ZERO;
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
+		break;
+	case SUNRISE:
+		dayNightMixFactor = daytimeTransitionFactor;
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
+		break;
+	case DAY:
+		dayNightMixFactor = REAL_ONE;
+		m_ambientLight = m_ambientDaytimeColor;
+		break;
+	case SUNSET:
+		dayNightMixFactor = daytimeTransitionFactor;
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
+		break;
+	case AFTER_DUSK:
+		dayNightMixFactor = REAL_ZERO;
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
+		break;
 	}
 	//LOG(Utility::Debug, LOGPLACE, "Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
 	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());

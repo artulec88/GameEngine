@@ -34,6 +34,16 @@
 
 namespace Rendering
 {
+	enum Daytime
+	{
+		NIGHT = 0,
+		BEFORE_DAWN,
+		SUNRISE,
+		DAY,
+		SUNSET,
+		AFTER_DUSK
+	};
+
 	enum AntiAliasingMethod
 	{
 		NONE = 0,

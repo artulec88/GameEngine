@@ -66,8 +66,8 @@ public:
 	RENDERING_API inline void AddCamera(Camera* camera);
 	RENDERING_API inline BaseLight* GetCurrentLight() { return currentLight; }
 	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return m_ambientLight; }
-	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDayLight; }
-	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNightLight; }
+	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDaytimeColor; }
+	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNighttimeColor; }
 	RENDERING_API inline Camera& GetCurrentCamera();
 	RENDERING_API unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
 	RENDERING_API unsigned int NextCamera();
@@ -111,8 +111,9 @@ private:
 	Math::Vector3D ambientLightFogColor;
 	Math::Real ambientLightFogStart;
 	Math::Real ambientLightFogEnd;
-	const Math::Vector3D m_ambientDayLight;
-	const Math::Vector3D m_ambientNightLight;
+	const Math::Vector3D m_ambientDaytimeColor;
+	const Math::Vector3D m_ambientSunNearHorizonColor;
+	const Math::Vector3D m_ambientNighttimeColor;
 	Math::Vector3D m_ambientLight;
 	BaseLight* currentLight;
 	unsigned int currentCameraIndex;
@@ -147,11 +148,6 @@ private:
 	Math::Real fxaaSpanMax;
 	Math::Real fxaaReduceMin;
 	Math::Real fxaaReduceMul;
-
-	Math::Real m_timeSunriseStarts;
-	Math::Real m_timeSunriseFinishes;
-	Math::Real m_timeSunsetStarts;
-	Math::Real m_timeSunsetFinishes;
 
 	Texture* fontTexture;
 	TextRenderer* textRenderer;
