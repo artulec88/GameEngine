@@ -30,7 +30,7 @@ DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL
 
 	if (shadowMapSizeAsPowerOf2 != 0) // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows
 	{
-		 Math::Matrix4D ortoMatrix = Math::Matrix4D::OrtographicProjection(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea);
+		Math::Matrix4D ortoMatrix = Math::Matrix4D::OrtographicProjection(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea);
 		SetShadowInfo(new ShadowInfo(ortoMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
 		ASSERT(shadowInfo != NULL);
 		if (shadowInfo == NULL)

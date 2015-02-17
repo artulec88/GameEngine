@@ -784,6 +784,7 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
 	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
+	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
@@ -798,6 +799,7 @@ void Renderer::InitializeTweakBars()
 	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
 	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
+	TwSetParam(cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 #endif
 
 #ifdef LIGHTS_TWEAK_BAR

@@ -71,6 +71,9 @@ private:
 	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
 	 */
 	void CalculateSunElevationAndAzimuth();
+#ifdef ANT_TWEAK_BAR_ENABLED
+	void InitializeTweakBars();
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -87,10 +90,17 @@ protected:
 	Rendering::Daytime m_daytime;
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
+#ifdef ANT_TWEAK_BAR_ENABLED
+	Math::Angle M_FIRST_ELEVATION_LEVEL;
+	Math::Angle M_SECOND_ELEVATION_LEVEL;
+	Math::Angle M_THIRD_ELEVATION_LEVEL;
+	Math::Real m_clockSpeed;
+#else
 	const Math::Angle M_FIRST_ELEVATION_LEVEL;
 	const Math::Angle M_SECOND_ELEVATION_LEVEL;
 	const Math::Angle M_THIRD_ELEVATION_LEVEL;
 	const Math::Real m_clockSpeed;
+#endif
 	Game* m_game;
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;

@@ -742,7 +742,10 @@ void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int 
 	{
 	case GLFW_PRESS:
 		isMouseLocked = ! isMouseLocked;
-		LOG(Info, LOGPLACE, "Mouse is locked");
+		if (isMouseLocked)
+		{
+			CoreEngine::GetCoreEngine()->SetCursorPos(CoreEngine::GetCoreEngine()->GetWindowWidth() / 2, CoreEngine::GetCoreEngine()->GetWindowHeight() / 2);
+		}
 		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
@@ -803,6 +806,7 @@ void TestGame::InitializeTweakBars()
 	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
 	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
+	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 #endif
 }
 #endif

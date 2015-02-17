@@ -237,6 +237,7 @@ void CoreEngine::Run()
 	Rendering::InitializeTweakBars();
 	m_renderer->InitializeTweakBars();
 	m_game->InitializeTweakBars();
+	InitializeTweakBars();
 #endif
 
 	m_isRunning = true;
@@ -514,10 +515,10 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 
 void CoreEngine::CalculateSunElevationAndAzimuth()
 {
-	const int dayNumber = 172;
-	const Math::Angle LATITUDE(52.0f);
-	const Math::Angle LONGITUDE(-16.0f);
-	const int timeGMTdifference = -1;
+	const int dayNumber = GET_CONFIG_VALUE("startingDayNumber", 172);
+	const Math::Angle LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f));
+	const Math::Angle LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f));
+	const int timeGMTdifference = 1;
 	
 	const Math::Angle b((360.0f / 365.0f) * (dayNumber -81));
 	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Angle::RADIAN);
@@ -567,7 +568,8 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	}
 	if (prevDaytime != m_daytime)
 	{
-		LOG(Utility::Info, LOGPLACE, "m_daytime = %d at %.1f", m_daytime, m_timeOfDay);
+		LOG(Utility::Info, LOGPLACE, "%.2f, %.2f, %.2f\t m_daytime = %d at %.1f", M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees(), M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees(),
+			M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees(), m_daytime, m_timeOfDay);
 	}
 
 
@@ -603,3 +605,28 @@ Rendering::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFa
 	}
 	return m_daytime;
 }
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void CoreEngine::InitializeTweakBars()
+{
+	TwBar* coreEnginePropertiesBar = TwNewBar("CoreEnginePropertiesBar");
+	TwAddVarRW(coreEnginePropertiesBar, "windowWidth", TW_TYPE_INT32, &m_windowWidth, " label='Window width' ");
+	TwAddVarRW(coreEnginePropertiesBar, "windowHeight", TW_TYPE_INT32, &m_windowHeight, " label='Window height' ");
+	TwAddVarRO(coreEnginePropertiesBar, "frameTime", TW_TYPE_REAL, &m_frameTime, " label='Frame time' ");
+	TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
+	TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
+	
+	TwEnumVal daytimeEV[] = { { Rendering::NIGHT, "Night" }, { Rendering::BEFORE_DAWN, "Before dawn" }, { Rendering::SUNRISE, "Sunrise" },
+		{ Rendering::DAY, "Day" }, { Rendering::SUNSET, "Sunset" }, { Rendering::AFTER_DUSK, "After dusk" }};
+	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
+	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
+	
+	
+	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", angleType, &m_sunElevation, " label='Sun elevation' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", angleType, &m_sunAzimuth, " label='Sun azimuth' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
+	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+}
+#endif
