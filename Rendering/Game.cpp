@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Game.h"
+#include "GameStateManager.h"
 #include "CoreEngine.h"
 #include "Vertex.h"
 #include "Input.h"
@@ -32,9 +33,11 @@ Game* Game::s_game = NULL;
 	return s_game;
 }
 
-Game::Game()
+Game::Game() :
+	m_rootGameNode(),
+	m_gameStateManager(NULL)
 {
-	LOG(Debug, LOGPLACE, "Game construction started");
+	LOG(Info, LOGPLACE, "Game construction started");
 	//rootGameNode = new GameNode();
 	//ASSERT(rootGameNode != NULL);
 	//if (rootGameNode == NULL)
@@ -45,9 +48,11 @@ Game::Game()
 
 	if (Game::s_game != NULL)
 	{
-		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
+		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of CoreEngine class has already been created");
 		SAFE_DELETE(Game::s_game);
 	}
+	m_gameStateManager = new DefaultGameStateManager();
+
 	Game::s_game = this;
 	LOG(Debug, LOGPLACE, "Game construction finished");
 }
@@ -55,8 +60,10 @@ Game::Game()
 
 Game::~Game(void)
 {
-	//SAFE_DELETE(rootGameNode);
-	//SAFE_DELETE(shader);
+	LOG(Info, LOGPLACE, "Game construction finished");
+	//SAFE_DELETE(m_rootGameNode);
+	SAFE_DELETE(m_gameStateManager);
+	LOG(Debug, LOGPLACE, "Game construction finished");
 }
 
 void Game::SetEngine(CoreEngine* coreEngine)
@@ -241,12 +248,7 @@ void Game::AddToSceneRoot(GameNode* child)
 
 void Game::Render(Renderer* renderer)
 {
-	if (renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Rendering engine is NULL");
-		exit(EXIT_FAILURE);
-	}
-	renderer->Render(m_rootGameNode);
+	m_gameStateManager->Render(renderer, GetRootGameNode());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

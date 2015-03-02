@@ -104,7 +104,6 @@ protected:
 #endif
 	Game* m_game;
 	Renderer* m_renderer;
-	GameStateManager* m_gameStateManager;
 	TextRenderer* m_fpsTextRenderer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CoreEngine */

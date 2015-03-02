@@ -76,11 +76,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="InGameState.cpp" />
+    <ClCompile Include="IntroGameState.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainMenuGameState.cpp" />
     <ClCompile Include="TestGame.cpp" />
     <ClCompile Include="TestGame2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="InGameState.h" />
+    <ClInclude Include="IntroGameState.h" />
+    <ClInclude Include="MainMenuGameState.h" />
     <ClInclude Include="TestGame.h" />
     <ClInclude Include="TestGame2.h" />
   </ItemGroup>

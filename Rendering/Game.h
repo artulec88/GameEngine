@@ -3,6 +3,7 @@
 
 #include "Rendering.h"
 #include "GameNode.h"
+#include "GameStateManager.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Transform.h"
@@ -74,6 +75,7 @@ protected:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	GameNode m_rootGameNode;
+	GameStateManager* m_gameStateManager;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Game */
 

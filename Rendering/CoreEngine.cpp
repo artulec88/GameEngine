@@ -41,7 +41,6 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE)),
 	m_game(game),
 	m_renderer(NULL),
-	m_gameStateManager(NULL),
 	m_fpsTextRenderer(NULL)
 {
 	// TODO: Fix singleton initialization
@@ -57,8 +56,6 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	CreateRenderer(width, height, title);
 
-	m_gameStateManager = new DefaultGameStateManager();
-	m_gameStateManager->Push(new MainMenuGameState());
 	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
 	//while (m_timeOfDay > SECONDS_PER_DAY)
@@ -328,7 +325,7 @@ void CoreEngine::Run()
 			
 			/* ==================== REGION #2_2 begin ====================*/
 			QueryPerformanceCounter(&innerT1);
-			m_gameStateManager->Input(m_frameTime, m_game->GetRootGameNode());
+			m_game->Input(m_frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_2++;
 			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
@@ -340,8 +337,7 @@ void CoreEngine::Run()
 			
 			/* ==================== REGION #2_3 begin ====================*/
 			QueryPerformanceCounter(&innerT1);
-			m_gameStateManager->Update(m_frameTime, m_game->GetRootGameNode());
-			//m_game->Update(m_frameTime);
+			m_game->Update(m_frameTime);
 			QueryPerformanceCounter(&innerT2);
 			countStats2_3++;
 			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
@@ -375,8 +371,7 @@ void CoreEngine::Run()
 			//}
 			//m_renderer->Render(m_game->GetRootGameNode());
 			m_renderer->SetReal("timeOfDay", m_timeOfDay);
-			m_gameStateManager->Render(m_renderer, m_game->GetRootGameNode());
-			//m_game->Render(m_renderer);
+			m_game->Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
 			//double time = glfwGetTime();

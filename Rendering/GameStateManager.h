@@ -81,7 +81,7 @@ public:
 
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
-	virtual void Update(Math::Real deltaTime, const GameNode& gameNode) = 0;
+	virtual void Update(Math::Real deltaTime, GameNode& gameNode) = 0;
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
@@ -142,7 +142,7 @@ public:
 
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
-	void Update(Math::Real deltaTime, const GameNode& gameNode);
+	void Update(Math::Real deltaTime, GameNode& gameNode);
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
@@ -155,7 +155,7 @@ private:
     /// <param name="gameState">
     ///   State that will be checked for implementing the Drawable or Updateable interfaces
     /// </param>
-	void AddToRenderablesOrUpdateables(GameState* gameState);
+	void AddToInterfaces(GameState* gameState);
 
     /// <summary>
     ///   Removes the specified game state to the exposed Drawables or Updateables if it
@@ -164,13 +164,13 @@ private:
     /// <param name="gameState">
     ///   State that will be checked for implementing the Drawable or Updateable interfaces
     /// </param>
-    void RemoveFromRenderablesOrUpdateables(GameState *gameState);
+    void RemoveFromInterfaces(GameState *gameState);
 
     /// <summary>
     ///   Rebuilds the separate updateable and drawable queues when an Hiding state has
     ///   been popped from the stack
     /// </summary>
-    void RebuildRenderableAndUpdateableQueues();
+    void RebuildInterfaceQueues();
 
     /// <summary>Notifies all previously exposed states that they have been obscured</summary>
     void NotifyObscuredStates();

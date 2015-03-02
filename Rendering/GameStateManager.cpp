@@ -61,7 +61,7 @@ void DefaultGameStateManager::Push(GameState* gameState, Modality::ModalityType 
 		m_exposedUpdateables.clear();
 	}
 
-	AddToRenderablesOrUpdateables(gameState);
+	AddToInterfaces(gameState);
 	NotifyObscuredStates();
 	gameState->Entered();
 }
@@ -79,11 +79,11 @@ GameState* DefaultGameStateManager::Pop()
 
 	if (poppedPair.second == Modality::EXCLUSIVE)
 	{
-		RebuildRenderableAndUpdateableQueues();
+		RebuildInterfaceQueues();
 	}
 	else
 	{
-		RemoveFromRenderablesOrUpdateables(poppedPair.first);
+		RemoveFromInterfaces(poppedPair.first);
 	}
 
 	NotifyRevealedStates();
@@ -99,7 +99,7 @@ void DefaultGameStateManager::Input(Math::Real elapsedTime, GameNode& gameNode)
 	}
 }
 
-void DefaultGameStateManager::Update(Math::Real deltaTime, const GameNode& gameNode)
+void DefaultGameStateManager::Update(Math::Real deltaTime, GameNode& gameNode)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
 	{
@@ -116,7 +116,7 @@ void DefaultGameStateManager::Render(Renderer* renderer, const GameNode& gameNod
 	}
 }
 
-void DefaultGameStateManager::AddToRenderablesOrUpdateables(GameState* gameState)
+void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	IRenderable *renderable = dynamic_cast<IRenderable*>(gameState);
 	if(renderable != NULL)
@@ -131,7 +131,7 @@ void DefaultGameStateManager::AddToRenderablesOrUpdateables(GameState* gameState
 	}
 }
 
-void DefaultGameStateManager::RemoveFromRenderablesOrUpdateables(GameState* gameState)
+void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if (renderable != NULL)
@@ -146,10 +146,11 @@ void DefaultGameStateManager::RemoveFromRenderablesOrUpdateables(GameState* game
 	}
 }
 
-void DefaultGameStateManager::RebuildRenderableAndUpdateableQueues()
+void DefaultGameStateManager::RebuildInterfaceQueues()
 {
-	m_exposedUpdateables.clear();
+	m_exposedInputables.clear();
 	m_exposedRenderables.clear();
+	m_exposedUpdateables.clear();
 
 	if (m_activeStates.empty())
 	{
@@ -169,7 +170,7 @@ void DefaultGameStateManager::RebuildRenderableAndUpdateableQueues()
 
 	while (index < m_activeStates.size())
 	{
-		AddToRenderablesOrUpdateables(m_activeStates.at(index).first);
+		AddToInterfaces(m_activeStates.at(index).first);
 		++index;
 	}
 }

@@ -7,6 +7,9 @@
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>
 
+namespace GameNamespace
+{
+
 class TestGame : public Rendering::Game
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -72,3 +75,4 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 };
 
+} /* end namespace GameNamespace */

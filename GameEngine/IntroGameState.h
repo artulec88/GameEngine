@@ -1,25 +1,22 @@
-#ifndef __GAME_STATE_H__
-#define __GAME_STATE_H__
+#ifndef __INTRO_GAME_STATE_H__
+#define __INTRO_GAME_STATE_H__
 
-#include "Rendering.h"
-#include "IInputable.h"
-#include "IRenderable.h"
-#include "IUpdateable.h"
+#include "Rendering\Renderer.h"
+#include "Rendering\GameState.h"
+#include "Rendering\IInputable.h"
+#include "Rendering\IRenderable.h"
+#include "Math\Math.h"
+#include "Rendering\GameNode.h"
 
-namespace Rendering
+namespace GameNamespace
 {
 
-class RENDERING_API GameState
+class IntroGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	GameState()
-	{
-	}
-	
-	virtual ~GameState(void)
-	{
-	}
+	IntroGameState();
+	virtual ~IntroGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -27,29 +24,32 @@ public:
 	/**
 	 * Called after the game state has been placed in the game state manager
 	 */
-	virtual void Entered() = 0;
+	virtual void Entered();
 
 	/**
 	 * Called right before the game state is removed from the game state manager
 	 */
-	virtual void Leaving() = 0;
+	virtual void Leaving();
 
 	/**
 	 * Called right before another game state is stacked on top of this one
 	 */
-	virtual void Obscuring() = 0;
+	virtual void Obscuring();
 
 	/**
 	 * Called after the game state has become the topmost game state on the stack again
 	 */
-	virtual void Revealed() = 0;
+	virtual void Revealed();
+
+	virtual void Input(Math::Real elapsedTime, Rendering::GameNode& gameNode);
+	virtual void Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 /* ==================== Non-static member variables end ==================== */
-}; /* end class GameState */
+}; /* end class IntroGameState */
 
-} /* end namespace Rendering */
+} /* end namespace GameNamespace */
 
-#endif /* __GAME_STATE_H__ */
+#endif /* __INTRO_GAME_STATE_H__ */

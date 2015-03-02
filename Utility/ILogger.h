@@ -4,8 +4,14 @@
 #include "Utility.h"
 #include <Windows.h>
 
+#define LOGGING_ENABLED
+
 // TODO: Doesn't work. The #define keyword cannot replace parts of the expression.
+#ifdef LOGGING_ENABLED
 #define LOG Utility::ILogger::GetLogger().Log
+#else
+#define LOG
+#endif
 
 //#define LOG(level, message) Utility::LOG(level, LOGPLACE, message)
 
