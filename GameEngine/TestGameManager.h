@@ -1,24 +1,24 @@
 #pragma once
 
-#include <Rendering\Game.h>
+#include <Rendering\GameManager.h>
 #include <Rendering\GameNode.h>
 #include <Rendering\Shader.h>
 #include <Rendering\DirectionalLight.h>
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>
 
-namespace GameNamespace
+namespace Game
 {
 
-class TestGame : public Rendering::Game
+class TestGameManager : public Rendering::GameManager
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	TestGame();
-	virtual ~TestGame(void);
+	TestGameManager();
+	virtual ~TestGameManager(void);
 private:
-	TestGame(TestGame& game);
-	void operator=(TestGame& game);
+	TestGameManager(TestGameManager& gameManager);
+	void operator=(TestGameManager& gameManager);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -73,6 +73,6 @@ protected:
 	//Rendering::GameNode* castleNode;
 
 /* ==================== Non-static member variables end ==================== */
-};
+}; /* end class TestGameManager */
 
-} /* end namespace GameNamespace */
+} /* end namespace Game */

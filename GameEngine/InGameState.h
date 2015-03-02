@@ -9,7 +9,7 @@
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
 
-namespace GameNamespace
+namespace Game
 {
 
 class InGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
@@ -52,6 +52,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class InGameState */
 
-} /* end namespace GameNamespace */
+} /* end namespace Game */
 
 #endif /* __IN_GAME_STATE_H__ */

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Game.h"
+#include "GameManager.h"
 #include "GameStateManager.h"
 #include "CoreEngine.h"
 #include "Vertex.h"
@@ -26,18 +26,18 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
-Game* Game::s_game = NULL;
+GameManager* GameManager::s_gameManager = NULL;
 
-/* static */ Game* Game::GetGame()
+/* static */ GameManager* GameManager::GetGameManager()
 {
-	return s_game;
+	return s_gameManager;
 }
 
-Game::Game() :
+GameManager::GameManager() :
 	m_rootGameNode(),
 	m_gameStateManager(NULL)
 {
-	LOG(Info, LOGPLACE, "Game construction started");
+	LOG(Info, LOGPLACE, "Game manager construction started");
 	//rootGameNode = new GameNode();
 	//ASSERT(rootGameNode != NULL);
 	//if (rootGameNode == NULL)
@@ -46,27 +46,27 @@ Game::Game() :
 	//	exit(EXIT_FAILURE);
 	//}
 
-	if (Game::s_game != NULL)
+	if (GameManager::s_gameManager != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of CoreEngine class has already been created");
-		SAFE_DELETE(Game::s_game);
+		SAFE_DELETE(GameManager::s_gameManager);
 	}
 	m_gameStateManager = new DefaultGameStateManager();
 
-	Game::s_game = this;
-	LOG(Debug, LOGPLACE, "Game construction finished");
+	GameManager::s_gameManager = this;
+	LOG(Debug, LOGPLACE, "Game manager construction finished");
 }
 
 
-Game::~Game(void)
+GameManager::~GameManager(void)
 {
-	LOG(Info, LOGPLACE, "Game construction finished");
+	LOG(Info, LOGPLACE, "Game manager destruction finished");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
-	LOG(Debug, LOGPLACE, "Game construction finished");
+	LOG(Debug, LOGPLACE, "Game manager destruction finished");
 }
 
-void Game::SetEngine(CoreEngine* coreEngine)
+void GameManager::SetEngine(CoreEngine* coreEngine)
 {
 	//if (rootGameNode == NULL)
 	//{
@@ -76,7 +76,7 @@ void Game::SetEngine(CoreEngine* coreEngine)
 	m_rootGameNode.SetEngine(coreEngine);
 }
 
-void Game::Init()
+void GameManager::Init()
 {
 	//if (rootGameNode == NULL)
 	//{
@@ -86,81 +86,81 @@ void Game::Init()
 	//rootGameNode->Init();
 }
 
-/* static */ void Game::WindowCloseEventCallback(GLFWwindow* window)
+/* static */ void GameManager::WindowCloseEventCallback(GLFWwindow* window)
 {
-	GetGame()->CloseWindowEvent(window);
+	GetGameManager()->CloseWindowEvent(window);
 }
 
-/* static */ void Game::WindowResizeCallback(GLFWwindow* window, int width, int height)
+/* static */ void GameManager::WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if ( !TwWindowSize(width, height) )
 	{
-		GetGame()->WindowResizeEvent(window, width, height);
+		GetGameManager()->WindowResizeEvent(window, width, height);
 	}
 #else
-	GetGame()->CloseWindowEvent(window);
+	GetGameManager()->CloseWindowEvent(window);
 #endif
 }
 
-/* static */ void Game::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+/* static */ void GameManager::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if( !TwEventKeyGLFW(key, action) )  // send event to AntTweakBar
     {
 		// event has not been handled by AntTweakBar
-		GetGame()->KeyEvent(window, key, scancode, action, mods);
+		GetGameManager()->KeyEvent(window, key, scancode, action, mods);
     }
 #else
-	GetGame()->KeyEvent(window, key, scancode, action, mods);
+	GetGameManager()->KeyEvent(window, key, scancode, action, mods);
 #endif
 }
 
-/* static */ void Game::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
+/* static */ void GameManager::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if ( !TwEventMouseButtonGLFW(button, action) )
 	{
 		// event has not been handled by AntTweakBar
-		GetGame()->MouseButtonEvent(window, button, action, mods);
+		GetGameManager()->MouseButtonEvent(window, button, action, mods);
 	}
 #else
-	GetGame()->MouseButtonEvent(window, button, action, mods);
+	GetGameManager()->MouseButtonEvent(window, button, action, mods);
 #endif
 }
 
-/* static */ void Game::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
+/* static */ void GameManager::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMousePosGLFW(static_cast<int>(xPos), static_cast<int>(yPos)))
 	{
 		// event has not been handled by AntTweakBar
-		GetGame()->MousePosEvent(window, xPos, yPos);
+		GetGameManager()->MousePosEvent(window, xPos, yPos);
 	}
 #else
-	GetGame()->MousePosEvent(window, xPos, yPos);
+	GetGameManager()->MousePosEvent(window, xPos, yPos);
 #endif
 }
 
-/* static */ void Game::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
+/* static */ void GameManager::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if ( !TwEventMouseWheelGLFW(static_cast<int>(yOffset)) ) // TODO: Check if yOffset here is ok
 	{
 		// event has not been handled by AntTweakBar
-		GetGame()->ScrollEvent(window, xOffset, yOffset);
+		GetGameManager()->ScrollEvent(window, xOffset, yOffset);
 	}
 #else
-	GetGame()->ScrollEvent(window, xOffset, yOffset);
+	GetGameManager()->ScrollEvent(window, xOffset, yOffset);
 #endif
 }
 
-void Game::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void GameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	LOG(Notice, LOGPLACE, "Window resize event (width = %d, height = %d)", width, height);
 }
 
-void Game::CloseWindowEvent(GLFWwindow* window)
+void GameManager::CloseWindowEvent(GLFWwindow* window)
 {
 	LOG(Notice, LOGPLACE, "Close window event");
 	glfwSetWindowShouldClose(window, GL_TRUE);
@@ -172,7 +172,7 @@ void Game::CloseWindowEvent(GLFWwindow* window)
  * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
  * @param mods Bit field describing which modifier keys were held down
  */
-void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	LOG(Delocust, LOGPLACE, "Key event with key = %d", key);
 
@@ -184,7 +184,7 @@ void Game::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int m
 	}
 }
 
-void Game::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	LOG(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
@@ -207,17 +207,17 @@ void Game::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods
 	}
 }
 
-void Game::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void GameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 
 }
 
-void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+void GameManager::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
 	LOG(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
-//GameNode& Game::GetRootGameNode() const
+//GameNode& GameManager::GetRootGameNode() const
 //{
 //	ASSERT(rootGameNode != NULL);
 //	if (rootGameNode == NULL)
@@ -231,7 +231,7 @@ void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 //	return *rootGameNode;
 //}
 
-//Shader* Game::GetShader() const
+//Shader* GameManager::GetShader() const
 //{
 //	ASSERT(shader != NULL);
 //	if (shader == NULL)
@@ -241,18 +241,18 @@ void Game::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 //	return shader;
 //}
 
-void Game::AddToSceneRoot(GameNode* child)
+void GameManager::AddToSceneRoot(GameNode* child)
 {
 	m_rootGameNode.AddChild(child);
 }
 
-void Game::Render(Renderer* renderer)
+void GameManager::Render(Renderer* renderer)
 {
 	m_gameStateManager->Render(renderer, GetRootGameNode());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Game::InitializeTweakBars()
+void GameManager::InitializeTweakBars()
 {
 }
 #endif

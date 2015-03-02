@@ -1,5 +1,5 @@
-#ifndef RENDERING_GAME_H
-#define RENDERING_GAME_H
+#ifndef __RENDERING_GAME_MANAGER_H__
+#define __RENDERING_GAME_MANAGER_H__
 
 #include "Rendering.h"
 #include "GameNode.h"
@@ -18,16 +18,16 @@ namespace Rendering
 
 class Renderer;
 
-class RENDERING_API Game
+class RENDERING_API GameManager
 {
 /* ==================== Static variables begin ==================== */
 protected:
-	static Game* s_game;
+	static GameManager* s_gameManager;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Static functions begin ==================== */
 public:
-	static Game* GetGame();
+	static GameManager* GetGameManager();
 	static void WindowCloseEventCallback(GLFWwindow* window);
 	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -39,11 +39,11 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Game();
-	virtual ~Game(void);
+	GameManager();
+	virtual ~GameManager(void);
 private:
-	Game(Game& game) {}
-	void operator=(Game& game) {}
+	GameManager(GameManager& gameManager) {}
+	void operator=(GameManager& gameManager) {}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -77,8 +77,8 @@ protected:
 	GameNode m_rootGameNode;
 	GameStateManager* m_gameStateManager;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class Game */
+}; /* end class GameManager */
 
 } /* end namespace Rendering */
 
-#endif // RENDERING_GAME_H
+#endif // __RENDERING_GAME_MANAGER_H__

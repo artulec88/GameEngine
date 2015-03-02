@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Renderer.h"
-#include "Game.h"
+#include "GameManager.h"
 #include "CoreEngine.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -213,14 +213,14 @@ void Renderer::SetCallbacks()
 		LOG(Critical, LOGPLACE, "Setting GLFW callbacks failed. Window is NULL.");
 		exit(EXIT_FAILURE);
 	}
-	glfwSetWindowCloseCallback(window, &Game::WindowCloseEventCallback);
-	glfwSetWindowSizeCallback(window, Game::WindowResizeCallback);
-	glfwSetKeyCallback(window, &Game::KeyEventCallback);
-	//glfwSetCharCallback(window, Game::CharEventCallback);
-	//glfwSetMousePosCallback(window, Game::MouseMotionCallback);
-	glfwSetCursorPosCallback(window, &Game::MousePosCallback);
-	glfwSetMouseButtonCallback(window, &Game::MouseEventCallback);
-	glfwSetScrollCallback(window, &Game::ScrollEventCallback);
+	glfwSetWindowCloseCallback(window, &GameManager::WindowCloseEventCallback);
+	glfwSetWindowSizeCallback(window, GameManager::WindowResizeCallback);
+	glfwSetKeyCallback(window, &GameManager::KeyEventCallback);
+	//glfwSetCharCallback(window, GameManager::CharEventCallback);
+	//glfwSetMousePosCallback(window, GameManager::MouseMotionCallback);
+	glfwSetCursorPosCallback(window, &GameManager::MousePosCallback);
+	glfwSetMouseButtonCallback(window, &GameManager::MouseEventCallback);
+	glfwSetScrollCallback(window, &GameManager::ScrollEventCallback);
 }
 
 void Renderer::InitializeCubeMap()

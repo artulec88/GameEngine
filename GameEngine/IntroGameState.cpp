@@ -1,6 +1,6 @@
 #include "IntroGameState.h"
 
-using namespace GameNamespace;
+using namespace Game;
 
 IntroGameState::IntroGameState(void) :
 	Rendering::GameState()

@@ -1,4 +1,4 @@
-#include "TestGame.h"
+#include "TestGameManager.h"
 #include "MainMenuGameState.h"
 #include "InGameState.h"
 
@@ -18,15 +18,15 @@
 
 #include <sstream>
 
-using namespace GameNamespace;
+using namespace Game;
 using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
 #define RENDER_LIGHT_MESHES
 
-TestGame::TestGame() :
-	Game(),
+TestGameManager::TestGameManager() :
+	GameManager(),
 	planeNode(NULL),
 	planeMesh(NULL),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
@@ -59,7 +59,7 @@ TestGame::TestGame() :
 }
 
 
-TestGame::~TestGame(void)
+TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 	SAFE_DELETE_JUST_TABLE(pointLightNodes);
@@ -68,10 +68,10 @@ TestGame::~TestGame(void)
 	//SAFE_DELETE(planeNode);
 }
 
-void TestGame::Init()
+void TestGameManager::Init()
 {
 	LOG(Notice, LOGPLACE, "Initalizing test game");
-	Game::Init();
+	GameManager::Init();
 
 	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -209,7 +209,7 @@ void TestGame::Init()
 	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
 
-void TestGame::AddLights()
+void TestGameManager::AddLights()
 {
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
@@ -226,7 +226,7 @@ void TestGame::AddLights()
 	}
 }
 
-void TestGame::AddDirectionalLight()
+void TestGameManager::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
@@ -314,7 +314,7 @@ void TestGame::AddDirectionalLight()
 #endif
 }
 
-void TestGame::AddPointLights()
+void TestGameManager::AddPointLights()
 {
 	if (pointLightCount < 1)
 	{
@@ -375,7 +375,7 @@ void TestGame::AddPointLights()
 	}
 }
 
-void TestGame::AddSpotLights()
+void TestGameManager::AddSpotLights()
 {
 	if (spotLightCount < 1)
 	{
@@ -447,7 +447,7 @@ void TestGame::AddSpotLights()
 	}
 }
 
-void TestGame::AddCameras()
+void TestGameManager::AddCameras()
 {
 	if (cameraCount < 1)
 	{
@@ -508,7 +508,7 @@ void TestGame::AddCameras()
 //	stdlog(Info, LOGPLACE, "The game is being cleaned up");
 //}
 
-void TestGame::Input(Real delta)
+void TestGameManager::Input(Real delta)
 {
 	m_gameStateManager->Input(delta, GetRootGameNode());
 }
@@ -525,14 +525,14 @@ Vector3D velocity;
 Real maxSpeed = 0.02f;
 bool isMouseLocked = false;
 
-void TestGame::Update(Real delta)
+void TestGameManager::Update(Real delta)
 {
 	m_gameStateManager->Update(delta, GetRootGameNode());
 }
 
-void TestGame::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
-	Game::WindowResizeEvent(window, width, height);
+	GameManager::WindowResizeEvent(window, width, height);
 }
 
 /**
@@ -541,9 +541,9 @@ void TestGame::WindowResizeEvent(GLFWwindow* window, int width, int height)
  * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
  * @param mods Bit field describing which modifier keys were held down
  */
-void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void TestGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	Game::KeyEvent(window, key, scancode, action, mods);
+	GameManager::KeyEvent(window, key, scancode, action, mods);
 
 	//ASSERT(camera != NULL);
 	//if (camera == NULL)
@@ -625,7 +625,7 @@ void TestGame::KeyEvent(GLFWwindow* window, int key, int scancode, int action, i
 	}
 }
 
-void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	// TODO: Pass the event to the Input function in the current game state.
 	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
@@ -657,7 +657,7 @@ void TestGame::MouseButtonEvent(GLFWwindow* window, int button, int action, int 
 	}
 }
 
-void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
 	if (! isMouseLocked)
 	{
@@ -692,7 +692,7 @@ void TestGame::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void TestGame::InitializeTweakBars()
+void TestGameManager::InitializeTweakBars()
 {
 #ifdef GAME_PROPERTIES_TWEAK_BAR
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!

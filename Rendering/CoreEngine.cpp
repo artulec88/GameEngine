@@ -25,7 +25,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	return s_coreEngine;
 }
 
-CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, Game* game) :
+CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager* game) :
 	m_isRunning(false),
 	m_windowWidth(width),
 	m_windowHeight(height),

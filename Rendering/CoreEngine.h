@@ -3,7 +3,7 @@
 #include "Rendering.h"
 #include "Renderer.h"
 #include "TextRenderer.h"
-#include "Game.h"
+#include "GameManager.h"
 #include "GameStateManager.h"
 
 #include "Math\Math.h"
@@ -34,7 +34,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int width, int height, const char* title, int maxFrameRate, Game* game);
+	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager* game);
 	virtual ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);
@@ -102,7 +102,7 @@ protected:
 	const Math::Angle M_THIRD_ELEVATION_LEVEL;
 	const Math::Real m_clockSpeed;
 #endif
-	Game* m_game;
+	GameManager* m_game;
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;
 /* ==================== Non-static member variables end ==================== */

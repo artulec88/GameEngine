@@ -1,7 +1,7 @@
 #include "InGameState.h"
 #include "Utility\ILogger.h"
 
-using namespace GameNamespace;
+using namespace Game;
 
 InGameState::InGameState(void) :
 	Rendering::GameState()

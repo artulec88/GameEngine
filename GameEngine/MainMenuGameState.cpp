@@ -1,6 +1,6 @@
 #include "MainMenuGameState.h"
 
-using namespace GameNamespace;
+using namespace Game;
 
 MainMenuGameState::MainMenuGameState(void) :
 	Rendering::GameState()

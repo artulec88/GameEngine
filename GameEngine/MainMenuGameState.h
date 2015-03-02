@@ -8,7 +8,7 @@
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
 
-namespace GameNamespace
+namespace Game
 {
 
 class MainMenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
@@ -50,6 +50,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MainMenuGameState */
 
-} /* end namespace GameNamespace */
+} /* end namespace Game */
 
 #endif /* __MAIN_MENU_GAME_STATE_H__ */

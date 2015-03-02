@@ -18,8 +18,7 @@
 //#include "Rendering\Vertex.h"
 ///* RENDERING end */
 
-#include "TestGame.h"
-#include "TestGame2.h"
+#include "TestGameManager.h"
 
 #ifdef _DEBUG
 #include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
@@ -56,7 +55,7 @@ int main (int argc, char* argv[])
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
-	Game* game = new GameNamespace::TestGame();
+	GameManager* game = new Game::TestGameManager();
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 800), GET_CONFIG_VALUE("windowHeight", 600),
 		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 30), game);
