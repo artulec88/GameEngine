@@ -132,19 +132,19 @@ void GameNode::Update(Math::Real delta)
 	}
 }
 
-void GameNode::RenderAll(Shader* shader, Renderer* renderer)
+void GameNode::RenderAll(Shader* shader, Renderer* renderer) const
 {
 	Render(shader, renderer);
 
-	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
+	for (std::vector<GameNode*>::const_iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->RenderAll(shader, renderer);
 	}
 }
 
-void GameNode::Render(Shader* shader, Renderer* renderer)
+void GameNode::Render(Shader* shader, Renderer* renderer) const
 {
-	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
+	for (std::vector<GameComponent*>::const_iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Render(shader, renderer);
 	}

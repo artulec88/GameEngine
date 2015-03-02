@@ -54,7 +54,7 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	//GLFWwindow* GetWindow() const { return this->window; };
-	RENDERING_API void Render(GameNode& node);
+	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void SwapBuffers();
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -117,7 +117,7 @@ private:
 	Math::Vector3D m_ambientLight;
 	BaseLight* currentLight;
 	unsigned int currentCameraIndex;
-	Camera* currentCamera;
+	Camera* m_currentCamera;
 	
 	Camera	altCamera; // alternative camera for shadow mapping, rendering to texture etc.
 	GameNode* altCameraNode;

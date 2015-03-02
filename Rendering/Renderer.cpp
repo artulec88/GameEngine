@@ -55,7 +55,7 @@ Renderer::Renderer(GLFWwindow* window) :
 		GET_CONFIG_VALUE("ambientNighttimeColorBlue", 0.02f)),
 	currentLight(NULL),
 	currentCameraIndex(0),
-	currentCamera(NULL),
+	m_currentCamera(NULL),
 	altCamera(Matrix4D::Identity()),
 	altCameraNode(NULL),
 	cubeMapNode(NULL),
@@ -339,7 +339,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	return cubeMapTexture;
 }
 
-void Renderer::Render(GameNode& gameNode)
+void Renderer::Render(const GameNode& gameNode)
 {
 	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
 	// TODO: Expand with Stencil buffer once it is used
@@ -360,7 +360,7 @@ void Renderer::Render(GameNode& gameNode)
 	//BindAsRenderTarget();
 
 	ClearScreen();
-	currentCamera = cameras[currentCameraIndex];
+	m_currentCamera = cameras[currentCameraIndex];
 	if (ambientLightFogEnabled)
 	{
 		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
@@ -392,7 +392,7 @@ void Renderer::Render(GameNode& gameNode)
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
-			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(currentCamera->GetTransform().GetTransformedPos(), currentCamera->GetTransform().GetTransformedRot());
+			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
 			altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
 			altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
 			//altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
@@ -404,14 +404,14 @@ void Renderer::Render(GameNode& gameNode)
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 			bool flipFacesEnabled = shadowInfo->IsFlipFacesEnabled();
 
-			Camera* temp = currentCamera;
-			currentCamera = &altCamera;
+			Camera* temp = m_currentCamera;
+			m_currentCamera = &altCamera;
 
 			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
 			gameNode.RenderAll(shadowMapShader, this);
 			if (flipFacesEnabled) { glCullFace(GL_BACK); }
 
-			currentCamera = temp;
+			m_currentCamera = temp;
 
 			if (applyFilterEnabled)
 			{
@@ -458,15 +458,15 @@ void Renderer::Render(GameNode& gameNode)
 		/* ==================== Rendering to texture begin ==================== */
 		//if (renderToTextureTestingEnabled)
 		//{
-		//	Camera* temp = currentCamera;
-		//	currentCamera = &altCamera;
+		//	Camera* temp = m_currentCamera;
+		//	m_currentCamera = &altCamera;
 		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//	defaultShader->Bind();
 		//	defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
 		//	planeMesh->Draw();
 
-		//	currentCamera = temp;
+		//	m_currentCamera = temp;
 		//}
 		/* ==================== Rendering to texture end ==================== */
 	}
@@ -528,7 +528,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 
 void Renderer::RenderSkybox()
 {
-	cubeMapNode->GetTransform().SetPos(currentCamera->GetTransform().GetTransformedPos());
+	cubeMapNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
 	if (ambientLightFogEnabled)
 	{
 		return;
@@ -612,15 +612,15 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
 	altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
 
-	Camera* temp = currentCamera;
-	currentCamera = &altCamera;
+	Camera* temp = m_currentCamera;
+	m_currentCamera = &altCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader->Bind();
 	filterShader->UpdateUniforms(planeTransform, *planeMaterial, this);
 	planeMesh->Draw();
 
-	currentCamera = temp;
+	m_currentCamera = temp;
 	SetTexture("filterTexture", NULL);
 }
 
@@ -645,12 +645,12 @@ void Renderer::ClearScreen() const
 
 inline Camera& Renderer::GetCurrentCamera()
 {
-	if (currentCamera == NULL)
+	if (m_currentCamera == NULL)
 	{
 		LOG(Emergency, LOGPLACE, "Current camera is NULL");
 		exit(EXIT_FAILURE);
 	}
-	return *currentCamera;
+	return *m_currentCamera;
 }
 
 unsigned int Renderer::NextCamera()
@@ -673,7 +673,7 @@ unsigned int Renderer::PrevCamera()
 
 unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 {
-	//currentCamera->Deactivate();
+	//m_currentCamera->Deactivate();
 	ASSERT((cameraIndex >= 0) && (cameraIndex < cameras.size()));
 	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
 	{

@@ -34,7 +34,7 @@ public:
 
 	RENDERING_API void InputAll(Math::Real delta);
 	RENDERING_API void UpdateAll(Math::Real delta);
-	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer);
+	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer) const;
 
 	RENDERING_API void SetEngine(CoreEngine* coreEngine);
 
@@ -45,7 +45,7 @@ public:
 private:
 	void Input(Math::Real delta);
 	void Update(Math::Real delta);
-	void Render(Shader* shader, Renderer* renderer);
+	void Render(Shader* shader, Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

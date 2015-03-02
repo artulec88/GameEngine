@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "TextRenderer.h"
 #include "Game.h"
+#include "GameStateManager.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -103,6 +104,7 @@ protected:
 #endif
 	Game* m_game;
 	Renderer* m_renderer;
+	GameStateManager* m_gameStateManager;
 	TextRenderer* m_fpsTextRenderer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CoreEngine */
