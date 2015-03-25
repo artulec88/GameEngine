@@ -29,8 +29,8 @@ public:
 
 	Color Lerp(const Color& color, Math::Real lerpFactor) const
 	{
-		return Color(((1 - lerpFactor) * m_red) + (lerpFactor * color.GetRed()), ((1 - lerpFactor) * m_green) + (lerpFactor * color.GetGreen()),
-			((1 - lerpFactor) * m_blue) + (lerpFactor * color.GetBlue()), ((1 - lerpFactor) * m_alpha) + (lerpFactor * color.GetAlpha()));
+		return Color(((REAL_ONE - lerpFactor) * m_red) + (lerpFactor * color.GetRed()), ((REAL_ONE - lerpFactor) * m_green) + (lerpFactor * color.GetGreen()),
+			((REAL_ONE - lerpFactor) * m_blue) + (lerpFactor * color.GetBlue()), ((REAL_ONE - lerpFactor) * m_alpha) + (lerpFactor * color.GetAlpha()));
 	}
 	std::string ToString() const
 	{
