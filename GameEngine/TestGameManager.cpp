@@ -54,8 +54,8 @@ TestGameManager::TestGameManager() :
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 
-	//m_gameStateManager->Push(new MainMenuGameState());
-	m_gameStateManager->Push(new InGameState());
+	m_gameStateManager->Push(new MainMenuGameState());
+	//m_gameStateManager->Push(new InGameState());
 }
 
 
@@ -388,7 +388,7 @@ void TestGameManager::AddSpotLights()
 	const Color defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
 	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
 	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
-	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Angle::DEGREE);
+	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Unit::DEGREE);
 	const int defaultSpotLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("defaultSpotLightShadowMapSizeAsPowerOf2", 10); // 2 ^ 10 = 1024
 	const Real defaultSpotLightShadowSoftness(GET_CONFIG_VALUE("defaultSpotLightShadowSoftness", 1.0f));
 	const Real defaultSpotLightLightBleedingReductionAmount(GET_CONFIG_VALUE("defaultSpotLightLightBleedingReductionAmount", 0.2f));
@@ -426,7 +426,7 @@ void TestGameManager::AddSpotLights()
 		Real exponent = GET_CONFIG_VALUE("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
 		Attenuation attenuation(constant, linear, exponent);
 
-		Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + spotLightIndexStr, defaultSpotLightViewAngle.GetAngleInRadians()), Angle::RADIAN);
+		Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + spotLightIndexStr, defaultSpotLightViewAngle.GetAngleInRadians()), Unit::RADIAN);
 		
 		int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("spotLightShadowMapSizeAsPowerOf2_" + spotLightIndexStr, 10); // 2 ^ 10 = 1024
 		Real shadowSoftness = GET_CONFIG_VALUE("spotLightShadowSoftness_" + spotLightIndexStr, defaultSpotLightShadowSoftness);
@@ -492,7 +492,7 @@ void TestGameManager::AddCameras()
 			rot2.ToRotationMatrix().ToString().c_str());
 		cameraNodes[i]->GetTransform().SetRot(rot);
 
-		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Angle::DEGREE);
+		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Unit::DEGREE);
 		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
 		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
 		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);

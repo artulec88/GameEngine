@@ -806,7 +806,7 @@ private:
 			//}
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
-		ISort* insertionSorter = ISort::GetSortingObject(ISort::INSERTION_SORT);
+		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
@@ -895,7 +895,7 @@ private:
 			//}
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
-		ISort* insertionSorter = ISort::GetSortingObject(ISort::INSERTION_SORT);
+		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)

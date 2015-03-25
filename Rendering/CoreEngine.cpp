@@ -41,7 +41,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE)),
 	m_game(game),
 	m_renderer(NULL),
-	m_fpsTextRenderer(NULL)
+	m_fpsTextRenderer(NULL),
+	m_renderingRequiredCount(0),
+	m_renderingNotRequiredCount(0)
 {
 	// TODO: Fix singleton initialization
 	LOG(Debug, LOGPLACE, "Main application construction started");
@@ -215,11 +217,14 @@ void CoreEngine::Stop()
 	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
 	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
 	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
+	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
+	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
 	/* ==================== Printing stats end ==================== */
 }
 
 void CoreEngine::Run()
 {
+	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	const Math::Real ONE_MILLION = static_cast<Math::Real>(1000000.0);
 
 	minMaxTime1.Init();
@@ -245,12 +250,12 @@ void CoreEngine::Run()
 #ifdef COUNT_FPS
 	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
-	Math::Real frameTimeCounter = 0.0;
+	Math::Real frameTimeCounter = REAL_ZERO;
 	int fps;
 	Math::Real spf;
 #endif
 
-	Math::Real unprocessingTime = 0.0; // used to cap the FPS when it gets too high
+	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
 	int inGameHours, inGameMinutes, inGameSeconds;
 
@@ -292,7 +297,7 @@ void CoreEngine::Run()
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
 			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
-			frameTimeCounter = 0.0;
+			frameTimeCounter = REAL_ZERO;
 		}
 #endif
 		QueryPerformanceCounter(&t2); // stop timer
@@ -404,13 +409,15 @@ void CoreEngine::Run()
 			TwDraw();
 #endif
 			m_renderer->SwapBuffers();
+			++m_renderingRequiredCount;
 		}
 		else
 		{
 			//LOG(Info, LOGPLACE, "Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			//this_thread::sleep_for(chrono::milliseconds(100));
-			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(10));
+			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
+			++m_renderingNotRequiredCount;
 		}
 		QueryPerformanceCounter(&t2);
 		countStats3++;
@@ -521,12 +528,12 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const int timeGMTdifference = 1;
 	
 	const Math::Angle b((360.0f / 365.0f) * (dayNumber -81));
-	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Angle::RADIAN);
+	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Unit::RADIAN);
 	const Math::Angle tropicOfCancer(23.45f);
 
 	const Math::Real equationOfTime = 9.87f * doubleB.Sin() - 7.53f * b.Cos() - 1.5f * b.Sin(); // EoT
 	const Math::Real declinationSin = tropicOfCancer.Sin() * b.Sin();
-	const Math::Angle declinationAngle(asin(declinationSin), Math::Angle::RADIAN);
+	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
 	LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
 	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);

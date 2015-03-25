@@ -105,6 +105,11 @@ protected:
 	GameManager* m_game;
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;
+
+/* ==================== Mutable class variables begin ==================== */
+	mutable int m_renderingRequiredCount;
+	mutable int m_renderingNotRequiredCount;
+/* ==================== Mutable class variables end ==================== */
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CoreEngine */
 

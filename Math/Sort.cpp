@@ -5,7 +5,7 @@
 using namespace Math;
 
 /* ==================== BubbleSort class implementation begin ==================== */
-BubbleSort::BubbleSort() : ISort(ISort::BUBBLE_SORT)
+BubbleSort::BubbleSort() : ISort(Sorting::BUBBLE_SORT)
 {
 }
 
@@ -35,7 +35,7 @@ void BubbleSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingPara
 /* ==================== BubbleSort class implementation end ==================== */
 
 /* ==================== InsertionSort class implementation begin ==================== */
-InsertionSort::InsertionSort() : ISort(ISort::INSERTION_SORT)
+InsertionSort::InsertionSort() : ISort(Sorting::INSERTION_SORT)
 {
 }
 
@@ -65,7 +65,7 @@ void InsertionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingP
 /* ==================== InsertionSort class implementation end ==================== */
 
 /* ==================== SelectionSort class implementation begin ==================== */
-SelectionSort::SelectionSort() : ISort(ISort::SELECTION_SORT)
+SelectionSort::SelectionSort() : ISort(Sorting::SELECTION_SORT)
 {
 }
 
@@ -95,7 +95,7 @@ void SelectionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingP
 /* ==================== SelectionSort class implementation end ==================== */
 
 /* ==================== MergeSort class implementation begin ==================== */
-MergeSort::MergeSort() : ISort(ISort::MERGE_SORT)
+MergeSort::MergeSort() : ISort(Sorting::MERGE_SORT)
 {
 }
 
@@ -125,7 +125,7 @@ void MergeSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParam
 /* ==================== MergeSort class implementation end ==================== */
 
 /* ==================== HeapSort class implementation begin ==================== */
-HeapSort::HeapSort() : ISort(ISort::HEAP_SORT)
+HeapSort::HeapSort() : ISort(Sorting::HEAP_SORT)
 {
 }
 
@@ -155,7 +155,7 @@ void HeapSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParame
 /* ==================== HeapSort class implementation end ==================== */
 
 /* ==================== QuickSort class implementation begin ==================== */
-QuickSort::QuickSort() : ISort(ISort::QUICK_SORT)
+QuickSort::QuickSort() : ISort(Sorting::QUICK_SORT)
 {
 }
 
@@ -185,7 +185,7 @@ void QuickSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParam
 /* ==================== QuickSort class implementation end ==================== */
 
 /* ==================== ShellSort class implementation begin ==================== */
-ShellSort::ShellSort() : ISort(ISort::SHELL_SORT)
+ShellSort::ShellSort() : ISort(Sorting::SHELL_SORT)
 {
 }
 
@@ -215,7 +215,7 @@ void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParam
 /* ==================== ShellSort class implementation end ==================== */
 
 /* ==================== CombSort class implementation begin ==================== */
-CombSort::CombSort() : ISort(ISort::COMB_SORT)
+CombSort::CombSort() : ISort(Sorting::COMB_SORT)
 {
 }
 
@@ -245,7 +245,7 @@ void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParame
 /* ==================== CombSort class implementation end ==================== */
 
 /* ==================== CountingSort class implementation begin ==================== */
-CountingSort::CountingSort() : ISort(ISort::COUNTING_SORT)
+CountingSort::CountingSort() : ISort(Sorting::COUNTING_SORT)
 {
 }
 
@@ -279,7 +279,7 @@ void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingPa
 /* ==================== CountingSort class implementation end ==================== */
 
 /* ==================== RadixSort class implementation begin ==================== */
-RadixSort::RadixSort() : ISort(ISort::RADIX_SORT)
+RadixSort::RadixSort() : ISort(Sorting::RADIX_SORT)
 {
 }
 
@@ -313,7 +313,7 @@ void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParam
 /* ==================== RadixSort class implementation end ==================== */
 
 /* ==================== BucketSort class implementation begin ==================== */
-BucketSort::BucketSort() : ISort(ISort::BUCKET_SORT)
+BucketSort::BucketSort() : ISort(Sorting::BUCKET_SORT)
 {
 }
 

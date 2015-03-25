@@ -60,7 +60,7 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 	//	LOG(Utility::Debug, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
 	//}
 	SortingParametersChain sortingParameters(sortingKey, ASCENDING);
-	ISort::GetSortingObject(ISort::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
+	ISort::GetSortingObject(Sorting::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
 	//LOG(Utility::Debug, LOGPLACE, "After sorting: depth = %d", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{

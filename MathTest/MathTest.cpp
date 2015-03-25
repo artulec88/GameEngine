@@ -63,9 +63,9 @@ void AngleTest()
 	LOG (Notice, LOGPLACE, "Angle test started");
 	/* ==================== ANGLE TEST #1- comparing angles- begin ==================== */
 	Angle angle1(90.0);
-	Angle angle2(90.0, Angle::DEGREE);
-	Angle angle3(M_PI / 2.0f, Angle::RADIAN); // angle1 == angle2 == angle3
-	Angle angle4(M_PI / 2.0f, Angle::DEGREE); // angle4 is different than angle1, angle2, angle3
+	Angle angle2(90.0, Unit::DEGREE);
+	Angle angle3(M_PI / 2.0f, Unit::RADIAN); // angle1 == angle2 == angle3
+	Angle angle4(M_PI / 2.0f, Unit::DEGREE); // angle4 is different than angle1, angle2, angle3
 	TestReport(angle1 == angle2, "The comparison operators of the Angle class are incorrect. angle1 == angle2");
 	TestReport(angle1 == angle3, "The comparison operators of the Angle class are incorrect. angle1 == angle3");
 	TestReport(angle2 == angle3, "The comparison operators of the Angle class are incorrect. angle2 == angle3");
@@ -73,7 +73,7 @@ void AngleTest()
 	TestReport(angle2 != angle4, "The comparison operators of the Angle class are incorrect. angle2 != angle4");
 	TestReport(angle3 != angle4, "The comparison operators of the Angle class are incorrect. angle3 != angle4");
 	Angle angle5(45.0f);
-	Angle angle6(M_PI / 4.0f, Angle::RADIAN); // angle5 is equal to angle6
+	Angle angle6(M_PI / 4.0f, Unit::RADIAN); // angle5 is equal to angle6
 	TestReport(angle1 > angle5, "The comparison operators of the Angle class are incorrect. angle1 > angle5");
 	TestReport(angle1 > angle6, "The comparison operators of the Angle class are incorrect. angle1 > angle6");
 	TestReport(angle1 >= angle5, "The comparison operators of the Angle class are incorrect. angle1 >= angle5");
@@ -169,9 +169,9 @@ void SortTest()
 
 	const int NUMBER_OF_SORTING_METHODS = 6; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
 	const int chosenSortingMethodIndices[] = { 3, 4, 5, 6, 7, 10 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
-	ISort::SortingMethod sortingMethods[] = { ISort::BUBBLE_SORT, ISort::INSERTION_SORT, ISort::SELECTION_SORT,
-		ISort::MERGE_SORT, ISort::HEAP_SORT, ISort::QUICK_SORT, ISort::SHELL_SORT, ISort::COMB_SORT,
-		ISort::COUNTING_SORT, ISort::RADIX_SORT, ISort::BUCKET_SORT };
+	Sorting::SortingAlgorithm sortingMethods[] = { Sorting::BUBBLE_SORT, Sorting::INSERTION_SORT, Sorting::SELECTION_SORT,
+		Sorting::MERGE_SORT, Sorting::HEAP_SORT, Sorting::QUICK_SORT, Sorting::SHELL_SORT, Sorting::COMB_SORT,
+		Sorting::COUNTING_SORT, Sorting::RADIX_SORT, Sorting::BUCKET_SORT };
 	std::string sortingMethodsStr[] = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
 		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 

@@ -5,7 +5,7 @@
 
 using namespace Math;
 
-Angle::Angle(Real angle /* = REAL_ZERO */, Unit unit /* = DEGREE */) :
+Angle::Angle(Real angle /* = REAL_ZERO */, Unit::UnitType unit /* = DEGREE */) :
 	m_angle(angle),
 	m_unit(unit)
 {
@@ -13,7 +13,7 @@ Angle::Angle(Real angle /* = REAL_ZERO */, Unit unit /* = DEGREE */) :
 
 Angle::Angle(const Angle& angle) :
 	m_angle(angle.GetAngleInRadians()),
-	m_unit(RADIAN)
+	m_unit(Unit::RADIAN)
 {
 }
 
@@ -22,9 +22,9 @@ Real Angle::GetAngleInDegrees() const
 {
 	switch (m_unit)
 	{
-	case DEGREE:
+	case Unit::DEGREE:
 		return m_angle;
-	case RADIAN:
+	case Unit::RADIAN:
 		return ToDeg(m_angle);
 	default:
 		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
@@ -38,9 +38,9 @@ Real Angle::GetAngleInRadians() const
 {
 	switch (m_unit)
 	{
-	case DEGREE:
+	case Unit::DEGREE:
 		return ToRad(m_angle);
-	case RADIAN:
+	case Unit::RADIAN:
 		return m_angle;
 	default:
 		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);

@@ -35,5 +35,5 @@ void MainMenuGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameN
 void MainMenuGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state rendering");
-	//renderer->RenderMainMenu();
+	renderer->RenderMainMenu();
 }

@@ -55,6 +55,7 @@ private:
 public:
 	//GLFWwindow* GetWindow() const { return this->window; };
 	RENDERING_API void Render(const GameNode& node);
+	RENDERING_API void RenderMainMenu();
 	RENDERING_API void SwapBuffers();
 
 #ifdef ANT_TWEAK_BAR_ENABLED

@@ -142,8 +142,8 @@ Renderer::Renderer(GLFWwindow* window) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	//fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	//textRenderer = new TextRenderer(fontTexture);
+	fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	textRenderer = new TextRenderer(fontTexture);
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
@@ -187,6 +187,8 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(planeMaterial);
 	SAFE_DELETE(planeMesh);
 
+	// TODO: fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
+	// Of course, we should deal with it later on more appropriately.
 	//SetTexture("fontTexture", NULL);
 	//SAFE_DELETE(fontTexture);
 	SAFE_DELETE(textRenderer);
@@ -485,6 +487,19 @@ void Renderer::Render(const GameNode& gameNode)
 	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
 	//textRenderer->DrawString(0, 5800, ss.str(), this);
 	//textRenderer->DrawString(0, 50, "Hello world", this);
+}
+
+void Renderer::RenderMainMenu()
+{
+	BindAsRenderTarget();
+	ClearScreen();
+	m_currentCamera = cameras[currentCameraIndex];
+
+	//double time = glfwGetTime();
+	//std::stringstream ss;
+	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
+	//textRenderer->DrawString(0, 5800, ss.str(), this);
+	textRenderer->DrawString(0, 50, "This is main menu", this);
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()
