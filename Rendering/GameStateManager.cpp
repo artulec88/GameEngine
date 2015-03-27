@@ -91,6 +91,15 @@ GameState* DefaultGameStateManager::Pop()
 	return poppedPair.first;
 }
 
+void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
+{
+	LOG(Utility::Critical, LOGPLACE, "Key event");
+	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
+	{
+		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
+	}
+}
+
 void DefaultGameStateManager::Input(Math::Real elapsedTime, GameNode& gameNode)
 {
 	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
@@ -118,7 +127,13 @@ void DefaultGameStateManager::Render(Renderer* renderer, const GameNode& gameNod
 
 void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
-	IRenderable *renderable = dynamic_cast<IRenderable*>(gameState);
+	IInputable* inputable = dynamic_cast<IInputable*>(gameState);
+	if (inputable != NULL)
+	{
+		m_exposedInputables.push_back(inputable);
+	}
+
+	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if(renderable != NULL)
 	{
 		m_exposedRenderables.push_back(renderable);
@@ -133,6 +148,12 @@ void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 
 void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
+	IInputable* inputable = dynamic_cast<IInputable*>(gameState);
+	if (inputable != NULL)
+	{
+		m_exposedInputables.pop_back();
+	}
+
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if (renderable != NULL)
 	{

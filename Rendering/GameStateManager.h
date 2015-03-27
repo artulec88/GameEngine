@@ -75,8 +75,15 @@ public:
 	/// <returns> The lastmost game state on the stack </returns>
 	virtual GameState* Peek() const = 0;
 
+	/// <summary> Collects input according to current game state </summary>
+	/// <param name="key"> The key that triggered the event </param>
+	/// <param name="scancode"> The system-specific scancode of the key </param>
+	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
+	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
+	virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
+
 	/// <summary> Processes player's input according to current game state </summary>
-	/// <param name="elapsedTime> Elapsed simulation time </param>
+	/// <param name="elapsedTime"> Elapsed simulation time </param>
 	virtual void Input(Math::Real elapsedTime, GameNode& gameNode) = 0;
 
 	/// <summary> Advances the time of the active game states </summary>
@@ -135,6 +142,13 @@ public:
 	/// </summary>
 	/// <returns> The lastmost game state on the stack </returns>
 	virtual GameState* Peek() const;
+
+	/// <summary> Collects input according to current game state </summary>
+	/// <param name="key"> The key that triggered the event </param>
+	/// <param name="scancode"> The system-specific scancode of the key </param>
+	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
+	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
+	virtual void KeyEvent(int key, int scancode, int action, int mods);
 
 	/// <summary> Processes player's input according to current game state </summary>
 	/// <param name="elapsedTime> Elapsed simulation time </param>

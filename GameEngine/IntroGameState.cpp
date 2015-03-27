@@ -27,6 +27,16 @@ void IntroGameState::Revealed()
 {
 }
 
+void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
+{
+	switch (key)
+	{
+	case GLFW_KEY_ESCAPE:
+		LOG(Utility::Info, LOGPLACE, "To skip the intro click ESC twice.");
+		break;
+	}
+}
+
 void IntroGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state input processing");

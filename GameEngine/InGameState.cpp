@@ -28,6 +28,94 @@ void InGameState::Revealed()
 {
 }
 
+bool forward = false;
+bool backward = false;
+bool left = false;
+bool right = false;
+bool up = false;
+bool down = false;
+void InGameState::KeyEvent(int key, int scancode, int action, int mods)
+{
+	//ASSERT(camera != NULL);
+	//if (camera == NULL)
+	//{
+	//	LOG(Error, LOGPLACE, "Camera instance is not initialized");
+	//	return;
+	//}
+
+	// TODO: Set delta to correct value
+	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
+	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+	//const Math::Real sensitivity = static_cast<Math::Real>(Camera::GetSensitivity());
+	switch (key)
+	{
+	case GLFW_KEY_C:
+		//LOG(Utility::Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
+		break;
+	case GLFW_KEY_W:
+		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//LOG(Debug, LOGPLACE, "Forward = %d", forward);
+
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
+		break;
+	case GLFW_KEY_S:
+		backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//LOG(Debug, LOGPLACE, "Backward = %d", backward);
+
+		//direction -= transform.GetRot().GetForward().Normalized();
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
+		break;
+	case GLFW_KEY_A:
+		left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//LOG(Debug, LOGPLACE, "Left = %d", left);
+
+		//direction -= transform.GetRot().GetRight().Normalized();
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
+		break;
+	case GLFW_KEY_D:
+		right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//LOG(Debug, LOGPLACE, "Right = %d", right);
+
+		//direction += transform.GetRot().GetRight().Normalized();
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
+		break;
+	case GLFW_KEY_SPACE: // move up
+		up = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//direction += transform.GetRot().GetUp().Normalized();
+		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
+		break;
+	case GLFW_KEY_LEFT_CONTROL: // move down
+		down = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		//direction -= transform.GetRot().GetUp().Normalized();
+		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
+		break;
+	case GLFW_KEY_UP: // rotation around X axis
+		//transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
+		break;
+	case GLFW_KEY_DOWN: // rotation around X axis
+		//transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
+		break;
+	case GLFW_KEY_LEFT: // rotation around Y axis
+		//transform.Rotate(transform.GetTransformedRot().GetUp() /*Camera::yAxis*/, Angle(-sensitivity));
+		break;
+	case GLFW_KEY_RIGHT: // rotation around Y axis
+		//transform.Rotate(transform.GetTransformedRot().GetUp() /*Camera::yAxis*/, Angle(sensitivity));
+		break;
+	case GLFW_KEY_N: // next camera
+		//if (action == GLFW_PRESS)
+		//{
+		//	CoreEngine::GetCoreEngine()->NextCamera();
+		//}
+		break;
+	case GLFW_KEY_P: // prev camera
+		//if (action == GLFW_PRESS)
+		//{
+		//	CoreEngine::GetCoreEngine()->PrevCamera();
+		//}
+		break;
+	}
+}
+
 void InGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state input processing");

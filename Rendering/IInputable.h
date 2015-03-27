@@ -28,6 +28,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Input(Math::Real elapsedTime, GameNode& gameNode) = 0;
+	virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
