@@ -21,13 +21,13 @@
     <ClCompile Include="IntroGameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MainMenuGameState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="InGameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestGameManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuGameState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,13 +35,13 @@
     <ClInclude Include="IntroGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainMenuGameState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="InGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestGameManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuGameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

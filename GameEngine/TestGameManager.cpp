@@ -1,5 +1,5 @@
 #include "TestGameManager.h"
-#include "MainMenuGameState.h"
+#include "MenuGameState.h"
 #include "InGameState.h"
 
 #include "Rendering\CoreEngine.h"
@@ -54,7 +54,7 @@ TestGameManager::TestGameManager() :
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 
-	m_gameStateManager->Push(new MainMenuGameState());
+	m_gameStateManager->Push(new MenuGameState());
 	//m_gameStateManager->Push(new InGameState());
 }
 

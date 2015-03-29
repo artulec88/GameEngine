@@ -489,7 +489,7 @@ void Renderer::Render(const GameNode& gameNode)
 	//textRenderer->DrawString(0, 50, "Hello world", this);
 }
 
-void Renderer::RenderMainMenu()
+void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 {
 	BindAsRenderTarget();
 	ClearScreen();
@@ -499,7 +499,12 @@ void Renderer::RenderMainMenu()
 	//std::stringstream ss;
 	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
 	//textRenderer->DrawString(0, 5800, ss.str(), this);
-	textRenderer->DrawString(0, 50, "This is main menu", this);
+	//textRenderer->DrawString(0, 50, "This is main menu", this);
+	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
+	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	{
+		textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this);
+	}
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()

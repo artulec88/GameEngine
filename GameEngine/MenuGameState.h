@@ -1,5 +1,5 @@
-#ifndef __MAIN_MENU_GAME_STATE_H__
-#define __MAIN_MENU_GAME_STATE_H__
+#ifndef __MENU_GAME_STATE_H__
+#define __MENU_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
 #include "Rendering\GameState.h"
@@ -7,16 +7,25 @@
 #include "Rendering\IRenderable.h"
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
+#include "Rendering\MenuEntry.h"
+
+#include <vector>
 
 namespace Game
 {
 
-class MainMenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
+class MenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
 {
+/* ==================== Static variables and functions begin ==================== */
+private:
+	static Rendering::MenuEntry s_mainMenuEntry;
+	static void InitializeMainMenu();
+/* ==================== Static variables and functions end ==================== */
+
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MainMenuGameState();
-	virtual ~MainMenuGameState(void);
+	MenuGameState();
+	virtual ~MenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -48,9 +57,10 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	Rendering::MenuEntry* m_currentMenuEntry;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class MainMenuGameState */
+}; /* end class MenuGameState */
 
 } /* end namespace Game */
 
-#endif /* __MAIN_MENU_GAME_STATE_H__ */
+#endif /* __MENU_GAME_STATE_H__ */

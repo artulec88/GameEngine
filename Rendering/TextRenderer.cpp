@@ -2,6 +2,7 @@
 #include "TextRenderer.h"
 #include "Material.h"
 #include "Renderer.h"
+#include "CoreEngine.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
@@ -17,6 +18,8 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 {
 	//fontTexture = new Texture("..\\Textures\\font1.bmp");
 	fontMaterial = new Material(fontTexture);
+	fontMaterial->SetReal("screenWidth", CoreEngine::GetCoreEngine()->GetWindowWidth());
+	fontMaterial->SetReal("screenHeight", CoreEngine::GetCoreEngine()->GetWindowHeight());
 	textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
 
 	//Vertex vertices[] = {
@@ -75,6 +78,31 @@ TextRenderer::~TextRenderer(void)
 	LOG(Utility::Debug, LOGPLACE, "Text renderer destruction finished");
 }
 
+void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer) const
+{
+	DrawString(alignment, y, str, renderer, defaultFontSize);
+}
+
+void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+{
+	Math::Real x = REAL_ZERO;
+	switch (alignment)
+	{
+	case Text::LEFT:
+		x = REAL_ZERO;
+		break;
+	case Text::RIGHT:
+		x = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth()) - str.size() * fontSize;
+		break;
+	case Text::CENTER:
+		x = (static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth()) - str.size() * fontSize) / 2;
+		break;
+	default:
+		LOG(Utility::Warning, LOGPLACE, "Incorrect alignment type used.");
+	}
+	DrawString(x, y, str, renderer, fontSize);
+}
+
 void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const
 {
 	DrawString(x, y, str, renderer, defaultFontSize);
@@ -94,6 +122,7 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 		Math::Vector2D upRightVec(x + i * fontSize + fontSize, y + fontSize);
 		Math::Vector2D downRightVec(x + i * fontSize + fontSize, y);
 		Math::Vector2D downLeftVec(x + i * fontSize, y);
+		//LOG(Utility::Critical, LOGPLACE, "str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);
 		vertices.push_back(downLeftVec);
@@ -127,7 +156,7 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	textShader->Bind();
 
 	//Updating uniforms
-	textShader->UpdateUniforms(Transform(), *fontMaterial, renderer);
+	textShader->UpdateUniforms(Transform() /* TODO: Create something better here */, *fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D::Translation(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices

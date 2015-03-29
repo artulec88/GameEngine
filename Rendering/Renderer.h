@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "Shader.h"
 #include "Color.h"
+#include "MenuEntry.h"
 
 #include "Math\Vector.h"
 
@@ -55,7 +56,7 @@ private:
 public:
 	//GLFWwindow* GetWindow() const { return this->window; };
 	RENDERING_API void Render(const GameNode& node);
-	RENDERING_API void RenderMainMenu();
+	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void SwapBuffers();
 
 #ifdef ANT_TWEAK_BAR_ENABLED

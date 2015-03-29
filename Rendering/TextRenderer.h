@@ -11,6 +11,17 @@ namespace Rendering
 class Material;
 class Renderer;
 
+namespace Text
+{
+	enum Alignment
+	{
+		LEFT = 0,
+		RIGHT,
+		CENTER,
+		//JUSTIFY // TODO: Implement JUSTIFY alignment
+	}; /* end enum Alignment */
+} /* end namespace Text */
+
 class TextRenderer
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -21,6 +32,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer) const;
+	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
 	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const;
 	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
 	void SetFontSize(Math::Real fontSize);

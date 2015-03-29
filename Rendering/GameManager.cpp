@@ -209,7 +209,7 @@ void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, i
 
 void GameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-
+	LOG(Debug, LOGPLACE, "Mouse position event x=%.2f, y=%.2f", xPos, yPos);
 }
 
 void GameManager::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
