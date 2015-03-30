@@ -503,7 +503,8 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this);
+		textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
+			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
 }
 

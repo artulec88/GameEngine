@@ -176,8 +176,12 @@ void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action
 {
 	LOG(Delocust, LOGPLACE, "Key event with key = %d", key);
 
-	//Input::UpdateKey(window, key, scancode, action, mods);
-	if (key == GLFW_KEY_ESCAPE)
+	//if (key == GLFW_KEY_ESCAPE)
+	//{
+	//	glfwSetWindowShouldClose(window, GL_TRUE);
+	//	return;
+	//}
+	if ((key == GLFW_KEY_F3) && (mods & GLFW_MOD_ALT))
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;

@@ -16,8 +16,12 @@ MenuGameState::MenuGameState(void) :
 	m_currentMenuEntry(NULL)
 {
 	m_currentMenuEntry = new Rendering::MenuEntry("Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry("Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Controls"));
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry("Start"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry("Options"));
+	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry("Exit"));
 
 	s_mainMenuEntry = *m_currentMenuEntry;
@@ -46,12 +50,49 @@ void MenuGameState::Revealed()
 
 void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
-	LOG(Utility::Critical, LOGPLACE, "Key event");
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
-		LOG(Utility::Critical, LOGPLACE, "To exit the game click \"QUIT\"");
+		if (action == GLFW_PRESS)
+		{
+			if (m_currentMenuEntry->HasParent())
+			{
+				m_currentMenuEntry = m_currentMenuEntry->GetParent();
+			}
+			else
+			{
+				// TODO: Switch to InGameState state
+			}
+		}
+		//LOG(Utility::Info, LOGPLACE, "To exit the game click \"QUIT\"");
 		break;
+	case GLFW_KEY_UP:
+		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
+		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
+		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
+		if (action == GLFW_PRESS)
+		{
+			m_currentMenuEntry->SelectPrevChildMenuEntry();
+		}
+		break;
+	case GLFW_KEY_DOWN:
+		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
+		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
+		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
+		if (action == GLFW_PRESS)
+		{
+			m_currentMenuEntry->SelectNextChildMenuEntry();
+		}
+		break;
+	case GLFW_KEY_ENTER:
+	{
+		Rendering::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
+		if ((action == GLFW_PRESS) && selectedChild->HasChildren())
+		{
+			m_currentMenuEntry = selectedChild;
+		}
+		break;
+	}
 	default:
 		LOG(Utility::Critical, LOGPLACE, "To start the game click \"START\"");
 		break;

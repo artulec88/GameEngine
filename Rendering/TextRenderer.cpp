@@ -12,15 +12,14 @@ const int vertexTempID = 0;
 const int uvTempID = 1;
 
 TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* = 32.0f */) :
-	fontMaterial(NULL),
-	defaultFontSize(defaultFontSize),
-	textShader(NULL)
+	m_fontMaterial(NULL),
+	m_defaultFontSize(defaultFontSize),
+	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
+	m_textShader(NULL)
 {
-	//fontTexture = new Texture("..\\Textures\\font1.bmp");
-	fontMaterial = new Material(fontTexture);
-	fontMaterial->SetReal("screenWidth", CoreEngine::GetCoreEngine()->GetWindowWidth());
-	fontMaterial->SetReal("screenHeight", CoreEngine::GetCoreEngine()->GetWindowHeight());
-	textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
+	//m_fontTexture = new Texture("..\\Textures\\font1.bmp");
+	m_fontMaterial = new Material(fontTexture);
+	m_textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
 
 	//Vertex vertices[] = {
 	//	Vertex(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
@@ -39,7 +38,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	//glGenVertexArrays(1, &vaoID);
 	//glBindVertexArray(vaoID);
 
-	glGenBuffers(1, &vertexBuffer);
+	glGenBuffers(1, &m_vertexBuffer);
 	//glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, &vertices[0], GL_STATIC_DRAW);
 	//glEnableVertexAttribArray(vertexTempID);
@@ -54,36 +53,50 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
     //    0.0f, 0.0f,
     //    0.0f, 0.0f
     //};
-	glGenBuffers(1, &texCoordBuffer);
+	glGenBuffers(1, &m_texCoordBuffer);
 	//glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 8, &texCoords[0], GL_DYNAMIC_DRAW);
 	//glEnableVertexAttribArray(uvTempID);
 	//glVertexAttribPointer(uvTempID, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	Rendering::CheckErrorCode("TextRenderer::TextRenderer", "Generating and binding texture coordinates buffer");
 
-	projection = Math::Matrix4D::OrtographicProjection(REAL_ZERO, 800 /* screen width */, REAL_ZERO, 600 /* screen height */, -REAL_ONE, REAL_ONE);
+	m_windowWidth = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth());
+	m_windowHeight = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight());
+	//m_fontMaterial->SetReal("screenWidth", m_windowWidth);
+	//m_fontMaterial->SetReal("screenHeight", m_windowHeight);
+	m_projection = Math::Matrix4D::OrtographicProjection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE);
 }
 
 
 TextRenderer::~TextRenderer(void)
 {
 	LOG(Utility::Delocust, LOGPLACE, "Text renderer destruction started");
-	SAFE_DELETE(fontMaterial);
-	SAFE_DELETE(textShader);
+	SAFE_DELETE(m_fontMaterial);
+	SAFE_DELETE(m_textShader);
 
-	glDeleteVertexArrays(1, &vaoID);
-	glDeleteBuffers(1, &vertexBuffer);
-	glDeleteBuffers(1, &texCoordBuffer);
+	glDeleteVertexArrays(1, &m_vaoID);
+	glDeleteBuffers(1, &m_vertexBuffer);
+	glDeleteBuffers(1, &m_texCoordBuffer);
 
 	LOG(Utility::Debug, LOGPLACE, "Text renderer destruction finished");
 }
 
 void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer) const
 {
-	DrawString(alignment, y, str, renderer, defaultFontSize);
+	DrawString(alignment, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
 void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+{
+	DrawString(alignment, y, str, renderer, fontSize, m_defaultFontColor);
+}
+
+void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+{
+	DrawString(alignment, y, str, renderer, m_defaultFontSize, fontColor);
+}
+
+void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	Math::Real x = REAL_ZERO;
 	switch (alignment)
@@ -92,23 +105,33 @@ void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std
 		x = REAL_ZERO;
 		break;
 	case Text::RIGHT:
-		x = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth()) - str.size() * fontSize;
+		x = m_windowWidth - str.size() * fontSize;
 		break;
 	case Text::CENTER:
-		x = (static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth()) - str.size() * fontSize) / 2;
+		x = (m_windowWidth - str.size() * fontSize) / 2;
 		break;
 	default:
 		LOG(Utility::Warning, LOGPLACE, "Incorrect alignment type used.");
 	}
-	DrawString(x, y, str, renderer, fontSize);
+	DrawString(x, y, str, renderer, fontSize, fontColor);
 }
 
 void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const
 {
-	DrawString(x, y, str, renderer, defaultFontSize);
+	DrawString(x, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
 void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+{
+	DrawString(x, y, str, renderer, fontSize, m_defaultFontColor);
+}
+
+void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+{
+	DrawString(x, y, str, renderer, m_defaultFontSize, fontColor);
+}
+
+void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	LOG(Utility::Debug, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
 
@@ -148,25 +171,26 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 		uvs.push_back(upRightUV);
 		uvs.push_back(downLeftUV);
 	}
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Math::Vector2D), &vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(Math::Vector2D), &uvs[0], GL_STATIC_DRAW);
 
-	textShader->Bind();
+	m_textShader->Bind();
 
 	//Updating uniforms
-	textShader->UpdateUniforms(Transform() /* TODO: Create something better here */, *fontMaterial, renderer);
+	m_fontMaterial->SetVector3D("textColor", fontColor);
+	m_textShader->UpdateUniforms(Transform() /* TODO: Create something better here */, *m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D::Translation(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
 	// 2nd attribute buffer : UVs
 	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, texCoordBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0 );
 
 	if (Rendering::glDepthTestEnabled)

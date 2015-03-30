@@ -93,7 +93,6 @@ GameState* DefaultGameStateManager::Pop()
 
 void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	LOG(Utility::Critical, LOGPLACE, "Key event");
 	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
