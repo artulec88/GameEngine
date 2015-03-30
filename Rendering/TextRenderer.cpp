@@ -61,7 +61,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	//glVertexAttribPointer(uvTempID, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	Rendering::CheckErrorCode("TextRenderer::TextRenderer", "Generating and binding texture coordinates buffer");
 
-	projection = Math::Matrix4D::OrtographicProjection(REAL_ZERO, 800 /* screen width */, REAL_ZERO, 600 /* screen height */, -REAL_ONE, REAL_ONE);
+	projection = Math::Matrix4D::OrtographicProjection(REAL_ZERO, CoreEngine::GetCoreEngine()->GetWindowWidth(), REAL_ZERO, CoreEngine::GetCoreEngine()->GetWindowHeight(), -REAL_ONE, REAL_ONE);
 }
 
 
