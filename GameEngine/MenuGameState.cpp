@@ -1,5 +1,7 @@
 #include "MenuGameState.h"
+#include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
+#include "InGameState.h"
 
 using namespace Game;
 
@@ -16,14 +18,14 @@ MenuGameState::MenuGameState(void) :
 	Rendering::GameState(),
 	m_currentMenuEntry(NULL)
 {
-	m_currentMenuEntry = new Rendering::MenuEntry("Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry("Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry("Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry("Start"));
+	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::Actions::UNDEFINED, "Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::Actions::OTHER, "Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Controls"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START, "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry("Exit"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::QUIT, "Quit"));
 
 	s_mainMenuEntry = *m_currentMenuEntry;
 }
@@ -55,19 +57,20 @@ void MenuGameState::Revealed()
 
 void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
+	if (action != GLFW_PRESS)
+	{
+		return;
+	}
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
-		if (action == GLFW_PRESS)
+		if (m_currentMenuEntry->HasParent())
 		{
-			if (m_currentMenuEntry->HasParent())
-			{
-				m_currentMenuEntry = m_currentMenuEntry->GetParent();
-			}
-			else
-			{
-				// TODO: Switch to InGameState state
-			}
+			m_currentMenuEntry = m_currentMenuEntry->GetParent();
+		}
+		else
+		{
+				
 		}
 		//LOG(Utility::Info, LOGPLACE, "To exit the game click \"QUIT\"");
 		break;
@@ -75,26 +78,34 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
-		if (action == GLFW_PRESS)
-		{
-			m_currentMenuEntry->SelectPrevChildMenuEntry();
-		}
+		m_currentMenuEntry->SelectPrevChildMenuEntry();
 		break;
 	case GLFW_KEY_DOWN:
 		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
-		if (action == GLFW_PRESS)
-		{
-			m_currentMenuEntry->SelectNextChildMenuEntry();
-		}
+		m_currentMenuEntry->SelectNextChildMenuEntry();
 		break;
 	case GLFW_KEY_ENTER:
 	{
 		Rendering::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
-		if ((action == GLFW_PRESS) && selectedChild->HasChildren())
+		if (selectedChild->HasChildren())
 		{
 			m_currentMenuEntry = selectedChild;
+		}
+		else
+		{
+			// TODO: Both "Start" and "Exit" have no children, but the ENTER action should be handled in a different way for them.
+			Rendering::Actions::ActionID selectedMenuEntryAction = selectedChild->GetAction();
+			switch (selectedMenuEntryAction)
+			{
+			case Rendering::Actions::START:
+				Rendering::GameManager::GetGameManager()->SwitchState(new InGameState());
+				break;
+			case Rendering::Actions::QUIT:
+				Rendering::GameManager::GetGameManager()->RequestGameQuit();
+				break;
+			}
 		}
 		break;
 	}

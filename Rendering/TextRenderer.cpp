@@ -209,7 +209,7 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 	 // Save the current blending state
 	if (!Rendering::glBlendEnabled)
 	{
-		glEnable(GL_BLEND);	
+		glEnable(GL_BLEND);
 	}
 	/**
 	 * This effectively means:

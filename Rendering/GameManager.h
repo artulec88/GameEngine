@@ -69,6 +69,11 @@ public:
 	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
+	void SwitchState(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
+	void PopState();
+	void PushState(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
+	void RequestGameQuit() const;
+
 protected:
 	void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */
