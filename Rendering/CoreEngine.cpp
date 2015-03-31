@@ -274,13 +274,16 @@ void CoreEngine::Run()
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 		
-		m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
-		if (m_timeOfDay > SECONDS_PER_DAY)
+		if (m_game->IsInGameCalculationEnabled())
 		{
-			m_timeOfDay -= SECONDS_PER_DAY;
+			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
+			if (m_timeOfDay > SECONDS_PER_DAY)
+			{
+				m_timeOfDay -= SECONDS_PER_DAY;
+			}
+			CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
+			ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
 		}
-		CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
-		ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
 
 		previousTime = currentTime;
 		
@@ -379,31 +382,32 @@ void CoreEngine::Run()
 			m_game->Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
-			//double time = glfwGetTime();
+			
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
-			ss.str(std::string());
-			// TODO: Leading zeros (setfill('0') << setw(5))
-			if (inGameHours < 10) { ss << "Time: 0"; }
-			else { ss << "Time: "; }
-			if (inGameMinutes < 10) { ss << inGameHours << ":0" << inGameMinutes; }
-			else { ss << inGameHours << ":" << inGameMinutes; }
-			if (m_clockSpeed < 12.0f)
+			
+			if (m_game->IsInGameCalculationEnabled())
 			{
-				if (inGameSeconds < 10)
+				ss.str(std::string());
+				// TODO: Leading zeros (setfill('0') << setw(5))
+				if (inGameHours < 10) { ss << "Time: 0"; }
+				else { ss << "Time: "; }
+				if (inGameMinutes < 10) { ss << inGameHours << ":0" << inGameMinutes; }
+				else { ss << inGameHours << ":" << inGameMinutes; }
+				if (m_clockSpeed < 12.0f)
 				{
-					ss << ":0" << inGameSeconds;
+					if (inGameSeconds < 10)
+					{
+						ss << ":0" << inGameSeconds;
+					}
+					else
+					{
+						ss << ":" << inGameSeconds;
+					}
 				}
-				else
-				{
-					ss << ":" << inGameSeconds;
-				}
+				m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
 			}
-			m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) + 100.0f, "Start", m_renderer, 64.0f);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2), "Options", m_renderer, 64.0f);
-			//fpsTextRenderer->DrawString(static_cast<Math::Real>(windowWidth / 4), static_cast<Math::Real>(windowHeight / 2) - 100.0f, "Exit", m_renderer, 64.0f);
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();
