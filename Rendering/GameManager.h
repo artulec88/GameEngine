@@ -55,6 +55,7 @@ public:
 
 	inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 
+	bool IsInGameTimeCalculationEnabled() const { return m_gameStateManager->IsInGameTimeCalculationEnabled(); }
 	void SetEngine(CoreEngine* coreEngine);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
