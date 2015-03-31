@@ -93,6 +93,8 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
 	virtual void Render(Renderer* renderer, const GameNode& gameNode) = 0;
+	
+	boolean IsInGameTimeCalculationEnabled() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
