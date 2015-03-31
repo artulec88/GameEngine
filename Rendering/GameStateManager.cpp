@@ -13,6 +13,16 @@ GameStateManager::~GameStateManager(void)
 {
 }
 
+bool GameStateManager::IsInGameTimeCalculationEnabled() const
+{
+	GameState* currentState = Peek();
+	if (currentState == NULL)
+	{
+		return false;
+	}
+	return currentState->IsInGameTimeCalculationEnabled();
+}
+
 GameState* GameStateManager::Switch(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
 {
 	GameState* currentState = Peek();
