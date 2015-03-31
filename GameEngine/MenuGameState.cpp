@@ -1,4 +1,5 @@
 #include "MenuGameState.h"
+#include "Utility\ILogger.h"
 
 using namespace Game;
 
@@ -34,18 +35,22 @@ MenuGameState::~MenuGameState(void)
 
 void MenuGameState::Entered()
 {
+	LOG(Utility::Info, LOGPLACE, "Menu game state has been placed in the game state manager");
 }
 
 void MenuGameState::Leaving()
 {
+	LOG(Utility::Info, LOGPLACE, "Menu game state is about to be removed from the game state manager");
 }
 
 void MenuGameState::Obscuring()
 {
+	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of menu game state");
 }
 
 void MenuGameState::Revealed()
 {
+	LOG(Utility::Info, LOGPLACE, "Menu game state has become the topmost game state in the game state manager's stack");
 }
 
 void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
@@ -94,7 +99,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	}
 	default:
-		LOG(Utility::Critical, LOGPLACE, "To start the game click \"START\"");
+		LOG(Utility::Debug, LOGPLACE, "The key %d is not supported by the menu game state", key);
 		break;
 	}
 }
