@@ -41,6 +41,8 @@ public:
 	 * Called after the game state has become the topmost game state on the stack again
 	 */
 	virtual void Revealed();
+	
+	bool IsInGameTimeCalculationEnabled() const { return true; }
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Input(Math::Real elapsedTime, Rendering::GameNode& gameNode);
