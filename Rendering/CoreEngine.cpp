@@ -274,7 +274,7 @@ void CoreEngine::Run()
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 		
-		if (m_game->IsInGameCalculationEnabled())
+		if (m_game->IsInGameTimeCalculationEnabled())
 		{
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
 			if (m_timeOfDay > SECONDS_PER_DAY)
@@ -387,7 +387,7 @@ void CoreEngine::Run()
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
 			
-			if (m_game->IsInGameCalculationEnabled())
+			if (m_game->IsInGameTimeCalculationEnabled())
 			{
 				ss.str(std::string());
 				// TODO: Leading zeros (setfill('0') << setw(5))
