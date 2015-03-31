@@ -44,7 +44,7 @@ public:
 	 */
 	virtual void Revealed() = 0;
 	
-	virtual void IsInGameTimeCalculationEnabled() const { return false; }
+	virtual bool IsInGameTimeCalculationEnabled() const { return false; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
