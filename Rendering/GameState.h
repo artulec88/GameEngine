@@ -43,6 +43,8 @@ public:
 	 * Called after the game state has become the topmost game state on the stack again
 	 */
 	virtual void Revealed() = 0;
+	
+	virtual void IsInGameTimeCalculationEnabled() const { return false; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
