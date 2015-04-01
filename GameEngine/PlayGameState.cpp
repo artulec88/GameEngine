@@ -1,34 +1,34 @@
-#include "InGameState.h"
+#include "PlayGameState.h"
 #include "Utility\ILogger.h"
 #include "MenuGameState.h"
 
 using namespace Game;
 
-InGameState::InGameState(void) :
+PlayGameState::PlayGameState(void) :
 	Rendering::GameState()
 {
 }
 
-InGameState::~InGameState(void)
+PlayGameState::~PlayGameState(void)
 {
 }
 
-void InGameState::Entered()
+void PlayGameState::Entered()
 {
 	LOG(Utility::Info, LOGPLACE, "Play game state has been placed in the game state manager");
 }
 
-void InGameState::Leaving()
+void PlayGameState::Leaving()
 {
 	LOG(Utility::Info, LOGPLACE, "Play game state is about to be removed from the game state manager");
 }
 
-void InGameState::Obscuring()
+void PlayGameState::Obscuring()
 {
 	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of play game state");
 }
 
-void InGameState::Revealed()
+void PlayGameState::Revealed()
 {
 	LOG(Utility::Info, LOGPLACE, "Play game state has become the topmost game state in the game state manager's stack");
 }
@@ -39,7 +39,7 @@ bool left = false;
 bool right = false;
 bool up = false;
 bool down = false;
-void InGameState::KeyEvent(int key, int scancode, int action, int mods)
+void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
 	//ASSERT(camera != NULL);
 	//if (camera == NULL)
@@ -127,13 +127,13 @@ void InGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void InGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void PlayGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state input processing");
 	gameNode.InputAll(elapsedTime);
 }
 
-void InGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
+void PlayGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state rendering");
 	LOG(Utility::Debug, LOGPLACE, "Rendering IN-GAME STATE");
@@ -146,9 +146,9 @@ void InGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNod
 	renderer->Render(gameNode);
 }
 
-void InGameState::Update(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void PlayGameState::Update(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
-	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state updating");
+	LOG(Utility::Debug, LOGPLACE, "Play game state updating");
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
 	//planeObject->GetTransform().SetPos(0.0, -1.0, 5.0);
