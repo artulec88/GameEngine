@@ -18,6 +18,10 @@ MenuGameState::MenuGameState(void) :
 	Rendering::GameState(),
 	m_currentMenuEntry(NULL)
 {
+	/**
+	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
+	 * the new operations must not be called.
+	 */ 
 	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::Actions::UNDEFINED, "Main menu");
 	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::Actions::OTHER, "Options");
 	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Sound"));
