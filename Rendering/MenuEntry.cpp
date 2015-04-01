@@ -17,18 +17,20 @@ using namespace Rendering;
 }
 
 MenuEntry::MenuEntry(void) :
+	m_action(Actions::UNDEFINED),
+	m_text(),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
-	m_selectedMenuEntryIndex(0),
-	m_text()
+	m_selectedMenuEntryIndex(0)
 {
 }
 
-MenuEntry::MenuEntry(const std::string& text) :
+MenuEntry::MenuEntry(Actions::ActionID actionID, const std::string& text) :
+	m_action(actionID),
+	m_text(text),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
-	m_selectedMenuEntryIndex(0),
-	m_text(text)
+	m_selectedMenuEntryIndex(0)
 {
 }
 

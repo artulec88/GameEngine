@@ -264,7 +264,6 @@ void CoreEngine::Run()
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 
 	while (m_isRunning)
-
 	{
 		/* ==================== REGION #1 begin ====================*/
 		QueryPerformanceCounter(&t1); // start timer

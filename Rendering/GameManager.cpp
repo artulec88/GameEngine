@@ -255,6 +255,29 @@ void GameManager::Render(Renderer* renderer)
 	m_gameStateManager->Render(renderer, GetRootGameNode());
 }
 
+void GameManager::SwitchState(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
+{
+	m_gameStateManager->Switch(gameState, modality);
+}
+
+void GameManager::PopState()
+{
+	m_gameStateManager->Pop();
+}
+
+void GameManager::PushState(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
+{
+	m_gameStateManager->Push(gameState, modality);
+}
+
+void GameManager::RequestGameQuit() const
+{
+	// TODO: Ask the user to save the game if the inGameState can be found in the game states stack
+	//glfwSetWindowShouldClose(window, GL_TRUE); // Doesn't work, because we don't have a window
+
+	CoreEngine::GetCoreEngine()->GetRenderer()->RequestWindowClose();
+}
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 void GameManager::InitializeTweakBars()
 {

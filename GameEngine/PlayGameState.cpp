@@ -1,6 +1,7 @@
 #include "PlayGameState.h"
+#include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
-#include "MenuGameState.h"
+#include "PlayMenuGameState.h"
 
 using namespace Game;
 
@@ -57,7 +58,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_PRESS)
 		{
-			Rendering::GameManager::GetGameManager()->PushState(new MenuGameState());
+			Rendering::GameManager::GetGameManager()->PushState(new PlayMenuGameState());
 		}
 		break;
 	case GLFW_KEY_C:

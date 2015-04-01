@@ -54,7 +54,7 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	//GLFWwindow* GetWindow() const { return this->window; };
+	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void SwapBuffers();

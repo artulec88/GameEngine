@@ -200,8 +200,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 
 	while (index < m_activeStates.size())
 	{
-		AddToInterfaces(m_activeStates.at(index).first);
-		++index;
+		AddToInterfaces(m_activeStates.at(++index).first);
 	}
 }
 
@@ -226,7 +225,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	// Now go forward (up until the second-to-last state) and notify the obscured states
 	while (index < m_activeStates.size() - 1)
 	{
-		m_activeStates.at(index).first->Obscuring();
+		m_activeStates.at(++index).first->Obscuring();
 	}
 }
 
@@ -251,6 +250,6 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	// Now go forward and notify all revealed state
 	while (index < m_activeStates.size())
 	{
-		m_activeStates.at(index).first->Revealed();
+		m_activeStates.at(++index).first->Revealed();
 	}
 }

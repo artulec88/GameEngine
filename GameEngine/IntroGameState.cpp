@@ -1,4 +1,5 @@
 #include "IntroGameState.h"
+#include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
 #include "MenuGameState.h"
 

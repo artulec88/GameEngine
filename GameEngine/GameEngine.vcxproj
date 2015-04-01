@@ -76,16 +76,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="InGameState.cpp" />
     <ClCompile Include="IntroGameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuGameState.cpp" />
+    <ClCompile Include="PlayGameState.cpp" />
+    <ClCompile Include="PlayMenuGameState.cpp" />
     <ClCompile Include="TestGameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InGameState.h" />
     <ClInclude Include="IntroGameState.h" />
     <ClInclude Include="MenuGameState.h" />
+    <ClInclude Include="PlayGameState.h" />
+    <ClInclude Include="PlayMenuGameState.h" />
     <ClInclude Include="TestGameManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

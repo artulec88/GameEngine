@@ -1,6 +1,6 @@
 #include "TestGameManager.h"
 #include "MenuGameState.h"
-#include "InGameState.h"
+//#include "PlayGameState.h"
 
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"

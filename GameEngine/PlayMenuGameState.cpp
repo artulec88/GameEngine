@@ -1,20 +1,20 @@
-#include "MenuGameState.h"
+#include "PlayMenuGameState.h"
 #include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 
 using namespace Game;
 
-/* static */ Rendering::MenuEntry MenuGameState::s_mainMenuEntry;
+/* static */ Rendering::MenuEntry PlayMenuGameState::s_mainMenuEntry;
 
-/* static */ void MenuGameState::InitializeMainMenu()
+/* static */ void PlayMenuGameState::InitializeMainMenu()
 {
 	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Start"));
 	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Options"));
 	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Exit"));
 }
 
-MenuGameState::MenuGameState(void) :
+PlayMenuGameState::PlayMenuGameState(void) :
 	Rendering::GameState(),
 	m_currentMenuEntry(NULL)
 {
@@ -27,39 +27,39 @@ MenuGameState::MenuGameState(void) :
 	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Sound"));
 	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Graphics"));
 	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START_RESUME, "Start"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START_RESUME, "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::QUIT, "Quit"));
 
 	s_mainMenuEntry = *m_currentMenuEntry;
 }
 
-MenuGameState::~MenuGameState(void)
+PlayMenuGameState::~PlayMenuGameState(void)
 {
 	SAFE_DELETE(m_currentMenuEntry);
 }
 
-void MenuGameState::Entered()
+void PlayMenuGameState::Entered()
 {
-	LOG(Utility::Info, LOGPLACE, "Menu game state has been placed in the game state manager");
+	LOG(Utility::Info, LOGPLACE, "PlayMenu game state has been placed in the game state manager");
 }
 
-void MenuGameState::Leaving()
+void PlayMenuGameState::Leaving()
 {
-	LOG(Utility::Info, LOGPLACE, "Menu game state is about to be removed from the game state manager");
+	LOG(Utility::Info, LOGPLACE, "PlayMenu game state is about to be removed from the game state manager");
 }
 
-void MenuGameState::Obscuring()
+void PlayMenuGameState::Obscuring()
 {
-	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of menu game state");
+	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of PlayMenu game state");
 }
 
-void MenuGameState::Revealed()
+void PlayMenuGameState::Revealed()
 {
-	LOG(Utility::Info, LOGPLACE, "Menu game state has become the topmost game state in the game state manager's stack");
+	LOG(Utility::Info, LOGPLACE, "PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
-void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
+void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
 	if (action != GLFW_PRESS)
 	{
@@ -104,7 +104,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 			switch (selectedMenuEntryAction)
 			{
 			case Rendering::Actions::START_RESUME:
-				Rendering::GameManager::GetGameManager()->SwitchState(new PlayGameState());
+				Rendering::GameManager::GetGameManager()->PopState();
 				break;
 			case Rendering::Actions::QUIT:
 				Rendering::GameManager::GetGameManager()->RequestGameQuit();
@@ -119,12 +119,12 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void MenuGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void PlayMenuGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state input processing");
 }
 
-void MenuGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
+void PlayMenuGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);
