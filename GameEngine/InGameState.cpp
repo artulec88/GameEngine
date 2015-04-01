@@ -1,5 +1,6 @@
 #include "InGameState.h"
 #include "Utility\ILogger.h"
+#include "MenuGameState.h"
 
 using namespace Game;
 
@@ -14,18 +15,22 @@ InGameState::~InGameState(void)
 
 void InGameState::Entered()
 {
+	LOG(Utility::Info, LOGPLACE, "Play game state has been placed in the game state manager");
 }
 
 void InGameState::Leaving()
 {
+	LOG(Utility::Info, LOGPLACE, "Play game state is about to be removed from the game state manager");
 }
 
 void InGameState::Obscuring()
 {
+	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of play game state");
 }
 
 void InGameState::Revealed()
 {
+	LOG(Utility::Info, LOGPLACE, "Play game state has become the topmost game state in the game state manager's stack");
 }
 
 bool forward = false;
@@ -49,6 +54,12 @@ void InGameState::KeyEvent(int key, int scancode, int action, int mods)
 	//const Math::Real sensitivity = static_cast<Math::Real>(Camera::GetSensitivity());
 	switch (key)
 	{
+	case GLFW_KEY_ESCAPE:
+		if (action == GLFW_PRESS)
+		{
+			Rendering::GameManager::GetGameManager()->PushState(new MenuGameState());
+		}
+		break;
 	case GLFW_KEY_C:
 		//LOG(Utility::Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
 		break;
