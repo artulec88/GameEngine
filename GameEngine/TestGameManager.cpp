@@ -68,10 +68,15 @@ TestGameManager::~TestGameManager(void)
 	//SAFE_DELETE(planeNode);
 }
 
-void TestGameManager::Init()
+void TestGameManager::Load()
 {
 	LOG(Notice, LOGPLACE, "Initalizing test game");
-	GameManager::Init();
+	ASSERT(!m_isGameLoaded);
+	if (m_isGameLoaded)
+	{
+		LOG(Error, LOGPLACE, "Loading the game will not be performed. The game has already been loaded.");
+		return;
+	}
 
 	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -206,6 +211,13 @@ void TestGameManager::Init()
 	}
 	///* ==================== Adding cameras end ==================== */
 
+	ASSERT(m_isGameLoaded);
+	m_isGameLoaded = true;
+	if (!m_isGameLoaded)
+	{
+		LOG(Error, LOGPLACE, "The game has not been loaded properly.");
+		exit(EXIT_FAILURE);
+	}
 	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
 
@@ -496,7 +508,7 @@ void TestGameManager::AddCameras()
 		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
 		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
 		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
-		cameraNodes[i]->AddComponent(new Camera(fov, aspectRatio, zNearPlane, zFarPlane));
+		cameraNodes[i]->AddComponent(new CameraComponent(fov, aspectRatio, zNearPlane, zFarPlane));
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
 	}
@@ -510,7 +522,7 @@ void TestGameManager::AddCameras()
 
 void TestGameManager::Input(Real delta)
 {
-	m_gameStateManager->Input(delta, GetRootGameNode());
+	//m_gameStateManager->Input(delta, GetRootGameNode());
 }
 
 // TODO: Remove in the future
@@ -522,7 +534,7 @@ bool isMouseLocked = false;
 
 void TestGameManager::Update(Real delta)
 {
-	m_gameStateManager->Update(delta, GetRootGameNode());
+	//m_gameStateManager->Update(delta, GetRootGameNode());
 }
 
 void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
@@ -594,7 +606,7 @@ void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos
 	if (rotX || rotY)
 	{
 		unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
-		const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
+		const Real sensitivity = static_cast<Real>(CameraBase::GetSensitivity());
 		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 		if (rotX)
 		{
@@ -612,6 +624,12 @@ void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos
 void TestGameManager::InitializeTweakBars()
 {
 #ifdef GAME_PROPERTIES_TWEAK_BAR
+	if (!m_isGameLoaded)
+	{
+		LOG(Warning, LOGPLACE, "Cannot initialize game's tweak bars. The game has not been loaded yet.");
+		return;
+	}
+	LOG(Info, LOGPLACE, "Initializing game's tweak bars");
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
 
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
@@ -620,11 +638,17 @@ void TestGameManager::InitializeTweakBars()
 	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementScale", TW_TYPE_FLOAT, &planeDisplacementScale, " label='Plane displacement scale' group=Plane ");
 	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementOffset", TW_TYPE_FLOAT, &planeDisplacementOffset, " label='Plane displacement offset' group=Plane ");
+	if (planeMaterial == NULL)
+	{
+		LOG(Error, LOGPLACE, "Cannot add plane material information to tweak bar. The plane material is NULL.");
+		return;
+	}
 	planeMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
 	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
 	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
 	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+	LOG(Info, LOGPLACE, "Initializing game's tweak bars finished");
 #endif
 }
 #endif

@@ -2,7 +2,6 @@
 #include "Camera.h"
 #include "CoreEngine.h"
 #include "Renderer.h"
-#include "Transform.h"
 #include "Input.h"
 
 #include "Math\Quaternion.h"
@@ -19,53 +18,90 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ const Vector3D Camera::xAxis(REAL_ONE, REAL_ZERO, REAL_ZERO);
-/* static */ const Vector3D Camera::yAxis(REAL_ZERO, REAL_ONE, REAL_ZERO);
+/* static */ const Vector3D CameraBase::xAxis(REAL_ONE, REAL_ZERO, REAL_ZERO);
+/* static */ const Vector3D CameraBase::yAxis(REAL_ZERO, REAL_ONE, REAL_ZERO);
 
-/* static */ Real Camera::sensitivity = 0.5f;
-
-/* static */
-Real Camera::GetSensitivity()
-{
-	return Camera::sensitivity;
-}
+/* static */ Real CameraBase::sensitivity = 0.5f;
 
 /* static */
-void Camera::InitializeCameraSensitivity()
+Real CameraBase::GetSensitivity()
 {
-	Camera::sensitivity = GET_CONFIG_VALUE("cameraSensitivity", 0.5f);
+	return CameraBase::sensitivity;
 }
 
-//Camera::Camera() :
-//	GameComponent()
-//{
-//	this->projection = Matrix4D::PerspectiveProjection(Angle(Camera::defaultFoV, true /* is in degrees */), Camera::defaultAspectRatio, Camera::defaultNearPlane, Camera::defaultFarPlane);
-//}
+/* static */
+void CameraBase::InitializeCameraSensitivity()
+{
+	CameraBase::sensitivity = GET_CONFIG_VALUE("cameraSensitivity", 0.5f);
+}
 
-Camera::Camera(const Matrix4D& projectionMatrix) :
-	GameComponent(),
-	projection(projectionMatrix)
+CameraBase::CameraBase(const Matrix4D& projectionMatrix) :
+	m_projection(projectionMatrix)
 {
 }
 
-Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
-	GameComponent()
+CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
 #ifdef ANT_TWEAK_BAR_ENABLED
-	,prevFov(FoV),
-	fov(FoV),
-	prevAspectRatio(aspectRatio),
-	aspectRatio(aspectRatio),
-	prevNearPlane(zNearPlane),
-	nearPlane(zNearPlane),
-	prevFarPlane(zFarPlane),
-	farPlane(zFarPlane)
+	m_prevFov(FoV),
+	m_fov(FoV),
+	m_prevAspectRatio(aspectRatio),
+	m_aspectRatio(aspectRatio),
+	m_prevNearPlane(zNearPlane),
+	m_nearPlane(zNearPlane),
+	m_prevFarPlane(zFarPlane),
+	m_farPlane(zFarPlane)
 #endif
 {
-	this->projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
+	m_projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
+}
+
+
+CameraBase::~CameraBase(void)
+{
+}
+
+
+Camera::Camera(const Matrix4D& projectionMatrix, const Transform& transform) :
+	CameraBase(projectionMatrix),
+	m_transform(transform)
+{
+}
+
+Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, const Transform& transform) :
+	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane),
+	m_transform(transform)
+{
 }
 
 
 Camera::~Camera(void)
+{
+}
+
+Matrix4D Camera::GetViewProjection() const
+{
+	Vector3D cameraPos = m_transform.GetTransformedPos();
+	Matrix4D cameraTranslation = Matrix4D::Translation(cameraPos.Negated());
+	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
+	Matrix4D cameraRotation = m_transform.GetTransformedRot().Conjugate().ToRotationMatrix();
+
+	return m_projection * cameraRotation * cameraTranslation;
+}
+
+CameraComponent::CameraComponent(const Matrix4D& projectionMatrix) :
+	CameraBase(projectionMatrix),
+	GameComponent()
+{
+}
+
+CameraComponent::CameraComponent(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
+	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane),
+	GameComponent()
+{
+}
+
+
+CameraComponent::~CameraComponent(void)
 {
 }
 
@@ -112,7 +148,7 @@ Camera::~Camera(void)
 //	return right;
 //}
 
-void Camera::AddToEngine(CoreEngine* coreEngine)
+void CameraComponent::AddToEngine(CoreEngine* coreEngine)
 {
 	if (coreEngine == NULL)
 	{
@@ -122,9 +158,9 @@ void Camera::AddToEngine(CoreEngine* coreEngine)
 	coreEngine->GetRenderer()->AddCamera(this);
 }
 
-//void Camera::RotateX(const Angle& angle)
+//void CameraComponent::RotateX(const Angle& angle)
 //{
-//	Vector3D horizontalAxis = Camera::yAxis.Cross(forward);
+//	Vector3D horizontalAxis = CameraBase::yAxis.Cross(forward);
 //	horizontalAxis.Normalize(); // TODO: Check whether Normalize() is necessary
 //
 //	forward.Rotate(horizontalAxis, angle);
@@ -134,60 +170,46 @@ void Camera::AddToEngine(CoreEngine* coreEngine)
 //	up.Normalize(); // TODO: Check whether Normalize() is necessary
 //}
 
-//void Camera::RotateY(const Angle& angle)
+//void CameraComponent::RotateY(const Angle& angle)
 //{
-//	Vector3D horizontalAxis = Camera::yAxis.Cross(forward);
+//	Vector3D horizontalAxis = CameraBase::yAxis.Cross(forward);
 //	horizontalAxis.Normalize(); // TODO: Check whether Normalize() is necessary
 //
-//	forward.Rotate(Camera::yAxis, angle);
+//	forward.Rotate(CameraBase::yAxis, angle);
 //	forward.Normalize(); // TODO: Check whether Normalize() is necessary
 //
 //	up = forward.Cross(horizontalAxis);
 //	up.Normalize(); // TODO: Check whether Normalize() is necessary
 //}
 
-//void Camera::Deactivate()
-//{
-//	if (! isActive)
-//	{
-//		LOG(Warning, LOGPLACE, "Deactivating camera which is already deactivated");
-//	}
-//	isActive = false;
-//}
-
-//void Camera::Activate()
-//{
-//	isActive = true;
-//}
-
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Camera::Input(Real delta)
+void CameraComponent::Input(Real delta)
 {
-	if ( (prevFov != fov) || (!AlmostEqual(prevAspectRatio, aspectRatio)) || (!AlmostEqual(prevNearPlane, nearPlane)) || (!AlmostEqual(prevFarPlane, farPlane)) )
+	if ( (m_prevFov != m_fov) || (!AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!AlmostEqual(m_prevFarPlane, m_farPlane)) )
 	{
 		LOG(Info, LOGPLACE, "Recalculating the projection matrix for the selected camera");
 
-		projection = Math::Matrix4D::PerspectiveProjection(fov, aspectRatio, nearPlane, farPlane);
+		m_projection = Math::Matrix4D::PerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
-		prevFov = fov;
-		prevAspectRatio = aspectRatio;
-		prevNearPlane = nearPlane;
-		prevFarPlane = farPlane;
+		m_prevFov = m_fov;
+		m_prevAspectRatio = m_aspectRatio;
+		m_prevNearPlane = m_nearPlane;
+		m_prevFarPlane = m_farPlane;
 	}
 }
 #endif
 
-Matrix4D Camera::GetViewProjection() const
+Matrix4D CameraComponent::GetViewProjection() const
 {
 	Vector3D cameraPos = GetTransform().GetTransformedPos();
 	Matrix4D cameraTranslation = Matrix4D::Translation(cameraPos.Negated());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 
-	return projection * cameraRotation * cameraTranslation;
+	return m_projection * cameraRotation * cameraTranslation;
 }
 
-//std::string Camera::ToString() const
+//std::string CameraComponent::ToString() const
 //{
 //	std::stringstream ss("");
 //

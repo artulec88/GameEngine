@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Rendering.h"
-#include "Camera.h"
 
 #include "Math\Vector.h"
 #include "Math\Quaternion.h"
@@ -10,6 +9,8 @@
 namespace Rendering
 {
 
+class Camera;
+
 class RENDERING_API Transform
 {
 public:
@@ -17,7 +18,7 @@ public:
 	~Transform();
 
 	Math::Matrix4D GetTransformation() const;
-	//Math::Matrix4D GetProjectedTransformation(const Camera& camera) const;
+	//Math::Matrix4D GetProjectedTransformation(const CameraBase& camera) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Math::Vector3D& GetPos() { return pos; }

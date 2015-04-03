@@ -17,6 +17,12 @@ PlayGameState::~PlayGameState(void)
 void PlayGameState::Entered()
 {
 	LOG(Utility::Info, LOGPLACE, "Play game state has been placed in the game state manager");
+	Rendering::GameManager* gameManager = Rendering::GameManager::GetGameManager();
+	if (!gameManager->IsGameLoaded())
+	{
+		gameManager->Load();
+		gameManager->InitializeTweakBars();
+	}
 }
 
 void PlayGameState::Leaving()
@@ -52,7 +58,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	// TODO: Set delta to correct value
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-	//const Math::Real sensitivity = static_cast<Math::Real>(Camera::GetSensitivity());
+	//const Math::Real sensitivity = static_cast<Math::Real>(CameraBase::GetSensitivity());
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
@@ -108,10 +114,10 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 		//transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
 		break;
 	case GLFW_KEY_LEFT: // rotation around Y axis
-		//transform.Rotate(transform.GetTransformedRot().GetUp() /*Camera::yAxis*/, Angle(-sensitivity));
+		//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(-sensitivity));
 		break;
 	case GLFW_KEY_RIGHT: // rotation around Y axis
-		//transform.Rotate(transform.GetTransformedRot().GetUp() /*Camera::yAxis*/, Angle(sensitivity));
+		//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(sensitivity));
 		break;
 	case GLFW_KEY_N: // next camera
 		//if (action == GLFW_PRESS)

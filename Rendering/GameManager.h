@@ -48,13 +48,14 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Init();
+	virtual void Load() = 0; // Loads the game
 	virtual void Input(Math::Real delta) = 0;
 	virtual void Update(Math::Real delta) = 0;
 	void Render(Renderer* renderer);
 
 	inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 
+	bool IsGameLoaded() const { return m_isGameLoaded; }
 	bool IsInGameTimeCalculationEnabled() const { return m_gameStateManager->IsInGameTimeCalculationEnabled(); }
 	void SetEngine(CoreEngine* coreEngine);
 
@@ -82,6 +83,7 @@ protected:
 protected:
 	GameNode m_rootGameNode;
 	GameStateManager* m_gameStateManager;
+	bool m_isGameLoaded;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

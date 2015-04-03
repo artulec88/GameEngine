@@ -35,7 +35,8 @@ GameManager* GameManager::s_gameManager = NULL;
 
 GameManager::GameManager() :
 	m_rootGameNode(),
-	m_gameStateManager(NULL)
+	m_gameStateManager(NULL),
+	m_isGameLoaded(false)
 {
 	LOG(Info, LOGPLACE, "Game manager construction started");
 	//rootGameNode = new GameNode();
@@ -74,16 +75,6 @@ void GameManager::SetEngine(CoreEngine* coreEngine)
 	//	exit(EXIT_FAILURE);
 	//}
 	m_rootGameNode.SetEngine(coreEngine);
-}
-
-void GameManager::Init()
-{
-	//if (rootGameNode == NULL)
-	//{
-	//	LOG(Critical, LOGPLACE, "Root game node is not initialized");
-	//	exit(EXIT_FAILURE);
-	//}
-	//rootGameNode->Init();
 }
 
 /* static */ void GameManager::WindowCloseEventCallback(GLFWwindow* window)

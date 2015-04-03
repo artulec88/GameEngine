@@ -34,6 +34,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	SECONDS_PER_MINUTE(60),
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
+	DAYS_PER_YEAR(365),
+	m_dayNumber(GET_CONFIG_VALUE("startingDayNumber", 172)),
 	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
 	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
@@ -60,16 +62,16 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
-	//while (m_timeOfDay > SECONDS_PER_DAY)
-	//{
-	//	m_timeOfDay -= static_cast<int>(m_timeOfDay) % SECONDS_PER_DAY;
-	//}
+
+	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
+
 	// return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY);
 	if (m_timeOfDay < REAL_ZERO)
 	{
 		m_timeOfDay = GetCurrentLocalTime();
 	}
+	//CalculateSunElevationAndAzimuth();
 
 	LOG(Debug, LOGPLACE, "Main application construction finished");
 }
@@ -235,13 +237,13 @@ void CoreEngine::Run()
 	minMaxTime3.Init();
 	
 	LOG(Notice, LOGPLACE, "The game started running");
-	ASSERT(!isRunning);
+	ASSERT(!m_isRunning);
 
-	m_game->Init();
+	//m_game->Load();
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
 	m_renderer->InitializeTweakBars();
-	m_game->InitializeTweakBars();
+	//m_game->InitializeTweakBars();
 	InitializeTweakBars();
 #endif
 
@@ -262,7 +264,6 @@ void CoreEngine::Run()
 	LARGE_INTEGER frequency; // ticks per second
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
-
 	while (m_isRunning)
 	{
 		/* ==================== REGION #1 begin ====================*/
@@ -525,12 +526,11 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 
 void CoreEngine::CalculateSunElevationAndAzimuth()
 {
-	const int dayNumber = GET_CONFIG_VALUE("startingDayNumber", 172);
 	const Math::Angle LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f));
 	const Math::Angle LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f));
 	const int timeGMTdifference = 1;
 	
-	const Math::Angle b((360.0f / 365.0f) * (dayNumber -81));
+	const Math::Angle b((360.0f / 365.0f) * (m_dayNumber - 81));
 	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Unit::RADIAN);
 	const Math::Angle tropicOfCancer(23.45f);
 
@@ -559,59 +559,58 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
 	}
 
-	Daytime prevDaytime = m_daytime;
+	GameTime::Daytime prevDaytime = m_daytime;
 	if (m_sunElevation < M_FIRST_ELEVATION_LEVEL)
 	{
-		m_daytime = Rendering::NIGHT;
+		m_daytime = Rendering::GameTime::NIGHT;
 	}
 	else if (m_sunElevation < M_SECOND_ELEVATION_LEVEL)
 	{
-		m_daytime = (isAfternoon) ? Rendering::AFTER_DUSK : Rendering::BEFORE_DAWN;
+		m_daytime = (isAfternoon) ? Rendering::GameTime::AFTER_DUSK : Rendering::GameTime::BEFORE_DAWN;
 	}
 	else if (m_sunElevation < M_THIRD_ELEVATION_LEVEL)
 	{
-		m_daytime = (isAfternoon) ? Rendering::SUNSET : Rendering::SUNRISE;
+		m_daytime = (isAfternoon) ? Rendering::GameTime::SUNSET : Rendering::GameTime::SUNRISE;
 	}
 	else
 	{
-		m_daytime = Rendering::DAY;
+		m_daytime = Rendering::GameTime::DAY;
 	}
 	if (prevDaytime != m_daytime)
 	{
-		LOG(Utility::Info, LOGPLACE, "%.2f, %.2f, %.2f\t m_daytime = %d at %.1f", M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees(), M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees(),
-			M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees(), m_daytime, m_timeOfDay);
+		LOG(Utility::Info, LOGPLACE, "Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
 	}
 
 
 	LOG(Utility::Debug, LOGPLACE, "Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
-Rendering::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
+Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
 {
 	switch (m_daytime)
 	{
-	case Rendering::NIGHT:
-	case Rendering::DAY:
+	case Rendering::GameTime::NIGHT:
+	case Rendering::GameTime::DAY:
 		daytimeTransitionFactor = REAL_ZERO;
 		break;
-	case Rendering::BEFORE_DAWN:
+	case Rendering::GameTime::BEFORE_DAWN:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::SUNRISE:
+	case Rendering::GameTime::SUNRISE:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::SUNSET:
+	case Rendering::GameTime::SUNSET:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::AFTER_DUSK:
+	case Rendering::GameTime::AFTER_DUSK:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect daytime");
+		LOG(Utility::Error, LOGPLACE, "Incorrect daytime %d", m_daytime);
 	}
 	return m_daytime;
 }
@@ -626,11 +625,10 @@ void CoreEngine::InitializeTweakBars()
 	TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
 	TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
 	
-	TwEnumVal daytimeEV[] = { { Rendering::NIGHT, "Night" }, { Rendering::BEFORE_DAWN, "Before dawn" }, { Rendering::SUNRISE, "Sunrise" },
-		{ Rendering::DAY, "Day" }, { Rendering::SUNSET, "Sunset" }, { Rendering::AFTER_DUSK, "After dusk" }};
+	TwEnumVal daytimeEV[] = { { Rendering::GameTime::NIGHT, "Night" }, { Rendering::GameTime::BEFORE_DAWN, "Before dawn" }, { Rendering::GameTime::SUNRISE, "Sunrise" },
+		{ Rendering::GameTime::DAY, "Day" }, { Rendering::GameTime::SUNSET, "Sunset" }, { Rendering::GameTime::AFTER_DUSK, "After dusk" }};
 	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
-	
 	
 	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", angleType, &m_sunElevation, " label='Sun elevation' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", angleType, &m_sunAzimuth, " label='Sun azimuth' ");

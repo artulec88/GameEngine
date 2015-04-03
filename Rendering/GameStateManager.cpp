@@ -178,6 +178,7 @@ void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 
 void DefaultGameStateManager::RebuildInterfaceQueues()
 {
+	LOG(Utility::Info, LOGPLACE, "Rebuilding game state interface queues");
 	m_exposedInputables.clear();
 	m_exposedRenderables.clear();
 	m_exposedUpdateables.clear();
@@ -188,6 +189,8 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
+	LOG(Utility::Debug, LOGPLACE, "Currently active game states: %d", m_activeStates.size());
+	ASSERT(!m_activeStates.empty());
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
@@ -197,10 +200,10 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 		}
 		--index;
 	}
-
+	LOG(Utility::Debug, LOGPLACE, "Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
-		AddToInterfaces(m_activeStates.at(++index).first);
+		AddToInterfaces(m_activeStates.at(index++).first);
 	}
 }
 
@@ -223,9 +226,10 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	}
 
 	// Now go forward (up until the second-to-last state) and notify the obscured states
+	LOG(Utility::Debug, LOGPLACE, "Calculated game state index equals %d", index);
 	while (index < m_activeStates.size() - 1)
 	{
-		m_activeStates.at(++index).first->Obscuring();
+		m_activeStates.at(index++).first->Obscuring();
 	}
 }
 
@@ -235,6 +239,7 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	{
 		return;
 	}
+	LOG(Utility::Info, LOGPLACE, "Notifying revealed game states");
 
 	// Reverse scan until we hit either the beginning or find the next Hiding state
 	std::size_t index = m_activeStates.size() - 1;
@@ -248,8 +253,9 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	}
 
 	// Now go forward and notify all revealed state
+	LOG(Utility::Info, LOGPLACE, "Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
-		m_activeStates.at(++index).first->Revealed();
+		m_activeStates.at(index++).first->Revealed();
 	}
 }

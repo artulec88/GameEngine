@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Transform.h"
+#include "Camera.h"
 #include "Utility\ILogger.h"
 
 using namespace Rendering;

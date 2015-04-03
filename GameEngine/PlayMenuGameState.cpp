@@ -104,6 +104,7 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 			switch (selectedMenuEntryAction)
 			{
 			case Rendering::Actions::START_RESUME:
+				//ASSERT(Rendering::GameManager::GetGameManager()->HasMoreThanOneState)
 				Rendering::GameManager::GetGameManager()->PopState();
 				break;
 			case Rendering::Actions::QUIT:

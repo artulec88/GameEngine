@@ -23,7 +23,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Init();
+	virtual void Load();
 	virtual void Input(Math::Real delta);
 	virtual void Update(Math::Real delta);
 

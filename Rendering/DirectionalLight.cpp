@@ -94,31 +94,31 @@ void DirectionalLight::Update(Math::Real delta)
 	Math::Angle sunElevation = coreEngine->GetSunElevation();
 	Math::Angle sunAzimuth = coreEngine->GetSunAzimuth();
 	Math::Real daytimeTransitionFactor;
-	Rendering::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
+	Rendering::GameTime::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
 
-	isEnabled = (daytime != Rendering::NIGHT);
+	isEnabled = (daytime != Rendering::GameTime::NIGHT);
 
 	switch (daytime)
 	{
-	case NIGHT:
+	case GameTime::NIGHT:
 		color = m_sunlightNighttimeColor;
 		break;
-	case BEFORE_DAWN:
+	case GameTime::BEFORE_DAWN:
 		color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
 		intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;
-	case SUNRISE:
+	case GameTime::SUNRISE:
 		color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
 		intensity = m_maxIntensity;
 		break;
-	case DAY:
+	case GameTime::DAY:
 		color = m_sunlightDaytimeColor;
 		break;
-	case SUNSET:
+	case GameTime::SUNSET:
 		color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
 		intensity = m_maxIntensity;
 		break;
-	case AFTER_DUSK:
+	case GameTime::AFTER_DUSK:
 		color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
 		intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;

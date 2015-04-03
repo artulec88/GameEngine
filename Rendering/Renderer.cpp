@@ -56,8 +56,8 @@ Renderer::Renderer(GLFWwindow* window) :
 	currentLight(NULL),
 	currentCameraIndex(0),
 	m_currentCamera(NULL),
-	altCamera(Matrix4D::Identity()),
-	altCameraNode(NULL),
+	m_mainMenuCamera(NULL),
+	altCamera(Matrix4D::Identity(), Transform()),
 	cubeMapNode(NULL),
 	cubeMapShader(NULL),
 	cubeMapTextureDay(NULL),
@@ -116,8 +116,6 @@ Renderer::Renderer(GLFWwindow* window) :
 	nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
 	gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
 	fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
-	altCameraNode = new GameNode();
-	altCameraNode->AddComponent(&altCamera);
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
 
 	int width, height;
@@ -151,6 +149,19 @@ Renderer::Renderer(GLFWwindow* window) :
 	SetReal("fxaaReduceMin", fxaaReduceMin);
 	SetReal("fxaaReduceMul", fxaaReduceMul);
 #endif
+
+	/* ==================== Creating a "Main menu camera" begin ==================== */
+	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
+	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
+	const Real defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f);
+	const Real defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f);
+
+	Angle fov(GET_CONFIG_VALUE("mainMenuCameraFoV", defaultFoV), Unit::DEGREE);
+	Real aspectRatio = GET_CONFIG_VALUE("mainMenuCameraAspectRatio", defaultAspectRatio);
+	Real zNearPlane = GET_CONFIG_VALUE("mainMenuCameraNearPlane", defaultNearPlane);
+	Real zFarPlane = GET_CONFIG_VALUE("mainMenuCameraFarPlane", defaultFarPlane);
+	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Transform());
+	/* ==================== Creating a "Main menu camera" end ==================== */
 
 	LOG(Debug, LOGPLACE, "Creating Renderer instance finished");
 }
@@ -362,6 +373,12 @@ void Renderer::Render(const GameNode& gameNode)
 	//BindAsRenderTarget();
 
 	ClearScreen();
+	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	{
+		LOG(Emergency, LOGPLACE, "Rendering failed. There is no proper camera set up.");
+		exit(EXIT_FAILURE);
+		// TODO: Instead of exit maybe just use the default camera (??)
+	}
 	m_currentCamera = cameras[currentCameraIndex];
 	if (ambientLightFogEnabled)
 	{
@@ -406,7 +423,7 @@ void Renderer::Render(const GameNode& gameNode)
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 			bool flipFacesEnabled = shadowInfo->IsFlipFacesEnabled();
 
-			Camera* temp = m_currentCamera;
+			CameraBase* temp = m_currentCamera;
 			m_currentCamera = &altCamera;
 
 			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
@@ -460,7 +477,7 @@ void Renderer::Render(const GameNode& gameNode)
 		/* ==================== Rendering to texture begin ==================== */
 		//if (renderToTextureTestingEnabled)
 		//{
-		//	Camera* temp = m_currentCamera;
+		//	CameraBase* temp = m_currentCamera;
 		//	m_currentCamera = &altCamera;
 		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -493,7 +510,15 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 {
 	BindAsRenderTarget();
 	ClearScreen();
-	m_currentCamera = cameras[currentCameraIndex];
+	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	{
+		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
+		m_currentCamera = m_mainMenuCamera;
+	}
+	else
+	{
+		m_currentCamera = cameras[currentCameraIndex];
+	}
 
 	//double time = glfwGetTime();
 	//std::stringstream ss;
@@ -512,31 +537,31 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 {
 	/* ==================== Adjusting the time variables begin ==================== */
 	Math::Real daytimeTransitionFactor, dayNightMixFactor;
-	Rendering::Daytime daytime = CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
+	Rendering::GameTime::Daytime daytime = CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 
 	switch (daytime)
 	{
-	case NIGHT:
+	case GameTime::NIGHT:
 		dayNightMixFactor = REAL_ZERO;
 		m_ambientLight = m_ambientNighttimeColor;
 		break;
-	case BEFORE_DAWN:
+	case GameTime::BEFORE_DAWN:
 		dayNightMixFactor = REAL_ZERO;
 		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
 		break;
-	case SUNRISE:
+	case GameTime::SUNRISE:
 		dayNightMixFactor = daytimeTransitionFactor;
 		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
 		break;
-	case DAY:
+	case GameTime::DAY:
 		dayNightMixFactor = REAL_ONE;
 		m_ambientLight = m_ambientDaytimeColor;
 		break;
-	case SUNSET:
+	case GameTime::SUNSET:
 		dayNightMixFactor = daytimeTransitionFactor;
 		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
 		break;
-	case AFTER_DUSK:
+	case GameTime::AFTER_DUSK:
 		dayNightMixFactor = REAL_ZERO;
 		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
 		break;
@@ -633,7 +658,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
 	altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
 
-	Camera* temp = m_currentCamera;
+	CameraBase* temp = m_currentCamera;
 	m_currentCamera = &altCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -664,7 +689,7 @@ void Renderer::ClearScreen() const
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-inline Camera& Renderer::GetCurrentCamera()
+inline CameraBase& Renderer::GetCurrentCamera()
 {
 	if (m_currentCamera == NULL)
 	{
@@ -719,7 +744,7 @@ inline void Renderer::AddLight(BaseLight* light)
 	lights.push_back(light);
 }
 
-inline void Renderer::AddCamera(Camera* camera)
+inline void Renderer::AddCamera(CameraBase* camera)
 {
 	cameras.push_back(camera);
 	++cameraCount;
@@ -773,6 +798,7 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
  */
 void Renderer::InitializeTweakBars()
 {
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's tweak bars");
 	AntTweakBarTypes::InitializeTweakBarTypes();
 
 	int width, height;
@@ -810,15 +836,25 @@ void Renderer::InitializeTweakBars()
 
 #ifdef CAMERA_TWEAK_BAR
 	cameraBar = TwNewBar("CamerasBar");
-	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
-	char cameraIndexStr[256];
-	char cameraDefStr[256];
-	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
-	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
-	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
-	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", currentCameraIndex);
-	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
-	TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
+	if (cameras.empty() || cameras[currentCameraIndex] == NULL)
+	{
+		TwAddVarRW(cameraBar, "cameraVar", cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
+		TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
+		TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera->GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
+	}
+	else
+	{
+		TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
+		char cameraIndexStr[256];
+		char cameraDefStr[256];
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
+		TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
+		TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
+	}
+	
 	TwDefine(" CamerasBar/Camera opened=true ");
 	TwSetParam(cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 #endif
@@ -838,6 +874,7 @@ void Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
+	LOG(Info, LOGPLACE, "Initializing rendering engine's tweak bars finished");
 }
 
 void Renderer::CheckCameraIndexChange()

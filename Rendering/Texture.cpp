@@ -287,7 +287,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		}
 		m_textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 		stbi_image_free(data);
-		ASSERT(textureData);
+		ASSERT(m_textureData);
 		s_textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, m_textureData));
 		LOG(Utility::Debug, LOGPLACE, "Loading texture from file \"%s\" finished successfully", name.c_str());
 	}

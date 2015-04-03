@@ -48,7 +48,7 @@ public:
 	RENDERING_API Renderer(GLFWwindow* window);
 	RENDERING_API virtual ~Renderer(void);
 private:
-	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity()) {} // don't implement
+	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity(), Transform()) {} // don't implement
 	void operator=(const Renderer& renderer) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
@@ -65,12 +65,12 @@ public:
 #endif
 	
 	RENDERING_API inline void AddLight(BaseLight* light);
-	RENDERING_API inline void AddCamera(Camera* camera);
+	RENDERING_API inline void AddCamera(CameraBase* camera);
 	RENDERING_API inline BaseLight* GetCurrentLight() { return currentLight; }
 	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return m_ambientLight; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDaytimeColor; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNighttimeColor; }
-	RENDERING_API inline Camera& GetCurrentCamera();
+	RENDERING_API inline CameraBase& GetCurrentCamera();
 	RENDERING_API unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
 	RENDERING_API unsigned int NextCamera();
 	RENDERING_API unsigned int PrevCamera();
@@ -119,10 +119,13 @@ private:
 	Math::Vector3D m_ambientLight;
 	BaseLight* currentLight;
 	unsigned int currentCameraIndex;
-	Camera* m_currentCamera;
+	CameraBase* m_currentCamera;
 	
-	Camera	altCamera; // alternative camera for shadow mapping, rendering to texture etc.
-	GameNode* altCameraNode;
+	/// <summary> The main menu camera. This camera will be used
+	/// in the main menu rendering when there are no game cameras set up. </summary>
+	CameraBase* m_mainMenuCamera;
+	
+	Camera altCamera; // alternative camera for shadow mapping, rendering to texture etc.
 	Material* planeMaterial;
 	Transform planeTransform;
 	Mesh* planeMesh;
@@ -143,7 +146,7 @@ private:
 	Shader* gaussBlurFilterShader;
 	Shader* fxaaFilterShader;
 	std::vector<BaseLight*> lights;
-	std::vector<Camera*> cameras;
+	std::vector<CameraBase*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
 	Math::Matrix4D lightMatrix;
 

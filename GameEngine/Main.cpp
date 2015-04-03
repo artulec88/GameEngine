@@ -50,7 +50,7 @@ int main (int argc, char* argv[])
 	IConfig::GetConfig().LoadFromFile(ICommand::GetCommand().Get("-config", "..\\Config\\Config.cfg"));
 	const std::string logLevel = GET_CONFIG_VALUE_STR("LoggingLevel", "Info");
 	ILogger::GetLogger().Fill(logLevel, Debug);
-	Camera::InitializeCameraSensitivity();
+	CameraBase::InitializeCameraSensitivity();
 	ICommand::DeleteCommand();
 	/* ==================== Reading settings and parameters end ==================== */
 

@@ -59,7 +59,7 @@ public:
 	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
 	Math::Angle GetSunElevation() const { return m_sunElevation; }
 	Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
-	Rendering::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
+	Rendering::GameTime::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 protected:
@@ -87,8 +87,10 @@ protected:
 	const Math::Real SECONDS_PER_MINUTE; // the number of seconds during one minute
 	const Math::Real SECONDS_PER_HOUR; // the number of seconds during one hour
 	const Math::Real SECONDS_PER_DAY; // the number of seconds during one day
+	const int DAYS_PER_YEAR; // the number of days during one year
+	int m_dayNumber;
 	Math::Real m_timeOfDay;
-	Rendering::Daytime m_daytime;
+	Rendering::GameTime::Daytime m_daytime;
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
 #ifdef ANT_TWEAK_BAR_ENABLED

@@ -34,15 +34,18 @@
 
 namespace Rendering
 {
-	enum Daytime
+	namespace GameTime
 	{
-		NIGHT = 0,
-		BEFORE_DAWN,
-		SUNRISE,
-		DAY,
-		SUNSET,
-		AFTER_DUSK
-	};
+		enum Daytime
+		{
+			NIGHT = 0,
+			BEFORE_DAWN,
+			SUNRISE,
+			DAY,
+			SUNSET,
+			AFTER_DUSK
+		};
+	}
 
 	enum AntiAliasingMethod
 	{
