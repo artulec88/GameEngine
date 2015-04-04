@@ -77,6 +77,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="IntroGameState.cpp" />
+    <ClCompile Include="LoadGameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuGameState.cpp" />
     <ClCompile Include="PlayGameState.cpp" />
@@ -85,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IntroGameState.h" />
+    <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />

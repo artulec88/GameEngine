@@ -246,19 +246,19 @@ void GameManager::Render(Renderer* renderer)
 	m_gameStateManager->Render(renderer, GetRootGameNode());
 }
 
-void GameManager::SwitchState(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
+void GameManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
-	m_gameStateManager->Switch(gameState, modality);
+	m_gameStateManager->SetTransition(gameStateTransition);
+}
+
+void GameManager::PerformStateTransition()
+{
+	m_gameStateManager->PerformStateTransition();
 }
 
 void GameManager::PopState()
 {
 	m_gameStateManager->Pop();
-}
-
-void GameManager::PushState(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
-{
-	m_gameStateManager->Push(gameState, modality);
 }
 
 void GameManager::RequestGameQuit() const

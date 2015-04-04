@@ -522,7 +522,7 @@ void TestGameManager::AddCameras()
 
 void TestGameManager::Input(Real delta)
 {
-	//m_gameStateManager->Input(delta, GetRootGameNode());
+	m_gameStateManager->Input(delta, GetRootGameNode());
 }
 
 // TODO: Remove in the future
@@ -534,7 +534,7 @@ bool isMouseLocked = false;
 
 void TestGameManager::Update(Real delta)
 {
-	//m_gameStateManager->Update(delta, GetRootGameNode());
+	m_gameStateManager->Update(delta, GetRootGameNode());
 }
 
 void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
@@ -588,6 +588,7 @@ void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int actio
 
 void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
+	// TODO: Mouse pos event should be handled by the game state manager
 	if (! isMouseLocked)
 	{
 		return;
@@ -607,7 +608,7 @@ void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos
 	{
 		unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 		const Real sensitivity = static_cast<Real>(CameraBase::GetSensitivity());
-		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
+		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform(); // TODO: This leads to Access...Exception for e.g. MenuGameState. Mouse pos event should be handled by the game state manager.
 		if (rotX)
 		{
 			transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));

@@ -533,6 +533,23 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 	}
 }
 
+void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
+{
+	BindAsRenderTarget();
+	ClearScreen();
+	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	{
+		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
+		m_currentCamera = m_mainMenuCamera;
+	}
+	else
+	{
+		m_currentCamera = cameras[currentCameraIndex];
+	}
+
+	textRenderer->DrawString(Text::CENTER, 350, "Loading", this);
+}
+
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 {
 	/* ==================== Adjusting the time variables begin ==================== */

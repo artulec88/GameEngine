@@ -12,7 +12,7 @@
 
 namespace Rendering
 {
-	namespace Modality
+	namespace GameStateModality
 	{
 		/// <summary>
 		/// Possible behaviors of a game state in respect to the states below it on the stack
@@ -30,8 +30,49 @@ namespace Rendering
 			/// not completely obscure it or requires it to continue being updated.
 			/// </summary>
 			POPUP
-		};
-	} /* end namespace Modality */
+		}; /* end enum ModalityType */
+	} /* end namespace GameStateModality */
+
+	namespace GameStateTransitioning
+	{
+		enum TransitionType
+		{
+			SWITCH = 0,
+			PUSH
+		}; /* end enum TransitionType */
+
+		class RENDERING_API GameStateTransition
+		{
+		/* ==================== Constructors and destructors begin ==================== */
+		public:
+			GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
+				m_transitionType(transitionType),
+				m_gameState(gameState),
+				m_modalityType(modalityType)
+			{
+			}
+
+			~GameStateTransition()
+			{
+				SAFE_DELETE(m_gameState);
+			}
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+		public:
+			GameState* GetGameState() const { return m_gameState; }
+			TransitionType GetTransitionType() const { return m_transitionType; }
+			GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+		private:
+			GameState* m_gameState;
+			TransitionType m_transitionType;
+			GameStateModality::ModalityType m_modalityType;
+		/* ==================== Non-static member functions begin ==================== */
+		}; /* end class GameStateTransition */
+	} /* end namespace GameStateTransitioning */
 
 /// <summary>
 /// Interface for a stack-based game state manager.
@@ -58,7 +99,7 @@ public:
     ///   except that it will also work if the game state stack is currently empty, in which
     ///   case it will equal the Push() method and return an empty smart pointer.
     /// </remarks>
-	virtual GameState* Switch(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
+	virtual GameState* Switch(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE);
 
 	/// <summary> Removes the lastmost game state from the stack </summary>
 	/// <returns> The state that has been removed from the stack </returns>
@@ -67,7 +108,7 @@ public:
 	/// <summary> Appends a new game state to the stack </summary>
 	/// <param name="gameState"> Game state that will be pushed onto the stack </param>
 	/// <param name="modality"> Indicates whether the state completely obscures the state below it </param>
-	virtual void Push(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE) = 0;
+	virtual void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE) = 0;
 
 	/// <summary>
 	/// Returns the currently active game state
@@ -95,11 +136,15 @@ public:
 	virtual void Render(Renderer* renderer, const GameNode& gameNode) = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
+
+	void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
+	void PerformStateTransition();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	std::stack<GameState> m_gameStatesStack;
+	/// <summary> The variable holding the game state to which the game state manager will transition </summary>
+	GameStateTransitioning::GameStateTransition* m_gameStateTransition;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameStateManager */
 
@@ -118,7 +163,7 @@ private:
 class DefaultGameStateManager : public GameStateManager
 {
 private:
-	typedef std::pair<GameState*, Modality::ModalityType> GameStateModalityTypePair;
+	typedef std::pair<GameState*, GameStateModality::ModalityType> GameStateModalityTypePair;
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Initializes a new game state manager </summary>
@@ -137,7 +182,7 @@ public:
 	/// <summary> Appends a new game state to the stack </summary>
 	/// <param name="gameState"> Game state that will be pushed onto the stack </param>
 	/// <param name="modality"> Indicates whether the state completely obscures the state below it </param>
-	virtual void Push(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
+	virtual void Push(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE);
 
 	/// <summary>
 	/// Returns the currently active game state

@@ -1,28 +1,26 @@
-#ifndef __MENU_GAME_STATE_H__
-#define __MENU_GAME_STATE_H__
+#ifndef __LOAD_GAME_STATE_H__
+#define __LOAD_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
 #include "Rendering\GameState.h"
-#include "Rendering\IInputable.h"
 #include "Rendering\IRenderable.h"
-#include "Math\Math.h"
+#include "Rendering\IUpdateable.h"
 #include "Rendering\GameNode.h"
-#include "Rendering\MenuEntry.h"
-
-#include <vector>
+#include "Math\Math.h"
 
 namespace Game
 {
 
-class MenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
+/* TODO: Consider inheriting from Rendering::IUpdateable class */
+class LoadGameState : public Rendering::GameState, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MenuGameState();
-	virtual ~MenuGameState(void);
+	LoadGameState();
+	virtual ~LoadGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -47,17 +45,17 @@ public:
 	 */
 	virtual void Revealed();
 
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Input(Math::Real elapsedTime, Rendering::GameNode& gameNode);
 	virtual void Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode);
+	
+	virtual void Update(Math::Real elapsedTime, Rendering::GameNode& gameNode);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Rendering::MenuEntry* m_currentMenuEntry;
+	Math::Real m_loadingProgress;
 /* ==================== Non-static member variables end ==================== */
-}; /* end class MenuGameState */
+}; /* end class LoadGameState */
 
 } /* end namespace Game */
 
-#endif /* __MENU_GAME_STATE_H__ */
+#endif /* __LOAD_GAME_STATE_H__ */

@@ -57,6 +57,7 @@ public:
 	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
+	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 	RENDERING_API void SwapBuffers();
 
 #ifdef ANT_TWEAK_BAR_ENABLED

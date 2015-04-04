@@ -2,36 +2,28 @@
 #include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
+//#include "LoadGameState.h"
+#include <new>
 
 using namespace Game;
-
-/* static */ Rendering::MenuEntry MenuGameState::s_mainMenuEntry;
-
-/* static */ void MenuGameState::InitializeMainMenu()
-{
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Start"));
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Options"));
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Exit"));
-}
+using namespace Rendering;
 
 MenuGameState::MenuGameState(void) :
-	Rendering::GameState(),
+	GameState(),
 	m_currentMenuEntry(NULL)
 {
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::Actions::UNDEFINED, "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::Actions::OTHER, "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START_RESUME, "Start"));
+	m_currentMenuEntry = new MenuEntry(Actions::UNDEFINED, "Main menu");
+	MenuEntry* optionsMenuEntry = new MenuEntry(Actions::OTHER, "Options");
+	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Sound"));
+	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Graphics"));
+	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Controls"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(Actions::START_RESUME, "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::QUIT, "Quit"));
-
-	s_mainMenuEntry = *m_currentMenuEntry;
+	m_currentMenuEntry->AddChildren(new MenuEntry(Actions::QUIT, "Quit"));
 }
 
 MenuGameState::~MenuGameState(void)
@@ -92,7 +84,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	case GLFW_KEY_ENTER:
 	{
-		Rendering::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
+		MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
 		if (selectedChild->HasChildren())
 		{
 			m_currentMenuEntry = selectedChild;
@@ -100,14 +92,16 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		else
 		{
 			// TODO: Both "Start" and "Exit" have no children, but the ENTER action should be handled in a different way for them.
-			Rendering::Actions::ActionID selectedMenuEntryAction = selectedChild->GetAction();
+			Actions::ActionID selectedMenuEntryAction = selectedChild->GetAction();
 			switch (selectedMenuEntryAction)
 			{
-			case Rendering::Actions::START_RESUME:
-				Rendering::GameManager::GetGameManager()->SwitchState(new PlayGameState());
+			case Actions::START_RESUME:
+			{
+				GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 				break;
-			case Rendering::Actions::QUIT:
-				Rendering::GameManager::GetGameManager()->RequestGameQuit();
+			}
+			case Actions::QUIT:
+				GameManager::GetGameManager()->RequestGameQuit();
 				break;
 			}
 		}
@@ -119,12 +113,12 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void MenuGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void MenuGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state input processing");
 }
 
-void MenuGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
+void MenuGameState::Render(Renderer* renderer, const GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);

@@ -253,8 +253,8 @@ void CoreEngine::Run()
 	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	Math::Real frameTimeCounter = REAL_ZERO;
-	int fps;
-	Math::Real spf;
+	int fps = 0;
+	Math::Real spf = REAL_ZERO;
 #endif
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
@@ -429,6 +429,10 @@ void CoreEngine::Run()
 		minMaxTime3.ProcessTime(elapsedTime);
 		timeSum3 += elapsedTime; // in [ms]
 		/* ==================== REGION #3 end ====================*/
+
+		/* ==================== Switching the game state if necessary begin ==================== */
+		m_game->PerformStateTransition();
+		/* ==================== Switching the game state if necessary end ==================== */
 	}
 }
 

@@ -17,9 +17,6 @@ namespace Game
 class PlayMenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
-private:
-	static Rendering::MenuEntry s_mainMenuEntry;
-	static void InitializeMainMenu();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

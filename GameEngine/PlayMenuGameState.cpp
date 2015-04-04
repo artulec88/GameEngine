@@ -5,15 +5,6 @@
 
 using namespace Game;
 
-/* static */ Rendering::MenuEntry PlayMenuGameState::s_mainMenuEntry;
-
-/* static */ void PlayMenuGameState::InitializeMainMenu()
-{
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Start"));
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Options"));
-	//s_mainMenuEntry.AddChildren(new Rendering::MenuEntry("Exit"));
-}
-
 PlayMenuGameState::PlayMenuGameState(void) :
 	Rendering::GameState(),
 	m_currentMenuEntry(NULL)
@@ -30,8 +21,6 @@ PlayMenuGameState::PlayMenuGameState(void) :
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START_RESUME, "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::QUIT, "Quit"));
-
-	s_mainMenuEntry = *m_currentMenuEntry;
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)

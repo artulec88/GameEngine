@@ -4,13 +4,15 @@
 
 using namespace Rendering;
 
-GameStateManager::GameStateManager()
+GameStateManager::GameStateManager() :
+	m_gameStateTransition(NULL)
 {
 }
 
 
 GameStateManager::~GameStateManager(void)
 {
+	SAFE_DELETE(m_gameStateTransition);
 }
 
 bool GameStateManager::IsInGameTimeCalculationEnabled() const
@@ -23,7 +25,44 @@ bool GameStateManager::IsInGameTimeCalculationEnabled() const
 	return currentState->IsInGameTimeCalculationEnabled();
 }
 
-GameState* GameStateManager::Switch(GameState* gameState, Modality::ModalityType modality /* = Modality::EXCLUSIVE */)
+void GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
+{
+	if (gameStateTransition == NULL)
+	{
+		LOG(Utility::Warning, LOGPLACE, "There is no need to set game state transition to NULL manually.");
+	}
+	if (m_gameStateTransition != NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "Cannot set the game state transition object. Previous transition has not been performed yet.");
+	}
+	m_gameStateTransition = gameStateTransition;
+}
+
+void GameStateManager::PerformStateTransition()
+{
+	if (m_gameStateTransition == NULL) // No pending state transition
+	{
+		return;
+	}
+	
+	switch (m_gameStateTransition->GetTransitionType())
+	{
+	case GameStateTransitioning::SWITCH:
+		LOG(Utility::Notice, LOGPLACE, "Switching the topmost state");
+		Switch(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
+		break;
+	case GameStateTransitioning::PUSH:
+		LOG(Utility::Notice, LOGPLACE, "Pushing new game state on the stack");
+		Push(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
+		break;
+	default:
+		LOG(Utility::Error, LOGPLACE, "Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
+	}
+	//SAFE_DELETE(m_gameStateTransition);
+	m_gameStateTransition = NULL;
+}
+
+GameState* GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
 {
 	GameState* currentState = Peek();
 	if (currentState != NULL)
@@ -42,10 +81,14 @@ DefaultGameStateManager::DefaultGameStateManager() :
 
 DefaultGameStateManager::~DefaultGameStateManager()
 {
-	while (!m_activeStates.empty())
+	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{
-		Pop();
+		SAFE_DELETE(activeStateItr->first);
 	}
+	//std::vector<GameStateModalityTypePair> m_activeStates;
+	//std::vector<IInputable*> m_exposedInputables;
+	//std::vector<IRenderable*> m_exposedRenderables;
+	//std::vector<IUpdateable*> m_exposedUpdateables;
 }
 
 GameState* DefaultGameStateManager::Peek() const
@@ -60,11 +103,11 @@ GameState* DefaultGameStateManager::Peek() const
 	}
 }
 
-void DefaultGameStateManager::Push(GameState* gameState, Modality::ModalityType modalityType /* = Modality::EXCLUSIVE */)
+void DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
 {
 	m_activeStates.push_back(std::make_pair(gameState, modalityType));
 	
-	if (modalityType == Modality::EXCLUSIVE)
+	if (modalityType == GameStateModality::EXCLUSIVE)
 	{
 		m_exposedInputables.clear();
 		m_exposedRenderables.clear();
@@ -87,7 +130,7 @@ GameState* DefaultGameStateManager::Pop()
 	poppedPair.first->Leaving();
 	m_activeStates.pop_back();
 
-	if (poppedPair.second == Modality::EXCLUSIVE)
+	if (poppedPair.second == GameStateModality::EXCLUSIVE)
 	{
 		RebuildInterfaceQueues();
 	}
@@ -103,10 +146,18 @@ GameState* DefaultGameStateManager::Pop()
 
 void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
+	//LOG(Utility::Error, LOGPLACE, "Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
+	if (m_exposedInputables.empty())
+	{
+		return;
+	}
+	LOG(Utility::Debug, LOGPLACE, "The INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
+		m_exposedInputables.size(), key, scancode, action, mods);
 	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
+	//LOG(Utility::Error, LOGPLACE, "Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
 void DefaultGameStateManager::Input(Math::Real elapsedTime, GameNode& gameNode)
@@ -127,7 +178,6 @@ void DefaultGameStateManager::Update(Math::Real deltaTime, GameNode& gameNode)
 
 void DefaultGameStateManager::Render(Renderer* renderer, const GameNode& gameNode)
 {
-	//renderer->Render(gameNode);
 	for (std::vector<IRenderable*>::iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->Render(renderer, gameNode);
@@ -178,7 +228,7 @@ void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 
 void DefaultGameStateManager::RebuildInterfaceQueues()
 {
-	LOG(Utility::Info, LOGPLACE, "Rebuilding game state interface queues");
+	LOG(Utility::Info, LOGPLACE, "Clearing game state interface queues");
 	m_exposedInputables.clear();
 	m_exposedRenderables.clear();
 	m_exposedUpdateables.clear();
@@ -194,7 +244,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == Modality::EXCLUSIVE)
+		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}
@@ -218,7 +268,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	std::size_t index = m_activeStates.size() - 2;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == Modality::EXCLUSIVE)
+		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}
@@ -245,7 +295,7 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == Modality::EXCLUSIVE)
+		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}

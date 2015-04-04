@@ -70,9 +70,12 @@ public:
 	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 	virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
-	void SwitchState(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
+	/// <summary> Sets the game state transition object. The transition itself is not performed.
+	/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>
+	/// <see cref="PerformStateTransition">
+	void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
+	void PerformStateTransition();
 	void PopState();
-	void PushState(GameState* gameState, Modality::ModalityType modality = Modality::EXCLUSIVE);
 	void RequestGameQuit() const;
 
 protected:

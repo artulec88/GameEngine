@@ -4,9 +4,10 @@
 #include "PlayMenuGameState.h"
 
 using namespace Game;
+using namespace Rendering;
 
 PlayGameState::PlayGameState(void) :
-	Rendering::GameState()
+	GameState()
 {
 }
 
@@ -17,7 +18,7 @@ PlayGameState::~PlayGameState(void)
 void PlayGameState::Entered()
 {
 	LOG(Utility::Info, LOGPLACE, "Play game state has been placed in the game state manager");
-	Rendering::GameManager* gameManager = Rendering::GameManager::GetGameManager();
+	GameManager* gameManager = GameManager::GetGameManager();
 	if (!gameManager->IsGameLoaded())
 	{
 		gameManager->Load();
@@ -64,7 +65,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_PRESS)
 		{
-			Rendering::GameManager::GetGameManager()->PushState(new PlayMenuGameState());
+			GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), GameStateTransitioning::PUSH, GameStateModality::EXCLUSIVE));
 		}
 		break;
 	case GLFW_KEY_C:
@@ -134,13 +135,13 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void PlayGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void PlayGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state input processing");
 	gameNode.InputAll(elapsedTime);
 }
 
-void PlayGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
+void PlayGameState::Render(Renderer* renderer, const GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state rendering");
 	LOG(Utility::Debug, LOGPLACE, "Rendering IN-GAME STATE");
@@ -153,7 +154,7 @@ void PlayGameState::Render(Rendering::Renderer* renderer, const Rendering::GameN
 	renderer->Render(gameNode);
 }
 
-void PlayGameState::Update(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void PlayGameState::Update(Math::Real elapsedTime, GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "Play game state updating");
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");

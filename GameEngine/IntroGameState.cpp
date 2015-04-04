@@ -4,9 +4,10 @@
 #include "MenuGameState.h"
 
 using namespace Game;
+using namespace Rendering;
 
 IntroGameState::IntroGameState(void) :
-	Rendering::GameState()
+	GameState()
 {
 }
 
@@ -41,7 +42,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_REPEAT)
 		{
-			Rendering::GameManager::GetGameManager()->SwitchState(new MenuGameState());
+			GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new MenuGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 			break;
 		}
 	default:
@@ -50,12 +51,12 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void IntroGameState::Input(Math::Real elapsedTime, Rendering::GameNode& gameNode)
+void IntroGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state input processing");
 }
 
-void IntroGameState::Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode)
+void IntroGameState::Render(Renderer* renderer, const GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state rendering");
 }
