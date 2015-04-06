@@ -33,6 +33,21 @@ GameManager* GameManager::s_gameManager = NULL;
 	return s_gameManager;
 }
 
+/* static */ void GameManager::Load(void* arg)
+{
+	GameManager* gameManager = static_cast<GameManager*>(arg);
+	if (gameManager == NULL)
+	{
+		LOG(Emergency, LOGPLACE, "Cannot load the game. Passed parameter is not a game manager object.");
+		exit(EXIT_FAILURE);
+	}
+	//CoreEngine::GetCoreEngine()->GetRenderer()
+	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetRenderer()->GetThreadWindow());
+	Rendering::InitGlew();
+	// glew init
+	gameManager->Load();
+}
+
 GameManager::GameManager() :
 	m_rootGameNode(),
 	m_gameStateManager(NULL),

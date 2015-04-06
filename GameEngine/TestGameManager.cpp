@@ -574,7 +574,9 @@ void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int actio
 		isMouseLocked = ! isMouseLocked;
 		if (isMouseLocked)
 		{
-			CoreEngine::GetCoreEngine()->SetCursorPos(CoreEngine::GetCoreEngine()->GetWindowWidth() / 2, CoreEngine::GetCoreEngine()->GetWindowHeight() / 2);
+			int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
+			int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
+			CoreEngine::GetCoreEngine()->SetCursorPos(static_cast<Math::Real>(width) / 2.0f, static_cast<Math::Real>(height) / 2.0f);
 		}
 		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;

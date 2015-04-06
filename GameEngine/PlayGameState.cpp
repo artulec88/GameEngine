@@ -3,6 +3,8 @@
 #include "Utility\ILogger.h"
 #include "PlayMenuGameState.h"
 
+#include "tinythread.h"
+
 using namespace Game;
 using namespace Rendering;
 
@@ -15,30 +17,44 @@ PlayGameState::~PlayGameState(void)
 {
 }
 
+void fun(void* arg)
+{
+	//GameManager* gameManager = GameManager::GetGameManager();
+	//if (!gameManager->IsGameLoaded())
+	//{
+	//	gameManager->Load();
+	//	gameManager->InitializeTweakBars();
+	//}
+	tthread::this_thread::sleep_for(tthread::chrono::milliseconds(15000));
+	LOG(Utility::Critical, LOGPLACE, "This is fun");
+}
+
 void PlayGameState::Entered()
 {
-	LOG(Utility::Info, LOGPLACE, "Play game state has been placed in the game state manager");
+	LOG(Utility::Info, LOGPLACE, "PLAY game state has been placed in the game state manager");
+	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
 	if (!gameManager->IsGameLoaded())
 	{
 		gameManager->Load();
 		gameManager->InitializeTweakBars();
 	}
+	//t.join();
 }
 
 void PlayGameState::Leaving()
 {
-	LOG(Utility::Info, LOGPLACE, "Play game state is about to be removed from the game state manager");
+	LOG(Utility::Info, LOGPLACE, "PLAY game state is about to be removed from the game state manager");
 }
 
 void PlayGameState::Obscuring()
 {
-	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of play game state");
+	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of PLAY game state");
 }
 
 void PlayGameState::Revealed()
 {
-	LOG(Utility::Info, LOGPLACE, "Play game state has become the topmost game state in the game state manager's stack");
+	LOG(Utility::Info, LOGPLACE, "PLAY game state has become the topmost game state in the game state manager's stack");
 }
 
 bool forward = false;
@@ -137,14 +153,14 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 
 void PlayGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
 {
-	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state input processing");
+	LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
 	gameNode.InputAll(elapsedTime);
 }
 
 void PlayGameState::Render(Renderer* renderer, const GameNode& gameNode)
 {
-	LOG(Utility::Debug, LOGPLACE, "IN-GAME game state rendering");
-	LOG(Utility::Debug, LOGPLACE, "Rendering IN-GAME STATE");
+	LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
+	LOG(Utility::Debug, LOGPLACE, "Rendering PLAY STATE");
 
 	if (renderer == NULL)
 	{
@@ -156,7 +172,7 @@ void PlayGameState::Render(Renderer* renderer, const GameNode& gameNode)
 
 void PlayGameState::Update(Math::Real elapsedTime, GameNode& gameNode)
 {
-	LOG(Utility::Debug, LOGPLACE, "Play game state updating");
+	LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
 	//stdlog(Delocust, LOGPLACE, "Game is being updated");
 	
 	//planeObject->GetTransform().SetPos(0.0, -1.0, 5.0);

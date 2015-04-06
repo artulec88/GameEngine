@@ -84,9 +84,9 @@ protected:
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
-	const Math::Real SECONDS_PER_MINUTE; // the number of seconds during one minute
-	const Math::Real SECONDS_PER_HOUR; // the number of seconds during one hour
-	const Math::Real SECONDS_PER_DAY; // the number of seconds during one day
+	const int SECONDS_PER_MINUTE; // the number of seconds during one minute
+	const int SECONDS_PER_HOUR; // the number of seconds during one hour
+	const int SECONDS_PER_DAY; // the number of seconds during one day
 	const int DAYS_PER_YEAR; // the number of days during one year
 	int m_dayNumber;
 	Math::Real m_timeOfDay;

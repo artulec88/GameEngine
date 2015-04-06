@@ -27,7 +27,7 @@ using namespace Math;
 
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
-Renderer::Renderer(GLFWwindow* window) :
+Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	cameraCount(-1),
 	applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
 	backgroundColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f),
@@ -36,6 +36,7 @@ Renderer::Renderer(GLFWwindow* window) :
 		GET_CONFIG_VALUE("ClearColorAlpha", 1.0f)),
 	shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	window(window),
+	m_threadWindow(threadWindow),
 	vao(0),
 	isMouseEnabled(true),
 	ambientLightFogEnabled(GET_CONFIG_VALUE("ambientLightFogEnabled", true)),
@@ -547,7 +548,11 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 		m_currentCamera = cameras[currentCameraIndex];
 	}
 
-	textRenderer->DrawString(Text::CENTER, 350, "Loading", this);
+	std::stringstream ss;
+	int progress = static_cast<int>(loadingProgress * 100);
+	ss << progress << "\%";
+	textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
+	textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()

@@ -45,7 +45,7 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API Renderer(GLFWwindow* window);
+	RENDERING_API Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
 	RENDERING_API virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer) : altCamera(Math::Matrix4D::Identity(), Transform()) {} // don't implement
@@ -55,10 +55,13 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
+
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 	RENDERING_API void SwapBuffers();
+
+	RENDERING_API GLFWwindow* GetThreadWindow() { return m_threadWindow; }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	RENDERING_API void InitializeTweakBars();
@@ -107,6 +110,7 @@ private:
 	Color backgroundColor;
 	bool shadowsEnabled;
 	GLFWwindow* window;
+	GLFWwindow* m_threadWindow;
 	GLuint framebuffer;
 	GLuint vao; // vertex array id
 	bool isMouseEnabled;

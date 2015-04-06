@@ -83,6 +83,7 @@
     <ClCompile Include="PlayGameState.cpp" />
     <ClCompile Include="PlayMenuGameState.cpp" />
     <ClCompile Include="TestGameManager.cpp" />
+    <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IntroGameState.h" />
@@ -91,6 +92,7 @@
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />
     <ClInclude Include="TestGameManager.h" />
+    <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

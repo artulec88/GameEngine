@@ -50,10 +50,10 @@ GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 
 using namespace Math;
 
-GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title)
+GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
 	LOG(Utility::Info, LOGPLACE, "Initializing graphics started");
-	GLFWwindow* window = InitGlfw(width, height, title);
+	GLFWwindow* window = InitGlfw(width, height, title, threadWindow);
 	InitGlew();
 
 
@@ -99,7 +99,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	return window;
 }
 
-GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
+GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
 	LOG(Utility::Debug, LOGPLACE, "Initializing GLFW started");
 	if( !glfwInit() )
@@ -108,6 +108,16 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 		exit(EXIT_FAILURE);
 		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
+	
+	glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
+    threadWindow = glfwCreateWindow( 1, 1, "Thread Window", NULL, NULL );
+	if (threadWindow == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+
 	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	switch (Rendering::antiAliasingMethod)
 	{
@@ -144,7 +154,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 #endif
 
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	//glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
 	GLFWmonitor* monitor = NULL;
@@ -153,10 +163,10 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title)
 	{
 		monitor = glfwGetPrimaryMonitor();
 	}
-	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
+	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), monitor, threadWindow); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{
-		LOG(Utility::Critical, LOGPLACE, "Failed to open GLFW window.  If you have an Intel GPU, they are not 3.3 compatible.");
+		LOG(Utility::Critical, LOGPLACE, "Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}

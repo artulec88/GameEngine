@@ -7,6 +7,7 @@
 #include "Rendering\IUpdateable.h"
 #include "Rendering\GameNode.h"
 #include "Math\Math.h"
+#include "tinythread.h"
 
 namespace Game
 {
@@ -53,6 +54,7 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	Math::Real m_loadingProgress;
+	tthread::thread* m_loadingThread;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class LoadGameState */
 

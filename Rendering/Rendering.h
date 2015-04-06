@@ -54,8 +54,8 @@ namespace Rendering
 		FXAA
 	};
 
-	GLFWwindow* InitGraphics(int width, int height, const std::string& title);
-	GLFWwindow* InitGlfw(int width, int height, const std::string& title);
+	GLFWwindow* InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
+	GLFWwindow* InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
 	void InitGlew();
 	void CheckErrorCode(const char* functionName, const char* comment);
 

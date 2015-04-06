@@ -28,6 +28,9 @@ protected:
 /* ==================== Static functions begin ==================== */
 public:
 	static GameManager* GetGameManager();
+	
+	static void Load(void* arg);
+
 	static void WindowCloseEventCallback(GLFWwindow* window);
 	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

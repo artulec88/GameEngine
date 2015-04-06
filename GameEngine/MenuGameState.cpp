@@ -2,8 +2,7 @@
 #include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
-//#include "LoadGameState.h"
-#include <new>
+#include "LoadGameState.h"
 
 using namespace Game;
 using namespace Rendering;
@@ -97,7 +96,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 			{
 			case Actions::START_RESUME:
 			{
-				GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
+				GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new LoadGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 				break;
 			}
 			case Actions::QUIT:

@@ -93,8 +93,10 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
-	GLFWwindow* window = Rendering::InitGraphics(width, height, title);
-	m_renderer = new Renderer(window);
+	GLFWwindow* threadWindow = NULL;
+	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
+	//LOG(Utility::Debug, LOGPLACE, "Thread window address: %p", threadWindow);
+	m_renderer = new Renderer(window, threadWindow);
 
 	if (m_renderer == NULL)
 	{
@@ -353,6 +355,10 @@ void CoreEngine::Run()
 			timeSum2_3 += elapsedTime;
 			/* ==================== REGION #2_3 end ====================*/
 
+			/* ==================== Switching the game state if necessary begin ==================== */
+			m_game->PerformStateTransition();
+			/* ==================== Switching the game state if necessary end ==================== */
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 			Rendering::CheckChangesAndUpdateGLState();
 #endif
@@ -429,10 +435,6 @@ void CoreEngine::Run()
 		minMaxTime3.ProcessTime(elapsedTime);
 		timeSum3 += elapsedTime; // in [ms]
 		/* ==================== REGION #3 end ====================*/
-
-		/* ==================== Switching the game state if necessary begin ==================== */
-		m_game->PerformStateTransition();
-		/* ==================== Switching the game state if necessary end ==================== */
 	}
 }
 
@@ -501,7 +503,8 @@ Math::Real CoreEngine::GetCurrentLocalTime() const
 	if (result > SECONDS_PER_DAY)
 	{
 		LOG(Utility::Error, LOGPLACE, "Incorrect local time");
-		result = REAL_ZERO;
+		// result = REAL_ZERO;
+		result -= SECONDS_PER_DAY;
 	}
 	return result;
 }
