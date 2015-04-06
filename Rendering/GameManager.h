@@ -58,7 +58,9 @@ public:
 
 	inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 
+	virtual Math::Real GetLoadingProgress() const = 0;
 	bool IsGameLoaded() const { return m_isGameLoaded; }
+
 	bool IsInGameTimeCalculationEnabled() const { return m_gameStateManager->IsInGameTimeCalculationEnabled(); }
 	void SetEngine(CoreEngine* coreEngine);
 

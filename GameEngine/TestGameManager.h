@@ -27,6 +27,8 @@ public:
 	virtual void Input(Math::Real delta);
 	virtual void Update(Math::Real delta);
 
+	virtual Math::Real GetLoadingProgress() const;
+
 	virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
@@ -44,6 +46,9 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	const int m_resourcesToLoad;
+	int m_resourcesLoaded;
+
 	Rendering::GameNode* planeNode;
 	
 	Rendering::TerrainMesh* planeMesh;

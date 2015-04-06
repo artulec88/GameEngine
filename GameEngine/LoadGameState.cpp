@@ -52,8 +52,8 @@ void LoadGameState::Render(Rendering::Renderer* renderer, const Rendering::GameN
 void LoadGameState::Update(Math::Real elapsedTime, Rendering::GameNode& gameNode)
 {
 	LOG(Utility::Debug, LOGPLACE, "LOAD game state updating");
-	// m_loadingProgress = GameManager::GetGameManager()->GetLoadPercentage();
-	m_loadingProgress += 0.00022f;
+	m_loadingProgress = GameManager::GetGameManager()->GetLoadingProgress();
+	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
 	{
 		m_loadingProgress = REAL_ONE;
