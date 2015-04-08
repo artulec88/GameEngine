@@ -28,7 +28,6 @@ public:
 	virtual void Update(Math::Real delta);
 	virtual void Render(Shader* shader, Renderer* renderer);
 
-	virtual void AddToEngine(CoreEngine* coreEngine);
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();
 	const Transform& GetTransform() const;

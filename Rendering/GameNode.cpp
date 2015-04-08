@@ -13,8 +13,7 @@ using namespace std;
 /* static */ int GameNode::gameNodeCount = 0;
 
 GameNode::GameNode(void) :
-	ID(GameNode::gameNodeCount++),
-	coreEngine(NULL)
+	ID(GameNode::gameNodeCount++)
 {
 	//LOG(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//LOG(Info, LOGPLACE, "Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
@@ -46,7 +45,6 @@ GameNode::~GameNode(void)
 	//LOG(Debug, LOGPLACE, "Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
 	//childrenGameNodes.clear();
 
-	// TODO: Fix dangling pointers
 	for (unsigned int i = 0; i < components.size(); ++i)
 	{
 		SAFE_DELETE(components[i]);
@@ -64,27 +62,7 @@ GameNode* GameNode::AddChild(GameNode* child)
 {
 	childrenGameNodes.push_back(child);
 	child->GetTransform().SetParent(&transform);
-	child->SetEngine(coreEngine);
 	return this;
-}
-
-void GameNode::SetEngine(CoreEngine* coreEngine)
-{
-	if (this->coreEngine == coreEngine)
-	{
-		LOG(Warning, LOGPLACE, "Core engine already set for the game node");
-		return;
-	}
-
-	this->coreEngine = coreEngine;
-	for (std::vector<GameComponent*>::iterator gameComponentItr = components.begin(); gameComponentItr != components.end(); ++gameComponentItr)
-	{
-		(*gameComponentItr)->AddToEngine(coreEngine);
-	}
-	for (std::vector<GameNode*>::iterator gameNodeItr = childrenGameNodes.begin(); gameNodeItr != childrenGameNodes.end(); ++gameNodeItr)
-	{
-		(*gameNodeItr)->SetEngine(coreEngine);
-	}
 }
 
 GameNode* GameNode::AddComponent(GameComponent* child)

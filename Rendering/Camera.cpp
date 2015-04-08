@@ -98,6 +98,7 @@ CameraComponent::CameraComponent(const Angle& FoV, Real aspectRatio, Real zNearP
 	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane),
 	GameComponent()
 {
+	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(this);
 }
 
 
@@ -148,15 +149,15 @@ CameraComponent::~CameraComponent(void)
 //	return right;
 //}
 
-void CameraComponent::AddToEngine(CoreEngine* coreEngine)
-{
-	if (coreEngine == NULL)
-	{
-		LOG(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
-		return;
-	}
-	coreEngine->GetRenderer()->AddCamera(this);
-}
+//void CameraComponent::AddToEngine(CoreEngine* coreEngine)
+//{
+//	if (coreEngine == NULL)
+//	{
+//		LOG(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
+//		return;
+//	}
+//	coreEngine->GetRenderer()->AddCamera(this);
+//}
 
 //void CameraComponent::RotateX(const Angle& angle)
 //{

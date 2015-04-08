@@ -55,7 +55,7 @@ int main (int argc, char* argv[])
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
-	GameManager* game = new Game::TestGameManager();
+	Game::TestGameManager game;
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
 		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 30), game);

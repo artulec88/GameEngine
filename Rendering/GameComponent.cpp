@@ -67,7 +67,7 @@ const Transform& GameComponent::GetTransform() const
 	return parentGameNode->GetTransform();
 }
 
-void GameComponent::AddToEngine(CoreEngine* engine)
-{
-
-}
+//void GameComponent::AddToEngine(CoreEngine* engine)
+//{
+//
+//}

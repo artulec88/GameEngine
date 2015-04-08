@@ -39,7 +39,7 @@ public:
 	Math::Real GetIntensity() const { return this->intensity; }
 	inline Shader* GetShader() { return this->shader; }
 	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
-	virtual void AddToEngine(CoreEngine* coreEngine);
+	//virtual void AddToEngine(CoreEngine* coreEngine);
 	virtual bool IsEnabled() const { return isEnabled; }
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);

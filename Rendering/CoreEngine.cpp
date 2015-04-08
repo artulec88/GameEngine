@@ -9,7 +9,6 @@
 #include "Math\FloatingPoint.h"
 
 #include <ctime>
-#include <iostream>
 #include <iomanip>
 #include <sstream>
 //#include <GLFW\glfw3.h>
@@ -18,6 +17,19 @@ using namespace Rendering;
 using namespace Utility;
 using namespace std;
 
+/**
+ * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
+ */
+#ifdef CALCULATE_STATS
+#define START_TIMER(t) do { if (true) StartTimer(t); } while (0)
+#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum) do { if (true) StopTimer(t1, t2, f, countStats, minMaxTime, timeSum); } while (0)
+#else
+//#define START_TIMER(t) do { if (false) StartTimer(t) } while (0)
+//#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum) do { if (false) StopTimer(t1, t2, f, countStats, minMaxTime, timeSum) } while (0)
+#define START_TIMER(t)
+#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum)
+#endif
+
 CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ CoreEngine* CoreEngine::GetCoreEngine()
@@ -25,55 +37,63 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	return s_coreEngine;
 }
 
-CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager* game) :
+CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game) :
 	m_isRunning(false),
 	m_windowWidth(width),
 	m_windowHeight(height),
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
+	m_game(game),
+	m_renderer(NULL),
+	m_fpsTextRenderer(NULL),
 	SECONDS_PER_MINUTE(60),
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
 	DAYS_PER_YEAR(365),
 	m_dayNumber(GET_CONFIG_VALUE("startingDayNumber", 172)),
 	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
+#ifdef CALCULATE_STATS
+	m_countStats1(0),
+	m_timeSum1(REAL_ZERO),
+	m_countStats2(0),
+	m_timeSum2(REAL_ZERO),
+	m_countStats2_1(0),
+	m_timeSum2_1(REAL_ZERO),
+	m_countStats2_2(0),
+	m_timeSum2_2(REAL_ZERO),
+	m_countStats2_3(0),
+	m_timeSum2_3(REAL_ZERO),
+	m_countStats3(0),
+	m_timeSum3(REAL_ZERO),
+	m_renderingRequiredCount(0),
+	m_renderingNotRequiredCount(0)
+#endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
 	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightThirdElevationLevel", REAL_ONE)),
-	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE)),
-	m_game(game),
-	m_renderer(NULL),
-	m_fpsTextRenderer(NULL),
-	m_renderingRequiredCount(0),
-	m_renderingNotRequiredCount(0)
+	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
-	// TODO: Fix singleton initialization
-	LOG(Debug, LOGPLACE, "Main application construction started");
+	LOG(Notice, LOGPLACE, "Main application construction started");
 	if (s_coreEngine != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
 		SAFE_DELETE(s_coreEngine);
 	}
 	s_coreEngine = this;
-	
-	m_game->SetEngine(this);
 
 	CreateRenderer(width, height, title);
 
 	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
-
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
-
-	// return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
-	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY);
+	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	if (m_timeOfDay < REAL_ZERO)
 	{
 		m_timeOfDay = GetCurrentLocalTime();
 	}
-	//CalculateSunElevationAndAzimuth();
+	CalculateSunElevationAndAzimuth();
 
-	LOG(Debug, LOGPLACE, "Main application construction finished");
+	LOG(Notice, LOGPLACE, "Main application construction finished");
 }
 
 
@@ -82,11 +102,12 @@ CoreEngine::~CoreEngine(void)
 	LOG(Debug, LOGPLACE, "Core engine destruction started");
 
 	// TODO: Expand this with additional resources deallocation
-	SAFE_DELETE(m_game);
+	// SAFE_DELETE(m_game);
 	SAFE_DELETE(m_renderer);
 	SAFE_DELETE(m_fpsTextRenderer);
 
 	LOG(Notice, LOGPLACE, "Core engine destruction finished");
+
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 }
@@ -115,92 +136,18 @@ void CoreEngine::Start()
 		return;
 	}
 	LOG(Notice, LOGPLACE, "The core engine starts");
+	
+#ifdef CALCULATE_STATS
+	m_minMaxTime1.Init();
+	m_minMaxTime2.Init();
+	m_minMaxTime2_1.Init();
+	m_minMaxTime2_2.Init();
+	m_minMaxTime2_3.Init();
+	m_minMaxTime3.Init();
+#endif
+
 	Run();
 }
-
-#define MIN_MAX_STATS_COUNT 3
-
-struct minMaxTime
-{
-	double minTime[MIN_MAX_STATS_COUNT];
-	double maxTime[MIN_MAX_STATS_COUNT];
-	void Init()
-	{
-		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-		{
-			minTime[i] = 99999999.9;
-			maxTime[i] = 0.0;
-		}
-	}
-	void ProcessTime(double elapsedTime)
-	{
-		bool maxFound = false;
-		bool minFound = false;
-		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-		{
-			if ( (minFound) && (maxFound) )
-				return;
-			if ( (!minFound) && (elapsedTime < minTime[i]) )
-			{
-				for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
-				{
-					minTime[j + 1] = minTime[j];
-				}
-				minTime[i] = elapsedTime;
-				minFound = true;
-			}
-			if ( (!maxFound) && (elapsedTime > maxTime[i]) )
-			{
-				for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
-				{
-					maxTime[j + 1] = maxTime[j];
-				}
-				maxTime[i] = elapsedTime;
-				maxFound = true;
-			}
-		}
-	}
-	std::string ToString()
-	{
-		std::stringstream ss("");
-		ss << "minTimes = { ";
-		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-		{
-			ss << std::setprecision(2) << minTime[i] << "[us]; ";
-		}
-		ss << " } maxTimes = { ";
-		for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-		{
-			ss << std::setprecision(2) << maxTime[i] << "[us]; ";
-		}
-		ss << " }";
-		return ss.str();
-	}
-};
-
-long countStats1 = 0;
-minMaxTime minMaxTime1;
-double timeSum1 = 0.0;
-
-long countStats2 = 0;
-minMaxTime minMaxTime2;
-double timeSum2 = 0.0;
-
-long countStats2_1 = 0;
-minMaxTime minMaxTime2_1;
-double timeSum2_1 = 0.0;
-
-long countStats2_2 = 0;
-minMaxTime minMaxTime2_2;
-double timeSum2_2 = 0.0;
-
-long countStats2_3 = 0;
-minMaxTime minMaxTime2_3;
-double timeSum2_3 = 0.0;
-
-long countStats3 = 0;
-minMaxTime minMaxTime3;
-double timeSum3 = 0.0;
 
 void CoreEngine::Stop()
 {
@@ -215,37 +162,30 @@ void CoreEngine::Stop()
 	LOG(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
-	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats1, timeSum1, timeSum1 / countStats1, minMaxTime1.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2, timeSum2, timeSum2 / countStats2, minMaxTime2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_1, timeSum2_1, timeSum2_1 / countStats2_1, minMaxTime2_1.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_2, timeSum2_2, timeSum2_2 / countStats2_2, minMaxTime2_2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats2_3, timeSum2_3, timeSum2_3 / countStats2_3, minMaxTime2_3.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", countStats3, timeSum3, timeSum3 / countStats3, minMaxTime3.ToString().c_str());
+#ifdef CALCULATE_STATS
+	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
 	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
 	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
+#endif
 	/* ==================== Printing stats end ==================== */
 }
 
 void CoreEngine::Run()
 {
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
-	const Math::Real ONE_MILLION = static_cast<Math::Real>(1000000.0);
-
-	minMaxTime1.Init();
-	minMaxTime2.Init();
-	minMaxTime2_1.Init();
-	minMaxTime2_2.Init();
-	minMaxTime2_3.Init();
-	minMaxTime3.Init();
 	
 	LOG(Notice, LOGPLACE, "The game started running");
 	ASSERT(!m_isRunning);
 
-	//m_game->Load();
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
 	m_renderer->InitializeTweakBars();
-	//m_game->InitializeTweakBars();
+	//m_game.InitializeTweakBars();
 	InitializeTweakBars();
 #endif
 
@@ -263,20 +203,22 @@ void CoreEngine::Run()
 	Math::Real previousTime = GetTime();
 	int inGameHours, inGameMinutes, inGameSeconds;
 
+#ifdef CALCULATE_STATS
 	LARGE_INTEGER frequency; // ticks per second
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
+#endif
 	while (m_isRunning)
 	{
 		/* ==================== REGION #1 begin ====================*/
-		QueryPerformanceCounter(&t1); // start timer
+		START_TIMER(t1);
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 		
-		if (m_game->IsInGameTimeCalculationEnabled())
+		if (m_game.IsInGameTimeCalculationEnabled())
 		{
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
 			if (m_timeOfDay > SECONDS_PER_DAY)
@@ -305,15 +247,11 @@ void CoreEngine::Run()
 			frameTimeCounter = REAL_ZERO;
 		}
 #endif
-		QueryPerformanceCounter(&t2); // stop timer
-		countStats1++;
-		double elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-		minMaxTime1.ProcessTime(elapsedTime);
-		timeSum1 += elapsedTime;
+		STOP_TIMER(t1, t2, frequency, m_countStats1, m_minMaxTime1, m_timeSum1);
 		/* ==================== REGION #1 end ====================*/
 
 		/* ==================== REGION #2 begin ====================*/
-		QueryPerformanceCounter(&t1); // start timer
+		START_TIMER(t1);
 		while (unprocessingTime > m_frameTime)
 		{
 			//previousTime = GetTime();
@@ -324,39 +262,27 @@ void CoreEngine::Run()
 				return;
 			}
 			/* ==================== REGION #2_1 begin ====================*/
-			QueryPerformanceCounter(&innerT1);
+			START_TIMER(innerT1);
 			PollEvents();
-			QueryPerformanceCounter(&innerT2);
-			countStats2_1++;
-			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
-			minMaxTime2_1.ProcessTime(elapsedTime);
-			timeSum2_1 += elapsedTime;
+			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
 			/* ==================== REGION #2_1 end ====================*/
 			
 			/* ==================== REGION #2_2 begin ====================*/
-			QueryPerformanceCounter(&innerT1);
-			m_game->Input(m_frameTime);
-			QueryPerformanceCounter(&innerT2);
-			countStats2_2++;
-			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
-			minMaxTime2_2.ProcessTime(elapsedTime);
-			timeSum2_2 += elapsedTime;
+			START_TIMER(innerT1);
+			m_game.Input(m_frameTime);
+			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
 			//Input::Update();
 			
 			/* ==================== REGION #2_3 begin ====================*/
-			QueryPerformanceCounter(&innerT1);
-			m_game->Update(m_frameTime);
-			QueryPerformanceCounter(&innerT2);
-			countStats2_3++;
-			elapsedTime = static_cast<double>(ONE_MILLION * (innerT2.QuadPart - innerT1.QuadPart)) / frequency.QuadPart; // in [us]
-			minMaxTime2_3.ProcessTime(elapsedTime);
-			timeSum2_3 += elapsedTime;
+			START_TIMER(innerT1);
+			m_game.Update(m_frameTime);
+			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
 			/* ==================== REGION #2_3 end ====================*/
 
 			/* ==================== Switching the game state if necessary begin ==================== */
-			m_game->PerformStateTransition();
+			m_game.PerformStateTransition();
 			/* ==================== Switching the game state if necessary end ==================== */
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -365,27 +291,15 @@ void CoreEngine::Run()
 			
 			unprocessingTime -= m_frameTime;
 		}
-		QueryPerformanceCounter(&t2); // start timer
-		countStats2++;
-		elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-		minMaxTime2.ProcessTime(elapsedTime);
-		timeSum2 += elapsedTime; // in [ms]
+		STOP_TIMER(t1, t2, frequency, m_countStats2, m_minMaxTime2, m_timeSum2);
 		/* ==================== REGION #2 end ====================*/
 		
 		/* ==================== REGION #3 begin ====================*/
-		QueryPerformanceCounter(&t1);
+		START_TIMER(t1);
 		if (isRenderRequired)
 		{
-			//m_renderer->ClearScreen();
-			//m_renderer->Render();
-			//Shader* shader = m_game->GetShader();
-			//if (shader == NULL)
-			//{
-			//	LOG(Error, LOGPLACE, "Shader instance is NULL");
-			//}
-			//m_renderer->Render(m_game->GetRootGameNode());
 			m_renderer->SetReal("timeOfDay", m_timeOfDay);
-			m_game->Render(m_renderer);
+			m_game.Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
 			
@@ -393,7 +307,7 @@ void CoreEngine::Run()
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
 			
-			if (m_game->IsInGameTimeCalculationEnabled())
+			if (m_game.IsInGameTimeCalculationEnabled())
 			{
 				ss.str(std::string());
 				// TODO: Leading zeros (setfill('0') << setw(5))
@@ -419,7 +333,9 @@ void CoreEngine::Run()
 			TwDraw();
 #endif
 			m_renderer->SwapBuffers();
+#ifdef CALCULATE_STATS
 			++m_renderingRequiredCount;
+#endif
 		}
 		else
 		{
@@ -427,13 +343,11 @@ void CoreEngine::Run()
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			//this_thread::sleep_for(chrono::milliseconds(100));
 			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
+#ifdef CALCULATE_STATS
 			++m_renderingNotRequiredCount;
+#endif
 		}
-		QueryPerformanceCounter(&t2);
-		countStats3++;
-		elapsedTime = static_cast<double>(ONE_MILLION * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-		minMaxTime3.ProcessTime(elapsedTime);
-		timeSum3 += elapsedTime; // in [ms]
+		STOP_TIMER(t1, t2, frequency, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 	}
 }
@@ -643,5 +557,62 @@ void CoreEngine::InitializeTweakBars()
 	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+}
+#endif
+
+#ifdef CALCULATE_STATS
+void CoreEngine::MinMaxTime::Init()
+{
+	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+	{
+		m_minTime[i] = REAL_MAX;
+		m_maxTime[i] = REAL_ZERO;
+	}
+}
+
+void CoreEngine::MinMaxTime::ProcessTime(double elapsedTime)
+{
+	bool maxFound = false;
+	bool minFound = false;
+	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+	{
+		if ( (minFound) && (maxFound) )
+			return;
+		if ( (!minFound) && (elapsedTime < m_minTime[i]) )
+		{
+			for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
+			{
+				m_minTime[j + 1] = m_minTime[j];
+			}
+			m_minTime[i] = elapsedTime;
+			minFound = true;
+		}
+		if ( (!maxFound) && (elapsedTime > m_maxTime[i]) )
+		{
+			for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
+			{
+				m_maxTime[j + 1] = m_maxTime[j];
+			}
+			m_maxTime[i] = elapsedTime;
+			maxFound = true;
+		}
+	}
+}
+
+std::string CoreEngine::MinMaxTime::ToString()
+{
+	std::stringstream ss("");
+	ss << "minTimes = { ";
+	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+	{
+		ss << std::setprecision(2) << m_minTime[i] << "[us]; ";
+	}
+	ss << " } maxTimes = { ";
+	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
+	{
+		ss << std::setprecision(2) << m_maxTime[i] << "[us]; ";
+	}
+	ss << " }";
+	return ss.str();
 }
 #endif

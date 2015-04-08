@@ -103,7 +103,7 @@ void Logger::Log(LogLevel level, const char *name, int line, const char *format,
 		fprintf(*o, "\n");
 		fflush(*o);
 	}
-	//mutex.Unlock();
+	ResetConsoleColor();
 }
 
 void Logger::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)

@@ -95,7 +95,7 @@ public:
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void Input(Math::Real delta);
 #endif
-	virtual void AddToEngine(CoreEngine* coreEngine);
+	//virtual void AddToEngine(CoreEngine* coreEngine);
 	virtual Transform& GetTransform() { return GameComponent::GetTransform(); }
 	virtual const Transform& GetTransform() const { return GameComponent::GetTransform(); }
 /* ==================== Non-static member functions end ==================== */

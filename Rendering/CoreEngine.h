@@ -15,6 +15,7 @@
 
 //#ifdef _DEBUG
 #define COUNT_FPS
+//#define CALCULATE_STATS
 //#endif
 
 namespace Rendering
@@ -22,6 +23,19 @@ namespace Rendering
 
 class RENDERING_API CoreEngine
 {
+#ifdef CALCULATE_STATS
+#define MIN_MAX_STATS_COUNT 3
+struct MinMaxTime
+{
+	double m_minTime[MIN_MAX_STATS_COUNT];
+	double m_maxTime[MIN_MAX_STATS_COUNT];
+	
+	void Init();
+	void ProcessTime(double elapsedTime);
+	std::string ToString();
+};
+#endif
+
 /* ==================== Static variables begin ==================== */
 protected:
 	static CoreEngine* s_coreEngine;
@@ -34,7 +48,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager* game);
+	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game);
 	virtual ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);
@@ -72,6 +86,20 @@ private:
 	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
 	 */
 	void CalculateSunElevationAndAzimuth();
+
+#ifdef CALCULATE_STATS
+	void StartTimer(LARGE_INTEGER& start) const { QueryPerformanceCounter(&start); }
+	void StopTimer(LARGE_INTEGER& start, LARGE_INTEGER& end, LARGE_INTEGER frequency, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
+	{
+		static const Math::Real ONE_MILLION = static_cast<Math::Real>(1000000.0f);
+		QueryPerformanceCounter(&end);
+		++countStats;
+		double elapsedTime = static_cast<double>(ONE_MILLION * (end.QuadPart - start.QuadPart)) / frequency.QuadPart; // in [us]
+		minMaxTime.ProcessTime(elapsedTime);
+		timeSum += elapsedTime;
+	}
+#endif
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	void InitializeTweakBars();
 #endif
@@ -84,6 +112,10 @@ protected:
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
+	GameManager& m_game;
+	Renderer* m_renderer;
+	TextRenderer* m_fpsTextRenderer;
+
 	const int SECONDS_PER_MINUTE; // the number of seconds during one minute
 	const int SECONDS_PER_HOUR; // the number of seconds during one hour
 	const int SECONDS_PER_DAY; // the number of seconds during one day
@@ -93,6 +125,36 @@ protected:
 	Rendering::GameTime::Daytime m_daytime;
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
+
+#ifdef CALCULATE_STATS
+	long m_countStats1;
+	MinMaxTime m_minMaxTime1;
+	double m_timeSum1;
+	
+	long m_countStats2;
+	MinMaxTime m_minMaxTime2;
+	double m_timeSum2;
+	
+	long m_countStats2_1;
+	MinMaxTime m_minMaxTime2_1;
+	double m_timeSum2_1;
+	
+	long m_countStats2_2;
+	MinMaxTime m_minMaxTime2_2;
+	double m_timeSum2_2;
+	
+	long m_countStats2_3;
+	MinMaxTime m_minMaxTime2_3;
+	double m_timeSum2_3;
+	
+	long m_countStats3;
+	MinMaxTime m_minMaxTime3;
+	double m_timeSum3;
+
+	mutable int m_renderingRequiredCount;
+	mutable int m_renderingNotRequiredCount;
+#endif
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Math::Angle M_FIRST_ELEVATION_LEVEL;
 	Math::Angle M_SECOND_ELEVATION_LEVEL;
@@ -104,14 +166,6 @@ protected:
 	const Math::Angle M_THIRD_ELEVATION_LEVEL;
 	const Math::Real m_clockSpeed;
 #endif
-	GameManager* m_game;
-	Renderer* m_renderer;
-	TextRenderer* m_fpsTextRenderer;
-
-/* ==================== Mutable class variables begin ==================== */
-	mutable int m_renderingRequiredCount;
-	mutable int m_renderingNotRequiredCount;
-/* ==================== Mutable class variables end ==================== */
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CoreEngine */
 

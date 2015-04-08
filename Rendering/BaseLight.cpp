@@ -15,6 +15,7 @@ BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZE
 	shadowInfo(NULL),
 	isEnabled(true)
 {
+	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(this);
 }
 
 BaseLight::~BaseLight(void)
@@ -49,15 +50,15 @@ void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
 	this->shadowInfo = shadowInfo;
 }
 
-void BaseLight::AddToEngine(CoreEngine* coreEngine)
-{
-	if (coreEngine == NULL)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
-		return;
-	}
-	coreEngine->GetRenderer()->AddLight(this);
-}
+//void BaseLight::AddToEngine(CoreEngine* coreEngine)
+//{
+//	if (coreEngine == NULL)
+//	{
+//		LOG(Utility::Critical, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
+//		return;
+//	}
+//	coreEngine->GetRenderer()->AddLight(this);
+//}
 
 ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {

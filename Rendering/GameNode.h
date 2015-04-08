@@ -36,8 +36,6 @@ public:
 	RENDERING_API void UpdateAll(Math::Real delta);
 	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer) const;
 
-	RENDERING_API void SetEngine(CoreEngine* coreEngine);
-
 	RENDERING_API Transform& GetTransform() { return this->transform; };
 	RENDERING_API const Transform& GetTransform() const { return this->transform; }
 
@@ -54,7 +52,6 @@ protected:
 	std::vector<GameNode*> childrenGameNodes;
 	std::vector<GameComponent*> components;
 	Transform transform;
-	CoreEngine* coreEngine;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
 

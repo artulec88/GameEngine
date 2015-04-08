@@ -82,16 +82,6 @@ GameManager::~GameManager(void)
 	LOG(Debug, LOGPLACE, "Game manager destruction finished");
 }
 
-void GameManager::SetEngine(CoreEngine* coreEngine)
-{
-	//if (rootGameNode == NULL)
-	//{
-	//	LOG(Critical, LOGPLACE, "Cannot set core engine. Root game node is NULL.");
-	//	exit(EXIT_FAILURE);
-	//}
-	m_rootGameNode.SetEngine(coreEngine);
-}
-
 /* static */ void GameManager::WindowCloseEventCallback(GLFWwindow* window)
 {
 	GetGameManager()->CloseWindowEvent(window);

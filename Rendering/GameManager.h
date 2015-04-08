@@ -62,7 +62,6 @@ public:
 	bool IsGameLoaded() const { return m_isGameLoaded; }
 
 	bool IsInGameTimeCalculationEnabled() const { return m_gameStateManager->IsInGameTimeCalculationEnabled(); }
-	void SetEngine(CoreEngine* coreEngine);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void InitializeTweakBars();
