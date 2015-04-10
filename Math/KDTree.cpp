@@ -108,10 +108,13 @@ Real KDTree::SearchNearestValue(const Vector2D& position) const
 	//return minDistancePositions[0].GetY(); // return the nearest position's Y component
 
 	// Calculate the weighted average where weights are in inverse proportion to distances
+	// See: http://en.wikipedia.org/wiki/Inverse_distance_weighting
+	// TODO: Create different strategies (strategy pattern) for weighted average calculation
+	// TODO: Measure which method (#1 or #2) is faster
+	/* ==================== METHOD #1 begin ==================== */
 	if (AlmostEqual(m_minDistances[0], REAL_ZERO))
 	{
-		Real result = m_minDistancePositions[0].GetY();
-		return result;
+		return m_minDistancePositions[0].GetY();
 	}
 	Real sumOfDistances = REAL_ZERO;
 	for (int i = 0; i < m_numberOfSamples; ++i)
@@ -128,6 +131,26 @@ Real KDTree::SearchNearestValue(const Vector2D& position) const
 	}
 	result /= sumOfWeights;
 	return result;
+	/* ==================== METHOD #1 end ==================== */
+	
+	/* ==================== METHOD #2 begin ==================== */
+//	if (AlmostEqual(m_minDistances[0], REAL_ZERO))
+//	{
+//		return m_minDistancePositions[0].GetY();
+//	}
+//	Real sumOfInversedDistances = REAL_ZERO;
+//	for (int i = 0; i < m_numberOfSamples; ++i)
+//	{
+//		sumOfInversedDistances += REAL_ONE / m_minDistances[i];
+//	}
+//	Real result = REAL_ZERO;
+//	for (int i = 0; i < m_numberOfSamples; ++i)
+//	{
+//		result += m_minDistancePositions[i].GetY() / m_minDistances[i];
+//	}
+//	result /= sumOfInversedDistances;
+//	return result;
+	/* ==================== METHOD #2 end ==================== */
 }
 
 void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const
