@@ -11,9 +11,9 @@
 11.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
 12.	HUD/GUI
 13.	Text alignment
-14.	Game state design pattern. Implement different states for the Renderer class. Depending on the game state Renderer::Render function should behave differently (e.g. render scene, render game menu)
-15.	Skybox is not seamless
-16.	Skybox day/night cycles. Smooth transition between one cubemap (representing daytime) and the other (representing nightime). Read http://stackoverflow.com/questions/11118186/procedural-dynamic-colouring-of-a-skybox-in-opengl
-17.	Text shader should automatically detects window size. Even better would be to calculate vertex coordinates in world space on CPU and not in the shader.
-18.	Loading the game only after starting the game (after clicking START in the main menu game state)
-19.	Create a decorator class (http://en.wikipedia.org/wiki/Decorator_pattern#C.2B.2B) for the GameManager::Load method. The decorator sets/checks the state of the GameManager::m_isGameLoaded member variable, calls the GameManager::Load method and sets/checks the state of the GameManager::m_isGameLoaded member variable again.
+14.	Skybox is not seamless
+15.	Text shader should automatically detects window size. Even better would be to calculate vertex coordinates in world space on CPU and not in the shader.
+16.	Create a decorator class (http://en.wikipedia.org/wiki/Decorator_pattern#C.2B.2B) for the GameManager::Load method. The decorator sets/checks the state of the GameManager::m_isGameLoaded member variable, calls the GameManager::Load method and sets/checks the state of the GameManager::m_isGameLoaded member variable again.
+17.	Move ISort class to Sorting namespace.
+18.	Move SortingKey and SortingDirection enums to Sorting namespace. Also, move their definitions to the ISort.h file.
+19.	Create statistics class.
