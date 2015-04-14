@@ -16,12 +16,7 @@ namespace Math
 
 class MATH_API Matrix4D// : public Utility::ISerializable
 {
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	Real m[MATRIX_SIZE][MATRIX_SIZE];
-/* ==================== Non-static member variables end ==================== */
-
-/* ==================== Static functions begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 public:
 	static Matrix4D Identity();
 	static Matrix4D PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */);
@@ -38,7 +33,7 @@ public:
 	static Matrix4D RotationFromDirection(const Vector3D& forward, const Vector3D& up);
 
 	static int Signum(int i, int j);
-/* ==================== Static functions end ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -75,6 +70,11 @@ public:
 
 	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	Real m[MATRIX_SIZE][MATRIX_SIZE];
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Matrix */
 
 inline Real Matrix4D::GetElement (int i, int j) const
@@ -113,20 +113,24 @@ inline void Matrix4D::SetElement(int i, int j, Real value)
 
 inline const Math::Real* Matrix4D::operator[](int index) const
 {
+#ifdef _DEBUG
 	if ((index < 0) || (index >= MATRIX_SIZE))
 	{
 		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
 		exit(EXIT_FAILURE);
 	}
+#endif
 	return m[index];
 }
 inline Math::Real* Matrix4D::operator[](int index)
 {
+#ifdef _DEBUG
 	if ((index < 0) || (index >= MATRIX_SIZE))
 	{
 		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
 		exit(EXIT_FAILURE);
 	}
+#endif
 	return m[index];
 }
 

@@ -12,20 +12,20 @@ namespace Math
 
 class MATH_API Quaternion// : public Utility::ISerializable
 {
-private:
-	Real m_x;
-	Real m_y;
-	Real m_z;
-	Real m_w;
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
 
-public: // constructors and destructors
+/* ==================== Constructors and destructors begin ==================== */
+public:
 	Quaternion() : m_x(REAL_ZERO), m_y(REAL_ZERO), m_z(REAL_ZERO), m_w(REAL_ONE) { };
 	Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
 	Quaternion(const Vector3D& axis, const Angle& angle);
 	Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW()) { };
 	Quaternion(const Matrix4D& rotMatrix);
+/* ==================== Constructors and destructors end ==================== */
 
-public: // public member functions
+/* ==================== Non-static member functions begin ==================== */
+public:
 	Real GetX() const { return m_x; };
 	Real GetY() const { return m_y; };
 	Real GetZ() const { return m_z; };
@@ -38,7 +38,7 @@ public: // public member functions
 	Real Length() const;
 	Real LengthSquared() const;
 	
-	Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); }; // creates negation vector
+	Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 	
 	Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
 	Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
@@ -90,8 +90,16 @@ public: // public member functions
 
 	inline Matrix4D ToRotationMatrix() const;
 
-public:
 	std::string ToString() const;
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	Real m_x;
+	Real m_y;
+	Real m_z;
+	Real m_w;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Quaternion */
 
 } /* end namespace Math */

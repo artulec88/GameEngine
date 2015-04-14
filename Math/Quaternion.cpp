@@ -7,14 +7,13 @@ using namespace Math;
 
 Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 {
-	//CHECKED
-	Real sinHalfAngle = static_cast<Real>(sin(angle.GetAngleInRadians() / 2));
-	Real cosHalfAngle = static_cast<Real>(cos(angle.GetAngleInRadians() / 2));
+	Angle halfAngle(angle / 2);
+	Real sinHalfAngle = halfAngle.Sin();
 
 	m_x = axis.GetX() * sinHalfAngle;
 	m_y = axis.GetY() * sinHalfAngle;
 	m_z = axis.GetZ() * sinHalfAngle;
-	m_w = cosHalfAngle;
+	m_w = halfAngle.Cos();
 }
 
 // From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
@@ -118,6 +117,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 std::string Quaternion::ToString() const
 {
+	// TODO: Set precision (std::precision)
 	std::stringstream ss("");
 	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
 	return ss.str();

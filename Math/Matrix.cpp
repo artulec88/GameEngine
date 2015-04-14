@@ -143,22 +143,15 @@ Matrix4D::~Matrix4D()
  */
 /* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
 {
-	// CHECKED
+	/* ==================== SOLUTION #1 begin ==================== */
 	Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
 
-	Real xRad = angleX.GetAngleInRadians();
-	Real yRad = angleY.GetAngleInRadians();
-	Real zRad = angleZ.GetAngleInRadians();
-
-	Real xSin = sin(xRad);
-	Real xCos = cos(xRad);
-	Real ySin = sin(yRad);
-	Real yCos = cos(yRad);
-	Real zSin = sin(zRad);
-	Real zCos = cos(zRad);
-
-	// TODO: Can't we define rotation using just one matrix and not three?
-	// This way we prevent the hard-computing multiplications of three matrices.
+	Real xSin = angleX.Sin();
+	Real xCos = angleX.Cos();
+	Real ySin = angleY.Sin();
+	Real yCos = angleY.Cos();
+	Real zSin = angleZ.Sin();
+	Real zCos = angleZ.Cos();
 
 	rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
 	rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
@@ -175,8 +168,28 @@ Matrix4D::~Matrix4D()
 	rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
 	rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
 
-	//return rotX * rotY * rotZ;
 	return rotZ * rotY * rotX;
+	/* ==================== SOLUTION #1 end ==================== */
+
+	// TODO: Can't we define rotation using just one matrix and not three?
+	// This way we prevent the hard-computing multiplications of three matrices.
+	/* ==================== SOLUTION #2 begin ==================== */
+	//Matrix4D rot;
+
+	//Real xSin = angleX.Sin();
+	//Real xCos = angleX.Cos();
+	//Real ySin = angleY.Sin();
+	//Real yCos = angleY.Cos();
+	//Real zSin = angleZ.Sin();
+	//Real zCos = angleZ.Cos();
+
+	//rot.m[0][0] = yCos * zCos;							rot.m[0][1] = yCos * zSin;							rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
+	//rot.m[1][0] = -xSin * ySin * zCos - xCos * zSin;	rot.m[1][1] = -xSin * ySin * zSin - xCos * zCos;	rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
+	//rot.m[2][0] = -xCos * ySin * zCos + xSin * zSin;	rot.m[2][1] = -xCos * ySin * zSin - xSin * zCos;	rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
+	//rot.m[3][0] = REAL_ZERO;							rot.m[3][1] = REAL_ZERO;							rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
+
+	//return rot;
+	/* ==================== SOLUTION #2 end ==================== */
 }
 
 ///* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)

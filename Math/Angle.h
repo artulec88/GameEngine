@@ -3,30 +3,36 @@
 #include "Math.h"
 //#include "Utility\ISerializable.h"
 #include <string>
-#include <sstream>
 
 namespace Math
 {
 
-	namespace Unit
+namespace Unit
+{
+	/// <summary>
+	/// Possible units for the angles
+	/// </summary>
+	enum UnitType
 	{
-		/// <summary>
-		/// Possible units for the angles
-		/// </summary>
-		enum UnitType
-		{
-			DEGREE = 0,
-			RADIAN
-		};
-	} /* end namespace Unit */
+		DEGREE = 0,
+		RADIAN
+	};
+} /* end namespace Unit */
 
 class MATH_API Angle
 {
-public: // constructors and destructors
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
 	explicit Angle(Real angle = REAL_ZERO, Unit::UnitType unit = Unit::DEGREE); // Explicit constructor, so that Real cannot be easily cast to Angle
 	Angle(const Angle& angle); // copy constructor
+	~Angle();
+/* ==================== Constructors and destructors end ==================== */
 
-public: // non-static member functions
+/* ==================== Non-static member functions begin ==================== */
+public:
 	Real GetAngleInDegrees() const;
 	Real GetAngleInRadians() const;
 	bool IsInDegrees() const { return (m_unit == Unit::DEGREE); }
@@ -39,6 +45,9 @@ public: // non-static member functions
 		switch(m_unit)
 		{
 		case Unit::DEGREE:
+#ifdef COUNT_STATS
+			++m_degToRadConversionCount;
+#endif
 			return sin(ToRad(m_angle));
 			break;
 		case Unit::RADIAN:
@@ -53,6 +62,9 @@ public: // non-static member functions
 		switch(m_unit)
 		{
 		case Unit::DEGREE:
+#ifdef COUNT_STATS
+			++m_degToRadConversionCount;
+#endif
 			return cos(ToRad(m_angle));
 			break;
 		case Unit::RADIAN:
@@ -62,17 +74,39 @@ public: // non-static member functions
 		}
 	}
 
-	Angle operator-() const { return Angle(-m_angle, m_unit); };
+	Angle operator-() const;
+
+	Angle operator+(const Angle& angle) const;
+	Angle operator-(const Angle& angle) const;
+	Angle operator*(Real s) const;
+	Angle operator/(Real s) const;
+
+	Angle& operator+=(const Angle& angle) const;
+	Angle& operator-=(const Angle& angle) const;
+	Angle& operator*=(Real s) const;
+	Angle& operator/=(Real s) const;
+
 	bool operator==(const Angle& angle) const;
 	bool operator!=(const Angle& angle) const;
 	bool operator>(const Angle& angle) const;
 	bool operator>=(const Angle& angle) const;
 	bool operator<(const Angle& angle) const;
 	bool operator<=(const Angle& angle) const;
-    
-private: // non-static member variables
+
+	std::string ToString() const;
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
 	Real m_angle;
 	Unit::UnitType m_unit;
+
+#ifdef COUNT_STATS
+	mutable int m_degToRadConversionCount;
+	mutable int m_radToDegConversionCount;
+#endif
+/* ==================== Non-static member variables end ==================== */
+
 }; /* end class Angle */
   
 } /* end namespace Math */
