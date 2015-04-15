@@ -41,7 +41,7 @@ public:
 	Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 	
 	Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
-	Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
+	Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 	Quaternion operator-(const Quaternion& q) const { return Quaternion(m_x - q.GetX(), m_y - q.GetY(), m_z - q.GetZ(), m_w - q.GetW()); };
 	Quaternion operator*(Real s) const { return Quaternion(s * m_x, s * m_y, s * m_z, s * m_w); };
 	Quaternion operator*(const Quaternion& q) const;

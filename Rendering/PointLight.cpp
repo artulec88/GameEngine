@@ -9,12 +9,13 @@ using namespace Utility;
 
 /* static */ bool PointLight::pointLightsEnabled = true;
 
-PointLight::PointLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, Math::Real intensity /* = REAL_ZERO */,
-		const Attenuation& attenuation /* = Attenuation() */) :
+PointLight::PointLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
+		const Attenuation& attenuation /* = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */) :
 	BaseLight(color, intensity),
-	attenuation(attenuation)
+	m_attenuation(attenuation)
 {
 	CalculateRange();
+	// Beware of using new operator in the constructor (See e.g. http://herbsutter.com/2008/07/25/constructor-exceptions-in-c-c-and-java/)
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
 }
 
@@ -24,8 +25,8 @@ PointLight::~PointLight(void)
 
 void PointLight::CalculateRange()
 {
-	Math::Real a = this->attenuation.GetExponent();
-	Math::Real b = this->attenuation.GetLinear();
+	Math::Real a = m_attenuation.GetExponent();
+	Math::Real b = m_attenuation.GetLinear();
 
 	Math::Real maxColorElement = (color.GetRed() > color.GetGreen()) ? color.GetRed() : color.GetGreen();
 	if (color.GetBlue() > maxColorElement)
@@ -33,9 +34,9 @@ void PointLight::CalculateRange()
 		maxColorElement = color.GetBlue();
 	}
 	const int colorDepth = GET_CONFIG_VALUE("ColorDepth", 256);
-	Math::Real c = this->attenuation.GetConstant() - colorDepth * intensity * maxColorElement;
+	Math::Real c = m_attenuation.GetConstant() - colorDepth * intensity * maxColorElement;
 
-	this->range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
+	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
 }
 
 bool PointLight::IsEnabled() const

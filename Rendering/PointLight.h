@@ -19,15 +19,15 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
-		const Attenuation& attenuation = Attenuation());
+	PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
+		const Attenuation& attenuation = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE));
 	virtual ~PointLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Attenuation GetAttenuation() const { return this->attenuation; };
-	Math::Real GetRange() const { return this->range; };
+	Attenuation GetAttenuation() const { return m_attenuation; };
+	Math::Real GetRange() const { return m_range; };
 	virtual bool IsEnabled() const;
 protected:
 	void CalculateRange();
@@ -35,8 +35,8 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Attenuation attenuation;
-	Math::Real range;
+	Attenuation m_attenuation;
+	Math::Real m_range;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PointLight */
 

@@ -24,7 +24,7 @@ class RENDERING_API BaseLight : public GameComponent
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	explicit BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO);
+	explicit BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO);
 	virtual ~BaseLight(void);
 private:
 	BaseLight(const BaseLight& baseLight) {} // Copy constructor disabled
@@ -35,12 +35,11 @@ private:
 public:
 	//virtual void Update(Math::Real delta);
 	//virtual void Render(Shader* shader, Renderer* renderer);
-	Color GetColor() const { return this->color; }
-	Math::Real GetIntensity() const { return this->intensity; }
-	inline Shader* GetShader() { return this->shader; }
-	inline ShadowInfo* GetShadowInfo() { return this->shadowInfo; }
-	//virtual void AddToEngine(CoreEngine* coreEngine);
-	virtual bool IsEnabled() const { return isEnabled; }
+	Color GetColor() const { return m_color; }
+	Math::Real GetIntensity() const { return m_intensity; }
+	inline Shader* GetShader() { return m_shader; }
+	inline ShadowInfo* GetShadowInfo() { return m_shadowInfo; }
+	virtual bool IsEnabled() const { return m_isEnabled; }
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -53,11 +52,11 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Color color;
-	Math::Real intensity;
-	Shader* shader;
-	ShadowInfo* shadowInfo;
-	bool isEnabled;
+	Color m_color;
+	Math::Real m_intensity;
+	Shader* m_shader;
+	ShadowInfo* m_shadowInfo;
+	bool m_isEnabled;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BaseLight */
 

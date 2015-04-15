@@ -7,13 +7,13 @@
 
 using namespace Rendering;
 
-BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, Math::Real intensity /* = REAL_ZERO */) :
+BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
 	GameComponent(),
-	color(color),
-	intensity(intensity),
-	shader(NULL),
-	shadowInfo(NULL),
-	isEnabled(true)
+	m_color(color),
+	m_intensity(intensity),
+	m_shader(NULL),
+	m_shadowInfo(NULL),
+	m_isEnabled(true)
 {
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(this);
 }
@@ -22,43 +22,32 @@ BaseLight::~BaseLight(void)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
-	SAFE_DELETE(shader);
-	SAFE_DELETE(shadowInfo);
+	SAFE_DELETE(m_shader);
+	SAFE_DELETE(m_shadowInfo);
 }
 
 void BaseLight::SetShader(Shader* shader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(this->shader);
-	if (this->shader != NULL)
+	if (m_shader != NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "Setting new shader for the light seems dubious.");
-		SAFE_DELETE(this->shader);
+		SAFE_DELETE(m_shader);
 	}
-	this->shader = shader;
+	m_shader = shader;
 }
 
 void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
 {
 	//SAFE_DELETE(this->shadowInfo);
-	if (this->shadowInfo != NULL)
+	if (m_shadowInfo != NULL)
 	{
 		LOG(Utility::Warning, LOGPLACE, "Setting new shadow info for the light seems dubious.");
-		delete this->shadowInfo;
-		this->shadowInfo = NULL;
+		SAFE_DELETE(m_shadowInfo);
 	}
-	this->shadowInfo = shadowInfo;
+	m_shadowInfo = shadowInfo;
 }
-
-//void BaseLight::AddToEngine(CoreEngine* coreEngine)
-//{
-//	if (coreEngine == NULL)
-//	{
-//		LOG(Utility::Critical, LOGPLACE, "Cannot add light to the core engine. Core Engine is NULL");
-//		return;
-//	}
-//	coreEngine->GetRenderer()->AddLight(this);
-//}
 
 ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
@@ -74,8 +63,8 @@ void BaseLight::InitializeTweakBar(TwBar* lightsBar)
 	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightShadowInfo", shadowInfoType, &(*GetShadowInfo()), " label='Shadow info' group='Base lights' ");
-	TwAddVarRW(lightsBar, "lightColor", TW_TYPE_COLOR4F, &color, " label='Color' group='Base lights' ");
-	TwAddVarRW(lightsBar, "lightIntensity", TW_TYPE_REAL, &intensity, " label='Intensity' group='Base lights' ");
-	TwAddVarRW(lightsBar, "lightEnabled", TW_TYPE_BOOLCPP, &isEnabled, " label='Enabled' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightColor", TW_TYPE_COLOR4F, &m_color, " label='Color' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightIntensity", TW_TYPE_REAL, &m_intensity, " label='Intensity' group='Base lights' ");
+	TwAddVarRW(lightsBar, "lightEnabled", TW_TYPE_BOOLCPP, &m_isEnabled, " label='Enabled' group='Base lights' ");
 }
 #endif

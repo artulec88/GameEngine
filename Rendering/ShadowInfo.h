@@ -30,22 +30,22 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	inline Math::Matrix4D GetProjection() const { return projectionMatrix; }
-	inline Math::Real GetShadowSoftness() const { return shadowSoftness; }
-	inline Math::Real GetMinVariance() const { return minVariance; }
-	inline Math::Real GetLightBleedingReductionAmount() const { return lightBleedingReductionAmount; }
-	inline bool IsFlipFacesEnabled() const { return flipFacesEnabled; }
-	inline int GetShadowMapSizeAsPowerOf2() const { return shadowMapSizeAsPowerOf2; }
+	inline Math::Matrix4D GetProjection() const { return m_projectionMatrix; }
+	inline Math::Real GetShadowSoftness() const { return m_shadowSoftness; }
+	inline Math::Real GetMinVariance() const { return m_minVariance; }
+	inline Math::Real GetLightBleedingReductionAmount() const { return m_lightBleedingReductionAmount; }
+	inline bool IsFlipFacesEnabled() const { return m_flipFacesEnabled; }
+	inline int GetShadowMapSizeAsPowerOf2() const { return m_shadowMapSizeAsPowerOf2; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Matrix4D projectionMatrix;
-	bool flipFacesEnabled;
-	int shadowMapSizeAsPowerOf2;
-	Math::Real shadowSoftness;
-	Math::Real lightBleedingReductionAmount;
-	Math::Real minVariance;
+	Math::Matrix4D m_projectionMatrix;
+	bool m_flipFacesEnabled;
+	int m_shadowMapSizeAsPowerOf2;
+	Math::Real m_shadowSoftness;
+	Math::Real m_lightBleedingReductionAmount;
+	Math::Real m_minVariance;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ShadowInfo */
 

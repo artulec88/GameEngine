@@ -28,7 +28,8 @@ public:
 	//static Matrix4D Rotation(Real x, Real y, Real z, const Angle& angle);
 	//static Matrix4D Rotation(const Vector3D& vec, const Angle& angle);
 
-	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ); // TODO: Check all Matrix4D::Rotation(...) functions.
+	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY);
+	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
 	static Matrix4D RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 	static Matrix4D RotationFromDirection(const Vector3D& forward, const Vector3D& up);
 

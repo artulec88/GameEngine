@@ -141,6 +141,32 @@ Matrix4D::~Matrix4D()
 	return Scale(vec.GetX(), vec.GetY(), vec.GetZ());
 }
 
+/* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY)
+{
+	/**
+	 * This function should return the same matrix as the function Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)).
+	 */
+	Matrix4D rot;
+
+	Real xSin = angleX.Sin();
+	Real xCos = angleX.Cos();
+	Real ySin = angleY.Sin();
+	Real yCos = angleY.Cos();
+
+	rot.m[0][0] = yCos;			rot.m[0][1] = REAL_ZERO;	rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
+	rot.m[1][0] = -xSin * ySin;	rot.m[1][1] = xCos;			rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
+	rot.m[2][0] = -xCos * ySin;	rot.m[2][1] = -xSin;		rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
+	rot.m[3][0] = REAL_ZERO;	rot.m[3][1] = REAL_ZERO;	rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
+
+	//Matrix4D matrixToCompare = Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO));
+	//if (rot != matrixToCompare)
+	//{
+	//	LOG(Utility::Error, LOGPLACE, "Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s",
+	//		rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//}
+	return rot;
+}
+
 /**
  * @see Vector2D::Rotate(Real angle)
  */

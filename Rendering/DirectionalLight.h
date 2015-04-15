@@ -21,7 +21,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	DirectionalLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Real intensity = REAL_ZERO,
+	DirectionalLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
 		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowArea = 80.0f, Math::Real shadowSoftness = REAL_ONE,
 		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );

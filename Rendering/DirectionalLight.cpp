@@ -9,7 +9,7 @@ using namespace Rendering;
 
 /* static */ bool DirectionalLight::directionalLightsEnabled = true;
 
-DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, Math::Real intensity /* = REAL_ZERO */,
+DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
 		int shadowMapSizeAsPowerOf2 /* = 0 */, Math::Real shadowArea /* = 80.0f */, Math::Real shadowSoftness /* = REAL_ONE */,
 		Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
 		Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */ ) :
@@ -21,8 +21,8 @@ DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL
 	m_sunlightNighttimeColor(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO))
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-	ASSERT(shader != NULL);
-	if (shader == NULL)
+	ASSERT(m_shader != NULL);
+	if (m_shader == NULL)
 	{
 		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL");
 		exit(EXIT_FAILURE);
@@ -32,8 +32,8 @@ DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL
 	{
 		Math::Matrix4D ortoMatrix = Math::Matrix4D::OrtographicProjection(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea);
 		SetShadowInfo(new ShadowInfo(ortoMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		ASSERT(shadowInfo != NULL);
-		if (shadowInfo == NULL)
+		ASSERT(m_shadowInfo != NULL);
+		if (m_shadowInfo == NULL)
 		{
 			LOG(Utility::Emergency, LOGPLACE, "Cannot initialize directional light. Shadow info is NULL");
 		}
@@ -85,7 +85,6 @@ ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(const Math::Ve
 }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
-int tempCounter = 0;
 
 void DirectionalLight::Update(Math::Real delta)
 {
@@ -123,9 +122,9 @@ void DirectionalLight::Update(Math::Real delta)
 		intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;
 	}
-	Transform& t = GetTransform();
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(-sunElevation, -sunAzimuth, Math::Angle(REAL_ZERO));
-	t.SetRot(Math::Quaternion(rotMatrix));
+	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(-sunElevation, -sunAzimuth);
+	GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another
+	// e.g. GetTransform().SetRot(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), 0.5f, true));
 }
 
 #endif

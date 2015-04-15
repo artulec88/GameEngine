@@ -222,7 +222,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 	if (shortest && cos < 0)
 	{
 		cos = -cos;
-		fixedQ = -q;
+		fixedQ = -q; // TODO: Replace with fixedQ.Negate();
 	}
 
 	if (abs(cos) > 1 - EPSILON)

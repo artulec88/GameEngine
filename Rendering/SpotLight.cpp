@@ -10,9 +10,9 @@ using namespace Math;
 
 /* static */ bool SpotLight::spotLightsEnabled = true;
 
-SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZERO)*/,
-		Real intensity /*= 0.0*/,
-		const Attenuation& attenuation /*= Attenuation() */,
+SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)*/,
+		Real intensity /*= REAL_ZERO */,
+		const Attenuation& attenuation /*= Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */,
 		const Angle& viewAngle /*= Angle(170.0f) */,
 		int shadowMapSizeAsPowerOf2 /* = 0 */,
 		Math::Real shadowSoftness /* = REAL_ONE */,
@@ -25,10 +25,10 @@ SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZER
 
 	if (shadowMapSizeAsPowerOf2 != 0) // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows at all
 	{
-		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f, this->range);
+		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f /* TODO: Don't use hard-coded values */, m_range);
 		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		ASSERT(shadowInfo != NULL);
-		if (shadowInfo == NULL)
+		ASSERT(m_shadowInfo != NULL);
+		if (m_shadowInfo == NULL)
 		{
 			LOG(Utility::Critical, LOGPLACE, "Cannot initialize spot light. Shadow info is NULL");
 			exit(EXIT_FAILURE);
