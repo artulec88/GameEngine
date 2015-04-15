@@ -2,7 +2,7 @@
 #include "SortingParameters.h"
 #include "Utility\ILogger.h"
 
-using namespace Math;
+using namespace Math::Sorting;
 
 SortingParametersChain::SortingParametersChain() :
 	m_sortingParametersChain(NULL),

@@ -116,6 +116,8 @@ protected:
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;
 
+	const Math::Angle LATITUDE;
+	const Math::Angle LONGITUDE;
 	const int SECONDS_PER_MINUTE; // the number of seconds during one minute
 	const int SECONDS_PER_HOUR; // the number of seconds during one hour
 	const int SECONDS_PER_DAY; // the number of seconds during one day

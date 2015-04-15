@@ -47,13 +47,38 @@ public: // public member functions
 	bool operator!=(const Vector2D& v) const;
 	bool operator==(const Vector2D& v) const;
 
-	Vector2D Normalized() const;
-	void Normalize();
+	Vector2D Normalized() const
+	{
+		Real length = LengthSquared();
+		//if (AlmostEqual(length, REAL_ZERO))
+		//{
+		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+		//	return (*this);
+		//}
+		return (*this) / static_cast<Real>(sqrt(length));
+	}
+
+	void Normalize()
+	{
+		Real length = LengthSquared();
+		//if (AlmostEqual(length, REAL_ZERO))
+		//{
+		//	return;
+		//}
+		*this /= static_cast<Real>(sqrt(length));
+	}
+	
+	Real Cross(const Vector2D& v) const
+	{
+		return m_x * v.GetY() - m_y * v.GetX();
+	}
+
+	Real Dot(const Vector2D& v) const
+	{
+		return (m_x * v.GetX() + m_y * v.GetY());
+	}
 
 	Vector2D Rotate(const Angle& angle);
-	
-	Real Cross(const Vector2D& v) const; // CHECKED!
-	Real Dot(const Vector2D& v) const; // CHECKED!
 
 	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 
@@ -119,15 +144,41 @@ public: // public member functions
 		return static_cast<size_t>(m_x * 31 + m_y);
 	}
 
-	Vector3D Normalized() const; // CHECKED!
-	void Normalize(); // CHECKED!
+	Vector3D Normalized() const
+	{
+		Real length = LengthSquared();
+		//if (AlmostEqual(length, REAL_ZERO))
+		//{
+		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+		//	return (*this);
+		//}
+		return (*this) / static_cast<Real>(sqrt(length));
+	}
+	void Normalize()
+	{
+		Real length = LengthSquared();
+		//if (AlmostEqual(length, REAL_ZERO))
+		//{
+		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+		//	return;
+		//}
+		(*this) /= static_cast<Real>(sqrt(length));
+	}
 
 	//Vector3D Rotate(Real angle);
 	Vector3D Rotate(const Vector3D& axis, const Angle& angle);
 	Vector3D Rotate(const Quaternion& rotation) const;
 	
-	Real Dot(const Vector3D& v) const; // CHECKED!
-	Vector3D Cross(const Vector3D& v) const;
+	Real Dot(const Vector3D& v) const
+	{
+		return (m_x * v.GetX() + m_y * v.GetY() + m_z * v.GetZ());
+	}
+	Vector3D Cross(const Vector3D& v) const
+	{
+		return Vector3D(m_y * v.GetZ() - m_z * v.GetY(),
+			m_z * v.GetX() - m_x * v.GetZ(),
+			m_x * v.GetY() - m_y * v.GetX());
+	}
 
 	Real Max() const;
 	Vector3D Max(const Vector3D& v) const;

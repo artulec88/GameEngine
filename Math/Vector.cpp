@@ -49,37 +49,6 @@ Real Vector2D::LengthSquared() const
 	return static_cast<Real>(m_x * m_x + m_y * m_y);
 }
 
-Vector2D Vector2D::Normalized() const
-{
-	Real length = LengthSquared();
-	if (AlmostEqual(length, 0.0f))
-	{
-		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
-		return (*this);
-	}
-	return (*this) / static_cast<Real>(sqrt(length));
-}
-
-void Vector2D::Normalize()
-{
-	Real length = LengthSquared();
-	if (AlmostEqual(length, 0.0f))
-	{
-		return;
-	}
-	*this /= static_cast<Real>(sqrt(length));
-}
-
-Real Vector2D::Cross(const Vector2D& v) const
-{
-	return m_x * v.GetY() - m_y * v.GetX();
-}
-
-Real Vector2D::Dot(const Vector2D& v) const
-{
-	return (m_x * v.GetX() + m_y * v.GetY());
-}
-
 Vector2D Vector2D::Rotate(const Angle& angle)
 {
 	Real rad = angle.GetAngleInRadians();
@@ -197,43 +166,6 @@ Real Vector3D::Length() const
 Real Vector3D::LengthSquared() const
 {
 	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z);
-}
-
-Vector3D Vector3D::Normalized() const
-{
-	Real length = LengthSquared();
-	if (AlmostEqual(length, 0.0f))
-	{
-		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
-		return (*this);
-	}
-	return (*this) / static_cast<Real>(sqrt(length));
-}
-
-void Vector3D::Normalize()
-{
-	Real length = LengthSquared();
-	if (AlmostEqual(length, 0.0f))
-	{
-		LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
-		return;
-	}
-
-	(*this) /= static_cast<Real>(sqrt(length));
-}
-
-Real Vector3D::Dot(const Vector3D& v) const
-{
-	return (m_x * v.GetX() + m_y * v.GetY() + m_z * v.GetZ());
-}
-
-Vector3D Vector3D::Cross(const Vector3D& v) const
-{
-	Real x = m_y * v.GetZ() - m_z * v.GetY();
-	Real y = m_z * v.GetX() - m_x * v.GetZ();
-	Real z = m_x * v.GetY() - m_y * v.GetX();
-
-	return Vector3D(x, y, z);
 }
 
 Real Vector3D::Max() const

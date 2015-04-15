@@ -6,16 +6,6 @@
 
 using namespace Math;
 
-Angle::Angle(Real angle /* = REAL_ZERO */, Unit::UnitType unit /* = DEGREE */) :
-	m_angle(angle),
-	m_unit(unit)
-#ifdef COUNT_STATS
-	,m_degToRadConversionCount(0),
-	m_radToDegConversionCount(0)
-#endif
-{
-}
-
 Angle::Angle(const Angle& angle) :
 	m_angle(angle.GetAngleInRadians()),
 	m_unit(Unit::RADIAN)
@@ -24,13 +14,6 @@ Angle::Angle(const Angle& angle) :
 	m_radToDegConversionCount(0)
 #endif
 {
-}
-
-Angle::~Angle()
-{
-#ifdef COUNT_STATS
-	LOG(Utility::Debug, LOGPLACE, "The conversions between radians and degrees units report: ToRad: %d\t ToDeg: %d", m_degToRadConversionCount, m_radToDegConversionCount);
-#endif
 }
 
 // TODO: move this function to *.h file as an inline function
@@ -117,7 +100,7 @@ Angle Angle::operator/(Real s) const
 	return Angle(m_angle / s, m_unit);
 }
 
-Angle& Angle::operator+=(const Angle& angle) const
+Angle& Angle::operator+=(const Angle& angle)
 {
 	switch (m_unit)
 	{
@@ -133,7 +116,7 @@ Angle& Angle::operator+=(const Angle& angle) const
 	return *this;
 }
 
-Angle& Angle::operator-=(const Angle& angle) const
+Angle& Angle::operator-=(const Angle& angle)
 {
 	switch (m_unit)
 	{
@@ -149,13 +132,13 @@ Angle& Angle::operator-=(const Angle& angle) const
 	return *this;
 }
 
-Angle& Angle::operator*=(Real s) const
+Angle& Angle::operator*=(Real s)
 {
 	m_angle *= s;
 	return *this;
 }
 
-Angle& Angle::operator/=(Real s) const
+Angle& Angle::operator/=(Real s)
 {
 	m_angle /= s;
 	return *this;

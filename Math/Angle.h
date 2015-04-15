@@ -26,9 +26,28 @@ class MATH_API Angle
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	explicit Angle(Real angle = REAL_ZERO, Unit::UnitType unit = Unit::DEGREE); // Explicit constructor, so that Real cannot be easily cast to Angle
+	// Explicit constructor, so that Real cannot be easily cast to Angle
+	explicit Angle(Real angle = REAL_ZERO, Unit::UnitType unit = Unit::DEGREE) :
+		m_angle(angle),
+		m_unit(unit)
+#ifdef COUNT_STATS
+		,m_degToRadConversionCount(0),
+		m_radToDegConversionCount(0)
+#endif
+	{
+	}
+
 	Angle(const Angle& angle); // copy constructor
-	~Angle();
+	
+	~Angle()
+	{
+//#ifdef COUNT_STATS
+	//	if ((m_degToRadConversionCount > m_radToDegConversionCount + 1) || (m_radToDegConversionCount > m_degToRadConversionCount + 1))
+	//	{
+	//		LOG(Utility::Info, LOGPLACE, "The conversions between radians and degrees units report: ToRad: %d\t ToDeg: %d", m_degToRadConversionCount, m_radToDegConversionCount);
+	//	}
+//#endif
+	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -81,10 +100,10 @@ public:
 	Angle operator*(Real s) const;
 	Angle operator/(Real s) const;
 
-	Angle& operator+=(const Angle& angle) const;
-	Angle& operator-=(const Angle& angle) const;
-	Angle& operator*=(Real s) const;
-	Angle& operator/=(Real s) const;
+	Angle& operator+=(const Angle& angle);
+	Angle& operator-=(const Angle& angle);
+	Angle& operator*=(Real s);
+	Angle& operator/=(Real s);
 
 	bool operator==(const Angle& angle) const;
 	bool operator!=(const Angle& angle) const;

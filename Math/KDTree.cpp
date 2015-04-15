@@ -40,18 +40,18 @@ KDTree::~KDTree(void)
 
 void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 {
-	SortingKey sortingKey;
+	Sorting::SortingKey sortingKey;
 	switch (depth % 2)
 	{
 	case 0:
-		sortingKey = COMPONENT_X;
+		sortingKey = Sorting::COMPONENT_X;
 		break;
 	case 1:
-		sortingKey = COMPONENT_Z;
+		sortingKey = Sorting::COMPONENT_Z;
 		break;
 	default: // shouldn't occur at all
 		LOG(Utility::Warning, LOGPLACE, "Cannot determine the sorting key for the process of constructing the k-d tree");
-		sortingKey = COMPONENT_X;
+		sortingKey = Sorting::COMPONENT_X;
 		break;
 	}
 	//LOG(Utility::Debug, LOGPLACE, "Before sorting: depth = %d", depth);
@@ -59,8 +59,8 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 	//{
 	//	LOG(Utility::Debug, LOGPLACE, "depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
 	//}
-	SortingParametersChain sortingParameters(sortingKey, ASCENDING);
-	ISort::GetSortingObject(Sorting::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
+	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::ASCENDING);
+	Sorting::ISort::GetSortingObject(Sorting::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
 	//LOG(Utility::Debug, LOGPLACE, "After sorting: depth = %d", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{

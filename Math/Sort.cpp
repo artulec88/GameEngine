@@ -2,7 +2,7 @@
 #include "Utility\ILogger.h"
 #include "Sort.h"
 
-using namespace Math;
+using namespace Math::Sorting;
 
 /* ==================== BubbleSort class implementation begin ==================== */
 BubbleSort::BubbleSort() : ISort(Sorting::BUBBLE_SORT)

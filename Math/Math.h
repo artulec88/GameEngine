@@ -6,6 +6,8 @@
 #define MATH_API __declspec(dllimport)
 #endif
 
+#define COUNT_STATS
+
 #define EPSILON		static_cast<Math::Real>(1e-5)
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)

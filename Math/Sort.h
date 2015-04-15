@@ -7,8 +7,7 @@
 #include "ISort.h"
 #include <vector>
 
-namespace Math
-{
+namespace Math { namespace Sorting {
 
 class BubbleSort : public ISort
 {
@@ -948,5 +947,7 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BucketSort */
+
+} /* end namespace Sorting */
 
 } /* end namespace Math */

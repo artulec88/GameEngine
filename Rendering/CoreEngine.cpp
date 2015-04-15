@@ -46,6 +46,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_game(game),
 	m_renderer(NULL),
 	m_fpsTextRenderer(NULL),
+	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
+	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
 	SECONDS_PER_MINUTE(60),
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
@@ -447,8 +449,6 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 
 void CoreEngine::CalculateSunElevationAndAzimuth()
 {
-	const Math::Angle LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f));
-	const Math::Angle LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f));
 	const int timeGMTdifference = 1;
 	
 	const Math::Angle b((360.0f / 365.0f) * (m_dayNumber - 81));
@@ -458,19 +458,19 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const Math::Real equationOfTime = 9.87f * doubleB.Sin() - 7.53f * b.Cos() - 1.5f * b.Sin(); // EoT
 	const Math::Real declinationSin = tropicOfCancer.Sin() * b.Sin();
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
-	LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
+	//LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
 	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
 	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
-	LOG(Utility::Debug, LOGPLACE, "Time correction in seconds = %.5f", timeCorrectionInSeconds);
-	LOG(Utility::Debug, LOGPLACE, "Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
+	//LOG(Utility::Debug, LOGPLACE, "Time correction in seconds = %.5f", timeCorrectionInSeconds);
+	//LOG(Utility::Debug, LOGPLACE, "Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
 	
 	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
-	LOG(Utility::Debug, LOGPLACE, "Hour angle = %.5f", hourAngle.GetAngleInDegrees());
+	//LOG(Utility::Debug, LOGPLACE, "Hour angle = %.5f", hourAngle.GetAngleInDegrees());
 
 	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
 	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
-	LOG(Utility::Debug, LOGPLACE, "Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
+	//LOG(Utility::Debug, LOGPLACE, "Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
 
 	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
@@ -497,13 +497,11 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	{
 		m_daytime = Rendering::GameTime::DAY;
 	}
-	if (prevDaytime != m_daytime)
-	{
-		LOG(Utility::Info, LOGPLACE, "Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
-	}
-
-
-	LOG(Utility::Debug, LOGPLACE, "Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
+	//if (prevDaytime != m_daytime)
+	//{
+	//	LOG(Utility::Info, LOGPLACE, "Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
+	//}
+	//LOG(Utility::Debug, LOGPLACE, "Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
 Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const

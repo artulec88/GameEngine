@@ -6,40 +6,36 @@
 #include "Utility\ILogger.h"
 #include "SortingParameters.h"
 
-namespace Math
+namespace Math { namespace Sorting
 {
-
-	namespace Sorting
-	{
-		/// <summary>
-		/// Possible algorithms for sorting
-		/// </summary>
-		enum SortingAlgorithm
-		{
-			BUBBLE_SORT = 0,
-			INSERTION_SORT,
-			SELECTION_SORT,
-			MERGE_SORT,
-			HEAP_SORT,
-			QUICK_SORT,
-			SHELL_SORT,
-			COMB_SORT,
-			COUNTING_SORT,
-			RADIX_SORT,
-			BUCKET_SORT
-		};
-	} /* end namespace Sorting */
+/// <summary>
+/// Possible algorithms for sorting
+/// </summary>
+enum SortingAlgorithm
+{
+	BUBBLE_SORT = 0,
+	INSERTION_SORT,
+	SELECTION_SORT,
+	MERGE_SORT,
+	HEAP_SORT,
+	QUICK_SORT,
+	SHELL_SORT,
+	COMB_SORT,
+	COUNTING_SORT,
+	RADIX_SORT,
+	BUCKET_SORT
+};
 
 class ISort
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
-	MATH_API static ISort* GetSortingObject(Sorting::SortingAlgorithm sortingMethod);
+	MATH_API static ISort* GetSortingObject(SortingAlgorithm sortingMethod);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API ISort(Sorting::SortingAlgorithm sortingMethod);
+	MATH_API ISort(SortingAlgorithm sortingMethod);
 	MATH_API virtual ~ISort(void);
 private:
 	ISort(const ISort& sortObject) {} // don't implement
@@ -52,7 +48,7 @@ public:
 	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
 	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
-	MATH_API Sorting::SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
+	MATH_API SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
 protected:
 	template <typename T>
 	bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
@@ -183,8 +179,10 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Sorting::SortingAlgorithm m_sortingAlgorithm;
+	SortingAlgorithm m_sortingAlgorithm;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ISort */
+
+} /* end namespace Sorting */
 
 } /* end namespace Math */

@@ -50,6 +50,7 @@ public:
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
 	bool operator==(const Matrix4D& m) const;
+	bool operator!=(const Matrix4D& m) const;
 	Matrix4D& operator=(const Matrix4D& mat);
 
 	const Math::Real* operator[](int index) const;

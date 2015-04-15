@@ -11,7 +11,10 @@ using namespace Utility;
 
 Matrix4D::Matrix4D()
 {
-	// TODO: Load identity matrix
+	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
 }
 
 Matrix4D::Matrix4D(const Matrix4D& mat)
@@ -144,37 +147,7 @@ Matrix4D::~Matrix4D()
 /* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
 {
 	/* ==================== SOLUTION #1 begin ==================== */
-	Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
-
-	Real xSin = angleX.Sin();
-	Real xCos = angleX.Cos();
-	Real ySin = angleY.Sin();
-	Real yCos = angleY.Cos();
-	Real zSin = angleZ.Sin();
-	Real zCos = angleZ.Cos();
-
-	rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
-	rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
-	rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
-	rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
-
-	rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
-	rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
-	rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
-	rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
-
-	rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
-	rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
-	rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
-	rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
-
-	return rotZ * rotY * rotX;
-	/* ==================== SOLUTION #1 end ==================== */
-
-	// TODO: Can't we define rotation using just one matrix and not three?
-	// This way we prevent the hard-computing multiplications of three matrices.
-	/* ==================== SOLUTION #2 begin ==================== */
-	//Matrix4D rot;
+	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
 
 	//Real xSin = angleX.Sin();
 	//Real xCos = angleX.Cos();
@@ -183,12 +156,46 @@ Matrix4D::~Matrix4D()
 	//Real zSin = angleZ.Sin();
 	//Real zCos = angleZ.Cos();
 
-	//rot.m[0][0] = yCos * zCos;							rot.m[0][1] = yCos * zSin;							rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
-	//rot.m[1][0] = -xSin * ySin * zCos - xCos * zSin;	rot.m[1][1] = -xSin * ySin * zSin - xCos * zCos;	rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
-	//rot.m[2][0] = -xCos * ySin * zCos + xSin * zSin;	rot.m[2][1] = -xCos * ySin * zSin - xSin * zCos;	rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
-	//rot.m[3][0] = REAL_ZERO;							rot.m[3][1] = REAL_ZERO;							rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
+	//rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
+	//rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
+	//rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
+	//rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
 
-	//return rot;
+	//rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
+	//rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
+	//rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
+	//rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
+
+	//rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
+	//rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
+	//rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
+	//rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
+
+	//return rotZ * rotY * rotX;
+	/* ==================== SOLUTION #1 end ==================== */
+
+	/* ==================== SOLUTION #2 begin ==================== */
+	Matrix4D rot;
+
+	Real xSin = angleX.Sin();
+	Real xCos = angleX.Cos();
+	Real ySin = angleY.Sin();
+	Real yCos = angleY.Cos();
+	Real zSin = angleZ.Sin();
+	Real zCos = angleZ.Cos();
+
+	rot.m[0][0] = yCos * zCos;							rot.m[0][1] = yCos * zSin;							rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
+	rot.m[1][0] = -xSin * ySin * zCos - xCos * zSin;	rot.m[1][1] = -xSin * ySin * zSin + xCos * zCos;	rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
+	rot.m[2][0] = -xCos * ySin * zCos + xSin * zSin;	rot.m[2][1] = -xCos * ySin * zSin - xSin * zCos;	rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
+	rot.m[3][0] = REAL_ZERO;							rot.m[3][1] = REAL_ZERO;							rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
+
+	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
+	//if (rot != matrixToCompare)
+	//{
+	//	LOG(Utility::Error, LOGPLACE, "Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s",
+	//		rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//}
+	return rot;
 	/* ==================== SOLUTION #2 end ==================== */
 }
 
@@ -227,13 +234,9 @@ Matrix4D::~Matrix4D()
 
 /* static */ Matrix4D Matrix4D::RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
-	Vector3D f = forward;
-	Vector3D u = up;
-	Vector3D r = right;
-
-	//f.Normalize(); // TODO: Should not be necessary
-	//u.Normalize(); // TODO: Should not be necessary
-	//r.Normalize(); // TODO: Should not be necessary
+	//Vector3D f = forward.Normalized();
+	//Vector3D u = up.Normalized();
+	//Vector3D r = right.Normalized();
 	
 	//Vector3D right = up;
 	//right.Normalize(); // TODO: Should not be necessary
@@ -241,11 +244,12 @@ Matrix4D::~Matrix4D()
 
 	//Vector3D newUp = forw.Cross(right);
 
+	// We assume that forward, up and right vectors are normalized.
 	Matrix4D matrix;
-	matrix.m[0][0] = r.GetX();	matrix.m[0][1] = u.GetX();	matrix.m[0][2] = f.GetX();	matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = r.GetY();	matrix.m[1][1] = u.GetY();	matrix.m[1][2] = f.GetY();	matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = r.GetZ();	matrix.m[2][1] = u.GetZ();	matrix.m[2][2] = f.GetZ();	matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
+	matrix.m[0][0] = right.GetX();	matrix.m[0][1] = up.GetX();	matrix.m[0][2] = forward.GetX();	matrix.m[0][3] = REAL_ZERO;
+	matrix.m[1][0] = right.GetY();	matrix.m[1][1] = up.GetY();	matrix.m[1][2] = forward.GetY();	matrix.m[1][3] = REAL_ZERO;
+	matrix.m[2][0] = right.GetZ();	matrix.m[2][1] = up.GetZ();	matrix.m[2][2] = forward.GetZ();	matrix.m[2][3] = REAL_ZERO;
+	matrix.m[3][0] = REAL_ZERO;		matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;			matrix.m[3][3] = REAL_ONE;
 	return matrix;
 }
 
@@ -295,50 +299,81 @@ std::string Matrix4D::ToString() const
 	
 Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 {
+	/* ==================== SOLUTION #1 (doesn't work!!!) begin ==================== */
+	//Matrix4D matrix;
+
+	//matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2];
+	//matrix.m[0][1] = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2];
+	//matrix.m[0][2] = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2];
+	//matrix.m[0][3] = REAL_ZERO;
+
+	//matrix.m[1][0] = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2];
+	//matrix.m[1][1] = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2];
+	//matrix.m[1][2] = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2];
+	//matrix.m[1][3] = REAL_ZERO;
+
+	//matrix.m[2][0] = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2];
+	//matrix.m[2][1] = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2];
+	//matrix.m[2][2] = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2];
+	//matrix.m[2][3] = REAL_ZERO;
+
+	//matrix.m[3][0] = m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0];
+	//matrix.m[3][1] = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1];
+	//matrix.m[3][2] = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2];
+	//matrix.m[3][3] = REAL_ONE;
+	//
+	//return matrix;
+	/* ==================== SOLUTION #1 (doesn't work!!!) end ==================== */
+
+	/* ==================== SOLUTION #2 begin ==================== */
 	Matrix4D matrix;
 
-	//matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[0][1] * mat.m[1][0] + m[0][2] * mat.m[2][0] + m[0][3] * mat.m[3][0];
-	//matrix.m[0][1] = m[0][0] * mat.m[0][1] + m[0][1] * mat.m[1][1] + m[0][2] * mat.m[2][1] + m[0][3] * mat.m[3][1];
-	//matrix.m[0][2] = m[0][0] * mat.m[0][2] + m[0][1] * mat.m[1][2] + m[0][2] * mat.m[2][2] + m[0][3] * mat.m[3][2];
-	//matrix.m[0][3] = m[0][0] * mat.m[0][3] + m[0][1] * mat.m[1][3] + m[0][2] * mat.m[2][3] + m[0][3] * mat.m[3][3];
+	matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2] + m[3][0] * mat.m[0][3];
+	matrix.m[0][1] = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2] + m[3][1] * mat.m[0][3];
+	matrix.m[0][2] = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2] + m[3][2] * mat.m[0][3];
+	matrix.m[0][3] = m[0][3] * mat.m[0][0] + m[1][3] * mat.m[0][1] + m[2][3] * mat.m[0][2] + m[3][3] * mat.m[0][3];
 
-	//matrix.m[1][0] = m[1][0] * mat.m[0][0] + m[1][1] * mat.m[1][0] + m[1][2] * mat.m[2][0] + m[1][3] * mat.m[3][0];
-	//matrix.m[1][1] = m[1][0] * mat.m[0][1] + m[1][1] * mat.m[1][1] + m[1][2] * mat.m[2][1] + m[1][3] * mat.m[3][1];
-	//matrix.m[1][2] = m[1][0] * mat.m[0][2] + m[1][1] * mat.m[1][2] + m[1][2] * mat.m[2][2] + m[1][3] * mat.m[3][2];
-	//matrix.m[1][3] = m[1][0] * mat.m[0][3] + m[1][1] * mat.m[1][3] + m[1][2] * mat.m[2][3] + m[1][3] * mat.m[3][3];
-	//		
-	//matrix.m[2][0] = m[2][0] * mat.m[0][0] + m[2][1] * mat.m[1][0] + m[2][2] * mat.m[2][0] + m[2][3] * mat.m[3][0];
-	//matrix.m[2][1] = m[2][0] * mat.m[0][1] + m[2][1] * mat.m[1][1] + m[2][2] * mat.m[2][1] + m[2][3] * mat.m[3][1];
-	//matrix.m[2][2] = m[2][0] * mat.m[0][2] + m[2][1] * mat.m[1][2] + m[2][2] * mat.m[2][2] + m[2][3] * mat.m[3][2];
-	//matrix.m[2][3] = m[2][0] * mat.m[0][3] + m[2][1] * mat.m[1][3] + m[2][2] * mat.m[2][3] + m[2][3] * mat.m[3][3];
-	//
-	//matrix.m[3][0] = m[3][0] * mat.m[0][0] + m[3][1] * mat.m[1][0] + m[3][2] * mat.m[2][0] + m[3][3] * mat.m[3][0];
-	//matrix.m[3][1] = m[3][0] * mat.m[0][1] + m[3][1] * mat.m[1][1] + m[3][2] * mat.m[2][1] + m[3][3] * mat.m[3][1];
-	//matrix.m[3][2] = m[3][0] * mat.m[0][2] + m[3][1] * mat.m[1][2] + m[3][2] * mat.m[2][2] + m[3][3] * mat.m[3][2];
-	//matrix.m[3][3] = m[3][0] * mat.m[0][3] + m[3][1] * mat.m[1][3] + m[3][2] * mat.m[2][3] + m[3][3] * mat.m[3][3];
+	matrix.m[1][0] = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2] + m[3][0] * mat.m[1][3];
+	matrix.m[1][1] = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2] + m[3][1] * mat.m[1][3];
+	matrix.m[1][2] = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2] + m[3][2] * mat.m[1][3];
+	matrix.m[1][3] = m[0][3] * mat.m[1][0] + m[1][3] * mat.m[1][1] + m[2][3] * mat.m[1][2] + m[3][3] * mat.m[1][3];
 
-	for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
-	{
-		for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
-		{
-			//matrix.m[i][j] = REAL_ZERO;
-			Real sum = REAL_ZERO;
-			for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
-			{
-				sum += m[k][j] * mat.m[i][k];
-			}
-			matrix.m[i][j] = sum;
-		}
-	}
+	matrix.m[2][0] = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2] + m[3][0] * mat.m[2][3];
+	matrix.m[2][1] = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2] + m[3][1] * mat.m[2][3];
+	matrix.m[2][2] = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2] + m[3][2] * mat.m[2][3];
+	matrix.m[2][3] = m[0][3] * mat.m[2][0] + m[1][3] * mat.m[2][1] + m[2][3] * mat.m[2][2] + m[3][3] * mat.m[2][3];
 
+	matrix.m[3][0] = m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0] * mat.m[3][3];
+	matrix.m[3][1] = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1] * mat.m[3][3];
+	matrix.m[3][2] = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2] * mat.m[3][3];
+	matrix.m[3][3] = m[0][3] * mat.m[3][0] + m[1][3] * mat.m[3][1] + m[2][3] * mat.m[3][2] + m[3][3] * mat.m[3][3];
+	
 	return matrix;
+	/* ==================== SOLUTION #2 end ==================== */
+
+	/* ==================== SOLUTION #3 begin ==================== */
+	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		//matrix.m[i][j] = REAL_ZERO;
+	//		Real sum = REAL_ZERO;
+	//		for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
+	//		{
+	//			sum += m[k][j] * mat.m[i][k];
+	//		}
+	//		matrix.m[i][j] = sum;
+	//	}
+	//}
+	//return matrix;
+	/* ==================== SOLUTION #3 end ==================== */
 }
 
 Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
 	Vector3D result;
 
-	Real oneperw = 1.0f / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
+	Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
 	result.SetX((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw);
 	result.SetY((m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw);
 	result.SetZ((m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
@@ -368,6 +403,11 @@ bool Matrix4D::operator==(const Matrix4D& matrix) const
 	}
 	
 	return true;
+}
+
+bool Matrix4D::operator!=(const Matrix4D& matrix) const
+{
+	return (!((*this) == matrix));
 }
 
 Matrix4D& Matrix4D::operator=(const Matrix4D& mat)

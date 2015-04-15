@@ -2,9 +2,9 @@
 #include "ISort.h"
 #include "Sort.h"
 
-using namespace Math;
+using namespace Math::Sorting;
 
-/* static */ ISort* ISort::GetSortingObject(Sorting::SortingAlgorithm sortingAlgorithm)
+/* static */ ISort* ISort::GetSortingObject(SortingAlgorithm sortingAlgorithm)
 {
 	switch (sortingAlgorithm)
 	{
@@ -23,7 +23,7 @@ using namespace Math;
 	}
 }
 
-ISort::ISort(Sorting::SortingAlgorithm sortingAlgorithm) :
+ISort::ISort(SortingAlgorithm sortingAlgorithm) :
 	m_sortingAlgorithm(sortingAlgorithm)
 {
 }
