@@ -45,9 +45,9 @@ public:
 	bool IsInGameTimeCalculationEnabled() const { return true; }
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Input(Math::Real elapsedTime, Rendering::GameNode& gameNode);
-	virtual void Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode);
-	virtual void Update(Math::Real elapsedTime, Rendering::GameNode& gameNode);
+	virtual void Input(Math::Real elapsedTime);
+	virtual void Render(Rendering::Renderer* renderer);
+	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

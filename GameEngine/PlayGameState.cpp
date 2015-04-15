@@ -151,34 +151,31 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void PlayGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
+void PlayGameState::Input(Math::Real elapsedTime)
 {
 	LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
-	gameNode.InputAll(elapsedTime);
+	GameManager::GetGameManager()->GetRootGameNode()->InputAll(elapsedTime);
 }
 
-void PlayGameState::Render(Renderer* renderer, const GameNode& gameNode)
+void PlayGameState::Render(Renderer* renderer)
 {
 	LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
-	LOG(Utility::Debug, LOGPLACE, "Rendering PLAY STATE");
 
 	if (renderer == NULL)
 	{
 		LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
-	renderer->Render(gameNode);
+	renderer->Render(*GameManager::GetGameManager()->GetRootGameNode());
 }
 
-void PlayGameState::Update(Math::Real elapsedTime, GameNode& gameNode)
+void PlayGameState::Update(Math::Real elapsedTime)
 {
 	LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
-	//stdlog(Delocust, LOGPLACE, "Game is being updated");
-	
-	//planeObject->GetTransform().SetPos(0.0, -1.0, 5.0);
 
+	GameManager* gameManager = GameManager::GetGameManager();
+	gameManager->GetRootGameNode()->UpdateAll(elapsedTime);
 	//rootGameNode->GetTransform().SetPos(0.0, -1.0, 5.0);
-	gameNode.UpdateAll(elapsedTime);
 
 	//temp += delta;
 	//if (temp > 20.0 * M_PI)

@@ -2,9 +2,9 @@
 #define __GAME_STATE_H__
 
 #include "Rendering.h"
-#include "IInputable.h"
-#include "IRenderable.h"
-#include "IUpdateable.h"
+//#include "IInputable.h"
+//#include "IRenderable.h"
+//#include "IUpdateable.h"
 
 namespace Rendering
 {

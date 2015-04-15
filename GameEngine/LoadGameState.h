@@ -46,9 +46,9 @@ public:
 	 */
 	virtual void Revealed();
 
-	virtual void Render(Rendering::Renderer* renderer, const Rendering::GameNode& gameNode);
+	virtual void Render(Rendering::Renderer* renderer);
 	
-	virtual void Update(Math::Real elapsedTime, Rendering::GameNode& gameNode);
+	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

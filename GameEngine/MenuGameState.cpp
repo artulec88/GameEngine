@@ -112,12 +112,12 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void MenuGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
+void MenuGameState::Input(Math::Real elapsedTime)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state input processing");
 }
 
-void MenuGameState::Render(Renderer* renderer, const GameNode& gameNode)
+void MenuGameState::Render(Renderer* renderer)
 {
 	LOG(Utility::Debug, LOGPLACE, "MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);

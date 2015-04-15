@@ -21,7 +21,7 @@ using namespace Utility;
 /* static */ const Vector3D CameraBase::xAxis(REAL_ONE, REAL_ZERO, REAL_ZERO);
 /* static */ const Vector3D CameraBase::yAxis(REAL_ZERO, REAL_ONE, REAL_ZERO);
 
-/* static */ Real CameraBase::sensitivity = 0.5f;
+/* static */ Real CameraBase::sensitivity;
 
 /* static */
 Real CameraBase::GetSensitivity()

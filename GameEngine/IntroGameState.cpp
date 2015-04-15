@@ -51,12 +51,12 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void IntroGameState::Input(Math::Real elapsedTime, GameNode& gameNode)
+void IntroGameState::Input(Math::Real elapsedTime)
 {
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state input processing");
 }
 
-void IntroGameState::Render(Renderer* renderer, const GameNode& gameNode)
+void IntroGameState::Render(Renderer* renderer)
 {
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state rendering");
 }

@@ -160,7 +160,7 @@ void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mo
 	//LOG(Utility::Error, LOGPLACE, "Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
-void DefaultGameStateManager::Input(Math::Real elapsedTime, GameNode& gameNode)
+void DefaultGameStateManager::Input(Math::Real elapsedTime)
 {
 	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
 	{
@@ -168,19 +168,19 @@ void DefaultGameStateManager::Input(Math::Real elapsedTime, GameNode& gameNode)
 	}
 }
 
-void DefaultGameStateManager::Update(Math::Real deltaTime, GameNode& gameNode)
+void DefaultGameStateManager::Update(Math::Real deltaTime)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
 	{
-		(*gameStateItr)->Update(deltaTime, gameNode);
+		(*gameStateItr)->Update(deltaTime);
 	}
 }
 
-void DefaultGameStateManager::Render(Renderer* renderer, const GameNode& gameNode)
+void DefaultGameStateManager::Render(Renderer* renderer)
 {
 	for (std::vector<IRenderable*>::iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
 	{
-		(*gameStateItr)->Render(renderer, gameNode);
+		(*gameStateItr)->Render(renderer);
 	}
 }
 

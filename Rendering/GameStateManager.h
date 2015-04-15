@@ -125,15 +125,15 @@ public:
 
 	/// <summary> Processes player's input according to current game state </summary>
 	/// <param name="elapsedTime"> Elapsed simulation time </param>
-	virtual void Input(Math::Real elapsedTime, GameNode& gameNode) = 0;
+	virtual void Input(Math::Real elapsedTime) = 0;
 
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
-	virtual void Update(Math::Real deltaTime, GameNode& gameNode) = 0;
+	virtual void Update(Math::Real deltaTime) = 0;
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
-	virtual void Render(Renderer* renderer, const GameNode& gameNode) = 0;
+	virtual void Render(Renderer* renderer) = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
 

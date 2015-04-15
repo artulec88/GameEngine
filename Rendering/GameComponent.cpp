@@ -10,14 +10,14 @@
 using namespace Rendering;
 
 GameComponent::GameComponent(void) :
-	parentGameNode(NULL)
+	m_parentGameNode(NULL)
 {
 }
 
 
 GameComponent::~GameComponent(void)
 {
-	// what if parentGameNode is still in use by some other staff?
+	// what if parentGameNode is still in use by some other stuff?
 	//if (parentGameNode != NULL)
 	//{
 	//	delete parentGameNode;
@@ -44,30 +44,25 @@ void GameComponent::SetParent(GameNode* parentGameNode)
 		LOG(Utility::Error, LOGPLACE, "Cannot assign a parent to the game component. Parent game node is NULL.");
 		exit(EXIT_FAILURE);
 	}
-	this->parentGameNode = parentGameNode;
+	m_parentGameNode = parentGameNode;
 }
 
 Transform& GameComponent::GetTransform()
 {
-	if (parentGameNode == NULL)
+	if (m_parentGameNode == NULL)
 	{
 		LOG(Utility::Emergency, LOGPLACE, "Cannot get transformation for a given component. Parent game node is NULL.");
 		exit(EXIT_FAILURE);
 	}
-	return parentGameNode->GetTransform();
+	return m_parentGameNode->GetTransform();
 }
 
 const Transform& GameComponent::GetTransform() const
 {
-	if (parentGameNode == NULL)
+	if (m_parentGameNode == NULL)
 	{
 		LOG(Utility::Emergency, LOGPLACE, "Cannot get transformation for a given component. Parent game node is NULL.");
 		exit(EXIT_FAILURE);
 	}
-	return parentGameNode->GetTransform();
+	return m_parentGameNode->GetTransform();
 }
-
-//void GameComponent::AddToEngine(CoreEngine* engine)
-//{
-//
-//}

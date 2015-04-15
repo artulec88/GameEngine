@@ -28,7 +28,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API int GetID() const { return this->ID; }; // just for easier debugging purposes
+	RENDERING_API int GetID() const { return m_ID; }; // just for easier debugging purposes
 	RENDERING_API GameNode* AddChild(GameNode* child);
 	RENDERING_API GameNode* AddComponent(GameComponent* component);
 
@@ -36,8 +36,8 @@ public:
 	RENDERING_API void UpdateAll(Math::Real delta);
 	RENDERING_API void RenderAll(Shader* shader, Renderer* renderer) const;
 
-	RENDERING_API Transform& GetTransform() { return this->transform; };
-	RENDERING_API const Transform& GetTransform() const { return this->transform; }
+	RENDERING_API Transform& GetTransform() { return m_transform; };
+	RENDERING_API const Transform& GetTransform() const { return m_transform; }
 
 	RENDERING_API std::vector<GameNode*> GetAllDescendants() const;
 private:
@@ -48,10 +48,10 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	int ID; // just for easier debugging purposes
-	std::vector<GameNode*> childrenGameNodes;
-	std::vector<GameComponent*> components;
-	Transform transform;
+	int m_ID; // just for easier debugging purposes
+	std::vector<GameNode*> m_childrenGameNodes;
+	std::vector<GameComponent*> m_components; // See TODO comment in GameComponent.h file.
+	Transform m_transform;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
 

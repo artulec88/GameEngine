@@ -28,7 +28,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Render(Renderer* renderer, const GameNode& rootGameNode) = 0;
+	virtual void Render(Renderer* renderer) = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
