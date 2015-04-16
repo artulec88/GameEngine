@@ -48,6 +48,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_fpsTextRenderer(NULL),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
+	TROPIC_OF_CANCER_SINUS(0.39794863131f),
 	SECONDS_PER_MINUTE(60),
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
@@ -69,8 +70,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_timeSum3(REAL_ZERO),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
-	m_secondsPerFrameStats(),
 	m_isSamplingSpf(false),
+	m_secondsPerFrameStats(),
 #endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
 	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
@@ -176,9 +177,11 @@ void CoreEngine::Stop()
 	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
 	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
 
-	Math::Real minSpf, maxSpf, stdDevSpf;
-	Math::Real averageSpf = CalculateAverageSpf(minSpf, maxSpf, stdDevSpf);
-	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nAverage SPF =\t%.3f [ms]\nMin SPF =\t%.3f [ms]\nMax SPF =\t%.3f [ms]\nStdDev SPF =\t%.3f [ms]", averageSpf, minSpf, maxSpf, stdDevSpf);
+	//Math::Real minSpf, maxSpf, stdDevSpf;
+	Math::Real meanSpf = m_secondsPerFrameStats.CalculateMean(Math::Statistics::SPF);
+	Math::Real medianSpf = m_secondsPerFrameStats.CalculateMedian(Math::Statistics::SPF);
+	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_secondsPerFrameStats.Size(), meanSpf, medianSpf);
+	//LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nAverage SPF =\t%.3f [ms]\nMin SPF =\t%.3f [ms]\nMax SPF =\t%.3f [ms]\nStdDev SPF =\t%.3f [ms]", averageSpf, minSpf, maxSpf, stdDevSpf);
 #endif
 	/* ==================== Printing stats end ==================== */
 }
@@ -253,7 +256,7 @@ void CoreEngine::Run()
 #ifdef CALCULATE_STATS
 			if (m_isSamplingSpf)
 			{
-				m_secondsPerFrameStats.push_back(spf);
+				m_secondsPerFrameStats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
 			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
@@ -463,12 +466,11 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 {
 	const int timeGMTdifference = 1;
 	
-	const Math::Angle b((360.0f / 365.0f) * (m_dayNumber - 81));
+	const Math::Angle b(0.9863014f * (m_dayNumber - 81)); // 0,98630136986301369863013698630137 = 360 / 365
 	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Unit::RADIAN);
-	const Math::Angle tropicOfCancer(23.45f);
 
 	const Math::Real equationOfTime = 9.87f * doubleB.Sin() - 7.53f * b.Cos() - 1.5f * b.Sin(); // EoT
-	const Math::Real declinationSin = tropicOfCancer.Sin() * b.Sin();
+	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * b.Sin();
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
 	//LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
@@ -627,46 +629,46 @@ std::string CoreEngine::MinMaxTime::ToString()
 }
 #endif
 
-#ifdef CALCULATE_STATS
-Math::Real CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
-{
-	if (m_secondsPerFrameStats.empty())
-	{
-		minSpf = REAL_ZERO;
-		maxSpf = REAL_ZERO;
-		stdDev = REAL_ZERO;
-		return REAL_ZERO;
-	}
-
-	minSpf = REAL_MAX;
-	maxSpf = REAL_MIN;
-	Math::Real spfSum = REAL_ZERO;
-	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
-	{
-		Math::Real spf = *spfItr;
-		if (spf < minSpf)
-		{
-			minSpf = spf;
-		}
-		else if (spf > maxSpf)
-		{
-			maxSpf = spf;
-		}
-		spfSum += spf;
-	}
-
-	Math::Real average = spfSum / m_secondsPerFrameStats.size();
-
-	/* ==================== Calculating standard deviation begin ==================== */
-	stdDev = REAL_ZERO;
-	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
-	{
-		stdDev += (average - *spfItr) * (average - *spfItr);
-	}
-	stdDev = sqrt(stdDev / m_secondsPerFrameStats.size());
-	/* ==================== Calculating standard deviation end ==================== */
-
-
-	return average;
-}
-#endif
+//#ifdef CALCULATE_STATS
+//Math::Real CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
+//{
+//	if (m_secondsPerFrameStats.empty())
+//	{
+//		minSpf = REAL_ZERO;
+//		maxSpf = REAL_ZERO;
+//		stdDev = REAL_ZERO;
+//		return REAL_ZERO;
+//	}
+//
+//	minSpf = REAL_MAX;
+//	maxSpf = REAL_MIN;
+//	Math::Real spfSum = REAL_ZERO;
+//	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+//	{
+//		Math::Real spf = *spfItr;
+//		if (spf < minSpf)
+//		{
+//			minSpf = spf;
+//		}
+//		else if (spf > maxSpf)
+//		{
+//			maxSpf = spf;
+//		}
+//		spfSum += spf;
+//	}
+//
+//	Math::Real average = spfSum / m_secondsPerFrameStats.size();
+//
+//	/* ==================== Calculating standard deviation begin ==================== */
+//	stdDev = REAL_ZERO;
+//	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+//	{
+//		stdDev += (average - *spfItr) * (average - *spfItr);
+//	}
+//	stdDev = sqrt(stdDev / m_secondsPerFrameStats.size());
+//	/* ==================== Calculating standard deviation end ==================== */
+//
+//
+//	return average;
+//}
+//#endif

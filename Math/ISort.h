@@ -44,6 +44,8 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	MATH_API virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
 	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
@@ -53,11 +55,11 @@ protected:
 	template <typename T>
 	bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
 	{
-		return NeedSwapping<T>(v1, v2, sortingParameters.GetSortingKey(), sortingParameters.GetSortingDirection());
+		return NeedSwapping<T>(v1, v2, sortingParameters.GetSortingDirection());
 	}
 
 	template <typename T>
-	bool NeedSwapping(const T& v1, const T& v2, SortingKey sortingKey, SortingDirection sortingDirection)
+	bool NeedSwapping(const T& v1, const T& v2, SortingDirection sortingDirection)
 	{
 		switch (sortingDirection)
 		{
@@ -80,7 +82,7 @@ protected:
 		SortingKey sortingKey = sortingParameters.GetSortingKey();
 		if (sortingKey == COMPONENT_Z)
 		{
-			LOG(Utility::Critical, LOGPLACE, "Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
+			LOG(Utility::Error, LOGPLACE, "Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 			return false;
 		}
 
@@ -91,7 +93,7 @@ protected:
 		{
 			return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 		}
-		return NeedSwapping(v1, v2, sortingKey, sortingDirection);
+		return NeedSwapping(v1, v2, sortingDirection);
 	}
 
 	template <>
@@ -107,26 +109,15 @@ protected:
 		{
 			return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 		}
-		return NeedSwapping(v1, v2, sortingKey, sortingDirection);
-	}
-
-	template <>
-	bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, SortingKey sortingKey, SortingDirection sortingDirection)
-	{
-		return NeedSwapping(vec1, vec2, SortingParametersChain(sortingKey, sortingDirection));
-	}
-
-
-	template <>
-	bool NeedSwapping(const Math::Vector3D& vec1, const Math::Vector3D& vec2, SortingKey sortingKey, SortingDirection sortingDirection)
-	{
-		return NeedSwapping(vec1, vec2, SortingParametersChain(sortingKey, sortingDirection));
+		return NeedSwapping(v1, v2, sortingDirection);
 	}
 
 	Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
 	{
 		switch (sortingKey)
 		{
+		case VALUE:
+			LOG(Utility::Warning, LOGPLACE, "VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 		case COMPONENT_X:
 			return v.GetX();
 		case COMPONENT_Y:
@@ -150,6 +141,8 @@ protected:
 	{
 		switch (sortingKey)
 		{
+		case VALUE:
+			LOG(Utility::Warning, LOGPLACE, "VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 		case COMPONENT_X:
 			return v.GetX();
 		case COMPONENT_Y:

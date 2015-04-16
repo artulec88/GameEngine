@@ -4,13 +4,6 @@
 
 using namespace Math::Sorting;
 
-SortingParametersChain::SortingParametersChain() :
-	m_sortingParametersChain(NULL),
-	m_sortingKey(COMPONENT_X),
-	m_sortingDirection(ASCENDING)
-{
-}
-
 SortingParametersChain::SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection) :
 	m_sortingParametersChain(NULL),
 	m_sortingKey(sortingKey),

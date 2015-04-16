@@ -16,7 +16,7 @@ using namespace Math::Sorting;
 	case Sorting::QUICK_SORT: LOG(Utility::Debug, LOGPLACE, "Quick sort specified as the sorting algorithm"); return new QuickSort();
 	case Sorting::SHELL_SORT: LOG(Utility::Debug, LOGPLACE, "Shell sort specified as the sorting algorihtm"); return new ShellSort();
 	case Sorting::COMB_SORT: LOG(Utility::Debug, LOGPLACE, "Comb sort specified as the sorting algorithm."); return new CombSort();
-	case Sorting::COUNTING_SORT: LOG(Utility::Error, LOGPLACE, "Counting sort is not yet supported by the Game engine. Insertion sort will be used instead."); return new InsertionSort();
+	case Sorting::COUNTING_SORT: LOG(Utility::Debug, LOGPLACE, "Counting sort specified as the sorting algorithm"); return new CountingSort();
 	case Sorting::RADIX_SORT: LOG(Utility::Error, LOGPLACE, "Radix sort is not yet supported by the Game engine. Insertion sort will be used instead."); return new InsertionSort();
 	case Sorting::BUCKET_SORT: LOG(Utility::Debug, LOGPLACE, "Bucket sort specified as the sorting algorithm."); return new BucketSort();
 	default: LOG(Utility::Emergency, LOGPLACE, "Unknown sorting algorithm specified. Insertion sort will be used as a default."); return new InsertionSort();

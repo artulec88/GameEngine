@@ -8,6 +8,7 @@
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
+#include "Math\Statistics.h"
 
 #include "Utility\Time.h"
 
@@ -106,7 +107,6 @@ private:
 		minMaxTime.ProcessTime(elapsedTime);
 		timeSum += elapsedTime;
 	}
-	Math::Real CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -127,6 +127,7 @@ protected:
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;
+	const Math::Real TROPIC_OF_CANCER_SINUS;
 	const int SECONDS_PER_MINUTE; // the number of seconds during one minute
 	const int SECONDS_PER_HOUR; // the number of seconds during one hour
 	const int SECONDS_PER_DAY; // the number of seconds during one day
@@ -164,8 +165,8 @@ protected:
 
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;
-	mutable std::vector<Math::Real> m_secondsPerFrameStats;
 	mutable bool m_isSamplingSpf;
+	mutable Math::Statistics::Stats<Math::Real> m_secondsPerFrameStats;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED

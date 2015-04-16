@@ -1,0 +1,58 @@
+[Notice] [2015-04-16 17:09:50] unknown-module : Sorting test started
+[Notice] [2015-04-16 17:10:02] unknown-module : Average time for ASCENDING Merge sort by X component:	0.001 [s]
+[Info] [2015-04-16 17:10:13] unknown-module : Test #2 passed
+[Notice] [2015-04-16 17:10:14] unknown-module : Average time for DESCENDING Merge sort by X component:	0.001 [s]
+[Info] [2015-04-16 17:10:26] unknown-module : Test #3 passed
+[Notice] [2015-04-16 17:10:26] unknown-module : Average time for ASCENDING Merge sort by Y component:	0.001 [s]
+[Info] [2015-04-16 17:10:38] unknown-module : Test #4 passed
+[Notice] [2015-04-16 17:10:39] unknown-module : Average time for DESCENDING Merge sort by Y component:	0.001 [s]
+[Info] [2015-04-16 17:10:50] unknown-module : Test #5 passed
+[Notice] [2015-04-16 17:10:51] unknown-module : Average time for ASCENDING Merge sort by sum of components:	0.001 [s]
+[Error] [2015-04-16 17:10:51] unknown-module : Merge sort in ASCENDING order by sum of components failed. Vectors[125] ((x=-19.9817; y=-19.4226)) should precede Vectors[124] ((x=-19.4604; y=-19.9438))
+[Error] [2015-04-16 17:11:02] unknown-module : Test #6 FAILED. Merge sort in ASCENDING order by sum of components failed.
+[Info] [2015-04-16 17:11:02] unknown-module : Test #6 passed
+[Notice] [2015-04-16 17:11:03] unknown-module : Average time for DESCENDING Merge sort by sum of components:	0.001 [s]
+[Error] [2015-04-16 17:11:03] unknown-module : Merge sort in DESCENDING order by sum of components failed. Vectors[90] ((x=19.8999; y=19.6606)) should precede Vectors[89] ((x=19.9963; y=19.5642))
+[Error] [2015-04-16 17:11:15] unknown-module : Test #7 FAILED. Merge sort in DESCENDING order by sum of components failed.
+[Info] [2015-04-16 17:11:15] unknown-module : Test #7 passed
+[Notice] [2015-04-16 17:11:16] unknown-module : Average time for ASCENDING Merge sort by sum of absolute components:	0.002 [s]
+[Error] [2015-04-16 17:11:16] unknown-module : Merge sort in ASCENDING order by sum of absolute components failed. Vectors[35] ((x=-0.147099; y=0.0201425)) should precede Vectors[34] ((x=-0.071413; y=0.0958284))
+[Error] [2015-04-16 17:11:28] unknown-module : Test #8 FAILED. Merge sort in ASCENDING order by sum of absolute components failed.
+[Info] [2015-04-16 17:11:28] unknown-module : Test #8 passed
+[Notice] [2015-04-16 17:11:29] unknown-module : Average time for DESCENDING Merge sort by sum of absolute components:	0.001 [s]
+[Error] [2015-04-16 17:11:29] unknown-module : Merge sort in DESCENDING order by sum of absolute components failed. Vectors[160] ((x=-19.7778; y=19.9011)) should precede Vectors[159] ((x=-19.7729; y=-19.906))
+[Error] [2015-04-16 17:11:40] unknown-module : Test #9 FAILED. Merge sort in DESCENDING order by sum of absolute components failed.
+[Info] [2015-04-16 17:11:40] unknown-module : Test #9 passed
+[Notice] [2015-04-16 17:11:41] unknown-module : Average time for ASCENDING Merge sort by sum of squared components:	0.001 [s]
+[Error] [2015-04-16 17:11:41] unknown-module : Merge sort in ASCENDING order by sum of squared components failed. Vectors[1268] ((x=-0.352183; y=0.722068)) should precede Vectors[1267] ((x=0.764794; y=-0.245979))
+[Notice] [2015-04-16 17:51:41] unknown-module : Sorting test started
+[Notice] [2015-04-16 17:51:47] unknown-module : Average time for ASCENDING Merge sort by X component:	0.374 [s]
+[Info] [2015-04-16 17:51:53] unknown-module : Test #2 passed
+[Notice] [2015-04-16 17:51:53] unknown-module : Average time for DESCENDING Merge sort by X component:	0.375 [s]
+[Info] [2015-04-16 17:51:59] unknown-module : Test #3 passed
+[Notice] [2015-04-16 17:51:59] unknown-module : Average time for ASCENDING Merge sort by Y component:	0.358 [s]
+[Info] [2015-04-16 17:52:05] unknown-module : Test #4 passed
+[Notice] [2015-04-16 17:52:05] unknown-module : Average time for DESCENDING Merge sort by Y component:	0.374 [s]
+[Info] [2015-04-16 17:52:11] unknown-module : Test #5 passed
+[Notice] [2015-04-16 17:52:11] unknown-module : Average time for ASCENDING Merge sort by sum of components:	0.423 [s]
+[Error] [2015-04-16 17:52:11] unknown-module : Merge sort in ASCENDING order by sum of components failed. Vectors[179] ((x=-19.48; y=-19.4507)) should precede Vectors[178] ((x=-19.0905; y=-19.8401))
+[Notice] [2015-04-16 17:52:24] unknown-module : Sorting test started
+[Notice] [2015-04-16 17:53:27] unknown-module : Sorting test started
+[Notice] [2015-04-16 17:53:33] unknown-module : Average time for ASCENDING Merge sort by X component:	0.375 [s]
+[Info] [2015-04-16 17:53:39] unknown-module : Test #2 passed
+[Notice] [2015-04-16 17:53:39] unknown-module : Average time for DESCENDING Merge sort by X component:	0.390 [s]
+[Info] [2015-04-16 17:53:45] unknown-module : Test #3 passed
+[Notice] [2015-04-16 17:53:45] unknown-module : Average time for ASCENDING Merge sort by Y component:	0.374 [s]
+[Info] [2015-04-16 17:53:51] unknown-module : Test #4 passed
+[Notice] [2015-04-16 17:53:51] unknown-module : Average time for DESCENDING Merge sort by Y component:	0.374 [s]
+[Info] [2015-04-16 17:53:57] unknown-module : Test #5 passed
+[Notice] [2015-04-16 17:53:57] unknown-module : Average time for ASCENDING Merge sort by sum of components:	0.437 [s]
+[Error] [2015-04-16 17:53:57] unknown-module : Merge sort in ASCENDING order by sum of components failed. Vectors[184] ((x=-19.6265; y=-19.2883)) should precede Vectors[183] ((x=-19.3884; y=-19.5264))
+[Error] [2015-04-16 17:54:03] unknown-module : Test #6 FAILED. Merge sort in ASCENDING order by sum of components failed.
+[Info] [2015-04-16 17:54:03] unknown-module : Test #6 passed
+[Notice] [2015-04-16 17:54:03] unknown-module : Average time for DESCENDING Merge sort by sum of components:	0.438 [s]
+[Error] [2015-04-16 17:54:03] unknown-module : Merge sort in DESCENDING order by sum of components failed. Vectors[74] ((x=19.6472; y=19.7241)) should precede Vectors[73] ((x=19.8779; y=19.4934))
+[Error] [2015-04-16 17:54:09] unknown-module : Test #7 FAILED. Merge sort in DESCENDING order by sum of components failed.
+[Info] [2015-04-16 17:54:09] unknown-module : Test #7 passed
+[Notice] [2015-04-16 17:54:10] unknown-module : Average time for ASCENDING Merge sort by sum of absolute components:	0.702 [s]
+[Error] [2015-04-16 17:54:10] unknown-module : Merge sort in ASCENDING order by sum of absolute components failed. Vectors[93] ((x=-0.353404; y=-0.0189212)) should precede Vectors[92] ((x=-0.3473; y=-0.0250249))

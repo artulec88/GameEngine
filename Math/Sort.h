@@ -22,10 +22,12 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
-	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
-	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
-	virtual void Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
+	virtual void Sort(Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
 private:
 	template <typename T>
 	void Sort(T* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
@@ -77,6 +79,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -133,6 +137,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -195,6 +201,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -284,6 +292,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -368,6 +378,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -459,6 +471,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -565,6 +579,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -631,6 +647,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -654,6 +672,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);
@@ -702,6 +722,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
+	virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING);
 	virtual void Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters);

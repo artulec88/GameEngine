@@ -5,7 +5,7 @@
 namespace Math { namespace Sorting
 {
 
-enum MATH_API SortingKey { COMPONENT_X = 0, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_ABSOLUTE_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
+enum MATH_API SortingKey { VALUE = 0, COMPONENT_X, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_ABSOLUTE_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
 enum MATH_API SortingDirection { ASCENDING = 0, DESCENDING };
 
 class SortingParametersChain
@@ -16,7 +16,6 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API SortingParametersChain();
 	MATH_API SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
 	MATH_API virtual ~SortingParametersChain(void);
 private:
