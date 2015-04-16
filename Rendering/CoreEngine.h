@@ -13,9 +13,13 @@
 
 #include <string>
 
+#ifdef CALCULATE_STATS
+#include <vector>
+#endif
+
 //#ifdef _DEBUG
 #define COUNT_FPS
-//#define CALCULATE_STATS
+#define CALCULATE_STATS
 //#endif
 
 namespace Rendering
@@ -88,6 +92,10 @@ private:
 	void CalculateSunElevationAndAzimuth();
 
 #ifdef CALCULATE_STATS
+public:
+	void StartSamplingSpf() const { m_isSamplingSpf = true; }
+	void StopSamplingSpf() const { m_isSamplingSpf = false; }
+private:
 	void StartTimer(LARGE_INTEGER& start) const { QueryPerformanceCounter(&start); }
 	void StopTimer(LARGE_INTEGER& start, LARGE_INTEGER& end, LARGE_INTEGER frequency, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
 	{
@@ -98,6 +106,7 @@ private:
 		minMaxTime.ProcessTime(elapsedTime);
 		timeSum += elapsedTime;
 	}
+	Math::Real CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -155,6 +164,8 @@ protected:
 
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;
+	mutable std::vector<Math::Real> m_secondsPerFrameStats;
+	mutable bool m_isSamplingSpf;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED

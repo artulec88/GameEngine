@@ -248,7 +248,7 @@ void GameManager::AddToSceneRoot(GameNode* child)
 
 void GameManager::Render(Renderer* renderer)
 {
-	m_gameStateManager->Render(renderer, GetRootGameNode());
+	m_gameStateManager->Render(renderer);
 }
 
 void GameManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)

@@ -173,6 +173,7 @@ void TestGameManager::Load()
 	monkeyNode1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\monkey4.obj"),
 		new Material(new Texture("..\\Textures\\chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
+	monkeyNode1->AddComponent(new LookAtComponent());
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
@@ -545,7 +546,7 @@ void TestGameManager::AddCameras()
 
 void TestGameManager::Input(Real delta)
 {
-	m_gameStateManager->Input(delta, GetRootGameNode());
+	m_gameStateManager->Input(delta);
 }
 
 // TODO: Remove in the future
@@ -557,7 +558,7 @@ bool isMouseLocked = false;
 
 void TestGameManager::Update(Real delta)
 {
-	m_gameStateManager->Update(delta, GetRootGameNode());
+	m_gameStateManager->Update(delta);
 }
 
 void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)

@@ -2,6 +2,7 @@
 #include "Rendering\GameManager.h"
 #include "Utility\ILogger.h"
 #include "PlayMenuGameState.h"
+#include "Rendering\CoreEngine.h"
 
 #include "tinythread.h"
 
@@ -39,12 +40,19 @@ void PlayGameState::Entered()
 		gameManager->Load();
 		gameManager->InitializeTweakBars();
 	}
+
+#ifdef CALCULATE_STATS
+	CoreEngine::GetCoreEngine()->StartSamplingSpf();
+#endif
 	//t.join();
 }
 
 void PlayGameState::Leaving()
 {
 	LOG(Utility::Info, LOGPLACE, "PLAY game state is about to be removed from the game state manager");
+#ifdef CALCULATE_STATS
+	CoreEngine::GetCoreEngine()->StopSamplingSpf();
+#endif
 }
 
 void PlayGameState::Obscuring()
@@ -154,7 +162,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 void PlayGameState::Input(Math::Real elapsedTime)
 {
 	LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
-	GameManager::GetGameManager()->GetRootGameNode()->InputAll(elapsedTime);
+	GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
 }
 
 void PlayGameState::Render(Renderer* renderer)
@@ -166,7 +174,7 @@ void PlayGameState::Render(Renderer* renderer)
 		LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
 		exit(EXIT_FAILURE);
 	}
-	renderer->Render(*GameManager::GetGameManager()->GetRootGameNode());
+	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)
@@ -174,7 +182,7 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
 
 	GameManager* gameManager = GameManager::GetGameManager();
-	gameManager->GetRootGameNode()->UpdateAll(elapsedTime);
+	gameManager->GetRootGameNode().UpdateAll(elapsedTime);
 	//rootGameNode->GetTransform().SetPos(0.0, -1.0, 5.0);
 
 	//temp += delta;

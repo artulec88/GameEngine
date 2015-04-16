@@ -68,7 +68,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_countStats3(0),
 	m_timeSum3(REAL_ZERO),
 	m_renderingRequiredCount(0),
-	m_renderingNotRequiredCount(0)
+	m_renderingNotRequiredCount(0),
+	m_secondsPerFrameStats(),
+	m_isSamplingSpf(false),
 #endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
 	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
@@ -173,6 +175,10 @@ void CoreEngine::Stop()
 	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
 	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
 	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
+
+	Math::Real minSpf, maxSpf, stdDevSpf;
+	Math::Real averageSpf = CalculateAverageSpf(minSpf, maxSpf, stdDevSpf);
+	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nAverage SPF =\t%.3f [ms]\nMin SPF =\t%.3f [ms]\nMax SPF =\t%.3f [ms]\nStdDev SPF =\t%.3f [ms]", averageSpf, minSpf, maxSpf, stdDevSpf);
 #endif
 	/* ==================== Printing stats end ==================== */
 }
@@ -244,6 +250,12 @@ void CoreEngine::Run()
 		{
 			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
+#ifdef CALCULATE_STATS
+			if (m_isSamplingSpf)
+			{
+				m_secondsPerFrameStats.push_back(spf);
+			}
+#endif
 			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = REAL_ZERO;
@@ -612,5 +624,49 @@ std::string CoreEngine::MinMaxTime::ToString()
 	}
 	ss << " }";
 	return ss.str();
+}
+#endif
+
+#ifdef CALCULATE_STATS
+Math::Real CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
+{
+	if (m_secondsPerFrameStats.empty())
+	{
+		minSpf = REAL_ZERO;
+		maxSpf = REAL_ZERO;
+		stdDev = REAL_ZERO;
+		return REAL_ZERO;
+	}
+
+	minSpf = REAL_MAX;
+	maxSpf = REAL_MIN;
+	Math::Real spfSum = REAL_ZERO;
+	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+	{
+		Math::Real spf = *spfItr;
+		if (spf < minSpf)
+		{
+			minSpf = spf;
+		}
+		else if (spf > maxSpf)
+		{
+			maxSpf = spf;
+		}
+		spfSum += spf;
+	}
+
+	Math::Real average = spfSum / m_secondsPerFrameStats.size();
+
+	/* ==================== Calculating standard deviation begin ==================== */
+	stdDev = REAL_ZERO;
+	for (std::vector<Math::Real>::const_iterator spfItr = m_secondsPerFrameStats.begin(); spfItr != m_secondsPerFrameStats.end(); ++spfItr)
+	{
+		stdDev += (average - *spfItr) * (average - *spfItr);
+	}
+	stdDev = sqrt(stdDev / m_secondsPerFrameStats.size());
+	/* ==================== Calculating standard deviation end ==================== */
+
+
+	return average;
 }
 #endif

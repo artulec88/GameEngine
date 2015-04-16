@@ -594,9 +594,15 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 	/* ==================== Adjusting the time variables end ==================== */
 }
 
+// TODO: Move these two variables to Renderer class
+Math::Real skyboxAngle = REAL_ZERO;
+Math::Real skyboxAngleStep = 0.02f; // TODO: This variable should be dependant of the clock speed in CoreEngine
+
 void Renderer::RenderSkybox()
 {
 	cubeMapNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
+	cubeMapNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
+	skyboxAngle += skyboxAngleStep;
 	if (ambientLightFogEnabled)
 	{
 		return;

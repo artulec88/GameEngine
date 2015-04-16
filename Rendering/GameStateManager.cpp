@@ -164,7 +164,7 @@ void DefaultGameStateManager::Input(Math::Real elapsedTime)
 {
 	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
 	{
-		(*gameStateItr)->Input(elapsedTime, gameNode);
+		(*gameStateItr)->Input(elapsedTime);
 	}
 }
 

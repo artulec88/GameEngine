@@ -95,36 +95,39 @@ void DirectionalLight::Update(Math::Real delta)
 	Math::Real daytimeTransitionFactor;
 	Rendering::GameTime::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
 
-	isEnabled = (daytime != Rendering::GameTime::NIGHT);
+	m_isEnabled = (daytime != Rendering::GameTime::NIGHT);
 
 	switch (daytime)
 	{
 	case GameTime::NIGHT:
-		color = m_sunlightNighttimeColor;
+		m_color = m_sunlightNighttimeColor;
 		break;
 	case GameTime::BEFORE_DAWN:
-		color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-		intensity = daytimeTransitionFactor * m_maxIntensity;
+		m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
+		m_intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;
 	case GameTime::SUNRISE:
-		color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-		intensity = m_maxIntensity;
+		m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
+		m_intensity = m_maxIntensity;
 		break;
 	case GameTime::DAY:
-		color = m_sunlightDaytimeColor;
+		m_color = m_sunlightDaytimeColor;
 		break;
 	case GameTime::SUNSET:
-		color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-		intensity = m_maxIntensity;
+		m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
+		m_intensity = m_maxIntensity;
 		break;
 	case GameTime::AFTER_DUSK:
-		color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-		intensity = daytimeTransitionFactor * m_maxIntensity;
+		m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
+		m_intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;
 	}
 	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(-sunElevation, -sunAzimuth);
 	GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another
 	// e.g. GetTransform().SetRot(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), 0.5f, true));
+	
+	//GetTransform().Rotate(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), delta * 5, true));
+	//GetTransform().Rotate(Math::Quaternion(rotMatrix));
 }
 
 #endif

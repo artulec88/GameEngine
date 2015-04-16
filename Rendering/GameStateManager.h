@@ -199,15 +199,15 @@ public:
 
 	/// <summary> Processes player's input according to current game state </summary>
 	/// <param name="elapsedTime> Elapsed simulation time </param>
-	virtual void Input(Math::Real elapsedTime, GameNode& gameNode);
+	virtual void Input(Math::Real elapsedTime);
 
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
-	void Update(Math::Real deltaTime, GameNode& gameNode);
+	void Update(Math::Real deltaTime);
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
-	void Render(Renderer* renderer, const GameNode& gameNode);
+	void Render(Renderer* renderer);
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it

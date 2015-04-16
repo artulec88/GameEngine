@@ -19,7 +19,7 @@ SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZER
 		Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
 		Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) ) */) :
 	PointLight(color, intensity, attenuation),
-	cutoff(cos(viewAngle.GetAngleInRadians() / 2.0f))
+	m_cutoff((viewAngle / 2).Cos())
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
 

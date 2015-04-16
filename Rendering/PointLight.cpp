@@ -28,13 +28,13 @@ void PointLight::CalculateRange()
 	Math::Real a = m_attenuation.GetExponent();
 	Math::Real b = m_attenuation.GetLinear();
 
-	Math::Real maxColorElement = (color.GetRed() > color.GetGreen()) ? color.GetRed() : color.GetGreen();
-	if (color.GetBlue() > maxColorElement)
+	Math::Real maxColorElement = (m_color.GetRed() > m_color.GetGreen()) ? m_color.GetRed() : m_color.GetGreen();
+	if (m_color.GetBlue() > maxColorElement)
 	{
-		maxColorElement = color.GetBlue();
+		maxColorElement = m_color.GetBlue();
 	}
 	const int colorDepth = GET_CONFIG_VALUE("ColorDepth", 256);
-	Math::Real c = m_attenuation.GetConstant() - colorDepth * intensity * maxColorElement;
+	Math::Real c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
 
 	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
 }
