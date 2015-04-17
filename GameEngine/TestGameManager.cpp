@@ -96,24 +96,19 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
 	planeNode = new GameNode();
-#ifdef ANT_TWEAK_BAR_ENABLED
 	planeMesh = new TerrainMesh("..\\Models\\terrain02.obj");
+#ifndef ANT_TWEAK_BAR_ENABLED
+	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
+	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
+	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
+	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
+#endif
 	planeMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), planeSpecularIntensity, planeSpecularPower,
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), planeDisplacementScale, planeDisplacementOffset);
 	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
 	m_resourcesLoaded += 5; // TODO: Consider creating some prettier solution. This is ugly
-#else
-	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
-	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
-	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
-	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
-	planeNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\terrain02.obj"),
-		new Material(new Texture("..\\Textures\\grass.jpg"), planeSpecularIntensity, planeSpecularPower,
-		new Texture("..\\Textures\\bricks_normal.jpg"), new Texture("..\\Textures\\bricks_disp.png"), planeDisplacementScale, planeDisplacementOffset)));
-	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-#endif
 	//planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	planeNode->GetTransform().SetScale(15.0f);
 	planeMesh->TransformPositions(planeNode->GetTransform().GetTransformation());

@@ -56,3 +56,4 @@
 [Info] [2015-04-16 17:54:09] unknown-module : Test #7 passed
 [Notice] [2015-04-16 17:54:10] unknown-module : Average time for ASCENDING Merge sort by sum of absolute components:	0.702 [s]
 [Error] [2015-04-16 17:54:10] unknown-module : Merge sort in ASCENDING order by sum of absolute components failed. Vectors[93] ((x=-0.353404; y=-0.0189212)) should precede Vectors[92] ((x=-0.3473; y=-0.0250249))
+[Notice] [2015-04-17 02:37:12] unknown-module : Sorting test started

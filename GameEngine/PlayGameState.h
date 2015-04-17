@@ -7,7 +7,6 @@
 #include "Rendering\IRenderable.h"
 #include "Rendering\IUpdateable.h"
 #include "Math\Math.h"
-#include "Rendering\GameNode.h"
 
 namespace Game
 {
@@ -52,6 +51,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	//Rendering::GameNode& m_rootGameNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PlayGameState */
 

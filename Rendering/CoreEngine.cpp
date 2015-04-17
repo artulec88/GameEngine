@@ -184,6 +184,16 @@ void CoreEngine::Stop()
 	//LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nAverage SPF =\t%.3f [ms]\nMin SPF =\t%.3f [ms]\nMax SPF =\t%.3f [ms]\nStdDev SPF =\t%.3f [ms]", averageSpf, minSpf, maxSpf, stdDevSpf);
 #endif
 	/* ==================== Printing stats end ==================== */
+
+	// Just for checking whether time calculation is performed correctly
+	//LARGE_INTEGER frequency; // ticks per second
+	//QueryPerformanceFrequency(&frequency); // get ticks per second;
+	//LARGE_INTEGER t1, t2;
+	//QueryPerformanceCounter(&t1);
+	//tthread::this_thread::sleep_for(tthread::chrono::seconds(1));
+	//QueryPerformanceCounter(&t2);
+	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
+	//LOG(Info, LOGPLACE, "Elapsed time = %f [us]", elapsedTime);
 }
 
 void CoreEngine::Run()
@@ -315,17 +325,22 @@ void CoreEngine::Run()
 		START_TIMER(t1);
 		if (isRenderRequired)
 		{
-			m_renderer->SetReal("timeOfDay", m_timeOfDay);
+			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
 			m_game.Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
-			
+
+#ifdef DRAW_FPS
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
-			
+#endif
+#ifdef DRAW_GAME_TIME
 			if (m_game.IsInGameTimeCalculationEnabled())
 			{
+#ifndef DRAW_FPS
+				std::stringstream ss;
+#endif
 				ss.str(std::string());
 				// TODO: Leading zeros (setfill('0') << setw(5))
 				if (inGameHours < 10) { ss << "Time: 0"; }
@@ -345,6 +360,7 @@ void CoreEngine::Run()
 				}
 				m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
 			}
+#endif
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();
@@ -467,10 +483,11 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const int timeGMTdifference = 1;
 	
 	const Math::Angle b(0.9863014f * (m_dayNumber - 81)); // 0,98630136986301369863013698630137 = 360 / 365
-	const Math::Angle doubleB(b.GetAngleInRadians() * 2.0f, Math::Unit::RADIAN);
+	const Math::Real bSin = b.Sin();
+	const Math::Real bCos = b.Cos();
 
-	const Math::Real equationOfTime = 9.87f * doubleB.Sin() - 7.53f * b.Cos() - 1.5f * b.Sin(); // EoT
-	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * b.Sin();
+	const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
+	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
 	//LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
@@ -568,6 +585,11 @@ void CoreEngine::InitializeTweakBars()
 	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
+	
+	TwDefine(" CoreEnginePropertiesBar refresh=0.5 ");
+	//double refreshRate = 0.2;
+	//TwSetParam(coreEnginePropertiesBar, NULL, "refresh", TW_PARAM_DOUBLE, 1, &refreshRate);
+
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 }
 #endif

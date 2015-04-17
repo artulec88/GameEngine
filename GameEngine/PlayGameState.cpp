@@ -3,6 +3,7 @@
 #include "Utility\ILogger.h"
 #include "PlayMenuGameState.h"
 #include "Rendering\CoreEngine.h"
+#include "Rendering\GameNode.h"
 
 #include "tinythread.h"
 
@@ -10,7 +11,8 @@ using namespace Game;
 using namespace Rendering;
 
 PlayGameState::PlayGameState(void) :
-	GameState()
+	GameState()//,
+	//m_rootGameNode(GameManager::GetGameManager()->GetRootGameNode())
 {
 }
 
@@ -38,7 +40,9 @@ void PlayGameState::Entered()
 	if (!gameManager->IsGameLoaded())
 	{
 		gameManager->Load();
+#ifdef ANT_TWEAK_BAR_ENABLED
 		gameManager->InitializeTweakBars();
+#endif
 	}
 
 #ifdef CALCULATE_STATS
@@ -161,28 +165,34 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 
 void PlayGameState::Input(Math::Real elapsedTime)
 {
-	LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
+	//LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
 	GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
+	//m_rootGameNode.InputAll(elapsedTime);
 }
 
 void PlayGameState::Render(Renderer* renderer)
 {
-	LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
+	//LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
 
-	if (renderer == NULL)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
-		exit(EXIT_FAILURE);
-	}
+	//if (renderer == NULL)
+	//{
+	//	LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
+	//	exit(EXIT_FAILURE);
+	//}
+	
+	//renderer->Render(m_rootGameNode);
+
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)
 {
-	LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
+	//LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
 
-	GameManager* gameManager = GameManager::GetGameManager();
-	gameManager->GetRootGameNode().UpdateAll(elapsedTime);
+	//m_rootGameNode.UpdateAll(elapsedTime);
+	GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);
+
+
 	//rootGameNode->GetTransform().SetPos(0.0, -1.0, 5.0);
 
 	//temp += delta;

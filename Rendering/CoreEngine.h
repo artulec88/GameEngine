@@ -18,8 +18,17 @@
 #include <vector>
 #endif
 
+// TODO: Consider replacing some of even all of below #defines with CoreEngine class member variables.
+// As member variables they could be easily added to the CoreEngine tweak bar and modified in runtime.
 //#ifdef _DEBUG
+
 #define COUNT_FPS
+#ifdef COUNT_FPS
+#define DRAW_FPS
+#endif
+
+#define DRAW_GAME_TIME
+
 #define CALCULATE_STATS
 //#endif
 

@@ -40,9 +40,9 @@ CameraBase::CameraBase(const Matrix4D& projectionMatrix) :
 {
 }
 
-CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
+CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane)
 #ifdef ANT_TWEAK_BAR_ENABLED
-	m_prevFov(FoV),
+	: m_prevFov(FoV),
 	m_fov(FoV),
 	m_prevAspectRatio(aspectRatio),
 	m_aspectRatio(aspectRatio),
