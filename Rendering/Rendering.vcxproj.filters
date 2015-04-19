@@ -19,16 +19,55 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="..\Shaders\BasicVertexShader.vshader">
+    <None Include="..\Shaders\basicShader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\BasicFragmentShader.fshader">
+    <None Include="..\Shaders\billboarding.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\TextureFragmentShader.fshader">
+    <None Include="..\Shaders\common.glh">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\TextureVertexShader.vshader">
+    <None Include="..\Shaders\filter.vsh">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\filter-fxaa.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\filter-gaussBlur7x1.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\filter-null.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forward-ambient.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forward-ambient-fog-enabled.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forward-directional.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forwardlighting.glh">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forwardlighting.vsh">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forward-point.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\forward-spot.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\Lighting.glh">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\lightingMain.fsh">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="..\Shaders\nullShader.glsl">
       <Filter>Shaders</Filter>
     </None>
     <None Include="..\Shaders\PhongFragmentShader.fshader">
@@ -37,28 +76,16 @@
     <None Include="..\Shaders\PhongVertexShader.vshader">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\ForwardAmbient.fshader">
+    <None Include="..\Shaders\Sampling.glh">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\ForwardAmbient.vshader">
+    <None Include="..\Shaders\shadowMapGenerator.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\ForwardDirectional.fshader">
+    <None Include="..\Shaders\skybox-shader.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="..\Shaders\ForwardDirectional.vshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\ForwardPoint.fshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\ForwardPoint.vshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\ForwardSpot.fshader">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="..\Shaders\ForwardSpot.vshader">
+    <None Include="..\Shaders\text-shader.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

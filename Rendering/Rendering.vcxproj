@@ -78,20 +78,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\Shaders\BasicFragmentShader.fshader" />
-    <None Include="..\Shaders\BasicVertexShader.vshader" />
-    <None Include="..\Shaders\ForwardAmbient.fshader" />
-    <None Include="..\Shaders\ForwardAmbient.vshader" />
-    <None Include="..\Shaders\ForwardDirectional.fshader" />
-    <None Include="..\Shaders\ForwardDirectional.vshader" />
-    <None Include="..\Shaders\ForwardPoint.fshader" />
-    <None Include="..\Shaders\ForwardPoint.vshader" />
-    <None Include="..\Shaders\ForwardSpot.fshader" />
-    <None Include="..\Shaders\ForwardSpot.vshader" />
+    <None Include="..\Shaders\basicShader.glsl" />
+    <None Include="..\Shaders\billboarding.glsl" />
+    <None Include="..\Shaders\common.glh" />
+    <None Include="..\Shaders\filter-fxaa.glsl" />
+    <None Include="..\Shaders\filter-gaussBlur7x1.glsl" />
+    <None Include="..\Shaders\filter-null.glsl" />
+    <None Include="..\Shaders\filter.vsh" />
+    <None Include="..\Shaders\forward-ambient-fog-enabled.glsl" />
+    <None Include="..\Shaders\forward-ambient.glsl" />
+    <None Include="..\Shaders\forward-directional.glsl" />
+    <None Include="..\Shaders\forward-point.glsl" />
+    <None Include="..\Shaders\forward-spot.glsl" />
+    <None Include="..\Shaders\forwardlighting.glh" />
+    <None Include="..\Shaders\forwardlighting.vsh" />
+    <None Include="..\Shaders\Lighting.glh" />
+    <None Include="..\Shaders\lightingMain.fsh" />
+    <None Include="..\Shaders\nullShader.glsl" />
     <None Include="..\Shaders\PhongFragmentShader.fshader" />
     <None Include="..\Shaders\PhongVertexShader.vshader" />
-    <None Include="..\Shaders\TextureFragmentShader.fshader" />
-    <None Include="..\Shaders\TextureVertexShader.vshader" />
+    <None Include="..\Shaders\Sampling.glh" />
+    <None Include="..\Shaders\shadowMapGenerator.glsl" />
+    <None Include="..\Shaders\skybox-shader.glsl" />
+    <None Include="..\Shaders\text-shader.glsl" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

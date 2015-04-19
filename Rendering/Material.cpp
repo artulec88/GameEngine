@@ -9,7 +9,8 @@ Material::Material(Texture* diffuseTexture,
 	Texture* normalMap /* = NULL */,
 	Texture* displacementMap /* = NULL */,
 	Math::Real displacementScale /* = REAL_ZERO */,
-	Math::Real displacementOffset /* = REAL_ZERO */)
+	Math::Real displacementOffset /* = REAL_ZERO */) :
+		m_hasMultipleTextures(false)
 {
 	if (diffuseTexture == NULL)
 	{
@@ -57,5 +58,6 @@ void Material::SetAdditionalTexture(Texture* texture, const std::string& texture
 		LOG(Utility::Warning, LOGPLACE, "Cannot set the additional texture for material. The texture is NULL.");
 		return;
 	}
+	m_hasMultipleTextures = true;
 	SetTexture(textureName, texture);
 }

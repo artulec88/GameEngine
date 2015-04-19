@@ -29,10 +29,12 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API void SetAdditionalTexture(Texture* texture, const std::string& textureName);
+	bool HasMultipleTextures() const { return m_hasMultipleTextures; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-//private:
+private:
+	bool m_hasMultipleTextures;
 	//Texture* texture;
 	//Math::Vector3D color;
 	/**

@@ -1,11 +1,13 @@
 #include "sampling.glh"
 
 uniform sampler2D diffuse;
+uniform sampler2D diffuse2;
 uniform sampler2D normalMap;
 uniform sampler2D displacementMap;
 
 uniform float displacementScale;
 uniform float displacementBias;
+//uniform bool hasMultipleTextures;
 
 uniform sampler2D R_shadowMap;
 uniform float R_shadowVarianceMin;
@@ -39,7 +41,21 @@ void main()
 	vec3 normal = normalize(tbnMatrix * (255.0/128.0 * texture2D(normalMap, texCoords).xyz - 1));
     
     vec4 lightingAmt = CalcLightingEffect(normal, worldPos0) * CalcShadowAmount(R_shadowMap, shadowMapCoords0);
-	SetFragOutput(0, texture2D(diffuse, texCoords) * lightingAmt);
+	
+	const float minimum = -1.8; // TODO: Get minimum and maximum height from the terrain mesh
+	const float maximum = 0.8;
+	const float limit = 0.5;
+	vec4 texColor = 0.0;
+	
+	if (worldPos0.y < limit)
+	{
+		texColor = mix(texture2D(diffuse, texCoords), texture2D(diffuse2, texCoords), (worldPos0.y - minimum) / (limit - minimum));
+	}
+	else
+	{
+		texColor = texture2D(diffuse2, texCoords);
+	}
+	SetFragOutput(0, texColor * lightingAmt);
 	
 	// vec4 diffuseTexColor = texture2D(diffuse, texCoords);
 	// if (hasMultipleTextures)

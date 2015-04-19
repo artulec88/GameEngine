@@ -205,8 +205,6 @@ void CoreEngine::Run()
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
-	m_renderer->InitializeTweakBars();
-	//m_game.InitializeTweakBars();
 	InitializeTweakBars();
 #endif
 
@@ -568,6 +566,10 @@ Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTr
 #ifdef ANT_TWEAK_BAR_ENABLED
 void CoreEngine::InitializeTweakBars()
 {
+	AntTweakBarTypes::InitializeTweakBarTypes();
+
+	TwWindowSize(m_windowWidth, m_windowHeight);
+
 	TwBar* coreEnginePropertiesBar = TwNewBar("CoreEnginePropertiesBar");
 	TwAddVarRW(coreEnginePropertiesBar, "windowWidth", TW_TYPE_INT32, &m_windowWidth, " label='Window width' ");
 	TwAddVarRW(coreEnginePropertiesBar, "windowHeight", TW_TYPE_INT32, &m_windowHeight, " label='Window height' ");

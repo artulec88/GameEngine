@@ -113,6 +113,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	defaultShader = new Shader(GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient"));
 	defaultShaderFogEnabled = new Shader(GET_CONFIG_VALUE_STR("defaultShaderFogEnabled", "ForwardAmbientFogEnabled"));
+	m_defaultShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-terrain"));
+	m_defaultShaderFogEnabledTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-fog-enabled-terrain"));
+
 	shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
 	nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
 	gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
@@ -121,14 +124,14 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
-	tempTarget = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	filterTarget = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
-	planeMaterial = new Material(tempTarget, 1, 8);
-	planeTransform.SetScale(REAL_ONE);
-	planeTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
-	planeTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
-	planeMesh = new Mesh("..\\Models\\plane4.obj");
-	planeMesh->Initialize();
+	filterMaterial = new Material(filterTarget, 1, 8);
+	filterTransform.SetScale(REAL_ONE);
+	filterTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
+	filterTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
+	filterMesh = new Mesh("..\\Models\\plane4.obj");
+	filterMesh->Initialize();
 
 	InitializeCubeMap();
 
@@ -196,8 +199,8 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	//SAFE_DELETE(cubeMapNode);
 	SAFE_DELETE(cubeMapShader);
-	SAFE_DELETE(planeMaterial);
-	SAFE_DELETE(planeMesh);
+	SAFE_DELETE(filterMaterial);
+	SAFE_DELETE(filterMesh);
 
 	// TODO: fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
@@ -310,37 +313,37 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	}
 	if (!cubeMapPosXFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the right face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the right face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegXFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the left face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the left face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapPosYFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the up face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the up face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegYFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the down face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the down face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapPosZFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the front face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the front face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegZFaceFileFound)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot locate the back face of the cube map");
+		LOG(Error, LOGPLACE, "Cannot locate the back face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
@@ -351,6 +354,19 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 		exit(EXIT_FAILURE);
 	}
 	return cubeMapTexture;
+}
+
+void Renderer::RegisterTerrainNode(GameNode* terrainNode)
+{
+	if (terrainNode == NULL)
+	{
+		LOG(Warning, LOGPLACE, "Terrain node is NULL.");
+	}
+	if (m_terrainNode != NULL)
+	{
+		LOG(Warning, LOGPLACE, "Replacing already set terrain node with a different one.");
+	}
+	m_terrainNode = terrainNode;
 }
 
 void Renderer::Render(const GameNode& gameNode)
@@ -383,10 +399,12 @@ void Renderer::Render(const GameNode& gameNode)
 	m_currentCamera = cameras[currentCameraIndex];
 	if (ambientLightFogEnabled)
 	{
+		m_terrainNode->RenderAll(m_defaultShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
 	}
 	else
 	{
+		m_terrainNode->RenderAll(m_defaultShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(defaultShader, this); // Ambient rendering with disabled fog
 	}
 
@@ -407,7 +425,7 @@ void Renderer::Render(const GameNode& gameNode)
 		}
 		SetTexture("shadowMap", shadowMaps[shadowMapIndex]);
 		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-		glClearColor(REAL_ONE /* completely in light */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		if (shadowInfo != NULL) // The currentLight casts shadows
 		{
@@ -428,6 +446,7 @@ void Renderer::Render(const GameNode& gameNode)
 			m_currentCamera = &altCamera;
 
 			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
+			m_terrainNode->RenderAll(shadowMapShader, this);
 			gameNode.RenderAll(shadowMapShader, this);
 			if (flipFacesEnabled) { glCullFace(GL_BACK); }
 
@@ -462,6 +481,7 @@ void Renderer::Render(const GameNode& gameNode)
 		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
 		glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
+		m_terrainNode->RenderAll(currentLight->GetTerrainShader(), this);
 		gameNode.RenderAll(currentLight->GetShader(), this);
 
 		glDepthFunc(Rendering::glDepthTestFunc);
@@ -483,8 +503,8 @@ void Renderer::Render(const GameNode& gameNode)
 		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//	defaultShader->Bind();
-		//	defaultShader->UpdateUniforms(planeTransform, *planeMaterial, this);
-		//	planeMesh->Draw();
+		//	defaultShader->UpdateUniforms(filterTransform, *filterMaterial, this);
+		//	filterMesh->Draw();
 
 		//	m_currentCamera = temp;
 		//}
@@ -492,19 +512,9 @@ void Renderer::Render(const GameNode& gameNode)
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
-//#ifdef ANT_TWEAK_BAR_ENABLED
-//	TwDraw();
-//#endif
-
 	RenderSkybox();
 
 	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
-
-	//double time = glfwGetTime();
-	//std::stringstream ss;
-	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
-	//textRenderer->DrawString(0, 5800, ss.str(), this);
-	//textRenderer->DrawString(0, 50, "Hello world", this);
 }
 
 void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
@@ -550,7 +560,7 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 
 	std::stringstream ss;
 	int progress = static_cast<int>(loadingProgress * 100);
-	ss << progress << "\%";
+	ss << progress << "%";
 	textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
 	textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
 }
@@ -588,7 +598,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
 		break;
 	}
-	//LOG(Utility::Debug, LOGPLACE, "Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
+	//LOG(Debug, LOGPLACE, "Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
 	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());
 	SetReal("dayNightMixFactor", dayNightMixFactor);
 	/* ==================== Adjusting the time variables end ==================== */
@@ -691,8 +701,8 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader->Bind();
-	filterShader->UpdateUniforms(planeTransform, *planeMaterial, this);
-	planeMesh->Draw();
+	filterShader->UpdateUniforms(filterTransform, *filterMaterial, this);
+	filterMesh->Draw();
 
 	m_currentCamera = temp;
 	SetTexture("filterTexture", NULL);
@@ -812,7 +822,7 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 	std::map<std::string, unsigned int>::const_iterator samplerItr = samplerMap.find(samplerName);
 	if (samplerItr == samplerMap.end())
 	{
-		LOG(Utility::Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
+		LOG(Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return 0;
 		//exit(EXIT_FAILURE);
 	}
@@ -826,14 +836,10 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
  */
 void Renderer::InitializeTweakBars()
 {
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's tweak bars");
-	AntTweakBarTypes::InitializeTweakBarTypes();
-
-	int width, height;
-	glfwGetWindowSize(window, &width, &height);
-	TwWindowSize(width, height);
+	LOG(Info, LOGPLACE, "Initializing rendering engine's tweak bars");
 
 #ifdef RENDERER_PROPERTIES_BAR
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar");
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
 	cameraMembers[0].Name = "Projection"; cameraMembers[1].Name = "FoV"; cameraMembers[2].Name = "AspectRatio"; cameraMembers[3].Name = "NearPlane"; cameraMembers[4].Name = "FarPlane";
 	cameraMembers[0].Type = matrix4DType; cameraMembers[1].Type = angleType; cameraMembers[2].Type = TW_TYPE_FLOAT; cameraMembers[3].Type = TW_TYPE_FLOAT; cameraMembers[4].Type = TW_TYPE_FLOAT;
@@ -859,20 +865,24 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
 	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
-	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar finished");
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar");
 	cameraBar = TwNewBar("CamerasBar");
 	if (cameras.empty() || cameras[currentCameraIndex] == NULL)
 	{
-		TwAddVarRW(cameraBar, "cameraVar", cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
-		TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
-		TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera->GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
+		LOG(Error, LOGPLACE, "Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
+		
+		//TwAddVarRW(cameraBar, "cameraVar", cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
+		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
+		//TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera->GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
 	}
 	else
 	{
-		TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
+		TwAddVarRW(cameraBar, "cameraVar", cameraType, cameras[currentCameraIndex], " label='Camera' group=Camera ");
 		char cameraIndexStr[256];
 		char cameraDefStr[256];
 		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
@@ -884,7 +894,8 @@ void Renderer::InitializeTweakBars()
 	}
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
-	TwSetParam(cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+	TwSetParam(cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar finished");
 #endif
 
 #ifdef LIGHTS_TWEAK_BAR
@@ -902,13 +913,13 @@ void Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
-	LOG(Info, LOGPLACE, "Initializing rendering engine's tweak bars finished");
+	LOG(Debug, LOGPLACE, "Initializing rendering engine's tweak bars finished");
 }
 
 void Renderer::CheckCameraIndexChange()
 {
 #ifdef CAMERA_TWEAK_BAR
-	if (previousFrameCameraIndex == currentCameraIndex)
+	if (cameras.empty() || previousFrameCameraIndex == currentCameraIndex)
 	{
 		return;
 	}

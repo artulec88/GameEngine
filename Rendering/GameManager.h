@@ -83,6 +83,7 @@ public:
 	void RequestGameQuit() const;
 
 protected:
+	void RegisterTerrainNode(GameNode* terrainNode);
 	void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */
 

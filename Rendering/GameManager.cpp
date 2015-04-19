@@ -246,6 +246,11 @@ void GameManager::AddToSceneRoot(GameNode* child)
 	m_rootGameNode.AddChild(child);
 }
 
+void GameManager::RegisterTerrainNode(GameNode* terrainNode)
+{
+	CoreEngine::GetCoreEngine()->GetRenderer()->RegisterTerrainNode(terrainNode);
+}
+
 void GameManager::Render(Renderer* renderer)
 {
 	m_gameStateManager->Render(renderer);

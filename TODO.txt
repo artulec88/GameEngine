@@ -19,3 +19,4 @@
 19.	Create statistics class.
 20.	The constructor of Math::Angle class should still define the parameter Unit, but actually all angles should be stored in RADIANS, because it prevents us unnecessary conversion from one unit to another. Generally speaking, the conversions between RADIANS and DEGREES should be minimized. First, count the number of calls to ToRad and ToDeg functions in the running application. Then try to minimize it.
 21.	The night texture should be displayed much later than right now.
+22.	Use forwardlighting.vsh in the forward-ambient.glsl

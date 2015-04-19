@@ -12,6 +12,7 @@ BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZE
 	m_color(color),
 	m_intensity(intensity),
 	m_shader(NULL),
+	m_terrainShader(NULL),
 	m_shadowInfo(NULL),
 	m_isEnabled(true)
 {
@@ -23,6 +24,7 @@ BaseLight::~BaseLight(void)
 	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
 	SAFE_DELETE(m_shader);
+	SAFE_DELETE(m_terrainShader);
 	SAFE_DELETE(m_shadowInfo);
 }
 
@@ -36,6 +38,18 @@ void BaseLight::SetShader(Shader* shader)
 		SAFE_DELETE(m_shader);
 	}
 	m_shader = shader;
+}
+
+void BaseLight::SetTerrainShader(Shader* terrainShader)
+{
+	// TODO: delete shader if it's not referenced by any other object
+	//SAFE_DELETE(m_terrainShader);
+	if (m_terrainShader != NULL)
+	{
+		LOG(Utility::Warning, LOGPLACE, "Setting new terrain shader for the light seems dubious.");
+		SAFE_DELETE(m_terrainShader);
+	}
+	m_terrainShader = terrainShader;
 }
 
 void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)

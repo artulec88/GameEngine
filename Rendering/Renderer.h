@@ -55,6 +55,7 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
+	void RegisterTerrainNode(GameNode* terrainNode);
 
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
@@ -131,10 +132,14 @@ private:
 	CameraBase* m_mainMenuCamera;
 	
 	Camera altCamera; // alternative camera for shadow mapping, rendering to texture etc.
-	Material* planeMaterial;
-	Transform planeTransform;
-	Mesh* planeMesh;
-	Texture* tempTarget;
+	Material* filterMaterial;
+	Transform filterTransform;
+	Mesh* filterMesh;
+	Texture* filterTarget;
+
+	GameNode* m_terrainNode;
+	Shader* m_defaultShaderTerrain;
+	Shader* m_defaultShaderFogEnabledTerrain;
 
 	GameNode* cubeMapNode;
 	Shader* cubeMapShader;

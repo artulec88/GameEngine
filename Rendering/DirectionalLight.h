@@ -31,6 +31,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
+	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 

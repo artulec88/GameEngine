@@ -20,35 +20,25 @@ PlayGameState::~PlayGameState(void)
 {
 }
 
-void fun(void* arg)
-{
-	//GameManager* gameManager = GameManager::GetGameManager();
-	//if (!gameManager->IsGameLoaded())
-	//{
-	//	gameManager->Load();
-	//	gameManager->InitializeTweakBars();
-	//}
-	tthread::this_thread::sleep_for(tthread::chrono::milliseconds(15000));
-	LOG(Utility::Critical, LOGPLACE, "This is fun");
-}
-
 void PlayGameState::Entered()
 {
 	LOG(Utility::Info, LOGPLACE, "PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
+	ASSERT(gameManager->IsGameLoaded());
 	if (!gameManager->IsGameLoaded())
 	{
+		LOG(Utility::Warning, LOGPLACE, "PLAY game state has been placed in the game state manager before loading the game.");
 		gameManager->Load();
-#ifdef ANT_TWEAK_BAR_ENABLED
-		gameManager->InitializeTweakBars();
-#endif
 	}
+#ifdef ANT_TWEAK_BAR_ENABLED
+	gameManager->InitializeTweakBars();
+	CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
+#endif
 
 #ifdef CALCULATE_STATS
 	CoreEngine::GetCoreEngine()->StartSamplingSpf();
 #endif
-	//t.join();
 }
 
 void PlayGameState::Leaving()
@@ -179,9 +169,6 @@ void PlayGameState::Render(Renderer* renderer)
 	//	LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
 	//	exit(EXIT_FAILURE);
 	//}
-	
-	//renderer->Render(m_rootGameNode);
-
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
 }
 
@@ -243,7 +230,7 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	////LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
 
 	//timeToUpdateCameraHeight += delta;
-	//if ((heightMapCalculationEnabled) && (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL))
+	//if ((m_heightMapCalculationEnabled) && (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL))
 	//{
 	//	Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
 	//	transform.GetPos().SetY(height);

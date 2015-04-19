@@ -22,6 +22,20 @@ SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZER
 	m_cutoff((viewAngle / 2).Cos())
 {
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
+	ASSERT(m_shader != NULL);
+	if (m_shader == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize spot light. Shader is NULL.");
+		exit(EXIT_FAILURE);
+	}
+
+	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot-terrain")));
+	ASSERT(m_terrainShader != NULL);
+	if (m_terrainShader == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize spot light. Terrain shader is NULL.");
+		exit(EXIT_FAILURE);
+	}
 
 	if (shadowMapSizeAsPowerOf2 != 0) // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows at all
 	{

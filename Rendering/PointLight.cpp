@@ -15,8 +15,23 @@ PointLight::PointLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_
 	m_attenuation(attenuation)
 {
 	CalculateRange();
+	
 	// Beware of using new operator in the constructor (See e.g. http://herbsutter.com/2008/07/25/constructor-exceptions-in-c-c-and-java/)
 	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
+	ASSERT(m_shader != NULL);
+	if (m_shader == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize point light. Shader is NULL.");
+		exit(EXIT_FAILURE);
+	}
+
+	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
+	ASSERT(m_terrainShader != NULL);
+	if (m_terrainShader == NULL)
+	{
+		LOG(Utility::Critical, LOGPLACE, "Cannot initialize point light. Terrain shader is NULL.");
+		exit(EXIT_FAILURE);
+	}
 }
 
 PointLight::~PointLight(void)
@@ -38,6 +53,25 @@ void PointLight::CalculateRange()
 
 	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
 }
+
+//void PointLight::InitializeShaders()
+//{
+//	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
+//	ASSERT(m_shader != NULL);
+//	if (m_shader == NULL)
+//	{
+//		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL.");
+//		exit(EXIT_FAILURE);
+//	}
+//
+//	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
+//	ASSERT(m_terrainShader != NULL);
+//	if (m_terrainShader == NULL)
+//	{
+//		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Terrain shader is NULL.");
+//		exit(EXIT_FAILURE);
+//	}
+//}
 
 bool PointLight::IsEnabled() const
 {

@@ -38,6 +38,7 @@ public:
 	Color GetColor() const { return m_color; }
 	Math::Real GetIntensity() const { return m_intensity; }
 	inline Shader* GetShader() { return m_shader; }
+	inline Shader* GetTerrainShader() { return m_terrainShader; }
 	inline ShadowInfo* GetShadowInfo() { return m_shadowInfo; }
 	virtual bool IsEnabled() const { return m_isEnabled; }
 
@@ -46,7 +47,9 @@ public:
 	virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
 protected:
+	//virtual void InitializeShaders() = 0;
 	void SetShader(Shader* shader);
+	void SetTerrainShader(Shader* terrainShader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);
 /* ==================== Non-static member functions end ==================== */
 
@@ -55,6 +58,7 @@ protected:
 	Color m_color;
 	Math::Real m_intensity;
 	Shader* m_shader;
+	Shader* m_terrainShader;
 	ShadowInfo* m_shadowInfo;
 	bool m_isEnabled;
 /* ==================== Non-static member variables end ==================== */

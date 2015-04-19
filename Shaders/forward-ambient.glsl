@@ -9,6 +9,7 @@ attribute vec3 position;
 attribute vec2 texCoord;
 attribute vec3 normal;
 attribute vec3 tangent;
+//attribute vec3 biTangent;
 
 uniform mat4 T_model;
 uniform mat4 T_MVP;
@@ -16,7 +17,7 @@ uniform mat4 T_MVP;
 void main()
 {
     gl_Position = T_MVP * vec4(position, 1.0);
-    texCoord0 = texCoord; 
+    texCoord0 = texCoord;
     worldPos0 = (T_model * vec4(position, 1.0)).xyz;
     
     vec3 n = normalize((T_model * vec4(normal, 0.0)).xyz);
@@ -32,7 +33,6 @@ void main()
 uniform vec3 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
-uniform sampler2D diffuse2;
 uniform sampler2D displacementMap;
 
 uniform float displacementScale;
@@ -43,23 +43,8 @@ void main()
 {	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
+	//vec2 texCoords = texCoord0;
 	
-	const float minimum = -1.8;
-	const float maximum = 0.8;
-	const float limit = 0.5;
-	vec4 texColor = 0.0;
-	if (worldPos0.y < limit)
-	{
-		texColor = mix(texture2D(diffuse, texCoords), texture2D(diffuse2, texCoords), (worldPos0.y - minimum) / (limit - minimum));
-	}
-	else
-	{
-		texColor = texture2D(diffuse2, texCoords);
-	}
-	//vec4 diffuseTexColor = texture2D(diffuse, texCoords);
-	//vec4 diffuse2TexColor = texture2D(diffuse2, texCoords);
-	//vec4 texColor = mix(diffuseTexColor, diffuse2TexColor, diffuse2TexColor.r + diffuse2TexColor.g + diffuse2TexColor.b);
-	
-	SetFragOutput(0, texColor * vec4(R_ambientIntensity, 1));
+	SetFragOutput(0, texture2D(diffuse, texCoords) * vec4(R_ambientIntensity, 1));
 }
 #endif

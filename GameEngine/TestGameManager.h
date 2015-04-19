@@ -49,10 +49,10 @@ protected:
 	const int m_resourcesToLoad;
 	int m_resourcesLoaded;
 
-	Rendering::GameNode* planeNode;
+	Rendering::GameNode* terrainNode;
 	
-	Rendering::TerrainMesh* planeMesh;
-	Rendering::Material* planeMaterial;
+	Rendering::TerrainMesh* terrainMesh;
+	Rendering::Material* terrainMaterial;
 	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	Math::Real timeToUpdateCameraHeight;
 	
@@ -60,8 +60,8 @@ protected:
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::Material* boxMaterial;
 
-	Math::Real planeSpecularIntensity, planeSpecularPower;
-	Math::Real planeDisplacementScale, planeDisplacementOffset;
+	Math::Real terrainSpecularIntensity, terrainSpecularPower;
+	Math::Real terrainDisplacementScale, terrainDisplacementOffset;
 #endif
 
 	const int humanCount;
@@ -73,8 +73,7 @@ protected:
 	Rendering::GameNode** spotLightNodes;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
-	Rendering::GameNode* skyboxNode;
-	bool heightMapCalculationEnabled;
+	bool m_heightMapCalculationEnabled;
 	//Rendering::GameNode* castleNode;
 
 /* ==================== Non-static member variables end ==================== */

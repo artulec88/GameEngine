@@ -33,6 +33,7 @@ public:
 public:
 	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 	Math::Real GetCutoff() const { return m_cutoff; };
+	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
 /* ==================== Non-static member functions end ==================== */
 

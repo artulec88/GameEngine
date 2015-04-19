@@ -176,13 +176,21 @@ void Mesh::Initialize()
 			LOG(Error, LOGPLACE, "Tangent calculated incorrectly");
 			pTangent = &aiZeroVector;
 		}
+		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
+		//if (pBitangent == NULL)
+		//{
+		//	LOG(Error, LOGPLACE, "Bitangent calculated incorrectly");
+		//	pBitangent = &aiZeroVector;
+		//}
 
 		Math::Vector3D vertexPos(pPos->x, pPos->y, pPos->z);
 		positions.push_back(vertexPos);
 		Math::Vector2D vertexTexCoord(pTexCoord->x, pTexCoord->y);
 		Math::Vector3D vertexNormal(pNormal->x, pNormal->y, pNormal->z);
 		Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
-
+		//Math::Vector3D vertexBitangent(pBitangent->x, pBitangent->y, pBitangent->z);
+		
+		//Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent, vertexBitangent);
 		Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
 		vertices.push_back(vertex);
 	}
@@ -285,12 +293,14 @@ void Mesh::Draw() const
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
 	glEnableVertexAttribArray(3);
+	//glEnableVertexAttribArray(4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0); // positions
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D)); // texture coordinates
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D))); // normals
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D))); // tangents
+	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
 	glDrawElements(mode /* GL_TRIANGLES / GL_LINES */, meshData->GetSize(), GL_UNSIGNED_INT, 0);
@@ -299,6 +309,7 @@ void Mesh::Draw() const
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
+	//glDisableVertexAttribArray(4);
 }
 
 void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const
@@ -312,18 +323,18 @@ void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, 
 		int i1 = indices[i + 1];
 		int i2 = indices[i + 2];
 		
-		Vector3D v1 = vertices[i1].pos - vertices[i0].pos;
-		Vector3D v2 = vertices[i2].pos - vertices[i0].pos;
+		Vector3D v1 = vertices[i1].m_pos - vertices[i0].m_pos;
+		Vector3D v2 = vertices[i2].m_pos - vertices[i0].m_pos;
 		Vector3D normalVec = v1.Cross(v2).Normalized();
 		
-		vertices[i0].normal += normalVec;
-		vertices[i1].normal += normalVec;
-		vertices[i2].normal += normalVec;
+		vertices[i0].m_normal += normalVec;
+		vertices[i1].m_normal += normalVec;
+		vertices[i2].m_normal += normalVec;
 	}
 	
 	for(int i = 0; i < verticesCount; i++)
 	{
-		vertices[i].normal = vertices[i].normal.Normalized();
+		vertices[i].m_normal = vertices[i].m_normal.Normalized();
 	}
 }
 
@@ -340,26 +351,26 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 		Vertex& v2 = vertices[i + 2];
 
 		// Edges of the triangle: position delta
-		Math::Vector3D deltaPos1 = v1.pos - v0.pos;
-		Math::Vector3D deltaPos2 = v2.pos - v0.pos;
+		Math::Vector3D deltaPos1 = v1.m_pos - v0.m_pos;
+		Math::Vector3D deltaPos2 = v2.m_pos - v0.m_pos;
 
 		// UV delta
-		Math::Vector2D deltaUV1 = v1.texCoord - v0.texCoord;
-		Math::Vector2D deltaUV2 = v2.texCoord - v0.texCoord;
+		Math::Vector2D deltaUV1 = v1.m_texCoord - v0.m_texCoord;
+		Math::Vector2D deltaUV2 = v2.m_texCoord - v0.m_texCoord;
 
 		Math::Real r = static_cast<Math::Real>(1.0f) / (deltaUV1.GetX() * deltaUV2.GetY() - deltaUV1.GetY() * deltaUV2.GetX());
 		Math::Vector3D tangent = (deltaPos1 * deltaUV2.GetY() - deltaPos2 * deltaUV1.GetY()) * r;
 		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.GetX() - deltaPos1 * deltaUV2.GetX()) * r;
 
 		// Set the same tangent for all three vertices of the triangle. They will be merged later, during indexing.
-		v0.tangent = tangent;
-		v1.tangent = tangent;
-		v2.tangent = tangent;
+		v0.m_tangent = tangent;
+		v1.m_tangent = tangent;
+		v2.m_tangent = tangent;
 
 		// Set the same bitangent for all three vertices of the triangle. They will be merged later, during indexing.
-		//v0.bitangent = bitangent;
-		//v1.bitangent = bitangent;
-		//v2.bitangent = bitangent;
+		//v0.m_bitangent = bitangent;
+		//v1.m_bitangent = bitangent;
+		//v2.m_bitangent = bitangent;
 	}
 
 	// See "http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#Going_further"
@@ -499,47 +510,6 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	lastY = y;
 
 	//LOG(Utility::Notice, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
-#elif defined HEIGHTMAP_SORT_TABLE
-	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
-	{
-		return lastY;
-	}
-
-	/**
-	 * TODO: Calculate the y value. Add additional parameter to GetHeightAt function which indicates the interpolation method.
-	 * This interpolation method would be used for situations when the pair (x, z) is not found in the this->positions table.
-	 */
-	/**
-	 * TODO: Optimization!!!
-	 */
-	const int SAMPLES = 4;
-	Math::Vector3D closestPositions [SAMPLES];
-	Math::Real closestPositionsDistances [SAMPLES];
-	for (int i = 0; i < SAMPLES; ++i)
-	{
-		closestPositions[i].SetX(REAL_MAX);
-		closestPositions[i].SetY(REAL_MAX);
-		closestPositions[i].SetZ(REAL_MAX);
-		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
-	}
-	Math::Real y = REAL_ZERO;
-
-	int lowIndex = lastClosestPositionIndex, highIndex = lastClosestPositionIndex + 1;
-	while (true)
-	{
-		Math::Real distanceForLowIndex = positions[lowIndex].LengthSquared();
-		Math::Real distanceForHighIndex = positions[highIndex].LengthSquared();
-		--lowIndex;
-		++highIndex;
-	}
-
-	lastX = xz.GetX();
-	lastZ = xz.GetY(); // in this case GetY() returns Z
-
-	y += 1.5f; // head position adjustment
-	lastY = y;
-
-	//LOG(Utility::Info, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_KD_TREE
 	if (AlmostEqual(xz.GetX(), m_lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
 	{
@@ -548,7 +518,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	Math::Real y = m_kdTree->SearchNearestValue(xz);
 	m_lastX = xz.GetX();
 	m_lastZ = xz.GetY(); // in this case GetY() returns Z
-	y += 2.5f; // head position adjustment
+	y += 2.5f; // head position adjustment // TODO: Don't use hard-coded values!
 	m_lastY = y;
 	//LOG(Utility::Debug, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif

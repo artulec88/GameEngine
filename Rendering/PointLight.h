@@ -28,6 +28,7 @@ public:
 public:
 	Attenuation GetAttenuation() const { return m_attenuation; };
 	Math::Real GetRange() const { return m_range; };
+	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
 protected:
 	void CalculateRange();

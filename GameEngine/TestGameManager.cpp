@@ -29,18 +29,18 @@ TestGameManager::TestGameManager() :
 	GameManager(),
 	m_resourcesToLoad(24),
 	m_resourcesLoaded(0),
-	planeNode(NULL),
-	planeMesh(NULL),
+	terrainNode(NULL),
+	terrainMesh(NULL),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
 	timeToUpdateCameraHeight(REAL_ZERO),
 	boxNode(NULL),
-#ifdef ANT_TWEAK_BAR_ENABLED` 
-	planeMaterial(NULL),
+#ifdef ANT_TWEAK_BAR_ENABLED 
+	terrainMaterial(NULL),
 	boxMaterial(NULL),
-	planeSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),
-	planeSpecularPower(GET_CONFIG_VALUE("defaultSpecularPower", 8.0f)),
-	planeDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
-	planeDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
+	terrainSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),
+	terrainSpecularPower(GET_CONFIG_VALUE("defaultSpecularPower", 8.0f)),
+	terrainDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
+	terrainDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
 #endif
 	humanCount(2),
 	humanNodes(NULL),
@@ -51,8 +51,7 @@ TestGameManager::TestGameManager() :
 	spotLightNodes(NULL),
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
-	skyboxNode(NULL),
-	heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
+	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 
@@ -67,7 +66,7 @@ TestGameManager::~TestGameManager(void)
 	SAFE_DELETE_JUST_TABLE(pointLightNodes);
 	SAFE_DELETE_JUST_TABLE(spotLightNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
-	//SAFE_DELETE(planeNode);
+	//SAFE_DELETE(terrainNode);
 }
 
 Math::Real TestGameManager::GetLoadingProgress() const
@@ -95,24 +94,25 @@ void TestGameManager::Load()
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
-	planeNode = new GameNode();
-	planeMesh = new TerrainMesh("..\\Models\\terrain02.obj");
+	terrainNode = new GameNode();
+	terrainMesh = new TerrainMesh("..\\Models\\terrain02.obj");
 #ifndef ANT_TWEAK_BAR_ENABLED
-	Math::Real planeSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
-	Math::Real planeSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
-	Math::Real planeDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
-	Math::Real planeDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
+	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
+	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
+	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
+	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
 #endif
-	planeMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), planeSpecularIntensity, planeSpecularPower,
+	terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
-		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), planeDisplacementScale, planeDisplacementOffset);
-	planeMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	planeNode->AddComponent(new MeshRenderer(planeMesh, planeMaterial));
+		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
 	m_resourcesLoaded += 5; // TODO: Consider creating some prettier solution. This is ugly
-	//planeNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	planeNode->GetTransform().SetScale(15.0f);
-	planeMesh->TransformPositions(planeNode->GetTransform().GetTransformation());
-	AddToSceneRoot(planeNode);
+	//terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
+	terrainNode->GetTransform().SetScale(15.0f);
+	terrainMesh->TransformPositions(terrainNode->GetTransform().GetTransformation());
+	//AddToSceneRoot(terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
+	RegisterTerrainNode(terrainNode);
 
 	boxNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -655,21 +655,29 @@ void TestGameManager::InitializeTweakBars()
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
 
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
-	TwAddVarRW(testGamePropertiesBar, "heightMapCalculationEnabled", TW_TYPE_BOOLCPP, &heightMapCalculationEnabled, " label='Heightmap calculation enabled' ");
-	//TwAddVarRW(testGamePropertiesBar, "planeSpecularIntensity", TW_TYPE_FLOAT, &planeSpecularIntensity, " label='Plane specular intensity' group=Plane ");
-	//TwAddVarRW(testGamePropertiesBar, "planeSpecularPower", TW_TYPE_FLOAT, &planeSpecularPower, " label='Plane specular power' group=Plane ");
-	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementScale", TW_TYPE_FLOAT, &planeDisplacementScale, " label='Plane displacement scale' group=Plane ");
-	//TwAddVarRW(testGamePropertiesBar, "planeDisplacementOffset", TW_TYPE_FLOAT, &planeDisplacementOffset, " label='Plane displacement offset' group=Plane ");
-	if (planeMaterial == NULL)
+	TwAddVarRW(testGamePropertiesBar, "heightMapCalculationEnabled", TW_TYPE_BOOLCPP, &m_heightMapCalculationEnabled, " label='Heightmap calculation enabled' ");
+	//TwAddVarRW(testGamePropertiesBar, "terrainSpecularIntensity", TW_TYPE_FLOAT, &terrainSpecularIntensity, " label='Terrain specular intensity' group='Terrain' ");
+	//TwAddVarRW(testGamePropertiesBar, "terrainSpecularPower", TW_TYPE_FLOAT, &terrainSpecularPower, " label='Terrain specular power' group='Terrain' ");
+	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementScale", TW_TYPE_FLOAT, &terrainDisplacementScale, " label='Terrain displacement scale' group='Terrain' ");
+	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementOffset", TW_TYPE_FLOAT, &terrainDisplacementOffset, " label='Terrain displacement offset' group='Terrain' ");
+	if (terrainMaterial == NULL)
 	{
-		LOG(Error, LOGPLACE, "Cannot add plane material information to tweak bar. The plane material is NULL.");
+		LOG(Error, LOGPLACE, "Cannot add terrain material information to tweak bar. The terrain material is NULL.");
 		return;
 	}
-	planeMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
-	planeMaterial->InitializeTweakBar(testGamePropertiesBar, "Plane");
+
+	//TwAddVarRO(testGamePropertiesBar, "temp1", TW_TYPE_INT32, &humanCount, " label='Human count' group='Terrain' ");
+	//TwAddVarRO(testGamePropertiesBar, "temp2", TW_TYPE_INT32, &pointLightCount, " label='Human count' group='Box' ");
+
+	terrainMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
+	terrainMaterial->InitializeTweakBar(testGamePropertiesBar, "Terrain");
 	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
-	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+
+	//TwRemoveVar(testGamePropertiesBar, "temp1");
+	//TwRemoveVar(testGamePropertiesBar, "temp2");
+
+	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	LOG(Info, LOGPLACE, "Initializing game's tweak bars finished");
 #endif
 }
