@@ -441,10 +441,10 @@ void CoreEngine::PollEvents()
 Math::Real CoreEngine::GetCurrentLocalTime() const
 {
 	time_t rawtime;
-	struct tm* timeinfo;
+	struct tm timeinfo;
 	time(&rawtime);
-	timeinfo = localtime(&rawtime);
-	Math::Real result = SECONDS_PER_HOUR * timeinfo->tm_hour + SECONDS_PER_MINUTE * timeinfo->tm_min + timeinfo->tm_sec;
+	localtime_s(&timeinfo, &rawtime);
+	Math::Real result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
 	if (result > SECONDS_PER_DAY)
 	{
 		LOG(Utility::Error, LOGPLACE, "Incorrect local time");

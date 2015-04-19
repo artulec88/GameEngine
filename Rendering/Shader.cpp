@@ -555,6 +555,13 @@ void Shader::Bind() const
 	glUseProgram(shaderData->GetProgram());
 }
 
+bool Shader::IsBound() const
+{
+	GLint currentProgramID;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
+	return currentProgramID == GetProgramID();
+}
+
 void Shader::Unbind() const
 {
 	//LOG(Utility::Delocust, LOGPLACE, "The shader is being unbound");

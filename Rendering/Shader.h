@@ -100,7 +100,8 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	GLuint GetProgramID() const { return shaderData->GetProgram(); }
-	RENDERING_API void Bind() const;
+	void Bind() const;
+	bool IsBound() const;
 	RENDERING_API void Unbind() const;
 	RENDERING_API virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
