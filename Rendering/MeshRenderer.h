@@ -8,6 +8,7 @@ class Mesh;
 class Material;
 class Shader;
 
+// TODO: Inherit from IRenderable interface or use it in the Mesh class instead.
 class RENDERING_API MeshRenderer : public GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */

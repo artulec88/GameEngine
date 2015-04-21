@@ -7,6 +7,7 @@
 namespace Rendering
 {
 
+// TODO: Inherit from IUpdateable and IRenderable interfaces.
 class RENDERING_API LookAtComponent : public GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */

@@ -20,3 +20,5 @@
 20.	The constructor of Math::Angle class should still define the parameter Unit, but actually all angles should be stored in RADIANS, because it prevents us unnecessary conversion from one unit to another. Generally speaking, the conversions between RADIANS and DEGREES should be minimized. First, count the number of calls to ToRad and ToDeg functions in the running application. Then try to minimize it.
 21.	The night texture should be displayed much later than right now.
 22.	Use forwardlighting.vsh in the forward-ambient.glsl
+23.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
+24.	Water rendering. DU/DV maps.
