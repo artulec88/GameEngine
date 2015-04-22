@@ -20,6 +20,9 @@ out vec2 texCoord0;
 
 void main()
 {
+	/* Since GS is executed on a complete primitive (e.g. points list, triangle) we actually have access to each of the vertices that comprise it.
+	 * This is done using the built-in variable 'gl_in'.
+	 */
 	vec3 pos = gl_in[0].gl_Position.xyz;
 	vec3 directionToCamera = normalize(C_eyePos - pos);
 	vec3 upVec = vec3(0.0, 1.0, 0.0);
