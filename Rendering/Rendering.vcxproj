@@ -116,6 +116,8 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="IInputable.h" />
+    <ClInclude Include="IInputableKeyboard.h" />
+    <ClInclude Include="IInputableMouse.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="IRenderable.h" />
@@ -158,6 +160,8 @@
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="IInputableKeyboard.cpp" />
+    <ClCompile Include="IInputableMouse.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />

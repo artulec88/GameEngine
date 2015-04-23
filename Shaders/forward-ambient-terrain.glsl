@@ -50,9 +50,9 @@ void main()
 	// vec4 diffuse2TexColor = texture2D(diffuse2, texCoords);
 	// vec4 texColor = mix(diffuseTexColor, diffuse2TexColor, diffuse2TexColor.a);
 	
-	const float minimum = -1.8;
-	const float maximum = 0.8;
-	const float limit = 0.5;
+	const float minimum = -2.8;
+	const float maximum = 1.8;
+	const float limit = 0.9;
 	vec4 texColor = 0.0;
 	
 	// This line gives the same results as the if..else clauses, but is slower (around 0.6 ms)

@@ -109,7 +109,7 @@ void TestGameManager::Load()
 	terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
 	m_resourcesLoaded += 5; // TODO: Consider creating some prettier solution. This is ugly
 	//terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	terrainNode->GetTransform().SetScale(15.0f);
+	terrainNode->GetTransform().SetScale(30.0f);
 	terrainMesh->TransformPositions(terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	RegisterTerrainNode(terrainNode);
@@ -573,73 +573,27 @@ void TestGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int ac
 	m_gameStateManager->KeyEvent(key, scancode, action, mods);
 }
 
+/**
+ * GLFW_MOUSE_BUTTON_1 = left mouse button
+ * GLFW_MOUSE_BUTTON_2 = right mouse button
+ * GLFW_MOUSE_BUTTON_3 = middle mouse button
+ */
 void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	// TODO: Pass the event to the Input function in the current game state.
 	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
 	// I would expect here something as follows:
 	// currentGameState->MouseInput(...)
-	LOG(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	
+	// LOG(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
-	/**
-	 * GLFW_MOUSE_BUTTON_1 = left mouse button
-	 * GLFW_MOUSE_BUTTON_2 = right mouse button
-	 * GLFW_MOUSE_BUTTON_3 = middle mouse button
-	 */
-
-	switch (action)
-	{
-	case GLFW_PRESS:
-		isMouseLocked = ! isMouseLocked;
-		if (isMouseLocked)
-		{
-			int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
-			int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
-			CoreEngine::GetCoreEngine()->SetCursorPos(static_cast<Math::Real>(width) / 2.0f, static_cast<Math::Real>(height) / 2.0f);
-		}
-		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
-		break;
-	case GLFW_RELEASE:
-		LOG(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
-		break;
-	default:
-		LOG(Warning, LOGPLACE, "Unknown action performed with the mouse");
-	}
+	//GameManager::MouseButtonEvent(window, button, action, mods);
+	m_gameStateManager->MouseButtonEvent(button, action, mods);
 }
 
 void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	// TODO: Mouse pos event should be handled by the game state manager
-	if (! isMouseLocked)
-	{
-		return;
-	}
-	//stdlog(Debug, LOGPLACE, "Cursor position = %.2f, %.2f", xPos, yPos);
-
-	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
-	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
-	Vector2D centerPosition(static_cast<Real>(width) / 2, static_cast<Real>(height) / 2);
-	Vector2D deltaPosition(static_cast<Real>(xPos), static_cast<Real>(yPos));
-	deltaPosition -= centerPosition;
-	
-	bool rotX = ! AlmostEqual(deltaPosition.GetX(), 0.0f);
-	bool rotY = ! AlmostEqual(deltaPosition.GetY(), 0.0f);
-
-	if (rotX || rotY)
-	{
-		unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
-		const Real sensitivity = static_cast<Real>(CameraBase::GetSensitivity());
-		Transform& transform = cameraNodes[currentCameraIndex]->GetTransform(); // TODO: This leads to Access...Exception for e.g. MenuGameState. Mouse pos event should be handled by the game state manager.
-		if (rotX)
-		{
-			transform.Rotate(Vector3D(0, 1, 0), Angle(deltaPosition.GetX() * sensitivity));
-		}
-		if (rotY)
-		{
-			transform.Rotate(transform.GetRot().GetRight(), Angle(deltaPosition.GetY() * sensitivity));
-		}
-		CoreEngine::GetCoreEngine()->SetCursorPos(centerPosition.GetX(), centerPosition.GetY());
-	}
+	m_gameStateManager->MousePosEvent(xPos, yPos);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

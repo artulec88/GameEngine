@@ -43,9 +43,9 @@ void main()
     
     vec4 lightingAmt = CalcLightingEffect(normal, worldPos0) * CalcShadowAmount(R_shadowMap, shadowMapCoords0);
 	
-	const float minimum = -1.8; // TODO: Get minimum and maximum height from the terrain mesh
-	const float maximum = 0.8;
-	const float limit = 0.5;
+	const float minimum = -2.8; // TODO: Get minimum and maximum height from the terrain mesh
+	const float maximum = 1.8;
+	const float limit = 0.9;
 	vec4 texColor = 0.0;
 	
 	if (worldPos0.y < limit)

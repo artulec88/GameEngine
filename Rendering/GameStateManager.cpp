@@ -86,9 +86,19 @@ DefaultGameStateManager::~DefaultGameStateManager()
 		SAFE_DELETE(activeStateItr->first);
 	}
 	//std::vector<GameStateModalityTypePair> m_activeStates;
-	//std::vector<IInputable*> m_exposedInputables;
+	//std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
+	//std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 	//std::vector<IRenderable*> m_exposedRenderables;
 	//std::vector<IUpdateable*> m_exposedUpdateables;
+}
+
+void DefaultGameStateManager::ClearAllIntefaceLists()
+{
+	m_exposedInputables.clear();
+	m_exposedInputablesKeyboard.clear();
+	m_exposedInputablesMouse.clear();
+	m_exposedRenderables.clear();
+	m_exposedUpdateables.clear();
 }
 
 GameState* DefaultGameStateManager::Peek() const
@@ -109,9 +119,7 @@ void DefaultGameStateManager::Push(GameState* gameState, GameStateModality::Moda
 	
 	if (modalityType == GameStateModality::EXCLUSIVE)
 	{
-		m_exposedInputables.clear();
-		m_exposedRenderables.clear();
-		m_exposedUpdateables.clear();
+		ClearAllIntefaceLists();
 	}
 
 	AddToInterfaces(gameState);
@@ -147,22 +155,52 @@ GameState* DefaultGameStateManager::Pop()
 void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
 	//LOG(Utility::Error, LOGPLACE, "Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
-	if (m_exposedInputables.empty())
+	if (m_exposedInputablesKeyboard.empty())
 	{
 		return;
 	}
-	LOG(Utility::Debug, LOGPLACE, "The INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
-		m_exposedInputables.size(), key, scancode, action, mods);
-	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
+	LOG(Utility::Debug, LOGPLACE, "The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
+		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
+	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
 	//LOG(Utility::Error, LOGPLACE, "Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
+void DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
+{
+	if (m_exposedInputablesMouse.empty())
+	{
+		LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
+		return;
+	}
+	//LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)",
+	//	m_exposedInputablesMouse.size(), button, action, mods);
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	{
+		(*gameStateItr)->MouseButtonEvent(button, action, mods);
+	}
+}
+
+void DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
+{
+	if (m_exposedInputablesMouse.empty())
+	{
+		LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
+		return;
+	}
+	//LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)",
+	//	m_exposedInputablesMouse.size(), button, action, mods);
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	{
+		(*gameStateItr)->MousePosEvent(xPos, yPos);
+	}
+}
+
 void DefaultGameStateManager::Input(Math::Real elapsedTime)
 {
-	for (std::vector<IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
+	for (std::vector<Input::IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->Input(elapsedTime);
 	}
@@ -186,31 +224,58 @@ void DefaultGameStateManager::Render(Renderer* renderer)
 
 void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
-	IInputable* inputable = dynamic_cast<IInputable*>(gameState);
+	//LOG(Utility::Critical, LOGPLACE, "Adding to interfaces started");
+	Input::IInputable* inputable = dynamic_cast<Input::IInputable*>(gameState);
 	if (inputable != NULL)
 	{
+		//LOG(Utility::Critical, LOGPLACE, "Adding to INPUT interface");
 		m_exposedInputables.push_back(inputable);
+		Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+		if (inputableKeyboard != NULL)
+		{
+			//LOG(Utility::Critical, LOGPLACE, "Adding to KEYBOARD INPUT interface");
+			m_exposedInputablesKeyboard.push_back(inputableKeyboard);
+		}
+		Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+		if (inputableMouse != NULL)
+		{
+			//LOG(Utility::Critical, LOGPLACE, "Adding to MOUSE INPUT interface");
+			m_exposedInputablesMouse.push_back(inputableMouse);
+		}
 	}
 
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if(renderable != NULL)
 	{
+		//LOG(Utility::Critical, LOGPLACE, "Adding to RENDER interface");
 		m_exposedRenderables.push_back(renderable);
 	}
 	
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
 	if(updateable != NULL)
 	{
+		//LOG(Utility::Critical, LOGPLACE, "Adding to UPDATE interface");
 		m_exposedUpdateables.push_back(updateable);
 	}
+	//LOG(Utility::Critical, LOGPLACE, "Adding to interfaces finished");
 }
 
 void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
-	IInputable* inputable = dynamic_cast<IInputable*>(gameState);
+	Input::IInputable* inputable = dynamic_cast<Input::IInputable*>(gameState);
 	if (inputable != NULL)
 	{
-		m_exposedInputables.pop_back();
+		m_exposedInputables.push_back(inputable);
+		Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+		if (inputableKeyboard != NULL)
+		{
+			m_exposedInputablesKeyboard.push_back(inputableKeyboard);
+		}
+		Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+		if (inputableMouse != NULL)
+		{
+			m_exposedInputablesMouse.push_back(inputableMouse);
+		}
 	}
 
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
@@ -229,9 +294,7 @@ void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 void DefaultGameStateManager::RebuildInterfaceQueues()
 {
 	LOG(Utility::Info, LOGPLACE, "Clearing game state interface queues");
-	m_exposedInputables.clear();
-	m_exposedRenderables.clear();
-	m_exposedUpdateables.clear();
+	ClearAllIntefaceLists();
 
 	if (m_activeStates.empty())
 	{

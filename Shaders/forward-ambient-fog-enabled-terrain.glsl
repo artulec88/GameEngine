@@ -50,9 +50,9 @@ void main()
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
 	
-	const float minimum = -1.8;
-	const float maximum = 0.8;
-	const float limit = 0.5;
+	const float minimum = -2.8;
+	const float maximum = 1.8;
+	const float limit = 0.9;
 	vec4 texColor = 0.0;
 	
 	// This line gives the same results as the if..else clauses, but is slower (around 0.6 ms)

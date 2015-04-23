@@ -3,7 +3,7 @@
 
 #include "Rendering\Renderer.h"
 #include "Rendering\GameState.h"
-#include "Rendering\IInputable.h"
+#include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IRenderable.h"
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
@@ -11,7 +11,7 @@
 namespace Game
 {
 
-class IntroGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
+class IntroGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

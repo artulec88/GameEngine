@@ -81,7 +81,10 @@ public:
 	
 	int GetWindowWidth() const { return m_windowWidth; };
 	int GetWindowHeight() const { return m_windowHeight; };
+	
 	void SetCursorPos(Math::Real xPos, Math::Real yPos);
+	void CentralizeCursor();
+
 	virtual Math::Real GetTime() const;
 	virtual void ClearScreen() const;
 	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }

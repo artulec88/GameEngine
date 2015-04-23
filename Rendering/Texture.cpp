@@ -146,6 +146,12 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 			glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 			//glTexParameterf(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); // TODO: Check if this parameter is ok for all texture targets. It is ok though for GL_TEXTURE_CUBE_MAP texture target. What about GL_TEXTURE_2D?
 		}
+		else
+		{
+			//glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			//glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			//glTexParameterf(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); // TODO: Check if this parameter is ok for all texture targets. It is ok though for GL_TEXTURE_CUBE_MAP texture target. What about GL_TEXTURE_2D?
+		}
 
 		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
 

@@ -150,11 +150,11 @@ void DirectionalLight::Update(Math::Real delta)
 		break;
 	}
 	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(-sunElevation, -sunAzimuth);
-	//GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
+	GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
 	// e.g. GetTransform().SetRot(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), 0.5f, true));
 
 	//GetTransform().Rotate(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), delta * 5, true));
-	GetTransform().Rotate(Math::Quaternion(rotMatrix));
+	//GetTransform().Rotate(Math::Quaternion(rotMatrix));
 }
 
 #endif

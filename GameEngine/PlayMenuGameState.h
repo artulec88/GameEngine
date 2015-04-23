@@ -3,7 +3,7 @@
 
 #include "Rendering\Renderer.h"
 #include "Rendering\GameState.h"
-#include "Rendering\IInputable.h"
+#include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IRenderable.h"
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
@@ -14,7 +14,7 @@
 namespace Game
 {
 
-class PlayMenuGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable
+class PlayMenuGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

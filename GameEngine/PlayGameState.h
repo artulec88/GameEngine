@@ -3,7 +3,8 @@
 
 #include "Rendering\Renderer.h"
 #include "Rendering\GameState.h"
-#include "Rendering\IInputable.h"
+#include "Rendering\IInputableKeyboard.h"
+#include "Rendering\IInputableMouse.h"
 #include "Rendering\IRenderable.h"
 #include "Rendering\IUpdateable.h"
 #include "Math\Math.h"
@@ -11,7 +12,8 @@
 namespace Game
 {
 
-class PlayGameState : public Rendering::GameState, public virtual Rendering::IInputable, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
+class PlayGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard,
+	public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -43,6 +45,8 @@ public:
 	
 	bool IsInGameTimeCalculationEnabled() const { return true; }
 
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Input(Math::Real elapsedTime);
 	virtual void Render(Rendering::Renderer* renderer);
@@ -52,6 +56,7 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	//Rendering::GameNode& m_rootGameNode;
+	bool m_isMouseLocked;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PlayGameState */
 

@@ -3,7 +3,8 @@
 
 #include "Rendering.h"
 #include "GameState.h"
-#include "IInputable.h"
+#include "IInputableKeyboard.h"
+#include "IInputableMouse.h"
 #include "IRenderable.h"
 #include "IUpdateable.h"
 #include "Math\Math.h"
@@ -77,7 +78,7 @@ namespace Rendering
 /// <summary>
 /// Interface for a stack-based game state manager.
 /// </summary>
-class GameStateManager : public virtual IInputable, public virtual IRenderable, public virtual IUpdateable
+class GameStateManager : public virtual Input::IInputableKeyboard, public virtual Input::IInputableMouse, public virtual IRenderable, public virtual IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -116,12 +117,20 @@ public:
 	/// <returns> The lastmost game state on the stack </returns>
 	virtual GameState* Peek() const = 0;
 
-	/// <summary> Collects input according to current game state </summary>
+	/// <summary> Collects keyboard key input according to current game state </summary>
 	/// <param name="key"> The key that triggered the event </param>
 	/// <param name="scancode"> The system-specific scancode of the key </param>
 	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
 	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
 	virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
+
+	/// <summary> Collects mouse button input according to current game state </summary>
+	/// <param name="key"> The mouse button that triggered the event </param>
+	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
+	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
+	virtual void MouseButtonEvent(int button, int action, int mods) = 0;
+
+	virtual void MousePosEvent(double xPos, double yPos) = 0;
 
 	/// <summary> Processes player's input according to current game state </summary>
 	/// <param name="elapsedTime"> Elapsed simulation time </param>
@@ -197,6 +206,9 @@ public:
 	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+
 	/// <summary> Processes player's input according to current game state </summary>
 	/// <param name="elapsedTime> Elapsed simulation time </param>
 	virtual void Input(Math::Real elapsedTime);
@@ -217,6 +229,9 @@ private:
     ///   State that will be checked for implementing the Drawable or Updateable interfaces
     /// </param>
 	void AddToInterfaces(GameState* gameState);
+
+	/// <summary> Clears all interface lists </summary>
+	void ClearAllIntefaceLists();
 
     /// <summary>
     ///   Removes the specified game state to the exposed Drawables or Updateables if it
@@ -243,7 +258,9 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::vector<GameStateModalityTypePair> m_activeStates;
-	std::vector<IInputable*> m_exposedInputables;
+	std::vector<Input::IInputable*> m_exposedInputables;
+	std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
+	std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 	std::vector<IRenderable*> m_exposedRenderables;
 	std::vector<IUpdateable*> m_exposedUpdateables;
 /* ==================== Non-static member variables end ==================== */

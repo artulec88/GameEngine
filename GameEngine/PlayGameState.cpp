@@ -5,14 +5,16 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\GameNode.h"
 
+#include "Math\FloatingPoint.h"
+
 #include "tinythread.h"
 
 using namespace Game;
 using namespace Rendering;
 
 PlayGameState::PlayGameState(void) :
-	GameState()//,
-	//m_rootGameNode(GameManager::GetGameManager()->GetRootGameNode())
+	GameState(),
+	m_isMouseLocked(false)
 {
 }
 
@@ -57,6 +59,60 @@ void PlayGameState::Obscuring()
 void PlayGameState::Revealed()
 {
 	LOG(Utility::Info, LOGPLACE, "PLAY game state has become the topmost game state in the game state manager's stack");
+}
+
+void PlayGameState::MouseButtonEvent(int button, int action, int mods)
+{
+	switch (action)
+	{
+	case GLFW_PRESS:
+		m_isMouseLocked = ! m_isMouseLocked;
+		if (m_isMouseLocked)
+		{
+			CoreEngine::GetCoreEngine()->CentralizeCursor();
+		}
+		LOG(Utility::Info, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		break;
+	case GLFW_RELEASE:
+		LOG(Utility::Info, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		break;
+	default:
+		LOG(Utility::Warning, LOGPLACE, "Unknown action performed with the mouse. Button=%d\t action=%d\t mods=%d", button, action, mods);
+	}
+}
+
+void PlayGameState::MousePosEvent(double xPos, double yPos)
+{
+	// TODO: Mouse pos event should be handled by the game state manager
+	if (!m_isMouseLocked)
+	{
+		return;
+	}
+	//stdlog(Debug, LOGPLACE, "Cursor position = %.2f, %.2f", xPos, yPos);
+
+	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
+	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
+	Math::Vector2D centerPosition(static_cast<Math::Real>(width) / 2, static_cast<Math::Real>(height) / 2);
+	Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
+	deltaPosition -= centerPosition;
+	
+	bool rotX = ! Math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
+	bool rotY = ! Math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
+
+	if (rotX || rotY)
+	{
+		Transform& transform = CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
+		const Math::Real sensitivity = static_cast<Math::Real>(CameraBase::GetSensitivity());
+		if (rotX)
+		{
+			transform.Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * sensitivity));
+		}
+		if (rotY)
+		{
+			transform.Rotate(transform.GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * sensitivity));
+		}
+		CoreEngine::GetCoreEngine()->CentralizeCursor();
+	}
 }
 
 bool forward = false;

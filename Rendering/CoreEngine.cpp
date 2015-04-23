@@ -476,6 +476,16 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 	m_renderer->SetCursorPos(xPos, yPos);
 }
 
+void CoreEngine::CentralizeCursor()
+{
+	if (m_renderer == NULL)
+	{
+		LOG(Critical, LOGPLACE, "Cannot set cursor position. The rendering engine is NULL.");
+		return;
+	}
+	m_renderer->SetCursorPos(m_windowWidth / 2, m_windowHeight / 2);
+}
+
 void CoreEngine::CalculateSunElevationAndAzimuth()
 {
 	const int timeGMTdifference = 1;
