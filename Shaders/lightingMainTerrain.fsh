@@ -37,11 +37,22 @@ float CalcShadowAmount(sampler2D shadowMap, vec4 initialShadowMapCoords)
 DeclareFragOutput(0, vec4);
 void main()
 {
+	/**
+	 * The cosine value of the angle between light direction and the surface normal vector.
+	 * This value may also be used in the shadow calculation for optimized shadows (see http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35)
+	 * TODO: If the cosine is required in both light and shadow calculation then maybe we should determine the cosine once and pass it to CalcLight
+	 * and CalcShadowAmount functions.
+	 */
+	// if (CalculateDotBetweenLightDirectionAndNormal(normal) < 0) // optimization technique- See http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35. First tests didn't give any optimization.
+	// {
+		// SetFragOutput(0, vec4(0, 0, 0, 1));
+	// }
+	
+	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
 	vec3 normal = normalize(tbnMatrix * (255.0/128.0 * texture2D(normalMap, texCoords).xyz - 1));
-    
-    vec4 lightingAmt = CalcLightingEffect(normal, worldPos0) * CalcShadowAmount(R_shadowMap, shadowMapCoords0);
+	vec4 lightingAmt = CalcLightingEffect(normal, worldPos0) * CalcShadowAmount(R_shadowMap, shadowMapCoords0);
 	
 	const float minimum = -2.8; // TODO: Get minimum and maximum height from the terrain mesh
 	const float maximum = 1.8;

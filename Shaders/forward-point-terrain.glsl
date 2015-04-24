@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2014 Benny Bobaganoosh
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 #include "common.glh"
 #include "forwardlighting.glh"
 
@@ -28,6 +12,15 @@ uniform float specularIntensity;
 uniform float specularPower;
 
 uniform PointLight R_pointLight;
+
+/**
+ * Possible optimization technique- the surface that aren't oriented to light are in shadow.
+ * See http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35. First tests didn't prove that.
+ */
+// float CalculateDotBetweenLightDirectionAndNormal(vec3 normal)
+// {
+	// return 1.0; // Point light does not have a direction so it is impossible to calculate the dot product
+// }
 
 vec4 CalcLightingEffect(vec3 normal, vec3 worldPos)
 {

@@ -29,6 +29,15 @@ uniform float specularPower;
 
 uniform DirectionalLight R_directionalLight;
 
+/**
+ * Possible optimization technique- the surface that aren't oriented to light are in shadow.
+ * See http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35. First tests didn't prove that.
+ */
+// float CalculateDotBetweenLightDirectionAndNormal(vec3 normal)
+// {
+	// return dot(normal, R_directionalLight.direction);
+// }
+
 vec4 CalcLightingEffect(vec3 normal, vec3 worldPos)
 {
 	return CalcLight(R_directionalLight.base, -R_directionalLight.direction, normal, worldPos,
