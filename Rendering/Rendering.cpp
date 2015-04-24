@@ -3,7 +3,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
-Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::FXAA;
+Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::NONE;
 
 /* ==================== Blending parameters begin ==================== */
 bool Rendering::glBlendEnabled, Rendering::glBlendEnabledOld;

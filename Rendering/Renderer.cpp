@@ -256,7 +256,7 @@ void Renderer::InitializeCubeMap()
 	cubeMapNode = new GameNode();
 	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
 	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	cubeMapNode->GetTransform().SetScale(50.0f);
+	cubeMapNode->GetTransform().SetScale(5.0f);
 	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 }
 
@@ -469,7 +469,7 @@ void Renderer::Render(const GameNode& gameNode)
 			// everything in the scene will be mapped to the same point
 			lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-			SetReal("shadowVarianceMin", 0.00002f);
+			SetReal("shadowVarianceMin", 0.00002f /* do not use hard-coded values */);
 		}
 		GetTexture("displayTexture")->BindAsRenderTarget();
 		//BindAsRenderTarget();
@@ -514,7 +514,14 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSkybox();
 
-	ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+	if (Rendering::antiAliasingMethod == Rendering::FXAA)
+	{
+		ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+	}
+	else
+	{
+		ApplyFilter(nullFilterShader, GetTexture("displayTexture"), NULL);
+	}
 }
 
 void Renderer::RenderMainMenu(const MenuEntry& menuEntry)

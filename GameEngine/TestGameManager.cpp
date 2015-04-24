@@ -95,7 +95,7 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
 	terrainNode = new GameNode();
-	terrainMesh = new TerrainMesh("..\\Models\\terrain02.obj");
+	terrainMesh = new TerrainMesh("..\\Models\\" + GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -105,9 +105,10 @@ void TestGameManager::Load()
 	terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
-	m_resourcesLoaded += 5; // TODO: Consider creating some prettier solution. This is ugly
 	//terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	terrainNode->GetTransform().SetScale(30.0f);
 	terrainMesh->TransformPositions(terrainNode->GetTransform().GetTransformation());
@@ -216,19 +217,7 @@ void TestGameManager::Load()
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
-	///* ==================== Adding cameras begin ==================== */
-	if (cameraCount > 0)
-	{
-		LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
-		AddCameras();
-		LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
-	}
-	else
-	{
-		LOG(Error, LOGPLACE, "No cameras defined.");
-		exit(EXIT_FAILURE);
-	}
-	///* ==================== Adding cameras end ==================== */
+	AddCameras(); // Adding cameras
 
 	ASSERT(m_isGameLoaded);
 	m_isGameLoaded = true;
@@ -485,6 +474,8 @@ void TestGameManager::AddCameras()
 		LOG(Error, LOGPLACE, "No cameras defined.");
 		exit(EXIT_FAILURE);
 	}
+	
+	LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
 
 	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
 	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
@@ -531,6 +522,7 @@ void TestGameManager::AddCameras()
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
 	}
+	LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
 }
 
 //
