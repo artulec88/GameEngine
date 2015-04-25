@@ -245,10 +245,11 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	//delete [] drawBuffers;
 	//drawBuffers = NULL;
 
-	ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE.");
+		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is %d.", status);
 		exit(EXIT_FAILURE);
 	}
 

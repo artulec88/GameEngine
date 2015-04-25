@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Math\Vector.h"
-#include <GLFW\glfw3.h>
+//#include <GLFW\glfw3.h>
 #include <list>
 
 namespace Rendering

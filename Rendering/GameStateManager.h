@@ -1,5 +1,5 @@
-#ifndef __GAME_STATE_MANAGER_H__
-#define __GAME_STATE_MANAGER_H__
+#ifndef __RENDERING_GAME_STATE_MANAGER_H__
+#define __RENDERING_GAME_STATE_MANAGER_H__
 
 #include "Rendering.h"
 #include "GameState.h"
@@ -268,4 +268,4 @@ private:
 
 } /* end namespace Rendering */
 
-#endif /* __GAME_STATE_MANAGER_H__ */
+#endif /* __RENDERING_GAME_STATE_MANAGER_H__ */

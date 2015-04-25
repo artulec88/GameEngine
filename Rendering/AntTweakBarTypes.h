@@ -2,7 +2,6 @@
 
 #include "Rendering.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
-
 #include "AntTweakBar\include\AntTweakBar.h"
 #include "Math\Angle.h"
 #include "Math\Vector.h"
