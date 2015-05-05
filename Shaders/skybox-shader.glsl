@@ -31,6 +31,7 @@ void main()
     gl_Position = pos;
 }
 #elif defined(FS_BUILD)
+#include "parallaxMapping.glh"
 #include "sampling.glh"
 
 uniform float R_dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day

@@ -27,6 +27,7 @@ void main()
     tbnMatrix = mat3(t, biTangent, n);
 }
 #elif defined(FS_BUILD)
+#include "parallaxMapping.glh"
 #include "sampling.glh"
 
 uniform vec3 R_ambientFogColor;

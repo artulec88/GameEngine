@@ -6,12 +6,12 @@
 #define RENDERING_API __declspec(dllimport)
 #endif
 
+#include <string>
+#include "Math\Math.h"
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
 #include <GL\glew.h>
 // Include GLFW
 #include <GLFW\glfw3.h>
-#include <string>
-#include "Math\Math.h"
 
 #define ANT_TWEAK_BAR_ENABLED
 

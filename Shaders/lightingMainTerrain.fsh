@@ -1,3 +1,4 @@
+#include "parallaxMapping.glh"
 #include "sampling.glh"
 
 uniform sampler2D diffuse;
