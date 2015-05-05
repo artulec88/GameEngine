@@ -81,3 +81,15 @@ bool PointLight::IsEnabled() const
 	}
 	return BaseLight::IsEnabled();
 }
+
+float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
+
+void PointLight::Update(Math::Real deltaTime)
+{
+	gTemp += deltaTime;
+	if (gTemp > 20.0 * Math::M_PI)
+	{
+		gTemp = REAL_ZERO;
+	}
+	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 200, cos(gTemp) / 400, cos(gTemp) / 200)));
+}

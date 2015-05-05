@@ -30,6 +30,8 @@ public:
 	Math::Real GetRange() const { return m_range; };
 	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
+
+	virtual void Update(Math::Real deltaTime);
 protected:
 	void CalculateRange();
 /* ==================== Non-static member functions end ==================== */

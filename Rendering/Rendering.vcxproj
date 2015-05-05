@@ -109,6 +109,7 @@
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameComponent.h" />
@@ -147,6 +148,7 @@
     <ClCompile Include="AntTweakBarTypes.cpp" />
     <ClCompile Include="BaseLight.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CubeShadowMap.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

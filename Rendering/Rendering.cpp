@@ -93,6 +93,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	}
 
 	//glEnable(GL_TEXTURE_2D);
+	glEnable(GL_TEXTURE_CUBE_MAP);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 
 	LOG(Utility::Info, LOGPLACE, "Initializing graphics finished successfully");
@@ -736,6 +737,47 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 	default:
 		LOG(Utility::Critical, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = %d", functionName, comment, errCode);
 		exit(EXIT_FAILURE);
+	}
+}
+
+/**
+ * See https://www.opengl.org/sdk/docs/man3/xhtml/glCheckFramebufferStatus.xml
+ */
+void Rendering::CheckFramebufferStatus()
+{
+	GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	switch (framebufferStatus)
+	{
+	case GL_FRAMEBUFFER_COMPLETE:
+		LOG(Utility::Debug, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_COMPLETE");
+		break;
+	case GL_FRAMEBUFFER_UNDEFINED:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_UNDEFINED");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+		break;
+	case GL_FRAMEBUFFER_UNSUPPORTED:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_UNSUPPORTED");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE");
+		break;
+	case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
+		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
+		break;
+	default:
+		LOG(Utility::Emergency, LOGPLACE, "Framebuffer is in unknown status 0x%x", framebufferStatus);
+		break;
 	}
 }
 

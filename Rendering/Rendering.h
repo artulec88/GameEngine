@@ -58,6 +58,7 @@ namespace Rendering
 	GLFWwindow* InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
 	void InitGlew();
 	void CheckErrorCode(const char* functionName, const char* comment);
+	void CheckFramebufferStatus();
 
 
 	//void ReadAlphaTestParameter();
