@@ -60,10 +60,8 @@ uniform sampler2D displacementMap;
 
 uniform float displacementScale;
 uniform float displacementBias;
-//uniform bool hasMultipleTextures;
-
-// consider using samplerCubeShadow
 layout(binding=5) uniform samplerCube R_cubeShadowMap;
+//uniform bool hasMultipleTextures;
 
 bool InRange(float val)
 {
@@ -80,7 +78,7 @@ float CalcShadowAmount(samplerCube cubeShadowMap, vec3 lightDirection)
 	}
 	else
 	{
-		return 0.5; // inside the shadow
+		return 0.0; // inside the shadow
 	}
 }
 
@@ -118,7 +116,7 @@ void main()
 	{
 		texColor = texture2D(diffuse2, texCoords);
 	}
-	SetFragOutput(0, texColor * lightingAmt / texColor);
+	SetFragOutput(0, texColor * lightingAmt);
 	
 	// vec4 diffuseTexColor = texture2D(diffuse, texCoords);
 	// if (hasMultipleTextures)

@@ -133,7 +133,7 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 
 void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
-	LOG(Utility::Debug, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
+	LOG(Utility::Delocust, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
 
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Started drawing a string");
 

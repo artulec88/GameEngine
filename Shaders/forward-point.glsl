@@ -60,7 +60,6 @@ uniform sampler2D displacementMap;
 uniform float displacementScale;
 uniform float displacementBias;
 
-// consider using samplerCubeShadow
 layout(binding=5) uniform samplerCube R_cubeShadowMap;
 
 bool InRange(float val)
@@ -78,7 +77,7 @@ float CalcShadowAmount(samplerCube cubeShadowMap, vec3 lightDirection)
 	}
 	else
 	{
-		return 0.5; // inside the shadow
+		return 0.0; // inside the shadow
 	}
 }
 
@@ -102,7 +101,7 @@ void main()
 	vec3 normal = normalize(tbnMatrix * (255.0/128.0 * texture2D(normalMap, texCoords).xyz - 1));
 	vec3 lightDirection = worldPos0 - R_pointLight.position;
 	vec4 lightingAmt = CalcLightingEffect(normal, worldPos0) * CalcShadowAmount(R_cubeShadowMap, lightDirection);
-	SetFragOutput(0, (texture2D(diffuse, texCoords) * lightingAmt) / texture2D(diffuse, texCoords));
+	SetFragOutput(0, texture2D(diffuse, texCoords) * lightingAmt);
 	
 	// vec4 diffuseTexColor = texture2D(diffuse, texCoords);
 	// if (hasMultipleTextures)
