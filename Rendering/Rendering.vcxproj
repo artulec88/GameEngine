@@ -123,6 +123,8 @@
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
+    <ClInclude Include="LightBuilder.h" />
+    <ClInclude Include="LightBuilderDirector.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
@@ -166,6 +168,8 @@
     <ClCompile Include="IInputableMouse.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="LightBuilder.cpp" />
+    <ClCompile Include="LightBuilderDirector.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />

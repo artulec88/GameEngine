@@ -7,6 +7,8 @@
 #include "Rendering\MeshRenderer.h"
 #include "Rendering\LookAtComponent.h"
 #include "Rendering\Color.h"
+#include "Rendering\LightBuilder.h"
+#include "Rendering\LightBuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -285,16 +287,9 @@ void TestGameManager::AddDirectionalLight()
 	directionalLightNode = new GameNode();
 
 	const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
-	const Color defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", 1.0f), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", 1.0f));
-	const Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", 1.0f));
 	const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
 	const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
 	const Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", 0.0f));
-	const Real defaultDirectionalLightShadowArea = GET_CONFIG_VALUE("defaultDirectionalLightShadowArea", 80.0f);
-	const int defaultDirectionalLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("defaultDirectionalLightShadowMapSizeAsPowerOf2", 10);
-	const Real defaultDirectionalLightShadowSoftness = GET_CONFIG_VALUE("defaultDirectionalLightShadowSoftness", 1.0f);
-	const Real defaultDirectionalLightLightBleedingReductionAmount = GET_CONFIG_VALUE("defaultDirectionalLightLightBleedingReductionAmount", 0.2f);
-	const Real defaultDirectionalLightMinVariance = GET_CONFIG_VALUE("defaultDirectionalLightMinVariance", 0.00002f);
 
 	Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
 	Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
@@ -318,20 +313,10 @@ void TestGameManager::AddDirectionalLight()
 	//directionalLightNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
 
-	Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetRed());
-	Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetGreen());
-	Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetBlue());
-	Color color(red, green, blue);
-		
-	Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
-
-	Real shadowArea = GET_CONFIG_VALUE("directionalLightShadowArea", defaultDirectionalLightShadowArea);
-	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("directionalLightShadowMapSizeAsPowerOf2", defaultDirectionalLightShadowMapSizeAsPowerOf2);
-	Real shadowSoftness = GET_CONFIG_VALUE("directionalLightShadowSoftness", defaultDirectionalLightShadowSoftness);
-	Real lightBleedingReductionAmount = GET_CONFIG_VALUE("directionalLightLightBleedingReductionAmount", defaultDirectionalLightLightBleedingReductionAmount);
-	Real minVariance = GET_CONFIG_VALUE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
-
-	directionalLightNode->AddComponent(new DirectionalLight(color, intensity, shadowMapSizeAsPowerOf2, shadowArea, shadowSoftness, lightBleedingReductionAmount, minVariance));
+	Rendering::DirectionalLightBuilder directionalLightBuilder;
+	Rendering::LightBuilderDirector lightBuilderDirector(directionalLightBuilder);
+	lightBuilderDirector.Construct();
+	directionalLightNode->AddComponent(directionalLightBuilder.GetLight());
 	AddToSceneRoot(directionalLightNode);
 
 	// Rendering a small box around point light node position to let the user see the source

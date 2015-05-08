@@ -45,14 +45,15 @@ public:
 	bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+
+	void SetShader(Shader* shader);
+	void SetTerrainShader(Shader* terrainShader);
+	void SetShadowInfo(ShadowInfo* shadowInfo);
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
 protected:
-	//virtual void InitializeShaders() = 0;
-	void SetShader(Shader* shader);
-	void SetTerrainShader(Shader* terrainShader);
-	void SetShadowInfo(ShadowInfo* shadowInfo);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

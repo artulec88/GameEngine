@@ -21,19 +21,22 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	DirectionalLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
-		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowArea = 80.0f, Math::Real shadowSoftness = REAL_ONE,
-		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );
+	DirectionalLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO);
 	virtual ~DirectionalLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
+
 	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+
+	void SetMaxIntensity(Math::Real maxIntensity) { m_maxIntensity = maxIntensity; }
+	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
+	void SetSunNearHorizonColor(const Color& sunNearHorizonColor) { m_sunNearHorizonColor = sunNearHorizonColor; }
+	void SetSunlightNighttimeColor(const Color& sunlightNighttimeColor) { m_sunlightNighttimeColor = sunlightNighttimeColor; }
 
 #ifdef SIMULATE_SUN_BEHAVIOR
 	virtual void Update(Math::Real delta);
@@ -42,10 +45,10 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Math::Real m_maxIntensity;
-	const Color m_sunlightDaytimeColor;
-	const Color m_sunNearHorizonColor;
-	const Color m_sunlightNighttimeColor;
+	Math::Real m_maxIntensity;
+	Color m_sunlightDaytimeColor;
+	Color m_sunNearHorizonColor;
+	Color m_sunlightNighttimeColor;
 	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLight */

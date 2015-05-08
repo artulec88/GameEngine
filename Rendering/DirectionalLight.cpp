@@ -9,45 +9,9 @@ using namespace Rendering;
 
 /* static */ bool DirectionalLight::directionalLightsEnabled = true;
 
-DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
-		int shadowMapSizeAsPowerOf2 /* = 0 */, Math::Real shadowArea /* = 80.0f */, Math::Real shadowSoftness /* = REAL_ONE */,
-		Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
-		Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */ ) :
-	BaseLight(color, intensity),
-	m_maxIntensity(intensity),
-	m_halfShadowArea(shadowArea / 2.0f),
-	m_sunlightDaytimeColor(color),
-	m_sunNearHorizonColor(GET_CONFIG_VALUE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE("directionalLightNearHorizonColorBlue", REAL_ZERO)),
-	m_sunlightNighttimeColor(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO))
+DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
+	BaseLight(color, intensity)
 {
-	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-	ASSERT(m_shader != NULL);
-	if (m_shader == NULL)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL.");
-		exit(EXIT_FAILURE);
-	}
-
-	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
-	ASSERT(m_terrainShader != NULL);
-	if (m_terrainShader == NULL)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Terrain shader is NULL.");
-		exit(EXIT_FAILURE);
-	}
-
-	m_isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows
-	if (m_isShadowingEnabled)
-	{
-		m_isShadowingEnabled = true;
-		Math::Matrix4D ortoMatrix = Math::Matrix4D::OrtographicProjection(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea);
-		SetShadowInfo(new ShadowInfo(ortoMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		ASSERT(m_shadowInfo != NULL);
-		if (m_shadowInfo == NULL)
-		{
-			LOG(Utility::Emergency, LOGPLACE, "Cannot initialize directional light. Shadow info is NULL");
-		}
-	}
 }
 
 
