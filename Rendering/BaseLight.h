@@ -41,6 +41,8 @@ public:
 	inline Shader* GetTerrainShader() { return m_terrainShader; }
 	inline ShadowInfo* GetShadowInfo() { return m_shadowInfo; }
 	virtual bool IsEnabled() const { return m_isEnabled; }
+	
+	bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -61,6 +63,7 @@ protected:
 	Shader* m_terrainShader;
 	ShadowInfo* m_shadowInfo;
 	bool m_isEnabled;
+	bool m_isShadowingEnabled;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BaseLight */
 

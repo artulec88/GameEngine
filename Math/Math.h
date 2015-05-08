@@ -70,4 +70,19 @@ namespace Math
 	{
 		return ((1 - mixFactor) * a) + (mixFactor * b);
 	}
+
+	template<typename Type> Type RoundUpPow2(Type number)
+	{
+		if (number < 0)
+		{
+			return 0;
+		}
+		--number;
+		number |= number >> 1;
+		number |= number >> 2;
+		number |= number >> 4;
+		number |= number >> 8;
+		number |= number >> 16;
+		return number + 1;
+	}
 } /* end namespace Math */

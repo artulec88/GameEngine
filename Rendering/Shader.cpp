@@ -76,6 +76,11 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	LOG(Info, LOGPLACE, "Shader \"%s\" text loaded", fileName.c_str());
 
+	/**
+	 * TODO: Vertex shader text should only contain the shader file content in the #if defined(VS_BUILD) block.
+	 * Analogically, the fragment shader text should only contain the content in the #if defined(FS_BUILD) block.
+	 * The same should apply to the geometry shader text.
+	 */
 	std::string vertexShaderText = "#version " + glslVersion + "\n#define VS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 	std::string geometryShaderText = "#version " + glslVersion + "\n#define GS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
 	std::string fragmentShaderText = "#version " + glslVersion + "\n#define FS_BUILD\n#define GLSL_VERSION " + glslVersion + "\n" + shaderText;
@@ -96,13 +101,16 @@ ShaderData::ShaderData(const std::string& fileName) :
 		LOG(Critical, LOGPLACE, "Error while compiling shader program %d", programID);
 		exit(EXIT_FAILURE);
 	}
-
-	AddShaderUniforms(vertexShaderText);
-	if (geometryShaderPresent)
-	{
-		AddShaderUniforms(geometryShaderText);
-	}
-	AddShaderUniforms(fragmentShaderText);
+	AddShaderUniforms(shaderText);
+	//LOG(Error, LOGPLACE, "Vertex shader text = %s", vertexShaderText.c_str());
+	//AddShaderUniforms(vertexShaderText);
+	//if (geometryShaderPresent)
+	//{
+	//	LOG(Error, LOGPLACE, "Geometry shader text = %s", geometryShaderText.c_str());
+	//	AddShaderUniforms(geometryShaderText);
+	//}
+	//LOG(Error, LOGPLACE, "Fragment shader text = %s", fragmentShaderText.c_str());
+	//AddShaderUniforms(fragmentShaderText);
 }
 
 ShaderData::~ShaderData()
@@ -187,7 +195,7 @@ bool ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
 		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		LOG(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
+		LOG(Error, LOGPLACE, "Error linking shader program:\n%s\r", &errorMessage[0]);
 	}
 
 	glValidateProgram(programID);
@@ -196,7 +204,7 @@ bool ShaderData::Compile()
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
 		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		LOG(Error, LOGPLACE, "Error linking shader program: \"%s\"", &errorMessage[0]);
+		LOG(Error, LOGPLACE, "Error validating shader program:\n%s\r", &errorMessage[0]);
 	}
 
 	if (!compileSuccess)
@@ -320,7 +328,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	int temp = 0;
 	for (std::vector<UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
 	{
-		LOG(Delocust, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
+		LOG(Debug, LOGPLACE, "structs[%d].name = \"%s\"", temp, itr->name.c_str());
 		int innerTemp = 0;
 		for (std::vector<TypedData>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
 		{
@@ -342,10 +350,13 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		 */
 		bool isCommented = false;
 		unsigned int lastLineEnd = shaderText.rfind(";", uniformLocation);
+		//LOG(Info, LOGPLACE, "Uniform location in shader text = %d; lastLineEnd = %d; std::string::npos = %d", uniformLocation, lastLineEnd, std::string::npos);
 		if(lastLineEnd != std::string::npos)
 		{
 			std::string potentialCommentSection = shaderText.substr(lastLineEnd,uniformLocation - lastLineEnd);
-			isCommented = potentialCommentSection.find("//") != std::string::npos;
+			unsigned int commentFind = potentialCommentSection.find("//");
+			isCommented = (commentFind != std::string::npos);
+			//LOG(Info, LOGPLACE, "potentialCommentSection = \"%s\"; find("") = %d", potentialCommentSection.c_str(), commentFind);
 		}
 		if(!isCommented)
 		{
@@ -361,11 +372,15 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 			uniformTypes.push_back(uniformType);
 			AddUniform(uniformName, uniformType, structs);
 		}
+		else
+		{
+			LOG(Debug, LOGPLACE, "Uniform is commented out");
+		}
 		uniformLocation = shaderText.find(UNIFORM_KEY, uniformLocation + UNIFORM_KEY.length());
 	}
 	for (std::map<std::string, unsigned int>::const_iterator it = uniformMap.begin(); it != uniformMap.end(); ++it)
 	{
-		LOG(Delocust, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
+		LOG(Debug, LOGPLACE, "Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
 	}
 }
 
@@ -595,6 +610,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	for (unsigned int i = 0; i < shaderData->GetUniformNames().size(); ++i)
 	{
 		std::string uniformName = shaderData->GetUniformNames()[i];
+		//LOG(Critical, LOGPLACE, "uniformName = \"%s\"", uniformName.c_str());
 		std::string uniformType = shaderData->GetUniformTypes()[i];
 
 		const std::string uniformSubstr = uniformName.substr(0, 2);
@@ -609,16 +625,31 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
 			{
 				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
-				Texture* texture = renderer->GetTexture(unprefixedName);
-				ASSERT(texture != NULL);
-				if (texture == NULL)
+				//LOG(Critical, LOGPLACE, "Sampler slot = %d; unprefixedName = \"%s\"", samplerSlot, unprefixedName.c_str());
+				if (unprefixedName == "cubeShadowMap")
 				{
-					LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
-					exit(EXIT_FAILURE);
+					//LOG(Critical, LOGPLACE, "Binding cube shadow map");
+					renderer->BindCubeShadowMap(samplerSlot);
 				}
-				texture->Bind(samplerSlot);
+				else
+				{
+					Texture* texture = renderer->GetTexture(unprefixedName);
+					ASSERT(texture != NULL);
+					if (texture == NULL)
+					{
+						LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
+						exit(EXIT_FAILURE);
+					}
+					texture->Bind(samplerSlot);
+				}
 				SetUniformi(uniformName, samplerSlot);
 			}
+			//else if (uniformType == "samplerCubeShadow")
+			//{
+			//	unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
+			//	renderer->BindCubeShadowMap(samplerSlot);
+			//	SetUniformi(uniformName, samplerSlot);
+			//}
 			else if (uniformType == "vec3")
 			{
 				SetUniformVector3D(uniformName, renderer->GetVec3D(unprefixedName));

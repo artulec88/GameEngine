@@ -4,12 +4,14 @@
 #include "GameNode.h"
 #include "Camera.h"
 #include "BaseLight.h"
+#include "PointLight.h"
 #include "MappedValues.h"
 #include "Material.h"
 #include "Transform.h"
 #include "Shader.h"
 #include "Color.h"
 #include "MenuEntry.h"
+#include "CubeShadowMap.h"
 
 #include "Math\Vector.h"
 
@@ -54,8 +56,6 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
-	void RegisterTerrainNode(GameNode* terrainNode);
 
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
@@ -90,10 +90,19 @@ public:
 	RENDERING_API inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
 
 	RENDERING_API void PrintGlReport();
+
+	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
+	void RegisterTerrainNode(GameNode* terrainNode);
+	void BindCubeShadowMap(unsigned int textureUnit) const;
+
 protected:
 	void RenderSkybox();
+	void RenderSceneWithAmbientLight(const GameNode& gameNode);
+	void RenderSceneWithPointLights(const GameNode& gameNode);
+	void RenderSceneWithLight(BaseLight* light, const GameNode& gameNode);
 	void SetCallbacks();
 	void ClearScreen() const;
+	void ClearScreen(const Color& clearColor) const;
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
 	void InitializeCubeMap();
@@ -106,9 +115,9 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	unsigned int cameraCount;
-	bool applyFilterEnabled;
-	Color backgroundColor;
+	unsigned int m_cameraCount;
+	bool m_applyFilterEnabled;
+	Color m_backgroundColor;
 	bool shadowsEnabled;
 	GLFWwindow* window;
 	GLFWwindow* m_threadWindow;
@@ -146,6 +155,9 @@ private:
 	Texture* cubeMapTextureDay;
 	Texture* cubeMapTextureNight;
 
+	Shader* m_cubeMapShader; // for use by the point lights
+	CubeShadowMap* m_cubeShadowMap; // for use by the point lights
+	//Texture* m_cubeShadowMap; // for use by the point lights
 	Texture* shadowMaps[SHADOW_MAPS_COUNT];
 	Texture* shadowMapTempTargets[SHADOW_MAPS_COUNT];
 
@@ -155,7 +167,11 @@ private:
 	Shader* nullFilterShader;
 	Shader* gaussBlurFilterShader;
 	Shader* fxaaFilterShader;
-	std::vector<BaseLight*> lights;
+
+	std::vector<BaseLight*> m_lights;
+	std::vector<BaseLight*> m_directionalAndSpotLights;
+	std::vector<PointLight*> m_pointLights;
+
 	std::vector<CameraBase*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
 	Math::Matrix4D lightMatrix;

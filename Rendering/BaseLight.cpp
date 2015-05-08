@@ -14,8 +14,13 @@ BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZE
 	m_shader(NULL),
 	m_terrainShader(NULL),
 	m_shadowInfo(NULL),
-	m_isEnabled(true)
+	m_isEnabled(true),
+	m_isShadowingEnabled(true)
 {
+	/**
+	 * I don't like this. The `this` operator below is not yet a fully constructed object, so the AddLight function called here is a "code smell".
+	 * Consider using the Builder or Factory design patterns to allow easier light objects creation.
+	 */
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(this);
 }
 

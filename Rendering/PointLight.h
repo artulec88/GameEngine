@@ -14,7 +14,7 @@ class RENDERING_API PointLight : public BaseLight
 public:
 	static bool pointLightsEnabled;
 public:
-	static bool* GetPointLightsEnabled() { return &pointLightsEnabled; }
+	static bool* ArePointLightsEnabled() { return &pointLightsEnabled; }
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -28,7 +28,6 @@ public:
 public:
 	Attenuation GetAttenuation() const { return m_attenuation; };
 	Math::Real GetRange() const { return m_range; };
-	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
 
 	virtual void Update(Math::Real deltaTime);

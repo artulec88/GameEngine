@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "CubeShadowMap.h"
 #include "Utility\ILogger.h"
+#include "Math\Math.h"
 
 using namespace Rendering;
 
@@ -40,7 +41,11 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 {
 	// See http://stackoverflow.com/questions/12879969/hardware-support-for-non-power-of-two-textures
 
-	LOG(Utility::Notice, LOGPLACE, "Initializing cube shadow map with width=%d and height=%d");
+	unsigned int windowWidthPowerOfTwo = Math::RoundUpPow2(windowWidth);
+	unsigned int windowHeightPowerOfTwo = Math::RoundUpPow2(windowHeight);
+	unsigned int cubeMapSize = (windowWidthPowerOfTwo > windowHeightPowerOfTwo) ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
+
+	LOG(Utility::Notice, LOGPLACE, "Initializing cube shadow map with width=%d and height=%d (cubeMapSize=%d)", windowWidth, windowHeight, cubeMapSize);
 	const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
     // Create the FBO
@@ -49,7 +54,7 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
     // Create the depth buffer
     glGenTextures(1, &m_depth);
     glBindTexture(GL_TEXTURE_2D, m_depth);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, windowWidth, windowHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, cubeMapSize, cubeMapSize, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -67,11 +72,11 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 
     for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, windowWidth, windowHeight, 0, GL_RED, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_R32F, cubeMapSize, cubeMapSize, 0, GL_RED, GL_FLOAT, NULL);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
 	//LOG(Utility::Debug, LOGPLACE, "The texture does not have any depth attachment. Creating the render buffer is started.");
 	//glGenRenderbuffers(1, &m_renderBuffer);
 	//glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);

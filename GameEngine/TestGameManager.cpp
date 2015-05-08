@@ -27,7 +27,7 @@ using namespace Rendering;
 
 TestGameManager::TestGameManager() :
 	GameManager(),
-	m_resourcesToLoad(24),
+	m_resourcesToLoad(32),
 	m_resourcesLoaded(0),
 	terrainNode(NULL),
 	terrainMesh(NULL),
@@ -150,10 +150,11 @@ void TestGameManager::Load()
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetPos(-2.0f, 2.5f, 2.0f);
-	testMesh1->GetTransform().SetScale(0.5f);
+	testMesh1->GetTransform().SetScale(1.5f);
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
-	//testMesh2->GetTransform().SetScale(0.5f);
+	//testMesh2->GetTransform().SetScale(1.5f);
+	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D::RotationEuler(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
 	testMesh1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
 		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, new Texture("..\\Textures\\bricks2_normal.jpg"), new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
@@ -191,6 +192,30 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
 	AddToSceneRoot(earthNode);
+
+	GameNode* sphereNode = new GameNode();
+	sphereNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	m_resourcesLoaded += 2;
+	sphereNode->GetTransform().SetPos(-3.0f, 1.5f, -3.0f);
+	AddToSceneRoot(sphereNode);
+
+	GameNode* sphereNode2 = new GameNode();
+	sphereNode2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	m_resourcesLoaded += 2;
+	sphereNode2->GetTransform().SetPos(-3.0f, 2.0f, 3.0f);
+	AddToSceneRoot(sphereNode2);
+
+	GameNode* sphereNode3 = new GameNode();
+	sphereNode3->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	m_resourcesLoaded += 2;
+	sphereNode3->GetTransform().SetPos(3.0f, 2.5f, -3.0f);
+	AddToSceneRoot(sphereNode3);
+
+	GameNode* sphereNode4 = new GameNode();
+	sphereNode4->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	m_resourcesLoaded += 2;
+	sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
+	AddToSceneRoot(sphereNode4);
 
 	srand((unsigned int)time(NULL));
 

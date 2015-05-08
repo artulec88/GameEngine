@@ -28,12 +28,12 @@ using namespace Math;
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
 Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
-	cameraCount(-1),
-	applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
-	backgroundColor(GET_CONFIG_VALUE("ClearColorRed", 0.0f),
-		GET_CONFIG_VALUE("ClearColorGreen", 0.0f),
-		GET_CONFIG_VALUE("ClearColorBlue", 0.0f),
-		GET_CONFIG_VALUE("ClearColorAlpha", 1.0f)),
+	m_cameraCount(-1),
+	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
+	m_backgroundColor(GET_CONFIG_VALUE("ClearColorRed", REAL_ZERO),
+		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
+		GET_CONFIG_VALUE("ClearColorBlue", REAL_ZERO),
+		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
 	shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	window(window),
 	m_threadWindow(threadWindow),
@@ -92,6 +92,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("normalMap", 1);
 	SetSamplerSlot("displacementMap", 2);
 	SetSamplerSlot("shadowMap", 3);
+	SetSamplerSlot("cubeShadowMap", 5);
 	SetSamplerSlot("cubeMapDay", 0);
 	SetSamplerSlot("cubeMapNight", 1);
 	SetSamplerSlot("filterTexture", 0);
@@ -134,6 +135,11 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	filterMesh->Initialize();
 
 	InitializeCubeMap();
+
+	m_cubeMapShader = new Shader(GET_CONFIG_VALUE_STR("cubeShadowMapShader", "CubeShadowMapGenerator"));
+	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
+	m_cubeShadowMap = new CubeShadowMap();
+	m_cubeShadowMap->Init(width, height);
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
@@ -199,6 +205,7 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	//SAFE_DELETE(cubeMapNode);
 	SAFE_DELETE(cubeMapShader);
+	SAFE_DELETE(m_cubeShadowMap);
 	SAFE_DELETE(filterMaterial);
 	SAFE_DELETE(filterMesh);
 
@@ -369,9 +376,33 @@ void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 	m_terrainNode = terrainNode;
 }
 
+/* TODO: Remove in the future */
+struct CameraDirection
+{
+	GLenum cubemapFace;
+	Quaternion rotation;
+};
+
+CameraDirection gCameraDirections[6 /* number of cube map faces */] =
+{
+	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
+	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
+	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE) },
+	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE) },
+	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
+	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) }
+
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Quaternion(Matrix4D::RotationFromDirection(Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
+};
+
 void Renderer::Render(const GameNode& gameNode)
 {
-	Rendering::CheckErrorCode("Renderer::Render", "Started the Render function");
+	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
 	// TODO: Expand with Stencil buffer once it is used
 
 	AdjustAmbientLightAccordingToCurrentTime();
@@ -397,24 +428,19 @@ void Renderer::Render(const GameNode& gameNode)
 		// TODO: Instead of exit maybe just use the default camera (??)
 	}
 	m_currentCamera = cameras[currentCameraIndex];
-	if (ambientLightFogEnabled)
-	{
-		m_terrainNode->RenderAll(m_defaultShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
-		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
-	}
-	else
-	{
-		m_terrainNode->RenderAll(m_defaultShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
-		gameNode.RenderAll(defaultShader, this); // Ambient rendering with disabled fog
-	}
 
-	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
+	RenderSceneWithAmbientLight(gameNode);
+
+	RenderSceneWithPointLights(gameNode);
+
+	for (std::vector<BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		currentLight = (*lightItr);
 		if (!currentLight->IsEnabled())
 		{
 			continue;
 		}
+
 		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
 		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 		ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
@@ -423,7 +449,7 @@ void Renderer::Render(const GameNode& gameNode)
 			LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 			shadowMapIndex = 0;
 		}
-		SetTexture("shadowMap", shadowMaps[shadowMapIndex]);
+		SetTexture("shadowMap", shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -452,7 +478,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 			m_currentCamera = temp;
 
-			if (applyFilterEnabled)
+			if (m_applyFilterEnabled)
 			{
 				//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
 				//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
@@ -471,29 +497,7 @@ void Renderer::Render(const GameNode& gameNode)
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", 0.00002f /* do not use hard-coded values */);
 		}
-		GetTexture("displayTexture")->BindAsRenderTarget();
-		//BindAsRenderTarget();
-		if (!Rendering::glBlendEnabled)
-		{
-			glEnable(GL_BLEND);
-		}
-		glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
-		glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-		glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
-		m_terrainNode->RenderAll(currentLight->GetTerrainShader(), this);
-		gameNode.RenderAll(currentLight->GetShader(), this);
-
-		glDepthFunc(Rendering::glDepthTestFunc);
-		glDepthMask(GL_TRUE);
-		if (!Rendering::glBlendEnabled)
-		{
-			glDisable(GL_BLEND);
-		}
-		else
-		{
-			glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
-		}
+		RenderSceneWithLight(currentLight, gameNode);
 
 		/* ==================== Rendering to texture begin ==================== */
 		//if (renderToTextureTestingEnabled)
@@ -521,6 +525,89 @@ void Renderer::Render(const GameNode& gameNode)
 	else
 	{
 		ApplyFilter(nullFilterShader, GetTexture("displayTexture"), NULL);
+	}
+}
+
+void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
+{
+	if (ambientLightFogEnabled)
+	{
+		m_terrainNode->RenderAll(m_defaultShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
+		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
+	}
+	else
+	{
+		m_terrainNode->RenderAll(m_defaultShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
+		gameNode.RenderAll(defaultShader, this); // Ambient rendering with disabled fog
+	}
+}
+
+void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
+{
+	if (!PointLight::ArePointLightsEnabled())
+	{
+		return;
+	}
+
+	for (std::vector<PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
+	{
+		PointLight* currentPointLight = (*pointLightItr);
+		if (!currentPointLight->IsEnabled())
+		{
+			continue;
+		}
+		glCullFace(GL_FRONT);
+		const int NUMBER_OF_CUBE_MAP_FACES = 6;
+
+		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
+		altCamera.GetTransform().SetPos(currentPointLight->GetTransform().GetTransformedPos());
+		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+		{
+			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
+			//m_cubeShadowMap->BindAsRenderTarget( /* TODO: Add cube face parameter (e.g. GL_TEXTURE_CUBE_MAP_POSITIVE_X) */ );
+			LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
+			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+			altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
+
+			CameraBase* temp = m_currentCamera;
+			m_currentCamera = &altCamera;
+
+			m_terrainNode->RenderAll(m_cubeMapShader, this);
+			gameNode.RenderAll(m_cubeMapShader, this);
+
+			m_currentCamera = temp;
+		}
+
+		RenderSceneWithLight(currentPointLight, gameNode);
+	}
+}
+
+void Renderer::RenderSceneWithLight(BaseLight* light, const GameNode& gameNode)
+{
+	glCullFace(Rendering::glCullFaceMode);
+	GetTexture("displayTexture")->BindAsRenderTarget();
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
+	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+
+	m_terrainNode->RenderAll(light->GetTerrainShader(), this);
+	gameNode.RenderAll(light->GetShader(), this);
+
+	glDepthFunc(Rendering::glDepthTestFunc);
+	glDepthMask(GL_TRUE);
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+	else
+	{
+		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
 	}
 }
 
@@ -729,8 +816,14 @@ void Renderer::ClearScreen() const
 	}
 	else
 	{
-		glClearColor(backgroundColor.GetRed(), backgroundColor.GetGreen(), backgroundColor.GetBlue(), backgroundColor.GetAlpha());
+		glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
 	}
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void Renderer::ClearScreen(const Color& clearColor) const
+{
+	glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -786,13 +879,47 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 
 inline void Renderer::AddLight(BaseLight* light)
 {
-	lights.push_back(light);
+	DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(light);
+	if (directionalLight != NULL)
+	{
+		LOG(Critical, LOGPLACE, "Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		m_directionalAndSpotLights.push_back(directionalLight);
+	}
+	PointLight* pointLight = dynamic_cast<PointLight*>(light);
+	if (pointLight != NULL)
+	{
+		LOG(Critical, LOGPLACE, "Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
+		m_pointLights.push_back(pointLight);
+	}
+	SpotLight* spotLight = dynamic_cast<SpotLight*>(light);
+	if (spotLight != NULL)
+	{
+		LOG(Critical, LOGPLACE, "Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
+		m_directionalAndSpotLights.push_back(spotLight);
+	}
+
+	m_lights.push_back(light);
+
+	for (std::vector<BaseLight*>::const_iterator lightItr = m_lights.begin(); lightItr != m_lights.end(); ++lightItr)
+	{
+		LOG(Critical, LOGPLACE, "Light intensity = %.2f", (*lightItr)->GetIntensity());
+	}
+
+	for (std::vector<BaseLight*>::const_iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	{
+		LOG(Critical, LOGPLACE, "Directional/Spot light intensity = %.2f", (*lightItr)->GetIntensity());
+	}
+
+	for (std::vector<PointLight*>::const_iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
+	{
+		LOG(Critical, LOGPLACE, "Point light intensity = %.2f", (*pointLightItr)->GetIntensity());
+	}
 }
 
 inline void Renderer::AddCamera(CameraBase* camera)
 {
 	cameras.push_back(camera);
-	++cameraCount;
+	++m_cameraCount;
 }
 
 void Renderer::PrintGlReport()
@@ -836,6 +963,11 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 	return samplerItr->second;
 }
 
+void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
+{
+	m_cubeShadowMap->BindForReading(textureUnit);
+}
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 /**
  * This function must be called after AntTweakBar library is initalized.
@@ -855,23 +987,26 @@ void Renderer::InitializeTweakBars()
 	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
 
 	propertiesBar = TwNewBar("PropertiesBar");
-	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &backgroundColor, " label='Background color' ");
+	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &m_backgroundColor, " label='Background color' ");
 	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
-	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &applyFilterEnabled, " label='Apply filter' ");
-	TwAddVarRW(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &m_applyFilterEnabled, " label='Apply filter' ");
+	TwAddVarRO(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRO(propertiesBar, "ambientLightDaytime", TW_TYPE_COLOR3F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
+	TwAddVarRO(propertiesBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR3F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
+	TwAddVarRO(propertiesBar, "ambientLightNighttime", TW_TYPE_COLOR3F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
 	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
 	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &ambientLightFogColor, " label='Fog color' group='Ambient light' ");
 	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
 	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
 	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
-	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::GetPointLightsEnabled(), " label='Point lights' group=Lights");
+	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &shadowsEnabled, " label='Render shadows' group=Shadows");
 	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
-	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &cameraCount);
+	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCount);
 	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar finished");
 #endif
