@@ -235,56 +235,10 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	//m_rootGameNode.UpdateAll(elapsedTime);
 	GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);
 
-
-	//rootGameNode->GetTransform().SetPos(0.0, -1.0, 5.0);
-
-	//temp += delta;
-	//if (temp > 20.0 * M_PI)
-	//{
-	//	temp = 0.0;
-	//}
-
-	//for (int i = 0; i < pointLightCount; ++i)
-	//{
-	//	if (pointLightNodes[i] == NULL)
-	//	{
-	//		LOG(Error, LOGPLACE, "Point light node #%d is NULL while the number of created point lights should be equal to %d.", i, pointLightCount);
-	//		continue;
-	//	}
-	//	Transform& t = pointLightNodes[i]->GetTransform();
-	//	t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, cos(temp) / 2000, cos(temp) / 1000)));
-	//}
-
-	////for (int i = 0; i < spotLightCount; ++i)
-	////{
-	////	if (spotLightNodes[i] == NULL)
-	////	{
-	////		LOG(Error, LOGPLACE, "Spot light node #%d is NULL while the number of created spot lights should be equal to %d.", i, spotLightCount);
-	////		continue;
-	////	}
-	////	Transform& t = spotLightNodes[i]->GetTransform();
-	////	t.SetPos(t.GetPos() + (Vector3D(sin(temp) / 1000, sin(temp) / 2000, cos(temp) / 1000)));
-	////}
-
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	//
 	///* ==================== Adjusting camera vertical position begin ==================== */
-	////const int NUMBER_OF_TEST_ITERATIONS = 1000;
-	////const Math::Real lowX = -30.0f;
-	////const Math::Real highX = 30.0f;
-	////const Math::Real lowZ = -30.0f;
-	////const Math::Real highZ = 30.0f;
-	////clock_t begin = clock();
-	////for (int i = 0; i < NUMBER_OF_TEST_ITERATIONS; ++i)
-	////{
-	////	Math::Real x = lowX + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highX - lowX));
-	////	Math::Real z = lowZ + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (highZ - lowZ));
-	////	Math::Real height = planeMesh->GetHeightAt(Math::Vector2D(x, z));
-	////}
-	////clock_t end = clock();
-	////LOG(Info, LOGPLACE, "Camera's height calculation took %.2f [us]", (1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC)) / NUMBER_OF_TEST_ITERATIONS);
-
 	//timeToUpdateCameraHeight += delta;
 	//if ((m_heightMapCalculationEnabled) && (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL))
 	//{

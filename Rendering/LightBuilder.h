@@ -76,7 +76,7 @@ class PointLightBuilder : public LightBuilder
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API PointLightBuilder(int pointLightIndex = 0);
+	RENDERING_API PointLightBuilder();
 	RENDERING_API virtual ~PointLightBuilder(void) { };
 /* ==================== Constructors and destructors end ==================== */
 
@@ -88,7 +88,7 @@ public:
 	virtual void BuildMeshRenderer();
 #endif
 
-	void SetPointLightIndex(int pointLightIndex) { m_pointLightIndex = pointLightIndex; }
+	RENDERING_API void SetPointLightIndex(int pointLightIndex);
 
 	GameNode* GetLightNode() { return m_pointLightNode; }
 /* ==================== Non-static member functions end ==================== */
@@ -109,18 +109,15 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PointLightBuilder */
 
-class SpotLightBuilder
+class SpotLightBuilder : public LightBuilder
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API SpotLightBuilder() { };
+	RENDERING_API SpotLightBuilder();
 	RENDERING_API virtual ~SpotLightBuilder(void) { };
-private:
-	SpotLightBuilder(SpotLightBuilder& spotLightBuilder) {}
-	void operator=(SpotLightBuilder& spotLightBuilder) {}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -131,12 +128,29 @@ public:
 	virtual void BuildMeshRenderer();
 #endif
 
-	SpotLight* GetLight() { return m_spotLight; }
+	RENDERING_API void SetSpotLightIndex(int spotLightIndex);
+
+	GameNode* GetLightNode() { return m_spotLightNode; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	SpotLight* m_spotLight;
+	const Math::Vector3D M_DEFAULT_SPOT_LIGHT_POS;
+	const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X;
+	const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y;
+	const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z;
+	const Color M_DEFAULT_SPOT_LIGHT_COLOR;
+	const Math::Real M_DEFAULT_SPOT_LIGHT_INTENSITY;
+	const Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION;
+	const Math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
+	const int M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2;
+	const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS;
+	const Math::Real M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT;
+	const Math::Real M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE;
+
+	int m_spotLightIndex;
+	std::string m_spotLightIndexStr;
+	GameNode* m_spotLightNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class SpotLightBuilder */
 

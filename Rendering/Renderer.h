@@ -60,7 +60,10 @@ public:
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
-	RENDERING_API void SwapBuffers();
+	RENDERING_API inline void SwapBuffers()
+	{
+		glfwSwapBuffers(window);
+	}
 
 	RENDERING_API GLFWwindow* GetThreadWindow() { return m_threadWindow; }
 
@@ -75,7 +78,17 @@ public:
 	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return m_ambientLight; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDaytimeColor; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNighttimeColor; }
-	RENDERING_API inline CameraBase& GetCurrentCamera();
+	
+	RENDERING_API inline CameraBase& GetCurrentCamera()
+	{
+		if (m_currentCamera == NULL)
+		{
+			LOG(Utility::Emergency, LOGPLACE, "Current camera is NULL");
+			exit(EXIT_FAILURE);
+		}
+		return *m_currentCamera;
+	}
+
 	RENDERING_API unsigned int GetCurrentCameraIndex() const { return currentCameraIndex; }
 	RENDERING_API unsigned int NextCamera();
 	RENDERING_API unsigned int PrevCamera();
@@ -85,7 +98,10 @@ public:
 	RENDERING_API unsigned int GetSamplerSlot(const std::string& samplerName) const;
 	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
 
-	RENDERING_API bool IsCloseRequested() const;
+	RENDERING_API inline bool IsCloseRequested() const
+	{
+		return glfwWindowShouldClose(window) != 0;
+	}
 
 	RENDERING_API inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
 
@@ -101,8 +117,26 @@ protected:
 	void RenderSceneWithPointLights(const GameNode& gameNode);
 	void RenderSceneWithLight(BaseLight* light, const GameNode& gameNode);
 	void SetCallbacks();
-	void ClearScreen() const;
-	void ClearScreen(const Color& clearColor) const;
+
+	inline void ClearScreen() const
+	{
+		if (ambientLightFogEnabled)
+		{
+			Math::Vector3D fogColor = ambientLightFogColor * m_ambientLight;
+			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
+		}
+		else
+		{
+			glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
+		}
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	inline void ClearScreen(const Color& clearColor) const
+	{
+		glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
 	inline void SetSamplerSlot(const std::string& name, unsigned int value) { samplerMap[name] = value; }
 private:
 	void InitializeCubeMap();
@@ -118,7 +152,8 @@ private:
 	unsigned int m_cameraCount;
 	bool m_applyFilterEnabled;
 	Color m_backgroundColor;
-	bool shadowsEnabled;
+	bool m_shadowsEnabled;
+	bool m_pointLightShadowsEnabled;
 	GLFWwindow* window;
 	GLFWwindow* m_threadWindow;
 	GLuint framebuffer;

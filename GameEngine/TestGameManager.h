@@ -67,9 +67,7 @@ protected:
 	const int humanCount;
 	Rendering::GameNode** humanNodes;
 	const int pointLightCount;
-	Rendering::GameNode** pointLightNodes;
 	const int spotLightCount;
-	Rendering::GameNode** spotLightNodes;
 	const int cameraCount;
 	Rendering::GameNode** cameraNodes;
 	bool m_heightMapCalculationEnabled;

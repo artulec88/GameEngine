@@ -45,9 +45,7 @@ TestGameManager::TestGameManager() :
 	humanCount(2),
 	humanNodes(NULL),
 	pointLightCount(GET_CONFIG_VALUE("pointLightsCount", 1)),
-	pointLightNodes(NULL),
 	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
-	spotLightNodes(NULL),
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
@@ -62,8 +60,6 @@ TestGameManager::TestGameManager() :
 TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
-	SAFE_DELETE_JUST_TABLE(pointLightNodes);
-	SAFE_DELETE_JUST_TABLE(spotLightNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
 	//SAFE_DELETE(terrainNode);
 }
@@ -262,11 +258,19 @@ void TestGameManager::AddLights()
 		AddPointLights();
 		LOG(Debug, LOGPLACE, "%d point lights created", pointLightCount);
 	}
+	else
+	{
+		LOG(Notice, LOGPLACE, "Point lights disabled");
+	}
 	if (spotLightCount > 0)
 	{
 		LOG(Notice, LOGPLACE, "Creating %d spot lights...", spotLightCount);
 		AddSpotLights();
 		LOG(Debug, LOGPLACE, "%d spot lights created", spotLightCount);
+	}
+	else
+	{
+		LOG(Notice, LOGPLACE, "Spot lights disabled");
 	}
 }
 
@@ -293,10 +297,8 @@ void TestGameManager::AddPointLights()
 {
 	if (pointLightCount < 1)
 	{
-		LOG(Info, LOGPLACE, "Point lights disabled");
 		return;
 	}
-	LOG(Info, LOGPLACE, "Point lights enabled. %d point lights will be created.", pointLightCount);
 
 	Rendering::PointLightBuilder pointLightBuilder;
 	Rendering::LightBuilderDirector lightBuilderDirector(pointLightBuilder);
@@ -315,69 +317,15 @@ void TestGameManager::AddSpotLights()
 	{
 		return;
 	}
-	const Vector3D defaultSpotLightPos(GET_CONFIG_VALUE("defaultSpotLightPosX", 0.0f), GET_CONFIG_VALUE("defaultSpotLightPosY", 0.0f), GET_CONFIG_VALUE("defaultSpotLightPosZ", 0.0f));
-	const Angle defaultSpotLightRotationX(GET_CONFIG_VALUE("defaultSpotLightAngleX", -45.0f));
-	const Angle defaultSpotLightRotationY(GET_CONFIG_VALUE("defaultSpotLightAngleY", 0.0f));
-	const Angle defaultSpotLightRotationZ(GET_CONFIG_VALUE("defaultSpotLightAngleZ", 0.0f));
-	const Color defaultSpotLightColor(GET_CONFIG_VALUE("defaultSpotLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultSpotLightColorBlue", 1.0f));
-	const Real defaultSpotLightIntensity(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f));
-	const Attenuation defaultSpotLightAttenuation(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f));
-	const Angle defaultSpotLightViewAngle(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Unit::DEGREE);
-	const int defaultSpotLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("defaultSpotLightShadowMapSizeAsPowerOf2", 10); // 2 ^ 10 = 1024
-	const Real defaultSpotLightShadowSoftness(GET_CONFIG_VALUE("defaultSpotLightShadowSoftness", 1.0f));
-	const Real defaultSpotLightLightBleedingReductionAmount(GET_CONFIG_VALUE("defaultSpotLightLightBleedingReductionAmount", 0.2f));
-	const Real defaultSpotLightMinVariance(GET_CONFIG_VALUE("defaultSpotLightMinVariance", 0.00002f));
-	spotLightNodes = new GameNode* [spotLightCount];
+
+	Rendering::SpotLightBuilder spotLightBuilder;
+	Rendering::LightBuilderDirector lightBuilderDirector(spotLightBuilder);
 	for (int i = 0; i < spotLightCount; ++i)
 	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		std::string spotLightIndexStr = ss.str();
-
-		spotLightNodes[i] = new GameNode();
-		
-		Real xPos = GET_CONFIG_VALUE("spotLightPosX_" + spotLightIndexStr, defaultSpotLightPos.GetX());
-		Real yPos = GET_CONFIG_VALUE("spotLightPosY_" + spotLightIndexStr, defaultSpotLightPos.GetY());
-		Real zPos = GET_CONFIG_VALUE("spotLightPosZ_" + spotLightIndexStr, defaultSpotLightPos.GetZ());
-		spotLightNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
-		
-		Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + spotLightIndexStr, defaultSpotLightRotationX.GetAngleInDegrees()));
-		Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + spotLightIndexStr, defaultSpotLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + spotLightIndexStr, defaultSpotLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
-		Quaternion rot(rotMatrix);
-		spotLightNodes[i]->GetTransform().SetRot(rot);
-
-		Real red = GET_CONFIG_VALUE("spotLightColorRed_" + spotLightIndexStr, defaultSpotLightColor.GetRed());
-		Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + spotLightIndexStr, defaultSpotLightColor.GetGreen());
-		Real blue = GET_CONFIG_VALUE("spotLightColorBlue_" + spotLightIndexStr, defaultSpotLightColor.GetBlue());
-		Color color(red, green, blue);
-		
-		Real intensity = GET_CONFIG_VALUE("spotLightIntensity_" + spotLightIndexStr, defaultSpotLightIntensity);
-		
-		Real constant = GET_CONFIG_VALUE("spotLightAttenuationConstant_" + spotLightIndexStr, defaultSpotLightAttenuation.GetConstant());
-		Real linear = GET_CONFIG_VALUE("spotLightAttenuationLinear_" + spotLightIndexStr, defaultSpotLightAttenuation.GetLinear());
-		Real exponent = GET_CONFIG_VALUE("spotLightAttenuationExponent_" + spotLightIndexStr, defaultSpotLightAttenuation.GetExponent());
-		Attenuation attenuation(constant, linear, exponent);
-
-		Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + spotLightIndexStr, defaultSpotLightViewAngle.GetAngleInRadians()), Unit::RADIAN);
-		
-		int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("spotLightShadowMapSizeAsPowerOf2_" + spotLightIndexStr, 10); // 2 ^ 10 = 1024
-		Real shadowSoftness = GET_CONFIG_VALUE("spotLightShadowSoftness_" + spotLightIndexStr, defaultSpotLightShadowSoftness);
-		Real lightBleedingReductionAmount = GET_CONFIG_VALUE("spotLightLightBleedingReductionAmount_" + spotLightIndexStr, defaultSpotLightLightBleedingReductionAmount);
-		Real minVariance = GET_CONFIG_VALUE("spotLightMinVariance_" + spotLightIndexStr, defaultSpotLightMinVariance);
-
-		spotLightNodes[i]->AddComponent(new SpotLight(color, intensity, attenuation, viewAngle, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		
-		// Rendering a small box around spot light node position to let the user see the source
-#ifdef RENDER_LIGHT_MESHES
-		spotLightNodes[i]->AddComponent(new MeshRenderer(
-			new Mesh("..\\Models\\SpotLight.obj"),
-			new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));
-		spotLightNodes[i]->GetTransform().SetScale(0.1f);
-#endif
-		
-		AddToSceneRoot(spotLightNodes[i]);
+		spotLightBuilder.SetSpotLightIndex(i);
+		lightBuilderDirector.Construct();
+		GameNode* spotLightNode = spotLightBuilder.GetLightNode();
+		AddToSceneRoot(spotLightNode);
 	}
 }
 

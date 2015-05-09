@@ -34,7 +34,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorBlue", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
-	shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
+	m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
+	m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
 	window(window),
 	m_threadWindow(threadWindow),
 	vao(0),
@@ -453,7 +454,7 @@ void Renderer::Render(const GameNode& gameNode)
 		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		if (shadowInfo != NULL) // The currentLight casts shadows
+		if ((m_shadowsEnabled) && (shadowInfo != NULL)) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
 			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
@@ -489,7 +490,7 @@ void Renderer::Render(const GameNode& gameNode)
 				}
 			}
 		}
-		else // shadowInfo == NULL
+		else // current light does not cast shadow or shadowing is disabled at all
 		{
 			// we set the light matrix this way so that, if no shadow should be cast
 			// everything in the scene will be mapped to the same point
@@ -556,28 +557,30 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		{
 			continue;
 		}
-		glCullFace(GL_FRONT);
-		const int NUMBER_OF_CUBE_MAP_FACES = 6;
-
-		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-		altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
-		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+		if (m_shadowsEnabled && m_pointLightShadowsEnabled)
 		{
-			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-			//m_cubeShadowMap->BindAsRenderTarget( /* TODO: Add cube face parameter (e.g. GL_TEXTURE_CUBE_MAP_POSITIVE_X) */ );
-			LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
-			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+			glCullFace(GL_FRONT);
+			const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
-			altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
+			glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
+			altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
+			for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+			{
+				Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
+				//LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
+				m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
+				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-			CameraBase* temp = m_currentCamera;
-			m_currentCamera = &altCamera;
+				altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
 
-			m_terrainNode->RenderAll(m_cubeMapShader, this);
-			gameNode.RenderAll(m_cubeMapShader, this);
+				CameraBase* temp = m_currentCamera;
+				m_currentCamera = &altCamera;
 
-			m_currentCamera = temp;
+				m_terrainNode->RenderAll(m_cubeMapShader, this);
+				gameNode.RenderAll(m_cubeMapShader, this);
+
+				m_currentCamera = temp;
+			}
 		}
 
 		RenderSceneWithLight(currentLight, gameNode);
@@ -802,41 +805,6 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	SetTexture("filterTexture", NULL);
 }
 
-void Renderer::SwapBuffers()
-{
-	glfwSwapBuffers(window);
-}
-
-void Renderer::ClearScreen() const
-{
-	if (ambientLightFogEnabled)
-	{
-		Vector3D fogColor = ambientLightFogColor * m_ambientLight;
-		glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
-	}
-	else
-	{
-		glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
-	}
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-void Renderer::ClearScreen(const Color& clearColor) const
-{
-	glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
-inline CameraBase& Renderer::GetCurrentCamera()
-{
-	if (m_currentCamera == NULL)
-	{
-		LOG(Emergency, LOGPLACE, "Current camera is NULL");
-		exit(EXIT_FAILURE);
-	}
-	return *m_currentCamera;
-}
-
 unsigned int Renderer::NextCamera()
 {
 	if (currentCameraIndex == cameras.size() - 1)
@@ -877,46 +845,41 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	return this->currentCameraIndex;
 }
 
-inline void Renderer::AddLight(BaseLight* light)
+void Renderer::AddLight(BaseLight* light)
 {
 	DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(light);
 	if (directionalLight != NULL)
 	{
-		LOG(Critical, LOGPLACE, "Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		LOG(Debug, LOGPLACE, "Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
 		m_directionalAndSpotLights.push_back(directionalLight);
 	}
-	PointLight* pointLight = dynamic_cast<PointLight*>(light);
-	if (pointLight != NULL)
+	else
 	{
-		LOG(Critical, LOGPLACE, "Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
-		m_pointLights.push_back(pointLight);
-	}
-	SpotLight* spotLight = dynamic_cast<SpotLight*>(light);
-	if (spotLight != NULL)
-	{
-		LOG(Critical, LOGPLACE, "Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
-		m_directionalAndSpotLights.push_back(spotLight);
+		SpotLight* spotLight = dynamic_cast<SpotLight*>(light);
+		if (spotLight != NULL)
+		{
+			LOG(Debug, LOGPLACE, "Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
+			m_directionalAndSpotLights.push_back(spotLight);
+		}
+		else
+		{
+			PointLight* pointLight = dynamic_cast<PointLight*>(light);
+			if (pointLight != NULL)
+			{
+				LOG(Debug, LOGPLACE, "Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
+				m_pointLights.push_back(pointLight);
+			}
+			else
+			{
+				LOG(Emergency, LOGPLACE, "Adding the light of unknown type. It is neither a directional nor spot nor point light.");
+			}
+		}
 	}
 
 	m_lights.push_back(light);
-
-	for (std::vector<BaseLight*>::const_iterator lightItr = m_lights.begin(); lightItr != m_lights.end(); ++lightItr)
-	{
-		LOG(Critical, LOGPLACE, "Light intensity = %.2f", (*lightItr)->GetIntensity());
-	}
-
-	for (std::vector<BaseLight*>::const_iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	{
-		LOG(Critical, LOGPLACE, "Directional/Spot light intensity = %.2f", (*lightItr)->GetIntensity());
-	}
-
-	for (std::vector<PointLight*>::const_iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
-	{
-		LOG(Critical, LOGPLACE, "Point light intensity = %.2f", (*pointLightItr)->GetIntensity());
-	}
 }
 
-inline void Renderer::AddCamera(CameraBase* camera)
+void Renderer::AddCamera(CameraBase* camera)
 {
 	cameras.push_back(camera);
 	++m_cameraCount;
@@ -929,11 +892,6 @@ void Renderer::PrintGlReport()
 	LOG(Info, LOGPLACE, "OpenGL version:\t%s", (const char*)glGetString(GL_VERSION));
 	LOG(Info, LOGPLACE, "GLSL version:\t%s", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
 	//LOG(Error, LOGPLACE, "OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
-}
-
-bool Renderer::IsCloseRequested() const
-{
-	return glfwWindowShouldClose(window) != 0;
 }
 
 void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType)
@@ -957,7 +915,7 @@ unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 	if (samplerItr == samplerMap.end())
 	{
 		LOG(Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
-		return 0;
+		return NULL;
 		//exit(EXIT_FAILURE);
 	}
 	return samplerItr->second;
@@ -1001,7 +959,8 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
 	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
-	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &shadowsEnabled, " label='Render shadows' group=Shadows");
+	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
+	TwAddVarRW(propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
 	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
