@@ -66,7 +66,6 @@ protected:
 
 	const int humanCount;
 	Rendering::GameNode** humanNodes;
-	Rendering::GameNode* directionalLightNode;
 	const int pointLightCount;
 	Rendering::GameNode** pointLightNodes;
 	const int spotLightCount;

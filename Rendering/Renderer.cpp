@@ -551,8 +551,8 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 
 	for (std::vector<PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
 	{
-		PointLight* currentPointLight = (*pointLightItr);
-		if (!currentPointLight->IsEnabled())
+		currentLight = (*pointLightItr);
+		if (!currentLight->IsEnabled())
 		{
 			continue;
 		}
@@ -560,7 +560,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
 		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-		altCamera.GetTransform().SetPos(currentPointLight->GetTransform().GetTransformedPos());
+		altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
 		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
@@ -580,7 +580,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 			m_currentCamera = temp;
 		}
 
-		RenderSceneWithLight(currentPointLight, gameNode);
+		RenderSceneWithLight(currentLight, gameNode);
 	}
 }
 

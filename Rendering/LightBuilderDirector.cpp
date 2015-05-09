@@ -18,5 +18,7 @@ void LightBuilderDirector::Construct()
 {
 	m_lightBuilder.BuildPart1();
 	m_lightBuilder.BuildPart2();
-	m_lightBuilder.AddToEngine();
+#ifdef RENDER_LIGHT_MESHES
+	m_lightBuilder.BuildMeshRenderer();
+#endif
 }

@@ -2,9 +2,11 @@
 #define __RENDERING_LIGHT_BUILDER_H__
 
 #include "Rendering.h"
-#include "DirectionalLight.h"
-#include "PointLight.h"
+#include "GameNode.h"
 #include "SpotLight.h"
+#include <string>
+
+#define RENDER_LIGHT_MESHES
 
 namespace Rendering
 {
@@ -27,7 +29,9 @@ private:
 public:
 	virtual void BuildPart1() = 0;
 	virtual void BuildPart2() = 0;
-	virtual void AddToEngine() = 0;
+#ifdef RENDER_LIGHT_MESHES
+	virtual void BuildMeshRenderer() = 0;
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -52,13 +56,16 @@ private:
 public:
 	virtual void BuildPart1();
 	virtual void BuildPart2();
-	virtual void AddToEngine();
-	DirectionalLight* GetLight() { return m_directionalLight; }
+#ifdef RENDER_LIGHT_MESHES
+	virtual void BuildMeshRenderer();
+#endif
+
+	GameNode* GetLightNode() { return m_directionalLightNode; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	DirectionalLight* m_directionalLight;
+	GameNode* m_directionalLightNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLightBuilder */
 
@@ -69,24 +76,36 @@ class PointLightBuilder : public LightBuilder
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API PointLightBuilder() { };
+	RENDERING_API PointLightBuilder(int pointLightIndex = 0);
 	RENDERING_API virtual ~PointLightBuilder(void) { };
-private:
-	PointLightBuilder(PointLightBuilder& pointLightBuilder) {}
-	void operator=(PointLightBuilder& pointLightBuilder) {}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void BuildPart1();
 	virtual void BuildPart2();
-	virtual void AddToEngine();
-	PointLight* GetLight() { return m_pointLight; }
+#ifdef RENDER_LIGHT_MESHES
+	virtual void BuildMeshRenderer();
+#endif
+
+	void SetPointLightIndex(int pointLightIndex) { m_pointLightIndex = pointLightIndex; }
+
+	GameNode* GetLightNode() { return m_pointLightNode; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	PointLight* m_pointLight;
+	const Math::Vector3D M_DEFAULT_POINT_LIGHT_POS;
+	const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X;
+	const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y;
+	const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z;
+	const Color M_DEFAULT_POINT_LIGHT_COLOR;
+	const Math::Real M_DEFAULT_POINT_LIGHT_INTENSITY;
+	const Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION;
+
+	int m_pointLightIndex;
+	std::string m_pointLightIndexStr;
+	GameNode* m_pointLightNode;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PointLightBuilder */
 
@@ -108,7 +127,10 @@ private:
 public:
 	virtual void BuildPart1();
 	virtual void BuildPart2();
-	virtual void AddToEngine();
+#ifdef RENDER_LIGHT_MESHES
+	virtual void BuildMeshRenderer();
+#endif
+
 	SpotLight* GetLight() { return m_spotLight; }
 /* ==================== Non-static member functions end ==================== */
 

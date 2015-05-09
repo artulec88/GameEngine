@@ -25,8 +25,6 @@ using namespace Utility;
 using namespace Math;
 using namespace Rendering;
 
-#define RENDER_LIGHT_MESHES
-
 TestGameManager::TestGameManager() :
 	GameManager(),
 	m_resourcesToLoad(32),
@@ -46,7 +44,6 @@ TestGameManager::TestGameManager() :
 #endif
 	humanCount(2),
 	humanNodes(NULL),
-	directionalLightNode(NULL),
 	pointLightCount(GET_CONFIG_VALUE("pointLightsCount", 1)),
 	pointLightNodes(NULL),
 	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
@@ -284,124 +281,31 @@ void TestGameManager::AddDirectionalLight()
 		return;
 	}
 	LOG(Info, LOGPLACE, "Directional lights enabled");
-	directionalLightNode = new GameNode();
-
-	const Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
-	const Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
-	const Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", 0.0f));
-	const Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", 0.0f));
-
-	Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
-	Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
-	Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
-	Vector3D position(xPos, yPos, zPos);
-	directionalLightNode->GetTransform().SetPos(position);
-
-	Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
-	Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
-	Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
-	Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
-	LOG(Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
-	Quaternion rot(rotMatrix);
-	Quaternion rot2(Vector3D(1, 0, 0), angleX);
-	LOG(Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-		rotMatrix.ToString().c_str(),
-		rot.ToString().c_str(),
-		rot.ToRotationMatrix().ToString().c_str(),
-		rot2.ToRotationMatrix().ToString().c_str());
-	directionalLightNode->GetTransform().SetRot(rot);
-	//directionalLightNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
-	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
 
 	Rendering::DirectionalLightBuilder directionalLightBuilder;
 	Rendering::LightBuilderDirector lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
-	directionalLightNode->AddComponent(directionalLightBuilder.GetLight());
+	GameNode* directionalLightNode = directionalLightBuilder.GetLightNode();
 	AddToSceneRoot(directionalLightNode);
-
-	// Rendering a small box around point light node position to let the user see the source
-#ifdef RENDER_LIGHT_MESHES
-	//Material directionalLightMaterial("directionalLight_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
-	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
-
-	directionalLightNode->GetTransform().SetScale(0.4f);
-	directionalLightNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\DirectionalLight.obj"),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
-		
-	Vector3D forwardVec = directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
-	Vector3D rayEndPosition = forwardVec * 2.0f;
-	//LOG(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
-	//	position.ToString().c_str(),
-	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
-	//	forwardVec.ToString().c_str(),
-	//	(position + rayEndPosition).ToString().c_str());
-	Vertex vertices [] = { Vertex(Vector3D()), Vertex(rayEndPosition) };
-	int indices [] = { 0, 1 };
-	directionalLightNode->AddComponent(new MeshRenderer(
-		new Mesh(vertices, 2, indices, 2, false, GL_LINES),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
-#endif
 }
 
 void TestGameManager::AddPointLights()
 {
 	if (pointLightCount < 1)
 	{
+		LOG(Info, LOGPLACE, "Point lights disabled");
 		return;
 	}
+	LOG(Info, LOGPLACE, "Point lights enabled. %d point lights will be created.", pointLightCount);
 
-	const Vector3D defaultPointLightPos(GET_CONFIG_VALUE("defaultPointLightPosX", 0.0f), GET_CONFIG_VALUE("defaultPointLightPosY", 0.0f), GET_CONFIG_VALUE("defaultPointLightPosZ", 0.0f));
-	const Angle defaultPointLightRotationX(GET_CONFIG_VALUE("defaultPointLightAngleX", -45.0f));
-	const Angle defaultPointLightRotationY(GET_CONFIG_VALUE("defaultPointLightAngleY", 0.0f));
-	const Angle defaultPointLightRotationZ(GET_CONFIG_VALUE("defaultPointLightAngleZ", 0.0f));
-	const Color defaultPointLightColor(GET_CONFIG_VALUE("defaultPointLightColorRed", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorGreen", 0.0f), GET_CONFIG_VALUE("defaultPointLightColorBlue", 1.0f));
-	const Real defaultPointLightIntensity(GET_CONFIG_VALUE("defaultPointLightIntensity", 10.0f));
-	const Attenuation defaultPointLightAttenuation(GET_CONFIG_VALUE("defaultPointLightAttenuationConstant", 0.0f), GET_CONFIG_VALUE("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultPointLightAttenuationExponent", 0.0f));
-	pointLightNodes = new GameNode* [pointLightCount];
+	Rendering::PointLightBuilder pointLightBuilder;
+	Rendering::LightBuilderDirector lightBuilderDirector(pointLightBuilder);
 	for (int i = 0; i < pointLightCount; ++i)
 	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		std::string pointLightIndexStr = ss.str();
-
-		pointLightNodes[i] = new GameNode();
-		
-		Real xPos = GET_CONFIG_VALUE("pointLightPosX_" + pointLightIndexStr, defaultPointLightPos.GetX());
-		Real yPos = GET_CONFIG_VALUE("pointLightPosY_" + pointLightIndexStr, defaultPointLightPos.GetY());
-		Real zPos = GET_CONFIG_VALUE("pointLightPosZ_" + pointLightIndexStr, defaultPointLightPos.GetZ());
-		pointLightNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
-		
-		Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + pointLightIndexStr, defaultPointLightRotationX.GetAngleInDegrees()));
-		Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + pointLightIndexStr, defaultPointLightRotationY.GetAngleInDegrees()));
-		Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + pointLightIndexStr, defaultPointLightRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
-		Quaternion rot(rotMatrix);
-		pointLightNodes[i]->GetTransform().SetRot(rot);
-
-		Real red = GET_CONFIG_VALUE("pointLightColorRed_" + pointLightIndexStr, defaultPointLightColor.GetRed());
-		Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + pointLightIndexStr, defaultPointLightColor.GetGreen());
-		Real blue = GET_CONFIG_VALUE("pointLightColorBlue_" + pointLightIndexStr, defaultPointLightColor.GetBlue());
-		Color color(red, green, blue);
-		
-		Real intensity = GET_CONFIG_VALUE("pointLightIntensity_" + pointLightIndexStr, defaultPointLightIntensity);
-		
-		Real constant = GET_CONFIG_VALUE("pointLightAttenuationConstant_" + pointLightIndexStr, defaultPointLightAttenuation.GetConstant());
-		Real linear = GET_CONFIG_VALUE("pointLightAttenuationLinear_" + pointLightIndexStr, defaultPointLightAttenuation.GetLinear());
-		Real exponent = GET_CONFIG_VALUE("pointLightAttenuationExponent_" + pointLightIndexStr, defaultPointLightAttenuation.GetExponent());
-		Attenuation attenuation(constant, linear, exponent);
-
-		pointLightNodes[i]->AddComponent(new PointLight(color, intensity, attenuation));
-		
-		// Rendering a small box around point light node position to let the user see the source
-#ifdef RENDER_LIGHT_MESHES
-		pointLightNodes[i]->AddComponent(new MeshRenderer(
-			new Mesh("..\\Models\\PointLight.obj"),
-			new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
-		pointLightNodes[i]->GetTransform().SetScale(0.1f);
-#endif
-		
-		AddToSceneRoot(pointLightNodes[i]);
+		pointLightBuilder.SetPointLightIndex(i);
+		lightBuilderDirector.Construct();
+		GameNode* pointLightNode = pointLightBuilder.GetLightNode();
+		AddToSceneRoot(pointLightNode);
 	}
 }
 
