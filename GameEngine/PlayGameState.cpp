@@ -228,6 +228,8 @@ void PlayGameState::Render(Renderer* renderer)
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
 }
 
+Math::Vector3D velocity;
+Math::Real maxSpeed = 1.0f;
 void PlayGameState::Update(Math::Real elapsedTime)
 {
 	//LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
@@ -235,11 +237,12 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	//m_rootGameNode.UpdateAll(elapsedTime);
 	GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);
 
+	Transform& transform = CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	//
 	///* ==================== Adjusting camera vertical position begin ==================== */
-	//timeToUpdateCameraHeight += delta;
+	//timeToUpdateCameraHeight += elapsedTime;
 	//if ((m_heightMapCalculationEnabled) && (timeToUpdateCameraHeight > CAMERA_HEIGHT_UPDATE_INTERVAL))
 	//{
 	//	Math::Real height = planeMesh->GetHeightAt(transform.GetPos().GetXZ());
@@ -248,51 +251,51 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	//}
 	///* ==================== Adjusting camera vertical position begin ==================== */
 
-	//const Real sensitivity = static_cast<Real>(Camera::GetSensitivity());
-	//Vector3D acceleration;
-	//if (forward)
-	//{
-	//	acceleration += transform.GetRot().GetForward().Normalized();
-	//}
-	//if (backward)
-	//{
-	//	acceleration -= transform.GetRot().GetForward().Normalized();
-	//}
-	//if (left)
-	//{
-	//	acceleration -= transform.GetRot().GetRight().Normalized();
-	//}
-	//if (right)
-	//{
-	//	acceleration += transform.GetRot().GetRight().Normalized();
-	//}
-	//if (up)
-	//{
-	//	acceleration += transform.GetRot().GetUp().Normalized();
-	//}
-	//if (down)
-	//{
-	//	acceleration -= transform.GetRot().GetUp().Normalized();
-	//}
-	//velocity += acceleration * delta * sensitivity * 0.01f;
-	//const Real step = 0.1f;
-	//const Real approachedValue = 0.0f; // must be ZERO!
-	//if (AlmostEqual(acceleration.GetX(), approachedValue))
-	//{
-	//	velocity.ApproachX(step, approachedValue);
-	//}
-	//if (AlmostEqual(acceleration.GetY(), approachedValue))
-	//{
-	//	velocity.ApproachY(step, approachedValue);
-	//}
-	//if (AlmostEqual(acceleration.GetZ(), approachedValue))
-	//{
-	//	velocity.ApproachZ(step, approachedValue);
-	//}
-	//velocity.Threshold(maxSpeed);
-	////velocity += acceleration * delta;
-	////velocity -= slowDownVec;
-	////stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
+	const Math::Real sensitivity = static_cast< Math::Real>(Camera::GetSensitivity());
+	Math::Vector3D acceleration;
+	if (forward)
+	{
+		acceleration += transform.GetRot().GetForward().Normalized();
+	}
+	if (backward)
+	{
+		acceleration -= transform.GetRot().GetForward().Normalized();
+	}
+	if (left)
+	{
+		acceleration -= transform.GetRot().GetRight().Normalized();
+	}
+	if (right)
+	{
+		acceleration += transform.GetRot().GetRight().Normalized();
+	}
+	if (up)
+	{
+		acceleration += transform.GetRot().GetUp().Normalized();
+	}
+	if (down)
+	{
+		acceleration -= transform.GetRot().GetUp().Normalized();
+	}
+	velocity += acceleration * elapsedTime * sensitivity * 0.01f;
+	const Math::Real step = 0.1f;
+	const Math::Real approachedValue = 0.0f; // must be ZERO!
+	if (Math::AlmostEqual(acceleration.GetX(), approachedValue))
+	{
+		velocity.ApproachX(step, approachedValue);
+	}
+	if (Math::AlmostEqual(acceleration.GetY(), approachedValue))
+	{
+		velocity.ApproachY(step, approachedValue);
+	}
+	if (Math::AlmostEqual(acceleration.GetZ(), approachedValue))
+	{
+		velocity.ApproachZ(step, approachedValue);
+	}
+	velocity.Threshold(maxSpeed);
+	//velocity += acceleration * delta;
+	//velocity -= slowDownVec;
+	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 
-	//transform.SetPos(transform.GetPos() + velocity);
+	transform.SetPos(transform.GetPos() + velocity);
 }

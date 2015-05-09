@@ -400,9 +400,6 @@ void TestGameManager::Input(Real delta)
 
 // TODO: Remove in the future
 Real temp = 0.0;
-
-Vector3D velocity;
-Real maxSpeed = 0.02f;
 bool isMouseLocked = false;
 
 void TestGameManager::Update(Real delta)

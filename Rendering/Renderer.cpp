@@ -557,31 +557,31 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		{
 			continue;
 		}
-		if (m_shadowsEnabled && m_pointLightShadowsEnabled)
+		//if (m_shadowsEnabled && m_pointLightShadowsEnabled)
+		//{
+		glCullFace(GL_FRONT);
+		const int NUMBER_OF_CUBE_MAP_FACES = 6;
+
+		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
+		altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
+		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 		{
-			glCullFace(GL_FRONT);
-			const int NUMBER_OF_CUBE_MAP_FACES = 6;
+			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
+			//LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
+			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
+			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-			glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-			altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
-			for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
-			{
-				Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-				//LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
-				m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
-				glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+			altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
 
-				altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
+			CameraBase* temp = m_currentCamera;
+			m_currentCamera = &altCamera;
 
-				CameraBase* temp = m_currentCamera;
-				m_currentCamera = &altCamera;
+			m_terrainNode->RenderAll(m_cubeMapShader, this);
+			gameNode.RenderAll(m_cubeMapShader, this);
 
-				m_terrainNode->RenderAll(m_cubeMapShader, this);
-				gameNode.RenderAll(m_cubeMapShader, this);
-
-				m_currentCamera = temp;
-			}
+			m_currentCamera = temp;
 		}
+		//}
 
 		RenderSceneWithLight(currentLight, gameNode);
 	}
