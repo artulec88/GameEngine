@@ -98,7 +98,7 @@ protected:
 
 
 //class CubeShadowMapTexture : public Texture
-{
+//{
 /* ==================== Constructors and destructors begin ==================== */
 //public:
 //	RENDERING_API CubeShadowMapTexture(int windowWidth, int windowHeight);
