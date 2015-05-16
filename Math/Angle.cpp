@@ -179,6 +179,6 @@ bool Angle::operator<=(const Angle& angle) const
 std::string Angle::ToString() const
 {
 	std::stringstream ss("");
-	ss << GetAngleInDegrees() << "\u2103";
+	ss << GetAngleInDegrees() << L'\u2103';
 	return ss.str();
 }

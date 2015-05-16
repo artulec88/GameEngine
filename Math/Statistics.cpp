@@ -89,8 +89,8 @@ T Stats<T>::CalculateMedian(StatsID statsID)
 
 	if ((m_samples[statsID].size() % 2) == 0)
 	{
-		Real medianMean = m_samples[statsID].at(m_samples[statsID].size() / 2) + m_samples[statsID].at((m_samples[statsID].size() / 2) - 1);
-		return medianMean / 2;
+		T medianMean = m_samples[statsID].at(m_samples[statsID].size() / 2) + m_samples[statsID].at((m_samples[statsID].size() / 2) - 1);
+		return static_cast<T>(medianMean / 2.0f);
 	}
 	else
 	{
