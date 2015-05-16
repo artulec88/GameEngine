@@ -308,6 +308,12 @@ void TestGameManager::AddPointLights()
 		lightBuilderDirector.Construct();
 		GameNode* pointLightNode = pointLightBuilder.GetLightNode();
 		AddToSceneRoot(pointLightNode);
+		
+		//GameNode* bulbNode = new GameNode();
+		//bulbNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\Bulb\\Bulb.obj") /* new Mesh("..\\Models\\PointLight.obj") */, new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
+		//bulbNode->GetTransform().SetPos(REAL_ZERO, REAL_ONE, REAL_ZERO);
+		//bulbNode->GetTransform().SetScale(5.0f);
+		//pointLightNode->AddChild(bulbNode);
 	}
 }
 

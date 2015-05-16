@@ -152,8 +152,8 @@ private:
 	unsigned int m_cameraCount;
 	bool m_applyFilterEnabled;
 	Color m_backgroundColor;
-	bool m_shadowsEnabled;
-	bool m_pointLightShadowsEnabled;
+	//bool m_shadowsEnabled;
+	//bool m_pointLightShadowsEnabled;
 	GLFWwindow* window;
 	GLFWwindow* m_threadWindow;
 	GLuint framebuffer;

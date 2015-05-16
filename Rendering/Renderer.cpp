@@ -34,8 +34,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorBlue", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
-	m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
-	m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
+	//m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
+	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
 	window(window),
 	m_threadWindow(threadWindow),
 	vao(0),
@@ -454,7 +454,7 @@ void Renderer::Render(const GameNode& gameNode)
 		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		if ((m_shadowsEnabled) && (shadowInfo != NULL)) // The currentLight casts shadows
+		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
 			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
@@ -959,8 +959,8 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
 	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
-	TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
-	TwAddVarRW(propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
+	//TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
+	//TwAddVarRW(propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
 	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");

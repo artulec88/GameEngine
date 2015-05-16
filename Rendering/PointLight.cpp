@@ -77,4 +77,5 @@ void PointLight::Update(Math::Real deltaTime)
 		gTemp = REAL_ZERO;
 	}
 	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 2000, cos(gTemp) / 4000, cos(gTemp) / 2000)));
+	//GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(REAL_ZERO, cos(gTemp) / 2000, REAL_ZERO)));
 }

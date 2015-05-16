@@ -196,7 +196,7 @@ void PointLightBuilder::BuildPart2()
 	pointLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
 
 	// Setting shadow info
-	// Setting additional directional light information
+	// Setting additional point light information
 
 	m_pointLightNode->AddComponent(pointLight);
 
@@ -208,7 +208,7 @@ void PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
 	m_pointLightNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\Bulb\\Bulb.obj") /* new Mesh("..\\Models\\PointLight.obj") */,
+		/* new Mesh("..\\Models\\Bulb\\Bulb.obj") */ new Mesh("..\\Models\\PointLight.obj"),
 		new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
 	m_pointLightNode->GetTransform().SetScale(0.005f);
 }
@@ -303,6 +303,7 @@ void SpotLightBuilder::BuildPart2()
 void SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
+	LOG(Utility::Critical, LOGPLACE, "SpotLightBuilder::BuildMeshRenderer");
 	m_spotLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SpotLight.obj"),
 		new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));

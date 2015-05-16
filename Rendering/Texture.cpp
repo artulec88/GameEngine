@@ -7,7 +7,7 @@
 
 using namespace Rendering;
 
-TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount /* = 1 */, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments) :
+TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments) :
 	m_textureTarget(textureTarget),
 	m_texturesCount(texturesCount),
 	m_width(width),
@@ -191,7 +191,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 {
 	if (attachments == NULL)
 	{
-		LOG(Utility::Debug, LOGPLACE, "No attachments used");
+		LOG(Utility::Delocust, LOGPLACE, "No attachments used");
 		return;
 	}
 	if (m_texturesCount > MAX_BOUND_TEXTURES_COUNT) //Assert to be sure no buffer overrun should occur
@@ -205,8 +205,14 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 
 	for (int i = 0; i < m_texturesCount; ++i)
 	{
+		LOG(Utility::Debug, LOGPLACE, "The texture uses 0x%x as an attachment", attachments[i]);
 		if ( (attachments[i] == GL_DEPTH_ATTACHMENT) || (attachments[i] == GL_STENCIL_ATTACHMENT) )
 		{
+			/**
+			 * The draw buffers are only concerned about the fragment shader's output so in fact they are not needed for depth and stencil buffers.
+			 * The reason for this is that one does not write to depth nor stencil buffer in the FS.
+			 * That is why for GL_DEPTH_ATTACHMENT and GL_STENCIL_ATTACHMENT we set the drawBuffers to GL_NONE.
+			 */
 			drawBuffers[i] = GL_NONE;
 			if (attachments[i] == GL_DEPTH_ATTACHMENT)
 			{
@@ -231,11 +237,12 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 
 	if (m_framebuffer == 0)
 	{
-		LOG(Utility::Debug, LOGPLACE, "Framebuffer is 0");
+		LOG(Utility::Debug, LOGPLACE, "Framebuffer will not be used by the texture");
 		return;
 	}
 	if (!hasDepth)
 	{
+		LOG(Utility::Debug, LOGPLACE, "The texture does not have any depth attachment. Creating the render buffer is started.");
 		glGenRenderbuffers(1, &m_renderbuffer);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_renderbuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
@@ -249,7 +256,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is %d.", status);
+		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is 0x%x.", status);
 		exit(EXIT_FAILURE);
 	}
 
@@ -313,99 +320,32 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 
 	unsigned char* cubeMapData [NUMBER_OF_CUBE_MAP_FACES];
 	int x[NUMBER_OF_CUBE_MAP_FACES], y[NUMBER_OF_CUBE_MAP_FACES], bytesPerPixel[NUMBER_OF_CUBE_MAP_FACES];
-	unsigned int index = 0;
-	cubeMapData[index] = stbi_load(posXFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
-	{
-		std::string name = posXFileName;
-		const char *tmp = strrchr(posXFileName.c_str(), '\\');
-		if (tmp != NULL)
-		{
-			name.assign(tmp + 1);
-		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
 
-	index++;
-	cubeMapData[index] = stbi_load(negXFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
+	const std::string filenames [NUMBER_OF_CUBE_MAP_FACES] = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
+	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		std::string name = negXFileName;
-		const char *tmp = strrchr(negXFileName.c_str(), '\\');
-		if (tmp != NULL)
+		cubeMapData[i] = stbi_load(filenames[i].c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		if (cubeMapData[i] == NULL)
 		{
-			name.assign(tmp + 1);
+			std::string name = filenames[i];
+			const char *tmp = strrchr(filenames[i].c_str(), '\\');
+			if (tmp != NULL)
+			{
+				name.assign(tmp + 1);
+			}
+			LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
+			exit(EXIT_FAILURE);
 		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-
-	index++;
-	cubeMapData[index] = stbi_load(posYFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
-	{
-		std::string name = posYFileName;
-		const char *tmp = strrchr(posYFileName.c_str(), '\\');
-		if (tmp != NULL)
+		if (i > 0)
 		{
-			name.assign(tmp + 1);
-		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-
-	index++;
-	cubeMapData[index] = stbi_load(negYFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
-	{
-		std::string name = negYFileName;
-		const char *tmp = strrchr(negYFileName.c_str(), '\\');
-		if (tmp != NULL)
-		{
-			name.assign(tmp + 1);
-		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-
-	index++;
-	cubeMapData[index] = stbi_load(posZFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
-	{
-		std::string name = posZFileName;
-		const char *tmp = strrchr(posZFileName.c_str(), '\\');
-		if (tmp != NULL)
-		{
-			name.assign(tmp + 1);
-		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-
-	index++;
-	cubeMapData[index] = stbi_load(negZFileName.c_str(), &x[index], &y[index], &bytesPerPixel[index], 4 /* req_comp */);
-	if (cubeMapData[index] == NULL)
-	{
-		std::string name = negZFileName;
-		const char *tmp = strrchr(negZFileName.c_str(), '\\');
-		if (tmp != NULL)
-		{
-			name.assign(tmp + 1);
-		}
-		LOG(Utility::Error, LOGPLACE, "Unable to load texture from the file \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-
-	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES - 1; ++i)
-	{
-		if (x[i] != x[i+1])
-		{
-			LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same width, but face %d has width=%d and face %d has width=%d", i, x[i], i+1, x[i+1]);
-		}
-		if (y[i] != y[i+1])
-		{
-			LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same height, but face %d has height=%d and face %d has height=%d", i, x[i], i+1, x[i+1]);
+			if (x[i] != x[i-1])
+			{
+				LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same width, but face %d has width=%d and face %d has width=%d", i, x[i], i+1, x[i+1]);
+			}
+			if (y[i] != y[i+1])
+			{
+				LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same height, but face %d has height=%d and face %d has height=%d", i, x[i], i+1, x[i+1]);
+			}
 		}
 	}
 
@@ -483,3 +423,13 @@ void Texture::BindAsRenderTarget() const
 	}
 	m_textureData->BindAsRenderTarget();
 }
+
+//CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
+//{
+//	GLenum attachments [2] = { GL_DEPTH_ATTACHMENT, GL_COLOR_ATTACHMENT0 };
+//	m_textureData = new TextureData(GL_TEXTURE_CUBE_MAP, 512 /* width */, 512 /* height */, 2 /* textures count */, NULL /* data */, NULL /* filters */, NULL /* internal format */, NULL /* format */, true /* clamp enabled */, attachments);
+//}
+//
+//CubeShadowMapTexture::~CubeShadowMapTexture(void)
+//{
+//}
