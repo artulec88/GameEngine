@@ -70,7 +70,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_timeSum3(REAL_ZERO),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
-	m_isSamplingSpf(false),
+	m_isSamplingSpf(true),
 	m_secondsPerFrameStats(),
 #endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),

@@ -5,10 +5,10 @@
 #include "Shader.h"
 #include "Utility\ILogger.h"
 
-using namespace Rendering;
+using namespace Rendering::Lighting;
 
-BaseLight::BaseLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
-	GameComponent(),
+BaseLight::BaseLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
+	Rendering::GameComponent(),
 	m_color(color),
 	m_intensity(intensity),
 	m_shader(NULL),
@@ -28,7 +28,7 @@ BaseLight::~BaseLight(void)
 	SAFE_DELETE(m_shadowInfo);
 }
 
-void BaseLight::SetShader(Shader* shader)
+void BaseLight::SetShader(Rendering::Shader* shader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(this->shader);
@@ -40,7 +40,7 @@ void BaseLight::SetShader(Shader* shader)
 	m_shader = shader;
 }
 
-void BaseLight::SetTerrainShader(Shader* terrainShader)
+void BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(m_terrainShader);
@@ -52,7 +52,7 @@ void BaseLight::SetTerrainShader(Shader* terrainShader)
 	m_terrainShader = terrainShader;
 }
 
-void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
+void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
 {
 	//SAFE_DELETE(this->shadowInfo);
 	if (m_shadowInfo != NULL)
@@ -63,7 +63,7 @@ void BaseLight::SetShadowInfo(ShadowInfo* shadowInfo)
 	m_shadowInfo = shadowInfo;
 }
 
-ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+Rendering::ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
 	ShadowCameraTransform shadowCameraTransform;
 	shadowCameraTransform.pos = GetTransform().GetTransformedPos();

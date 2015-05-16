@@ -17,6 +17,18 @@ namespace Rendering
 class Shader;
 class Renderer;
 
+namespace Lighting
+{
+/// <summary>
+/// Possible types of lights
+/// </summary>
+enum LightType
+{
+	DIRECTIONAL = 0,
+	POINT,
+	SPOT
+};
+
 class RENDERING_API BaseLight : public GameComponent
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -46,6 +58,8 @@ public:
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 
+	virtual LightType GetLightType() const = 0;
+
 	void SetShader(Shader* shader);
 	void SetTerrainShader(Shader* terrainShader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);
@@ -67,5 +81,7 @@ protected:
 	bool m_isShadowingEnabled;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BaseLight */
+
+} /* end namespace Lighting */
 
 } /* end namespace Rendering */

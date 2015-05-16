@@ -5,7 +5,7 @@
 #include "BaseLight.h"
 #include "Color.h"
 
-namespace Rendering
+namespace Rendering { namespace Lighting
 {
 
 class RENDERING_API PointLight : public BaseLight
@@ -30,6 +30,8 @@ public:
 	Math::Real GetRange() const { return m_range; };
 	virtual bool IsEnabled() const;
 
+	virtual LightType GetLightType() const { return POINT; }
+
 	virtual void Update(Math::Real deltaTime);
 protected:
 	void CalculateRange();
@@ -41,5 +43,7 @@ protected:
 	Math::Real m_range;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PointLight */
+
+} /* end namespace Lighting */
 
 } /* end namespace Rendering */

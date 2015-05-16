@@ -660,32 +660,41 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			}
 			else if(uniformType == "DirectionalLight")
 			{
-				DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(renderer->GetCurrentLight());
-				if (directionalLight == NULL)
-				{
-					LOG(Error, LOGPLACE, "Cannot update directional light uniform. Directional light instance is NULL.");
-					continue;
-				}
+				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
+				Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
+				ASSERT(directionalLight != NULL);
+				//if (directionalLight == NULL)
+				//{
+				//	LOG(Error, LOGPLACE, "Cannot update directional light uniform. Directional light instance is NULL.");
+				//	continue;
+				//}
 				SetUniformDirectionalLight(uniformName, *directionalLight);
 			}
 			else if(uniformType == "PointLight")
 			{
-				PointLight* pointLight = dynamic_cast<PointLight*>(renderer->GetCurrentLight());
-				if (pointLight == NULL)
-				{
-					LOG(Error, LOGPLACE, "Cannot update point light uniform. Point light instance is NULL.");
-					continue;
-				}
+				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
+				Lighting::PointLight* pointLight = renderer->GetPointLight();
+				ASSERT(pointLight != NULL);
+				//if (pointLight == NULL)
+				//{
+				//	LOG(Error, LOGPLACE, "Cannot update point light uniform. Point light instance is NULL.");
+				//	continue;
+				//}
 				SetUniformPointLight(uniformName, *pointLight);
 			}
 			else if(uniformType == "SpotLight")
 			{
-				SpotLight* spotLight = dynamic_cast<SpotLight*>(renderer->GetCurrentLight());
-				if (spotLight == NULL)
-				{
-					LOG(Error, LOGPLACE, "Cannot update spot light uniform. Spot light instance is NULL.");
-					continue;
-				}
+				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+				Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(renderer->GetCurrentLight());
+				//Lighting::SpotLight* spotLight = renderer->GetSpotLight();
+				ASSERT(spotLight != NULL);
+				//if (spotLight == NULL)
+				//{
+				//	LOG(Error, LOGPLACE, "Cannot update spot light uniform. Spot light instance is NULL.");
+				//	continue;
+				//}
 				SetUniformSpotLight(uniformName, *spotLight);
 			}
 			else
@@ -818,14 +827,18 @@ void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& mat
 	}
 }
 
-void Shader::SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight) const
+/**
+ * BaseLight object is absolutely enough to get all the information necessary for the directional light.
+ * Color and intensity are directly stored in the BaseLight object and the direction can be easily retrieved from the transformation.
+ */
+void Shader::SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const
 {
 	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());
 	SetUniformColor(uniformName + ".base.color", directionalLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", directionalLight.GetIntensity());
 }
 
-void Shader::SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight) const
+void Shader::SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const
 {
 	SetUniformColor(uniformName + ".base.color", pointLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", pointLight.GetIntensity());
@@ -836,7 +849,7 @@ void Shader::SetUniformPointLight(const std::string& uniformName, const PointLig
 	SetUniformf(uniformName + ".range", pointLight.GetRange());
 }
 
-void Shader::SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight) const
+void Shader::SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const
 {
 	SetUniformColor(uniformName + ".pointLight.base.color", spotLight.GetColor());
 	SetUniformf(uniformName + ".pointLight.base.intensity", spotLight.GetIntensity());

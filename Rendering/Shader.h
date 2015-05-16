@@ -110,36 +110,15 @@ public:
 	RENDERING_API void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
 	RENDERING_API void SetUniformColor(const std::string& uniformName, const Color& color) const;
 	RENDERING_API void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
-
-	//void AddAllUniforms(const std::string& shaderText);
-	//void AddUniform(const std::string& uniform);
-	//void SetUniformi(const std::string& name, int value);
-	//void SetUniformf(const std::string& name, Math::Real value);
-	//void SetUniform(const std::string& name, const Math::Vector3D& vector);
-	//void SetUniform(const std::string& name, const Math::Matrix4D& matrix);
-
-	//virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer);
-
-	//void AddVertexShader(const std::string& vertexShaderText);
-	//void AddFragmentShader(const std::string& fragmentShaderText);
-	//void AddVertexShaderFromFile(const std::string& fileName);
-	//void AddFragmentShaderFromFile(const std::string& fileName);
-	////void AddGeometryShaderFromFile(const std::string& fileName);
-	
-
 protected:
-	//std::string LoadShader(const std::string& fileName) const; // TODO: Consider making this function static
-	//void AddProgram(const std::string& text, GLenum type);
 private:
-	void SetUniformDirectionalLight(const std::string& uniformName, const DirectionalLight& directionalLight) const;
-	void SetUniformPointLight(const std::string& uniformName, const PointLight& pointLight) const;
-	void SetUniformSpotLight(const std::string& uniformName, const SpotLight& spotLight) const;
-
-	//void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
-	//std::vector<UniformStruct> FindUniformStructs(const std::string& shaderText) const;
-	//std::string FindUniformStructName(const std::string& structStartToOpeningBrace) const;
-	//std::vector<TypedData> FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
-	//bool IsUniformPresent(const std::string& uniformName, std::map<std::string, unsigned int>::const_iterator& itr) const;
+	/**
+	 * BaseLight object is absolutely enough to get all the information necessary for the directional light.
+	 * Color and intensity are directly stored in the BaseLight object and the direction can be easily retrieved from the transformation.
+	 */
+	void SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const;
+	void SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const;
+	void SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

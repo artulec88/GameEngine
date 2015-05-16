@@ -4,13 +4,13 @@
 #include "Shader.h"
 #include "Utility\IConfig.h"
 
-using namespace Rendering;
+using namespace Rendering::Lighting;
 using namespace Utility;
 
 /* static */ bool PointLight::pointLightsEnabled = true;
 
-PointLight::PointLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
-		const Attenuation& attenuation /* = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */) :
+PointLight::PointLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
+		const Rendering::Attenuation& attenuation /* = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */) :
 	BaseLight(color, intensity),
 	m_attenuation(attenuation)
 {

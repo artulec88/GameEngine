@@ -32,13 +32,6 @@ class TextRenderer;
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class Renderer : public MappedValues
 {
-public:
-	enum RendererState
-	{
-		RENDERING_MENU,
-		RENDERING_GAME
-	};
-
 /* ==================== Static variables begin ==================== */
 private:
 	static const int SHADOW_MAPS_COUNT = 11;
@@ -62,7 +55,7 @@ public:
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 	RENDERING_API inline void SwapBuffers()
 	{
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(m_window);
 	}
 
 	RENDERING_API GLFWwindow* GetThreadWindow() { return m_threadWindow; }
@@ -72,10 +65,11 @@ public:
 	RENDERING_API void CheckCameraIndexChange();
 #endif
 	
-	RENDERING_API inline void AddLight(BaseLight* light);
+	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
-	RENDERING_API inline BaseLight* GetCurrentLight() { return currentLight; }
-	RENDERING_API inline Math::Vector3D& GetAmbientLight() { return m_ambientLight; }
+	RENDERING_API inline Lighting::BaseLight* GetCurrentLight() { return m_currentLight; }
+	RENDERING_API inline Lighting::PointLight* GetPointLight() { return m_pointLight; }
+	//RENDERING_API inline Lighting::SpotLight* GetSpotLight() { return m_spotLight; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const { return m_ambientDaytimeColor; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const { return m_ambientNighttimeColor; }
 	
@@ -93,21 +87,21 @@ public:
 	RENDERING_API unsigned int NextCamera();
 	RENDERING_API unsigned int PrevCamera();
 	RENDERING_API unsigned int SetCurrentCamera(unsigned int cameraIndex);
-	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const { glfwSetCursorPos(window, xPos, yPos); }
+	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const { glfwSetCursorPos(m_window, xPos, yPos); }
 	
 	RENDERING_API unsigned int GetSamplerSlot(const std::string& samplerName) const;
 	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
 
 	RENDERING_API inline bool IsCloseRequested() const
 	{
-		return glfwWindowShouldClose(window) != 0;
+		return glfwWindowShouldClose(m_window) != 0;
 	}
 
 	RENDERING_API inline Math::Matrix4D GetLightMatrix() const { return lightMatrix; }
 
 	RENDERING_API void PrintGlReport();
 
-	void RequestWindowClose() const { glfwSetWindowShouldClose(window, GL_TRUE); }
+	void RequestWindowClose() const { glfwSetWindowShouldClose(m_window, GL_TRUE); }
 	void RegisterTerrainNode(GameNode* terrainNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
@@ -115,14 +109,14 @@ protected:
 	void RenderSkybox();
 	void RenderSceneWithAmbientLight(const GameNode& gameNode);
 	void RenderSceneWithPointLights(const GameNode& gameNode);
-	void RenderSceneWithLight(BaseLight* light, const GameNode& gameNode);
+	void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode);
 	void SetCallbacks();
 
 	inline void ClearScreen() const
 	{
-		if (ambientLightFogEnabled)
+		if (m_ambientLightFogEnabled)
 		{
-			Math::Vector3D fogColor = ambientLightFogColor * m_ambientLight;
+			Math::Vector3D fogColor = m_ambientLightFogColor * m_ambientLight;
 			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
 		}
 		else
@@ -149,25 +143,27 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	unsigned int m_cameraCount;
 	bool m_applyFilterEnabled;
 	Color m_backgroundColor;
 	//bool m_shadowsEnabled;
 	//bool m_pointLightShadowsEnabled;
-	GLFWwindow* window;
+	GLFWwindow* m_window;
 	GLFWwindow* m_threadWindow;
-	GLuint framebuffer;
-	GLuint vao; // vertex array id
-	bool isMouseEnabled;
-	bool ambientLightFogEnabled;
-	Math::Vector3D ambientLightFogColor;
-	Math::Real ambientLightFogStart;
-	Math::Real ambientLightFogEnd;
+	//GLuint framebuffer;
+	GLuint m_vao; // vertex array id
+	bool m_ambientLightFogEnabled;
+	Math::Vector3D m_ambientLightFogColor;
+	Math::Real m_ambientLightFogStart;
+	Math::Real m_ambientLightFogEnd;
 	const Math::Vector3D m_ambientDaytimeColor;
 	const Math::Vector3D m_ambientSunNearHorizonColor;
 	const Math::Vector3D m_ambientNighttimeColor;
 	Math::Vector3D m_ambientLight;
-	BaseLight* currentLight;
+	Lighting::BaseLight* m_currentLight;
+	Lighting::PointLight* m_pointLight;
+
+	// TODO: Start refactoring from here
+
 	unsigned int currentCameraIndex;
 	CameraBase* m_currentCamera;
 	
@@ -203,9 +199,9 @@ private:
 	Shader* gaussBlurFilterShader;
 	Shader* fxaaFilterShader;
 
-	std::vector<BaseLight*> m_lights;
-	std::vector<BaseLight*> m_directionalAndSpotLights;
-	std::vector<PointLight*> m_pointLights;
+	std::vector<Lighting::BaseLight*> m_lights;
+	std::vector<Lighting::BaseLight*> m_directionalAndSpotLights;
+	std::vector<Lighting::PointLight*> m_pointLights;
 
 	std::vector<CameraBase*> cameras;
 	std::map<std::string, unsigned int> samplerMap;
@@ -219,6 +215,7 @@ private:
 	TextRenderer* textRenderer;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+	unsigned int m_cameraCountMinusOne;
 //#ifdef CARTOON_SHADING_ENABLED // cartoon shading is included in the Lighting.glh file (probably commented out)
 //	bool cartoonShadingEnabled;
 //	Shader* cartoonShader;

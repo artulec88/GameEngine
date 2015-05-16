@@ -7,7 +7,7 @@
 
 #define SIMULATE_SUN_BEHAVIOR
 
-namespace Rendering
+namespace Rendering { namespace Lighting
 {
 
 class RENDERING_API DirectionalLight : public BaseLight
@@ -33,6 +33,8 @@ public:
 	virtual bool IsEnabled() const;
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 
+	virtual LightType GetLightType() const { return DIRECTIONAL; }
+
 	void SetMaxIntensity(Math::Real maxIntensity) { m_maxIntensity = maxIntensity; }
 	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
 	void SetSunNearHorizonColor(const Color& sunNearHorizonColor) { m_sunNearHorizonColor = sunNearHorizonColor; }
@@ -52,5 +54,7 @@ private:
 	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLight */
+
+} /* end namespace Lighting */
 
 } /* end namespace Rendering */

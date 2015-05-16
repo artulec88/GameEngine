@@ -5,11 +5,11 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-using namespace Rendering;
+using namespace Rendering::Lighting;
 
 /* static */ bool DirectionalLight::directionalLightsEnabled = true;
 
-DirectionalLight::DirectionalLight(const Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
+DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
 	BaseLight(color, intensity)
 {
 }
@@ -47,7 +47,7 @@ bool DirectionalLight::IsEnabled() const
 	return BaseLight::IsEnabled();
 }
 
-ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
 	// This function in directional light allows the directional light to be casting shadows only in the area around the camera current position
 	ShadowCameraTransform shadowCameraTransform;

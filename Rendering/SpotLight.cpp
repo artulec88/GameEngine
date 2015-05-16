@@ -5,14 +5,14 @@
 #include "Utility\IConfig.h"
 #include "Math\Matrix.h"
 
-using namespace Rendering;
+using namespace Rendering::Lighting;
 using namespace Math;
 
 /* static */ bool SpotLight::spotLightsEnabled = true;
 
-SpotLight::SpotLight(const Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)*/,
+SpotLight::SpotLight(const Rendering::Color& color /*= Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)*/,
 		Real intensity /*= REAL_ZERO */,
-		const Attenuation& attenuation /*= Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */,
+		const Rendering::Attenuation& attenuation /*= Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */,
 		const Angle& viewAngle /*= Angle(170.0f) */,
 		int shadowMapSizeAsPowerOf2 /* = 0 */,
 		Math::Real shadowSoftness /* = REAL_ONE */,

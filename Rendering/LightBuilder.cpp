@@ -66,7 +66,7 @@ void DirectionalLightBuilder::BuildPart2()
 	Color color(red, green, blue);
 
 	Math::Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
-	DirectionalLight* directionalLight = new DirectionalLight(color, intensity);
+	Lighting::DirectionalLight* directionalLight = new Lighting::DirectionalLight(color, intensity);
 
 	// Setting shaders
 	directionalLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
@@ -189,7 +189,7 @@ void PointLightBuilder::BuildPart2()
 	Math::Real exponent = GET_CONFIG_VALUE("pointLightAttenuationExponent_" + m_pointLightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
 	Attenuation attenuation(constant, linear, exponent);
 
-	PointLight* pointLight = new PointLight(color, intensity, attenuation);
+	Lighting::PointLight* pointLight = new Lighting::PointLight(color, intensity, attenuation);
 
 	// Setting shaders
 	pointLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
@@ -288,7 +288,7 @@ void SpotLightBuilder::BuildPart2()
 	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("spotLightLightBleedingReductionAmount_" + m_spotLightIndexStr, M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT);
 	Math::Real minVariance = GET_CONFIG_VALUE("spotLightMinVariance_" + m_spotLightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
 
-	SpotLight* spotLight = new SpotLight(color, intensity, attenuation, viewAngle, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+	Lighting::SpotLight* spotLight = new Lighting::SpotLight(color, intensity, attenuation, viewAngle, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 
 	// Setting shaders
 	spotLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));

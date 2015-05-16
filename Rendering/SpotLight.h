@@ -7,7 +7,7 @@
 #include "Math\Vector.h"
 #include "Math\Angle.h"
 
-namespace Rendering
+namespace Rendering { namespace Lighting
 {
 
 class RENDERING_API SpotLight : public PointLight
@@ -35,6 +35,8 @@ public:
 	Math::Real GetCutoff() const { return m_cutoff; };
 	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
+
+	virtual LightType GetLightType() const { return SPOT; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -49,5 +51,7 @@ private:
 	Math::Real m_cutoff;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class SpotLight */
+
+} /* end namespace Lighting */
 
 } /* end namespace Rendering */

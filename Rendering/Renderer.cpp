@@ -28,7 +28,6 @@ using namespace Math;
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
 
 Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
-	m_cameraCount(-1),
 	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
 	m_backgroundColor(GET_CONFIG_VALUE("ClearColorRed", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
@@ -36,16 +35,15 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
 	//m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
-	window(window),
+	m_window(window),
 	m_threadWindow(threadWindow),
-	vao(0),
-	isMouseEnabled(true),
-	ambientLightFogEnabled(GET_CONFIG_VALUE("ambientLightFogEnabled", true)),
-	ambientLightFogColor(GET_CONFIG_VALUE("ambientLightFogColor_x", 0.7f),
+	m_vao(0),
+	m_ambientLightFogEnabled(GET_CONFIG_VALUE("ambientLightFogEnabled", true)),
+	m_ambientLightFogColor(GET_CONFIG_VALUE("ambientLightFogColor_x", 0.7f),
 		GET_CONFIG_VALUE("ambientLightFogColor_y", 0.7f),
 		GET_CONFIG_VALUE("ambientLightFogColor_z", 0.7f)),
-	ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
-	ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
+	m_ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
+	m_ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
 	m_ambientDaytimeColor(GET_CONFIG_VALUE("ambientDaytimeColorRed", 0.2f),
 		GET_CONFIG_VALUE("ambientDaytimeColorGreen", 0.2f),
 		GET_CONFIG_VALUE("ambientDaytimeColorBlue", 0.2f)),
@@ -55,7 +53,12 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_ambientNighttimeColor(GET_CONFIG_VALUE("ambientNighttimeColorRed", 0.02f),
 		GET_CONFIG_VALUE("ambientNighttimeColorGreen", 0.02f),
 		GET_CONFIG_VALUE("ambientNighttimeColorBlue", 0.02f)),
-	currentLight(NULL),
+	m_ambientLight(m_ambientDaytimeColor),
+	m_currentLight(NULL),
+	m_pointLight(NULL),
+	// TODO: Start refactoring from here
+
+
 	currentCameraIndex(0),
 	m_currentCamera(NULL),
 	m_mainMenuCamera(NULL),
@@ -78,7 +81,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
 	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f))
 #ifdef ANT_TWEAK_BAR_ENABLED
-	,propertiesBar(NULL),
+	,m_cameraCountMinusOne(0),
+	propertiesBar(NULL),
 	cameraBar(NULL),
 	lightsBar(NULL),
 	previousFrameCameraIndex(0),
@@ -99,12 +103,12 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("filterTexture", 0);
 	SetSamplerSlot("diffuse2", 4);
 
-	glGenVertexArrays(1, &vao);
+	glGenVertexArrays(1, &m_vao);
 
 #ifndef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("ambientFogColor", ambientLightFogColor);
-	SetReal("ambientFogStart", ambientLightFogStart);
-	SetReal("ambientFogEnd", ambientLightFogEnd);
+	SetVector3D("ambientFogColor", m_ambientLightFogColor);
+	SetReal("ambientFogStart", m_ambientLightFogStart);
+	SetReal("ambientFogEnd", m_ambientLightFogEnd);
 	SetVector3D("ambientIntensity", m_ambientLight);
 #endif
 
@@ -125,7 +129,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
 
 	int width, height;
-	glfwGetWindowSize(window, &width, &height);
+	glfwGetWindowSize(m_window, &width, &height);
 	filterTarget = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	filterMaterial = new Material(filterTarget, 1, 8);
@@ -182,18 +186,9 @@ Renderer::~Renderer(void)
 {
 	LOG(Notice, LOGPLACE, "Destroying rendering engine...");
 	
-	glDeleteVertexArrays(1, &vao);
+	glDeleteVertexArrays(1, &m_vao);
 
-	//if (cameras != NULL)
-	//{
-	//	delete [] cameras;
-	//	cameras = NULL;
-	//}
-	//if (currentLight != NULL)
-	//{
-	//	delete currentLight;
-	//	currentLight = NULL;
-	//}
+	//SAFE_DELETE(m_currentLight);
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
 
@@ -232,20 +227,20 @@ Renderer::~Renderer(void)
 
 void Renderer::SetCallbacks()
 {
-	ASSERT(window != NULL);
-	if (window == NULL)
+	ASSERT(m_window != NULL);
+	if (m_window == NULL)
 	{
 		LOG(Critical, LOGPLACE, "Setting GLFW callbacks failed. Window is NULL.");
 		exit(EXIT_FAILURE);
 	}
-	glfwSetWindowCloseCallback(window, &GameManager::WindowCloseEventCallback);
-	glfwSetWindowSizeCallback(window, GameManager::WindowResizeCallback);
-	glfwSetKeyCallback(window, &GameManager::KeyEventCallback);
-	//glfwSetCharCallback(window, GameManager::CharEventCallback);
-	//glfwSetMousePosCallback(window, GameManager::MouseMotionCallback);
-	glfwSetCursorPosCallback(window, &GameManager::MousePosCallback);
-	glfwSetMouseButtonCallback(window, &GameManager::MouseEventCallback);
-	glfwSetScrollCallback(window, &GameManager::ScrollEventCallback);
+	glfwSetWindowCloseCallback(m_window, &GameManager::WindowCloseEventCallback);
+	glfwSetWindowSizeCallback(m_window, GameManager::WindowResizeCallback);
+	glfwSetKeyCallback(m_window, &GameManager::KeyEventCallback);
+	//glfwSetCharCallback(m_window, GameManager::CharEventCallback);
+	//glfwSetMousePosCallback(m_window, GameManager::MouseMotionCallback);
+	glfwSetCursorPosCallback(m_window, &GameManager::MousePosCallback);
+	glfwSetMouseButtonCallback(m_window, &GameManager::MouseEventCallback);
+	glfwSetScrollCallback(m_window, &GameManager::ScrollEventCallback);
 }
 
 void Renderer::InitializeCubeMap()
@@ -409,9 +404,9 @@ void Renderer::Render(const GameNode& gameNode)
 	AdjustAmbientLightAccordingToCurrentTime();
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("ambientFogColor", ambientLightFogColor);
-	SetReal("ambientFogStart", ambientLightFogStart);
-	SetReal("ambientFogEnd", ambientLightFogEnd);
+	SetVector3D("ambientFogColor", m_ambientLightFogColor);
+	SetReal("ambientFogStart", m_ambientLightFogStart);
+	SetReal("ambientFogEnd", m_ambientLightFogEnd);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetReal("fxaaSpanMax", fxaaSpanMax);
 	SetReal("fxaaReduceMin", fxaaReduceMin);
@@ -434,15 +429,15 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSceneWithPointLights(gameNode);
 
-	for (std::vector<BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
-		currentLight = (*lightItr);
-		if (!currentLight->IsEnabled())
+		m_currentLight = (*lightItr);
+		if (!m_currentLight->IsEnabled())
 		{
 			continue;
 		}
 
-		ShadowInfo* shadowInfo = currentLight->GetShadowInfo();
+		ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 		ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
 		if (shadowMapIndex >= SHADOW_MAPS_COUNT)
@@ -457,11 +452,11 @@ void Renderer::Render(const GameNode& gameNode)
 		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
 		{
 			altCamera.SetProjection(shadowInfo->GetProjection());
-			ShadowCameraTransform shadowCameraTransform = currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
+			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
 			altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
 			altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
-			//altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
-			//altCamera.GetTransform().SetRot(currentLight->GetTransform().GetTransformedRot());
+			//altCamera.GetTransform().SetPos(m_currentLight->GetTransform().GetTransformedPos());
+			//altCamera.GetTransform().SetRot(m_currentLight->GetTransform().GetTransformedRot());
 
 			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
 
@@ -498,7 +493,7 @@ void Renderer::Render(const GameNode& gameNode)
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", 0.00002f /* do not use hard-coded values */);
 		}
-		RenderSceneWithLight(currentLight, gameNode);
+		RenderSceneWithLight(m_currentLight, gameNode);
 
 		/* ==================== Rendering to texture begin ==================== */
 		//if (renderToTextureTestingEnabled)
@@ -531,7 +526,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 {
-	if (ambientLightFogEnabled)
+	if (m_ambientLightFogEnabled)
 	{
 		m_terrainNode->RenderAll(m_defaultShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
@@ -545,15 +540,15 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 
 void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 {
-	if (!PointLight::ArePointLightsEnabled())
+	if (!Lighting::PointLight::ArePointLightsEnabled())
 	{
 		return;
 	}
 
-	for (std::vector<PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
+	for (std::vector<Lighting::PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
 	{
-		currentLight = (*pointLightItr);
-		if (!currentLight->IsEnabled())
+		m_pointLight = (*pointLightItr);
+		if (!m_pointLight->IsEnabled())
 		{
 			continue;
 		}
@@ -563,7 +558,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
 		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-		altCamera.GetTransform().SetPos(currentLight->GetTransform().GetTransformedPos());
+		altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
 		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
@@ -583,11 +578,12 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		}
 		//}
 
-		RenderSceneWithLight(currentLight, gameNode);
+		RenderSceneWithLight(m_pointLight, gameNode);
 	}
+	m_pointLight = NULL;
 }
 
-void Renderer::RenderSceneWithLight(BaseLight* light, const GameNode& gameNode)
+void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode)
 {
 	glCullFace(Rendering::glCullFaceMode);
 	GetTexture("displayTexture")->BindAsRenderTarget();
@@ -710,7 +706,7 @@ void Renderer::RenderSkybox()
 	cubeMapNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
 	cubeMapNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
 	skyboxAngle += skyboxAngleStep;
-	if (ambientLightFogEnabled)
+	if (m_ambientLightFogEnabled)
 	{
 		return;
 	}
@@ -845,9 +841,9 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	return this->currentCameraIndex;
 }
 
-void Renderer::AddLight(BaseLight* light)
+void Renderer::AddLight(Lighting::BaseLight* light)
 {
-	DirectionalLight* directionalLight = dynamic_cast<DirectionalLight*>(light);
+	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
 	if (directionalLight != NULL)
 	{
 		LOG(Debug, LOGPLACE, "Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
@@ -855,7 +851,7 @@ void Renderer::AddLight(BaseLight* light)
 	}
 	else
 	{
-		SpotLight* spotLight = dynamic_cast<SpotLight*>(light);
+		Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(light);
 		if (spotLight != NULL)
 		{
 			LOG(Debug, LOGPLACE, "Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
@@ -863,7 +859,7 @@ void Renderer::AddLight(BaseLight* light)
 		}
 		else
 		{
-			PointLight* pointLight = dynamic_cast<PointLight*>(light);
+			Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(light);
 			if (pointLight != NULL)
 			{
 				LOG(Debug, LOGPLACE, "Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
@@ -882,7 +878,9 @@ void Renderer::AddLight(BaseLight* light)
 void Renderer::AddCamera(CameraBase* camera)
 {
 	cameras.push_back(camera);
-	++m_cameraCount;
+#ifdef ANT_TWEAK_BAR_ENABLED
+	++m_cameraCountMinusOne;
+#endif
 }
 
 void Renderer::PrintGlReport()
@@ -903,7 +901,7 @@ void Renderer::UpdateUniformStruct(const Transform& transform, const Material& m
 void Renderer::BindAsRenderTarget()
 {
 	int width, height;
-	glfwGetWindowSize(window, &width, &height);
+	glfwGetWindowSize(m_window, &width, &height);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glViewport(0, 0, width, height);
 }
@@ -952,20 +950,20 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRO(propertiesBar, "ambientLightDaytime", TW_TYPE_COLOR3F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
 	TwAddVarRO(propertiesBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR3F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
 	TwAddVarRO(propertiesBar, "ambientLightNighttime", TW_TYPE_COLOR3F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
-	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
-	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &ambientLightFogColor, " label='Fog color' group='Ambient light' ");
-	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
-	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
-	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
-	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
-	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
+	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &m_ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
+	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &m_ambientLightFogColor, " label='Fog color' group='Ambient light' ");
+	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &m_ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
+	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &m_ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
+	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
+	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
+	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	//TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
 	//TwAddVarRW(propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
 	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
-	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCount);
+	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar finished");
 #endif
@@ -1004,8 +1002,8 @@ void Renderer::InitializeTweakBars()
 	lightsBar = TwNewBar("LightsBar");
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
-		currentLight = *lightItr;
-		currentLight->InitializeTweakBar(lightsBar);
+		m_currentLight = *lightItr;
+		m_currentLight->InitializeTweakBar(lightsBar);
 	}
 #endif
 
