@@ -55,12 +55,7 @@ GameManager::GameManager() :
 {
 	LOG(Info, LOGPLACE, "Game manager construction started");
 	//rootGameNode = new GameNode();
-	//ASSERT(rootGameNode != NULL);
-	//if (rootGameNode == NULL)
-	//{
-	//	LOG(Critical, LOGPLACE, "Root game node construction failed");
-	//	exit(EXIT_FAILURE);
-	//}
+	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
 	if (GameManager::s_gameManager != NULL)
 	{
@@ -219,25 +214,13 @@ void GameManager::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset
 
 //GameNode& GameManager::GetRootGameNode() const
 //{
-//	ASSERT(rootGameNode != NULL);
-//	if (rootGameNode == NULL)
-//	{
-//		LOG(Emergency, LOGPLACE, "Root game node is NULL.");
-//		exit(EXIT_FAILURE);
-//	//	// TODO: throw another exception in the future
-//	//	throw FileNotFoundException();
-//	}
-//
+//	CHECK_CONDITION_EXIT(rootGameNode != NULL, Emergency, "Root game node is NULL.");
 //	return *rootGameNode;
 //}
 
 //Shader* GameManager::GetShader() const
 //{
-//	ASSERT(shader != NULL);
-//	if (shader == NULL)
-//	{
-//		LOG(Error, LOGPLACE, "Shader is NULL");
-//	}
+//	CHECK_CONDITION(shader != NULL, Error, "Shader is NULL.");
 //	return shader;
 //}
 

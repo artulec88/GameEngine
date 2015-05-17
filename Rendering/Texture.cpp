@@ -15,17 +15,8 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	ASSERT(m_texturesCount > 0);
-	if (m_texturesCount < 1)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Incorrect number of textures specified");
-		exit(EXIT_FAILURE);
-	}
-	if (m_texturesCount > MAX_BOUND_TEXTURES_COUNT) //Assert to be sure no buffer overrun should occur
-	{
-		LOG(Utility::Error, LOGPLACE, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_texturesCount > 0, Utility::Emergency, "Incorrect number of textures specified (%d).", m_texturesCount);
+	CHECK_CONDITION_EXIT(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Error, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
 	m_textureID = new GLuint[m_texturesCount];
 
 	InitTextures(data, filters, internalFormat, format, clampEnabled);
@@ -100,16 +91,9 @@ TextureData::~TextureData(void)
 
 void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled)
 {
-	//ASSERT(data.size == texturesCount);
-	//ASSERT(filter.size == texturesCount);
-	//ASSERT(internalFormat.size == texturesCount);
-	//ASSERT(format.size == texturesCount);
-	
-	//ASSERT(data != NULL);
-	//ASSERT(filter != NULL);
 	if (data == NULL)
 	{
-		LOG(Utility::Debug, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
+		LOG(Utility::Debug, LOGPLACE, "No data passed to the Texture object.");
 		//return;
 	}
 	if (filters == NULL)
@@ -176,14 +160,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 
 void TextureData::Bind(int textureIndex) const
 {
-	ASSERT(textureIndex >= 0);
-	ASSERT(textureIndex < m_texturesCount);
-	if ((textureIndex < 0) || (textureIndex >= m_texturesCount))
-	{
-		LOG(Utility::Error, LOGPLACE,
-			"Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
-		return;
-	}
+	CHECK_CONDITION_RETURN(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Error, "Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
 	glBindTexture(m_textureTarget, m_textureID[textureIndex]);
 }
 
@@ -194,11 +171,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 		LOG(Utility::Delocust, LOGPLACE, "No attachments used");
 		return;
 	}
-	if (m_texturesCount > MAX_BOUND_TEXTURES_COUNT) //Assert to be sure no buffer overrun should occur
-	{
-		LOG(Utility::Error, LOGPLACE, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Error, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
 
 	GLenum* drawBuffers= new GLenum[m_texturesCount];
 	bool hasDepth = false;
@@ -253,14 +226,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	//drawBuffers = NULL;
 
 	GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-	ASSERT(status == GL_FRAMEBUFFER_COMPLETE);
-	if (status != GL_FRAMEBUFFER_COMPLETE)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is 0x%x.", status);
-		exit(EXIT_FAILURE);
-	}
-
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	CHECK_CONDITION_EXIT(status == GL_FRAMEBUFFER_COMPLETE, Utility::Critical, "Framebuffer creation failed. The framebuffer status is not GL_FRAMEBUFFER_COMPLETE. Instead it is 0x%x.", status);
 }
 
 void TextureData::BindAsRenderTarget() const
@@ -301,7 +267,6 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		}
 		m_textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 		stbi_image_free(data);
-		ASSERT(m_textureData);
 		s_textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, m_textureData));
 		LOG(Utility::Debug, LOGPLACE, "Loading texture from file \"%s\" finished successfully", name.c_str());
 	}
@@ -360,34 +325,18 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	m_textureData(NULL),
 	m_fileName()
 {
-	//ASSERT(data != NULL);
-	ASSERT(width > 0);
-	ASSERT(height > 0);
+	CHECK_CONDITION_RETURN((width <= 0) || (height <= 0), Utility::Error, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
 	if (data == NULL)
 	{
 		LOG(Utility::Debug, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");
 	}
-	if ((width <= 0) || (height <= 0))
-	{
-		LOG(Utility::Error, LOGPLACE, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
-		return;
-	}
 	m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
-	ASSERT(m_textureData != NULL);
-	if (m_textureData == NULL)
-	{
-		LOG(Utility::Error, LOGPLACE, "Texture data creation error. Texture data is NULL.");
-	}
+	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Error, "Texture data creation failed. Texture data is NULL.");
 }
 
 Texture::~Texture(void)
 {
-	ASSERT(m_textureData != NULL);
-	if (m_textureData == NULL)
-	{
-		LOG(Utility::Warning, LOGPLACE, "Texture data is already NULL");
-		return;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS(m_textureData != NULL, Utility::Warning, "Texture data is already NULL.");
 	
 	m_textureData->RemoveReference();
 	if (! m_textureData->IsReferenced())
@@ -402,13 +351,8 @@ Texture::~Texture(void)
 
 void Texture::Bind(unsigned int unit /* = 0 */) const
 {
-	ASSERT(m_textureData != NULL);
+	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Emergency, "Cannot bind the texture. Texture data is NULL.");
 	ASSERT((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT));
-	if (m_textureData == NULL)
-	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot bind the texture. Texture data is NULL");
-		return;
-	}
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
 	m_textureData->Bind(0);
@@ -416,11 +360,7 @@ void Texture::Bind(unsigned int unit /* = 0 */) const
 
 void Texture::BindAsRenderTarget() const
 {
-	if (m_textureData == NULL)
-	{
-		LOG(Utility::Error, LOGPLACE, "Cannot bind the texture data as render target. Texture data is NULL.");
-		return;
-	}
+	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Emergency, "Cannot bind the texture as render target. Texture data is NULL.");
 	m_textureData->BindAsRenderTarget();
 }
 

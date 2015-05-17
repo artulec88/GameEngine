@@ -13,7 +13,7 @@
 // Include GLFW
 #include <GLFW\glfw3.h>
 
-#define ANT_TWEAK_BAR_ENABLED
+//#define ANT_TWEAK_BAR_ENABLED
 
 #define OPEN_GL_PROPERTIES_TWEAK_BAR
 #define RENDERER_PROPERTIES_BAR

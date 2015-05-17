@@ -27,12 +27,12 @@ void PlayGameState::Entered()
 	LOG(Utility::Info, LOGPLACE, "PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
-	ASSERT(gameManager->IsGameLoaded());
-	if (!gameManager->IsGameLoaded())
-	{
-		LOG(Utility::Warning, LOGPLACE, "PLAY game state has been placed in the game state manager before loading the game.");
-		gameManager->Load();
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
+	//if (!gameManager->IsGameLoaded())
+	//{
+	//	LOG(Utility::Warning, LOGPLACE, "PLAY game state has been placed in the game state manager before loading the game.");
+	//	gameManager->Load();
+	//}
 #ifdef ANT_TWEAK_BAR_ENABLED
 	gameManager->InitializeTweakBars();
 	CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
@@ -123,10 +123,9 @@ bool up = false;
 bool down = false;
 void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
-	//ASSERT(camera != NULL);
+	//CHECK_CONDITION_RETURN(camera != NULL, Utility::Error, "Camera instance is not initialized");
 	//if (camera == NULL)
 	//{
-	//	LOG(Error, LOGPLACE, "Camera instance is not initialized");
 	//	return;
 	//}
 

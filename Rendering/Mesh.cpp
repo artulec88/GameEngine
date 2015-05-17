@@ -86,12 +86,7 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 
 Mesh::~Mesh(void)
 {
-	ASSERT(meshData != NULL);
-	if (meshData == NULL)
-	{
-		LOG(Utility::Warning, LOGPLACE, "Mesh data is already NULL");
-		return;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS(meshData != NULL, Utility::Warning, "Destructing the mesh aborted. Mesh data is NULL.");
 	meshData->RemoveReference();
 	if (! meshData->IsReferenced())
 	{
@@ -198,7 +193,7 @@ void Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		ASSERT(face.mNumIndices == 3);
+		CHECK_CONDITION(face.mNumIndices == 3, Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -227,12 +222,7 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	//	this->CalcTangents(vertices, verticesCount);
 	//}
 
-	ASSERT(meshData != NULL);
-	if (meshData == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Mesh data instance is NULL");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
 	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 
@@ -282,12 +272,7 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 
 void Mesh::Draw() const
 {
-	ASSERT(meshData != NULL);
-	if (meshData == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Mesh data instance is NULL");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
 
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);

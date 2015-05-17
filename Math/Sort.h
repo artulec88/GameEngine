@@ -514,16 +514,8 @@ private:
 				nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
 			}
 		}
-		ASSERT(indices.back() < QUARTER_VECTOR_SIZE);
-		ASSERT(indices.front() == FIRST_CONST_INDEX);
-		if (indices.back() >= QUARTER_VECTOR_SIZE)
-		{
-			LOG(Utility::Error, LOGPLACE, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = %d and the gap = %d", vectorSize, indices.back());
-		}
-		if (indices.front() != FIRST_CONST_INDEX)
-		{
-			LOG(Utility::Error, LOGPLACE, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to %d, but is equal to %d", FIRST_CONST_INDEX, indices.front());
-		}
+		CHECK_CONDITION(indices.back() < QUARTER_VECTOR_SIZE, Error, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = %d and the gap = %d", vectorSize, indices.back());
+		CHECK_CONDITION(indices.front() == FIRST_CONST_INDEX, Error, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to %d, but is equal to %d", FIRST_CONST_INDEX, indices.front());
 
 		while (!indices.empty())
 		{
@@ -751,11 +743,7 @@ private:
 				maxValue = value;
 			}
 		}
-		ASSERT(!(maxValue < minValue));
-		if (maxValue < minValue)
-		{
-			LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
-		}
+		CHECK_CONDITION(!(maxValue < minValue), Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
 	}
 
 	void FindMinMax(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
@@ -780,11 +768,7 @@ private:
 				maxValue = value;
 			}
 		}
-		ASSERT(!(maxValue < minValue));
-		//if (maxValue < minValue)
-		//{
-		//	LOG(Utility::Error, LOGPLACE, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);;
-		//}
+		CHECK_CONDITION(!(maxValue < minValue), Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
 	}
 
 	template <typename T>
@@ -819,12 +803,7 @@ private:
 				--bucketIndex;
 			}
 
-			ASSERT((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS));
-
-			//if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
-			//{
-			//	LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
-			//}
+			CHECK_CONDITION((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Critical, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
@@ -908,12 +887,7 @@ private:
 				--bucketIndex;
 			}
 
-			ASSERT((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS));
-
-			//if ((bucketIndex < 0) || (bucketIndex >= NUMBER_OF_BUCKETS))
-			//{
-			//	LOG(Utility::Critical, LOGPLACE, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
-			//}
+			CHECK_CONDITION((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);

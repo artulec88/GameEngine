@@ -63,12 +63,7 @@ public:
 
 	void CalculateParentTransformation() const
 	{
-		ASSERT(parentTransform != NULL);
-		if (parentTransform == NULL)
-		{
-			LOG(Utility::Error, LOGPLACE, "Parent transform is NULL");
-			return;
-		}
+		CHECK_CONDITION_RETURN(parentTransform != NULL, Utility::Error, "Parent transform is NULL.");
 		parentTransformation = parentTransform->GetTransformation();
 	}
 	/**

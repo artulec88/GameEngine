@@ -238,12 +238,7 @@ Renderer::~Renderer(void)
 
 void Renderer::SetCallbacks()
 {
-	ASSERT(m_window != NULL);
-	if (m_window == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Setting GLFW callbacks failed. Window is NULL.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &GameManager::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(m_window, GameManager::WindowResizeCallback);
 	glfwSetKeyCallback(m_window, &GameManager::KeyEventCallback);
@@ -450,12 +445,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 		ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-		ASSERT(shadowMapIndex < SHADOW_MAPS_COUNT);
-		if (shadowMapIndex >= SHADOW_MAPS_COUNT)
-		{
-			LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-			shadowMapIndex = 0;
-		}
+		CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 		SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 		m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
@@ -769,18 +759,8 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 		LOG(Error, LOGPLACE, "Cannot apply a filter. Filtering shader is NULL.");
 		return;
 	}
-	ASSERT(source != NULL);
-	if (source == NULL)
-	{
-		LOG(Emergency, LOGPLACE, "Cannot apply a filter. Source texture is NULL.");
-		return;
-	}
-	ASSERT(source != dest);
-	if (source == dest)
-	{
-		LOG(Error, LOGPLACE, "Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
-		return;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS(source != NULL, Emergency, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_RETURN_ALWAYS(source != dest, Error, "Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
 	if (dest == NULL)
 	{
 		LOG(Delocust, LOGPLACE, "Binding window as a render target for filtering");
@@ -792,7 +772,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 		dest->BindAsRenderTarget();
 	}
 
-	LOG(Debug, LOGPLACE, "Applying a filter to the source texture");
+	//LOG(Debug, LOGPLACE, "Applying a filter to the source texture");
 	
 	SetTexture("filterTexture", source);
 
@@ -832,17 +812,8 @@ unsigned int Renderer::PrevCamera()
 
 unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 {
-	ASSERT((cameraIndex >= 0) && (cameraIndex < m_cameras.size()));
-	if ( (cameraIndex < 0) || (cameraIndex >= m_cameras.size()) )
-	{
-		LOG(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
-		LOG(Notice, LOGPLACE, "Setting current camera index to 0 (i.e. first camera)");
-		m_currentCameraIndex = 0;
-	}
-	else
-	{
-		m_currentCameraIndex = cameraIndex;
-	}
+	CHECK_CONDITION((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
+	m_currentCameraIndex = cameraIndex;
 #ifndef ANT_TWEAK_BAR_ENABLED
 	LOG(Notice, LOGPLACE, "Switched to camera #%d", m_currentCameraIndex + 1);
 	//LOG(Debug, LOGPLACE, "%s", m_cameras[m_currentCameraIndex]->ToString().c_str());

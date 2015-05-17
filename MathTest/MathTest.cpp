@@ -238,7 +238,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = identityMatrix1 * identityMatrix2;
-		ASSERT(result == identityMatrix1 * identityMatrix2);
+		CHECK_CONDITION(result == identityMatrix1 * identityMatrix2, Utility::Error, "Identity matrix multiplication result is incorrect.");
 	}
 	outerEnd = clock();
 	TimeReport("Average time for identity matrices multiplication:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
@@ -252,7 +252,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = mat1 * mat2;
-		//ASSERT(result == mat1 * mat2);
+		//CHECK_CONDITION(result == mat1 * mat2, Utility::Error, "Random matrix multiplication result is incorrect.");
 	}
 	outerEnd = clock();
 	TimeReport("Average time for random matrices multiplication:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);

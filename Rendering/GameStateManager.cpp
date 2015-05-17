@@ -303,7 +303,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
 	LOG(Utility::Debug, LOGPLACE, "Currently active game states: %d", m_activeStates.size());
-	ASSERT(!m_activeStates.empty());
+	CHECK_CONDITION_EXIT_ALWAYS(!m_activeStates.empty(), Utility::Warning, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{

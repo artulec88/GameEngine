@@ -25,7 +25,6 @@ Material::Material(Texture* diffuseTexture,
 		normalMap = new Texture("..\\Textures\\defaultNormalMap.jpg");
 		//LOG(Utility::Info, LOGPLACE, "Adding normal map to the material");
 	}
-	ASSERT(normalMap != NULL);
 	SetTexture("normalMap", normalMap);
 
 	if (displacementMap == NULL)
@@ -34,7 +33,6 @@ Material::Material(Texture* diffuseTexture,
 		displacementMap = new Texture("..\\Textures\\defaultDisplacementMap.jpg");
 		//LOG(Utility::Info, "Adding displacement map to the material");
 	}
-	ASSERT(displacementMap != NULL);
 	SetTexture("displacementMap", displacementMap);
 
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f);

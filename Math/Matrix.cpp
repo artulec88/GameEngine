@@ -48,7 +48,7 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	SLOW_ASSERT((*this) == mat);
+	SLOW_ASSERT((*this) == mat); // TODO: Check the operator == because we got assertions here
 }
 
 Matrix4D::~Matrix4D()

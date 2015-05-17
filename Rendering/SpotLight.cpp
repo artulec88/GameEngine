@@ -26,12 +26,7 @@ SpotLight::SpotLight(const Rendering::Color& color /*= Color(REAL_ZERO, REAL_ZER
 	{
 		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f /* TODO: Don't use hard-coded values */, m_range);
 		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		ASSERT(m_shadowInfo != NULL);
-		if (m_shadowInfo == NULL)
-		{
-			LOG(Utility::Critical, LOGPLACE, "Cannot initialize spot light. Shadow info is NULL");
-			exit(EXIT_FAILURE);
-		}
+		CHECK_CONDITION_EXIT(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize spot light. Shadow info is NULL.");
 	}
 }
 

@@ -124,13 +124,7 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	//LOG(Utility::Debug, LOGPLACE, "Thread window address: %p", threadWindow);
 	m_renderer = new Renderer(window, threadWindow);
 
-	if (m_renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Failed to create a Renderer");
-		exit(EXIT_FAILURE);
-	}
-
-	ASSERT(m_renderer != NULL);
+	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
 }
 
 void CoreEngine::Start()
@@ -163,7 +157,7 @@ void CoreEngine::Stop()
 	}
 	
 	m_isRunning = false;
-	ASSERT(!m_isRunning);
+	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	LOG(Notice, LOGPLACE, "The core engine has stopped");
 	
 	/* ==================== Printing stats begin ==================== */
@@ -200,8 +194,8 @@ void CoreEngine::Run()
 {
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	
+	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
 	LOG(Notice, LOGPLACE, "The game started running");
-	ASSERT(!m_isRunning);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
@@ -398,34 +392,19 @@ void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& i
 
 unsigned int CoreEngine::GetCurrentCameraIndex() const
 {
-	ASSERT(m_renderer != NULL);
-	if (m_renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot get the current camera index. The renderer does not exist.");
 	return m_renderer->GetCurrentCameraIndex();
 }
 
 unsigned int CoreEngine::NextCamera() const
 {
-	ASSERT(m_renderer != NULL);
-	if (m_renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the next camera. The renderer does not exist.");
 	return m_renderer->NextCamera();
 }
 
 unsigned int CoreEngine::PrevCamera() const
 {
-	ASSERT(m_renderer != NULL);
-	if (m_renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Renderer is not yet initialized");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the previous camera. The renderer does not exist.");
 	return m_renderer->PrevCamera();
 }
 

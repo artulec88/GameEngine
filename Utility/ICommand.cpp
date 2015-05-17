@@ -20,23 +20,13 @@ using namespace Utility;
 
 /* static */ ICommand& ICommand::GetCommand()
 {
-	ASSERT(ICommand::command != NULL);
-	if (ICommand::command == NULL)
-	{
-		LOG(Error, LOGPLACE, "Command instance does not exist. Cannot read application parameters");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(ICommand::command != NULL, Utility::Error, "Command instance does not exist. Cannot read application parameters.");
 	return *ICommand::command;
 }
 
 /* static */ void ICommand::DeleteCommand()
 {
-	ASSERT(ICommand::command != NULL);
-	if (ICommand::command == NULL)
-	{
-		LOG(Warning, LOGPLACE, "Trying to delete command instance when it is already deallocated.");
-		return;
-	}
+	CHECK_CONDITION_RETURN(ICommand::command != NULL, Utility::Warning, "Trying to delete command instance when it is already deallocated.");
 	LOG(Debug, LOGPLACE, "Deallocating command instance.");
 	SAFE_DELETE(ICommand::command);
 }

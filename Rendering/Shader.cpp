@@ -177,10 +177,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 			output.append(fragmentToAppend + "\n");
 		}
 	}
-
-	ASSERT(file.is_open());
 	file.close();
-
 	return output;
 }
 
@@ -408,12 +405,7 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 	}
 
 	unsigned int location = glGetUniformLocation(programID, uniformName.c_str());
-	ASSERT(location != INVALID_VALUE);
-	if (location == INVALID_VALUE)
-	{
-		LOG(Emergency, LOGPLACE, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(location != INVALID_VALUE, Emergency, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
 	LOG(Delocust, LOGPLACE, "Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
 	uniformMap.insert(std::pair<std::string, unsigned int>(uniformName, location));
 }
@@ -509,13 +501,8 @@ std::vector<TypedData> ShaderData::FindUniformStructComponents(const std::string
 bool ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, unsigned int>::const_iterator& itr) const
 {
 	itr = uniformMap.find(uniformName);
-	if (itr == uniformMap.end())
-	{
-		LOG(Error, LOGPLACE, "Uniform \"%s\" has not been found", uniformName.c_str());
-		exit(EXIT_FAILURE);
-		return false;
-	}
-	return true;
+	CHECK_CONDITION(itr != uniformMap.end(), Error, "Uniform \"%s\" has not been found.", uniformName.c_str());
+	return (itr != uniformMap.end());
 }
 
 /* ==================== Shader class begin ==================== */
@@ -540,12 +527,7 @@ Shader::Shader(const std::string& fileName) :
 
 Shader::~Shader(void)
 {
-	ASSERT(shaderData != NULL);
-	if (shaderData == NULL)
-	{
-		LOG(Utility::Warning, LOGPLACE, "Shader data is already NULL");
-		return;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS(shaderData != NULL, Utility::Warning, "Shader data is already NULL.");
 	
 	shaderData->RemoveReference();
 	if (! shaderData->IsReferenced())
@@ -561,12 +543,7 @@ Shader::~Shader(void)
 
 void Shader::Bind() const
 {
-	ASSERT(shaderData != NULL);
-	if (shaderData == NULL)
-	{
-		LOG(Utility::Critical, LOGPLACE, "Cannot bind the shader. Shader data is NULL");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(shaderData != NULL, Utility::Critical, "Cannot bind the shader. Shader data is NULL.");
 	glUseProgram(shaderData->GetProgram());
 }
 
@@ -585,24 +562,9 @@ void Shader::Unbind() const
 
 void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const
 {
-	ASSERT(renderer != NULL);
-	if (renderer == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Cannot update uniforms. Rendering engine is NULL.");
-		exit(EXIT_FAILURE);
-	}
-	ASSERT(shaderData != NULL);
-	if (shaderData == NULL)
-	{
-		LOG(Critical, LOGPLACE, "Cannot update uniforms. Shader data is NULL.");
-		exit(EXIT_FAILURE);
-	}
-	ASSERT(shaderData->GetUniformNames().size() == shaderData->GetUniformTypes().size());
-	if (shaderData->GetUniformNames().size() != shaderData->GetUniformTypes().size())
-	{
-		LOG(Error, LOGPLACE, "Shader data is incorrect. There are %d uniform names and %d uniform types",
-			shaderData->GetUniformNames().size(), shaderData->GetUniformTypes().size());
-	}
+	CHECK_CONDITION_EXIT(renderer != NULL, Critical, "Cannot update uniforms. Rendering engine is NULL.");
+	CHECK_CONDITION_EXIT(shaderData != NULL, Critical, "Cannot update uniforms. Shader data is NULL.");
+	CHECK_CONDITION_EXIT(shaderData->GetUniformNames().size() == shaderData->GetUniformTypes().size(), Error, "Shader data is incorrect. There are %d uniform names and %d uniform types", shaderData->GetUniformNames().size(), shaderData->GetUniformTypes().size());
 
 	Matrix4D worldMatrix = transform.GetTransformation();
 	Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter
@@ -610,7 +572,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	for (unsigned int i = 0; i < shaderData->GetUniformNames().size(); ++i)
 	{
 		std::string uniformName = shaderData->GetUniformNames()[i];
-		//LOG(Critical, LOGPLACE, "uniformName = \"%s\"", uniformName.c_str());
+		//LOG(Debug, LOGPLACE, "uniformName = \"%s\"", uniformName.c_str());
 		std::string uniformType = shaderData->GetUniformTypes()[i];
 
 		const std::string uniformSubstr = uniformName.substr(0, 2);
@@ -625,21 +587,14 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
 			{
 				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
-				//LOG(Critical, LOGPLACE, "Sampler slot = %d; unprefixedName = \"%s\"", samplerSlot, unprefixedName.c_str());
 				if (unprefixedName == "cubeShadowMap")
 				{
-					//LOG(Critical, LOGPLACE, "Binding cube shadow map");
 					renderer->BindCubeShadowMap(samplerSlot);
 				}
 				else
 				{
 					Texture* texture = renderer->GetTexture(unprefixedName);
-					ASSERT(texture != NULL);
-					if (texture == NULL)
-					{
-						LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL", unprefixedName.c_str());
-						exit(EXIT_FAILURE);
-					}
+					CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL.", unprefixedName.c_str());
 					texture->Bind(samplerSlot);
 				}
 				SetUniformi(uniformName, samplerSlot);
@@ -663,12 +618,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
 				const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
-				ASSERT(directionalLight != NULL);
-				//if (directionalLight == NULL)
-				//{
-				//	LOG(Error, LOGPLACE, "Cannot update directional light uniform. Directional light instance is NULL.");
-				//	continue;
-				//}
+				CHECK_CONDITION_EXIT(directionalLight != NULL, Error, "Cannot update directional light uniform. Directional light instance is NULL.");
 				SetUniformDirectionalLight(uniformName, *directionalLight);
 			}
 			else if(uniformType == "PointLight")
@@ -676,12 +626,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
 				const Lighting::PointLight* pointLight = renderer->GetPointLight();
-				ASSERT(pointLight != NULL);
-				//if (pointLight == NULL)
-				//{
-				//	LOG(Error, LOGPLACE, "Cannot update point light uniform. Point light instance is NULL.");
-				//	continue;
-				//}
+				CHECK_CONDITION_EXIT(pointLight != NULL, Error, "Cannot update point light uniform. Point light instance is NULL.");
 				SetUniformPointLight(uniformName, *pointLight);
 			}
 			else if(uniformType == "SpotLight")
@@ -689,12 +634,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
 				//const Lighting::SpotLight* spotLight = renderer->GetSpotLight();
-				ASSERT(spotLight != NULL);
-				//if (spotLight == NULL)
-				//{
-				//	LOG(Error, LOGPLACE, "Cannot update spot light uniform. Spot light instance is NULL.");
-				//	continue;
-				//}
+				CHECK_CONDITION_EXIT(spotLight != NULL, Error, "Cannot update spot light uniform. Spot light instance is NULL.");
 				SetUniformSpotLight(uniformName, *spotLight);
 			}
 			else
@@ -706,12 +646,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 		{
 			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
 			Texture* texture = material.GetTexture(uniformName);
-			ASSERT(texture != NULL);
-			if (texture == NULL)
-			{
-				LOG(Utility::Critical, LOGPLACE, "Updating uniforms operation failed. Material texture \"%s\" is NULL", uniformName.c_str());
-				exit(EXIT_FAILURE);
-			}
+			CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Material texture \"%s\" is NULL.", uniformName.c_str());
 			texture->Bind(samplerSlot);
 			SetUniformi(uniformName, samplerSlot);
 		}

@@ -16,19 +16,19 @@ using namespace std;
 
 Command::Command(int argc, char* argv[]) : ICommand()
 {
-	ASSERT(argv != NULL);
+	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	Fill(argc, argv);
 }
 
 //Command::Command(const std::string& str)
 //{
-//	ASSERT(str.length() > 0);
+//	CHECK_CONDITION(str.length() > 0, Utility::Error, "Incorrect Command constructor parameter specified \"%s\"", str.c_str());
 //	Read(str); // TODO: Command::Read() returns bool. Add checking the bool value
 //}
 //
 //Command::Command(const char* str)
 //{
-//	ASSERT(str != NULL);
+//	CHECK_CONDITION(str != NULL, Utility::Error, "Incorrect Command constructor parameter specified.");
 //	Read(string(str)); // TODO: Command::Read() returns bool. Add checking the bool value
 //}
 
@@ -40,8 +40,8 @@ Command::~Command()
 
 void Command::Fill(int argc, char* argv[])
 {
-	ASSERT(argc >= 1);
-	ASSERT(argv != NULL);
+	CHECK_CONDITION(argc >= 1, Utility::Error, "Incorrect number of program parameters specified (%d)", argc);
+	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	for (int i = 0; i < argc; ++i)
 	{
 		commands.push_back(string(argv[i]));
@@ -128,11 +128,9 @@ string Command::Get(const string& opt, const string& defaultValue) const
  */
 bool Command::GetArgPosition(const std::string& opt, int& argPos, int first /* = 0*/) const
 {
-	//ASSERT(first >= 0);
 	int number = first;
 	for (std::vector<std::string>::const_iterator itr = commands.begin() + first; itr != commands.end(); ++itr, ++number)
 	{
-		//ASSERT(number >= first);
 		if ((*itr) == opt)
 		{
 			argPos = number;

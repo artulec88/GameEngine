@@ -78,12 +78,7 @@ Math::Real TestGameManager::GetLoadingProgress() const
 void TestGameManager::Load()
 {
 	LOG(Notice, LOGPLACE, "Initalizing test game");
-	ASSERT(!m_isGameLoaded);
-	if (m_isGameLoaded)
-	{
-		LOG(Error, LOGPLACE, "Loading the game will not be performed. The game has already been loaded.");
-		return;
-	}
+	CHECK_CONDITION_RETURN_ALWAYS(!m_isGameLoaded, Error, "Loading the game will not be performed. The game has already been loaded.");
 
 	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -239,13 +234,8 @@ void TestGameManager::Load()
 
 	AddCameras(); // Adding cameras
 
-	ASSERT(m_isGameLoaded);
 	m_isGameLoaded = true;
-	if (!m_isGameLoaded)
-	{
-		LOG(Error, LOGPLACE, "The game has not been loaded properly.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(m_isGameLoaded, Critical, "The game has not been loaded properly.");
 	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
 

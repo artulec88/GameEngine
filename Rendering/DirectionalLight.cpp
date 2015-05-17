@@ -22,20 +22,10 @@ DirectionalLight::~DirectionalLight(void)
 //void DirectionalLight::InitializeShaders()
 //{
 //	SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-//	ASSERT(m_shader != NULL);
-//	if (m_shader == NULL)
-//	{
-//		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Shader is NULL.");
-//		exit(EXIT_FAILURE);
-//	}
+//	CHECK_CONDITION_EXIT(m_shader != NULL, Utility::Critical, "Cannot initialize directional light. Shader is NULL.");
 //
 //	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
-//	ASSERT(m_terrainShader != NULL);
-//	if (m_terrainShader == NULL)
-//	{
-//		LOG(Utility::Critical, LOGPLACE, "Cannot initialize directional light. Terrain shader is NULL.");
-//		exit(EXIT_FAILURE);
-//	}
+//	CHECK_CONDITION_EXIT(m_terrainShader != NULL, Utility::Critical, "Cannot initialize directional light. Terrain shader is NULL.");
 //}
 
 bool DirectionalLight::IsEnabled() const
