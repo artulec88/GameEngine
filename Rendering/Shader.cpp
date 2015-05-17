@@ -662,7 +662,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			{
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
-				Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
+				const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
 				ASSERT(directionalLight != NULL);
 				//if (directionalLight == NULL)
 				//{
@@ -675,7 +675,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			{
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
-				Lighting::PointLight* pointLight = renderer->GetPointLight();
+				const Lighting::PointLight* pointLight = renderer->GetPointLight();
 				ASSERT(pointLight != NULL);
 				//if (pointLight == NULL)
 				//{
@@ -687,8 +687,8 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else if(uniformType == "SpotLight")
 			{
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
-				Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(renderer->GetCurrentLight());
-				//Lighting::SpotLight* spotLight = renderer->GetSpotLight();
+				const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
+				//const Lighting::SpotLight* spotLight = renderer->GetSpotLight();
 				ASSERT(spotLight != NULL);
 				//if (spotLight == NULL)
 				//{

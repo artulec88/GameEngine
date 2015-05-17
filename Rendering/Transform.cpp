@@ -13,7 +13,6 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(0.0, 0.0, 0.0) */, const 
 	parentTransform(NULL),
 	isChanged(true)
 {
-	LOG(Utility::Delocust, LOGPLACE, "Transform is being constructed (2)");
 }
 
 Transform::~Transform()

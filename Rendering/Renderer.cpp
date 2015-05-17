@@ -56,37 +56,51 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_ambientLight(m_ambientDaytimeColor),
 	m_currentLight(NULL),
 	m_pointLight(NULL),
-	// TODO: Start refactoring from here
-
-
-	currentCameraIndex(0),
+	m_spotLight(NULL),
+	m_currentCameraIndex(0),
 	m_currentCamera(NULL),
 	m_mainMenuCamera(NULL),
-	altCamera(Matrix4D::Identity(), Transform()),
-	cubeMapNode(NULL),
-	cubeMapShader(NULL),
-	cubeMapTextureDay(NULL),
-	cubeMapTextureNight(NULL),
-	defaultShader(NULL),
-	defaultShaderFogEnabled(NULL),
-	//textShader(NULL),
-	shadowMapShader(NULL),
-	nullFilterShader(NULL),
-	gaussBlurFilterShader(NULL),
-	fxaaFilterShader(NULL),
-	fontTexture(NULL),
-	textRenderer(NULL),
-	lightMatrix(Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
-	fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
-	fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
-	fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f))
+	m_altCamera(Matrix4D::Identity(), Transform()),
+	m_filterTexture(NULL),
+	m_filterMaterial(NULL),
+	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2)/2, sqrtf(2)/2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
+	m_filterMesh(NULL),
+	m_terrainNode(NULL),
+	m_ambientShaderTerrain(NULL),
+	m_ambientShaderFogEnabledTerrain(NULL),
+	m_ambientShader(NULL),
+	m_ambientShaderFogEnabled(NULL),
+	m_shadowMapShader(NULL),
+	m_nullFilterShader(NULL),
+	m_gaussBlurFilterShader(NULL),
+	m_fxaaFilterShader(NULL),
+	m_fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
+	m_fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
+	m_fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
+	m_skyboxNode(NULL),
+	m_skyboxShader(NULL),
+	m_skyboxTextureDay(NULL),
+	m_skyboxTextureNight(NULL),
+	m_cubeMapShader(NULL),
+	m_cubeShadowMap(NULL),
+	m_shadowMaps(),
+	m_shadowMapTempTargets(),
+	m_lights(),
+	m_directionalAndSpotLights(),
+	m_pointLights(),
+	m_cameras(),
+	m_samplerMap(),
+	m_lightMatrix(Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
+	m_fontTexture(NULL),
+	m_textRenderer(NULL)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
-	propertiesBar(NULL),
-	cameraBar(NULL),
-	lightsBar(NULL),
-	previousFrameCameraIndex(0),
-	renderToTextureTestingEnabled(false)
+	m_previousFrameCameraIndex(0),
+	m_propertiesBar(NULL),
+	m_cameraBar(NULL),
+	m_lightsBar(NULL),
+	m_cameraMembers(),
+	m_cameraType()
 #endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
@@ -117,27 +131,24 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	defaultShader = new Shader(GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient"));
-	defaultShaderFogEnabled = new Shader(GET_CONFIG_VALUE_STR("defaultShaderFogEnabled", "ForwardAmbientFogEnabled"));
-	m_defaultShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-terrain"));
-	m_defaultShaderFogEnabledTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-fog-enabled-terrain"));
+	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient"));
+	m_ambientShaderFogEnabled = new Shader(GET_CONFIG_VALUE_STR("defaultShaderFogEnabled", "ForwardAmbientFogEnabled"));
+	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-terrain"));
+	m_ambientShaderFogEnabledTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-fog-enabled-terrain"));
 
-	shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
-	nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
-	gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
-	fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
-	altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
+	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
+	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
+	m_gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
+	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
+	m_altCamera.GetTransform().Rotate(Vector3D(0, 1, 0), Angle(180));
 
 	int width, height;
 	glfwGetWindowSize(m_window, &width, &height);
-	filterTarget = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_filterTexture = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
-	filterMaterial = new Material(filterTarget, 1, 8);
-	filterTransform.SetScale(REAL_ONE);
-	filterTransform.Rotate(Vector3D(1, 0, 0), Angle(90));
-	filterTransform.Rotate(Vector3D(0, 0, 1), Angle(180));
-	filterMesh = new Mesh("..\\Models\\plane4.obj");
-	filterMesh->Initialize();
+	m_filterMaterial = new Material(m_filterTexture);
+	m_filterMesh = new Mesh("..\\Models\\plane4.obj");
+	m_filterMesh->Initialize();
 
 	InitializeCubeMap();
 
@@ -149,20 +160,20 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
 		int shadowMapSize = 1 << (i + 1);
-		shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+		m_shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-		shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+		m_shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	textRenderer = new TextRenderer(fontTexture);
+	m_fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_textRenderer = new TextRenderer(m_fontTexture);
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
-	SetReal("fxaaSpanMax", fxaaSpanMax);
-	SetReal("fxaaReduceMin", fxaaReduceMin);
-	SetReal("fxaaReduceMul", fxaaReduceMul);
+	SetReal("fxaaSpanMax", m_fxaaSpanMax);
+	SetReal("fxaaReduceMin", m_fxaaReduceMin);
+	SetReal("fxaaReduceMul", m_fxaaReduceMul);
 #endif
 
 	/* ==================== Creating a "Main menu camera" begin ==================== */
@@ -192,30 +203,30 @@ Renderer::~Renderer(void)
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
 
-	SAFE_DELETE(defaultShader);
-	SAFE_DELETE(defaultShaderFogEnabled);
-	SAFE_DELETE(shadowMapShader);
-	SAFE_DELETE(nullFilterShader);
-	SAFE_DELETE(gaussBlurFilterShader);
-	SAFE_DELETE(fxaaFilterShader);
+	SAFE_DELETE(m_ambientShader);
+	SAFE_DELETE(m_ambientShaderFogEnabled);
+	SAFE_DELETE(m_shadowMapShader);
+	SAFE_DELETE(m_nullFilterShader);
+	SAFE_DELETE(m_gaussBlurFilterShader);
+	SAFE_DELETE(m_fxaaFilterShader);
 	//SAFE_DELETE(altCameraNode);
-	//SAFE_DELETE(cubeMapNode);
-	SAFE_DELETE(cubeMapShader);
+	//SAFE_DELETE(m_skyboxNode);
+	SAFE_DELETE(m_skyboxShader);
 	SAFE_DELETE(m_cubeShadowMap);
-	SAFE_DELETE(filterMaterial);
-	SAFE_DELETE(filterMesh);
+	SAFE_DELETE(m_filterMaterial);
+	SAFE_DELETE(m_filterMesh);
 
-	// TODO: fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
+	// TODO: m_fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
 	//SetTexture("fontTexture", NULL);
-	//SAFE_DELETE(fontTexture);
-	SAFE_DELETE(textRenderer);
+	//SAFE_DELETE(m_fontTexture);
+	SAFE_DELETE(m_textRenderer);
 
 	SetTexture("shadowMap", NULL);
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
-		SAFE_DELETE(shadowMaps[i]);
-		SAFE_DELETE(shadowMapTempTargets[i]);
+		SAFE_DELETE(m_shadowMaps[i]);
+		SAFE_DELETE(m_shadowMapTempTargets[i]);
 	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -247,20 +258,20 @@ void Renderer::InitializeCubeMap()
 {
 	std::string cubeMapDayDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
-	cubeMapTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
-	cubeMapTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
+	m_skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
+	m_skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
 
-	//SetTexture("cubeMapDay", cubeMapTextureDay);
-	//SetTexture("cubeMapNight", cubeMapTextureNight);
+	//SetTexture("cubeMapDay", m_skyboxTextureDay);
+	//SetTexture("cubeMapNight", m_skyboxTextureNight);
 
-	Material* cubeMapMaterial = new Material(cubeMapTextureDay, "cubeMapDay");
-	cubeMapMaterial->SetAdditionalTexture(cubeMapTextureNight, "cubeMapNight");
+	Material* cubeMapMaterial = new Material(m_skyboxTextureDay, "cubeMapDay");
+	cubeMapMaterial->SetAdditionalTexture(m_skyboxTextureNight, "cubeMapNight");
 
-	cubeMapNode = new GameNode();
-	cubeMapNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
-	cubeMapNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	cubeMapNode->GetTransform().SetScale(5.0f);
-	cubeMapShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
+	m_skyboxNode = new GameNode();
+	m_skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
+	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_skyboxNode->GetTransform().SetScale(5.0f);
+	m_skyboxShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 }
 
 Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
@@ -408,22 +419,22 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("ambientFogStart", m_ambientLightFogStart);
 	SetReal("ambientFogEnd", m_ambientLightFogEnd);
 	SetVector3D("ambientIntensity", m_ambientLight);
-	SetReal("fxaaSpanMax", fxaaSpanMax);
-	SetReal("fxaaReduceMin", fxaaReduceMin);
-	SetReal("fxaaReduceMul", fxaaReduceMul);
+	SetReal("fxaaSpanMax", m_fxaaSpanMax);
+	SetReal("fxaaReduceMin", m_fxaaReduceMin);
+	SetReal("fxaaReduceMul", m_fxaaReduceMul);
 	CheckCameraIndexChange();
 #endif
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	//BindAsRenderTarget();
 
 	ClearScreen();
-	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
 		LOG(Emergency, LOGPLACE, "Rendering failed. There is no proper camera set up.");
 		exit(EXIT_FAILURE);
 		// TODO: Instead of exit maybe just use the default camera (??)
 	}
-	m_currentCamera = cameras[currentCameraIndex];
+	m_currentCamera = m_cameras[m_currentCameraIndex];
 
 	RenderSceneWithAmbientLight(gameNode);
 
@@ -445,39 +456,39 @@ void Renderer::Render(const GameNode& gameNode)
 			LOG(Error, LOGPLACE, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 			shadowMapIndex = 0;
 		}
-		SetTexture("shadowMap", shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-		shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+		SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+		m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
 		{
-			altCamera.SetProjection(shadowInfo->GetProjection());
+			m_altCamera.SetProjection(shadowInfo->GetProjection());
 			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
-			altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
-			altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
-			//altCamera.GetTransform().SetPos(m_currentLight->GetTransform().GetTransformedPos());
-			//altCamera.GetTransform().SetRot(m_currentLight->GetTransform().GetTransformedRot());
+			m_altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
+			m_altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
+			//m_altCamera.GetTransform().SetPos(m_currentLight->GetTransform().GetTransformedPos());
+			//m_altCamera.GetTransform().SetRot(m_currentLight->GetTransform().GetTransformedRot());
 
-			lightMatrix = BIAS_MATRIX * altCamera.GetViewProjection();
+			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection();
 
 			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 			bool flipFacesEnabled = shadowInfo->IsFlipFacesEnabled();
 
 			CameraBase* temp = m_currentCamera;
-			m_currentCamera = &altCamera;
+			m_currentCamera = &m_altCamera;
 
 			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
-			m_terrainNode->RenderAll(shadowMapShader, this);
-			gameNode.RenderAll(shadowMapShader, this);
+			m_terrainNode->RenderAll(m_shadowMapShader, this);
+			gameNode.RenderAll(m_shadowMapShader, this);
 			if (flipFacesEnabled) { glCullFace(GL_BACK); }
 
 			m_currentCamera = temp;
 
 			if (m_applyFilterEnabled)
 			{
-				//ApplyFilter(nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-				//ApplyFilter(nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 				Real shadowSoftness = shadowInfo->GetShadowSoftness();
 				if (!AlmostEqual(shadowSoftness, REAL_ZERO))
 				{
@@ -489,7 +500,7 @@ void Renderer::Render(const GameNode& gameNode)
 		{
 			// we set the light matrix this way so that, if no shadow should be cast
 			// everything in the scene will be mapped to the same point
-			lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", 0.00002f /* do not use hard-coded values */);
 		}
@@ -499,12 +510,12 @@ void Renderer::Render(const GameNode& gameNode)
 		//if (renderToTextureTestingEnabled)
 		//{
 		//	CameraBase* temp = m_currentCamera;
-		//	m_currentCamera = &altCamera;
+		//	m_currentCamera = &m_altCamera;
 		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
 		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//	defaultShader->Bind();
-		//	defaultShader->UpdateUniforms(filterTransform, *filterMaterial, this);
-		//	filterMesh->Draw();
+		//	m_ambientShader->Bind();
+		//	m_ambientShader->UpdateUniforms(m_filterTransform, *m_filterMaterial, this);
+		//	m_filterMesh->Draw();
 
 		//	m_currentCamera = temp;
 		//}
@@ -516,11 +527,11 @@ void Renderer::Render(const GameNode& gameNode)
 
 	if (Rendering::antiAliasingMethod == Rendering::FXAA)
 	{
-		ApplyFilter(fxaaFilterShader, GetTexture("displayTexture"), NULL);
+		ApplyFilter(m_fxaaFilterShader, GetTexture("displayTexture"), NULL);
 	}
 	else
 	{
-		ApplyFilter(nullFilterShader, GetTexture("displayTexture"), NULL);
+		ApplyFilter(m_nullFilterShader, GetTexture("displayTexture"), NULL);
 	}
 }
 
@@ -528,13 +539,13 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 {
 	if (m_ambientLightFogEnabled)
 	{
-		m_terrainNode->RenderAll(m_defaultShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
-		gameNode.RenderAll(defaultShaderFogEnabled, this); // Ambient rendering with fog enabled
+		m_terrainNode->RenderAll(m_ambientShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
+		gameNode.RenderAll(m_ambientShaderFogEnabled, this); // Ambient rendering with fog enabled
 	}
 	else
 	{
-		m_terrainNode->RenderAll(m_defaultShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
-		gameNode.RenderAll(defaultShader, this); // Ambient rendering with disabled fog
+		m_terrainNode->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
+		gameNode.RenderAll(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
 }
 
@@ -558,7 +569,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
 		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-		altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
+		m_altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
 		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
@@ -566,10 +577,10 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-			altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
+			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
 
 			CameraBase* temp = m_currentCamera;
-			m_currentCamera = &altCamera;
+			m_currentCamera = &m_altCamera;
 
 			m_terrainNode->RenderAll(m_cubeMapShader, this);
 			gameNode.RenderAll(m_cubeMapShader, this);
@@ -614,25 +625,25 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 {
 	BindAsRenderTarget();
 	ClearScreen();
-	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
 		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;
 	}
 	else
 	{
-		m_currentCamera = cameras[currentCameraIndex];
+		m_currentCamera = m_cameras[m_currentCameraIndex];
 	}
 
 	//double time = glfwGetTime();
 	//std::stringstream ss;
 	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
-	//textRenderer->DrawString(0, 5800, ss.str(), this);
-	//textRenderer->DrawString(0, 50, "This is main menu", this);
+	//m_textRenderer->DrawString(0, 5800, ss.str(), this);
+	//m_textRenderer->DrawString(0, 50, "This is main menu", this);
 	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
+		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
 			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
 }
@@ -641,21 +652,21 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 {
 	BindAsRenderTarget();
 	ClearScreen();
-	if (cameras.empty() || cameras.at(currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
 		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;
 	}
 	else
 	{
-		m_currentCamera = cameras[currentCameraIndex];
+		m_currentCamera = m_cameras[m_currentCameraIndex];
 	}
 
 	std::stringstream ss;
 	int progress = static_cast<int>(loadingProgress * 100);
 	ss << progress << "%";
-	textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
-	textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
+	m_textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
+	m_textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()
@@ -703,8 +714,8 @@ Math::Real skyboxAngleStep = 0.02f; // TODO: This variable should be dependant o
 
 void Renderer::RenderSkybox()
 {
-	cubeMapNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
-	cubeMapNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
+	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
+	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
 	skyboxAngle += skyboxAngleStep;
 	if (m_ambientLightFogEnabled)
 	{
@@ -720,7 +731,7 @@ void Renderer::RenderSkybox()
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	glDepthFunc(GL_LEQUAL);
-	cubeMapNode->RenderAll(cubeMapShader, this);
+	m_skyboxNode->RenderAll(m_skyboxShader, this);
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glCullFace(Rendering::glCullFaceMode);
 	//glEnable(GL_DEPTH_TEST);
@@ -730,8 +741,8 @@ void Renderer::RenderSkybox()
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
 {
-	Texture* shadowMap = shadowMaps[shadowMapIndex];
-	Texture* shadowMapTempTarget = shadowMapTempTargets[shadowMapIndex];
+	Texture* shadowMap = m_shadowMaps[shadowMapIndex];
+	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
 	if (shadowMap == NULL)
 	{
 		LOG(Error, LOGPLACE, "Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
@@ -744,10 +755,10 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 	}
 
 	SetVector3D("blurScale", Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
-	ApplyFilter(gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
+	ApplyFilter(m_gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
 	
 	SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
-	ApplyFilter(gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
+	ApplyFilter(m_gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
@@ -785,17 +796,17 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	
 	SetTexture("filterTexture", source);
 
-	altCamera.SetProjection(Matrix4D::Identity());
-	altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
+	m_altCamera.SetProjection(Matrix4D::Identity());
+	m_altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	m_altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
 
 	CameraBase* temp = m_currentCamera;
-	m_currentCamera = &altCamera;
+	m_currentCamera = &m_altCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader->Bind();
-	filterShader->UpdateUniforms(filterTransform, *filterMaterial, this);
-	filterMesh->Draw();
+	filterShader->UpdateUniforms(m_filterTransform, *m_filterMaterial, this);
+	m_filterMesh->Draw();
 
 	m_currentCamera = temp;
 	SetTexture("filterTexture", NULL);
@@ -803,42 +814,40 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 
 unsigned int Renderer::NextCamera()
 {
-	if (currentCameraIndex == cameras.size() - 1)
+	if (m_currentCameraIndex == m_cameras.size() - 1)
 	{
-		currentCameraIndex = -1;
+		m_currentCameraIndex = -1;
 	}
-	return SetCurrentCamera(currentCameraIndex + 1);
+	return SetCurrentCamera(m_currentCameraIndex + 1);
 }
 
 unsigned int Renderer::PrevCamera()
 {
-	if (currentCameraIndex == 0)
+	if (m_currentCameraIndex == 0)
 	{
-		currentCameraIndex = cameras.size();
+		m_currentCameraIndex = m_cameras.size();
 	}
-	return SetCurrentCamera(currentCameraIndex - 1);
+	return SetCurrentCamera(m_currentCameraIndex - 1);
 }
 
 unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 {
-	//m_currentCamera->Deactivate();
-	ASSERT((cameraIndex >= 0) && (cameraIndex < cameras.size()));
-	if ( (cameraIndex < 0) || (cameraIndex >= cameras.size()) )
+	ASSERT((cameraIndex >= 0) && (cameraIndex < m_cameras.size()));
+	if ( (cameraIndex < 0) || (cameraIndex >= m_cameras.size()) )
 	{
-		LOG(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, cameras.size());
+		LOG(Error, LOGPLACE, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
 		LOG(Notice, LOGPLACE, "Setting current camera index to 0 (i.e. first camera)");
-		this->currentCameraIndex = 0;
+		m_currentCameraIndex = 0;
 	}
 	else
 	{
-		this->currentCameraIndex = cameraIndex;
+		m_currentCameraIndex = cameraIndex;
 	}
 #ifndef ANT_TWEAK_BAR_ENABLED
-	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
-	//LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	LOG(Notice, LOGPLACE, "Switched to camera #%d", m_currentCameraIndex + 1);
+	//LOG(Debug, LOGPLACE, "%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 #endif
-	//cameras[this->currentCameraIndex]->Activate();
-	return this->currentCameraIndex;
+	return m_currentCameraIndex;
 }
 
 void Renderer::AddLight(Lighting::BaseLight* light)
@@ -877,7 +886,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 
 void Renderer::AddCamera(CameraBase* camera)
 {
-	cameras.push_back(camera);
+	m_cameras.push_back(camera);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	++m_cameraCountMinusOne;
 #endif
@@ -909,8 +918,8 @@ void Renderer::BindAsRenderTarget()
 unsigned int Renderer::GetSamplerSlot(const std::string& samplerName) const
 {
 	/* TODO: Add assertions and checks */
-	std::map<std::string, unsigned int>::const_iterator samplerItr = samplerMap.find(samplerName);
-	if (samplerItr == samplerMap.end())
+	std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
+	if (samplerItr == m_samplerMap.end())
 	{
 		LOG(Error, LOGPLACE, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return NULL;
@@ -936,70 +945,70 @@ void Renderer::InitializeTweakBars()
 #ifdef RENDERER_PROPERTIES_BAR
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar");
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
-	cameraMembers[0].Name = "Projection"; cameraMembers[1].Name = "FoV"; cameraMembers[2].Name = "AspectRatio"; cameraMembers[3].Name = "NearPlane"; cameraMembers[4].Name = "FarPlane";
-	cameraMembers[0].Type = matrix4DType; cameraMembers[1].Type = angleType; cameraMembers[2].Type = TW_TYPE_FLOAT; cameraMembers[3].Type = TW_TYPE_FLOAT; cameraMembers[4].Type = TW_TYPE_FLOAT;
-	cameraMembers[0].Offset = 8; cameraMembers[1].Offset = 80; cameraMembers[2].Offset = 92; cameraMembers[3].Offset = 100; cameraMembers[4].Offset = 108;
-	cameraMembers[0].DefString = ""; cameraMembers[1].DefString = ""; cameraMembers[2].DefString = " step=0.01 "; cameraMembers[3].DefString = ""; cameraMembers[4].DefString = "";
-	cameraType = TwDefineStruct("Camera", cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
+	m_cameraMembers[0].Name = "Projection"; m_cameraMembers[1].Name = "FoV"; m_cameraMembers[2].Name = "AspectRatio"; m_cameraMembers[3].Name = "NearPlane"; m_cameraMembers[4].Name = "FarPlane";
+	m_cameraMembers[0].Type = matrix4DType; m_cameraMembers[1].Type = angleType; m_cameraMembers[2].Type = TW_TYPE_FLOAT; m_cameraMembers[3].Type = TW_TYPE_FLOAT; m_cameraMembers[4].Type = TW_TYPE_FLOAT;
+	m_cameraMembers[0].Offset = 8; m_cameraMembers[1].Offset = 80; m_cameraMembers[2].Offset = 92; m_cameraMembers[3].Offset = 100; m_cameraMembers[4].Offset = 108;
+	m_cameraMembers[0].DefString = ""; m_cameraMembers[1].DefString = ""; m_cameraMembers[2].DefString = " step=0.01 "; m_cameraMembers[3].DefString = ""; m_cameraMembers[4].DefString = "";
+	m_cameraType = TwDefineStruct("Camera", m_cameraMembers, 5, sizeof(Rendering::Camera), NULL, NULL);
 
-	propertiesBar = TwNewBar("PropertiesBar");
-	TwAddVarRW(propertiesBar, "bgColor", TW_TYPE_COLOR3F, &m_backgroundColor, " label='Background color' ");
-	TwAddVarRW(propertiesBar, "currentCamera", TW_TYPE_UINT32, &currentCameraIndex, " label='Current camera' ");
-	TwAddVarRW(propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &m_applyFilterEnabled, " label='Apply filter' ");
-	TwAddVarRO(propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
-	TwAddVarRO(propertiesBar, "ambientLightDaytime", TW_TYPE_COLOR3F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
-	TwAddVarRO(propertiesBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR3F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
-	TwAddVarRO(propertiesBar, "ambientLightNighttime", TW_TYPE_COLOR3F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
-	TwAddVarRW(propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &m_ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
-	TwAddVarRW(propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &m_ambientLightFogColor, " label='Fog color' group='Ambient light' ");
-	TwAddVarRW(propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &m_ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
-	TwAddVarRW(propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &m_ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
-	TwAddVarRW(propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
-	TwAddVarRW(propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
-	TwAddVarRW(propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
-	//TwAddVarRW(propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
-	//TwAddVarRW(propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
-	TwAddVarRW(propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
-	TwAddVarRW(propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
-	TwAddVarRW(propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
+	m_propertiesBar = TwNewBar("PropertiesBar");
+	TwAddVarRW(m_propertiesBar, "bgColor", TW_TYPE_COLOR3F, &m_backgroundColor, " label='Background color' ");
+	TwAddVarRW(m_propertiesBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
+	TwAddVarRW(m_propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &m_applyFilterEnabled, " label='Apply filter' ");
+	TwAddVarRO(m_propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
+	TwAddVarRO(m_propertiesBar, "ambientLightDaytime", TW_TYPE_COLOR3F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
+	TwAddVarRO(m_propertiesBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR3F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
+	TwAddVarRO(m_propertiesBar, "ambientLightNighttime", TW_TYPE_COLOR3F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogEnabled", TW_TYPE_BOOLCPP, &m_ambientLightFogEnabled, " label='Fog enabled' group='Ambient light' ");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &m_ambientLightFogColor, " label='Fog color' group='Ambient light' ");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &m_ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &m_ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
+	TwAddVarRW(m_propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
+	TwAddVarRW(m_propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
+	TwAddVarRW(m_propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
+	//TwAddVarRW(m_propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
+	//TwAddVarRW(m_propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
+	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
 
-	TwSetParam(propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
-	TwSetParam(propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
+	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar finished");
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar");
-	cameraBar = TwNewBar("CamerasBar");
-	if (cameras.empty() || cameras[currentCameraIndex] == NULL)
+	m_cameraBar = TwNewBar("CamerasBar");
+	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL)
 	{
 		LOG(Error, LOGPLACE, "Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
 		
-		//TwAddVarRW(cameraBar, "cameraVar", cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
+		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
 		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
 		//TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera->GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
 	}
 	else
 	{
-		TwAddVarRW(cameraBar, "cameraVar", cameraType, cameras[currentCameraIndex], " label='Camera' group=Camera ");
+		TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType, m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
 		char cameraIndexStr[256];
 		char cameraDefStr[256];
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
-		TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", currentCameraIndex);
-		TwAddVarRW(cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &cameras[currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", m_currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", m_currentCameraIndex);
+		TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", m_currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", m_currentCameraIndex);
+		TwAddVarRW(m_cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &m_cameras[m_currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	}
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
-	TwSetParam(cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
+	TwSetParam(m_cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar finished");
 #endif
 
 #ifdef LIGHTS_TWEAK_BAR
 	//TODO: Doesn't work yet.
-	lightsBar = TwNewBar("LightsBar");
+	m_lightsBar = TwNewBar("LightsBar");
 	for (std::vector<BaseLight*>::iterator lightItr = lights.begin(); lightItr != lights.end(); ++lightItr)
 	{
 		m_currentLight = *lightItr;
@@ -1008,9 +1017,9 @@ void Renderer::InitializeTweakBars()
 #endif
 
 	//TwBar* altCameraBar = TwNewBar("AltCameraBar");
-	//TwAddVarRW(altCameraBar, "cameraVar", cameraType,  &altCamera, " label='Camera' group=Camera ");
-	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
-	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
+	//TwAddVarRW(altCameraBar, "cameraVar", m_cameraType,  &m_altCamera, " label='Camera' group=Camera ");
+	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &m_altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
+	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &m_altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
 	LOG(Debug, LOGPLACE, "Initializing rendering engine's tweak bars finished");
 }
@@ -1018,26 +1027,26 @@ void Renderer::InitializeTweakBars()
 void Renderer::CheckCameraIndexChange()
 {
 #ifdef CAMERA_TWEAK_BAR
-	if (cameras.empty() || previousFrameCameraIndex == currentCameraIndex)
+	if (m_cameras.empty() || m_previousFrameCameraIndex == m_currentCameraIndex)
 	{
 		return;
 	}
-	LOG(Notice, LOGPLACE, "Switched to camera #%d", this->currentCameraIndex + 1);
-	//LOG(Debug, LOGPLACE, "%s", cameras[this->currentCameraIndex]->ToString().c_str());
+	LOG(Notice, LOGPLACE, "Switched to camera #%d", m_currentCameraIndex + 1);
+	//LOG(Debug, LOGPLACE, "%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 
-	TwRemoveAllVars(cameraBar);
-	TwAddVarRW(cameraBar, "cameraVar", cameraType,  cameras[currentCameraIndex], " label='Camera' group=Camera ");
+	TwRemoveAllVars(m_cameraBar);
+	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
 	char cameraIndexStr[256];
 	char cameraDefStr[256];
-	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", currentCameraIndex);
-	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", currentCameraIndex);
-	TwAddVarRW(cameraBar, cameraIndexStr, vector3DType, &cameras[currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
-	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", currentCameraIndex);
-	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", currentCameraIndex);
-	//TwAddVarRW(cameraBar, cameraIndexStr, angleType, &tempAngle, cameraDefStr);
+	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", m_currentCameraIndex);
+	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", m_currentCameraIndex);
+	TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", m_currentCameraIndex);
+	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", m_currentCameraIndex);
+	//TwAddVarRW(m_cameraBar, cameraIndexStr, angleType, &tempAngle, cameraDefStr);
 	TwDefine(" CamerasBar/Camera opened=true ");
 
-	previousFrameCameraIndex = currentCameraIndex;
+	m_previousFrameCameraIndex = m_currentCameraIndex;
 #endif
 }
 #endif
