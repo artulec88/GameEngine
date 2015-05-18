@@ -7,10 +7,12 @@
 #include "Utility\Config.h"
 
 #include "Math\FloatingPoint.h"
+#include "Math\IStatisticsStorage.h"
 
 #include <ctime>
 #include <iomanip>
 #include <sstream>
+#include <iostream>
 //#include <GLFW\glfw3.h>
 
 using namespace Rendering;
@@ -70,8 +72,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_timeSum3(REAL_ZERO),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
-	m_isSamplingSpf(true),
-	m_secondsPerFrameStats(),
+	m_isSamplingSpf(false),
+	m_classStats(STATS("CoreEngine")),
+	m_stats(),
 #endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
 	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
@@ -79,6 +82,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
 	LOG(Notice, LOGPLACE, "Main application construction started");
+
+	START_PROFILING;
+
 	if (s_coreEngine != NULL)
 	{
 		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
@@ -98,6 +104,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	}
 	CalculateSunElevationAndAzimuth();
 
+	STOP_PROFILING;
+
 	LOG(Notice, LOGPLACE, "Main application construction finished");
 }
 
@@ -105,6 +113,26 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 CoreEngine::~CoreEngine(void)
 {
 	LOG(Debug, LOGPLACE, "Core engine destruction started");
+
+	/* ==================== Printing stats begin ==================== */
+#ifdef CALCULATE_STATS
+	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
+	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
+	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
+	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
+	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
+
+	//Math::Real minSpf, maxSpf, stdDevSpf;
+	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
+	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
+	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
+
+	PRINT_PROFILING_REPORT;
+#endif
+	/* ==================== Printing stats end ==================== */	
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
@@ -119,16 +147,19 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
+	START_PROFILING;
 	GLFWwindow* threadWindow = NULL;
 	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
 	//LOG(Utility::Debug, LOGPLACE, "Thread window address: %p", threadWindow);
 	m_renderer = new Renderer(window, threadWindow);
 
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
+	STOP_PROFILING;
 }
 
 void CoreEngine::Start()
 {
+	START_PROFILING;
 	if (m_isRunning)
 	{
 		LOG(Warning, LOGPLACE, "The core engine instance is already running");
@@ -146,10 +177,13 @@ void CoreEngine::Start()
 #endif
 
 	Run();
+	Stop();
+	STOP_PROFILING;
 }
 
 void CoreEngine::Stop()
 {
+	START_PROFILING;
 	if (!m_isRunning)
 	{
 		LOG(Warning, LOGPLACE, "The core engine instance is not running");
@@ -159,25 +193,6 @@ void CoreEngine::Stop()
 	m_isRunning = false;
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	LOG(Notice, LOGPLACE, "The core engine has stopped");
-	
-	/* ==================== Printing stats begin ==================== */
-#ifdef CALCULATE_STATS
-	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
-	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
-	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
-
-	//Math::Real minSpf, maxSpf, stdDevSpf;
-	Math::Real meanSpf = m_secondsPerFrameStats.CalculateMean(Math::Statistics::SPF);
-	Math::Real medianSpf = m_secondsPerFrameStats.CalculateMedian(Math::Statistics::SPF);
-	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_secondsPerFrameStats.Size(), meanSpf, medianSpf);
-	//LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nAverage SPF =\t%.3f [ms]\nMin SPF =\t%.3f [ms]\nMax SPF =\t%.3f [ms]\nStdDev SPF =\t%.3f [ms]", averageSpf, minSpf, maxSpf, stdDevSpf);
-#endif
-	/* ==================== Printing stats end ==================== */
 
 	// Just for checking whether time calculation is performed correctly
 	//LARGE_INTEGER frequency; // ticks per second
@@ -188,10 +203,12 @@ void CoreEngine::Stop()
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 	//LOG(Info, LOGPLACE, "Elapsed time = %f [us]", elapsedTime);
+	STOP_PROFILING;
 }
 
 void CoreEngine::Run()
 {
+	START_PROFILING;
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
@@ -258,7 +275,7 @@ void CoreEngine::Run()
 #ifdef CALCULATE_STATS
 			if (m_isSamplingSpf)
 			{
-				m_secondsPerFrameStats.Push(Math::Statistics::SPF, spf);
+				m_stats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
 			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
@@ -281,7 +298,7 @@ void CoreEngine::Run()
 			 */
 			if (m_renderer->IsCloseRequested())
 			{
-				Stop();
+				STOP_PROFILING;
 				return;
 			}
 			/* ==================== REGION #2_1 begin ====================*/

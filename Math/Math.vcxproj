@@ -80,6 +80,7 @@
     <ClInclude Include="Angle.h" />
     <ClInclude Include="FloatingPoint.h" />
     <ClInclude Include="ISort.h" />
+    <ClInclude Include="IStatisticsStorage.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
@@ -101,6 +102,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ISort.cpp" />
+    <ClCompile Include="IStatisticsStorage.cpp" />
     <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />

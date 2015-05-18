@@ -16,6 +16,8 @@
 #include "CubeShadowMap.h"
 
 #include "Math\Vector.h"
+#include "Math\Statistics.h"
+#include "Math\IStatisticsStorage.h"
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar\include\AntTweakBar.h"
@@ -45,7 +47,7 @@ public:
 	RENDERING_API Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
 	RENDERING_API virtual ~Renderer(void);
 private:
-	Renderer(const Renderer& renderer) : m_altCamera(Math::Matrix4D::Identity(), Transform()) {} // don't implement
+	Renderer(const Renderer& renderer) : m_altCamera(Math::Matrix4D::Identity(), Transform()), m_classStats(STATS("Renderer")) {} // don't implement
 	void operator=(const Renderer& renderer) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
@@ -57,17 +59,11 @@ public:
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 	RENDERING_API inline void SwapBuffers()
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_swapBuffersInvocationCount;
-#endif
 		glfwSwapBuffers(m_window);
 	}
 
 	RENDERING_API GLFWwindow* GetThreadWindow()
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getThreadWindowInvocationCount;
-#endif
 		return m_threadWindow;
 	}
 
@@ -80,49 +76,31 @@ public:
 	RENDERING_API inline void AddCamera(CameraBase* camera);
 	RENDERING_API inline const Lighting::BaseLight* GetCurrentLight() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getCurrentLightInvocationCount;
-#endif
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
 		return m_currentLight;
 	}
 	RENDERING_API inline const Lighting::PointLight* GetPointLight() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getPointLightInvocationCount;
-#endif
 		return m_pointLight;
 	}
 	//RENDERING_API inline const Lighting::SpotLight* GetSpotLight() const { return m_spotLight; }
 	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getAmbientDayLightInvocationCount;
-#endif
 		return m_ambientDaytimeColor;
 	}
 	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getAmbientNightLightInvocationCount;
-#endif
 		return m_ambientNighttimeColor;
 	}
 	
 	RENDERING_API inline CameraBase& GetCurrentCamera()
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getCurrentCameraInvocationCount;
-#endif
 		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return *m_currentCamera;
 	}
 
 	RENDERING_API unsigned int GetCurrentCameraIndex() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getCurrentCameraIndexInvocationCount;
-#endif
 		return m_currentCameraIndex;
 	}
 	RENDERING_API unsigned int NextCamera();
@@ -130,9 +108,6 @@ public:
 	RENDERING_API unsigned int SetCurrentCamera(unsigned int cameraIndex);
 	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_setCursorPosInvocationCount;
-#endif
 		glfwSetCursorPos(m_window, xPos, yPos);
 	}
 	
@@ -146,17 +121,11 @@ public:
 
 	RENDERING_API inline bool IsCloseRequested() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_isCloseRequestedInvocationCount;
-#endif
 		return glfwWindowShouldClose(m_window) != 0;
 	}
 
 	RENDERING_API inline Math::Matrix4D GetLightMatrix() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_getLightMatrixInvocationCount;
-#endif
 		return m_lightMatrix;
 	}
 
@@ -164,9 +133,6 @@ public:
 
 	void RequestWindowClose() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_requestWindowCloseInvocationCount;
-#endif
 		glfwSetWindowShouldClose(m_window, GL_TRUE);
 	}
 	void RegisterTerrainNode(GameNode* terrainNode);
@@ -181,9 +147,6 @@ protected:
 
 	inline void ClearScreen() const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_clearScreen1InvocationCount;
-#endif
 		if (m_ambientLightFogEnabled)
 		{
 			Math::Vector3D fogColor = m_ambientLightFogColor * m_ambientLight;
@@ -197,18 +160,12 @@ protected:
 	}
 	inline void ClearScreen(const Color& clearColor) const
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_clearScreen2InvocationCount;
-#endif
 		glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	inline void SetSamplerSlot(const std::string& name, unsigned int value)
 	{
-#ifdef COUNT_EACH_METHOD_INVOCATION
-		++m_setSamplerSlotInvocationCount;
-#endif
 		m_samplerMap[name] = value;
 	}
 private:
@@ -308,48 +265,8 @@ private:
 	TwType m_cameraType;
 #endif
 
-#ifdef COUNT_EACH_METHOD_INVOCATION
-	mutable unsigned int m_addCameraInvocationCount;
-	mutable unsigned int m_addLightInvocationCount;
-	mutable unsigned int m_adjustAmbientLightAccordingToCurrentTimeInvocationCount;
-	mutable unsigned int m_applyFilterInvocationCount;
-	mutable unsigned int m_bindAsRenderTargetInvocationCount;
-	mutable unsigned int m_bindCubeShadowMapInvocationCount;
-	mutable unsigned int m_blurShadowMapInvocationCount;
-	mutable unsigned int m_checkCameraIndexChangeInvocationCount;
-	mutable unsigned int m_clearScreen1InvocationCount;
-	mutable unsigned int m_clearScreen2InvocationCount;
-	mutable unsigned int m_getAmbientDayLightInvocationCount;
-	mutable unsigned int m_getAmbientNightLightInvocationCount;
-	mutable unsigned int m_getCurrentCameraInvocationCount;
-	mutable unsigned int m_getCurrentCameraIndexInvocationCount;
-	mutable unsigned int m_getCurrentLightInvocationCount;
-	mutable unsigned int m_getLightMatrixInvocationCount;
-	mutable unsigned int m_getPointLightInvocationCount;
-	mutable unsigned int m_getSamplerSlotInvocationCount;
-	mutable unsigned int m_getThreadWindowInvocationCount;
-	mutable unsigned int m_initializeCubeMapInvocationCount;
-	mutable unsigned int m_initializeCubeMapTextureInvocationCount;
-	mutable unsigned int m_initializeTweakBarsInvocationCount;
-	mutable unsigned int m_isCloseRequestedInvocationCount;
-	mutable unsigned int m_nextCameraInvocationCount;
-	mutable unsigned int m_prevCameraInvocationCount;
-	mutable unsigned int m_printGLReportInvocationCount;
-	mutable unsigned int m_registerTerrainNodeInvocationCount;
-	mutable unsigned int m_renderInvocationCount;
-	mutable unsigned int m_renderLoadingScreenInvocationCount;
-	mutable unsigned int m_renderMainMenuInvocationCount;
-	mutable unsigned int m_renderSceneWithAmbientLightInvocationCount;
-	mutable unsigned int m_renderSceneWithLightInvocationCount;
-	mutable unsigned int m_renderSceneWithPointLightsInvocationCount;
-	mutable unsigned int m_renderSkyboxInvocationCount;
-	mutable unsigned int m_requestWindowCloseInvocationCount;
-	mutable unsigned int m_setCallbacksInvocationCount;
-	mutable unsigned int m_setCurrentCameraInvocationCount;
-	mutable unsigned int m_setCursorPosInvocationCount;
-	mutable unsigned int m_setSamplerSlotInvocationCount;
-	mutable unsigned int m_swapBuffersInvocationCount;
-	mutable unsigned int m_updateUniformStructInvocationCount;
+#ifdef CALCULATE_STATS
+	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Renderer */

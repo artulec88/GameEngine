@@ -29,7 +29,6 @@
 
 #define DRAW_GAME_TIME
 
-#define CALCULATE_STATS
 //#endif
 
 namespace Rendering
@@ -178,7 +177,8 @@ protected:
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;
 	mutable bool m_isSamplingSpf;
-	mutable Math::Statistics::Stats<Math::Real> m_secondsPerFrameStats;
+	mutable Math::Statistics::ClassStats& m_classStats;
+	mutable Math::Statistics::Stats<Math::Real> m_stats;
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
