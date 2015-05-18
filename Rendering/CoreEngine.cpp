@@ -275,6 +275,10 @@ void CoreEngine::Run()
 		{
 			//previousTime = GetTime();
 			isRenderRequired = true;
+			/**
+			 *TODO: The function IsCloseRequested() is called thousand times before actually returning true and closing the application.
+			 * Instead we should only check it from time to time or maybe only in some specific game states (e.g. PlayMenuGameState)
+			 */
 			if (m_renderer->IsCloseRequested())
 			{
 				Stop();
