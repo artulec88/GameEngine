@@ -278,47 +278,57 @@ Renderer::~Renderer(void)
 	glfwTerminate(); // Terminate GLFW
 
 #ifdef COUNT_EACH_METHOD_INVOCATION
-	LOG(Utility::Info, LOGPLACE, "Renderer::AddCamera invocations count = %d", m_addCameraInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::AddLight invocations count = %d", m_addLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::AdjustAmbientLightAccordingToCurrentTime invocations count = %d", m_adjustAmbientLightAccordingToCurrentTimeInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::ApplyFilter invocations count = %d", m_applyFilterInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::BindAsRenderTarget invocations count = %d", m_bindAsRenderTargetInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::BindCubeShadowMap invocations count = %d", m_bindCubeShadowMapInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::BlurShadowMap invocations count = %d", m_blurShadowMapInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::CheckCameraIndexChange invocations count = %d", m_checkCameraIndexChangeInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::ClearScreen1 invocations count = %d", m_clearScreen1InvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::ClearScreen2 invocations count = %d", m_clearScreen2InvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetAmbientDayLight invocations count = %d", m_getAmbientDayLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetAmbientNightLight invocations count = %d", m_getAmbientNightLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentCamera invocations count = %d", m_getCurrentCameraInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentCameraIndex invocations count = %d", m_getCurrentCameraIndexInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentLight invocations count = %d", m_getCurrentLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetLightMatrix invocations count = %d", m_getLightMatrixInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetPointLight invocations count = %d", m_getPointLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetSamplerSlot invocations count = %d", m_getSamplerSlotInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::GetThreadWindow invocations count = %d", m_getThreadWindowInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeCubeMap invocations count = %d", m_initializeCubeMapInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeCubeMapTexture invocations count = %d", m_initializeCubeMapTextureInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeTweakBars invocations count = %d", m_initializeTweakBarsInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::IsCloseRequested invocations count = %d", m_isCloseRequestedInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::NextCamera invocations count = %d", m_nextCameraInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::PrevCamera invocations count = %d", m_prevCameraInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::PrintGLReport invocations count = %d", m_printGLReportInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RegisterTerrainNode invocations count = %d", m_registerTerrainNodeInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::Render invocations count = %d", m_renderInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderLoadingScreen invocations count = %d", m_renderLoadingScreenInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderMainMenu invocations count = %d", m_renderMainMenuInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithAmbientLight invocations count = %d", m_renderSceneWithAmbientLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithLight invocations count = %d", m_renderSceneWithLightInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithPointLights invocations count = %d", m_renderSceneWithPointLightsInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSkybox invocations count = %d", m_renderSkyboxInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::RequestWindowClose invocations count = %d", m_requestWindowCloseInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::SetCallbacks invocations count = %d", m_setCallbacksInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::SetCurrentCamera invocations count = %d", m_setCurrentCameraInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::SetCursorPos invocations count = %d", m_setCursorPosInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::SetSamplerSlot invocations count = %d", m_setSamplerSlotInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::SwapBuffers invocations count = %d", m_swapBuffersInvocationCount);
-	LOG(Utility::Info, LOGPLACE, "Renderer::UpdateUniformStruct invocations count = %d", m_updateUniformStructInvocationCount);
+	unsigned int invocationsSum = m_addCameraInvocationCount + m_addLightInvocationCount + m_adjustAmbientLightAccordingToCurrentTimeInvocationCount +
+		m_applyFilterInvocationCount + m_bindAsRenderTargetInvocationCount + m_bindCubeShadowMapInvocationCount + m_blurShadowMapInvocationCount +
+		m_checkCameraIndexChangeInvocationCount + m_clearScreen1InvocationCount + m_clearScreen2InvocationCount + m_getAmbientDayLightInvocationCount +
+		m_getAmbientNightLightInvocationCount + m_getCurrentCameraInvocationCount + m_getCurrentCameraIndexInvocationCount + m_getCurrentLightInvocationCount +
+		m_getLightMatrixInvocationCount + m_getPointLightInvocationCount + m_getSamplerSlotInvocationCount + m_getThreadWindowInvocationCount +
+		m_initializeCubeMapInvocationCount + m_initializeCubeMapTextureInvocationCount + m_initializeTweakBarsInvocationCount + m_isCloseRequestedInvocationCount +
+		m_nextCameraInvocationCount + m_prevCameraInvocationCount + m_printGLReportInvocationCount + m_registerTerrainNodeInvocationCount + m_renderInvocationCount +
+		m_renderLoadingScreenInvocationCount + m_renderMainMenuInvocationCount + m_renderSceneWithAmbientLightInvocationCount + m_renderSceneWithLightInvocationCount +
+		m_renderSceneWithPointLightsInvocationCount + m_renderSkyboxInvocationCount + m_requestWindowCloseInvocationCount + m_setCallbacksInvocationCount +
+		m_setCurrentCameraInvocationCount + m_setCursorPosInvocationCount + m_setSamplerSlotInvocationCount + m_swapBuffersInvocationCount + m_updateUniformStructInvocationCount;
+	LOG(Utility::Info, LOGPLACE, "Renderer::AddCamera invocations count = %d (%.1f%%)", m_addCameraInvocationCount, static_cast<float>(100.0f * m_addCameraInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::AddLight invocations count = %d (%.1f%%)", m_addLightInvocationCount, static_cast<float>(100.0f * m_addLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::AdjustAmbientLightAccordingToCurrentTime invocations count = %d (%.1f%%)", m_adjustAmbientLightAccordingToCurrentTimeInvocationCount, static_cast<float>(100.0f * m_adjustAmbientLightAccordingToCurrentTimeInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::ApplyFilter invocations count = %d (%.1f%%)", m_applyFilterInvocationCount, static_cast<float>(100.0f * m_applyFilterInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::BindAsRenderTarget invocations count = %d (%.1f%%)", m_bindAsRenderTargetInvocationCount, static_cast<float>(100.0f * m_bindAsRenderTargetInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::BindCubeShadowMap invocations count = %d (%.1f%%)", m_bindCubeShadowMapInvocationCount, static_cast<float>(100.0f * m_bindCubeShadowMapInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::BlurShadowMap invocations count = %d (%.1f%%)", m_blurShadowMapInvocationCount, static_cast<float>(100.0f * m_blurShadowMapInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::CheckCameraIndexChange invocations count = %d (%.1f%%)", m_checkCameraIndexChangeInvocationCount, static_cast<float>(100.0f * m_checkCameraIndexChangeInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::ClearScreen1 invocations count = %d (%.1f%%)", m_clearScreen1InvocationCount, static_cast<float>(100.0f * m_clearScreen1InvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::ClearScreen2 invocations count = %d (%.1f%%)", m_clearScreen2InvocationCount, static_cast<float>(100.0f * m_clearScreen2InvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetAmbientDayLight invocations count = %d (%.1f%%)", m_getAmbientDayLightInvocationCount, static_cast<float>(100.0f * m_getAmbientDayLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetAmbientNightLight invocations count = %d (%.1f%%)", m_getAmbientNightLightInvocationCount, static_cast<float>(100.0f * m_getAmbientNightLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentCamera invocations count = %d (%.1f%%)", m_getCurrentCameraInvocationCount, static_cast<float>(100.0f * m_getCurrentCameraInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentCameraIndex invocations count = %d (%.1f%%)", m_getCurrentCameraIndexInvocationCount, static_cast<float>(100.0f * m_getCurrentCameraIndexInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetCurrentLight invocations count = %d (%.1f%%)", m_getCurrentLightInvocationCount, static_cast<float>(100.0f * m_getCurrentLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetLightMatrix invocations count = %d (%.1f%%)", m_getLightMatrixInvocationCount, static_cast<float>(100.0f * m_getLightMatrixInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetPointLight invocations count = %d (%.1f%%)", m_getPointLightInvocationCount, static_cast<float>(100.0f * m_getPointLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetSamplerSlot invocations count = %d (%.1f%%)", m_getSamplerSlotInvocationCount, static_cast<float>(100.0f * m_getSamplerSlotInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::GetThreadWindow invocations count = %d (%.1f%%)", m_getThreadWindowInvocationCount, static_cast<float>(100.0f * m_getThreadWindowInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeCubeMap invocations count = %d (%.1f%%)", m_initializeCubeMapInvocationCount, static_cast<float>(100.0f * m_initializeCubeMapInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeCubeMapTexture invocations count = %d (%.1f%%)", m_initializeCubeMapTextureInvocationCount, static_cast<float>(100.0f * m_initializeCubeMapTextureInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::InitializeTweakBars invocations count = %d (%.1f%%)", m_initializeTweakBarsInvocationCount, static_cast<float>(100.0f * m_initializeTweakBarsInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::IsCloseRequested invocations count = %d (%.1f%%)", m_isCloseRequestedInvocationCount, static_cast<float>(100.0f * m_isCloseRequestedInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::NextCamera invocations count = %d (%.1f%%)", m_nextCameraInvocationCount, static_cast<float>(100.0f * m_nextCameraInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::PrevCamera invocations count = %d (%.1f%%)", m_prevCameraInvocationCount, static_cast<float>(100.0f * m_prevCameraInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::PrintGLReport invocations count = %d (%.1f%%)", m_printGLReportInvocationCount, static_cast<float>(100.0f * m_printGLReportInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RegisterTerrainNode invocations count = %d (%.1f%%)", m_registerTerrainNodeInvocationCount, static_cast<float>(100.0f * m_registerTerrainNodeInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::Render invocations count = %d (%.1f%%)", m_renderInvocationCount, static_cast<float>(100.0f * m_renderInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderLoadingScreen invocations count = %d (%.1f%%)", m_renderLoadingScreenInvocationCount, static_cast<float>(100.0f * m_renderLoadingScreenInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderMainMenu invocations count = %d (%.1f%%)", m_renderMainMenuInvocationCount, static_cast<float>(100.0f * m_renderMainMenuInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithAmbientLight invocations count = %d (%.1f%%)", m_renderSceneWithAmbientLightInvocationCount, static_cast<float>(100.0f * m_renderSceneWithAmbientLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithLight invocations count = %d (%.1f%%)", m_renderSceneWithLightInvocationCount, static_cast<float>(100.0f * m_renderSceneWithLightInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSceneWithPointLights invocations count = %d (%.1f%%)", m_renderSceneWithPointLightsInvocationCount, static_cast<float>(100.0f * m_renderSceneWithPointLightsInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RenderSkybox invocations count = %d (%.1f%%)", m_renderSkyboxInvocationCount, static_cast<float>(100.0f * m_renderSkyboxInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::RequestWindowClose invocations count = %d (%.1f%%)", m_requestWindowCloseInvocationCount, static_cast<float>(100.0f * m_requestWindowCloseInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::SetCallbacks invocations count = %d (%.1f%%)", m_setCallbacksInvocationCount, static_cast<float>(100.0f * m_setCallbacksInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::SetCurrentCamera invocations count = %d (%.1f%%)", m_setCurrentCameraInvocationCount, static_cast<float>(100.0f * m_setCurrentCameraInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::SetCursorPos invocations count = %d (%.1f%%)", m_setCursorPosInvocationCount, static_cast<float>(100.0f * m_setCursorPosInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::SetSamplerSlot invocations count = %d (%.1f%%)", m_setSamplerSlotInvocationCount, static_cast<float>(100.0f * m_setSamplerSlotInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::SwapBuffers invocations count = %d (%.1f%%)", m_swapBuffersInvocationCount, static_cast<float>(100.0f * m_swapBuffersInvocationCount) / invocationsSum);
+	LOG(Utility::Info, LOGPLACE, "Renderer::UpdateUniformStruct invocations count = %d (%.1f%%)", m_updateUniformStructInvocationCount, static_cast<float>(100.0f * m_updateUniformStructInvocationCount) / invocationsSum);
 #endif
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
