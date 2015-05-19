@@ -218,7 +218,8 @@ ClassStats::~ClassStats()
 
 void ClassStats::StartProfiling(const char* methodName)
 {
-	LOG(Utility::Critical, LOGPLACE, "Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.", m_className, methodName, m_profilingMethodsCount);
+	//LOG(Utility::Debug, LOGPLACE, "Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.",
+	//	m_className, methodName, m_profilingMethodsCount);
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }

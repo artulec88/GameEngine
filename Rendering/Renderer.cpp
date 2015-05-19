@@ -201,6 +201,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 Renderer::~Renderer(void)
 {
 	LOG(Notice, LOGPLACE, "Destroying rendering engine...");
+	START_PROFILING;
 	
 	glDeleteVertexArrays(1, &m_vao);
 
@@ -239,6 +240,7 @@ Renderer::~Renderer(void)
 #endif
 	glfwTerminate(); // Terminate GLFW
 
+	STOP_PROFILING;
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 
@@ -257,6 +259,7 @@ void Renderer::SetCallbacks()
 
 void Renderer::InitializeCubeMap()
 {
+	START_PROFILING;
 	std::string cubeMapDayDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
 	m_skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
@@ -273,6 +276,7 @@ void Renderer::InitializeCubeMap()
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_skyboxNode->GetTransform().SetScale(5.0f);
 	m_skyboxShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
+	STOP_PROFILING;
 }
 
 Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
