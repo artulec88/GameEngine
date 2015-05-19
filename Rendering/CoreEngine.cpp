@@ -132,7 +132,7 @@ CoreEngine::~CoreEngine(void)
 	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
 
 	QueryPerformanceCounter(&m_coreEngineStopTimer);
-	Math::Real totalElapsedTime = static_cast<Math::Real>((t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [s]
+	Math::Real totalElapsedTime = static_cast<Math::Real>((m_coreEngineStopTimer.QuadPart - m_coreEngineStartTimer.QuadPart)) / m_frequency.QuadPart; // in [s]
 	STATS_STORAGE.PrintReport(totalElapsedTime);
 #endif
 	/* ==================== Printing stats end ==================== */	

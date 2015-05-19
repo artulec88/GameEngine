@@ -69,22 +69,25 @@ public:
 	void Push(Math::Real sample);
 	
 	Math::Real CalculateMean() const;
-	Math::Real CalculateMedian();
+	Math::Real CalculateMedian() const;
 	
-	void StartProfiling();
+	void StartProfiling(bool isNestedWithinAnotherProfiledMethod);
 	void StopProfiling();
 
 	Math::Real GetTotalTime() const { return m_totalTime; }
+	Math::Real GetTotalTimeWithoutNestedStats() const;
 	int GetInvocationsCount() const { return m_invocationsCount; }
 	bool IsProfiling() const { return m_isProfiling; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	std::vector<Math::Real> m_timeSamples;
+	/// <summary> Time samples stored along with the information whether the method has been nested within another method in the same class. </summary>
+	std::vector<std::pair<bool, Math::Real>> m_timeSamples;
 	Math::Real m_totalTime;
 	int m_invocationsCount;
 	bool m_isProfiling;
+	bool m_isNestedWithinAnotherProfiledMethod;
 	LARGE_INTEGER m_startTimer;
 	LARGE_INTEGER m_frequency; // TODO: Probably unnecessary to store this information in every MethodStats instance
 /* ==================== Non-static member variables end ==================== */
@@ -126,6 +129,13 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	const char* m_className;
+
+	/// <summary> The number of methods which are currently being profiled within the class </summary>
+	/// When equal to zero we know that no class method is currently running.
+	/// When bigger than zero we know that there is some nesting involved, i.e. class A is running its method A1
+	/// and A::A1 started the A::A2 method. If both A1 and A2 are enabled for profiling then we should only store the A::A1
+	/// running time in the class A total time calculation.
+	unsigned int m_profilingMethodsCount;
 	std::map<const char*, MethodStats> m_methodsStats;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ClassStats */
