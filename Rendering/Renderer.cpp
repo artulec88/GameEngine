@@ -103,7 +103,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_cameraType()
 #endif
 #ifdef CALCULATE_STATS
-	,m_classStats(STATS("Renderer"))
+	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {
 	LOG(Info, LOGPLACE, "Creating Renderer instance started");
@@ -239,7 +239,6 @@ Renderer::~Renderer(void)
 #endif
 	glfwTerminate(); // Terminate GLFW
 
-	PRINT_PROFILING_REPORT;
 	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
 }
 

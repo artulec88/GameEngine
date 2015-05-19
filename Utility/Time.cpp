@@ -5,34 +5,19 @@
 #include <sstream>
 #include <limits>
 
-using namespace Utility;
+using namespace Utility::Time;
 using namespace std;
 
-#ifdef INFINITE
-#undef INFINITE
-#endif
-#define INFINITE (1000001)
-#define DISABLED (1000002)
-
-const Time Time::Infinite(0, INFINITE);
-const Time Time::Disabled(0, DISABLED);
-const Time Time::Short(0, 100);
-
-Time::Time() :
-	seconds(0),
-	micros(0)
+Time::Time(float time) :
+	m_time(time),
+	m_timeUnit(MILISECONDS)
 {
 }
 
-Time::Time(int seconds, int micros) :
-	seconds(seconds),
-	micros(micros)
+Time::Time(float time, TimeUnit timeUnit) :
+	m_time(time),
+	m_timeUnit(timeUnit)
 {
-}
-
-Time::Time(double value)
-{
-	operator=(value);
 }
 
 Time::~Time()
@@ -44,154 +29,67 @@ double Time::ToReal() const
 	return seconds + static_cast<double>(micros) / 1000000;
 }
 
-int Time::Signum(const Time &arg) const
-{
-	if (arg.seconds > seconds) return 1;
-	if (arg.seconds < seconds) return -1;
-
-	if (arg.micros > micros) return 1;
-	if (arg.micros < micros) return -1;
-
-	return 0;
-
-}
-
-void Time::Reset()
-{
-	seconds = 0;
-	micros = 0;
-}
-
-bool Time::IsInfinite() const
-{
-	return micros == INFINITE;
-}
-
-bool Time::IsDisabled() const
-{
-	return micros == DISABLED; 
-}
-
-void Time::MakeDisabled()
-{
-	micros = INFINITE;
-}
-
-void Time::MakeInfinite()
-{
-	micros = DISABLED;
-}
-
 bool Time::operator==(const Time &arg) const
 {
-	return Signum(arg) == 0;
+	return false;
 }
 
 bool Time::operator!=(const Time &arg) const
 {
-	return Signum(arg) != 0;
+	return true;
 }
 
 bool Time::operator<(const Time &arg) const
 {
-	return Signum(arg) == 1;
+	return false;
 }
 
 bool Time::operator>(const Time &arg) const
 {
-	return Signum(arg) == -1;
+	return false;
 }
 
 bool Time::operator<=(const Time &arg) const
 {
-	return Signum(arg) >= 0;
+	return false;
 }
 
 bool Time::operator>=(const Time &arg) const
 {
-	return Signum(arg) <= 0;
+	return false;
 }
 
 Time Time::operator+(const Time &arg) const
 {
 	Time result;
-	if (IsDisabled() || IsDisabled())
+	result.seconds = seconds + arg.seconds;
+	result.micros = micros + arg.micros;
+	if (result.micros >= 1000000)
 	{
-		result.MakeDisabled();
-	}
-	else if (IsInfinite() || arg.IsInfinite())
-	{
-		result.MakeInfinite();
-	}
-	else
-	{
-		result.seconds = seconds + arg.seconds;
-		result.micros = micros + arg.micros;
-		if (result.micros >= 1000000)
-		{
-			result.micros -= 1000000;
-			result.seconds++;
-		}
+		result.micros -= 1000000;
+		result.seconds++;
 	}
 
-	return result;	
+	return result;
 }
 
 
 Time Time::operator-(const Time &arg) const
 {
 	Time result;
-	if (IsDisabled() || IsDisabled())
+	result.seconds = seconds - arg.seconds;
+	result.micros = micros - arg.micros;
+	if (result.micros < 0)
 	{
-		result.MakeDisabled();
-	}
-	else if (IsInfinite() || arg.IsInfinite())
-	{
-		result.MakeInfinite();
-	}
-	else
-	{
-		result.seconds = seconds - arg.seconds;
-		result.micros = micros - arg.micros;
-		if (result.micros < 0)
-		{
-			result.micros += 1000000;
-			result.seconds--;
-		}
+		result.micros += 1000000;
+		result.seconds--;
 	}
 
 	return result;	
 
 }
 
-Time Time::Now()
-{
-	//struct timespec time;
-	//clock_gettime(CLOCK_REALTIME, &time);
-	//return Time(time.tv_sec, time.tv_nsec / 1000);
-
-	SYSTEMTIME st;
-	GetSystemTime(&st);
-	return Time(st.wSecond, st.wMilliseconds);
-}
-
-Time Time::Eternity()
-{
-	return Time(INT_MAX, 0);
-	//return Time(2000000000, 0);
-}
-
-Time Time::Chaos()
-{
-	return Time(0, 0);
-}
-
-Time Time::Second()
-{
-	return Time(1, 0);
-}
-
-const Time& Time::operator=(double value)
+const Time& Time::operator=(float value)
 {
 	seconds = (int)value;
 	micros = (int)((value - seconds) * 1000000);

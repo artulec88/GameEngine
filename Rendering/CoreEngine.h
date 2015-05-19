@@ -174,6 +174,8 @@ protected:
 	MinMaxTime m_minMaxTime3;
 	double m_timeSum3;
 
+	LARGE_INTEGER m_coreEngineStartTimer, m_coreEngineStopTimer, m_frequency;
+
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;
 	mutable bool m_isSamplingSpf;

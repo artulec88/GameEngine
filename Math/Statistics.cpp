@@ -199,12 +199,34 @@ void ClassStats::StopProfiling(const char* methodName)
 	m_methodsStats[methodName].StopProfiling();
 }
 
-void ClassStats::PrintReport() const
+void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */) const
 {
 	static const Math::Real ONE_THOUSAND = 1000.0f;
 	static const Math::Real ONE_MILION = 1000000.0f;
 
 	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
+	Math::Real classTotalTime = REAL_ZERO;
+	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	{
+		classTotalTime += methodStatsItr->second.GetTotalTime();
+	}
+	if (classTotalTime > ONE_THOUSAND)
+	{
+		if (classTotalTime > ONE_MILION)
+		{
+			LOG(Utility::Info, LOGPLACE, "\tClass total time: %.3f [s]", classTotalTime / ONE_MILION);
+		}
+		else
+		{
+			LOG(Utility::Info, LOGPLACE, "\tClass total time: %.3f [ms]", classTotalTime / ONE_THOUSAND);
+		}
+	}
+	else
+	{
+		LOG(Utility::Info, LOGPLACE, "\tTotal time: %.3f [us]", classTotalTime);
+	}
+	LOG(Utility::Info, LOGPLACE, "\tApplication usage: %.3f%%", 100.0f * classTotalTime / (ONE_MILION * totalElapsedTime));
+
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		LOG(Utility::Info, LOGPLACE, "\tMethod: \"%s\"", methodStatsItr->first);
@@ -244,6 +266,8 @@ void ClassStats::PrintReport() const
 			LOG(Utility::Info, LOGPLACE, "\t\tAverage time: %.3f [us]", meanTime);
 		}
 		
+		LOG(Utility::Info, LOGPLACE, "\t\tClass usage: %.3f%%", 100.0f * totalTime / classTotalTime);
+		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.3f%%", 100.0f * totalTime / totalElapsedTime);
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 	}

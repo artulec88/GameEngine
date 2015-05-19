@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-#define STATS(className) Math::Statistics::IStatisticsStorage::GetStatisticsStorage().GetClassStats(className)
+#define STATS_STORAGE Math::Statistics::IStatisticsStorage::GetStatisticsStorage()
 
 namespace Math { namespace Statistics
 {
@@ -38,6 +38,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	MATH_API ClassStats& GetClassStats(const char* className);
+	MATH_API void PrintReport(Math::Real totalElapsedSeconds) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

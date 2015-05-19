@@ -5,34 +5,38 @@
 #include <time.h>
 #include <string>
 
-namespace Utility
+namespace Utility namespace Time
 {
+	enum TimeUnit
+	{
+		MINUTES = 0,
+		SECONDS = 1,
+		MILISECONDS = 2,
+		MICROSECONDS = 3,
+		NANOSECONDS = 4
+	};
+
+	const char* timeUnitStr[] = 
+	{
+		"[m]",
+		"[s]",
+		"[ms]",
+		"[us]",
+		"[ns]",
+		NULL
+	};
+
 	class UTILITY_API Time// : public ISerializable
 	{
-	public:
-		int seconds;
-		int micros;
 	public: // constructors destructors
-		Time();
-		Time(int seconds, int micros);
-		Time(double value);
+		explicit Time(float time);
+		Time(float time, TimeUnit timeUnit);
 		~Time();
-	public: /* static methods variables */
-		static Time Now();
-		static Time Eternity();
-		static Time Chaos();
-		static Time Second();
-
-		static const Time Infinite;
-		static const Time Disabled;
-		static const Time Short;
 	public:
-		double ToReal() const;
+		float ToReal() const;
 
 		Time operator+(const Time &arg) const;
 		Time operator-(const Time &arg) const;
-			
-		int Signum(const Time &arg) const;
 		void Reset();
 
 		bool operator<(const Time &arg) const;
@@ -45,12 +49,13 @@ namespace Utility
 		const Time &operator=(double value);
 		const Time &operator=(const Time &t);
 
-		bool IsInfinite() const;
-		bool IsDisabled() const;
-		void MakeInfinite();
-		void MakeDisabled();
-
 		std::string ToString() const;
 		std::string ToDateString(const char *format = "%Y-%m-%d %H:%M:%S") const;
+	public:
+		float m_time;
+		TimeUnit m_timeUnit;
 	};
-} /* end namespace Utils */
+
+} /* end namespace Time */
+
+} /* end namespace Utility */

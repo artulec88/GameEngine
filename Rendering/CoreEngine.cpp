@@ -73,7 +73,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
 	m_isSamplingSpf(false),
-	m_classStats(STATS("CoreEngine")),
+	m_classStats(STATS_STORAGE.GetClassStats("CoreEngine")),
 	m_stats(),
 #endif
 	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
@@ -82,7 +82,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
 	LOG(Notice, LOGPLACE, "Main application construction started");
-
+	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
+	QueryPerformanceCounter(&m_coreEngineStartTimer);
 	START_PROFILING;
 
 	if (s_coreEngine != NULL)
@@ -130,7 +131,9 @@ CoreEngine::~CoreEngine(void)
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
 	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
 
-	PRINT_PROFILING_REPORT;
+	QueryPerformanceCounter(&m_coreEngineStopTimer);
+	Math::Real totalElapsedTime = static_cast<Math::Real>((t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [s]
+	STATS_STORAGE.PrintReport(totalElapsedTime);
 #endif
 	/* ==================== Printing stats end ==================== */	
 
