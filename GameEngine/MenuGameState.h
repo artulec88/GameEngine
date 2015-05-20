@@ -55,6 +55,9 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	Rendering::MenuEntry* m_currentMenuEntry;
+#ifdef CALCULATE_STATS
+	mutable Math::Statistics::ClassStats& m_classStats;
+#endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MenuGameState */
 

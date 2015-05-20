@@ -72,6 +72,9 @@ protected:
 	Rendering::GameNode** cameraNodes;
 	bool m_heightMapCalculationEnabled;
 	//Rendering::GameNode* castleNode;
+#ifdef CALCULATE_STATS
+	mutable Math::Statistics::ClassStats& m_classStats;
+#endif
 
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TestGameManager */

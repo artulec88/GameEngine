@@ -8,6 +8,9 @@ using namespace Rendering;
 
 IntroGameState::IntroGameState(void) :
 	GameState()
+#ifdef CALCULATE_STATS
+	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
+#endif
 {
 }
 
@@ -37,6 +40,7 @@ void IntroGameState::Revealed()
 
 void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
+	START_PROFILING;
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
@@ -49,14 +53,19 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 		LOG(Utility::Info, LOGPLACE, "To skip the intro you have to double-click ESC button");
 		break;
 	}
+	STOP_PROFILING;
 }
 
 void IntroGameState::Input(Math::Real elapsedTime)
 {
+	START_PROFILING;
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state input processing");
+	STOP_PROFILING;
 }
 
 void IntroGameState::Render(Renderer* renderer)
 {
+	START_PROFILING;
 	LOG(Utility::Debug, LOGPLACE, "INTRO game state rendering");
+	STOP_PROFILING;
 }

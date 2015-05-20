@@ -49,6 +49,9 @@ TestGameManager::TestGameManager() :
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
+#ifdef CALCULATE_STATS
+	,m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
+#endif
 {
 	LOG(Debug, LOGPLACE, "TestGame is being constructed");
 
@@ -78,6 +81,7 @@ Math::Real TestGameManager::GetLoadingProgress() const
 void TestGameManager::Load()
 {
 	LOG(Notice, LOGPLACE, "Initalizing test game");
+	START_PROFILING;
 	CHECK_CONDITION_RETURN_ALWAYS(!m_isGameLoaded, Error, "Loading the game will not be performed. The game has already been loaded.");
 
 	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
@@ -236,11 +240,13 @@ void TestGameManager::Load()
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_EXIT_ALWAYS(m_isGameLoaded, Critical, "The game has not been loaded properly.");
+	STOP_PROFILING;
 	LOG(Notice, LOGPLACE, "Initalizing test game finished");
 }
 
 void TestGameManager::AddLights()
 {
+	START_PROFILING;
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
@@ -262,6 +268,7 @@ void TestGameManager::AddLights()
 	{
 		LOG(Notice, LOGPLACE, "Spot lights disabled");
 	}
+	STOP_PROFILING;
 }
 
 void TestGameManager::AddDirectionalLight()
@@ -327,6 +334,7 @@ void TestGameManager::AddSpotLights()
 
 void TestGameManager::AddCameras()
 {
+	START_PROFILING;
 	if (cameraCount < 1)
 	{
 		LOG(Error, LOGPLACE, "No cameras defined.");
@@ -381,6 +389,7 @@ void TestGameManager::AddCameras()
 		AddToSceneRoot(cameraNodes[i]);
 	}
 	LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
+	STOP_PROFILING;
 }
 
 //
@@ -391,7 +400,9 @@ void TestGameManager::AddCameras()
 
 void TestGameManager::Input(Real delta)
 {
+	START_PROFILING;
 	m_gameStateManager->Input(delta);
+	STOP_PROFILING;
 }
 
 // TODO: Remove in the future
@@ -400,7 +411,9 @@ bool isMouseLocked = false;
 
 void TestGameManager::Update(Real delta)
 {
+	START_PROFILING;
 	m_gameStateManager->Update(delta);
+	STOP_PROFILING;
 }
 
 void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)

@@ -34,6 +34,7 @@ ClassStats& IStatisticsStorage::GetClassStats(const char* className)
 void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Time object and pass it here instead of Math::Real */) const
 {
 	// Elapsed time should specify how much time has passed since the start of the CoreEngine::Start() function until the end of the CoreEngine::Stop() function.
+	Utility::ILogger::GetLogger().AddFile("ApplicationStats.txt");
 	LOG(Utility::Info, LOGPLACE, "Total elapsed time: %.3f [s]", totalElapsedSeconds);
 	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{

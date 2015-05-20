@@ -186,7 +186,7 @@ CameraComponent::~CameraComponent(void)
 #ifdef ANT_TWEAK_BAR_ENABLED
 void CameraComponent::Input(Real delta)
 {
-	if ( (m_prevFov != m_fov) || (!AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!AlmostEqual(m_prevFarPlane, m_farPlane)) )
+	if ( (!AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov) )
 	{
 		LOG(Info, LOGPLACE, "Recalculating the projection matrix for the selected camera");
 

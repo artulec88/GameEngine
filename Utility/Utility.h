@@ -13,15 +13,16 @@
 #define UTILITY_API __declspec(dllimport)
 #endif
 
-#ifdef NDEBUG
-#ifdef LOGMODULE
-#define LOGPLACE LOGMODULE, 0 
-#else
-#define LOGPLACE "unknown-module", 0 
-#endif
-#else
+//#ifdef NDEBUG
+//#ifdef LOGMODULE
+//#define LOGPLACE LOGMODULE, 0 
+//#else
+//#define LOGPLACE "unknown-module", 0 
+//#endif
+//#else
+//#define LOGPLACE __FILE__, __LINE__
+//#endif
 #define LOGPLACE __FILE__, __LINE__
-#endif
 
 #ifdef _DEBUG
 #include <string.h>

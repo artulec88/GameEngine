@@ -281,6 +281,7 @@ void Renderer::InitializeCubeMap()
 
 Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
 {
+	START_PROFILING;
 	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
 	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
 	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
@@ -372,6 +373,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 		LOG(Error, LOGPLACE, "Cube map texture is NULL");
 		exit(EXIT_FAILURE);
 	}
+	STOP_PROFILING;
 	return cubeMapTexture;
 }
 
@@ -414,6 +416,7 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 
 void Renderer::Render(const GameNode& gameNode)
 {
+	START_PROFILING;
 	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
 	// TODO: Expand with Stencil buffer once it is used
 
@@ -533,10 +536,12 @@ void Renderer::Render(const GameNode& gameNode)
 	{
 		ApplyFilter(m_nullFilterShader, GetTexture("displayTexture"), NULL);
 	}
+	STOP_PROFILING;
 }
 
 void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 {
+	START_PROFILING;
 	if (m_ambientLightFogEnabled)
 	{
 		m_terrainNode->RenderAll(m_ambientShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
@@ -547,12 +552,15 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 		m_terrainNode->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
+	STOP_PROFILING;
 }
 
 void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 {
+	START_PROFILING;
 	if (!Lighting::PointLight::ArePointLightsEnabled())
 	{
+		STOP_PROFILING;
 		return;
 	}
 
@@ -592,10 +600,12 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		RenderSceneWithLight(m_pointLight, gameNode);
 	}
 	m_pointLight = NULL;
+	STOP_PROFILING;
 }
 
 void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode)
 {
+	START_PROFILING;
 	glCullFace(Rendering::glCullFaceMode);
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
@@ -619,10 +629,12 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 	{
 		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
 	}
+	STOP_PROFILING;
 }
 
 void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 {
+	START_PROFILING;
 	BindAsRenderTarget();
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
@@ -646,10 +658,12 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
 			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
+	STOP_PROFILING;
 }
 
 void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 {
+	START_PROFILING;
 	BindAsRenderTarget();
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
@@ -667,10 +681,12 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	ss << progress << "%";
 	m_textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
 	m_textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
+	STOP_PROFILING;
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 {
+	START_PROFILING;
 	/* ==================== Adjusting the time variables begin ==================== */
 	Math::Real daytimeTransitionFactor, dayNightMixFactor;
 	Rendering::GameTime::Daytime daytime = CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
@@ -706,6 +722,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());
 	SetReal("dayNightMixFactor", dayNightMixFactor);
 	/* ==================== Adjusting the time variables end ==================== */
+	STOP_PROFILING;
 }
 
 // TODO: Move these two variables to Renderer class
@@ -714,11 +731,13 @@ Math::Real skyboxAngleStep = 0.02f; // TODO: This variable should be dependant o
 
 void Renderer::RenderSkybox()
 {
+	START_PROFILING;
 	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
 	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
 	skyboxAngle += skyboxAngleStep;
 	if (m_ambientLightFogEnabled)
 	{
+		STOP_PROFILING;
 		return;
 	}
 
@@ -737,20 +756,24 @@ void Renderer::RenderSkybox()
 	//glEnable(GL_DEPTH_TEST);
 	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
 	/* ==================== Rendering skybox end ==================== */
+	STOP_PROFILING;
 }
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
 {
+	START_PROFILING;
 	Texture* shadowMap = m_shadowMaps[shadowMapIndex];
 	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
 	if (shadowMap == NULL)
 	{
 		LOG(Error, LOGPLACE, "Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		STOP_PROFILING;
 		return;
 	}
 	if (shadowMapTempTarget == NULL)
 	{
 		LOG(Error, LOGPLACE, "Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		STOP_PROFILING;
 		return;
 	}
 
@@ -759,14 +782,17 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 	
 	SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
 	ApplyFilter(m_gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
+	STOP_PROFILING;
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
 void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 {
+	START_PROFILING;
 	if (filterShader == NULL)
 	{
 		LOG(Error, LOGPLACE, "Cannot apply a filter. Filtering shader is NULL.");
+		STOP_PROFILING;
 		return;
 	}
 	CHECK_CONDITION_RETURN_ALWAYS(source != NULL, Emergency, "Cannot apply a filter. Source texture is NULL.");
@@ -800,6 +826,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 
 	m_currentCamera = temp;
 	SetTexture("filterTexture", NULL);
+	STOP_PROFILING;
 }
 
 unsigned int Renderer::NextCamera()

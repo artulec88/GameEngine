@@ -10,6 +10,9 @@ using namespace Rendering;
 MenuGameState::MenuGameState(void) :
 	GameState(),
 	m_currentMenuEntry(NULL)
+#ifdef CALCULATE_STATS
+	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
+#endif
 {
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
@@ -52,6 +55,7 @@ void MenuGameState::Revealed()
 
 void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
+	START_PROFILING;
 	if (action != GLFW_PRESS)
 	{
 		return;
@@ -110,15 +114,20 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		LOG(Utility::Debug, LOGPLACE, "The key %d is not supported by the menu game state", key);
 		break;
 	}
+	STOP_PROFILING;
 }
 
 void MenuGameState::Input(Math::Real elapsedTime)
 {
+	START_PROFILING;
 	LOG(Utility::Delocust, LOGPLACE, "MAIN MENU game state input processing");
+	STOP_PROFILING;
 }
 
 void MenuGameState::Render(Renderer* renderer)
 {
+	START_PROFILING;
 	LOG(Utility::Delocust, LOGPLACE, "MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);
+	STOP_PROFILING;
 }

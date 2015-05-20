@@ -13,6 +13,9 @@ LoadGameState::LoadGameState(void) :
 	Rendering::GameState(),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
+#ifdef CALCULATE_STATS
+	,m_classStats(STATS_STORAGE.GetClassStats("LoadGameState"))
+#endif
 {
 }
 
@@ -23,9 +26,11 @@ LoadGameState::~LoadGameState(void)
 
 void LoadGameState::Entered()
 {
+	START_PROFILING;
 	LOG(Utility::Info, LOGPLACE, "LOAD game state has been placed in the game state manager");
 	LOG(Utility::Notice, LOGPLACE, "Starting the loading thread");
 	m_loadingThread = new tthread::thread(Rendering::GameManager::Load, Rendering::GameManager::GetGameManager());
+	STOP_PROFILING;
 }
 
 void LoadGameState::Leaving()
@@ -45,12 +50,15 @@ void LoadGameState::Revealed()
 
 void LoadGameState::Render(Rendering::Renderer* renderer)
 {
+	START_PROFILING;
 	LOG(Utility::Delocust, LOGPLACE, "LOAD game state rendering");
 	renderer->RenderLoadingScreen(m_loadingProgress);
+	STOP_PROFILING;
 }
 
 void LoadGameState::Update(Math::Real elapsedTime)
 {
+	START_PROFILING;
 	LOG(Utility::Delocust, LOGPLACE, "LOAD game state updating");
 	m_loadingProgress = GameManager::GetGameManager()->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
@@ -65,4 +73,5 @@ void LoadGameState::Update(Math::Real elapsedTime)
 		m_loadingThread->join();
 		GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 	}
+	STOP_PROFILING;
 }

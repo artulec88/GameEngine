@@ -15,6 +15,9 @@ using namespace Rendering;
 PlayGameState::PlayGameState(void) :
 	GameState(),
 	m_isMouseLocked(false)
+#ifdef CALCULATE_STATS
+	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
+#endif
 {
 }
 
@@ -24,6 +27,7 @@ PlayGameState::~PlayGameState(void)
 
 void PlayGameState::Entered()
 {
+	START_PROFILING;
 	LOG(Utility::Info, LOGPLACE, "PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
@@ -41,6 +45,7 @@ void PlayGameState::Entered()
 #ifdef CALCULATE_STATS
 	CoreEngine::GetCoreEngine()->StartSamplingSpf();
 #endif
+	STOP_PROFILING;
 }
 
 void PlayGameState::Leaving()
@@ -63,6 +68,7 @@ void PlayGameState::Revealed()
 
 void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
+	START_PROFILING;
 	switch (action)
 	{
 	case GLFW_PRESS:
@@ -79,10 +85,12 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 	default:
 		LOG(Utility::Warning, LOGPLACE, "Unknown action performed with the mouse. Button=%d\t action=%d\t mods=%d", button, action, mods);
 	}
+	STOP_PROFILING;
 }
 
 void PlayGameState::MousePosEvent(double xPos, double yPos)
 {
+	START_PROFILING;
 	// TODO: Mouse pos event should be handled by the game state manager
 	if (!m_isMouseLocked)
 	{
@@ -113,6 +121,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 		}
 		CoreEngine::GetCoreEngine()->CentralizeCursor();
 	}
+	STOP_PROFILING;
 }
 
 bool forward = false;
@@ -123,6 +132,7 @@ bool up = false;
 bool down = false;
 void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
+	START_PROFILING;
 	//CHECK_CONDITION_RETURN(camera != NULL, Utility::Error, "Camera instance is not initialized");
 	//if (camera == NULL)
 	//{
@@ -206,17 +216,21 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 		//}
 		break;
 	}
+	STOP_PROFILING;
 }
 
 void PlayGameState::Input(Math::Real elapsedTime)
 {
+	START_PROFILING;
 	//LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
 	GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
 	//m_rootGameNode.InputAll(elapsedTime);
+	STOP_PROFILING;
 }
 
 void PlayGameState::Render(Renderer* renderer)
 {
+	START_PROFILING;
 	//LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
 
 	//if (renderer == NULL)
@@ -225,12 +239,14 @@ void PlayGameState::Render(Renderer* renderer)
 	//	exit(EXIT_FAILURE);
 	//}
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
+	STOP_PROFILING;
 }
 
 Math::Vector3D velocity;
 Math::Real maxSpeed = 1.0f;
 void PlayGameState::Update(Math::Real elapsedTime)
 {
+	START_PROFILING;
 	//LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
 
 	//m_rootGameNode.UpdateAll(elapsedTime);
@@ -297,4 +313,5 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 
 	transform.SetPos(transform.GetPos() + velocity);
+	STOP_PROFILING;
 }
