@@ -1,6 +1,8 @@
 #pragma once
 #include <limits>
 #include "Math.h"
+#include "Statistics.h"
+#include "IStatisticsStorage.h"
 
 namespace Math
 {
@@ -65,7 +67,10 @@ public: /* non-static methods */
 	 * Constructs a FloatingPoint from a raw floating-point number. On an Intel CPU, passing a non-normalized NAN around may change its bits,
 	 * although the new value is guaranteed to be also a NAN. Therefore, don't expect this constructor to preserve the bits in x when x is a NAN.
 	 */
-	explicit FloatingPoint(const RawType& x)
+	explicit FloatingPoint(const RawType& x) :
+#ifdef CALCULATE_MATH_STATS
+	m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
+#endif
 	{
 		u_.value_ = x;
 	}
@@ -84,11 +89,14 @@ public: /* non-static methods */
 	 */
 	bool AlmostEqual(const FloatingPoint& rhs) const
 	{
+		START_PROFILING;
 		// The IEEE standard says that any comparison operation involving a NAN must return false
 		if (IsNAN() || rhs.IsNAN())
 			return false;
 
-		return DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_) <= s_kMaxUlps;
+		Bits distance = DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_);
+		STOP_PROFILING;
+		return distance <= s_kMaxUlps;
 	}
 
 public: /* static methods */
@@ -117,6 +125,10 @@ private:
 		RawType value_; // The raw floating-point number
 		Bits bits_; // the bits that represent the number
 	};
+	
+#ifdef CALCULATE_MATH_STATS
+	mutable Statistics::ClassStats& m_classStats;
+#endif
 	
 	/**
 	 * Converts an integer from the sign-and-magnitude representation to the biased representation.

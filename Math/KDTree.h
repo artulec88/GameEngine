@@ -2,6 +2,8 @@
 
 #include "Math.h"
 #include "Vector.h"
+#include "Statistics.h"
+#include "IStatisticsStorage.h"
 #include <string>
 
 namespace Math
@@ -52,6 +54,9 @@ private:
 	int m_numberOfSamples;
 	Vector3D* m_minDistancePositions; // only root node should allocate memory for this variable
 	Real* m_minDistances; // only root node should allocate memory for this variable
+#ifdef CALCULATE_MATH_STATS
+	mutable Statistics::ClassStats& m_classStats;
+#endif
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class KDTree */

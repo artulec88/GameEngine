@@ -2,6 +2,8 @@
 
 #include "Angle.h"
 #include "Math.h"
+#include "Statistics.h"
+#include "IStatisticsStorage.h"
 #include "Vector.h"
 
 //#include "Utility\ISerializable.h"
@@ -74,8 +76,11 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	Real m[MATRIX_SIZE][MATRIX_SIZE];
+#ifdef CALCULATE_MATH_STATS
+	mutable Statistics::ClassStats& m_classStats;
+#endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Matrix */
 
