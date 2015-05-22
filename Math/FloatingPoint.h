@@ -67,9 +67,9 @@ public: /* non-static methods */
 	 * Constructs a FloatingPoint from a raw floating-point number. On an Intel CPU, passing a non-normalized NAN around may change its bits,
 	 * although the new value is guaranteed to be also a NAN. Therefore, don't expect this constructor to preserve the bits in x when x is a NAN.
 	 */
-	explicit FloatingPoint(const RawType& x) :
+	explicit FloatingPoint(const RawType& x)
 #ifdef CALCULATE_MATH_STATS
-	m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
+	: m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
 #endif
 	{
 		u_.value_ = x;

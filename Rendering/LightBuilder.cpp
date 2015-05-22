@@ -303,7 +303,6 @@ void SpotLightBuilder::BuildPart2()
 void SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
-	LOG(Utility::Critical, LOGPLACE, "SpotLightBuilder::BuildMeshRenderer");
 	m_spotLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SpotLight.obj"),
 		new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));

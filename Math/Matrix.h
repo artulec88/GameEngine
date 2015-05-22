@@ -19,6 +19,10 @@ namespace Math
 class MATH_API Matrix4D// : public Utility::ISerializable
 {
 /* ==================== Static variables and functions begin ==================== */
+#ifdef CALCULATE_MATH_STATS
+private:
+	static Statistics::ClassStats& s_classStats;
+#endif
 public:
 	static Matrix4D Identity();
 	static Matrix4D PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */);

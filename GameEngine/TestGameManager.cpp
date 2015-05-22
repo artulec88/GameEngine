@@ -104,7 +104,7 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
 	//terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	terrainNode->GetTransform().SetScale(30.0f);
+	terrainNode->GetTransform().SetScale(20.0f);
 	terrainMesh->TransformPositions(terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	RegisterTerrainNode(terrainNode);
