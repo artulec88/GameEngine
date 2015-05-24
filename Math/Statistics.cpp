@@ -304,4 +304,14 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */)
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 	}
 }
+
+int ClassStats::GetTotalNumberOfSamples() const
+{
+	int totalNumberOfSamples = 0;
+	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	{
+		totalNumberOfSamples += methodStatsItr->second.GetInvocationsCount();
+	}
+	return totalNumberOfSamples;
+}
 /* ==================== ClassStats end ==================== */

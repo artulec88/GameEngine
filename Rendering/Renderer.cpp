@@ -83,8 +83,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_skyboxTextureNight(NULL),
 	m_cubeMapShader(NULL),
 	m_cubeShadowMap(NULL),
-	m_shadowMaps(),
-	m_shadowMapTempTargets(),
+	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
+	//m_shadowMapTempTargets(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	m_lights(),
 	m_directionalAndSpotLights(),
 	m_pointLights(),
@@ -99,7 +99,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_propertiesBar(NULL),
 	m_cameraBar(NULL),
 	m_lightsBar(NULL),
-	m_cameraMembers(),
+	//m_cameraMembers(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	m_cameraType()
 #endif
 #ifdef CALCULATE_STATS

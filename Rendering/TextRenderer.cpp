@@ -81,22 +81,22 @@ TextRenderer::~TextRenderer(void)
 	LOG(Utility::Debug, LOGPLACE, "Text renderer destruction finished");
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer) const
+void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const
 {
 	DrawString(alignment, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
 {
 	DrawString(alignment, y, str, renderer, fontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
 {
 	DrawString(alignment, y, str, renderer, m_defaultFontSize, fontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
+void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	Math::Real x = REAL_ZERO;
 	switch (alignment)
@@ -116,22 +116,22 @@ void TextRenderer::DrawString(Text::Alignment alignment, Math::Real y, const std
 	DrawString(x, y, str, renderer, fontSize, fontColor);
 }
 
-void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const
+void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer) const
 {
 	DrawString(x, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
 {
 	DrawString(x, y, str, renderer, fontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
 {
 	DrawString(x, y, str, renderer, m_defaultFontSize, fontColor);
 }
 
-void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
+void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	LOG(Utility::Delocust, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
 
@@ -139,12 +139,13 @@ void TextRenderer::DrawString(Math::Real x, Math::Real y, const std::string& str
 
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
+	Math::Real yReal = static_cast<Math::Real>(y);
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{
-		Math::Vector2D upLeftVec(x + i * fontSize, y + fontSize);
-		Math::Vector2D upRightVec(x + i * fontSize + fontSize, y + fontSize);
-		Math::Vector2D downRightVec(x + i * fontSize + fontSize, y);
-		Math::Vector2D downLeftVec(x + i * fontSize, y);
+		Math::Vector2D upLeftVec(x + i * fontSize, yReal + fontSize);
+		Math::Vector2D upRightVec(x + i * fontSize + fontSize, yReal + fontSize);
+		Math::Vector2D downRightVec(x + i * fontSize + fontSize, static_cast<Math::Real>(yReal));
+		Math::Vector2D downLeftVec(x + i * fontSize, yReal);
 		//LOG(Utility::Critical, LOGPLACE, "str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);

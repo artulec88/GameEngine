@@ -124,6 +124,8 @@ public:
 		}
 		return methodStatsIterator->second.IsProfiling();
 	}
+
+	int GetTotalNumberOfSamples() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

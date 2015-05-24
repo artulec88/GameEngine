@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "IStatisticsStorage.h"
+#include <sstream>
 
 using namespace Math::Statistics;
 
@@ -10,6 +11,7 @@ using namespace Math::Statistics;
 	{
 		IStatisticsStorage::statisticsStorage = new IStatisticsStorage();
 	}
+	//IStatisticsStorage::statisticsStorage->PrintSimpleReport();
 	return *IStatisticsStorage::statisticsStorage;
 }
 
@@ -29,6 +31,16 @@ ClassStats& IStatisticsStorage::GetClassStats(const char* className)
 {
 	std::pair<std::map<const char*, ClassStats*>::iterator, bool /* false if element already existed */> insertRes = m_classStatistics.insert(std::pair<const char*, ClassStats*>(className, new ClassStats(className)));
 	return *insertRes.first->second;
+}
+
+void IStatisticsStorage::PrintSimpleReport() const
+{
+	std::stringstream ss("");
+	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
+	{
+		ss << classStatsItr->first << " (" << classStatsItr->second->GetTotalNumberOfSamples() << "); ";
+	}
+	LOG(Utility::Info, LOGPLACE, "Simple report = \"%s\"", ss.str().c_str());
 }
 
 void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Time object and pass it here instead of Math::Real */) const

@@ -82,8 +82,10 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
 	LOG(Notice, LOGPLACE, "Main application construction started");
+#ifdef CALCULATE_STATS
 	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
 	QueryPerformanceCounter(&m_coreEngineStartTimer);
+#endif
 	START_PROFILING;
 
 	if (s_coreEngine != NULL)
@@ -98,7 +100,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
-	m_timeOfDay = fmod(m_timeOfDay, SECONDS_PER_DAY); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
+	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	if (m_timeOfDay < REAL_ZERO)
 	{
 		m_timeOfDay = GetCurrentLocalTime();
@@ -409,9 +411,9 @@ void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inG
 void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
 {
 	inGameHours = static_cast<int>(timeOfDay) / SECONDS_PER_HOUR;
-	Math::Real temp = fmod(m_timeOfDay, SECONDS_PER_HOUR);
+	Math::Real temp = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_HOUR));
 	inGameMinutes = static_cast<int>(temp) / SECONDS_PER_MINUTE;
-	inGameSeconds = static_cast<int>(fmod(temp, SECONDS_PER_MINUTE));
+	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(SECONDS_PER_MINUTE)));
 }
 
 unsigned int CoreEngine::GetCurrentCameraIndex() const
@@ -447,14 +449,14 @@ Math::Real CoreEngine::GetCurrentLocalTime() const
 	struct tm timeinfo;
 	time(&rawtime);
 	localtime_s(&timeinfo, &rawtime);
-	Math::Real result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
+	int result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
 	if (result > SECONDS_PER_DAY)
 	{
 		LOG(Utility::Error, LOGPLACE, "Incorrect local time");
 		// result = REAL_ZERO;
 		result -= SECONDS_PER_DAY;
 	}
-	return result;
+	return static_cast<Math::Real>(result);
 }
 
 Math::Real CoreEngine::GetTime() const
@@ -486,7 +488,7 @@ void CoreEngine::CentralizeCursor()
 		LOG(Critical, LOGPLACE, "Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
-	m_renderer->SetCursorPos(m_windowWidth / 2, m_windowHeight / 2);
+	m_renderer->SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
 void CoreEngine::CalculateSunElevationAndAzimuth()

@@ -33,14 +33,14 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer) const;
-	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
-	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
-	void DrawString(Text::Alignment alignment, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
-	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer) const;
-	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
-	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
-	void DrawString(Math::Real x, Math::Real y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
+	void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const;
+	void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
+	void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
+	void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
+	void DrawString(int x, int y, const std::string& str, Renderer* renderer) const;
+	void DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
+	void DrawString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
+	void DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
 
 	void SetFontSize(Math::Real fontSize);
 /* ==================== Non-static member functions end ==================== */

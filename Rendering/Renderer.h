@@ -47,8 +47,17 @@ public:
 	RENDERING_API Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
 	RENDERING_API virtual ~Renderer(void);
 private:
-	Renderer(const Renderer& renderer) : m_altCamera(Math::Matrix4D::Identity(), Transform()), m_classStats(STATS_STORAGE.GetClassStats("Renderer")) {} // don't implement
-	void operator=(const Renderer& renderer) {} // don't implement
+	Renderer(const Renderer& renderer) :
+		m_altCamera(Math::Matrix4D::Identity(),
+		Transform())
+#ifdef CALCULATE_STATS
+		,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
+#endif
+	{
+	} // don't implement
+	void operator=(const Renderer& renderer)
+	{
+	} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */

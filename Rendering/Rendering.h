@@ -17,6 +17,11 @@
 #define ANT_TWEAK_BAR_ENABLED
 
 #ifdef CALCULATE_STATS
+#undef START_PROFILING_STATIC
+#undef STOP_PROFILING_STATIC
+#undef START_PROFILING
+#undef STOP_PROFILING
+
 #define START_PROFILING_STATIC do { s_classStats.StartProfiling(__FUNCTION__); } while (0)
 #define STOP_PROFILING_STATIC do { s_classStats.StopProfiling(__FUNCTION__); } while (0)
 #define START_PROFILING do { m_classStats.StartProfiling(__FUNCTION__); } while (0)
