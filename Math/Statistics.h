@@ -69,7 +69,9 @@ public:
 	void Push(Math::Real sample);
 	
 	Math::Real CalculateMean() const;
+#ifdef METHOD_STATS_VARIANT_1
 	Math::Real CalculateMedian() const;
+#endif
 	
 	void StartProfiling(bool isNestedWithinAnotherProfiledMethod);
 	void StopProfiling();
@@ -83,7 +85,12 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	/// <summary> Time samples stored along with the information whether the method has been nested within another method in the same class. </summary>
+#ifdef METHOD_STATS_VARIANT_1
 	std::vector<std::pair<bool, Math::Real>> m_timeSamples;
+#else
+	Math::Real m_totalTimeNestedProfiling;
+	int m_invocationsCountNestedProfiling;
+#endif
 	Math::Real m_totalTime;
 	int m_invocationsCount;
 	bool m_isProfiling;

@@ -10,6 +10,8 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
+#include "StatsTest1.h"
+
 #include <ctime>
 #include <string>
 //#include <iostream>
@@ -32,10 +34,11 @@ double elapsedTime;
 unsigned int testNumber = 0;
 bool angleTestEnabled = false;
 bool vectorTestEnabled = false;
-bool matrixTestEnabled = true;
+bool matrixTestEnabled = false;
 bool quaternionTestEnabled = false;
-bool sortingTestEnabled = true;
-bool kdTreeTestEnabled = true;
+bool sortingTestEnabled = false;
+bool kdTreeTestEnabled = false;
+bool statsTestEnabled = true;
 bool otherTestEnabled = true;
 
 enum TimeUnit
@@ -72,22 +75,21 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 
 double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
-	double nominator;
+	double nominator = static_cast<double>(end - begin);
 	double denominator = static_cast<double>(CLOCKS_PER_SEC * NUMBER_OF_ITERATIONS);
 
 	switch (timeUnit)
 	{
 	case SECONDS:
-		nominator = static_cast<double>(outerEnd - outerBegin);
 		break;
 	case MILISECONDS:
-		nominator = static_cast<double>(NUMBER_OF_MILISECONDS_IN_SECOND * (outerEnd - outerBegin));
+		nominator *= NUMBER_OF_MILISECONDS_IN_SECOND;
 		break;
 	case MICROSECONDS:
-		nominator = static_cast<double>(NUMBER_OF_MICROSECONDS_IN_SECOND * (outerEnd - outerBegin));
+		nominator *= NUMBER_OF_MICROSECONDS_IN_SECOND;
 		break;
 	case NANOSECONDS:
-		nominator = static_cast<double>(NUMBER_OF_NANOSECONDS_IN_SECOND * (outerEnd - outerBegin));
+		nominator *= NUMBER_OF_NANOSECONDS_IN_SECOND;
 		break;
 	default:
 		LOG(Error, LOGPLACE, "Cannot calculate the elapsed time. Unknown time unit specified.");
@@ -757,6 +759,38 @@ void KDTreeTest()
 	delete [] positions;
 }
 
+void StatsTest()
+{
+	LARGE_INTEGER frequency, startTimer, stopTimer;
+	QueryPerformanceFrequency(&frequency); // get ticks per second;
+	QueryPerformanceCounter(&startTimer);
+
+	//clock_t outerBegin = clock();
+
+	const int METHOD_1_INVOCATIONS_COUNT = 5;
+	const int METHOD_2_INVOCATIONS_COUNT = 150;
+
+	MathTest::StatsTest1 statsTest1;
+	for (int i = 0; i < METHOD_1_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue1 = statsTest1.Method1();
+	}
+	for (int i = 0; i < METHOD_2_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue1 = statsTest1.Method2();
+	}
+
+	QueryPerformanceCounter(&stopTimer);
+	Math::Real totalElapsedTime = static_cast<Math::Real>((stopTimer.QuadPart - startTimer.QuadPart)) / frequency.QuadPart; // in [s]
+
+	//clock_t outerEnd = clock();
+
+	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
+	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
+	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
+	STATS_STORAGE.PrintReport(totalElapsedTime);
+}
+
 int main (int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -776,6 +810,8 @@ int main (int argc, char* argv[])
 	//SortTestTime();
 
 	KDTreeTest();
+
+	StatsTest();
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
