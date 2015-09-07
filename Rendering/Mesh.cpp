@@ -149,8 +149,7 @@ void Mesh::Initialize()
 	}
 	if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
 	{
-		LOG(Emergency, LOGPLACE, "Incorrect number of meshes loaded (%d). Check the model.", scene->mNumMeshes);
-		LOG(Info, LOGPLACE, "One of the possible solutions is to check whether the model has an additional line at the end");
+		LOG(Emergency, LOGPLACE, "Incorrect number of meshes loaded- %d- check the model. One of the possible solutions is to check whether the model has any additional lines at the end.", scene->mNumMeshes);
 		exit(EXIT_FAILURE);
 	}
 
@@ -159,7 +158,7 @@ void Mesh::Initialize()
 	std::vector<Math::Vector3D> positions;
 	std::vector<int> indices;
 
-	const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
+	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	for (unsigned int i = 0; i < model->mNumVertices; ++i)
 	{
 		const aiVector3D* pPos = &(model->mVertices[i]);
@@ -198,14 +197,14 @@ void Mesh::Initialize()
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
 	}
-	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store these positions
+	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
 	AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
 
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Info, LOGPLACE, "Loading a model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	LOG(Info, LOGPLACE, "Loading model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 }
 

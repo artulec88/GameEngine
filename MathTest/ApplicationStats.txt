@@ -1,0 +1,190 @@
+[Info] [2015-08-04 20:57:58] IStatisticsStorage.cpp(50) : Total elapsed time: 0.000 [s]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-04 20:57:58] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-04 20:57:58] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-04 20:57:58] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 20:57:58] Statistics.cpp(302) : 		Total time: 1.444 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(319) : 		Average time: 1.444 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(322) : 		Class usage: 1.$%
+[Info] [2015-08-04 20:57:58] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 20:57:58] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-04 20:57:58] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 20:57:58] Statistics.cpp(302) : 		Total time: 1.444 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(319) : 		Average time: 1.444 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(322) : 		Class usage: 1.$%
+[Info] [2015-08-04 20:57:58] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 20:57:58] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-04 20:57:58] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-04 20:57:58] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-04 21:04:15] IStatisticsStorage.cpp(50) : Total elapsed time: 0.000 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-04 21:04:15] Statistics.cpp(270) : 	Class total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(281) : 	Application usage: 1.$%
+[Info] [2015-08-04 21:04:15] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-04 21:04:15] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:04:15] Statistics.cpp(293) : 		Total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(310) : 		Average time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(322) : 		Class usage: 100.0%
+[Info] [2015-08-04 21:04:15] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:04:15] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-04 21:04:15] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:04:15] Statistics.cpp(293) : 		Total time: 563716.555 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(310) : 		Average time: 563716.555 [s]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(322) : 		Class usage: 0.0%
+[Info] [2015-08-04 21:04:15] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:04:15] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-04 21:04:15] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-04 21:04:15] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-04 21:04:28] IStatisticsStorage.cpp(50) : Total elapsed time: 0.000 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-04 21:04:28] Statistics.cpp(270) : 	Class total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(281) : 	Application usage: 1.$%
+[Info] [2015-08-04 21:04:28] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-04 21:04:28] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:04:28] Statistics.cpp(293) : 		Total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(310) : 		Average time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(322) : 		Class usage: 100.0%
+[Info] [2015-08-04 21:04:28] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:04:28] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-04 21:04:28] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:04:28] Statistics.cpp(293) : 		Total time: 395674.911 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(310) : 		Average time: 395674.911 [s]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(322) : 		Class usage: 0.0%
+[Info] [2015-08-04 21:04:28] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:04:28] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-04 21:04:28] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-04 21:04:28] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-04 21:07:41] IStatisticsStorage.cpp(50) : Total elapsed time: 0.000 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-04 21:07:41] Statistics.cpp(270) : 	Class total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(281) : 	Application usage: 1.$%
+[Info] [2015-08-04 21:07:41] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-04 21:07:41] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:07:41] Statistics.cpp(293) : 		Total time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(310) : 		Average time: 44312803741942176.000 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(322) : 		Class usage: 100.0%
+[Info] [2015-08-04 21:07:41] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:07:41] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-04 21:07:41] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-04 21:07:41] Statistics.cpp(293) : 		Total time: 1668598.989 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(310) : 		Average time: 1668598.989 [s]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(322) : 		Class usage: 0.0%
+[Info] [2015-08-04 21:07:41] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-04 21:07:41] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-04 21:07:41] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-04 21:07:41] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-24 21:16:42] IStatisticsStorage.cpp(50) : Total elapsed time: 0.000 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:16:42] Statistics.cpp(270) : 	Class total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(281) : 	Application usage: 1.$%
+[Info] [2015-08-24 21:16:42] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:16:42] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:16:42] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(322) : 		Class usage: 100.0%
+[Info] [2015-08-24 21:16:42] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-24 21:16:42] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:16:42] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:16:42] Statistics.cpp(293) : 		Total time: 1356801643.643 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(310) : 		Average time: 1356801643.643 [s]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(322) : 		Class usage: 0.0%
+[Info] [2015-08-24 21:16:42] Statistics.cpp(323) : 		Application usage: 1.$%
+[Info] [2015-08-24 21:16:42] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:16:42] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:16:42] Statistics.cpp(281) : 	Application usage: -1.$%
+[Info] [2015-08-24 21:20:08] IStatisticsStorage.cpp(50) : Total elapsed time: 6.416 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:20:08] Statistics.cpp(270) : 	Class total time: 2265310612567359500.000 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(281) : 	Application usage: 35308638435617006000.0%
+[Info] [2015-08-24 21:20:08] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:20:08] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:20:08] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(322) : 		Class usage: 49.4%
+[Info] [2015-08-24 21:20:08] Statistics.cpp(323) : 		Application usage: 17454738788659536000.0%
+[Info] [2015-08-24 21:20:08] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:20:08] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:20:08] Statistics.cpp(293) : 		Total time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(310) : 		Average time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(322) : 		Class usage: 50.6%
+[Info] [2015-08-24 21:20:08] Statistics.cpp(323) : 		Application usage: 17853900770095077000.0%
+[Info] [2015-08-24 21:20:08] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:20:08] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:20:08] Statistics.cpp(281) : 	Application usage: 0.0%
+[Info] [2015-08-24 21:20:17] IStatisticsStorage.cpp(50) : Total elapsed time: 1.156 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:20:17] Statistics.cpp(270) : 	Class total time: 2265310612567359500.000 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(281) : 	Application usage: 195973066207134150000.0%
+[Info] [2015-08-24 21:20:17] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:20:17] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:20:17] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(322) : 		Class usage: 49.4%
+[Info] [2015-08-24 21:20:17] Statistics.cpp(323) : 		Application usage: 96878804502630564000.0%
+[Info] [2015-08-24 21:20:17] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:20:17] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:20:17] Statistics.cpp(293) : 		Total time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(310) : 		Average time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(322) : 		Class usage: 50.6%
+[Info] [2015-08-24 21:20:17] Statistics.cpp(323) : 		Application usage: 99094267938239283000.0%
+[Info] [2015-08-24 21:20:17] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:20:17] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:20:17] Statistics.cpp(281) : 	Application usage: 0.0%
+[Info] [2015-08-24 21:21:08] IStatisticsStorage.cpp(50) : Total elapsed time: 1.164 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:21:08] Statistics.cpp(270) : 	Class total time: 2265310612567359500.000 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(281) : 	Application usage: 194657747675616610000.0%
+[Info] [2015-08-24 21:21:08] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:21:08] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:21:08] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(322) : 		Class usage: 49.4%
+[Info] [2015-08-24 21:21:08] Statistics.cpp(323) : 		Application usage: 96228580013419938000.0%
+[Info] [2015-08-24 21:21:08] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:21:08] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:21:08] Statistics.cpp(293) : 		Total time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(310) : 		Average time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(322) : 		Class usage: 50.6%
+[Info] [2015-08-24 21:21:08] Statistics.cpp(323) : 		Application usage: 98429173854093230000.0%
+[Info] [2015-08-24 21:21:08] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:21:08] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:21:08] Statistics.cpp(281) : 	Application usage: 0.0%
+[Info] [2015-08-24 21:21:55] IStatisticsStorage.cpp(50) : Total elapsed time: 1.171 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:21:55] Statistics.cpp(270) : 	Class total time: 2265310612567359500.000 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(281) : 	Application usage: 193450652947956240000.0%
+[Info] [2015-08-24 21:21:55] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:21:55] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:21:55] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(322) : 		Class usage: 49.4%
+[Info] [2015-08-24 21:21:55] Statistics.cpp(323) : 		Application usage: 95631855696142762000.0%
+[Info] [2015-08-24 21:21:55] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:21:55] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:21:55] Statistics.cpp(293) : 		Total time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(310) : 		Average time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(322) : 		Class usage: 50.6%
+[Info] [2015-08-24 21:21:55] Statistics.cpp(323) : 		Application usage: 97818803405313360000.0%
+[Info] [2015-08-24 21:21:55] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:21:55] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:21:55] Statistics.cpp(281) : 	Application usage: 0.0%
+[Info] [2015-08-24 21:22:07] IStatisticsStorage.cpp(50) : Total elapsed time: 1.162 [s]
+[Info] [2015-08-24 21:22:07] Statistics.cpp(260) : Class: "StatsTest1"
+[Info] [2015-08-24 21:22:07] Statistics.cpp(270) : 	Class total time: 2265310612567359500.000 [s]
+[Info] [2015-08-24 21:22:07] Statistics.cpp(281) : 	Application usage: 194983633815923130000.0%
+[Info] [2015-08-24 21:22:07] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-08-24 21:22:07] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:22:08] Statistics.cpp(293) : 		Total time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:22:08] Statistics.cpp(310) : 		Average time: 1119850743880734000.000 [s]
+[Info] [2015-08-24 21:22:08] Statistics.cpp(322) : 		Class usage: 49.4%
+[Info] [2015-08-24 21:22:08] Statistics.cpp(323) : 		Application usage: 96389681027390407000.0%
+[Info] [2015-08-24 21:22:08] Statistics.cpp(285) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-08-24 21:22:08] Statistics.cpp(286) : 		Invocations count: 1
+[Info] [2015-08-24 21:22:08] Statistics.cpp(293) : 		Total time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:22:08] Statistics.cpp(310) : 		Average time: 1145459940744219500.000 [s]
+[Info] [2015-08-24 21:22:08] Statistics.cpp(322) : 		Class usage: 50.6%
+[Info] [2015-08-24 21:22:08] Statistics.cpp(323) : 		Application usage: 98593958990795424000.0%
+[Info] [2015-08-24 21:22:08] Statistics.cpp(260) : Class: "Matrix4DStatic"
+[Info] [2015-08-24 21:22:08] Statistics.cpp(279) : 	Total time: 0.000 [us]
+[Info] [2015-08-24 21:22:08] Statistics.cpp(281) : 	Application usage: 0.0%

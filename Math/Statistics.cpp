@@ -2,6 +2,11 @@
 #include "Statistics.h"
 #include "ISort.h"
 #include "Utility\ILogger.h"
+#include <iostream>
+#include <algorithm>
+#include <iterator>
+#include <iomanip>
+#include <fstream>
 
 using namespace Math::Statistics;
 
@@ -253,76 +258,38 @@ void ClassStats::StopProfiling(const char* methodName)
 	--m_profilingMethodsCount;
 }
 
-void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */) const
+void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */, std::fstream& appStatsFile) const
 {
-	static const Math::Real ONE_THOUSAND = 1000.0f;
 	static const Math::Real ONE_MILION = 1000000.0f;
-
 	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
-	Math::Real classTotalTime = REAL_ZERO;
+	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
+	Math::Real classTotalTimeIncludingNestedCalls = REAL_ZERO;
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		//LOG(Utility::Info, LOGPLACE, "classTotalTime = %f. Method's total time without nested stats %f", classTotalTime, methodStatsItr->second.GetTotalTimeWithoutNestedStats());
-		classTotalTime += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
+		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
+		classTotalTimeIncludingNestedCalls += methodStatsItr->second.GetTotalTime();
 	}
-	if (classTotalTime > ONE_THOUSAND)
-	{
-		if (classTotalTime > ONE_MILION)
-		{
-			LOG(Utility::Info, LOGPLACE, "\tTotal time: %.3f [s]", classTotalTime / ONE_MILION);
-		}
-		else
-		{
-			LOG(Utility::Info, LOGPLACE, "\tTotal time: %.3f [ms]", classTotalTime / ONE_THOUSAND);
-		}
-	}
-	else
-	{
-		LOG(Utility::Info, LOGPLACE, "\tTotal time: %.3f [us]", classTotalTime);
-	}
-	LOG(Utility::Info, LOGPLACE, "\tApplication usage: %.1f%%", 100.0f * classTotalTime / (ONE_MILION * totalElapsedTime));
+	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTimeExcludingNestedCalls << "\t" << classTotalTimeIncludingNestedCalls << "\n";
+	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time: %.2f %s");
+	LogTime(classTotalTimeIncludingNestedCalls, "\tTotal time including nested calls: %.2f %s");
+	LOG(Utility::Info, LOGPLACE, "\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * totalElapsedTime));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		LOG(Utility::Info, LOGPLACE, "\tMethod: \"%s\"", methodStatsItr->first);
 		LOG(Utility::Info, LOGPLACE, "\t\tInvocations count: %d", methodStatsItr->second.GetInvocationsCount());
 		
-		Math::Real totalTime = methodStatsItr->second.GetTotalTime();
-		if (totalTime > ONE_THOUSAND)
-		{
-			if (totalTime > ONE_MILION)
-			{
-				LOG(Utility::Info, LOGPLACE, "\t\tTotal time: %.3f [s]", totalTime / ONE_MILION);
-			}
-			else
-			{
-				LOG(Utility::Info, LOGPLACE, "\t\tTotal time: %.3f [ms]", totalTime / ONE_THOUSAND);
-			}
-		}
-		else
-		{
-			LOG(Utility::Info, LOGPLACE, "\t\tTotal time: %.3f [us]", totalTime);
-		}
+		Math::Real totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
+		LogTime(totalTimeExcludingNestedCalls, "\t\tTotal time: %.2f %s");
+		Math::Real totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
+		LogTime(totalTimeIncludingNestedCalls, "\t\tTotal time including nested calls: %.2f %s");
 
 		Math::Real meanTime = methodStatsItr->second.CalculateMean();
-		if (meanTime > ONE_THOUSAND)
-		{
-			if (meanTime > ONE_MILION)
-			{
-				LOG(Utility::Info, LOGPLACE, "\t\tAverage time: %.3f [s]", meanTime / ONE_MILION);
-			}
-			else
-			{
-				LOG(Utility::Info, LOGPLACE, "\t\tAverage time: %.3f [ms]", meanTime / ONE_THOUSAND);
-			}
-		}
-		else
-		{
-			LOG(Utility::Info, LOGPLACE, "\t\tAverage time: %.3f [us]", meanTime);
-		}
+		LogTime(meanTime, "\t\tAverage time: %.2f %s");
 		
-		LOG(Utility::Info, LOGPLACE, "\t\tClass usage: %.1f%%", 100.0f * totalTime / classTotalTime);
-		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.1f%%", 100.0f * totalTime / (ONE_MILION * totalElapsedTime));
+		LOG(Utility::Info, LOGPLACE, "\t\tClass usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
+		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 	}
@@ -336,5 +303,26 @@ int ClassStats::GetTotalNumberOfSamples() const
 		totalNumberOfSamples += methodStatsItr->second.GetInvocationsCount();
 	}
 	return totalNumberOfSamples;
+}
+
+void ClassStats::LogTime(Math::Real time, const char* logTimeTextFormat) const
+{
+	static const Math::Real ONE_THOUSAND = 1000.0f;
+	static const Math::Real ONE_MILION = 1000000.0f;
+	if (time > ONE_THOUSAND)
+	{
+		if (time > ONE_MILION)
+		{
+			LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time / ONE_MILION, "[s]");
+		}
+		else
+		{
+			LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time / ONE_THOUSAND, "[ms]");
+		}
+	}
+	else
+	{
+		LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time, "[us]");
+	}
 }
 /* ==================== ClassStats end ==================== */

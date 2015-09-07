@@ -81,10 +81,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MathTest.cpp" />
-    <ClCompile Include="StatsTest1.cpp" />
+    <ClCompile Include="StatsTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="StatsTest1.h" />
+    <ClInclude Include="StatsTest.h" />
     <ClInclude Include="StatsTesting.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

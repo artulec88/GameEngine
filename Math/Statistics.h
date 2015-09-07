@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <fstream>
 #include "Utility\ILogger.h"
 
 namespace Math { namespace Statistics
@@ -84,8 +85,10 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	/// <summary> Time samples stored along with the information whether the method has been nested within another method in the same class. </summary>
 #ifdef METHOD_STATS_VARIANT_1
+	/// <summary>
+	/// Time samples stored along with the information whether the method has been nested within another method in the same class.
+	/// </summary>
 	std::vector<std::pair<bool, Math::Real>> m_timeSamples;
 #else
 	Math::Real m_totalTimeNestedProfiling;
@@ -117,7 +120,7 @@ public:
 	//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 	//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-	MATH_API void PrintReport(Math::Real totalElapsedTime) const;
+	MATH_API void PrintReport(Math::Real totalElapsedTime, std::fstream& appStatsFile) const;
 
 	MATH_API void StartProfiling(const char* methodName);
 	MATH_API void StopProfiling(const char* methodName);
@@ -133,6 +136,8 @@ public:
 	}
 
 	int GetTotalNumberOfSamples() const;
+private:
+	void LogTime(Math::Real time, const char* logTimeTextFormat) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

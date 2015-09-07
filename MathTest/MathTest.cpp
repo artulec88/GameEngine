@@ -10,7 +10,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
-#include "StatsTest1.h"
+#include "StatsTest.h"
 
 #include <ctime>
 #include <string>
@@ -767,17 +767,39 @@ void StatsTest()
 
 	//clock_t outerBegin = clock();
 
-	const int METHOD_1_INVOCATIONS_COUNT = 5;
-	const int METHOD_2_INVOCATIONS_COUNT = 150;
+	const int STATS_TEST_1_METHOD_1_INVOCATIONS_COUNT = 5;
+	const int STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT = 150;
+	const int STATS_TEST_1_METHOD_3_INVOCATIONS_COUNT = 4;
+	const int STATS_TEST_2_METHOD_1_INVOCATIONS_COUNT = 2;
+	const int STATS_TEST_2_METHOD_2_INVOCATIONS_COUNT = 1000;
+	const int STATS_TEST_2_METHOD_3_INVOCATIONS_COUNT = 8;
 
 	MathTest::StatsTest1 statsTest1;
-	for (int i = 0; i < METHOD_1_INVOCATIONS_COUNT; ++i)
+	for (int i = 0; i < STATS_TEST_1_METHOD_1_INVOCATIONS_COUNT; ++i)
 	{
 		float floatValue1 = statsTest1.Method1();
 	}
-	for (int i = 0; i < METHOD_2_INVOCATIONS_COUNT; ++i)
+	for (int i = 0; i < STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue1 = statsTest1.Method2();
+		float floatValue2 = statsTest1.Method2();
+	}
+	for (int i = 0; i < STATS_TEST_1_METHOD_3_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue3 = statsTest1.Method3();
+	}
+	
+	MathTest::StatsTest2 statsTest2;
+	for (int i = 0; i < STATS_TEST_2_METHOD_1_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue1 = statsTest2.Method1();
+	}
+	for (int i = 0; i < STATS_TEST_2_METHOD_2_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue2 = statsTest2.Method2();
+	}
+	for (int i = 0; i < STATS_TEST_2_METHOD_3_INVOCATIONS_COUNT; ++i)
+	{
+		float floatValue3 = statsTest2.Method3();
 	}
 
 	QueryPerformanceCounter(&stopTimer);

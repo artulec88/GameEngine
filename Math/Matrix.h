@@ -25,7 +25,13 @@ private:
 #endif
 public:
 	static Matrix4D Identity();
-	static Matrix4D PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */);
+	/// <summary>Creating perspective projection matrix based on the specified parameters.</summary>
+	/// <param name='fov'>Field of view</param>
+	/// <param name='aspect'>Aspect ratio</param>
+	/// <param name='nearPlane'>Near plane</param>
+	/// <param name='farPlane'>Far plane</param>
+	/// <returns>Perspective projection matrix</returns>
+	static Matrix4D PerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
 	static Matrix4D OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 	static Matrix4D Translation(Real x, Real y, Real z);
 	static Matrix4D Translation(const Vector3D& vec);

@@ -23,7 +23,7 @@ GameNode::GameNode(void) :
 
 GameNode::~GameNode(void)
 {
-	LOG(Info, LOGPLACE, "Game node (ID=%d) destruction started", m_ID);
+	LOG(Debug, LOGPLACE, "Game node (ID=%d) destruction started", m_ID);
 	//LOG(Debug, LOGPLACE, "Destroying components started for game node with ID=%d", this->ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
