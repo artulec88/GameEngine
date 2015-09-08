@@ -261,6 +261,11 @@ void ClassStats::StopProfiling(const char* methodName)
 void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */, std::fstream& appStatsFile) const
 {
 	static const Math::Real ONE_MILION = 1000000.0f;
+	
+	std::fstream classStatsFile;
+	classStatsFile.open("..\\Docs\\ClassStats.dat", std::ios::out);
+	classStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time including nested calls\"\n";
+
 	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
 	Math::Real classTotalTimeIncludingNestedCalls = REAL_ZERO;
@@ -293,6 +298,7 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 	}
+	classStatsFile.close();
 }
 
 int ClassStats::GetTotalNumberOfSamples() const
