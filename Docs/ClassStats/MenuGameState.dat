@@ -1,0 +1,4 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Game::MenuGameState::KeyEvent	1	3.85044	3.85044	3.85044
+Game::MenuGameState::Input	1219	1806.36	1806.36	1.48183
+Game::MenuGameState::Render	69	171089	171089	2479.55

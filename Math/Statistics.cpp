@@ -263,8 +263,13 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 	static const Math::Real ONE_MILION = 1000000.0f;
 	
 	std::fstream classStatsFile;
-	classStatsFile.open("..\\Docs\\ClassStats.dat", std::ios::out);
-	classStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time including nested calls\"\n";
+	if (!m_methodsStats.empty())
+	{
+		std::stringstream ss;
+		ss << "..\\Docs\\ClassStats\\" << m_className << ".dat";
+		classStatsFile.open(ss.str().c_str(), std::ios::out);
+		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Total time\"\t\"Total time including nested calls\"\t\"Average time\"\n";
+	}
 
 	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
@@ -297,8 +302,15 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
+		"\"Method name\"\t\"Invocations count\"\t\"Total time\"\t\"Total time including nested calls\"\t\"Average time\"\n";
+		classStatsFile << methodStatsItr->first << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" <<
+			methodStatsItr->second.GetTotalTime() << "\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats() <<
+			"\t" << meanTime << "\n";
 	}
-	classStatsFile.close();
+	if (classStatsFile.is_open())
+	{
+		classStatsFile.close();
+	}
 }
 
 int ClassStats::GetTotalNumberOfSamples() const

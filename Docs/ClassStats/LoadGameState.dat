@@ -1,0 +1,4 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Game::LoadGameState::Entered	1	854.798	854.798	854.798
+Game::LoadGameState::Render	4114	2.10107e+006	2.10107e+006	510.713
+Game::LoadGameState::Update	74408	112240	112240	1.50843

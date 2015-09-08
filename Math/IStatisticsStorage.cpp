@@ -54,7 +54,10 @@ void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Ti
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time including nested calls\"\n";
 	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
-		classStatsItr->second->PrintReport(totalElapsedSeconds, appStatsFile);
+		if (!classStatsItr->second->IsEmpty())
+		{
+			classStatsItr->second->PrintReport(totalElapsedSeconds, appStatsFile);
+		}
 	}
 	appStatsFile.close();
 }

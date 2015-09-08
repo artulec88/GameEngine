@@ -1,0 +1,4 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Math::Matrix4D::Matrix4D	704423	1.00895e+006	722975	1.4323
+Math::Matrix4D::operator*	216486	1.0718e+006	1.07179e+006	4.95091
+Math::Matrix4D::operator=	110772	160500	160498	1.44892

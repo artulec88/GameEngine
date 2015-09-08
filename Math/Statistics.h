@@ -135,6 +135,11 @@ public:
 		return methodStatsIterator->second.IsProfiling();
 	}
 
+	MATH_API bool IsEmpty() const
+	{
+		return m_methodsStats.empty();
+	}
+
 	int GetTotalNumberOfSamples() const;
 private:
 	void LogTime(Math::Real time, const char* logTimeTextFormat) const;

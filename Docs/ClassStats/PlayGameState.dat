@@ -1,0 +1,8 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Game::PlayGameState::Entered	1	5238.04	5238.04	5238.04
+Game::PlayGameState::MouseButtonEvent	5	6538.53	0	1307.71
+Game::PlayGameState::MousePosEvent	87	3172.76	0	36.4685
+Game::PlayGameState::KeyEvent	12	25.0279	0	2.08565
+Game::PlayGameState::Input	23614	1.83398e+006	186939	77.665
+Game::PlayGameState::Render	209	5.33587e+006	2.37063e+006	25530.5
+Game::PlayGameState::Update	23614	1.04897e+006	107865	44.4216

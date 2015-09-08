@@ -1,7 +1,7 @@
 set terminal pdf font "Verdana,7"
 set output "AppStats.pdf"
 set autoscale # scale axes automatically
-# set logscale y
+set logscale y
 set style data histogram
 set style histogram cluster gap 1
 set style fill solid 1.0

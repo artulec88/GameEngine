@@ -1,0 +1,6 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Game::TestGameManager::Load	1	3.71101e+007	3.71101e+007	3.71101e+007
+Game::TestGameManager::AddLights	1	1.84942e+006	0	1.84942e+006
+Game::TestGameManager::AddCameras	1	1412.15	0	1412.15
+Game::TestGameManager::Input	101450	2.08415e+006	1.97601e+006	20.5437
+Game::TestGameManager::Update	101450	1.45945e+006	1.12499e+006	14.3859

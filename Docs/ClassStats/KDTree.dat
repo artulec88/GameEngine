@@ -1,0 +1,3 @@
+"Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
+Math::KDTree::KDTree	16641	280666	0	16.8659
+Math::KDTree::BuildTree	16641	127170	0	7.64194
