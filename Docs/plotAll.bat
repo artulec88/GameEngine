@@ -4,4 +4,4 @@ popd
 exit /b 0
 :Sub
 echo Processing file '%1'...
-C:\Users\Artur\Downloads\gnuplot\bin\gnuplot.exe -c %1
+C:\Users\aosesik\Downloads\gnuplot\bin\gnuplot.exe -c %1

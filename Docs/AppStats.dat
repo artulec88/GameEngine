@@ -1,0 +1,5 @@
+"Class name"	"Total time"	"Total time including nested calls"
+LoadGameState	32000000 35000000
+StatsTest1	8400000	8400000
+StatsTest2	10000000	12700000
+Matrix4DStatic	0.0	0.0

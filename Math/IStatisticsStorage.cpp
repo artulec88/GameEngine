@@ -47,7 +47,7 @@ void IStatisticsStorage::PrintSimpleReport() const
 void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Time object and pass it here instead of Math::Real */) const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
-	Utility::ILogger::GetLogger().AddFile("ApplicationStats.txt");
+	Utility::ILogger::GetLogger().AddFile("..\\Docs\\ApplicationStats.txt");
 	LOG(Utility::Info, LOGPLACE, "Total elapsed time: %.3f [s]", totalElapsedSeconds);
 	std::fstream appStatsFile;
 	appStatsFile.open("AppStats.dat", std::ios::out);
