@@ -246,6 +246,11 @@ ClassStats::~ClassStats()
 
 void ClassStats::StartProfiling(const char* methodName)
 {
+	if (methodName == NULL)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		return;
+	}
 	//LOG(Utility::Debug, LOGPLACE, "Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.", m_className, methodName, m_profilingMethodsCount);
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
@@ -253,6 +258,11 @@ void ClassStats::StartProfiling(const char* methodName)
 
 void ClassStats::StopProfiling(const char* methodName)
 {
+	if (methodName == NULL)
+	{
+		LOG(Utility::Error, LOGPLACE, "Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		return;
+	}
 	//LOG(Utility::Debug, LOGPLACE, "Stopped profiling the function \"%s\"", methodName);
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
@@ -268,21 +278,21 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		std::stringstream ss;
 		ss << "..\\Docs\\ClassStats\\" << m_className << ".dat";
 		classStatsFile.open(ss.str().c_str(), std::ios::out);
-		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Total time\"\t\"Total time including nested calls\"\t\"Average time\"\n";
+		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Invocation count excluding nested calls\"\t\"Total time\"\t\"Total time excluding nested calls\"\t\"Average time\"\n";
 	}
 
 	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
-	Math::Real classTotalTimeIncludingNestedCalls = REAL_ZERO;
+	Math::Real classTotalTime = REAL_ZERO;
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		//LOG(Utility::Info, LOGPLACE, "classTotalTime = %f. Method's total time without nested stats %f", classTotalTime, methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
-		classTotalTimeIncludingNestedCalls += methodStatsItr->second.GetTotalTime();
+		classTotalTime += methodStatsItr->second.GetTotalTime();
 	}
-	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTimeExcludingNestedCalls << "\t" << classTotalTimeIncludingNestedCalls << "\n";
-	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time: %.2f %s");
-	LogTime(classTotalTimeIncludingNestedCalls, "\tTotal time including nested calls: %.2f %s");
+	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
+	LogTime(classTotalTime, "\tTotal time: %.2f %s");
+	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time excluding nested calls: %.2f %s");
 	LOG(Utility::Info, LOGPLACE, "\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * totalElapsedTime));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
@@ -302,10 +312,11 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
-		"\"Method name\"\t\"Invocations count\"\t\"Total time\"\t\"Total time including nested calls\"\t\"Average time\"\n";
-		classStatsFile << methodStatsItr->first << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" <<
-			methodStatsItr->second.GetTotalTime() << "\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats() <<
-			"\t" << meanTime << "\n";
+		std::string methodNameStr(methodStatsItr->first);
+		methodNameStr = methodNameStr.substr(name.rfind("::") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
+		classStatsFile << methodNameStr << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" <<
+			methodStatsItr->second.GetInvocationsCountWithoutNestedCalls() << methodStatsItr->second.GetTotalTime() <<
+			"\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats() << "\t" << meanTime << "\n";
 	}
 	if (classStatsFile.is_open())
 	{

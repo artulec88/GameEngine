@@ -1,6 +1,6 @@
 "Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
-Math::Angle::Sin	49679	71587.1	71587.1	1.44099
-Math::Angle::Cos	50731	73226.5	73226.5	1.44343
-Math::Angle::GetAngleInDegrees	1710	2451.78	2451.78	1.43379
-Math::Angle::GetAngleInRadians	188928	274064	68560.8	1.45063
-Math::Angle::operator ==	70842	813258	813258	11.4799
+Sin	49679	71587.1	71587.1	1.44099
+Cos	50731	73226.5	73226.5	1.44343
+GetAngleInDegrees	1710	2451.78	2451.78	1.43379
+GetAngleInRadians	188928	274064	68560.8	1.45063
+operator==	70842	813258	813258	11.4799

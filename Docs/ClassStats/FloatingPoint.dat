@@ -1,2 +1,2 @@
 "Method name"	"Invocations count"	"Total time"	"Total time including nested calls"	"Average time"
-Math::FloatingPoint<float>::AlmostEqual	5198762	1.03497e+007	1.03497e+007	1.9908
+AlmostEqual	5198762	1.03497e+007	1.03497e+007	1.9908

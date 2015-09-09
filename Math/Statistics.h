@@ -80,6 +80,7 @@ public:
 	Math::Real GetTotalTime() const { return m_totalTime; }
 	Math::Real GetTotalTimeWithoutNestedStats() const;
 	int GetInvocationsCount() const { return m_invocationsCount; }
+	int GetInvocationsCountWithoutNestedCalls() const { return m_invocationsCount - m_invocationsCountNestedProfiling; }
 	bool IsProfiling() const { return m_isProfiling; }
 /* ==================== Non-static member functions end ==================== */
 

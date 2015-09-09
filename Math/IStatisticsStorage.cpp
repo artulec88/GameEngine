@@ -51,7 +51,7 @@ void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Ti
 	LOG(Utility::Info, LOGPLACE, "Total elapsed time: %.3f [s]", totalElapsedSeconds);
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
-	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time including nested calls\"\n";
+	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";
 	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		if (!classStatsItr->second->IsEmpty())
