@@ -9,7 +9,7 @@ set style fill solid border -1
 set boxwidth 0.9
 set xtics scale 0 rotate by 60 right
 set title filename
-set ylabel "Total time [s]"
-plot filename.".dat" using ($3/1000000):xtic(1) title col,\
-	filename.".dat" using ($4/1000000):xtic(1) title col,\
-	filename.".dat" using ($5/1000000):xtic(1) title col
+set ylabel "Time [s]"
+plot filename.".dat" using ($4/1000000):xtic(1) title col,\
+	filename.".dat" using ($5/1000000):xtic(1) title col,\
+	filename.".dat" using ($6/1000000):xtic(1) title col

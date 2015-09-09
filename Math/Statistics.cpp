@@ -313,9 +313,15 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		
 		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 		std::string methodNameStr(methodStatsItr->first);
-		methodNameStr = methodNameStr.substr(name.rfind("::") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
+		methodNameStr = methodNameStr.substr(methodNameStr.rfind(":") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
+		int spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
+		if (spacePos != std::string::npos)
+		{
+			methodNameStr = methodNameStr.substr(0, spacePos) + methodNameStr.substr(spacePos + 1);
+		}
+		methodNameStr.erase(std::remove_if(methodNameStr.begin(), methodNameStr.end(), std::bind( std::isspace<char>, -1, std::locale::classic() )), methodNameStr.end());
 		classStatsFile << methodNameStr << "\t" << methodStatsItr->second.GetInvocationsCount() << "\t" <<
-			methodStatsItr->second.GetInvocationsCountWithoutNestedCalls() << methodStatsItr->second.GetTotalTime() <<
+			methodStatsItr->second.GetInvocationsCountWithoutNestedCalls() << "\t" << methodStatsItr->second.GetTotalTime() <<
 			"\t" << methodStatsItr->second.GetTotalTimeWithoutNestedStats() << "\t" << meanTime << "\n";
 	}
 	if (classStatsFile.is_open())

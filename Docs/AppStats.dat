@@ -1,13 +1,7 @@
-"Class name"	"Total time"	"Total time including nested calls"
-LoadGameState	2214168.0	2214168.0
-MenuGameState	172899.2	172899.2
-PlayGameState	2670666.3	8233795.0
-FloatingPoint	96101.5	96101.5
-TestGameManager	40211148.0	42504580.0
-FloatingPoint	306191.9	306191.9
-CoreEngine	52158232.0	104315488.0
-Renderer	8389676.0	13421497.0
-Angle	1029084.0	1234587.3
-FloatingPoint	10349696.0	10349696.0
-KDTree	0.0	407835.5
-Matrix4D	1955262.1	2241249.8
+"Class name"	"Total time"	"Total time excluding nested calls"
+MenuGameState	182060.8	149543.4
+TestGameManager	10081.4	10081.4
+CoreEngine	3629600.3	1815280.5
+Renderer	1493488.6	875928.2
+Angle	30.3	30.3
+Matrix4D	26191.6	22669.9
