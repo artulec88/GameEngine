@@ -123,7 +123,7 @@ public:
 	RENDERING_API inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
 		std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
-		CHECK_CONDITION_EXIT(samplerItr == m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
+		CHECK_CONDITION_EXIT(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return samplerItr->second;
 	}
 	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);

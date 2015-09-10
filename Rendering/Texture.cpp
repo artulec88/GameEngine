@@ -325,7 +325,7 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	m_textureData(NULL),
 	m_fileName()
 {
-	CHECK_CONDITION_RETURN((width <= 0) || (height <= 0), Utility::Error, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
+	CHECK_CONDITION_RETURN((width > 0) && (height > 0), Utility::Error, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
 	if (data == NULL)
 	{
 		LOG(Utility::Debug, LOGPLACE, "Cannot initialize texture. Passed texture data is NULL");

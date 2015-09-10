@@ -12,18 +12,38 @@ using namespace Math::Statistics;
 
 /* ==================== Stats begin ==================== */
 template <typename T>
-Stats<T>::Stats(void)
+Stats<T>::Stats(int level /* = 0 */) :
+	m_level(level),
+	m_child(NULL)
 {
 }
 
 template <typename T>
 Stats<T>::~Stats(void)
 {
+	SAFE_DELETE(m_child);
 }
 
 template <typename T>
 void Stats<T>::Push(StatsID statsID, T sample)
 {
+	if (Size(statsID) == MAX_SAMPLES_COUNT)
+	{
+		if (m_level == MAX_STATS_LEVEL)
+		{
+			LOG(Utility::Warning, LOGPLACE, "Maximum number of samples reached for stats ID: %d", statsID);
+		}
+		else
+		{
+			T mean = CalculateMean(statsID);
+			if (m_child == NULL)
+			{
+				m_child = new Stats<T>(m_level + 1);
+			}
+			m_child->Push(statsID, mean);
+		}
+		m_samples[statsID].clear();
+	}
 	m_samples[statsID].push_back(sample);
 }
 
@@ -50,30 +70,74 @@ int Stats<T>::Size(StatsID statsID) const
 }
 
 template <typename T>
+T Stats<T>::CalculateSum(StatsID statsID) const
+{
+	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
+	if (mapItr == m_samples.end())
+	{
+		LOG(Utility::Warning, LOGPLACE, "Sum cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		return 0;
+	}
+	
+	T childSum = 0;
+	if (m_child != NULL)
+	{
+		childSum = m_child->CalculateSum(statsID);
+	}
+	T sum = 0;
+	for (std::vector<T>::const_iterator samplesItr = mapItr->second.begin(); samplesItr != mapItr->second.end(); ++samplesItr)
+	{
+		sum += (*samplesItr);
+	}
+	const int levelFactor = static_cast<int>(pow(static_cast<Math::Real>(MAX_SAMPLES_COUNT), static_cast<Math::Real>(m_level)));
+	return (sum * levelFactor) + childSum;
+}
+
+template <typename T>
+int Stats<T>::CalculateSamplesCount(StatsID statsID) const
+{
+	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
+	if (mapItr == m_samples.end())
+	{
+		LOG(Utility::Debug, LOGPLACE, "Samples cannot be counted for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		return 0;
+	}
+	
+	int childSamplesCount = 0;
+	if (m_child != NULL)
+	{
+		childSamplesCount = m_child->CalculateSamplesCount(statsID);
+	}
+	const int levelFactor = static_cast<int>(pow(static_cast<Math::Real>(MAX_SAMPLES_COUNT), static_cast<Math::Real>(m_level)));
+	return Size(statsID) * levelFactor + childSamplesCount;
+}
+
+template <typename T>
 T Stats<T>::CalculateMean(StatsID statsID) const
 {
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		LOG(Utility::Debug, LOGPLACE, "Mean cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		LOG(Utility::Warning, LOGPLACE, "Mean cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
 		return 0;
 	}
-	if (mapItr->second.empty())
-	{
-		LOG(Utility::Info, LOGPLACE, "Mean cannot be calculated for %d statsID. There are no samples stored.", statsID);
-		return static_cast<T>(0);
-	}
-	T sum = 0;
-	for (std::vector<T>::const_iterator samplesItr = mapItr->second.begin(); samplesItr != mapItr->second.end(); ++samplesItr)
-	{
-		sum += *samplesItr;
-	}
-	return sum / mapItr->second.size();
+
+	T sum = CalculateSum(statsID);
+	int samplesCount = CalculateSamplesCount(statsID);
+	CHECK_CONDITION(samplesCount > 0);
+
+	LOG(Utility::Debug, LOGPLACE, "Sum = %.3f, samplesCount = %d", sum, samplesCount);
+
+	return sum / samplesCount;
 }
 
 template <typename T>
 T Stats<T>::CalculateMedian(StatsID statsID)
 {
+	if (m_child != NULL)
+	{
+		LOG(Utility::Emergency, LOGPLACE, "Median shouldn't be used for the hierarchical stats storage as it is now used. The result will not be correct.");
+	}
 	if (m_samples[statsID].empty())
 	{
 		LOG(Utility::Info, LOGPLACE, "Median cannot be calculated for %d statsID. There are no samples stored.", statsID);
@@ -91,6 +155,12 @@ T Stats<T>::CalculateMedian(StatsID statsID)
 	{
 		return m_samples[statsID].at(m_samples[statsID].size() / 2);
 	}
+}
+
+template <typename T>
+int Stats<T>::GetHierachyDepth() const
+{
+	return (m_child == NULL) ? m_level : m_child->GetHierachyDepth();
 }
 
 template MATH_API class Stats<Math::Real>;
@@ -111,6 +181,7 @@ MethodStats::MethodStats(void) :
 	m_isNestedWithinAnotherProfiledMethod(false)
 {
 	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
+	LOG(Utility::Debug, LOGPLACE, "MethodStats constructor");
 }
 
 MethodStats::~MethodStats(void)
@@ -207,8 +278,8 @@ void MethodStats::StopProfiling()
 
 Math::Real MethodStats::GetTotalTimeWithoutNestedStats() const
 {
-	CHECK_CONDITION(m_invocationsCount == m_timeSamples.size(), Utility::Error, "There have been %d method invocations performed, but %d samples are stored", m_invocationsCount, m_timeSamples.size());
 #ifdef METHOD_STATS_VARIANT_1
+	CHECK_CONDITION(m_invocationsCount == m_timeSamples.size(), Utility::Error, "There have been %d method invocations performed, but %d samples are stored", m_invocationsCount, m_timeSamples.size());
 	if (m_timeSamples.empty())
 	{
 		CHECK_CONDITION(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::Warning, "Although no time samples are stored the total time is not zero (%.4f).", m_totalTime);
@@ -237,6 +308,7 @@ ClassStats::ClassStats(const char* className) :
 	m_className(className),
 	m_profilingMethodsCount(0)
 {
+	LOG(Utility::Debug, LOGPLACE, "ClassStats \"%s\" constructor", className);
 }
 
 ClassStats::~ClassStats()

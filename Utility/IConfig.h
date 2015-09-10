@@ -4,14 +4,9 @@
 #include "ILogger.h"
 #include <sstream>
 
-#ifdef _DEBUG
 #include <string>
-#define GET_CONFIG_VALUE(cfgName, defValue) Utility::IConfig::GetConfig().Get(cfgName, Utility::IConfig::GetConfig().Get(cfgName + std::string("_default"), defValue))
-#define GET_CONFIG_VALUE_STR(cfgName, defValue) Utility::IConfig::GetConfig().GetArg(cfgName, Utility::IConfig::GetConfig().GetArg(cfgName + std::string("_default"), defValue))
-#else
 #define GET_CONFIG_VALUE(cfgName, defValue) Utility::IConfig::GetConfig().Get(cfgName, defValue)
 #define GET_CONFIG_VALUE_STR(cfgName, defValue) Utility::IConfig::GetConfig().GetArg(cfgName, defValue)
-#endif
 
 namespace Utility
 {

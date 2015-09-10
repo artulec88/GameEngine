@@ -1,9 +1,9 @@
 @echo off
-pushd
+rem pushd
 for %%F in (*.gnu) do call :Sub %%F
 cd .\ClassStats
 for %%F in (*.dat) do call :Class %%~nF
-popd
+rem popd
 cd ..
 GOTO :EOF
 :Sub

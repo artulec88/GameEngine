@@ -1,3 +1,3 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-KDTree	16641	0	332410	0	19.9754
-BuildTree	16641	0	191742	0	11.5223
+KDTree	16641	0	336602	0	20.2273
+BuildTree	16641	0	205106	0	12.3253

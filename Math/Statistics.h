@@ -10,6 +10,9 @@
 
 namespace Math { namespace Statistics
 {
+extern const int STATS_SAMPLES_FIRST_LEVEL;
+extern const int STATS_SAMPLES_SECOND_LEVEL;
+extern const int STATS_SAMPLES_THIRD_LEVEL;
 //enum TimeUnit
 //{
 //	SECONDS = 0,
@@ -35,9 +38,15 @@ enum MATH_API StatsID
 template <typename T>
 class Stats
 {
+/* ==================== Static variables and functions begin ==================== */
+private:
+	static const int MAX_STATS_LEVEL = 3;
+	static const int MAX_SAMPLES_COUNT = 1000;
+/* ==================== Static variables and functions end ==================== */
+
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API Stats();
+	MATH_API Stats(int level = 0);
 	MATH_API ~Stats(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -46,13 +55,17 @@ public:
 	MATH_API void Push(StatsID statsID, T sample);
 	MATH_API int Size() const;
 	MATH_API int Size(StatsID statsID) const;
-	
+	T CalculateSum(StatsID statsID) const;
+	int CalculateSamplesCount(StatsID statsID) const;
 	MATH_API T CalculateMean(StatsID statsID) const;
 	MATH_API T CalculateMedian(StatsID statsID);
+	int GetHierachyDepth() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	const int m_level;
+	Stats<T>* m_child;
 	std::map<StatsID, std::vector<T>> m_samples;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Stats */

@@ -52,7 +52,7 @@
 #else
 #define SLOW_ASSERT(expr)
 #endif
-#else /* _DEBUG */
+#else /* _RELEASE */
 #define CHECK_CONDITION(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)

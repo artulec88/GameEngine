@@ -1,4 +1,4 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-KeyEvent	3	1	5.77566	1.92522	1.92522
-Input	1374	904	3408.13	2450.81	2.48044
-Render	110	57	178647	147091	1624.06
+KeyEvent	1	1	2034	2034	2034
+Input	9181	9181	14463.3	14463.3	1.57536
+Render	910	910	650783	650783	715.146

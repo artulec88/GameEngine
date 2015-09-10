@@ -1,4 +1,4 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Matrix4D	7953	5752	13054.3	9532.59	1.64143
-operator*	2201	2201	12352.8	12352.8	5.61237
-operator=	443	443	784.525	784.525	1.77094
+Matrix4D	3556728	660464	5.33898e+006	1.16387e+006	1.50109
+operator*	1031525	265065	5.16371e+006	1.38435e+006	5.0059
+operator=	579903	50807	817737	87019.9	1.41013

@@ -10,18 +10,20 @@ using namespace Math::Statistics;
 {
 	if (IStatisticsStorage::statisticsStorage == NULL)
 	{
+		//LOG(Utility::Critical, LOGPLACE, "Creating new statistics storage");
 		IStatisticsStorage::statisticsStorage = new IStatisticsStorage();
 	}
-	//IStatisticsStorage::statisticsStorage->PrintSimpleReport();
 	return *IStatisticsStorage::statisticsStorage;
 }
 
 IStatisticsStorage::IStatisticsStorage()
 {
+	//LOG(Utility::Critical, LOGPLACE, "IStatisticsStorage constructor");
 }
 
 IStatisticsStorage::~IStatisticsStorage(void)
 {
+	LOG(Utility::Critical, LOGPLACE, "IStatisticsStorage destructor");
 	for (std::map<const char*, ClassStats*>::iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		delete classStatsItr->second;
@@ -30,8 +32,13 @@ IStatisticsStorage::~IStatisticsStorage(void)
 
 ClassStats& IStatisticsStorage::GetClassStats(const char* className)
 {
-	std::pair<std::map<const char*, ClassStats*>::iterator, bool /* false if element already existed */> insertRes = m_classStatistics.insert(std::pair<const char*, ClassStats*>(className, new ClassStats(className)));
-	return *insertRes.first->second;
+	std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.find(className);
+	if (classStatsItr == m_classStatistics.end())
+	{
+		std::pair<std::map<const char*, ClassStats*>::iterator, bool /* false if element already existed */> insertRes = m_classStatistics.insert(std::pair<const char*, ClassStats*>(className, new ClassStats(className)));
+		return *insertRes.first->second;
+	}
+	return *classStatsItr->second;
 }
 
 void IStatisticsStorage::PrintSimpleReport() const

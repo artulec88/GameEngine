@@ -132,6 +132,7 @@ CoreEngine::~CoreEngine(void)
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
 	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
+	//LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
 
 	QueryPerformanceCounter(&m_coreEngineStopTimer);
 	Math::Real totalElapsedTime = static_cast<Math::Real>((m_coreEngineStopTimer.QuadPart - m_coreEngineStartTimer.QuadPart)) / m_frequency.QuadPart; // in [s]
@@ -243,8 +244,14 @@ void CoreEngine::Run()
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 #endif
+	//int bla = 0;
 	while (m_isRunning)
 	{
+		//if (bla % 1000 == 0)
+		//{
+		//	LOG(Utility::Critical, LOGPLACE, "Sizeof(STATS_STORAGE) = %d", sizeof(STATS_STORAGE));
+		//}
+		//++bla;
 		/* ==================== REGION #1 begin ====================*/
 		START_TIMER(t1);
 		bool isRenderRequired = false;
