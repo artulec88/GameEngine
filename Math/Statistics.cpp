@@ -124,7 +124,7 @@ T Stats<T>::CalculateMean(StatsID statsID) const
 
 	T sum = CalculateSum(statsID);
 	int samplesCount = CalculateSamplesCount(statsID);
-	CHECK_CONDITION(samplesCount > 0);
+	CHECK_CONDITION(samplesCount > 0, Utility::Emergency, "Samples count (%d) must be positive.", samplesCount);
 
 	LOG(Utility::Debug, LOGPLACE, "Sum = %.3f, samplesCount = %d", sum, samplesCount);
 
