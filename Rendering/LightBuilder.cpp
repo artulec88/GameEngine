@@ -71,6 +71,7 @@ void DirectionalLightBuilder::BuildPart2()
 	// Setting shaders
 	directionalLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
 	directionalLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
+	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting shadow info
 	const Math::Real defaultDirectionalLightShadowArea = GET_CONFIG_VALUE("defaultDirectionalLightShadowArea", 80.0f);

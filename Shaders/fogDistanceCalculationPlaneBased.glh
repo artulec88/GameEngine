@@ -1,0 +1,4 @@
+float CalcFogDistance(vec3 cameraPos, vec3 worldPos, vec4 fragCoord)
+{
+	return gl_FragCoord.z / gl_FragCoord.w;
+}

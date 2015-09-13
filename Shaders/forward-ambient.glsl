@@ -9,7 +9,6 @@ attribute vec3 position;
 attribute vec2 texCoord;
 attribute vec3 normal;
 attribute vec3 tangent;
-//attribute vec3 biTangent;
 
 uniform mat4 T_model;
 uniform mat4 T_MVP;
