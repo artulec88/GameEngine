@@ -13,7 +13,7 @@
 // Include GLFW
 #include <GLFW\glfw3.h>
 
-#define CALCULATE_STATS
+//#define CALCULATE_STATS
 #define ANT_TWEAK_BAR_ENABLED
 
 #undef START_PROFILING_STATIC
@@ -62,6 +62,40 @@ namespace Rendering
 			DAY,
 			SUNSET,
 			AFTER_DUSK
+		};
+	}
+
+	namespace FogEffect
+	{
+		// must match the values in the FogCalculationType
+		enum FogFallOffType
+		{
+			LINEAR = 0,
+			EXPONENTIAL = 1,
+			SQUARED_EXPONENTIAL = 2
+		};
+
+		// must match the values in the FogFallOffType
+		enum FogCalculationType
+		{
+			PLANE_BASED = 0,
+			RANGE_BASED = 4
+		};
+
+		// TODO: Consider removing this struct. Use simple 'int' as the key for the fog shaders in the Renderer class.
+		// Use bitwise AND (between FogFallOffType and FogCalculationType) to construct this 'int' value.
+		struct Fog
+		{
+			Fog() : fallOffType(LINEAR), calculationType(PLANE_BASED)
+			{
+			}
+			Fog(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
+				fallOffType(fogFallOffType), calculationType(fogCalculationType)
+			{
+			}
+			bool operator<(const Fog& fog) const;
+			FogFallOffType fallOffType;
+			FogCalculationType calculationType;
 		};
 	}
 

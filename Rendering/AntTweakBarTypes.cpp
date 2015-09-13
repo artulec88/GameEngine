@@ -5,6 +5,8 @@
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include <stddef.h>
 
+TwType Rendering::fogFallOffType;
+TwType Rendering::fogCalculationType;
 TwType Rendering::angleUnitType;
 TwType Rendering::angleType;
 TwType Rendering::vector3DType;
@@ -14,6 +16,19 @@ TwType Rendering::shadowInfoType;
 
 /* static */ void Rendering::AntTweakBarTypes::InitializeTweakBarTypes()
 {
+	TwEnumVal fogFallOffTypeEV[] = {
+		{ Rendering::FogEffect::LINEAR, "Linear" },
+		{ Rendering::FogEffect::EXPONENTIAL, "Exponential" },
+		{ Rendering::FogEffect::SQUARED_EXPONENTIAL, "Squared exponential" }
+	};
+	fogFallOffType = TwDefineEnum("FogFallOffType", fogFallOffTypeEV, 3);
+	
+	TwEnumVal fogCalculationTypeEV[] = {
+		{ Rendering::FogEffect::PLANE_BASED, "Plane-based" },
+		{ Rendering::FogEffect::RANGE_BASED, "Range-based" }
+	};
+	fogCalculationType = TwDefineEnum("FogCalculationType", fogCalculationTypeEV, 2);
+
 	// array used to describe the Angle::Unit enum values
 	TwEnumVal angleUnitEV[] = { { Math::Unit::DEGREE, "Degree" }, { Math::Unit::RADIAN, "Rad" } };
 	angleUnitType = TwDefineEnum("Unit", angleUnitEV, 2);

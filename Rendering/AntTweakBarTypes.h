@@ -18,6 +18,8 @@ namespace Rendering
 		static void InitializeTweakBarTypes();
 	};
 
+	extern TwType fogFallOffType;
+	extern TwType fogCalculationType;
 	extern TwType angleUnitType;
 	extern TwType angleType;
 	extern TwType vector3DType;

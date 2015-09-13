@@ -510,6 +510,7 @@ Shader::Shader(const std::string& fileName) :
 	shaderData(NULL),
 	fileName(fileName)
 {
+	LOG(Utility::Debug, LOGPLACE, "Shader constructed based on filename \"%s\"", fileName.c_str());
 	std::map<std::string, ShaderData*>::const_iterator itr = shaderResourceMap.find(fileName);
 	if (itr == shaderResourceMap.end())
 	{

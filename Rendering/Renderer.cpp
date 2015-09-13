@@ -44,6 +44,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("ambientLightFogColor_z", 0.7f)),
 	m_ambientLightFogStart(GET_CONFIG_VALUE("ambientLightFogStart", 8.0f)),
 	m_ambientLightFogEnd(GET_CONFIG_VALUE("ambientLightFogEnd", 50.0f)),
+	m_ambientLightFogDensityFactor(GET_CONFIG_VALUE("ambientLightFogDensityFactor", 0.2f)),
+	m_ambientLightFogFallOffType(static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE("ambientLightFogFallOffType", 0))),
+	m_ambientLightFogCalculationType(static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE("ambientLightFogCalculationType", 0))),
 	m_ambientDaytimeColor(GET_CONFIG_VALUE("ambientDaytimeColorRed", 0.2f),
 		GET_CONFIG_VALUE("ambientDaytimeColorGreen", 0.2f),
 		GET_CONFIG_VALUE("ambientDaytimeColorBlue", 0.2f)),
@@ -67,9 +70,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_filterMesh(NULL),
 	m_terrainNode(NULL),
 	m_ambientShaderTerrain(NULL),
-	m_ambientShaderFogEnabledTerrain(NULL),
 	m_ambientShader(NULL),
-	m_ambientShaderFogEnabled(NULL),
 	m_shadowMapShader(NULL),
 	m_nullFilterShader(NULL),
 	m_gaussBlurFilterShader(NULL),
@@ -127,6 +128,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetVector3D("ambientFogColor", m_ambientLightFogColor);
 	SetReal("ambientFogStart", m_ambientLightFogStart);
 	SetReal("ambientFogEnd", m_ambientLightFogEnd);
+	SetReal("ambientFogDensityFactor", m_ambientLightFogDensityFactor);
 	SetVector3D("ambientIntensity", m_ambientLight);
 #endif
 
@@ -135,10 +137,32 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("defaultShader", "ForwardAmbient"));
-	m_ambientShaderFogEnabled = new Shader(GET_CONFIG_VALUE_STR("defaultShaderFogEnabled", "ForwardAmbientFogEnabled"));
-	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-terrain"));
-	m_ambientShaderFogEnabledTerrain = new Shader(GET_CONFIG_VALUE_STR("defaultShaderTerrain", "forward-ambient-fog-enabled-terrain"));
+	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("ambientLightShader", "ForwardAmbient"));
+	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderTerrain", "forward-ambient-terrain"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBased", "forward-ambient-fog-linear-plane-based"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBased", "forward-ambient-fog-exponential-plane-based"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBased", "forward-ambient-fog-exponential-squared-plane-based"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBased", "forward-ambient-fog-linear-range-based"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBased", "forward-ambient-fog-exponential-range-based"));
+	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBased", "forward-ambient-fog-exponential-squared-range-based"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBasedTerrain", "forward-ambient-fog-linear-plane-based-terrain"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBasedTerrain", "forward-ambient-fog-exponential-plane-based-terrain"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBasedTerrain", "forward-ambient-fog-exponential-squared-plane-based-terrain"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBasedTerrain", "forward-ambient-fog-linear-range-based-terrain"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBasedTerrain", "forward-ambient-fog-exponential-range-based-terrain"));
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBasedTerrain", "forward-ambient-fog-exponential-squared-range-based-terrain"));
 
 	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
 	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
@@ -210,7 +234,6 @@ Renderer::~Renderer(void)
 	// TODO: Deallocating the cameras member variable
 
 	SAFE_DELETE(m_ambientShader);
-	SAFE_DELETE(m_ambientShaderFogEnabled);
 	SAFE_DELETE(m_shadowMapShader);
 	SAFE_DELETE(m_nullFilterShader);
 	SAFE_DELETE(m_gaussBlurFilterShader);
@@ -227,6 +250,19 @@ Renderer::~Renderer(void)
 	//SetTexture("fontTexture", NULL);
 	//SAFE_DELETE(m_fontTexture);
 	SAFE_DELETE(m_textRenderer);
+
+	for (std::map<FogEffect::Fog, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
+		ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
+	{
+		SAFE_DELETE(ambientLightFogShadersItr->second);
+	}
+	m_ambientShadersFogEnabledMap.clear();
+	for (std::map<FogEffect::Fog, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledTerrainMap.begin();
+		ambientLightFogShadersItr != m_ambientShadersFogEnabledTerrainMap.end(); ambientLightFogShadersItr++)
+	{
+		SAFE_DELETE(ambientLightFogShadersItr->second);
+	}
+	m_ambientShadersFogEnabledTerrainMap.clear();
 
 	SetTexture("shadowMap", NULL);
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
@@ -426,6 +462,7 @@ void Renderer::Render(const GameNode& gameNode)
 	SetVector3D("ambientFogColor", m_ambientLightFogColor);
 	SetReal("ambientFogStart", m_ambientLightFogStart);
 	SetReal("ambientFogEnd", m_ambientLightFogEnd);
+	SetReal("ambientFogDensityFactor", m_ambientLightFogDensityFactor);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -544,12 +581,18 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 	START_PROFILING;
 	if (m_ambientLightFogEnabled)
 	{
-		m_terrainNode->RenderAll(m_ambientShaderFogEnabledTerrain, this); // Ambient rendering with fog enabled for terrain node
-		gameNode.RenderAll(m_ambientShaderFogEnabled, this); // Ambient rendering with fog enabled
+		//LOG(Utility::Critical, LOGPLACE, "Ambient fog fall-off type: %d. Fog distance calculation type: %d",
+		//	m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
+		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
+		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
+		CHECK_CONDITION_RETURN_ALWAYS(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL");
+		CHECK_CONDITION_RETURN_ALWAYS(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL");
+		m_terrainNode->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
+		gameNode.RenderAll(fogShader, this); // Ambient rendering with fog enabled
 	}
 	else
 	{
-		m_terrainNode->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog enabled for terrain node
+		m_terrainNode->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
 		gameNode.RenderAll(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
 	STOP_PROFILING;
@@ -957,6 +1000,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "ambientLightFogColor", TW_TYPE_COLOR3F, &m_ambientLightFogColor, " label='Fog color' group='Ambient light' ");
 	TwAddVarRW(m_propertiesBar, "ambientLightFogStart", TW_TYPE_REAL, &m_ambientLightFogStart, " label='Fog start' group='Ambient light' step=0.5 min=0.5");
 	TwAddVarRW(m_propertiesBar, "ambientLightFogEnd", TW_TYPE_REAL, &m_ambientLightFogEnd, " label='Fog end' group='Ambient light' step=0.5 min=1.0");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogDensityFactor", TW_TYPE_REAL, &m_ambientLightFogDensityFactor, " label='Fog density factor' group='Ambient light' step=0.02 min=0.01 max=5.0 ");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogFallOffType", fogFallOffType, &m_ambientLightFogFallOffType, " label='Fog fall-off type' group='Ambient light' ");
+	TwAddVarRW(m_propertiesBar, "ambientLightFogCalculationType", fogCalculationType, &m_ambientLightFogCalculationType, " label='Fog calculation type' group='Ambient light' ");
 	TwAddVarRW(m_propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
 	TwAddVarRW(m_propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(m_propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");

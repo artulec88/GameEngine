@@ -200,6 +200,9 @@ private:
 	Math::Vector3D m_ambientLightFogColor;
 	Math::Real m_ambientLightFogStart;
 	Math::Real m_ambientLightFogEnd;
+	Math::Real m_ambientLightFogDensityFactor;
+	FogEffect::FogFallOffType m_ambientLightFogFallOffType;
+	FogEffect::FogCalculationType m_ambientLightFogCalculationType;
 	const Math::Vector3D m_ambientDaytimeColor;
 	const Math::Vector3D m_ambientSunNearHorizonColor;
 	const Math::Vector3D m_ambientNighttimeColor;
@@ -224,10 +227,10 @@ private:
 
 	GameNode* m_terrainNode;
 	Shader* m_ambientShaderTerrain;
-	Shader* m_ambientShaderFogEnabledTerrain;
+	std::map<FogEffect::Fog, Shader*> m_ambientShadersFogEnabledMap;
+	std::map<FogEffect::Fog, Shader*> m_ambientShadersFogEnabledTerrainMap;
 
 	Shader* m_ambientShader;
-	Shader* m_ambientShaderFogEnabled;
 	Shader* m_shadowMapShader;
 	Shader* m_nullFilterShader;
 	Shader* m_gaussBlurFilterShader;

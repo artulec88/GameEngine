@@ -11,7 +11,7 @@
 #undef START_PROFILING
 #undef STOP_PROFILING
 
-#define CALCULATE_MATH_STATS
+//#define CALCULATE_MATH_STATS
 #ifdef CALCULATE_MATH_STATS
 #define START_PROFILING_STATIC // do { s_classStats.StartProfiling(__FUNCTION__); } while (0)
 #define STOP_PROFILING_STATIC // do { s_classStats.StopProfiling(__FUNCTION__); } while (0)

@@ -50,6 +50,19 @@ GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 
 using namespace Math;
 
+bool Rendering::FogEffect::Fog::operator<(const Rendering::FogEffect::Fog& fog) const
+{
+	if (fallOffType != fog.fallOffType)
+	{
+		return fallOffType < fog.fallOffType;
+	}
+	else
+	{
+		return calculationType < fog.calculationType;
+	}
+	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
+}
+
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
 	LOG(Utility::Info, LOGPLACE, "Initializing graphics started");

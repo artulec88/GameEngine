@@ -307,7 +307,7 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 			{
 				LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same width, but face %d has width=%d and face %d has width=%d", i, x[i], i+1, x[i+1]);
 			}
-			if (y[i] != y[i+1])
+			if (y[i] != y[i-1])
 			{
 				LOG(Utility::Error, LOGPLACE, "All cube map texture's faces must have the same height, but face %d has height=%d and face %d has height=%d", i, x[i], i+1, x[i+1]);
 			}
