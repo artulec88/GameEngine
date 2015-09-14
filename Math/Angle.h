@@ -33,9 +33,7 @@ public:
 		m_angle(angle),
 		m_unit(unit)
 #ifdef CALCULATE_MATH_STATS
-		,m_degToRadConversionCount(0),
-		m_radToDegConversionCount(0),
-		m_classStats(STATS_STORAGE.GetClassStats("Angle"))
+		,m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
 	{
 	}
@@ -44,18 +42,12 @@ public:
 	
 	~Angle()
 	{
-//#ifdef CALCULATE_MATH_STATS
-	//	if ((m_degToRadConversionCount > m_radToDegConversionCount + 1) || (m_radToDegConversionCount > m_degToRadConversionCount + 1))
-	//	{
-	//		LOG(Utility::Info, LOGPLACE, "The conversions between radians and degrees units report: ToRad: %d\t ToDeg: %d", m_degToRadConversionCount, m_radToDegConversionCount);
-	//	}
-//#endif
 	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Real GetAngleInDegrees() const;
+	inline Real GetAngleInDegrees() const;
 	Real GetAngleInRadians() const;
 	bool IsInDegrees() const { return (m_unit == Unit::DEGREE); }
 	Unit::UnitType GetUnit() const { return m_unit; }
@@ -69,9 +61,6 @@ public:
 		switch(m_unit)
 		{
 		case Unit::DEGREE:
-#ifdef CALCULATE_MATH_STATS
-			++m_degToRadConversionCount;
-#endif
 			STOP_PROFILING;
 			return sin(ToRad(m_angle));
 			break;
@@ -89,9 +78,6 @@ public:
 		switch(m_unit)
 		{
 		case Unit::DEGREE:
-#ifdef CALCULATE_MATH_STATS
-			++m_degToRadConversionCount;
-#endif
 			STOP_PROFILING;
 			return cos(ToRad(m_angle));
 			break;
@@ -132,8 +118,6 @@ private:
 	Unit::UnitType m_unit;
 
 #ifdef CALCULATE_MATH_STATS
-	mutable int m_degToRadConversionCount;
-	mutable int m_radToDegConversionCount;
 	mutable Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

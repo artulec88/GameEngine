@@ -168,8 +168,7 @@ private:
 
 inline bool AlmostEqual(Real value1, Real value2)
 {
-	const Real epsilon = static_cast<Real>(0.0001);
-	if (abs(value1 - value2) > epsilon)
+	if (abs(value1 - value2) > EPSILON)
 	{
 		return false;
 	}

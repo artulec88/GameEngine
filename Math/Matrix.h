@@ -44,8 +44,6 @@ public:
 	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
 	static Matrix4D RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 	static Matrix4D RotationFromDirection(const Vector3D& forward, const Vector3D& up);
-
-	static int Signum(int i, int j);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -57,8 +55,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void SetElement(int i, int j, Real value);
-	Real GetElement (int i, int j) const;
+	inline void SetElement(int i, int j, Real value);
+	inline Real GetElement (int i, int j) const;
 	
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
@@ -66,8 +64,8 @@ public:
 	bool operator!=(const Matrix4D& m) const;
 	Matrix4D& operator=(const Matrix4D& mat);
 
-	const Math::Real* operator[](int index) const;
-	Math::Real* operator[](int index);
+	inline const Math::Real* operator[](int index) const;
+	inline Math::Real* operator[](int index);
 
 	Vector3D Transform(const Vector3D& vec); // Write tests
 	
@@ -83,6 +81,8 @@ public:
 	bool IsIdentity() const;
 
 	std::string ToString() const;
+private:
+	int Signum(int i, int j);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -96,58 +96,26 @@ private:
 
 inline Real Matrix4D::GetElement (int i, int j) const
 {
-#ifdef _DEBUG
-	if ((i < 0) || (i >= MATRIX_SIZE))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
-		exit(EXIT_FAILURE);
-	}
-	if ((j < 0) || (j >= MATRIX_SIZE))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
-		exit(EXIT_FAILURE);
-	}
-#endif
+	CHECK_CONDITION_EXIT((i >= 0) && (i < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", i);
+	CHECK_CONDITION_EXIT((j >= 0) && (j < MATRIX_SIZE), Utility::Error, "Incorrect column index given (%d)", j);
 	return m[i][j];
 }
 
 inline void Matrix4D::SetElement(int i, int j, Real value)
 {
-#ifdef _DEBUG
-	if ((i < 0) || (i >= 3))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", i);
-		exit(EXIT_FAILURE);
-	}
-	if ((j < 0) || (j >= 3))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect column index given (%d)", j);
-		exit(EXIT_FAILURE);
-	}
-#endif
+	CHECK_CONDITION_EXIT((i >= 0) && (i < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", i);
+	CHECK_CONDITION_EXIT((j >= 0) && (j < MATRIX_SIZE), Utility::Error, "Incorrect column index given (%d)", j);
 	m[i][j] = value;
 }
 
 inline const Math::Real* Matrix4D::operator[](int index) const
 {
-#ifdef _DEBUG
-	if ((index < 0) || (index >= MATRIX_SIZE))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
-		exit(EXIT_FAILURE);
-	}
-#endif
+	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", index);
 	return m[index];
 }
 inline Math::Real* Matrix4D::operator[](int index)
 {
-#ifdef _DEBUG
-	if ((index < 0) || (index >= MATRIX_SIZE))
-	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect row index given (%d)", index);
-		exit(EXIT_FAILURE);
-	}
-#endif
+	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", index);
 	return m[index];
 }
 

@@ -10,15 +10,6 @@
 
 namespace Math { namespace Statistics
 {
-/**
- * TODO: The Math library should not know anything (even class names) about the classes it provides statistics for.
- * Some other solution should be given.
- */
-//enum MATH_API StatsClassID
-//{
-//	CORE_ENGINE = 0,
-//	RENDERER
-//};
 
 class IStatisticsStorage
 {

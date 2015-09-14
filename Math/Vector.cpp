@@ -116,6 +116,11 @@ bool Vector2D::operator!=(const Vector2D& v) const
 	return (!((*this) == v));
 }
 
+bool Vector2D::IsNormalized() const
+{
+	return AlmostEqual(LengthSquared(), REAL_ONE);
+}
+
 Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 {
 	return ((vec - (*this)) * lerpFactor) + (*this);
@@ -288,6 +293,11 @@ inline bool Vector3D::operator==(const Vector3D& v) const
 bool Vector3D::operator!=(const Vector3D& v) const
 {
 	return (!((*this) == v));
+}
+
+bool Vector3D::IsNormalized() const
+{
+	return AlmostEqual(LengthSquared(), REAL_ONE);
 }
 
 Vector3D Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const

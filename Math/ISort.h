@@ -68,7 +68,7 @@ protected:
 		case DESCENDING:
 			return (v2 > v1);
 		default:
-			LOG(Utility::Critical, LOGPLACE, "Unknown sorting direction specified.");
+			LOG(Utility::Error, LOGPLACE, "Unknown sorting direction specified.");
 			return false;
 			break;
 		}

@@ -57,7 +57,6 @@ public: // public member functions
 		//}
 		return (*this) / static_cast<Real>(sqrt(length));
 	}
-
 	void Normalize()
 	{
 		Real length = LengthSquared();
@@ -67,6 +66,7 @@ public: // public member functions
 		//}
 		*this /= static_cast<Real>(sqrt(length));
 	}
+	bool IsNormalized() const;
 	
 	Real Cross(const Vector2D& v) const
 	{
@@ -164,6 +164,7 @@ public: // public member functions
 		//}
 		(*this) /= static_cast<Real>(sqrt(length));
 	}
+	bool IsNormalized() const;
 
 	//Vector3D Rotate(Real angle);
 	Vector3D Rotate(const Vector3D& axis, const Angle& angle);

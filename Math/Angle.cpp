@@ -10,9 +10,7 @@ Angle::Angle(const Angle& angle) :
 	m_angle(angle.GetAngleInRadians()),
 	m_unit(Unit::RADIAN)
 #ifdef CALCULATE_MATH_STATS
-	,m_degToRadConversionCount(0),
-	m_radToDegConversionCount(0),
-	m_classStats(STATS_STORAGE.GetClassStats("Angle"))
+	,m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
 {
 }
@@ -27,9 +25,6 @@ Real Angle::GetAngleInDegrees() const
 		STOP_PROFILING;
 		return m_angle;
 	case Unit::RADIAN:
-#ifdef CALCULATE_MATH_STATS
-		++m_radToDegConversionCount;
-#endif
 		STOP_PROFILING;
 		return ToDeg(m_angle);
 	default:
@@ -47,9 +42,6 @@ Real Angle::GetAngleInRadians() const
 	switch (m_unit)
 	{
 	case Unit::DEGREE:
-#ifdef CALCULATE_MATH_STATS
-		++m_degToRadConversionCount;
-#endif
 		STOP_PROFILING;
 		return ToRad(m_angle);
 	case Unit::RADIAN:
@@ -224,6 +216,6 @@ bool Angle::operator<=(const Angle& angle) const
 std::string Angle::ToString() const
 {
 	std::stringstream ss("");
-	ss << GetAngleInDegrees() << L'\u2103';
+	ss << GetAngleInDegrees() << L'\u2103'; // TODO: Check whether the correct "degree" sign is displayed.
 	return ss.str();
 }

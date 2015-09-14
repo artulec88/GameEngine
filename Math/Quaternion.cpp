@@ -146,6 +146,11 @@ Quaternion Quaternion::Normalized() const
 void Quaternion::Normalize()
 {
 	Real length = Length();
+	if (AlmostEqual(length , REAL_ONE))
+	{
+		LOG(Utility::Debug, LOGPLACE, "The quaternion is already normalized");
+		return;
+	}
 	m_x /= length;
 	m_y /= length;
 	m_z /= length;

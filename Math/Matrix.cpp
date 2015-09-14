@@ -61,8 +61,7 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	SLOW_ASSERT((*this) == mat); // TODO: Check the operator == because we got assertions here
-	
+	CHECK_CONDITION((*this) == mat, Utility::Error, "The copy constructor should cause the two matrices to be equal, but they are not.");
 	STOP_PROFILING;
 }
 
@@ -80,7 +79,7 @@ Matrix4D::~Matrix4D()
 	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = REAL_ONE;	matrix.m[2][3] = REAL_ZERO;
 	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
 	
-	SLOW_ASSERT(matrix.IsIdentity());
+	CHECK_CONDITION(matrix.IsIdentity(), Utility::Error, "The identity matrix is not in fact an identity matrix.");
 	
 	STOP_PROFILING_STATIC;
 	return matrix;
@@ -91,8 +90,8 @@ Matrix4D::~Matrix4D()
 	START_PROFILING_STATIC;
 	// CHECKED
 	Matrix4D matrix;
-	Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
-	Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
+	const Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
+	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
 
 	//matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
 	//matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
@@ -116,9 +115,9 @@ Matrix4D::~Matrix4D()
 	// CHECKED
 	Matrix4D matrix;
 
-	Real width = right - left;
-	Real height = top - bottom;
-	Real depth = farPlane - nearPlane;
+	const Real width = right - left;
+	const Real height = top - bottom;
+	const Real depth = farPlane - nearPlane;
 
 	const Real temp = static_cast<Real>(2);
 	
@@ -189,6 +188,7 @@ Matrix4D::~Matrix4D()
 	//	LOG(Utility::Error, LOGPLACE, "Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s",
 	//		rot.ToString().c_str(), matrixToCompare.ToString().c_str());
 	//}
+	CHECK_CONDITION((*this) == Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING_STATIC;
 	return rot;
 }
@@ -299,7 +299,10 @@ Matrix4D::~Matrix4D()
 
 	//Vector3D newUp = forw.Cross(right);
 
-	// We assume that forward, up and right vectors are normalized.
+	CHECK_CONDITION(forward.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
+	CHECK_CONDITION(up.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION(right.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+
 	Matrix4D matrix;
 	matrix.m[0][0] = right.GetX();	matrix.m[0][1] = up.GetX();	matrix.m[0][2] = forward.GetX();	matrix.m[0][3] = REAL_ZERO;
 	matrix.m[1][0] = right.GetY();	matrix.m[1][1] = up.GetY();	matrix.m[1][2] = forward.GetY();	matrix.m[1][3] = REAL_ZERO;
@@ -324,36 +327,37 @@ Matrix4D::~Matrix4D()
 #endif
 }
 
-/* static */ int Matrix4D::Signum(int i, int j)
+int Matrix4D::Signum(int i, int j)
 {
 	return ((i + j) % 2) ? -1 : 1;
 }
 
 std::string Matrix4D::ToString() const
 {
+	const std::string INDENTATION_STRING = " ";
 	std::stringstream s("");
-	s << m[0][0] << " ";
-	s << m[0][1] << " ";
-	s << m[0][2] << " ";
-	s << m[0][3] << " ";
+	s << m[0][0] << INDENTATION_STRING;
+	s << m[0][1] << INDENTATION_STRING;
+	s << m[0][2] << INDENTATION_STRING;
+	s << m[0][3] << INDENTATION_STRING;
 	s << std::endl;
 
-	s << m[1][0] << " ";
-	s << m[1][1] << " ";
-	s << m[1][2] << " ";
-	s << m[1][3] << " ";
+	s << m[1][0] << INDENTATION_STRING;
+	s << m[1][1] << INDENTATION_STRING;
+	s << m[1][2] << INDENTATION_STRING;
+	s << m[1][3] << INDENTATION_STRING;
 	s << std::endl;
 
-	s << m[2][0] << " ";
-	s << m[2][1] << " ";
-	s << m[2][2] << " ";
-	s << m[2][3] << " ";
+	s << m[2][0] << INDENTATION_STRING;
+	s << m[2][1] << INDENTATION_STRING;
+	s << m[2][2] << INDENTATION_STRING;
+	s << m[2][3] << INDENTATION_STRING;
 	s << std::endl;
 
-	s << m[3][0] << " ";
-	s << m[3][1] << " ";
-	s << m[3][2] << " ";
-	s << m[3][3] << " ";
+	s << m[3][0] << INDENTATION_STRING;
+	s << m[3][1] << INDENTATION_STRING;
+	s << m[3][2] << INDENTATION_STRING;
+	s << m[3][3] << INDENTATION_STRING;
 	s << std::endl;
 
 	return s.str();
@@ -436,14 +440,12 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
 	START_PROFILING;
-	Vector3D result;
-
-	Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
-	result.SetX((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw);
-	result.SetY((m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw);
-	result.SetZ((m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
+	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
+	Real x = (m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw;
+	Real y = (m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw;
+	Real z = (m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw;
 	STOP_PROFILING;
-	return result;
+	return Vector3D(x, y, z);
 }
 
 /**
