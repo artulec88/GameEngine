@@ -82,7 +82,7 @@ public:
 
 	std::string ToString() const;
 private:
-	int Signum(int i, int j);
+	int Signum(int i, int j) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
