@@ -415,10 +415,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 
 void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 {
-	if (terrainNode == NULL)
-	{
-		LOG(Warning, LOGPLACE, "Terrain node is NULL.");
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(terrainNode != NULL; Error, "Cannot register terrain node. Given terrain node is NULL.");
 	if (m_terrainNode != NULL)
 	{
 		LOG(Warning, LOGPLACE, "Replacing already set terrain node with a different one.");

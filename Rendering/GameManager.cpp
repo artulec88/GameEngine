@@ -50,6 +50,7 @@ GameManager* GameManager::s_gameManager = NULL;
 
 GameManager::GameManager() :
 	m_rootGameNode(),
+	m_terrainNode(NULL),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false)
 {
@@ -74,6 +75,7 @@ GameManager::~GameManager(void)
 	LOG(Info, LOGPLACE, "Game manager destruction finished");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
+	SAFE_DELETE(m_terrainNode);
 	LOG(Debug, LOGPLACE, "Game manager destruction finished");
 }
 

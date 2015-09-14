@@ -48,8 +48,6 @@ private:
 protected:
 	const int m_resourcesToLoad;
 	int m_resourcesLoaded;
-
-	Rendering::GameNode* terrainNode;
 	
 	Rendering::TerrainMesh* terrainMesh;
 	Rendering::Material* terrainMaterial;

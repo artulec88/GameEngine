@@ -166,10 +166,9 @@ private:
 	FloatingPointUnion u_;
 }; /* end class FloatingPoint */
 
-template <typename T>
-inline bool AlmostEqual(T value1, T value2)
+inline bool AlmostEqual(Real value1, Real value2)
 {
-	const Real epsilon = static_cast<Real>(0.1);
+	const Real epsilon = static_cast<Real>(0.0001);
 	if (abs(value1 - value2) > epsilon)
 	{
 		return false;

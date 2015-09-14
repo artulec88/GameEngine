@@ -29,7 +29,6 @@ TestGameManager::TestGameManager() :
 	GameManager(),
 	m_resourcesToLoad(32),
 	m_resourcesLoaded(0),
-	terrainNode(NULL),
 	terrainMesh(NULL),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
 	timeToUpdateCameraHeight(REAL_ZERO),
@@ -64,7 +63,6 @@ TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
-	//SAFE_DELETE(terrainNode);
 }
 
 Math::Real TestGameManager::GetLoadingProgress() const
@@ -88,7 +86,7 @@ void TestGameManager::Load()
 	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
-	terrainNode = new GameNode();
+	m_terrainNode = new GameNode();
 	terrainMesh = new TerrainMesh("..\\Models\\" + GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
@@ -102,12 +100,12 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
-	//terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	terrainNode->GetTransform().SetScale(20.0f);
-	terrainMesh->TransformPositions(terrainNode->GetTransform().GetTransformation());
-	//AddToSceneRoot(terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
-	RegisterTerrainNode(terrainNode);
+	m_terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
+	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
+	m_terrainNode->GetTransform().SetScale(20.0f);
+	terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
+	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
+	RegisterTerrainNode(m_terrainNode);
 
 	boxNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED

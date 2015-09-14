@@ -90,6 +90,7 @@ protected:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	GameNode m_rootGameNode;
+	GameNode* m_terrainNode;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 /* ==================== Non-static member variables end ==================== */

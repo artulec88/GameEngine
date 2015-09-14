@@ -51,7 +51,7 @@ void LoadGameState::Revealed()
 void LoadGameState::Render(Rendering::Renderer* renderer)
 {
 	START_PROFILING;
-	LOG(Utility::Delocust, LOGPLACE, "LOAD game state rendering");
+	//LOG(Utility::Delocust, LOGPLACE, "LOAD game state rendering");
 	renderer->RenderLoadingScreen(m_loadingProgress);
 	STOP_PROFILING;
 }
@@ -59,7 +59,7 @@ void LoadGameState::Render(Rendering::Renderer* renderer)
 void LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	LOG(Utility::Delocust, LOGPLACE, "LOAD game state updating");
+	//LOG(Utility::Delocust, LOGPLACE, "LOAD game state updating");
 	m_loadingProgress = GameManager::GetGameManager()->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
