@@ -28,7 +28,7 @@ PlayGameState::~PlayGameState(void)
 void PlayGameState::Entered()
 {
 	START_PROFILING;
-	LOG(Utility::Info, LOGPLACE, "PLAY game state has been placed in the game state manager");
+	INFO_LOG("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
 	CHECK_CONDITION_EXIT_ALWAYS(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
@@ -50,7 +50,7 @@ void PlayGameState::Entered()
 
 void PlayGameState::Leaving()
 {
-	LOG(Utility::Info, LOGPLACE, "PLAY game state is about to be removed from the game state manager");
+	INFO_LOG("PLAY game state is about to be removed from the game state manager");
 #ifdef CALCULATE_STATS
 	CoreEngine::GetCoreEngine()->StopSamplingSpf();
 #endif
@@ -58,12 +58,12 @@ void PlayGameState::Leaving()
 
 void PlayGameState::Obscuring()
 {
-	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of PLAY game state");
+	INFO_LOG("Another game state is about to stack on top of PLAY game state");
 }
 
 void PlayGameState::Revealed()
 {
-	LOG(Utility::Info, LOGPLACE, "PLAY game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG("PLAY game state has become the topmost game state in the game state manager's stack");
 }
 
 void PlayGameState::MouseButtonEvent(int button, int action, int mods)
@@ -77,13 +77,13 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 		{
 			CoreEngine::GetCoreEngine()->CentralizeCursor();
 		}
-		LOG(Utility::Info, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		INFO_LOG("Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
-		LOG(Utility::Info, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		INFO_LOG("Mouse button released: button=%d\t mods=%d", button, mods);
 		break;
 	default:
-		LOG(Utility::Warning, LOGPLACE, "Unknown action performed with the mouse. Button=%d\t action=%d\t mods=%d", button, action, mods);
+		WARNING_LOG("Unknown action performed with the mouse. Button=%d\t action=%d\t mods=%d", button, action, mods);
 	}
 	STOP_PROFILING;
 }
@@ -96,7 +96,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	{
 		return;
 	}
-	//stdlog(Debug, LOGPLACE, "Cursor position = %.2f, %.2f", xPos, yPos);
+	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
 
 	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
 	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
@@ -222,7 +222,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 void PlayGameState::Input(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	//LOG(Utility::Debug, LOGPLACE, "PLAY game state input processing");
+	DEBUG_LOG("PLAY game state input processing");
 	GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
 	//m_rootGameNode.InputAll(elapsedTime);
 	STOP_PROFILING;
@@ -231,7 +231,7 @@ void PlayGameState::Input(Math::Real elapsedTime)
 void PlayGameState::Render(Renderer* renderer)
 {
 	START_PROFILING;
-	//LOG(Utility::Debug, LOGPLACE, "PLAY game state rendering");
+	DEBUG_LOG("PLAY game state rendering");
 
 	//if (renderer == NULL)
 	//{
@@ -247,7 +247,7 @@ Math::Real maxSpeed = 1.0f;
 void PlayGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	//LOG(Utility::Debug, LOGPLACE, "PLAY game state updating");
+	DEBUG_LOG("PLAY game state updating");
 
 	//m_rootGameNode.UpdateAll(elapsedTime);
 	GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);

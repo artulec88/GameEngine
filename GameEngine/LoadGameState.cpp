@@ -27,31 +27,31 @@ LoadGameState::~LoadGameState(void)
 void LoadGameState::Entered()
 {
 	START_PROFILING;
-	LOG(Utility::Info, LOGPLACE, "LOAD game state has been placed in the game state manager");
-	LOG(Utility::Notice, LOGPLACE, "Starting the loading thread");
+	INFO_LOG("LOAD game state has been placed in the game state manager");
+	NOTICE_LOG("Starting the loading thread");
 	m_loadingThread = new tthread::thread(Rendering::GameManager::Load, Rendering::GameManager::GetGameManager());
 	STOP_PROFILING;
 }
 
 void LoadGameState::Leaving()
 {
-	LOG(Utility::Info, LOGPLACE, "LOAD game state is about to be removed from the game state manager");
+	INFO_LOG("LOAD game state is about to be removed from the game state manager");
 }
 
 void LoadGameState::Obscuring()
 {
-	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of LOAD game state");
+	INFO_LOG("Another game state is about to stack on top of LOAD game state");
 }
 
 void LoadGameState::Revealed()
 {
-	LOG(Utility::Info, LOGPLACE, "LOAD game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
 void LoadGameState::Render(Rendering::Renderer* renderer)
 {
 	START_PROFILING;
-	//LOG(Utility::Delocust, LOGPLACE, "LOAD game state rendering");
+	DELOCUST_LOG("LOAD game state rendering");
 	renderer->RenderLoadingScreen(m_loadingProgress);
 	STOP_PROFILING;
 }
@@ -59,7 +59,7 @@ void LoadGameState::Render(Rendering::Renderer* renderer)
 void LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	//LOG(Utility::Delocust, LOGPLACE, "LOAD game state updating");
+	DELOCUST_LOG("LOAD game state updating");
 	m_loadingProgress = GameManager::GetGameManager()->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
@@ -69,7 +69,7 @@ void LoadGameState::Update(Math::Real elapsedTime)
 
 	if (GameManager::GetGameManager()->IsGameLoaded())
 	{
-		LOG(Utility::Notice, LOGPLACE, "The game is loaded");
+		NOTICE_LOG("The game is loaded");
 		m_loadingThread->join();
 		GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 	}

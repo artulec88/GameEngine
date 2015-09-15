@@ -33,22 +33,22 @@ PlayMenuGameState::~PlayMenuGameState(void)
 
 void PlayMenuGameState::Entered()
 {
-	LOG(Utility::Info, LOGPLACE, "PlayMenu game state has been placed in the game state manager");
+	INFO_LOG("PlayMenu game state has been placed in the game state manager");
 }
 
 void PlayMenuGameState::Leaving()
 {
-	LOG(Utility::Info, LOGPLACE, "PlayMenu game state is about to be removed from the game state manager");
+	INFO_LOG("PlayMenu game state is about to be removed from the game state manager");
 }
 
 void PlayMenuGameState::Obscuring()
 {
-	LOG(Utility::Info, LOGPLACE, "Another game state is about to stack on top of PlayMenu game state");
+	INFO_LOG("Another game state is about to stack on top of PlayMenu game state");
 }
 
 void PlayMenuGameState::Revealed()
 {
-	LOG(Utility::Info, LOGPLACE, "PlayMenu game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG("PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
 void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
@@ -107,18 +107,18 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	}
 	default:
-		LOG(Utility::Debug, LOGPLACE, "The key %d is not supported by the menu game state", key);
+		DEBUG_LOG("The key %d is not supported by the menu game state", key);
 		break;
 	}
 }
 
 void PlayMenuGameState::Input(Math::Real elapsedTime)
 {
-	LOG(Utility::Delocust, LOGPLACE, "PLAY MAIN MENU game state input processing");
+	DEBUG_LOG("PLAY MAIN MENU game state input processing");
 }
 
 void PlayMenuGameState::Render(Rendering::Renderer* renderer)
 {
-	LOG(Utility::Delocust, LOGPLACE, "PLAY MAIN MENU game state rendering");
+	DEBUG_LOG("PLAY MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);
 }

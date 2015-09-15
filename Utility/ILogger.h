@@ -75,51 +75,51 @@
 #endif
 
 #ifdef CRITICAL_LOGGING_ENABLED
-#define CRITICAL_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Critical, logPlace, message, ##__VA_ARGS__)
+#define CRITICAL_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Critical, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define CRITICAL_LOG(logPlace, message, ...)
+#define CRITICAL_LOG(message, ...)
 #endif
 
 #ifdef EMERGENCY_LOGGING_ENABLED
-#define EMERGENCY_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Emergency, logPlace, message, ##__VA_ARGS__)
+#define EMERGENCY_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Emergency, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define EMERGENCY_LOG(logPlace, message, ...)
+#define EMERGENCY_LOG(message, ...)
 #endif
 
 #ifdef ERROR_LOGGING_ENABLED
-#define ERROR_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Error, logPlace, message, ##__VA_ARGS__)
+#define ERROR_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Error, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define ERROR_LOG(logPlace, message, ...)
+#define ERROR_LOG(message, ...)
 #endif
 
 #ifdef WARNING_LOGGING_ENABLED
-#define WARNING_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Warning, logPlace, message, ##__VA_ARGS__)
+#define WARNING_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Warning, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define WARNING_LOG(logPlace, message, ...)
+#define WARNING_LOG(message, ...)
 #endif
 
 #ifdef NOTICE_LOGGING_ENABLED
-#define NOTICE_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Notice, logPlace, message, ##__VA_ARGS__)
+#define NOTICE_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Notice, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define NOTICE_LOG(logPlace, message, ...)
+#define NOTICE_LOG(message, ...)
 #endif
 
 #ifdef INFO_LOGGING_ENABLED
-#define INFO_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Info, logPlace, message, ##__VA_ARGS__)
+#define INFO_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Info, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define INFO_LOG(logPlace, message, ...)
+#define INFO_LOG(message, ...)
 #endif
 
 #ifdef DEBUG_LOGGING_ENABLED
-#define DEBUG_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Debug, logPlace, message, ##__VA_ARGS__)
+#define DEBUG_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Debug, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define DEBUG_LOG(logPlace, message, ...)
+#define DEBUG_LOG(message, ...)
 #endif
 
 #ifdef DELOCUST_LOGGING_ENABLED
-#define DELOCUST_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Delocust, logPlace, message, ##__VA_ARGS__)
+#define DELOCUST_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Delocust, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define DELOCUST_LOG(logPlace, message, ...)
+#define DELOCUST_LOG(message, ...)
 #endif
 
 namespace Utility

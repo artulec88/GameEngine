@@ -52,7 +52,7 @@ TestGameManager::TestGameManager() :
 	,m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {
-	LOG(Debug, LOGPLACE, "TestGame is being constructed");
+	DEBUG_LOG("TestGame is being constructed");
 
 	m_gameStateManager->Push(new MenuGameState());
 	//m_gameStateManager->Push(new InGameState());
@@ -69,8 +69,7 @@ Math::Real TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > m_resourcesToLoad)
 	{
-		LOG(Warning, LOGPLACE, "Resources loaded (%d) exceeds the total number of expected resources (%d)",
-			m_resourcesLoaded, m_resourcesToLoad);
+		WARNING_LOG("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, m_resourcesToLoad);
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / m_resourcesToLoad;
@@ -78,7 +77,7 @@ Math::Real TestGameManager::GetLoadingProgress() const
 
 void TestGameManager::Load()
 {
-	LOG(Notice, LOGPLACE, "Initalizing test game");
+	NOTICE_LOG("Initalizing test game");
 	START_PROFILING;
 	CHECK_CONDITION_RETURN_ALWAYS(!m_isGameLoaded, Error, "Loading the game will not be performed. The game has already been loaded.");
 
@@ -99,6 +98,7 @@ void TestGameManager::Load()
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	//terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -239,7 +239,7 @@ void TestGameManager::Load()
 	m_isGameLoaded = true;
 	CHECK_CONDITION_EXIT_ALWAYS(m_isGameLoaded, Critical, "The game has not been loaded properly.");
 	STOP_PROFILING;
-	LOG(Notice, LOGPLACE, "Initalizing test game finished");
+	NOTICE_LOG("Initalizing test game finished");
 }
 
 void TestGameManager::AddLights()
@@ -248,23 +248,23 @@ void TestGameManager::AddLights()
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
-		LOG(Notice, LOGPLACE, "Creating %d point lights", pointLightCount);
+		NOTICE_LOG("Creating %d point lights", pointLightCount);
 		AddPointLights();
-		LOG(Debug, LOGPLACE, "%d point lights created", pointLightCount);
+		DEBUG_LOG("%d point lights created", pointLightCount);
 	}
 	else
 	{
-		LOG(Notice, LOGPLACE, "Point lights disabled");
+		NOTICE_LOG("Point lights disabled");
 	}
 	if (spotLightCount > 0)
 	{
-		LOG(Notice, LOGPLACE, "Creating %d spot lights...", spotLightCount);
+		NOTICE_LOG("Creating %d spot lights...", spotLightCount);
 		AddSpotLights();
-		LOG(Debug, LOGPLACE, "%d spot lights created", spotLightCount);
+		DEBUG_LOG("%d spot lights created", spotLightCount);
 	}
 	else
 	{
-		LOG(Notice, LOGPLACE, "Spot lights disabled");
+		NOTICE_LOG("Spot lights disabled");
 	}
 	STOP_PROFILING;
 }
@@ -276,10 +276,10 @@ void TestGameManager::AddDirectionalLight()
 	int directionalLightsCount = GET_CONFIG_VALUE("directionalLightsCount", 1);
 	if (directionalLightsCount == 0)
 	{
-		LOG(Notice, LOGPLACE, "Directional lights disabled");
+		NOTICE_LOG("Directional lights disabled");
 		return;
 	}
-	LOG(Info, LOGPLACE, "Directional lights enabled");
+	INFO_LOG("Directional lights enabled");
 
 	Rendering::DirectionalLightBuilder directionalLightBuilder;
 	Rendering::LightBuilderDirector lightBuilderDirector(directionalLightBuilder);
@@ -335,11 +335,11 @@ void TestGameManager::AddCameras()
 	START_PROFILING;
 	if (cameraCount < 1)
 	{
-		LOG(Error, LOGPLACE, "No cameras defined.");
+		ERROR_LOG("No cameras defined.");
 		exit(EXIT_FAILURE);
 	}
 	
-	LOG(Notice, LOGPLACE, "Creating %d camera(-s)...", cameraCount);
+	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
 	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
 	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
@@ -368,10 +368,10 @@ void TestGameManager::AddCameras()
 		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
 		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
-		LOG(Delocust, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
+		DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		LOG(Delocust, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+		DELOCUST_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
 			rotMatrix.ToString().c_str(),
 			rot.ToString().c_str(),
 			rot.ToRotationMatrix().ToString().c_str(),
@@ -386,7 +386,7 @@ void TestGameManager::AddCameras()
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
 	}
-	LOG(Debug, LOGPLACE, "%d camera(-s) created", cameraCount);
+	DEBUG_LOG("%d camera(-s) created", cameraCount);
 	STOP_PROFILING;
 }
 
@@ -460,10 +460,10 @@ void TestGameManager::InitializeTweakBars()
 #ifdef GAME_PROPERTIES_TWEAK_BAR
 	if (!m_isGameLoaded)
 	{
-		LOG(Warning, LOGPLACE, "Cannot initialize game's tweak bars. The game has not been loaded yet.");
+		WARNING_LOG("Cannot initialize game's tweak bars. The game has not been loaded yet.");
 		return;
 	}
-	LOG(Info, LOGPLACE, "Initializing game's tweak bars");
+	INFO_LOG("Initializing game's tweak bars");
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
 
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
@@ -474,7 +474,7 @@ void TestGameManager::InitializeTweakBars()
 	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementOffset", TW_TYPE_FLOAT, &terrainDisplacementOffset, " label='Terrain displacement offset' group='Terrain' ");
 	if (terrainMaterial == NULL)
 	{
-		LOG(Error, LOGPLACE, "Cannot add terrain material information to tweak bar. The terrain material is NULL.");
+		ERROR_LOG("Cannot add terrain material information to tweak bar. The terrain material is NULL.");
 		return;
 	}
 
@@ -490,7 +490,7 @@ void TestGameManager::InitializeTweakBars()
 	//TwRemoveVar(testGamePropertiesBar, "temp2");
 
 	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	LOG(Info, LOGPLACE, "Initializing game's tweak bars finished");
+	INFO_LOG("Initializing game's tweak bars finished");
 #endif
 }
 #endif

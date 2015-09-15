@@ -28,7 +28,7 @@ Config::Config() : isInitialized(false)
 	std::ifstream file(fileName.c_str());
 	if (!file.is_open())
 	{
-		LOG(Error, LOGPLACE, "Could not open configuration file \"%s\"", fileName.c_str());
+		ERROR_LOG("Could not open configuration file \"%s\"", fileName.c_str());
 		return;
 	}
 	cfgValues.clear();
@@ -40,7 +40,7 @@ Config::Config() : isInitialized(false)
 		file >> name;
 		if (file.fail())
 		{
-			LOG(Emergency, LOGPLACE, "Fail occured in the stream while reading the configuration file");
+			EMERGENCY_LOG("Fail occured in the stream while reading the configuration file");
 			exit(EXIT_FAILURE);
 		}
 		std::getline(file, line);
@@ -50,7 +50,7 @@ Config::Config() : isInitialized(false)
 		}
 
 		line = RightTrim(line.substr(0, line.find_first_of('#')));
-		LOG(Delocust, LOGPLACE, "Line after = \"%s\"", line.c_str());
+		DELOCUST_LOG("Line after = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		CutToTokens(line, tokens, ' ');
 		value = tokens[2];
@@ -60,13 +60,13 @@ Config::Config() : isInitialized(false)
 			{
 				if (tokens[i] == "#")
 				{
-					LOG(Warning, LOGPLACE, "Comment sign '#' found when it should be already removed");
+					WARNING_LOG("Comment sign '#' found when it should be already removed");
 					break;
 				}
 				value += " " + tokens[i];
 			}
 		}
-		LOG(Debug, LOGPLACE, "Configuration parameter \"%s\" = \"%s\"", name.c_str(), value.c_str());
+		DEBUG_LOG("Configuration parameter \"%s\" = \"%s\"", name.c_str(), value.c_str());
 		cfgValues[name] = value;
 	}
 
@@ -75,12 +75,13 @@ Config::Config() : isInitialized(false)
 
 std::string Config::GetArg(const std::string& name, const std::string& defValue) const
 {
-	CHECK_CONDITION_EXIT_ALWAYS(isInitialized, Utility::Error, "Cannot get the config value for the argument \"%s\". The Config instance is not initialized.", name.c_str());
+	ASSERT(isInitialized);
+	CHECK_CONDITION_ERROR_EXIT_ALWAYS(isInitialized, "Cannot get the config value for the argument \"%s\". The Config instance is not initialized.", name.c_str());
 
 	ValuesMap::const_iterator valueMapIt = cfgValues.find(name);
 	if (valueMapIt == cfgValues.end())
 	{
-		LOG(Warning, LOGPLACE, "The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
+		WARNING_LOG("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
 		//cfgNotDefinedValues[name] = defValue;
 		return defValue;
 	}

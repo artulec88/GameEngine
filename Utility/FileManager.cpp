@@ -75,10 +75,10 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	////return dwError;
 
 
-	LOG(Info, LOGPLACE, "Listing all files in a directory %s", directoryPath.c_str());
+	INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
 	if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	{
-		LOG(Error, LOGPLACE, "Cannot list the files in a given directory. The directory path is too long");
+		ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
 		return std::vector<std::string>();
 	}
 	std::vector<std::string> filenames;
@@ -101,7 +101,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 		{
 			if (ent->d_type == DT_REG) // is regular file
 			{
-				LOG(Debug, LOGPLACE, "%s", ent->d_name);
+				DEBUG_LOG("%s", ent->d_name);
 				filenames.push_back(ent->d_name);
 			}
 		}
@@ -109,7 +109,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	}
 	else
 	{
-		LOG(Error, LOGPLACE, "Could not open directory \"%s\"", directoryPath.c_str());
+		ERROR_LOG("Could not open directory \"%s\"", directoryPath.c_str());
 	}
 	return filenames;
 }

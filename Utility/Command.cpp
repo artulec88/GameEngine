@@ -34,7 +34,7 @@ Command::Command(int argc, char* argv[]) : ICommand()
 
 Command::~Command()
 {
-	LOG(Delocust, LOGPLACE, "Command object gets destroyed");
+	DELOCUST_LOG("Command object gets destroyed");
 	commands.clear();
 }
 

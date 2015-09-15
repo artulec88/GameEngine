@@ -75,7 +75,7 @@ void ILogger::SetConsoleColor(LogLevel level) const
 		SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 		break;
 	default:
-		LOG(Error, LOGPLACE, "Incorrect logging level set");
+		ERROR_LOG("Incorrect logging level set");
 		break;
 	}
 }

@@ -12,7 +12,7 @@ using namespace Utility;
 	ASSERT(ICommand::command == NULL);
 	if (ICommand::command != NULL)
 	{
-		LOG(Warning, LOGPLACE, "Trying to create new command instance when it is already present. Reallocating new command instance.");
+		WARNING_LOG("Trying to create new command instance when it is already present. Reallocating new command instance.");
 		SAFE_DELETE(ICommand::command);
 	}
 	ICommand::command = new Command(argc, argv);
@@ -27,7 +27,7 @@ using namespace Utility;
 /* static */ void ICommand::DeleteCommand()
 {
 	CHECK_CONDITION_RETURN(ICommand::command != NULL, Utility::Warning, "Trying to delete command instance when it is already deallocated.");
-	LOG(Debug, LOGPLACE, "Deallocating command instance.");
+	DEBUG_LOG("Deallocating command instance.");
 	SAFE_DELETE(ICommand::command);
 }
 

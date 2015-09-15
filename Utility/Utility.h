@@ -42,7 +42,7 @@
 #ifdef _DEBUG
 #define CHECK_CONDITION(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
-#define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_ERROR_EXIT_ALWAYS(expr, message, ...) do { ASSERT(expr); if (!(expr)) { ERROR_LOG(message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
 #define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
 #define CHECK_CONDITION_RETURN(expr, returnValue, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
@@ -57,7 +57,7 @@
 #else /* _RELEASE */
 #define CHECK_CONDITION(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...)
-#define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_ERROR_EXIT_ALWAYS(expr, message, ...) do { if (!(expr)) { ERROR_LOG(message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...)
 #define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
 #define CHECK_CONDITION_RETURN(expr, returnValue, logLevel, message, ...)
