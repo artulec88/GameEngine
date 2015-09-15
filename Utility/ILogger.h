@@ -5,15 +5,122 @@
 #include <Windows.h>
 
 #define LOGGING_ENABLED
+#define CRITICAL_LOGGING_ENABLED
+#define EMERGENCY_LOGGING_ENABLED
+#define ERROR_LOGGING_ENABLED
+#define WARNING_LOGGING_ENABLED
+#define NOTICE_LOGGING_ENABLED
+#define INFO_LOGGING_ENABLED
+#define DEBUG_LOGGING_ENABLED
+#define DELOCUST_LOGGING_ENABLED
 
-// TODO: Doesn't work. The #define keyword cannot replace parts of the expression.
-#ifdef LOGGING_ENABLED
-#define LOG Utility::ILogger::GetLogger().Log
-#else
-#define LOG
+#ifndef LOGGING_ENABLED
+#undef CRITICAL_LOGGING_ENABLED
+#undef EMERGENCY_LOGGING_ENABLED
+#undef ERROR_LOGGING_ENABLED
+#undef WARNING_LOGGING_ENABLED
+#undef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
 #endif
 
-//#define LOG(level, message) Utility::LOG(level, LOGPLACE, message)
+#ifndef CRITICAL_LOGGING_ENABLED
+#undef EMERGENCY_LOGGING_ENABLED
+#undef ERROR_LOGGING_ENABLED
+#undef WARNING_LOGGING_ENABLED
+#undef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef EMERGENCY_LOGGING_ENABLED
+#undef ERROR_LOGGING_ENABLED
+#undef WARNING_LOGGING_ENABLED
+#undef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef ERROR_LOGGING_ENABLED
+#undef WARNING_LOGGING_ENABLED
+#undef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef WARNING_LOGGING_ENABLED
+#undef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef NOTICE_LOGGING_ENABLED
+#undef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef INFO_LOGGING_ENABLED
+#undef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifndef DEBUG_LOGGING_ENABLED
+#undef DELOCUST_LOGGING_ENABLED
+#endif
+
+#ifdef CRITICAL_LOGGING_ENABLED
+#define CRITICAL_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Critical, logPlace, message, ##__VA_ARGS__)
+#else
+#define CRITICAL_LOG(logPlace, message, ...)
+#endif
+
+#ifdef EMERGENCY_LOGGING_ENABLED
+#define EMERGENCY_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Emergency, logPlace, message, ##__VA_ARGS__)
+#else
+#define EMERGENCY_LOG(logPlace, message, ...)
+#endif
+
+#ifdef ERROR_LOGGING_ENABLED
+#define ERROR_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Error, logPlace, message, ##__VA_ARGS__)
+#else
+#define ERROR_LOG(logPlace, message, ...)
+#endif
+
+#ifdef WARNING_LOGGING_ENABLED
+#define WARNING_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Warning, logPlace, message, ##__VA_ARGS__)
+#else
+#define WARNING_LOG(logPlace, message, ...)
+#endif
+
+#ifdef NOTICE_LOGGING_ENABLED
+#define NOTICE_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Notice, logPlace, message, ##__VA_ARGS__)
+#else
+#define NOTICE_LOG(logPlace, message, ...)
+#endif
+
+#ifdef INFO_LOGGING_ENABLED
+#define INFO_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Info, logPlace, message, ##__VA_ARGS__)
+#else
+#define INFO_LOG(logPlace, message, ...)
+#endif
+
+#ifdef DEBUG_LOGGING_ENABLED
+#define DEBUG_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Debug, logPlace, message, ##__VA_ARGS__)
+#else
+#define DEBUG_LOG(logPlace, message, ...)
+#endif
+
+#ifdef DELOCUST_LOGGING_ENABLED
+#define DELOCUST_LOG(logPlace, message, ...) Utility::ILogger::GetLogger().Log(Utility::Delocust, logPlace, message, ##__VA_ARGS__)
+#else
+#define DELOCUST_LOG(logPlace, message, ...)
+#endif
 
 namespace Utility
 {

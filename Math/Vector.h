@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_VECTOR_H__
+#define __MATH_VECTOR_H__
 
 #include "Math.h"
 #include "Angle.h"
@@ -12,13 +13,16 @@ class Quaternion;
 
 class MATH_API Vector2D
 {
-public: // constructors and destructors
+/* ==================== Constructors and destructors begin ==================== */
+public:
 	Vector2D();
 	Vector2D(Real x, Real y);
 	Vector2D(const Vector2D& v);
 	~Vector2D();
+/* ==================== Constructors and destructors end ==================== */
 
-public: // public member functions
+/* ==================== Non-static member functions begin ==================== */
+public:
 	Real GetX() const { return m_x; };
 	Real GetY() const { return m_y; };
 	void SetX(Real x) { m_x = x; };
@@ -84,25 +88,31 @@ public: // public member functions
 
 public:
 	std::string ToString() const;
+/* ==================== Non-static member functions end ==================== */
 
-protected: // member variables
+/* ==================== Non-static member variables begin ==================== */
+protected:
 	Real m_x;
 	Real m_y;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Vector2D */
 
 
-class MATH_API Vector3D// : public Utility::ISerializable
+class MATH_API Vector3D
 {
-public: // constructors and destructors
+/* ==================== Constructors and destructors begin ==================== */
+public:
 	Vector3D();
 	Vector3D(Real x, Real y, Real z);
 	Vector3D(const Vector3D& v);
 	~Vector3D();
+/* ==================== Constructors and destructors end ==================== */
 
-public: // public member functions
-	Real GetX() const { return m_x; };
-	Real GetY() const { return m_y; };
-	Real GetZ() const { return m_z; };
+/* ==================== Non-static member functions begin ==================== */
+public:
+	inline Real GetX() const { return m_x; };
+	inline Real GetY() const { return m_y; };
+	inline Real GetZ() const { return m_z; };
 	void SetX(Real x) { m_x = x; };
 	void SetY(Real y) { m_y = y; };
 	void SetZ(Real z) { m_z = z; };
@@ -113,7 +123,9 @@ public: // public member functions
 	Real Length() const; // CHECKED!
 	Real LengthSquared() const; // CHECKED!
 	
-	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; }; // creates negation vector
+	/// <summary> Negates all components in the vector. </summary>
+	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; };
+	/// <summary> Negates all components and returns the reference to the vector. </summary>
 	Vector3D& Negated() { Negate(); return *this; }
 	
 	Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); }
@@ -146,22 +158,19 @@ public: // public member functions
 
 	Vector3D Normalized() const
 	{
-		Real length = LengthSquared();
-		//if (AlmostEqual(length, REAL_ZERO))
-		//{
-		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
-		//	return (*this);
-		//}
-		return (*this) / static_cast<Real>(sqrt(length));
+		Normalize();
+		return (*this);
 	}
 	void Normalize()
 	{
 		Real length = LengthSquared();
-		//if (AlmostEqual(length, REAL_ZERO))
-		//{
-		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
-		//	return;
-		//}
+#ifdef _DEBUG
+		if (AlmostEqual(length, REAL_ZERO))
+		{
+			LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+			return (*this);
+		}
+#endif
 		(*this) /= static_cast<Real>(sqrt(length));
 	}
 	bool IsNormalized() const;
@@ -192,21 +201,27 @@ public: // public member functions
 	Vector2D GetZX() const { return Vector2D(m_z, m_x); };
 	Vector2D GetZY() const { return Vector2D(m_z, m_y); };
 
+	void Approach(Real step, const Vector3D& approachedVector);
 	void ApproachX(Real step, Real approachedValue);
 	void ApproachY(Real step, Real approachedValue);
 	void ApproachZ(Real step, Real approachedValue);
-	void Threshold(Real MaxLength);
+	void Threshold(Real maxLength);
 
 	// interpolation LERP
 	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 	std::string ToString() const;
+/* ==================== Non-static member functions end ==================== */
 
-protected: // member variables
+/* ==================== Non-static member variables begin ==================== */
+protected:
 	Real m_x;
 	Real m_y;
 	Real m_z;
 	//Real padding;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class Vector3D */
 
 } /* end namespace Math */
+
+#endif /* __MATH_VECTOR_H__ */

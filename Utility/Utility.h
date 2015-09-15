@@ -43,8 +43,10 @@
 #define CHECK_CONDITION(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
-#define CHECK_CONDITION_RETURN(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
-#define CHECK_CONDITION_RETURN_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN(expr, returnValue, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
+#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
 #define ASSERT(expr) if (expr) { } else { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILENAME__, __LINE__); /*stdlog(Critical, LOGPLACE, "Error occurred");*/ }
 #define SLOW_ASSERTIONS_ENABLED
 #ifdef SLOW_ASSERTIONS_ENABLED
@@ -56,8 +58,10 @@
 #define CHECK_CONDITION(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
-#define CHECK_CONDITION_RETURN(expr, logLevel, message, ...)
-#define CHECK_CONDITION_RETURN_ALWAYS(expr, logLevel, message, ...) do { if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN(expr, returnValue, logLevel, message, ...)
+#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { LOG(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
 #define ASSERT(expr)
 #define SLOW_ASSERT(expr)
 #endif /* _DEBUG */
