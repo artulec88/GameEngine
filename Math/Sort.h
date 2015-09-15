@@ -103,10 +103,6 @@ private:
 
 		for (int i = 1; i < vectorSize; ++i)
 		{
-			//for (int k = 0; k < vectorSize; ++k)
-			//{
-			//	LOG(Utility::Debug, LOGPLACE, "i = %d) vectors[%d] = %s", i, k, vectors[k].ToString().c_str());
-			//}
 			T key(vectors[i]);
 			int j = i - 1;
 			while ( (j >= 0) && (NeedSwapping(vectors[j], key, sortingParameters)) )
@@ -115,7 +111,6 @@ private:
 				vectors[j] = key;
 				--j;
 			}
-			//vectors[i + 1] = vectors[j];
 		}
 	}
 /* ==================== Non-static member functions end ==================== */
@@ -533,24 +528,6 @@ private:
 			}
 			indices.pop_back();
 		}
-		
-		/*bool swapOccured = false;
-		do
-		{
-			for ()
-			int index = 1;
-			int indexStep = indices.back();
-			for (int j = index; j < vectorSize; j += indexStep)
-			{
-				int i = j - 1;
-				while ( (i >= 0) && (NeedSwapping(vectors[i], vectors[j], sortingKey, sortingDirection)) )
-				{
-					vectors[i + 1] = vectors[i];
-					--i;
-				}
-				vectors[i + 1] = vectors[j];
-			}
-		} while ((index != 1) && swapOccured);*/
 	}
 /* ==================== Non-static member functions end ==================== */
 
