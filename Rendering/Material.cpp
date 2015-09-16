@@ -22,7 +22,8 @@ Material::Material(Texture* diffuseTexture,
 	if (normalMap == NULL)
 	{
 		DEBUG_LOG("The material is not using any normal maps");
-		const std::string defaultNormalMapStr = GET_CONFIG_VALUE_STR("defaultNormalMap", "..\\Textures\\defaultNormalMap.jpg");
+		//const std::string defaultNormalMapStr = GET_CONFIG_VALUE_STR("defaultNormalMap", "..\\Textures\\defaultNormalMap.jpg");
+		const std::string defaultNormalMapStr = "..\\Textures\\defaultNormalMap.jpg";
 		normalMap = new Texture(defaultNormalMapStr);
 		//INFO_LOG("Adding default normal map (\"%s\") to the material", defaultNormalMapStr.c_str());
 	}

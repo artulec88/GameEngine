@@ -1075,7 +1075,7 @@ void Rendering::UpdateScissorTestParameters()
 		else
 		{
 			glDisable(glPropertyEnum);
-			NOICE_LOG("GL_SCISSOR_TEST is now disabled");
+			NOTICE_LOG("GL_SCISSOR_TEST is now disabled");
 		}
 		glScissorTestEnabledOld = glScissorTestEnabled;
 	}

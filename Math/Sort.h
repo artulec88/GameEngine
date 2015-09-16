@@ -828,7 +828,8 @@ private:
 			}
 			break;
 		default:
-			LOG(Utility::Error, LOGPLACE, "");
+			ERROR_LOG("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
+				sortingDirection, SortingDirection::ASCENDING, SortingDirection::DESCENDING);
 			break;
 		}
 	}
@@ -912,7 +913,8 @@ private:
 			}
 			break;
 		default:
-			LOG(Utility::Error, LOGPLACE, "");
+			ERROR_LOG("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
+				sortingParameters.GetSortingDirection(), SortingDirection::ASCENDING, SortingDirection::DESCENDING);
 			break;
 		}
 	}

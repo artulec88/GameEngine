@@ -415,7 +415,11 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 
 void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 {
-	CHECK_CONDITION_EXIT_ALWAYS(terrainNode != NULL, Error, "Cannot register terrain node. Given terrain node is NULL.");
+	ASSERT(terrainNode != NULL);
+	if (terrainNode == NULL)
+	{
+		ERROR_LOG("Cannot register terrain node. Given terrain node is NULL.");
+	}
 	if (m_terrainNode != NULL)
 	{
 		WARNING_LOG("Replacing already set terrain node with a different one.");
@@ -581,8 +585,16 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 		//CRITICAL_LOG("Ambient fog fall-off type: %d. Fog distance calculation type: %d", m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
 		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
 		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
-		CHECK_CONDITION_RETURN_ALWAYS(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL");
-		CHECK_CONDITION_RETURN_ALWAYS(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL");
+		ASSERT(fogShader != NULL);
+		if (fogShader == NULL)
+		{
+			EMERGENCY_LOG("Cannot render the scene with ambient light. The fog shader is NULL");
+		}
+		ASSERT(fogTerrainShader != NULL);
+		if (fogTerrainShader == NULL)
+		{
+			EMERGENCY_LOG("Cannot render terrain with ambient light. The terrain fog shader is NULL");
+		}
 		m_terrainNode->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(fogShader, this); // Ambient rendering with fog enabled
 	}
@@ -834,8 +846,16 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 		STOP_PROFILING;
 		return;
 	}
-	CHECK_CONDITION_RETURN_ALWAYS(source != NULL, Emergency, "Cannot apply a filter. Source texture is NULL.");
-	CHECK_CONDITION_RETURN_ALWAYS(source != dest, Error, "Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
+	ASSERT(source != NULL);
+	if (source == NULL)
+	{
+		EMERGENCY_LOG("Cannot apply a filter. Source texture is NULL.");
+	}
+	ASSERT(source != dest);
+	if (source == dest)
+	{
+		ERROR_LOG("Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
+	}
 	if (dest == NULL)
 	{
 		DELOCUST_LOG("Binding window as a render target for filtering");

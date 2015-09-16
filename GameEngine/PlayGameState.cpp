@@ -31,12 +31,11 @@ void PlayGameState::Entered()
 	INFO_LOG("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	GameManager* gameManager = GameManager::GetGameManager();
-	CHECK_CONDITION_EXIT_ALWAYS(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
-	//if (!gameManager->IsGameLoaded())
-	//{
-	//	LOG(Utility::Warning, LOGPLACE, "PLAY game state has been placed in the game state manager before loading the game.");
-	//	gameManager->Load();
-	//}
+	ASSERT(gameManager->IsGameLoaded());
+	if (!gameManager->IsGameLoaded())
+	{
+		ERROR_LOG("PLAY game state has been placed in the game state manager before loading the game.");
+	}
 #ifdef ANT_TWEAK_BAR_ENABLED
 	gameManager->InitializeTweakBars();
 	CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();

@@ -86,7 +86,11 @@ Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 
 Mesh::~Mesh(void)
 {
-	CHECK_CONDITION_RETURN_ALWAYS(meshData != NULL, Utility::Warning, "Destructing the mesh aborted. Mesh data is NULL.");
+	ASSERT(meshData != NULL);
+	if (meshData == NULL)
+	{
+		WARNING_LOG("Destructing the mesh aborted. Mesh data is already NULL.");
+	}
 	meshData->RemoveReference();
 	if (! meshData->IsReferenced())
 	{

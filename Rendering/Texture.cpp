@@ -335,7 +335,11 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 
 Texture::~Texture(void)
 {
-	CHECK_CONDITION_RETURN_ALWAYS(m_textureData != NULL, Utility::Warning, "Texture data is already NULL.");
+	ASSERT(m_textureData != NULL);
+	if (m_textureData == NULL)
+	{
+		WARNING_LOG("Texture data is already NULL.");
+	}
 	
 	m_textureData->RemoveReference();
 	if (! m_textureData->IsReferenced())

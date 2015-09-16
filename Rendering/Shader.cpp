@@ -528,7 +528,11 @@ Shader::Shader(const std::string& fileName) :
 
 Shader::~Shader(void)
 {
-	CHECK_CONDITION_RETURN_ALWAYS(m_shaderData != NULL, Utility::Warning, "Shader data is already NULL.");
+	ASSERT(m_shaderData != NULL);
+	if (m_shaderData == NULL)
+	{
+		WARNING_LOG("Shader data is already NULL.");
+	}
 	
 	m_shaderData->RemoveReference();
 	if (! m_shaderData->IsReferenced())

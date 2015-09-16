@@ -55,7 +55,7 @@ public:
 		Type result;
 		std::stringstream resultSS;
 		resultSS << resultStr;
-		LOG(Delocust, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultSS.str().c_str());
+		DELOCUST_LOG("Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultSS.str().c_str());
 		resultSS >> result;
 		return result;
 	}

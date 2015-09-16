@@ -307,7 +307,7 @@ void SortTest()
 	{
 		initialVectors[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
 		initialVectors[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
-		LOG(Debug, LOGPLACE, "initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
+		DEBUG_LOG("initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
 	}
 
 	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */

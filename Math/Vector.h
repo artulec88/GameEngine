@@ -158,8 +158,9 @@ public:
 
 	Vector3D Normalized() const
 	{
-		Normalize();
-		return (*this);
+		Vector3D copyVec(*this);
+		copyVec.Normalize();
+		return copyVec;
 	}
 	void Normalize()
 	{

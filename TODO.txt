@@ -23,4 +23,4 @@
 23.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
 24.	Water rendering. DU/DV maps.
 25.	Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-26.	Optimize loading meshes (e.g. "\\Models\\terrain02.obj").
+26.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.

@@ -46,7 +46,7 @@ void BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
 	//SAFE_DELETE(m_terrainShader);
 	if (m_terrainShader != NULL)
 	{
-		WARNING_("Setting new terrain shader for the light seems dubious.");
+		WARNING_LOG("Setting new terrain shader for the light seems dubious.");
 		SAFE_DELETE(m_terrainShader);
 	}
 	m_terrainShader = terrainShader;
