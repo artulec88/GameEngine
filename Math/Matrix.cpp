@@ -325,7 +325,7 @@ Matrix4D::~Matrix4D()
 #endif
 }
 
-int Matrix4D::Signum(int i, int j)
+int Matrix4D::Signum(int i, int j) const
 {
 	return ((i + j) % 2) ? -1 : 1;
 }
