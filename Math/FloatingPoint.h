@@ -170,8 +170,10 @@ inline bool AlmostEqual(Real value1, Real value2)
 {
 	if (abs(value1 - value2) > EPSILON)
 	{
+		// TODO: Count how often we get here.
 		return false;
 	}
+	// TODO: Count how often we get here.
 	FloatingPoint<Real> fpValue1(value1);
 	FloatingPoint<Real> fpValue2(value2);
 	return (fpValue1.AlmostEqual(fpValue2));

@@ -50,17 +50,17 @@ using namespace Utility;
 //	switch (action)
 //	{
 //	case GLFW_PRESS:
-//		LOG(Delocust, LOGPLACE, "Pressed key %d", key);
+//		DELOCUST_LOG("Pressed key %d", key);
 //		//inputs[key] = true;
 //		downKeys.push_back(key);
 //		break;
 //	case GLFW_RELEASE:
-//		LOG(Delocust, LOGPLACE, "Released key %d", key);
+//		DELOCUST_LOG("Released key %d", key);
 //		//inputs[key] = false;
 //		upKeys.push_back(key);
 //		break;
 //	case GLFW_REPEAT:
-//		LOG(Delocust, LOGPLACE, "Repeated key %d", key);
+//		DELOCUST_LOG("Repeated key %d", key);
 //		//inputs[key] = true;
 //		repeatedKeys.push_back(key);
 //		break;
@@ -72,7 +72,7 @@ using namespace Utility;
 //
 ///* static */ Input::KeyValue Input::GetKey(int keyCode)
 //{
-//	//LOG(Debug, LOGPLACE, "Number of pressed, released, repeated keys = %d; %d; %d", downKeys.size(), upKeys.size(), repeatedKeys.size());
+//	//DEBUG_LOG("Number of pressed, released, repeated keys = %d; %d; %d", downKeys.size(), upKeys.size(), repeatedKeys.size());
 //	for (std::list<int>::const_iterator it = downKeys.begin(); it != downKeys.end(); ++it)
 //	{
 //		if ((*it) == keyCode)

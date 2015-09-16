@@ -61,7 +61,7 @@ float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
 
 void PointLight::Update(Math::Real deltaTime)
 {
-	gTemp += deltaTime * 0.0001f;
+	gTemp += deltaTime * 0.0001f; // TODO: Do not use hard-coded values! Ever!
 	if (gTemp > 20.0f * Math::M_PI)
 	{
 		gTemp = REAL_ZERO;

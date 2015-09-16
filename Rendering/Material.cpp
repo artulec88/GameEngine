@@ -14,24 +14,25 @@ Material::Material(Texture* diffuseTexture,
 {
 	if (diffuseTexture == NULL)
 	{
-		LOG(Utility::Error, LOGPLACE, "The material is given the NULL diffuse texture");
+		ERROR_LOG("The material is given the NULL diffuse texture");
 	}
 	SetTexture("diffuse", diffuseTexture);
 	SetReal("specularIntensity", specularIntensity);
 	SetReal("specularPower", specularPower);
 	if (normalMap == NULL)
 	{
-		LOG(Utility::Debug, LOGPLACE, "The material is not using any normal maps");
-		normalMap = new Texture("..\\Textures\\defaultNormalMap.jpg");
-		//LOG(Utility::Info, LOGPLACE, "Adding normal map to the material");
+		DEBUG_LOG("The material is not using any normal maps");
+		const std::string defaultNormalMapStr = GET_CONFIG_VALUE_STR("defaultNormalMap", "..\\Textures\\defaultNormalMap.jpg");
+		normalMap = new Texture(defaultNormalMapStr);
+		//INFO_LOG("Adding default normal map (\"%s\") to the material", defaultNormalMapStr.c_str());
 	}
 	SetTexture("normalMap", normalMap);
 
 	if (displacementMap == NULL)
 	{
-		LOG(Utility::Debug, LOGPLACE, "The material is not using any displacement maps");
+		DEBUG_LOG("The material is not using any displacement maps");
 		displacementMap = new Texture("..\\Textures\\defaultDisplacementMap.jpg");
-		//LOG(Utility::Info, "Adding displacement map to the material");
+		//INFO_LOG("Adding displacement map to the material");
 	}
 	SetTexture("displacementMap", displacementMap);
 
@@ -44,7 +45,7 @@ Material::Material(Texture* texture, const std::string& textureName)
 {
 	if (texture == NULL)
 	{
-		LOG(Utility::Error, LOGPLACE, "The material is given the NULL main texture");
+		ERROR_LOG("The material is given the NULL main texture");
 	}
 	SetTexture(textureName, texture);
 }
@@ -53,7 +54,7 @@ void Material::SetAdditionalTexture(Texture* texture, const std::string& texture
 {
 	if (texture == NULL)
 	{
-		LOG(Utility::Warning, LOGPLACE, "Cannot set the additional texture for material. The texture is NULL.");
+		WARNING_LOG("Cannot set the additional texture for material. The texture is NULL.");
 		return;
 	}
 	m_hasMultipleTextures = true;

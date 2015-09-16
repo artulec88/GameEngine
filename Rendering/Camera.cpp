@@ -126,10 +126,10 @@ CameraComponent::~CameraComponent(void)
 //void Camera::Move(const Vector3D& dir, Math::Real amount)
 //{
 //	Transform& t = GetTransform();
-//	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
+//	DEBUG_LOG("Camera position = %s", t.GetPos().ToString().c_str());
 //	t.SetTranslation(t.GetPos() + (dir * amount));
-//	LOG(Debug, LOGPLACE, "Camera position = %s", t.GetPos().ToString().c_str());
-//	LOG(Delocust, LOGPLACE, "%s", ToString().c_str());
+//	DEBUG_LOG("Camera position = %s", t.GetPos().ToString().c_str());
+//	DELOCUST_LOG("%s", ToString().c_str());
 //}
 
 //Vector3D Camera::GetLeft() const
@@ -153,7 +153,7 @@ CameraComponent::~CameraComponent(void)
 //{
 //	if (coreEngine == NULL)
 //	{
-//		LOG(Utility::Error, LOGPLACE, "Cannot add camera to the core engine. Core engine is NULL.");
+//		ERROR_LOG("Cannot add camera to the core engine. Core engine is NULL.");
 //		return;
 //	}
 //	coreEngine->GetRenderer()->AddCamera(this);
@@ -188,7 +188,7 @@ void CameraComponent::Input(Real delta)
 {
 	if ( (!AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov) )
 	{
-		LOG(Info, LOGPLACE, "Recalculating the projection matrix for the selected camera");
+		INFO_LOG("Recalculating the projection matrix for the selected camera");
 
 		m_projection = Math::Matrix4D::PerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 

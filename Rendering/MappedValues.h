@@ -45,14 +45,12 @@ public:
 	{
 		if (vec3DMap.find(name) == vec3DMap.end())
 		{
-			LOG(Utility::Debug, LOGPLACE, "Vector3D with name \"%s\" is not found in the map. Creating a new vector with this name.", name.c_str());
+			DEBUG_LOG("Vector3D with name \"%s\" is not found in the map. Creating a new vector with this name.", name.c_str());
 			vec3DMap.insert(std::pair<std::string, Math::Vector3D>(name, vec));
 		}
 		else
 		{
-#ifdef _DEBUG
-			LOG(Utility::Delocust, LOGPLACE, "Modifying the Vector3D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec3DMap[name].ToString().c_str(), vec.ToString().c_str());
-#endif
+			DELOCUST_LOG("Modifying the Vector3D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec3DMap[name].ToString().c_str(), vec.ToString().c_str());
 			vec3DMap[name] = vec;
 		}
 	}
@@ -61,14 +59,12 @@ public:
 	{
 		if (realMap.find(name) == realMap.end())
 		{
-			LOG(Utility::Debug, LOGPLACE, "The real value with name \"%s\" is not found in the map. Creating a new real value with this name.", name.c_str());
+			DEBUG_LOG("The real value with name \"%s\" is not found in the map. Creating a new real value with this name.", name.c_str());
 			realMap.insert(std::pair<std::string, Math::Real>(name, value));
 		}
 		else
 		{
-#ifdef _DEBUG
-			LOG(Utility::Delocust, LOGPLACE, "Modifying the real value with name \"%s\" from \"%.2f\" to \"%.2f\"", name.c_str(), realMap[name], value);
-#endif
+			DELOCUST_LOG("Modifying the real value with name \"%s\" from \"%.2f\" to \"%.2f\"", name.c_str(), realMap[name], value);
 			realMap[name] = value;
 		}
 	}
@@ -77,20 +73,18 @@ public:
 	{
 		//if (texture == NULL)
 		//{
-		//	LOG(Utility::Warning, LOGPLACE, "Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
+		//	WARNING_LOG("Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
 		//	//return;
 		//}
 		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(textureName);
 		if (textureItr == textureMap.end())
 		{
-			LOG(Utility::Debug, LOGPLACE, "The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
+			DEBUG_LOG("The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
 			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
 		}
 		else
 		{
-#ifdef _DEBUG
-			LOG(Utility::Delocust, LOGPLACE, "Modifying the texture with name \"%s\".", textureName.c_str());
-#endif
+			DELOCUST_LOG("Modifying the texture with name \"%s\".", textureName.c_str());
 			textureMap[textureName] = texture;
 		}
 		//textureMap[textureName] = texture;
@@ -101,7 +95,7 @@ public:
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
-			LOG(Utility::Debug, LOGPLACE, "Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			DEBUG_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return defaultVector3D;
 		}
 		return itr->second;
@@ -112,7 +106,7 @@ public:
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
 		{
-			LOG(Utility::Debug, LOGPLACE, "Real number with name \"%s\" has not been found", name.c_str());
+			DEBUG_LOG("Real number with name \"%s\" has not been found", name.c_str());
 			return 0;
 		}
 		return itr->second;
@@ -123,7 +117,7 @@ public:
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
-			LOG(Utility::Debug, LOGPLACE, "Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			DEBUG_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
 			return defaultTexture;
 		}
 		return itr->second;

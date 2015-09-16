@@ -4,10 +4,11 @@
 using namespace Rendering;
 
 Resource::Resource(const std::string& filename) :
-	m_filename(filename),
-	m_isLoaded(false)
+	m_isLoaded(false),
+	m_guid(0),
+	m_filename(filename)
 {
-	m_guid = 0; // TODO: Calculate hash value based on the filename
+	// TODO: Calculate hash value based on the filename
 }
 
 

@@ -65,7 +65,7 @@ bool Rendering::FogEffect::Fog::operator<(const Rendering::FogEffect::Fog& fog) 
 
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
-	LOG(Utility::Info, LOGPLACE, "Initializing graphics started");
+	INFO_LOG("Initializing graphics started");
 	GLFWwindow* window = InitGlfw(width, height, title, threadWindow);
 	InitGlew();
 
@@ -101,7 +101,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 		glEnable(GL_MULTISAMPLE);
 		break;
 	default:
-		LOG(Utility::Warning, LOGPLACE, "Unknown anti-aliasing algorithm chosen");
+		WARNING_LOG("Unknown anti-aliasing algorithm chosen");
 		glEnable(GL_MULTISAMPLE);
 	}
 
@@ -110,16 +110,16 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	LOG(Utility::Info, LOGPLACE, "Initializing graphics finished successfully");
+	INFO_LOG("Initializing graphics finished successfully");
 	return window;
 }
 
 GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
-	LOG(Utility::Debug, LOGPLACE, "Initializing GLFW started");
+	DEBUG_LOG("Initializing GLFW started");
 	if( !glfwInit() )
 	{
-		LOG(Utility::Critical, LOGPLACE, "Failed to initalize GLFW");
+		CRITICAL_LOG("Failed to initalize GLFW");
 		exit(EXIT_FAILURE);
 		// throw FileNotFoundException(); // TODO: throw another exception in the future
 	}
@@ -128,7 +128,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
     threadWindow = glfwCreateWindow( 1, 1, "Thread Window", NULL, NULL );
 	if (threadWindow == NULL)
 	{
-		LOG(Utility::Critical, LOGPLACE, "Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
+		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -142,7 +142,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		 */
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		LOG(Utility::Notice, LOGPLACE, "No anti-aliasing algorithm chosen");
+		NOTICE_LOG("No anti-aliasing algorithm chosen");
 		break;
 	case FXAA:
 		/**
@@ -150,14 +150,14 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		 */
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		LOG(Utility::Notice, LOGPLACE, "FXAA anti-aliasing algorithm chosen");
+		NOTICE_LOG("FXAA anti-aliasing algorithm chosen");
 		break;
 	case MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-		LOG(Utility::Notice, LOGPLACE, "%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		NOTICE_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
 		break;
 	default:
-		LOG(Utility::Warning, LOGPLACE, "Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
+		WARNING_LOG("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 	}
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
@@ -181,7 +181,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), monitor, threadWindow); // Open a window and create its OpenGL context
 	if (window == NULL)
 	{
-		LOG(Utility::Critical, LOGPLACE, "Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
+		CRITICAL_LOG("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -189,33 +189,33 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
 	glfwSetCursorPos(window, width / 2, height / 2); // Set cursor position to the middle point
 	//glfwSwapInterval(1);
-	glfwSetTime(0.0);
-	LOG(Utility::Debug, LOGPLACE, "Initializing GLFW finished successfully");
+	glfwSetTime(REAL_ZERO);
+	DEBUG_LOG("Initializing GLFW finished successfully");
 	return window;
 }
 
 void Rendering::InitGlew()
 {
-	LOG(Utility::Info, LOGPLACE, "Initializing GLEW started");
+	INFO_LOG("Initializing GLEW started");
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
 	if (GLEW_OK != err)
 	{
-		LOG(Utility::Error, LOGPLACE, "Error while initializing GLEW: %s", glewGetErrorString(err));
+		ERROR_LOG("Error while initializing GLEW: %s", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 	if (GLEW_VERSION_2_0)
 	{
-		LOG(Utility::Info, LOGPLACE, "OpenGL 2.0 supported");
+		INFO_LOG("OpenGL 2.0 supported");
 	}
 	else
 	{
-		LOG(Utility::Info, LOGPLACE, "OpenGL 2.0 NOT supported");
+		INFO_LOG("OpenGL 2.0 NOT supported");
 		exit(EXIT_FAILURE);
 	}
 
-	LOG(Utility::Notice, LOGPLACE, "Using GLEW version %s", glewGetString(GLEW_VERSION));
+	NOTICE_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
 }
 
 /**
@@ -228,7 +228,7 @@ void Rendering::InitGlew()
 //	if (alphaTestEnabled == 0)
 //	{
 //		glDisable(GL_ALPHA_TEST);
-//		LOG(Utility::Debug, LOGPLACE, "GL_ALPHA_TEST disabled");
+//		DEBUG_LOG("GL_ALPHA_TEST disabled");
 //		return;
 //	}
 //
@@ -246,12 +246,12 @@ void Rendering::InitGlew()
 //	else if (alphaFuncStr == "GL_ALWAYS") { glAlphaFunc(GL_ALWAYS, alphaFuncRefValue); }
 //	else /* GL_ALWAYS is default */
 //	{
-//		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the alpha test function. Using default GL_ALWAYS", alphaFuncStr.c_str());
+//		ERROR_LOG("Invalid enum \"%s\" given for the alpha test function. Using default GL_ALWAYS", alphaFuncStr.c_str());
 //		alphaFuncStr = "GL_ALWAYS";
 //		glAlphaFunc(GL_ALWAYS, alphaFuncRefValue);
 //	}
 //
-//	LOG(Utility::Info, LOGPLACE, "GL_ALPHA_TEST enabled with function \"%s\" and reference value = %.2f", alphaFuncStr.c_str(), alphaFuncRefValue);
+//	INFO_LOG("GL_ALPHA_TEST enabled with function \"%s\" and reference value = %.2f", alphaFuncStr.c_str(), alphaFuncRefValue);
 //}
 
 /**
@@ -265,7 +265,7 @@ void Rendering::ReadBlendParameter()
 	if (!glBlendEnabled)
 	{
 		glDisable(GL_BLEND);
-		LOG(Utility::Debug, LOGPLACE, "GL_BLEND disabled");
+		DEBUG_LOG("GL_BLEND disabled");
 		return;
 	}
 
@@ -293,7 +293,7 @@ void Rendering::ReadBlendParameter()
 	else if (blendSFactorStr == "GL_ONE_MINUS_SRC1_ALPHA") { glBlendSfactor = GL_ONE_MINUS_SRC1_ALPHA; }
 	else /* GL_ONE is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the blend sFactor. Using default GL_ONE", blendSFactorStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the blend sFactor. Using default GL_ONE", blendSFactorStr.c_str());
 		blendSFactorStr = "GL_ONE";
 		glBlendSfactor = GL_ONE;
 	}
@@ -314,7 +314,7 @@ void Rendering::ReadBlendParameter()
 	else if (blendDFactorStr == "GL_ONE_MINUS_CONSTANT_ALPHA") { glBlendDfactor = GL_ONE_MINUS_CONSTANT_ALPHA; }
 	else /* GL_ZERO is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the blend dFactor. Using default GL_ZERO", blendDFactorStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the blend dFactor. Using default GL_ZERO", blendDFactorStr.c_str());
 		blendDFactorStr = "GL_ZERO";
 		glBlendDfactor = GL_ZERO;
 	}
@@ -322,7 +322,7 @@ void Rendering::ReadBlendParameter()
 	glBlendSfactorOld = glBlendSfactor;
 	glBlendDfactorOld = glBlendDfactor;
 	glBlendFunc(glBlendSfactor, glBlendDfactor);
-	LOG(Utility::Info, LOGPLACE, "GL_BLEND enabled with sFactor = \"%s\" and dFactor = \"%s\"", blendSFactorStr.c_str(), blendDFactorStr.c_str());
+	INFO_LOG("GL_BLEND enabled with sFactor = \"%s\" and dFactor = \"%s\"", blendSFactorStr.c_str(), blendDFactorStr.c_str());
 }
 
 /**
@@ -336,7 +336,7 @@ void Rendering::ReadColorLogicOperationParameter()
 	if (!glColorLogicOperationEnabled)
 	{
 		glDisable(GL_COLOR_LOGIC_OP);
-		LOG(Utility::Debug, LOGPLACE, "GL_COLOR_LOGIC_OP disabled");
+		DEBUG_LOG("GL_COLOR_LOGIC_OP disabled");
 		return;
 	}
 
@@ -360,7 +360,7 @@ void Rendering::ReadColorLogicOperationParameter()
 	else if (logicalOperationStr == "GL_OR_INVERTED") { glColorLogicOperationCode = GL_OR_INVERTED; }
 	else /* GL_COPY is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the color logic operation parameter. Using default GL_COPY", logicalOperationStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the color logic operation parameter. Using default GL_COPY", logicalOperationStr.c_str());
 		logicalOperationStr = "GL_COPY";
 		glColorLogicOperationCode = GL_COPY;
 	}
@@ -369,7 +369,7 @@ void Rendering::ReadColorLogicOperationParameter()
 
 	glLogicOp(glColorLogicOperationCode);
 
-	LOG(Utility::Info, LOGPLACE, "GL_COLOR_LOGIC_OP enabled in \"%s\" mode", logicalOperationStr.c_str());
+	INFO_LOG("GL_COLOR_LOGIC_OP enabled in \"%s\" mode", logicalOperationStr.c_str());
 }
 
 /**
@@ -383,7 +383,7 @@ void Rendering::ReadCullFaceParameter()
 	if (!glCullFaceEnabled)
 	{
 		glDisable(GL_CULL_FACE);
-		LOG(Utility::Debug, LOGPLACE, "GL_CULL_FACE disabled");
+		DEBUG_LOG("GL_CULL_FACE disabled");
 	}
 	else
 	{
@@ -396,7 +396,7 @@ void Rendering::ReadCullFaceParameter()
 	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFaceMode = GL_FRONT_AND_BACK; } // cull both back and front faces (only lines, points are rendered)
 	else /* GL_BACK is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the face culling parameter. Using default GL_BACK", cullFaceModeStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the face culling parameter. Using default GL_BACK", cullFaceModeStr.c_str());
 		cullFaceModeStr = "GL_BACK";
 		glCullFaceMode = GL_BACK;
 	}
@@ -405,7 +405,7 @@ void Rendering::ReadCullFaceParameter()
 
 	glCullFace(glCullFaceMode);
 
-	LOG(Utility::Info, LOGPLACE, "GL_CULL_FACE enabled in \"%s\" mode", cullFaceModeStr.c_str());
+	INFO_LOG("GL_CULL_FACE enabled in \"%s\" mode", cullFaceModeStr.c_str());
 }
 
 /**
@@ -420,13 +420,12 @@ void Rendering::ReadDepthClampParameter()
 	if (!glDepthClampEnabled)
 	{
 		glDisable(GL_DEPTH_CLAMP);
-		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_CLAMP disabled");
+		DEBUG_LOG("GL_DEPTH_CLAMP disabled");
 		return;
 	}
 
 	glEnable(GL_DEPTH_CLAMP); // prevents the camera to clip through the mesh
-
-	LOG(Utility::Info, LOGPLACE, "GL_DEPTH_CLAMP enabled");
+	INFO_LOG("GL_DEPTH_CLAMP enabled");
 }
 
 /**
@@ -442,7 +441,7 @@ void Rendering::ReadDepthTestParameter()
 	if (!glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
-		LOG(Utility::Debug, LOGPLACE, "GL_DEPTH_TEST disabled");
+		DEBUG_LOG("GL_DEPTH_TEST disabled");
 	}
 	else
 	{
@@ -461,7 +460,7 @@ void Rendering::ReadDepthTestParameter()
 	else if (depthTestFuncStr == "GL_ALWAYS ") { glDepthTestFunc = GL_ALWAYS; }
 	else /* GL_LESS is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the depth test parameter. Using default GL_LESS", depthTestFuncStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the depth test parameter. Using default GL_LESS", depthTestFuncStr.c_str());
 		depthTestFuncStr = "GL_LESS";
 		glDepthTestFunc = GL_LESS;
 	}
@@ -475,8 +474,7 @@ void Rendering::ReadDepthTestParameter()
 	glDepthRangeNearValueOld = glDepthRangeNearValue;
 	glDepthRangeFarValueOld = glDepthRangeFarValue;
 	glDepthRange(glDepthRangeNearValue, glDepthRangeFarValue);
-	LOG(Utility::Info, LOGPLACE, "GL_DEPTH_TEST enabled with function \"%s\" and the range [%.2f; %.2f]",
-		depthTestFuncStr.c_str(), glDepthRangeNearValue, glDepthRangeFarValue);
+	INFO_LOG("GL_DEPTH_TEST enabled with function \"%s\" and the range [%.2f; %.2f]", depthTestFuncStr.c_str(), glDepthRangeNearValue, glDepthRangeFarValue);
 }
 
 /**
@@ -489,12 +487,12 @@ void Rendering::ReadDitherParameter()
 	if (!glDitheringEnabled)
 	{
 		glDisable(GL_DITHER);
-		LOG(Utility::Debug, LOGPLACE, "GL_DITHER disabled");
+		DEBUG_LOG("GL_DITHER disabled");
 		return;
 	}
 
 	glEnable(GL_DITHER);
-	LOG(Utility::Info, LOGPLACE, "GL_DITHER enabled");
+	INFO_LOG("GL_DITHER enabled");
 }
 
 /**
@@ -508,14 +506,14 @@ void Rendering::ReadFrontFaceParameter()
 	else if (frontFaceStr == "GL_CCW") { glFrontFaceMode = GL_CCW; } // every face I draw in counter-clockwise order is a front face
 	else /* GL_CCW is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the front face mode. Using default GL_CCW", frontFaceStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the front face mode. Using default GL_CCW", frontFaceStr.c_str());
 		frontFaceStr = "GL_CCW";
 		glFrontFaceMode = GL_CCW;
 	}
 
 	glFrontFaceModeOld = glFrontFaceMode;
 	glFrontFace(glFrontFaceMode);
-	LOG(Utility::Info, LOGPLACE, "\"%s\" mode specified for the glFrontFace", frontFaceStr.c_str());
+	INFO_LOG("\"%s\" mode specified for the glFrontFace", frontFaceStr.c_str());
 }
 
 /**
@@ -528,7 +526,7 @@ void Rendering::ReadHistogramParameter()
 	if (histogramEnabled == 0)
 	{
 		glDisable(GL_HISTOGRAM);
-		LOG(Utility::Debug, LOGPLACE, "GL_HISTOGRAM disabled");
+		DEBUG_LOG("GL_HISTOGRAM disabled");
 		return;
 	}
 
@@ -540,7 +538,7 @@ void Rendering::ReadHistogramParameter()
 	else if (histogramTargetStr == "GL_PROXY_HISTOGRAM") { histogramTarget = GL_PROXY_HISTOGRAM; }
 	else /* GL_HISTOGRAM is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the histogram target parameter. Using default GL_HISTOGRAM", histogramTargetStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the histogram target parameter. Using default GL_HISTOGRAM", histogramTargetStr.c_str());
 		histogramTargetStr = "GL_HISTOGRAM";
 		histogramTarget = GL_HISTOGRAM;
 	}
@@ -584,7 +582,7 @@ void Rendering::ReadHistogramParameter()
 	else if (histogramInternalFormatStr == "GL_RGBA16") { histogramInternalFormat = GL_RGBA16; }
 	else /* GL_RGBA is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the histogram internal format. Using default GL_RGBA", histogramInternalFormatStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the histogram internal format. Using default GL_RGBA", histogramInternalFormatStr.c_str());
 		histogramInternalFormatStr = "GL_RGBA";
 		histogramInternalFormat = GL_RGBA;
 	}
@@ -594,12 +592,12 @@ void Rendering::ReadHistogramParameter()
 
 	if (histogramSink)
 	{
-		LOG(Utility::Info, LOGPLACE, "GL_HISTOGRAM enabled with target = \"%s\", width = %d, internal format = \"%s\" and enabled sink",
+		INFO_LOG("GL_HISTOGRAM enabled with target = \"%s\", width = %d, internal format = \"%s\" and enabled sink",
 			histogramTargetStr.c_str(), histogramWidth, histogramInternalFormatStr.c_str());
 	}
 	else
 	{
-		LOG(Utility::Info, LOGPLACE, "GL_HISTOGRAM enabled with target = \"%s\", width = %d, internal format = \"%s\" and disabled sink",
+		INFO_LOG("GL_HISTOGRAM enabled with target = \"%s\", width = %d, internal format = \"%s\" and disabled sink",
 			histogramTargetStr.c_str(), histogramWidth, histogramInternalFormatStr.c_str());
 	}
 }
@@ -637,7 +635,7 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 	else
 	{
 		glDisable(GL_SCISSOR_TEST);
-		LOG(Utility::Debug, LOGPLACE, "GL_SCISSOR_TEST disabled");
+		DEBUG_LOG("GL_SCISSOR_TEST disabled");
 	}
 	
 	glScissorBoxLowerLeftCornerX = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_X", 0);
@@ -652,7 +650,7 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 	if (glScissorTestEnabled)
 	{
 		glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
-		LOG(Utility::Info, LOGPLACE, "GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
+		INFO_LOG("GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
 			glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
 	}
 }
@@ -669,7 +667,7 @@ void Rendering::ReadStencilTestParameter()
 	if (stencilTestEnabled == 0)
 	{
 		glDisable(GL_STENCIL_TEST);
-		LOG(Utility::Debug, LOGPLACE, "GL_STENCIL_TEST_ENABLED disabled");
+		DEBUG_LOG("GL_STENCIL_TEST_ENABLED disabled");
 		return;
 	}
 
@@ -687,7 +685,7 @@ void Rendering::ReadStencilTestParameter()
 	else if (stencilTestFuncStr == "GL_ALWAYS") { stencilTestFunc = GL_ALWAYS; }
 	else /* GL_ALWAYS is default */
 	{
-		LOG(Utility::Error, LOGPLACE, "Invalid enum \"%s\" given for the stencil test function. Using default GL_ALWAYS", stencilTestFuncStr.c_str());
+		ERROR_LOG("Invalid enum \"%s\" given for the stencil test function. Using default GL_ALWAYS", stencilTestFuncStr.c_str());
 		stencilTestFuncStr = "GL_ALWAYS";
 		stencilTestFunc = GL_ALWAYS;
 	}
@@ -696,7 +694,7 @@ void Rendering::ReadStencilTestParameter()
 	GLuint stencilTestMask = GET_CONFIG_VALUE("GL_STENCIL_TEST_MASK", 1);
 
 	glStencilFunc(stencilTestFunc, stencilTestRefValue, stencilTestMask);
-	LOG(Utility::Info, LOGPLACE, "GL_STENCIL_TEST enabled with function \"%s\", reference value = %d and the mask = %d",
+	INFO_LOG("GL_STENCIL_TEST enabled with function \"%s\", reference value = %d and the mask = %d",
 		stencilTestFuncStr.c_str(), stencilTestRefValue, stencilTestMask);
 }
 
@@ -725,31 +723,31 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 	switch (errCode)
 	{
 	case GL_INVALID_ENUM:
-		LOG(Utility::Error, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_INVALID_ENUM", functionName, comment);
+		ERROR_LOG("Error occured in function \"%s\". %s failed with error code = GL_INVALID_ENUM", functionName, comment);
 		break;
 	case GL_INVALID_VALUE:
-		LOG(Utility::Error, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_INVALID_VALUE", functionName, comment);
+		ERROR_LOG("Error occured in function \"%s\". %s failed with error code = GL_INVALID_VALUE", functionName, comment);
 		break;
 	case GL_INVALID_OPERATION:
-		LOG(Utility::Error, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_INVALID_OPERATION", functionName, comment);
+		ERROR_LOG("Error occured in function \"%s\". %s failed with error code = GL_INVALID_OPERATION", functionName, comment);
 		break;
 	case GL_INVALID_FRAMEBUFFER_OPERATION:
-		LOG(Utility::Error, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_INVALID_FRAMEBUFFER_OPERATION", functionName, comment);
+		ERROR_LOG("Error occured in function \"%s\". %s failed with error code = GL_INVALID_FRAMEBUFFER_OPERATION", functionName, comment);
 		break;
 	case GL_OUT_OF_MEMORY:
-		LOG(Utility::Critical, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_OUT_OF_MEMORY", functionName, comment);
+		CRITICAL_LOG("Error occured in function \"%s\". %s failed with error code = GL_OUT_OF_MEMORY", functionName, comment);
 		exit(EXIT_FAILURE);
 		break;
 	case GL_STACK_UNDERFLOW:
-		LOG(Utility::Critical, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_STACK_UNDERFLOW", functionName, comment);
+		CRITICAL_LOG("Error occured in function \"%s\". %s failed with error code = GL_STACK_UNDERFLOW", functionName, comment);
 		exit(EXIT_FAILURE);
 		break;
 	case GL_STACK_OVERFLOW:
-		LOG(Utility::Critical, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = GL_STACK_OVERFLOW", functionName, comment);
+		CRITICAL_LOG("Error occured in function \"%s\". %s failed with error code = GL_STACK_OVERFLOW", functionName, comment);
 		exit(EXIT_FAILURE);
 		break;
 	default:
-		LOG(Utility::Critical, LOGPLACE, "Error occured in function \"%s\". %s failed with error code = %d", functionName, comment, errCode);
+		CRITICAL_LOG("Error occured in function \"%s\". %s failed with error code = %d", functionName, comment, errCode);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -763,34 +761,34 @@ void Rendering::CheckFramebufferStatus()
 	switch (framebufferStatus)
 	{
 	case GL_FRAMEBUFFER_COMPLETE:
-		LOG(Utility::Debug, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_COMPLETE");
+		DEBUG_LOG("Framebuffer is in status GL_FRAMEBUFFER_COMPLETE");
 		break;
 	case GL_FRAMEBUFFER_UNDEFINED:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_UNDEFINED");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_UNDEFINED");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER");
 		break;
 	case GL_FRAMEBUFFER_UNSUPPORTED:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_UNSUPPORTED");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_UNSUPPORTED");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE");
 		break;
 	case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:
-		LOG(Utility::Error, LOGPLACE, "Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
+		ERROR_LOG("Framebuffer is in status GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
 		break;
 	default:
-		LOG(Utility::Emergency, LOGPLACE, "Framebuffer is in unknown status 0x%x", framebufferStatus);
+		EMERGENCY_LOG("Framebuffer is in unknown status 0x%x", framebufferStatus);
 		break;
 	}
 }
@@ -798,7 +796,7 @@ void Rendering::CheckFramebufferStatus()
 #ifdef ANT_TWEAK_BAR_ENABLED
 void TW_CALL Rendering::TweakBarErrorHandler(const char* errorMessage)
 {
-	LOG(Utility::Error, LOGPLACE, "TweakBar error: \"%s\"", errorMessage);
+	ERROR_LOG("TweakBar error: \"%s\"", errorMessage);
 }
 
 void Rendering::InitializeTweakBars()
@@ -896,12 +894,12 @@ void Rendering::UpdateBlendParameters()
 	if (glBlendEnabled)
 	{
 		glEnable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now enabled");
+		NOTICE_LOG("GL_BLEND is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_BLEND is now disabled");
+		NOTICE_LOG("GL_BLEND is now disabled");
 	}
 	glBlendEnabledOld = glBlendEnabled;
 
@@ -909,7 +907,7 @@ void Rendering::UpdateBlendParameters()
 	if ((glBlendSfactor != glBlendSfactorOld) || (glBlendDfactor != glBlendDfactorOld))
 	{
 		glBlendFunc(glBlendSfactor, glBlendDfactor);
-		LOG(Utility::Notice, LOGPLACE, "Blending is now performed with the following parameters: sFactor = %d, dFactor = %d", glBlendSfactor, glBlendDfactor);
+		NOTICE_LOG("Blending is now performed with the following parameters: sFactor = %d, dFactor = %d", glBlendSfactor, glBlendDfactor);
 		glBlendSfactorOld = glBlendSfactor;
 		glBlendDfactorOld = glBlendDfactor;
 	}
@@ -926,12 +924,12 @@ void Rendering::UpdateColorLogicOperationParameters()
 	if (glColorLogicOperationEnabled)
 	{
 		glEnable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_COLOR_LOGIC_OP is now enabled");
+		NOTICE_LOG("GL_COLOR_LOGIC_OP is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_COLOR_LOGIC_OP is now disabled");
+		NOTICE_LOG("GL_COLOR_LOGIC_OP is now disabled");
 	}
 	glColorLogicOperationEnabledOld = glColorLogicOperationEnabled;
 
@@ -939,7 +937,7 @@ void Rendering::UpdateColorLogicOperationParameters()
 	if (glColorLogicOperationCode != glColorLogicOperationCodeOld)
 	{
 		glLogicOp(glColorLogicOperationCode);
-		LOG(Utility::Notice, LOGPLACE, "Color logic operation %d is chosen", glColorLogicOperationCode);
+		NOTICE_LOG("Color logic operation %d is chosen", glColorLogicOperationCode);
 		glColorLogicOperationCodeOld = glColorLogicOperationCode;
 	}
 }
@@ -956,13 +954,13 @@ void Rendering::UpdateCullFaceParameters()
 	{
 		glEnable(glPropertyEnum);
 		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Enabling GL_CULL_FACE");
-		LOG(Utility::Notice, LOGPLACE, "GL_CULL_FACE is now enabled");
+		NOTICE_LOG("GL_CULL_FACE is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
 		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Disabling GL_CULL_FACE");
-		LOG(Utility::Notice, LOGPLACE, "GL_CULL_FACE is now disabled");
+		NOTICE_LOG("GL_CULL_FACE is now disabled");
 	}
 	glCullFaceEnabledOld = glCullFaceEnabled;
 
@@ -971,7 +969,7 @@ void Rendering::UpdateCullFaceParameters()
 	{
 		glCullFace(glCullFaceMode);
 		CheckErrorCode("Rendering::UpdateCullFaceParameters", "Setting the cull face mode");
-		LOG(Utility::Notice, LOGPLACE, "Face culling mode is %d", glCullFaceMode);
+		NOTICE_LOG("Face culling mode is %d", glCullFaceMode);
 		glCullFaceModeOld = glCullFaceMode;
 	}
 
@@ -990,13 +988,13 @@ void Rendering::UpdateDepthClampParameters()
 	{
 		glEnable(glPropertyEnum);
 		CheckErrorCode("Rendering::UpdateDepthClampParameters", "Enabling GL_DEPTH_CLAMP");
-		LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_CLAMP is now enabled");
+		NOTICE_LOG("GL_DEPTH_CLAMP is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
 		CheckErrorCode("Rendering::UpdateDepthClampParameters", "Disabling GL_DEPTH_CLAMP");
-		LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_CLAMP is now disabled");
+		NOTICE_LOG("GL_DEPTH_CLAMP is now disabled");
 	}
 }
 
@@ -1008,13 +1006,13 @@ void Rendering::UpdateDepthTestParameters()
 		{
 			glEnable(GL_DEPTH_TEST);
 			CheckErrorCode("Rendering::UpdateDepthTestParameters", "Enabling GL_DEPTH_TEST");
-			LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_TEST is now enabled");
+			NOTICE_LOG("GL_DEPTH_TEST is now enabled");
 		}
 		else
 		{
 			glDisable(GL_DEPTH_TEST);
 			CheckErrorCode("Rendering::UpdateDepthTestParameters", "Disabling GL_DEPTH_TEST");
-			LOG(Utility::Notice, LOGPLACE, "GL_DEPTH_TEST is now disabled");
+			NOTICE_LOG("GL_DEPTH_TEST is now disabled");
 		}
 		glDepthTestEnabledOld = glDepthTestEnabled;
 	}
@@ -1023,7 +1021,7 @@ void Rendering::UpdateDepthTestParameters()
 	{
 		glDepthFunc(glDepthTestFunc);
 		CheckErrorCode("Rendering::UpdateDepthTestParameters", "Depth function change");
-		LOG(Utility::Notice, LOGPLACE, "Depth function changed from %d to %d", glDepthTestFuncOld, glDepthTestFunc);
+		NOTICE_LOG("Depth function changed from %d to %d", glDepthTestFuncOld, glDepthTestFunc);
 		glDepthTestFuncOld = glDepthTestFunc;
 	}
 
@@ -1042,12 +1040,12 @@ void Rendering::UpdateDitheringParameters()
 	if (glDitheringEnabled)
 	{
 		glEnable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_DITHER is now enabled");
+		NOTICE_LOG("GL_DITHER is now enabled");
 	}
 	else
 	{
 		glDisable(glPropertyEnum);
-		LOG(Utility::Notice, LOGPLACE, "GL_DITHER is now disabled");
+		NOTICE_LOG("GL_DITHER is now disabled");
 	}
 }
 
@@ -1061,7 +1059,7 @@ void Rendering::UpdateFrontFaceParameters()
 	glFrontFaceModeOld = glFrontFaceMode;
 	glFrontFace(glFrontFaceMode);
 	CheckErrorCode("Rendering::UpdateFrontFaceParameters", "Change front face parameter");
-	LOG(Utility::Notice, LOGPLACE, "%d value has been chosen for the front face parameter", glFrontFaceMode);
+	NOTICE_LOG("%d value has been chosen for the front face parameter", glFrontFaceMode);
 }
 
 void Rendering::UpdateScissorTestParameters()
@@ -1072,12 +1070,12 @@ void Rendering::UpdateScissorTestParameters()
 		if (glScissorTestEnabled)
 		{
 			glEnable(glPropertyEnum);
-			LOG(Utility::Notice, LOGPLACE, "GL_SCISSOR_TEST is now enabled");
+			NOTICE_LOG("GL_SCISSOR_TEST is now enabled");
 		}
 		else
 		{
 			glDisable(glPropertyEnum);
-			LOG(Utility::Notice, LOGPLACE, "GL_SCISSOR_TEST is now disabled");
+			NOICE_LOG("GL_SCISSOR_TEST is now disabled");
 		}
 		glScissorTestEnabledOld = glScissorTestEnabled;
 	}
@@ -1089,7 +1087,7 @@ void Rendering::UpdateScissorTestParameters()
 		// TODO: Clear whole screen
 		//glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 		glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
-		LOG(Utility::Notice, LOGPLACE, "Scissor test is now performed with the following parameters: left corner position = (%d; %d), box width = %d, box height = %d",
+		NOTICE_LOG("Scissor test is now performed with the following parameters: left corner position = (%d; %d), box width = %d, box height = %d",
 			glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
 
 		glScissorBoxLowerLeftCornerXOld = glScissorBoxLowerLeftCornerX;

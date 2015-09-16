@@ -55,7 +55,7 @@ protected:
 	/// because we are not going to render to every texture in the scene. </summary>
 	GLuint m_framebuffer;
 
-	/// <summary> </summary>
+	/// <summary> The rendering buffer. </summary>
 	/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 40:00)
 	GLuint m_renderbuffer;
 /* ==================== Non-static member variables end ==================== */

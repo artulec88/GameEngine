@@ -22,7 +22,7 @@ void LookAtComponent::Update(Math::Real delta)
 {
 	if (renderer == NULL)
 	{
-		//LOG(Utility::Warning, LOGPLACE, "LookAtComponent does not have a renderer set up.");
+		//WARNING_LOG("LookAtComponent does not have a renderer set up.");
 		return;
 	}
 
@@ -31,7 +31,7 @@ void LookAtComponent::Update(Math::Real delta)
 
 	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
 
-	//LOG(Utility::Info, LOGPLACE, "Current camera position = %s", currentCameraPos.ToString().c_str());
+	//INFO_LOG("Current camera position = %s", currentCameraPos.ToString().c_str());
 	//Math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, Math::Vector3D(0, 1, 0));
 	//Math::Quaternion interpolatedRotation = GetTransform().GetRot().Slerp(newRot, delta * 5, true);
 	//GetTransform().SetRot(interpolatedRotation);
@@ -40,7 +40,7 @@ void LookAtComponent::Update(Math::Real delta)
 
 	//GetTransform().SetRot((GetTransform().GetRot() + Math::Quaternion(REAL_ZERO, 0.0001f, REAL_ZERO, REAL_ZERO)).Normalized());
 
-	//LOG(Utility::Debug, LOGPLACE, "LookAtComponent has just set a new rotation");
+	//DEBUG_LOG("LookAtComponent has just set a new rotation");
 }
 
 void LookAtComponent::Render(Shader* shader, Renderer* renderer)

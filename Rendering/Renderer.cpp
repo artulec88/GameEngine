@@ -107,7 +107,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {
-	LOG(Info, LOGPLACE, "Creating Renderer instance started");
+	INFO_LOG("Creating Renderer instance started");
 	START_PROFILING;
 	PrintGlReport();
 	SetCallbacks();
@@ -218,13 +218,13 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 	STOP_PROFILING;
-	LOG(Debug, LOGPLACE, "Creating Renderer instance finished");
+	NOTICE_LOG("Creating Renderer instance finished");
 }
 
 
 Renderer::~Renderer(void)
 {
-	LOG(Notice, LOGPLACE, "Destroying rendering engine...");
+	INFO_LOG("Destroying rendering engine...");
 	START_PROFILING;
 	
 	glDeleteVertexArrays(1, &m_vao);
@@ -277,7 +277,7 @@ Renderer::~Renderer(void)
 	glfwTerminate(); // Terminate GLFW
 
 	STOP_PROFILING;
-	LOG(Notice, LOGPLACE, "Rendering engine destroyed");
+	NOTICE_LOG("Rendering engine destroyed");
 }
 
 void Renderer::SetCallbacks()
@@ -369,44 +369,44 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	}
 	if (!cubeMapPosXFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the right face of the cube map");
+		ERROR_LOG("Cannot locate the right face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegXFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the left face of the cube map");
+		ERROR_LOG("Cannot locate the left face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapPosYFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the up face of the cube map");
+		ERROR_LOG("Cannot locate the up face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegYFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the down face of the cube map");
+		ERROR_LOG("Cannot locate the down face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapPosZFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the front face of the cube map");
+		ERROR_LOG("Cannot locate the front face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	if (!cubeMapNegZFaceFileFound)
 	{
-		LOG(Error, LOGPLACE, "Cannot locate the back face of the cube map");
+		ERROR_LOG("Cannot locate the back face of the cube map");
 		// TODO: Set default texture for the missing face instead of just exiting
 		exit(EXIT_FAILURE);
 	}
 	Texture* cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
-		LOG(Error, LOGPLACE, "Cube map texture is NULL");
+		ERROR_LOG("Cube map texture is NULL");
 		exit(EXIT_FAILURE);
 	}
 	STOP_PROFILING;
@@ -418,7 +418,7 @@ void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 	CHECK_CONDITION_EXIT_ALWAYS(terrainNode != NULL; Error, "Cannot register terrain node. Given terrain node is NULL.");
 	if (m_terrainNode != NULL)
 	{
-		LOG(Warning, LOGPLACE, "Replacing already set terrain node with a different one.");
+		WARNING_LOG("Replacing already set terrain node with a different one.");
 	}
 	m_terrainNode = terrainNode;
 }
@@ -472,7 +472,7 @@ void Renderer::Render(const GameNode& gameNode)
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
-		LOG(Emergency, LOGPLACE, "Rendering failed. There is no proper camera set up.");
+		EMERGENCY_LOG("Rendering failed. There is no proper camera set up.");
 		exit(EXIT_FAILURE);
 		// TODO: Instead of exit maybe just use the default camera (??)
 	}
@@ -578,8 +578,7 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 	START_PROFILING;
 	if (m_ambientLightFogEnabled)
 	{
-		//LOG(Utility::Critical, LOGPLACE, "Ambient fog fall-off type: %d. Fog distance calculation type: %d",
-		//	m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
+		//CRITICAL_LOG("Ambient fog fall-off type: %d. Fog distance calculation type: %d", m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
 		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
 		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
 		CHECK_CONDITION_RETURN_ALWAYS(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL");
@@ -621,7 +620,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-			//LOG(Debug, LOGPLACE, "Binding the cube face #%d", i);
+			//DEBUG_LOG("Binding the cube face #%d", i);
 			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
 			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
@@ -679,7 +678,7 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
-		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
+		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;
 	}
 	else
@@ -708,7 +707,7 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
-		//LOG(Delocust, LOGPLACE, "Rendering main menu with a \"main menu camera\".");
+		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;
 	}
 	else
@@ -758,7 +757,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
 		break;
 	}
-	//LOG(Debug, LOGPLACE, "Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
+	//DEBUG_LOG("Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
 	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());
 	SetReal("dayNightMixFactor", dayNightMixFactor);
 	/* ==================== Adjusting the time variables end ==================== */
@@ -806,13 +805,13 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
 	if (shadowMap == NULL)
 	{
-		LOG(Error, LOGPLACE, "Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG("Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
 		STOP_PROFILING;
 		return;
 	}
 	if (shadowMapTempTarget == NULL)
 	{
-		LOG(Error, LOGPLACE, "Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG("Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
 		STOP_PROFILING;
 		return;
 	}
@@ -831,7 +830,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	START_PROFILING;
 	if (filterShader == NULL)
 	{
-		LOG(Error, LOGPLACE, "Cannot apply a filter. Filtering shader is NULL.");
+		ERROR_LOG("Cannot apply a filter. Filtering shader is NULL.");
 		STOP_PROFILING;
 		return;
 	}
@@ -839,16 +838,16 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	CHECK_CONDITION_RETURN_ALWAYS(source != dest, Error, "Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
 	if (dest == NULL)
 	{
-		LOG(Delocust, LOGPLACE, "Binding window as a render target for filtering");
+		DELOCUST_LOG("Binding window as a render target for filtering");
 		BindAsRenderTarget();
 	}
 	else
 	{
-		LOG(Delocust, LOGPLACE, "Binding texture as a render target for filtering");
+		DELOCUST_LOG("Binding texture as a render target for filtering");
 		dest->BindAsRenderTarget();
 	}
 
-	//LOG(Debug, LOGPLACE, "Applying a filter to the source texture");
+	//DEBUG_LOG("Applying a filter to the source texture");
 	
 	SetTexture("filterTexture", source);
 
@@ -892,8 +891,8 @@ unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
 	CHECK_CONDITION((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
 	m_currentCameraIndex = cameraIndex;
 #ifndef ANT_TWEAK_BAR_ENABLED
-	LOG(Notice, LOGPLACE, "Switched to camera #%d", m_currentCameraIndex + 1);
-	//LOG(Debug, LOGPLACE, "%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG("Switched to camera #%d", m_currentCameraIndex + 1);
+	//DEBUG_LOG("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 #endif
 	return m_currentCameraIndex;
 }
@@ -903,7 +902,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
 	if (directionalLight != NULL)
 	{
-		LOG(Debug, LOGPLACE, "Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		DEBUG_LOG("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
 		m_directionalAndSpotLights.push_back(directionalLight);
 	}
 	else
@@ -911,7 +910,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 		Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(light);
 		if (spotLight != NULL)
 		{
-			LOG(Debug, LOGPLACE, "Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
+			DEBUG_LOG("Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
 			m_directionalAndSpotLights.push_back(spotLight);
 		}
 		else
@@ -919,16 +918,15 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 			Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(light);
 			if (pointLight != NULL)
 			{
-				LOG(Debug, LOGPLACE, "Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
+				DEBUG_LOG("Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
 				m_pointLights.push_back(pointLight);
 			}
 			else
 			{
-				LOG(Emergency, LOGPLACE, "Adding the light of unknown type. It is neither a directional nor spot nor point light.");
+				EMERGENCY_LOG("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
 			}
 		}
 	}
-
 	m_lights.push_back(light);
 }
 
@@ -942,16 +940,14 @@ void Renderer::AddCamera(CameraBase* camera)
 
 void Renderer::PrintGlReport()
 {
-	LOG(Info, LOGPLACE, "Vendor:\t%s", (const char*)glGetString(GL_VENDOR));
-	LOG(Info, LOGPLACE, "Renderer name:\t%s", (const char*)glGetString(GL_RENDERER));
-	LOG(Info, LOGPLACE, "OpenGL version:\t%s", (const char*)glGetString(GL_VERSION));
-	LOG(Info, LOGPLACE, "GLSL version:\t%s", (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
-	//LOG(Error, LOGPLACE, "OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
+	INFO_LOG("OpenGL report: Vendor:\"%s\"; Renderer name:\"%s\"; Version:\"%s\"; GLSL version:\"%s\"", (const char*)glGetString(GL_VENDOR),
+		(const char*)glGetString(GL_RENDERER), (const char*)glGetString(GL_VERSION), (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+	//INFO_LOG("OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
 }
 
 void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType)
 {
-	LOG(Error, LOGPLACE, "Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
+	ERROR_LOG("Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
 }
 
 void Renderer::BindAsRenderTarget()
@@ -974,10 +970,10 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
  */
 void Renderer::InitializeTweakBars()
 {
-	LOG(Info, LOGPLACE, "Initializing rendering engine's tweak bars");
+	INFO_LOG("Initializing rendering engine's tweak bars");
 
 #ifdef RENDERER_PROPERTIES_BAR
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar");
+	DEBUG_LOG("Initializing rendering engine's properties tweak bar");
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
 	m_cameraMembers[0].Name = "Projection"; m_cameraMembers[1].Name = "FoV"; m_cameraMembers[2].Name = "AspectRatio"; m_cameraMembers[3].Name = "NearPlane"; m_cameraMembers[4].Name = "FarPlane";
 	m_cameraMembers[0].Type = matrix4DType; m_cameraMembers[1].Type = angleType; m_cameraMembers[2].Type = TW_TYPE_FLOAT; m_cameraMembers[3].Type = TW_TYPE_FLOAT; m_cameraMembers[4].Type = TW_TYPE_FLOAT;
@@ -1011,15 +1007,15 @@ void Renderer::InitializeTweakBars()
 
 	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's properties tweak bar finished");
+	DEBUG_LOG("Initializing rendering engine's properties tweak bar finished");
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar");
+	DEBUG_LOG("Initializing rendering engine's cameras tweak bar");
 	m_cameraBar = TwNewBar("CamerasBar");
 	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL)
 	{
-		LOG(Error, LOGPLACE, "Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
+		ERROR_LOG("Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
 		
 		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
 		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
@@ -1040,7 +1036,7 @@ void Renderer::InitializeTweakBars()
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
 	TwSetParam(m_cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's cameras tweak bar finished");
+	DEBUG_LOG("Initializing rendering engine's cameras tweak bar finished");
 #endif
 
 #ifdef LIGHTS_TWEAK_BAR
@@ -1058,7 +1054,7 @@ void Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &m_altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &m_altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
-	LOG(Debug, LOGPLACE, "Initializing rendering engine's tweak bars finished");
+	DEBUG_LOG("Initializing rendering engine's tweak bars finished");
 }
 
 void Renderer::CheckCameraIndexChange()
@@ -1068,8 +1064,8 @@ void Renderer::CheckCameraIndexChange()
 	{
 		return;
 	}
-	LOG(Notice, LOGPLACE, "Switched to camera #%d", m_currentCameraIndex + 1);
-	//LOG(Debug, LOGPLACE, "%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG("Switched to camera #%d", m_currentCameraIndex + 1);
+	//DEBUG_LOG("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 
 	TwRemoveAllVars(m_cameraBar);
 	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");

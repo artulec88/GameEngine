@@ -56,7 +56,7 @@ public:
 		Real length = LengthSquared();
 		//if (AlmostEqual(length, REAL_ZERO))
 		//{
-		//	LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+		//	WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		//	return (*this);
 		//}
 		return (*this) / static_cast<Real>(sqrt(length));
@@ -167,7 +167,7 @@ public:
 #ifdef _DEBUG
 		if (AlmostEqual(length, REAL_ZERO))
 		{
-			LOG(Utility::Warning, LOGPLACE, "Trying to normalize the vector with 0 length. 0 length vector is returned.");
+			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 			return (*this);
 		}
 #endif

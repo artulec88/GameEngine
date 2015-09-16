@@ -28,7 +28,7 @@ Real Angle::GetAngleInDegrees() const
 		STOP_PROFILING;
 		return ToDeg(m_angle);
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
 		STOP_PROFILING;
 		return m_angle;
 	}
@@ -48,7 +48,7 @@ Real Angle::GetAngleInRadians() const
 		STOP_PROFILING;
 		return m_angle;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
 		STOP_PROFILING;
 		return m_angle;
 	}
@@ -74,7 +74,7 @@ Angle Angle::operator+(const Angle& angle) const
 		break;
 	default:
 		STOP_PROFILING;
-		LOG(Utility::Error, LOGPLACE, "Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
+		ERROR_LOG("Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
 		return Angle(*this);
 	}
 }
@@ -94,7 +94,7 @@ Angle Angle::operator-(const Angle& angle) const
 		break;
 	default:
 		STOP_PROFILING;
-		LOG(Utility::Error, LOGPLACE, "Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
+		ERROR_LOG("Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
 		return Angle(*this);
 	}
 }
@@ -121,7 +121,7 @@ Angle& Angle::operator+=(const Angle& angle)
 		m_angle += angle.GetAngleInRadians();
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
+		ERROR_LOG("Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
 	}
 	STOP_PROFILING;
 	return *this;
@@ -139,7 +139,7 @@ Angle& Angle::operator-=(const Angle& angle)
 		m_angle -= angle.GetAngleInRadians();
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
+		ERROR_LOG("Cannot add two angles. The angle is specified in unknown unit type (%d)", m_unit);
 	}
 	STOP_PROFILING;
 	return *this;
@@ -156,6 +156,13 @@ Angle& Angle::operator*=(Real s)
 Angle& Angle::operator/=(Real s)
 {
 	START_PROFILING;
+#ifdef _DEBUG
+	if (AlmostEqual(s, REAL_ZERO))
+	{
+		ERROR_LOG("Cannot divide the angle by 0. Returning the unmodified angle.");
+		return *this;
+	}
+#endif
 	m_angle /= s;
 	STOP_PROFILING;
 	return *this;
@@ -172,7 +179,7 @@ Angle& Angle::operator=(const Angle& angle)
 		m_angle = angle.GetAngleInRadians();
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "The angle is specified in unknown unit type (%d)", angle.GetUnit());
+		ERROR_LOG("The angle is specified in unknown unit type (%d)", angle.GetUnit());
 	}
 	m_unit = angle.GetUnit();
 	return (*this);

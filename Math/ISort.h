@@ -68,7 +68,7 @@ protected:
 		case DESCENDING:
 			return (v2 > v1);
 		default:
-			LOG(Utility::Error, LOGPLACE, "Unknown sorting direction specified.");
+			ERROR_LOG("Unknown sorting direction specified.");
 			return false;
 			break;
 		}
@@ -82,7 +82,7 @@ protected:
 		SortingKey sortingKey = sortingParameters.GetSortingKey();
 		if (sortingKey == COMPONENT_Z)
 		{
-			LOG(Utility::Error, LOGPLACE, "Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
+			ERROR_LOG("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 			return false;
 		}
 
@@ -117,13 +117,13 @@ protected:
 		switch (sortingKey)
 		{
 		case VALUE:
-			LOG(Utility::Warning, LOGPLACE, "VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 		case COMPONENT_X:
 			return v.GetX();
 		case COMPONENT_Y:
 			return v.GetY();
 		case COMPONENT_Z:
-			LOG(Utility::Critical, LOGPLACE, "Cannot determine the value of the Z component for the 2D vector.");
+			CRITICAL_LOG("Cannot determine the value of the Z component for the 2D vector.");
 			exit(EXIT_FAILURE);
 		case SUM_OF_SQUARED_COMPONENTS:
 			return v.LengthSquared();
@@ -132,7 +132,7 @@ protected:
 		case SUM_OF_ABSOLUTE_COMPONENTS:
 			return v.SumOfAbsoluteComponents();
 		default:
-			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
+			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
 			return v.GetX();
 		}
 	}
@@ -142,7 +142,7 @@ protected:
 		switch (sortingKey)
 		{
 		case VALUE:
-			LOG(Utility::Warning, LOGPLACE, "VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 		case COMPONENT_X:
 			return v.GetX();
 		case COMPONENT_Y:
@@ -156,7 +156,7 @@ protected:
 		case SUM_OF_ABSOLUTE_COMPONENTS:
 			return v.SumOfAbsoluteComponents();
 		default:
-			LOG(Utility::Emergency, LOGPLACE, "Unknown sorting key specified. Returning X component value by default.");
+			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
 			return v.GetX();
 		}
 	}
