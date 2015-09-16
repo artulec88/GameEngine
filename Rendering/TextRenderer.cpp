@@ -17,6 +17,10 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
 	m_textShader(NULL)
 {
+	if (fontTexture == NULL)
+	{
+		WARNING_LOG("The text renderer will not work properly. The specified font texture is NULL");
+	}
 	//m_fontTexture = new Texture("..\\Textures\\font1.bmp");
 	m_fontMaterial = new Material(fontTexture);
 	m_textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
@@ -70,7 +74,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 
 TextRenderer::~TextRenderer(void)
 {
-	LOG(Utility::Delocust, LOGPLACE, "Text renderer destruction started");
+	DELOCUST_LOG("Text renderer destruction started");
 	SAFE_DELETE(m_fontMaterial);
 	SAFE_DELETE(m_textShader);
 
@@ -78,7 +82,7 @@ TextRenderer::~TextRenderer(void)
 	glDeleteBuffers(1, &m_vertexBuffer);
 	glDeleteBuffers(1, &m_texCoordBuffer);
 
-	LOG(Utility::Debug, LOGPLACE, "Text renderer destruction finished");
+	DEBUG_LOG("Text renderer destruction finished");
 }
 
 void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const
@@ -111,7 +115,7 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 		x = (m_windowWidth - str.size() * fontSize) / 2;
 		break;
 	default:
-		LOG(Utility::Warning, LOGPLACE, "Incorrect alignment type used.");
+		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
 	}
 	DrawString(x, y, str, renderer, fontSize, fontColor);
 }
@@ -133,7 +137,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 
 void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
-	LOG(Utility::Delocust, LOGPLACE, "Started drawing string \"%s\"", str.c_str());
+	DELOCUST_LOG("Started drawing string \"%s\"", str.c_str());
 
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Started drawing a string");
 
@@ -146,7 +150,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 		Math::Vector2D upRightVec(x + i * fontSize + fontSize, yReal + fontSize);
 		Math::Vector2D downRightVec(x + i * fontSize + fontSize, static_cast<Math::Real>(yReal));
 		Math::Vector2D downLeftVec(x + i * fontSize, yReal);
-		//LOG(Utility::Critical, LOGPLACE, "str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
+		//CRITICAL_LOG("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);
 		vertices.push_back(downLeftVec);
@@ -159,7 +163,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 		int ch = static_cast<int>(str[i]);
 		Math::Real xUV = static_cast<Math::Real>(ch % 16) * oneOverSixteen;
 		Math::Real yUV = REAL_ONE - ((static_cast<Math::Real>(ch / 16) * oneOverSixteen) + oneOverSixteen);
-		//LOG(Utility::Info, LOGPLACE, "character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
+		//INFO_LOG("character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
 
 		Math::Vector2D upLeftUV(xUV, REAL_ONE - (yUV + oneOverSixteen ));
 		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
@@ -235,5 +239,4 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 		glEnable(GL_DEPTH_TEST);
 	}
 	Rendering::CheckErrorCode("TextRenderer::DrawString", "Finishing drawing a string");
-	//exit(EXIT_FAILURE);
 }

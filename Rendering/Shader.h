@@ -99,7 +99,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	GLuint GetProgramID() const { return shaderData->GetProgram(); }
+	GLuint GetProgramID() const { return m_shaderData->GetProgram(); }
 	void Bind() const;
 	bool IsBound() const;
 	RENDERING_API void Unbind() const;
@@ -123,8 +123,8 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	ShaderData* shaderData;
-	std::string fileName;
+	ShaderData* m_shaderData;
+	std::string m_fileName;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Shader */
 

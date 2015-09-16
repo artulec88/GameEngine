@@ -6,7 +6,7 @@
 using namespace Rendering;
 using namespace Math;
 
-Transform::Transform(const Vector3D& pos /* = Vector3D(0.0, 0.0, 0.0) */, const Quaternion& rot /* = Quaternion(0.0, 0.0, 0.0, 1.0) */, Math::Real scale /* = 1.0 */) :
+Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real scale /* = REAL_ONE */) :
 	pos(pos),
 	rotation(rot),
 	scale(scale),
@@ -17,7 +17,7 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(0.0, 0.0, 0.0) */, const 
 
 Transform::~Transform()
 {
-	//LOG(Utility::Debug, LOGPLACE, "Transform is being destructed");
+	//DEBUG_LOG("Transform is being destructed");
 }
 
 //bool Transform::IsHierarchyChanged() const
@@ -44,7 +44,7 @@ Matrix4D Transform::GetTransformation() const
 		isChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
 		//{
-		//	LOG(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
 		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());
@@ -58,7 +58,7 @@ Matrix4D Transform::GetTransformation() const
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
 		//{
-		//	LOG(Utility::Debug, LOGPLACE, "IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 	}
 
@@ -94,7 +94,7 @@ void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
 
 void Transform::Rotate(const Quaternion& rot)
 {
-	//LOG(Utility::Debug, LOGPLACE, "Started...");
+	//DEBUG_LOG("Started...");
 	this->rotation = (rot * this->rotation).Normalized();
 	isChanged = true;
 }

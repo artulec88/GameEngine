@@ -9,7 +9,7 @@ void MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
 	if (realMap.empty() && vec3DMap.empty())
 	{
-		LOG(Utility::Warning, LOGPLACE, "The group \"%s\" does not have any parameters set in the maps", groupName);
+		WARNING_LOG("The group \"%s\" does not have any parameters set in the maps", groupName);
 		return;
 	}
 	char temp[256];
@@ -33,13 +33,13 @@ void MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 	if (!realMap.empty())
 	{
 		_snprintf_s(defStr, 256, 255, " %s/Floats group=%s ", tweakBarName, groupName);
-		LOG(Utility::Debug, LOGPLACE, "defStr = \"%s\"", defStr);
+		DEBUG_LOG("defStr = \"%s\"", defStr);
 		TwDefine(defStr);
 	}
 	if (!vec3DMap.empty())
 	{
 		_snprintf_s(defStr, 256, 255, " %s/Vectors group=%s ", tweakBarName, groupName);
-		LOG(Utility::Debug, LOGPLACE, "defStr = \"%s\"", defStr);
+		DEBUG_LOG("defStr = \"%s\"", defStr);
 		TwDefine(defStr);
 	}
 }

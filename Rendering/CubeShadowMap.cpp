@@ -45,7 +45,7 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 	unsigned int windowHeightPowerOfTwo = Math::RoundUpPow2(windowHeight);
 	unsigned int cubeMapSize = (windowWidthPowerOfTwo > windowHeightPowerOfTwo) ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
 
-	LOG(Utility::Notice, LOGPLACE, "Initializing cube shadow map with width=%d and height=%d (cubeMapSize=%d)", windowWidth, windowHeight, cubeMapSize);
+	NOTICE_LOG("Initializing cube shadow map with width=%d and height=%d (cubeMapSize=%d)", windowWidth, windowHeight, cubeMapSize);
 	const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
     // Create the FBO
@@ -77,7 +77,7 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depth, 0);
-	//LOG(Utility::Debug, LOGPLACE, "The texture does not have any depth attachment. Creating the render buffer is started.");
+	//DEBUG_LOG("The texture does not have any depth attachment. Creating the render buffer is started.");
 	//glGenRenderbuffers(1, &m_renderBuffer);
 	//glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
 	//glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, windowWidth, windowHeight);

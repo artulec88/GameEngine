@@ -81,7 +81,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
-	LOG(Notice, LOGPLACE, "Main application construction started");
+	NOTICE_LOG("Main application construction started");
 #ifdef CALCULATE_STATS
 	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
 	QueryPerformanceCounter(&m_coreEngineStartTimer);
@@ -90,7 +90,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	if (s_coreEngine != NULL)
 	{
-		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of MainApp class has already been created");
+		ERROR_LOG("Constructor called when a singleton instance of MainApp class has already been created");
 		SAFE_DELETE(s_coreEngine);
 	}
 	s_coreEngine = this;
@@ -109,30 +109,30 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	STOP_PROFILING;
 
-	LOG(Notice, LOGPLACE, "Main application construction finished");
+	NOTICE_LOG("Main application construction finished");
 }
 
 
 CoreEngine::~CoreEngine(void)
 {
-	LOG(Debug, LOGPLACE, "Core engine destruction started");
+	DEBUG_LOG("Core engine destruction started");
 
 	/* ==================== Printing stats begin ==================== */
 #ifdef CALCULATE_STATS
-	LOG(Info, LOGPLACE, "The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
-	LOG(Info, LOGPLACE, "\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
-	LOG(Info, LOGPLACE, "The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
-	LOG(Info, LOGPLACE, "Rendering step performed %d times", m_renderingRequiredCount);
-	LOG(Info, LOGPLACE, "Rendering step omitted %d times", m_renderingNotRequiredCount);
+	INFO_LOG("The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
+	INFO_LOG("The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
+	INFO_LOG("\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
+	INFO_LOG("\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
+	INFO_LOG("\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
+	INFO_LOG("The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
+	INFO_LOG("Rendering step performed %d times", m_renderingRequiredCount);
+	INFO_LOG("Rendering step omitted %d times", m_renderingNotRequiredCount);
 
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
-	LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
-	//LOG(Info, LOGPLACE, "SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
+	INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
+	//INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
 
 	QueryPerformanceCounter(&m_coreEngineStopTimer);
 	Math::Real totalElapsedTime = static_cast<Math::Real>((m_coreEngineStopTimer.QuadPart - m_coreEngineStartTimer.QuadPart)) / m_frequency.QuadPart; // in [s]
@@ -145,7 +145,7 @@ CoreEngine::~CoreEngine(void)
 	SAFE_DELETE(m_renderer);
 	SAFE_DELETE(m_fpsTextRenderer);
 
-	LOG(Notice, LOGPLACE, "Core engine destruction finished");
+	NOTICE_LOG("Core engine destruction finished");
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
@@ -156,7 +156,7 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	START_PROFILING;
 	GLFWwindow* threadWindow = NULL;
 	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
-	//LOG(Utility::Debug, LOGPLACE, "Thread window address: %p", threadWindow);
+	//DEBUG_LOG("Thread window address: %p", threadWindow);
 	m_renderer = new Renderer(window, threadWindow);
 
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
@@ -168,10 +168,10 @@ void CoreEngine::Start()
 	START_PROFILING;
 	if (m_isRunning)
 	{
-		LOG(Warning, LOGPLACE, "The core engine instance is already running");
+		WARNING_LOG("The core engine instance is already running");
 		return;
 	}
-	LOG(Notice, LOGPLACE, "The core engine starts");
+	NOTICE_LOG("The core engine starts");
 	
 #ifdef CALCULATE_STATS
 	m_minMaxTime1.Init();
@@ -192,13 +192,13 @@ void CoreEngine::Stop()
 	START_PROFILING;
 	if (!m_isRunning)
 	{
-		LOG(Warning, LOGPLACE, "The core engine instance is not running");
+		WARNING_LOG("The core engine instance is not running");
 		return;
 	}
 	
 	m_isRunning = false;
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
-	LOG(Notice, LOGPLACE, "The core engine has stopped");
+	NOTICE_LOG("The core engine has stopped");
 
 	// Just for checking whether time calculation is performed correctly
 	//LARGE_INTEGER frequency; // ticks per second
@@ -208,7 +208,7 @@ void CoreEngine::Stop()
 	//tthread::this_thread::sleep_for(tthread::chrono::seconds(1));
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-	//LOG(Info, LOGPLACE, "Elapsed time = %f [us]", elapsedTime);
+	//INFO_LOG("Elapsed time = %f [us]", elapsedTime);
 	STOP_PROFILING;
 }
 
@@ -218,7 +218,7 @@ void CoreEngine::Run()
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
-	LOG(Notice, LOGPLACE, "The game started running");
+	NOTICE_LOG("The game started running");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
@@ -244,14 +244,8 @@ void CoreEngine::Run()
 	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 #endif
-	//int bla = 0;
 	while (m_isRunning)
 	{
-		//if (bla % 1000 == 0)
-		//{
-		//	LOG(Utility::Critical, LOGPLACE, "Sizeof(STATS_STORAGE) = %d", sizeof(STATS_STORAGE));
-		//}
-		//++bla;
 		/* ==================== REGION #1 begin ====================*/
 		START_TIMER(t1);
 		bool isRenderRequired = false;
@@ -290,7 +284,7 @@ void CoreEngine::Run()
 				m_stats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
-			LOG(Debug, LOGPLACE, "FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			DEBUG_LOG("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = REAL_ZERO;
 		}
@@ -397,7 +391,7 @@ void CoreEngine::Run()
 		}
 		else
 		{
-			//LOG(Info, LOGPLACE, "Rendering is not required. Moving on...");
+			//INFO_LOG("Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			//this_thread::sleep_for(chrono::milliseconds(100));
 			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
@@ -459,7 +453,7 @@ Math::Real CoreEngine::GetCurrentLocalTime() const
 	int result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
 	if (result > SECONDS_PER_DAY)
 	{
-		LOG(Utility::Error, LOGPLACE, "Incorrect local time");
+		ERROR_LOG("Incorrect local time");
 		// result = REAL_ZERO;
 		result -= SECONDS_PER_DAY;
 	}
@@ -482,7 +476,7 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 {
 	if (m_renderer == NULL)
 	{
-		LOG(Critical, LOGPLACE, "Cannot set cursor position. The rendering engine is NULL.");
+		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
 	m_renderer->SetCursorPos(xPos, yPos);
@@ -492,7 +486,7 @@ void CoreEngine::CentralizeCursor()
 {
 	if (m_renderer == NULL)
 	{
-		LOG(Critical, LOGPLACE, "Cannot set cursor position. The rendering engine is NULL.");
+		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
 	m_renderer->SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
@@ -509,19 +503,19 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
 	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
-	//LOG(Utility::Debug, LOGPLACE, "Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
+	//DEBUG_LOG("Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
 	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
 	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
-	//LOG(Utility::Debug, LOGPLACE, "Time correction in seconds = %.5f", timeCorrectionInSeconds);
-	//LOG(Utility::Debug, LOGPLACE, "Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
+	//DEBUG_LOG("Time correction in seconds = %.5f", timeCorrectionInSeconds);
+	//DEBUG_LOG("Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
 	
 	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
-	//LOG(Utility::Debug, LOGPLACE, "Hour angle = %.5f", hourAngle.GetAngleInDegrees());
+	//DEBUG_LOG("Hour angle = %.5f", hourAngle.GetAngleInDegrees());
 
 	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
 	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
-	//LOG(Utility::Debug, LOGPLACE, "Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
+	//DEBUG_LOG("Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
 
 	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
@@ -550,9 +544,9 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	}
 	//if (prevDaytime != m_daytime)
 	//{
-	//	LOG(Utility::Info, LOGPLACE, "Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
+	//	INFO_LOG("Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
 	//}
-	//LOG(Utility::Debug, LOGPLACE, "Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
+	//DEBUG_LOG("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
 Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
@@ -580,7 +574,7 @@ Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTr
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Incorrect daytime %d", m_daytime);
+		ERROR_LOG("Incorrect daytime %d", m_daytime);
 	}
 	return m_daytime;
 }

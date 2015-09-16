@@ -15,34 +15,34 @@ using namespace std;
 GameNode::GameNode(void) :
 	m_ID(GameNode::gameNodeCount++)
 {
-	//LOG(Info, LOGPLACE, "Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
-	//LOG(Info, LOGPLACE, "Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
-	//LOG(Info, LOGPLACE, "Transform.GetScale() = \"%f\"", transform.GetScale());
+	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
+	//INFO_LOG("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
+	//INFO_LOG("Transform.GetScale() = \"%f\"", transform.GetScale());
 }
 
 
 GameNode::~GameNode(void)
 {
-	LOG(Debug, LOGPLACE, "Game node (ID=%d) destruction started", m_ID);
-	//LOG(Debug, LOGPLACE, "Destroying components started for game node with ID=%d", this->ID);
+	DEBUG_LOG("Game node (ID=%d) destruction started", m_ID);
+	//DEBUG_LOG("Destroying components started for game node with ID=%d", this->ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
 	//	SAFE_DELETE(*itr);
 	//}
-	//LOG(Debug, LOGPLACE, "Destroying components finished for game node with ID=%d", this->ID);
+	//DEBUG_LOG("Destroying components finished for game node with ID=%d", this->ID);
 
-	//LOG(Debug, LOGPLACE, "Started recursive destruction of game nodes for game node with ID=%d", this->ID);
+	//DEBUG_LOG("Started recursive destruction of game nodes for game node with ID=%d", this->ID);
 	//for (std::vector<GameNode*>::iterator itr = childrenGameNodes.begin(); itr != childrenGameNodes.end(); ++itr)
 	//{
 	//	if ((*itr) != NULL)
 	//	{
-	//		LOG(Delocust, LOGPLACE, "Destroying child game node started");
+	//		DELOCUST_LOG("Destroying child game node started");
 	//		delete *itr;
 	//		*itr = NULL;
-	//		LOG(Delocust, LOGPLACE, "Destroying child game node finished");
+	//		DELOCUST_LOG("Destroying child game node finished");
 	//	}
 	//}
-	//LOG(Debug, LOGPLACE, "Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
+	//DEBUG_LOG("Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
 	//childrenGameNodes.clear();
 
 	for (unsigned int i = 0; i < m_components.size(); ++i)
@@ -55,7 +55,7 @@ GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
-	LOG(Info, LOGPLACE, "Game node (ID=%d) destruction finished", m_ID);
+	INFO_LOG("Game node (ID=%d) destruction finished", m_ID);
 }
 
 GameNode* GameNode::AddChild(GameNode* child)

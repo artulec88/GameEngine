@@ -31,7 +31,7 @@ void Stats<T>::Push(StatsID statsID, T sample)
 	{
 		if (m_level == MAX_STATS_LEVEL)
 		{
-			LOG(Utility::Warning, LOGPLACE, "Maximum number of samples reached for stats ID: %d", statsID);
+			WARNING_LOG("Maximum number of samples reached for stats ID: %d", statsID);
 		}
 		else
 		{
@@ -75,7 +75,7 @@ T Stats<T>::CalculateSum(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		LOG(Utility::Warning, LOGPLACE, "Sum cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		WARNING_LOG("Sum cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
 		return 0;
 	}
 	
@@ -99,7 +99,7 @@ int Stats<T>::CalculateSamplesCount(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		LOG(Utility::Debug, LOGPLACE, "Samples cannot be counted for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		DEBUG_LOG("Samples cannot be counted for %d statsID. The specific entry in statistics map has not been created.", statsID);
 		return 0;
 	}
 	
@@ -118,7 +118,7 @@ T Stats<T>::CalculateMean(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		LOG(Utility::Warning, LOGPLACE, "Mean cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		WARNING_LOG("Mean cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
 		return 0;
 	}
 
@@ -126,7 +126,7 @@ T Stats<T>::CalculateMean(StatsID statsID) const
 	int samplesCount = CalculateSamplesCount(statsID);
 	CHECK_CONDITION(samplesCount > 0, Utility::Emergency, "Samples count (%d) must be positive.", samplesCount);
 
-	LOG(Utility::Debug, LOGPLACE, "Sum = %.3f, samplesCount = %d", sum, samplesCount);
+	DEBUG_LOG("Sum = %.3f, samplesCount = %d", sum, samplesCount);
 
 	return sum / samplesCount;
 }
@@ -136,11 +136,11 @@ T Stats<T>::CalculateMedian(StatsID statsID)
 {
 	if (m_child != NULL)
 	{
-		LOG(Utility::Emergency, LOGPLACE, "Median shouldn't be used for the hierarchical stats storage as it is now used. The result will not be correct.");
+		EMERGENCY_LOG("Median shouldn't be used for the hierarchical stats storage as it is now used. The result will not be correct.");
 	}
 	if (m_samples[statsID].empty())
 	{
-		LOG(Utility::Info, LOGPLACE, "Median cannot be calculated for %d statsID. There are no samples stored.", statsID);
+		INFO_LOG("Median cannot be calculated for %d statsID. There are no samples stored.", statsID);
 		return static_cast<T>(0);
 	}
 
@@ -181,7 +181,7 @@ MethodStats::MethodStats(void) :
 	m_isNestedWithinAnotherProfiledMethod(false)
 {
 	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
-	LOG(Utility::Debug, LOGPLACE, "MethodStats constructor");
+	DEBUG_LOG("MethodStats constructor");
 }
 
 MethodStats::~MethodStats(void)
@@ -213,7 +213,7 @@ Math::Real MethodStats::CalculateMean() const
 	if (m_timeSamples.empty())
 	{
 		CHECK_CONDITION(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::Warning, "Although no time samples are stored the total time is not zero (%.4f).", m_totalTime);
-		LOG(Utility::Debug, LOGPLACE, "Mean cannot be calculated. No time samples are stored.");
+		DEBUG_LOG("Mean cannot be calculated. No time samples are stored.");
 		return REAL_ZERO;
 	}
 #endif
@@ -234,7 +234,7 @@ Math::Real MethodStats::CalculateMedian() const
 {
 	if (m_timeSamples.empty())
 	{
-		LOG(Utility::Info, LOGPLACE, "Median cannot be calculated. There are no time samples stored.");
+		INFO_LOG("Median cannot be calculated. There are no time samples stored.");
 		return REAL_ZERO;
 	}
 
@@ -271,7 +271,7 @@ void MethodStats::StopProfiling()
 	LARGE_INTEGER endTimer;
 	QueryPerformanceCounter(&endTimer);
 	Math::Real elapsedTime = static_cast<Math::Real>(NUMBER_OF_MICROSECONDS_IN_SECOND * (endTimer.QuadPart - m_startTimer.QuadPart)) / m_frequency.QuadPart; // in [us]
-	//LOG(Utility::Debug, LOGPLACE, "Stopped profiling the method. %.3f [us] has passed.", elapsedTime);
+	//DEBUG_LOG("Stopped profiling the method. %.3f [us] has passed.", elapsedTime);
 	Push(elapsedTime);
 	m_isProfiling = false;
 }
@@ -283,7 +283,7 @@ Math::Real MethodStats::GetTotalTimeWithoutNestedStats() const
 	if (m_timeSamples.empty())
 	{
 		CHECK_CONDITION(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::Warning, "Although no time samples are stored the total time is not zero (%.4f).", m_totalTime);
-		LOG(Utility::Debug, LOGPLACE, "Total time (with no \"nested\" stats) cannot be calculated. No time samples are stored.");
+		DEBUG_LOG("Total time (with no \"nested\" stats) cannot be calculated. No time samples are stored.");
 		return REAL_ZERO;
 	}
 
@@ -297,7 +297,7 @@ Math::Real MethodStats::GetTotalTimeWithoutNestedStats() const
 	}
 	return totalTimeWithoutNestedStats;
 #else
-	//LOG(Utility::Info, LOGPLACE, "Total time = %f. Total time nested profiling = %f", m_totalTime, m_totalTimeNestedProfiling);
+	//INFO_LOG("Total time = %f. Total time nested profiling = %f", m_totalTime, m_totalTimeNestedProfiling);
 	return m_totalTime - m_totalTimeNestedProfiling;
 #endif
 }
@@ -308,7 +308,7 @@ ClassStats::ClassStats(const char* className) :
 	m_className(className),
 	m_profilingMethodsCount(0)
 {
-	LOG(Utility::Debug, LOGPLACE, "ClassStats \"%s\" constructor", className);
+	DEBUG_LOG("ClassStats \"%s\" constructor", className);
 }
 
 ClassStats::~ClassStats()
@@ -320,10 +320,10 @@ void ClassStats::StartProfiling(const char* methodName)
 {
 	if (methodName == NULL)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		ERROR_LOG("Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
 		return;
 	}
-	//LOG(Utility::Debug, LOGPLACE, "Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.", m_className, methodName, m_profilingMethodsCount);
+	//DEBUG_LOG("Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.", m_className, methodName, m_profilingMethodsCount);
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
@@ -332,10 +332,10 @@ void ClassStats::StopProfiling(const char* methodName)
 {
 	if (methodName == NULL)
 	{
-		LOG(Utility::Error, LOGPLACE, "Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		ERROR_LOG("Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
 		return;
 	}
-	//LOG(Utility::Debug, LOGPLACE, "Stopped profiling the function \"%s\"", methodName);
+	//DEBUG_LOG("Stopped profiling the function \"%s\"", methodName);
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }
@@ -353,24 +353,24 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Invocation count excluding nested calls\"\t\"Total time\"\t\"Total time excluding nested calls\"\t\"Average time\"\n";
 	}
 
-	LOG(Utility::Info, LOGPLACE, "Class: \"%s\"", m_className);
+	INFO_LOG("Class: \"%s\"", m_className);
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
 	Math::Real classTotalTime = REAL_ZERO;
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
-		//LOG(Utility::Info, LOGPLACE, "classTotalTime = %f. Method's total time without nested stats %f", classTotalTime, methodStatsItr->second.GetTotalTimeWithoutNestedStats());
+		//INFO_LOG("classTotalTime = %f. Method's total time without nested stats %f", classTotalTime, methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		classTotalTime += methodStatsItr->second.GetTotalTime();
 	}
 	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
 	LogTime(classTotalTime, "\tTotal time: %.2f %s");
 	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time excluding nested calls: %.2f %s");
-	LOG(Utility::Info, LOGPLACE, "\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * totalElapsedTime));
+	INFO_LOG("\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * totalElapsedTime));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
-		LOG(Utility::Info, LOGPLACE, "\tMethod: \"%s\"", methodStatsItr->first);
-		LOG(Utility::Info, LOGPLACE, "\t\tInvocations count: %d", methodStatsItr->second.GetInvocationsCount());
+		INFO_LOG("\tMethod: \"%s\"", methodStatsItr->first);
+		INFO_LOG("\t\tInvocations count: %d", methodStatsItr->second.GetInvocationsCount());
 		
 		Math::Real totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		LogTime(totalTimeExcludingNestedCalls, "\t\tTotal time: %.2f %s");
@@ -380,10 +380,10 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		Math::Real meanTime = methodStatsItr->second.CalculateMean();
 		LogTime(meanTime, "\t\tAverage time: %.2f %s");
 		
-		LOG(Utility::Info, LOGPLACE, "\t\tClass usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
-		LOG(Utility::Info, LOGPLACE, "\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
+		INFO_LOG("\t\tClass usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
+		INFO_LOG("\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
 		
-		//LOG(Utility::Info, LOGPLACE, "\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
+		//INFO_LOG("\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 		std::string methodNameStr(methodStatsItr->first);
 		methodNameStr = methodNameStr.substr(methodNameStr.rfind(":") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
 		int spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
@@ -420,16 +420,16 @@ void ClassStats::LogTime(Math::Real time, const char* logTimeTextFormat) const
 	{
 		if (time > ONE_MILION)
 		{
-			LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time / ONE_MILION, "[s]");
+			INFO_LOG(logTimeTextFormat, time / ONE_MILION, "[s]");
 		}
 		else
 		{
-			LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time / ONE_THOUSAND, "[ms]");
+			INFO_LOG(logTimeTextFormat, time / ONE_THOUSAND, "[ms]");
 		}
 	}
 	else
 	{
-		LOG(Utility::Info, LOGPLACE, logTimeTextFormat, time, "[us]");
+		INFO_LOG(logTimeTextFormat, time, "[us]");
 	}
 }
 /* ==================== ClassStats end ==================== */

@@ -41,10 +41,10 @@ void DirectionalLightBuilder::BuildPart1()
 	Math::Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(angleX, angleY, angleZ);
-	LOG(Utility::Debug, LOGPLACE, "angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
+	DEBUG_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
-	LOG(Utility::Debug, LOGPLACE, "rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+	DEBUG_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
 		rotMatrix.ToString().c_str(),
 		rot.ToString().c_str(),
 		rot.ToRotationMatrix().ToString().c_str(),
@@ -117,11 +117,8 @@ void DirectionalLightBuilder::BuildMeshRenderer()
 		
 	Math::Vector3D forwardVec = m_directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
-	//LOG(Delocust, LOGPLACE, "light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s",
-	//	position.ToString().c_str(),
-	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(),
-	//	forwardVec.ToString().c_str(),
-	//	(position + rayEndPosition).ToString().c_str());
+	//DELOCUST_LOG("light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s", position.ToString().c_str(),
+	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(), forwardVec.ToString().c_str(), (position + rayEndPosition).ToString().c_str());
 	Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
 	int indices [] = { 0, 1 };
 	m_directionalLightNode->AddComponent(new MeshRenderer(

@@ -29,11 +29,11 @@ void GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition
 {
 	if (gameStateTransition == NULL)
 	{
-		LOG(Utility::Warning, LOGPLACE, "There is no need to set game state transition to NULL manually.");
+		WARNING_LOG("There is no need to set game state transition to NULL manually.");
 	}
 	if (m_gameStateTransition != NULL)
 	{
-		LOG(Utility::Emergency, LOGPLACE, "Cannot set the game state transition object. Previous transition has not been performed yet.");
+		EMERGENCY_LOG("Cannot set the game state transition object. Previous transition has not been performed yet.");
 	}
 	m_gameStateTransition = gameStateTransition;
 }
@@ -48,15 +48,15 @@ void GameStateManager::PerformStateTransition()
 	switch (m_gameStateTransition->GetTransitionType())
 	{
 	case GameStateTransitioning::SWITCH:
-		LOG(Utility::Notice, LOGPLACE, "Switching the topmost state");
+		NOTICE_LOG("Switching the topmost state");
 		Switch(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
 		break;
 	case GameStateTransitioning::PUSH:
-		LOG(Utility::Notice, LOGPLACE, "Pushing new game state on the stack");
+		NOTICE_LOG("Pushing new game state on the stack");
 		Push(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
 		break;
 	default:
-		LOG(Utility::Error, LOGPLACE, "Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
+		ERROR_LOG("Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
 	}
 	//SAFE_DELETE(m_gameStateTransition);
 	m_gameStateTransition = NULL;
@@ -131,7 +131,7 @@ GameState* DefaultGameStateManager::Pop()
 {
 	if (m_activeStates.empty())
 	{
-		LOG(Utility::Error, LOGPLACE, "Attempted to pop from an empty game state stack");
+		ERROR_LOG("Attempted to pop from an empty game state stack");
 		return NULL;
 	}
 	GameStateModalityTypePair poppedPair = m_activeStates.back();
@@ -154,29 +154,28 @@ GameState* DefaultGameStateManager::Pop()
 
 void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	//LOG(Utility::Error, LOGPLACE, "Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
+	//ERROR_LOG("Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 	if (m_exposedInputablesKeyboard.empty())
 	{
 		return;
 	}
-	LOG(Utility::Debug, LOGPLACE, "The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
+	DEBUG_LOG("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
 		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
 	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
-	//LOG(Utility::Error, LOGPLACE, "Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
+	//ERROR_LOG("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
 void DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
-		LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
+		DEBUG_LOG("The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
 		return;
 	}
-	//LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)",
-	//	m_exposedInputablesMouse.size(), button, action, mods);
+	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MouseButtonEvent(button, action, mods);
@@ -187,11 +186,10 @@ void DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
-		LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
+		DEBUG_LOG("The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
 		return;
 	}
-	//LOG(Utility::Debug, LOGPLACE, "The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)",
-	//	m_exposedInputablesMouse.size(), button, action, mods);
+	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MousePosEvent(xPos, yPos);
@@ -224,22 +222,22 @@ void DefaultGameStateManager::Render(Renderer* renderer)
 
 void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
-	//LOG(Utility::Critical, LOGPLACE, "Adding to interfaces started");
+	DEBUG_LOG("Adding to interfaces started");
 	Input::IInputable* inputable = dynamic_cast<Input::IInputable*>(gameState);
 	if (inputable != NULL)
 	{
-		//LOG(Utility::Critical, LOGPLACE, "Adding to INPUT interface");
+		DEBUG_LOG("Adding to INPUT interface");
 		m_exposedInputables.push_back(inputable);
 		Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
 		if (inputableKeyboard != NULL)
 		{
-			//LOG(Utility::Critical, LOGPLACE, "Adding to KEYBOARD INPUT interface");
+			DEBUG_LOG("Adding to KEYBOARD INPUT interface");
 			m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 		}
 		Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 		if (inputableMouse != NULL)
 		{
-			//LOG(Utility::Critical, LOGPLACE, "Adding to MOUSE INPUT interface");
+			DEBUG_LOG("Adding to MOUSE INPUT interface");
 			m_exposedInputablesMouse.push_back(inputableMouse);
 		}
 	}
@@ -247,17 +245,17 @@ void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if(renderable != NULL)
 	{
-		//LOG(Utility::Critical, LOGPLACE, "Adding to RENDER interface");
+		DEBUG_LOG("Adding to RENDER interface");
 		m_exposedRenderables.push_back(renderable);
 	}
 	
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
 	if(updateable != NULL)
 	{
-		//LOG(Utility::Critical, LOGPLACE, "Adding to UPDATE interface");
+		DEBUG_LOG("Adding to UPDATE interface");
 		m_exposedUpdateables.push_back(updateable);
 	}
-	//LOG(Utility::Critical, LOGPLACE, "Adding to interfaces finished");
+	DELOCUST_LOG("Adding to interfaces finished");
 }
 
 void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
@@ -293,7 +291,7 @@ void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 
 void DefaultGameStateManager::RebuildInterfaceQueues()
 {
-	LOG(Utility::Info, LOGPLACE, "Clearing game state interface queues");
+	INFO_LOG("Clearing game state interface queues");
 	ClearAllIntefaceLists();
 
 	if (m_activeStates.empty())
@@ -302,7 +300,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
-	LOG(Utility::Debug, LOGPLACE, "Currently active game states: %d", m_activeStates.size());
+	DEBUG_LOG("Currently active game states: %d", m_activeStates.size());
 	CHECK_CONDITION_EXIT_ALWAYS(!m_activeStates.empty(), Utility::Warning, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
@@ -313,7 +311,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 		}
 		--index;
 	}
-	LOG(Utility::Debug, LOGPLACE, "Calculated game state index equals %d", index);
+	DEBUG_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
 		AddToInterfaces(m_activeStates.at(index++).first);
@@ -339,7 +337,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	}
 
 	// Now go forward (up until the second-to-last state) and notify the obscured states
-	LOG(Utility::Debug, LOGPLACE, "Calculated game state index equals %d", index);
+	DEBUG_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size() - 1)
 	{
 		m_activeStates.at(index++).first->Obscuring();
@@ -352,7 +350,7 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	{
 		return;
 	}
-	LOG(Utility::Info, LOGPLACE, "Notifying revealed game states");
+	INFO_LOG("Notifying revealed game states");
 
 	// Reverse scan until we hit either the beginning or find the next Hiding state
 	std::size_t index = m_activeStates.size() - 1;
@@ -366,7 +364,7 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	}
 
 	// Now go forward and notify all revealed state
-	LOG(Utility::Info, LOGPLACE, "Calculated game state index equals %d", index);
+	INFO_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
 		m_activeStates.at(index++).first->Revealed();

@@ -38,7 +38,7 @@ GameManager* GameManager::s_gameManager = NULL;
 	GameManager* gameManager = static_cast<GameManager*>(arg);
 	if (gameManager == NULL)
 	{
-		LOG(Emergency, LOGPLACE, "Cannot load the game. Passed parameter is not a game manager object.");
+		EMERGENCY_LOG("Cannot load the game. Passed parameter is not a game manager object.");
 		exit(EXIT_FAILURE);
 	}
 	//CoreEngine::GetCoreEngine()->GetRenderer()
@@ -54,29 +54,29 @@ GameManager::GameManager() :
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false)
 {
-	LOG(Info, LOGPLACE, "Game manager construction started");
+	INFO_LOG("Game manager construction started");
 	//rootGameNode = new GameNode();
 	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
 	if (GameManager::s_gameManager != NULL)
 	{
-		LOG(Error, LOGPLACE, "Constructor called when a singleton instance of CoreEngine class has already been created");
+		ERROR_LOG("Constructor called when a singleton instance of CoreEngine class has already been created");
 		SAFE_DELETE(GameManager::s_gameManager);
 	}
 	m_gameStateManager = new DefaultGameStateManager();
 
 	GameManager::s_gameManager = this;
-	LOG(Debug, LOGPLACE, "Game manager construction finished");
+	DEBUG_LOG("Game manager construction finished");
 }
 
 
 GameManager::~GameManager(void)
 {
-	LOG(Info, LOGPLACE, "Game manager destruction finished");
+	INFO_LOG("Game manager destruction finished");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
-	LOG(Debug, LOGPLACE, "Game manager destruction finished");
+	DEBUG_LOG("Game manager destruction finished");
 }
 
 /* static */ void GameManager::WindowCloseEventCallback(GLFWwindow* window)
@@ -150,12 +150,12 @@ GameManager::~GameManager(void)
 
 void GameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
-	LOG(Notice, LOGPLACE, "Window resize event (width = %d, height = %d)", width, height);
+	NOTICE_LOG("Window resize event (width = %d, height = %d)", width, height);
 }
 
 void GameManager::CloseWindowEvent(GLFWwindow* window)
 {
-	LOG(Notice, LOGPLACE, "Close window event");
+	NOTICE_LOG("Close window event");
 	glfwSetWindowShouldClose(window, GL_TRUE);
 }
 
@@ -167,7 +167,7 @@ void GameManager::CloseWindowEvent(GLFWwindow* window)
  */
 void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	LOG(Delocust, LOGPLACE, "Key event with key = %d", key);
+	DELOCUST_LOG("Key event with key = %d", key);
 
 	//if (key == GLFW_KEY_ESCAPE)
 	//{
@@ -183,7 +183,7 @@ void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action
 
 void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	LOG(Delocust, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	DELOCUST_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	/**
 	 * GLFW_MOUSE_BUTTON_1 = left mouse button
@@ -194,24 +194,24 @@ void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, i
 	switch (action)
 	{
 	case GLFW_PRESS:
-		LOG(Debug, LOGPLACE, "Mouse button pressed: button=%d\t mods=%d", button, mods);
+		DEBUG_LOG("Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
-		LOG(Debug, LOGPLACE, "Mouse button released: button=%d\t mods=%d", button, mods);
+		DEBUG_LOG("Mouse button released: button=%d\t mods=%d", button, mods);
 		break;
 	default:
-		LOG(Warning, LOGPLACE, "Unknown action performed with the mouse");
+		WARNING_LOG("Unknown action performed with the mouse");
 	}
 }
 
 void GameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	LOG(Debug, LOGPLACE, "Mouse position event x=%.2f, y=%.2f", xPos, yPos);
+	DEBUG_LOG("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
 }
 
 void GameManager::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
-	LOG(Debug, LOGPLACE, "Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
+	DEBUG_LOG("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
 //GameNode& GameManager::GetRootGameNode() const

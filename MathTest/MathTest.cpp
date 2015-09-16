@@ -60,7 +60,7 @@ const char* timeUnitStr[] =
 
 void ReportError(const std::string& reportStr)
 {
-	LOG(Error, LOGPLACE, "Test #%d FAILED. %s", testNumber, reportStr.c_str());
+	ERROR_LOG("Test #%d FAILED. %s", testNumber, reportStr.c_str());
 }
 
 void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
@@ -70,7 +70,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	{
 		ReportError(reportErrorStr);
 	}
-	LOG(Info, LOGPLACE, "Test #%d passed", testNumber);
+	INFO_LOG("Test #%d passed", testNumber);
 }
 
 double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
@@ -92,7 +92,7 @@ double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const
 		nominator *= NUMBER_OF_NANOSECONDS_IN_SECOND;
 		break;
 	default:
-		LOG(Error, LOGPLACE, "Cannot calculate the elapsed time. Unknown time unit specified.");
+		ERROR_LOG("Cannot calculate the elapsed time. Unknown time unit specified.");
 	}
 
 	return nominator / denominator;
@@ -101,7 +101,7 @@ double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const
 void TimeReport(const std::string& reportStr, clock_t begin, clock_t end, TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	double elapsedTime = CalculateElapsedTime(begin, end, timeUnit, NUMBER_OF_ITERATIONS);
-	LOG(Notice, LOGPLACE, "%s:\t%.3f %s", reportStr.c_str(), elapsedTime, timeUnitStr[timeUnit]);
+	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), elapsedTime, timeUnitStr[timeUnit]);
 }
 
 void AngleTest()
@@ -111,7 +111,7 @@ void AngleTest()
 		return;
 	}
 
-	LOG (Notice, LOGPLACE, "Angle test started");
+	NOTICE_LOG("Angle test started");
 	/* ==================== ANGLE TEST #1- comparing angles- begin ==================== */
 	Angle angle1(90.0);
 	Angle angle2(90.0, Unit::DEGREE);
@@ -139,7 +139,7 @@ void AngleTest()
 	TestReport(angle6 >= angle5, "The comparison operator of the Angle class are incorrect. angle6 >= angle5");
 	TestReport(angle6 <= angle5, "The comparison operator of the Angle class are incorrect. angle6 <= angle5");
 	/* ==================== ANGLE TEST #1- comparing angles- end ==================== */
-	LOG (Notice, LOGPLACE, "Angle test finished");
+	NOTICE_LOG("Angle test finished");
 }
 
 void VectorTest()
@@ -149,7 +149,7 @@ void VectorTest()
 		return;
 	}
 
-	LOG (Notice, LOGPLACE, "Vector test started");
+	NOTICE_LOG("Vector test started");
 	/* ==================== VECTOR2D TEST #1- comparing vectors- begin ==================== */
 	Vector2D vec1(90.0, 90.0);
 	Vector2D vec2(45.0, 90.0);
@@ -179,7 +179,7 @@ void VectorTest()
 	//TestReport(angle6 <= angle5, "The comparison operator of the Angle class are incorrect. angle6 <= angle5");
 	/* ==================== VECTOR2D TEST #1- comparing vectors- end ==================== */
 
-	LOG (Notice, LOGPLACE, "Vector test finished");
+	NOTICE_LOG("Vector test finished");
 }
 
 Angle RandomAngle()
@@ -283,7 +283,7 @@ void SortTest()
 	//ofstream sortingOutputFile;
 	//sortingOutputFile.open("sortingOutput.txt");
 
-	LOG (Notice, LOGPLACE, "Sorting test started");
+	NOTICE_LOG("Sorting test started");
 	const int NUMBER_OF_VECTORS = 200000;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
@@ -348,16 +348,16 @@ void SortTest()
 			if ((!firstCriterionEqual && vectors[i + 1].GetX() < vectors[i].GetX()) ||
 				(firstCriterionEqual && (vectors[i + 1].GetY() > vectors[i].GetY())))
 			{
-				LOG(Error, LOGPLACE, "%s in ASCENDING order by X component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in ASCENDING order by X component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), vectors[i + 1].GetX(), i, vectors[i].ToString().c_str(), vectors[i].GetX());
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by X component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (ASCENDING order by X component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by X component failed.");
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending end ==================== */
@@ -382,16 +382,16 @@ void SortTest()
 		{
 			if ((vectors[i + 1].GetX() > vectors[i].GetX()) || ((AlmostEqual(vectors[i + 1].GetX(), vectors[i].GetX())) && (vectors[i + 1].GetY() > vectors[i].GetY())))
 			{
-				LOG(Error, LOGPLACE, "%s in DESCENDING order by X component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in DESCENDING order by X component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), vectors[i + 1].GetX(), i, vectors[i].ToString().c_str(), vectors[i].GetX());
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by X component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (DESCENDING order by X component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by X component failed.");
 		/* ==================== SORTING TEST #2- sorting Vector2D objects by X component descending end ==================== */
@@ -418,16 +418,16 @@ void SortTest()
 		{
 			if ((vectors[i + 1].GetY() < vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in ASCENDING order by Y component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in ASCENDING order by Y component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), vectors[i + 1].GetY(), i, vectors[i].ToString().c_str(), vectors[i].GetY());
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by Y component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (ASCENDING order by Y component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by Y component failed.");
 		/* ==================== SORTING TEST #3- sorting Vector2D objects by Y component ascending end ==================== */
@@ -452,16 +452,16 @@ void SortTest()
 		{
 			if ((vectors[i + 1].GetY() > vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in DESCENDING order by Y component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in DESCENDING order by Y component failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), vectors[i + 1].GetY(), i, vectors[i].ToString().c_str(), vectors[i].GetY());
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by Y component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (DESCENDING order by Y component):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by Y component failed.");
 		/* ==================== SORTING TEST #4- sorting Vector2D objects by Y component descending end ==================== */
@@ -490,16 +490,16 @@ void SortTest()
 			if ((!firstCriterionEqual && sumOfComponents2 < sumOfComponents1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of components failed. Vectors[%d] (%s) (sorting key value = %.5f) should precede Vectors[%d] (%s) (sorting key value = %.5f)",
+				ERROR_LOG("%s in ASCENDING order by sum of components failed. Vectors[%d] (%s) (sorting key value = %.5f) should precede Vectors[%d] (%s) (sorting key value = %.5f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), sumOfComponents2, i, vectors[i].ToString().c_str(), sumOfComponents1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (ASCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of components failed.");
 		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of components ascending end ==================== */
@@ -528,16 +528,16 @@ void SortTest()
 			if ((!firstCriterionEqual && sumOfComponents2 > sumOfComponents1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in DESCENDING order by sum of components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), sumOfComponents2, i, vectors[i].ToString().c_str(), sumOfComponents1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (DESCENDING order by sum of components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of components failed.");
 		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of components descending end ==================== */
@@ -566,16 +566,16 @@ void SortTest()
 			if ((!firstCriterionEqual && sumOfAbsoluteComponents2 < sumOfAbsoluteComponents1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of absolute components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in ASCENDING order by sum of absolute components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), sumOfAbsoluteComponents2, i, vectors[i].ToString().c_str(), sumOfAbsoluteComponents1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (ASCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of absolute components failed.");
 		/* ==================== SORTING TEST #7- sorting Vector2D objects by sum of absolute components ascending end ==================== */
@@ -604,16 +604,16 @@ void SortTest()
 			if ((!firstCriterionEqual && sumOfAbsoluteComponents2 > sumOfAbsoluteComponents1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of absolute components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in DESCENDING order by sum of absolute components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), sumOfAbsoluteComponents2, i, vectors[i].ToString().c_str(), sumOfAbsoluteComponents1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (DESCENDING order by sum of absolute components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of absolute components failed.");
 		/* ==================== SORTING TEST #8- sorting Vector2D objects by sum of absolute components descending end ==================== */
@@ -642,16 +642,16 @@ void SortTest()
 			if ((!firstCriterionEqual && lengthSquared2 < lengthSquared1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in ASCENDING order by sum of squared components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in ASCENDING order by sum of squared components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), lengthSquared2, i, vectors[i].ToString().c_str(), lengthSquared1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (ASCENDING order by sum of squared components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (ASCENDING order by sum of squared components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in ASCENDING order by sum of squared components failed.");
 		/* ==================== SORTING TEST #9- sorting Vector2D objects by sum of squared components ascending end ==================== */
@@ -680,26 +680,25 @@ void SortTest()
 			if ((!firstCriterionEqual && lengthSquared2 > lengthSquared1) ||
 				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
 			{
-				LOG(Error, LOGPLACE, "%s in DESCENDING order by sum of squared components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
+				ERROR_LOG("%s in DESCENDING order by sum of squared components failed. Vectors[%d] (%s) (sorting key value = %.4f) should precede Vectors[%d] (%s) (sorting key value = %.4f)",
 					sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str(), i + 1, vectors[i + 1].ToString().c_str(), lengthSquared2, i, vectors[i].ToString().c_str(), lengthSquared1);
 				sortingTestCasePassed = false;
 				break;
 			}
 		}
-		LOG(Debug, LOGPLACE, "%s results (DESCENDING order by sum of squared components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
+		DEBUG_LOG("%s results (DESCENDING order by sum of squared components):\n", sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]].c_str());
 		for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 		{
-			LOG(Debug, LOGPLACE, "Vectors[%d] = %s", i, vectors[i].ToString().c_str());
+			DEBUG_LOG("Vectors[%d] = %s", i, vectors[i].ToString().c_str());
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of squared components failed.");
 		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending end ==================== */
-		delete sorter;
-		sorter = NULL;
+		SAFE_DELETE(sorter);
 	}
 
-	delete [] initialVectors;
-	delete [] vectors;
-	LOG (Notice, LOGPLACE, "Sorting test finished");
+	SAFE_DELETE_JUST_TABLE(initialVectors);
+	SAFE_DELETE_JUST_TABLE(vectors);
+	NOTICE_LOG("Sorting test finished");
 }
 
 void KDTreeTest()
@@ -709,7 +708,7 @@ void KDTreeTest()
 		return;
 	}
 
-	LOG (Notice, LOGPLACE, "K-d tree test started");
+	NOTICE_LOG("K-d tree test started");
 	const int NUMBER_OF_POSITIONS = 6;
 	const int NUMBER_OF_SEARCH_POSITIONS = 10;
 	const int NUMBER_OF_INTERPOLATED_NEAREST_POINTS = 1; // number of nearest points which will be used for calculating the final result
@@ -728,12 +727,12 @@ void KDTreeTest()
 	//	positions[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
 	//	positions[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
 	//	positions[i].SetZ(LOWER_BOUND_Z + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Z - LOWER_BOUND_Z)));
-	//	LOG(Debug, LOGPLACE, "positions[%d] = %s", i, positions[i].ToString().c_str());
+	//	DEBUG_LOG("positions[%d] = %s", i, positions[i].ToString().c_str());
 	//}
 
 	KDTree* kdTree = new KDTree(positions, NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
 
-	//LOG(Utility::Debug, LOGPLACE, "K-d tree structure:\n%s", kdTree->ToString().c_str());
+	//DEBUG_LOG("K-d tree structure:\n%s", kdTree->ToString().c_str());
 
 	Math::Vector2D* searchPositions = new Math::Vector2D[NUMBER_OF_SEARCH_POSITIONS];
 	searchPositions[0].SetX(2.0f); searchPositions[0].SetY(3.0f);
@@ -749,14 +748,14 @@ void KDTreeTest()
 	for (int i = 0; i < NUMBER_OF_SEARCH_POSITIONS; ++i)
 	{
 		Real height = kdTree->SearchNearestValue(searchPositions[i]);
-		//LOG(Utility::Info, LOGPLACE, "The nearest point for search point (%s) is (%s). The minimum distance equals %.2f and returned height is %.2f",
+		//INFO_LOG("The nearest point for search point (%s) is (%s). The minimum distance equals %.2f and returned height is %.2f",
 		//	searchPositions[i].ToString().c_str(), minDistancePositions[0].ToString().c_str(), minDistances[0], height);
-		LOG(Utility::Info, LOGPLACE, "The final result for position (%s) in k-d tree search is %.3f", searchPositions[i].ToString().c_str(), height);
+		INFO_LOG("The final result for position (%s) in k-d tree search is %.3f", searchPositions[i].ToString().c_str(), height);
 	}
 
-	delete kdTree;
-	delete [] searchPositions;
-	delete [] positions;
+	SAFE_DELETE(kdTree);
+	SAFE_DELETE_JUST_TABLE(searchPositions);
+	SAFE_DELETE_JUST_TABLE(positions);
 }
 
 void StatsTest()

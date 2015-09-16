@@ -26,7 +26,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 	Real trace = m00 + m11 + m22;
 
-	//LOG(Utility::Debug, LOGPLACE, "trace = %.3f", trace);
+	//DEBUG_LOG("trace = %.3f", trace);
 	if (trace > 0)
 	{
 		Real s = 0.5f / static_cast<Real>(sqrt(trace + 1.0f));
@@ -34,7 +34,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
-		//LOG(Utility::Debug, LOGPLACE, "temp = %.4f; s = %.4f; (x, y, z, w) = (%.4f, %.4f, %.4f, %.4f)", temp, s, m_x, m_y, m_z, m_w);
+		//DEBUG_LOG("temp = %.4f; s = %.4f; (x, y, z, w) = (%.4f, %.4f, %.4f, %.4f)", temp, s, m_x, m_y, m_z, m_w);
 	}
 	else if ( (m00 > m11) && (m00 > m22) )
 	{
@@ -73,7 +73,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 	Real trace = m00 + m11 + m22;
 
-	//LOG(Utility::Debug, LOGPLACE, "trace = %.3f", trace);
+	//DEBUG_LOG("trace = %.3f", trace);
 	if (trace > 0)
 	{
 		Real s = static_cast<Real>(0.5f) / static_cast<Real>(sqrt(trace + REAL_ONE));
@@ -81,7 +81,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
-		//LOG(Utility::Debug, LOGPLACE, "temp = %.4f; s = %.4f; (x, y, z, w) = (%.4f, %.4f, %.4f, %.4f)", temp, s, m_x, m_y, m_z, m_w);
+		//DEBUG_LOG("temp = %.4f; s = %.4f; (x, y, z, w) = (%.4f, %.4f, %.4f, %.4f)", temp, s, m_x, m_y, m_z, m_w);
 	}
 	else if ( (m00 > m11) && (m00 > m22) )
 	{
@@ -148,7 +148,7 @@ void Quaternion::Normalize()
 	Real length = Length();
 	if (AlmostEqual(length , REAL_ONE))
 	{
-		LOG(Utility::Debug, LOGPLACE, "The quaternion is already normalized");
+		DEBUG_LOG("The quaternion is already normalized");
 		return;
 	}
 	m_x /= length;

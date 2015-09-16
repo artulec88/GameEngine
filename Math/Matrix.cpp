@@ -185,8 +185,7 @@ Matrix4D::~Matrix4D()
 	//Matrix4D matrixToCompare = Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO));
 	//if (rot != matrixToCompare)
 	//{
-	//	LOG(Utility::Error, LOGPLACE, "Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s",
-	//		rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
 	//}
 	CHECK_CONDITION((*this) == Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING_STATIC;
@@ -245,8 +244,7 @@ Matrix4D::~Matrix4D()
 	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
 	//if (rot != matrixToCompare)
 	//{
-	//	LOG(Utility::Error, LOGPLACE, "Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s",
-	//		rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
 	//}
 	STOP_PROFILING_STATIC;
 	return rot;

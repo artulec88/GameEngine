@@ -84,7 +84,7 @@ void MenuEntry::SelectChildMenuEntry(int index)
 {
 	if ((index < 0) || (index >= GetChildrenCount()))
 	{
-		LOG(Utility::Warning, LOGPLACE, "Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
+		WARNING_LOG("Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
 	}
 	m_selectedMenuEntryIndex = index % GetChildrenCount();
 }

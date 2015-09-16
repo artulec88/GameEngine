@@ -66,12 +66,12 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 //	CalcIndices(vertices, verticesCount, indexedVerticesVector, indicesVector);
 //	if (indexedVerticesVector.empty())
 //	{
-//		LOG(Emergency, LOGPLACE, "The vector with indexed vertices is empty");
+//		EMERGENCY_LOG("The vector with indexed vertices is empty");
 //		exit(EXIT_FAILURE);
 //	}
 //	if (indicesVector.empty())
 //	{
-//		LOG(Emergency, LOGPLACE, "The vector with vertices indices is empty");
+//		EMERGENCY_LOG("The vector with vertices indices is empty");
 //		exit(EXIT_FAILURE);
 //	}
 //	AddVertices(&indexedVerticesVector[0], indexedVerticesVector.size(), &indicesVector[0], indicesVector.size(), calcNormalsEnabled);
@@ -102,13 +102,13 @@ void Mesh::Initialize()
 {
 	if (meshData != NULL)
 	{
-		LOG(Utility::Debug, LOGPLACE, "Mesh data already initialized");
+		DEBUG_LOG("Mesh data already initialized");
 		return;
 	}
 
 	if (fileName.empty())
 	{
-		LOG(Utility::Error, LOGPLACE, "Mesh data cannot be initialized. File name is not specified");
+		ERROR_LOG("Mesh data cannot be initialized. File name is not specified");
 	}
 
 	std::string name = fileName;
@@ -118,12 +118,12 @@ void Mesh::Initialize()
 		name.assign(tmp + 1);
 	}
 	//std::string extension = name.substr(name.find_last_of(".") + 1);
-	//LOG(Utility::Delocust, LOGPLACE, "Extension is = \"%s\"", extension.c_str());
+	//DELOCUST_LOG("Extension is = \"%s\"", extension.c_str());
 
 	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(fileName);
 	if (itr != meshResourceMap.end()) // the mesh has been already loaded
 	{
-		LOG(Info, LOGPLACE, "Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
+		INFO_LOG("Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
 		meshData = itr->second;
 		meshData->AddReference();
 		return;
@@ -133,7 +133,7 @@ void Mesh::Initialize()
 	clock_t begin = clock();
 #endif
 
-	LOG(Info, LOGPLACE, "Loading model from file \"%s\"", name.c_str());
+	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(fileName.c_str(),
@@ -144,12 +144,12 @@ void Mesh::Initialize()
 
 	if (scene == NULL)
 	{
-		LOG(Critical, LOGPLACE, "Error while loading a mesh \"%s\"", name.c_str());
+		CRITICAL_LOG("Error while loading a mesh \"%s\"", name.c_str());
 		exit(EXIT_FAILURE);
 	}
 	if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
 	{
-		LOG(Emergency, LOGPLACE, "Incorrect number of meshes loaded- %d- check the model. One of the possible solutions is to check whether the model has any additional lines at the end.", scene->mNumMeshes);
+		EMERGENCY_LOG("Incorrect number of meshes loaded- %d- check the model. One of the possible solutions is to check whether the model has any additional lines at the end.", scene->mNumMeshes);
 		exit(EXIT_FAILURE);
 	}
 
@@ -167,13 +167,13 @@ void Mesh::Initialize()
 		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
 		if (pTangent == NULL)
 		{
-			LOG(Error, LOGPLACE, "Tangent calculated incorrectly");
+			ERROR_LOG("Tangent calculated incorrectly");
 			pTangent = &aiZeroVector;
 		}
 		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
 		//if (pBitangent == NULL)
 		//{
-		//	LOG(Error, LOGPLACE, "Bitangent calculated incorrectly");
+		//	ERROR_LOG("Bitangent calculated incorrectly");
 		//	pBitangent = &aiZeroVector;
 		//}
 
@@ -204,7 +204,7 @@ void Mesh::Initialize()
 
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Info, LOGPLACE, "Loading model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	INFO_LOG("Loading model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 }
 
@@ -438,7 +438,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	{
 		//if (i % 10000 == 0)
 		//{
-		//	LOG(Utility::Debug, LOGPLACE, "i = %d", i);
+		//	DEBUG_LOG("i = %d", i);
 		//}
 
 
@@ -446,7 +446,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 		 * Checking the closestPositions table and adding new position if distance(positions[i], (x, z)) < closestPositions[SAMPLES]
 		 */
 		Math::Real distance = (positions[i].GetXZ() - xz).LengthSquared();
-		//LOG(Utility::Info, LOGPLACE, "distance = %.2f", distance);
+		//INFO_LOG("distance = %.2f", distance);
 		if (AlmostEqual(distance, REAL_ZERO))
 		{
 			y = positions[i].GetY();
@@ -461,7 +461,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 				break;
 			}
 		}
-		//LOG(Utility::Info, LOGPLACE, "index = %d", index);
+		//INFO_LOG("index = %d", index);
 		if (index < SAMPLES)
 		{
 			for (int j = SAMPLES - 1; j > index; --j)
@@ -474,8 +474,8 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 		}
 	}
 
-	//LOG(Utility::Info, LOGPLACE, "closestPositions = { %s, %s, %s, %s }", closestPositions[0].ToString().c_str(),
-	//	closestPositions[1].ToString().c_str(), closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
+	//INFO_LOG("closestPositions = { %s, %s, %s, %s }", closestPositions[0].ToString().c_str(), closestPositions[1].ToString().c_str(),
+	//	closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
 
 	if (!foundPerfectMatch)
 	{
@@ -490,10 +490,10 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	lastX = xz.GetX();
 	lastZ = xz.GetY(); // in this case GetY() returns Z
 
-	y += 2.0f; // head position
+	y += 2.0f; // head position. TODO: Don't use hard-coded values! Ever!
 	lastY = y;
 
-	//LOG(Utility::Notice, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_KD_TREE
 	if (AlmostEqual(xz.GetX(), m_lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
 	{
@@ -504,12 +504,12 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	m_lastZ = xz.GetY(); // in this case GetY() returns Z
 	y += 2.5f; // head position adjustment // TODO: Don't use hard-coded values!
 	m_lastY = y;
-	//LOG(Utility::Debug, LOGPLACE, "Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Debug, LOGPLACE, "Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	DEBUG_LOG("Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 
 	return y;
@@ -523,14 +523,14 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 {
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	positionsCount = vertices.size();
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", positionsCount);
+	INFO_LOG("Terrain consists of %d positions", positionsCount);
 	positions = new Math::Vector3D[positionsCount];
 	for (unsigned int i = 0; i < positionsCount; ++i)
 	{
 		positions[i] = vertices[i].pos;
 	}
 #elif defined HEIGHTMAP_SORT_TABLE
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d positions", vertices.size());
+	INFO_LOG("Terrain consists of %d positions", vertices.size());
 	std::vector<Math::Vector3D> uniquePositions;
 	for (unsigned int i = 0; i < vertices.size(); ++i)
 	{
@@ -541,8 +541,8 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 			{
 				isPositionUnique = false;
 				break;
-				//LOG(Utility::Emergency, LOGPLACE, "Positions %d and %d are equal (%s == %s)",
-				//	i, j, positions[i].ToString().c_str(), positions[j].ToString().c_str());
+				//EMERGENCY_LOG("Positions %d and %d are equal (%s == %s)", i, j,
+				//	positions[i].ToString().c_str(), positions[j].ToString().c_str());
 			}
 		}
 		if (isPositionUnique)
@@ -556,7 +556,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
 
 	positionsCount = uniquePositions.size();;
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", positionsCount);
+	INFO_LOG("Terrain consists of %d unique positions", positionsCount);
 	positions = new Math::Vector3D[positionsCount];
 	for (unsigned int i = 0; i < positionsCount; ++i)
 	{
@@ -566,7 +566,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 #ifdef MEASURE_TIME_ENABLED
 	clock_t begin = clock();
 #endif
-	LOG(Utility::Debug, LOGPLACE, "Terrain consists of %d positions", positions.size());
+	DEBUG_LOG("Terrain consists of %d positions", positions.size());
 	std::unordered_set<Math::Vector3D> verticesSet;
 	for (unsigned int i = 0; i < positions.size(); ++i)
 	{
@@ -576,15 +576,15 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_TIME_ENABLED
 	clock_t end = clock();
-	LOG(Debug, LOGPLACE, "Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	DEBUG_LOG("Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 
 	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_Y);
-	//LOG(Info, LOGPLACE, "The minimum value is %s", uniquePositions[0].ToString().c_str());
-	//LOG(Info, LOGPLACE, "The maximum value is %s", uniquePositions[uniquePositions.size() - 1].ToString().c_str());
+	//INFO_LOG("The minimum value is %s", uniquePositions[0].ToString().c_str());
+	//INFO_LOG("The maximum value is %s", uniquePositions[uniquePositions.size() - 1].ToString().c_str());
 
 	m_positionsCount = uniquePositions.size();
-	LOG(Utility::Info, LOGPLACE, "Terrain consists of %d unique positions", m_positionsCount);
+	INFO_LOG("Terrain consists of %d unique positions", m_positionsCount);
 	m_positions = new Math::Vector3D[m_positionsCount];
 	for (int i = 0; i < m_positionsCount; ++i)
 	{
@@ -601,15 +601,15 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 
 void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
-	LOG(Utility::Debug, LOGPLACE, "Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
+	DEBUG_LOG("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 	for (int i = 0; i < m_positionsCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
 		m_positions[i] = transformationMatrix * m_positions[i];
 		//if ((i % 1000 == 0) || (i == positionsCount - 1))
 		//{
-		//	LOG(Utility::Delocust, LOGPLACE, "%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
+		//	DELOCUST_LOG("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	m_kdTree = new KDTree(m_positions, m_positionsCount, 8);
+	m_kdTree = new KDTree(m_positions, m_positionsCount, 8 /* TODO: Don't use hard-coded values! Ever! */);
 }
