@@ -15,6 +15,7 @@
 #include "MenuEntry.h"
 #include "CubeShadowMap.h"
 
+#include "Math\Angle.h"
 #include "Math\Vector.h"
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
@@ -240,6 +241,8 @@ private:
 	Math::Real m_fxaaReduceMin;
 	Math::Real m_fxaaReduceMul;
 
+	Math::Angle m_skyboxAngle;
+	const Math::Angle m_skyboxAngleStep;
 	GameNode* m_skyboxNode;
 	Shader* m_skyboxShader;
 	Texture* m_skyboxTextureDay;

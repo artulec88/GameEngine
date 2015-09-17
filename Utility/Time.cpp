@@ -5,242 +5,135 @@
 #include <sstream>
 #include <limits>
 
-using namespace Utility;
+using namespace Utility::Timing;
 using namespace std;
 
-#ifdef INFINITE
-#undef INFINITE
-#endif
-#define INFINITE (1000001)
-#define DISABLED (1000002)
+/* ==================== Time<T> class end ==================== */
+template UTILITY_API class Time<float>;
+template UTILITY_API class Time<double>;
+/* ==================== Time<T> class end ==================== */
 
-const Time Time::Infinite(0, INFINITE);
-const Time Time::Disabled(0, DISABLED);
-const Time Time::Short(0, 100);
-
-Time::Time() :
-	seconds(0),
-	micros(0)
+/* ==================== Timer class begin ==================== */
+/* static */ LARGE_INTEGER Time::FREQUENCY = 0;
+/* static */ LARGE_INTEGER Time::GetFrequency()
 {
-}
-
-Time::Time(int seconds, int micros) :
-	seconds(seconds),
-	micros(micros)
-{
-}
-
-Time::Time(double value)
-{
-	operator=(value);
-}
-
-Time::~Time()
-{
-}
-
-double Time::ToReal() const
-{
-	return seconds + static_cast<double>(micros) / 1000000;
-}
-
-int Time::Signum(const Time &arg) const
-{
-	if (arg.seconds > seconds) return 1;
-	if (arg.seconds < seconds) return -1;
-
-	if (arg.micros > micros) return 1;
-	if (arg.micros < micros) return -1;
-
-	return 0;
-
-}
-
-void Time::Reset()
-{
-	seconds = 0;
-	micros = 0;
-}
-
-bool Time::IsInfinite() const
-{
-	return micros == INFINITE;
-}
-
-bool Time::IsDisabled() const
-{
-	return micros == DISABLED; 
-}
-
-void Time::MakeDisabled()
-{
-	micros = INFINITE;
-}
-
-void Time::MakeInfinite()
-{
-	micros = DISABLED;
-}
-
-bool Time::operator==(const Time &arg) const
-{
-	return Signum(arg) == 0;
-}
-
-bool Time::operator!=(const Time &arg) const
-{
-	return Signum(arg) != 0;
-}
-
-bool Time::operator<(const Time &arg) const
-{
-	return Signum(arg) == 1;
-}
-
-bool Time::operator>(const Time &arg) const
-{
-	return Signum(arg) == -1;
-}
-
-bool Time::operator<=(const Time &arg) const
-{
-	return Signum(arg) >= 0;
-}
-
-bool Time::operator>=(const Time &arg) const
-{
-	return Signum(arg) <= 0;
-}
-
-Time Time::operator+(const Time &arg) const
-{
-	Time result;
-	if (IsDisabled() || IsDisabled())
+	if (Time::FREQUENCY == 0)
 	{
-		result.MakeDisabled();
+		QueryPerformanceFrequency(&Time::FREQUENCY);
 	}
-	else if (IsInfinite() || arg.IsInfinite())
+	return Time::FREQUENCY;
+}
+
+Timer::Timer() :
+	m_isRunning(false),
+	m_startTime(0),
+	m_stopTime(0)
+{
+}
+
+Timer::~Timer()
+{
+}
+
+Time Timer::ToReal() const
+{
+	static int ONE_THOUSAND = 1000;
+	static int ONE_MILLION = 1000 * ONE_THOUSAND;
+	static int ONE_BILLION = 1000 * ONE_MILION;
+
+	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
+	if (elapsedTimeInSeconds > 1)
 	{
-		result.MakeInfinite();
+		return Time(elapsedTimeInSeconds, TimeUnit::SECOND);
 	}
-	else
+	else if (elapsedTimeInSeconds > 0.001)
 	{
-		result.seconds = seconds + arg.seconds;
-		result.micros = micros + arg.micros;
-		if (result.micros >= 1000000)
-		{
-			result.micros -= 1000000;
-			result.seconds++;
-		}
+		return Time(elapsedTimeInSeconds * ONE_THOUSAND, TimeUnit::MILISECOND);
 	}
-
-	return result;	
-}
-
-
-Time Time::operator-(const Time &arg) const
-{
-	Time result;
-	if (IsDisabled() || IsDisabled())
+	else if (elapsedTimeInSeconds > 0.000001)
 	{
-		result.MakeDisabled();
+		return Time(elapsedTimeInSeconds * ONE_MILION, TimeUnit::MICROSECOND);
 	}
-	else if (IsInfinite() || arg.IsInfinite())
+	return Time(elapsedTimeInSeconds * ONE_BILLION, TimeUnit::NANOSECOND);
+}
+
+Time Timer::ToReal(TimeUnit timeUnit) const
+{
+	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
+	const int timeUnitConverter = pow(10, timeUnit - TimeUnit::SECOND);
+	return Time(elapsedTimeInSeconds * timeUnitConverter, timeUnit);
+}
+
+void Timer::Start()
+{
+	QueryPerformanceCounter(&m_startTime);
+	m_isRunning = true;
+}
+
+void Timer::Reset()
+{
+	Start();
+}
+
+void Timer::Stop()
+{
+	if (!m_isRunning)
 	{
-		result.MakeInfinite();
+		// TODO: WARNING_LOG
+		return;
 	}
-	else
-	{
-		result.seconds = seconds - arg.seconds;
-		result.micros = micros - arg.micros;
-		if (result.micros < 0)
-		{
-			result.micros += 1000000;
-			result.seconds--;
-		}
-	}
-
-	return result;	
-
+	QueryPerformanceCounter(&m_stopTime);
+	m_isRunning = false;
 }
 
-Time Time::Now()
+std::string Timer::ToString() const
 {
-	//struct timespec time;
-	//clock_gettime(CLOCK_REALTIME, &time);
-	//return Time(time.tv_sec, time.tv_nsec / 1000);
-
-	SYSTEMTIME st;
-	GetSystemTime(&st);
-	return Time(st.wSecond, st.wMilliseconds);
+	// TODO: Finish the function
+	return "";
 }
 
-Time Time::Eternity()
+std::string Timer::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
-	return Time(INT_MAX, 0);
-	//return Time(2000000000, 0);
+	// TODO: Finish the function
+	return "";
 }
 
-Time Time::Chaos()
-{
-	return Time(0, 0);
-}
+//std::string Timer::ToString() const
+//{
+//	//char buffer[30];
+//	//sprintf(buffer, "%d:%06d", seconds, micros);
+//	//return std::string(buffer);
+//
+//	std::stringstream ss("");
+//	ss << seconds;
+//	ss << ":";
+//	ss << micros;
+//	return ss.str();
+//}
 
-Time Time::Second()
-{
-	return Time(1, 0);
-}
-
-const Time& Time::operator=(double value)
-{
-	seconds = (int)value;
-	micros = (int)((value - seconds) * 1000000);
-	return *this;
-}
-
-const Time& Time::operator=(const Time &t)
-{
-	seconds = t.seconds;
-	micros = t.micros;
-	return *this;
-}
-
-std::string Time::ToString() const
-{
-	//char buffer[30];
-	//sprintf(buffer, "%d:%06d", seconds, micros);
-	//return std::string(buffer);
-
-	std::stringstream ss("");
-	ss << seconds;
-	ss << ":";
-	ss << micros;
-	return ss.str();
-}
-
-std::string Time::ToDateString(const char *format) const
-{
-	//char buffer[80];
-	//memset(buffer, 0, 80);
-	//time_t t = seconds;
-	//int result = strftime(buffer, 79, format, localtime(&t));
-	//if (result == 0)
-	//{
-	//	return std::string("time-error");
-	//}
-	//buffer[result] = '\0';
-	//return string(buffer);
-
-	time_t rawtime = seconds;
-	struct tm timeinfo;
-	char buffer [80];
-
-	time (&rawtime);
-	localtime_s(&timeinfo, &rawtime);
-
-	if ( (strftime (buffer, 80, format, &timeinfo)) == 0)
-	{
-		return std::string("time-error");
-	}
-	return string(buffer);
-}
+//std::string Timer::ToDateString(const char *format) const
+//{
+//	//char buffer[80];
+//	//memset(buffer, 0, 80);
+//	//time_t t = seconds;
+//	//int result = strftime(buffer, 79, format, localtime(&t));
+//	//if (result == 0)
+//	//{
+//	//	return std::string("time-error");
+//	//}
+//	//buffer[result] = '\0';
+//	//return string(buffer);
+//
+//	time_t rawtime = seconds;
+//	struct tm timeinfo;
+//	char buffer [80];
+//
+//	time (&rawtime);
+//	localtime_s(&timeinfo, &rawtime);
+//
+//	if ( (strftime (buffer, 80, format, &timeinfo)) == 0)
+//	{
+//		return std::string("time-error");
+//	}
+//	return string(buffer);
+//}

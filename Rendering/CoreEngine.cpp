@@ -240,8 +240,6 @@ void CoreEngine::Run()
 	int inGameHours, inGameMinutes, inGameSeconds;
 
 #ifdef CALCULATE_STATS
-	LARGE_INTEGER frequency; // ticks per second
-	QueryPerformanceFrequency(&frequency); // get ticks per second;
 	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 #endif
 	while (m_isRunning)
@@ -289,7 +287,7 @@ void CoreEngine::Run()
 			frameTimeCounter = REAL_ZERO;
 		}
 #endif
-		STOP_TIMER(t1, t2, frequency, m_countStats1, m_minMaxTime1, m_timeSum1);
+		STOP_TIMER(t1, t2, m_frequency, m_countStats1, m_minMaxTime1, m_timeSum1);
 		/* ==================== REGION #1 end ====================*/
 
 		/* ==================== REGION #2 begin ====================*/
@@ -310,13 +308,13 @@ void CoreEngine::Run()
 			/* ==================== REGION #2_1 begin ====================*/
 			START_TIMER(innerT1);
 			PollEvents();
-			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
+			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
 			/* ==================== REGION #2_1 end ====================*/
 			
 			/* ==================== REGION #2_2 begin ====================*/
 			START_TIMER(innerT1);
 			m_game.Input(m_frameTime);
-			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
+			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
 			//Input::Update();
@@ -324,7 +322,7 @@ void CoreEngine::Run()
 			/* ==================== REGION #2_3 begin ====================*/
 			START_TIMER(innerT1);
 			m_game.Update(m_frameTime);
-			STOP_TIMER(innerT1, innerT2, frequency, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
+			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
 			/* ==================== REGION #2_3 end ====================*/
 
 			/* ==================== Switching the game state if necessary begin ==================== */
@@ -337,7 +335,7 @@ void CoreEngine::Run()
 			
 			unprocessingTime -= m_frameTime;
 		}
-		STOP_TIMER(t1, t2, frequency, m_countStats2, m_minMaxTime2, m_timeSum2);
+		STOP_TIMER(t1, t2, m_frequency, m_countStats2, m_minMaxTime2, m_timeSum2);
 		/* ==================== REGION #2 end ====================*/
 		
 		/* ==================== REGION #3 begin ====================*/
@@ -399,7 +397,7 @@ void CoreEngine::Run()
 			++m_renderingNotRequiredCount;
 #endif
 		}
-		STOP_TIMER(t1, t2, frequency, m_countStats3, m_minMaxTime3, m_timeSum3);
+		STOP_TIMER(t1, t2, m_frequency, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 	}
 }

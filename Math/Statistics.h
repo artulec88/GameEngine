@@ -113,7 +113,6 @@ private:
 	bool m_isProfiling;
 	bool m_isNestedWithinAnotherProfiledMethod;
 	LARGE_INTEGER m_startTimer;
-	LARGE_INTEGER m_frequency; // TODO: Probably unnecessary to store this information in every MethodStats instance
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MethodStats */
 

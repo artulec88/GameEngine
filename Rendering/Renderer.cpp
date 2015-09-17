@@ -78,6 +78,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
+	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
+	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN), // TODO: This variable should be dependant of the clock speed in CoreEngine.
 	m_skyboxNode(NULL),
 	m_skyboxShader(NULL),
 	m_skyboxTextureDay(NULL),
@@ -777,16 +779,12 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 	STOP_PROFILING;
 }
 
-// TODO: Move these two variables to Renderer class
-Math::Real skyboxAngle = REAL_ZERO;
-Math::Real skyboxAngleStep = 0.02f; // TODO: This variable should be dependant of the clock speed in CoreEngine
-
 void Renderer::RenderSkybox()
 {
 	START_PROFILING;
 	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
-	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(skyboxAngle)));
-	skyboxAngle += skyboxAngleStep;
+	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_skyboxAngle));
+	m_skyboxAngle += m_skyboxAngleStep;
 	if (m_ambientLightFogEnabled)
 	{
 		STOP_PROFILING;

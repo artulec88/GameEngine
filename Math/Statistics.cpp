@@ -180,7 +180,6 @@ MethodStats::MethodStats(void) :
 	m_isProfiling(false),
 	m_isNestedWithinAnotherProfiledMethod(false)
 {
-	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
 	DEBUG_LOG("MethodStats constructor");
 }
 
@@ -270,7 +269,8 @@ void MethodStats::StopProfiling()
 	static const Math::Real NUMBER_OF_MICROSECONDS_IN_SECOND = static_cast<Math::Real>(1000000.0f);
 	LARGE_INTEGER endTimer;
 	QueryPerformanceCounter(&endTimer);
-	Math::Real elapsedTime = static_cast<Math::Real>(NUMBER_OF_MICROSECONDS_IN_SECOND * (endTimer.QuadPart - m_startTimer.QuadPart)) / m_frequency.QuadPart; // in [us]
+	LARGE_INTEGER frequency = Utility::Timing::Time::GetFrequency();
+	Math::Real elapsedTime = static_cast<Math::Real>(NUMBER_OF_MICROSECONDS_IN_SECOND * (endTimer.QuadPart - m_startTimer.QuadPart)) / frequency.QuadPart; // in [us]
 	//DEBUG_LOG("Stopped profiling the method. %.3f [us] has passed.", elapsedTime);
 	Push(elapsedTime);
 	m_isProfiling = false;

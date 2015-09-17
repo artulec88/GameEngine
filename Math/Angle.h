@@ -30,8 +30,8 @@ class MATH_API Angle
 public:
 	// Explicit constructor, so that Real cannot be easily cast to Angle
 	explicit Angle(Real angle = REAL_ZERO, Unit::UnitType unit = Unit::DEGREE) :
-		m_angle(angle),
-		m_unit(unit)
+		m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle)),
+		m_unit(Unit::RADIAN)
 #ifdef CALCULATE_MATH_STATS
 		,m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif

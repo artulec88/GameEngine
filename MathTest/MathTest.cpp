@@ -41,23 +41,6 @@ bool kdTreeTestEnabled = false;
 bool statsTestEnabled = true;
 bool otherTestEnabled = true;
 
-enum TimeUnit
-{
-	SECONDS = 0,
-	MILISECONDS = 1,
-	MICROSECONDS = 2,
-	NANOSECONDS = 3
-};
-
-const char* timeUnitStr[] = 
-{
-	"[s]",
-	"[ms]",
-	"[us]",
-	"[ns]",
-	NULL
-};
-
 void ReportError(const std::string& reportStr)
 {
 	ERROR_LOG("Test #%d FAILED. %s", testNumber, reportStr.c_str());
