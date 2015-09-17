@@ -383,6 +383,7 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 
 TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
 	m_positionsCount(0),
 	m_lastX(REAL_ZERO),
@@ -391,7 +392,8 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 #ifdef HEIGHTMAP_SORT_TABLE
 	,m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
-	,m_kdTree(NULL)
+	,m_kdTree(NULL),
+	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #endif
 {
 }
@@ -494,7 +496,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	lastX = xz.GetX();
 	lastZ = xz.GetY(); // in this case GetY() returns Z
 
-	y += 2.0f; // head position. TODO: Don't use hard-coded values! Ever!
+	y += m_headPositionHeightAdjustment; // head position adjustment
 	lastY = y;
 
 	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
@@ -506,7 +508,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	Math::Real y = m_kdTree->SearchNearestValue(xz);
 	m_lastX = xz.GetX();
 	m_lastZ = xz.GetY(); // in this case GetY() returns Z
-	y += 2.5f; // head position adjustment // TODO: Don't use hard-coded values!
+	y += m_headPositionHeightAdjustment; // head position adjustment
 	m_lastY = y;
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
@@ -615,5 +617,5 @@ void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 		//	DELOCUST_LOG("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	m_kdTree = new KDTree(m_positions, m_positionsCount, 8 /* TODO: Don't use hard-coded values! Ever! */);
+	m_kdTree = new KDTree(m_positions, m_positionsCount, m_kdTreeSamples);
 }

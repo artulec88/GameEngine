@@ -451,7 +451,7 @@ void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int actio
 	// I would expect here something as follows:
 	// currentGameState->MouseInput(...)
 	
-	// LOG(Debug, LOGPLACE, "Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	// DEBUG_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	//GameManager::MouseButtonEvent(window, button, action, mods);
 	m_gameStateManager->MouseButtonEvent(button, action, mods);

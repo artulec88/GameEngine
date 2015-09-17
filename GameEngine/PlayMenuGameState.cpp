@@ -68,16 +68,16 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		{
 				
 		}
-		//LOG(Utility::Info, LOGPLACE, "To exit the game click \"QUIT\"");
+		//INFO_LOG("To exit the game click \"QUIT\"");
 		break;
 	case GLFW_KEY_UP:
-		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
+		//INFO_LOG("Selected menu entry changed from %d to %d",
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
 		m_currentMenuEntry->SelectPrevChildMenuEntry();
 		break;
 	case GLFW_KEY_DOWN:
-		//LOG(Utility::Info, LOGPLACE, "Selected menu entry changed from %d to %d",
+		//INFO_LOG("Selected menu entry changed from %d to %d",
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
 		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
 		m_currentMenuEntry->SelectNextChildMenuEntry();

@@ -51,7 +51,7 @@ public:
 	//{
 	//	if (!isInitialized)
 	//	{
-	//		LOG(Warning, LOGPLACE, "The Config instance is not initalized.");
+	//		WARNING_LOG("The Config instance is not initalized.");
 	//		//std::string fileName;
 	//		//std::cout << "Specify the configuration file to read:\t";
 	//		// TODO: If the user gives just a filename concatenate it with the string
@@ -67,7 +67,7 @@ public:
 	//	{
 	//		std::stringstream s;
 	//		s << defValue;
-	//		LOG(Notice, LOGPLACE, "The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), s.str().c_str());
+	//		NOTICE_LOG("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), s.str().c_str());
 	//		cfgNotDefinedValues[name] = s.str();
 	//		return defValue;
 	//	}

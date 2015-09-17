@@ -121,12 +121,14 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
 	int m_positionsCount;
 	Math::Real m_lastX, m_lastY, m_lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int m_lastClosestPositionIndex;
 #elif defined HEIGHTMAP_KD_TREE
+	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
 #endif
 /* ==================== Non-static member variables end ==================== */

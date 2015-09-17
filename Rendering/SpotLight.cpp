@@ -24,7 +24,8 @@ SpotLight::SpotLight(const Rendering::Color& color /*= Color(REAL_ZERO, REAL_ZER
 	m_isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows at all
 	if (m_isShadowingEnabled)
 	{
-		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, 0.1f /* TODO: Don't use hard-coded values */, m_range);
+		Math::Real spotLightProjectionNearPlane = GET_CONFIG_VALUE("spotLightProjectionNearPlane", 0.1f);
+		Matrix4D projectionMatrix = Matrix4D::PerspectiveProjection(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, spotLightProjectionNearPlane, m_range);
 		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
 		CHECK_CONDITION_EXIT(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize spot light. Shadow info is NULL.");
 	}

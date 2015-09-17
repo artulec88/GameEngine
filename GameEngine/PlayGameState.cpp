@@ -151,31 +151,31 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 		}
 		break;
 	case GLFW_KEY_C:
-		//LOG(Utility::Debug, LOGPLACE, "transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
+		//DEBUG_LOG("transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
 		break;
 	case GLFW_KEY_W:
 		forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//LOG(Debug, LOGPLACE, "Forward = %d", forward);
+		//DEBUG_LOG("Forward = %d", forward);
 
 		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_S:
 		backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//LOG(Debug, LOGPLACE, "Backward = %d", backward);
+		//DEBUG_LOG("Backward = %d", backward);
 
 		//direction -= transform.GetRot().GetForward().Normalized();
 		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_A:
 		left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//LOG(Debug, LOGPLACE, "Left = %d", left);
+		//DEBUG_LOG("Left = %d", left);
 
 		//direction -= transform.GetRot().GetRight().Normalized();
 		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_D:
 		right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//LOG(Debug, LOGPLACE, "Right = %d", right);
+		//DEBUG_LOG("Right = %d", right);
 
 		//direction += transform.GetRot().GetRight().Normalized();
 		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
@@ -234,7 +234,7 @@ void PlayGameState::Render(Renderer* renderer)
 
 	//if (renderer == NULL)
 	//{
-	//	LOG(Utility::Critical, LOGPLACE, "Rendering engine is NULL");
+	//	CRITICAL_LOG("Rendering engine is NULL");
 	//	exit(EXIT_FAILURE);
 	//}
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());

@@ -62,10 +62,10 @@ float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
 void PointLight::Update(Math::Real deltaTime)
 {
 	gTemp += deltaTime * 0.0001f; // TODO: Do not use hard-coded values! Ever!
-	if (gTemp > 20.0f * Math::M_PI)
+	if (gTemp > 20.0f * Math::M_PI) // TODO: Do not use hard-coded values! Ever!
 	{
 		gTemp = REAL_ZERO;
 	}
-	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 2000, cos(gTemp) / 4000, cos(gTemp) / 2000)));
+	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 2000, cos(gTemp) / 4000, cos(gTemp) / 2000))); // TODO: Do not use hard-coded values! Ever!
 	//GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(REAL_ZERO, cos(gTemp) / 2000, REAL_ZERO)));
 }

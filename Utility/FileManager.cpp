@@ -21,10 +21,10 @@ FileManager::~FileManager(void)
 
 std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string& directoryPath) const
 {
-	//LOG(Info, LOGPLACE, "Listing all files in a directory %s", directoryPath.c_str());
+	//INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
 	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	//{
-	//	LOG(Error, LOGPLACE, "Cannot list the files in a given directory. The directory path is too long");
+	//	ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
 	//	return;
 	//}
 	//WIN32_FIND_DATA ffd;
@@ -42,7 +42,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//
 	//if (hFind == INVALID_HANDLE_VALUE)
 	//{
-	//	LOG(Emergency, LOGPLACE, "Cannot list the files in a given directory. Invalid directory handle instance.");
+	//	EMERGENCY_LOG("Cannot list the files in a given directory. Invalid directory handle instance.");
 	//	//return dwError;
 	//}
 	//
@@ -52,14 +52,14 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//	if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	//	{
 	//		std::basic_string<TCHAR> s(ffd.cFileName);
-	//		LOG(Info, LOGPLACE, "%s\t<DIR>\n", s.c_str());
+	//		INFO_LOG("%s\t<DIR>\n", s.c_str());
 	//	}
 	//	else
 	//	{
 	//		filesize.LowPart = ffd.nFileSizeLow;
 	//		filesize.HighPart = ffd.nFileSizeHigh;
 	//		std::basic_string<TCHAR> s(ffd.cFileName);
-	//		LOG(Info, LOGPLACE, "%s\t%ld bytes\n", s.c_str(), filesize.QuadPart);
+	//		INFO_LOG("%s\t%ld bytes\n", s.c_str(), filesize.QuadPart);
 	//	}
 	//}
 	//while (FindNextFile(hFind, &ffd) != 0);
@@ -68,7 +68,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//if (dwError != ERROR_NO_MORE_FILES)
 	//{
 	//	//DisplayErrorBox(TEXT("FindFirstFile"));
-	//	LOG(Error, LOGPLACE, "Listing all files in a directory %s failed.", directoryPath.c_str());
+	//	ERROR_LOG("Listing all files in a directory %s failed.", directoryPath.c_str());
 	//}
 	//
 	//FindClose(hFind);

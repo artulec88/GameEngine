@@ -50,7 +50,7 @@ public:
 		ss << defValue;
 		const std::string resultStr = GetArg(name, ss.str());
 
-		//LOG(Delocust, LOGPLACE, "Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultStr.c_str());
+		//DELOCUST_LOG("Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultStr.c_str());
 
 		Type result;
 		std::stringstream resultSS;

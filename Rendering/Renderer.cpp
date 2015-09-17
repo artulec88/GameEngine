@@ -82,6 +82,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_skyboxShader(NULL),
 	m_skyboxTextureDay(NULL),
 	m_skyboxTextureNight(NULL),
+	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),
 	m_cubeMapShader(NULL),
 	m_cubeShadowMap(NULL),
 	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
@@ -543,7 +544,7 @@ void Renderer::Render(const GameNode& gameNode)
 			// everything in the scene will be mapped to the same point
 			m_lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-			SetReal("shadowVarianceMin", 0.00002f /* do not use hard-coded values */);
+			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 		}
 		RenderSceneWithLight(m_currentLight, gameNode);
 
