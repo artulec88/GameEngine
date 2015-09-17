@@ -248,7 +248,7 @@ private:
 	Texture* m_skyboxTextureDay;
 	Texture* m_skyboxTextureNight;
 
-	const Math::Real m_defaultShadowMinVariance;
+	Math::Real m_defaultShadowMinVariance;
 	Shader* m_cubeMapShader; // for use by the point lights
 	CubeShadowMap* m_cubeShadowMap; // for use by the point lights
 	//Texture* m_cubeShadowMap; // for use by the point lights

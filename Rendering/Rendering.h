@@ -13,7 +13,7 @@
 // Include GLFW
 #include <GLFW\glfw3.h>
 
-//#define CALCULATE_STATS
+#define CALCULATE_STATS
 #define ANT_TWEAK_BAR_ENABLED
 
 #undef START_PROFILING_STATIC

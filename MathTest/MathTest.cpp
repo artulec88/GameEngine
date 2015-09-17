@@ -56,22 +56,22 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	INFO_LOG("Test #%d passed", testNumber);
 }
 
-double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
+double CalculateElapsedTime(clock_t begin, clock_t end, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	double nominator = static_cast<double>(end - begin);
 	double denominator = static_cast<double>(CLOCKS_PER_SEC * NUMBER_OF_ITERATIONS);
 
 	switch (timeUnit)
 	{
-	case SECONDS:
+	case Timing::SECOND:
 		break;
-	case MILISECONDS:
+	case Timing::MILLISECOND:
 		nominator *= NUMBER_OF_MILISECONDS_IN_SECOND;
 		break;
-	case MICROSECONDS:
+	case Timing::MICROSECOND:
 		nominator *= NUMBER_OF_MICROSECONDS_IN_SECOND;
 		break;
-	case NANOSECONDS:
+	case Timing::NANOSECOND:
 		nominator *= NUMBER_OF_NANOSECONDS_IN_SECOND;
 		break;
 	default:
@@ -81,10 +81,10 @@ double CalculateElapsedTime(clock_t begin, clock_t end, TimeUnit timeUnit, const
 	return nominator / denominator;
 }
 
-void TimeReport(const std::string& reportStr, clock_t begin, clock_t end, TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const std::string& reportStr, clock_t begin, clock_t end, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	double elapsedTime = CalculateElapsedTime(begin, end, timeUnit, NUMBER_OF_ITERATIONS);
-	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), elapsedTime, timeUnitStr[timeUnit]);
+	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), elapsedTime, Timing::Time::ConvertTimeUnitToString(timeUnit).c_str());
 }
 
 void AngleTest()
@@ -214,7 +214,7 @@ void MatrixTest()
 		Matrix4D matrix2 = Matrix4D::Identity();
 	}
 	outerEnd = clock();
-	TimeReport("Average time for identity matrix creation:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	TimeReport("Average time for identity matrix creation:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
 	/* ==================== MATRIX TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #2 begin ==================== */
@@ -226,7 +226,7 @@ void MatrixTest()
 		CHECK_CONDITION(result == identityMatrix1 * identityMatrix2, Utility::Error, "Identity matrix multiplication result is incorrect.");
 	}
 	outerEnd = clock();
-	TimeReport("Average time for identity matrices multiplication:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for identity matrices multiplication:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #2 end ==================== */
 
 	/* ==================== MATRIX TEST #3 begin ==================== */
@@ -240,7 +240,7 @@ void MatrixTest()
 		//CHECK_CONDITION(result == mat1 * mat2, Utility::Error, "Random matrix multiplication result is incorrect.");
 	}
 	outerEnd = clock();
-	TimeReport("Average time for random matrices multiplication:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for random matrices multiplication:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #3 end ==================== */
 
 	/* ==================== MATRIX TEST #4 begin ==================== */
@@ -251,7 +251,7 @@ void MatrixTest()
 		Matrix4D result = Matrix4D::RotationEuler(RandomAngle(), RandomAngle(), RandomAngle());
 	}
 	outerEnd = clock();
-	TimeReport("Average time for rotation Euler matrix calculation:\t", outerBegin, outerEnd, MICROSECONDS, NUMBER_OF_ROTATION_EULER_ITERATIONS);
+	TimeReport("Average time for rotation Euler matrix calculation:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
 	/* ==================== MATRIX TEST #4 end ==================== */
 }
 
@@ -323,7 +323,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -359,7 +359,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -395,7 +395,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -429,7 +429,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -463,7 +463,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -501,7 +501,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -539,7 +539,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -577,7 +577,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -615,7 +615,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -653,7 +653,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, SECONDS, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{

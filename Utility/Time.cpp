@@ -4,30 +4,112 @@
 #include <stdio.h>
 #include <sstream>
 #include <limits>
+#include "ILogger.h"
 
 using namespace Utility::Timing;
 using namespace std;
 
-/* ==================== Time<T> class end ==================== */
-template UTILITY_API class Time<float>;
-template UTILITY_API class Time<double>;
-/* ==================== Time<T> class end ==================== */
+/* ==================== TimeSpan class begin ==================== */
+bool TimeSpan::operator<(const TimeSpan &timeSpan) const
+{
+	CRITICAL_LOG("The function is not yet implemented");
+	if (m_unit == timeSpan.GetUnit())
+	{
+		return m_value < timeSpan.GetValue();
+	}
+	// TODO: Finish the function
+	return true;
+}
+
+bool TimeSpan::operator>(const TimeSpan &timeSpan) const
+{
+	CRITICAL_LOG("The function is not yet implemented");
+	if (m_unit == timeSpan.GetUnit())
+	{
+		return m_value > timeSpan.GetValue();
+	}
+	// TODO: Finish the function
+	return true;
+}
+
+std::string TimeSpan::ToString() const
+{
+	CRITICAL_LOG("The functions is not yet implemented");
+	return "";
+}
+/* ==================== TimeSpan class end ==================== */
+
+/* ==================== Time class begin ==================== */
+/* static */ Time Time::Now()
+{
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	return Time(st.wSecond, st.wMilliseconds);
+}
+
+/* static */ std::string Time::ConvertTimeUnitToString(TimeUnit timeUnit)
+{
+	switch (timeUnit)
+	{
+	case SECOND:
+		return "[s]";
+	case MILLISECOND:
+		return "[ms]";
+	case MICROSECOND:
+		return "[us]";
+	case NANOSECOND:
+		return "[ns]";
+	default:
+		ERROR_LOG("Unknown time unit (%d)", timeUnit);
+		return "Unknown time unit";
+	}
+}
+
+std::string Time::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
+{
+	//char buffer[80];
+	//memset(buffer, 0, 80);
+	//time_t t = seconds;
+	//int result = strftime(buffer, 79, format, localtime(&t));
+	//if (result == 0)
+	//{
+	//	return std::string("time-error");
+	//}
+	//buffer[result] = '\0';
+	//return string(buffer);
+
+	time_t rawtime = m_seconds;
+	struct tm timeinfo;
+	char buffer [80];
+
+	time (&rawtime);
+	localtime_s(&timeinfo, &rawtime);
+
+	if ( (strftime (buffer, 80, format, &timeinfo)) == 0)
+	{
+		return std::string("time-error");
+	}
+	return string(buffer);
+}
+/* ==================== Time class end ==================== */
 
 /* ==================== Timer class begin ==================== */
-/* static */ LARGE_INTEGER Time::FREQUENCY = 0;
-/* static */ LARGE_INTEGER Time::GetFrequency()
+/* static */ bool Timer::isFrequencyInitialized = false;
+/* static */ LARGE_INTEGER Timer::frequency;
+/* static */ LARGE_INTEGER Timer::GetFrequency()
 {
-	if (Time::FREQUENCY == 0)
+	if (!Timer::isFrequencyInitialized)
 	{
-		QueryPerformanceFrequency(&Time::FREQUENCY);
+		QueryPerformanceFrequency(&Timer::frequency);
+		Timer::isFrequencyInitialized = true;
 	}
-	return Time::FREQUENCY;
+	return Timer::frequency;
 }
 
 Timer::Timer() :
 	m_isRunning(false),
-	m_startTime(0),
-	m_stopTime(0)
+	m_startTime(),
+	m_stopTime()
 {
 }
 
@@ -35,33 +117,33 @@ Timer::~Timer()
 {
 }
 
-Time Timer::ToReal() const
+TimeSpan Timer::ToReal() const
 {
 	static int ONE_THOUSAND = 1000;
 	static int ONE_MILLION = 1000 * ONE_THOUSAND;
-	static int ONE_BILLION = 1000 * ONE_MILION;
+	static int ONE_BILLION = 1000 * ONE_MILLION;
 
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
 	if (elapsedTimeInSeconds > 1)
 	{
-		return Time(elapsedTimeInSeconds, TimeUnit::SECOND);
+		return TimeSpan(elapsedTimeInSeconds, TimeUnit::SECOND);
 	}
 	else if (elapsedTimeInSeconds > 0.001)
 	{
-		return Time(elapsedTimeInSeconds * ONE_THOUSAND, TimeUnit::MILISECOND);
+		return TimeSpan(elapsedTimeInSeconds * ONE_THOUSAND, TimeUnit::MILLISECOND);
 	}
 	else if (elapsedTimeInSeconds > 0.000001)
 	{
-		return Time(elapsedTimeInSeconds * ONE_MILION, TimeUnit::MICROSECOND);
+		return TimeSpan(elapsedTimeInSeconds * ONE_MILLION, TimeUnit::MICROSECOND);
 	}
-	return Time(elapsedTimeInSeconds * ONE_BILLION, TimeUnit::NANOSECOND);
+	return TimeSpan(elapsedTimeInSeconds * ONE_BILLION, TimeUnit::NANOSECOND);
 }
 
-Time Timer::ToReal(TimeUnit timeUnit) const
+TimeSpan Timer::ToReal(TimeUnit timeUnit) const
 {
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	const int timeUnitConverter = pow(10, timeUnit - TimeUnit::SECOND);
-	return Time(elapsedTimeInSeconds * timeUnitConverter, timeUnit);
+	const int timeUnitConverter = pow(10, static_cast<float>(timeUnit - TimeUnit::SECOND));
+	return TimeSpan(elapsedTimeInSeconds * timeUnitConverter, timeUnit);
 }
 
 void Timer::Start()
@@ -79,61 +161,9 @@ void Timer::Stop()
 {
 	if (!m_isRunning)
 	{
-		// TODO: WARNING_LOG
+		WARNING_LOG("Stopping the timer which is already stopped.");
 		return;
 	}
 	QueryPerformanceCounter(&m_stopTime);
 	m_isRunning = false;
 }
-
-std::string Timer::ToString() const
-{
-	// TODO: Finish the function
-	return "";
-}
-
-std::string Timer::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
-{
-	// TODO: Finish the function
-	return "";
-}
-
-//std::string Timer::ToString() const
-//{
-//	//char buffer[30];
-//	//sprintf(buffer, "%d:%06d", seconds, micros);
-//	//return std::string(buffer);
-//
-//	std::stringstream ss("");
-//	ss << seconds;
-//	ss << ":";
-//	ss << micros;
-//	return ss.str();
-//}
-
-//std::string Timer::ToDateString(const char *format) const
-//{
-//	//char buffer[80];
-//	//memset(buffer, 0, 80);
-//	//time_t t = seconds;
-//	//int result = strftime(buffer, 79, format, localtime(&t));
-//	//if (result == 0)
-//	//{
-//	//	return std::string("time-error");
-//	//}
-//	//buffer[result] = '\0';
-//	//return string(buffer);
-//
-//	time_t rawtime = seconds;
-//	struct tm timeinfo;
-//	char buffer [80];
-//
-//	time (&rawtime);
-//	localtime_s(&timeinfo, &rawtime);
-//
-//	if ( (strftime (buffer, 80, format, &timeinfo)) == 0)
-//	{
-//		return std::string("time-error");
-//	}
-//	return string(buffer);
-//}

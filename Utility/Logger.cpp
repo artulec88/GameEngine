@@ -40,7 +40,7 @@ void Logger::operator()(LogLevel level, const char *name, int line, const char *
 	{
 		name = tmp + 1;
 	}
-	Utility::Time now = Utility::Time::Now();
+	Utility::Timing::Time now = Utility::Timing::Time::Now();
 	std::string date = now.ToDateString();
 
 	//mutex.Lock();
@@ -81,7 +81,7 @@ void Logger::Log(LogLevel level, const char *name, int line, const char *format,
 	{
 		name = tmp + 1;
 	}
-	Utility::Time now = Utility::Time::Now();
+	Utility::Timing::Time now = Utility::Timing::Time::Now();
 	std::string date = now.ToDateString();
 
 	//mutex.Lock();

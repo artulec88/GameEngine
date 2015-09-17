@@ -5,6 +5,7 @@
 #include "Math\FloatingPoint.h"
 
 #include "Utility\Utility.h"
+#include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Math\ISort.h"
 
@@ -383,7 +384,7 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 
 TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5)),
 	m_positions(NULL),
 	m_positionsCount(0),
 	m_lastX(REAL_ZERO),

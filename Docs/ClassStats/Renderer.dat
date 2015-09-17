@@ -1,5 +1,5 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Renderer	1	1	1.00174e+006	1.00174e+006	1.00174e+006
-InitializeCubeMap	1	0	320343	0	320343
-InitializeCubeMapTexture	2	0	296363	0	148181
-RenderMainMenu	1075	1075	728313	728313	677.501
+Renderer	1	1	1.36905e+006	1.36905e+006	1.36905e+006
+InitializeCubeMap	1	0	400732	0	400732
+InitializeCubeMapTexture	2	0	364523	0	182262
+RenderMainMenu	459	459	449023	449023	978.264

@@ -2,7 +2,7 @@ uniform vec3 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
 uniform sampler2D diffuse2;
-//uniform sampler2D terrainMap;
+uniform sampler2D terrainMap;
 uniform sampler2D displacementMap;
 
 uniform float displacementScale;
@@ -17,7 +17,7 @@ void main()
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
 	
-	//vec2 terrainMapTexColor = normalize(texture2D(terrainMap, texCoords).xy);
+	vec2 terrainMapTexColor = normalize(texture2D(terrainMap, texCoords).xy);
 	//float terrainMapTexColorSum = terrainMapTexColor.x + terrainMapTexColor.y;
 	//terrainMapTexColor
 	
