@@ -18,6 +18,8 @@
 #include "Math\KDTree.h"
 #endif
 
+#define MEASURE_TIME_ENABLED
+
 namespace Rendering
 {
 

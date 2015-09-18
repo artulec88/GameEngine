@@ -5,15 +5,19 @@
 #include <time.h>
 #include <string>
 
+#define START_TIMER(timerID) Timing::Timer timerID; timerID.Start();
+#define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
+#define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) timerID.Stop(); } while (0)
+
 namespace Utility { namespace Timing
 {
 	/// <summary> Possible time units. </summary>
 	enum TimeUnit
 	{
-		SECOND = 0, // The values here are important. Don't mess with them.
-		MILLISECOND = 3,
-		MICROSECOND = 6,
-		NANOSECOND = 9
+		SECOND = 0,
+		MILLISECOND,
+		MICROSECOND,
+		NANOSECOND
 	};
 
 	class UTILITY_API TimeSpan
@@ -34,6 +38,8 @@ namespace Utility { namespace Timing
 	public:
 		float GetValue() const { return m_value; }
 		TimeUnit GetUnit() const { return m_unit; }
+		void AdjustUnitToValue();
+		TimeSpan& operator/=(int s);
 		bool operator<(const TimeSpan &timeSpan) const;
 		bool operator>(const TimeSpan &timeSpan) const;
 		std::string ToString() const;
@@ -50,8 +56,16 @@ namespace Utility { namespace Timing
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	public:
+		static const float ONE_OVER_BILLION;
+		static const float ONE_OVER_MILLION;
+		static const float ONE_OVER_THOUSAND;
+		static const float ONE;
+		static const float ONE_THOUSAND;
+		static const float ONE_MILLION;
+		static const float ONE_BILLION;
 		static Time Now();
 		static std::string ConvertTimeUnitToString(TimeUnit timeUnit);
+		static float TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit);
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
@@ -96,8 +110,8 @@ namespace Utility { namespace Timing
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		TimeSpan ToReal() const;
-		TimeSpan ToReal(TimeUnit timeUnit) const;
+		TimeSpan GetTimeSpan() const;
+		TimeSpan GetTimeSpan(TimeUnit timeUnit) const;
 
 		void Start();
 		void Reset();

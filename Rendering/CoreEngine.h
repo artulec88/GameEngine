@@ -18,6 +18,9 @@
 #include <vector>
 #endif
 
+#undef STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
+#define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) StopTimer(timerID, countStats, minMaxTime, timeSum); } while (0)
+
 // TODO: Consider replacing some of even all of below #defines with CoreEngine class member variables.
 // As member variables they could be easily added to the CoreEngine tweak bar and modified in runtime.
 //#ifdef _DEBUG
@@ -108,13 +111,11 @@ public:
 	void StartSamplingSpf() const { m_isSamplingSpf = true; }
 	void StopSamplingSpf() const { m_isSamplingSpf = false; }
 private:
-	void StartTimer(LARGE_INTEGER& start) const { QueryPerformanceCounter(&start); }
-	void StopTimer(LARGE_INTEGER& start, LARGE_INTEGER& end, LARGE_INTEGER frequency, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
+	void StopTimer(Timing::Timer& timer, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
 	{
-		static const Math::Real ONE_MILLION = static_cast<Math::Real>(1000000.0f);
-		QueryPerformanceCounter(&end);
+		timer.Stop();
 		++countStats;
-		double elapsedTime = static_cast<double>(ONE_MILLION * (end.QuadPart - start.QuadPart)) / frequency.QuadPart; // in [us]
+		float elapsedTime = timer.GetTimeSpan(Timing::MICROSECOND).GetValue();
 		minMaxTime.ProcessTime(elapsedTime);
 		timeSum += elapsedTime;
 	}

@@ -10,6 +10,19 @@ using namespace Utility::Timing;
 using namespace std;
 
 /* ==================== TimeSpan class begin ==================== */
+void TimeSpan::AdjustUnitToValue()
+{
+	// TODO: This function should make the m_value and m_unit variables easier to read, i.e.
+	// if m_value=123456,789 and m_unit=us then we should change m_value to 123,456789 and m_unit=ms.
+	CRITICAL_LOG("The function is not yet implemented");
+}
+
+TimeSpan& TimeSpan::operator/=(int s)
+{
+	m_value /= s;
+	return (*this);
+}
+
 bool TimeSpan::operator<(const TimeSpan &timeSpan) const
 {
 	CRITICAL_LOG("The function is not yet implemented");
@@ -34,12 +47,21 @@ bool TimeSpan::operator>(const TimeSpan &timeSpan) const
 
 std::string TimeSpan::ToString() const
 {
-	CRITICAL_LOG("The functions is not yet implemented");
-	return "";
+	std::stringstream ss("");
+	ss << m_value << " " << Time::ConvertTimeUnitToString(m_unit);
+	return ss.str();
 }
 /* ==================== TimeSpan class end ==================== */
 
 /* ==================== Time class begin ==================== */
+/* static */ const float ONE_OVER_BILLION = 0.000000001f;
+/* static */ const float ONE_OVER_MILLION = 0.000001f;
+/* static */ const float ONE_OVER_THOUSAND = 0.001f;
+/* static */ const float ONE = 1.0f;
+/* static */ const float Time::ONE_THOUSAND = 1000.0f;
+/* static */ const float Time::ONE_MILLION = 1000000.0f;
+/* static */ const float Time::ONE_BILLION = 1000000000.0f;
+
 /* static */ Time Time::Now()
 {
 	SYSTEMTIME st;
@@ -62,6 +84,30 @@ std::string TimeSpan::ToString() const
 	default:
 		ERROR_LOG("Unknown time unit (%d)", timeUnit);
 		return "Unknown time unit";
+	}
+}
+
+/* static */ float Time::TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit)
+{
+	int timeUnitDiff = toTimeUnit - fromTimeUnit;
+	switch (timeUnitDiff)
+	{
+	case -3:
+		return ONE_OVER_BILLION;
+	case -2:
+		return ONE_OVER_MILLION;
+	case -1:
+		return ONE_OVER_THOUSAND;
+	case 0:
+		return ONE;
+	case 1:
+		return ONE_THOUSAND;
+	case 2:
+		return ONE_MILLION;
+	case 3:
+		return ONE_BILLION;
+	default:
+		ERROR_LOG("Failed determining the time unit conversion factor (fromTimeUnit = %d; toTimeUnit = %d)", fromTimeUnit, toTimeUnit);
 	}
 }
 
@@ -117,33 +163,28 @@ Timer::~Timer()
 {
 }
 
-TimeSpan Timer::ToReal() const
+TimeSpan Timer::GetTimeSpan() const
 {
-	static int ONE_THOUSAND = 1000;
-	static int ONE_MILLION = 1000 * ONE_THOUSAND;
-	static int ONE_BILLION = 1000 * ONE_MILLION;
-
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	if (elapsedTimeInSeconds > 1)
+	if (elapsedTimeInSeconds > Time::ONE)
 	{
 		return TimeSpan(elapsedTimeInSeconds, TimeUnit::SECOND);
 	}
-	else if (elapsedTimeInSeconds > 0.001)
+	else if (elapsedTimeInSeconds > Time::ONE_OVER_THOUSAND)
 	{
-		return TimeSpan(elapsedTimeInSeconds * ONE_THOUSAND, TimeUnit::MILLISECOND);
+		return TimeSpan(elapsedTimeInSeconds * Time::ONE_THOUSAND, TimeUnit::MILLISECOND);
 	}
-	else if (elapsedTimeInSeconds > 0.000001)
+	else if (elapsedTimeInSeconds > Time::ONE_OVER_MILLION)
 	{
-		return TimeSpan(elapsedTimeInSeconds * ONE_MILLION, TimeUnit::MICROSECOND);
+		return TimeSpan(elapsedTimeInSeconds * Time::ONE_MILLION, TimeUnit::MICROSECOND);
 	}
-	return TimeSpan(elapsedTimeInSeconds * ONE_BILLION, TimeUnit::NANOSECOND);
+	return TimeSpan(elapsedTimeInSeconds * Time::ONE_BILLION, TimeUnit::NANOSECOND);
 }
 
-TimeSpan Timer::ToReal(TimeUnit timeUnit) const
+TimeSpan Timer::GetTimeSpan(TimeUnit timeUnit) const
 {
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	const int timeUnitConverter = pow(10, static_cast<float>(timeUnit - TimeUnit::SECOND));
-	return TimeSpan(elapsedTimeInSeconds * timeUnitConverter, timeUnit);
+	return TimeSpan(elapsedTimeInSeconds * Time::TimeUnitConvertingFactor, timeUnit);
 }
 
 void Timer::Start()

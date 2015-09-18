@@ -7,6 +7,7 @@
 #include "Utility\Utility.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
+#include "Utility\Time.h"
 #include "Math\ISort.h"
 
 #include <assimp\Importer.hpp>
@@ -14,16 +15,18 @@
 #include <assimp\postprocess.h>
 
 #include <unordered_set>
-
-#ifdef MEASURE_TIME_ENABLED
-#include <time.h>
-#endif
 #include <fstream>
 
 using namespace Rendering;
 using namespace Utility;
 using namespace std;
 using namespace Math;
+
+#ifndef MEASURE_TIME_ENABLED
+#undef START_TIMER
+#undef RESET_TIMER
+#undef STOP_TIMER
+#endif
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
@@ -134,10 +137,7 @@ void Mesh::Initialize()
 		return;
 	}
 
-#ifdef MEASURE_TIME_ENABLED
-	clock_t begin = clock();
-#endif
-
+	START_TIMER(timer);
 	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
@@ -207,9 +207,9 @@ void Mesh::Initialize()
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
 
+	STOP_TIMER(timer);
 #ifdef MEASURE_TIME_ENABLED
-	clock_t end = clock();
-	INFO_LOG("Loading model took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	INFO_LOG("Loading model took %s", timer.GetTimeSpan().ToString());
 #endif
 }
 
@@ -413,9 +413,7 @@ TerrainMesh::~TerrainMesh(void)
  */
 Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 {
-#ifdef MEASURE_TIME_ENABLED
-	clock_t begin = clock();
-#endif
+	START_TIMER(timer);
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
 	{
@@ -514,9 +512,9 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
+	STOP_TIMER(timer);
 #ifdef MEASURE_TIME_ENABLED
-	clock_t end = clock();
-	DEBUG_LOG("Camera's height calculation took %.2f [us]", 1000000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Timing::MICROSECOND).ToString()));
 #endif
 
 	return y;

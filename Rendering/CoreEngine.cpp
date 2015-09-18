@@ -22,14 +22,13 @@ using namespace std;
 /**
  * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
  */
-#ifdef CALCULATE_STATS
-#define START_TIMER(t) do { if (true) StartTimer(t); } while (0)
-#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum) do { if (true) StopTimer(t1, t2, f, countStats, minMaxTime, timeSum); } while (0)
-#else
-//#define START_TIMER(t) do { if (false) StartTimer(t) } while (0)
-//#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum) do { if (false) StopTimer(t1, t2, f, countStats, minMaxTime, timeSum) } while (0)
-#define START_TIMER(t)
-#define STOP_TIMER(t1, t2, f, countStats, minMaxTime, timeSum)
+#ifndef CALCULATE_STATS
+#undef START_TIMER
+#undef RESET_TIMER
+#undef STOP_TIMER
+#define START_TIMER(timerID)
+#define RESET_TIMER(timerID)
+#define STOP_TIMER(timerID)
 #endif
 
 CoreEngine* CoreEngine::s_coreEngine = NULL;
@@ -245,7 +244,7 @@ void CoreEngine::Run()
 	while (m_isRunning)
 	{
 		/* ==================== REGION #1 begin ====================*/
-		START_TIMER(t1);
+		START_TIMER(timer);
 		bool isRenderRequired = false;
 
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
@@ -287,11 +286,11 @@ void CoreEngine::Run()
 			frameTimeCounter = REAL_ZERO;
 		}
 #endif
-		STOP_TIMER(t1, t2, m_frequency, m_countStats1, m_minMaxTime1, m_timeSum1);
+		STOP_TIMER(timer, m_countStats1, m_minMaxTime1, m_timeSum1);
 		/* ==================== REGION #1 end ====================*/
 
 		/* ==================== REGION #2 begin ====================*/
-		START_TIMER(t1);
+		RESET_TIMER(timer);
 		while (unprocessingTime > m_frameTime)
 		{
 			//previousTime = GetTime();
@@ -306,23 +305,23 @@ void CoreEngine::Run()
 				return;
 			}
 			/* ==================== REGION #2_1 begin ====================*/
-			START_TIMER(innerT1);
+			START_TIMER(innerTimer);
 			PollEvents();
-			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
+			STOP_TIMER(innerTimer, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
 			/* ==================== REGION #2_1 end ====================*/
 			
 			/* ==================== REGION #2_2 begin ====================*/
-			START_TIMER(innerT1);
+			RESET_TIMER(innerTimer);
 			m_game.Input(m_frameTime);
-			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
+			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
 			//Input::Update();
 			
 			/* ==================== REGION #2_3 begin ====================*/
-			START_TIMER(innerT1);
+			RESET_TIMER(innerTimer);
 			m_game.Update(m_frameTime);
-			STOP_TIMER(innerT1, innerT2, m_frequency, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
+			STOP_TIMER(innerTimer, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
 			/* ==================== REGION #2_3 end ====================*/
 
 			/* ==================== Switching the game state if necessary begin ==================== */
@@ -335,11 +334,11 @@ void CoreEngine::Run()
 			
 			unprocessingTime -= m_frameTime;
 		}
-		STOP_TIMER(t1, t2, m_frequency, m_countStats2, m_minMaxTime2, m_timeSum2);
+		STOP_TIMER(timer, m_countStats2, m_minMaxTime2, m_timeSum2);
 		/* ==================== REGION #2 end ====================*/
 		
 		/* ==================== REGION #3 begin ====================*/
-		START_TIMER(t1);
+		RESET_TIMER(timer);
 		if (isRenderRequired)
 		{
 			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
@@ -397,7 +396,7 @@ void CoreEngine::Run()
 			++m_renderingNotRequiredCount;
 #endif
 		}
-		STOP_TIMER(t1, t2, m_frequency, m_countStats3, m_minMaxTime3, m_timeSum3);
+		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 	}
 }

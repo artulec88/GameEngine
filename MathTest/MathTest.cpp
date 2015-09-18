@@ -28,7 +28,6 @@ const int NUMBER_OF_NANOSECONDS_IN_SECOND = 1000000000;
 
 unsigned int innerLoops = 10000;
 unsigned int outerLoops = 10000;
-clock_t outerBegin, outerEnd;
 double elapsedTime;
 
 unsigned int testNumber = 0;
@@ -56,35 +55,13 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	INFO_LOG("Test #%d passed", testNumber);
 }
 
-double CalculateElapsedTime(clock_t begin, clock_t end, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
-	double nominator = static_cast<double>(end - begin);
-	double denominator = static_cast<double>(CLOCKS_PER_SEC * NUMBER_OF_ITERATIONS);
-
-	switch (timeUnit)
-	{
-	case Timing::SECOND:
-		break;
-	case Timing::MILLISECOND:
-		nominator *= NUMBER_OF_MILISECONDS_IN_SECOND;
-		break;
-	case Timing::MICROSECOND:
-		nominator *= NUMBER_OF_MICROSECONDS_IN_SECOND;
-		break;
-	case Timing::NANOSECOND:
-		nominator *= NUMBER_OF_NANOSECONDS_IN_SECOND;
-		break;
-	default:
-		ERROR_LOG("Cannot calculate the elapsed time. Unknown time unit specified.");
-	}
-
-	return nominator / denominator;
-}
-
-void TimeReport(const std::string& reportStr, clock_t begin, clock_t end, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
-{
-	double elapsedTime = CalculateElapsedTime(begin, end, timeUnit, NUMBER_OF_ITERATIONS);
-	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), elapsedTime, Timing::Time::ConvertTimeUnitToString(timeUnit).c_str());
+	timer.Stop();
+	Timing::TimeSpan timeSpan = timer.getTimeSpan(timeUnit);
+	timeSpan /= NUMBER_OF_ITERATIONS;
+	timeSpan.AdjustUnitToValue();
+	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), timeSpan.ToString().c_str());
 }
 
 void AngleTest()
@@ -208,50 +185,51 @@ void MatrixTest()
 	Matrix4D matrix1 = Matrix4D::Identity();
 	TestReport(matrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 
-	outerBegin = clock();
+	Timing::Timer timer;
+	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
 		Matrix4D matrix2 = Matrix4D::Identity();
 	}
-	outerEnd = clock();
-	TimeReport("Average time for identity matrix creation:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	timer.Stop();
+	TimeReport("Average time for identity matrix creation:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
 	/* ==================== MATRIX TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #2 begin ==================== */
 	const int NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
-	outerBegin = clock();
+	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = identityMatrix1 * identityMatrix2;
 		CHECK_CONDITION(result == identityMatrix1 * identityMatrix2, Utility::Error, "Identity matrix multiplication result is incorrect.");
 	}
-	outerEnd = clock();
-	TimeReport("Average time for identity matrices multiplication:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	timer.Stop();
+	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #2 end ==================== */
 
 	/* ==================== MATRIX TEST #3 begin ==================== */
 	const int NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
 	Matrix4D mat1 = RandomMatrix(REAL_ZERO, REAL_ONE);
 	Matrix4D mat2 = RandomMatrix(REAL_ZERO, REAL_ONE);
-	outerBegin = clock();
+	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = mat1 * mat2;
 		//CHECK_CONDITION(result == mat1 * mat2, Utility::Error, "Random matrix multiplication result is incorrect.");
 	}
-	outerEnd = clock();
-	TimeReport("Average time for random matrices multiplication:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
+	timer.Stop();
+	TimeReport("Average time for random matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #3 end ==================== */
 
 	/* ==================== MATRIX TEST #4 begin ==================== */
 	const int NUMBER_OF_ROTATION_EULER_ITERATIONS = 100000;
-	outerBegin = clock();
+	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_ROTATION_EULER_ITERATIONS; ++i)
 	{
 		Matrix4D result = Matrix4D::RotationEuler(RandomAngle(), RandomAngle(), RandomAngle());
 	}
-	outerEnd = clock();
-	TimeReport("Average time for rotation Euler matrix calculation:\t", outerBegin, outerEnd, Timing::MICROSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
+	timer.Stop();
+	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, Timing::MICROSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
 	/* ==================== MATRIX TEST #4 end ==================== */
 }
 
@@ -313,7 +291,8 @@ void SortTest()
 		bool sortingTestCasePassed = true;
 		Sorting::SortingParametersChain sortingParameters(Sorting::COMPONENT_X, Sorting::ASCENDING);
 		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::COMPONENT_Y, Sorting::DESCENDING));
-		outerBegin = clock();
+		Timing::Timer timer;
+		timer.Start();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -322,8 +301,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -349,7 +328,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::COMPONENT_X);
 		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -358,8 +337,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -385,7 +364,7 @@ void SortTest()
 		sortingParameters.SetSortingKey(Sorting::COMPONENT_Y);
 		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
 		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::COMPONENT_X, Sorting::DESCENDING));
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -394,8 +373,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -419,7 +398,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::COMPONENT_Y);
 		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -428,8 +407,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -453,7 +432,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -462,8 +441,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -491,7 +470,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -500,8 +479,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -529,7 +508,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_ABSOLUTE_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -538,8 +517,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -567,7 +546,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_ABSOLUTE_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -576,8 +555,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -605,7 +584,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_SQUARED_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -614,8 +593,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -643,7 +622,7 @@ void SortTest()
 		sortingTestCasePassed = true;
 		sortingParameters.SetSortingKey(Sorting::SUM_OF_SQUARED_COMPONENTS);
 		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
-		outerBegin = clock();
+		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
 			for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
@@ -652,8 +631,8 @@ void SortTest()
 			}
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
-		outerEnd = clock();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", outerBegin, outerEnd, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		timer.Stop();
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -743,11 +722,8 @@ void KDTreeTest()
 
 void StatsTest()
 {
-	LARGE_INTEGER frequency, startTimer, stopTimer;
-	QueryPerformanceFrequency(&frequency); // get ticks per second;
-	QueryPerformanceCounter(&startTimer);
-
-	//clock_t outerBegin = clock();
+	Timing::Timer timer;
+	timer.Start();
 
 	const int STATS_TEST_1_METHOD_1_INVOCATIONS_COUNT = 5;
 	const int STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT = 150;
@@ -784,15 +760,12 @@ void StatsTest()
 		float floatValue3 = statsTest2.Method3();
 	}
 
-	QueryPerformanceCounter(&stopTimer);
-	Math::Real totalElapsedTime = static_cast<Math::Real>((stopTimer.QuadPart - startTimer.QuadPart)) / frequency.QuadPart; // in [s]
-
-	//clock_t outerEnd = clock();
+	timer.Stop();
 
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(totalElapsedTime);
+	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND).GetValue(););
 }
 
 int main (int argc, char* argv[])
