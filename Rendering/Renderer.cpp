@@ -106,7 +106,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//m_cameraMembers(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	m_cameraType()
 #endif
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {

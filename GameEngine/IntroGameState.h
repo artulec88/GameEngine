@@ -7,6 +7,10 @@
 #include "Rendering\IRenderable.h"
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
+#include "GameStats.h"
+#ifdef CALCULATE_GAME_STATS
+#include "Math\IStatisticsStorage.h"
+#endif
 
 namespace Game
 {
@@ -48,7 +52,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

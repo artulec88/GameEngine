@@ -11,6 +11,11 @@
 
 #include <vector>
 
+#include "GameStats.h"
+#ifdef CALCULATE_GAME_STATS
+#include "Math\IStatisticsStorage.h"
+#endif
+
 namespace Game
 {
 
@@ -55,7 +60,7 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	Rendering::MenuEntry* m_currentMenuEntry;
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

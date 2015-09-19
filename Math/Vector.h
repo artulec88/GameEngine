@@ -3,7 +3,7 @@
 
 #include "Math.h"
 #include "Angle.h"
-//#include "Utility\ISerializable.h"
+//#include "FloatingPoint.h"
 #include <string>
 #include <sstream>
 
@@ -165,13 +165,13 @@ public:
 	void Normalize()
 	{
 		Real length = LengthSquared();
-#ifdef _DEBUG
-		if (AlmostEqual(length, REAL_ZERO))
-		{
-			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
-			return (*this);
-		}
-#endif
+//#ifdef _DEBUG
+//		if (AlmostEqual(length, REAL_ZERO))
+//		{
+//			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
+//			return;
+//		}
+//#endif
 		(*this) /= static_cast<Real>(sqrt(length));
 	}
 	bool IsNormalized() const;

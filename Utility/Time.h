@@ -4,6 +4,7 @@
 //#include "ISerializable.h"
 #include <time.h>
 #include <string>
+#include "ILogger.h"
 
 #define START_TIMER(timerID) Timing::Timer timerID; timerID.Start();
 #define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
@@ -116,10 +117,13 @@ namespace Utility { namespace Timing
 		void Start();
 		void Reset();
 		void Stop();
+		bool IsRunning() const { return m_isRunning; }
 	private:
 		float CalculateElapsedTimeInSeconds() const
 		{
-			return static_cast<float>((m_stopTime.QuadPart - m_startTime.QuadPart)) / frequency.QuadPart; // in [s]
+			//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
+			//INFO_LOG("diff = %d, frequency = %d", diff, GetFrequency().QuadPart);
+			return static_cast<float>(m_stopTime.QuadPart - m_startTime.QuadPart) / GetFrequency().QuadPart; // in [s]
 		}
 	/* ==================== Non-static member functions end ==================== */
 

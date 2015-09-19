@@ -54,10 +54,10 @@ std::string TimeSpan::ToString() const
 /* ==================== TimeSpan class end ==================== */
 
 /* ==================== Time class begin ==================== */
-/* static */ const float ONE_OVER_BILLION = 0.000000001f;
-/* static */ const float ONE_OVER_MILLION = 0.000001f;
-/* static */ const float ONE_OVER_THOUSAND = 0.001f;
-/* static */ const float ONE = 1.0f;
+/* static */ const float Time::ONE_OVER_BILLION = 0.000000001f;
+/* static */ const float Time::ONE_OVER_MILLION = 0.000001f;
+/* static */ const float Time::ONE_OVER_THOUSAND = 0.001f;
+/* static */ const float Time::ONE = 1.0f;
 /* static */ const float Time::ONE_THOUSAND = 1000.0f;
 /* static */ const float Time::ONE_MILLION = 1000000.0f;
 /* static */ const float Time::ONE_BILLION = 1000000000.0f;
@@ -108,6 +108,7 @@ std::string TimeSpan::ToString() const
 		return ONE_BILLION;
 	default:
 		ERROR_LOG("Failed determining the time unit conversion factor (fromTimeUnit = %d; toTimeUnit = %d)", fromTimeUnit, toTimeUnit);
+		return ONE;
 	}
 }
 
@@ -168,27 +169,33 @@ TimeSpan Timer::GetTimeSpan() const
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
 	if (elapsedTimeInSeconds > Time::ONE)
 	{
-		return TimeSpan(elapsedTimeInSeconds, TimeUnit::SECOND);
+		return TimeSpan(elapsedTimeInSeconds, SECOND);
 	}
 	else if (elapsedTimeInSeconds > Time::ONE_OVER_THOUSAND)
 	{
-		return TimeSpan(elapsedTimeInSeconds * Time::ONE_THOUSAND, TimeUnit::MILLISECOND);
+		return TimeSpan(elapsedTimeInSeconds * Time::ONE_THOUSAND, MILLISECOND);
 	}
 	else if (elapsedTimeInSeconds > Time::ONE_OVER_MILLION)
 	{
-		return TimeSpan(elapsedTimeInSeconds * Time::ONE_MILLION, TimeUnit::MICROSECOND);
+		return TimeSpan(elapsedTimeInSeconds * Time::ONE_MILLION, MICROSECOND);
 	}
-	return TimeSpan(elapsedTimeInSeconds * Time::ONE_BILLION, TimeUnit::NANOSECOND);
+	return TimeSpan(elapsedTimeInSeconds * Time::ONE_BILLION, NANOSECOND);
 }
 
 TimeSpan Timer::GetTimeSpan(TimeUnit timeUnit) const
 {
 	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	return TimeSpan(elapsedTimeInSeconds * Time::TimeUnitConvertingFactor, timeUnit);
+	//INFO_LOG("Elapsed time in seconds = %.2f", elapsedTimeInSeconds);
+	return TimeSpan(elapsedTimeInSeconds * Time::TimeUnitConvertingFactor(SECOND, timeUnit), timeUnit);
 }
 
 void Timer::Start()
 {
+	if (m_isRunning)
+	{
+		WARNING_LOG("Starting the timer which is already running");
+		return;
+	}
 	QueryPerformanceCounter(&m_startTime);
 	m_isRunning = true;
 }

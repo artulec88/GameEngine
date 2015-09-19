@@ -136,8 +136,10 @@ void Mesh::Initialize()
 		meshData->AddReference();
 		return;
 	}
-
-	START_TIMER(timer);
+#ifdef MEASURE_TIME_ENABLED
+	Utility::Timing::Timer timer;
+	timer.Start();
+#endif
 	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
@@ -207,9 +209,9 @@ void Mesh::Initialize()
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
 
-	STOP_TIMER(timer);
 #ifdef MEASURE_TIME_ENABLED
-	INFO_LOG("Loading model took %s", timer.GetTimeSpan().ToString());
+	timer.Stop();
+	INFO_LOG("Loading model took %s", timer.GetTimeSpan().ToString().c_str());
 #endif
 }
 
@@ -413,7 +415,10 @@ TerrainMesh::~TerrainMesh(void)
  */
 Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 {
-	START_TIMER(timer);
+#ifdef MEASURE_TIME_ENABLED
+	Utility::Timing::Timer timer;
+	timer.Start();
+#endif
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
 	{
@@ -512,9 +517,9 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
-	STOP_TIMER(timer);
 #ifdef MEASURE_TIME_ENABLED
-	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Timing::MICROSECOND).ToString()));
+	timer.Stop();
+	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Timing::MICROSECOND).ToString());
 #endif
 
 	return y;

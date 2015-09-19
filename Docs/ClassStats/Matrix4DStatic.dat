@@ -1,0 +1,9 @@
+"Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
+Identity	8	8	1.#INF	1.#INF	1.#INF
+PerspectiveProjection	6	6	1.#INF	1.#INF	1.#INF
+OrtographicProjection	3	3	1.#INF	1.#INF	1.#INF
+Translation	5578	5578	1.#INF	1.#INF	1.#INF
+Scale	2729	2729	1.#INF	1.#INF	1.#INF
+RotationEuler	132175	132175	1.#INF	1.#INF	1.#INF
+RotationFromVectors	5591	5585	1.#INF	-1.#IND	1.#INF
+RotationFromDirection	6	6	1.#INF	1.#INF	1.#INF

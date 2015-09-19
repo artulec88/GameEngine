@@ -86,6 +86,7 @@
     <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameStats.h" />
     <ClInclude Include="IntroGameState.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />

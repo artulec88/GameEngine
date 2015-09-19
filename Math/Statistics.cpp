@@ -179,7 +179,8 @@ MethodStats::MethodStats(void) :
 #endif
 	m_invocationsCount(0),
 	m_isProfiling(false),
-	m_isNestedWithinAnotherProfiledMethod(false)
+	m_isNestedWithinAnotherProfiledMethod(false),
+	m_timer()
 {
 	DEBUG_LOG("MethodStats constructor");
 }
@@ -262,16 +263,21 @@ void MethodStats::StartProfiling(bool isNestedWithinAnotherProfiledMethod)
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	QueryPerformanceCounter(&m_startTimer);
+	if (m_timer.IsRunning())
+	{
+		ERROR_LOG("Timer already running");
+	}
+	m_timer.Start();
 }
 
 void MethodStats::StopProfiling()
 {
-	static const Math::Real NUMBER_OF_MICROSECONDS_IN_SECOND = static_cast<Math::Real>(1000000.0f);
-	LARGE_INTEGER endTimer;
-	QueryPerformanceCounter(&endTimer);
-	LARGE_INTEGER frequency = Utility::Timing::Timer::GetFrequency();
-	Math::Real elapsedTime = static_cast<Math::Real>(NUMBER_OF_MICROSECONDS_IN_SECOND * (endTimer.QuadPart - m_startTimer.QuadPart)) / frequency.QuadPart; // in [us]
+	if (!m_timer.IsRunning())
+	{
+		ERROR_LOG("Timer already stopped");
+	}
+	m_timer.Stop();
+	Math::Real elapsedTime = m_timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
 	//DEBUG_LOG("Stopped profiling the method. %.3f [us] has passed.", elapsedTime);
 	Push(elapsedTime);
 	m_isProfiling = false;

@@ -22,3 +22,4 @@
 22.	Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 23.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.
 24.	Add Renderer::m_skyboxAngleStep to the tweak bars.
+25.	Closing the game with the "X" button in the right top corner of the window during the loading phase of the game causes an exception (only probably, needs to be checked!)

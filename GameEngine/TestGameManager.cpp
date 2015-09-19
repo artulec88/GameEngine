@@ -48,7 +48,7 @@ TestGameManager::TestGameManager() :
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {

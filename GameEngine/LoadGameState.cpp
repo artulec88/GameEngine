@@ -13,7 +13,7 @@ LoadGameState::LoadGameState(void) :
 	Rendering::GameState(),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("LoadGameState"))
 #endif
 {

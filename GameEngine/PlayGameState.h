@@ -8,6 +8,10 @@
 #include "Rendering\IRenderable.h"
 #include "Rendering\IUpdateable.h"
 #include "Math\Math.h"
+#include "GameStats.h"
+#ifdef CALCULATE_GAME_STATS
+#include "Math\IStatisticsStorage.h"
+#endif
 
 namespace Game
 {
@@ -57,7 +61,7 @@ public:
 private:
 	//Rendering::GameNode& m_rootGameNode;
 	bool m_isMouseLocked;
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

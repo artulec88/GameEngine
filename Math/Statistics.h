@@ -7,28 +7,26 @@
 #include <string>
 #include <fstream>
 #include "Utility\ILogger.h"
+#include "Utility\Time.h"
+
+//#define CALCULATE_STATS
+//#ifdef CALCULATE_STATS
+#define START_PROFILING_STATIC do { s_classStats.StartProfiling(__FUNCTION__); } while (0)
+#define STOP_PROFILING_STATIC do { s_classStats.StopProfiling(__FUNCTION__); } while (0)
+#define START_PROFILING do { m_classStats.StartProfiling(__FUNCTION__); } while (0)
+#define STOP_PROFILING do { m_classStats.StopProfiling(__FUNCTION__); } while (0)
+//#else
+//#define START_PROFILING_STATIC
+//#define STOP_PROFILING_STATIC
+//#define START_PROFILING
+//#define STOP_PROFILING
+//#endif
 
 namespace Math { namespace Statistics
 {
 extern const int STATS_SAMPLES_FIRST_LEVEL;
 extern const int STATS_SAMPLES_SECOND_LEVEL;
 extern const int STATS_SAMPLES_THIRD_LEVEL;
-//enum TimeUnit
-//{
-//	SECONDS = 0,
-//	MILISECONDS = 1,
-//	MICROSECONDS = 2,
-//	NANOSECONDS = 3
-//};
-
-//const char* timeUnitStr[] = 
-//{
-//	"[s]",
-//	"[ms]",
-//	"[us]",
-//	"[ns]",
-//	NULL
-//};
 
 enum MATH_API StatsID
 {
@@ -112,7 +110,7 @@ private:
 	int m_invocationsCount;
 	bool m_isProfiling;
 	bool m_isNestedWithinAnotherProfiledMethod;
-	LARGE_INTEGER m_startTimer;
+	Utility::Timing::Timer m_timer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MethodStats */
 

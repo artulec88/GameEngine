@@ -187,7 +187,7 @@ Matrix4D::~Matrix4D()
 	//{
 	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
 	//}
-	CHECK_CONDITION((*this) == Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
+	CHECK_CONDITION(rot == Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING_STATIC;
 	return rot;
 }

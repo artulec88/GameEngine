@@ -8,17 +8,17 @@
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
-#include "Math\Statistics.h"
 
 #include "Utility\Time.h"
 
 #include <string>
 
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
+#include "Math\Statistics.h"
 #include <vector>
 #endif
 
-#undef STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
+#undef STOP_TIMER
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) StopTimer(timerID, countStats, minMaxTime, timeSum); } while (0)
 
 // TODO: Consider replacing some of even all of below #defines with CoreEngine class member variables.
@@ -39,7 +39,7 @@ namespace Rendering
 
 class RENDERING_API CoreEngine
 {
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 #define MIN_MAX_STATS_COUNT 3
 struct MinMaxTime
 {
@@ -106,16 +106,19 @@ private:
 	 */
 	void CalculateSunElevationAndAzimuth();
 
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 public:
 	void StartSamplingSpf() const { m_isSamplingSpf = true; }
 	void StopSamplingSpf() const { m_isSamplingSpf = false; }
 private:
-	void StopTimer(Timing::Timer& timer, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
+	void StopTimer(Utility::Timing::Timer& timer, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
 	{
-		timer.Stop();
+		if (timer.IsRunning())
+		{
+			timer.Stop();
+		}
 		++countStats;
-		float elapsedTime = timer.GetTimeSpan(Timing::MICROSECOND).GetValue();
+		float elapsedTime = timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
 		minMaxTime.ProcessTime(elapsedTime);
 		timeSum += elapsedTime;
 	}
@@ -150,7 +153,7 @@ protected:
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
 
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;
 	MinMaxTime m_minMaxTime1;
 	double m_timeSum1;
@@ -175,7 +178,7 @@ protected:
 	MinMaxTime m_minMaxTime3;
 	double m_timeSum3;
 
-	LARGE_INTEGER m_coreEngineStartTimer, m_coreEngineStopTimer, m_frequency;
+	Utility::Timing::Timer m_timer;
 
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;

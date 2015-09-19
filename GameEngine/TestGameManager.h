@@ -7,6 +7,11 @@
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>
 
+#include "GameStats.h"
+#ifdef CALCULATE_GAME_STATS
+#include "Math\IStatisticsStorage.h"
+#endif
+
 namespace Game
 {
 
@@ -70,7 +75,7 @@ protected:
 	Rendering::GameNode** cameraNodes;
 	bool m_heightMapCalculationEnabled;
 	//Rendering::GameNode* castleNode;
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 

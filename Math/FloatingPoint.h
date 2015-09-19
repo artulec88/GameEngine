@@ -1,8 +1,10 @@
 #pragma once
 #include <limits>
 #include "Math.h"
+#ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
+#endif
 
 namespace Math
 {
@@ -166,16 +168,24 @@ private:
 	FloatingPointUnion u_;
 }; /* end class FloatingPoint */
 
+//static int oneTempCounter = 0;
+//static int twoTempCounter = 1;
+
 inline bool AlmostEqual(Real value1, Real value2)
 {
+	//if ((oneTempCounter % 10000 == 0) || (twoTempCounter % 10000 == 0))
+	//{
+	//	CRITICAL_LOG("oneTempCounter = %d, twoTempCounter = %d", oneTempCounter, twoTempCounter);
+	//}
 	if (abs(value1 - value2) > EPSILON)
 	{
-		// TODO: Count how often we get here.
+		//++oneTempCounter;
 		return false;
 	}
 	// TODO: Count how often we get here.
 	FloatingPoint<Real> fpValue1(value1);
 	FloatingPoint<Real> fpValue2(value2);
+	//++twoTempCounter;
 	return (fpValue1.AlmostEqual(fpValue2));
 }
 

@@ -160,7 +160,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 
 void TextureData::Bind(int textureIndex) const
 {
-	CHECK_CONDITION_RETURN(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Error, "Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
+	CHECK_CONDITION_RETURN_VOID(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Error, "Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
 	glBindTexture(m_textureTarget, m_textureID[textureIndex]);
 }
 
@@ -324,7 +324,7 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	m_textureData(NULL),
 	m_fileName()
 {
-	CHECK_CONDITION_RETURN((width > 0) && (height > 0), Utility::Error, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
+	CHECK_CONDITION((width > 0) && (height > 0), Utility::Error, "Cannot initialize texture. Passed texture size is incorrect (width=%d; height=%d)", width, height);
 	if (data == NULL)
 	{
 		DEBUG_LOG("Cannot initialize texture. Passed texture data is NULL");

@@ -1,4 +1,3 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Entered	1	1	1210.01	1210.01	1210.01
-Render	11078	11078	4.64331e+006	4.64331e+006	419.147
-Update	74417	74417	157009	157009	2.10985
+Entered	1	1	1.#INF	1.#INF	1.#INF
+Update	1	1	1.#INF	1.#INF	1.#INF

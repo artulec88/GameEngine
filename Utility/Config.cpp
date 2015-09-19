@@ -76,7 +76,7 @@ Config::Config() : isInitialized(false)
 std::string Config::GetArg(const std::string& name, const std::string& defValue) const
 {
 	ASSERT(isInitialized);
-	CHECK_CONDITION_ERROR_EXIT_ALWAYS(isInitialized, "Cannot get the config value for the argument \"%s\". The Config instance is not initialized.", name.c_str());
+	CHECK_CONDITION_EXIT_ALWAYS(isInitialized, Utility::Error, "Cannot get the config value for the argument \"%s\". The Config instance is not initialized.", name.c_str());
 
 	ValuesMap::const_iterator valueMapIt = cfgValues.find(name);
 	if (valueMapIt == cfgValues.end())

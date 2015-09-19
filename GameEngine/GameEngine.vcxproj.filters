@@ -62,5 +62,8 @@
     <ClInclude Include="tinythread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,8 +17,10 @@
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
+#ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
+#endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 #include "AntTweakBar\include\AntTweakBar.h"
@@ -51,7 +53,7 @@ private:
 	Renderer(const Renderer& renderer) :
 		m_altCamera(Math::Matrix4D::Identity(),
 		Transform())
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 		,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 	{
@@ -281,7 +283,7 @@ private:
 	TwType m_cameraType;
 #endif
 
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

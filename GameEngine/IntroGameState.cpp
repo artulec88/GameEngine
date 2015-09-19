@@ -8,7 +8,7 @@ using namespace Rendering;
 
 IntroGameState::IntroGameState(void) :
 	GameState()
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
 #endif
 {

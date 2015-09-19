@@ -63,7 +63,7 @@ public:
 
 	void CalculateParentTransformation() const
 	{
-		CHECK_CONDITION_RETURN(parentTransform != NULL, Utility::Error, "Parent transform is NULL.");
+		CHECK_CONDITION_RETURN_VOID(parentTransform != NULL, Utility::Error, "Parent transform is NULL.");
 		parentTransformation = parentTransform->GetTransformation();
 	}
 	/**

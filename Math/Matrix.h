@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Angle.h"
 #include "Math.h"
+#include "Angle.h"
+#include "Vector.h"
+#ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
-#include "Vector.h"
+#endif
 
 //#include "Utility\ISerializable.h"
 #include "Utility\ILogger.h"

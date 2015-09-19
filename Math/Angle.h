@@ -3,8 +3,10 @@
 #include "Math.h"
 //#include "Utility\ISerializable.h"
 #include <string>
+#ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
+#endif
 
 namespace Math
 {

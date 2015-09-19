@@ -22,7 +22,7 @@ using namespace std;
 /**
  * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
  */
-#ifndef CALCULATE_STATS
+#ifndef CALCULATE_RENDERING_STATS
 #undef START_TIMER
 #undef RESET_TIMER
 #undef STOP_TIMER
@@ -56,7 +56,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	DAYS_PER_YEAR(365),
 	m_dayNumber(GET_CONFIG_VALUE("startingDayNumber", 172)),
 	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
 	m_countStats2(0),
@@ -69,6 +69,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_timeSum2_3(REAL_ZERO),
 	m_countStats3(0),
 	m_timeSum3(REAL_ZERO),
+	m_timer(),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
 	m_isSamplingSpf(false),
@@ -81,9 +82,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
 {
 	NOTICE_LOG("Main application construction started");
-#ifdef CALCULATE_STATS
-	QueryPerformanceFrequency(&m_frequency); // get ticks per second;
-	QueryPerformanceCounter(&m_coreEngineStartTimer);
+#ifdef CALCULATE_RENDERING_STATS
+	m_timer.Start();
 #endif
 	START_PROFILING;
 
@@ -117,7 +117,7 @@ CoreEngine::~CoreEngine(void)
 	DEBUG_LOG("Core engine destruction started");
 
 	/* ==================== Printing stats begin ==================== */
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	INFO_LOG("The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
 	INFO_LOG("The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
 	INFO_LOG("\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
@@ -133,9 +133,8 @@ CoreEngine::~CoreEngine(void)
 	INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
 	//INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
 
-	QueryPerformanceCounter(&m_coreEngineStopTimer);
-	Math::Real totalElapsedTime = static_cast<Math::Real>((m_coreEngineStopTimer.QuadPart - m_coreEngineStartTimer.QuadPart)) / m_frequency.QuadPart; // in [s]
-	STATS_STORAGE.PrintReport(totalElapsedTime);
+	m_timer.Stop();
+	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND).GetValue());
 #endif
 	/* ==================== Printing stats end ==================== */	
 
@@ -172,7 +171,7 @@ void CoreEngine::Start()
 	}
 	NOTICE_LOG("The core engine starts");
 	
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 	m_minMaxTime1.Init();
 	m_minMaxTime2.Init();
 	m_minMaxTime2_1.Init();
@@ -238,8 +237,8 @@ void CoreEngine::Run()
 	Math::Real previousTime = GetTime();
 	int inGameHours, inGameMinutes, inGameSeconds;
 
-#ifdef CALCULATE_STATS
-	LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
+#ifdef CALCULATE_RENDERING_STATS
+	//LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 #endif
 	while (m_isRunning)
 	{
@@ -275,7 +274,7 @@ void CoreEngine::Run()
 		{
 			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 			if (m_isSamplingSpf)
 			{
 				m_stats.Push(Math::Statistics::SPF, spf);
@@ -382,7 +381,7 @@ void CoreEngine::Run()
 			TwDraw();
 #endif
 			m_renderer->SwapBuffers();
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 			++m_renderingRequiredCount;
 #endif
 		}
@@ -392,7 +391,7 @@ void CoreEngine::Run()
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			//this_thread::sleep_for(chrono::milliseconds(100));
 			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 			++m_renderingNotRequiredCount;
 #endif
 		}
@@ -609,7 +608,7 @@ void CoreEngine::InitializeTweakBars()
 }
 #endif
 
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_RENDERING_STATS
 void CoreEngine::MinMaxTime::Init()
 {
 	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
@@ -666,7 +665,7 @@ std::string CoreEngine::MinMaxTime::ToString()
 }
 #endif
 
-//#ifdef CALCULATE_STATS
+//#ifdef CALCULATE_RENDERING_STATS
 //Math::Real CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
 //{
 //	if (m_secondsPerFrameStats.empty())

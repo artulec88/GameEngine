@@ -102,17 +102,17 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 
 void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
-	Math::Real x = REAL_ZERO;
+	int x = 0;
 	switch (alignment)
 	{
 	case Text::LEFT:
-		x = REAL_ZERO;
+		x = 0;
 		break;
 	case Text::RIGHT:
-		x = m_windowWidth - str.size() * fontSize;
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
 		break;
 	case Text::CENTER:
-		x = (m_windowWidth - str.size() * fontSize) / 2;
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
 		break;
 	default:
 		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);

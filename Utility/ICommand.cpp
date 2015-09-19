@@ -26,7 +26,7 @@ using namespace Utility;
 
 /* static */ void ICommand::DeleteCommand()
 {
-	CHECK_CONDITION_RETURN(ICommand::command != NULL, Utility::Warning, "Trying to delete command instance when it is already deallocated.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(ICommand::command != NULL, Utility::Warning, "Trying to delete command instance when it is already deallocated.");
 	DEBUG_LOG("Deallocating command instance.");
 	SAFE_DELETE(ICommand::command);
 }

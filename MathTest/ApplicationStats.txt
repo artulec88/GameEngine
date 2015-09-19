@@ -188,3 +188,263 @@
 [Info] [2015-08-24 21:22:08] Statistics.cpp(260) : Class: "Matrix4DStatic"
 [Info] [2015-08-24 21:22:08] Statistics.cpp(279) : 	Total time: 0.000 [us]
 [Info] [2015-08-24 21:22:08] Statistics.cpp(281) : 	Application usage: 0.0%
+[Info] [2015-09-19 14:12:22] IStatisticsStorage.cpp(59) : Total elapsed time: 1.#IO [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(355) : Class: "StatsTest1"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 5
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 150
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method3"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 4
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::NestedMethod4"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 66668
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(355) : Class: "StatsTest2"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method1"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 2
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method2"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 5000
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method3"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 208
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::NestedMethod4"
+[Info] [2015-09-19 14:12:22] Statistics.cpp(372) : 		Invocations count: 41640
+[Info] [2015-09-19 14:12:22] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:12:22] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:12:22] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] IStatisticsStorage.cpp(59) : Total elapsed time: 1.#IO [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(355) : Class: "StatsTest1"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 5
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 150
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method3"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 4
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::NestedMethod4"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 66668
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(355) : Class: "StatsTest2"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method1"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 2
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method2"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 5000
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method3"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 208
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:23:42] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::NestedMethod4"
+[Info] [2015-09-19 14:23:42] Statistics.cpp(372) : 		Invocations count: 41640
+[Info] [2015-09-19 14:23:42] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:23:42] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:23:43] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] IStatisticsStorage.cpp(59) : Total elapsed time: 1.#IO [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(355) : Class: "StatsTest1"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 5
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 150
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method3"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 4
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::NestedMethod4"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 66668
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(355) : Class: "StatsTest2"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method1"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 2
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method2"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 5000
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method3"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 208
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::NestedMethod4"
+[Info] [2015-09-19 14:24:14] Statistics.cpp(372) : 		Invocations count: 41640
+[Info] [2015-09-19 14:24:14] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:24:14] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:24:14] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] IStatisticsStorage.cpp(59) : Total elapsed time: 1.#IO [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(355) : Class: "StatsTest1"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method1"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 5
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method2"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 150
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::Method3"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 4
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest1::NestedMethod4"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 66668
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(355) : Class: "StatsTest2"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 	Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 	Total time excluding nested calls: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(367) : 	Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method1"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 2
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method2"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 5000
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::Method3"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 208
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(371) : 	Method: "MathTest::StatsTest2::NestedMethod4"
+[Info] [2015-09-19 14:25:25] Statistics.cpp(372) : 		Invocations count: 41640
+[Info] [2015-09-19 14:25:25] Statistics.cpp(431) : 		Total time: -1.#J [us]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Total time including nested calls: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(422) : 		Average time: 1.#J [s]
+[Info] [2015-09-19 14:25:25] Statistics.cpp(382) : 		Class usage: -1.$%
+[Info] [2015-09-19 14:25:25] Statistics.cpp(383) : 		Application usage: -1.$%

@@ -8,7 +8,7 @@ using namespace Game;
 PlayMenuGameState::PlayMenuGameState(void) :
 	Rendering::GameState(),
 	m_currentMenuEntry(NULL)
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
 #endif
 {

@@ -8,6 +8,10 @@
 #include "Rendering\GameNode.h"
 #include "Math\Math.h"
 #include "tinythread.h"
+#include "GameStats.h"
+#ifdef CALCULATE_GAME_STATS
+#include "Math\IStatisticsStorage.h"
+#endif
 
 namespace Game
 {
@@ -55,7 +59,7 @@ public:
 private:
 	Math::Real m_loadingProgress;
 	tthread::thread* m_loadingThread;
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	mutable Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

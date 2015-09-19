@@ -10,7 +10,7 @@ using namespace Rendering;
 MenuGameState::MenuGameState(void) :
 	GameState(),
 	m_currentMenuEntry(NULL)
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
 {

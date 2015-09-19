@@ -58,7 +58,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	timer.Stop();
-	Timing::TimeSpan timeSpan = timer.getTimeSpan(timeUnit);
+	Timing::TimeSpan timeSpan = timer.GetTimeSpan(timeUnit);
 	timeSpan /= NUMBER_OF_ITERATIONS;
 	timeSpan.AdjustUnitToValue();
 	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), timeSpan.ToString().c_str());
@@ -765,7 +765,7 @@ void StatsTest()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND).GetValue(););
+	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND).GetValue());
 }
 
 int main (int argc, char* argv[])

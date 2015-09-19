@@ -367,9 +367,9 @@ void Vector3D::Threshold(Real maxLength)
 	Real length = Length();
 	if (length > maxLength)
 	{
-		CHECK_CONDITION_RETURN(!AlmostEqual(maxLength, REAL_ZERO), *this, Utility::Error, "Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID(!AlmostEqual(maxLength, REAL_ZERO), Utility::Error, "Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		Real quotient = length / maxLength;
-		CHECK_CONDITION_RETURN(!AlmostEqual(quotient, REAL_ZERO), *this, Utility::Error, "Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID(!AlmostEqual(quotient, REAL_ZERO), Utility::Error, "Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		m_x /= quotient;
 		m_y /= quotient;
 		m_z /= quotient;

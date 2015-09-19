@@ -15,7 +15,7 @@ using namespace Rendering;
 PlayGameState::PlayGameState(void) :
 	GameState(),
 	m_isMouseLocked(false)
-#ifdef CALCULATE_STATS
+#ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
 {
@@ -90,12 +90,12 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 void PlayGameState::MousePosEvent(double xPos, double yPos)
 {
 	START_PROFILING;
-	// TODO: Mouse pos event should be handled by the game state manager
+	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
 	if (!m_isMouseLocked)
 	{
+		STOP_PROFILING;
 		return;
 	}
-	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
 
 	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
 	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
