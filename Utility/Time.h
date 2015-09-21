@@ -119,11 +119,11 @@ namespace Utility { namespace Timing
 		void Stop();
 		bool IsRunning() const { return m_isRunning; }
 	private:
-		float CalculateElapsedTimeInSeconds() const
+		float CalculateElapsedTimeInMilliseconds() const
 		{
 			//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
 			//INFO_LOG("diff = %d, frequency = %d", diff, GetFrequency().QuadPart);
-			return static_cast<float>(m_stopTime.QuadPart - m_startTime.QuadPart) / GetFrequency().QuadPart; // in [s]
+			return static_cast<float>(Time::ONE_THOUSAND * (m_stopTime.QuadPart - m_startTime.QuadPart)) / GetFrequency().QuadPart; // in [s]
 		}
 	/* ==================== Non-static member functions end ==================== */
 

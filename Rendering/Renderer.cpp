@@ -209,17 +209,19 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
-	m_waterRefractionTexture = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
-			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-	m_waterReflectionTexture = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
-			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "waterShader"));
+	//m_waterRefractionTexture = new Texture(64, 64, NULL, GL_TEXTURE_2D, GL_LINEAR,
+	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+	//m_waterReflectionTexture = new Texture(64, 64, NULL, GL_TEXTURE_2D, GL_LINEAR,
+	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+	//m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "waterShader"));
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+	SetVector3D("clipPlaneNormal", m_waterRefractionClippingPlaneNormal);
+	SetReal("clipPlaneOriginDistance", m_waterRefractionClippingPlaneOriginDistance);
 #endif
 
 	/* ==================== Creating a "Main menu camera" begin ==================== */
@@ -490,6 +492,8 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+	SetVector3D("clipPlaneNormal", m_waterRefractionClippingPlaneNormal);
+	SetReal("clipPlaneOriginDistance", m_waterRefractionClippingPlaneOriginDistance);
 	CheckCameraIndexChange();
 #endif
 	GetTexture("displayTexture")->BindAsRenderTarget();
@@ -1042,6 +1046,10 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_COLOR3F, &m_waterRefractionClippingPlaneNormal, " label='Normal' group='Refraction' ");
+	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlaneOriginDistance, " label='Origin distance' group='Refraction' ");
+	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_COLOR3F, &m_waterReflectionClippingPlaneNormal, " label='Normal' group='Reflection' ");
+	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlaneOriginDistance, " label='Origin distance' group='Reflection' ");
 
 	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup

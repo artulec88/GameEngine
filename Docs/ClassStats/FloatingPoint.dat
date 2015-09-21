@@ -1,2 +1,2 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-AlmostEqual	4399266	4399266	1.#INF	1.#INF	1.#INF
+AlmostEqual	4177206	4177206	1.64773e+007	1.64773e+007	3.94457

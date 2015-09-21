@@ -166,27 +166,27 @@ Timer::~Timer()
 
 TimeSpan Timer::GetTimeSpan() const
 {
-	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	if (elapsedTimeInSeconds > Time::ONE)
+	float elapsedTimeInMillieconds = CalculateElapsedTimeInMilliseconds();
+	if (elapsedTimeInMillieconds > Time::ONE_THOUSAND)
 	{
-		return TimeSpan(elapsedTimeInSeconds, SECOND);
+		return TimeSpan(elapsedTimeInMillieconds * Time::ONE_OVER_THOUSAND, SECOND);
 	}
-	else if (elapsedTimeInSeconds > Time::ONE_OVER_THOUSAND)
+	else if (elapsedTimeInMillieconds > Time::ONE)
 	{
-		return TimeSpan(elapsedTimeInSeconds * Time::ONE_THOUSAND, MILLISECOND);
+		return TimeSpan(elapsedTimeInMillieconds, MILLISECOND);
 	}
-	else if (elapsedTimeInSeconds > Time::ONE_OVER_MILLION)
+	else if (elapsedTimeInMillieconds > Time::ONE_OVER_THOUSAND)
 	{
-		return TimeSpan(elapsedTimeInSeconds * Time::ONE_MILLION, MICROSECOND);
+		return TimeSpan(elapsedTimeInMillieconds * Time::ONE_THOUSAND, MICROSECOND);
 	}
-	return TimeSpan(elapsedTimeInSeconds * Time::ONE_BILLION, NANOSECOND);
+	return TimeSpan(elapsedTimeInMillieconds * Time::ONE_MILLION, NANOSECOND);
 }
 
 TimeSpan Timer::GetTimeSpan(TimeUnit timeUnit) const
 {
-	float elapsedTimeInSeconds = CalculateElapsedTimeInSeconds();
-	//INFO_LOG("Elapsed time in seconds = %.2f", elapsedTimeInSeconds);
-	return TimeSpan(elapsedTimeInSeconds * Time::TimeUnitConvertingFactor(SECOND, timeUnit), timeUnit);
+	float elapsedTimeInMilliseconds = CalculateElapsedTimeInMilliseconds();
+	//INFO_LOG("Elapsed time in seconds = %.2f", elapsedTimeInMilliseconds);
+	return TimeSpan(elapsedTimeInMilliseconds * Time::TimeUnitConvertingFactor(MILLISECOND, timeUnit), timeUnit);
 }
 
 void Timer::Start()
