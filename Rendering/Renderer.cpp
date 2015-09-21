@@ -96,7 +96,16 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_samplerMap(),
 	m_lightMatrix(Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
 	m_fontTexture(NULL),
-	m_textRenderer(NULL)
+	m_textRenderer(NULL),
+	m_waterRefractionClippingPlaneNormal(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO)),
+	m_waterReflectionClippingPlaneNormal(GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO)),
+	m_waterRefractionClippingPlaneOriginDistance(GET_CONFIG_VALUE("waterRefractionClippingPlaneOriginDistance", 10.0f)),
+	m_waterReflectionClippingPlaneOriginDistance(GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
+	m_waterRefractionTexture(NULL),
+	m_waterReflectionTexture(NULL),
+	m_waterShader(NULL)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -200,6 +209,12 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
+	m_waterRefractionTexture = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+	m_waterReflectionTexture = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "waterShader"));
+
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
@@ -253,6 +268,10 @@ Renderer::~Renderer(void)
 	//SetTexture("fontTexture", NULL);
 	//SAFE_DELETE(m_fontTexture);
 	SAFE_DELETE(m_textRenderer);
+
+	SAFE_DELETE(m_waterRefractionTexture);
+	SAFE_DELETE(m_waterReflectionTexture);
+	SAFE_DELETE(m_waterShader);
 
 	for (std::map<FogEffect::Fog, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
 		ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)

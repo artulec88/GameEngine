@@ -269,6 +269,14 @@ private:
 	Texture* m_fontTexture;
 	TextRenderer* m_textRenderer;
 
+	Math::Vector3D m_waterRefractionClippingPlaneNormal;
+	Math::Vector3D m_waterReflectionClippingPlaneNormal;
+	float m_waterRefractionClippingPlaneOriginDistance;
+	float m_waterReflectionClippingPlaneOriginDistance;
+	Texture* m_waterRefractionTexture;
+	Texture* m_waterReflectionTexture;
+	Shader* m_waterShader;
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int m_cameraCountMinusOne;
 //#ifdef CARTOON_SHADING_ENABLED // cartoon shading is included in the Lighting.glh file (probably commented out)

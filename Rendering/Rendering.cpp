@@ -108,6 +108,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	//glEnable(GL_TEXTURE_2D);
 	glEnable(GL_TEXTURE_CUBE_MAP);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
+	glEnable(GL_CLIP_PLANE0); // Enables plane clipping
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	INFO_LOG("Initializing graphics finished successfully");

@@ -205,7 +205,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 			glGenFramebuffers(1, &m_framebuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 		}
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureID[0], 0); // associate framebuffer with texture
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureID[0], 0 /* which mipmap level of the texture we want to use */); // associate framebuffer with texture
 	}
 
 	if (m_framebuffer == 0)
