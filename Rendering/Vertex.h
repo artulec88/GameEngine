@@ -6,7 +6,9 @@
 #include "Math\Vector.h"
 /* MATH end */
 
+#ifdef _DEBUG
 #include <string>
+#endif
 
 namespace Rendering
 {
@@ -28,7 +30,9 @@ struct RENDERING_API Vertex
 	bool operator==(const Vertex& vertex) const;
 	bool operator!=(const Vertex& vertex) const;
 
+#ifdef _DEBUG
 	std::string ToString() const;
+#endif
 }; /* end struct Vertex */
 
 } /* end namespace Rendering */

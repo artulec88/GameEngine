@@ -6,8 +6,6 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "TextRenderer.h"
-//#include "ForwardAmbientShader.h"
-//#include "ForwardDirectionalShader.h"
 #include "ShadowInfo.h"
 #include "MeshRenderer.h"
 #include "Utility\IConfig.h"
@@ -1046,9 +1044,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
-	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_COLOR3F, &m_waterRefractionClippingPlaneNormal, " label='Normal' group='Refraction' ");
+	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlaneNormal, " label='Normal' group='Refraction' ");
 	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlaneOriginDistance, " label='Origin distance' group='Refraction' ");
-	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_COLOR3F, &m_waterReflectionClippingPlaneNormal, " label='Normal' group='Reflection' ");
+	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlaneNormal, " label='Normal' group='Reflection' ");
 	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlaneOriginDistance, " label='Origin distance' group='Reflection' ");
 
 	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);

@@ -7,9 +7,9 @@ using namespace Rendering;
 using namespace Math;
 
 Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real scale /* = REAL_ONE */) :
-	pos(pos),
-	rotation(rot),
-	scale(scale),
+	m_pos(pos),
+	m_rotation(rot),
+	m_scale(scale),
 	parentTransform(NULL),
 	isChanged(true)
 {
@@ -17,7 +17,7 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REA
 
 Transform::~Transform()
 {
-	//DEBUG_LOG("Transform is being destructed");
+	//DEBUG_LOG("Transform is being destroyed");
 }
 
 //bool Transform::IsHierarchyChanged() const
@@ -47,10 +47,10 @@ Matrix4D Transform::GetTransformation() const
 		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
-		Matrix4D translationMatrix = Matrix4D::Translation(pos.GetX(), pos.GetY(), pos.GetZ());
-		Matrix4D scaleMatrix = Matrix4D::Scale(scale, scale, scale);
+		Matrix4D translationMatrix = Matrix4D::Translation(m_pos.GetX(), m_pos.GetY(), m_pos.GetZ());
+		Matrix4D scaleMatrix = Matrix4D::Scale(m_scale, m_scale, m_scale);
 
-		transformation = translationMatrix * rotation.ToRotationMatrix() * scaleMatrix;
+		transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix;
 		isChanged = false;
 	}
 	else /* if (! IsHierarchyChanged()) */
@@ -65,7 +65,7 @@ Matrix4D Transform::GetTransformation() const
 	/**
 	 * Apply TRANSLATION, then ROTATION and SCALING
 	 */
-	if (parentTransform == NULL)
+	if (m_parentTransform == NULL)
 	{
 		return transformation;
 	}
@@ -95,19 +95,19 @@ void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
 void Transform::Rotate(const Quaternion& rot)
 {
 	//DEBUG_LOG("Started...");
-	this->rotation = (rot * this->rotation).Normalized();
+	m_rotation = (rot * m_rotation).Normalized();
 	isChanged = true;
 }
 
 void Transform::LookAt(const Math::Vector3D& point, const Math::Vector3D& up)
 {
-	rotation = GetLookAtRotation(point, up);
+	m_rotation = GetLookAtRotation(point, up);
 	isChanged = true;
 }
 
 Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const Math::Vector3D& up) const
 {
-	return Quaternion(Math::Matrix4D::RotationFromDirection((point - pos).Normalized(), up));
+	return Quaternion(Math::Matrix4D::RotationFromDirection((point - m_pos).Normalized(), up));
 	//Math::Vector3D forward = point - pos;
 	//forward.Normalize();
 	//
@@ -121,4 +121,9 @@ Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const
 
 	//Math::Matrix4D rotMatrix = Math::Matrix4D::RotationFromVectors(forward, u, right);
 	//return Math::Quaternion(rotMatrix);
+}
+
+void Transform::SetParent(Transform* t)
+{
+	m_parentTransform = t;
 }

@@ -7,7 +7,6 @@
 #include "Utility\Config.h"
 
 #include "Math\FloatingPoint.h"
-#include "Math\IStatisticsStorage.h"
 
 #include <ctime>
 #include <iomanip>

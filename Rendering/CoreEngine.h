@@ -15,6 +15,7 @@
 
 #ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
+#include "Math\IStatisticsStorage.h"
 #include <vector>
 #endif
 

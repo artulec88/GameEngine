@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "PointLight.h"
-//#include "CoreEngine.h"
 #include "Shader.h"
 #include "Utility\IConfig.h"
 

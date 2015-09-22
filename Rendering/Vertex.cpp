@@ -1,8 +1,9 @@
 #include "stdafx.h"
 #include "Vertex.h"
-#include "Math\FloatingPoint.h"
 
+#ifdef _DEBUG
 #include <sstream>
+#endif
 
 using namespace Rendering;
 using namespace Math;
@@ -36,6 +37,7 @@ bool Vertex::operator!=(const Vertex& vertex) const
 	return (!((*this) == vertex));
 }
 
+#ifdef _DEBUG
 std::string Vertex::ToString() const
 {
 	std::stringstream ss("");
@@ -50,3 +52,4 @@ std::string Vertex::ToString() const
 
 	return ss.str();
 }
+#endif
