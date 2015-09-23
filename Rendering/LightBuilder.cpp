@@ -40,7 +40,7 @@ void DirectionalLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
 	Math::Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(angleX, angleY, angleZ);
+	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	DEBUG_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
@@ -88,8 +88,7 @@ void DirectionalLightBuilder::BuildPart2()
 	bool isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows
 	if (isShadowingEnabled)
 	{
-		Math::Matrix4D ortoMatrix = Math::Matrix4D::OrtographicProjection(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea);
-		directionalLight->SetShadowInfo(new ShadowInfo(ortoMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
+		directionalLight->SetShadowInfo(new ShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea), true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
 	}
 
 	// Setting additional directional light information
@@ -110,7 +109,7 @@ void DirectionalLightBuilder::BuildMeshRenderer()
 	//Material directionalLightMaterial("directionalLight_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
 
-	m_directionalLightNode->GetTransform().SetScale(0.4f);
+	m_directionalLightNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
 	m_directionalLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\DirectionalLight.obj"),
 		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
@@ -165,7 +164,7 @@ void PointLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + m_pointLightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
 	Math::Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + m_pointLightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + m_pointLightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(angleX, angleY, angleZ);
+	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_pointLightNode->GetTransform().SetRot(rot);
 }
@@ -208,7 +207,7 @@ void PointLightBuilder::BuildMeshRenderer()
 	m_pointLightNode->AddComponent(new MeshRenderer(
 		/* new Mesh("..\\Models\\Bulb\\Bulb.obj") */ new Mesh("..\\Models\\PointLight.obj"),
 		new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
-	m_pointLightNode->GetTransform().SetScale(0.005f);
+	m_pointLightNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
 /* ==================== PointLightBuilder implementation end ==================== */
@@ -255,7 +254,7 @@ void SpotLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + m_spotLightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
 	Math::Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + m_spotLightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + m_spotLightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(angleX, angleY, angleZ);
+	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_spotLightNode->GetTransform().SetRot(rot);
 }
@@ -304,7 +303,7 @@ void SpotLightBuilder::BuildMeshRenderer()
 	m_spotLightNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SpotLight.obj"),
 		new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));
-	m_spotLightNode->GetTransform().SetScale(0.1f);
+	m_spotLightNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
 /* ==================== SpotLightBuilder implementation end ==================== */

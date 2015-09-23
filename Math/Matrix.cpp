@@ -13,6 +13,13 @@ using namespace Utility;
 /* static */ Statistics::ClassStats& Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
 #endif
 
+/* static */ const Matrix4D Matrix4D::IDENTITY_MATRIX;
+
+/* static */ int Matrix4D::Signum(int i, int j)
+{
+	return ((i + j) % 2) ? -1 : 1;
+}
+
 Matrix4D::Matrix4D()
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
@@ -23,6 +30,170 @@ Matrix4D::Matrix4D()
 	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(Real scale)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	SetScaleMatrix(scale, scale, scale);
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
+	m[3][0] = posX;			m[3][1] = posY;			m[3][2] = posZ;			m[3][3] = REAL_ONE;
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(const Vector3D& pos)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
+	m[3][0] = pos.GetX();	m[3][1] = pos.GetY();	m[3][2] = pos.GetZ();	m[3][3] = REAL_ONE;
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	Real xSin = angleX.Sin();
+	Real xCos = angleX.Cos();
+	Real ySin = angleY.Sin();
+	Real yCos = angleY.Cos();
+
+	m[0][0] = yCos;			m[0][1] = REAL_ZERO;	m[0][2] = ySin;			m[0][3] = REAL_ZERO;
+	m[1][0] = -xSin * ySin;	m[1][1] = xCos;			m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
+	m[2][0] = -xCos * ySin;	m[2][1] = -xSin;		m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+
+	CHECK_CONDITION(rot == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING; // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
+	/* ==================== SOLUTION #1 begin ==================== */
+	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
+
+	//Real xSin = angleX.Sin();
+	//Real xCos = angleX.Cos();
+	//Real ySin = angleY.Sin();
+	//Real yCos = angleY.Cos();
+	//Real zSin = angleZ.Sin();
+	//Real zCos = angleZ.Cos();
+
+	//rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
+	//rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
+	//rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
+	//rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
+
+	//rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
+	//rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
+	//rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
+	//rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
+
+	//rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
+	//rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
+	//rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
+	//rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
+
+	//return rotZ * rotY * rotX;
+	/* ==================== SOLUTION #1 end ==================== */
+
+	/* ==================== SOLUTION #2 begin ==================== */
+	Real xSin = angleX.Sin();
+	Real xCos = angleX.Cos();
+	Real ySin = angleY.Sin();
+	Real yCos = angleY.Cos();
+	Real zSin = angleZ.Sin();
+	Real zCos = angleZ.Cos();
+
+	m[0][0] = yCos * zCos;							m[0][1] = yCos * zSin;							m[0][2] = ySin;			m[0][3] = REAL_ZERO;
+	m[1][0] = -xSin * ySin * zCos - xCos * zSin;	m[1][1] = -xSin * ySin * zSin + xCos * zCos;	m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
+	m[2][0] = -xCos * ySin * zCos + xSin * zSin;	m[2][1] = -xCos * ySin * zSin - xSin * zCos;	m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;							m[3][1] = REAL_ZERO;							m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+
+	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
+	//if (rot != matrixToCompare)
+	//{
+	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//}
+	STOP_PROFILING;
+	/* ==================== SOLUTION #2 end ==================== */
+}
+
+Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	SetRotationFromVectors(forward, up, right);
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	Vector3D n = forward.Normalized();
+	Vector3D u = up.Normalized().Cross(n);
+	Vector3D v = n.Cross(u);
+	SetRotationFromVectors(n, v, u);
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	SetPerspectiveProjection(fov, aspect, nearPlane, farPlane);
+	STOP_PROFILING;
+}
+
+Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+
+	const Real width = right - left;
+	const Real height = top - bottom;
+	const Real depth = farPlane - nearPlane;
+	const Real temp = static_cast<Real>(2);
+	
+	m[0][0] = temp / width;				m[0][1] = REAL_ZERO;				m[0][2] = REAL_ZERO;						m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;				m[1][1] = temp / height;			m[1][2] = REAL_ZERO;						m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;				m[2][1] = REAL_ZERO;				m[2][2] = -temp / depth;					m[2][3] = REAL_ZERO;
+	m[3][0] = -(right + left) / width;	m[3][1] = -(top + bottom) / height;	m[3][2] = -(farPlane + nearPlane) / depth;	m[3][3] = REAL_ONE;
 	STOP_PROFILING;
 }
 
@@ -67,267 +238,6 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 
 Matrix4D::~Matrix4D()
 {
-}
-
-/* static */ Matrix4D Matrix4D::Identity()
-{
-	START_PROFILING_STATIC;
-	Matrix4D matrix;
-	
-	matrix.m[0][0] = REAL_ONE;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = REAL_ONE;	matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = REAL_ONE;	matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
-	
-	CHECK_CONDITION(matrix.IsIdentity(), Utility::Error, "The identity matrix is not in fact an identity matrix.");
-	
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::PerspectiveProjection(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
-{
-	START_PROFILING_STATIC;
-	// CHECKED
-	Matrix4D matrix;
-	const Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
-	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
-
-	//matrix.m[0][0] = f / aspect;	matrix.m[0][1] = 0.0;	matrix.m[0][2] = 0.0;							matrix.m[0][3] = 0.0;
-	//matrix.m[1][0] = 0.0;			matrix.m[1][1] = f;		matrix.m[1][2] = 0.0;							matrix.m[1][3] = 0.0;
-	//matrix.m[2][0] = 0.0;			matrix.m[2][1] = 0.0;	matrix.m[2][2] = (farPlane + nearPlane) * div;	matrix.m[2][3] = 2.0 * farPlane * nearPlane * div;
-	//matrix.m[3][0] = 0.0;			matrix.m[3][1] = 0.0;	matrix.m[3][2] = -1.0;							matrix.m[3][3] = 0.0;
-
-	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
-	matrix.m[0][0] = f / aspect;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;												matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = REAL_ZERO;		matrix.m[1][1] = f;			matrix.m[1][2] = REAL_ZERO;												matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = REAL_ZERO;		matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = (-nearPlane - farPlane) * div;							matrix.m[2][3] = REAL_ONE;
-	matrix.m[3][0] = REAL_ZERO;		matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	matrix.m[3][3] = REAL_ZERO;
-	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
-
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
-{
-	START_PROFILING_STATIC;
-	// CHECKED
-	Matrix4D matrix;
-
-	const Real width = right - left;
-	const Real height = top - bottom;
-	const Real depth = farPlane - nearPlane;
-
-	const Real temp = static_cast<Real>(2);
-	
-	matrix.m[0][0] = temp / width;				matrix.m[0][1] = REAL_ZERO;					matrix.m[0][2] = REAL_ZERO;							matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = REAL_ZERO;					matrix.m[1][1] = temp / height;				matrix.m[1][2] = REAL_ZERO;							matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = REAL_ZERO;					matrix.m[2][1] = REAL_ZERO;					matrix.m[2][2] = -temp / depth;						matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = -(right + left) / width;	matrix.m[3][1] = -(top + bottom) / height;	matrix.m[3][2] = -(farPlane + nearPlane) / depth;	matrix.m[3][3] = REAL_ONE;
-	
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::Translation(Real x, Real y, Real z)
-{
-	START_PROFILING_STATIC;
-	Matrix4D matrix;
-	matrix.m[0][0] = REAL_ONE;	matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = REAL_ONE;	matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = REAL_ONE;	matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = x;			matrix.m[3][1] = y;			matrix.m[3][2] = z;			matrix.m[3][3] = REAL_ONE;
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::Translation(const Vector3D& vec)
-{
-	return Translation(vec.GetX(), vec.GetY(), vec.GetZ());
-}
-
-/* static */ Matrix4D Matrix4D::Scale(Real x, Real y, Real z)
-{
-	START_PROFILING_STATIC;
-	Matrix4D matrix;
-	matrix.m[0][0] = x;			matrix.m[0][1] = REAL_ZERO;	matrix.m[0][2] = REAL_ZERO;	matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = REAL_ZERO;	matrix.m[1][1] = y;			matrix.m[1][2] = REAL_ZERO;	matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = REAL_ZERO;	matrix.m[2][1] = REAL_ZERO;	matrix.m[2][2] = z;			matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = REAL_ZERO;	matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;	matrix.m[3][3] = REAL_ONE;
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::Scale(const Vector3D& vec)
-{
-	return Scale(vec.GetX(), vec.GetY(), vec.GetZ());
-}
-
-/* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY)
-{
-	START_PROFILING_STATIC;
-	/**
-	 * This function should return the same matrix as the function Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)).
-	 */
-	Matrix4D rot;
-
-	Real xSin = angleX.Sin();
-	Real xCos = angleX.Cos();
-	Real ySin = angleY.Sin();
-	Real yCos = angleY.Cos();
-
-	rot.m[0][0] = yCos;			rot.m[0][1] = REAL_ZERO;	rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
-	rot.m[1][0] = -xSin * ySin;	rot.m[1][1] = xCos;			rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
-	rot.m[2][0] = -xCos * ySin;	rot.m[2][1] = -xSin;		rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
-	rot.m[3][0] = REAL_ZERO;	rot.m[3][1] = REAL_ZERO;	rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
-
-	//Matrix4D matrixToCompare = Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO));
-	//if (rot != matrixToCompare)
-	//{
-	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
-	//}
-	CHECK_CONDITION(rot == Matrix4D::RotationEuler(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
-	STOP_PROFILING_STATIC;
-	return rot;
-}
-
-/**
- * @see Vector2D::Rotate(Real angle)
- */
-/* static */ Matrix4D Matrix4D::RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
-{
-	START_PROFILING_STATIC; // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
-	/* ==================== SOLUTION #1 begin ==================== */
-	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
-
-	//Real xSin = angleX.Sin();
-	//Real xCos = angleX.Cos();
-	//Real ySin = angleY.Sin();
-	//Real yCos = angleY.Cos();
-	//Real zSin = angleZ.Sin();
-	//Real zCos = angleZ.Cos();
-
-	//rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
-	//rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
-	//rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
-	//rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
-
-	//rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
-	//rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
-	//rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
-	//rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
-
-	//rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
-	//rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
-	//rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
-	//rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
-
-	//return rotZ * rotY * rotX;
-	/* ==================== SOLUTION #1 end ==================== */
-
-	/* ==================== SOLUTION #2 begin ==================== */
-	Matrix4D rot;
-
-	Real xSin = angleX.Sin();
-	Real xCos = angleX.Cos();
-	Real ySin = angleY.Sin();
-	Real yCos = angleY.Cos();
-	Real zSin = angleZ.Sin();
-	Real zCos = angleZ.Cos();
-
-	rot.m[0][0] = yCos * zCos;							rot.m[0][1] = yCos * zSin;							rot.m[0][2] = ySin;			rot.m[0][3] = REAL_ZERO;
-	rot.m[1][0] = -xSin * ySin * zCos - xCos * zSin;	rot.m[1][1] = -xSin * ySin * zSin + xCos * zCos;	rot.m[1][2] = xSin * yCos;	rot.m[1][3] = REAL_ZERO;
-	rot.m[2][0] = -xCos * ySin * zCos + xSin * zSin;	rot.m[2][1] = -xCos * ySin * zSin - xSin * zCos;	rot.m[2][2] = xCos * yCos;	rot.m[2][3] = REAL_ZERO;
-	rot.m[3][0] = REAL_ZERO;							rot.m[3][1] = REAL_ZERO;							rot.m[3][2] = REAL_ZERO;	rot.m[3][3] = REAL_ONE;
-
-	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
-	//if (rot != matrixToCompare)
-	//{
-	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
-	//}
-	STOP_PROFILING_STATIC;
-	return rot;
-	/* ==================== SOLUTION #2 end ==================== */
-}
-
-///* static */ Matrix4D Matrix4D::Rotation(Real x, Real y, Real z, const Angle& angle)
-//{
-//	Real vecNorm = sqrt(x * x + y * y + z * z);
-//	x /= vecNorm;
-//	y /= vecNorm;
-//	z /= vecNorm;
-//				
-//	Real angleInRadians = angle.GetAngleInRadians();
-//
-//	Matrix4D matrix;
-//	Real c = cos(angleInRadians);
-//	Real s = sin(angleInRadians);
-//	Real omc = 1 - c;
-//	Real xs = x * s;
-//	Real ys = y * s;
-//	Real zs = z * s;
-//	Real xy = x*y;
-//	Real xz = x*z;
-//	Real yz = y*z;
-//
-//	matrix.m[0][0] = x*x*omc+c;	matrix.m[0][1] = xy*omc-zs;	matrix.m[0][2] = xz*omc+ys;	matrix.m[0][3] = 0.0;
-//	matrix.m[1][0] = xy*omc+zs;	matrix.m[1][1] = y*y*omc+c;	matrix.m[1][2] = yz*omc-xs;	matrix.m[1][3] = 0.0;
-//	matrix.m[2][0] = xz*omc-ys;	matrix.m[2][1] = yz*omc+xs;	matrix.m[2][2] = z*z*omc+c;	matrix.m[2][3] = 0.0;
-//	matrix.m[3][0] = 0.0;		matrix.m[3][1] = 0.0;		matrix.m[3][2] = 0.0;		matrix.m[3][3] = 1.0;
-//	
-//	return matrix;
-//}
-
-///* static */ Matrix4D Matrix4D::Rotation(const Vector3D& vec, const Angle& angle)
-//{
-//	return Rotation(vec.GetX(), vec.GetY(), vec.GetZ(), angle);
-//}
-
-/* static */ Matrix4D Matrix4D::RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
-{
-	START_PROFILING_STATIC;
-	//Vector3D f = forward.Normalized();
-	//Vector3D u = up.Normalized();
-	//Vector3D r = right.Normalized();
-	
-	//Vector3D right = up;
-	//right.Normalize(); // TODO: Should not be necessary
-	//right = right.Cross(forw);
-
-	//Vector3D newUp = forw.Cross(right);
-
-	CHECK_CONDITION(forward.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
-	CHECK_CONDITION(up.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
-	CHECK_CONDITION(right.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
-
-	Matrix4D matrix;
-	matrix.m[0][0] = right.GetX();	matrix.m[0][1] = up.GetX();	matrix.m[0][2] = forward.GetX();	matrix.m[0][3] = REAL_ZERO;
-	matrix.m[1][0] = right.GetY();	matrix.m[1][1] = up.GetY();	matrix.m[1][2] = forward.GetY();	matrix.m[1][3] = REAL_ZERO;
-	matrix.m[2][0] = right.GetZ();	matrix.m[2][1] = up.GetZ();	matrix.m[2][2] = forward.GetZ();	matrix.m[2][3] = REAL_ZERO;
-	matrix.m[3][0] = REAL_ZERO;		matrix.m[3][1] = REAL_ZERO;	matrix.m[3][2] = REAL_ZERO;			matrix.m[3][3] = REAL_ONE;
-	STOP_PROFILING_STATIC;
-	return matrix;
-}
-
-/* static */ Matrix4D Matrix4D::RotationFromDirection(const Vector3D& forward, const Vector3D& up)
-{
-	START_PROFILING_STATIC;
-	Vector3D n = forward.Normalized();
-	Vector3D u = up.Normalized().Cross(n);
-	Vector3D v = n.Cross(u);
-#ifdef CALCULATE_MATH_STATS
-	Matrix4D rotMatrix = RotationFromVectors(n, v, u);
-	STOP_PROFILING_STATIC;
-	return rotMatrix;
-#else
-	return RotationFromVectors(n, v, u);
-#endif
-}
-
-int Matrix4D::Signum(int i, int j) const
-{
-	return ((i + j) % 2) ? -1 : 1;
 }
 
 std::string Matrix4D::ToString() const
@@ -583,7 +493,7 @@ Matrix4D Matrix4D::Inversion() const
 	if (det == 0)
 	{
 		STOP_PROFILING;
-		return Identity();
+		return Matrix4D::IDENTITY_MATRIX;
 	}
 
 	Matrix4D result;
@@ -641,6 +551,37 @@ bool Matrix4D::IsIdentity() const
 	return true;
 }
 
+void Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
+{
+	START_PROFILING;
+	m[0][0] = scaleX;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;	m[1][1] = scaleY;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = scaleZ;		m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	STOP_PROFILING;
+}
+
+void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
+{
+	START_PROFILING;
+	const Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
+	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
+
+	//m[0][0] = f / aspect;	m[0][1] = 0.0;	m[0][2] = 0.0;							m[0][3] = 0.0;
+	//m[1][0] = 0.0;		m[1][1] = f;	m[1][2] = 0.0;							m[1][3] = 0.0;
+	//m[2][0] = 0.0;		m[2][1] = 0.0;	m[2][2] = (farPlane + nearPlane) * div;	m[2][3] = 2.0 * farPlane * nearPlane * div;
+	//m[3][0] = 0.0;		m[3][1] = 0.0;	m[3][2] = -1.0;							m[3][3] = 0.0;
+
+	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
+	m[0][0] = f / aspect;	m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;											m[0][3] = REAL_ZERO;
+	m[1][0] = REAL_ZERO;	m[1][1] = f;			m[1][2] = REAL_ZERO;											m[1][3] = REAL_ZERO;
+	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = (-nearPlane - farPlane) * div;						m[2][3] = REAL_ONE;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[3][3] = REAL_ZERO;
+	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
+
+	STOP_PROFILING;
+}
+
 Vector3D Matrix4D::Transform(const Vector3D& vec)
 {
 	return Vector3D(m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0],
@@ -656,4 +597,24 @@ Vector3D Matrix4D::Transform(const Vector3D& vec)
 	//		ret.opera
 	//	}
 	//}
+}
+
+void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+{
+	//Vector3D f = forward.Normalized();
+	//Vector3D u = up.Normalized();
+	//Vector3D r = right.Normalized();
+	
+	//Vector3D right = up;
+	//right.Normalize(); // TODO: Should not be necessary
+	//right = right.Cross(forw);
+
+	//Vector3D newUp = forw.Cross(right);
+	CHECK_CONDITION(forward.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
+	CHECK_CONDITION(up.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION(right.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+	m[0][0] = right.GetX();	m[0][1] = up.GetX();	m[0][2] = forward.GetX();	m[0][3] = REAL_ZERO;
+	m[1][0] = right.GetY();	m[1][1] = up.GetY();	m[1][2] = forward.GetY();	m[1][3] = REAL_ZERO;
+	m[2][0] = right.GetZ();	m[2][1] = up.GetZ();	m[2][2] = forward.GetZ();	m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;		m[3][3] = REAL_ONE;
 }

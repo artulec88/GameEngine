@@ -105,7 +105,7 @@ void DirectionalLight::Update(Math::Real delta)
 		m_intensity = daytimeTransitionFactor * m_maxIntensity;
 		break;
 	}
-	Math::Matrix4D rotMatrix = Math::Matrix4D::RotationEuler(-sunElevation, -sunAzimuth);
+	Math::Matrix4D rotMatrix(-sunElevation, -sunAzimuth);
 	GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
 	// e.g. GetTransform().SetRot(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), 0.5f, true));
 

@@ -23,7 +23,7 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
-/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D::Scale(0.5f, 0.5f, 0.5f) * Matrix4D::Translation(1.0f, 1.0f, 1.0f));
+/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */));
 
 Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
@@ -61,7 +61,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_currentCameraIndex(0),
 	m_currentCamera(NULL),
 	m_mainMenuCamera(NULL),
-	m_altCamera(Matrix4D::Identity(), Transform()),
+	m_altCamera(Math::Matrix4D(), Transform()),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
 	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2)/2, sqrtf(2)/2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
@@ -92,7 +92,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_pointLights(),
 	m_cameras(),
 	m_samplerMap(),
-	m_lightMatrix(Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO)),
+	m_lightMatrix(REAL_ZERO /* scale matrix */),
 	m_fontTexture(NULL),
 	m_textRenderer(NULL),
 	m_waterRefractionClippingPlaneNormal(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
@@ -332,7 +332,7 @@ void Renderer::InitializeCubeMap()
 	m_skyboxNode = new GameNode();
 	m_skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	m_skyboxNode->GetTransform().SetScale(5.0f);
+	m_skyboxNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_skyboxShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
 	STOP_PROFILING;
 }
@@ -465,12 +465,12 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
 	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) }
 
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Quaternion(Matrix4D::RotationFromDirection(Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D::RotationFromDirection(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Quaternion(Matrix4D(Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Quaternion(Matrix4D(Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Quaternion(Matrix4D(Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
 void Renderer::Render(const GameNode& gameNode)
@@ -565,7 +565,7 @@ void Renderer::Render(const GameNode& gameNode)
 		{
 			// we set the light matrix this way so that, if no shadow should be cast
 			// everything in the scene will be mapped to the same point
-			m_lightMatrix = Math::Matrix4D::Scale(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_lightMatrix->SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 		}
@@ -891,7 +891,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	
 	SetTexture("filterTexture", source);
 
-	m_altCamera.SetProjection(Matrix4D::Identity());
+	m_altCamera.SetProjection(Math::Matrix4D::IDENTITY_MATRIX);
 	m_altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
 	m_altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
 

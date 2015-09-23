@@ -26,6 +26,7 @@ enum SortingAlgorithm
 	BUCKET_SORT
 };
 
+/// <summary> The base class for all sorting classes. </summary>
 class ISort
 {
 /* ==================== Static variables and functions begin ==================== */

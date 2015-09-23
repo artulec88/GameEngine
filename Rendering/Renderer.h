@@ -51,7 +51,7 @@ public:
 	RENDERING_API virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer) :
-		m_altCamera(Math::Matrix4D::Identity(),
+		m_altCamera(Math::Matrix4D(),
 		Transform())
 #ifdef CALCULATE_RENDERING_STATS
 		,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))

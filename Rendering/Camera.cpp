@@ -40,9 +40,10 @@ CameraBase::CameraBase(const Matrix4D& projectionMatrix) :
 {
 }
 
-CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane)
+CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
+	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane)
 #ifdef ANT_TWEAK_BAR_ENABLED
-	: m_prevFov(FoV),
+	,m_prevFov(FoV),
 	m_fov(FoV),
 	m_prevAspectRatio(aspectRatio),
 	m_aspectRatio(aspectRatio),
@@ -52,12 +53,27 @@ CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real
 	m_farPlane(zFarPlane)
 #endif
 {
-	m_projection = Matrix4D::PerspectiveProjection(FoV, aspectRatio, zNearPlane, zFarPlane);
 }
 
 
 CameraBase::~CameraBase(void)
 {
+}
+
+Matrix4D CameraBase::GetViewProjection() const
+{
+	Vector3D cameraPos = GetTransform().GetTransformedPos();
+	Matrix4D cameraTranslation(cameraPos.Negated());
+	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
+	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
+	/* ==================== SOLUTION #1 begin ==================== */
+	Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
+	/* ==================== SOLUTION #1 end ==================== */
+	/* ==================== SOLUTION #2 begin ==================== */
+	// Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
+	/* ==================== SOLUTION #2 end ==================== */
+
+	return m_projection * cameraRotation * cameraTranslation;
 }
 
 
@@ -76,16 +92,6 @@ Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPla
 
 Camera::~Camera(void)
 {
-}
-
-Matrix4D Camera::GetViewProjection() const
-{
-	Vector3D cameraPos = m_transform.GetTransformedPos();
-	Matrix4D cameraTranslation = Matrix4D::Translation(cameraPos.Negated());
-	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
-	Matrix4D cameraRotation = m_transform.GetTransformedRot().Conjugate().ToRotationMatrix();
-
-	return m_projection * cameraRotation * cameraTranslation;
 }
 
 CameraComponent::CameraComponent(const Matrix4D& projectionMatrix) :
@@ -190,7 +196,7 @@ void CameraComponent::Input(Real delta)
 	{
 		INFO_LOG("Recalculating the projection matrix for the selected camera");
 
-		m_projection = Math::Matrix4D::PerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+		m_projection->SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
 		m_prevFov = m_fov;
 		m_prevAspectRatio = m_aspectRatio;
@@ -199,16 +205,6 @@ void CameraComponent::Input(Real delta)
 	}
 }
 #endif
-
-Matrix4D CameraComponent::GetViewProjection() const
-{
-	Vector3D cameraPos = GetTransform().GetTransformedPos();
-	Matrix4D cameraTranslation = Matrix4D::Translation(cameraPos.Negated());
-	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
-	Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
-
-	return m_projection * cameraRotation * cameraTranslation;
-}
 
 //std::string CameraComponent::ToString() const
 //{

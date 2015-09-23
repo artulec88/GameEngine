@@ -36,7 +36,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
-	virtual Math::Matrix4D GetViewProjection() const = 0;
+	Math::Matrix4D GetViewProjection() const;
 	virtual Transform& GetTransform() = 0;
 	virtual const Transform& GetTransform() const = 0;
 /* ==================== Non-static member functions end ==================== */
@@ -66,7 +66,6 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual Math::Matrix4D GetViewProjection() const;
 	virtual Transform& GetTransform() { return m_transform; }
 	virtual const Transform& GetTransform() const { return m_transform; }
 /* ==================== Non-static member functions end ==================== */
@@ -91,7 +90,6 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual Math::Matrix4D GetViewProjection() const;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void Input(Math::Real delta);
 #endif

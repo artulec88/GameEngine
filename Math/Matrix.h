@@ -26,31 +26,65 @@ private:
 	static Statistics::ClassStats& s_classStats;
 #endif
 public:
-	static Matrix4D Identity();
-	/// <summary>Creating perspective projection matrix based on the specified parameters.</summary>
-	/// <param name='fov'>Field of view</param>
-	/// <param name='aspect'>Aspect ratio</param>
-	/// <param name='nearPlane'>Near plane</param>
-	/// <param name='farPlane'>Far plane</param>
-	/// <returns>Perspective projection matrix</returns>
-	static Matrix4D PerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
-	static Matrix4D OrtographicProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
-	static Matrix4D Translation(Real x, Real y, Real z);
-	static Matrix4D Translation(const Vector3D& vec);
-	static Matrix4D Scale(Real x, Real y, Real z);
-	static Matrix4D Scale(const Vector3D& vec);
-	//static Matrix4D Rotation(Real x, Real y, Real z, const Angle& angle);
-	//static Matrix4D Rotation(const Vector3D& vec, const Angle& angle);
-
-	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY);
-	static Matrix4D RotationEuler(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
-	static Matrix4D RotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
-	static Matrix4D RotationFromDirection(const Vector3D& forward, const Vector3D& up);
+	static const Matrix4D IDENTITY_MATRIX;
+	static int Signum(int i, int j) const;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Matrix4D();
+	/// <summary>Creates scale matrix based on the specified parameter.</summary>
+	/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
+	/// <returns>Scale matrix.</returns>
+	Matrix4D(Real scale);
+	/// <summary>Creates translation matrix based on the specified parameters.</summary>
+	/// <param name='posX'>The X coordinate of the translation.</param>
+	/// <param name='posY'>The Y coordinate of the translation.</param>
+	/// <param name='posZ'>The Z coordinate of the translation.</param>
+	/// <returns>Translation matrix.</returns>
+	Matrix4D(Real posX, Real posY, Real posZ);
+	/// <summary>Creates translation matrix based on the specified parameter.</summary>
+	/// <param name='pos'>The 3D translation vector.</param>
+	/// <returns>Translation matrix.</returns>
+	Matrix4D(const Vector3D& pos);
+	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
+	/// <param name='angleX'>The rotation angle around X axis.</param>
+	/// <param name='angleY'>The rotation angle around Y axis.</param>
+	/// <returns>Rotation matrix.</returns>
+	Matrix4D(const Angle& angleX, const Angle& angleY);
+	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
+	/// <param name='angleX'>The rotation angle around X axis.</param>
+	/// <param name='angleY'>The rotation angle around Y axis.</param>
+	/// <param name='angleZ'>The rotation angle around Z axis.</param>
+	/// <returns>Rotation matrix.</returns>
+	Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
+	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
+	/// <param name='forward'>The forward vector.</param>
+	/// <param name='up'>The up vector.</param>
+	/// <returns>Rotation matrix.</returns>
+	Matrix4D(const Vector3D& forward, const Vector3D& up);
+	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
+	/// <param name='forward'>The forward vector.</param>
+	/// <param name='up'>The up vector.</param>
+	/// <param name='right'>The right vector.</param>
+	/// <returns>Rotation matrix.</returns>
+	Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
+	/// <summary>Creates perspective projection matrix based on the specified parameters.</summary>
+	/// <param name='fov'>Field of view</param>
+	/// <param name='aspect'>Aspect ratio</param>
+	/// <param name='nearPlane'>Near plane</param>
+	/// <param name='farPlane'>Far plane</param>
+	/// <returns>Perspective projection matrix.</returns>
+	Matrix4D(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
+	/// <summary>Creates ortographic projection matrix based on the specified parameters.</summary>
+	/// <param name='left'>The left coordinate for the vertical clipping planes.</param>
+	/// <param name='right'>The right coordinate for the vertical clipping planes.</param>
+	/// <param name='bottom'>The bottom coordinate for the horizontal clipping planes.</param>
+	/// <param name='top'>The top coordinate for the horizontal clipping planes.</param>
+	/// <param name='nearPlane'>The distance to the nearer depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
+	/// <param name='farPlane'>The distance to the farther depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
+	/// <returns>Ortographic projection matrix.</returns>
+	Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 	Matrix4D(const Matrix4D& mat);
 	~Matrix4D();
 /* ==================== Constructors and destructors end ==================== */
@@ -69,6 +103,9 @@ public:
 	inline const Math::Real* operator[](int index) const;
 	inline Math::Real* operator[](int index);
 
+	void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
+	void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
+
 	Vector3D Transform(const Vector3D& vec); // Write tests
 	
 	Matrix4D Transposition() const;
@@ -84,7 +121,7 @@ public:
 
 	std::string ToString() const;
 private:
-	int Signum(int i, int j) const;
+	void SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

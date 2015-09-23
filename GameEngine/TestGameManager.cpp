@@ -150,7 +150,7 @@ void TestGameManager::Load()
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	//testMesh2->GetTransform().SetScale(1.5f);
-	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D::RotationEuler(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
+	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
 	testMesh1->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\plane.obj"),
 		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, new Texture("..\\Textures\\bricks2_normal.jpg"), new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
@@ -375,7 +375,7 @@ void TestGameManager::AddCameras()
 		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
 		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
 		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix = Matrix4D::RotationEuler(angleX, angleY, angleZ);
+		Matrix4D rotMatrix(angleX, angleY, angleZ);
 		DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);

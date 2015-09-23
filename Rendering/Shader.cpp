@@ -571,8 +571,22 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	CHECK_CONDITION_EXIT(m_shaderData->GetUniformNames().size() == m_shaderData->GetUniformTypes().size(), Error, "Shader data is incorrect. There are %d uniform names and %d uniform types", m_shaderData->GetUniformNames().size(), m_shaderData->GetUniformTypes().size());
 
 	Matrix4D worldMatrix = transform.GetTransformation();
-	Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter
-
+	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc.
+	/* ==================== SOLUTION #1 begin ==================== */
+	Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection()); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	projectedMatrix *= worldMatrix;
+	/* ==================== SOLUTION #1 end ==================== */
+	/* ==================== SOLUTION #2 begin ==================== */
+	//Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection() * worldMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	/* ==================== SOLUTION #2 end ==================== */
+	/* ==================== SOLUTION #3 begin ==================== */
+	//Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	/* ==================== SOLUTION #3 end ==================== */
+	/* ==================== SOLUTION #4 begin ==================== */
+	//Matrix4D projectedMatrix;
+	//renderer->GetCurrentCamera().GetViewProjection(projectedMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	//projectedMatrix *= worldMatrix;
+	/* ==================== SOLUTION #4 end ==================== */
 	for (unsigned int i = 0; i < m_shaderData->GetUniformNames().size(); ++i)
 	{
 		std::string uniformName = m_shaderData->GetUniformNames()[i];

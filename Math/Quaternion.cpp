@@ -197,7 +197,7 @@ inline Matrix4D Quaternion::ToRotationMatrix() const
 	Real zRight = 2.0f * (GetX()*GetZ() + GetW()*GetY());
 	Vector3D right(xRight, yRight, zRight);
 	
-	return Matrix4D::RotationFromVectors(forward, up, right);
+	return Matrix4D(forward, up, right);
 }
 
 Real Quaternion::Dot(const Quaternion& q) const

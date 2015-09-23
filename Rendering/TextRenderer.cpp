@@ -15,7 +15,10 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	m_fontMaterial(NULL),
 	m_defaultFontSize(defaultFontSize),
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
-	m_textShader(NULL)
+	m_textShader(NULL),
+	m_windowWidth(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth())),
+	m_windowHeight(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight())),
+	m_projection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE)
 {
 	if (fontTexture == NULL)
 	{
@@ -63,12 +66,8 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	//glEnableVertexAttribArray(uvTempID);
 	//glVertexAttribPointer(uvTempID, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	Rendering::CheckErrorCode("TextRenderer::TextRenderer", "Generating and binding texture coordinates buffer");
-
-	m_windowWidth = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth());
-	m_windowHeight = static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight());
 	//m_fontMaterial->SetReal("screenWidth", m_windowWidth);
 	//m_fontMaterial->SetReal("screenHeight", m_windowHeight);
-	m_projection = Math::Matrix4D::OrtographicProjection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE);
 }
 
 
@@ -186,7 +185,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
 	m_textShader->UpdateUniforms(Transform() /* TODO: Create something better here */, *m_fontMaterial, renderer);
-	//textShader->SetUniformMatrix("MVP", Math::Matrix4D::Translation(x, y, REAL_ZERO) * projection);
+	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
 	glEnableVertexAttribArray(0);

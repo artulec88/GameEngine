@@ -37,7 +37,7 @@ Material::Material(Texture* diffuseTexture,
 	}
 	SetTexture("displacementMap", displacementMap);
 
-	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f);
+	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
 	SetReal("displacementScale", displacementScale);
 	SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }

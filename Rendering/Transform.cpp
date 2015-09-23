@@ -47,8 +47,8 @@ Matrix4D Transform::GetTransformation() const
 		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
-		Matrix4D translationMatrix = Matrix4D::Translation(m_pos.GetX(), m_pos.GetY(), m_pos.GetZ());
-		Matrix4D scaleMatrix = Matrix4D::Scale(m_scale, m_scale, m_scale);
+		Matrix4D translationMatrix(m_pos);
+		Matrix4D scaleMatrix(m_scale);
 
 		transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix;
 		isChanged = false;
@@ -107,7 +107,7 @@ void Transform::LookAt(const Math::Vector3D& point, const Math::Vector3D& up)
 
 Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const Math::Vector3D& up) const
 {
-	return Quaternion(Math::Matrix4D::RotationFromDirection((point - m_pos).Normalized(), up));
+	return Quaternion(Math::Matrix4D((point - m_pos).Normalized(), up));
 	//Math::Vector3D forward = point - pos;
 	//forward.Normalize();
 	//
@@ -119,7 +119,7 @@ Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const
 	//Math::Vector3D u = forward.Cross(right);
 	//u.Normalize();
 
-	//Math::Matrix4D rotMatrix = Math::Matrix4D::RotationFromVectors(forward, u, right);
+	//Math::Matrix4D rotMatrix(forward, u, right); // rotation from vectors
 	//return Math::Quaternion(rotMatrix);
 }
 

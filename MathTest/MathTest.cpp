@@ -177,19 +177,19 @@ void MatrixTest()
 		return;
 	}
 
-	Matrix4D identityMatrix1 = Matrix4D::Identity();
-	Matrix4D identityMatrix2 = Matrix4D::Identity();
+	Matrix4D identityMatrix1(Matrix4D::IDENTITY_MATRIX);
+	Matrix4D identityMatrix2(Matrix4D::IDENTITY_MATRIX);
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
 	const int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
-	Matrix4D matrix1 = Matrix4D::Identity();
+	Matrix4D matrix1(Matrix4D::IDENTITY_MATRIX);
 	TestReport(matrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 
 	Timing::Timer timer;
 	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
-		Matrix4D matrix2 = Matrix4D::Identity();
+		Matrix4D matrix2(Matrix4D::IDENTITY_MATRIX);
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrix creation:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
@@ -226,7 +226,7 @@ void MatrixTest()
 	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_ROTATION_EULER_ITERATIONS; ++i)
 	{
-		Matrix4D result = Matrix4D::RotationEuler(RandomAngle(), RandomAngle(), RandomAngle());
+		Matrix4D result(RandomAngle(), RandomAngle(), RandomAngle());
 	}
 	timer.Stop();
 	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, Timing::MICROSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
