@@ -196,7 +196,7 @@ void CameraComponent::Input(Real delta)
 	{
 		INFO_LOG("Recalculating the projection matrix for the selected camera");
 
-		m_projection->SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+		m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
 		m_prevFov = m_fov;
 		m_prevAspectRatio = m_aspectRatio;

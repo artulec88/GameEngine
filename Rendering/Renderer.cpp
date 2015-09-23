@@ -565,7 +565,7 @@ void Renderer::Render(const GameNode& gameNode)
 		{
 			// we set the light matrix this way so that, if no shadow should be cast
 			// everything in the scene will be mapped to the same point
-			m_lightMatrix->SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 		}

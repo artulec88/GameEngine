@@ -573,11 +573,11 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	Matrix4D worldMatrix = transform.GetTransformation();
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc.
 	/* ==================== SOLUTION #1 begin ==================== */
-	Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection()); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
-	projectedMatrix *= worldMatrix;
+	//Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection()); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	//projectedMatrix *= worldMatrix;
 	/* ==================== SOLUTION #1 end ==================== */
 	/* ==================== SOLUTION #2 begin ==================== */
-	//Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection() * worldMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection() * worldMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
 	/* ==================== SOLUTION #2 end ==================== */
 	/* ==================== SOLUTION #3 begin ==================== */
 	//Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.

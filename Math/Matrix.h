@@ -27,7 +27,7 @@ private:
 #endif
 public:
 	static const Matrix4D IDENTITY_MATRIX;
-	static int Signum(int i, int j) const;
+	static int Signum(int i, int j);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
