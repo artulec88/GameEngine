@@ -30,6 +30,7 @@ void Stats<T>::Push(StatsID statsID, T sample)
 {
 	if (Size(statsID) == MAX_SAMPLES_COUNT)
 	{
+		//CRITICAL_LOG("Pushing %.2f to %d statsID.", sample, statsID);
 		if (m_level == MAX_STATS_LEVEL)
 		{
 			WARNING_LOG("Maximum number of samples reached for stats ID: %d", statsID);
@@ -45,7 +46,11 @@ void Stats<T>::Push(StatsID statsID, T sample)
 		}
 		m_samples[statsID].clear();
 	}
-	m_samples[statsID].push_back(sample);
+	else
+	{
+		//EMERGENCY_LOG("Pushing %.2f to %d statsID.", sample, statsID);
+		m_samples[statsID].push_back(sample);
+	}
 }
 
 template <typename T>
@@ -263,19 +268,19 @@ void MethodStats::StartProfiling(bool isNestedWithinAnotherProfiledMethod)
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	if (m_timer.IsRunning())
-	{
-		ERROR_LOG("Timer already running");
-	}
+	//if (m_timer.IsRunning())
+	//{
+	//	ERROR_LOG("Timer already running");
+	//}
 	m_timer.Start();
 }
 
 void MethodStats::StopProfiling()
 {
-	if (!m_timer.IsRunning())
-	{
-		ERROR_LOG("Timer already stopped");
-	}
+	//if (!m_timer.IsRunning())
+	//{
+	//	ERROR_LOG("Timer already stopped");
+	//}
 	m_timer.Stop();
 	Math::Real elapsedTime = m_timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
 	//DEBUG_LOG("Stopped profiling the method. %.3f [us] has passed.", elapsedTime);

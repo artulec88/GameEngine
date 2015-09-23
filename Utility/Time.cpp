@@ -191,11 +191,11 @@ TimeSpan Timer::GetTimeSpan(TimeUnit timeUnit) const
 
 void Timer::Start()
 {
-	if (m_isRunning)
-	{
-		WARNING_LOG("Starting the timer which is already running");
-		return;
-	}
+	//if (m_isRunning)
+	//{
+	//	WARNING_LOG("Starting the timer which is already running");
+	//	return;
+	//}
 	QueryPerformanceCounter(&m_startTime);
 	m_isRunning = true;
 }
@@ -207,11 +207,11 @@ void Timer::Reset()
 
 void Timer::Stop()
 {
-	if (!m_isRunning)
-	{
-		WARNING_LOG("Stopping the timer which is already stopped.");
-		return;
-	}
+	//if (!m_isRunning)
+	//{
+	//	WARNING_LOG("Stopping the timer which is already stopped.");
+	//	return;
+	//}
 	QueryPerformanceCounter(&m_stopTime);
 	m_isRunning = false;
 }

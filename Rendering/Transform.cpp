@@ -10,7 +10,7 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REA
 	m_pos(pos),
 	m_rotation(rot),
 	m_scale(scale),
-	parentTransform(NULL),
+	m_parentTransform(NULL),
 	isChanged(true)
 {
 }

@@ -67,8 +67,8 @@ public:
 	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Math::Vector3D& GetPos() { return pos; }
-	Math::Quaternion& GetRot() { return rotation; }
+	Math::Vector3D& GetPos() { return m_pos; }
+	Math::Quaternion& GetRot() { return m_rotation; }
 #endif
 
 	/**

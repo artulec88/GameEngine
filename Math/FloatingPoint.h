@@ -1,6 +1,8 @@
 #pragma once
 #include <limits>
 #include "Math.h"
+//#include "Utility\IConfig.h"
+//#include "Utility\ILogger.h" // only used if AlmostEqual logs anything
 #ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
@@ -169,24 +171,37 @@ private:
 }; /* end class FloatingPoint */
 
 //static int oneTempCounter = 0;
-//static int twoTempCounter = 1;
-
+//static int twoTempCounter = 0;
+//static int threeTempCounter = 0;
 inline bool AlmostEqual(Real value1, Real value2)
 {
-	//if ((oneTempCounter % 10000 == 0) || (twoTempCounter % 10000 == 0))
+	//if (((oneTempCounter % 10000 == 0) && (oneTempCounter > 0)) ||
+	//	((twoTempCounter % 10000 == 0) && (twoTempCounter > 0)) ||
+	//	((threeTempCounter % 10000 == 0) && (threeTempCounter > 0)))
 	//{
-	//	CRITICAL_LOG("oneTempCounter = %d, twoTempCounter = %d", oneTempCounter, twoTempCounter);
+	//	CRITICAL_LOG("oneTempCounter = %d, twoTempCounter = %d, threeTempCounter = %d", oneTempCounter, twoTempCounter, threeTempCounter);
 	//}
 	if (abs(value1 - value2) > EPSILON)
 	{
 		//++oneTempCounter;
 		return false;
 	}
-	// TODO: Count how often we get here.
-	FloatingPoint<Real> fpValue1(value1);
-	FloatingPoint<Real> fpValue2(value2);
-	//++twoTempCounter;
-	return (fpValue1.AlmostEqual(fpValue2));
+	return true; // to make comparison much faster we just return true here instead of creating the FloatingPoint objects.
+
+	//FloatingPoint<Real> fpValue1(value1);
+	//FloatingPoint<Real> fpValue2(value2);
+	//return fpValue1.AlmostEqual(fpValue2);
+	
+	//bool areEqual = fpValue1.AlmostEqual(fpValue2);
+	//if (areEqual)
+	//{
+	//	++twoTempCounter;
+	//}
+	//else
+	//{
+	//	++threeTempCounter;
+	//}
+	//return areEqual;
 }
 
 } /* end namespace Math */

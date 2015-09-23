@@ -1,8 +1,9 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Identity	1	1	4.81312	4.81312	4.81312
-PerspectiveProjection	1	1	12.0328	12.0328	12.0328
-OrtographicProjection	2	2	10.5889	10.5889	5.29443
-Translation	1817	1817	9842.98	9842.98	5.41716
-Scale	910	910	5037.91	5037.91	5.53617
-RotationFromVectors	1822	1816	9575.85	9550.82	5.25568
-RotationFromDirection	6	6	63.5331	63.5331	10.5889
+Identity	16661	16661	71097.9	71097.9	4.26732
+PerspectiveProjection	6	6	55.8314	55.8314	9.30523
+OrtographicProjection	3	3	15.4018	15.4018	5.13392
+Translation	364288	364287	1.50186e+006	1.50186e+006	4.12273
+Scale	15554	15554	65134.8	65134.8	4.18766
+RotationEuler	158488	158488	2.66485e+006	2.66485e+006	16.8142
+RotationFromVectors	364301	364295	1.49325e+006	1.49322e+006	4.09894
+RotationFromDirection	6	6	71.7144	71.7144	11.9524

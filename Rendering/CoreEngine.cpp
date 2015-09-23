@@ -27,7 +27,7 @@ using namespace std;
 #undef STOP_TIMER
 #define START_TIMER(timerID)
 #define RESET_TIMER(timerID)
-#define STOP_TIMER(timerID)
+#define STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
 #endif
 
 CoreEngine* CoreEngine::s_coreEngine = NULL;
@@ -71,7 +71,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_timer(),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
-	m_isSamplingSpf(false),
+	m_isSamplingSpf(true),
 	m_classStats(STATS_STORAGE.GetClassStats("CoreEngine")),
 	m_stats(),
 #endif
@@ -126,14 +126,14 @@ CoreEngine::~CoreEngine(void)
 	INFO_LOG("Rendering step performed %d times", m_renderingRequiredCount);
 	INFO_LOG("Rendering step omitted %d times", m_renderingNotRequiredCount);
 
+	m_timer.Stop();
+	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND).GetValue());
+
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
 	INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
 	//INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
-
-	m_timer.Stop();
-	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND).GetValue());
 #endif
 	/* ==================== Printing stats end ==================== */	
 

@@ -2,8 +2,10 @@
 
 #include "Math.h"
 #include "Vector.h"
+#ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
+#endif
 #include <string>
 
 namespace Math
