@@ -23,10 +23,10 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	Real GetX() const { return m_x; }
-	Real GetY() const { return m_y; }
-	void SetX(Real x) { m_x = x; }
-	void SetY(Real y) { m_y = y; }
+	inline Real GetX() const { return m_x; }
+	inline Real GetY() const { return m_y; }
+	inline void SetX(Real x) { m_x = x; }
+	inline void SetY(Real y) { m_y = y; }
 
 	Real SumOfComponents() const { return m_x + m_y; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y); }
