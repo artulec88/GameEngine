@@ -29,12 +29,14 @@ Vector2D::~Vector2D()
 {
 }
 
+#ifdef TO_STRING_ENABLED
 std::string Vector2D::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(x=" << m_x << "; y=" << m_y << ")";
 	return ss.str();
 }
+#endif
 
 Real Vector2D::Length() const
 {
@@ -160,7 +162,7 @@ std::string Vector3D::ToString() const
 
 Real Vector3D::Length() const
 {
-	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
+	return static_cast<Real>(sqrt(LengthSquared()));
 }
 
 Real Vector3D::LengthSquared() const
@@ -205,10 +207,7 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 
 Vector3D Vector3D::Rotate(const Quaternion& rotation) const
 {
-	//CHECKED
-	Quaternion conjugate = rotation.Conjugate();
-	Quaternion w = rotation * (*this) * conjugate;
-
+	Quaternion w = rotation * (*this) * rotation.Conjugate();
 	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
 

@@ -44,11 +44,11 @@ void DirectionalLightBuilder::BuildPart1()
 	DEBUG_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
-	DEBUG_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-		rotMatrix.ToString().c_str(),
-		rot.ToString().c_str(),
-		rot.ToRotationMatrix().ToString().c_str(),
-		rot2.ToRotationMatrix().ToString().c_str());
+	//DEBUG_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+	//	rotMatrix.ToString().c_str(),
+	//	rot.ToString().c_str(),
+	//	rot.ToRotationMatrix().ToString().c_str(),
+	//	rot2.ToRotationMatrix().ToString().c_str());
 	m_directionalLightNode->GetTransform().SetRot(rot);
 	//directionalLightNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 	//directionalLightNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));

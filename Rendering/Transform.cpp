@@ -50,7 +50,7 @@ Matrix4D Transform::GetTransformation() const
 		Matrix4D translationMatrix(m_pos);
 		Matrix4D scaleMatrix(m_scale);
 
-		transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix;
+		transformation = translationMatrix * m_rotation.ToRotationMatrix1() * scaleMatrix;
 		isChanged = false;
 	}
 	else /* if (! IsHierarchyChanged()) */

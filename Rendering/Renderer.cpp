@@ -711,7 +711,7 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 {
 	START_PROFILING;
 	BindAsRenderTarget();
-	ClearScreen();
+	ClearScreen(m_backgroundColor);
 	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
 	{
 		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");

@@ -4,8 +4,10 @@
 #include "Math.h"
 #include "Angle.h"
 //#include "FloatingPoint.h"
+#ifdef TO_STRING_ENABLED
 #include <string>
 #include <sstream>
+#endif
 
 namespace Math
 {
@@ -87,7 +89,9 @@ public:
 	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 public:
+#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -158,21 +162,20 @@ public:
 
 	Vector3D Normalized() const
 	{
-		Vector3D copyVec(*this);
-		copyVec.Normalize();
-		return copyVec;
+		Real length = Length();
+		return Vector3D(m_x / length, m_y / length, m_z / length);
 	}
 	void Normalize()
 	{
-		Real length = LengthSquared();
 //#ifdef _DEBUG
+//		Real length = LengthSquared();
 //		if (AlmostEqual(length, REAL_ZERO))
 //		{
 //			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 //			return;
 //		}
 //#endif
-		(*this) /= static_cast<Real>(sqrt(length));
+		(*this) /= Length();
 	}
 	bool IsNormalized() const;
 
@@ -211,7 +214,9 @@ public:
 	// interpolation LERP
 	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
+#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -342,7 +347,9 @@ public:
 	// interpolation LERP
 	Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 
+#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
+#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

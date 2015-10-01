@@ -142,6 +142,47 @@ void VectorTest()
 	NOTICE_LOG("Vector test finished");
 }
 
+void QuaternionTest()
+{
+	if (!quaternionTestEnabled)
+	{
+		return;
+	}
+
+	NOTICE_LOG("Quaternion test started");
+	/* ==================== QUATERNION TEST #1- comparing quaternions- begin ==================== */
+	Quaternion q1;
+	Quaternion q2(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	Quaternion q3(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
+	Quaternion q4(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
+	TestReport(q1 != q2, "The comparison operators of the Quaternion class are incorrect. q1 != q2");
+	TestReport(q1 != q3, "The comparison operators of the Quaternion class are incorrect. q1 != q3");
+	TestReport(q2 != q3, "The comparison operators of the Quaternion class are incorrect. q2 != q3");
+	TestReport(q1 == q4, "The comparison operators of the Quaternion class are incorrect. q1 == q4");
+	TestReport(q1 != q3, "The comparison operators of the Quaternion class are incorrect. q2 != q3");
+	TestReport(q2 != q4, "The comparison operators of the Quaternion class are incorrect. q2 != q4");
+	TestReport(q3 != q4, "The comparison operators of the Quaternion class are incorrect. q3 != q4");
+	/* ==================== QUATERNION TEST #1- comparing quaternions- end ==================== */
+
+	/* ==================== QUATERNION TEST #2- calculating rotation matrix- begin ==================== */
+	Quaternion q = RandomQuaternion();
+	q.ToRotationMatrix1();
+	/* ==================== QUATERNION TEST #2- calculating rotation matrix- end ==================== */
+
+	NOTICE_LOG("Quaternion test finished");
+}
+
+Quaternion RandomQuaternion()
+{
+	const Real MIN_COMPONENT = -5.0f;
+	const Real MAX_COMPONENT = 5.0f;
+	const Real x = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real y = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real z = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real w = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	return Quaternion(x, y, z, w);
+}
+
 Angle RandomAngle()
 {
 	const Real MIN_ANGLE = REAL_ZERO;

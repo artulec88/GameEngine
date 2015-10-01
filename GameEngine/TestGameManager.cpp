@@ -379,11 +379,11 @@ void TestGameManager::AddCameras()
 		DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 		Quaternion rot(rotMatrix);
 		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		DELOCUST_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-			rotMatrix.ToString().c_str(),
-			rot.ToString().c_str(),
-			rot.ToRotationMatrix().ToString().c_str(),
-			rot2.ToRotationMatrix().ToString().c_str());
+		//DELOCUST_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+		//	rotMatrix.ToString().c_str(),
+		//	rot.ToString().c_str(),
+		//	rot.ToRotationMatrix().ToString().c_str(),
+		//	rot2.ToRotationMatrix().ToString().c_str());
 		cameraNodes[i]->GetTransform().SetRot(rot);
 
 		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Unit::DEGREE);

@@ -10,8 +10,14 @@ namespace Rendering
 
 struct ShadowCameraTransform
 {
-	Math::Vector3D pos;
-	Math::Quaternion rot;
+	ShadowCameraTransform(Math::Vector3D& position, Math::Quaternion& rotation) :
+		m_pos(position),
+		m_rot(rotation)
+	{
+	}
+	
+	Math::Vector3D m_pos;
+	Math::Quaternion m_rot;
 };
 
 class RENDERING_API ShadowInfo

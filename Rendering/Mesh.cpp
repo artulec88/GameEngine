@@ -349,7 +349,7 @@ void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
 		Math::Vector2D deltaUV1 = v1.m_texCoord - v0.m_texCoord;
 		Math::Vector2D deltaUV2 = v2.m_texCoord - v0.m_texCoord;
 
-		Math::Real r = static_cast<Math::Real>(1.0f) / (deltaUV1.GetX() * deltaUV2.GetY() - deltaUV1.GetY() * deltaUV2.GetX());
+		Math::Real r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
 		Math::Vector3D tangent = (deltaPos1 * deltaUV2.GetY() - deltaPos2 * deltaUV1.GetY()) * r;
 		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.GetX() - deltaPos1 * deltaUV2.GetX()) * r;
 

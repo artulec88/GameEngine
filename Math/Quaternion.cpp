@@ -115,6 +115,27 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 	m_w /= length;
 }
 
+Matrix4D Quaternion::ToRotationMatrix4() const
+{
+	Real xForward = 2.0f * (GetX() * GetZ() - GetW() * GetY());
+	Real yForward = 2.0f * (GetY() * GetZ() + GetW() * GetX());
+	Real zForward = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
+	Vector3D forward(xForward, yForward, zForward);
+
+	Real xUp = 2.0f * (GetX()*GetY() + GetW()*GetZ());
+	Real yUp = 1.0f - 2.0f * (GetX()*GetX() + GetZ()*GetZ());
+	Real zUp = 2.0f * (GetY()*GetZ() - GetW()*GetX());
+	Vector3D up(xUp, yUp, zUp);
+
+	Real xRight = 1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ());
+	Real yRight = 2.0f * (GetX()*GetY() - GetW()*GetZ());
+	Real zRight = 2.0f * (GetX()*GetZ() + GetW()*GetY());
+	Vector3D right(xRight, yRight, zRight);
+	
+	return Matrix4D(forward, up, right);
+}
+
+#ifdef TO_STRING_ENABLED
 std::string Quaternion::ToString() const
 {
 	// TODO: Set precision (std::precision)
@@ -122,6 +143,7 @@ std::string Quaternion::ToString() const
 	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
 	return ss.str();
 }
+#endif
 
 Real Quaternion::Length() const
 {
@@ -135,12 +157,8 @@ Real Quaternion::LengthSquared() const
 
 Quaternion Quaternion::Normalized() const
 {
-	Real x = m_x / Length();
-	Real y = m_y / Length();
-	Real z = m_z / Length();
-	Real w = m_w / Length();
-
-	return Quaternion(x, y, z, w);
+	Real length = Length();
+	return Quaternion(m_x / length, m_y / length, m_z / length, m_w / length);
 }
 
 void Quaternion::Normalize()
@@ -177,27 +195,6 @@ Quaternion Quaternion::operator*(const Vector3D& vec) const
 	Real z = m_w * vec.GetZ() + m_x * vec.GetY() - m_y * vec.GetX();
 
 	return Quaternion(x, y, z, w);
-}
-
-inline Matrix4D Quaternion::ToRotationMatrix() const
-{
-	// CHECKED
-	Real xForward = 2.0f * (GetX() * GetZ() - GetW() * GetY());
-	Real yForward = 2.0f * (GetY() * GetZ() + GetW() * GetX());
-	Real zForward = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
-	Vector3D forward(xForward, yForward, zForward);
-
-	Real xUp = 2.0f * (GetX()*GetY() + GetW()*GetZ());
-	Real yUp = 1.0f - 2.0f * (GetX()*GetX() + GetZ()*GetZ());
-	Real zUp = 2.0f * (GetY()*GetZ() - GetW()*GetX());
-	Vector3D up(xUp, yUp, zUp);
-
-	Real xRight = 1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ());
-	Real yRight = 2.0f * (GetX()*GetY() - GetW()*GetZ());
-	Real zRight = 2.0f * (GetX()*GetZ() + GetW()*GetY());
-	Vector3D right(xRight, yRight, zRight);
-	
-	return Matrix4D(forward, up, right);
 }
 
 Real Quaternion::Dot(const Quaternion& q) const
@@ -243,6 +240,21 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
 
 	return Quaternion((*this) * srcFactor + fixedQ * destFactor);
+}
+
+Vector3D Quaternion::GetBack() const
+{
+	return Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE).Rotate(*this);
+}
+
+Vector3D Quaternion::GetDown() const
+{
+	return Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO).Rotate(*this);
+}
+
+Vector3D Quaternion::GetLeft() const
+{
+	return Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
 Quaternion& Quaternion::operator=(const Quaternion& q)

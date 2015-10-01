@@ -62,16 +62,20 @@ CameraBase::~CameraBase(void)
 
 Matrix4D CameraBase::GetViewProjection() const
 {
+	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
+	/* ==================== SOLUTION #1 begin ==================== */
+	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
+	/* ==================== SOLUTION #1 end ==================== */
+
 	Vector3D cameraPos = GetTransform().GetTransformedPos();
 	Matrix4D cameraTranslation(cameraPos.Negated());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
-	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
-	/* ==================== SOLUTION #1 begin ==================== */
-	Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
-	/* ==================== SOLUTION #1 end ==================== */
 	/* ==================== SOLUTION #2 begin ==================== */
-	// Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
+	Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix1());
 	/* ==================== SOLUTION #2 end ==================== */
+	/* ==================== SOLUTION #3 begin ==================== */
+	// Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
+	/* ==================== SOLUTION #3 end ==================== */
 
 	return m_projection * cameraRotation * cameraTranslation;
 }
