@@ -3,6 +3,7 @@
 #include "Quaternion.h"
 #include "FloatingPoint.h"
 #include <math.h>
+#include <sstream>
 
 using namespace Math;
 
@@ -29,14 +30,12 @@ Vector2D::~Vector2D()
 {
 }
 
-#ifdef TO_STRING_ENABLED
 std::string Vector2D::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(x=" << m_x << "; y=" << m_y << ")";
 	return ss.str();
 }
-#endif
 
 Real Vector2D::Length() const
 {

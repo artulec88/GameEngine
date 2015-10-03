@@ -115,27 +115,15 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 	m_w /= length;
 }
 
-Matrix4D Quaternion::ToRotationMatrix4() const
+Matrix4D Quaternion::ToRotationMatrix() const
 {
-	Real xForward = 2.0f * (GetX() * GetZ() - GetW() * GetY());
-	Real yForward = 2.0f * (GetY() * GetZ() + GetW() * GetX());
-	Real zForward = 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY());
-	Vector3D forward(xForward, yForward, zForward);
-
-	Real xUp = 2.0f * (GetX()*GetY() + GetW()*GetZ());
-	Real yUp = 1.0f - 2.0f * (GetX()*GetX() + GetZ()*GetZ());
-	Real zUp = 2.0f * (GetY()*GetZ() - GetW()*GetX());
-	Vector3D up(xUp, yUp, zUp);
-
-	Real xRight = 1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ());
-	Real yRight = 2.0f * (GetX()*GetY() - GetW()*GetZ());
-	Real zRight = 2.0f * (GetX()*GetZ() + GetW()*GetY());
-	Vector3D right(xRight, yRight, zRight);
-	
-	return Matrix4D(forward, up, right);
+	// This function was tested and proved to be the fastest of 6 variants of the same function.
+	// It prooved to be faster even than inline functions.
+	return Matrix4D(Vector3D(2.0f * (GetX() * GetZ() - GetW() * GetY()), 2.0f * (GetY() * GetZ() + GetW() * GetX()), 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY())),
+		Vector3D(2.0f * (GetX()*GetY() + GetW()*GetZ()), 1.0f - 2.0f * (GetX()*GetX() + GetZ()*GetZ()), 2.0f * (GetY()*GetZ() - GetW()*GetX())),
+		Vector3D(1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ()), 2.0f * (GetX()*GetY() - GetW()*GetZ()), 2.0f * (GetX()*GetZ() + GetW()*GetY())));
 }
 
-#ifdef TO_STRING_ENABLED
 std::string Quaternion::ToString() const
 {
 	// TODO: Set precision (std::precision)
@@ -143,7 +131,6 @@ std::string Quaternion::ToString() const
 	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
 	return ss.str();
 }
-#endif
 
 Real Quaternion::Length() const
 {
@@ -202,17 +189,22 @@ Real Quaternion::Dot(const Quaternion& q) const
 	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
 }
 
-Quaternion Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const
+Quaternion Quaternion::Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
-	// CHECKED
-	Quaternion fixedQ(q);
-
-	if (shortest && (this->Dot(q) < 0))
-	{
-		fixedQ = -q;
-	}
-
+	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
 	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();
+}
+
+Quaternion Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const
+{
+	if (shortest && Dot(q) < REAL_ZERO)
+	{
+		return Quaternion((-q.GetX() - m_x) * nlerpFactor + m_x, (-q.GetY() - m_y) * nlerpFactor + m_y, (-q.GetZ() - m_z) * nlerpFactor + m_z, (-q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
+	}
+	else
+	{
+		return Quaternion((q.GetX() - m_x) * nlerpFactor + m_x, (q.GetY() - m_y) * nlerpFactor + m_y, (q.GetZ() - m_z) * nlerpFactor + m_z, (q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
+	}
 }
 
 Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
@@ -229,7 +221,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 
 	if (abs(cos) > 1 - EPSILON)
 	{
-		return Nlerp(fixedQ, slerpFactor, false);
+		return Nlerp2(fixedQ, slerpFactor, false);
 	}
 
 	Real sinus = static_cast<Real>(sqrt(REAL_ONE - cos * cos));
@@ -247,9 +239,19 @@ Vector3D Quaternion::GetBack() const
 	return Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE).Rotate(*this);
 }
 
+Vector3D Quaternion::GetUp() const
+{
+	return Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO).Rotate(*this);
+}
+
 Vector3D Quaternion::GetDown() const
 {
 	return Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO).Rotate(*this);
+}
+
+Vector3D Quaternion::GetRight() const
+{
+	return Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
 Vector3D Quaternion::GetLeft() const
@@ -270,4 +272,9 @@ Quaternion& Quaternion::operator=(const Quaternion& q)
 bool Quaternion::operator==(const Quaternion& q) const
 {
 	return ( AlmostEqual(m_x, q.GetX()) && AlmostEqual(m_y, q.GetY()) && AlmostEqual(m_z, q.GetZ()) && AlmostEqual(m_w, q.GetW()) );
+}
+
+bool Quaternion::operator!=(const Quaternion& q) const
+{
+	return ( !AlmostEqual(m_x, q.GetX()) || !AlmostEqual(m_y, q.GetY()) || !AlmostEqual(m_z, q.GetZ()) || !AlmostEqual(m_w, q.GetW()) );
 }

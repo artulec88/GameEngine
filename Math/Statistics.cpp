@@ -8,6 +8,7 @@
 #include <iterator>
 #include <iomanip>
 #include <fstream>
+#include <sstream>
 
 using namespace Math::Statistics;
 

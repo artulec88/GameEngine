@@ -53,14 +53,14 @@ Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(con
 	Math::Real shadowMapSize = static_cast<Math::Real>(1 << GetShadowInfo()->GetShadowMapSizeAsPowerOf2());
 	Math::Real worldSpaceShadowMapTexelSize = (m_halfShadowArea * 2.0f) / shadowMapSize;
 	// Now we transform from the world space into the light space
-	Math::Vector3D lightSpaceCameraPos(shadowCameraTransform.pos.Rotate(shadowCameraTransform.rot.Conjugate()));
+	Math::Vector3D lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
 
 	// Now we need to snap the lightSpaceCameraPos to shadow map texel size increments
 	lightSpaceCameraPos.SetX(worldSpaceShadowMapTexelSize * floor(lightSpaceCameraPos.GetX() / worldSpaceShadowMapTexelSize));
 	lightSpaceCameraPos.SetY(worldSpaceShadowMapTexelSize * floor(lightSpaceCameraPos.GetY() / worldSpaceShadowMapTexelSize));
 
 	// Now we transform back from the light space into the world space
-	shadowCameraTransform.pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.rot);
+	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);
 	/* ==================== Fixing the shimmering effect end ==================== */
 	return shadowCameraTransform;
 }

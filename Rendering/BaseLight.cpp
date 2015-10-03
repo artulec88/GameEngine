@@ -65,10 +65,7 @@ void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
 
 Rendering::ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
-	ShadowCameraTransform shadowCameraTransform;
-	shadowCameraTransform.pos = GetTransform().GetTransformedPos();
-	shadowCameraTransform.rot = GetTransform().GetTransformedRot();
-	return shadowCameraTransform;
+	return ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

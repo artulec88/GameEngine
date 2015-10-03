@@ -4,10 +4,7 @@
 #include "Math.h"
 #include "Angle.h"
 //#include "FloatingPoint.h"
-#ifdef TO_STRING_ENABLED
-#include <string>
-#include <sstream>
-#endif
+#include <string> // for ToString() method
 
 namespace Math
 {
@@ -89,9 +86,7 @@ public:
 	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 public:
-#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
-#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -214,9 +209,7 @@ public:
 	// interpolation LERP
 	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
-#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
-#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -347,9 +340,7 @@ public:
 	// interpolation LERP
 	Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 
-#ifdef TO_STRING_ENABLED
 	std::string ToString() const;
-#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

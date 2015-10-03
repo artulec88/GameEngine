@@ -159,7 +159,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 {
 	START_PROFILING;
 	//++numberOfPositionsChecked;
-	DEBUG_LOG("Visiting the node with position (%s) and value %.2f", m_position.ToString().c_str(), m_value);
+	//DELOCUST_LOG("Visiting the node with position (%s) and value %.2f", m_position.ToString().c_str(), m_value);
 	Real distance = (position - m_position).LengthSquared();
 	int j = m_numberOfSamples - 1;
 	while ( (j >= 0) && (minDistances[j] > distance) )
@@ -179,7 +179,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 	//}
 	if (IsLeaf())
 	{
-		DEBUG_LOG("The node with position (%s) and value %.2f is a leaf", m_position.ToString().c_str(), m_value);
+		//DELOCUST_LOG("The node with position (%s) and value %.2f is a leaf", m_position.ToString().c_str(), m_value);
 		STOP_PROFILING;
 		return;
 	}
@@ -196,7 +196,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		else if (m_leftTree != NULL)
 		{
-			DELOCUST_LOG("Left tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG("Left tree of node (%s) pruned", m_position.ToString().c_str());
 		}
 		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
@@ -204,7 +204,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		else if (m_rightTree != NULL)
 		{
-			DELOCUST_LOG("Right tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG("Right tree of node (%s) pruned", m_position.ToString().c_str());
 		}
 	}
 	else
@@ -215,7 +215,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		else if (m_rightTree != NULL)
 		{
-			DELOCUST_LOG("Right tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG("Right tree of node (%s) pruned", m_position.ToString().c_str());
 		}
 		if ((m_leftTree != NULL) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
 		{
@@ -223,7 +223,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		else if (m_leftTree != NULL)
 		{
-			DELOCUST_LOG("Left tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG("Left tree of node (%s) pruned", m_position.ToString().c_str());
 		}
 	}
 	STOP_PROFILING;

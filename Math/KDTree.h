@@ -6,7 +6,7 @@
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
 #endif
-#include <string>
+#include <string> // for ToString() method
 
 namespace Math
 {

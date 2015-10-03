@@ -529,8 +529,8 @@ void Renderer::Render(const GameNode& gameNode)
 		{
 			m_altCamera.SetProjection(shadowInfo->GetProjection());
 			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
-			m_altCamera.GetTransform().SetPos(shadowCameraTransform.pos);
-			m_altCamera.GetTransform().SetRot(shadowCameraTransform.rot);
+			m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
+			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 			//m_altCamera.GetTransform().SetPos(m_currentLight->GetTransform().GetTransformedPos());
 			//m_altCamera.GetTransform().SetRot(m_currentLight->GetTransform().GetTransformedRot());
 

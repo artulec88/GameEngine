@@ -34,10 +34,10 @@ unsigned int testNumber = 0;
 bool angleTestEnabled = false;
 bool vectorTestEnabled = false;
 bool matrixTestEnabled = false;
-bool quaternionTestEnabled = false;
+bool quaternionTestEnabled = true;
 bool sortingTestEnabled = false;
 bool kdTreeTestEnabled = false;
-bool statsTestEnabled = true;
+bool statsTestEnabled = false;
 bool otherTestEnabled = true;
 
 void ReportError(const std::string& reportStr)
@@ -57,11 +57,11 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
-	timer.Stop();
+	CHECK_CONDITION_EXIT_ALWAYS(!timer.IsRunning(), Error, "Timer is still running");
 	Timing::TimeSpan timeSpan = timer.GetTimeSpan(timeUnit);
 	timeSpan /= NUMBER_OF_ITERATIONS;
-	timeSpan.AdjustUnitToValue();
-	NOTICE_LOG("%s:\t%.3f %s", reportStr.c_str(), timeSpan.ToString().c_str());
+	//timeSpan.AdjustUnitToValue();
+	NOTICE_LOG("%s:\t%s", reportStr.c_str(), timeSpan.ToString().c_str());
 }
 
 void AngleTest()
@@ -142,6 +142,24 @@ void VectorTest()
 	NOTICE_LOG("Vector test finished");
 }
 
+Real RandomReal(Real min, Real max)
+{
+	Real realValue = min + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (max - min));
+	CHECK_CONDITION_EXIT_ALWAYS(!(realValue < min || realValue > max), Error, "Generated random value (%.4f) is outside of given range [%.4f; %.4f]", realValue, min, max);
+	return realValue;
+}
+
+Quaternion RandomQuaternion()
+{
+	const Real MIN_COMPONENT = -5.0f;
+	const Real MAX_COMPONENT = 5.0f;
+	const Real x = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real y = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real z = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real w = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	return Quaternion(x, y, z, w);
+}
+
 void QuaternionTest()
 {
 	if (!quaternionTestEnabled)
@@ -165,22 +183,47 @@ void QuaternionTest()
 	/* ==================== QUATERNION TEST #1- comparing quaternions- end ==================== */
 
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- begin ==================== */
+	INFO_LOG("Profiling quaternion to rotation matrix conversion functions begin");
 	Quaternion q = RandomQuaternion();
-	q.ToRotationMatrix1();
+	const int QUATERNION_TO_ROTATION_MATRIX_ITERATIONS = 5000000;
+	Timing::Timer timer;
+	timer.Start();
+	for (int i = 0; i < QUATERNION_TO_ROTATION_MATRIX_ITERATIONS; ++i)
+	{
+		Quaternion q = RandomQuaternion();
+		q.ToRotationMatrix();
+	}
+	timer.Stop();
+	TimeReport("Average time for quaternion to rotation matrix conversion", timer, Timing::MICROSECOND, QUATERNION_TO_ROTATION_MATRIX_ITERATIONS);
+	DEBUG_LOG("Profiling quaternion to rotation matrix conversion functions end.");
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- end ==================== */
 
-	NOTICE_LOG("Quaternion test finished");
-}
+	/* ==================== QUATERNION TEST #3- calculating linear interpolation- begin ==================== */
+	INFO_LOG("Profiling quaternion linear interpolation functions begin");
+	const int QUATERNION_LINEAR_INTERPOLATION_ITERATIONS = 1000000;
+	timer.Reset();
+	for (int i = 0; i < QUATERNION_LINEAR_INTERPOLATION_ITERATIONS; ++i)
+	{
+		Quaternion q1 = RandomQuaternion();
+		Quaternion q2 = RandomQuaternion();
+		q1.Nlerp1(q2, RandomReal(REAL_ZERO, REAL_ONE), false);
+	}
+	timer.Stop();
+	TimeReport("Average time for quaternion linear interpolation function #1", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
 
-Quaternion RandomQuaternion()
-{
-	const Real MIN_COMPONENT = -5.0f;
-	const Real MAX_COMPONENT = 5.0f;
-	const Real x = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real y = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real z = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real w = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	return Quaternion(x, y, z, w);
+	timer.Reset();
+	for (int i = 0; i < QUATERNION_LINEAR_INTERPOLATION_ITERATIONS; ++i)
+	{
+		Quaternion q1 = RandomQuaternion();
+		Quaternion q2 = RandomQuaternion();
+		q1.Nlerp2(q2, RandomReal(REAL_ZERO, REAL_ONE), false);
+	}
+	timer.Stop();
+	TimeReport("Average time for quaternion linear interpolation function #2", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
+	DEBUG_LOG("Profiling quaternion linear interpolation functions end.");
+	/* ==================== QUATERNION TEST #3- calculating linear interpolation- end ==================== */
+
+	NOTICE_LOG("Quaternion test finished");
 }
 
 Angle RandomAngle()
@@ -763,6 +806,10 @@ void KDTreeTest()
 
 void StatsTest()
 {
+	if (!statsTestEnabled)
+	{
+		return;
+	}
 	Timing::Timer timer;
 	timer.Start();
 
@@ -823,6 +870,7 @@ int main (int argc, char* argv[])
 
 	AngleTest();
 	VectorTest();
+	QuaternionTest();
 	MatrixTest();
 	SortTest();
 	//SortTestTime();
