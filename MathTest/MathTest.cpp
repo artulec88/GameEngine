@@ -11,6 +11,7 @@
 #include "Utility\Time.h"
 
 #include "StatsTest.h"
+#include "VectorTestGroup.h"
 
 #include <ctime>
 #include <string>
@@ -32,7 +33,7 @@ double elapsedTime;
 
 unsigned int testNumber = 0;
 bool angleTestEnabled = false;
-bool vectorTestEnabled = false;
+bool vectorTestEnabled = true;
 bool matrixTestEnabled = false;
 bool quaternionTestEnabled = true;
 bool sortingTestEnabled = false;
@@ -108,38 +109,14 @@ void VectorTest()
 	{
 		return;
 	}
-
-	NOTICE_LOG("Vector test started");
-	/* ==================== VECTOR2D TEST #1- comparing vectors- begin ==================== */
-	Vector2D vec1(90.0, 90.0);
-	Vector2D vec2(45.0, 90.0);
-	Vector2D vec3(90.0, 45.0);
-	Vector2D vec4(90.0, 90.0);
-	TestReport(vec1 != vec2, "The comparison operators of the Vector2D class are incorrect. vec1 != vec2");
-	TestReport(vec1 != vec3, "The comparison operators of the Vector2D class are incorrect. vec1 != vec3");
-	TestReport(vec2 != vec3, "The comparison operators of the Vector2D class are incorrect. vec2 != vec3");
-	TestReport(vec1 == vec4, "The comparison operators of the Vector2D class are incorrect. vec1 == vec4");
-	TestReport(vec2 != vec3, "The comparison operators of the Vector2D class are incorrect. vec2 != vec3");
-	TestReport(vec2 != vec4, "The comparison operators of the Vector2D class are incorrect. vec2 != vec4");
-	TestReport(vec3 != vec4, "The comparison operators of the Vector2D class are incorrect. vec3 != vec4");
-	//Angle angle5(45.0f);
-	//Angle angle6(M_PI / 4.0f, false); // angle5 is equal to angle6
-	//TestReport(angle1 > angle5, "The comparison operators of the Angle class are incorrect. angle1 > angle5");
-	//TestReport(angle1 > angle6, "The comparison operators of the Angle class are incorrect. angle1 > angle6");
-	//TestReport(angle1 >= angle5, "The comparison operators of the Angle class are incorrect. angle1 >= angle5");
-	//TestReport(angle1 >= angle6, "The comparison operators of the Angle class are incorrect. angle1 >= angle6");
-	//TestReport(angle5 < angle1, "The comparison operators of the Angle class are incorrect. angle5 < angle1");
-	//TestReport(angle6 < angle1, "The comparison operators of the Angle class are incorrect. angle6 < angle1");
-	//TestReport(angle5 <= angle1, "The comparison operators of the Angle class are incorrect. angle5 <= angle1");
-	//TestReport(angle6 <= angle1, "The comparison operators of the Angle class are incorrect. angle6 <= angle1");
-	//TestReport(angle5 == angle6, "The comparison operators of the Angle class are incorrect. angle5 == angle6");
-	//TestReport(angle5 >= angle6, "The comparison operator of the Angle class are incorrect. angle5 >= angle6");
-	//TestReport(angle5 <= angle6, "The comparison operator of the Angle class are incorrect. angle5 <= angle6");
-	//TestReport(angle6 >= angle5, "The comparison operator of the Angle class are incorrect. angle6 >= angle5");
-	//TestReport(angle6 <= angle5, "The comparison operator of the Angle class are incorrect. angle6 <= angle5");
-	/* ==================== VECTOR2D TEST #1- comparing vectors- end ==================== */
-
-	NOTICE_LOG("Vector test finished");
+	MathTest::VectorTestGroup vectorTests;
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO), true));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ONE), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ZERO), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ONE), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(REAL_ZERO, REAL_ZERO), REAL_ZERO));
+	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(REAL_ONE, REAL_ZERO), REAL_ONE));
+	vectorTests.StartTests();
 }
 
 Real RandomReal(Real min, Real max)

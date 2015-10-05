@@ -7,29 +7,6 @@
 namespace MathTest
 {
 
-class TestGroup
-{
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	TestGroup(void);
-	virtual ~TestGroup(void);
-/* ==================== Constructors and destructors end ==================== */
-
-/* ==================== Non-static member functions begin ==================== */
-protected:
-	void AddTest(const Test& test);
-	virtual void StartTests() = 0;
-	bool IsTestGroupEnabled() const;
-/* ==================== Non-static member functions end ==================== */
-
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	std::vector<Test> m_tests;
-	Utility::Timing::Timer m_timer;
-	bool m_isTestGroupEnabled;
-/* ==================== Non-static member variables end ==================== */
-}; /* end class TestGroup */
-
 class Test
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -39,8 +16,10 @@ public:
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
-protected:
-	void StartTest();
+public:
+	virtual void StartTest() = 0;
+	virtual void BeforeTest();
+	virtual void AfterTest();
 	bool IsTestEnabled() const;
 /* ==================== Non-static member functions end ==================== */
 
@@ -51,4 +30,29 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Test */
 
+class TestGroup
+{
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	TestGroup(void);
+	virtual ~TestGroup(void);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	void AddTest(Test* test);
+	void StartTests();
+	bool IsTestGroupEnabled() const;
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	std::vector<Test*> m_tests;
+	Utility::Timing::Timer m_timer;
+	bool m_isTestGroupEnabled;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class TestGroup */
+
 } /* end namespace MathTest */
+
+#endif /* __MATH_TEST_TEST_GROUP_H__ */

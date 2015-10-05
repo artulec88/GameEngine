@@ -41,6 +41,7 @@
 
 #ifdef _DEBUG
 #define CHECK_CONDITION(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
+#define CHECK_CONDITION_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
@@ -56,6 +57,7 @@
 #endif
 #else /* _RELEASE */
 #define CHECK_CONDITION(expr, logLevel, message, ...)
+#define CHECK_CONDITION_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, logLevel, message, ...)
 #define CHECK_CONDITION_EXIT_ALWAYS(expr, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger().Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, logLevel, message, ...)

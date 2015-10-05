@@ -21,12 +21,24 @@
     <ClCompile Include="StatsTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VectorTestGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StatsTesting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StatsTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VectorTestGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
