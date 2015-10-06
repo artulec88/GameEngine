@@ -64,6 +64,54 @@ protected:
 	Math::Real m_expectedLength;
 }; /* end class Vector2DTestLength */
 
+class Vector2DTestAddOperator : public Vector2DTestBase
+{
+public:
+	Vector2DTestAddOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedSumVector);
+	virtual ~Vector2DTestAddOperator();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Math::Vector2D m_expectedSumVector;
+}; /* end class Vector2DTestAddOperator */
+
+class Vector2DTestSubtractOperator : public Vector2DTestBase
+{
+public:
+	Vector2DTestSubtractOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedSubtractVector);
+	virtual ~Vector2DTestSubtractOperator();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Math::Vector2D m_expectedSubtractVector;
+}; /* end class Vector2DTestSubtractOperator */
+
+class Vector2DTestMultiplyOperator : public Vector2DTestBase
+{
+public:
+	Vector2DTestMultiplyOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedMultiplyVector);
+	virtual ~Vector2DTestMultiplyOperator();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Math::Vector2D m_expectedMultiplyVector;
+}; /* end class Vector2DTestMultiplyOperator */
+
+class Vector2DTestDivideOperator : public Vector2DTestBase
+{
+public:
+	Vector2DTestDivideOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedDivideVector);
+	virtual ~Vector2DTestDivideOperator();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Math::Vector2D m_expectedDivideVector;
+}; /* end class Vector2DTestDivideOperator */
+
 } /* end namespace MathTest */
 
 #endif /* __MATH_TEST_VECTOR_TEST_GROUP_H__ */

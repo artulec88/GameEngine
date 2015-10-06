@@ -39,7 +39,9 @@ public:
 	Vector2D operator-() const { return Vector2D(-m_x, -m_y); }
 	Vector2D operator-(const Vector2D& v) const { return Vector2D(m_x - v.GetX(), m_y - v.GetY()); }
 	Vector2D operator*(Real s) const { return Vector2D(s * m_x, s * m_y); }
+	Vector2D operator*(const Vector2D& v) const { return Vector2D(m_x * v.GetX(), m_y * v.GetY()); }
 	Vector2D operator/(Real s) const { return Vector2D(m_x / s, m_y / s); }
+	Vector2D operator/(const Vector2D& v) const { return Vector2D(m_x / v.GetX(), m_y / v.GetY()); }
 	
 	Vector2D& operator+=(const Vector2D& v);
 	Vector2D& operator-=(const Vector2D& v);
