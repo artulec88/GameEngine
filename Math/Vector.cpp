@@ -30,13 +30,6 @@ Vector2D::~Vector2D()
 {
 }
 
-std::string Vector2D::ToString() const
-{
-	std::stringstream ss("");
-	ss << "(x=" << m_x << "; y=" << m_y << ")";
-	return ss.str();
-}
-
 Real Vector2D::Length() const
 {
 	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
@@ -45,14 +38,6 @@ Real Vector2D::Length() const
 Real Vector2D::LengthSquared() const
 {
 	return static_cast<Real>(m_x * m_x + m_y * m_y);
-}
-
-Vector2D Vector2D::Rotate(const Angle& angle)
-{
-	const Real cosine = angle.Cos();
-	const Real sine = angle.Sin();
-
-	return Vector2D(m_x * cosine - m_y * sine, m_x * sine + m_y * cosine);
 }
 
 Vector2D& Vector2D::operator+=(const Vector2D& v)
@@ -121,9 +106,26 @@ bool Vector2D::IsNormalized() const
 	return AlmostEqual(LengthSquared(), REAL_ONE);
 }
 
+Vector2D Vector2D::Rotate(const Angle& angle)
+{
+	const Real cosine = angle.Cos();
+	const Real sine = angle.Sin();
+
+	return Vector2D(m_x * cosine - m_y * sine, m_x * sine + m_y * cosine);
+}
+
 Vector2D Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 {
+	CHECK_CONDITION(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Error,
+		"Vector2D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
+}
+
+std::string Vector2D::ToString() const
+{
+	std::stringstream ss("");
+	ss << "(x=" << m_x << "; y=" << m_y << ")";
+	return ss.str();
 }
 
 /* ==================== Vector3D ==================== */

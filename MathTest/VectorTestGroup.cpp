@@ -1,5 +1,4 @@
 #include "VectorTestGroup.h"
-#include "Math\Vector.h"
 #include "Math\FloatingPoint.h"
 
 using namespace MathTest;
@@ -59,7 +58,7 @@ void Vector2DTestCompare::StartTest()
 		"The vector %s and vector %s comparison result not as expected.",
 		m_vector.ToString().c_str(), m_compareVector.ToString().c_str());
 }
-/* ==================== class Vector2DTestBase end ==================== */
+/* ==================== class Vector2DTestCompare end ==================== */
 
 
 /* ==================== class Vector2DTestLength begin ==================== */
@@ -78,10 +77,10 @@ void Vector2DTestLength::StartTest()
 	Math::Real lengthSquared = m_vector.LengthSquared();
 	Math::Real length = m_vector.Length();
 	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(length, m_expectedLength), Utility::Error,
-		"The vector %s has length %.2f, but was expected to have a length %.2f",
+		"The vector %s has length %.2f, but was expected to have length %.2f",
 		m_vector.ToString().c_str(), length, m_expectedLength);
 	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Error,
-		"The vector %s has length %.2f and squared length %.2f, but expected to have a squared length %.2f",
+		"The vector %s has length %.2f and squared length %.2f, but expected to have squared length %.2f",
 		m_vector.ToString().c_str(), lengthSquared, m_expectedLength * m_expectedLength);
 }
 /* ==================== class Vector2DTestLength end ==================== */
@@ -197,3 +196,137 @@ void Vector2DTestDivideOperator::StartTest()
 		m_vector.ToString().c_str(), m_expectedDivideVector.ToString().c_str());
 }
 /* ==================== class Vector2DTestDivideOperator end ==================== */
+
+
+/* ==================== class Vector2DTestNormalize begin ==================== */
+Vector2DTestNormalize::Vector2DTestNormalize(const Math::Vector2D& vector, const Math::Vector2D& expectedNormalizedVector) :
+	Vector2DTestBase(vector),
+	m_expectedNormalizedVector(expectedNormalizedVector)
+{
+	Math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
+	Math::Real length = m_expectedNormalizedVector.Length();
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::Error,
+		"Given expected normalized vector %s is in fact not normalized.", m_expectedNormalizedVector.ToString().c_str());
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(length, lengthSquared), Utility::Error,
+		"Given expected normalized vector %s gives different results for length and squared length (%.3f and %.3f respectively).",
+		m_expectedNormalizedVector.ToString().c_str(), length, lengthSquared);
+	CHECK_CONDITION_ALWAYS(m_expectedNormalizedVector.IsNormalized(), Utility::Error,
+		"Given expected normalized vector %s is in fact not normalized.",
+		m_expectedNormalizedVector.ToString().c_str());
+}
+
+Vector2DTestNormalize::~Vector2DTestNormalize(void)
+{
+}
+
+void Vector2DTestNormalize::StartTest()
+{
+	Math::Vector2D normalizedVector = m_vector.Normalized();
+	CHECK_CONDITION_ALWAYS(normalizedVector == m_expectedNormalizedVector, Utility::Error,
+		"The vector %s after normalization equals %s. It is different than expected %s.",
+		m_vector.ToString().c_str(), normalizedVector.ToString().c_str(),
+		m_expectedNormalizedVector.ToString().c_str());
+	CHECK_CONDITION_ALWAYS(normalizedVector.IsNormalized(), Utility::Error,
+		"Calculated normalized vector %s is in fact not normalized.",
+		normalizedVector.ToString().c_str());
+
+	m_vector.Normalize();
+	CHECK_CONDITION_ALWAYS(m_vector == m_expectedNormalizedVector, Utility::Error,
+		"The vector after normalization %s is different than expected %s",
+		m_vector.ToString().c_str(), m_expectedNormalizedVector.ToString().c_str());
+	CHECK_CONDITION_ALWAYS(m_vector.IsNormalized(), Utility::Error,
+		"Calculated normalized vector %s is in fact not normalized.",
+		m_vector.ToString().c_str());
+}
+/* ==================== class Vector2DTestNormalize end ==================== */
+
+
+/* ==================== class Vector2DTestCross begin ==================== */
+Vector2DTestCross::Vector2DTestCross(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedCrossResult) :
+	Vector2DTestBase(vector1),
+	m_vector2(vector2),
+	m_expectedCrossResult(expectedCrossResult)
+{
+}
+
+Vector2DTestCross::~Vector2DTestCross(void)
+{
+}
+
+void Vector2DTestCross::StartTest()
+{
+	Math::Real crossResult = m_vector.Cross(m_vector2);
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(crossResult, m_expectedCrossResult, Utility::Error,
+		"The cross product of vectors %s and %s equals %.3f. It is different than expected %.3f",
+		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult, m_expectedCrossResult);
+}
+/* ==================== class Vector2DTestCross end ==================== */
+
+
+/* ==================== class Vector2DTestDot begin ==================== */
+Vector2DTestDot::Vector2DTestDot(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedDotResult) :
+	Vector2DTestBase(vector1),
+	m_vector2(vector2),
+	m_expectedDotResult(expectedDotResult)
+{
+}
+
+Vector2DTestDot::~Vector2DTestDot(void)
+{
+}
+
+void Vector2DTestDot::StartTest()
+{
+	Math::Real dotResult = m_vector.Dot(m_vector2);
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(dotResult, m_expectedDotResult, Utility::Error,
+		"The dot product of vectors %s and %s equals %.3f. It is different than expected %.3f",
+		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), dotResult, m_expectedDotResult);
+}
+/* ==================== class Vector2DTestDot end ==================== */
+
+
+/* ==================== class Vector2DTestRotate begin ==================== */
+Vector2DTestRotate::Vector2DTestRotate(const Math::Vector2D& vector, const Math::Angle& angle, const Math::Vector2D& expectedRotateVector) :
+	Vector2DTestBase(vector),
+	m_angle(angle),
+	m_expectedRotateVector(expectedRotateVector)
+{
+}
+
+Vector2DTestRotate::~Vector2DTestRotate(void)
+{
+}
+
+void Vector2DTestRotate::StartTest()
+{
+	Math::Vector2D rotateVector = m_vector.Rotate(m_angle);
+	CHECK_CONDITION_ALWAYS(rotateVector == m_expectedRotateVector, Utility::Error,
+		"The rotation of vector %s by angle %s is a vector %s. It is different than expected %s",
+		m_vector.ToString().c_str(), m_angle.ToString().c_str(), rotateVector.ToString().c_str(),
+		m_expectedRotateVector.ToString().c_str());
+}
+/* ==================== class Vector2DTestRotate end ==================== */
+
+
+/* ==================== class Vector2DTestRotate begin ==================== */
+Vector2DTestLerp::Vector2DTestLerp(const Math::Vector2D& vector, const Math::Vector2D& vector2, Math::Real lerpFactor, const Math::Vector2D& expectedLerpVector) :
+	Vector2DTestBase(vector),
+	m_vector2(vector2),
+	m_lerpFactor(lerpFactor),
+	m_expectedLerpVector(expectedLerpVector)
+{
+}
+
+Vector2DTestLerp::~Vector2DTestLerp(void)
+{
+}
+
+void Vector2DTestLerp::StartTest()
+{
+	Math::Vector2D lerpVector = m_vector.Lerp(m_vector2, m_lerpFactor);
+	CHECK_CONDITION_ALWAYS(lerpVector == m_expectedLerpVector, Utility::Error,
+		"The linear interpolation of vectors %s and %s with the factor equal to %.2f is a vector %s. It is different than expected %s",
+		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), m_lerpFactor, lerpVector.ToString().c_str(),
+		m_expectedLerpVector.ToString().c_str());
+}
+/* ==================== class Vector2DTestLerp end ==================== */

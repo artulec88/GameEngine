@@ -3,6 +3,7 @@
 
 #include "Test.h"
 #include "Math\Vector.h"
+#include "Math\Angle.h"
 
 namespace MathTest
 {
@@ -111,6 +112,66 @@ protected:
 	Math::Vector2D m_vector2;
 	Math::Vector2D m_expectedDivideVector;
 }; /* end class Vector2DTestDivideOperator */
+
+class Vector2DTestNormalize : public Vector2DTestBase
+{
+public:
+	Vector2DTestNormalize(const Math::Vector2D& vector, const Math::Vector2D& expectedNormalizedVector);
+	virtual ~Vector2DTestNormalize();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_expectedNormalizedVector;
+}; /* end class Vector2DTestNormalize */
+
+class Vector2DTestCross : public Vector2DTestBase
+{
+public:
+	Vector2DTestCross(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedCrossResult);
+	virtual ~Vector2DTestCross();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Real m_expectedCrossResult;
+}; /* end class Vector2DTestCross */
+
+class Vector2DTestDot : public Vector2DTestBase
+{
+public:
+	Vector2DTestDot(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedDotResult);
+	virtual ~Vector2DTestDot();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Real m_expectedDotResult;
+}; /* end class Vector2DTestDot */
+
+class Vector2DTestRotate : public Vector2DTestBase
+{
+public:
+	Vector2DTestRotate(const Math::Vector2D& vec1, const Math::Angle& angle, const Math::Vector2D& expectedRotateVector);
+	virtual ~Vector2DTestRotate();
+public:
+	virtual void StartTest();
+protected:
+	Math::Angle m_angle;
+	Math::Vector2D m_expectedRotateVector;
+}; /* end class Vector2DTestRotate */
+
+class Vector2DTestLerp : public Vector2DTestBase
+{
+public:
+	Vector2DTestLerp(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real lerpFactor, const Math::Vector2D& expectedLerpVector);
+	virtual ~Vector2DTestLerp();
+public:
+	virtual void StartTest();
+protected:
+	Math:Vector2D m_vector2;
+	Math::Real m_lerpFactor;
+	Math::Vector2D m_expectedLerpVector;
+}; /* end class Vector2DTestLerp */
 
 } /* end namespace MathTest */
 

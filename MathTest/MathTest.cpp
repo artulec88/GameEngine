@@ -12,6 +12,7 @@
 
 #include "StatsTest.h"
 #include "VectorTestGroup.h"
+#include "QuaternionTestGroup.h"
 
 #include <ctime>
 #include <string>
@@ -110,12 +111,49 @@ void VectorTest()
 		return;
 	}
 	MathTest::VectorTestGroup vectorTests;
-	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO), true));
-	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ONE), false));
-	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ZERO), false));
-	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ONE), false));
-	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(REAL_ZERO, REAL_ZERO), REAL_ZERO));
-	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(REAL_ONE, REAL_ZERO), REAL_ONE));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f), true));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 1.0f), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestCompare(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 1.0f), false));
+	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(0.0f, 0.0f), 0.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestLength(Math::Vector2D(1.0f, 0.0f), 1.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestAddOperator(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 1.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestAddOperator(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestAddOperator(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(2.0f, 1.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestSubtractOperator(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(-1.0f, 1.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestSubtractOperator(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(-1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestSubtractOperator(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(0.0f, 1.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestMultiplyOperator(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestMultiplyOperator(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestMultiplyOperator(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestDivideOperator(Math::Vector2D(8.0f, 2.0f), Math::Vector2D(4.0f, 1.0f), Math::Vector2D(2.0f, 2.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestDivideOperator(Math::Vector2D(2.0f, 8.0f), Math::Vector2D(2.0f, 2.0f), Math::Vector2D(1.0f, 4.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestDivideOperator(Math::Vector2D(-4.0f, 4.0f), Math::Vector2D(2.0f, -2.0f), Math::Vector2D(-2.0f, -2.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(2.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(0.5f, 0.5f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(0.0f, 1.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(5.0f, 5.0f), Math::Vector2D(0.5f, 0.5f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.6f, 0.8f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(2.0f, 1.0f), -5.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(5.0f, 4.0f), Math::Vector2D(2.0f, -1.0f), -13.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(-3.0f, 2.0f), Math::Vector2D(-3.0f, 3.0f), -3.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(0.0f, 4.0f), Math::Vector2D(4.0f, 1.0f), -8.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestDot(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(2.0f, 1.0f), 11.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestDot(Math::Vector2D(5.0f, 4.0f), Math::Vector2D(2.0f, -1.0f), 6.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestDot(Math::Vector2D(-3.0f, 2.0f), Math::Vector2D(-3.0f, 3.0f), 15.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestDot(Math::Vector2D(0.0f, 4.0f), Math::Vector2D(4.0f, 1.0f), 4.0f));
+	vectorTests.AddTest(new MathTest::Vector2DTestRotate(Math::Vector2D(0.0f, 4.0f), Math::Angle(45.0f), Math::Vector2D(-2.0f * sqrtf(2.0f), 2.0f * sqrtf(2.0f))));
+	vectorTests.AddTest(new MathTest::Vector2DTestRotate(Math::Vector2D(5.0f, 4.0f), Math::Angle(90.0f), Math::Vector2D(-4.0f, 5.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestRotate(Math::Vector2D(5.0f, 4.0f), Math::Angle(360.0f), Math::Vector2D(5.0f, 4.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestRotate(Math::Vector2D(-3.0f, 2.0f), Math::Angle(-45.0f), Math::Vector2D(-sqrtf(2.0f) / 2.0f, 2.5f * sqrtf(2.0f))));
+	vectorTests.AddTest(new MathTest::Vector2DTestRotate(Math::Vector2D(3.0f, 4.0f), Math::Angle(60.0f), Math::Vector2D((3.0f - 4.0f * sqrtf(3.0f)) / 2.0f, (4.0f + 3.0f * sqrtf(3.0f)) / 2.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(0.0f, 4.0f), Math::Vector2D(1.0f, 2.0f), 0.2f, Math::Vector2D(0.2f, 3.6f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(5.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 0.5f, Math::Vector2D(2.75f, 3.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(5.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 1.0f, Math::Vector2D(0.5f, 2.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(-3.0f, 2.0f), Math::Vector2D(0.5f, 2.0f), 0.25f, Math::Vector2D(-2.125f, 2.0f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 0.75f, Math::Vector2D(1.125f, 2.5f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 0.0f, Math::Vector2D(3.0f, 4.0f)));
 	vectorTests.StartTests();
 }
 
@@ -143,21 +181,14 @@ void QuaternionTest()
 	{
 		return;
 	}
-
-	NOTICE_LOG("Quaternion test started");
-	/* ==================== QUATERNION TEST #1- comparing quaternions- begin ==================== */
-	Quaternion q1;
-	Quaternion q2(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	Quaternion q3(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
-	Quaternion q4(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
-	TestReport(q1 != q2, "The comparison operators of the Quaternion class are incorrect. q1 != q2");
-	TestReport(q1 != q3, "The comparison operators of the Quaternion class are incorrect. q1 != q3");
-	TestReport(q2 != q3, "The comparison operators of the Quaternion class are incorrect. q2 != q3");
-	TestReport(q1 == q4, "The comparison operators of the Quaternion class are incorrect. q1 == q4");
-	TestReport(q1 != q3, "The comparison operators of the Quaternion class are incorrect. q2 != q3");
-	TestReport(q2 != q4, "The comparison operators of the Quaternion class are incorrect. q2 != q4");
-	TestReport(q3 != q4, "The comparison operators of the Quaternion class are incorrect. q3 != q4");
-	/* ==================== QUATERNION TEST #1- comparing quaternions- end ==================== */
+	MathTest::QuaternionTestGroup quaternionTests;
+	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 1.0f), Quaternion(0.0f, 0.0f, 0.0f, 0.0f), false));
+	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 0.0f), Quaternion(1.0f, 1.0f, 1.0f, 1.0f), false));
+	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 0.0f), Quaternion(1.0f, 1.0f, 1.0f, 1.0f), false));
+	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 1.0f), Quaternion(0.0f, 0.0f, 0.0f, 1.0f), true));
+	quaternionTests.AddTest(new MathTest::QuaternionTestLength(Quaternion(1.0f, 2.0f, 3.0f, 4.0f), sqrtf(30.0f)));
+	quaternionTests.AddTest(new MathTest::QuaternionTestLength(Quaternion(0.0f, 0.0f, 0.0f, 4.0f), 4.0f));
+	quaternionTests.AddTest(new MathTest::QuaternionTestLength(Quaternion(3.0f, 4.0f, 0.0f, 0.0f), 5.0f));
 
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- begin ==================== */
 	INFO_LOG("Profiling quaternion to rotation matrix conversion functions begin");
@@ -199,8 +230,6 @@ void QuaternionTest()
 	TimeReport("Average time for quaternion linear interpolation function #2", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
 	DEBUG_LOG("Profiling quaternion linear interpolation functions end.");
 	/* ==================== QUATERNION TEST #3- calculating linear interpolation- end ==================== */
-
-	NOTICE_LOG("Quaternion test finished");
 }
 
 Angle RandomAngle()

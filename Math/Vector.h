@@ -54,22 +54,28 @@ public:
 
 	Vector2D Normalized() const
 	{
-		Real length = LengthSquared();
+		//Real length = LengthSquared();
 		//if (AlmostEqual(length, REAL_ZERO))
 		//{
 		//	WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		//	return (*this);
 		//}
-		return (*this) / static_cast<Real>(sqrt(length));
+		// return (*this) / static_cast<Real>(sqrt(length));
+		Real length = Length();
+		return Vector2D(m_x / length, m_y / length);
 	}
 	void Normalize()
 	{
-		Real length = LengthSquared();
+		//Real length = LengthSquared();
 		//if (AlmostEqual(length, REAL_ZERO))
 		//{
 		//	return;
 		//}
-		*this /= static_cast<Real>(sqrt(length));
+		//*this /= static_cast<Real>(sqrt(length));
+
+		Real length = Length();
+		m_x /= length;
+		m_y /= length;
 	}
 	bool IsNormalized() const;
 	

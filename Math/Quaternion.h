@@ -9,7 +9,7 @@
 namespace Math
 {
 
-class MATH_API Quaternion// : public Utility::ISerializable
+class MATH_API Quaternion
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
