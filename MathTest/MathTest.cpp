@@ -131,9 +131,9 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::Vector2DTestDivideOperator(Math::Vector2D(-4.0f, 4.0f), Math::Vector2D(2.0f, -2.0f), Math::Vector2D(-2.0f, -2.0f)));
 	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(2.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
-	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(0.5f, 0.5f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(sqrtf(2.0f) / 2.0f, sqrtf(2.0f) / 2.0f)));
 	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(0.0f, 1.0f)));
-	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(5.0f, 5.0f), Math::Vector2D(0.5f, 0.5f)));
+	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(5.0f, 5.0f), Math::Vector2D(sqrtf(2.0f) / 2.0f, sqrtf(2.0f) / 2.0f)));
 	vectorTests.AddTest(new MathTest::Vector2DTestNormalize(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.6f, 0.8f)));
 	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(2.0f, 1.0f), -5.0f));
 	vectorTests.AddTest(new MathTest::Vector2DTestCross(Math::Vector2D(5.0f, 4.0f), Math::Vector2D(2.0f, -1.0f), -13.0f));

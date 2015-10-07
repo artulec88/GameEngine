@@ -256,7 +256,7 @@ Vector2DTestCross::~Vector2DTestCross(void)
 void Vector2DTestCross::StartTest()
 {
 	Math::Real crossResult = m_vector.Cross(m_vector2);
-	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(crossResult, m_expectedCrossResult, Utility::Error,
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::Error,
 		"The cross product of vectors %s and %s equals %.3f. It is different than expected %.3f",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult, m_expectedCrossResult);
 }
@@ -278,7 +278,7 @@ Vector2DTestDot::~Vector2DTestDot(void)
 void Vector2DTestDot::StartTest()
 {
 	Math::Real dotResult = m_vector.Dot(m_vector2);
-	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(dotResult, m_expectedDotResult, Utility::Error,
+	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::Error,
 		"The dot product of vectors %s and %s equals %.3f. It is different than expected %.3f",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), dotResult, m_expectedDotResult);
 }
@@ -308,7 +308,7 @@ void Vector2DTestRotate::StartTest()
 /* ==================== class Vector2DTestRotate end ==================== */
 
 
-/* ==================== class Vector2DTestRotate begin ==================== */
+/* ==================== class Vector2DTestLerp begin ==================== */
 Vector2DTestLerp::Vector2DTestLerp(const Math::Vector2D& vector, const Math::Vector2D& vector2, Math::Real lerpFactor, const Math::Vector2D& expectedLerpVector) :
 	Vector2DTestBase(vector),
 	m_vector2(vector2),

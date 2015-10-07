@@ -81,11 +81,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MathTest.cpp" />
+    <ClCompile Include="QuaternionTestGroup.cpp" />
     <ClCompile Include="StatsTest.cpp" />
     <ClCompile Include="Test.cpp" />
     <ClCompile Include="VectorTestGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="QuaternionTestGroup.h" />
     <ClInclude Include="StatsTest.h" />
     <ClInclude Include="StatsTesting.h" />
     <ClInclude Include="Test.h" />

@@ -27,6 +27,9 @@
     <ClCompile Include="VectorTestGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="QuaternionTestGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StatsTesting.h">
@@ -39,6 +42,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="VectorTestGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuaternionTestGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

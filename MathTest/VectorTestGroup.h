@@ -133,7 +133,7 @@ public:
 	virtual void StartTest();
 protected:
 	Math::Vector2D m_vector2;
-	Real m_expectedCrossResult;
+	Math::Real m_expectedCrossResult;
 }; /* end class Vector2DTestCross */
 
 class Vector2DTestDot : public Vector2DTestBase
@@ -145,7 +145,7 @@ public:
 	virtual void StartTest();
 protected:
 	Math::Vector2D m_vector2;
-	Real m_expectedDotResult;
+	Math::Real m_expectedDotResult;
 }; /* end class Vector2DTestDot */
 
 class Vector2DTestRotate : public Vector2DTestBase
@@ -168,7 +168,7 @@ public:
 public:
 	virtual void StartTest();
 protected:
-	Math:Vector2D m_vector2;
+	Math::Vector2D m_vector2;
 	Math::Real m_lerpFactor;
 	Math::Vector2D m_expectedLerpVector;
 }; /* end class Vector2DTestLerp */
