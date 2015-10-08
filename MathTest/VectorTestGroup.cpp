@@ -7,12 +7,12 @@ using namespace MathTest;
 VectorTestGroup::VectorTestGroup(void) :
 	TestGroup()
 {
-	NOTICE_LOG("Vector test started");
+	NOTICE_LOG("Vector tests started");
 }
 
 VectorTestGroup::~VectorTestGroup(void)
 {
-	NOTICE_LOG("Vector test finished");
+	NOTICE_LOG("Vector tests finished");
 }
 
 void VectorTestGroup::StartTests()

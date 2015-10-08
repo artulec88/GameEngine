@@ -347,6 +347,7 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 
 Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
+#ifdef _DEBUG
 	START_PROFILING;
 	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
 	Real x = (m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw;
@@ -354,6 +355,12 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 	Real z = (m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw;
 	STOP_PROFILING;
 	return Vector3D(x, y, z);
+#else
+	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
+	return Vector3D((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw,
+		(m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw,
+		(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
+#endif
 }
 
 /**

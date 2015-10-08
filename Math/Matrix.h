@@ -8,7 +8,6 @@
 #include "IStatisticsStorage.h"
 #endif
 
-//#include "Utility\ISerializable.h"
 #include "Utility\ILogger.h"
 
 #include <string>
@@ -18,7 +17,7 @@ namespace Math
 
 #define MATRIX_SIZE 4
 
-class MATH_API Matrix4D// : public Utility::ISerializable
+class MATH_API Matrix4D
 {
 /* ==================== Static variables and functions begin ==================== */
 #ifdef CALCULATE_MATH_STATS
@@ -36,7 +35,7 @@ public:
 	/// <summary>Creates scale matrix based on the specified parameter.</summary>
 	/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
 	/// <returns>Scale matrix.</returns>
-	Matrix4D(Real scale);
+	explicit Matrix4D(Real scale);
 	/// <summary>Creates translation matrix based on the specified parameters.</summary>
 	/// <param name='posX'>The X coordinate of the translation.</param>
 	/// <param name='posY'>The Y coordinate of the translation.</param>
@@ -46,7 +45,7 @@ public:
 	/// <summary>Creates translation matrix based on the specified parameter.</summary>
 	/// <param name='pos'>The 3D translation vector.</param>
 	/// <returns>Translation matrix.</returns>
-	Matrix4D(const Vector3D& pos);
+	explicit Matrix4D(const Vector3D& pos);
 	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 	/// <param name='angleX'>The rotation angle around X axis.</param>
 	/// <param name='angleY'>The rotation angle around Y axis.</param>
@@ -92,7 +91,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	inline void SetElement(int i, int j, Real value);
-	inline Real GetElement (int i, int j) const;
+	inline Real GetElement(int i, int j) const;
 	
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
@@ -106,17 +105,14 @@ public:
 	void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
 	void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
 
-	Vector3D Transform(const Vector3D& vec); // Write tests
+	Vector3D Transform(const Vector3D& vec); // TODO: Write tests
 	
 	Matrix4D Transposition() const;
 	Matrix4D Inversion() const; // TODO: Write tests
 	Real Det(int p, int q) const;
 	
-	/**
-	 * Checks whether the matrix is an identity matrix or not.
-	 * 
-	 * @brief Used only during tests
-	 */
+	/// <summary>Checks whether the matrix is an identity matrix or not. It should be used only in tests.</summary>
+	/// <returns>True if the matrix is an identity matrix. False otherwise.</returns>
 	bool IsIdentity() const;
 
 	std::string ToString() const;
@@ -126,6 +122,8 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	// TODO: Consider using a one-dimensional array to store MATRIX_SIZE * MATRIX_SIZE elements.
+	// TODO: Read an article http://stackoverflow.com/questions/17259877/1d-or-2d-array-whats-faster.
 	Real m[MATRIX_SIZE][MATRIX_SIZE];
 #ifdef CALCULATE_MATH_STATS
 	mutable Statistics::ClassStats& m_classStats;

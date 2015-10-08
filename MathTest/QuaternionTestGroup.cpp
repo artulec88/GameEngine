@@ -36,7 +36,7 @@ QuaternionTestBase::QuaternionTestBase(const Math::Quaternion& quaternion) :
 QuaternionTestBase::~QuaternionTestBase(void)
 {
 }
-/* ==================== class Quaternion2DTestBase end ==================== */
+/* ==================== class QuaternionTestBase end ==================== */
 
 
 /* ==================== class QuaternionTestCompare begin ==================== */
