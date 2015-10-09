@@ -292,6 +292,8 @@ bool Vector3D::IsNormalized() const
 
 Vector3D Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
 {
+	CHECK_CONDITION(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Error,
+		"Vector3D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
@@ -530,6 +532,8 @@ bool Vector4D::IsNormalized() const
 
 Vector4D Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
 {
+	CHECK_CONDITION(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Error,
+		"Vector2D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 

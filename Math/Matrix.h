@@ -84,6 +84,9 @@ public:
 	/// <param name='farPlane'>The distance to the farther depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
 	/// <returns>Ortographic projection matrix.</returns>
 	Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
+	/// <summary>A simple copy-constructor.</summary>
+	/// <param name='mat'>A matrix which is to be copied.</param>
+	/// <returns>A deep copy of the given matrix.</returns>
 	Matrix4D(const Matrix4D& mat);
 	~Matrix4D();
 /* ==================== Constructors and destructors end ==================== */

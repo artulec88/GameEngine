@@ -25,100 +25,19 @@ void VectorTestGroup::StartTests()
 /* ==================== class VectorTestGroup end ==================== */
 
 
-/* ==================== class Vector2DTestLength begin ==================== */
-//Vector2DTestLength::Vector2DTestLength(const Math::Vector2D& vector, Math::Real expectedLength) :
-//	VectorTestBase<Math::Vector2D>(vector),
-//	m_expectedLength(expectedLength)
-//{
-//}
-//
-//Vector2DTestLength::~Vector2DTestLength(void)
-//{
-//}
-//
-//void Vector2DTestLength::StartTest()
-//{
-//	Math::Real lengthSquared = m_vector.LengthSquared();
-//	Math::Real length = m_vector.Length();
-//	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(length, m_expectedLength), Utility::Error,
-//		"The vector %s has length %.2f, but was expected to have length %.2f",
-//		m_vector.ToString().c_str(), length, m_expectedLength);
-//	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Error,
-//		"The vector %s has length %.2f and squared length %.2f, but expected to have squared length %.2f",
-//		m_vector.ToString().c_str(), lengthSquared, m_expectedLength * m_expectedLength);
-//}
-/* ==================== class Vector2DTestLength end ==================== */
-
-
-/* ==================== class Vector2DTestAddOperator begin ==================== */
-//Vector2DTestAddOperator::Vector2DTestAddOperator(const Math::Vector2D& vector1, const Math::Vector2D& vector2, const Math::Vector2D& expectedSumVector) :
-//	VectorTestBase<Math::Vector2D>(vector1),
-//	m_vector2(vector2),
-//	m_expectedSumVector(expectedSumVector)
-//{
-//}
-//
-//Vector2DTestAddOperator::~Vector2DTestAddOperator(void)
-//{
-//}
-//
-//void Vector2DTestAddOperator::StartTest()
-//{
-//	Math::Vector2D sumVector = m_vector + m_vector2;
-//	CHECK_CONDITION_ALWAYS(sumVector == m_expectedSumVector, Utility::Error,
-//		"The sum of vectors %s and %s is a vector %s. It is different than expected %s",
-//		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), sumVector.ToString().c_str(),
-//		m_expectedSumVector.ToString().c_str());
-//
-//	m_vector += m_vector2;
-//	CHECK_CONDITION_ALWAYS(m_vector == m_expectedSumVector, Utility::Error,
-//		"The operator += returned different result than operator + (%s != %s)",
-//		m_vector.ToString().c_str(), m_expectedSumVector.ToString().c_str());
-//}
-/* ==================== class Vector2DTestAddOperator end ==================== */
-
-
-/* ==================== class Vector2DTestSubtractOperator begin ==================== */
-//Vector2DTestSubtractOperator::Vector2DTestSubtractOperator(const Math::Vector2D& vector1, const Math::Vector2D& vector2, const Math::Vector2D& expectedSubtractVector) :
-//	VectorTestBase<Math::Vector2D>(vector1),
-//	m_vector2(vector2),
-//	m_expectedSubtractVector(expectedSubtractVector)
-//{
-//}
-//
-//Vector2DTestSubtractOperator::~Vector2DTestSubtractOperator(void)
-//{
-//}
-//
-//void Vector2DTestSubtractOperator::StartTest()
-//{
-//	Math::Vector2D subtractVector = m_vector - m_vector2;
-//	CHECK_CONDITION_ALWAYS(subtractVector == m_expectedSubtractVector, Utility::Error,
-//		"The subtraction of vectors %s and %s is a vector %s. It is different than expected %s",
-//		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), subtractVector.ToString().c_str(),
-//		m_expectedSubtractVector.ToString().c_str());
-//
-//	m_vector -= m_vector2;
-//	CHECK_CONDITION_ALWAYS(m_vector == m_expectedSubtractVector, Utility::Error,
-//		"The operator -= returned different result than operator - (%s != %s)",
-//		m_vector.ToString().c_str(), m_expectedSubtractVector.ToString().c_str());
-//}
-/* ==================== class Vector2DTestSubtractOperator end ==================== */
-
-
-/* ==================== class Vector2DTestMultiplyOperator begin ==================== */
-//Vector2DTestMultiplyOperator::Vector2DTestMultiplyOperator(const Math::Vector2D& vector1, const Math::Vector2D& vector2, const Math::Vector2D& expectedMultiplyVector) :
+/* ==================== class VectorTestMultiplyOperator begin ==================== */
+//VectorTestMultiplyOperator::VectorTestMultiplyOperator(const Math::Vector2D& vector1, const Math::Vector2D& vector2, const Math::Vector2D& expectedMultiplyVector) :
 //	VectorTestBase<Math::Vector2D>(vector1),
 //	m_vector2(vector2),
 //	m_expectedMultiplyVector(expectedMultiplyVector)
 //{
 //}
 //
-//Vector2DTestMultiplyOperator::~Vector2DTestMultiplyOperator(void)
+//VectorTestMultiplyOperator::~VectorTestMultiplyOperator(void)
 //{
 //}
 //
-//void Vector2DTestMultiplyOperator::StartTest()
+//void VectorTestMultiplyOperator::StartTest()
 //{
 //	Math::Vector2D multiplyVector = m_vector * m_vector2;
 //	CHECK_CONDITION_ALWAYS(multiplyVector == m_expectedMultiplyVector, Utility::Error,
@@ -131,7 +50,7 @@ void VectorTestGroup::StartTests()
 //		"The operator *= returned different result than operator * (%s != %s)",
 //		m_vector.ToString().c_str(), m_expectedMultiplyVector.ToString().c_str());
 //}
-/* ==================== class Vector2DTestMultiplyOperator end ==================== */
+/* ==================== class VectorTestMultiplyOperator end ==================== */
 
 
 /* ==================== class Vector2DTestDivideOperator begin ==================== */

@@ -124,14 +124,6 @@ Matrix4D Quaternion::ToRotationMatrix() const
 		Vector3D(1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ()), 2.0f * (GetX()*GetY() - GetW()*GetZ()), 2.0f * (GetX()*GetZ() + GetW()*GetY())));
 }
 
-std::string Quaternion::ToString() const
-{
-	// TODO: Set precision (std::precision)
-	std::stringstream ss("");
-	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
-	return ss.str();
-}
-
 Real Quaternion::Length() const
 {
 	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
@@ -160,6 +152,12 @@ void Quaternion::Normalize()
 	m_y /= length;
 	m_z /= length;
 	m_w /= length;
+}
+
+bool Quaternion::IsNormalized() const
+{
+	Real lengthSquared = LengthSquared();
+	return AlmostEqual(lengthSquared, REAL_ONE);
 }
 
 Quaternion Quaternion::operator*(const Quaternion& q) const
@@ -277,4 +275,12 @@ bool Quaternion::operator==(const Quaternion& q) const
 bool Quaternion::operator!=(const Quaternion& q) const
 {
 	return ( !AlmostEqual(m_x, q.GetX()) || !AlmostEqual(m_y, q.GetY()) || !AlmostEqual(m_z, q.GetZ()) || !AlmostEqual(m_w, q.GetW()) );
+}
+
+std::string Quaternion::ToString() const
+{
+	// TODO: Set precision (std::precision)
+	std::stringstream ss("");
+	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
+	return ss.str();
 }
