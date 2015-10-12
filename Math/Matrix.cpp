@@ -246,10 +246,17 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	// TODO: Check which of the three solution is faster
 	
 	/* ==================== SOLUTION #1 begin ==================== */
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
 	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
 	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
 	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+#else
+	m[0] = mat[0];		m[1] = mat[1];		m[2] = mat[2];		m[3] = mat[3];
+	m[4] = mat[4];		m[5] = mat[5];		m[6] = mat[6];		m[7] = mat[7];
+	m[8] = mat[8];		m[9] = mat[9];		m[10] = mat[10];	m[11] = mat[11];
+	m[12] = mat[12];	m[13] = mat[13];	m[14] = mat[14];	m[15] = mat[15];
+#endif
 	/* ==================== SOLUTION #1 end ==================== */
 	
 	/* ==================== SOLUTION #2 begin ==================== */
@@ -257,7 +264,11 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//{
 	//	for (int j = 0; j < MATRIX_SIZE; ++j)
 	//	{
+// #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	//		m[i][j] = mat[i][j];
+//#else
+	//		m[i * MATRIX_SIZE + j] = mat[i * MATRIX_SIZE + j];
+//#endif
 	//	}
 	//}
 	/* ==================== SOLUTION #2 end ==================== */
@@ -284,30 +295,57 @@ std::string Matrix4D::ToString() const
 {
 	const std::string INDENTATION_STRING = " ";
 	std::stringstream s("");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	s << m[0][0] << INDENTATION_STRING;
 	s << m[0][1] << INDENTATION_STRING;
 	s << m[0][2] << INDENTATION_STRING;
 	s << m[0][3] << INDENTATION_STRING;
+#else
+	s << m[0] << INDENTATION_STRING;
+	s << m[1] << INDENTATION_STRING;
+	s << m[2] << INDENTATION_STRING;
+	s << m[3] << INDENTATION_STRING;
+#endif
 	s << std::endl;
 
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	s << m[1][0] << INDENTATION_STRING;
 	s << m[1][1] << INDENTATION_STRING;
 	s << m[1][2] << INDENTATION_STRING;
 	s << m[1][3] << INDENTATION_STRING;
+#else
+	s << m[4] << INDENTATION_STRING;
+	s << m[5] << INDENTATION_STRING;
+	s << m[6] << INDENTATION_STRING;
+	s << m[7] << INDENTATION_STRING;
+#endif
 	s << std::endl;
 
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	s << m[2][0] << INDENTATION_STRING;
 	s << m[2][1] << INDENTATION_STRING;
 	s << m[2][2] << INDENTATION_STRING;
 	s << m[2][3] << INDENTATION_STRING;
+#else
+	s << m[8] << INDENTATION_STRING;
+	s << m[9] << INDENTATION_STRING;
+	s << m[10] << INDENTATION_STRING;
+	s << m[11] << INDENTATION_STRING;
+#endif
 	s << std::endl;
 
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	s << m[3][0] << INDENTATION_STRING;
 	s << m[3][1] << INDENTATION_STRING;
 	s << m[3][2] << INDENTATION_STRING;
 	s << m[3][3] << INDENTATION_STRING;
+#else
+	s << m[12] << INDENTATION_STRING;
+	s << m[13] << INDENTATION_STRING;
+	s << m[14] << INDENTATION_STRING;
+	s << m[15] << INDENTATION_STRING;
+#endif
 	s << std::endl;
-
 	return s.str();
 }
 	

@@ -349,7 +349,7 @@ public:
 		m_expectedDotResult(expectedDotResult)
 	{
 	}
-	virtual ~VectorTestDot();
+	virtual ~VectorTestDot()
 	{
 	}
 public:
