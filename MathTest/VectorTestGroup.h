@@ -174,65 +174,197 @@ protected:
 }; /* end class VectorTestSubtractOperator */
 
 
-//class Vector2DTestMultiplyOperator : public VectorTestBase<Math::Vector2D>
-//{
-//public:
-//	Vector2DTestMultiplyOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedMultiplyVector);
-//	virtual ~Vector2DTestMultiplyOperator();
-//public:
-//	virtual void StartTest();
-//protected:
-//	Math::Vector2D m_vector2;
-//	Math::Vector2D m_expectedMultiplyVector;
-//}; /* end class Vector2DTestMultiplyOperator */
-//
-//class Vector2DTestDivideOperator : public VectorTestBase<Math::Vector2D>
-//{
-//public:
-//	Vector2DTestDivideOperator(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const Math::Vector2D& expectedDivideVector);
-//	virtual ~Vector2DTestDivideOperator();
-//public:
-//	virtual void StartTest();
-//protected:
-//	Math::Vector2D m_vector2;
-//	Math::Vector2D m_expectedDivideVector;
-//}; /* end class Vector2DTestDivideOperator */
-//
-//class Vector2DTestNormalize : public VectorTestBase<Math::Vector2D>
-//{
-//public:
-//	Vector2DTestNormalize(const Math::Vector2D& vector, const Math::Vector2D& expectedNormalizedVector);
-//	virtual ~Vector2DTestNormalize();
-//public:
-//	virtual void StartTest();
-//protected:
-//	Math::Vector2D m_expectedNormalizedVector;
-//}; /* end class Vector2DTestNormalize */
-//
-//class Vector2DTestCross : public VectorTestBase<Math::Vector2D>
-//{
-//public:
-//	Vector2DTestCross(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedCrossResult);
-//	virtual ~Vector2DTestCross();
-//public:
-//	virtual void StartTest();
-//protected:
-//	Math::Vector2D m_vector2;
-//	Math::Real m_expectedCrossResult;
-//}; /* end class Vector2DTestCross */
-//
-//class Vector2DTestDot : public VectorTestBase<Math::Vector2D>
-//{
-//public:
-//	Vector2DTestDot(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedDotResult);
-//	virtual ~Vector2DTestDot();
-//public:
-//	virtual void StartTest();
-//protected:
-//	Math::Vector2D m_vector2;
-//	Math::Real m_expectedDotResult;
-//}; /* end class Vector2DTestDot */
-//
+template <class T>
+class VectorTestMultiplyOperator : public VectorTestBase<T>
+{
+public:
+	VectorTestMultiplyOperator(const T& vector1, const T& vector2, Math::Real value, const T& expectedMultiplyVector1, const T& expectedMultiplyVector2) :
+		VectorTestBase<T>(vector1),
+		m_vector2(vector2),
+		m_value(value),
+		m_expectedMultiplyVector1(expectedMultiplyVector1),
+		m_expectedMultiplyVector2(expectedMultiplyVector2)
+	{
+	}
+	virtual ~VectorTestMultiplyOperator()
+	{
+	}
+public:
+	virtual void StartTest()
+	{
+		T multiplyVector1 = m_vector * m_vector2;
+		T multiplyVector2 = m_vector * m_value;
+		CHECK_CONDITION_ALWAYS(multiplyVector1 == m_expectedMultiplyVector1, Utility::Error,
+			"The multiplication of vectors %s and %s is a vector %s. It is different than expected %s",
+			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), multiplyVector1.ToString().c_str(),
+			m_expectedMultiplyVector1.ToString().c_str());
+		CHECK_CONDITION_ALWAYS(multiplyVector2 == m_expectedMultiplyVector2, Utility::Error,
+			"The multiplication of vector %s and value %.2f is a vector %s. It is different than expected %s",
+			m_vector.ToString().c_str(), m_value, multiplyVector2.ToString().c_str(),
+			m_expectedMultiplyVector2.ToString().c_str());
+
+		T tempVector(m_vector);
+		m_vector *= m_vector2;
+		CHECK_CONDITION_ALWAYS(m_vector == m_expectedMultiplyVector1, Utility::Error,
+			"The operator *= returned different result than operator * (%s != %s)",
+			m_vector.ToString().c_str(), m_expectedMultiplyVector1.ToString().c_str());
+		m_vector = tempVector;
+		m_vector *= m_value;
+		CHECK_CONDITION_ALWAYS(m_vector == m_expectedMultiplyVector2, Utility::Error,
+			"The operator *= returned different result than operator * (%s != %s)",
+			m_vector.ToString().c_str(), m_expectedMultiplyVector2.ToString().c_str());
+	}
+protected:
+	T m_vector2;
+	Math::Real m_value;
+	T m_expectedMultiplyVector1;
+	T m_expectedMultiplyVector2;
+}; /* end class VectorTestMultiplyOperator */
+
+template <class T>
+class VectorTestDivideOperator : public VectorTestBase<T>
+{
+public:
+	VectorTestDivideOperator(const T& vector1, const T& vector2, Math::Real value, const T& expectedDivideVector1, const T& expectedDivideVector2) :
+		VectorTestBase<T>(vector1),
+		m_vector2(vector2),
+		m_value(value),
+		m_expectedDivideVector1(expectedDivideVector1),
+		m_expectedDivideVector2(expectedDivideVector2)
+	{
+	}
+	virtual ~VectorTestDivideOperator()
+	{
+	}
+public:
+	virtual void StartTest()
+	{
+		T divideVector1 = m_vector / m_vector2;
+		T divideVector2 = m_vector / m_value;
+		CHECK_CONDITION_ALWAYS(divideVector1 == m_expectedDivideVector1, Utility::Error,
+			"The division of vectors %s and %s is a vector %s. It is different than expected %s",
+			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), divideVector1.ToString().c_str(),
+			m_expectedDivideVector1.ToString().c_str());
+		CHECK_CONDITION_ALWAYS(divideVector2 == m_expectedDivideVector2, Utility::Error,
+			"The division of vector %s and value %.2f is a vector %s. It is different than expected %s",
+			m_vector.ToString().c_str(), m_value, divideVector2.ToString().c_str(),
+			m_expectedDivideVector2.ToString().c_str());
+
+		T tempVector(m_vector);
+		m_vector /= m_vector2;
+		CHECK_CONDITION_ALWAYS(m_vector == m_expectedDivideVector1, Utility::Error,
+			"The operator /= returned different result than operator / (%s != %s)",
+			m_vector.ToString().c_str(), m_expectedDivideVector1.ToString().c_str());
+		m_vector = tempVector;
+		m_vector /= m_value;
+		CHECK_CONDITION_ALWAYS(m_vector == m_expectedDivideVector2, Utility::Error,
+			"The operator /= returned different result than operator / (%s != %s)",
+			m_vector.ToString().c_str(), m_expectedDivideVector2.ToString().c_str());
+	}
+protected:
+	T m_vector2;
+	Math::Real m_value;
+	T m_expectedDivideVector1;
+	T m_expectedDivideVector2;
+}; /* end class VectorTestDivideOperator */
+
+template <class T>
+class VectorTestNormalize : public VectorTestBase<T>
+{
+public:
+	VectorTestNormalize(const T& vector, const T& expectedNormalizedVector) :
+		VectorTestBase<T>(vector),
+		m_expectedNormalizedVector(expectedNormalizedVector)
+	{
+		Math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
+		Math::Real length = m_expectedNormalizedVector.Length();
+		CHECK_CONDITION_ALWAYS(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::Error,
+			"Given expected normalized vector %s is in fact not normalized.", m_expectedNormalizedVector.ToString().c_str());
+		CHECK_CONDITION_ALWAYS(Math::AlmostEqual(length, lengthSquared), Utility::Error,
+			"Given expected normalized vector %s gives different results for length and squared length (%.7f and %.7f respectively).",
+			m_expectedNormalizedVector.ToString().c_str(), length, lengthSquared);
+		CHECK_CONDITION_ALWAYS(m_expectedNormalizedVector.IsNormalized(), Utility::Error,
+			"Given expected normalized vector %s is in fact not normalized.",
+			m_expectedNormalizedVector.ToString().c_str());
+	}
+	virtual ~VectorTestNormalize()
+	{
+	}
+public:
+	virtual void StartTest()
+	{
+		T normalizedVector = m_vector.Normalized();
+		CHECK_CONDITION_ALWAYS(normalizedVector == m_expectedNormalizedVector, Utility::Error,
+			"The vector %s after normalization equals %s. It is different than expected %s.",
+			m_vector.ToString().c_str(), normalizedVector.ToString().c_str(),
+			m_expectedNormalizedVector.ToString().c_str());
+		CHECK_CONDITION_ALWAYS(normalizedVector.IsNormalized(), Utility::Error,
+			"Calculated normalized vector %s is in fact not normalized.",
+			normalizedVector.ToString().c_str());
+
+		m_vector.Normalize();
+		CHECK_CONDITION_ALWAYS(m_vector == m_expectedNormalizedVector, Utility::Error,
+			"The vector after normalization %s is different than expected %s",
+			m_vector.ToString().c_str(), m_expectedNormalizedVector.ToString().c_str());
+		CHECK_CONDITION_ALWAYS(m_vector.IsNormalized(), Utility::Error,
+			"Calculated normalized vector %s is in fact not normalized.",
+			m_vector.ToString().c_str());
+	}
+protected:
+	T m_expectedNormalizedVector;
+}; /* end class VectorTestNormalize */
+
+
+class Vector2DTestCross : public VectorTestBase<Math::Vector2D>
+{
+public:
+	Vector2DTestCross(const Math::Vector2D& vector1, const Math::Vector2D& vector2, Math::Real expectedCrossResult);
+	virtual ~Vector2DTestCross();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector2D m_vector2;
+	Math::Real m_expectedCrossResult;
+}; /* end class Vector2DTestCross */
+
+class Vector3DTestCross : public VectorTestBase<Math::Vector3D>
+{
+public:
+	Vector3DTestCross(const Math::Vector3D& vector1, const Math::Vector3D& vector2, const Math::Vector3D& expectedCrossResult);
+	virtual ~Vector3DTestCross();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector3D m_vector2;
+	Math::Vector3D m_expectedCrossResult;
+}; /* end class Vector3DTestCross */
+
+template <class T>
+class VectorTestDot : public VectorTestBase<T>
+{
+public:
+	VectorTestDot(const T& vector1, const T& vector2, Math::Real expectedDotResult) :
+		VectorTestBase<T>(vector1),
+		m_vector2(vector2),
+		m_expectedDotResult(expectedDotResult)
+	{
+	}
+	virtual ~VectorTestDot();
+	{
+	}
+public:
+	virtual void StartTest()
+	{
+		Math::Real dotResult = m_vector.Dot(m_vector2);
+		CHECK_CONDITION_ALWAYS(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::Error,
+			"The dot product of vectors %s and %s equals %.3f. It is different than expected %.3f",
+			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), dotResult, m_expectedDotResult);
+	}
+protected:
+	T m_vector2;
+	Math::Real m_expectedDotResult;
+}; /* end class VectorTestDot */
+
 //class Vector2DTestRotate : public VectorTestBase<Math::Vector2D>
 //{
 //public:

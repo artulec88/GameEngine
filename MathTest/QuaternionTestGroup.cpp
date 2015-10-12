@@ -157,9 +157,9 @@ void QuaternionTestSubtractOperator::StartTest()
 
 
 /* ==================== class QuaternionTestDivideOperator begin ==================== */
-QuaternionTestDivideOperator::QuaternionTestDivideOperator(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, const Math::Quaternion& expectedDivideQuaternion) :
+QuaternionTestDivideOperator::QuaternionTestDivideOperator(const Math::Quaternion& quaternion, Math::Real divideValue, const Math::Quaternion& expectedDivideQuaternion) :
 	QuaternionTestBase(quaternion),
-	m_quaternion2(quaternion2),
+	m_divideValue(divideValue),
 	m_expectedDivideQuaternion(expectedDivideQuaternion)
 {
 }
@@ -170,11 +170,11 @@ QuaternionTestDivideOperator::~QuaternionTestDivideOperator(void)
 
 void QuaternionTestDivideOperator::StartTest()
 {
-	Math::Quaternion divideQuaternion = m_quaternion / m_quaternion2;
+	Math::Quaternion divideQuaternion = m_quaternion / m_divideValue;
 	CHECK_CONDITION_ALWAYS(divideQuaternion == m_expectedDivideQuaternion, Utility::Error,
-		"The division of quaternions %s and %s is a quaternion %s. It is different than expected %s",
-		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(),
-		divideQuaternion.ToString().c_str(), m_expectedDivideQuaternion.ToString().c_str());
+		"The division of quaternion %s by value %.2f is a quaternion %s. It is different than expected %s",
+		m_quaternion.ToString().c_str(), m_divideValue, divideQuaternion.ToString().c_str(),
+		m_expectedDivideQuaternion.ToString().c_str());
 }
 /* ==================== class QuaternionTestDivideOperator end ==================== */
 
@@ -236,7 +236,7 @@ QuaternionTestDot::~QuaternionTestDot(void)
 
 void QuaternionTestDot::StartTest()
 {
-	Math::Quaternion dotResult = m_quaternion.Dot(m_quaternion2);
+	Math::Real dotResult = m_quaternion.Dot(m_quaternion2);
 	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::Error,
 		"The dot product of quaternions %s and %s equals %.3f. It is different than expected %.3f",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(), dotResult, m_expectedDotResult);
@@ -260,7 +260,7 @@ QuaternionTestNlerp::~QuaternionTestNlerp(void)
 
 void QuaternionTestNlerp::StartTest()
 {
-	Math::Quaternion nlerpQuaternion = m_quaternion.Nlerp(m_quaternion2, m_nlerpFactor, m_shortest);
+	Math::Quaternion nlerpQuaternion = m_quaternion.Nlerp1(m_quaternion2, m_nlerpFactor, m_shortest);
 	CHECK_CONDITION_ALWAYS(nlerpQuaternion == m_expectedNlerpQuaternion, Utility::Error,
 		"The linear interpolation of quaternions %s and %s with the factor equal to %.2f is a vector %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(), m_nlerpFactor, nlerpQuaternion.ToString().c_str(),
@@ -431,7 +431,7 @@ QuaternionTestRotationMatrix::~QuaternionTestRotationMatrix(void)
 
 void QuaternionTestRotationMatrix::StartTest()
 {
-	Math::Vector3D rotationMatrix = m_quaternion.ToRotationMatrix();
+	Math::Matrix4D rotationMatrix = m_quaternion.ToRotationMatrix();
 	CHECK_CONDITION_ALWAYS(rotationMatrix == m_expectedRotationMatrix, Utility::Error,
 		"The rotation matrix for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), rotationMatrix.ToString().c_str(),

@@ -45,6 +45,7 @@ public:
 	
 	Vector2D& operator+=(const Vector2D& v);
 	Vector2D& operator-=(const Vector2D& v);
+	Vector2D& operator*=(Real s);
 	Vector2D& operator*=(const Vector2D& v);
 	Vector2D& operator/=(Real s);
 	Vector2D& operator/=(const Vector2D& v);
@@ -140,10 +141,12 @@ public:
 	Vector3D operator-(const Vector3D& v) const { return Vector3D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); }
 	Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
 	Vector3D operator*(const Vector3D& v) const { return Vector3D(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ()); }
-	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); }; // CHECKED!
+	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); };
+	Vector3D operator/(const Vector3D v) const { return Vector3D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); };
 
 	Vector3D& operator+=(const Vector3D& v);
 	Vector3D& operator-=(const Vector3D& v);
+	Vector3D& operator*=(Real s);
 	Vector3D& operator*=(const Vector3D& v);
 	Vector3D& operator/=(Real s);
 	Vector3D& operator/=(const Vector3D& v);
@@ -267,9 +270,11 @@ public:
 	Vector4D operator*(Real s) const { return Vector4D(s * m_x, s * m_y, s * m_z, s * m_w); }
 	Vector4D operator*(const Vector4D& v) const { return Vector4D(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ(), m_w * v.GetW()); }
 	Vector4D operator/(Real s) const { return Vector4D(m_x / s, m_y / s, m_z / s, m_w / s); }
+	Vector4D operator/(const Vector4D v) const { return Vector4D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); };
 
 	Vector4D& operator+=(const Vector4D& v);
 	Vector4D& operator-=(const Vector4D& v);
+	Vector4D& operator*=(Real s);
 	Vector4D& operator*=(const Vector4D& v);
 	Vector4D& operator/=(Real s);
 	Vector4D& operator/=(const Vector4D& v);

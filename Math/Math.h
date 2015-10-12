@@ -14,7 +14,7 @@
 #define STOP_PROFILING
 #endif
 
-#define EPSILON		static_cast<Math::Real>(1e-7)
+#define EPSILON		static_cast<Math::Real>(1e-6)
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)
 

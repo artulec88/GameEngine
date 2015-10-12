@@ -56,6 +56,13 @@ Vector2D& Vector2D::operator-=(const Vector2D& v)
 	return *this;
 }
 
+Vector2D& Vector2D::operator*=(Math::Real value)
+{
+	m_x *= value;
+	m_y *= value;
+	return *this;
+}
+
 Vector2D& Vector2D::operator*=(const Vector2D& v)
 {
 	m_x *= v.GetX();
@@ -227,6 +234,14 @@ Vector3D& Vector3D::operator-=(const Vector3D& v)
 	m_y -= v.GetY();
 	m_z -= v.GetZ();
 
+	return *this;
+}
+
+Vector3D& Vector3D::operator*=(Math::Real value)
+{
+	m_x *= value;
+	m_y *= value;
+	m_z *= value;
 	return *this;
 }
 
@@ -460,6 +475,15 @@ Vector4D& Vector4D::operator-=(const Vector4D& v)
 	m_z -= v.GetZ();
 	m_w -= v.GetW();
 
+	return *this;
+}
+
+Vector4D& Vector4D::operator*=(Math::Real value)
+{
+	m_x *= value;
+	m_y *= value;
+	m_z *= value;
+	m_w *= value;
 	return *this;
 }
 

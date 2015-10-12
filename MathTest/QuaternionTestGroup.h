@@ -131,12 +131,12 @@ protected:
 class QuaternionTestDivideOperator : public QuaternionTestBase
 {
 public:
-	QuaternionTestDivideOperator(const Math::Quaternion& quaternion, const Math::Quaternion& quaternion2, const Math::Quaternion& expectedDivideQuaternion);
+	QuaternionTestDivideOperator(const Math::Quaternion& quaternion, Math::Real divideValue, const Math::Quaternion& expectedDivideQuaternion);
 	virtual ~QuaternionTestDivideOperator();
 public:
 	virtual void StartTest();
 protected:
-	Math::Quaternion m_quaternion2;
+	Math::Real m_divideValue;
 	Math::Quaternion m_expectedDivideQuaternion;
 }; /* end class QuaternionTestDivideOperator */
 
