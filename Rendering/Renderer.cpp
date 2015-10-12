@@ -606,19 +606,11 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 	START_PROFILING;
 	if (m_ambientLightFogEnabled)
 	{
-		//CRITICAL_LOG("Ambient fog fall-off type: %d. Fog distance calculation type: %d", m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
+		//DEBUG_LOG("Ambient fog fall-off type: %d. Fog distance calculation type: %d", m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
 		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
 		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
-		ASSERT(fogShader != NULL);
-		if (fogShader == NULL)
-		{
-			EMERGENCY_LOG("Cannot render the scene with ambient light. The fog shader is NULL");
-		}
-		ASSERT(fogTerrainShader != NULL);
-		if (fogTerrainShader == NULL)
-		{
-			EMERGENCY_LOG("Cannot render terrain with ambient light. The terrain fog shader is NULL");
-		}
+		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		m_terrainNode->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
 		gameNode.RenderAll(fogShader, this); // Ambient rendering with fog enabled
 	}
@@ -681,6 +673,7 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode)
 {
 	START_PROFILING;
+	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
 	glCullFace(Rendering::glCullFaceMode);
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
@@ -752,7 +745,7 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	}
 
 	std::stringstream ss;
-	int progress = static_cast<int>(loadingProgress * 100);
+	int progress = static_cast<int>(loadingProgress * 100.0f);
 	ss << progress << "%";
 	m_textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
 	m_textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);

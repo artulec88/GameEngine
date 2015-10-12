@@ -26,10 +26,18 @@ Matrix4D::Matrix4D()
 #endif
 {
 	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+#else
+	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
+	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = REAL_ZERO;	m[15] = REAL_ONE;
+#endif
+
 	STOP_PROFILING;
 }
 
@@ -49,10 +57,18 @@ Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
 #endif
 {
 	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
 	m[3][0] = posX;			m[3][1] = posY;			m[3][2] = posZ;			m[3][3] = REAL_ONE;
+#else
+	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO:	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
+	m[12] = posX;		m[13] = posY;		m[14] = posZ;		m[15] = REAL_ONE;
+#endif
+
 	STOP_PROFILING;
 }
 
@@ -62,10 +78,17 @@ Matrix4D::Matrix4D(const Vector3D& pos)
 #endif
 {
 	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
 	m[3][0] = pos.GetX();	m[3][1] = pos.GetY();	m[3][2] = pos.GetZ();	m[3][3] = REAL_ONE;
+#else
+	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO:	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
+	m[12] = pos.GetX();	m[13] = pos.GetY();	m[14] = pos.GetZ();	m[15] = REAL_ONE;
+#endif
 	STOP_PROFILING;
 }
 
@@ -79,12 +102,17 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	Real xCos = angleX.Cos();
 	Real ySin = angleY.Sin();
 	Real yCos = angleY.Cos();
-
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = yCos;			m[0][1] = REAL_ZERO;	m[0][2] = ySin;			m[0][3] = REAL_ZERO;
 	m[1][0] = -xSin * ySin;	m[1][1] = xCos;			m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
 	m[2][0] = -xCos * ySin;	m[2][1] = -xSin;		m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
-
+#else
+	m[0] = yCos;			m[1] = REAL_ZERO;	m[2] = ySin;			m[3] = REAL_ZERO;
+	m[4] = -xSin * ySin;	m[5] = xCos;		m[6] = xSin * yCos;		m[7] = REAL_ZERO;
+	m[8] = -xCos * ySin;	m[9] = -xSin;		m[10] = xCos * yCos;	m[11] = REAL_ZERO;
+	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+#endif
 	CHECK_CONDITION(rot == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING;
 }
@@ -124,18 +152,23 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ
 	/* ==================== SOLUTION #1 end ==================== */
 
 	/* ==================== SOLUTION #2 begin ==================== */
-	Real xSin = angleX.Sin();
-	Real xCos = angleX.Cos();
-	Real ySin = angleY.Sin();
-	Real yCos = angleY.Cos();
-	Real zSin = angleZ.Sin();
-	Real zCos = angleZ.Cos();
-
+	const Real xSin = angleX.Sin();
+	const Real xCos = angleX.Cos();
+	const Real ySin = angleY.Sin();
+	const Real yCos = angleY.Cos();
+	const Real zSin = angleZ.Sin();
+	const Real zCos = angleZ.Cos();
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = yCos * zCos;							m[0][1] = yCos * zSin;							m[0][2] = ySin;			m[0][3] = REAL_ZERO;
 	m[1][0] = -xSin * ySin * zCos - xCos * zSin;	m[1][1] = -xSin * ySin * zSin + xCos * zCos;	m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
 	m[2][0] = -xCos * ySin * zCos + xSin * zSin;	m[2][1] = -xCos * ySin * zSin - xSin * zCos;	m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;							m[3][1] = REAL_ZERO;							m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
-
+#else
+	m[0] = yCos * zCos;							m[1] = yCos * zSin;							m[2] = ySin;			m[3] = REAL_ZERO;
+	m[4] = -xSin * ySin * zCos - xCos * zSin;	m[5] = -xSin * ySin * zSin + xCos * zCos;	m[6] = xSin * yCos;		m[7] = REAL_ZERO;
+	m[8] = -xCos * ySin * zCos + xSin * zSin;	m[9] = -xCos * ySin * zSin - xSin * zCos;	m[10] = xCos * yCos;	m[11] = REAL_ZERO;
+	m[12] = REAL_ZERO;							m[13] = REAL_ZERO;							m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+#endif
 	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
 	//if (rot != matrixToCompare)
 	//{
@@ -188,12 +221,19 @@ Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane,
 	const Real width = right - left;
 	const Real height = top - bottom;
 	const Real depth = farPlane - nearPlane;
-	const Real temp = static_cast<Real>(2);
+	const Real temp = static_cast<Real>(2.0f);
 	
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = temp / width;				m[0][1] = REAL_ZERO;				m[0][2] = REAL_ZERO;						m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;				m[1][1] = temp / height;			m[1][2] = REAL_ZERO;						m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;				m[2][1] = REAL_ZERO;				m[2][2] = -temp / depth;					m[2][3] = REAL_ZERO;
 	m[3][0] = -(right + left) / width;	m[3][1] = -(top + bottom) / height;	m[3][2] = -(farPlane + nearPlane) / depth;	m[3][3] = REAL_ONE;
+#else
+	m[0] = temp / width;				m[1] = REAL_ZERO;					m[2] = REAL_ZERO;							m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO;					m[5] = temp / height;				m[6] = REAL_ZERO;							m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;					m[9] = REAL_ZERO;					m[10] = -temp / depth;						m[11] = REAL_ZERO;
+	m[12] = -(right + left) / width;	m[13] = -(top + bottom) / height;	m[14] = -(farPlane + nearPlane) / depth;	m[15] = REAL_ONE;
+#endif
 	STOP_PROFILING;
 }
 

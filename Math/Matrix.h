@@ -12,10 +12,11 @@
 
 #include <string>
 
+#define MATRIX_SIZE 4
+#define MATRIX_MODE_TWO_DIMENSIONS
+
 namespace Math
 {
-
-#define MATRIX_SIZE 4
 
 class MATH_API Matrix4D
 {
@@ -31,6 +32,8 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
+	/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
+	/// <returns>Identity matrix.</returns>
 	Matrix4D();
 	/// <summary>Creates scale matrix based on the specified parameter.</summary>
 	/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
@@ -127,7 +130,12 @@ private:
 private:
 	// TODO: Consider using a one-dimensional array to store MATRIX_SIZE * MATRIX_SIZE elements.
 	// TODO: Read an article http://stackoverflow.com/questions/17259877/1d-or-2d-array-whats-faster.
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	Real m[MATRIX_SIZE][MATRIX_SIZE];
+#else
+	Real m[MATRIX_SIZE * MATRIX_SIZE];
+#endif
+
 #ifdef CALCULATE_MATH_STATS
 	mutable Statistics::ClassStats& m_classStats;
 #endif
@@ -138,14 +146,22 @@ inline Real Matrix4D::GetElement (int i, int j) const
 {
 	CHECK_CONDITION_EXIT((i >= 0) && (i < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", i);
 	CHECK_CONDITION_EXIT((j >= 0) && (j < MATRIX_SIZE), Utility::Error, "Incorrect column index given (%d)", j);
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	return m[i][j];
+#else
+	return m[i * MATRIX_SIZE + j];
+#endif
 }
 
 inline void Matrix4D::SetElement(int i, int j, Real value)
 {
 	CHECK_CONDITION_EXIT((i >= 0) && (i < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", i);
 	CHECK_CONDITION_EXIT((j >= 0) && (j < MATRIX_SIZE), Utility::Error, "Incorrect column index given (%d)", j);
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[i][j] = value;
+#else
+	m[i * MATRIX_SIZE + j] = value;
+#endif
 }
 
 inline const Math::Real* Matrix4D::operator[](int index) const
