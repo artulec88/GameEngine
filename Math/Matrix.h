@@ -105,8 +105,13 @@ public:
 	bool operator!=(const Matrix4D& m) const;
 	Matrix4D& operator=(const Matrix4D& mat);
 
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	inline const Math::Real* operator[](int index) const;
 	inline Math::Real* operator[](int index);
+#else
+	inline const Math::Real* At(int index) const;
+	inline Math::Real operator[](int index) const;
+#endif
 
 	void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
 	void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
@@ -164,6 +169,7 @@ inline void Matrix4D::SetElement(int i, int j, Real value)
 #endif
 }
 
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 inline const Math::Real* Matrix4D::operator[](int index) const
 {
 	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", index);
@@ -174,5 +180,17 @@ inline Math::Real* Matrix4D::operator[](int index)
 	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE), Utility::Error, "Incorrect row index given (%d)", index);
 	return m[index];
 }
+#else
+inline const Math::Real* Matrix4D::At(int index) const
+{
+	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE), Utility::Error, "Incorrect index given (%d)", index);
+	return &m[index];
+}
+inline Math::Real Matrix4D::operator[](int index) const
+{
+	CHECK_CONDITION_EXIT((index >= 0) && (index < MATRIX_SIZE * MATRIX_SIZE), Utility::Error, "Incorrect index given (%d)", index);
+	return m[index];
+}
+#endif
 
 } /* end namespace Math */

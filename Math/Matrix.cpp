@@ -64,7 +64,7 @@ Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
 	m[3][0] = posX;			m[3][1] = posY;			m[3][2] = posZ;			m[3][3] = REAL_ONE;
 #else
 	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO:	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
 	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
 	m[12] = posX;		m[13] = posY;		m[14] = posZ;		m[15] = REAL_ONE;
 #endif
@@ -85,7 +85,7 @@ Matrix4D::Matrix4D(const Vector3D& pos)
 	m[3][0] = pos.GetX();	m[3][1] = pos.GetY();	m[3][2] = pos.GetZ();	m[3][3] = REAL_ONE;
 #else
 	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO:	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
 	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
 	m[12] = pos.GetX();	m[13] = pos.GetY();	m[14] = pos.GetZ();	m[15] = REAL_ONE;
 #endif
@@ -380,7 +380,7 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 
 	/* ==================== SOLUTION #2 begin ==================== */
 	Matrix4D matrix;
-
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2] + m[3][0] * mat.m[0][3];
 	matrix.m[0][1] = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2] + m[3][1] * mat.m[0][3];
 	matrix.m[0][2] = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2] + m[3][2] * mat.m[0][3];
@@ -400,6 +400,27 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 	matrix.m[3][1] = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1] * mat.m[3][3];
 	matrix.m[3][2] = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2] * mat.m[3][3];
 	matrix.m[3][3] = m[0][3] * mat.m[3][0] + m[1][3] * mat.m[3][1] + m[2][3] * mat.m[3][2] + m[3][3] * mat.m[3][3];
+#else
+	matrix.m[0] = m[0] * mat.m[0] + m[4] * mat.m[1] + m[8] * mat.m[2] + m[12] * mat.m[3];
+	matrix.m[1] = m[1] * mat.m[0] + m[5] * mat.m[1] + m[9] * mat.m[2] + m[13] * mat.m[3];
+	matrix.m[2] = m[2] * mat.m[0] + m[6] * mat.m[1] + m[10] * mat.m[2] + m[14] * mat.m[3];
+	matrix.m[3] = m[3] * mat.m[0] + m[7] * mat.m[1] + m[11] * mat.m[2] + m[15] * mat.m[3];
+
+	matrix.m[4] = m[0] * mat.m[4] + m[4] * mat.m[5] + m[8] * mat.m[6] + m[12] * mat.m[7];
+	matrix.m[5] = m[1] * mat.m[4] + m[5] * mat.m[5] + m[9] * mat.m[6] + m[13] * mat.m[7];
+	matrix.m[6] = m[2] * mat.m[4] + m[6] * mat.m[5] + m[10] * mat.m[6] + m[14] * mat.m[7];
+	matrix.m[7] = m[3] * mat.m[4] + m[7] * mat.m[5] + m[11] * mat.m[6] + m[15] * mat.m[7];
+
+	matrix.m[8] = m[0] * mat.m[8] + m[4] * mat.m[9] + m[8] * mat.m[10] + m[12] * mat.m[11];
+	matrix.m[9] = m[1] * mat.m[8] + m[5] * mat.m[9] + m[9] * mat.m[10] + m[13] * mat.m[11];
+	matrix.m[10] = m[2] * mat.m[8] + m[6] * mat.m[9] + m[10] * mat.m[10] + m[14] * mat.m[11];
+	matrix.m[11] = m[3] * mat.m[8] + m[7] * mat.m[9] + m[11] * mat.m[10] + m[15] * mat.m[11];
+
+	matrix.m[12] = m[0] * mat.m[12] + m[4] * mat.m[13] + m[8] * mat.m[14] + m[12] * mat.m[15];
+	matrix.m[13] = m[1] * mat.m[12] + m[5] * mat.m[13] + m[9] * mat.m[14] + m[13] * mat.m[15];
+	matrix.m[14] = m[2] * mat.m[12] + m[6] * mat.m[13] + m[10] * mat.m[14] + m[14] * mat.m[15];
+	matrix.m[15] = m[3] * mat.m[12] + m[7] * mat.m[13] + m[11] * mat.m[14] + m[15] * mat.m[15];
+#endif
 	
 	STOP_PROFILING;
 	return matrix;
@@ -425,20 +446,25 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 
 Vector3D Matrix4D::operator*(const Vector3D& vec) const
 {
-#ifdef _DEBUG
 	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
 	Real x = (m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw;
 	Real y = (m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw;
 	Real z = (m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw;
+#else
+	const Real oneperw = REAL_ONE / (m[3] * vec.GetX() + m[7] * vec.GetY() + m[11] * vec.GetZ() + m[15]);
+	Real x = (m[0] * vec.GetX() + m[4] * vec.GetY() + m[8] * vec.GetZ() + m[12]) * oneperw;
+	Real y = (m[1] * vec.GetX() + m[5] * vec.GetY() + m[9] * vec.GetZ() + m[13]) * oneperw;
+	Real z = (m[2] * vec.GetX() + m[6] * vec.GetY() + m[10] * vec.GetZ() + m[14]) * oneperw;
+#endif
 	STOP_PROFILING;
 	return Vector3D(x, y, z);
-#else
-	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
-	return Vector3D((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw,
-		(m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw,
-		(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
-#endif
+
+	//const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
+	//return Vector3D((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw,
+	//	(m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw,
+	//	(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
 }
 
 /**
@@ -456,7 +482,11 @@ bool Matrix4D::operator==(const Matrix4D& matrix) const
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			if (! AlmostEqual(matrix.GetElement(i, j), m[i][j]))
+#else
+			if (! AlmostEqual(matrix.GetElement(i, j), m[i * MATRIX_SIZE + j]))
+#endif
 			{
 				STOP_PROFILING;
 				return false;
@@ -478,10 +508,17 @@ Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
 	// TODO: Check which of the three solution is faster
 	
 	/* ==================== SOLUTION #1 begin ==================== */
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
 	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
 	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
 	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+#else
+	m[0] = mat[0];		m[1] = mat[1];		m[2] = mat[2];		m[3] = mat[3];
+	m[4] = mat[4];		m[5] = mat[5];		m[6] = mat[6];		m[7] = mat[7];
+	m[8] = mat[8];		m[9] = mat[9];		m[10] = mat[10];	m[11] = mat[11];
+	m[12] = mat[12];	m[13] = mat[13];	m[14] = mat[14];	m[15] = mat[15];
+#endif
 	/* ==================== SOLUTION #1 end ==================== */
 	
 	/* ==================== SOLUTION #2 begin ==================== */
@@ -519,7 +556,11 @@ Matrix4D Matrix4D::Transposition() const
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			matrix.m[i][j] = m[j][i];
+#else
+			matrix.m[i * MATRIX_SIZE + j] = m[j * MATRIX_SIZE + i];
+#endif
 		}
 	}
 
@@ -557,8 +598,13 @@ Real Matrix4D::Det(int p, int q) const
 	//#define _det3(M, A00, A10, A20, A01, A11, A21, A02, A12, A22)
 	for (int k = 0; k < 3; ++k)
 	{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 		result += m[i[k]][j[0]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[2]];
 		result -= m[i[k]][j[2]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[0]];
+#else
+		result += m[i[k] * MATRIX_SIZE + j[0]] * m[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m[i[(k + 2) % 3] * MATRIX_SIZE + j[2]];
+		result -= m[i[k] * MATRIX_SIZE + j[2]] * m[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m[i[(k + 2) % 3] * MATRIX_SIZE + j[0]];
+#endif
 	}
 	
 	// TODO: Consider creating some asserts here.
@@ -572,7 +618,11 @@ Matrix4D Matrix4D::Inversion() const
 	Real det = 0;
 	for (int j = 0; j < MATRIX_SIZE; ++j)
 	{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 		det += Signum(3, j) * m[3][j] * Det(3, j);
+#else
+		det += Signum(3, j) * m[3 * MATRIX_SIZE + j] * Det(3, j);
+#endif
 	}
 
 	if (det == 0)
@@ -587,7 +637,11 @@ Matrix4D Matrix4D::Inversion() const
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			result.m[j][i] = Signum(i,j) * Det(i,j) / det;
+#else
+			result.m[j * MATRIX_SIZE + i] = Signum(i,j) * Det(i,j) / det;
+#endif
 		}
 	}
 	
@@ -616,7 +670,11 @@ bool Matrix4D::IsIdentity() const
 		{
 			if (i == j)
 			{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 				if (! AlmostEqual(REAL_ONE, m[i][j]))
+#else
+				if (! AlmostEqual(REAL_ONE, m[i * MATRIX_SIZE + j]))
+#endif
 				{
 					STOP_PROFILING;
 					return false;
@@ -624,7 +682,11 @@ bool Matrix4D::IsIdentity() const
 			}
 			else /* i != j */
 			{
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 				if (! AlmostEqual(REAL_ZERO, m[i][j]))
+#else
+				if (! AlmostEqual(REAL_ZERO, m[i * MATRIX_SIZE + j]))
+#endif
 				{
 					STOP_PROFILING;
 					return false;
@@ -639,10 +701,17 @@ bool Matrix4D::IsIdentity() const
 void Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 {
 	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = scaleX;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = scaleY;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = scaleZ;		m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+#else
+	m[0] = scaleX;		m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO;	m[5] = scaleY;		m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = scaleZ;		m[11] = REAL_ZERO;
+	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = REAL_ZERO;	m[15] = REAL_ONE;
+#endif
 	STOP_PROFILING;
 }
 
@@ -658,10 +727,17 @@ void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real near
 	//m[3][0] = 0.0;		m[3][1] = 0.0;	m[3][2] = -1.0;							m[3][3] = 0.0;
 
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = f / aspect;	m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;											m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = f;			m[1][2] = REAL_ZERO;											m[1][3] = REAL_ZERO;
 	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = (-nearPlane - farPlane) * div;						m[2][3] = REAL_ONE;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[3][3] = REAL_ZERO;
+#else
+	m[0] = f / aspect;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;												m[3] = REAL_ZERO;
+	m[4] = REAL_ZERO;	m[5] = f;			m[6] = REAL_ZERO;												m[7] = REAL_ZERO;
+	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = (-nearPlane - farPlane) * div;							m[11] = REAL_ONE;
+	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[15] = REAL_ZERO;
+#endif
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
 
 	STOP_PROFILING;
@@ -669,9 +745,15 @@ void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real near
 
 Vector3D Matrix4D::Transform(const Vector3D& vec)
 {
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	return Vector3D(m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0],
 					m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1],
 					m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]);
+#else
+	return Vector3D(m[0] * vec.GetX() + m[4] * vec.GetY() + m[8] * vec.GetZ() + m[12],
+					m[1] * vec.GetX() + m[5] * vec.GetY() + m[9] * vec.GetZ() + m[13],
+					m[2] * vec.GetX() + m[6] * vec.GetY() + m[10] * vec.GetZ() + m[14]);
+#endif
 
 	//Vector3D ret(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 
@@ -698,8 +780,15 @@ void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& u
 	CHECK_CONDITION(forward.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
 	CHECK_CONDITION(up.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
 	CHECK_CONDITION(right.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = right.GetX();	m[0][1] = up.GetX();	m[0][2] = forward.GetX();	m[0][3] = REAL_ZERO;
 	m[1][0] = right.GetY();	m[1][1] = up.GetY();	m[1][2] = forward.GetY();	m[1][3] = REAL_ZERO;
 	m[2][0] = right.GetZ();	m[2][1] = up.GetZ();	m[2][2] = forward.GetZ();	m[2][3] = REAL_ZERO;
 	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;		m[3][3] = REAL_ONE;
+#else
+	m[0] = right.GetX();	m[1] = up.GetX();	m[2] = forward.GetX();	m[3] = REAL_ZERO;
+	m[4] = right.GetY();	m[5] = up.GetY();	m[6] = forward.GetY();	m[7] = REAL_ZERO;
+	m[8] = right.GetZ();	m[9] = up.GetZ();	m[10] = forward.GetZ();	m[11] = REAL_ZERO;
+	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+#endif
 }

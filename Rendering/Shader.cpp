@@ -780,7 +780,7 @@ void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& mat
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		glUniformMatrix4fv(itr->second, 1, GL_FALSE, &(matrix[0][0]));
 #else
-		glUniformMatrix4fv(itr->second, 1, GL_FALSE, &(matrix[0]));
+		glUniformMatrix4fv(itr->second, 1, GL_FALSE, matrix.At(0));
 #endif
 	}
 }
