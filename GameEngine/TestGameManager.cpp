@@ -27,12 +27,12 @@ using namespace Rendering;
 
 TestGameManager::TestGameManager() :
 	GameManager(),
-	m_resourcesToLoad(32),
+	RESOURCES_TO_LOAD(32),
+	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
-	terrainMesh(NULL),
-	CAMERA_HEIGHT_UPDATE_INTERVAL(0.01f),
-	timeToUpdateCameraHeight(REAL_ZERO),
-	boxNode(NULL),
+	m_terrainMesh(NULL),
+	m_timeToUpdateCameraHeight(REAL_ZERO),
+	m_boxNode(NULL),
 #ifdef ANT_TWEAK_BAR_ENABLED 
 	terrainMaterial(NULL),
 	boxMaterial(NULL),
@@ -41,7 +41,7 @@ TestGameManager::TestGameManager() :
 	terrainDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
 	terrainDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
 #endif
-	humanCount(2),
+	HUMAN_NODES_COUNT(2),
 	humanNodes(NULL),
 	pointLightCount(GET_CONFIG_VALUE("pointLightsCount", 1)),
 	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
@@ -67,12 +67,12 @@ TestGameManager::~TestGameManager(void)
 
 Math::Real TestGameManager::GetLoadingProgress() const
 {
-	if (m_resourcesLoaded > m_resourcesToLoad)
+	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
-		WARNING_LOG("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, m_resourcesToLoad);
+		WARNING_LOG("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, RESOURCES_TO_LOAD);
 		return REAL_ONE;
 	}
-	return static_cast<Math::Real>(m_resourcesLoaded) / m_resourcesToLoad;
+	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
 }
 
 void TestGameManager::Load()
@@ -90,7 +90,7 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new GameNode();
-	terrainMesh = new TerrainMesh("..\\Models\\" + GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
+	m_terrainMesh = new TerrainMesh("..\\Models\\" + GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -104,10 +104,10 @@ void TestGameManager::Load()
 	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	//terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	m_terrainNode->AddComponent(new MeshRenderer(terrainMesh, terrainMaterial));
+	m_terrainNode->AddComponent(new MeshRenderer(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	m_terrainNode->GetTransform().SetScale(20.0f);
-	terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
+	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	RegisterTerrainNode(m_terrainNode);
 
@@ -215,8 +215,8 @@ void TestGameManager::Load()
 
 	srand((unsigned int)time(NULL));
 
-	humanNodes = new GameNode* [humanCount];
-	for (int i = 0; i < humanCount; ++i)
+	humanNodes = new GameNode* [HUMAN_NODES_COUNT];
+	for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
 	{
 		humanNodes[i] = new GameNode();
 		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 2.0f, 32.0f)));
@@ -486,7 +486,7 @@ void TestGameManager::InitializeTweakBars()
 		return;
 	}
 
-	//TwAddVarRO(testGamePropertiesBar, "temp1", TW_TYPE_INT32, &humanCount, " label='Human count' group='Terrain' ");
+	//TwAddVarRO(testGamePropertiesBar, "temp1", TW_TYPE_INT32, &HUMAN_NODES_COUNT, " label='Human count' group='Terrain' ");
 	//TwAddVarRO(testGamePropertiesBar, "temp2", TW_TYPE_INT32, &pointLightCount, " label='Human count' group='Box' ");
 
 	terrainMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_MATRIX_H__
+#define __MATH_MATRIX_H__
 
 #include "Math.h"
 #include "Angle.h"
@@ -13,11 +14,12 @@
 #include <string>
 
 #define MATRIX_SIZE 4
-#define MATRIX_MODE_TWO_DIMENSIONS
+#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
 namespace Math
 {
 
+/// <summary> The class representing the 4x4 matrix. </summary>
 class MATH_API Matrix4D
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -91,6 +93,8 @@ public:
 	/// <param name='mat'>A matrix which is to be copied.</param>
 	/// <returns>A deep copy of the given matrix.</returns>
 	Matrix4D(const Matrix4D& mat);
+
+	/// <summary>A simple matrix destructor.</summary>
 	~Matrix4D();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -194,3 +198,5 @@ inline Math::Real Matrix4D::operator[](int index) const
 #endif
 
 } /* end namespace Math */
+
+#endif /* __MATH_MATRIX_H__ */

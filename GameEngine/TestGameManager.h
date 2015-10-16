@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __GAME_TEST_GAME_MANAGER_H__
+#define __GAME_TEST_GAME_MANAGER_H__
 
 #include <Rendering\GameManager.h>
 #include <Rendering\GameNode.h>
@@ -51,23 +52,23 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	const int m_resourcesToLoad;
+	const int RESOURCES_TO_LOAD;
+	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	int m_resourcesLoaded;
 	
-	Rendering::TerrainMesh* terrainMesh;
-	Rendering::Material* terrainMaterial;
-	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
-	Math::Real timeToUpdateCameraHeight;
+	Rendering::TerrainMesh* m_terrainMesh;
+	Math::Real m_timeToUpdateCameraHeight;
 	
-	Rendering::GameNode* boxNode;
+	Rendering::GameNode* m_boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
+	Rendering::Material* terrainMaterial;
 	Rendering::Material* boxMaterial;
 
 	Math::Real terrainSpecularIntensity, terrainSpecularPower;
 	Math::Real terrainDisplacementScale, terrainDisplacementOffset;
 #endif
 
-	const int humanCount;
+	const int HUMAN_NODES_COUNT;
 	Rendering::GameNode** humanNodes;
 	const int pointLightCount;
 	const int spotLightCount;
@@ -83,3 +84,5 @@ protected:
 }; /* end class TestGameManager */
 
 } /* end namespace Game */
+
+#endif /* __GAME_TEST_GAME_MANAGER_H__ */

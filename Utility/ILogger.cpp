@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "ILogger.h"
 #include "Logger.h"
+#include <iostream>
 
 using namespace Utility;
 
@@ -31,7 +32,7 @@ using namespace Utility;
 ILogger::ILogger(void) :
 	level(Notice)
 {
-	console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
+	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
 	ReadConsoleColorsFromConfigFile();
 }
 
@@ -52,27 +53,27 @@ void ILogger::SetConsoleColor(LogLevel level) const
 	{
 	case Critical:
 		//SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE );
-		SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_INTENSITY );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_INTENSITY );
 		break;
 	case Emergency:
-		SetConsoleTextAttribute(console, FOREGROUND_RED );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED );
 		break;
 	case Error:
-		SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY );
 		break;
 	case Warning:
-		SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN );
 		break;
 	case Notice:
-		SetConsoleTextAttribute(console, FOREGROUND_GREEN | FOREGROUND_INTENSITY );
+		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN | FOREGROUND_INTENSITY );
 		break;
 	case Info:
-		SetConsoleTextAttribute(console, FOREGROUND_GREEN );
+		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN );
 		break;
 	case Debug:
 	case Delocust:
 	case DevNull:
-		SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 		break;
 	default:
 		ERROR_LOG("Incorrect logging level set");
@@ -82,5 +83,19 @@ void ILogger::SetConsoleColor(LogLevel level) const
 
 void ILogger::ResetConsoleColor() const
 {
-	SetConsoleTextAttribute(console, 15); // set color back to normal
+	SetConsoleTextAttribute(m_console, 15); // set color back to normal
+}
+
+void ILogger::SetLevel(LogLevel level)
+{
+	//mutex.Lock();
+	//if ((!m_modified) || (level > this->m_level))
+	//{
+	//	std::cout << "Logging level set to " << LevelNames[level] << std::endl;
+	//	this->m_level = level;
+	//}
+	//m_modified = true;
+	//mutex.Unlock();
+	std::cout << "Logging level set to " << LevelNames[level] << std::endl;
+	m_level = level;
 }

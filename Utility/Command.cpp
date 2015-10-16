@@ -35,7 +35,7 @@ Command::Command(int argc, char* argv[]) : ICommand()
 Command::~Command()
 {
 	DELOCUST_LOG("Command object gets destroyed");
-	commands.clear();
+	m_commands.clear();
 }
 
 void Command::Fill(int argc, char* argv[])
@@ -44,7 +44,7 @@ void Command::Fill(int argc, char* argv[])
 	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	for (int i = 0; i < argc; ++i)
 	{
-		commands.push_back(string(argv[i]));
+		m_commands.push_back(string(argv[i]));
 	}
 }
 
@@ -71,7 +71,7 @@ void Command::Fill(int argc, char* argv[])
 //		s >> term;
 //		if (term != "")
 //		{
-//			commands.push_back(term);
+//			m_commands.push_back(term);
 //			result = true;
 //		}
 //	}
@@ -90,7 +90,7 @@ bool Command::IsArgPosCorrect(int number) const
 //		return defaultValue;
 //
 //	Type value;
-//	std::stringstream s(commands[number]);
+//	std::stringstream s(m_commands[number]);
 //	s >> value;
 //	return value;
 //}
@@ -98,7 +98,7 @@ bool Command::IsArgPosCorrect(int number) const
 // template specialization
 //template<> string Command::Get(int number, const string& defaultValue) const
 //{
-//	return (IsArgPosCorrect(number) ? commands[number] : defaultValue);
+//	return (IsArgPosCorrect(number) ? m_commands[number] : defaultValue);
 //}
 
 string Command::Get(const string& opt, const string& defaultValue) const
@@ -109,7 +109,7 @@ string Command::Get(const string& opt, const string& defaultValue) const
 		return defaultValue;
 	}
 	pos = pos + 1;
-	return (IsArgPosCorrect(pos) ? commands[pos] : defaultValue);
+	return (IsArgPosCorrect(pos) ? m_commands[pos] : defaultValue);
 	//return Get<string>(pos + 1, defaultValue);
 }
 
@@ -129,7 +129,7 @@ string Command::Get(const string& opt, const string& defaultValue) const
 bool Command::GetArgPosition(const std::string& opt, int& argPos, int first /* = 0*/) const
 {
 	int number = first;
-	for (std::vector<std::string>::const_iterator itr = commands.begin() + first; itr != commands.end(); ++itr, ++number)
+	for (std::vector<std::string>::const_iterator itr = m_commands.begin() + first; itr != m_commands.end(); ++itr, ++number)
 	{
 		if ((*itr) == opt)
 		{

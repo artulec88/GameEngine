@@ -23,6 +23,9 @@ namespace Utility { namespace Timing
 
 	class UTILITY_API TimeSpan
 	{
+	/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions end ==================== */
+
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		TimeSpan(float timeValue, TimeUnit timeUnit) :

@@ -1,12 +1,11 @@
 #include "StdAfx.h"
 #include "FileNotFoundException.h"
 
-
-FileNotFoundException::FileNotFoundException(void)
+Utility::FileNotFoundException::FileNotFoundException(void)
 {
 }
 
 
-FileNotFoundException::~FileNotFoundException(void)
+Utility::FileNotFoundException::~FileNotFoundException(void)
 {
 }

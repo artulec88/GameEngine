@@ -17,13 +17,13 @@ namespace Utility
  */
 class Config : public IConfig
 {
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 protected:
 	typedef std::map<std::string, std::string> ValuesMap;
 	ValuesMap cfgValues;
 	//ValuesMap cfgNotDefinedValues;
 	bool isInitialized;
-/* ==================== Static variables end ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -32,7 +32,7 @@ public:
 //	~Config(void);
 /* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Static functions begin ==================== */
+/* ==================== Non-static member functions begin ==================== */
 public:
 	/**
 	 * Load configuration from a given config file.
@@ -86,7 +86,7 @@ public:
 	 * together with their last used default value.
 	 */
 	//std::string ReportUndefined();
-/* ==================== Static functions end ==================== */
+/* ==================== Non-static member functions end ==================== */
 }; /* end class Config */
 
 } /* end namespace Utility */

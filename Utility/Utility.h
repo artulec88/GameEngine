@@ -82,6 +82,16 @@ namespace Utility
 	//void UTILITY_API Trim(const std::string& s, std::string& result);
 	std::string& Trim(std::string& s);
 
+	template<typename T> Min(T value1, T value2)
+	{
+		return (value1 < value2) ? value1 : value2;
+	}
+
+	template<typename T> Max(T value1, T value2)
+	{
+		return (value1 > value2) ? value1 : value2;
+	}
+
 	/**
 	 * @brief Cut the string into tokens.
 	 *

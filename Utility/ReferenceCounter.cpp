@@ -4,26 +4,21 @@
 using namespace Utility;
 
 ReferenceCounter::ReferenceCounter() :
-	refCount(1)
+	m_refCount(1)
 {
 }
 
-//int ReferenceCounter::GetReferenceCount() const
-//{
-//	return refCount;
-//}
-
 void ReferenceCounter::AddReference()
 {
-	++refCount;
+	++m_refCount;
 }
 
 void ReferenceCounter::RemoveReference()
 {
-	--refCount;
+	--m_refCount;
 }
 
 bool ReferenceCounter::IsReferenced() const
 {
-	return refCount > 0;
+	return m_refCount > 0;
 }

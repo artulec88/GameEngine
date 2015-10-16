@@ -32,6 +32,7 @@ using namespace Rendering;
 void PrintHelp()
 {
 	cout << "usage: GameEngine.exe [OPTIONS]" << endl;
+	cout << "\t-log LoggingLevel" << endl;
 	cout << "\t-config ConfigFilePath" << endl;
 	cout << endl;
 }
