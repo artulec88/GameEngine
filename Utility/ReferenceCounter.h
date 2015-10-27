@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __UTILITY_REFERENCE_COUNTER_H__
+#define __UTILITY_REFERENCE_COUNTER_H__
+
 
 //#pragma warning(disable:4251)
 
@@ -9,12 +11,13 @@ namespace Utility
 	class UTILITY_API ReferenceCounter
 	{
 	/* ==================== Constructors and destructors begin ==================== */
-	public:
+	protected:
 		ReferenceCounter();
+		virtual ~ReferenceCounter();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	public:
+	protected:
 		void AddReference();
 		void RemoveReference();
 		bool IsReferenced() const;
@@ -27,3 +30,5 @@ namespace Utility
 	}; /* end class ReferenceCounter */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_REFERENCE_COUNTER_H__ */

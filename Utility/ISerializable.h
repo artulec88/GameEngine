@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_I_SERIALIZABLE_H__
+#define __UTILITY_I_SERIALIZABLE_H__
 
 #include "Utility.h"
 #include <string>
@@ -12,7 +13,7 @@ public:
 	ISerializable(void)
 	{
 	}
-	~ISerializable(void)
+	virtual ~ISerializable(void)
 	{
 	}
 public:
@@ -20,3 +21,5 @@ public:
 }; /* end class ISerializable */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_I_SERIALIZABLE_H__ */

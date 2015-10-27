@@ -8,6 +8,10 @@ ReferenceCounter::ReferenceCounter() :
 {
 }
 
+ReferenceCounter::~ReferenceCounter()
+{
+}
+
 void ReferenceCounter::AddReference()
 {
 	++m_refCount;

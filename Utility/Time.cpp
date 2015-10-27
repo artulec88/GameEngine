@@ -13,7 +13,7 @@ using namespace std;
 /* ==================== TimeSpan class begin ==================== */
 void TimeSpan::AdjustUnitToValue()
 {
-	// TODO: This function should make the m_value and m_unit variables easier to read, i.e.
+	// This function should make the m_value and m_unit variables easier to read, i.e.
 	// if m_value=123456,789 and m_unit=us then we should change m_value to 123,456789 and m_unit=ms.
 	WARNING_LOG("The function has not been tested yet.");
 
@@ -66,24 +66,24 @@ TimeSpan& TimeSpan::operator/=(int s)
 
 bool TimeSpan::operator<(const TimeSpan &timeSpan) const
 {
-	CRITICAL_LOG("The function is not yet implemented");
+	WARNING_LOG("The function has not been tested yet.");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value < timeSpan.GetValue();
 	}
-	// TODO: Finish the function
-	return true;
+	float timeUnitConvertingFactor = Time::TimeUnitConvertingFactor(m_unit, timeSpan.GetUnit());
+	return (m_value * timeUnitConvertingFactor) < timeSpan.GetValue();
 }
 
 bool TimeSpan::operator>(const TimeSpan &timeSpan) const
 {
-	CRITICAL_LOG("The function is not yet implemented");
+	WARNING_LOG("The function has not been tested yet");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value > timeSpan.GetValue();
 	}
-	// TODO: Finish the function
-	return true;
+	float timeUnitConvertingFactor = Time::TimeUnitConvertingFactor(m_unit, timeSpan.GetUnit());
+	return (m_value * timeUnitConvertingFactor) > timeSpan.GetValue();
 }
 
 std::string TimeSpan::ToString() const

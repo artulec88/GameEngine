@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_TIME_H__
+#define __UTILITY_TIME_H__
 
 #include "Utility.h"
 //#include "ISerializable.h"
@@ -141,3 +142,5 @@ namespace Utility { namespace Timing
 } /* end namespace Timing */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_TIME_H__ */

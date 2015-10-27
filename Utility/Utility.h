@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_UTILITY_H__
+#define __UTILITY_UTILITY_H__
 
 #include <vector>
 #include <string>
@@ -106,3 +107,5 @@ namespace Utility
 	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim);
 	void UTILITY_API CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, int delimCount);
 } /* end namespace Utility */
+
+#endif /* __UTILITY_UTILITY_H__ */

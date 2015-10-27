@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __RENDERING_TEXT_RENDERER_H__
+#define __RENDERING_TEXT_RENDERER_H__
+
 #include "GameComponent.h"
 #include "Mesh.h"
 #include "Shader.h"
@@ -64,3 +66,5 @@ private:
 }; /* end class TextRenderer */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_TEXT_RENDERER_H__ */
