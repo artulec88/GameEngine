@@ -88,7 +88,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="FileNotFoundException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Command.cpp" />
@@ -114,7 +113,6 @@
     </ClCompile>
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Utility.cpp" />
-    <ClCompile Include="FileNotFoundException.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
