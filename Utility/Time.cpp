@@ -40,7 +40,7 @@ void TimeSpan::AdjustUnitToValue()
 	else if (m_value >= Time::ONE_OVER_BILLION) { unitOffset = -3; }
 	else { unitOffset = -4; }
 	//TimeUnit newUnit = min(min(m_unit - unitOffset, NANOSECOND), 0);
-	TimeUnit newUnit = m_unit - unitOffset;
+	int newUnit = m_unit - unitOffset;
 	if (newUnit > NANOSECOND)
 	{
 		newUnit = NANOSECOND;
@@ -52,10 +52,10 @@ void TimeSpan::AdjustUnitToValue()
 	/* ==================== Calculating the new unit end ==================== */
 
 	/* ==================== Calculating the new value begin ==================== */
-	Math::Real newValueConversionFactor = pow(10.0f, 3.0f * (newUnit - m_unit));
+	float newValueConversionFactor = pow(10.0f, 3.0f * (newUnit - m_unit));
 	m_value *= newValueConversionFactor;
 	/* ==================== Calculating the new value end ==================== */
-	m_unit = newUnit;
+	m_unit = static_cast<TimeUnit>(newUnit);
 }
 
 TimeSpan& TimeSpan::operator/=(int s)

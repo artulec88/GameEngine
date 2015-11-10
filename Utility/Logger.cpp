@@ -25,7 +25,7 @@ Logger::~Logger()
 
 void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)
 {
-	if (this->level < level)
+	if (m_level < level)
 	{
 		return;
 	}
@@ -66,7 +66,7 @@ void Logger::operator()(LogLevel level, const char *name, int line, const char *
 
 void Logger::Log(LogLevel level, const char *name, int line, const char *format, ...)
 {
-	if (this->level < level)
+	if (m_level < level)
 	{
 		return;
 	}

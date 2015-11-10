@@ -30,7 +30,7 @@ using namespace Utility;
 }
 
 ILogger::ILogger(void) :
-	level(Notice)
+	m_level(Notice)
 {
 	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
 	ReadConsoleColorsFromConfigFile();
