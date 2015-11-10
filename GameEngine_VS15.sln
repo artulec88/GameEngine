@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 14.00
+# Visual Studio 2015
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngine", "GameEngine\GameEngine_VS15.vcxproj", "{C478356C-F557-4607-8CA3-490F7E52563D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math", "Math\Math_VS15.vcxproj", "{14463FDA-7554-41D8-98B4-A57611CED650}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "Utility\Utility_VS15.vcxproj", "{E6B0DAAC-2865-49FC-80BA-2DDF8F7EBD4F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Rendering", "Rendering\Rendering_VS15.vcxproj", "{CD386150-ED93-47EB-B573-754DADF409BF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathTest", "MathTest\MathTest_VS15.vcxproj", "{3FCC2007-176D-413C-8B65-17E46A27C169}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics", "Physics\Physics_VS15.vcxproj", "{57B80C55-5B45-4563-8252-6AE5C379900D}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = GameEngine.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C478356C-F557-4607-8CA3-490F7E52563D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C478356C-F557-4607-8CA3-490F7E52563D}.Debug|Win32.Build.0 = Debug|Win32
+		{C478356C-F557-4607-8CA3-490F7E52563D}.Release|Win32.ActiveCfg = Release|Win32
+		{C478356C-F557-4607-8CA3-490F7E52563D}.Release|Win32.Build.0 = Release|Win32
+		{14463FDA-7554-41D8-98B4-A57611CED650}.Debug|Win32.ActiveCfg = Debug|Win32
+		{14463FDA-7554-41D8-98B4-A57611CED650}.Debug|Win32.Build.0 = Debug|Win32
+		{14463FDA-7554-41D8-98B4-A57611CED650}.Release|Win32.ActiveCfg = Release|Win32
+		{14463FDA-7554-41D8-98B4-A57611CED650}.Release|Win32.Build.0 = Release|Win32
+		{E6B0DAAC-2865-49FC-80BA-2DDF8F7EBD4F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E6B0DAAC-2865-49FC-80BA-2DDF8F7EBD4F}.Debug|Win32.Build.0 = Debug|Win32
+		{E6B0DAAC-2865-49FC-80BA-2DDF8F7EBD4F}.Release|Win32.ActiveCfg = Release|Win32
+		{E6B0DAAC-2865-49FC-80BA-2DDF8F7EBD4F}.Release|Win32.Build.0 = Release|Win32
+		{CD386150-ED93-47EB-B573-754DADF409BF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CD386150-ED93-47EB-B573-754DADF409BF}.Debug|Win32.Build.0 = Debug|Win32
+		{CD386150-ED93-47EB-B573-754DADF409BF}.Release|Win32.ActiveCfg = Release|Win32
+		{CD386150-ED93-47EB-B573-754DADF409BF}.Release|Win32.Build.0 = Release|Win32
+		{3FCC2007-176D-413C-8B65-17E46A27C169}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3FCC2007-176D-413C-8B65-17E46A27C169}.Debug|Win32.Build.0 = Debug|Win32
+		{3FCC2007-176D-413C-8B65-17E46A27C169}.Release|Win32.ActiveCfg = Release|Win32
+		{3FCC2007-176D-413C-8B65-17E46A27C169}.Release|Win32.Build.0 = Release|Win32
+		{57B80C55-5B45-4563-8252-6AE5C379900D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{57B80C55-5B45-4563-8252-6AE5C379900D}.Debug|Win32.Build.0 = Debug|Win32
+		{57B80C55-5B45-4563-8252-6AE5C379900D}.Release|Win32.ActiveCfg = Release|Win32
+		{57B80C55-5B45-4563-8252-6AE5C379900D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

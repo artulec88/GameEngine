@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CD386150-ED93-47EB-B573-754DADF409BF}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Rendering</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;RENDERING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Assimp\lib\x86;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;AntTweakBar.lib;Utility.lib;Math.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RENDERING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Assimp\lib\x86;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp.lib;AntTweakBar.lib;Utility.lib;Math.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\Shaders\basicShader.glsl" />
+    <None Include="..\Shaders\billboarding.glsl" />
+    <None Include="..\Shaders\common.glh" />
+    <None Include="..\Shaders\filter-fxaa.glsl" />
+    <None Include="..\Shaders\filter-gaussBlur7x1.glsl" />
+    <None Include="..\Shaders\filter-null.glsl" />
+    <None Include="..\Shaders\filter.vsh" />
+    <None Include="..\Shaders\forward-ambient-fog-enabled.glsl" />
+    <None Include="..\Shaders\forward-ambient.glsl" />
+    <None Include="..\Shaders\forward-directional.glsl" />
+    <None Include="..\Shaders\forward-point.glsl" />
+    <None Include="..\Shaders\forward-spot.glsl" />
+    <None Include="..\Shaders\forwardlighting.glh" />
+    <None Include="..\Shaders\forwardlighting.vsh" />
+    <None Include="..\Shaders\Lighting.glh" />
+    <None Include="..\Shaders\lightingMain.fsh" />
+    <None Include="..\Shaders\nullShader.glsl" />
+    <None Include="..\Shaders\PhongFragmentShader.fshader" />
+    <None Include="..\Shaders\PhongVertexShader.vshader" />
+    <None Include="..\Shaders\Sampling.glh" />
+    <None Include="..\Shaders\shadowMapGenerator.glsl" />
+    <None Include="..\Shaders\skybox-shader.glsl" />
+    <None Include="..\Shaders\text-shader.glsl" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AntTweakBarTypes.h" />
+    <ClInclude Include="Attenuation.h" />
+    <ClInclude Include="BaseLight.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Color.h" />
+    <ClInclude Include="CubeShadowMap.h" />
+    <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameComponent.h" />
+    <ClInclude Include="GameNode.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="IInputable.h" />
+    <ClInclude Include="IInputableKeyboard.h" />
+    <ClInclude Include="IInputableMouse.h" />
+    <ClInclude Include="Input.h" />
+    <ClInclude Include="CoreEngine.h" />
+    <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="IUpdateable.h" />
+    <ClInclude Include="LightBuilder.h" />
+    <ClInclude Include="LightBuilderDirector.h" />
+    <ClInclude Include="LookAtComponent.h" />
+    <ClInclude Include="MappedValues.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="MenuEntry.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Rendering.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShadowInfo.h" />
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TextRenderer.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="tinythread.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Vertex.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AntTweakBarTypes.cpp" />
+    <ClCompile Include="BaseLight.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CubeShadowMap.cpp" />
+    <ClCompile Include="DirectionalLight.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameComponent.cpp" />
+    <ClCompile Include="GameNode.cpp" />
+    <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="IInputableKeyboard.cpp" />
+    <ClCompile Include="IInputableMouse.cpp" />
+    <ClCompile Include="Input.cpp" />
+    <ClCompile Include="CoreEngine.cpp" />
+    <ClCompile Include="LightBuilder.cpp" />
+    <ClCompile Include="LightBuilderDirector.cpp" />
+    <ClCompile Include="LookAtComponent.cpp" />
+    <ClCompile Include="MappedValues.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MenuEntry.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshRenderer.cpp" />
+    <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Rendering.cpp" />
+    <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowInfo.cpp" />
+    <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="TextRenderer.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="tinythread.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Vertex.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
