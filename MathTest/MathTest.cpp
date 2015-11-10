@@ -24,11 +24,6 @@ using namespace Math;
 using namespace Utility;
 using namespace std;
 
-const int NUMBER_OF_MICROSECONDS_IN_MILISECOND = 1000;
-const int NUMBER_OF_MILISECONDS_IN_SECOND = 1000;
-const int NUMBER_OF_MICROSECONDS_IN_SECOND = 1000000;
-const int NUMBER_OF_NANOSECONDS_IN_SECOND = 1000000000;
-
 unsigned int innerLoops = 10000;
 unsigned int outerLoops = 10000;
 double elapsedTime;
