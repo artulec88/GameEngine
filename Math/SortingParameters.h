@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_SORTING_PARAMETERS_H__
+#define __MATH_SORTING_PARAMETERS_H__
 
 #include "Math.h"
 
@@ -8,7 +9,7 @@ namespace Math { namespace Sorting
 enum MATH_API SortingKey { VALUE = 0, COMPONENT_X, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_ABSOLUTE_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
 enum MATH_API SortingDirection { ASCENDING = 0, DESCENDING };
 
-class SortingParametersChain
+class MATH_API SortingParametersChain
 {
 public:
 /* ==================== Static variables and functions begin ==================== */
@@ -16,8 +17,8 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
-	MATH_API virtual ~SortingParametersChain(void);
+	SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
+	virtual ~SortingParametersChain(void);
 private:
 	SortingParametersChain(const SortingParametersChain& sortingParametersChain) {} // don't implement
 	void operator=(const SortingParametersChain& sortingParametersChain) {} // don't implement
@@ -25,13 +26,13 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	MATH_API void ResetChainLink();
-	MATH_API void AddChainLink(SortingParametersChain* sortingChainParameters);
-	MATH_API SortingKey GetSortingKey() const { return m_sortingKey; }
-	MATH_API SortingDirection GetSortingDirection() const { return m_sortingDirection; }
-	MATH_API void SetSortingKey(SortingKey sortingKey);
-	MATH_API void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
-	MATH_API const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
+	void ResetChainLink();
+	void AddChainLink(SortingParametersChain* sortingChainParameters);
+	SortingKey GetSortingKey() const { return m_sortingKey; }
+	SortingDirection GetSortingDirection() const { return m_sortingDirection; }
+	void SetSortingKey(SortingKey sortingKey);
+	void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
+	const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -45,3 +46,5 @@ private:
 } /* end namespace Sorting */
 
 } /* end namespace Math */
+
+#endif /* __MATH_SORTING_PARAMETERS_H__ */

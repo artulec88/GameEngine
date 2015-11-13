@@ -6,7 +6,7 @@
 //#include <tchar.h> 
 //#include <stdio.h>
 //#include <strsafe.h>
-#include <dirent.h>
+//#include <dirent.h>
 
 using namespace Utility;
 
@@ -75,41 +75,43 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	////return dwError;
 
 
-	INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
-	if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
-	{
-		ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
-		return std::vector<std::string>();
-	}
+	//INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
+	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
+	//{
+	//	ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
+	//	return std::vector<std::string>();
+	//}
+	//std::vector<std::string> filenames;
+	//DIR* dir;
+	//struct dirent* ent;
+	//if ((dir = opendir(directoryPath.c_str())) != NULL)
+	//{
+	//	// print all files and directories within directory
+	//	/* 
+	//	 * Possible values for d_type variable:
+	//	 * #define DT_UNKNOWN  0
+	//	 * #define DT_REG      S_IFREG
+	//	 * #define DT_DIR      S_IFDIR
+	//	 * #define DT_FIFO     S_IFFIFO
+	//	 * #define DT_SOCK     S_IFSOCK
+	//	 * #define DT_CHR      S_IFCHR
+	//	 * #define DT_BLK      S_IFBLK
+	//	 */
+	//	while ((ent = readdir(dir)) != NULL)
+	//	{
+	//		if (ent->d_type == DT_REG) // is regular file
+	//		{
+	//			DEBUG_LOG("%s", ent->d_name);
+	//			filenames.push_back(ent->d_name);
+	//		}
+	//	}
+	//	closedir(dir);
+	//}
+	//else
+	//{
+	//	ERROR_LOG("Could not open directory \"%s\"", directoryPath.c_str());
+	//}
+	//return filenames;
 	std::vector<std::string> filenames;
-	DIR* dir;
-	struct dirent* ent;
-	if ((dir = opendir(directoryPath.c_str())) != NULL)
-	{
-		// print all files and directories within directory
-		/* 
-		 * Possible values for d_type variable:
-		 * #define DT_UNKNOWN  0
-		 * #define DT_REG      S_IFREG
-		 * #define DT_DIR      S_IFDIR
-		 * #define DT_FIFO     S_IFFIFO
-		 * #define DT_SOCK     S_IFSOCK
-		 * #define DT_CHR      S_IFCHR
-		 * #define DT_BLK      S_IFBLK
-		 */
-		while ((ent = readdir(dir)) != NULL)
-		{
-			if (ent->d_type == DT_REG) // is regular file
-			{
-				DEBUG_LOG("%s", ent->d_name);
-				filenames.push_back(ent->d_name);
-			}
-		}
-		closedir(dir);
-	}
-	else
-	{
-		ERROR_LOG("Could not open directory \"%s\"", directoryPath.c_str());
-	}
 	return filenames;
 }

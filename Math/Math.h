@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_MATH_H__
+#define __MATH_MATH_H__
 
 #ifdef MATH_EXPORTS
 #define MATH_API __declspec(dllexport)
@@ -92,3 +93,5 @@ namespace Math
 		return number + 1;
 	}
 } /* end namespace Math */
+
+#endif /* __MATH_MATH_H__ */

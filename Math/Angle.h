@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_ANGLE_H__
+#define __MATH_ANGLE_H__
 
 #include "Math.h"
 //#include "Utility\ISerializable.h"
@@ -120,10 +121,12 @@ private:
 	Unit::UnitType m_unit;
 
 #ifdef CALCULATE_MATH_STATS
-	mutable Statistics::ClassStats& m_classStats;
+	Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class Angle */
   
 } /* end namespace Math */
+
+#endif /* __MATH_ANGLE_H__ */

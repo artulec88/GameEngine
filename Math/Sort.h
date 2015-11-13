@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_SORT_H__
+#define __MATH_SORT_H__
 
 #include "Math.h"
 //#include <string>
@@ -927,3 +928,5 @@ private:
 } /* end namespace Sorting */
 
 } /* end namespace Math */
+
+#endif /* __MATH_SORT_H__ */

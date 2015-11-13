@@ -22,7 +22,7 @@ public:
 private:
 	float NestedMethod4();
 #ifdef CALCULATE_TEST_STATS
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 #endif
 };
 /* ==================== class StatsTest1 end ==================== */
@@ -41,7 +41,7 @@ public:
 private:
 	float NestedMethod4();
 #ifdef CALCULATE_TEST_STATS
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 #endif
 };
 /* ==================== class StatsTest2 end ==================== */

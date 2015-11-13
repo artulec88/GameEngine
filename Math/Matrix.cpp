@@ -113,7 +113,7 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	m[8] = -xCos * ySin;	m[9] = -xSin;		m[10] = xCos * yCos;	m[11] = REAL_ZERO;
 	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
 #endif
-	CHECK_CONDITION(rot == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
+	CHECK_CONDITION((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING;
 }
 
@@ -768,23 +768,23 @@ Vector3D Matrix4D::Transform(const Vector3D& vec)
 
 void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
-	//Vector3D f = forward.Normalized();
-	//Vector3D u = up.Normalized();
-	//Vector3D r = right.Normalized();
+	Vector3D f = forward.Normalized();
+	Vector3D u = up.Normalized();
+	Vector3D r = right.Normalized();
 	
 	//Vector3D right = up;
 	//right.Normalize(); // TODO: Should not be necessary
 	//right = right.Cross(forw);
 
 	//Vector3D newUp = forw.Cross(right);
-	CHECK_CONDITION(forward.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
-	CHECK_CONDITION(up.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
-	CHECK_CONDITION(right.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+	CHECK_CONDITION(f.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
+	CHECK_CONDITION(u.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION(r.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = right.GetX();	m[0][1] = up.GetX();	m[0][2] = forward.GetX();	m[0][3] = REAL_ZERO;
-	m[1][0] = right.GetY();	m[1][1] = up.GetY();	m[1][2] = forward.GetY();	m[1][3] = REAL_ZERO;
-	m[2][0] = right.GetZ();	m[2][1] = up.GetZ();	m[2][2] = forward.GetZ();	m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;		m[3][3] = REAL_ONE;
+	m[0][0] = r.GetX();		m[0][1] = u.GetX();		m[0][2] = f.GetX();		m[0][3] = REAL_ZERO;
+	m[1][0] = r.GetY();		m[1][1] = u.GetY();		m[1][2] = f.GetY();		m[1][3] = REAL_ZERO;
+	m[2][0] = r.GetZ();		m[2][1] = u.GetZ();		m[2][2] = f.GetZ();		m[2][3] = REAL_ZERO;
+	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
 #else
 	m[0] = right.GetX();	m[1] = up.GetX();	m[2] = forward.GetX();	m[3] = REAL_ZERO;
 	m[4] = right.GetY();	m[5] = up.GetY();	m[6] = forward.GetY();	m[7] = REAL_ZERO;

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_ISORT_H__
+#define __MATH_ISORT_H__
 
 #include "Math.h"
 #include "Vector.h"
@@ -180,3 +181,5 @@ protected:
 } /* end namespace Sorting */
 
 } /* end namespace Math */
+
+#endif /* __MATH_ISORT_H__ */

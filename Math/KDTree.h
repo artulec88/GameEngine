@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_KD_TREE_H__
+#define __MATH_KD_TREE_H__
 
 #include "Math.h"
 #include "Vector.h"
@@ -57,10 +58,12 @@ private:
 	Vector3D* m_minDistancePositions; // only root node should allocate memory for this variable
 	Real* m_minDistances; // only root node should allocate memory for this variable
 #ifdef CALCULATE_MATH_STATS
-	mutable Statistics::ClassStats& m_classStats;
+	Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class KDTree */
 
 } /* end namespace Math */
+
+#endif /* __MATH_KD_TREE_H__ */

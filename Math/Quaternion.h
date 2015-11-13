@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MATH_QUATERNION_H__
+#define __MATH_QUATERNION_H__
 
 #include "Angle.h"
 #include "Math.h"
@@ -83,3 +84,5 @@ private:
 }; /* end class Quaternion */
 
 } /* end namespace Math */
+
+#endif /* __MATH_QUATERNION_H__ */

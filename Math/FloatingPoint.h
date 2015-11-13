@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __MATH_FLOATING_POINT_H__
+#define __MATH_FLOATING_POINT_H__
+
 #include <limits>
 #include "Math.h"
 //#include "Utility\IConfig.h"
@@ -131,7 +133,7 @@ private:
 	};
 	
 #ifdef CALCULATE_MATH_STATS
-	mutable Statistics::ClassStats& m_classStats;
+	Statistics::ClassStats& m_classStats;
 #endif
 	
 	/**
@@ -205,3 +207,5 @@ inline bool AlmostEqual(Real value1, Real value2)
 }
 
 } /* end namespace Math */
+
+#endif /* __MATH_FLOATING_POINT_H__ */

@@ -146,7 +146,7 @@ private:
 #endif
 
 #ifdef CALCULATE_MATH_STATS
-	mutable Statistics::ClassStats& m_classStats;
+	Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Matrix */

@@ -9,7 +9,7 @@ using namespace Utility;
 
 /* static */ void ICommand::SetCommand(int argc, char* argv[])
 {
-	CHECK_CONDITION_ALWAYS(ICommand::command != NULL, Utility::Warning, "Trying to create new command instance when it is already present. Reallocating new command instance.");
+	CHECK_CONDITION_ALWAYS(ICommand::command == NULL, Utility::Warning, "Trying to create new command instance when it is already present. Reallocating new command instance.");
 	if (ICommand::command != NULL)
 	{
 		SAFE_DELETE(ICommand::command);
