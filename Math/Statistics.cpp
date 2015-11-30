@@ -353,7 +353,7 @@ void ClassStats::StopProfiling(const char* methodName)
 	--m_profilingMethodsCount;
 }
 
-void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */, std::fstream& appStatsFile) const
+void ClassStats::PrintReport(const Utility::Timing::TimeSpan& timeSpan, std::fstream& appStatsFile) const
 {
 	static const Math::Real ONE_MILION = 1000000.0f;
 	
@@ -378,7 +378,7 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
 	LogTime(classTotalTime, "\tTotal time: %.2f %s");
 	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time excluding nested calls: %.2f %s");
-	INFO_LOG("\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * totalElapsedTime));
+	INFO_LOG("\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
@@ -394,7 +394,7 @@ void ClassStats::PrintReport(Math::Real totalElapsedTime /* given in seconds */,
 		LogTime(meanTime, "\t\tAverage time: %.2f %s");
 		
 		INFO_LOG("\t\tClass usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
-		INFO_LOG("\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * totalElapsedTime));
+		INFO_LOG("\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
 		
 		//INFO_LOG("\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 		std::string methodNameStr(methodStatsItr->first);

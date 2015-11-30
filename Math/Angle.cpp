@@ -15,45 +15,6 @@ Angle::Angle(const Angle& angle) :
 {
 }
 
-// TODO: move this function to *.h file as an inline function
-Real Angle::GetAngleInDegrees() const
-{
-	START_PROFILING;
-	switch (m_unit)
-	{
-	case Unit::DEGREE:
-		STOP_PROFILING;
-		return m_angle;
-	case Unit::RADIAN:
-		STOP_PROFILING;
-		return ToDeg(m_angle);
-	default:
-		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
-		STOP_PROFILING;
-		return m_angle;
-	}
-}
-
-
-// TODO: move this function to *.h file as an inline function
-Real Angle::GetAngleInRadians() const
-{
-	START_PROFILING;
-	switch (m_unit)
-	{
-	case Unit::DEGREE:
-		STOP_PROFILING;
-		return ToRad(m_angle);
-	case Unit::RADIAN:
-		STOP_PROFILING;
-		return m_angle;
-	default:
-		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
-		STOP_PROFILING;
-		return m_angle;
-	}
-}
-
 Angle Angle::operator-() const
 {
 	return Angle(-m_angle, m_unit);
@@ -160,6 +121,7 @@ Angle& Angle::operator/=(Real s)
 	if (AlmostEqual(s, REAL_ZERO))
 	{
 		ERROR_LOG("Cannot divide the angle by 0. Returning the unmodified angle.");
+		STOP_PROFILING;
 		return *this;
 	}
 #endif

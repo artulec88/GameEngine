@@ -3,6 +3,7 @@
 
 #include "Math.h"
 #include "Statistics.h"
+#include "Utility\Time.h"
 #include <map>
 #include <string>
 
@@ -31,7 +32,7 @@ public:
 	MATH_API ClassStats& GetClassStats(const char* className);
 
 	MATH_API void PrintSimpleReport() const;
-	MATH_API void PrintReport(Math::Real totalElapsedSeconds) const;
+	MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -6,8 +6,24 @@
 namespace Math { namespace Sorting
 {
 
-enum MATH_API SortingKey { VALUE = 0, COMPONENT_X, COMPONENT_Y, COMPONENT_Z, SUM_OF_COMPONENTS, SUM_OF_ABSOLUTE_COMPONENTS, SUM_OF_SQUARED_COMPONENTS };
-enum MATH_API SortingDirection { ASCENDING = 0, DESCENDING };
+/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
+enum MATH_API SortingKey
+{
+	VALUE = 0,
+	COMPONENT_X,
+	COMPONENT_Y,
+	COMPONENT_Z,
+	SUM_OF_COMPONENTS,
+	SUM_OF_ABSOLUTE_COMPONENTS,
+	SUM_OF_SQUARED_COMPONENTS
+};
+
+/// <summary> The direction represents the order in which the sorting is performed. </summary>
+enum MATH_API SortingDirection
+{
+	ASCENDING = 0,
+	DESCENDING
+};
 
 class MATH_API SortingParametersChain
 {

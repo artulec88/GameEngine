@@ -127,7 +127,7 @@ CoreEngine::~CoreEngine(void)
 	INFO_LOG("Rendering step omitted %d times", m_renderingNotRequiredCount);
 
 	m_timer.Stop();
-	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND).GetValue());
+	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND));
 
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);

@@ -6,11 +6,11 @@
 using namespace Math::Statistics;
 
 /* static */ IStatisticsStorage* IStatisticsStorage::statisticsStorage = NULL;
+
 /* static */ IStatisticsStorage& IStatisticsStorage::GetStatisticsStorage()
 {
 	if (IStatisticsStorage::statisticsStorage == NULL)
 	{
-		//CRITICAL_LOG("Creating new statistics storage");
 		IStatisticsStorage::statisticsStorage = new IStatisticsStorage();
 	}
 	return *IStatisticsStorage::statisticsStorage;
@@ -18,7 +18,7 @@ using namespace Math::Statistics;
 
 IStatisticsStorage::IStatisticsStorage()
 {
-	//DEBUG_LOG("IStatisticsStorage constructor");
+	//CRITICAL_LOG("Creating new statistics storage");
 }
 
 IStatisticsStorage::~IStatisticsStorage(void)
@@ -52,11 +52,11 @@ void IStatisticsStorage::PrintSimpleReport() const
 	INFO_LOG("Simple report = \"%s\"", ss.str().c_str());
 }
 
-void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Time object and pass it here instead of Math::Real */) const
+void IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
 	Utility::ILogger::GetLogger().AddFile("ApplicationStats.txt");
-	INFO_LOG("Total elapsed time: %.3f [s]", totalElapsedSeconds);
+	INFO_LOG("Total elapsed time: %s", timeSpan.ToString().c_str());
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";
@@ -64,7 +64,7 @@ void IStatisticsStorage::PrintReport(Math::Real totalElapsedSeconds /* Create Ti
 	{
 		if (!classStatsItr->second->IsEmpty())
 		{
-			classStatsItr->second->PrintReport(totalElapsedSeconds, appStatsFile);
+			classStatsItr->second->PrintReport(timeSpan, appStatsFile);
 		}
 	}
 	appStatsFile.close();

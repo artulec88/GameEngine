@@ -916,7 +916,7 @@ void StatsTest()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND).GetValue());
+	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND));
 }
 
 int main (int argc, char* argv[])

@@ -135,7 +135,7 @@ public:
 	//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 	//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-	MATH_API void PrintReport(Math::Real totalElapsedTime, std::fstream& appStatsFile) const;
+	MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan, std::fstream& appStatsFile) const;
 
 	MATH_API void StartProfiling(const char* methodName);
 	MATH_API void StopProfiling(const char* methodName);

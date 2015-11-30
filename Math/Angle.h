@@ -15,7 +15,7 @@ namespace Math
 namespace Unit
 {
 	/// <summary>
-	/// Possible units for the angles
+	/// Possible units for the angles.
 	/// </summary>
 	enum UnitType
 	{
@@ -24,6 +24,9 @@ namespace Unit
 	};
 } /* end namespace Unit */
 
+/// <summary>
+/// Angle class is responsible for handling the angle.
+/// </summary>
 class MATH_API Angle
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -51,49 +54,17 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	inline Real GetAngleInDegrees() const;
-	Real GetAngleInRadians() const;
+	inline Real GetAngleInRadians() const;
 	bool IsInDegrees() const { return (m_unit == Unit::DEGREE); }
 	Unit::UnitType GetUnit() const { return m_unit; }
 
-	void SetAngleInDegrees(Real angle) { m_angle = angle; m_unit = Unit::DEGREE; }
-	void SetAngleInRadians(Real angle) { m_angle = angle; m_unit = Unit::RADIAN; }
+	void SetAngleInDegrees(Real angleInDegrees) { m_angle = angleInDegrees; m_unit = Unit::DEGREE; }
+	void SetAngleInRadians(Real angleInRadians) { m_angle = angleInRadians; m_unit = Unit::RADIAN; }
 
-	Real Sin() const
-	{
-		START_PROFILING;
-		switch(m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING;
-			return sin(ToRad(m_angle));
-			break;
-		case Unit::RADIAN:
-		default:
-			STOP_PROFILING;
-			return sin(m_angle);
-			break;
-		}
-	}
-	
-	Real Cos() const
-	{
-		START_PROFILING;
-		switch(m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING;
-			return cos(ToRad(m_angle));
-			break;
-		case Unit::RADIAN:
-		default:
-			STOP_PROFILING;
-			return cos(m_angle);
-			break;
-		}
-	}
+	inline Real Sin() const;	
+	inline Real Cos() const;
 
 	Angle operator-() const;
-
 	Angle operator+(const Angle& angle) const;
 	Angle operator-(const Angle& angle) const;
 	Angle operator*(Real s) const;
@@ -127,6 +98,76 @@ private:
 
 }; /* end class Angle */
   
+inline Real Angle::GetAngleInDegrees() const
+{
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		return m_angle;
+	case Unit::RADIAN:
+		STOP_PROFILING;
+		return ToDeg(m_angle);
+	default:
+		STOP_PROFILING;
+		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		return m_angle;
+	}
+}
+
+inline Real Angle::GetAngleInRadians() const
+{
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		return ToRad(m_angle);
+	case Unit::RADIAN:
+		STOP_PROFILING;
+		return m_angle;
+	default:
+		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		STOP_PROFILING;
+		return m_angle;
+	}
+}
+
+inline Real Angle::Sin() const
+{
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		return sin(ToRad(m_angle));
+		break;
+	case Unit::RADIAN:
+	default:
+		STOP_PROFILING;
+		return sin(m_angle);
+		break;
+	}
+}
+
+inline Real Angle::Cos() const
+{
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		return cos(ToRad(m_angle));
+		break;
+	case Unit::RADIAN:
+	default:
+		STOP_PROFILING;
+		return cos(m_angle);
+		break;
+	}
+}
+
 } /* end namespace Math */
 
 #endif /* __MATH_ANGLE_H__ */

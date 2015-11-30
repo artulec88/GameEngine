@@ -12,6 +12,7 @@
 namespace Math
 {
 
+/// <summary>The implementation of the k-d tree structure. It is used in terrain height calculation.</summary>
 class KDTree
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -27,16 +28,24 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	/**
-	 * \brief Searches the tree to find the numberOfSamples closest tree nodes to the specified position.
-	 * Then it interpolates their values based on their distances to the specified position. Finally it returns the interpolated value.
-	 * 
-	 * \param position position in 2D space
-	 * TODO: Add additional parameter to represent the number of closest positions maintained at all times
-	 * TODO: Add additional parameter to represent how to interpolate the nodes (average, weighted average, some other interpolation?)
-	 */
+	/// <summary>
+	/// Searches the tree to find specific number of (<see cref="m_numberOfSamples"/>) closest tree nodes to the given <paramref name="position"/>.
+	/// Then it interpolates their values based on their distances to the specified <paramref name="position"/> and returns the result.
+	/// </summary>
+	/// <param name="position">The position for which we want to determine the nearest value.</param>
+	/// <returns>The interpolated nearest value for the given <paramref name="position"/>.</returns>
 	MATH_API Real SearchNearestValue(const Vector2D& position) const;
+
+	/// <summary>
+	/// Returns <code>true</code> if current node is a leaf in a tree hierarchy. If current node has left or right child <code>false</code> is returned.
+	/// </summary>
+	/// <returns><code>true</code> if current node is a leaf and <code>false</code> otherwise.</returns>
 	MATH_API bool IsLeaf() const { return ((m_leftTree == NULL) && (m_rightTree == NULL)); }
+
+	/// <summary>
+	/// Returns <code>true</code> if current node is not a leaf in a tree hierarchy. In all other cases <code>false</code> is returned.
+	/// </summary>
+	/// <returns><code>true</code> if current node is not a leaf and <code>false</code> otherwise.</returns>
 	MATH_API bool HasChildren() const { return !IsLeaf(); }
 
 	MATH_API const Vector2D& GetPosition() const { return m_position; }

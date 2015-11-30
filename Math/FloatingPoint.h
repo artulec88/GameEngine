@@ -98,7 +98,10 @@ public: /* non-static methods */
 		START_PROFILING;
 		// The IEEE standard says that any comparison operation involving a NAN must return false
 		if (IsNAN() || rhs.IsNAN())
+		{
+			STOP_PROFILING;
 			return false;
+		}
 
 		Bits distance = DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_);
 		STOP_PROFILING;

@@ -10,24 +10,57 @@
 namespace Math { namespace Sorting
 {
 /// <summary>
-/// Possible algorithms for sorting
+/// Possible algorithms for sorting.
 /// </summary>
 enum SortingAlgorithm
 {
+	/// <summary>
+	/// Bubble sort algorithm (see https://en.wikipedia.org/wiki/Bubble_sort).
+	/// </summary>
 	BUBBLE_SORT = 0,
+	/// <summary>
+	/// Insertion sort algorithm (see https://en.wikipedia.org/wiki/Insertion_sort).
+	/// </summary>
 	INSERTION_SORT,
+	/// <summary>
+	/// Selection sort algorithm (see https://en.wikipedia.org/wiki/Selection_sort).
+	/// </summary>
 	SELECTION_SORT,
+	/// <summary>
+	/// Merge sort algorithm (see https://en.wikipedia.org/wiki/Merge_sort).
+	/// </summary>
 	MERGE_SORT,
+	/// <summary>
+	/// Heap sort algorithm (see https://en.wikipedia.org/wiki/Heapsort).
+	/// </summary>
 	HEAP_SORT,
+	/// <summary>
+	/// Quick sort algorithm (see https://en.wikipedia.org/wiki/Quicksort).
+	/// </summary>
 	QUICK_SORT,
+	/// <summary>
+	/// Shell sort algorithm (see https://en.wikipedia.org/wiki/Shellsort).
+	/// </summary>
 	SHELL_SORT,
+	/// <summary>
+	/// Comb sort algorithm (see https://en.wikipedia.org/wiki/Comb_sort).
+	/// </summary>
 	COMB_SORT,
+	/// <summary>
+	/// Counting sort algorithm (see https://en.wikipedia.org/wiki/Counting_sort).
+	/// </summary>
 	COUNTING_SORT,
+	/// <summary>
+	/// Radix sort algorithm (see https://en.wikipedia.org/wiki/Radix_sort).
+	/// </summary>
 	RADIX_SORT,
+	/// <summary>
+	/// Bucket sort algorithm (see https://en.wikipedia.org/wiki/Bucket_sort).
+	/// </summary>
 	BUCKET_SORT
 };
 
-/// <summary> The base class for all sorting classes. </summary>
+/// <summary>The base class for all sorting classes. It also serves as a "factory", that is creating specific instances of ISort classes.</summary>
 class ISort
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -116,51 +149,72 @@ protected:
 
 	Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
 	{
+		Math::Real result;
 		switch (sortingKey)
 		{
 		case VALUE:
 			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			result = v.GetX();
+			break;
 		case COMPONENT_X:
-			return v.GetX();
+			result = v.GetX();
+			break;
 		case COMPONENT_Y:
-			return v.GetY();
+			result = v.GetY();
+			break;
 		case COMPONENT_Z:
-			CRITICAL_LOG("Cannot determine the value of the Z component for the 2D vector.");
+			EMERGENCY_LOG("Cannot determine the value of the Z component for the 2D vector.");
 			exit(EXIT_FAILURE);
 		case SUM_OF_SQUARED_COMPONENTS:
-			return v.LengthSquared();
+			result = v.LengthSquared();
+			break;
 		case SUM_OF_COMPONENTS:
-			return v.SumOfComponents();
+			result = v.SumOfComponents();
+			break;
 		case SUM_OF_ABSOLUTE_COMPONENTS:
-			return v.SumOfAbsoluteComponents();
+			result = v.SumOfAbsoluteComponents();
+			break;
 		default:
 			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
-			return v.GetX();
+			result = v.GetX();
+			break;
 		}
+		return result;
 	}
 
 	Math::Real CollectValueByKey(const Math::Vector3D& v, SortingKey sortingKey)
 	{
+		Math::Real result;
 		switch (sortingKey)
 		{
 		case VALUE:
 			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			result = v.GetX();
+			break;
 		case COMPONENT_X:
-			return v.GetX();
+			result = v.GetX();
+			break;
 		case COMPONENT_Y:
-			return v.GetY();
+			result = v.GetY();
+			break;
 		case COMPONENT_Z:
-			return v.GetZ();
+			result = v.GetZ();
+			break;
 		case SUM_OF_SQUARED_COMPONENTS:
-			return v.LengthSquared();
+			result = v.LengthSquared();
+			break;
 		case SUM_OF_COMPONENTS:
-			return v.SumOfComponents();
+			result = v.SumOfComponents();
+			break;
 		case SUM_OF_ABSOLUTE_COMPONENTS:
-			return v.SumOfAbsoluteComponents();
+			result = v.SumOfAbsoluteComponents();
+			break;
 		default:
 			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
-			return v.GetX();
+			result = v.GetX();
+			break;
 		}
+		return result;
 	}
 	
 	template <typename T>

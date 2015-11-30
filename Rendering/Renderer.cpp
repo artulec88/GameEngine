@@ -80,6 +80,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN), // TODO: This variable should be dependant of the clock speed in CoreEngine.
 	m_skyboxNode(NULL),
 	m_skyboxShader(NULL),
+	m_skyboxShaderProcedural(NULL),
 	m_skyboxTextureDay(NULL),
 	m_skyboxTextureNight(NULL),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),
@@ -259,6 +260,7 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	//SAFE_DELETE(m_skyboxNode);
 	SAFE_DELETE(m_skyboxShader);
+	SAFE_DELETE(m_skyboxShaderProcedural);
 	SAFE_DELETE(m_cubeShadowMap);
 	SAFE_DELETE(m_filterMaterial);
 	SAFE_DELETE(m_filterMesh);
@@ -333,7 +335,8 @@ void Renderer::InitializeCubeMap()
 	m_skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_skyboxNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
-	m_skyboxShader = new Shader((GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader")));
+	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader"));
+	m_skyboxShaderProcedural = new Shader(GET_CONFIG_VALUE_STR("skyboxShaderProcedural", "skybox-shader-procedural"));
 	STOP_PROFILING;
 }
 

@@ -55,7 +55,7 @@ namespace Utility { namespace Timing
 		float m_value;
 		TimeUnit m_unit;
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class TimeSpan<T> */
+	}; /* end class TimeSpan */
 
 	class UTILITY_API Time
 	{
