@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_CAMERA_H__
+#define __RENDERING_CAMERA_H__
 
 #include "Rendering.h"
 #include "GameComponent.h"
@@ -11,14 +12,11 @@
 namespace Rendering
 {
 
-class CoreEngine;
-
 class RENDERING_API CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
-	static const Math::Vector3D xAxis;
-	static const Math::Vector3D yAxis;
+	static const Math::Vector3D AXIS_Y;
 private:
 	static Math::Real sensitivity;
 public:
@@ -93,7 +91,6 @@ public:
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void Input(Math::Real delta);
 #endif
-	//virtual void AddToEngine(CoreEngine* coreEngine);
 	virtual Transform& GetTransform() { return GameComponent::GetTransform(); }
 	virtual const Transform& GetTransform() const { return GameComponent::GetTransform(); }
 /* ==================== Non-static member functions end ==================== */
@@ -103,3 +100,5 @@ public:
 }; /* end class Camera */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_CAMERA_H__ */

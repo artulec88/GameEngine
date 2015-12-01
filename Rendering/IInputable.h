@@ -7,18 +7,18 @@ namespace Rendering { namespace Input
 {
 
 /// <summary>
-/// Interface for objects which can react to player's keyboard input
+/// Interface for objects which can react to player's input (either by keyboard, mouse, etc.).
 /// </summary>
 class IInputable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	/// <summary> Creates the keyboard inputable object. </summary>
+	/// <summary> Creates the inputable object. </summary>
 	RENDERING_API IInputable()
 	{
 	}
 
-	/// <summary> Destroys the keyboard inputable object. </summary>
+	/// <summary> Destroys the inputable object. </summary>
 	RENDERING_API virtual ~IInputable(void)
 	{
 	}

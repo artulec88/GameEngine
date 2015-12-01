@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_CORE_ENGINE_H__
+#define __RENDERING_CORE_ENGINE_H__
 
 #include "Rendering.h"
 #include "Renderer.h"
@@ -16,6 +17,7 @@
 #ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
+#include "Math\UtmostTimeSamples.h"
 #include <vector>
 #endif
 
@@ -40,19 +42,6 @@ namespace Rendering
 
 class RENDERING_API CoreEngine
 {
-#ifdef CALCULATE_RENDERING_STATS
-#define MIN_MAX_STATS_COUNT 3
-struct MinMaxTime
-{
-	double m_minTime[MIN_MAX_STATS_COUNT];
-	double m_maxTime[MIN_MAX_STATS_COUNT];
-	
-	void Init();
-	void ProcessTime(double elapsedTime);
-	std::string ToString();
-};
-#endif
-
 /* ==================== Static variables begin ==================== */
 protected:
 	static CoreEngine* s_coreEngine;
@@ -112,16 +101,16 @@ public:
 	void StartSamplingSpf() const { m_isSamplingSpf = true; }
 	void StopSamplingSpf() const { m_isSamplingSpf = false; }
 private:
-	void StopTimer(Utility::Timing::Timer& timer, long& countStats, MinMaxTime& minMaxTime, double& timeSum) const
+	void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostTimeSamples& minMaxTime, double& timeSum) const
 	{
 		if (timer.IsRunning())
 		{
 			timer.Stop();
 		}
 		++countStats;
-		float elapsedTime = timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
-		minMaxTime.ProcessTime(elapsedTime);
-		timeSum += elapsedTime;
+		Utility::Timing::TimeSpan timeSpan = timer.GetTimeSpan(Utility::Timing::MICROSECOND);
+		minMaxTime.ProcessTime(timeSpan);
+		timeSum += timeSpan.GetValue();
 	}
 #endif
 
@@ -156,27 +145,27 @@ protected:
 
 #ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;
-	MinMaxTime m_minMaxTime1;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime1;
 	double m_timeSum1;
 	
 	long m_countStats2;
-	MinMaxTime m_minMaxTime2;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime2;
 	double m_timeSum2;
 	
 	long m_countStats2_1;
-	MinMaxTime m_minMaxTime2_1;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime2_1;
 	double m_timeSum2_1;
 	
 	long m_countStats2_2;
-	MinMaxTime m_minMaxTime2_2;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime2_2;
 	double m_timeSum2_2;
 	
 	long m_countStats2_3;
-	MinMaxTime m_minMaxTime2_3;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime2_3;
 	double m_timeSum2_3;
 	
 	long m_countStats3;
-	MinMaxTime m_minMaxTime3;
+	Math::Statistics::UtmostTimeSamples m_minMaxTime3;
 	double m_timeSum3;
 
 	Utility::Timing::Timer m_timer;
@@ -204,3 +193,4 @@ protected:
 
 } /* end namespace Rendering */
 
+#endif /* __RENDERING_CORE_ENGINE_H__ */

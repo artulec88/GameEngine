@@ -4,12 +4,13 @@
 #include "Renderer.h"
 #include "Utility\ILogger.h"
 #include "Math\Quaternion.h"
+#include "CoreEngine.h"
 
 using namespace Rendering;
 
 LookAtComponent::LookAtComponent(void) :
 	GameComponent(),
-	renderer(NULL)
+	renderer(CoreEngine::GetCoreEngine()->GetRenderer())
 {
 }
 
@@ -20,12 +21,7 @@ LookAtComponent::~LookAtComponent(void)
 
 void LookAtComponent::Update(Math::Real delta)
 {
-	if (renderer == NULL)
-	{
-		//WARNING_LOG("LookAtComponent does not have a renderer set up.");
-		return;
-	}
-
+	CHECK_CONDITION(renderer != NULL, Utility::Critical, "Cannot update lookup component due to renderer object being NULL.");
 	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
 	Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetTransformedPos();
 
@@ -41,12 +37,4 @@ void LookAtComponent::Update(Math::Real delta)
 	//GetTransform().SetRot((GetTransform().GetRot() + Math::Quaternion(REAL_ZERO, 0.0001f, REAL_ZERO, REAL_ZERO)).Normalized());
 
 	//DEBUG_LOG("LookAtComponent has just set a new rotation");
-}
-
-void LookAtComponent::Render(Shader* shader, Renderer* renderer)
-{
-	if (this->renderer == NULL)
-	{
-		this->renderer = renderer;
-	}
 }

@@ -35,8 +35,6 @@ public:
 	Math::Real GetCutoff() const { return m_cutoff; };
 	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
-
-	virtual LightType GetLightType() const { return SPOT; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

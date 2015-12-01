@@ -7,7 +7,7 @@
 namespace Rendering
 {
 
-// TODO: Inherit from IUpdateable and IRenderable interfaces.
+// TODO: Inherit from IUpdateable interface.
 class RENDERING_API LookAtComponent : public GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -19,7 +19,6 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Update(Math::Real delta);
-	virtual void Render(Shader* shader, Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

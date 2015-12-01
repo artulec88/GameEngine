@@ -20,6 +20,7 @@ bool GameStateManager::IsInGameTimeCalculationEnabled() const
 	GameState* currentState = Peek();
 	if (currentState == NULL)
 	{
+		WARNING_LOG("Cannot determine whether in-game time calculation should be performed. No state currently active.");
 		return false;
 	}
 	return currentState->IsInGameTimeCalculationEnabled();
@@ -103,14 +104,7 @@ void DefaultGameStateManager::ClearAllIntefaceLists()
 
 GameState* DefaultGameStateManager::Peek() const
 {
-	if (m_activeStates.empty())
-	{
-		return NULL;
-	}
-	else
-	{
-		return m_activeStates.at(m_activeStates.size() - 1).first;
-	}
+	return (m_activeStates.empty()) ? NULL : m_activeStates.back().first;
 }
 
 void DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
@@ -301,16 +295,11 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
 	DEBUG_LOG("Currently active game states: %d", m_activeStates.size());
-	ASSERT(!m_activeStates.empty());
-	if (m_activeStates.empty())
-	{
-		CRITICAL_LOG("No active game state is present in the game at the moment.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(!m_activeStates.empty(), Utility::Emergency, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
+		if (m_activeStates[index].second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}
@@ -319,7 +308,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 	DEBUG_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
-		AddToInterfaces(m_activeStates.at(index++).first);
+		AddToInterfaces(m_activeStates[index++].first);
 	}
 }
 
@@ -334,7 +323,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	std::size_t index = m_activeStates.size() - 2;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
+		if (m_activeStates[index].second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}
@@ -345,7 +334,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	DEBUG_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size() - 1)
 	{
-		m_activeStates.at(index++).first->Obscuring();
+		m_activeStates[index++].first->Obscuring();
 	}
 }
 
@@ -361,7 +350,7 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
-		if (m_activeStates.at(index).second == GameStateModality::EXCLUSIVE)
+		if (m_activeStates[index].second == GameStateModality::EXCLUSIVE)
 		{
 			break;
 		}
@@ -372,6 +361,6 @@ void DefaultGameStateManager::NotifyRevealedStates()
 	INFO_LOG("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
-		m_activeStates.at(index++).first->Revealed();
+		m_activeStates[index++].first->Revealed();
 	}
 }

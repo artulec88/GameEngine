@@ -107,7 +107,7 @@ public:
 		if (itr == realMap.end()) // number not found
 		{
 			DEBUG_LOG("Real number with name \"%s\" has not been found", name.c_str());
-			return 0;
+			return REAL_ZERO;
 		}
 		return itr->second;
 	}

@@ -153,14 +153,15 @@ T Stats<T>::CalculateMedian(StatsID statsID)
 
 	Math::Sorting::ISort::GetSortingObject(Math::Sorting::MERGE_SORT)->Sort(&m_samples[statsID][0], m_samples[statsID].size(), Sorting::ASCENDING);
 
+	const int index = m_samples[statsID].size() / 2;
 	if ((m_samples[statsID].size() % 2) == 0)
 	{
-		T medianMean = m_samples[statsID].at(m_samples[statsID].size() / 2) + m_samples[statsID].at((m_samples[statsID].size() / 2) - 1);
+		T medianMean = m_samples[statsID][index] + m_samples[statsID][index - 1];
 		return static_cast<T>(medianMean / 2.0f);
 	}
 	else
 	{
-		return m_samples[statsID].at(m_samples[statsID].size() / 2);
+		return m_samples[statsID][index];
 	}
 }
 

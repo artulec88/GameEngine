@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_ANT_TWEAK_BAR_TYPES_H__
+#define __RENDERING_ANT_TWEAK_BAR_TYPES_H__
 
 #include "Rendering.h"
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -18,7 +19,10 @@ namespace Rendering
 		static void InitializeTweakBarTypes();
 	};
 
+	/// <summary> The fog fall-off type. </summary>
 	extern TwType fogFallOffType;
+
+	/// <summary> The fog calculation strategy. </summary>
 	extern TwType fogCalculationType;
 	extern TwType angleUnitType;
 	extern TwType angleType;
@@ -28,4 +32,6 @@ namespace Rendering
 	extern TwType shadowInfoType;
 }
 
-#endif
+#endif /* ANT_TWEAK_BAR_ENABLED */
+
+#endif /* __RENDERING_ANT_TWEAK_BAR_TYPES_H__ */

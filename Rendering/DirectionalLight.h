@@ -5,11 +5,12 @@
 #include "Transform.h"
 #include "Math\Angle.h"
 
-#define SIMULATE_SUN_BEHAVIOR
+#define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
 
 namespace Rendering { namespace Lighting
 {
 
+/// <summary> The directional light representation.</summary>
 class RENDERING_API DirectionalLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -33,8 +34,6 @@ public:
 	virtual bool IsEnabled() const;
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
 
-	virtual LightType GetLightType() const { return DIRECTIONAL; }
-
 	void SetMaxIntensity(Math::Real maxIntensity) { m_maxIntensity = maxIntensity; }
 	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
 	void SetSunNearHorizonColor(const Color& sunNearHorizonColor) { m_sunNearHorizonColor = sunNearHorizonColor; }
@@ -47,9 +46,16 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	///<summary>The maximum intensity of the directional light.</summary>
 	Math::Real m_maxIntensity;
+
+	///<summary>The daytime color of the directional light.</summary>
 	Color m_sunlightDaytimeColor;
+
+	///<summary>The near-horizon color of the directional light.</summary>
 	Color m_sunNearHorizonColor;
+
+	///<summary>The nighttime color of the directional light.</summary>
 	Color m_sunlightNighttimeColor;
 	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */

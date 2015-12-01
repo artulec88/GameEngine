@@ -8,7 +8,7 @@
 namespace Rendering
 {
 /// <summary>
-/// Interface for objects which can be updated in the game engine
+/// Interface for objects which can be updated in the game engine.
 /// </summary>
 class IUpdateable
 {
@@ -27,8 +27,8 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	/// <summary> Called when the updateable objects should advance its simulation state </summary>
-	/// <param name="elapsedTime"> Time by which to advance the simulation </param>
+	/// <summary> Called when the updateable objects should advance its simulation state. </summary>
+	/// <param name="elapsedTime"> Time by which to advance the simulation. </param>
 	/// <remarks>
 	/// In this call, the object should advance its own simulation according to the amount of elapsed time.
 	/// </remarks>

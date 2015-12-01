@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_COLOR_H__
+#define __RENDERING_COLOR_H__
 
 #include "Math\Math.h"
 #include <string>
@@ -7,6 +8,8 @@
 namespace Rendering
 {
 
+/// <summary>The representation of color in the game engine.</summary>
+/// <remarks>It could possibly be merged together with the <code>Vector4D</code> class in the Math library.</remarks>
 class RENDERING_API Color
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -42,9 +45,20 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Real m_red, m_green, m_blue;
+	/// <summary>Red component of the color represented in RGBA space.</summary>
+	Math::Real m_red;
+
+	/// <summary>Green component of the color represented in RGBA space.</summary>
+	Math::Real m_green;
+
+	/// <summary>Blue component of the color represented in RGBA space.</summary>
+	Math::Real m_blue;
+
+	/// <summary>Alpha component of the color represented in RGBA space.</summary>
 	Math::Real m_alpha;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Color */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_COLOR_H__ */

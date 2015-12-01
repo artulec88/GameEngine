@@ -10,6 +10,9 @@
 using namespace Utility::Timing;
 using namespace std;
 
+/* static */ const TimeSpan MAX_TIME_SPAN(9999999.9f, SECOND);
+/* static */ const TimeSpan MIN_TIME_SPAN(0.0f, NANOSECOND);
+
 /* ==================== TimeSpan class begin ==================== */
 void TimeSpan::AdjustUnitToValue()
 {

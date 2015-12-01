@@ -25,6 +25,9 @@ namespace Utility { namespace Timing
 	class UTILITY_API TimeSpan
 	{
 	/* ==================== Static variables and functions begin ==================== */
+	public:
+		static const TimeSpan MAX_TIME_SPAN; // TODO: Consider removing this static field and replacing its occurences with something else.
+		static const TimeSpan MIN_TIME_SPAN; // TODO: Consider removing this static field and replacing its occurences with something else.
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */

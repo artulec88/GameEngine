@@ -169,15 +169,6 @@ void CoreEngine::Start()
 		return;
 	}
 	NOTICE_LOG("The core engine starts");
-	
-#ifdef CALCULATE_RENDERING_STATS
-	m_minMaxTime1.Init();
-	m_minMaxTime2.Init();
-	m_minMaxTime2_1.Init();
-	m_minMaxTime2_2.Init();
-	m_minMaxTime2_3.Init();
-	m_minMaxTime3.Init();
-#endif
 
 	Run();
 	Stop();
@@ -604,63 +595,6 @@ void CoreEngine::InitializeTweakBars()
 	//TwSetParam(coreEnginePropertiesBar, NULL, "refresh", TW_PARAM_DOUBLE, 1, &refreshRate);
 
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
-}
-#endif
-
-#ifdef CALCULATE_RENDERING_STATS
-void CoreEngine::MinMaxTime::Init()
-{
-	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-	{
-		m_minTime[i] = REAL_MAX;
-		m_maxTime[i] = REAL_ZERO;
-	}
-}
-
-void CoreEngine::MinMaxTime::ProcessTime(double elapsedTime)
-{
-	bool maxFound = false;
-	bool minFound = false;
-	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-	{
-		if ( (minFound) && (maxFound) )
-			return;
-		if ( (!minFound) && (elapsedTime < m_minTime[i]) )
-		{
-			for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
-			{
-				m_minTime[j + 1] = m_minTime[j];
-			}
-			m_minTime[i] = elapsedTime;
-			minFound = true;
-		}
-		if ( (!maxFound) && (elapsedTime > m_maxTime[i]) )
-		{
-			for (int j = i; j < MIN_MAX_STATS_COUNT - 1; ++j)
-			{
-				m_maxTime[j + 1] = m_maxTime[j];
-			}
-			m_maxTime[i] = elapsedTime;
-			maxFound = true;
-		}
-	}
-}
-
-std::string CoreEngine::MinMaxTime::ToString()
-{
-	std::stringstream ss("");
-	ss << "minTimes = { ";
-	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-	{
-		ss << std::setprecision(2) << m_minTime[i] << "[us]; ";
-	}
-	ss << " } maxTimes = { ";
-	for (int i = 0; i < MIN_MAX_STATS_COUNT; ++i)
-	{
-		ss << std::setprecision(2) << m_maxTime[i] << "[us]; ";
-	}
-	ss << " }";
-	return ss.str();
 }
 #endif
 

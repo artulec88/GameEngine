@@ -7,6 +7,9 @@ using namespace Rendering;
 
 /* static */ const Math::Vector3D MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ZERO, REAL_ZERO);
 /* static */ const Math::Vector3D MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ONE, REAL_ONE);
+///* static */ void MenuEntry::InitializeMenuColors()
+//{
+//}
 /* static */ const Math::Vector3D& MenuEntry::GetNotSelectedMenuEntryTextColor()
 {
 	return MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
@@ -17,7 +20,7 @@ using namespace Rendering;
 }
 
 MenuEntry::MenuEntry(void) :
-	m_action(Actions::UNDEFINED),
+	m_actionID(Actions::UNDEFINED),
 	m_text(),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
@@ -26,7 +29,7 @@ MenuEntry::MenuEntry(void) :
 }
 
 MenuEntry::MenuEntry(Actions::ActionID actionID, const std::string& text) :
-	m_action(actionID),
+	m_actionID(actionID),
 	m_text(text),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
@@ -57,9 +60,9 @@ int MenuEntry::GetChildrenCount() const
 
 std::string MenuEntry::GetChildrenText(int index) const
 {
-	std::stringstream ss("");
-	ss << m_childrenMenuEntries.at(index)->GetText();
-	return ss.str();
+	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
+		"Cannot find child menu entry text. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
+	return m_childrenMenuEntries[index]->GetText();
 }
 
 void MenuEntry::SelectPrevChildMenuEntry()
@@ -82,10 +85,8 @@ void MenuEntry::SelectNextChildMenuEntry()
 
 void MenuEntry::SelectChildMenuEntry(int index)
 {
-	if ((index < 0) || (index >= GetChildrenCount()))
-	{
-		WARNING_LOG("Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
-	}
+	CHECK_CONDITION(index >= 0 && index < GetChildrenCount(), Utility::Warning,
+		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
 	m_selectedMenuEntryIndex = index % GetChildrenCount();
 }
 
@@ -96,10 +97,14 @@ MenuEntry* MenuEntry::GetParent()
 
 MenuEntry* MenuEntry::GetSelectedChild()
 {
-	return m_childrenMenuEntries.at(m_selectedMenuEntryIndex);
+	CHECK_CONDITION_RETURN(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), NULL, Utility::Error,
+		"Cannot return currently selected child menu entry. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
+	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 }
 
 bool MenuEntry::DoesSelectedChildHaveChildren() const
 {
-	return m_childrenMenuEntries.at(m_selectedMenuEntryIndex)->HasChildren();
+	CHECK_CONDITION_RETURN(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), false, Utility::Error,
+		"Cannot determine whether currently selected child menu entry has children. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
+	return m_childrenMenuEntries[m_selectedMenuEntryIndex]->HasChildren();
 }

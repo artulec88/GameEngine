@@ -27,14 +27,17 @@ GameComponent::~GameComponent(void)
 
 void GameComponent::Input(Math::Real delta)
 {
+	// TODO: Empty definitions wastes CPU time.
 }
 
 void GameComponent::Update(Math::Real delta)
 {
+	// TODO: Empty definitions wastes CPU time.
 }
 
 void GameComponent::Render(Shader* shader, Renderer* renderingEngine)
 {
+	// TODO: Empty definitions wastes CPU time.
 }
 
 void GameComponent::SetParent(GameNode* parentGameNode)

@@ -1,5 +1,5 @@
-#ifndef __MENU_ENTRY_H__
-#define __MENU_ENTRY_H__
+#ifndef __RENDERING_MENU_ENTRY_H__
+#define __RENDERING_MENU_ENTRY_H__
 
 #include "Rendering.h"
 #include "Math\Vector.h"
@@ -33,7 +33,7 @@ private:
 	static const Math::Vector3D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
 	static const Math::Vector3D SELECTED_MENU_ENTRY_TEXT_COLOR;
 public:
-	static void InitializeMenuColors();
+	//static void InitializeMenuColors();
 	static const Math::Vector3D& GetNotSelectedMenuEntryTextColor();
 	static const Math::Vector3D& GetSelectedMenuEntryTextColor();
 /* ==================== Static variables and functions end ==================== */
@@ -55,7 +55,7 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	void SelectChildMenuEntry(int index);
 
-	RENDERING_API Actions::ActionID GetAction() const { return m_action; }
+	RENDERING_API Actions::ActionID GetActionID() const { return m_actionID; }
 	RENDERING_API void AddChildren(MenuEntry* child);
 	RENDERING_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	RENDERING_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
@@ -68,7 +68,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Actions::ActionID m_action;
+	Actions::ActionID m_actionID;
 	std::string m_text;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;
@@ -78,4 +78,4 @@ private:
 
 } /* end namespace Rendering */
 
-#endif /* __MENU_ENTRY_H__ */
+#endif /* __RENDERING_MENU_ENTRY_H__ */

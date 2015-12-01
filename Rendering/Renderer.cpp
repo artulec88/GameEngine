@@ -501,7 +501,7 @@ void Renderer::Render(const GameNode& gameNode)
 	//BindAsRenderTarget();
 
 	ClearScreen();
-	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
 	{
 		EMERGENCY_LOG("Rendering failed. There is no proper camera set up.");
 		exit(EXIT_FAILURE);
@@ -708,7 +708,7 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 	START_PROFILING;
 	BindAsRenderTarget();
 	ClearScreen(m_backgroundColor);
-	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
 	{
 		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;
@@ -737,7 +737,7 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	START_PROFILING;
 	BindAsRenderTarget();
 	ClearScreen();
-	if (m_cameras.empty() || m_cameras.at(m_currentCameraIndex) == NULL)
+	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
 	{
 		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
 		m_currentCamera = m_mainMenuCamera;

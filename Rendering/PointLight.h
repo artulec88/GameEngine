@@ -30,8 +30,6 @@ public:
 	Math::Real GetRange() const { return m_range; };
 	virtual bool IsEnabled() const;
 
-	virtual LightType GetLightType() const { return POINT; }
-
 	virtual void Update(Math::Real deltaTime);
 protected:
 	void CalculateRange();

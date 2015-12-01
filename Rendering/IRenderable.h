@@ -9,7 +9,7 @@
 namespace Rendering
 {
 /// <summary>
-/// Interface for objects which can be rendered in the game engine
+/// Interface for objects which can be rendered in the game engine.
 /// </summary>
 class IRenderable
 {
