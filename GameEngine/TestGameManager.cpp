@@ -96,10 +96,14 @@ void TestGameManager::Load()
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
 	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
 	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
-#endif
+	Rendering::Material* terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
+		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+#else
 	terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+#endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	//terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
@@ -111,19 +115,19 @@ void TestGameManager::Load()
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	RegisterTerrainNode(m_terrainNode);
 
-	boxNode = new GameNode();
+	m_boxNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
 	boxMaterial = new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f);
-	boxNode->AddComponent(new MeshRenderer(
+	m_boxNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), boxMaterial));
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 #else
-	boxNode->AddComponent(new MeshRenderer(
+	m_boxNode->AddComponent(new MeshRenderer(
 		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
 #endif
-	boxNode->GetTransform().SetPos(12.0f, 3.5f, 9.0f);
-	boxNode->GetTransform().SetScale(0.05f);
-	AddToSceneRoot(boxNode);
+	m_boxNode->GetTransform().SetPos(12.0f, 3.5f, 9.0f);
+	m_boxNode->GetTransform().SetScale(0.05f);
+	AddToSceneRoot(m_boxNode);
 
 	////Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
 	////Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };

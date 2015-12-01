@@ -10,9 +10,6 @@
 using namespace Utility::Timing;
 using namespace std;
 
-/* static */ const TimeSpan MAX_TIME_SPAN(9999999.9f, SECOND);
-/* static */ const TimeSpan MIN_TIME_SPAN(0.0f, NANOSECOND);
-
 /* ==================== TimeSpan class begin ==================== */
 void TimeSpan::AdjustUnitToValue()
 {
@@ -65,6 +62,12 @@ TimeSpan& TimeSpan::operator/=(int s)
 {
 	m_value /= s;
 	return (*this);
+}
+
+void TimeSpan::operator=(const TimeSpan& timeSpan)
+{
+	m_value = timeSpan.GetValue();
+	m_unit = timeSpan.GetUnit();
 }
 
 bool TimeSpan::operator<(const TimeSpan &timeSpan) const

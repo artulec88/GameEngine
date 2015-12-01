@@ -8,8 +8,8 @@ UtmostTimeSamples::UtmostTimeSamples()
 {
 	for (int i = 0; i < NUMBER_OF_SAMPLES; ++i)
 	{
-		m_minTime[i] = Utility::Timing::TimeSpan::MAX_TIME_SPAN;
-		m_maxTime[i] = Utility::Timing::TimeSpan::MIN_TIME_SPAN;
+		m_minTime[i] = Utility::Timing::TimeSpan(9999999.9f, Utility::Timing::SECOND);
+		m_maxTime[i] = Utility::Timing::TimeSpan(0.0f, Utility::Timing::SECOND);
 	}
 }
 

@@ -25,16 +25,19 @@ namespace Utility { namespace Timing
 	class UTILITY_API TimeSpan
 	{
 	/* ==================== Static variables and functions begin ==================== */
-	public:
-		static const TimeSpan MAX_TIME_SPAN; // TODO: Consider removing this static field and replacing its occurences with something else.
-		static const TimeSpan MIN_TIME_SPAN; // TODO: Consider removing this static field and replacing its occurences with something else.
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
+		TimeSpan() :
+			m_value(0.0f),
+			m_unit(SECOND)
+		{
+		}
+
 		TimeSpan(float timeValue, TimeUnit timeUnit) :
-		  m_value(timeValue),
-		  m_unit(timeUnit)
+			m_value(timeValue),
+			m_unit(timeUnit)
 		{
 		}
 		~TimeSpan()
@@ -48,6 +51,7 @@ namespace Utility { namespace Timing
 		TimeUnit GetUnit() const { return m_unit; }
 		void AdjustUnitToValue();
 		TimeSpan& operator/=(int s);
+		void operator=(const TimeSpan& timeSpan);
 		bool operator<(const TimeSpan &timeSpan) const;
 		bool operator>(const TimeSpan &timeSpan) const;
 		std::string ToString() const;

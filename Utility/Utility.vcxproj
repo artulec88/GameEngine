@@ -103,7 +103,6 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IConfig.cpp" />
-    <ClCompile Include="ISerializable.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="ILogger.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />

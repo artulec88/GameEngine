@@ -17,7 +17,7 @@ namespace Utility
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
-	protected:
+	public:
 		void AddReference();
 		void RemoveReference();
 		bool IsReferenced() const;
