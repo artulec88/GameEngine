@@ -2,7 +2,7 @@
 #define __MATH_ANGLE_H__
 
 #include "Math.h"
-//#include "Utility\ISerializable.h"
+#include "Utility\ILogger.h"
 #include <string>
 #ifdef CALCULATE_MATH_STATS
 #include "Statistics.h"

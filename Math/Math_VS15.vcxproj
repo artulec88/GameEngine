@@ -80,12 +80,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.h" />
+    <ClInclude Include="BSPTree.h" />
     <ClInclude Include="FloatingPoint.h" />
+    <ClInclude Include="Interpolation.h" />
     <ClInclude Include="ISort.h" />
     <ClInclude Include="IStatisticsStorage.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="SortingParameters.h" />
@@ -96,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Angle.cpp" />
+    <ClCompile Include="BSPTree.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -104,11 +108,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="ISort.cpp" />
     <ClCompile Include="IStatisticsStorage.cpp" />
     <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Sort.cpp" />
     <ClCompile Include="SortingParameters.cpp" />

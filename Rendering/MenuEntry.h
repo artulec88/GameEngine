@@ -16,7 +16,7 @@ namespace Actions
 	 * TODO: Improve this enum. Maybe it would be better to define ActionID as a class to
 	 * allow storing additional parameters for a given action.
 	 */
-	RENDERING_API enum ActionID
+	enum ActionID
 	{
 		QUIT = 0,
 		START_RESUME,

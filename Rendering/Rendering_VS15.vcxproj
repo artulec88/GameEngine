@@ -51,13 +51,13 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;RENDERING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp-3.1.1\include;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Assimp\lib\x86;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Debug;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>assimp.lib;AntTweakBar.lib;Utility.lib;Math.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp-3.1.1\build\code\Debug;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Debug;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimpd.lib;AntTweakBar.lib;Utility.lib;Math.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -68,14 +68,14 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RENDERING_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\assimp--3.0.1270-source-only\include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp-3.1.1\include;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Assimp\lib\x86;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\Release;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\assimp-3.1.1\build\code\Release;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Libs;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>assimp.lib;AntTweakBar.lib;Utility.lib;Math.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

@@ -20,6 +20,19 @@
 
 #define MEASURE_TIME_ENABLED
 
+// Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
+namespace std
+{
+	template <>
+	struct hash<Math::Vector3D>
+	{
+		std::size_t operator()(const Math::Vector3D& vector) const
+		{
+			return vector.to_size_t();
+		}
+	};
+}
+
 namespace Rendering
 {
 

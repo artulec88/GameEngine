@@ -57,11 +57,11 @@ public:
 	MATH_API void Push(StatsID statsID, T sample);
 	MATH_API int Size() const;
 	MATH_API int Size(StatsID statsID) const;
-	T CalculateSum(StatsID statsID) const;
-	int CalculateSamplesCount(StatsID statsID) const;
+	MATH_API T CalculateSum(StatsID statsID) const;
+	MATH_API int CalculateSamplesCount(StatsID statsID) const;
 	MATH_API T CalculateMean(StatsID statsID) const;
 	MATH_API T CalculateMedian(StatsID statsID);
-	int GetHierachyDepth() const;
+	MATH_API int GetHierachyDepth() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -155,7 +155,7 @@ public:
 		return m_methodsStats.empty();
 	}
 
-	int GetTotalNumberOfSamples() const;
+	MATH_API int GetTotalNumberOfSamples() const;
 private:
 	void LogTime(Math::Real time, const char* logTimeTextFormat) const;
 /* ==================== Non-static member functions end ==================== */

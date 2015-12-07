@@ -171,8 +171,8 @@ int Stats<T>::GetHierachyDepth() const
 	return (m_child == NULL) ? m_level : m_child->GetHierachyDepth();
 }
 
-template MATH_API class Stats<Math::Real>;
-template MATH_API class Stats<int>;
+template class Stats<Math::Real>;
+template class Stats<int>;
 /* ==================== Stats end ==================== */
 
 

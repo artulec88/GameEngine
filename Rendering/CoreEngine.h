@@ -173,7 +173,7 @@ protected:
 	mutable int m_renderingRequiredCount;
 	mutable int m_renderingNotRequiredCount;
 	mutable bool m_isSamplingSpf;
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 	mutable Math::Statistics::Stats<Math::Real> m_stats;
 #endif
 

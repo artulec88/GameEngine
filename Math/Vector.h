@@ -161,9 +161,9 @@ public:
 	 * http://stackoverflow.com/questions/6585077/size-t-an-operator-and-a-way-to-use-unordered-set
 	 * http://stackoverflow.com/questions/13485979/hash-function-of-unordered-set
 	 */
-	operator size_t () const
+	std::size_t to_size_t() const
 	{
-		return static_cast<size_t>(m_x * 31 + m_y);
+		return static_cast<std::size_t>(m_x * 31 + m_y * 17 + m_z);
 	}
 
 	Vector3D Normalized() const
