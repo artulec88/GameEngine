@@ -14,6 +14,12 @@ Vector2D::Vector2D() :
 {
 }
 
+Vector2D::Vector2D(Real xy) :
+	m_x(xy),
+	m_y(xy)
+{
+}
+
 Vector2D::Vector2D(Real x, Real y) :
 	m_x(x),
 	m_y(y)
@@ -140,6 +146,13 @@ Vector3D::Vector3D() :
 	m_x(REAL_ZERO),
 	m_y(REAL_ZERO),
 	m_z(REAL_ZERO)
+{
+}
+
+Vector3D::Vector3D(Real xyz) :
+	m_x(xyz),
+	m_y(xyz),
+	m_z(xyz)
 {
 }
 
@@ -399,6 +412,14 @@ Vector4D::Vector4D() :
 	m_y(REAL_ZERO),
 	m_z(REAL_ZERO),
 	m_w(REAL_ZERO)
+{
+}
+
+Vector4D::Vector4D(Real xyzw) :
+	m_x(xyzw),
+	m_y(xyzw),
+	m_z(xyzw),
+	m_w(xyzw)
 {
 }
 

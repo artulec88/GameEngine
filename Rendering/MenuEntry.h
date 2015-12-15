@@ -10,13 +10,13 @@ namespace Rendering
 {
 
 // TODO: Consider moving this namespace to another file (e.g. Actions.h)
-namespace Actions
+namespace MenuActions
 {
 	/**
-	 * TODO: Improve this enum. Maybe it would be better to define ActionID as a class to
+	 * TODO: Improve this enum. Maybe it would be better to define MenuActionID as a class to
 	 * allow storing additional parameters for a given action.
 	 */
-	enum ActionID
+	enum MenuActionID
 	{
 		QUIT = 0,
 		START_RESUME,
@@ -24,7 +24,7 @@ namespace Actions
 		OTHER,
 		UNDEFINED
 	};
-}
+} /* end namespace MenuActions */
 
 class MenuEntry
 {
@@ -41,7 +41,7 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MenuEntry();
-	RENDERING_API MenuEntry(Actions::ActionID actionID, const std::string& text);
+	RENDERING_API MenuEntry(MenuActions::MenuActionID menuActionID, const std::string& text);
 	RENDERING_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -55,7 +55,7 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	void SelectChildMenuEntry(int index);
 
-	RENDERING_API Actions::ActionID GetActionID() const { return m_actionID; }
+	RENDERING_API MenuActions::MenuActionID GetMenuActionID() const { return m_menuActionID; }
 	RENDERING_API void AddChildren(MenuEntry* child);
 	RENDERING_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	RENDERING_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
@@ -68,7 +68,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Actions::ActionID m_actionID;
+	MenuActions::MenuActionID m_menuActionID;
 	std::string m_text;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;

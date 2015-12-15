@@ -91,7 +91,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		else
 		{
 			// TODO: Both "Start" and "Exit" have no children, but the ENTER action should be handled in a different way for them.
-			Actions::ActionID selectedMenuEntryAction = selectedChild->GetActionID();
+			MenuActions::MenuActionID selectedMenuEntryAction = selectedChild->GetMenuActionID();
 			switch (selectedMenuEntryAction)
 			{
 			case Actions::START_RESUME:

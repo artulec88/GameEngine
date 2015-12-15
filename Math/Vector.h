@@ -15,6 +15,7 @@ class MATH_API Vector2D
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Vector2D();
+	explicit Vector2D(Real xy);
 	Vector2D(Real x, Real y);
 	Vector2D(const Vector2D& v);
 	~Vector2D();
@@ -111,6 +112,7 @@ class MATH_API Vector3D
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Vector3D();
+	explicit Vector3D(Real xyz);
 	Vector3D(Real x, Real y, Real z);
 	Vector3D(const Vector3D& v);
 	~Vector3D();
@@ -237,6 +239,7 @@ class MATH_API Vector4D
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	Vector4D();
+	explicit Vector4D(Real xyzw);
 	Vector4D(Real x, Real y, Real z, Real w);
 	Vector4D(const Vector4D& v);
 	~Vector4D();
