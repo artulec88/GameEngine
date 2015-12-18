@@ -27,6 +27,11 @@ namespace Unit
 /// <summary>
 /// Angle class is responsible for handling the angle.
 /// </summary>
+/// <remarks>
+/// The fast trigonometric and inverse trigonometric functions are all based on approximations that appear in
+/// "Handbook of Mathematical Functions with Formulas, Graphs, and Mathematical Tables" by Milton Abramowitz and Irene A. Stegun.
+/// They are adopted in the book "3D Game Engine Architecture" by David H. Eberly in chapter 2.2.2 ("Fast functions").
+/// </remarks>
 class MATH_API Angle
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -61,7 +66,28 @@ public:
 	void SetAngleInDegrees(Real angleInDegrees) { m_angle = angleInDegrees; m_unit = Unit::DEGREE; }
 	void SetAngleInRadians(Real angleInRadians) { m_angle = angleInRadians; m_unit = Unit::RADIAN; }
 
-	inline Real Sin() const;	
+	inline Real Sin() const;
+	
+	/// <summary>
+	/// The fast trigonometric function calculating the sine of an angle. Given <code>x</code> is the angle in radians the result is the following:
+	/// sin(x) = x - 0.16605x^2 + 0.00761x^4 + eps(x).
+	/// </summary>
+	/// <remarks>
+	/// For correct results the angle must be in range [0; pi / 2].
+	/// The error term eps(x) is bounded by |eps(x)| <= 1.7 * 10^(-4).
+	/// </remarks>
+	inline Real FastSin1() const;
+	
+	/// <summary>
+	/// The fast trigonometric function calculating the sine of an angle. Given <code>x</code> is the angle in radians the result is the following:
+	/// sin(x) = x - 0.1666666664x^2 + 0.0083333315x^4 - 0.0001984090x^6 + 0.0000027526x^8 - 0.0000000239x^10 + eps(x).
+	/// </summary>
+	/// <remarks>
+	/// For correct results the angle must be in range [0; pi / 2].
+	/// The error term eps(x) is bounded by |eps(x)| <= 1.9 * 10^(-8).
+	/// </remarks>
+	inline Real FastSin2() const;
+
 	inline Real Cos() const;
 
 	Angle operator-() const;
@@ -147,6 +173,54 @@ inline Real Angle::Sin() const
 	default:
 		STOP_PROFILING;
 		return sin(m_angle);
+		break;
+	}
+}
+
+inline Real Angle::FastSin1() const
+{
+	// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
+	// In case the angle is outside specified range use: https://pl.wikipedia.org/wiki/Trygonometryczne_wzory_redukcyjne.
+	static const Real ANGLE_SECOND_POWER_FACTOR = 0.16605;
+	static const Real ANGLE_FOURTH_POWER_FACTOR = 0.00761;
+
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		const Real angleInRad = ToRad(m_angle);
+		return angleInRad - (ANGLE_SECOND_POWER_FACTOR * angleInRad * angleInRad * angleInRad) + (ANGLE_FOURTH_POWER_FACTOR * angleInRad * angleInRad * angleInRad * angleInRad * angleInRad);
+		break;
+	case Unit::RADIAN:
+	default:
+		STOP_PROFILING;
+		return m_angle - (ANGLE_SECOND_POWER_FACTOR * m_angle * m_angle * m_angle) + (ANGLE_FOURTH_POWER_FACTOR * m_angle * m_angle * m_angle * m_angle * m_angle);
+		break;
+	}
+}
+
+inline Real Angle::FastSin2() const
+{
+	// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
+	static const Real ANGLE_SECOND_POWER_FACTOR = 0.1666666664;
+	static const Real ANGLE_FOURTH_POWER_FACTOR = 0.0083333315;
+	static const Real ANGLE_SIXTH_POWER_FACTOR = 0.0001984090;
+	static const Real ANGLE_EIGHTH_POWER_FACTOR = 0.0000027526;
+	static const Real ANGLE_TENTH_POWER_FACTOR = 0.0000000239;
+
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING;
+		const Real angleInRad = ToRad(m_angle);
+		return angleInRad - (ANGLE_SECOND_POWER_FACTOR * pow(angleInRad, 3)) + (ANGLE_FOURTH_POWER_FACTOR * pow(angleInRad, 5)) - (ANGLE_SIXTH_POWER_FACTOR * pow(angleInRad, 7)) + (ANGLE_EIGHTH_POWER_FACTOR * pow(angleInRad, 9)) - (ANGLE_TENTH_POWER_FACTOR * pow(angleInRad, 11));
+		break;
+	case Unit::RADIAN:
+	default:
+		STOP_PROFILING;
+		return m_angle - (ANGLE_SECOND_POWER_FACTOR * pow(m_angle, 3)) + (ANGLE_FOURTH_POWER_FACTOR * pow(m_angle, 5)) - (ANGLE_SIXTH_POWER_FACTOR * pow(m_angle, 7)) + (ANGLE_EIGHTH_POWER_FACTOR * pow(m_angle, 9)) - (ANGLE_TENTH_POWER_FACTOR * pow(m_angle, 11));
 		break;
 	}
 }
