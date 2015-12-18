@@ -309,8 +309,7 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	velocity.Threshold(maxSpeed);
 	//velocity += acceleration * delta;
 	//velocity -= slowDownVec;
-	//stdlog(Debug, LOGPLACE, "Acceleration = %s\t Velocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
-
+	DEBUG_LOG("Acceleration = %s\tVelocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 	transform.SetPos(transform.GetPos() + velocity);
 	STOP_PROFILING;
 }

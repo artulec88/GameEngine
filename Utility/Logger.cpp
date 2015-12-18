@@ -111,7 +111,7 @@ void Logger::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defa
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
 	{
-		//stdlog(Delocust, LOGPLACE, "Setting new logging level from %s to %s", LevelNames[static_cast<int>(stdlog.GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
+		DELOCUST_LOG("Setting new logging level from %s to %s", LevelNames[static_cast<int>(GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
 		SetLevel(defaultLogLevel);
 		return;
 	}

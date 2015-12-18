@@ -24,17 +24,16 @@
 #include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
 #endif
 
-using namespace std;
 using namespace Math;
 using namespace Utility;
 using namespace Rendering;
 
 void PrintHelp()
 {
-	cout << "usage: GameEngine.exe [OPTIONS]" << endl;
-	cout << "\t-log LoggingLevel" << endl;
-	cout << "\t-config ConfigFilePath" << endl;
-	cout << endl;
+	std::cout << "usage: GameEngine.exe [OPTIONS]" << std::endl;
+	std::cout << "\t-log LoggingLevel" << std::endl;
+	std::cout << "\t-config ConfigFilePath" << std::endl;
+	std::cout << std::endl;
 }
 
 int main (int argc, char* argv[])
@@ -47,7 +46,6 @@ int main (int argc, char* argv[])
 		system("pause");
 		return EXIT_SUCCESS;
 	}
-	//stdlog.Fill(Command->Get("-log", ""), Debug);
 	IConfig::GetConfig().LoadFromFile(ICommand::GetCommand().Get("-config", "..\\Config\\Config.cfg"));
 	const std::string logLevel = GET_CONFIG_VALUE_STR("LoggingLevel", "Info");
 	ILogger::GetLogger().Fill(logLevel, Debug);

@@ -174,7 +174,7 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	//stdlog(Info, LOGPLACE, "MonkeyNode1 has ID=%d", monkeyNode1->GetID());
+	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode1);
 

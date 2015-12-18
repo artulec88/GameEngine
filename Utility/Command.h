@@ -39,6 +39,8 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	// TODO: Check if Array<std::string> is a better solution than using STL vector
+	//Container
 	std::vector<std::string> m_commands;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Command */

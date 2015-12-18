@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Config.h"
+#include "StringUtility.h"
 #include <fstream>
 
 using namespace Utility;
@@ -49,7 +50,8 @@ Config::Config() : isInitialized(false)
 			continue;
 		}
 
-		line = RightTrim(line.substr(0, line.find_first_of('#')));
+		line = line.substr(0, line.find_first_of('#'));
+		StringUtility::RightTrim(line);
 		DELOCUST_LOG("Line after = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		CutToTokens(line, tokens, ' ');

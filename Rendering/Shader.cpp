@@ -438,7 +438,7 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 	std::vector<std::string> tokens;
 	Utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
 	//std::string result;
-	//Utility::RightTrim(tokens[0], result);
+	//StringUtility::RightTrim(tokens[0], result);
 	//DELOCUST_LOG("tokens[0] = \"%s\"", tokens[0].c_str());
 	return tokens[0];
 

@@ -73,16 +73,6 @@
 
 namespace Utility
 {
-	// trim from start
-	//void UTILITY_API LeftTrim(const std::string& s, std::string& result);
-	std::string& LeftTrim(std::string& s);
-	// trim from end
-	//void UTILITY_API RightTrim(const std::string& s, std::string& result);
-	std::string& RightTrim(std::string& s);
-	// trim from both ends
-	//void UTILITY_API Trim(const std::string& s, std::string& result);
-	std::string& Trim(std::string& s);
-
 	//template<typename T> Min(T value1, T value2)
 	//{
 	//	return (value1 < value2) ? value1 : value2;

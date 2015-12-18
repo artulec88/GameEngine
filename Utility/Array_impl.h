@@ -123,7 +123,7 @@ void Utility::Container::Array<T>::SetMaxSize(int maxSize, bool copy)
 template<class T>
 int Utility::Container::Array<T>::GetMaxSize() const
 {
-	return m_naxSize;
+	return m_maxSize;
 }
 
 template<class T>
