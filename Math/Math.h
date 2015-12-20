@@ -35,9 +35,22 @@ namespace Math
 {
 	typedef float Real;
 
-	const Real M_PI = 3.14159265358979323846f;
-	const Real DegToRadFactor = M_PI / 180;
-	const Real RadToDegFactor = 180 / M_PI;
+	/// <summary> The constant value of PI (https://pl.wikipedia.org/wiki/Pi) </summary>
+	/// <remarks>
+	/// The reason why the value of PI is computed rather than explictly specified is to try maintain
+	/// as much precision as possible for the numbers and to maintain consistency of the values across files.
+	/// As an example of inconsistency, I have seen code distributions with one file containing:
+	/// <code>#define PI 3.1415</code>
+	/// and another file containing:
+	/// <code>#define PI 3.141593</code>
+	/// </remarks>
+	const Real PI = static_cast<Real>(3.14159265358979323846); //static_cast<Real>(4.0 * atan(1.0));
+	
+	/// <summary> The constant multiplier that converts degrees to radians </summary>
+	const Real DEG_TO_RAD_MULTIPLIER = PI / 180;
+
+	/// <summary> The constant multiplier that converts radians to degrees </summary>
+	const Real RAD_TO_DEG_MULTIPLIER = 180 / PI;
 
 	template<typename Type>
 	Type Absolute(Type v)
@@ -47,12 +60,12 @@ namespace Math
 
 	template<typename Type> Type ToRad(Type angleInDegrees)
 	{
-		return static_cast<Type>(Math::DegToRadFactor * angleInDegrees);
+		return static_cast<Type>(Math::DEG_TO_RAD_MULTIPLIER * angleInDegrees);
 	}
 
 	template<typename Type> Type ToDeg(Type angleInRadians)
 	{
-		return static_cast<Type>(Math::RadToDegFactor * angleInRadians);
+		return static_cast<Type>(Math::RAD_TO_DEG_MULTIPLIER * angleInRadians);
 	}
 
 	template<typename Type> int Floor(Type value)

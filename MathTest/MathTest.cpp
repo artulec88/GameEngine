@@ -11,6 +11,7 @@
 #include "Utility\Time.h"
 
 #include "StatsTest.h"
+#include "AngleTestGroup.h"
 #include "VectorTestGroup.h"
 #include "QuaternionTestGroup.h"
 #include "MatrixTestGroup.h"
@@ -29,8 +30,8 @@ unsigned int outerLoops = 10000;
 double elapsedTime;
 
 unsigned int testNumber = 0;
-bool angleTestEnabled = false;
-bool vectorTestEnabled = true;
+bool angleTestEnabled = true;
+bool vectorTestEnabled = false;
 bool matrixTestEnabled = false;
 bool quaternionTestEnabled = true;
 bool sortingTestEnabled = false;
@@ -69,35 +70,25 @@ void AngleTest()
 		return;
 	}
 
-	NOTICE_LOG("Angle test started");
-	/* ==================== ANGLE TEST #1- comparing angles- begin ==================== */
-	Angle angle1(90.0);
-	Angle angle2(90.0, Unit::DEGREE);
-	Angle angle3(M_PI / 2.0f, Unit::RADIAN); // angle1 == angle2 == angle3
-	Angle angle4(M_PI / 2.0f, Unit::DEGREE); // angle4 is different than angle1, angle2, angle3
-	TestReport(angle1 == angle2, "The comparison operators of the Angle class are incorrect. angle1 == angle2");
-	TestReport(angle1 == angle3, "The comparison operators of the Angle class are incorrect. angle1 == angle3");
-	TestReport(angle2 == angle3, "The comparison operators of the Angle class are incorrect. angle2 == angle3");
-	TestReport(angle1 != angle4, "The comparison operators of the Angle class are incorrect. angle1 != angle4");
-	TestReport(angle2 != angle4, "The comparison operators of the Angle class are incorrect. angle2 != angle4");
-	TestReport(angle3 != angle4, "The comparison operators of the Angle class are incorrect. angle3 != angle4");
-	Angle angle5(45.0f);
-	Angle angle6(M_PI / 4.0f, Unit::RADIAN); // angle5 is equal to angle6
-	TestReport(angle1 > angle5, "The comparison operators of the Angle class are incorrect. angle1 > angle5");
-	TestReport(angle1 > angle6, "The comparison operators of the Angle class are incorrect. angle1 > angle6");
-	TestReport(angle1 >= angle5, "The comparison operators of the Angle class are incorrect. angle1 >= angle5");
-	TestReport(angle1 >= angle6, "The comparison operators of the Angle class are incorrect. angle1 >= angle6");
-	TestReport(angle5 < angle1, "The comparison operators of the Angle class are incorrect. angle5 < angle1");
-	TestReport(angle6 < angle1, "The comparison operators of the Angle class are incorrect. angle6 < angle1");
-	TestReport(angle5 <= angle1, "The comparison operators of the Angle class are incorrect. angle5 <= angle1");
-	TestReport(angle6 <= angle1, "The comparison operators of the Angle class are incorrect. angle6 <= angle1");
-	TestReport(angle5 == angle6, "The comparison operators of the Angle class are incorrect. angle5 == angle6");
-	TestReport(angle5 >= angle6, "The comparison operator of the Angle class are incorrect. angle5 >= angle6");
-	TestReport(angle5 <= angle6, "The comparison operator of the Angle class are incorrect. angle5 <= angle6");
-	TestReport(angle6 >= angle5, "The comparison operator of the Angle class are incorrect. angle6 >= angle5");
-	TestReport(angle6 <= angle5, "The comparison operator of the Angle class are incorrect. angle6 <= angle5");
-	/* ==================== ANGLE TEST #1- comparing angles- end ==================== */
-	NOTICE_LOG("Angle test finished");
+	MathTest::AngleTestGroup angleTests;
+	const Angle angle1(90.0);
+	const Angle angle2(90.0, Unit::DEGREE);
+	const Angle angle3(PI / 2.0f, Unit::RADIAN);
+	const Angle angle4(PI / 2.0f, Unit::DEGREE);
+	const Angle angle5(45.0f);
+	const Angle angle6(PI / 4.0f, Unit::RADIAN);
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle2, true, false, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle3, true, false, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle2, angle3, true, false, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle4, false, false, true));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle1, false, true, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle2, angle4, false, false, true));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle2, false, true, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle3, angle4, false, false, true));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle3, false, true, false));
+	angleTests.AddTest(new MathTest::AngleTestCompare(angle5, angle6, true, false, false));
+
+	angleTests.StartTests();
 }
 
 void VectorTest()

@@ -82,6 +82,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AngleTestGroup.cpp" />
     <ClCompile Include="MathTest.cpp" />
     <ClCompile Include="MatrixTestGroup.cpp" />
     <ClCompile Include="QuaternionTestGroup.cpp" />
@@ -90,6 +91,7 @@
     <ClCompile Include="VectorTestGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AngleTestGroup.h" />
     <ClInclude Include="MatrixTestGroup.h" />
     <ClInclude Include="QuaternionTestGroup.h" />
     <ClInclude Include="StatsTest.h" />
