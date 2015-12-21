@@ -15,7 +15,8 @@ class TextureData : public Utility::ReferenceCounter
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
-	static const int MAX_BOUND_TEXTURES_COUNT = 32; // The max number of bound textures in OpenGL
+	/// <summary> The maximum numbers of bound textures in OpenGL. </summary>
+	static const int MAX_BOUND_TEXTURES_COUNT;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

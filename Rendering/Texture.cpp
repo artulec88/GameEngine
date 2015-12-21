@@ -7,6 +7,8 @@
 
 using namespace Rendering;
 
+/* static */ const int TextureData::MAX_BOUND_TEXTURES_COUNT = 32;
+
 TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments) :
 	m_textureTarget(textureTarget),
 	m_texturesCount(texturesCount),

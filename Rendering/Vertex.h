@@ -39,6 +39,10 @@ struct RENDERING_API Vertex
 	Math::Vector3D m_normal;
 	Math::Vector3D m_tangent;
 	//Math::Vector3D m_bitangent;
+	
+	// TODO: Memory layout- add additional padding variable or
+	// use a table of Math::Vector3D objects with size 4 where [0], [1], [2], [3] store position, texture coordinates, normals and tangents respectively.
+
 	/* ==================== Non-static member variables end ==================== */
 }; /* end struct Vertex */
 

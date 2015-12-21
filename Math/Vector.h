@@ -80,6 +80,12 @@ public:
 		m_y /= length;
 	}
 	bool IsNormalized() const;
+
+	/// <summary>
+	/// Given a two-dimensional vector (x, y) the function returns a two-dimensional vector perpendicular to it.
+	/// This is done by swapping the components and changing the sign of one of them. <code>Perp((x, y)) = (y, -x)</code>.
+	/// </summary>
+	Vector2D Perp(bool normalizingEnabled = false) const;
 	
 	Real Cross(const Vector2D& v) const
 	{
@@ -100,9 +106,10 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	Real m_x;
 	Real m_y;
+	// TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Vector2D */
 
@@ -226,11 +233,11 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	Real m_x;
 	Real m_y;
 	Real m_z;
-	//Real padding;
+	//Real padding; // TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Vector3D */
 
@@ -360,12 +367,12 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	Real m_x;
 	Real m_y;
 	Real m_z;
 	Real m_w;
-	//Real padding;
+	//Real padding; // TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Vector4D */
 

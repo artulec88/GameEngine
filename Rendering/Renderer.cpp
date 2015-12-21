@@ -24,6 +24,7 @@ using namespace Utility;
 using namespace Math;
 
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */));
+/* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
 Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),

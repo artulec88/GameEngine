@@ -42,8 +42,8 @@ class Stats
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
-	static const int MAX_STATS_LEVEL = 3;
-	static const int MAX_SAMPLES_COUNT = 1000;
+	static const int MAX_STATS_LEVEL;
+	static const int MAX_SAMPLES_COUNT;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

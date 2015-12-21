@@ -119,6 +119,15 @@ bool Vector2D::IsNormalized() const
 	return AlmostEqual(LengthSquared(), REAL_ONE);
 }
 
+Vector2D Vector2D::Perp(bool normalizingEnabled /* = false */) const
+{
+	if (normalizingEnabled)
+	{
+		return Vector2D(m_y, -m_x).Normalized();
+	}
+	return Vector2D(m_y, -m_x);
+}
+
 Vector2D Vector2D::Rotate(const Angle& angle)
 {
 	const Real cosine = angle.Cos();

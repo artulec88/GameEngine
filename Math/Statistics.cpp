@@ -12,6 +12,12 @@
 
 using namespace Math::Statistics;
 
+template <typename T>
+/* static */ const int Stats<T>::MAX_STATS_LEVEL = 3;
+
+template <typename T>
+/* static */ const int Stats<T>::MAX_SAMPLES_COUNT = 1000;
+
 /* ==================== Stats begin ==================== */
 template <typename T>
 Stats<T>::Stats(int level /* = 0 */) :

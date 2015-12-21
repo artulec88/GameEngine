@@ -67,8 +67,9 @@ public:
 	void SetAngleInRadians(Real angleInRadians) { m_angle = angleInRadians; m_unit = Unit::RADIAN; }
 
 	/// <summary>
-	/// Calculates and returns the sine of an angle.
+	/// Calculates and returns the sine of the current angle.
 	/// </summary>
+	/// <returns>The precise value of the sine of the current angle.</returns>
 	/// <remarks>
 	/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
 	/// </remarks>
@@ -78,6 +79,7 @@ public:
 	/// The fast trigonometric function calculating the sine of an angle. Given <code>x</code> is the angle in radians the result is the following:
 	/// sin(x) = x - 0.16605x^2 + 0.00761x^4 + eps(x).
 	/// </summary>
+	/// <returns>The approximated value of the sine of the current angle.</returns>
 	/// <remarks>
 	/// For correct results the angle must be in range [0; pi / 2].
 	/// The error term eps(x) is bounded by |eps(x)| <= 1.7 * 10^(-4).
@@ -88,18 +90,27 @@ public:
 	/// The fast trigonometric function calculating the sine of an angle. Given <code>x</code> is the angle in radians the result is the following:
 	/// sin(x) = x - 0.1666666664x^2 + 0.0083333315x^4 - 0.0001984090x^6 + 0.0000027526x^8 - 0.0000000239x^10 + eps(x).
 	/// </summary>
+	/// <returns>The approximated value of the sine of the current angle.</returns>
 	/// <remarks>
 	/// For correct results the angle must be in range [0; pi / 2].
 	/// The error term eps(x) is bounded by |eps(x)| <= 1.9 * 10^(-8).
 	/// </remarks>
 	inline Real FastSin2() const;
 
+	/// <summary>
+	/// Calculates and returns the cosine of the current angle.
+	/// </summary>
+	/// <returns>The precise value of the cosine of the current angle.</returns>
+	/// <remarks>
+	/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
+	/// </remarks>
 	inline Real Cos() const;
 
 	/// <summary>
 	/// The fast trigonometric function calculating the cosine of an angle. Given <code>x</code> is the angle in radians the result is the following:
 	/// cos(x) = 1 - 0.4967x^2 + 0.03705x^4 + eps(x).
 	/// </summary>
+	/// <returns>The approximated value of the cosine of the current angle.</returns>
 	/// <remarks>
 	/// For correct results the angle must be in range [0; pi / 2].
 	/// The error term eps(x) is bounded by |eps(x)| <= 1.2 * 10^(-3).
@@ -110,11 +121,43 @@ public:
 	/// The fast trigonometric function calculating the cosine of an angle. Given <code>x</code> is the angle in radians the result is the following:
 	/// cos(x) = 1 - 0.4999999963x^2 + 0.0416666418x^4 - 0.0013888397x^6 + 0.0000247609x^8 - 0.0000002605x^10 + eps(x).
 	/// </summary>
+	/// <returns>The approximated value of the cosine of the current angle.</returns>
 	/// <remarks>
 	/// For correct results the angle must be in range [0; pi / 2].
 	/// The error term eps(x) is bounded by |eps(x)| <= 6.5 * 10^(-9).
 	/// </remarks>
 	inline Real FastCos2() const;
+
+	/// <summary>
+	/// Calculates and returns the tangent of the current angle.
+	/// </summary>
+	/// <returns>The precise value of the tangent of the current angle.</returns>
+	/// <remarks>
+	/// This function is more precise than FastTan1() or FastTan2() at the expense of its speed. It is way slower than the other ones.
+	/// </remarks>
+	inline Real Tan() const;
+
+	/// <summary>
+	/// The fast trigonometric function calculating the tangent of an angle. Given <code>x</code> is the angle in radians the result is the following:
+	/// tan(x) = x + 0.31755x^3 + 0.2033x^5 + eps(x).
+	/// </summary>
+	/// <returns>The approximated value of the tangent of the current angle.</returns>
+	/// <remarks>
+	/// For correct results the angle must be in range [0; pi / 4].
+	/// The error term eps(x) is bounded by |eps(x)| <= 8.1 * 10^(-4).
+	/// </remarks>
+	inline Real FastTan1() const;
+
+	/// <summary>
+	/// The fast trigonometric function calculating the tangent of an angle. Given <code>x</code> is the angle in radians the result is the following:
+	/// tan(x) = x + 0.3333314036x^3 + 0.1333923995x^5 + + 0.0533740603x^7 + 0.0245650893x^9 + 0.0029005250x^11 + 0.0095168091x^13 + eps(x).
+	/// </summary>
+	/// <returns>The approximated value of the tangent of the current angle.</returns>
+	/// <remarks>
+	/// For correct results the angle must be in range [0; pi / 2 (although the book "3D Game Engine Architecture" by David H. Eberly says 2 it may be an error, it is likely to be 4 as in FastTan1())].
+	/// The error term eps(x) is bounded by |eps(x)| <= 1.9 * 10^(-8).
+	/// </remarks>
+	inline Real FastTan2() const;
 
 	Angle operator-() const;
 	Angle operator+(const Angle& angle) const;
@@ -277,6 +320,50 @@ inline Real Angle::FastCos2() const
 	STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
 	return REAL_ONE - (ANGLE_SECOND_POWER_FACTOR * pow(angleInRad, 2)) + (ANGLE_FOURTH_POWER_FACTOR * pow(angleInRad, 4)) -
 		(ANGLE_SIXTH_POWER_FACTOR * pow(angleInRad, 6)) + (ANGLE_EIGHTH_POWER_FACTOR * pow(angleInRad, 8)) - (ANGLE_TENTH_POWER_FACTOR * pow(angleInRad, 10));
+}
+
+inline Real Angle::Tan() const
+{
+	START_PROFILING;
+	switch (m_unit)
+	{
+	case Unit::DEGREE:
+		STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+		return tan(ToRad(m_angle));
+		break;
+	case Unit::RADIAN:
+	default:
+		STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+		return tan(m_angle);
+		break;
+	}
+}
+
+inline Real Angle::FastTan1() const
+{
+	START_PROFILING;
+	// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 4]!).
+	//static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.31755);
+	//static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.2033);
+
+	const Real angleInRad = GetAngleInRadians();
+	STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+	return angleInRad + 0.31755 * pow(angleInRad, 3) + 0.2033 * pow(angleInRad, 5);
+}
+
+inline Real Angle::FastTan2() const
+{
+	START_PROFILING;
+	// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
+	//static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4999999963);
+	//static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0416666418);
+	//static const Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0013888397);
+	//static const Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000247609);
+	//static const Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000002605);
+
+	const Real angleInRad = GetAngleInRadians();
+	STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+	return angleInRad + 0.3333314036 * pow(angleInRad, 3) + 0.1333923995 * pow(angleInRad, 5) + 0.0533740603 * pow(angleInRad, 7) + 0.0245650893 * pow(angleInRad, 9) + 0.0029005250 * pow(angleInRad, 11) + 0.0095168091 * pow(angleInRad, 13);
 }
 
 } /* end namespace Math */
