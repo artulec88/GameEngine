@@ -16,14 +16,14 @@ PlayMenuGameState::PlayMenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::Actions::UNDEFINED, "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::Actions::OTHER, "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::OTHER, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::START_RESUME, "Resume"));
+	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::MenuActions::UNDEFINED, "Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Controls"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::START_RESUME, "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::Actions::QUIT, "Quit"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::QUIT, "Quit"));
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)
@@ -95,11 +95,11 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 			Rendering::MenuActions::MenuActionID selectedMenuEntryAction = selectedChild->GetMenuActionID();
 			switch (selectedMenuEntryAction)
 			{
-			case Rendering::Actions::START_RESUME:
+			case Rendering::MenuActions::START_RESUME:
 				//ASSERT(Rendering::GameManager::GetGameManager()->HasMoreThanOneState)
 				Rendering::GameManager::GetGameManager()->PopState();
 				break;
-			case Rendering::Actions::QUIT:
+			case Rendering::MenuActions::QUIT:
 				Rendering::GameManager::GetGameManager()->RequestGameQuit();
 				break;
 			}

@@ -265,8 +265,8 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 
 	const GLchar* p[1];
 	p[0] = shaderText.c_str();
-	GLint lengths[1];
-	lengths[0] = shaderText.length(); // strlen(text.c_str());
+	GLint lengths[1] = { shaderText.length() };
+	//lengths[0] = shaderText.length(); // strlen(text.c_str());
 
 	glShaderSource(shader, 1, p, lengths);
 	glCompileShader(shader);
@@ -335,7 +335,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		++temp;
 	}
 	
-	unsigned int uniformLocation = shaderText.find(UNIFORM_KEY);
+	size_t uniformLocation = shaderText.find(UNIFORM_KEY);
 	while(uniformLocation != std::string::npos)
 	{
 		/**
@@ -346,19 +346,19 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		 * It seems there is a problem with the isCommented variable in this function.
 		 */
 		bool isCommented = false;
-		unsigned int lastLineEnd = shaderText.rfind(";", uniformLocation);
+		size_t lastLineEnd = shaderText.rfind(";", uniformLocation);
 		//INFO_LOG("Uniform location in shader text = %d; lastLineEnd = %d; std::string::npos = %d", uniformLocation, lastLineEnd, std::string::npos);
 		if(lastLineEnd != std::string::npos)
 		{
-			std::string potentialCommentSection = shaderText.substr(lastLineEnd,uniformLocation - lastLineEnd);
-			unsigned int commentFind = potentialCommentSection.find("//");
+			std::string potentialCommentSection = shaderText.substr(lastLineEnd, uniformLocation - lastLineEnd);
+			size_t commentFind = potentialCommentSection.find("//");
 			isCommented = (commentFind != std::string::npos);
 			//INFO_LOG("potentialCommentSection = \"%s\"; find("") = %d", potentialCommentSection.c_str(), commentFind);
 		}
 		if(!isCommented)
 		{
-			unsigned int begin = uniformLocation + UNIFORM_KEY.length();
-			unsigned int end = shaderText.find(";", begin);
+			size_t begin = uniformLocation + UNIFORM_KEY.length();
+			size_t end = shaderText.find(";", begin);
 			std::string uniformLine = shaderText.substr(begin + 1, end-begin - 1);
 			
 			begin = uniformLine.find(" ");
@@ -415,13 +415,14 @@ std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& sha
 	const std::string STRUCT_KEY = "struct";
 	std::vector<UniformStruct> result;
 	
-	unsigned int structLocation = shaderText.find(STRUCT_KEY);
+	size_t structLocation = shaderText.find(STRUCT_KEY);
+	DELOCUST_LOG("structLocation = %d; std::string::npos = %d", structLocation, std::string::npos);
 	while(structLocation != std::string::npos)
 	{
 		structLocation += STRUCT_KEY.length() + 1; //Ignore the struct keyword and space
 		
-		unsigned int braceOpening = shaderText.find("{", structLocation);
-		unsigned int braceClosing = shaderText.find("}", braceOpening);
+		size_t braceOpening = shaderText.find("{", structLocation);
+		size_t braceClosing = shaderText.find("}", braceOpening);
 		
 		UniformStruct newStruct;
 		newStruct.name = FindUniformStructName(shaderText.substr(structLocation, braceOpening - structLocation));

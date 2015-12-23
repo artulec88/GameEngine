@@ -21,7 +21,7 @@
 #include "TestGameManager.h"
 
 #ifdef _DEBUG
-#include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
+//#include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
 #endif
 
 using namespace Math;
@@ -33,6 +33,9 @@ void PrintHelp()
 	std::cout << "usage: GameEngine.exe [OPTIONS]" << std::endl;
 	std::cout << "\t-log LoggingLevel" << std::endl;
 	std::cout << "\t-config ConfigFilePath" << std::endl;
+	std::cout << "\t-textures TexturesDirectory" << std::endl;
+	std::cout << "\t-shaders ShadersDirectory" << std::endl;
+	std::cout << "\t-models ModelsDirectory" << std::endl;
 	std::cout << std::endl;
 }
 

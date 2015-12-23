@@ -60,7 +60,7 @@ private:
 	Math::Real m_loadingProgress;
 	tthread::thread* m_loadingThread;
 #ifdef CALCULATE_GAME_STATS
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class LoadGameState */

@@ -18,14 +18,14 @@ MenuGameState::MenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new MenuEntry(Actions::UNDEFINED, "Main menu");
-	MenuEntry* optionsMenuEntry = new MenuEntry(Actions::OTHER, "Options");
-	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Sound"));
-	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Graphics"));
-	optionsMenuEntry->AddChildren(new MenuEntry(Actions::OTHER, "Controls"));
-	m_currentMenuEntry->AddChildren(new MenuEntry(Actions::START_RESUME, "Start"));
+	m_currentMenuEntry = new MenuEntry(MenuActions::UNDEFINED, "Main menu");
+	MenuEntry* optionsMenuEntry = new MenuEntry(MenuActions::OTHER, "Options");
+	optionsMenuEntry->AddChildren(new MenuEntry(MenuActions::OTHER, "Sound"));
+	optionsMenuEntry->AddChildren(new MenuEntry(MenuActions::OTHER, "Graphics"));
+	optionsMenuEntry->AddChildren(new MenuEntry(MenuActions::OTHER, "Controls"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(MenuActions::START_RESUME, "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new MenuEntry(Actions::QUIT, "Quit"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(MenuActions::QUIT, "Quit"));
 }
 
 MenuGameState::~MenuGameState(void)
@@ -94,12 +94,12 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 			MenuActions::MenuActionID selectedMenuEntryAction = selectedChild->GetMenuActionID();
 			switch (selectedMenuEntryAction)
 			{
-			case Actions::START_RESUME:
+			case MenuActions::START_RESUME:
 			{
 				GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new LoadGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 				break;
 			}
-			case Actions::QUIT:
+			case MenuActions::QUIT:
 				GameManager::GetGameManager()->RequestGameQuit();
 				break;
 			}

@@ -718,7 +718,8 @@ void Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
 {
 	START_PROFILING;
-	const Real f = static_cast<Real>(REAL_ONE / tan(fov.GetAngleInRadians() / 2.0));
+	Angle halfAngle(fov / static_cast<Real>(2.0));
+	const Real f = static_cast<Real>(REAL_ONE / halfAngle.Tan());
 	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
 
 	//m[0][0] = f / aspect;	m[0][1] = 0.0;	m[0][2] = 0.0;							m[0][3] = 0.0;

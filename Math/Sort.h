@@ -676,7 +676,7 @@ class BucketSort : public ISort
 		void PushVector(const T& vector) { this->vectors.push_back(vector); }
 		T* GetVectors() { return &vectors[0]; }
 		T GetVector(int i) const { return vectors[i]; }
-		int GetVectorsSize() const { return vectors.size(); }
+		int GetVectorsSize() const { return static_cast<int>(vectors.size()); }
 	private:
 		std::vector<T> vectors;
 		Math::Real lowBound; // TODO: Remove this member variable in the future. It is not used anywhere

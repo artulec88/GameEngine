@@ -62,7 +62,7 @@ private:
 	//Rendering::GameNode& m_rootGameNode;
 	bool m_isMouseLocked;
 #ifdef CALCULATE_GAME_STATS
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class PlayGameState */

@@ -61,7 +61,7 @@ public:
 private:
 	Rendering::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
-	mutable Math::Statistics::ClassStats& m_classStats;
+	Math::Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MenuGameState */

@@ -2,6 +2,7 @@
 #define __RENDERING_IINPUTABLE_H__
 
 #include "Rendering.h"
+#include <vector>
 
 namespace Rendering { namespace Input
 {
@@ -30,6 +31,8 @@ public:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
+//private:
+	//std::vector<Command
 /* ==================== Non-static member variables end ==================== */
 }; /* end class IInputable */
 

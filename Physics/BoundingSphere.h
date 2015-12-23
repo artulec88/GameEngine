@@ -8,15 +8,15 @@
 namespace Physics
 {
 
-class PHYSICS_API BoundingSphere : public Collider
+class BoundingSphere : public Collider
 {
 /* ==================== Static variables begin ==================== */
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	BoundingSphere(const Math::Vector3D& center, Math::Real radius);
-	~BoundingSphere(void);
+	PHYSICS_API BoundingSphere(const Math::Vector3D& center, Math::Real radius);
+	PHYSICS_API ~BoundingSphere(void);
 private:
 	//BoundingSphere(const BoundingSphere& boundingSphere) {} // don't implement
 	//void operator=(const BoundingSphere& boundingSphere) {} // don't implement
@@ -24,9 +24,9 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	IntersectInfo IntersectBoundingSphere(const BoundingSphere& boundingSphere) const;
-	inline const Math::Vector3D& GetCenter() const { return m_center; }
-	inline const Math::Real GetRadius() const { return m_radius; }
+	PHYSICS_API IntersectInfo IntersectBoundingSphere(const BoundingSphere& boundingSphere) const;
+	PHYSICS_API inline const Math::Vector3D& GetCenter() const { return m_center; }
+	PHYSICS_API inline const Math::Real GetRadius() const { return m_radius; }
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

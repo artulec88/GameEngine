@@ -66,7 +66,7 @@ int Stats<T>::Size() const
 	int totalSize = 0;
 	for (std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.begin(); mapItr != m_samples.end(); ++mapItr)
 	{
-		totalSize += mapItr->second.size();
+		totalSize += static_cast<int>(mapItr->second.size());
 	}
 	return totalSize;
 }
@@ -79,7 +79,7 @@ int Stats<T>::Size(StatsID statsID) const
 	{
 		return 0;
 	}
-	return mapItr->second.size();
+	return static_cast<int>(mapItr->second.size());
 }
 
 template <typename T>
@@ -157,9 +157,9 @@ T Stats<T>::CalculateMedian(StatsID statsID)
 		return static_cast<T>(0);
 	}
 
-	Math::Sorting::ISort::GetSortingObject(Math::Sorting::MERGE_SORT)->Sort(&m_samples[statsID][0], m_samples[statsID].size(), Sorting::ASCENDING);
+	Math::Sorting::ISort::GetSortingObject(Math::Sorting::MERGE_SORT)->Sort(&m_samples[statsID][0], static_cast<int>(m_samples[statsID].size()), Sorting::ASCENDING);
 
-	const int index = m_samples[statsID].size() / 2;
+	const int index = static_cast<int>(m_samples[statsID].size()) / 2;
 	if ((m_samples[statsID].size() % 2) == 0)
 	{
 		T medianMean = m_samples[statsID][index] + m_samples[statsID][index - 1];
@@ -406,7 +406,7 @@ void ClassStats::PrintReport(const Utility::Timing::TimeSpan& timeSpan, std::fst
 		//INFO_LOG("\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
 		std::string methodNameStr(methodStatsItr->first);
 		methodNameStr = methodNameStr.substr(methodNameStr.rfind(":") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
-		int spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
+		std::size_t spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
 		if (spacePos != std::string::npos)
 		{
 			methodNameStr = methodNameStr.substr(0, spacePos) + methodNameStr.substr(spacePos + 1);

@@ -41,7 +41,7 @@ class Renderer : public MappedValues
 {
 /* ==================== Static variables begin ==================== */
 private:
-	static const int SHADOW_MAPS_COUNT;
+	static const int SHADOW_MAPS_COUNT = 11;
 	static const Math::Matrix4D BIAS_MATRIX;
 /* ==================== Static variables end ==================== */
 

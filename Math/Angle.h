@@ -348,7 +348,7 @@ inline Real Angle::FastTan1() const
 
 	const Real angleInRad = GetAngleInRadians();
 	STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-	return angleInRad + 0.31755 * pow(angleInRad, 3) + 0.2033 * pow(angleInRad, 5);
+	return static_cast<Real>(angleInRad + 0.31755 * pow(angleInRad, 3) + 0.2033 * pow(angleInRad, 5));
 }
 
 inline Real Angle::FastTan2() const
@@ -363,7 +363,8 @@ inline Real Angle::FastTan2() const
 
 	const Real angleInRad = GetAngleInRadians();
 	STOP_PROFILING; // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-	return angleInRad + 0.3333314036 * pow(angleInRad, 3) + 0.1333923995 * pow(angleInRad, 5) + 0.0533740603 * pow(angleInRad, 7) + 0.0245650893 * pow(angleInRad, 9) + 0.0029005250 * pow(angleInRad, 11) + 0.0095168091 * pow(angleInRad, 13);
+	return static_cast<Real>(angleInRad + 0.3333314036 * pow(angleInRad, 3) + 0.1333923995 * pow(angleInRad, 5) +
+		0.0533740603 * pow(angleInRad, 7) + 0.0245650893 * pow(angleInRad, 9) + 0.0029005250 * pow(angleInRad, 11) + 0.0095168091 * pow(angleInRad, 13));
 }
 
 } /* end namespace Math */
