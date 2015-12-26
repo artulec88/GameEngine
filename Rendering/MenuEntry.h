@@ -2,6 +2,7 @@
 #define __RENDERING_MENU_ENTRY_H__
 
 #include "Rendering.h"
+#include "GameCommand.h"
 #include "Math\Vector.h"
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MenuEntry();
-	RENDERING_API MenuEntry(MenuActions::MenuActionID menuActionID, const std::string& text);
+	RENDERING_API MenuEntry(const GameCommand& gameCommand, const std::string& text);
 	RENDERING_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -55,7 +56,7 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	void SelectChildMenuEntry(int index);
 
-	RENDERING_API MenuActions::MenuActionID GetMenuActionID() const { return m_menuActionID; }
+	RENDERING_API void ExecuteCommand() const { m_gameCommand.Execute(); }
 	RENDERING_API void AddChildren(MenuEntry* child);
 	RENDERING_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	RENDERING_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
@@ -68,7 +69,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	MenuActions::MenuActionID m_menuActionID;
+	const GameCommand& m_gameCommand;
 	std::string m_text;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;

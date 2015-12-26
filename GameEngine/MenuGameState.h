@@ -8,6 +8,7 @@
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
 #include "Rendering\MenuEntry.h"
+#include "Rendering\GameCommand.h"
 
 #include <vector>
 
@@ -59,6 +60,8 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	const Rendering::GameCommand& m_quitCommand;
+
 	Rendering::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;

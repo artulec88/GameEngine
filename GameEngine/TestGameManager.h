@@ -3,7 +3,6 @@
 
 #include <Rendering\GameManager.h>
 #include <Rendering\GameNode.h>
-#include <Rendering\Shader.h>
 #include <Rendering\DirectionalLight.h>
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>

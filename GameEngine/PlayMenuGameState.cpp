@@ -1,29 +1,35 @@
 #include "PlayMenuGameState.h"
 #include "Rendering\GameManager.h"
+#include "Rendering\GameCommand.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
+#include "QuitCommand.h"
+#include "ResumeGameCommand.h"
 
 using namespace Game;
 
 PlayMenuGameState::PlayMenuGameState(void) :
 	Rendering::GameState(),
+	m_quitCommand(QuitCommand(Rendering::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
 #endif
 {
+	Rendering::EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
+
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(Rendering::MenuActions::UNDEFINED, "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::OTHER, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::START_RESUME, "Resume"));
+	m_currentMenuEntry = new Rendering::MenuEntry(emptyGameCommand, "Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(emptyGameCommand, "Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(ResumeGameCommand(*Rendering::GameManager::GetGameManager()), "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(Rendering::MenuActions::QUIT, "Quit"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(m_quitCommand, "Quit"));
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)
@@ -83,29 +89,15 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		m_currentMenuEntry->SelectNextChildMenuEntry();
 		break;
 	case GLFW_KEY_ENTER:
-	{
-		Rendering::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
-		if (selectedChild->HasChildren())
+		if (m_currentMenuEntry->GetSelectedChild()->HasChildren())
 		{
-			m_currentMenuEntry = selectedChild;
+			m_currentMenuEntry = m_currentMenuEntry->GetSelectedChild();
 		}
 		else
 		{
-			// TODO: Both "Start" and "Exit" have no children, but the ENTER action should be handled in a different way for them.
-			Rendering::MenuActions::MenuActionID selectedMenuEntryAction = selectedChild->GetMenuActionID();
-			switch (selectedMenuEntryAction)
-			{
-			case Rendering::MenuActions::START_RESUME:
-				//ASSERT(Rendering::GameManager::GetGameManager()->HasMoreThanOneState)
-				Rendering::GameManager::GetGameManager()->PopState();
-				break;
-			case Rendering::MenuActions::QUIT:
-				Rendering::GameManager::GetGameManager()->RequestGameQuit();
-				break;
-			}
+			m_currentMenuEntry->GetSelectedChild()->ExecuteCommand();
 		}
 		break;
-	}
 	default:
 		DEBUG_LOG("The key %d is not supported by the menu game state", key);
 		break;
