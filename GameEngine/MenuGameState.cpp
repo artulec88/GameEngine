@@ -19,19 +19,19 @@ MenuGameState::MenuGameState(void) :
 	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
 {
-	EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
+	//EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new MenuEntry(emptyGameCommand, "Main menu");
-	MenuEntry* optionsMenuEntry = new MenuEntry(emptyGameCommand, "Options");
-	optionsMenuEntry->AddChildren(new MenuEntry(emptyGameCommand /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new MenuEntry(emptyGameCommand /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new MenuEntry(emptyGameCommand /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new MenuEntry(StartGameCommand(*GameManager::GetGameManager()), "Start"));
+	m_currentMenuEntry = new MenuEntry(new EmptyGameCommand(), "Main menu");
+	MenuEntry* optionsMenuEntry = new MenuEntry(new EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(new StartGameCommand(*GameManager::GetGameManager()), "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new MenuEntry(m_quitCommand, "Quit"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(&m_quitCommand, "Quit"));
 }
 
 MenuGameState::~MenuGameState(void)

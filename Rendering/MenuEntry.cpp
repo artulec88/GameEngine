@@ -20,7 +20,7 @@ using namespace Rendering;
 }
 
 MenuEntry::MenuEntry(void) :
-	m_gameCommand(EmptyGameCommand()),
+	m_gameCommand(new EmptyGameCommand()),
 	m_text(),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
@@ -28,23 +28,26 @@ MenuEntry::MenuEntry(void) :
 {
 }
 
-MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text) :
+MenuEntry::MenuEntry(const GameCommand* gameCommand, const std::string& text) :
 	m_gameCommand(gameCommand),
 	m_text(text),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
 {
+	DELOCUST_LOG("MenuEntry \"%s\" constructor", text.c_str());
 }
 
 
 MenuEntry::~MenuEntry(void)
 {
+	DELOCUST_LOG("MenuEntry \"%s\" destructor", m_text.c_str());
 	for (std::vector<MenuEntry*>::iterator childrenMenuEntryItr = m_childrenMenuEntries.begin(); childrenMenuEntryItr != m_childrenMenuEntries.end(); ++childrenMenuEntryItr)
 	{
 		delete (*childrenMenuEntryItr);
 	}
 	m_childrenMenuEntries.clear();
+	SAFE_DELETE(m_gameCommand);
 }
 
 void MenuEntry::AddChildren(MenuEntry* child)

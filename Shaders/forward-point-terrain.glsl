@@ -106,7 +106,7 @@ void main()
 	const float minimum = -2.8; // TODO: Get minimum and maximum height from the terrain mesh
 	const float maximum = 1.8;
 	const float limit = 0.9;
-	vec4 texColor = 0.0;
+	vec4 texColor = vec4(0.0);
 	
 	if (worldPos0.y < limit)
 	{

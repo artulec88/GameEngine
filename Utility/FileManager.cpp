@@ -2,10 +2,12 @@
 #include "FileManager.h"
 #include "ILogger.h"
 
-//#include <windows.h>
-//#include <tchar.h> 
-//#include <stdio.h>
-//#include <strsafe.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <tchar.h> 
+#include <stdio.h>
+#include <strsafe.h>
+#endif
 //#include <dirent.h>
 
 using namespace Utility;
@@ -19,9 +21,51 @@ FileManager::~FileManager(void)
 {
 }
 
-std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string& directoryPath) const
+std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
 {
-	//INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
+	DEBUG_LOG("Listing all files in a directory %s (recursive search = %d)", directoryPath.c_str(), isRecursiveSearchEnabled);
+	std::vector<std::string> filenames;
+#ifdef _WIN32
+	// Prepare directoryPath string for use with FindFile functions. First, copy the string to a buffer, then append '\*' to the directory name.
+	TCHAR szDir[MAX_PATH];
+	StringCchCopy(szDir, MAX_PATH, std::wstring(directoryPath.begin(), directoryPath.end()).c_str());
+	StringCchCat(szDir, MAX_PATH, TEXT("\\*"));
+
+	// Find the first file in the directory
+	WIN32_FIND_DATA ffd;
+	HANDLE hFind = FindFirstFile(szDir, &ffd);
+	if (INVALID_HANDLE_VALUE == hFind)
+	{
+		ERROR_LOG("Cannot list files in a directory \"%s\". FindFirstFile() function failed.", directoryPath.c_str());
+		exit(EXIT_FAILURE);
+	}
+
+	// List all the files in the directory with some information about them.
+	LARGE_INTEGER fileSize;
+	do
+	{
+		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			CRITICAL_LOG("Directory \"%s\"", ffd.cFileName);
+		}
+		else
+		{
+			std::wstring filename(ffd.cFileName);
+			fileSize.LowPart = ffd.nFileSizeLow;
+			fileSize.HighPart = ffd.nFileSizeHigh;
+			EMERGENCY_LOG("File \"%s\" has %ld bytes", filename.c_str(), fileSize.QuadPart);
+			filenames.push_back(std::string(filename.begin(), filename.end()));
+		}
+	} while (FindNextFile(hFind, &ffd) != 0);
+
+	DWORD dwError = GetLastError();
+	if (dwError != ERROR_NO_MORE_FILES)
+	{
+		ERROR_LOG("No more files.");
+	}
+
+	FindClose(hFind);
+#endif
 	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	//{
 	//	ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
@@ -111,7 +155,5 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//{
 	//	ERROR_LOG("Could not open directory \"%s\"", directoryPath.c_str());
 	//}
-	//return filenames;
-	std::vector<std::string> filenames;
 	return filenames;
 }

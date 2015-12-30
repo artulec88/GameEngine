@@ -39,7 +39,6 @@ void main()
 DeclareFragOutput(0, vec4);
 void main()
 {
-	const vec4 skycolor = vec4(0.0, 0.0, 1.0, 0.0);
-	SetFragOutput(0, skycolor);
+	SetFragOutput(0, vec4(0.0, 0.0, 1.0, 0.0));
 }
 #endif

@@ -16,20 +16,20 @@ PlayMenuGameState::PlayMenuGameState(void) :
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
 #endif
 {
-	Rendering::EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
+	//Rendering::EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
 
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(emptyGameCommand, "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(emptyGameCommand, "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(emptyGameCommand /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(ResumeGameCommand(*Rendering::GameManager::GetGameManager()), "Resume"));
+	m_currentMenuEntry = new Rendering::MenuEntry(new Rendering::EmptyGameCommand(), "Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(new Rendering::EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(new ResumeGameCommand(*Rendering::GameManager::GetGameManager()), "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(m_quitCommand, "Quit"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(&m_quitCommand, "Quit"));
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)

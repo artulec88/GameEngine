@@ -5,6 +5,7 @@
 #include "Rendering\GameState.h"
 #include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IRenderable.h"
+//#include "Rendering\GameCommand.h"
 #include "Math\Math.h"
 #include "Rendering\GameNode.h"
 #include "GameStats.h"
@@ -52,6 +53,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	//Rendering::GameCommand* quitIntroCommand;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif
