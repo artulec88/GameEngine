@@ -34,7 +34,7 @@ void main()
 #include "parallaxMapping.glh"
 #include "sampling.glh"
 
-#uniform vec3 R_skycolor;
+//uniform vec3 R_skycolor;
 
 DeclareFragOutput(0, vec4);
 void main()

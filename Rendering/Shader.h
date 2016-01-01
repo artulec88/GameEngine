@@ -32,11 +32,11 @@ struct UniformStruct
 
 class ShaderData : public Utility::ReferenceCounter
 {
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 private:
 	static int supportedOpenGLLevel;
 	static std::string glslVersion;
-/* ==================== Static variables end ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:

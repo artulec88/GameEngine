@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Shader.h"
 
+#include "CoreEngine.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
 
@@ -134,7 +135,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 	}
 	INFO_LOG("Loading shader data from file \"%s\"", name.c_str());
 
-	ifstream file(("..\\Shaders\\" + fileName).c_str());
+	ifstream file((CoreEngine::GetCoreEngine()->GetShadersDirectory() + fileName).c_str());
 	if (!file.is_open())
 	{
 		ERROR_LOG("Unable to open shader file \"%s\". Check the path.", name.c_str());

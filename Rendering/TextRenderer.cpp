@@ -24,7 +24,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	{
 		WARNING_LOG("The text renderer will not work properly. The specified font texture is NULL");
 	}
-	//m_fontTexture = new Texture("..\\Textures\\font1.bmp");
+	//m_fontTexture = new Texture("font1.bmp");
 	m_fontMaterial = new Material(fontTexture);
 	m_textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
 

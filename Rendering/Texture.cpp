@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Texture.h"
+#include "CoreEngine.h"
 #include "stb_image.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
@@ -21,6 +22,7 @@ TextureData::TextureData(GLenum textureTarget, int width, int height, int textur
 	CHECK_CONDITION_EXIT(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Error, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
 	m_textureID = new GLuint[m_texturesCount];
 
+	CheckErrorCode(__FUNCTION__, "Creating texture data");
 	InitTextures(data, filters, internalFormat, format, clampEnabled);
 	InitRenderTargets(attachments);
 }
@@ -48,7 +50,7 @@ TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int heig
 	
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(m_texturesCount, m_textureID);
-	CheckErrorCode(__FUNCTION__, "Generating textures");
+	CheckErrorCode(__FUNCTION__, "Generating cube map texture");
 	Bind(0);
 
 	const GLuint targets[] = {
@@ -102,7 +104,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 	{
 		WARNING_LOG("The filter array is NULL.");
 	}
-	
+
 	glGenTextures(m_texturesCount, m_textureID);
 	CheckErrorCode(__FUNCTION__, "Generating textures");
 	for (int i = 0; i < m_texturesCount; ++i)
@@ -259,7 +261,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		//DELOCUST_LOG("Extension is = \"%s\"", extension.c_str());
 
 		int x, y, bytesPerPixel;
-		unsigned char* data = stbi_load(fileName.c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
+		unsigned char* data = stbi_load((CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 
 		if (data == NULL)
 		{
@@ -290,7 +292,7 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 	const std::string filenames [NUMBER_OF_CUBE_MAP_FACES] = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		cubeMapData[i] = stbi_load(filenames[i].c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		cubeMapData[i] = stbi_load((CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
 		if (cubeMapData[i] == NULL)
 		{
 			std::string name = filenames[i];

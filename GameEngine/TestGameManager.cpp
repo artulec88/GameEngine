@@ -85,28 +85,28 @@ void TestGameManager::Load()
 		ERROR_LOG("Loading the game will not be performed. The game has already been loaded.");
 	}
 
-	//Material bricks(new Texture("..\\Textures\\bricks.jpg"), specularIntensity, specularPower, Texture("..\\Textures\\bricks_normal.jpg"), Texture("..\\Textures\\bricks_disp.png"), 0.03f, -0.5f);
-	//Material bricks2("bricks2_material", Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, Texture("..\\Textures\\bricks2_normal.jpg"), Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f);
-	//Material humanMaterial("human_material", Texture("..\\Textures\\HumanSkin.jpg"), 2, 32);
+	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
+	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
+	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new GameNode();
-	m_terrainMesh = new TerrainMesh("..\\Models\\" + GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
+	m_terrainMesh = new TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
 	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
 	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
-	Rendering::Material* terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
-		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	Rendering::Material* terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		new Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
+		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #else
-	terrainMaterial = new Material(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
-		new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		new Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
+		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	//terrainMaterial->SetAdditionalTexture(new Texture("..\\Textures\\" + GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
+	terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new MeshRenderer(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -117,13 +117,13 @@ void TestGameManager::Load()
 
 	m_boxNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED
-	boxMaterial = new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f);
+	boxMaterial = new Material(new Texture("crateBox2.jpg"), 1.0f, 2.0f);
 	m_boxNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), boxMaterial));
+		new Mesh("SimpleCrate\\CrateModel.obj"), boxMaterial));
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 #else
 	m_boxNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\SimpleCrate\\CrateModel.obj"), new Material(new Texture("..\\Textures\\crateBox2.jpg"), 1.0f, 2.0f)));
+		new Mesh("SimpleCrate\\CrateModel.obj"), new Material(new Texture("crateBox2.jpg"), 1.0f, 2.0f)));
 #endif
 	m_boxNode->GetTransform().SetPos(12.0f, 3.5f, 9.0f);
 	m_boxNode->GetTransform().SetScale(0.05f);
@@ -134,14 +134,14 @@ void TestGameManager::Load()
 	////int indices [] = { 0, 1 };
 	////boxNode->AddComponent(new MeshRenderer(
 	////	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
-	////	new Material(new Texture("..\\Textures\\DirectionalLight.png"))));
+	////	new Material(new Texture("DirectionalLight.png"))));
 
 	GameNode* boxNode2 = new GameNode();
 	boxNode2->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\cube.obj"),
-		new Material(new Texture("..\\Textures\\bricks2.jpg"), 1.0f, 8.0f,
-			new Texture("..\\Textures\\bricks2_normal.jpg"),
-			new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
+		new Mesh("cube.obj"),
+		new Material(new Texture("bricks2.jpg"), 1.0f, 8.0f,
+			new Texture("bricks2_normal.jpg"),
+			new Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	boxNode2->GetTransform().SetPos(8.0f, 0.5f, 5.0f);
 	boxNode2->GetTransform().Rotate(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
@@ -156,20 +156,20 @@ void TestGameManager::Load()
 	//testMesh2->GetTransform().SetScale(1.5f);
 	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
 	testMesh1->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\plane.obj"),
-		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0, new Texture("..\\Textures\\bricks2_normal.jpg"), new Texture("..\\Textures\\bricks2_disp.jpg"), 0.04f, -1.0f)));
+		new Mesh("plane.obj"),
+		new Material(new Texture("bricks2.jpg"), 0.0f, 0, new Texture("bricks2_normal.jpg"), new Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	testMesh2->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\plane.obj"),
-		new Material(new Texture("..\\Textures\\bricks2.jpg"), 0.0f, 0)));
+		new Mesh("plane.obj"),
+		new Material(new Texture("bricks2.jpg"), 0.0f, 0)));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
 
 	GameNode* monkeyNode1 = new GameNode();
 	monkeyNode1->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\monkey4.obj"),
-		new Material(new Texture("..\\Textures\\chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
+		new Mesh("monkey4.obj"),
+		new Material(new Texture("chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
 	monkeyNode1->AddComponent(new LookAtComponent());
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
@@ -180,39 +180,39 @@ void TestGameManager::Load()
 
 	GameNode* monkeyNode2 = new GameNode();
 	monkeyNode2->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\monkey3.obj"),
-		new Material(new Texture("..\\Textures\\bricks.jpg"), 2.0f, 32.0f)));
+		new Mesh("monkey3.obj"),
+		new Material(new Texture("bricks.jpg"), 2.0f, 32.0f)));
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
 
 	GameNode* earthNode = new GameNode();
-	earthNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\earth.obj"), new Material(new Texture("..\\Textures\\earth.jpg"))));
+	earthNode->AddComponent(new MeshRenderer(new Mesh("earth.obj"), new Material(new Texture("earth.jpg"))));
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
 	AddToSceneRoot(earthNode);
 
 	GameNode* sphereNode = new GameNode();
-	sphereNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	sphereNode->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
 	m_resourcesLoaded += 2;
 	sphereNode->GetTransform().SetPos(-3.0f, 1.5f, -3.0f);
 	AddToSceneRoot(sphereNode);
 
 	GameNode* sphereNode2 = new GameNode();
-	sphereNode2->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	sphereNode2->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
 	m_resourcesLoaded += 2;
 	sphereNode2->GetTransform().SetPos(-3.0f, 2.0f, 3.0f);
 	AddToSceneRoot(sphereNode2);
 
 	GameNode* sphereNode3 = new GameNode();
-	sphereNode3->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	sphereNode3->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
 	m_resourcesLoaded += 2;
 	sphereNode3->GetTransform().SetPos(3.0f, 2.5f, -3.0f);
 	AddToSceneRoot(sphereNode3);
 
 	GameNode* sphereNode4 = new GameNode();
-	sphereNode4->AddComponent(new MeshRenderer(new Mesh("..\\Models\\sphere.obj"), new Material(new Texture("..\\Textures\\rust.jpg"))));
+	sphereNode4->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
 	m_resourcesLoaded += 2;
 	sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
 	AddToSceneRoot(sphereNode4);
@@ -223,20 +223,20 @@ void TestGameManager::Load()
 	for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
 	{
 		humanNodes[i] = new GameNode();
-		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("..\\Models\\BodyMesh.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 2.0f, 32.0f)));
+		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(new Texture("HumanSkin.jpg"), 2.0f, 32.0f)));
 		humanNodes[i]->GetTransform().SetPos(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
 		AddToSceneRoot(humanNodes[i]);
 	}
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 
 	//castleNode = new GameNode();
-	//castleNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\castle.obj"), new Material(new Texture("..\\Textures\\HumanSkin.jpg"), 0.5f, 8.0f)));
+	//castleNode->AddComponent(new MeshRenderer(new Mesh("castle.obj"), new Material(new Texture("HumanSkin.jpg"), 0.5f, 8.0f)));
 	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
 
 	GameNode* teapotNode = new GameNode();
 	teapotNode->GetTransform().SetPos(3.0f, 4.0f, REAL_ONE);
-	teapotNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\teapot.obj"), new Material(new Texture("..\\Textures\\chessboard3.jpg"))));
+	teapotNode->AddComponent(new MeshRenderer(new Mesh("teapot.obj"), new Material(new Texture("chessboard3.jpg"))));
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	AddToSceneRoot(teapotNode);
 
@@ -317,7 +317,7 @@ void TestGameManager::AddPointLights()
 		AddToSceneRoot(pointLightNode);
 		
 		//GameNode* bulbNode = new GameNode();
-		//bulbNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\Bulb\\Bulb.obj") /* new Mesh("..\\Models\\PointLight.obj") */, new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
+		//bulbNode->AddComponent(new MeshRenderer(new Mesh("Bulb\\Bulb.obj") /* new Mesh("PointLight.obj") */, new Material(new Texture("PointLight.png"), 1.0f, 8.0f)));
 		//bulbNode->GetTransform().SetPos(REAL_ZERO, REAL_ONE, REAL_ZERO);
 		//bulbNode->GetTransform().SetScale(5.0f);
 		//pointLightNode->AddChild(bulbNode);

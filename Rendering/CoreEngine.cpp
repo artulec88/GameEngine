@@ -37,7 +37,8 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	return s_coreEngine;
 }
 
-CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game) :
+CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
+	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */) :
 	m_isRunning(false),
 	m_windowWidth(width),
 	m_windowHeight(height),
@@ -55,6 +56,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	DAYS_PER_YEAR(365),
 	m_dayNumber(GET_CONFIG_VALUE("startingDayNumber", 172)),
 	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
+	m_shadersDirectory(shadersDirectory),
+	m_modelsDirectory(modelsDirectory),
+	m_texturesDirectory(texturesDirectory),
 #ifdef CALCULATE_RENDERING_STATS
 	m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
@@ -95,7 +99,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	CreateRenderer(width, height, title);
 
-	m_fpsTextRenderer = new TextRenderer(new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
+	m_fpsTextRenderer = new TextRenderer(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
 	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)

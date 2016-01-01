@@ -54,8 +54,10 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game);
-	virtual ~CoreEngine(void);
+	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
+		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
+		const std::string& texturesDirectory = "..\\Textures\\");
+	~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);
 	void operator=(const CoreEngine& app);
@@ -77,19 +79,22 @@ public:
 	void SetCursorPos(Math::Real xPos, Math::Real yPos);
 	void CentralizeCursor();
 
-	virtual Math::Real GetTime() const;
-	virtual void ClearScreen() const;
+	Math::Real GetTime() const;
+	void ClearScreen() const;
 	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
 	Math::Angle GetSunElevation() const { return m_sunElevation; }
 	Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
 	Rendering::GameTime::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
-protected:
-	void CreateRenderer(int width, int height, const std::string& title);
-	virtual void Run();
-	void PollEvents();
+
+	std::string GetShadersDirectory() const { return m_shadersDirectory; }
+	std::string GetModelsDirectory() const { return m_modelsDirectory; }
+	std::string GetTexturesDirectory() const { return m_texturesDirectory; }
 private:
+	void CreateRenderer(int width, int height, const std::string& title);
+	void Run();
+	void PollEvents();
 	Math::Real GetCurrentLocalTime() const;
 	/**
 	 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
@@ -120,7 +125,7 @@ private:
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
-protected:
+private:
 	bool m_isRunning;
 	int m_windowWidth;
 	int m_windowHeight;
@@ -142,6 +147,13 @@ protected:
 	Rendering::GameTime::Daytime m_daytime;
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
+
+	/// <summary> Specifies where to look for the shader files. </summary>
+	const std::string m_shadersDirectory;
+	/// <summary> Specifies where to look for the model files. </summary>
+	const std::string m_modelsDirectory;
+	/// <summary> Specifies where to look for the texture files. </summary>
+	const std::string m_texturesDirectory;
 
 #ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;

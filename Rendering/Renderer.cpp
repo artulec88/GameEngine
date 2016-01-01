@@ -187,7 +187,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_filterTexture = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	m_filterMaterial = new Material(m_filterTexture);
-	m_filterMesh = new Mesh("..\\Models\\plane4.obj");
+	m_filterMesh = new Mesh("plane4.obj");
 	m_filterMesh->Initialize();
 
 	InitializeCubeMap();
@@ -206,7 +206,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	m_fontTexture = new Texture("..\\Textures\\Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_fontTexture = new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
 	//m_waterRefractionTexture = new Texture(64, 64, NULL, GL_TEXTURE_2D, GL_LINEAR,
@@ -321,8 +321,8 @@ void Renderer::SetCallbacks()
 void Renderer::InitializeCubeMap()
 {
 	START_PROFILING;
-	std::string cubeMapDayDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
-	std::string cubeMapNightDirectory = "..\\Textures\\" + GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
+	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
+	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
 	m_skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
 	m_skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
 
@@ -333,7 +333,7 @@ void Renderer::InitializeCubeMap()
 	cubeMapMaterial->SetAdditionalTexture(m_skyboxTextureNight, "cubeMapNight");
 
 	m_skyboxNode = new GameNode();
-	m_skyboxNode->AddComponent(new MeshRenderer(new Mesh("..\\Models\\" + GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
+	m_skyboxNode->AddComponent(new MeshRenderer(new Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), cubeMapMaterial));
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_skyboxNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader"));
@@ -353,7 +353,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
 
 	FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(cubeMapTextureDirectory);
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
 	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;

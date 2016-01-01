@@ -22,7 +22,7 @@ class MappedValues
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MappedValues(void) :
-		defaultTexture(new Texture("..\\Textures\\defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
+		defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 		defaultVector3D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO)) {}
 	RENDERING_API virtual ~MappedValues(void)
 	{

@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Mesh.h"
+#include "CoreEngine.h"
 //#include "OBJModel.h"
 #include "Math\Vector.h"
 #include "Math\FloatingPoint.h"
@@ -31,31 +32,31 @@ using namespace Math;
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
 MeshData::MeshData(int indexSize) :
-	vbo(0),
-	ibo(0),
-	size(indexSize)
+	m_vbo(0),
+	m_ibo(0),
+	m_size(indexSize)
 {
-	glGenBuffers(1, &vbo);
-	glGenBuffers(1, &ibo);
+	glGenBuffers(1, &m_vbo);
+	glGenBuffers(1, &m_ibo);
 }
 
 
 MeshData::~MeshData(void)
 {
-	if (vbo)
+	if (m_vbo)
 	{
-		glDeleteBuffers(1, &vbo);
+		glDeleteBuffers(1, &m_vbo);
 	}
-	if (ibo)
+	if (m_ibo)
 	{
-		glDeleteBuffers(1, &ibo);
+		glDeleteBuffers(1, &m_ibo);
 	}
 }
 
 Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	fileName(),
-	mode(mode),
-	meshData(NULL)
+	m_fileName(),
+	m_mode(mode),
+	m_meshData(NULL)
 {
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
@@ -82,44 +83,44 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 //}
 
 Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
-	fileName(fileName),
-	mode(mode),
-	meshData(NULL)
+	m_fileName(fileName),
+	m_mode(mode),
+	m_meshData(NULL)
 {
 }
 
 Mesh::~Mesh(void)
 {
-	ASSERT(meshData != NULL);
-	if (meshData == NULL)
+	ASSERT(m_meshData != NULL);
+	if (m_meshData == NULL)
 	{
 		WARNING_LOG("Destructing the mesh aborted. Mesh data is already NULL.");
 	}
-	meshData->RemoveReference();
-	if (! meshData->IsReferenced())
+	m_meshData->RemoveReference();
+	if (!m_meshData->IsReferenced())
 	{
-		if (fileName.length() > 0)
+		if (m_fileName.length() > 0)
 		{
-			meshResourceMap.erase(fileName);
+			meshResourceMap.erase(m_fileName);
 		}
-		SAFE_DELETE(meshData);
+		SAFE_DELETE(m_meshData);
 	}
 }
 
 void Mesh::Initialize()
 {
-	if (meshData != NULL)
+	if (m_meshData != NULL)
 	{
 		DEBUG_LOG("Mesh data already initialized");
 		return;
 	}
 
-	if (fileName.empty())
+	if (m_fileName.empty())
 	{
 		ERROR_LOG("Mesh data cannot be initialized. File name is not specified");
 	}
 
-	std::string name = fileName;
+	std::string name = m_fileName;
 	const char *tmp = strrchr(name.c_str(), '\\');
 	if (tmp != NULL)
 	{
@@ -128,12 +129,12 @@ void Mesh::Initialize()
 	//std::string extension = name.substr(name.find_last_of(".") + 1);
 	//DELOCUST_LOG("Extension is = \"%s\"", extension.c_str());
 
-	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(fileName);
+	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(m_fileName);
 	if (itr != meshResourceMap.end()) // the mesh has been already loaded
 	{
 		INFO_LOG("Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
-		meshData = itr->second;
-		meshData->AddReference();
+		m_meshData = itr->second;
+		m_meshData->AddReference();
 		return;
 	}
 #ifdef MEASURE_TIME_ENABLED
@@ -143,7 +144,7 @@ void Mesh::Initialize()
 	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(fileName.c_str(),
+	const aiScene* scene = importer.ReadFile((CoreEngine::GetCoreEngine()->GetModelsDirectory() + m_fileName).c_str(),
 		aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |
@@ -207,7 +208,7 @@ void Mesh::Initialize()
 	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
 	AddVertices(&vertices[0], vertices.size(), (int*)&indices[0], indices.size(), false);
 
-	meshResourceMap.insert(std::pair<std::string, MeshData*>(fileName, meshData));
+	meshResourceMap.insert(std::pair<std::string, MeshData*>(m_fileName, m_meshData));
 
 #ifdef MEASURE_TIME_ENABLED
 	timer.Stop();
@@ -217,7 +218,7 @@ void Mesh::Initialize()
 
 void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled /* = true */)
 {
-	meshData = new MeshData(indicesCount);
+	m_meshData = new MeshData(indicesCount);
 
 	if (calcNormalsEnabled)
 	{
@@ -229,10 +230,10 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	//}
 
 	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
-	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
@@ -286,15 +287,15 @@ void Mesh::Draw() const
 	glEnableVertexAttribArray(3);
 	//glEnableVertexAttribArray(4);
 
-	glBindBuffer(GL_ARRAY_BUFFER, meshData->GetVBO());
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0); // positions
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D)); // texture coordinates
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D))); // normals
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D))); // tangents
 	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshData->GetIBO());
-	glDrawElements(mode /* GL_TRIANGLES / GL_LINES */, meshData->GetSize(), GL_UNSIGNED_INT, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
+	glDrawElements(m_mode /* GL_TRIANGLES / GL_LINES */, m_meshData->GetSize(), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);

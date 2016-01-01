@@ -38,20 +38,8 @@ namespace Rendering
 
 class MeshData : public Utility::ReferenceCounter
 {
-/* ==================== Non-static member variables begin ==================== */
-private:
-	/**
-	 * @brief Vertex buffer object
-	 */
-	unsigned int vbo;
-	/**
-	 * @brief Index buffer objects
-	 *
-	 * An array of integers.
-	 */
-	unsigned int ibo; // index buffer object
-	int size; // the size
-/* ==================== Non-static member variables end ==================== */
+/* ==================== Static variables and functions begin ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -64,10 +52,22 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	unsigned int GetVBO() const { return vbo; }
-	unsigned int GetIBO() const { return ibo; }
-	int GetSize() const { return size; }
+	unsigned int GetVBO() const { return m_vbo; }
+	unsigned int GetIBO() const { return m_ibo; }
+	int GetSize() const { return m_size; }
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	/// <summary> Vertex buffer object. </summary>
+	unsigned int m_vbo;
+	
+	/// <summary> Index buffer object. </summary>
+	unsigned int m_ibo;
+	
+	/// <summary> The size. </summary>
+	int m_size;
+/* ==================== Non-static member variables end ==================== */
 }; /* end class MeshData */
 
 class Mesh// : public Utility::ReferenceCounter
@@ -104,9 +104,9 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	std::string fileName;
-	GLenum mode;
-	MeshData* meshData;
+	std::string m_fileName;
+	GLenum m_mode;
+	MeshData* m_meshData;
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class Mesh */
@@ -147,7 +147,6 @@ private:
 	Math::KDTree* m_kdTree;
 #endif
 /* ==================== Non-static member variables end ==================== */
-
 }; /* end class TerrainMesh */
 
 } /* end namespace Rendering */

@@ -46,14 +46,17 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	{
 		if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
-			CRITICAL_LOG("Directory \"%s\"", ffd.cFileName);
+			// TODO: Recursive search
+			if (isRecursiveSearchEnabled)
+			{
+				WARNING_LOG("The recursive search mode is not yet supported.");
+			}
 		}
 		else
 		{
 			std::wstring filename(ffd.cFileName);
 			fileSize.LowPart = ffd.nFileSizeLow;
 			fileSize.HighPart = ffd.nFileSizeHigh;
-			EMERGENCY_LOG("File \"%s\" has %ld bytes", filename.c_str(), fileSize.QuadPart);
 			filenames.push_back(std::string(filename.begin(), filename.end()));
 		}
 	} while (FindNextFile(hFind, &ffd) != 0);

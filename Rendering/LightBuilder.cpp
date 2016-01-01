@@ -106,13 +106,13 @@ void DirectionalLightBuilder::BuildPart2()
 void DirectionalLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
-	//Material directionalLightMaterial("directionalLight_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
-	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("..\\Textures\\DirectionalLight.png"), 1, 8);
+	//Material directionalLightMaterial("directionalLight_material", Texture("DirectionalLight.png"), 1, 8);
+	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("DirectionalLight.png"), 1, 8);
 
 	m_directionalLightNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
 	m_directionalLightNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\DirectionalLight.obj"),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
+		new Mesh("DirectionalLight.obj"),
+		new Material(new Texture("DirectionalLight.png"), 1.0f, 8.0f)));
 		
 	Math::Vector3D forwardVec = m_directionalLightNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -122,7 +122,7 @@ void DirectionalLightBuilder::BuildMeshRenderer()
 	int indices [] = { 0, 1 };
 	m_directionalLightNode->AddComponent(new MeshRenderer(
 		new Mesh(vertices, 2, indices, 2, false, GL_LINES),
-		new Material(new Texture("..\\Textures\\DirectionalLight.png"), 1.0f, 8.0f)));
+		new Material(new Texture("DirectionalLight.png"), 1.0f, 8.0f)));
 }
 #endif
 /* ==================== DirectionalLightBuilder implementation end ==================== */
@@ -205,8 +205,8 @@ void PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
 	m_pointLightNode->AddComponent(new MeshRenderer(
-		/* new Mesh("..\\Models\\Bulb\\Bulb.obj") */ new Mesh("..\\Models\\PointLight.obj"),
-		new Material(new Texture("..\\Textures\\PointLight.png"), 1.0f, 8.0f)));
+		/* new Mesh("Bulb\\Bulb.obj") */ new Mesh("PointLight.obj"),
+		new Material(new Texture("PointLight.png"), 1.0f, 8.0f)));
 	m_pointLightNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -301,8 +301,8 @@ void SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
 	m_spotLightNode->AddComponent(new MeshRenderer(
-		new Mesh("..\\Models\\SpotLight.obj"),
-		new Material(new Texture("..\\Textures\\SpotLight.png"), 1.0f, 8.0f)));
+		new Mesh("SpotLight.obj"),
+		new Material(new Texture("SpotLight.png"), 1.0f, 8.0f)));
 	m_spotLightNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
