@@ -92,7 +92,7 @@ GameManager::~GameManager(void)
 		GetGameManager()->WindowResizeEvent(window, width, height);
 	}
 #else
-	GetGameManager()->CloseWindowEvent(window);
+	GetGameManager()->WindowResizeEvent(window, width, height);
 #endif
 }
 

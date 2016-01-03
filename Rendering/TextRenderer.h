@@ -13,6 +13,7 @@ namespace Rendering
 
 class Material;
 class Renderer;
+class Transform;
 
 namespace Text
 {
@@ -44,7 +45,7 @@ public:
 	void DrawString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
 	void DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
 
-	void SetFontSize(Math::Real fontSize);
+	//void SetFontSize(Math::Real fontSize);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -57,6 +58,7 @@ private:
 	Math::Real m_windowWidth;
 	Math::Real m_windowHeight;
 
+	Transform m_transform;
 	Math::Matrix4D m_projection;
 
 	GLuint m_vaoID;

@@ -38,7 +38,7 @@ class ShaderData : public Utility::ReferenceCounter
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	ShaderData(const std::string& fileName);
-	virtual ~ShaderData(void);
+	~ShaderData(void);
 private:
 	ShaderData(const ShaderData& shaderData) {} // don't implement
 	void operator=(const ShaderData& shaderData) {} // don't implement
@@ -91,7 +91,7 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API Shader(const std::string& fileName);
-	RENDERING_API virtual ~Shader(void);
+	RENDERING_API ~Shader(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -100,7 +100,7 @@ public:
 	void Bind() const;
 	bool IsBound() const;
 	RENDERING_API void Unbind() const;
-	RENDERING_API virtual void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
+	RENDERING_API void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
 	RENDERING_API void SetUniformi(const std::string& uniformName, int value) const;
 	RENDERING_API void SetUniformf(const std::string& uniformName, Math::Real value) const;

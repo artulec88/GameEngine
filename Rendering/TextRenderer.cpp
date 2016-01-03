@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "TextRenderer.h"
 #include "Material.h"
+#include "Transform.h"
 #include "Renderer.h"
 #include "CoreEngine.h"
 #include "Utility\IConfig.h"
@@ -18,6 +19,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	m_textShader(NULL),
 	m_windowWidth(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth())),
 	m_windowHeight(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight())),
+	m_transform(), /* TODO: Fix transform. */
 	m_projection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE)
 {
 	if (fontTexture == NULL)
@@ -111,7 +113,8 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
 		break;
 	case Text::CENTER:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2; // TODO: Alignment doesn't work correctly. Fix it!
+		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
 		break;
 	default:
 		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
@@ -184,7 +187,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
-	m_textShader->UpdateUniforms(Transform() /* TODO: Create something better here */, *m_fontMaterial, renderer);
+	m_textShader->UpdateUniforms(m_transform, *m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
