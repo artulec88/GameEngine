@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C478356C-F557-4607-8CA3-490F7E52563D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GameEngine</RootNamespace>
+    <RootNamespace>Game</RootNamespace>
     <ProjectName>Game_VS15</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

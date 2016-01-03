@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameEngine_VS15", "GameEngine\GameEngine_VS15.vcxproj", "{C478356C-F557-4607-8CA3-490F7E52563D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game_VS15", "Game\Game_VS15.vcxproj", "{C478356C-F557-4607-8CA3-490F7E52563D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Math_VS15", "Math\Math_VS15.vcxproj", "{14463FDA-7554-41D8-98B4-A57611CED650}"
 EndProject
