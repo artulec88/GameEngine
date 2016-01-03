@@ -146,12 +146,17 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
 	Math::Real yReal = static_cast<Math::Real>(y);
+	const Math::Real screenHalfWidth = m_windowWidth / 2;
+	const Math::Real screenHalfHeight = m_windowHeight / 2;
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{
-		Math::Vector2D upLeftVec(x + i * fontSize, yReal + fontSize);
-		Math::Vector2D upRightVec(x + i * fontSize + fontSize, yReal + fontSize);
-		Math::Vector2D downRightVec(x + i * fontSize + fontSize, static_cast<Math::Real>(yReal));
-		Math::Vector2D downLeftVec(x + i * fontSize, yReal);
+		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
+		// below from the screen space coordinates ([0..screenWidth][0..screenHeight]) to clip space coordinates ([-1..1][-1..1]).
+		// The conversion is done by first subtracting the half of width / height (for X and Y components respectively) and then dividing the result by the same value.
+		Math::Vector2D upLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D upRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D downRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, (static_cast<Math::Real>(yReal) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D downLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, (yReal - screenHalfHeight) / screenHalfHeight);
 		//CRITICAL_LOG("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);

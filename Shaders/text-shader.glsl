@@ -3,7 +3,7 @@
 varying vec2 texCoord0;
 
 #if defined(VS_BUILD)
-attribute vec2 vVertex; // in screen space
+attribute vec2 vVertex; // in clipping space
 attribute vec2 vTexCoord;
 
 uniform float screenWidth;
@@ -12,13 +12,7 @@ uniform float screenHeight;
 
 void main()
 {
-	// Output position of the vertex, in clip space
-	// map [0..screenWidth][0..screenHeight] to [-1..1][-1..1]
-	const vec2 screenHalfSize = vec2(screenWidth / 2, screenHeight / 2);
-	vec2 vertexPosition_homoneneousspace = vVertex - screenHalfSize; // [0..screenWidth][0..screenHeight] -> [-400..400][-300..300]
-	vertexPosition_homoneneousspace /= screenHalfSize;
-	gl_Position =  vec4(vertexPosition_homoneneousspace, 0, 1);
-	
+	gl_Position =  vec4(vVertex, 0, 1);
 	texCoord0 = vTexCoord;
 	
 	//texCoord0 = vTexCoord;
