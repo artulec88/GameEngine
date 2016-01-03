@@ -6,15 +6,15 @@ varying vec2 texCoord0;
 attribute vec2 vVertex; // in screen space
 attribute vec2 vTexCoord;
 
-//uniform float screenWidth;
-//uniform float screenHeight;
+uniform float screenWidth;
+uniform float screenHeight;
 //uniform mat4 MVP;
 
 void main()
 {
 	// Output position of the vertex, in clip space
 	// map [0..screenWidth][0..screenHeight] to [-1..1][-1..1]
-	const vec2 screenHalfSize = vec2(512,300); // TODO: Pass the screen width and height here
+	const vec2 screenHalfSize = vec2(screenWidth / 2, screenHeight / 2);
 	vec2 vertexPosition_homoneneousspace = vVertex - screenHalfSize; // [0..screenWidth][0..screenHeight] -> [-400..400][-300..300]
 	vertexPosition_homoneneousspace /= screenHalfSize;
 	gl_Position =  vec4(vertexPosition_homoneneousspace, 0, 1);

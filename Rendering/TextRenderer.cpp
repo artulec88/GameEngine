@@ -113,7 +113,7 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
 		break;
 	case Text::CENTER:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2; // TODO: Alignment doesn't work correctly. Fix it!
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
 		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
 		break;
 	default:
@@ -187,6 +187,8 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
+	m_fontMaterial->SetReal("screenWidth", m_windowWidth);
+	m_fontMaterial->SetReal("screenHeight", m_windowHeight);
 	m_textShader->UpdateUniforms(m_transform, *m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
