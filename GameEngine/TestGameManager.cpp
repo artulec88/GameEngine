@@ -291,7 +291,7 @@ void TestGameManager::AddDirectionalLight()
 		NOTICE_LOG("Directional lights disabled");
 		return;
 	}
-	INFO_LOG("Directional lights enabled");
+	NOTICE_LOG("Directional lights enabled");
 
 	Rendering::DirectionalLightBuilder directionalLightBuilder;
 	Rendering::LightBuilderDirector lightBuilderDirector(directionalLightBuilder);

@@ -151,6 +151,7 @@ GameManager::~GameManager(void)
 void GameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	NOTICE_LOG("Window resize event (width = %d, height = %d)", width, height);
+	// TODO: Check if core engine find out about the resizing of the window.
 }
 
 void GameManager::CloseWindowEvent(GLFWwindow* window)
