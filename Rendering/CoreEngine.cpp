@@ -172,7 +172,7 @@ void CoreEngine::Start()
 		WARNING_LOG("The core engine instance is already running");
 		return;
 	}
-	NOTICE_LOG("The core engine starts");
+	NOTICE_LOG("The core engine started");
 
 	Run();
 	Stop();
@@ -210,7 +210,6 @@ void CoreEngine::Run()
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
-	NOTICE_LOG("The game started running");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();

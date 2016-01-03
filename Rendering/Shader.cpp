@@ -15,11 +15,9 @@ using namespace std;
 /* static */ std::map<std::string, ShaderData*> Shader::shaderResourceMap;
 
 ShaderData::ShaderData(const std::string& fileName) :
-	programID(0)
+	m_programID(glCreateProgram())
 {
-	programID = glCreateProgram();
-
-	if (programID == 0)
+	if (m_programID == 0)
 	{
 		CRITICAL_LOG("Error while creating shader program");
 		// TODO: Throw an exception
@@ -28,8 +26,6 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	std::string shaderText = LoadShaderData(fileName + ".glsl");
 	bool geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
-
-	INFO_LOG("Shader \"%s\" text loaded", fileName.c_str());
 
 	/**
 	 * TODO: Vertex shader text should only contain the shader file content in the #if defined(VS_BUILD) block.
@@ -53,7 +49,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (! Compile())
 	{
-		CRITICAL_LOG("Error while compiling shader program %d", programID);
+		CRITICAL_LOG("Error while compiling shader program %d", m_programID);
 		exit(EXIT_FAILURE);
 	}
 	AddShaderUniforms(shaderText);
@@ -70,13 +66,13 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 ShaderData::~ShaderData()
 {
-	DEBUG_LOG("Destroying shader data for shader program %d", programID);
+	DEBUG_LOG("Destroying shader data for shader program %d", m_programID);
 	for (std::vector<int>::iterator itr = shaders.begin(); itr != shaders.end(); ++itr)
 	{
-		glDetachShader(programID, *itr);
+		glDetachShader(m_programID, *itr);
 		glDeleteShader(*itr);
 	}
-	glDeleteProgram(programID);
+	glDeleteProgram(m_programID);
 }
 
 string ShaderData::LoadShaderData(const std::string& fileName) const
@@ -87,7 +83,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 	{
 		name.assign(tmp + 1);
 	}
-	INFO_LOG("Loading shader data from file \"%s\"", name.c_str());
+	DEBUG_LOG("Loading shader data from file \"%s\"", name.c_str());
 
 	ifstream file((CoreEngine::GetCoreEngine()->GetShadersDirectory() + fileName).c_str());
 	if (!file.is_open())
@@ -133,6 +129,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 		}
 	}
 	file.close();
+	DEBUG_LOG("Shader \"%s\" text loaded", fileName.c_str());
 	return output;
 }
 
@@ -140,32 +137,32 @@ bool ShaderData::Compile()
 {
 	bool compileSuccess = true;
 
-	glLinkProgram(programID);
+	glLinkProgram(m_programID);
 	int infoLogLength;
-	if (CheckForErrors(programID, GL_LINK_STATUS, true, infoLogLength))
+	if (CheckForErrors(m_programID, GL_LINK_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
-		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		ERROR_LOG("Error linking shader program %d:\n%s\r", programID, &errorMessage[0]);
+		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
+		ERROR_LOG("Error linking shader program %d:\n%s\r", m_programID, &errorMessage[0]);
 	}
 
-	glValidateProgram(programID);
-	if (CheckForErrors(programID, GL_VALIDATE_STATUS, true, infoLogLength))
+	glValidateProgram(m_programID);
+	if (CheckForErrors(m_programID, GL_VALIDATE_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
 		std::vector<char> errorMessage(infoLogLength + 1);
-		glGetProgramInfoLog(programID, infoLogLength, NULL, &errorMessage[0]);
-		ERROR_LOG("Error validating shader program %d:\n%s\r", programID, &errorMessage[0]);
+		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
+		ERROR_LOG("Error validating shader program %d:\n%s\r", m_programID, &errorMessage[0]);
 	}
 
 	if (!compileSuccess)
 	{
-		ERROR_LOG("Shader program %d compilation error occurred. Investigate the problem.", programID);
+		ERROR_LOG("Shader program %d compilation error occurred. Investigate the problem.", m_programID);
 	}
 	else
 	{
-		NOTICE_LOG("Shader program %d compiled successfully", programID);
+		DEBUG_LOG("Shader program %d compiled successfully", m_programID);
 	}
 	return compileSuccess;
 }
@@ -235,7 +232,7 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 		//return;
 	}
 
-	glAttachShader(programID, shader);
+	glAttachShader(m_programID, shader);
 	shaders.push_back(shader);
 }
 
@@ -266,7 +263,7 @@ void ShaderData::AddAllAttributes(const std::string& vertexShaderText, const std
 			begin = attributeLine.find(" ");
 			std::string attributeName = attributeLine.substr(begin + 1);
 				
-			glBindAttribLocation(programID, currentAttribLocation, attributeName.c_str());
+			glBindAttribLocation(m_programID, currentAttribLocation, attributeName.c_str());
 			currentAttribLocation++;
 		}
 		attributeLocation = vertexShaderText.find(attributeKeyword, attributeLocation + attributeKeyword.length());
@@ -359,7 +356,7 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 		return;
 	}
 
-	unsigned int location = glGetUniformLocation(programID, uniformName.c_str());
+	unsigned int location = glGetUniformLocation(m_programID, uniformName.c_str());
 	CHECK_CONDITION_EXIT(location != INVALID_VALUE, Emergency, "Invalid value of the location (%d) for the uniform \"%s\"", location, uniformName.c_str());
 	DELOCUST_LOG("Uniform \"%s\" has a location value of %d", uniformName.c_str(), location);
 	uniformMap.insert(std::pair<std::string, unsigned int>(uniformName, location));

@@ -119,7 +119,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {
-	INFO_LOG("Creating Renderer instance started");
+	NOTICE_LOG("Creating Renderer instance started");
 	START_PROFILING;
 	SetCallbacks();
 

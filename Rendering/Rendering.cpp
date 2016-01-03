@@ -121,7 +121,7 @@ void Rendering::PrintGlReport()
 
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
-	INFO_LOG("Initializing graphics started");
+	NOTICE_LOG("Initializing graphics started");
 
 	GLFWwindow* window = InitGlfw(width, height, title, threadWindow);
 	InitGlew();
@@ -170,7 +170,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	glEnable(GL_CLIP_PLANE0); // Enables plane clipping
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	INFO_LOG("Initializing graphics finished successfully");
+	NOTICE_LOG("Initializing graphics finished successfully");
 	return window;
 }
 
@@ -202,7 +202,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		 */
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		NOTICE_LOG("No anti-aliasing algorithm chosen");
+		INFO_LOG("No anti-aliasing algorithm chosen");
 		break;
 	case FXAA:
 		/**
@@ -210,11 +210,11 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		 */
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		NOTICE_LOG("FXAA anti-aliasing algorithm chosen");
+		INFO_LOG("FXAA anti-aliasing algorithm chosen");
 		break;
 	case MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-		NOTICE_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		INFO_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
 		break;
 	default:
 		WARNING_LOG("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
@@ -275,7 +275,7 @@ void Rendering::InitGlew()
 		exit(EXIT_FAILURE);
 	}
 
-	NOTICE_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
+	INFO_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
 	CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 

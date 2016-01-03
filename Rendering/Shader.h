@@ -35,15 +35,6 @@ class ShaderData : public Utility::ReferenceCounter
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	GLuint programID;
-	std::vector<int> shaders;
-	std::vector<std::string> uniformNames;
-	std::vector<std::string> uniformTypes;
-	std::map<std::string, unsigned int> uniformMap;
-/* ==================== Non-static member variables end ==================== */
-
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	ShaderData(const std::string& fileName);
@@ -55,7 +46,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	GLuint GetProgram() const { return programID; }
+	GLuint GetProgram() const { return m_programID; }
 	std::vector<int>& GetShaders() { return shaders; }
 	std::vector<std::string>& GetUniformNames() { return uniformNames; }
 	std::vector<std::string>& GetUniformTypes() { return uniformTypes; }
@@ -79,6 +70,15 @@ private:
 	bool Compile();
 	bool CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength);
 /* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	GLuint m_programID;
+	std::vector<int> shaders;
+	std::vector<std::string> uniformNames;
+	std::vector<std::string> uniformTypes;
+	std::map<std::string, unsigned int> uniformMap;
+	/* ==================== Non-static member variables end ==================== */
 }; /* end class ShaderData */
 
 class Shader
