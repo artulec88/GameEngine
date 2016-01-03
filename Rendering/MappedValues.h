@@ -22,7 +22,7 @@ class MappedValues
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MappedValues(void) :
-		defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
+		m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 		defaultVector3D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO)) {}
 	RENDERING_API virtual ~MappedValues(void)
 	{
@@ -117,8 +117,8 @@ public:
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
-			DEBUG_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
-			return defaultTexture;
+			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			return m_defaultTexture;
 		}
 		return itr->second;
 	}
@@ -136,7 +136,7 @@ private:
 	StrToVec3DMap vec3DMap;
 	StrToRealMap realMap;
 	StrToTextureMap textureMap;
-	Texture* defaultTexture;
+	Texture* m_defaultTexture;
 	Math::Vector3D defaultVector3D;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MappedValues */

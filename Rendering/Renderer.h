@@ -50,17 +50,8 @@ public:
 	RENDERING_API Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
 	RENDERING_API virtual ~Renderer(void);
 private:
-	Renderer(const Renderer& renderer) :
-		m_altCamera(Math::Matrix4D(),
-		Transform())
-#ifdef CALCULATE_RENDERING_STATS
-		,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
-#endif
-	{
-	} // don't implement
-	void operator=(const Renderer& renderer)
-	{
-	} // don't implement
+	Renderer(const Renderer& renderer);
+	void operator=(const Renderer& renderer);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
@@ -140,8 +131,6 @@ public:
 	{
 		return m_lightMatrix;
 	}
-
-	RENDERING_API void PrintGlReport();
 
 	void RequestWindowClose() const
 	{
@@ -251,7 +240,7 @@ private:
 	Texture* m_skyboxTextureDay;
 	Texture* m_skyboxTextureNight;
 
-	Math::Real m_defaultShadowMinVariance;
+	const Math::Real m_defaultShadowMinVariance;
 	Shader* m_cubeMapShader; // for use by the point lights
 	CubeShadowMap* m_cubeShadowMap; // for use by the point lights
 	//Texture* m_cubeShadowMap; // for use by the point lights

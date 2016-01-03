@@ -121,7 +121,6 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 {
 	INFO_LOG("Creating Renderer instance started");
 	START_PROFILING;
-	PrintGlReport();
 	SetCallbacks();
 
 	SetSamplerSlot("diffuse", 0);
@@ -973,13 +972,6 @@ void Renderer::AddCamera(CameraBase* camera)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	++m_cameraCountMinusOne;
 #endif
-}
-
-void Renderer::PrintGlReport()
-{
-	INFO_LOG("OpenGL report: Vendor:\"%s\"; Renderer name:\"%s\"; Version:\"%s\"; GLSL version:\"%s\"", (const char*)glGetString(GL_VENDOR),
-		(const char*)glGetString(GL_RENDERER), (const char*)glGetString(GL_VERSION), (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
-	//INFO_LOG("OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
 }
 
 void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType)

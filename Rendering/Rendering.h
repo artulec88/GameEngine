@@ -96,12 +96,14 @@ namespace Rendering
 		FXAA
 	};
 
+	void DetermineGlVersion();
+	void PrintGlReport();
+
 	GLFWwindow* InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
 	GLFWwindow* InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
 	void InitGlew();
 	void CheckErrorCode(const char* functionName, const char* comment);
 	void CheckFramebufferStatus();
-
 
 	//void ReadAlphaTestParameter();
 	void ReadBlendParameter();
@@ -119,6 +121,8 @@ namespace Rendering
 	void ReadTextureParameters();
 
 
+	extern int supportedOpenGLLevel;
+	extern std::string glslVersion;
 	extern AntiAliasingMethod antiAliasingMethod;
 	
 	/**

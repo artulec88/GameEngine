@@ -12,8 +12,6 @@ using namespace Utility;
 using namespace Math;
 using namespace std;
 
-/* static */ int ShaderData::supportedOpenGLLevel = 0;
-/* static */ std::string ShaderData::glslVersion = "";
 /* static */ std::map<std::string, ShaderData*> Shader::shaderResourceMap;
 
 ShaderData::ShaderData(const std::string& fileName) :
@@ -26,50 +24,6 @@ ShaderData::ShaderData(const std::string& fileName) :
 		CRITICAL_LOG("Error while creating shader program");
 		// TODO: Throw an exception
 		exit(EXIT_FAILURE);
-	}
-
-    if(supportedOpenGLLevel == 0)
-    {
-		int majorVersion;
-		int minorVersion;
-		
-		glGetIntegerv(GL_MAJOR_VERSION, &majorVersion); 
-		glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-		
-		supportedOpenGLLevel = majorVersion * 100 + minorVersion * 10;
-		
-		if(supportedOpenGLLevel >= 330)
-		{
-			std::ostringstream convert;
-			convert << supportedOpenGLLevel;
-		
-			glslVersion = convert.str();
-		}
-		else if(supportedOpenGLLevel >= 320)
-		{
-			glslVersion = "150";
-		}
-		else if(supportedOpenGLLevel >= 310)
-		{
-			glslVersion = "140";
-		}
-		else if(supportedOpenGLLevel >= 300)
-		{
-			glslVersion = "130";
-		}
-		else if(supportedOpenGLLevel >= 210)
-		{
-			glslVersion = "120";
-		}
-		else if(supportedOpenGLLevel >= 200)
-		{
-			glslVersion = "110";
-		}
-		else
-		{
-			CRITICAL_LOG("OpenGL Version %d.%d does not support shaders.\n", majorVersion, minorVersion);
-			exit(EXIT_FAILURE);
-		}
 	}
 
 	std::string shaderText = LoadShaderData(fileName + ".glsl");

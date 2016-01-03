@@ -3,6 +3,8 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
+int Rendering::supportedOpenGLLevel;
+std::string Rendering::glslVersion;
 Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::NONE;
 
 /* ==================== Blending parameters begin ==================== */
@@ -63,12 +65,69 @@ bool Rendering::FogEffect::Fog::operator<(const Rendering::FogEffect::Fog& fog) 
 	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
 }
 
+void Rendering::DetermineGlVersion()
+{
+	int majorVersion;
+	int minorVersion;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+	glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+	supportedOpenGLLevel = majorVersion * 100 + minorVersion * 10;
+
+	if (supportedOpenGLLevel >= 330)
+	{
+		std::ostringstream convert;
+		convert << supportedOpenGLLevel;
+
+		glslVersion = convert.str();
+	}
+	else if (supportedOpenGLLevel >= 320)
+	{
+		glslVersion = "150";
+	}
+	else if (supportedOpenGLLevel >= 310)
+	{
+		glslVersion = "140";
+	}
+	else if (supportedOpenGLLevel >= 300)
+	{
+		glslVersion = "130";
+	}
+	else if (supportedOpenGLLevel >= 210)
+	{
+		glslVersion = "120";
+	}
+	else if (supportedOpenGLLevel >= 200)
+	{
+		glslVersion = "110";
+	}
+	else
+	{
+		CRITICAL_LOG("GLSL Version %d.%d does not support shaders.\n", majorVersion, minorVersion);
+		exit(EXIT_FAILURE);
+	}
+}
+
+void Rendering::PrintGlReport()
+{
+	INFO_LOG("OpenGL report:\n\tVendor:\t\t\t\"%s\"\n\tRenderer name:\t\t\"%s\"\n\tVersion:\t\t\"%s\"\n\tGLSL version:\t\t\"%s\"",
+		(const char*)glGetString(GL_VENDOR),
+		(const char*)glGetString(GL_RENDERER),
+		(const char*)glGetString(GL_VERSION),
+		(const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+	//INFO_LOG("OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
+}
+
 GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
 	INFO_LOG("Initializing graphics started");
+
 	GLFWwindow* window = InitGlfw(width, height, title, threadWindow);
 	InitGlew();
 
+	DetermineGlVersion();
+	PrintGlReport();
 
 	//ReadAlphaTestParameter();
 	ReadBlendParameter();
@@ -208,15 +267,16 @@ void Rendering::InitGlew()
 	}
 	if (GLEW_VERSION_2_0)
 	{
-		INFO_LOG("OpenGL 2.0 supported");
+		DEBUG_LOG("OpenGL 2.0 supported");
 	}
 	else
 	{
-		INFO_LOG("OpenGL 2.0 NOT supported");
+		ERROR_LOG("Initializing GLEW failed. OpenGL 2.0 NOT supported");
 		exit(EXIT_FAILURE);
 	}
 
 	NOTICE_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
+	CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
 /**
@@ -324,6 +384,7 @@ void Rendering::ReadBlendParameter()
 	glBlendDfactorOld = glBlendDfactor;
 	glBlendFunc(glBlendSfactor, glBlendDfactor);
 	INFO_LOG("GL_BLEND enabled with sFactor = \"%s\" and dFactor = \"%s\"", blendSFactorStr.c_str(), blendDFactorStr.c_str());
+	CheckErrorCode(__FUNCTION__, "Initializing blending parameters");
 }
 
 /**
@@ -371,6 +432,7 @@ void Rendering::ReadColorLogicOperationParameter()
 	glLogicOp(glColorLogicOperationCode);
 
 	INFO_LOG("GL_COLOR_LOGIC_OP enabled in \"%s\" mode", logicalOperationStr.c_str());
+	CheckErrorCode(__FUNCTION__, "Initializing color logic parameters");
 }
 
 /**
@@ -407,6 +469,7 @@ void Rendering::ReadCullFaceParameter()
 	glCullFace(glCullFaceMode);
 
 	INFO_LOG("GL_CULL_FACE enabled in \"%s\" mode", cullFaceModeStr.c_str());
+	CheckErrorCode(__FUNCTION__, "Initializing culling face parameters");
 }
 
 /**
@@ -476,6 +539,7 @@ void Rendering::ReadDepthTestParameter()
 	glDepthRangeFarValueOld = glDepthRangeFarValue;
 	glDepthRange(glDepthRangeNearValue, glDepthRangeFarValue);
 	INFO_LOG("GL_DEPTH_TEST enabled with function \"%s\" and the range [%.2f; %.2f]", depthTestFuncStr.c_str(), glDepthRangeNearValue, glDepthRangeFarValue);
+	CheckErrorCode(__FUNCTION__, "Initializing depth clamping parameters");
 }
 
 /**
@@ -494,6 +558,7 @@ void Rendering::ReadDitherParameter()
 
 	glEnable(GL_DITHER);
 	INFO_LOG("GL_DITHER enabled");
+	CheckErrorCode(__FUNCTION__, "Initializing dithering parameters");
 }
 
 /**
@@ -515,6 +580,7 @@ void Rendering::ReadFrontFaceParameter()
 	glFrontFaceModeOld = glFrontFaceMode;
 	glFrontFace(glFrontFaceMode);
 	INFO_LOG("\"%s\" mode specified for the glFrontFace", frontFaceStr.c_str());
+	CheckErrorCode(__FUNCTION__, "Initializing front face parameters");
 }
 
 /**
@@ -523,11 +589,18 @@ void Rendering::ReadFrontFaceParameter()
  */
 void Rendering::ReadHistogramParameter()
 {
+	if (supportedOpenGLLevel > 300)
+	{
+		INFO_LOG("Histogram not supported in OpenGL version higher than 3.0");
+		CheckErrorCode(__FUNCTION__, "Initializing histogram parameters");
+		return;
+	}
 	int histogramEnabled = GET_CONFIG_VALUE("GL_HISTOGRAM_ENABLED", 0);
 	if (histogramEnabled == 0)
 	{
 		glDisable(GL_HISTOGRAM);
 		DEBUG_LOG("GL_HISTOGRAM disabled");
+		CheckErrorCode(__FUNCTION__, "Initializing histogram parameters");
 		return;
 	}
 
@@ -601,6 +674,7 @@ void Rendering::ReadHistogramParameter()
 		INFO_LOG("GL_HISTOGRAM enabled with target = \"%s\", width = %d, internal format = \"%s\" and disabled sink",
 			histogramTargetStr.c_str(), histogramWidth, histogramInternalFormatStr.c_str());
 	}
+	CheckErrorCode(__FUNCTION__, "Initializing histogram parameters");
 }
 
 /**
@@ -650,10 +724,11 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 	glScissorBoxHeightOld = glScissorBoxHeight;
 	if (glScissorTestEnabled)
 	{
-		glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
+		//glScissor(glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
 		INFO_LOG("GL_SCISSOR_TEST enabled with lower left corner position = (%d; %d), width = %d and height = %d",
 			glScissorBoxLowerLeftCornerX, glScissorBoxLowerLeftCornerY, glScissorBoxWidth, glScissorBoxHeight);
 	}
+	CheckErrorCode(__FUNCTION__, "Initializing scissor test parameters");
 }
 
 /**
@@ -697,6 +772,7 @@ void Rendering::ReadStencilTestParameter()
 	glStencilFunc(stencilTestFunc, stencilTestRefValue, stencilTestMask);
 	INFO_LOG("GL_STENCIL_TEST enabled with function \"%s\", reference value = %d and the mask = %d",
 		stencilTestFuncStr.c_str(), stencilTestRefValue, stencilTestMask);
+	CheckErrorCode(__FUNCTION__, "Initializing stencil test parameters");
 }
 
 /**
@@ -709,6 +785,7 @@ void Rendering::ReadTextureParameters()
 	glEnable(GL_TEXTURE_CUBE_MAP);
 	glEnable(GL_TEXTURE_CUBE_MAP_EXT);
 	glEnable(GL_TEXTURE_3D);
+	CheckErrorCode(__FUNCTION__, "Initializing texture parameters");
 }
 
 /**
