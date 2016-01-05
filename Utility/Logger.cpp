@@ -23,46 +23,46 @@ Logger::~Logger()
 {
 }
 
-void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)
-{
-	if (m_level < level)
-	{
-		return;
-	}
-
-	va_list args;
-	if (name == NULL)
-	{
-		name = "nowhere";
-	}
-	const char *tmp = strrchr(name, '\\');
-	if (tmp != NULL)
-	{
-		name = tmp + 1;
-	}
-	Utility::Timing::Time now = Utility::Timing::Time::Now();
-	std::string date = now.ToDateString();
-
-	//mutex.Lock();
-	//iterate through all the targets of logging
-	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
-	{
-		va_start(args, format);
-		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
-		if (line)
-		{
-			fprintf(*o, "(%d)", line);
-		}
-		fprintf(*o, " : ");
-			
-		vfprintf(*o, format, args);
-		va_end(args);
-		
-		fprintf(*o, "\n");
-		fflush(*o);
-	}
-	//mutex.Unlock();
-}
+//void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)
+//{
+//	if (m_level < level)
+//	{
+//		return;
+//	}
+//
+//	va_list args;
+//	if (name == NULL)
+//	{
+//		name = "nowhere";
+//	}
+//	const char *tmp = strrchr(name, '\\');
+//	if (tmp != NULL)
+//	{
+//		name = tmp + 1;
+//	}
+//	Utility::Timing::Time now = Utility::Timing::Time::Now();
+//	std::string date = now.ToDateString();
+//
+//	//mutex.Lock();
+//	//iterate through all the targets of logging
+//	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
+//	{
+//		va_start(args, format);
+//		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
+//		if (line)
+//		{
+//			fprintf(*o, "(%d)", line);
+//		}
+//		fprintf(*o, " : ");
+//			
+//		vfprintf(*o, format, args);
+//		va_end(args);
+//		
+//		fprintf(*o, "\n");
+//		fflush(*o);
+//	}
+//	//mutex.Unlock();
+//}
 
 void Logger::Log(LogLevel level, const char *name, int line, const char *format, ...)
 {

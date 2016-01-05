@@ -8,26 +8,30 @@
 
 namespace Utility
 {
-	class UTILITY_API ReferenceCounter
-	{
-	/* ==================== Constructors and destructors begin ==================== */
-	protected:
-		ReferenceCounter();
-		virtual ~ReferenceCounter();
-	/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		void AddReference();
-		void RemoveReference();
-		bool IsReferenced() const;
-	/* ==================== Non-static member functions end ==================== */
+/// <summary>
+/// A basic reference-counter class.
+/// </summary>
+class ReferenceCounter
+{
+/* ==================== Constructors and destructors begin ==================== */
+protected:
+	UTILITY_API ReferenceCounter();
+	UTILITY_API virtual ~ReferenceCounter();
+/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
-	protected:
-		int m_refCount;
-	/* ==================== Non-static member variables end ==================== */
-	}; /* end class ReferenceCounter */
+/* ==================== Non-static member functions begin ==================== */
+public:
+	UTILITY_API void AddReference();
+	UTILITY_API void RemoveReference();
+	UTILITY_API bool IsReferenced() const;
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	int m_refCount;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class ReferenceCounter */
 
 } /* end namespace Utility */
 

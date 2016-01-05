@@ -138,14 +138,14 @@ enum LogLevel
 	DevNull = 100
 }; /* end enum LogLevel */
 
-class UTILITY_API ILogger
+class ILogger
 {
 /* ==================== Static variables and functions begin ==================== */
 protected:
 	static ILogger* logger;
 	static const char* LevelNames[];
 public:
-	static ILogger& GetLogger(/* some parameter based on which the logger implementation class is chosen */);
+	UTILITY_API static ILogger& GetLogger(/* some parameter based on which the logger implementation class is chosen */);
 	//static void Log(LogLevel level, const char *name, int line, const char *format, ...);
 /* ==================== Static variables and functions end ==================== */
 
@@ -158,14 +158,14 @@ protected:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	LogLevel GetLevel() const { return m_level; }
-	virtual void operator()(LogLevel level, const char *name, int line, const char *format, ...) = 0;
-	virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
+	//virtual void operator()(LogLevel level, const char *name, int line, const char *format, ...) = 0;
+	UTILITY_API virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
 	virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 	virtual void AddFile(const char *name) = 0;
-	void ResetConsoleColor() const;
+	UTILITY_API void ResetConsoleColor() const;
 protected:
 	void SetLevel(LogLevel level);
-	inline void SetConsoleColor(LogLevel level) const;
+	void SetConsoleColor(LogLevel level) const;
 	void ReadConsoleColorsFromConfigFile();
 /* ==================== Non-static member functions end ==================== */
 

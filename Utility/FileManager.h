@@ -12,18 +12,18 @@ namespace Utility
 /// This class is just a simple wrapper and provides the interface for listing the files in a given directory.
 /// In the future this class may become a resource manager for handling, loading, allocating, deallocating etc. the files from hard drive.
 /// </summary>
-class UTILITY_API FileManager
+class FileManager
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	FileManager();
-	~FileManager(void);
+	UTILITY_API FileManager();
+	UTILITY_API ~FileManager(void);
 private:
-	FileManager(FileManager& fileManager) {}
-	void operator=(FileManager& fileManager) {}
+	FileManager(FileManager& fileManager) {} // don't implement
+	void operator=(FileManager& fileManager) {} // don't implement
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -40,7 +40,7 @@ public:
 	/// <returns>
 	/// A vector of file names located in the specified directory with files from subdirectories added or not depending on the value of the parameter <paramref name="isRecursiveSearchEnabled"/>.
 	/// </returns>
-	std::vector<std::string> ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled = false) const;
+	UTILITY_API std::vector<std::string> ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled = false) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

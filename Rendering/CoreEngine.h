@@ -1,11 +1,11 @@
 #ifndef __RENDERING_CORE_ENGINE_H__
 #define __RENDERING_CORE_ENGINE_H__
 
-#include "Rendering.h"
-#include "Renderer.h"
-#include "TextRenderer.h"
-#include "GameManager.h"
-#include "GameStateManager.h"
+#include "Rendering\Rendering.h"
+#include "Rendering\Renderer.h"
+#include "Rendering\TextRenderer.h"
+#include "Rendering\GameManager.h"
+#include "Rendering\GameStateManager.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"

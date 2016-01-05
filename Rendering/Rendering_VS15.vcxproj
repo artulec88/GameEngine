@@ -178,6 +178,7 @@
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GameCommand.h" />
@@ -190,7 +191,6 @@
     <ClInclude Include="IInputableKeyboard.h" />
     <ClInclude Include="IInputableMouse.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
     <ClInclude Include="LightBuilder.h" />
@@ -220,6 +220,7 @@
     <ClCompile Include="AntTweakBarTypes.cpp" />
     <ClCompile Include="BaseLight.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="CubeShadowMap.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -244,7 +245,6 @@
     <ClCompile Include="IInputableKeyboard.cpp" />
     <ClCompile Include="IInputableMouse.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="LightBuilder.cpp" />
     <ClCompile Include="LightBuilderDirector.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />

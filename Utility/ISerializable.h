@@ -7,17 +7,17 @@
 namespace Utility
 {
 
-class UTILITY_API ISerializable
+class ISerializable
 {
 public:
-	ISerializable(void)
+	UTILITY_API ISerializable(void)
 	{
 	}
-	virtual ~ISerializable(void)
+	UTILITY_API virtual ~ISerializable(void)
 	{
 	}
 public:
-	virtual std::string ToString() const = 0;
+	UTILITY_API virtual std::string ToString() const = 0;
 }; /* end class ISerializable */
 
 } /* end namespace Utility */

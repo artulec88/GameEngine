@@ -11,13 +11,13 @@
 namespace Utility
 {
 
-class UTILITY_API IConfig
+class IConfig
 {
 /* ==================== Static variables and functions begin ==================== */
 protected:
 	static IConfig* config;
 public:
-	static IConfig& GetConfig();
+	UTILITY_API static IConfig& GetConfig();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

@@ -15,7 +15,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MathTest_VS15", "MathTest\M
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics_VS15", "Physics\Physics_VS15.vcxproj", "{57B80C55-5B45-4563-8252-6AE5C379900D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UtilityTest_VS15", "UtilityTest_VS15\UtilityTest_VS15.vcxproj", "{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UtilityTest_VS15", "UtilityTest\UtilityTest_VS15.vcxproj", "{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreEngine_VS15", "CoreEngine\CoreEngine_VS15.vcxproj", "{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +83,14 @@ Global
 		{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}.Release|Win32.Build.0 = Release|Win32
 		{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}.Release|x64.ActiveCfg = Release|x64
 		{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}.Release|x64.Build.0 = Release|x64
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Debug|Win32.Build.0 = Debug|Win32
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Debug|x64.ActiveCfg = Debug|x64
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Debug|x64.Build.0 = Debug|x64
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Release|Win32.ActiveCfg = Release|Win32
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Release|Win32.Build.0 = Release|Win32
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Release|x64.ActiveCfg = Release|x64
+		{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

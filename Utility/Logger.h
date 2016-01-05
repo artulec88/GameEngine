@@ -27,7 +27,7 @@ namespace Utility
 	
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		void operator()(LogLevel level, const char *name, int line, const char *format, ...);
+		//void operator()(LogLevel level, const char *name, int line, const char *format, ...);
 		void Log(LogLevel level, const char *name, int line, const char *format, ...);
 		void Fill(const std::string& strLevel, LogLevel level);
 		void AddFile(const char *name);
