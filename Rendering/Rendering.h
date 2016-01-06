@@ -14,7 +14,13 @@
 #include <GLFW\glfw3.h>
 
 #define CALCULATE_RENDERING_STATS
-//#define ANT_TWEAK_BAR_ENABLED
+#define ANT_TWEAK_BAR_ENABLED
+
+/// <summary>
+/// If enabled the Rendering engine will be able to make simple debug drawing commands
+/// (see section "Debug Drawing Facilities" in "Game Engine Architecture" by Jason Gregory).
+/// </summary>
+#define DEBUG_RENDERING_ENABLED
 
 #ifndef CALCULATE_RENDERING_STATS
 #define START_PROFILING_STATIC

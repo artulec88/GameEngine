@@ -40,24 +40,24 @@
 namespace Rendering
 {
 
-class RENDERING_API CoreEngine
+class CoreEngine
 {
 /* ==================== Static variables begin ==================== */
 protected:
-	static CoreEngine* s_coreEngine;
+	RENDERING_API static CoreEngine* s_coreEngine;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Static functions begin ==================== */
 public:
-	static CoreEngine* GetCoreEngine();
+	RENDERING_API static CoreEngine* GetCoreEngine();
 /* ==================== Static functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
+	RENDERING_API CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
 		const std::string& texturesDirectory = "..\\Textures\\");
-	~CoreEngine(void);
+	RENDERING_API ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& app);
 	void operator=(const CoreEngine& app);
@@ -65,7 +65,7 @@ private: // disable copy constructor
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Start();
+	RENDERING_API void Start();
 	void Stop();
 	unsigned int GetCurrentCameraIndex() const;
 	unsigned int NextCamera() const;
@@ -77,7 +77,7 @@ public:
 	int GetWindowHeight() const { return m_windowHeight; };
 	
 	void SetCursorPos(Math::Real xPos, Math::Real yPos);
-	void CentralizeCursor();
+	RENDERING_API void CentralizeCursor();
 
 	Math::Real GetTime() const;
 	void ClearScreen() const;

@@ -17,6 +17,11 @@
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
+#ifdef DEBUG_RENDERING_ENABLED
+#include "Math\Sphere.h"
+#include "Math\AABB.h"
+#include "Math\OBB.h"
+#endif
 #ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
@@ -101,7 +106,7 @@ public:
 		return *m_currentCamera;
 	}
 
-	RENDERING_API unsigned int GetCurrentCameraIndex() const
+	RENDERING_API size_t GetCurrentCameraIndex() const
 	{
 		return m_currentCameraIndex;
 	}
@@ -137,6 +142,59 @@ public:
 	}
 	void RegisterTerrainNode(GameNode* terrainNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
+
+#ifdef DEBUG_RENDERING_ENABLED
+	/// <summary>
+	/// Adds a line segment to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
+		Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds a wireframe sphere to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddSphere(const Math::Sphere& sphere, const Color& color,
+		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds an axis-aligned cross (3 lines converging at a point) to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
+		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds a circle to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius,
+		const Color& color, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds a set of coordinate axes depicting the position and orientation of the given transformation to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddAxes(const Transform& transform, const Color& color, Math::Real size,
+		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds a wireframe triangle to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2,
+		const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds an axis-aligned bounding box to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds an oriented bounding box to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+
+	/// <summary>
+	/// Adds a text string to the debug drawing queue.
+	/// </summary>
+	RENDERING_API void AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+#endif
 
 protected:
 	void RenderSkybox();
@@ -202,7 +260,7 @@ private:
 	Lighting::PointLight* m_pointLight; // current point light
 	Lighting::SpotLight* m_spotLight; // current spot light
 
-	unsigned int m_currentCameraIndex;
+	size_t m_currentCameraIndex;
 	CameraBase* m_currentCamera;
 	
 	/// <summary> The main menu camera. This camera will be used

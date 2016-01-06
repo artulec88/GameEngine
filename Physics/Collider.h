@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Physics.h"
-#include "IntersectInfo.h"
+#include "Math\IntersectInfo.h"
 
 namespace Physics
 {
 
-/**
- * The collider
- */
+/// <summary>
+/// The representation of the physical collider object.
+/// </summary>
 class Collider
 {
 public:
@@ -36,7 +36,7 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	inline ColliderType GetType() const { return m_type; }
-	virtual IntersectInfo Intersect(const Collider& collider) const;
+	virtual Math::IntersectInfo Intersect(const Collider& collider) const;
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

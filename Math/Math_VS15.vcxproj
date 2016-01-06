@@ -141,25 +141,32 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Angle.h" />
     <ClInclude Include="BSPTree.h" />
     <ClInclude Include="FloatingPoint.h" />
     <ClInclude Include="Interpolation.h" />
+    <ClInclude Include="IntersectInfo.h" />
     <ClInclude Include="ISort.h" />
     <ClInclude Include="IStatisticsStorage.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="OBB.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="SortingParameters.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Statistics.h" />
     <ClInclude Include="UtmostTimeSamples.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Angle.cpp" />
     <ClCompile Include="BSPTree.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -177,15 +184,20 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Interpolation.cpp" />
+    <ClCompile Include="IntersectInfo.cpp" />
     <ClCompile Include="ISort.cpp" />
     <ClCompile Include="IStatisticsStorage.cpp" />
     <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="OBB.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="Sort.cpp" />
     <ClCompile Include="SortingParameters.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="UtmostTimeSamples.cpp" />
     <ClCompile Include="Vector.cpp" />

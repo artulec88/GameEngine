@@ -992,6 +992,50 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 	m_cubeShadowMap->BindForReading(textureUnit);
 }
 
+#ifdef DEBUG_RENDERING_ENABLED
+void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
+	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
+	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
+	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
+	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddAxes(const Transform& transform, const Color& color, Math::Real size,
+	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
+	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+
+void Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+{
+}
+#endif
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 /**
  * This function must be called after AntTweakBar library is initalized.
