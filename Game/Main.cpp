@@ -105,6 +105,11 @@ int main (int argc, char* argv[])
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
+	CRITICAL_LOG("sizeof(int) = %d", sizeof(int));
+	CRITICAL_LOG("sizeof(unsigned int) = %d", sizeof(unsigned int));
+	CRITICAL_LOG("sizeof(size_t) = %d", sizeof(size_t));
+	CRITICAL_LOG("sizeof(float) = %d", sizeof(float));
+	CRITICAL_LOG("sizeof(double) = %d", sizeof(double));
 	Game::TestGameManager game;
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),

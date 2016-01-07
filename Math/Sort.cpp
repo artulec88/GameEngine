@@ -13,32 +13,32 @@ BubbleSort::~BubbleSort(void)
 {
 }
 
-void BubbleSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void BubbleSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void BubbleSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void BubbleSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void BubbleSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void BubbleSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void BubbleSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void BubbleSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void BubbleSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void BubbleSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void BubbleSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void BubbleSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -53,32 +53,32 @@ InsertionSort::~InsertionSort(void)
 {
 }
 
-void InsertionSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void InsertionSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void InsertionSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void InsertionSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void InsertionSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void InsertionSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void InsertionSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void InsertionSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void InsertionSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void InsertionSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void InsertionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void InsertionSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -93,32 +93,32 @@ SelectionSort::~SelectionSort(void)
 {
 }
 
-void SelectionSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void SelectionSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void SelectionSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void SelectionSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void SelectionSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void SelectionSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void SelectionSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void SelectionSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void SelectionSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void SelectionSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void SelectionSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void SelectionSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -133,32 +133,32 @@ MergeSort::~MergeSort(void)
 {
 }
 
-void MergeSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void MergeSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void MergeSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void MergeSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void MergeSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void MergeSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void MergeSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void MergeSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void MergeSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void MergeSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void MergeSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void MergeSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -173,32 +173,32 @@ HeapSort::~HeapSort(void)
 {
 }
 
-void HeapSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void HeapSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void HeapSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void HeapSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void HeapSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void HeapSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void HeapSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void HeapSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void HeapSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void HeapSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void HeapSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void HeapSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -213,32 +213,32 @@ QuickSort::~QuickSort(void)
 {
 }
 
-void QuickSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void QuickSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void QuickSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void QuickSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void QuickSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void QuickSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void QuickSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void QuickSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void QuickSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void QuickSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void QuickSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void QuickSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -253,32 +253,32 @@ ShellSort::~ShellSort(void)
 {
 }
 
-void ShellSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void ShellSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void ShellSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void ShellSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void ShellSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void ShellSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void ShellSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void ShellSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void ShellSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void ShellSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void ShellSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -293,32 +293,32 @@ CombSort::~CombSort(void)
 {
 }
 
-void CombSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void CombSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void CombSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void CombSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void CombSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void CombSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void CombSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void CombSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void CombSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void CombSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void CombSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }
@@ -333,7 +333,7 @@ CountingSort::~CountingSort(void)
 {
 }
 
-void CountingSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void CountingSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	/* ==================== Calculating range of data begin ==================== */
 	int min = INT_MAX;
@@ -371,32 +371,32 @@ void CountingSort::Sort(int* values, int valuesCount, SortingDirection sortingDi
 	SAFE_DELETE_JUST_TABLE(helpTab2);
 }
 
-void CountingSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void CountingSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	//Sort<Math::Real>(values, valuesCount, VALUE, sortingDirection);
 	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
-void CountingSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void CountingSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
-void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void CountingSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
-void CountingSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void CountingSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
-void CountingSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void CountingSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
 	return;
@@ -412,36 +412,36 @@ RadixSort::~RadixSort(void)
 {
 }
 
-void RadixSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void RadixSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	// TODO: Create implementation of radix sort (see http://en.wikipedia.org/wiki/Radix_sort)
 }
 
-void RadixSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void RadixSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
-void RadixSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void RadixSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
-void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void RadixSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
-void RadixSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void RadixSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
-void RadixSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void RadixSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
@@ -457,32 +457,32 @@ BucketSort::~BucketSort(void)
 {
 }
 
-void BucketSort::Sort(int* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void BucketSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	//Sort<int>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void BucketSort::Sort(Math::Real* values, int valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
+void BucketSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	//Sort<Real>(values, valuesCount, VALUE, sortingDirection);
 }
 
-void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void BucketSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
+void BucketSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingKey, sortingDirection);
 }
 
-void BucketSort::Sort(Math::Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void BucketSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector2D>(vectors, vectorSize, sortingParameters);
 }
 
-void BucketSort::Sort(Math::Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters)
+void BucketSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
 	Sort<Math::Vector3D>(vectors, vectorSize, sortingParameters);
 }

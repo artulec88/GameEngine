@@ -31,7 +31,7 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
-MeshData::MeshData(int indexSize) :
+MeshData::MeshData(size_t indexSize) :
 	m_vbo(0),
 	m_ibo(0),
 	m_size(indexSize)
@@ -216,7 +216,7 @@ void Mesh::Initialize()
 #endif
 }
 
-void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled /* = true */)
+void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled /* = true */)
 {
 	m_meshData = new MeshData(indicesCount);
 
@@ -237,7 +237,7 @@ void Mesh::AddVertices(Vertex* vertices, int verticesCount, const int* indices, 
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
-//void Mesh::CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
+//void Mesh::CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
 //{
 //	/**
 //	 * TODO: Improve this code as described here:
@@ -295,7 +295,7 @@ void Mesh::Draw() const
 	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
-	glDrawElements(m_mode /* GL_TRIANGLES / GL_LINES */, m_meshData->GetSize(), GL_UNSIGNED_INT, 0);
+	glDrawElements(m_mode /* GL_TRIANGLES / GL_LINES */, static_cast<GLsizei>(m_meshData->GetSize()), GL_UNSIGNED_INT, 0);
 
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -304,7 +304,7 @@ void Mesh::Draw() const
 	//glDisableVertexAttribArray(4);
 }
 
-void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const
+void Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (GL_QUADS, GL_LINES) this iterationStep variable will be incorrect
@@ -330,7 +330,7 @@ void Mesh::CalcNormals(Vertex* vertices, int verticesCount, const int* indices, 
 	}
 }
 
-void Mesh::CalcTangents(Vertex* vertices, int verticesCount) const
+void Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect

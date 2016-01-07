@@ -217,7 +217,7 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 
 	const GLchar* p[1];
 	p[0] = shaderText.c_str();
-	GLint lengths[1] = { shaderText.length() };
+	GLint lengths[1] = { static_cast<GLint>(shaderText.length()) }; // TODO: warning C4838: conversion from 'unsigned int' to 'GLint' requires a narrowing conversion.
 	//lengths[0] = shaderText.length(); // strlen(text.c_str());
 
 	glShaderSource(shader, 1, p, lengths);

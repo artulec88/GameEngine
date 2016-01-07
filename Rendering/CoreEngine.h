@@ -67,9 +67,9 @@ private: // disable copy constructor
 public:
 	RENDERING_API void Start();
 	void Stop();
-	unsigned int GetCurrentCameraIndex() const;
-	unsigned int NextCamera() const;
-	unsigned int PrevCamera() const;
+	size_t GetCurrentCameraIndex() const;
+	size_t NextCamera() const;
+	size_t PrevCamera() const;
 	Renderer* GetRenderer() const { return m_renderer; }
 
 	

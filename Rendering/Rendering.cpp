@@ -5,7 +5,7 @@
 
 int Rendering::supportedOpenGLLevel;
 std::string Rendering::glslVersion;
-Rendering::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::NONE;
+Rendering::Aliasing::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::Aliasing::NONE;
 
 /* ==================== Blending parameters begin ==================== */
 bool Rendering::glBlendEnabled, Rendering::glBlendEnabledOld;
@@ -52,7 +52,7 @@ GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 
 using namespace Math;
 
-bool Rendering::FogEffect::Fog::operator<(const Rendering::FogEffect::Fog& fog) const
+bool Rendering::FogEffect::FogKey::operator<(const Rendering::FogEffect::FogKey& fog) const
 {
 	if (fallOffType != fog.fallOffType)
 	{
@@ -150,13 +150,13 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 
 	switch (Rendering::antiAliasingMethod)
 	{
-	case NONE:
+	case Aliasing::NONE:
 		glDisable(GL_MULTISAMPLE); // disable multisampling
 		break;
-	case FXAA:
+	case Aliasing::FXAA:
 		glDisable(GL_MULTISAMPLE); // disable multisampling
 		break;
-	case MSAA:
+	case Aliasing::MSAA:
 		glEnable(GL_MULTISAMPLE);
 		break;
 	default:
@@ -196,7 +196,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	switch (Rendering::antiAliasingMethod)
 	{
-	case NONE:
+	case Aliasing::NONE:
 		/**
 		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -204,7 +204,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG("No anti-aliasing algorithm chosen");
 		break;
-	case FXAA:
+	case Aliasing::FXAA:
 		/**
 		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
 		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
@@ -212,7 +212,7 @@ GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title,
 		glfwWindowHint(GLFW_SAMPLES, 0);
 		INFO_LOG("FXAA anti-aliasing algorithm chosen");
 		break;
-	case MSAA:
+	case Aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 		INFO_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
 		break;

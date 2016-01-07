@@ -6,6 +6,7 @@
 #define RENDERING_API __declspec(dllimport)
 #endif
 
+#include "stdafx.h"
 #include <string>
 #include "Math\Math.h"
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
@@ -48,6 +49,7 @@
 
 namespace Rendering
 {
+	// TODO: This namespace should be a part of the CoreEngine project and should not be contained in the Rendering namespace.
 	namespace GameTime
 	{
 		enum Daytime
@@ -80,27 +82,30 @@ namespace Rendering
 
 		// TODO: Consider removing this struct. Use simple 'int' as the key for the fog shaders in the Renderer class.
 		// Use bitwise AND (between FogFallOffType and FogCalculationType) to construct this 'int' value.
-		struct Fog
+		struct FogKey
 		{
-			Fog() : fallOffType(LINEAR), calculationType(PLANE_BASED)
+			FogKey() : fallOffType(LINEAR), calculationType(PLANE_BASED)
 			{
 			}
-			Fog(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
+			FogKey(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
 				fallOffType(fogFallOffType), calculationType(fogCalculationType)
 			{
 			}
-			bool operator<(const Fog& fog) const;
+			bool operator<(const FogKey& fog) const;
 			FogFallOffType fallOffType;
 			FogCalculationType calculationType;
 		};
 	}
 
-	enum AntiAliasingMethod
+	namespace Aliasing
 	{
-		NONE = 0,
-		MSAA,
-		FXAA
-	};
+		enum AntiAliasingMethod
+		{
+			NONE = 0,
+			MSAA,
+			FXAA
+		};
+	} /* end namespace Aliasing */
 
 	void DetermineGlVersion();
 	void PrintGlReport();
@@ -129,7 +134,7 @@ namespace Rendering
 
 	extern int supportedOpenGLLevel;
 	extern std::string glslVersion;
-	extern AntiAliasingMethod antiAliasingMethod;
+	extern Aliasing::AntiAliasingMethod antiAliasingMethod;
 	
 	/**
 	 * TODO: In the future all OpenGL paramaters declared below (e.g. glBlendEnabled, glBlendSFactor, glScissorTestEnabled etc.)

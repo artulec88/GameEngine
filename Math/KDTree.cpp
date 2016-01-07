@@ -6,7 +6,7 @@
 
 using namespace Math;
 
-KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int numberOfSamples /* = 1 */) :
+KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */) :
 	m_leftTree(NULL),
 	m_rightTree(NULL),
 	m_numberOfSamples(numberOfSamples),
@@ -23,7 +23,7 @@ KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int numberOfSample
 	STOP_PROFILING;
 }
 
-KDTree::KDTree(Math::Vector3D* positions, int positionsCount, int numberOfSamples, int depth) :
+KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples, int depth) :
 	m_leftTree(NULL),
 	m_rightTree(NULL),
 	m_numberOfSamples(numberOfSamples),
@@ -48,7 +48,7 @@ KDTree::~KDTree(void)
 	SAFE_DELETE(m_rightTree);
 }
 
-void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
+void KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
 {
 	START_PROFILING;
 	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
@@ -65,7 +65,7 @@ void KDTree::BuildTree(Math::Vector3D* positions, int positionsCount, int depth)
 	//	DEBUG_LOG("depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
 	//}
 
-	int medianIndex = positionsCount / 2;
+	size_t medianIndex = positionsCount / 2;
 	m_position = Vector2D(positions[medianIndex].GetXZ());
 	m_value = positions[medianIndex].GetY();
 

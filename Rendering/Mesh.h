@@ -43,7 +43,7 @@ class MeshData : public Utility::ReferenceCounter
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MeshData(int indexSize);
+	MeshData(size_t indexSize);
 	virtual ~MeshData(void);
 private:
 	MeshData(const MeshData& meshData) {} // don't implement
@@ -54,7 +54,7 @@ private:
 public:
 	unsigned int GetVBO() const { return m_vbo; }
 	unsigned int GetIBO() const { return m_ibo; }
-	int GetSize() const { return m_size; }
+	size_t GetSize() const { return m_size; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -66,7 +66,7 @@ private:
 	unsigned int m_ibo;
 	
 	/// <summary> The size. </summary>
-	int m_size;
+	size_t m_size;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MeshData */
 
@@ -93,10 +93,10 @@ public:
 	RENDERING_API void Initialize();
 	RENDERING_API void Draw() const;
 protected:
-	void AddVertices(Vertex* vertices, int verticesCount, const int* indices, int indicesCount, bool calcNormalsEnabled = true);
-	void CalcNormals(Vertex* vertices, int verticesCount, const int* indices, int indicesCount) const;
-	void CalcTangents(Vertex* vertices, int verticesCount) const;
-	//void CalcIndices(Vertex* vertices, int verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
+	void AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled = true);
+	void CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const;
+	void CalcTangents(Vertex* vertices, size_t verticesCount) const;
+	//void CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ };
 /* ==================== Non-static member functions end ==================== */
@@ -138,7 +138,7 @@ protected:
 private:
 	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
-	int m_positionsCount;
+	size_t m_positionsCount;
 	Math::Real m_lastX, m_lastY, m_lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int m_lastClosestPositionIndex;

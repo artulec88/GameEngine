@@ -75,6 +75,12 @@ public:
 	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
+	/// <summary>
+	/// Initializes the rendering engine tweak bar.
+	/// </summary>
+	/// <remarks>
+	/// This function must be called after AntTweakBar library is initialized. See Rendering::InitializeTweakBars().
+	/// </remarks>
 	RENDERING_API void InitializeTweakBars();
 	RENDERING_API void CheckCameraIndexChange();
 #endif
@@ -110,9 +116,9 @@ public:
 	{
 		return m_currentCameraIndex;
 	}
-	RENDERING_API unsigned int NextCamera();
-	RENDERING_API unsigned int PrevCamera();
-	RENDERING_API unsigned int SetCurrentCamera(unsigned int cameraIndex);
+	RENDERING_API size_t NextCamera();
+	RENDERING_API size_t PrevCamera();
+	RENDERING_API size_t SetCurrentCamera(size_t cameraIndex);
 	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const
 	{
 		glfwSetCursorPos(m_window, xPos, yPos);
@@ -237,6 +243,7 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 	bool m_applyFilterEnabled;
 	Color m_backgroundColor;
 	//bool m_shadowsEnabled;
@@ -276,8 +283,8 @@ private:
 
 	GameNode* m_terrainNode;
 	Shader* m_ambientShaderTerrain;
-	std::map<FogEffect::Fog, Shader*> m_ambientShadersFogEnabledMap;
-	std::map<FogEffect::Fog, Shader*> m_ambientShadersFogEnabledTerrainMap;
+	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledMap;
+	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledTerrainMap;
 
 	Shader* m_ambientShader;
 	Shader* m_shadowMapShader;
@@ -330,7 +337,7 @@ private:
 //	bool cartoonShadingEnabled;
 //	Shader* cartoonShader;
 //#endif
-	unsigned int m_previousFrameCameraIndex;
+	size_t m_previousFrameCameraIndex;
 	TwBar* m_propertiesBar;
 	TwBar* m_cameraBar;
 	TwBar* m_lightsBar;

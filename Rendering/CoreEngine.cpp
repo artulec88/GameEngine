@@ -406,19 +406,19 @@ void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& i
 	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(SECONDS_PER_MINUTE)));
 }
 
-unsigned int CoreEngine::GetCurrentCameraIndex() const
+size_t CoreEngine::GetCurrentCameraIndex() const
 {
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot get the current camera index. The renderer does not exist.");
 	return m_renderer->GetCurrentCameraIndex();
 }
 
-unsigned int CoreEngine::NextCamera() const
+size_t CoreEngine::NextCamera() const
 {
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the next camera. The renderer does not exist.");
 	return m_renderer->NextCamera();
 }
 
-unsigned int CoreEngine::PrevCamera() const
+size_t CoreEngine::PrevCamera() const
 {
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the previous camera. The renderer does not exist.");
 	return m_renderer->PrevCamera();

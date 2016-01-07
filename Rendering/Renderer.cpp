@@ -65,7 +65,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_altCamera(Math::Matrix4D(), Transform()),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
-	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2)/2, sqrtf(2)/2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
+	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f)/2, sqrtf(2.0f)/2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
 	m_terrainNode(NULL),
 	m_ambientShaderTerrain(NULL),
@@ -150,29 +150,29 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("ambientLightShader", "ForwardAmbient"));
 	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderTerrain", "forward-ambient-terrain"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBased", "forward-ambient-fog-linear-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBased", "forward-ambient-fog-exponential-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBased", "forward-ambient-fog-exponential-squared-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBased", "forward-ambient-fog-linear-range-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBased", "forward-ambient-fog-exponential-range-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBased", "forward-ambient-fog-exponential-squared-range-based"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBasedTerrain", "forward-ambient-fog-linear-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBasedTerrain", "forward-ambient-fog-exponential-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBasedTerrain", "forward-ambient-fog-exponential-squared-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBasedTerrain", "forward-ambient-fog-linear-range-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBasedTerrain", "forward-ambient-fog-exponential-range-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
+	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBasedTerrain", "forward-ambient-fog-exponential-squared-range-based-terrain"));
 
 	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
@@ -275,13 +275,13 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterReflectionTexture);
 	SAFE_DELETE(m_waterShader);
 
-	for (std::map<FogEffect::Fog, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
+	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
 		ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
 	{
 		SAFE_DELETE(ambientLightFogShadersItr->second);
 	}
 	m_ambientShadersFogEnabledMap.clear();
-	for (std::map<FogEffect::Fog, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledTerrainMap.begin();
+	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledTerrainMap.begin();
 		ambientLightFogShadersItr != m_ambientShadersFogEnabledTerrainMap.end(); ambientLightFogShadersItr++)
 	{
 		SAFE_DELETE(ambientLightFogShadersItr->second);
@@ -593,7 +593,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSkybox();
 
-	if (Rendering::antiAliasingMethod == Rendering::FXAA)
+	if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	{
 		ApplyFilter(m_fxaaFilterShader, GetTexture("displayTexture"), NULL);
 	}
@@ -610,8 +610,8 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 	if (m_ambientLightFogEnabled)
 	{
 		//DEBUG_LOG("Ambient fog fall-off type: %d. Fog distance calculation type: %d", m_ambientLightFogFallOffType, m_ambientLightFogCalculationType);
-		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
-		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::Fog(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
+		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::FogKey(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
+		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_ambientLightFogFallOffType, m_ambientLightFogCalculationType)];
 		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		m_terrainNode->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
@@ -904,7 +904,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 	STOP_PROFILING;
 }
 
-unsigned int Renderer::NextCamera()
+size_t Renderer::NextCamera()
 {
 	if (m_currentCameraIndex == m_cameras.size() - 1)
 	{
@@ -913,7 +913,7 @@ unsigned int Renderer::NextCamera()
 	return SetCurrentCamera(m_currentCameraIndex + 1);
 }
 
-unsigned int Renderer::PrevCamera()
+size_t Renderer::PrevCamera()
 {
 	if (m_currentCameraIndex == 0)
 	{
@@ -922,7 +922,7 @@ unsigned int Renderer::PrevCamera()
 	return SetCurrentCamera(m_currentCameraIndex - 1);
 }
 
-unsigned int Renderer::SetCurrentCamera(unsigned int cameraIndex)
+size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 {
 	CHECK_CONDITION((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
 	m_currentCameraIndex = cameraIndex;
@@ -996,51 +996,56 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug line rendering is not yet supported by the engine");
 }
 
 void Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug sphere rendering is not yet supported by the engine");
 }
 
 void Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug cross rendering is not yet supported by the engine");
 }
 
 void Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug circle rendering is not yet supported by the engine");
 }
 
 void Renderer::AddAxes(const Transform& transform, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug axes rendering is not yet supported by the engine");
 }
 
 void Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug triangle rendering is not yet supported by the engine");
 }
 
 void Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug AABB rendering is not yet supported by the engine");
 }
 
 void Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug OBB rendering is not yet supported by the engine");
 }
 
 void Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
+	WARNING_LOG("Debug text rendering is not yet supported by the engine");
 }
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-/**
- * This function must be called after AntTweakBar library is initalized.
- * See Rendering::InitializeTweakBars()
- */
 void Renderer::InitializeTweakBars()
 {
 	INFO_LOG("Initializing rendering engine's tweak bars");
@@ -1103,11 +1108,11 @@ void Renderer::InitializeTweakBars()
 		TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType, m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
 		char cameraIndexStr[256];
 		char cameraDefStr[256];
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", m_currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", m_currentCameraIndex);
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
 		TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Rot", m_currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Rot' group=Camera ", m_currentCameraIndex);
+		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Rot", m_currentCameraIndex);
+		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Rot' group=Camera ", m_currentCameraIndex);
 		TwAddVarRW(m_cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &m_cameras[m_currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
 	}
 	
@@ -1148,8 +1153,8 @@ void Renderer::CheckCameraIndexChange()
 	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
 	char cameraIndexStr[256];
 	char cameraDefStr[256];
-	_snprintf_s(cameraIndexStr, 256, 255, "camera[%d].Pos", m_currentCameraIndex);
-	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%d].Pos' group=Camera ", m_currentCameraIndex);
+	_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
+	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
 	TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
 	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", m_currentCameraIndex);
 	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", m_currentCameraIndex);

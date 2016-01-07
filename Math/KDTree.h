@@ -20,10 +20,10 @@ class KDTree
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API KDTree(Vector3D* positions, int positionsCount, int numberOfSamples = 1);
+	MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1);
 	MATH_API ~KDTree(void);
 private:
-	KDTree(Vector3D* positions, int positionsCount, int numberOfSamples, int depth);
+	KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples, int depth);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -52,7 +52,7 @@ public:
 	MATH_API Real GetValue() const { return m_value; }
 	MATH_API std::string ToString() const;
 private:
-	void BuildTree(Math::Vector3D* positions, int positionsCount, int depth);
+	void BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth);
 	void SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
 	std::string ToString(int depth) const;
 /* ==================== Non-static member functions end ==================== */

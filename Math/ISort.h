@@ -79,12 +79,12 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	MATH_API virtual void Sort(int* values, int valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
-	MATH_API virtual void Sort(Real* values, int valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
-	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
-	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
-	MATH_API virtual void Sort(Vector2D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
-	MATH_API virtual void Sort(Vector3D* vectors, int vectorSize, const SortingParametersChain& sortingParameters) = 0;
+	MATH_API virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
+	MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
+	MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 	MATH_API SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
 protected:
 	template <typename T>

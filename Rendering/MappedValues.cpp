@@ -15,8 +15,10 @@ void MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 	char temp[256];
 	char defFloatStr[256];
 	char defVec3DStr[256];
-	_snprintf_s(defFloatStr, 256, 255, " step=0.01 precision=2 group='Floats' ", groupName);
-	_snprintf_s(defVec3DStr, 256, 255, " group='Vectors' ", groupName);
+	//_snprintf_s(defFloatStr, 256, 255, " step=0.01 precision=2 group='Floats' ", groupName);
+	//_snprintf_s(defVec3DStr, 256, 255, " group='Vectors' ", groupName);
+	_snprintf_s(defFloatStr, 256, 255, " step=0.01 precision=2 group='Floats' ");
+	_snprintf_s(defVec3DStr, 256, 255, " group='Vectors' ");
 
 	for (StrToRealMap::iterator realItr = realMap.begin(); realItr != realMap.end(); ++realItr)
 	{
