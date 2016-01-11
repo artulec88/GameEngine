@@ -1,3 +1,6 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Input	1138	1138	504.432	504.432	0.443262
-Update	1138	1138	118.601	118.601	0.104219
+Load	1	1	1.11659e+06	1.11659e+06	1.11659e+06
+AddLights	1	0	55376.7	0	55376.7
+AddCameras	1	0	4031.67	0	4031.67
+Input	5187	2954	3769.35	3516.95	0.726692
+Update	5187	2954	18277.8	16995.7	3.52378

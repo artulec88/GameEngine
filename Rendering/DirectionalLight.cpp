@@ -9,9 +9,22 @@ using namespace Rendering::Lighting;
 
 /* static */ bool DirectionalLight::directionalLightsEnabled = true;
 
-DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
-	BaseLight(color, intensity)
+DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE) */,
+	Math::Real intensity /* = REAL_ONE */,
+	Math::Real halfShadowArea /* = REAL_ONE */,
+	int shadowMapSizeAsPowerOf2 /* = 0 */,
+	Math::Real shadowSoftness /* = REAL_ONE */,
+	Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
+	Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */) :
+	BaseLight(color, intensity),
+	m_halfShadowArea(halfShadowArea)
 {
+	if ((shadowMapSizeAsPowerOf2 != 0) /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */)
+	{
+		Math::Matrix4D ortographicProjectionMatrix(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea);
+		SetShadowInfo(new ShadowInfo(ortographicProjectionMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
+		CHECK_CONDITION_EXIT(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize directional light. Shadow info is NULL.");
+	}
 }
 
 

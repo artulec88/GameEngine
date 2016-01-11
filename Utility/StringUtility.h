@@ -22,7 +22,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> at its end.
 	/// </summary>
-	void RightTrim(std::string& s);
+	void UTILITY_API RightTrim(std::string& s);
 
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> from both ends.

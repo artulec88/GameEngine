@@ -66,12 +66,6 @@ void DirectionalLightBuilder::BuildPart2()
 	Color color(red, green, blue);
 
 	Math::Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
-	Lighting::DirectionalLight* directionalLight = new Lighting::DirectionalLight(color, intensity);
-
-	// Setting shaders
-	directionalLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-	directionalLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
-	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting shadow info
 	const Math::Real defaultDirectionalLightShadowArea = GET_CONFIG_VALUE("defaultDirectionalLightShadowArea", 80.0f);
@@ -79,17 +73,18 @@ void DirectionalLightBuilder::BuildPart2()
 	const Math::Real defaultDirectionalLightShadowSoftness = GET_CONFIG_VALUE("defaultDirectionalLightShadowSoftness", 1.0f);
 	const Math::Real defaultDirectionalLightLightBleedingReductionAmount = GET_CONFIG_VALUE("defaultDirectionalLightLightBleedingReductionAmount", 0.2f);
 	const Math::Real defaultDirectionalLightMinVariance = GET_CONFIG_VALUE("defaultDirectionalLightMinVariance", 0.00002f);
-
 	Math::Real halfShadowArea = GET_CONFIG_VALUE("directionalLightShadowArea", defaultDirectionalLightShadowArea) / 2.0f;
 	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("directionalLightShadowMapSizeAsPowerOf2", defaultDirectionalLightShadowMapSizeAsPowerOf2);
 	Math::Real shadowSoftness = GET_CONFIG_VALUE("directionalLightShadowSoftness", defaultDirectionalLightShadowSoftness);
 	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("directionalLightLightBleedingReductionAmount", defaultDirectionalLightLightBleedingReductionAmount);
 	Math::Real minVariance = GET_CONFIG_VALUE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
-	bool isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows
-	if (isShadowingEnabled)
-	{
-		directionalLight->SetShadowInfo(new ShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea), true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-	}
+
+	Lighting::DirectionalLight* directionalLight = new Lighting::DirectionalLight(color, intensity, halfShadowArea, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+
+	// Setting shaders
+	directionalLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
+	directionalLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
+	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting additional directional light information
 	directionalLight->SetMaxIntensity(directionalLight->GetIntensity());

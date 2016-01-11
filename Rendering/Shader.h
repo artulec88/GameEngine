@@ -59,7 +59,7 @@ private:
 	void AddFragmentShader(const std::string& fragmentShaderText);
 	void AddProgram(const std::string& shaderText, GLenum type);
 
-	void AddAllAttributes(const std::string& vertexShaderText, const std::string& attributeKeyword);
+	void AddAllAttributes(const std::string& vertexShaderText);
 	void AddShaderUniforms(const std::string& shaderText);
 	void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
 

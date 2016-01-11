@@ -211,9 +211,9 @@ protected:
 
 	inline void ClearScreen() const
 	{
-		if (m_ambientLightFogEnabled)
+		if (m_fogEnabled)
 		{
-			Math::Vector3D fogColor = m_ambientLightFogColor * m_ambientLight;
+			Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
 			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
 		}
 		else
@@ -252,13 +252,16 @@ private:
 	GLFWwindow* m_threadWindow;
 	//GLuint framebuffer;
 	GLuint m_vao; // vertex array id
-	bool m_ambientLightFogEnabled;
-	Math::Vector3D m_ambientLightFogColor;
-	Math::Real m_ambientLightFogStart;
-	Math::Real m_ambientLightFogEnd;
-	Math::Real m_ambientLightFogDensityFactor;
-	FogEffect::FogFallOffType m_ambientLightFogFallOffType;
-	FogEffect::FogCalculationType m_ambientLightFogCalculationType;
+
+	bool m_fogEnabled;
+	Math::Vector3D m_fogColor;
+	Math::Real m_fogStart;
+	Math::Real m_fogEnd;
+	Math::Real m_fogDensityFactor;
+	FogEffect::FogFallOffType m_fogFallOffType;
+	FogEffect::FogCalculationType m_fogCalculationType;
+
+	bool m_ambientLightEnabled;
 	const Math::Vector3D m_ambientDaytimeColor;
 	const Math::Vector3D m_ambientSunNearHorizonColor;
 	const Math::Vector3D m_ambientNighttimeColor;

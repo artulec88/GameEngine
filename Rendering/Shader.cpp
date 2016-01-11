@@ -4,6 +4,7 @@
 #include "CoreEngine.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
+#include "Utility\StringUtility.h"
 
 #include <fstream>
 
@@ -44,8 +45,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 	}
 	AddFragmentShader(fragmentShaderText);
 
-	const std::string attributeKeyword = "attribute"; // TODO: What about geometry shader? Check if we should analyze geometry shader too to find all attributes
-	AddAllAttributes(vertexShaderText, attributeKeyword);
+	AddAllAttributes(vertexShaderText);
 
 	if (! Compile())
 	{
@@ -236,8 +236,9 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 	shaders.push_back(shader);
 }
 
-void ShaderData::AddAllAttributes(const std::string& vertexShaderText, const std::string& attributeKeyword)
+void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 {
+	const std::string attributeKeyword = "attribute"; // TODO: What about geometry shader? Check if we should analyze geometry shader too to find all attributes
 	int currentAttribLocation = 0;
 	size_t attributeLocation = vertexShaderText.find(attributeKeyword);
 	while(attributeLocation != std::string::npos)
@@ -338,22 +339,17 @@ void ShaderData::AddUniform(const std::string& uniformName, const std::string& u
 	DEBUG_LOG("Adding uniform \"%s\" of type \"%s\"", uniformName.c_str(), uniformType.c_str());
 	bool addThis = true;
 
-	for (unsigned int i = 0; i < structs.size(); ++i)
+	for (std::vector<UniformStruct>::const_iterator structItr = structs.begin(); structItr != structs.end(); ++structItr)
 	{
-		if (structs[i].name.compare(uniformType) == 0)
+		if (structItr->name.compare(uniformType) == 0)
 		{
 			addThis = false;
-			for (unsigned int j = 0; j < structs[i].memberNames.size(); ++j)
+			for (std::vector<TypedData>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
 			{
-				AddUniform(uniformName + "." + structs[i].memberNames[j].name, structs[i].memberNames[j].type, structs);
+				AddUniform(uniformName + "." + structMemberNameItr->name, structMemberNameItr->type, structs);
 			}
+			return;
 		}
-	}
-
-	if (! addThis)
-	{
-		//INFO_LOG("addThis == false");
-		return;
 	}
 
 	unsigned int location = glGetUniformLocation(m_programID, uniformName.c_str());
@@ -390,8 +386,8 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 {
 	std::vector<std::string> tokens;
 	Utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
-	//std::string result;
-	//StringUtility::RightTrim(tokens[0], result);
+	std::string result;
+	Utility::StringUtility::RightTrim(tokens[0]);
 	//DELOCUST_LOG("tokens[0] = \"%s\"", tokens[0].c_str());
 	return tokens[0];
 
@@ -553,6 +549,8 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			std::string unprefixedName = uniformName.substr(2, uniformName.length());
 			if (unprefixedName == "lightMatrix")
 			{
+				//CRITICAL_LOG("Renderer->GetLightMatrix() = \"%s\"", renderer->GetLightMatrix().ToString().c_str());
+				//CRITICAL_LOG("WorldMatrix = \"%s\"", worldMatrix.ToString().c_str());
 				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix);
 			}
 			else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
@@ -708,9 +706,14 @@ void Shader::SetUniformf(const std::string& name, Math::Real value) const
 void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
 {
 	std::map<std::string, unsigned int>::const_iterator itr;
+	//if (name.compare("R_directionalLight.direction") == 0)
+	//{
+	//	CRITICAL_LOG("Directional light direction = \"%s\"", vector.ToString().c_str());
+	//}
 	if (m_shaderData->IsUniformPresent(name, itr))
 	{
 		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
+		//glUniform3fv(itr->second, 1, vector.At());
 		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
 	}
 }

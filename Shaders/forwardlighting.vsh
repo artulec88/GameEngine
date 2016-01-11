@@ -25,7 +25,7 @@ void main()
 	vec4 worldPosition = T_model * vec4(position, 1.0);
     worldPos0 = worldPosition.xyz;
 	
-	setClippingPlanes(worldPosition, vec4(R_clipPlaneNormal, R_clipPlaneOriginDistance));
+	//setClippingPlanes(worldPosition, vec4(R_clipPlaneNormal, R_clipPlaneOriginDistance));
     
     vec3 n = normalize((T_model * vec4(normal, 0.0)).xyz);
     vec3 t = normalize((T_model * vec4(tangent, 0.0)).xyz);
