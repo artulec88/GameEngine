@@ -202,6 +202,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="Resource.h" />
@@ -254,6 +255,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Resource.cpp" />

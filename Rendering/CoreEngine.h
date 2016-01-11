@@ -6,6 +6,7 @@
 #include "Rendering\TextRenderer.h"
 #include "Rendering\GameManager.h"
 #include "Rendering\GameStateManager.h"
+#include "Rendering\QuitGameCommand.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -42,15 +43,19 @@ namespace Rendering
 
 class CoreEngine
 {
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 protected:
 	RENDERING_API static CoreEngine* s_coreEngine;
-/* ==================== Static variables end ==================== */
-
-/* ==================== Static functions begin ==================== */
 public:
 	RENDERING_API static CoreEngine* GetCoreEngine();
-/* ==================== Static functions end ==================== */
+	static void WindowCloseEventCallback(GLFWwindow* window);
+	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
+	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	//static void CharEventCallback(GLFWwindow* window, unsigned int codepoint);
+	static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
+	static void MousePosCallback(GLFWwindow* window, double xPos, double yPos);
+	static void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset);
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -72,6 +77,20 @@ public:
 	size_t PrevCamera() const;
 	Renderer* GetRenderer() const { return m_renderer; }
 
+	void WindowResizeEvent(GLFWwindow* window, int width, int height);
+	void CloseWindowEvent(GLFWwindow* window);
+	
+	/// <summary>
+	/// Main entry for the key event handling.
+	/// </summary>
+	/// <param name="key">The keyboard key that was pressed or released.</param>
+	/// <param name="scancode">The system-specific scancode of the key.</param>
+	/// <param name="action">GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT.</param>
+	/// <param name="mods">Bit field describing which modifier keys were held down.</param>
+	void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
+	void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+	void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
+	void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 	
 	int GetWindowWidth() const { return m_windowWidth; };
 	int GetWindowHeight() const { return m_windowHeight; };
@@ -134,6 +153,8 @@ private:
 	GameManager& m_game;
 	Renderer* m_renderer;
 	TextRenderer* m_fpsTextRenderer;
+
+	QuitGameCommand m_quitGameCommand;
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;

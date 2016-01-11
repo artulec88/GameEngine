@@ -37,6 +37,75 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	return s_coreEngine;
 }
 
+/* static */ void CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
+{
+	GetCoreEngine()->CloseWindowEvent(window);
+}
+
+/* static */ void CoreEngine::WindowResizeCallback(GLFWwindow* window, int width, int height)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (!TwWindowSize(width, height))
+	{
+		GetCoreEngine()->WindowResizeEvent(window, width, height);
+	}
+#else
+	GetCoreEngine()->WindowResizeEvent(window, width, height);
+#endif
+}
+
+/* static */ void CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (!TwEventKeyGLFW(key, action))  // send event to AntTweakBar
+	{
+		// event has not been handled by AntTweakBar
+		GetCoreEngine()->KeyEvent(window, key, scancode, action, mods);
+	}
+#else
+	GetCoreEngine()->KeyEvent(window, key, scancode, action, mods);
+#endif
+}
+
+/* static */ void CoreEngine::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (!TwEventMouseButtonGLFW(button, action))
+	{
+		// event has not been handled by AntTweakBar
+		GetCoreEngine()->MouseButtonEvent(window, button, action, mods);
+	}
+#else
+	GetCoreEngine()->MouseButtonEvent(window, button, action, mods);
+#endif
+}
+
+/* static */ void CoreEngine::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (!TwEventMousePosGLFW(static_cast<int>(xPos), static_cast<int>(yPos)))
+	{
+		// event has not been handled by AntTweakBar
+		GetCoreEngine()->MousePosEvent(window, xPos, yPos);
+	}
+#else
+	GetCoreEngine()->MousePosEvent(window, xPos, yPos);
+#endif
+}
+
+/* static */ void CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
+{
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if (!TwEventMouseWheelGLFW(static_cast<int>(yOffset))) // TODO: Check if yOffset here is ok
+	{
+		// event has not been handled by AntTweakBar
+		GetCoreEngine()->ScrollEvent(window, xOffset, yOffset);
+	}
+#else
+	GetCoreEngine()->ScrollEvent(window, xOffset, yOffset);
+#endif
+}
+
 CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */) :
 	m_isRunning(false),
@@ -47,6 +116,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_game(game),
 	m_renderer(NULL),
 	m_fpsTextRenderer(NULL),
+	m_quitGameCommand(m_game),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
 	TROPIC_OF_CANCER_SINUS(0.39794863131f),
@@ -391,6 +461,36 @@ void CoreEngine::Run()
 		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 	}
+}
+
+void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
+{
+	m_game.WindowResizeEvent(window, width, height);
+}
+
+void CoreEngine::CloseWindowEvent(GLFWwindow* window)
+{
+	m_game.CloseWindowEvent(window);
+}
+
+void CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	m_game.KeyEvent(window, key, scancode, action, mods);
+}
+
+void CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+{
+	m_game.MouseButtonEvent(window, button, action, mods);
+}
+
+void CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+{
+	m_game.MousePosEvent(window, xPos, yPos);
+}
+
+void CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+{
+	m_game.ScrollEvent(window, xOffset, yOffset);
 }
 
 void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const

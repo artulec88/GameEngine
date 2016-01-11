@@ -28,16 +28,7 @@ protected:
 /* ==================== Static functions begin ==================== */
 public:
 	RENDERING_API static GameManager* GetGameManager();
-	
 	RENDERING_API static void Load(void* arg);
-
-	static void WindowCloseEventCallback(GLFWwindow* window);
-	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
-	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-	//static void CharEventCallback(GLFWwindow* window, unsigned int codepoint);
-	static void MouseEventCallback(GLFWwindow* window, int button, int action, int mods);
-	static void MousePosCallback(GLFWwindow* window, double xPos, double yPos);
-	static void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset);
 /* ==================== Static functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -67,11 +58,12 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 
+	// TODO: Think about removing the window parameter from the event handling functions below.
 	RENDERING_API virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	RENDERING_API virtual void CloseWindowEvent(GLFWwindow* window);
 	RENDERING_API virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
-	RENDERING_API virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
-	RENDERING_API virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
+	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
+	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
 	RENDERING_API virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
 
 	/// <summary> Sets the game state transition object. The transition itself is not performed.
@@ -81,7 +73,6 @@ public:
 	RENDERING_API void PerformStateTransition();
 	RENDERING_API void PopState();
 	RENDERING_API void RequestGameQuit() const;
-
 protected:
 	RENDERING_API void RegisterTerrainNode(GameNode* terrainNode);
 	RENDERING_API void AddToSceneRoot(GameNode* child);

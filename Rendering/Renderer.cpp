@@ -308,14 +308,14 @@ Renderer::~Renderer(void)
 void Renderer::SetCallbacks()
 {
 	CHECK_CONDITION_EXIT(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
-	glfwSetWindowCloseCallback(m_window, &GameManager::WindowCloseEventCallback);
-	glfwSetWindowSizeCallback(m_window, GameManager::WindowResizeCallback);
-	glfwSetKeyCallback(m_window, &GameManager::KeyEventCallback);
-	//glfwSetCharCallback(m_window, GameManager::CharEventCallback);
-	//glfwSetMousePosCallback(m_window, GameManager::MouseMotionCallback);
-	glfwSetCursorPosCallback(m_window, &GameManager::MousePosCallback);
-	glfwSetMouseButtonCallback(m_window, &GameManager::MouseEventCallback);
-	glfwSetScrollCallback(m_window, &GameManager::ScrollEventCallback);
+	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
+	glfwSetWindowSizeCallback(m_window, CoreEngine::WindowResizeCallback);
+	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
+	//glfwSetCharCallback(m_window, CoreEngine::CharEventCallback);
+	//glfwSetMousePosCallback(m_window, CoreEngine::MouseMotionCallback);
+	glfwSetCursorPosCallback(m_window, &CoreEngine::MousePosCallback);
+	glfwSetMouseButtonCallback(m_window, &CoreEngine::MouseEventCallback);
+	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
 }
 
 void Renderer::InitializeCubeMap()
