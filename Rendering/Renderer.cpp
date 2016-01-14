@@ -66,7 +66,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_altCamera(Math::Matrix4D(), Transform()),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
-	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f)/2, sqrtf(2.0f)/2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
+	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
 	m_terrainNode(NULL),
 	m_ambientShaderTerrain(NULL),
@@ -98,12 +98,14 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
 	m_fontTexture(NULL),
 	m_textRenderer(NULL),
-	m_waterRefractionClippingPlaneNormal(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
-		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO)),
-	m_waterReflectionClippingPlaneNormal(GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
-		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO)),
-	m_waterRefractionClippingPlaneOriginDistance(GET_CONFIG_VALUE("waterRefractionClippingPlaneOriginDistance", 10.0f)),
-	m_waterReflectionClippingPlaneOriginDistance(GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
+	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
+	m_waterNodes(),
+	m_waterRefractionClippingPlane(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO),
+		GET_CONFIG_VALUE("waterRefractionClippingPlaneOriginDistance", 10.0f)),
+	m_waterReflectionClippingPlane(GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
+		GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
 	m_waterShader(NULL)
@@ -133,6 +135,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("cubeMapNight", 1);
 	SetSamplerSlot("filterTexture", 0);
 	SetSamplerSlot("diffuse2", 4);
+	SetSamplerSlot("waterReflectionTexture", 0);
+	SetSamplerSlot("waterRefractionTexture", 1);
 
 	glGenVertexArrays(1, &m_vao);
 
@@ -199,7 +203,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
-		int shadowMapSize = 1 << (i + 1);
+		int shadowMapSize = 1 << (i + 1); // generates a sequence of numbers: 2, 4, 8, 16, ..., 2^(SHADOW_MAPS_COUNT).
 		m_shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 		m_shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
@@ -209,19 +213,20 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture = new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
-	//m_waterRefractionTexture = new Texture(64, 64, NULL, GL_TEXTURE_2D, GL_LINEAR,
-	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-	//m_waterReflectionTexture = new Texture(64, 64, NULL, GL_TEXTURE_2D, GL_LINEAR,
-	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-	//m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "waterShader"));
+	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	unsigned char* data[] = { NULL, NULL };
+	GLfloat filters[] = { GL_LINEAR, GL_LINEAR };
+	GLenum internalFormats[] = { GL_RGB, GL_DEPTH_COMPONENT32 };
+	GLenum formats[] = { GL_RGBA, GL_DEPTH_COMPONENT };
+	GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
+	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
+	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "water-shader"));
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
-	SetVector3D("clipPlaneNormal", m_waterRefractionClippingPlaneNormal);
-	SetReal("clipPlaneOriginDistance", m_waterRefractionClippingPlaneOriginDistance);
 #endif
 
 	/* ==================== Creating a "Main menu camera" begin ==================== */
@@ -453,6 +458,12 @@ void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 	m_terrainNode = terrainNode;
 }
 
+void Renderer::AddWaterNode(GameNode* waterNode)
+{
+	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
+	m_waterNodes.push_back(waterNode);
+}
+
 /* TODO: Remove in the future */
 struct CameraDirection
 {
@@ -494,10 +505,10 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
-	SetVector3D("clipPlaneNormal", m_waterRefractionClippingPlaneNormal);
-	SetReal("clipPlaneOriginDistance", m_waterRefractionClippingPlaneOriginDistance);
 	CheckCameraIndexChange();
 #endif
+	//RenderWaterTextures(gameNode);
+
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	//BindAsRenderTarget();
 
@@ -544,15 +555,20 @@ void Renderer::Render(const GameNode& gameNode)
 
 			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
-			bool flipFacesEnabled = shadowInfo->IsFlipFacesEnabled();
 
 			CameraBase* temp = m_currentCamera;
 			m_currentCamera = &m_altCamera;
 
-			if (flipFacesEnabled) { glCullFace(GL_FRONT); }
+			if (shadowInfo->IsFlipFacesEnabled())
+			{
+				glCullFace(GL_FRONT);
+			}
 			m_terrainNode->RenderAll(m_shadowMapShader, this);
 			gameNode.RenderAll(m_shadowMapShader, this);
-			if (flipFacesEnabled) { glCullFace(GL_BACK); }
+			if (shadowInfo->IsFlipFacesEnabled())
+			{
+				glCullFace(GL_BACK);
+			}
 
 			m_currentCamera = temp;
 
@@ -593,16 +609,157 @@ void Renderer::Render(const GameNode& gameNode)
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
+	RenderWaterNodes(); // normal rendering of water quads
 	RenderSkybox();
 
-	if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
+	STOP_PROFILING;
+}
+
+void Renderer::RenderWaterTextures(const GameNode& gameNode)
+{
+	START_PROFILING;
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
+	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
+	CHECK_CONDITION(m_waterNodes.size() == 1, Utility::Warning, "For now the rendering engine supports only one water node in the game engine, but there are %d created.", m_waterNodes.size());
+	RenderWaterReflectionTexture(gameNode);
+	//RenderWaterRefractionTexture(gameNode);
+	
+	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
+	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
+	// below glDisable(GL_CLIP_DISTANCE0) call, so we need a trick. In order to have no clipping we simply
+	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
+	// and as a result we render the whole scene.
+	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
+	//SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
+	BindAsRenderTarget();
+	STOP_PROFILING;
+}
+
+void Renderer::RenderWaterNodes()
+{
+	START_PROFILING;
+	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
+	//SetTexture("waterRefractionTexture", m_waterRefractionTexture);
+	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
-		ApplyFilter(m_fxaaFilterShader, GetTexture("displayTexture"), NULL);
+		(*waterNodeItr)->RenderAll(m_waterShader, this);
 	}
-	else
-	{
-		ApplyFilter(m_nullFilterShader, GetTexture("displayTexture"), NULL);
-	}
+	SetTexture("waterReflectionTexture", NULL);
+	//SetTexture("waterRefractionTexture", NULL);
+	STOP_PROFILING;
+}
+
+void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
+{
+	START_PROFILING;
+	
+	Transform& cameraTransform = m_currentCamera->GetTransform();
+	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+	Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
+
+	//SetVector4D("clipPlane", m_waterReflectionClippingPlane);
+	m_waterReflectionTexture->BindAsRenderTarget();
+	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+	RenderSceneWithAmbientLight(gameNode);
+	//RenderSceneWithPointLights(gameNode);
+	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	//{
+	//	m_currentLight = (*lightItr);
+	//	if (!m_currentLight->IsEnabled())
+	//	{
+	//		continue;
+	//	}
+
+		//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+		//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+		//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+		//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+		//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+		//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+		// we set the light matrix this way so that, if no shadow should be cast
+		// everything in the scene will be mapped to the same point
+	//	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	//	SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+	//	SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+
+	//	RenderSceneWithLight(m_currentLight, gameNode);
+	//}
+	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
+
+	//RenderSkybox();
+
+	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//{
+	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+	//}
+	//else
+	//{
+	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+	//}
+
+	//BindAsRenderTarget();
+	
+	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
+
+	STOP_PROFILING;
+}
+
+void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
+{
+	START_PROFILING;
+	//SetVector4D("clipPlane", m_waterRefractionClippingPlane);
+	m_waterRefractionTexture->BindAsRenderTarget();
+
+	m_currentCamera = m_cameras[m_currentCameraIndex];
+
+	RenderSceneWithAmbientLight(gameNode);
+	//RenderSceneWithPointLights(gameNode);
+	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	//{
+	//	m_currentLight = (*lightItr);
+	//	if (!m_currentLight->IsEnabled())
+	//	{
+	//		continue;
+	//	}
+
+		//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+		//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+		//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+		//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+		//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+		//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+
+		// we set the light matrix this way so that, if no shadow should be cast
+		// everything in the scene will be mapped to the same point
+	//	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	//	SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+	//	SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+
+	//	RenderSceneWithLight(m_currentLight, gameNode);
+	//}
+	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterRefractionTexture->GetWidth(), REAL_ONE / m_waterRefractionTexture->GetHeight(), REAL_ZERO));
+
+	RenderSkybox();
+
+	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//{
+	//	ApplyFilter(m_fxaaFilterShader, m_waterRefractionTexture, NULL);
+	//}
+	//else
+	//{
+	//	ApplyFilter(m_nullFilterShader, m_waterRefractionTexture, NULL);
+	//}
+
+	//BindAsRenderTarget();
 	STOP_PROFILING;
 }
 
@@ -1085,10 +1242,10 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
-	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlaneNormal, " label='Normal' group='Refraction' ");
-	TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlaneOriginDistance, " label='Origin distance' group='Refraction' ");
-	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlaneNormal, " label='Normal' group='Reflection' ");
-	TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlaneOriginDistance, " label='Origin distance' group='Reflection' ");
+	//TwAddVarRO(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlane.GetNormal(), " label='Normal' group='Refraction' ");
+	//TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlane.GetDistance(), " label='Origin distance' group='Refraction' ");
+	//TwAddVarRO(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlane.GetNormal(), " label='Normal' group='Reflection' ");
+	//TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlane.GetDistance(), " label='Origin distance' group='Reflection' ");
 
 	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup

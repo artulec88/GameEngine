@@ -47,7 +47,7 @@ MenuEntry::~MenuEntry(void)
 		delete (*childrenMenuEntryItr);
 	}
 	m_childrenMenuEntries.clear();
-	SAFE_DELETE(m_gameCommand);
+	// TODO: Removing m_gameCommand
 }
 
 void MenuEntry::AddChildren(MenuEntry* child)

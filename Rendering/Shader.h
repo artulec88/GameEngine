@@ -105,6 +105,8 @@ public:
 	RENDERING_API void SetUniformi(const std::string& uniformName, int value) const;
 	RENDERING_API void SetUniformf(const std::string& uniformName, Math::Real value) const;
 	RENDERING_API void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
+	RENDERING_API void SetUniformVector4D(const std::string& uniformName, const Math::Vector4D& vector) const;
+	RENDERING_API void SetUniformVector4D(const std::string& uniformName, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const;
 	RENDERING_API void SetUniformColor(const std::string& uniformName, const Color& color) const;
 	RENDERING_API void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 protected:

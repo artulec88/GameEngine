@@ -16,7 +16,7 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	m_fontMaterial(NULL),
 	m_defaultFontSize(defaultFontSize),
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
-	m_textShader(NULL),
+	m_textShader(GET_CONFIG_VALUE_STR("textShader", "text-shader")),
 	m_windowWidth(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth())),
 	m_windowHeight(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight())),
 	m_transform(), /* TODO: Fix transform. */
@@ -28,7 +28,6 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	}
 	//m_fontTexture = new Texture("font1.bmp");
 	m_fontMaterial = new Material(fontTexture);
-	m_textShader = new Shader((GET_CONFIG_VALUE_STR("textShader", "text-shader")));
 
 	//Vertex vertices[] = {
 	//	Vertex(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
@@ -77,7 +76,6 @@ TextRenderer::~TextRenderer(void)
 {
 	DELOCUST_LOG("Text renderer destruction started");
 	SAFE_DELETE(m_fontMaterial);
-	SAFE_DELETE(m_textShader);
 
 	glDeleteVertexArrays(1, &m_vaoID);
 	glDeleteBuffers(1, &m_vertexBuffer);
@@ -188,13 +186,13 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	glBindBuffer(GL_ARRAY_BUFFER, m_texCoordBuffer);
 	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(Math::Vector2D), &uvs[0], GL_STATIC_DRAW);
 
-	m_textShader->Bind();
+	m_textShader.Bind();
 
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
 	m_fontMaterial->SetReal("screenWidth", m_windowWidth);
 	m_fontMaterial->SetReal("screenHeight", m_windowHeight);
-	m_textShader->UpdateUniforms(m_transform, *m_fontMaterial, renderer);
+	m_textShader.UpdateUniforms(m_transform, *m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices

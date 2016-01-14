@@ -53,7 +53,7 @@ private:
 	Material* m_fontMaterial;
 	Math::Real m_defaultFontSize;
 	Math::Vector3D m_defaultFontColor;
-	Shader* m_textShader;
+	Shader m_textShader;
 
 	Math::Real m_windowWidth;
 	Math::Real m_windowHeight;

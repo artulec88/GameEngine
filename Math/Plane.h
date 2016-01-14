@@ -40,6 +40,7 @@ public:
 
 	MATH_API inline const Vector3D& GetNormal() const { return m_normal; }
 	MATH_API inline Real GetDistance() const { return m_distance; }
+	MATH_API inline Real& GetDistance() { return m_distance; }
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

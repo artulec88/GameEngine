@@ -163,6 +163,11 @@ void GameManager::AddToSceneRoot(GameNode* child)
 	m_rootGameNode.AddChild(child);
 }
 
+void GameManager::AddWaterNode(GameNode* waterNode)
+{
+	CoreEngine::GetCoreEngine()->GetRenderer()->AddWaterNode(waterNode);
+}
+
 void GameManager::RegisterTerrainNode(GameNode* terrainNode)
 {
 	CoreEngine::GetCoreEngine()->GetRenderer()->RegisterTerrainNode(terrainNode);

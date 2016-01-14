@@ -177,7 +177,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 	}
 	CHECK_CONDITION_EXIT(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Error, "Maximum number of bound textures exceeded. Buffer overrun might occur.");
 
-	GLenum* drawBuffers= new GLenum[m_texturesCount];
+	GLenum* drawBuffers = new GLenum[m_texturesCount];
 	bool hasDepth = false;
 
 	for (int i = 0; i < m_texturesCount; ++i)
@@ -209,12 +209,14 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 			glGenFramebuffers(1, &m_framebuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 		}
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureID[0], 0 /* which mipmap level of the texture we want to use */); // associate framebuffer with texture
+		// Associate the texture with the framebuffer
+		//glFramebufferTexture(GL_FRAMEBUFFER, attachments[i], m_textureID[i], 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureID[i], 0 /* which mipmap level of the texture we want to use */);
 	}
 
 	if (m_framebuffer == 0)
 	{
-		DEBUG_LOG("Framebuffer will not be used by the texture");
+		DEBUG_LOG("Framebuffer will not be used by the texture (textures count = %d)", m_texturesCount);
 		return;
 	}
 	if (!hasDepth)
@@ -234,7 +236,7 @@ void TextureData::InitRenderTargets(GLenum* attachments)
 
 void TextureData::BindAsRenderTarget() const
 {
-	//glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0); // just to make sure the texture is not bound
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	glViewport(0, 0, m_width, m_height);
 }
@@ -337,13 +339,19 @@ Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data 
 	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Error, "Texture data creation failed. Texture data is NULL.");
 }
 
+Texture::Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, bool clampEnabled, GLenum* attachments) :
+	m_textureData(NULL),
+	m_fileName()
+{
+	//m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
+	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Error, "Texture data creation failed. Texture data is NULL.");
+	m_textureData = new TextureData(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, clampEnabled, attachments);
+
+}
+
 Texture::~Texture(void)
 {
-	ASSERT(m_textureData != NULL);
-	if (m_textureData == NULL)
-	{
-		WARNING_LOG("Texture data is already NULL.");
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(m_textureData != NULL, Utility::Error, "Error encountered while destructing the texture. Texture data is already NULL.");
 	
 	m_textureData->RemoveReference();
 	if (! m_textureData->IsReferenced())
@@ -359,7 +367,7 @@ Texture::~Texture(void)
 void Texture::Bind(unsigned int unit /* = 0 */) const
 {
 	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Emergency, "Cannot bind the texture. Texture data is NULL.");
-	ASSERT((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT));
+	CHECK_CONDITION((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT), Utility::Error, "Specified unit %d is outside of range [0; %d)", unit, TextureData::MAX_BOUND_TEXTURES_COUNT);
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
 	m_textureData->Bind(0);

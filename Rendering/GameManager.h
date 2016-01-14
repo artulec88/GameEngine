@@ -76,6 +76,7 @@ public:
 protected:
 	RENDERING_API void RegisterTerrainNode(GameNode* terrainNode);
 	RENDERING_API void AddToSceneRoot(GameNode* child);
+	RENDERING_API void AddWaterNode(GameNode* waterNode);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

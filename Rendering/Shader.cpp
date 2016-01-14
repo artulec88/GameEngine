@@ -556,6 +556,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else if ((uniformType == "sampler2D") || (uniformType == "samplerCube"))
 			{
 				unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
+				//CRITICAL_LOG("Binding texture \"%s\" in sampler slot %d", unprefixedName.c_str(), samplerSlot);
 				if (unprefixedName == "cubeShadowMap")
 				{
 					renderer->BindCubeShadowMap(samplerSlot);
@@ -577,6 +578,10 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			else if (uniformType == "vec3")
 			{
 				SetUniformVector3D(uniformName, renderer->GetVec3D(unprefixedName));
+			}
+			else if (uniformType == "vec4")
+			{
+				SetUniformVector4D(uniformName, renderer->GetVec4D(unprefixedName));
 			}
 			else if(uniformType == "float")
 			{
@@ -653,6 +658,10 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			{
 				SetUniformVector3D(uniformName, material.GetVec3D(uniformName));
 			}
+			else if (uniformType == "vec4")
+			{
+				SetUniformVector4D(uniformName, material.GetVec4D(uniformName));
+			}
 			else if (uniformType == "float")
 			{
 				SetUniformf(uniformName, material.GetReal(uniformName));
@@ -715,6 +724,34 @@ void Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& v
 		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
 		//glUniform3fv(itr->second, 1, vector.At());
 		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
+	}
+}
+
+void Shader::SetUniformVector4D(const std::string& name, const Math::Vector4D& vector) const
+{
+	std::map<std::string, unsigned int>::const_iterator itr;
+	//if (name.compare("R_directionalLight.direction") == 0)
+	//{
+	//	CRITICAL_LOG("Directional light direction = \"%s\"", vector.ToString().c_str());
+	//}
+	if (m_shaderData->IsUniformPresent(name, itr))
+	{
+		glUniform4f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
+		//glUniform4fv(itr->second, 4, vector.At());
+		// TODO: Check whether glUniform4fv(itr->second, 4, vector) is faster.
+	}
+}
+
+void Shader::SetUniformVector4D(const std::string& name, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const
+{
+	std::map<std::string, unsigned int>::const_iterator itr;
+	//if (name.compare("R_directionalLight.direction") == 0)
+	//{
+	//	CRITICAL_LOG("Directional light direction = \"%s\"", vector.ToString().c_str());
+	//}
+	if (m_shaderData->IsUniformPresent(name, itr))
+	{
+		glUniform4f(itr->second, x, y, z, w);
 	}
 }
 

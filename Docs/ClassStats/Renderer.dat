@@ -1,5 +1,15 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Renderer	1	1	686729	686729	686729
-InitializeCubeMap	1	0	453007	0	453007
-InitializeCubeMapTexture	2	0	433064	0	216532
-RenderMainMenu	574	574	148984	148984	259.553
+Renderer	1	1	2.30702e+08	2.30702e+08	2.30702e+08
+InitializeCubeMap	1	0	335290	0	335290
+InitializeCubeMapTexture	2	0	324541	0	162271
+Render	94	94	111622	111622	1187.46
+RenderWaterNodes	94	0	2724.02	0	28.9789
+RenderSceneWithAmbientLight	94	0	31018.3	0	329.982
+RenderSceneWithPointLights	94	0	20.1469	0	0.214329
+RenderMainMenu	938	938	173398	173398	184.859
+RenderSceneWithLight	94	0	34346	0	365.382
+RenderLoadingScreen	359	359	204792	204792	570.452
+AdjustAmbientLightAccordingToCurrentTime	94	0	424.986	0	4.52113
+RenderSkybox	94	0	2644.57	0	28.1337
+BlurShadowMap	94	0	12845.8	0	136.657
+ApplyFilter	282	0	13085.2	0	46.4016

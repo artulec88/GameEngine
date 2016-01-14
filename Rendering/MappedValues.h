@@ -23,7 +23,10 @@ class MappedValues
 public:
 	RENDERING_API MappedValues(void) :
 		m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
-		defaultVector3D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO)) {}
+		m_defaultVector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+		m_defaultVector4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO)
+	{
+	}
 	RENDERING_API virtual ~MappedValues(void)
 	{
 		std::map<std::string, Texture*>::iterator itr = textureMap.begin();
@@ -45,13 +48,27 @@ public:
 	{
 		if (vec3DMap.find(name) == vec3DMap.end())
 		{
-			DEBUG_LOG("Vector3D with name \"%s\" is not found in the map. Creating a new vector with this name.", name.c_str());
+			DEBUG_LOG("Vector3D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
 			vec3DMap.insert(std::pair<std::string, Math::Vector3D>(name, vec));
 		}
 		else
 		{
 			DELOCUST_LOG("Modifying the Vector3D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec3DMap[name].ToString().c_str(), vec.ToString().c_str());
 			vec3DMap[name] = vec;
+		}
+	}
+
+	RENDERING_API inline void SetVector4D(const std::string& name, const Math::Vector4D& vec)
+	{
+		if (m_vec4DMap.find(name) == m_vec4DMap.end())
+		{
+			DEBUG_LOG("Vector 4D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
+			m_vec4DMap.insert(std::pair<std::string, Math::Vector4D>(name, vec));
+		}
+		else
+		{
+			DELOCUST_LOG("Modifying the Vector4D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), m_vec4DMap[name].ToString().c_str(), vec.ToString().c_str());
+			m_vec4DMap[name] = vec;
 		}
 	}
 
@@ -96,7 +113,18 @@ public:
 		if (itr == vec3DMap.end()) // vector not found
 		{
 			DEBUG_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
-			return defaultVector3D;
+			return m_defaultVector3D;
+		}
+		return itr->second;
+	}
+
+	RENDERING_API inline const Math::Vector4D GetVec4D(const std::string& name) const
+	{
+		std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
+		if (itr == m_vec4DMap.end()) // vector not found
+		{
+			DEBUG_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			return m_defaultVector4D;
 		}
 		return itr->second;
 	}
@@ -131,13 +159,16 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
+	typedef std::map<std::string, Math::Vector4D> StrToVec4DMap;
 	typedef std::map<std::string, Math::Real> StrToRealMap;
 	typedef std::map<std::string, Texture*> StrToTextureMap;
 	StrToVec3DMap vec3DMap;
+	StrToVec4DMap m_vec4DMap;
 	StrToRealMap realMap;
 	StrToTextureMap textureMap;
 	Texture* m_defaultTexture;
-	Math::Vector3D defaultVector3D;
+	Math::Vector3D m_defaultVector3D;
+	Math::Vector4D m_defaultVector4D;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MappedValues */
 

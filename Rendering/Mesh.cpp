@@ -222,7 +222,7 @@ void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indice
 
 	if (calcNormalsEnabled)
 	{
-		this->CalcNormals(vertices, verticesCount, indices, indicesCount);
+		CalcNormals(vertices, verticesCount, indices, indicesCount);
 	}
 	//if (calcTangents)
 	//{

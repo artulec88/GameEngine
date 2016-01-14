@@ -134,6 +134,13 @@ Real Quaternion::LengthSquared() const
 	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
 }
 
+void Quaternion::InvertPitch()
+{
+	// TODO: Warning. This function has not yet been tested. Use with precaution.
+	m_x = -m_x;
+	m_z = -m_z;
+}
+
 Quaternion Quaternion::Normalized() const
 {
 	Real length = Length();

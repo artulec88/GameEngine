@@ -33,6 +33,14 @@ public:
 
 	Real Length() const;
 	Real LengthSquared() const;
+
+	/// <summary>
+	/// Pitch inversion function.
+	/// </summary>
+	/// <remarks>
+	/// The pitch is described in the video: https://www.youtube.com/watch?v=PoxDDZmctnU&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=19.
+	/// </remarks
+	void InvertPitch();
 	
 	inline Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 	

@@ -27,7 +27,7 @@ using namespace Rendering;
 
 TestGameManager::TestGameManager() :
 	GameManager(),
-	RESOURCES_TO_LOAD(32),
+	RESOURCES_TO_LOAD(34),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_terrainMesh(NULL),
@@ -216,6 +216,13 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 2;
 	sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
 	AddToSceneRoot(sphereNode4);
+
+	GameNode* waterNode = new GameNode();
+	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), new Material(new Texture("water.jpg"))));
+	m_resourcesLoaded += 2;
+	waterNode->GetTransform().SetPos(-18.0f, 0.0f, -12.0f);
+	waterNode->GetTransform().SetScale(3.0f);
+	AddWaterNode(waterNode);
 
 	srand((unsigned int)time(NULL));
 

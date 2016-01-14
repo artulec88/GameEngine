@@ -17,6 +17,7 @@
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
+#include "Math\Plane.h"
 #ifdef DEBUG_RENDERING_ENABLED
 #include "Math\Sphere.h"
 #include "Math\AABB.h"
@@ -124,10 +125,10 @@ public:
 		glfwSetCursorPos(m_window, xPos, yPos);
 	}
 	
-	RENDERING_API inline unsigned int GetSamplerSlot(const std::string& samplerName) const
+	inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
 		std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
-		CHECK_CONDITION_EXIT(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
+		CHECK_CONDITION_EXIT_ALWAYS(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return samplerItr->second;
 	}
 	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
@@ -147,6 +148,7 @@ public:
 		glfwSetWindowShouldClose(m_window, GL_TRUE);
 	}
 	void RegisterTerrainNode(GameNode* terrainNode);
+	void AddWaterNode(GameNode* waterNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -203,6 +205,16 @@ public:
 #endif
 
 protected:
+	/// <summary>
+	/// Water textures (reflection, refraction) rendering pass.
+	/// </summary>
+	/// <remarks>
+	/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
+	/// </remarks>
+	void RenderWaterTextures(const GameNode& gameNode);
+	void RenderWaterNodes();
+	void RenderWaterReflectionTexture(const GameNode& gameNode);
+	void RenderWaterRefractionTexture(const GameNode& gameNode);
 	void RenderSkybox();
 	void RenderSceneWithAmbientLight(const GameNode& gameNode);
 	void RenderSceneWithPointLights(const GameNode& gameNode);
@@ -326,10 +338,14 @@ private:
 	Texture* m_fontTexture;
 	TextRenderer* m_textRenderer;
 
-	Math::Vector3D m_waterRefractionClippingPlaneNormal;
-	Math::Vector3D m_waterReflectionClippingPlaneNormal;
-	float m_waterRefractionClippingPlaneOriginDistance;
-	float m_waterReflectionClippingPlaneOriginDistance;
+	/// <summary>
+	/// The default clip plane which is used for the normal scene rendering pass.
+	/// The variable could be removed if GL_CLIP_DISTANCE0 could be disabled.
+	/// </summary>
+	const Math::Vector4D m_defaultClipPlane;
+	std::vector<GameNode*> m_waterNodes;
+	Math::Vector4D m_waterRefractionClippingPlane; // TODO: Consider using Math::Plane instead
+	Math::Vector4D m_waterReflectionClippingPlane; // TODO: Consider using Math::Plane instead
 	Texture* m_waterRefractionTexture;
 	Texture* m_waterReflectionTexture;
 	Shader* m_waterShader;
