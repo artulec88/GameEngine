@@ -1,32 +1,37 @@
 #include "common.glh"
 
-varying vec2 texCoord0;
+varying vec4 clipSpacePosition;
 
 #if defined(VS_BUILD)
 attribute vec3 position;
-attribute vec2 texCoord;
 
 uniform mat4 T_MVP;
 
 void main()
 {
-    gl_Position = T_MVP * vec4(position, 1.0);
-    //texCoord0 = vec2(position.x / 2.0 + 0.5, position.y / 2.0 + 0.5);
-	texCoord0 = texCoord;
+	clipSpacePosition = T_MVP * vec4(position, 1.0);
+    gl_Position = clipSpacePosition;
 }
 #elif defined(FS_BUILD)
 
 uniform sampler2D R_waterReflectionTexture;
-//uniform sampler2D R_waterRefractionTexture;
+uniform sampler2D R_waterRefractionTexture;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
-	vec4 reflectionColor = texture2D(R_waterReflectionTexture, texCoord0);
-	//vec4 refractionColor = texture2D(R_waterRefractionTexture, texCoord0);
-	//SetFragOutput(0, mix(reflectionColor, refractionColor, 0.5));
+	// Projective texture mapping (watch https://www.youtube.com/watch?v=GADTasvDOX4)
+	vec2 normalizedDeviceCoordinates = (clipSpacePosition.xy / clipSpacePosition.w) / 2.0 + 0.5;
 	
-	SetFragOutput(0, reflectionColor);
+	// Because it is a reflection we need to invert the Y component to make it upside down (it's reflection after all).
+	vec2 reflectionTexCoord = vec2(normalizedDeviceCoordinates.x, -normalizedDeviceCoordinates.y);
+	vec2 refractionTexCoord = vec2(normalizedDeviceCoordinates.x, normalizedDeviceCoordinates.y);
+	
+	vec4 reflectionColor = texture2D(R_waterReflectionTexture, reflectionTexCoord);
+	vec4 refractionColor = texture2D(R_waterRefractionTexture, refractionTexCoord);
+	SetFragOutput(0, mix(reflectionColor, refractionColor, 0.5));
+	
+	//SetFragOutput(0, reflectionColor);
 }
 
 #endif

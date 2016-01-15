@@ -119,7 +119,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_cameraType()
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
-	,m_debugTexture(NULL),
+	, m_guiTextures(NULL),
 	m_debugQuad(NULL),
 	m_debugShader(NULL)
 #endif
@@ -225,6 +225,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	GLenum formats[] = { GL_RGBA, GL_DEPTH_COMPONENT };
 	GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
 	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
+	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "water-shader"));
 
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
@@ -248,7 +249,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_debugTexture = new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f));
+	m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
 	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
 	m_debugShader = new Shader("debug-shader");
@@ -263,7 +265,7 @@ Renderer::~Renderer(void)
 {
 	INFO_LOG("Destroying rendering engine...");
 	START_PROFILING;
-	
+
 	glDeleteVertexArrays(1, &m_vao);
 
 	//SAFE_DELETE(m_currentLight);
@@ -294,13 +296,13 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterShader);
 
 	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
-		ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
+	ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
 	{
 		SAFE_DELETE(ambientLightFogShadersItr->second);
 	}
 	m_ambientShadersFogEnabledMap.clear();
 	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledTerrainMap.begin();
-		ambientLightFogShadersItr != m_ambientShadersFogEnabledTerrainMap.end(); ambientLightFogShadersItr++)
+	ambientLightFogShadersItr != m_ambientShadersFogEnabledTerrainMap.end(); ambientLightFogShadersItr++)
 	{
 		SAFE_DELETE(ambientLightFogShadersItr->second);
 	}
@@ -314,6 +316,12 @@ Renderer::~Renderer(void)
 	}
 
 #ifdef DEBUG_RENDERING_ENABLED
+	for (std::vector<GuiTexture*>::iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
+	{
+		SAFE_DELETE(*guiTextureItr);
+	}
+	m_guiTextures.clear();
+	SAFE_DELETE(m_debugQuad);
 	SAFE_DELETE(m_debugShader);
 #endif
 
@@ -524,7 +532,7 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
 	CheckCameraIndexChange();
 #endif
-	//RenderWaterTextures(gameNode);
+	RenderWaterTextures(gameNode);
 
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	//BindAsRenderTarget();
@@ -604,11 +612,12 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderWaterNodes(); // normal rendering of water quads
 
+	RenderSkybox();
+
 #ifdef DEBUG_RENDERING_ENABLED
 	RenderDebugNodes();
 #endif
 
-	RenderSkybox();
 
 	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
 	STOP_PROFILING;
@@ -617,11 +626,10 @@ void Renderer::Render(const GameNode& gameNode)
 void Renderer::RenderWaterTextures(const GameNode& gameNode)
 {
 	START_PROFILING;
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 	CHECK_CONDITION(m_waterNodes.size() == 1, Utility::Warning, "For now the rendering engine supports only one water node in the game engine, but there are %d created.", m_waterNodes.size());
 	RenderWaterReflectionTexture(gameNode);
-	//RenderWaterRefractionTexture(gameNode);
+	RenderWaterRefractionTexture(gameNode);
 	
 	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
 	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
@@ -629,7 +637,7 @@ void Renderer::RenderWaterTextures(const GameNode& gameNode)
 	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
 	// and as a result we render the whole scene.
 	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
-	//SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
 	BindAsRenderTarget();
 	STOP_PROFILING;
 }
@@ -638,13 +646,13 @@ void Renderer::RenderWaterNodes()
 {
 	START_PROFILING;
 	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
-	//SetTexture("waterRefractionTexture", m_waterRefractionTexture);
+	SetTexture("waterRefractionTexture", m_waterRefractionTexture);
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
 		(*waterNodeItr)->RenderAll(m_waterShader, this);
 	}
 	SetTexture("waterReflectionTexture", NULL);
-	//SetTexture("waterRefractionTexture", NULL);
+	SetTexture("waterRefractionTexture", NULL);
 	STOP_PROFILING;
 }
 
@@ -652,19 +660,23 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 {
 	START_PROFILING;
 	
-	//Transform& cameraTransform = m_currentCamera->GetTransform();
-	//const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
-	//Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
-	//cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	//cameraTransform.GetRot().InvertPitch();
+	Transform& cameraTransform = m_currentCamera->GetTransform();
+	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+	Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
 
-	//SetVector4D("clipPlane", m_waterReflectionClippingPlane);
+	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
 	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
+	glDisable(GL_DEPTH_TEST);
+	RenderSkybox();
 	RenderSceneWithAmbientLight(gameNode);
-	//RenderSceneWithPointLights(gameNode);
+
+	RenderSceneWithPointLights(gameNode);
 	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	//{
 	//	m_currentLight = (*lightItr);
@@ -691,7 +703,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	//}
 	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
 
-	//RenderSkybox();
+	glEnable(GL_DEPTH_TEST);
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
@@ -704,8 +716,8 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 
 	//BindAsRenderTarget();
 	
-	//cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
-	//cameraTransform.GetRot().InvertPitch();
+	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
 
 	STOP_PROFILING;
 }
@@ -713,13 +725,18 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 {
 	START_PROFILING;
-	//SetVector4D("clipPlane", m_waterRefractionClippingPlane);
+
+	m_waterRefractionClippingPlane.SetW(m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	SetVector4D("clipPlane", m_waterRefractionClippingPlane);
 	m_waterRefractionTexture->BindAsRenderTarget();
+	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	m_currentCamera = m_cameras[m_currentCameraIndex];
-
+	glDisable(GL_DEPTH_TEST);
+	RenderSkybox();
 	RenderSceneWithAmbientLight(gameNode);
-	//RenderSceneWithPointLights(gameNode);
+
+	RenderSceneWithPointLights(gameNode);
 	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	//{
 	//	m_currentLight = (*lightItr);
@@ -728,36 +745,37 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	//		continue;
 	//	}
 
-		//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-		//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-		//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-		//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-		//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-		//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+	//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+	//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+	//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+	//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+	//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
+	//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-		// we set the light matrix this way so that, if no shadow should be cast
-		// everything in the scene will be mapped to the same point
+	// we set the light matrix this way so that, if no shadow should be cast
+	// everything in the scene will be mapped to the same point
 	//	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	//	SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
 	//	SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 
 	//	RenderSceneWithLight(m_currentLight, gameNode);
 	//}
-	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterRefractionTexture->GetWidth(), REAL_ONE / m_waterRefractionTexture->GetHeight(), REAL_ZERO));
+	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
 
-	RenderSkybox();
+	glEnable(GL_DEPTH_TEST);
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
-	//	ApplyFilter(m_fxaaFilterShader, m_waterRefractionTexture, NULL);
+	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
 	//}
 	//else
 	//{
-	//	ApplyFilter(m_nullFilterShader, m_waterRefractionTexture, NULL);
+	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
 	//}
 
 	//BindAsRenderTarget();
+
 	STOP_PROFILING;
 }
 
@@ -965,7 +983,6 @@ void Renderer::RenderSkybox()
 		return;
 	}
 
-	/* ==================== Rendering skybox begin ==================== */
 	//glDisable(GL_DEPTH_TEST);
 	glCullFace(GL_FRONT);
 	/**
@@ -979,7 +996,6 @@ void Renderer::RenderSkybox()
 	glCullFace(Rendering::glCullFaceMode);
 	//glEnable(GL_DEPTH_TEST);
 	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
-	/* ==================== Rendering skybox end ==================== */
 	STOP_PROFILING;
 }
 
@@ -1140,10 +1156,18 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 void Renderer::RenderDebugNodes()
 {
 	m_debugShader->Bind();
-	m_debugTexture->Bind(0);
-	m_debugShader->SetUniformMatrix("guiTransformationMatrix", m_debugTexture->GetTransformationMatrix());
-	m_debugShader->SetUniformi("guiTexture", 0);
-	m_debugQuad->Draw();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_DEPTH_TEST);
+	for (std::vector<GuiTexture*>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
+	{
+		(*guiTextureItr)->Bind(0);
+		m_debugShader->SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
+		m_debugShader->SetUniformi("guiTexture", 0);
+		m_debugQuad->Draw();
+	}
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 }
 
 void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,

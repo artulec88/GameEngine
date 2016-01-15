@@ -370,7 +370,7 @@ private:
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	GuiTexture* m_debugTexture; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
+	std::vector<GuiTexture*> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
 	Mesh* m_debugQuad;
 	Shader* m_debugShader;
 #endif
