@@ -379,6 +379,19 @@ void Texture::BindAsRenderTarget() const
 	m_textureData->BindAsRenderTarget();
 }
 
+
+GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D scale, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, bool clampEnabled /* = false */, GLenum attachment /* = GL_NONE */) :
+	Texture(fileName, textureTarget, filter, internalFormat, format, clampEnabled, attachment),
+	m_transformationMatrix(position, scale),
+	m_position(position),
+	m_scale(scale)
+{
+}
+
+GuiTexture::~GuiTexture(void)
+{
+}
+
 //CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
 //{
 //	GLenum attachments [2] = { GL_DEPTH_ATTACHMENT, GL_COLOR_ATTACHMENT0 };

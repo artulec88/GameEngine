@@ -98,6 +98,42 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Texture */
 
+class GuiTexture : public Texture
+{
+/* ==================== Static variables begin ==================== */
+/* ==================== Static variables end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D scale, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
+	virtual ~GuiTexture(void);
+private:
+	GuiTexture(const GuiTexture& guiTexture);
+	void operator=(const GuiTexture& guiTexture);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	const Math::Matrix4D& GetTransformationMatrix() const { return m_transformationMatrix; }
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	/// <summary> The transformation matrix. </summary>
+	Math::Matrix4D m_transformationMatrix;
+
+	/// <summary>
+	/// Position on the screen.
+	/// </summary>
+	Math::Vector2D m_position;
+
+	/// <summary>
+	/// The scale of the texture.
+	/// </summary>
+	Math::Vector2D m_scale;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class GuiTexture */
+
 
 //class CubeShadowMapTexture : public Texture
 //{

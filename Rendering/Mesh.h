@@ -4,6 +4,7 @@
 #include "Vertex.h"
 
 #include "Math\Matrix.h"
+#include "Math\Vector.h"
 #include "Utility\ReferenceCounter.h"
 
 #include <string>
@@ -43,6 +44,10 @@ class MeshData : public Utility::ReferenceCounter
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
+	/// <summary>
+	/// Simple mesh data without index buffer object.
+	/// </summary>
+	MeshData();
 	MeshData(size_t indexSize);
 	virtual ~MeshData(void);
 private:
@@ -91,8 +96,9 @@ private:
 public:
 	RENDERING_API Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
 	RENDERING_API Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-	//RENDERING_API Mesh(Vertex* vertices, int verticesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~Mesh(void);
+protected:
+	Mesh(GLenum mode = GL_TRIANGLES);
 private: // disable copy constructor and assignment operator
 	Mesh(Mesh& mesh) {}
 	void operator=(Mesh& mesh) {}
@@ -100,8 +106,8 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API void Initialize();
-	RENDERING_API void Draw() const;
+	void Initialize();
+	virtual void Draw() const;
 	void BindBuffers() const;
 	void UnbindBuffers() const;
 protected:
@@ -116,13 +122,44 @@ protected:
 
 
 /* ==================== Non-static member variables begin ==================== */
-private:
+protected:
 	std::string m_fileName;
 	GLenum m_mode;
 	MeshData* m_meshData;
 /* ==================== Non-static member variables end ==================== */
 
 }; /* end class Mesh */
+
+/// <summary>
+/// The mesh that is going to be rendered on the screen.
+/// </summary>
+class GuiMesh : public Mesh
+{
+/* ==================== Static variables begin ==================== */
+private:
+	static std::map<std::string, MeshData*> meshResourceMap;
+/* ==================== Static variables end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount);
+	virtual ~GuiMesh(void);
+private: // disable copy constructor and assignment operator
+	GuiMesh(GuiMesh& mesh);
+	void operator=(GuiMesh& mesh);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	virtual void Draw() const;
+/* ==================== Non-static member functions end ==================== */
+
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	unsigned int m_positionsCount;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class GuiMesh */
 
 class TerrainMesh : public Mesh
 {

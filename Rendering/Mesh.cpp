@@ -31,6 +31,14 @@ using namespace Math;
 
 /* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
 
+MeshData::MeshData() :
+	m_vbo(0),
+	m_ibo(0),
+	m_size(0)
+{
+	glGenBuffers(1, &m_vbo);
+}
+
 MeshData::MeshData(size_t indexSize) :
 	m_vbo(0),
 	m_ibo(0),
@@ -53,6 +61,13 @@ MeshData::~MeshData(void)
 	}
 }
 
+Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
+	m_fileName(),
+	m_mode(mode),
+	m_meshData(NULL)
+{
+}
+
 Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(),
 	m_mode(mode),
@@ -60,27 +75,6 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 {
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
-
-//Mesh::Mesh(Vertex* vertices, int verticesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-//	fileName(),
-//	mode(mode),
-//	meshData(NULL)
-//{
-//	std::vector<Vertex> indexedVerticesVector;
-//	std::vector<int> indicesVector;
-//	CalcIndices(vertices, verticesCount, indexedVerticesVector, indicesVector);
-//	if (indexedVerticesVector.empty())
-//	{
-//		EMERGENCY_LOG("The vector with indexed vertices is empty");
-//		exit(EXIT_FAILURE);
-//	}
-//	if (indicesVector.empty())
-//	{
-//		EMERGENCY_LOG("The vector with vertices indices is empty");
-//		exit(EXIT_FAILURE);
-//	}
-//	AddVertices(&indexedVerticesVector[0], indexedVerticesVector.size(), &indicesVector[0], indicesVector.size(), calcNormalsEnabled);
-//}
 
 Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(fileName),
@@ -400,6 +394,33 @@ void Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
 	//	//	tangent.Negate();
 	//	//}
 	//}
+}
+
+GuiMesh::GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount) :
+	Mesh(GL_TRIANGLE_STRIP),
+	m_positionsCount(positionsCount)
+{
+	CHECK_CONDITION_EXIT(positionsCount > 0, Utility::Error, "Cannot create a mesh. Specified number of positions is not greater than 0");
+	CHECK_CONDITION_EXIT(positions != NULL, Utility::Error, "Cannot create a mesh. Specified positions array is NULL.");
+	m_meshData = new MeshData(positionsCount);
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	glBufferData(GL_ARRAY_BUFFER, positionsCount * sizeof(Math::Vector2D), positions, GL_STATIC_DRAW);
+}
+
+GuiMesh::~GuiMesh()
+{
+}
+
+void GuiMesh::Draw() const
+{
+	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Math::Vector2D), (GLvoid*)0); // positions
+	glDrawArrays(m_mode, 0, m_positionsCount * 2);
+	glDisableVertexAttribArray(0);
 }
 
 TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :

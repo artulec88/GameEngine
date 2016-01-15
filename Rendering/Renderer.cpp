@@ -119,7 +119,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_cameraType()
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
-	,m_debugNode(),
+	,m_debugTexture(NULL),
+	m_debugQuad(NULL),
 	m_debugShader(NULL)
 #endif
 #ifdef CALCULATE_RENDERING_STATS
@@ -247,9 +248,10 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 #ifdef DEBUG_RENDERING_ENABLED
+	m_debugTexture = new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f));
+	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
+	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
 	m_debugShader = new Shader("debug-shader");
-	m_debugNode.AddComponent(new MeshRenderer(new Mesh("plane4.obj"), new Material(new Texture("bricks2.jpg"))));
-	m_debugNode.GetTransform().SetPos(0.0f, 4.5f, 0.0f);
 #endif
 
 	STOP_PROFILING;
@@ -1137,7 +1139,11 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 #ifdef DEBUG_RENDERING_ENABLED
 void Renderer::RenderDebugNodes()
 {
-	m_debugNode.RenderAll(m_debugShader, this);
+	m_debugShader->Bind();
+	m_debugTexture->Bind(0);
+	m_debugShader->SetUniformMatrix("guiTransformationMatrix", m_debugTexture->GetTransformationMatrix());
+	m_debugShader->SetUniformi("guiTexture", 0);
+	m_debugQuad->Draw();
 }
 
 void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,

@@ -41,6 +41,35 @@ Matrix4D::Matrix4D()
 	STOP_PROFILING;
 }
 
+Matrix4D::Matrix4D(const Vector2D& position, const Vector2D& scale)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	Matrix4D translateMatrix(position.GetX(), position.GetY(), REAL_ZERO);
+	Matrix4D scaleMatrix;
+	scaleMatrix.SetScaleMatrix(scale.GetX(), scale.GetY(), REAL_ONE);
+	Matrix4D result = translateMatrix * scaleMatrix;
+
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	for (int i = 0; i < MATRIX_SIZE; ++i)
+	{
+		for (int j = 0; j < MATRIX_SIZE; ++j)
+		{
+			m[i][j] = result[i][j];
+		}
+	}
+#else
+	for (int i = 0; i < MATRIX_SIZE * MATRIX_SIZE; ++i)
+	{
+		m[i] = result[i];
+	}
+#endif
+
+	STOP_PROFILING;
+}
+
 Matrix4D::Matrix4D(Real scale)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))

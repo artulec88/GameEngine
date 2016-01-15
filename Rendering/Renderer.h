@@ -370,7 +370,8 @@ private:
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	GameNode m_debugNode;
+	GuiTexture* m_debugTexture; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
+	Mesh* m_debugQuad;
 	Shader* m_debugShader;
 #endif
 

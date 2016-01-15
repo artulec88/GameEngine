@@ -37,6 +37,9 @@ public:
 	/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
 	/// <returns>Identity matrix.</returns>
 	Matrix4D();
+	/// <summary> Creates a matrix based on the screen position and the scale. </summary>
+	/// <remarks> The function is used for the gui textures </remarks>
+	Matrix4D(const Vector2D& position, const Vector2D& scale);
 	/// <summary>Creates scale matrix based on the specified parameter.</summary>
 	/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
 	/// <returns>Scale matrix.</returns>
