@@ -3,7 +3,6 @@
 // Whitepaper describing the technique:
 // http://developer.download.nvidia.com/assets/gamedev/files/sdk/11/FXAA_WhitePaper.pdf
 
-
 #include "common.glh"
 
 varying vec2 texCoord0;

@@ -153,6 +153,11 @@ public:
 
 #ifdef DEBUG_RENDERING_ENABLED
 	/// <summary>
+	/// Rendering debug nodes, i.e. the nodes that do not belong to the scene, but can be used to see the intermediate results of some other processing (e.g. how shadow map looks).
+	/// </summary>
+	void RenderDebugNodes();
+
+	/// <summary>
 	/// Adds a line segment to the debug drawing queue.
 	/// </summary>
 	RENDERING_API void AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
@@ -362,6 +367,11 @@ private:
 	TwBar* m_lightsBar;
 	TwStructMember m_cameraMembers[5];
 	TwType m_cameraType;
+#endif
+
+#ifdef DEBUG_RENDERING_ENABLED
+	GameNode m_debugNode;
+	Shader* m_debugShader;
 #endif
 
 #ifdef CALCULATE_RENDERING_STATS

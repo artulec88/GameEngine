@@ -11,11 +11,7 @@ MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
 	m_mesh(mesh),
 	m_material(material)
 {
-	if (m_mesh == NULL)
-	{
-		ERROR_LOG("Cannot create a MeshRenderer instance. Mesh is NULL.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(m_mesh != NULL, Utility::Error, "Cannot create a mesh renderer instance. The specified mesh is NULL.");
 	m_mesh->Initialize();
 	if (m_material == NULL)
 	{
@@ -37,21 +33,9 @@ MeshRenderer::~MeshRenderer(void)
 
 void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 {
-	if (shader == NULL)
-	{
-		EMERGENCY_LOG("Rendering a mesh failed. Shader instance is NULL.");
-		return;
-	}
-	if (renderer == NULL)
-	{
-		CRITICAL_LOG("Rendering a mesh failed. Rendering engine is NULL.");
-		exit(EXIT_FAILURE);
-	}
-	if (m_material == NULL)
-	{
-		ERROR_LOG("Rendering a mesh failed. Material instance is NULL.");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID(shader != NULL, Utility::Emergency, "Rendering a mesh failed. Shader instance is NULL.");
+	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Rendering a mesh failed. Rendering engine is NULL.");
+	CHECK_CONDITION_RETURN_VOID(m_material != NULL, Utility::Error, "Rendering a mesh failed. Material instance is NULL.");
 	shader->Bind();
 	shader->UpdateUniforms(GetTransform(), *m_material, renderer);
 	m_mesh->Draw();

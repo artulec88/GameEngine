@@ -150,6 +150,7 @@ void TestGameManager::Load()
 
 	GameNode* testMesh1 = new GameNode();
 	testMesh1->GetTransform().SetPos(-2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetRot(Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1->GetTransform().SetScale(1.5f);
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);

@@ -118,6 +118,10 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//m_cameraMembers(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	m_cameraType()
 #endif
+#ifdef DEBUG_RENDERING_ENABLED
+	,m_debugNode(),
+	m_debugShader(NULL)
+#endif
 #ifdef CALCULATE_RENDERING_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
@@ -184,7 +188,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
 	m_gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
 	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
-	m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
+	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
 	int width, height;
 	glfwGetWindowSize(m_window, &width, &height);
@@ -241,6 +245,12 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	Real zFarPlane = GET_CONFIG_VALUE("mainMenuCameraFarPlane", defaultFarPlane);
 	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Transform());
 	/* ==================== Creating a "Main menu camera" end ==================== */
+
+#ifdef DEBUG_RENDERING_ENABLED
+	m_debugShader = new Shader("debug-shader");
+	m_debugNode.AddComponent(new MeshRenderer(new Mesh("plane4.obj"), new Material(new Texture("bricks2.jpg"))));
+	m_debugNode.GetTransform().SetPos(0.0f, 4.5f, 0.0f);
+#endif
 
 	STOP_PROFILING;
 	NOTICE_LOG("Creating Renderer instance finished");
@@ -300,6 +310,10 @@ Renderer::~Renderer(void)
 		SAFE_DELETE(m_shadowMaps[i]);
 		SAFE_DELETE(m_shadowMapTempTargets[i]);
 	}
+
+#ifdef DEBUG_RENDERING_ENABLED
+	SAFE_DELETE(m_debugShader);
+#endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
@@ -492,7 +506,8 @@ void Renderer::Render(const GameNode& gameNode)
 {
 	START_PROFILING;
 	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
-	// TODO: Expand with Stencil buffer once it is used
+	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
 
 	AdjustAmbientLightAccordingToCurrentTime();
 
@@ -513,12 +528,6 @@ void Renderer::Render(const GameNode& gameNode)
 	//BindAsRenderTarget();
 
 	ClearScreen();
-	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
-	{
-		EMERGENCY_LOG("Rendering failed. There is no proper camera set up.");
-		exit(EXIT_FAILURE);
-		// TODO: Instead of exit maybe just use the default camera (??)
-	}
 	m_currentCamera = m_cameras[m_currentCameraIndex];
 
 	RenderSceneWithAmbientLight(gameNode);
@@ -546,10 +555,7 @@ void Renderer::Render(const GameNode& gameNode)
 			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
 			m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
 			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
-			//m_altCamera.GetTransform().SetPos(m_currentLight->GetTransform().GetTransformedPos());
-			//m_altCamera.GetTransform().SetRot(m_currentLight->GetTransform().GetTransformedRot());
 
-			//CRITICAL_LOG("Bias matrix = \"%s\"", BIAS_MATRIX.ToString().c_str());
 			//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
 			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection();
 
@@ -591,25 +597,15 @@ void Renderer::Render(const GameNode& gameNode)
 			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 		}
 		RenderSceneWithLight(m_currentLight, gameNode);
-
-		/* ==================== Rendering to texture begin ==================== */
-		//if (renderToTextureTestingEnabled)
-		//{
-		//	CameraBase* temp = m_currentCamera;
-		//	m_currentCamera = &m_altCamera;
-		//	glClearColor(0.0f, 0.0f, 0.5f, 1.0f);
-		//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//	m_ambientShader->Bind();
-		//	m_ambientShader->UpdateUniforms(m_filterTransform, *m_filterMaterial, this);
-		//	m_filterMesh->Draw();
-
-		//	m_currentCamera = temp;
-		//}
-		/* ==================== Rendering to texture end ==================== */
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 	RenderWaterNodes(); // normal rendering of water quads
+
+#ifdef DEBUG_RENDERING_ENABLED
+	RenderDebugNodes();
+#endif
+
 	RenderSkybox();
 
 	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
@@ -654,11 +650,11 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 {
 	START_PROFILING;
 	
-	Transform& cameraTransform = m_currentCamera->GetTransform();
-	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
-	Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
-	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
+	//Transform& cameraTransform = m_currentCamera->GetTransform();
+	//const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+	//Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	//cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	//cameraTransform.GetRot().InvertPitch();
 
 	//SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
@@ -706,8 +702,8 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 
 	//BindAsRenderTarget();
 	
-	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
+	//cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	//cameraTransform.GetRot().InvertPitch();
 
 	STOP_PROFILING;
 }
@@ -1015,22 +1011,9 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 {
 	START_PROFILING;
-	if (filterShader == NULL)
-	{
-		ERROR_LOG("Cannot apply a filter. Filtering shader is NULL.");
-		STOP_PROFILING;
-		return;
-	}
-	ASSERT(source != NULL);
-	if (source == NULL)
-	{
-		EMERGENCY_LOG("Cannot apply a filter. Source texture is NULL.");
-	}
-	ASSERT(source != dest);
-	if (source == dest)
-	{
-		ERROR_LOG("Cannot apply a filter. Both source and destination textures point to the same Texture in memory.");
-	}
+	CHECK_CONDITION_EXIT(filterShader != NULL, Utility::Critical, "Cannot apply a filter. Filtering shader is NULL.");
+	CHECK_CONDITION_EXIT(source != NULL, Utility::Critical, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT(source != dest, Utility::Critical, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
 	if (dest == NULL)
 	{
 		DELOCUST_LOG("Binding window as a render target for filtering");
@@ -1152,6 +1135,11 @@ void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 }
 
 #ifdef DEBUG_RENDERING_ENABLED
+void Renderer::RenderDebugNodes()
+{
+	m_debugNode.RenderAll(m_debugShader, this);
+}
+
 void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
