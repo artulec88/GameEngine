@@ -230,13 +230,9 @@ void PlayGameState::Input(Math::Real elapsedTime)
 void PlayGameState::Render(Renderer* renderer)
 {
 	START_PROFILING;
+	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG("PLAY game state rendering");
 
-	//if (renderer == NULL)
-	//{
-	//	CRITICAL_LOG("Rendering engine is NULL");
-	//	exit(EXIT_FAILURE);
-	//}
 	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
 	STOP_PROFILING;
 }

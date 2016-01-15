@@ -72,6 +72,16 @@ private:
 
 class Mesh// : public Utility::ReferenceCounter
 {
+public:
+	class MeshComparator
+	{
+	public:
+		bool operator() (const Mesh& lhs, const Mesh& rhs) const
+		{
+			return lhs.Compare(rhs);
+		}
+	}; // end class MeshComparator
+
 /* ==================== Static variables begin ==================== */
 private:
 	static std::map<std::string, MeshData*> meshResourceMap;
@@ -92,6 +102,8 @@ private: // disable copy constructor and assignment operator
 public:
 	RENDERING_API void Initialize();
 	RENDERING_API void Draw() const;
+	void BindBuffers() const;
+	void UnbindBuffers() const;
 protected:
 	void AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled = true);
 	void CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const;
@@ -99,6 +111,7 @@ protected:
 	//void CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ };
+	bool Compare(const Mesh& mesh) const;
 /* ==================== Non-static member functions end ==================== */
 
 

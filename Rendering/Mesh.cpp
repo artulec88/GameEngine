@@ -281,27 +281,44 @@ void Mesh::Draw() const
 {
 	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
 
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	//glEnableVertexAttribArray(4);
+	BindBuffers();
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0); // positions
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D)); // texture coordinates
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D))); // normals
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D))); // tangents
 	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
 	glDrawElements(m_mode /* GL_TRIANGLES / GL_LINES */, static_cast<GLsizei>(m_meshData->GetSize()), GL_UNSIGNED_INT, 0);
 
+	UnbindBuffers();
+}
+
+void Mesh::BindBuffers() const
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
+	//glEnableVertexAttribArray(4);
+}
+
+void Mesh::UnbindBuffers() const
+{
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
 	glDisableVertexAttribArray(3);
 	//glDisableVertexAttribArray(4);
+}
+
+bool Mesh::Compare(const Mesh& mesh) const
+{
+	CHECK_CONDITION_RETURN(m_meshData != NULL && mesh.m_meshData != NULL, false, Utility::Error, "Cannot compare two meshes' VBOs, because mesh(-es) data is/are NULL.");
+	return m_meshData->GetVBO() < mesh.m_meshData->GetVBO();
 }
 
 void Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const
