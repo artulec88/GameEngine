@@ -103,6 +103,7 @@ public:
 	Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
 	Math::Angle GetSunElevation() const { return m_sunElevation; }
 	Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
+	Math::Real GetClockSpeed() const { return m_clockSpeed; }
 	Rendering::GameTime::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;

@@ -112,7 +112,7 @@ public:
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
-			DEBUG_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return m_defaultVector3D;
 		}
 		return itr->second;
@@ -123,7 +123,7 @@ public:
 		std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
 		if (itr == m_vec4DMap.end()) // vector not found
 		{
-			DEBUG_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return m_defaultVector4D;
 		}
 		return itr->second;
@@ -134,7 +134,7 @@ public:
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
 		{
-			DEBUG_LOG("Real number with name \"%s\" has not been found", name.c_str());
+			WARNING_LOG("Real number with name \"%s\" has not been found", name.c_str());
 			return REAL_ZERO;
 		}
 		return itr->second;

@@ -348,9 +348,15 @@ private:
 	/// The variable could be removed if GL_CLIP_DISTANCE0 could be disabled.
 	/// </summary>
 	const Math::Vector4D m_defaultClipPlane;
+	Math::Real m_waterWaveSpeed;
+	Math::Real m_waterMoveFactor;
 	std::vector<GameNode*> m_waterNodes;
 	Math::Vector4D m_waterRefractionClippingPlane; // TODO: Consider using Math::Plane instead
 	Math::Vector4D m_waterReflectionClippingPlane; // TODO: Consider using Math::Plane instead
+	/// <summary>
+	/// A map holding the distortion of the water creating a wrippling effect on its surface.
+	/// </summary>
+	Texture* m_waterDUDVTexture;
 	Texture* m_waterRefractionTexture;
 	Texture* m_waterReflectionTexture;
 	Shader* m_waterShader;

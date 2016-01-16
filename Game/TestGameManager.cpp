@@ -221,7 +221,7 @@ void TestGameManager::Load()
 	GameNode* waterNode = new GameNode();
 	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), new Material(new Texture("water.jpg"))));
 	m_resourcesLoaded += 2;
-	waterNode->GetTransform().SetPos(-18.0f, 0.0f, -12.0f);
+	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
 	waterNode->GetTransform().SetScale(3.0f);
 	AddWaterNode(waterNode);
 

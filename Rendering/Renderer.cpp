@@ -99,6 +99,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture(NULL),
 	m_textRenderer(NULL),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
+	m_waterWaveSpeed(GET_CONFIG_VALUE("waterWaveSpeed", 0.0003f)),
+	m_waterMoveFactor(GET_CONFIG_VALUE("waterMoveFactor", 0.0f)),
 	m_waterNodes(),
 	m_waterRefractionClippingPlane(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO),
@@ -106,6 +108,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_waterReflectionClippingPlane(GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
+	m_waterDUDVTexture(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
 	m_waterShader(NULL)
@@ -142,6 +145,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("diffuse2", 4);
 	SetSamplerSlot("waterReflectionTexture", 0);
 	SetSamplerSlot("waterRefractionTexture", 1);
+	SetSamplerSlot("waterDUDVMap", 2);
 
 	glGenVertexArrays(1, &m_vao);
 
@@ -218,6 +222,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture = new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
+	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
 	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	unsigned char* data[] = { NULL, NULL };
 	GLfloat filters[] = { GL_LINEAR, GL_LINEAR };
@@ -249,8 +254,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
-	m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
+	//m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
+	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
 	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
 	m_debugShader = new Shader("debug-shader");
@@ -291,6 +296,10 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(m_fontTexture);
 	SAFE_DELETE(m_textRenderer);
 
+	SetTexture("waterReflectionTexture", NULL);
+	SetTexture("waterRefractionTexture", NULL);
+	SetTexture("waterDUDVMap", NULL);
+	SAFE_DELETE(m_waterDUDVTexture);
 	SAFE_DELETE(m_waterRefractionTexture);
 	SAFE_DELETE(m_waterReflectionTexture);
 	SAFE_DELETE(m_waterShader);
@@ -647,12 +656,18 @@ void Renderer::RenderWaterNodes()
 	START_PROFILING;
 	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
 	SetTexture("waterRefractionTexture", m_waterRefractionTexture);
+	SetTexture("waterDUDVMap", m_waterDUDVTexture);
+	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
+	m_waterMoveFactor += m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed();
+	if (m_waterMoveFactor > REAL_ONE)
+	{
+		m_waterMoveFactor -= REAL_ONE;
+	}
+	SetReal("waterMoveFactor", m_waterMoveFactor);
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
 		(*waterNodeItr)->RenderAll(m_waterShader, this);
 	}
-	SetTexture("waterReflectionTexture", NULL);
-	SetTexture("waterRefractionTexture", NULL);
 	STOP_PROFILING;
 }
 
@@ -1260,6 +1275,8 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "waterWaveSpeed", TW_TYPE_REAL, &m_waterWaveSpeed, " min=0.0 step=0.000001 label='Wave speed' group='Water' ");
+	TwAddVarRO(m_propertiesBar, "waterMoveFactor", TW_TYPE_REAL, &m_waterMoveFactor, " min=0.001 step=0.001 label='Move factor' group='Water' ");
 	//TwAddVarRO(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlane.GetNormal(), " label='Normal' group='Refraction' ");
 	//TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlane.GetDistance(), " label='Origin distance' group='Refraction' ");
 	//TwAddVarRO(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlane.GetNormal(), " label='Normal' group='Reflection' ");
