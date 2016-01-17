@@ -99,6 +99,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fontTexture(NULL),
 	m_textRenderer(NULL),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
+	m_waterWaveStrength(GET_CONFIG_VALUE("waterWaveStrength", 0.04f)),
+	m_waterShineDamper(GET_CONFIG_VALUE("waterShineDamper", 20.0f)),
+	m_waterReflectivity(GET_CONFIG_VALUE("waterReflectivity", 0.5f)),
 	m_waterWaveSpeed(GET_CONFIG_VALUE("waterWaveSpeed", 0.0003f)),
 	m_waterMoveFactor(GET_CONFIG_VALUE("waterMoveFactor", 0.0f)),
 	m_waterNodes(),
@@ -673,6 +676,11 @@ void Renderer::RenderWaterNodes()
 		m_waterMoveFactor -= REAL_ONE;
 	}
 	SetReal("waterMoveFactor", m_waterMoveFactor);
+	SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
+	SetReal("farPlane", 1000.0f /* TODO: This value should be always equal to the far plane of the current camera, but it is not easy for us to get this value */);
+	SetReal("waterWaveStrength", m_waterWaveStrength);
+	SetReal("waterShineDamper", m_waterShineDamper);
+	SetReal("waterReflectivity", m_waterReflectivity);
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
 		(*waterNodeItr)->RenderAll(m_waterShader, this);
@@ -1284,6 +1292,9 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "waterWaveStrength", TW_TYPE_REAL, &m_waterWaveStrength, " min=0.001 step=0.001 label='Wave strength' group='Water' ");
+	TwAddVarRW(m_propertiesBar, "waterShineDamper", TW_TYPE_REAL, &m_waterShineDamper, " min=0.2 max=100.0 step=0.2 label='Shine damper' group='Water' ");
+	TwAddVarRW(m_propertiesBar, "waterReflectivity", TW_TYPE_REAL, &m_waterReflectivity, " min=0.02 max=10.0 step=0.02 label='Reflectivity' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterWaveSpeed", TW_TYPE_REAL, &m_waterWaveSpeed, " min=0.0 step=0.000001 label='Wave speed' group='Water' ");
 	TwAddVarRO(m_propertiesBar, "waterMoveFactor", TW_TYPE_REAL, &m_waterMoveFactor, " min=0.001 step=0.001 label='Move factor' group='Water' ");
 	//TwAddVarRO(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlane.GetNormal(), " label='Normal' group='Refraction' ");

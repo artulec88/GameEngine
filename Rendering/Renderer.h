@@ -348,6 +348,9 @@ private:
 	/// The variable could be removed if GL_CLIP_DISTANCE0 could be disabled.
 	/// </summary>
 	const Math::Vector4D m_defaultClipPlane;
+	Math::Real m_waterWaveStrength;
+	Math::Real m_waterShineDamper;
+	Math::Real m_waterReflectivity;
 	Math::Real m_waterWaveSpeed;
 	Math::Real m_waterMoveFactor;
 	std::vector<GameNode*> m_waterNodes;

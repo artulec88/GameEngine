@@ -32,32 +32,33 @@ uniform sampler2D R_waterNormalMap;
 
 uniform DirectionalLight R_directionalLight;
 
-const float WAVE_STRENGTH = 0.04;
-const float SHINE_DAMPER = 20.0;
-const float REFLECTIVITY = 0.5;
+uniform float R_nearPlane;
+uniform float R_farPlane;
+uniform float R_waterWaveStrength;
+uniform float R_waterShineDamper;
+uniform float R_waterReflectivity;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
 	// Projective texture mapping (watch https://www.youtube.com/watch?v=GADTasvDOX4)
+	// clipSpacePosition is in range [-1; 1]. First we divide by 2, so it is in range [-0.5; 0.5] and then add 0.5. As a result we convert the clipSpacePosition to be in range [0; 1].
 	vec2 normalizedDeviceCoordinates = (clipSpacePosition.xy / clipSpacePosition.w) / 2.0 + 0.5;
 	
 	// Because it is a reflection we need to invert the Y component to make it upside down (it's reflection after all).
 	vec2 reflectionTexCoord = vec2(normalizedDeviceCoordinates.x, -normalizedDeviceCoordinates.y);
-	vec2 refractionTexCoord = vec2(normalizedDeviceCoordinates.x, normalizedDeviceCoordinates.y);
+	vec2 refractionTexCoord = normalizedDeviceCoordinates;
 	
 	// Watch: https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8
 	// We don't want the depth map to be distorted, so we sample the water depth map before distortion is performed.
-	const float near = 0.1; // TODO: load them as uniforms. Must be equal to near plane for the camera.
-	const float far = 1000.0; // TODO: load them as uniforms. Must be equal to far plane for the camera.
 	float depth = texture2D(R_waterDepthMap, refractionTexCoord).r;
-	float floorDistance = 2.0 * near * far / (far + near - (2.0 * depth - 1.0) * (far - near)); // the distance from the camera to the object / terrain under the water.
-	float waterSurfaceDistance = 2.0 * near * far / (far + near - (2.0 * gl_FragCoord.z - 1.0) * (far - near)); // the distance from the camera to the water surface.
+	float floorDistance = 2.0 * R_nearPlane * R_farPlane / (R_farPlane + R_nearPlane - (2.0 * depth - 1.0) * (R_farPlane - R_nearPlane)); // the distance from the camera to the object / terrain under the water.
+	float waterSurfaceDistance = 2.0 * R_nearPlane * R_farPlane / (R_farPlane + R_nearPlane - (2.0 * gl_FragCoord.z - 1.0) * (R_farPlane - R_nearPlane)); // the distance from the camera to the water surface.
 	float waterDepth = floorDistance - waterSurfaceDistance;
 	
 	vec2 distortedTexCoords = texture(R_waterDUDVMap, vec2(texCoord0.x + R_waterMoveFactor, texCoord0.y)).rg * 0.1;
 	distortedTexCoords = texCoord0 + vec2(distortedTexCoords.x, distortedTexCoords.y + R_waterMoveFactor);
-	vec2 totalDistortion = (texture(R_waterDUDVMap, distortedTexCoords).rg * 2.0 - 1.0) * WAVE_STRENGTH * clamp(waterDepth / 40.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
+	vec2 totalDistortion = (texture(R_waterDUDVMap, distortedTexCoords).rg * 2.0 - 1.0) * R_waterWaveStrength * clamp(waterDepth / 40.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
 	
 	reflectionTexCoord += totalDistortion;
 	refractionTexCoord += totalDistortion;
@@ -81,8 +82,8 @@ void main()
 	float refractiveFactor = clamp(pow(dot(directionToEye, normal), 2.0 /* the bigger the more reflective water will be */), 0.0, 1.0);
 	
 	vec3 reflectedLight = reflect(-R_directionalLight.direction, normal);
-	float specular = pow(max(dot(directionToEye, reflectedLight), 0.0), SHINE_DAMPER);
-	vec3 specularHighlights = R_directionalLight.base.color.xyz * specular * REFLECTIVITY * clamp(waterDepth / 2.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
+	float specular = pow(max(dot(directionToEye, reflectedLight), 0.0), R_waterShineDamper);
+	vec3 specularHighlights = R_directionalLight.base.color.xyz * specular * R_waterReflectivity * clamp(waterDepth / 2.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
 	
 	vec4 outColor = mix(reflectionColor, refractionColor, refractiveFactor);
 	outColor = mix(outColor, vec4(0.0, 0.3, 0.5, 1.0), 0.08) + vec4(specularHighlights, 0.0);
