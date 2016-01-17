@@ -164,7 +164,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 
 void TextureData::Bind(int textureIndex) const
 {
-	CHECK_CONDITION_RETURN_VOID(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Error, "Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
+	CHECK_CONDITION_RETURN_VOID(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::Critical, "Cannot bind the texture with textureID=%d. This value is out of range [%d; %d)", textureIndex, 0, m_texturesCount);
 	glBindTexture(m_textureTarget, m_textureID[textureIndex]);
 }
 
@@ -364,13 +364,13 @@ Texture::~Texture(void)
 	}
 }
 
-void Texture::Bind(unsigned int unit /* = 0 */) const
+void Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureIndex /* = 0 */) const
 {
 	CHECK_CONDITION_EXIT(m_textureData != NULL, Utility::Emergency, "Cannot bind the texture. Texture data is NULL.");
 	CHECK_CONDITION((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT), Utility::Error, "Specified unit %d is outside of range [0; %d)", unit, TextureData::MAX_BOUND_TEXTURES_COUNT);
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
-	m_textureData->Bind(0);
+	m_textureData->Bind(textureIndex);
 }
 
 void Texture::BindAsRenderTarget() const

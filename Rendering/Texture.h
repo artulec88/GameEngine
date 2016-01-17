@@ -85,7 +85,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API void Bind(unsigned int unit = 0) const;
+	RENDERING_API void Bind(unsigned int unit = 0, unsigned int textureIndex = 0) const;
 	RENDERING_API void BindAsRenderTarget() const;
 	RENDERING_API inline int GetWidth() const { return m_textureData->GetWidth(); }
 	RENDERING_API inline int GetHeight() const { return m_textureData->GetHeight(); }

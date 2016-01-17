@@ -563,9 +563,10 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 				}
 				else
 				{
-					Texture* texture = renderer->GetTexture(unprefixedName);
+					unsigned int multitextureIndex = 0; // used only by the multitextures
+					Texture* texture = renderer->GetTexture(unprefixedName, &multitextureIndex);
 					CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL.", unprefixedName.c_str());
-					texture->Bind(samplerSlot);
+					texture->Bind(samplerSlot, multitextureIndex);
 				}
 				SetUniformi(uniformName, samplerSlot);
 			}

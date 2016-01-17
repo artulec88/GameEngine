@@ -107,6 +107,22 @@ public:
 		//textureMap[textureName] = texture;
 	}
 
+	RENDERING_API inline void SetMultitexture(const std::string& textureName, Texture* texture, unsigned int textureIndex)
+	{
+		const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
+		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(multitextureName);
+		if (textureItr == textureMap.end())
+		{
+			DEBUG_LOG("The multitexture with name \"%s\" is not found in the map. Creating a new texture with this name.", multitextureName.c_str());
+			textureMap.insert(std::pair<std::string, Texture*>(multitextureName, texture));
+		}
+		else
+		{
+			DELOCUST_LOG("Modifying the multitexture under index %d with name \"%s\".", textureIndex, textureName.c_str());
+			textureMap[multitextureName] = texture;
+		}
+	}
+
 	RENDERING_API inline const Math::Vector3D GetVec3D(const std::string& name) const
 	{
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
@@ -145,6 +161,33 @@ public:
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
+			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			return m_defaultTexture;
+		}
+		return itr->second;
+	}
+
+	RENDERING_API inline Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
+	{
+		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
+		if (itr == textureMap.end()) // texture not found
+		{
+			// The texture with the specified name has not been found. However, there is still hope- we should look for it in the multitextures.
+			for (std::map<std::string, Texture*>::const_iterator textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
+			{
+				const std::string& textureNameItr = textureItr->first;
+				size_t spacePos = textureNameItr.find(" ");
+				if (spacePos != std::string::npos)
+				{
+					if (textureNameItr.compare(0, textureName.length(), textureName) == 0)
+					{
+						// multitexture found
+						(*multitextureIndex) = std::stoi(textureNameItr.substr(spacePos + 1));
+						return textureItr->second;
+					}
+				}
+			}
+
 			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
 			return m_defaultTexture;
 		}

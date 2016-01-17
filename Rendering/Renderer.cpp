@@ -109,6 +109,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
 	m_waterDUDVTexture(NULL),
+	m_waterNormalMap(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
 	m_waterShader(NULL)
@@ -146,6 +147,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("waterReflectionTexture", 0);
 	SetSamplerSlot("waterRefractionTexture", 1);
 	SetSamplerSlot("waterDUDVMap", 2);
+	SetSamplerSlot("waterNormalMap", 3);
+	SetSamplerSlot("waterDepthMap", 4);
 
 	glGenVertexArrays(1, &m_vao);
 
@@ -223,6 +226,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_textRenderer = new TextRenderer(m_fontTexture);
 
 	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
+	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR("waterNormalMap", "waterNormalMap.png"));
 	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	unsigned char* data[] = { NULL, NULL };
 	GLfloat filters[] = { GL_LINEAR, GL_LINEAR };
@@ -297,9 +301,12 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_textRenderer);
 
 	SetTexture("waterReflectionTexture", NULL);
-	SetTexture("waterRefractionTexture", NULL);
+	SetMultitexture("waterRefractionTexture", NULL, 0);
+	SetMultitexture("waterDepthMap", NULL, 1);
 	SetTexture("waterDUDVMap", NULL);
+	SetTexture("waterNormalMap", NULL);
 	SAFE_DELETE(m_waterDUDVTexture);
+	SAFE_DELETE(m_waterNormalMap);
 	SAFE_DELETE(m_waterRefractionTexture);
 	SAFE_DELETE(m_waterReflectionTexture);
 	SAFE_DELETE(m_waterShader);
@@ -655,8 +662,10 @@ void Renderer::RenderWaterNodes()
 {
 	START_PROFILING;
 	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
-	SetTexture("waterRefractionTexture", m_waterRefractionTexture);
+	SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
+	SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
 	SetTexture("waterDUDVMap", m_waterDUDVTexture);
+	SetTexture("waterNormalMap", m_waterNormalMap);
 	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
 	m_waterMoveFactor += m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed();
 	if (m_waterMoveFactor > REAL_ONE)
@@ -681,7 +690,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
 	cameraTransform.GetRot().InvertPitch();
 
-	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* add 0.1f to remove some glitches on the water surface */);
 	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
 	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -747,7 +756,7 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 	RenderSkybox();
 	RenderSceneWithAmbientLight(gameNode);
 
@@ -778,7 +787,7 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	//}
 	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
 
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{

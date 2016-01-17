@@ -357,6 +357,7 @@ private:
 	/// A map holding the distortion of the water creating a wrippling effect on its surface.
 	/// </summary>
 	Texture* m_waterDUDVTexture;
+	Texture* m_waterNormalMap;
 	Texture* m_waterRefractionTexture;
 	Texture* m_waterReflectionTexture;
 	Shader* m_waterShader;
