@@ -149,6 +149,7 @@ public:
 	}
 	void RegisterTerrainNode(GameNode* terrainNode);
 	void AddWaterNode(GameNode* waterNode);
+	void AddBillboardNode(GameNode* billboardNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -218,6 +219,7 @@ protected:
 	/// </remarks>
 	void RenderWaterTextures(const GameNode& gameNode);
 	void RenderWaterNodes();
+	void RenderBillboardNodes();
 	void RenderWaterReflectionTexture(const GameNode& gameNode);
 	void RenderWaterRefractionTexture(const GameNode& gameNode);
 	void RenderSkybox();
@@ -364,6 +366,9 @@ private:
 	Texture* m_waterRefractionTexture;
 	Texture* m_waterReflectionTexture;
 	Shader* m_waterShader;
+
+	Shader* m_billboardShader;
+	std::vector<GameNode*> m_billboardNodes;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int m_cameraCountMinusOne;

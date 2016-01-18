@@ -18,7 +18,11 @@ void setClippingPlanes(vec4 worldPosition, vec4 plane)
 void main()
 {
     gl_Position = T_MVP * vec4(position, 1.0);
-    texCoord0 = texCoord; 
+#ifdef TILING_ENABLED
+	texCoord0 = texCoord * TILING;
+#else
+	texCoord0 = texCoord;
+#endif
 	vec4 worldPosition = T_model * vec4(position, 1.0);
     worldPos0 = worldPosition.xyz;
 	

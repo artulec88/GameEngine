@@ -168,6 +168,11 @@ void GameManager::AddWaterNode(GameNode* waterNode)
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddWaterNode(waterNode);
 }
 
+void GameManager::AddBillboardNode(GameNode* billboardNode)
+{
+	CoreEngine::GetCoreEngine()->GetRenderer()->AddBillboardNode(billboardNode);
+}
+
 void GameManager::RegisterTerrainNode(GameNode* terrainNode)
 {
 	CoreEngine::GetCoreEngine()->GetRenderer()->RegisterTerrainNode(terrainNode);

@@ -131,15 +131,39 @@ protected:
 }; /* end class Mesh */
 
 /// <summary>
+/// The billboard mesh that is going to be rendered on the screen.
+/// </summary>
+class BillboardMesh : public Mesh
+{
+/* ==================== Static variables begin ==================== */
+/* ==================== Static variables end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	RENDERING_API BillboardMesh(const Math::Vector3D& worldPosition);
+	RENDERING_API virtual ~BillboardMesh(void);
+private: // disable copy constructor and assignment operator
+	BillboardMesh(BillboardMesh& billboardMesh);
+	void operator=(BillboardMesh& billboardMesh);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	virtual void Draw() const;
+/* ==================== Non-static member functions end ==================== */
+
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	Math::Vector3D m_worldPosition;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class BillboardMesh */
+
+/// <summary>
 /// The mesh that is going to be rendered on the screen.
 /// </summary>
 class GuiMesh : public Mesh
 {
-/* ==================== Static variables begin ==================== */
-private:
-	static std::map<std::string, MeshData*> meshResourceMap;
-/* ==================== Static variables end ==================== */
-
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount);
@@ -177,7 +201,7 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz);
+	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false);
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);

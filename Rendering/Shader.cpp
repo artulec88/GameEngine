@@ -307,50 +307,25 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	size_t uniformLocation = shaderText.find(UNIFORM_KEYWORD);
 	while(uniformLocation != std::string::npos)
 	{
-		/**
-		 * TODO: When uniform is declared as follows:
-		 * "uniform someType uniformName; // this is a comment for uniform"
-		 * then errors with ignoring successive uniforms occurs. This is critical to check and fix!!!
-		 * When the comment is removed all comes back to normal.
-		 * It seems there is a problem with the isCommented variable in this function.
-		 */
-		/*
-		 * It seems the problem is now solved, but it should be tested a little bit more thoroughly.
-		 */
-		bool isCommented = false;
-		size_t lastLineEnd = shaderText.rfind(";", uniformLocation);
-		//INFO_LOG("Uniform location in shader text = %d; lastLineEnd = %d; std::string::npos = %d", uniformLocation, lastLineEnd, std::string::npos);
-		if(lastLineEnd != std::string::npos)
-		{
-			std::string potentialCommentSection = shaderText.substr(lastLineEnd, uniformLocation - lastLineEnd);
-			size_t commentFind = potentialCommentSection.find("//");
-			isCommented = (commentFind != std::string::npos);
-			//INFO_LOG("potentialCommentSection = \"%s\"; find("") = %d", potentialCommentSection.c_str(), commentFind);
-		}
-		if(!isCommented)
-		{
-			size_t begin = uniformLocation + UNIFORM_KEYWORD.length();
-			size_t end = shaderText.find(";", begin);
-			std::string uniformLine = shaderText.substr(begin + 1, end-begin - 1);
-			
-			begin = uniformLine.find(" ");
-			std::string uniformName = uniformLine.substr(begin + 1);
-			std::string uniformType = uniformLine.substr(0, begin);
-			
-			uniformNames.push_back(uniformName);
-			uniformTypes.push_back(uniformType);
-			AddUniform(uniformName, uniformType, structs);
-		}
-		else
-		{
-			ERROR_LOG("Uniform is commented out");
-		}
+		size_t begin = uniformLocation + UNIFORM_KEYWORD.length();
+		size_t end = shaderText.find(";", begin);
+		std::string uniformLine = shaderText.substr(begin + 1, end - begin - 1);
+
+		begin = uniformLine.find(" ");
+		std::string uniformName = uniformLine.substr(begin + 1);
+		std::string uniformType = uniformLine.substr(0, begin);
+
+		uniformNames.push_back(uniformName);
+		uniformTypes.push_back(uniformType);
+		AddUniform(uniformName, uniformType, structs);
 		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
 	}
+#ifdef DEBUG_LOGGING_ENABLED
 	for (std::map<std::string, unsigned int>::const_iterator it = uniformMap.begin(); it != uniformMap.end(); ++it)
 	{
 		DEBUG_LOG("Uniform map <\"%s\", %d>", (it->first).c_str(), it->second);
 	}
+#endif
 }
 
 void ShaderData::AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs)
@@ -649,6 +624,10 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			if (uniformName == "T_MVP")
 			{
 				SetUniformMatrix(uniformName, projectedMatrix);
+			}
+			else if (uniformName == "T_VP")
+			{
+				SetUniformMatrix(uniformName, renderer->GetCurrentCamera().GetViewProjection());
 			}
 			else if (uniformName == "T_model")
 			{

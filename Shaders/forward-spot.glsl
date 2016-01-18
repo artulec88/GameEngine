@@ -2,6 +2,7 @@
 #include "forwardlighting.glh"
 
 #if defined(VS_BUILD)
+#include "tiling.glh"
 #include "forwardlighting.vsh"
 #elif defined(FS_BUILD)
 

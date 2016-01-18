@@ -115,7 +115,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_waterNormalMap(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
-	m_waterShader(NULL)
+	m_waterShader(NULL),
+	m_billboardShader(NULL),
+	m_billboardNodes()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -240,6 +242,8 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "water-shader"));
 
+	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
+
 	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
@@ -313,6 +317,13 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterRefractionTexture);
 	SAFE_DELETE(m_waterReflectionTexture);
 	SAFE_DELETE(m_waterShader);
+	
+	SAFE_DELETE(m_billboardShader);
+	for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
+	{
+		SAFE_DELETE(*billboardNodeItr);
+	}
+	m_billboardNodes.clear();
 
 	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
 	ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
@@ -489,15 +500,8 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 
 void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 {
-	ASSERT(terrainNode != NULL);
-	if (terrainNode == NULL)
-	{
-		ERROR_LOG("Cannot register terrain node. Given terrain node is NULL.");
-	}
-	if (m_terrainNode != NULL)
-	{
-		WARNING_LOG("Replacing already set terrain node with a different one.");
-	}
+	CHECK_CONDITION(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
+	CHECK_CONDITION(m_terrainNode == NULL, Utility::Warning, "Replacing already set terrain noed with a different one.");
 	m_terrainNode = terrainNode;
 }
 
@@ -505,6 +509,12 @@ void Renderer::AddWaterNode(GameNode* waterNode)
 {
 	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
 	m_waterNodes.push_back(waterNode);
+}
+
+void Renderer::AddBillboardNode(GameNode* billboardNode)
+{
+	CHECK_CONDITION_EXIT(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
+	m_billboardNodes.push_back(billboardNode);
 }
 
 /* TODO: Remove in the future */
@@ -558,6 +568,8 @@ void Renderer::Render(const GameNode& gameNode)
 
 	ClearScreen();
 	m_currentCamera = m_cameras[m_currentCameraIndex];
+
+	RenderBillboardNodes(); // rendering billboards
 
 	RenderSceneWithAmbientLight(gameNode);
 
@@ -684,6 +696,17 @@ void Renderer::RenderWaterNodes()
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
 		(*waterNodeItr)->RenderAll(m_waterShader, this);
+	}
+	STOP_PROFILING;
+}
+
+void Renderer::RenderBillboardNodes()
+{
+	START_PROFILING;
+	DEBUG_LOG("Rendering billboards started");
+	for (std::vector<GameNode*>::const_iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
+	{
+		(*billboardNodeItr)->RenderAll(m_billboardShader, this);
 	}
 	STOP_PROFILING;
 }

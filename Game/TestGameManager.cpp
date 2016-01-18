@@ -79,11 +79,7 @@ void TestGameManager::Load()
 {
 	NOTICE_LOG("Initalizing test game");
 	START_PROFILING;
-	ASSERT(!m_isGameLoaded);
-	if (m_isGameLoaded)
-	{
-		ERROR_LOG("Loading the game will not be performed. The game has already been loaded.");
-	}
+	CHECK_CONDITION_ALWAYS(!m_isGameLoaded, Utility::Error, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -100,7 +96,7 @@ void TestGameManager::Load()
 		new Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #else
-	terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+	terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		new Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
 		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #endif
@@ -225,6 +221,16 @@ void TestGameManager::Load()
 	waterNode->GetTransform().SetScale(3.0f);
 	AddWaterNode(waterNode);
 
+	for (int i = 0; i < 200; ++i)
+	{
+		GameNode* billboardNode = new GameNode();
+		Math::Real x = static_cast<Real>(rand() % 50) - 25.0f;
+		Math::Real z = static_cast<Real>(rand() % 50) - 25.0f;
+		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		billboardNode->AddComponent(new MeshRenderer(new BillboardMesh(Math::Vector3D(x, y, z)), new Material(new Texture("Tree1.png"))));
+		AddBillboardNode(billboardNode);
+	}
+
 	srand((unsigned int)time(NULL));
 
 	humanNodes = new GameNode* [HUMAN_NODES_COUNT];
@@ -253,11 +259,7 @@ void TestGameManager::Load()
 	AddCameras(); // Adding cameras
 
 	m_isGameLoaded = true;
-	ASSERT(m_isGameLoaded);
-	if (!m_isGameLoaded)
-	{
-		CRITICAL_LOG("The game has not been loaded properly");
-	}
+	CHECK_CONDITION_ALWAYS(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
 	STOP_PROFILING;
 	NOTICE_LOG("Initalizing test game finished");
 }

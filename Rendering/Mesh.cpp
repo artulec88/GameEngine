@@ -396,6 +396,31 @@ void Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
 	//}
 }
 
+BillboardMesh::BillboardMesh(const Math::Vector3D& worldPosition) :
+	Mesh(GL_POINTS),
+	m_worldPosition(worldPosition)
+{
+	m_meshData = new MeshData();
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vector3D), &m_worldPosition, GL_STATIC_DRAW);
+}
+
+BillboardMesh::~BillboardMesh()
+{
+}
+
+void BillboardMesh::Draw() const
+{
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Math::Vector3D), (GLvoid*)0); // world position
+	glDrawArrays(m_mode, 0, 3);
+	glDisableVertexAttribArray(0);
+}
+
 GuiMesh::GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount) :
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount)
@@ -413,7 +438,7 @@ GuiMesh::~GuiMesh()
 
 void GuiMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 
@@ -452,7 +477,7 @@ TerrainMesh::~TerrainMesh(void)
  * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
  * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
  */
-Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
+Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */)
 {
 #ifdef MEASURE_TIME_ENABLED
 	Utility::Timing::Timer timer;
@@ -539,7 +564,10 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	lastX = xz.GetX();
 	lastZ = xz.GetY(); // in this case GetY() returns Z
 
-	y += m_headPositionHeightAdjustment; // head position adjustment
+	if (headPositionHeightAdjustmentEnabled)
+	{
+		y += m_headPositionHeightAdjustment; // head position adjustment
+	}
 	lastY = y;
 
 	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
@@ -551,7 +579,10 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz)
 	Math::Real y = m_kdTree->SearchNearestValue(xz);
 	m_lastX = xz.GetX();
 	m_lastZ = xz.GetY(); // in this case GetY() returns Z
-	y += m_headPositionHeightAdjustment; // head position adjustment
+	if (headPositionHeightAdjustmentEnabled)
+	{
+		y += m_headPositionHeightAdjustment; // head position adjustment
+	}
 	m_lastY = y;
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif

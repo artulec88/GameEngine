@@ -1,0 +1,3 @@
+#ifdef TILING_ENABLED
+const float TILING = 1.0;
+#endif

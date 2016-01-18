@@ -9,24 +9,26 @@ void main()
 }
 
 #elif defined(GS_BUILD)
-layout(points) in;
-layout(triangle_strip) out;
-layout(max_vertices = 4) out;
+layout(points) in; // The point list is the incoming topology
+layout(triangle_strip) out; // The triangle strip is the outgoing topology
+layout(max_vertices = 4) out; // We will emit no more than four vertices (we know we want to emit a quad)
 
-uniform mat4 T_VP; // View-Projection matrix
+uniform mat4 T_VP;
 uniform vec3 C_eyePos;
 
 out vec2 texCoord0;
 
 void main()
 {
-	/* Since GS is executed on a complete primitive (e.g. points list, triangle) we actually have access to each of the vertices that comprise it.
+	/* 
+	 * Since GS is executed on a complete primitive (e.g. points list, triangle) we actually have access to each of the vertices that comprise it.
 	 * This is done using the built-in variable 'gl_in'.
 	 */
 	vec3 pos = gl_in[0].gl_Position.xyz;
 	vec3 directionToCamera = normalize(C_eyePos - pos);
 	vec3 upVec = vec3(0.0, 1.0, 0.0);
 	vec3 right = cross(directionToCamera, upVec);
+	//vec3 right = cross(upVec, directionToCamera);
 	
 	pos -= (right * 0.5);
 	gl_Position = T_VP * vec4(pos, 1.0);
@@ -53,18 +55,18 @@ void main()
 }
 
 #elif defined(FS_BUILD)
-uniform sampler2D diffuse; // color map
+uniform sampler2D diffuse;
 
 in vec2 texCoord0;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
-	FragColor = texture2D(diffuse, texCoord0);
-	if (FragColor.r == 0 && FragColor.g == 0 && FragColor.b == 0)
-	{
-		discard;
-	}
-	SetFragOutput(0, FragColor);
+	vec4 fragColor = texture2D(diffuse, texCoord0);
+	//if (fragColor.r == 0 && fragColor.g == 0 && fragColor.b == 0)
+	//{
+	//	discard;
+	//}
+	SetFragOutput(0, fragColor);
 }
 #endif

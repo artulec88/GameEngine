@@ -265,11 +265,7 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		int x, y, bytesPerPixel;
 		unsigned char* data = stbi_load((CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 
-		if (data == NULL)
-		{
-			ERROR_LOG("Unable to load texture from the file \"%s\"", name.c_str());
-			return;
-		}
+		CHECK_CONDITION_EXIT(data != NULL, Utility::Error, "Unable to load texture from the file \"%s\"", name.c_str());
 		m_textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 		stbi_image_free(data);
 		s_textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, m_textureData));
