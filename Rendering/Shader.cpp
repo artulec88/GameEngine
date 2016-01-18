@@ -15,7 +15,7 @@ using namespace std;
 
 /* static */ const std::string ShaderData::UNIFORM_KEYWORD = "uniform";
 /* static */ const std::string ShaderData::ATTRIBUTE_KEYWORD = "attribute";
-/* static */ const std::string ShaderData::SINGLE_LINE_COMMENT = "////";
+/* static */ const std::string ShaderData::SINGLE_LINE_COMMENT = "//";
 /* static */ const std::string ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
 /* static */ const std::string ShaderData::MULTI_LINE_COMMENT_END = "*/";
 /* static */ std::map<std::string, ShaderData*> Shader::shaderResourceMap;
@@ -105,7 +105,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 		getline(file, line);
 		if (line.find("#include") == std::string::npos)
 		{
-				output.append(line + "\n");
+			output.append(line + "\n");
 		}
 		else
 		{
@@ -129,7 +129,25 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 		}
 	}
 	file.close();
+	
 	DEBUG_LOG("Shader \"%s\" text loaded", fileName.c_str());
+	/* ==================== Removing comments from the shader code begin ==================== */
+	size_t commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
+	while (commentBegin != std::string::npos)
+	{
+		size_t commentEnd = output.find(MULTI_LINE_COMMENT_END, commentBegin);
+		output.erase(commentBegin, commentEnd - commentBegin + MULTI_LINE_COMMENT_END.length());
+		commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
+	}
+	commentBegin = output.find(SINGLE_LINE_COMMENT);
+	while (commentBegin != std::string::npos)
+	{
+		size_t lineEnd = output.find("\n", commentBegin);
+		output.erase(commentBegin, lineEnd - commentBegin);
+		commentBegin = output.find(SINGLE_LINE_COMMENT);
+	}
+	/* ==================== Removing comments from the shader code end ==================== */
+
 	return output;
 }
 
@@ -296,6 +314,9 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		 * When the comment is removed all comes back to normal.
 		 * It seems there is a problem with the isCommented variable in this function.
 		 */
+		/*
+		 * It seems the problem is now solved, but it should be tested a little bit more thoroughly.
+		 */
 		bool isCommented = false;
 		size_t lastLineEnd = shaderText.rfind(";", uniformLocation);
 		//INFO_LOG("Uniform location in shader text = %d; lastLineEnd = %d; std::string::npos = %d", uniformLocation, lastLineEnd, std::string::npos);
@@ -322,7 +343,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		}
 		else
 		{
-			DEBUG_LOG("Uniform is commented out");
+			ERROR_LOG("Uniform is commented out");
 		}
 		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
 	}

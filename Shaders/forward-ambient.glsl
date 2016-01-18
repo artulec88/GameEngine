@@ -1,8 +1,3 @@
-/* this is a one line multiline comment */
-
-/* this is a multi
-line multiline comment
-*/
 #include "common.glh"
 
 varying vec2 texCoord0;
@@ -20,7 +15,7 @@ uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
 uniform sampler2D displacementMap;
 
-uniform float displacementScale;
+uniform float displacementScale; // displacement scale
 uniform float displacementBias;
 
 DeclareFragOutput(0, vec4);
