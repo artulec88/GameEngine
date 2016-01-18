@@ -13,6 +13,11 @@ using namespace Utility;
 using namespace Math;
 using namespace std;
 
+/* static */ const std::string ShaderData::UNIFORM_KEYWORD = "uniform";
+/* static */ const std::string ShaderData::ATTRIBUTE_KEYWORD = "attribute";
+/* static */ const std::string ShaderData::SINGLE_LINE_COMMENT = "////";
+/* static */ const std::string ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
+/* static */ const std::string ShaderData::MULTI_LINE_COMMENT_END = "*/";
 /* static */ std::map<std::string, ShaderData*> Shader::shaderResourceMap;
 
 ShaderData::ShaderData(const std::string& fileName) :
@@ -100,7 +105,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 		getline(file, line);
 		if (line.find("#include") == std::string::npos)
 		{
-			output.append(line + "\n");
+				output.append(line + "\n");
 		}
 		else
 		{
@@ -113,12 +118,7 @@ string ShaderData::LoadShaderData(const std::string& fileName) const
 			//{
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
 			//}
-			ASSERT(tokens.size() > 1);
-			if (tokens.size() <= 1)
-			{
-				ERROR_LOG("Error while reading #include directive in the shader file \"%s\"", name.c_str());
-				continue;
-			}
+			CHECK_CONDITION_EXIT_ALWAYS(tokens.size() > 1, Utility::Error, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
 			std::string includeFileName = tokens[1];
 			//DEBUG_LOG("Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
 			includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
@@ -238,9 +238,8 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 
 void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 {
-	const std::string attributeKeyword = "attribute"; // TODO: What about geometry shader? Check if we should analyze geometry shader too to find all attributes
 	int currentAttribLocation = 0;
-	size_t attributeLocation = vertexShaderText.find(attributeKeyword);
+	size_t attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD);
 	while(attributeLocation != std::string::npos)
 	{
  		bool isCommented = false;
@@ -256,7 +255,7 @@ void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 		
 		if(!isCommented)
 		{
-			size_t begin = attributeLocation + attributeKeyword.length();
+			size_t begin = attributeLocation + ATTRIBUTE_KEYWORD.length();
 			size_t end = vertexShaderText.find(";", begin);
 			
 			std::string attributeLine = vertexShaderText.substr(begin + 1, end-begin - 1);
@@ -267,13 +266,12 @@ void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 			glBindAttribLocation(m_programID, currentAttribLocation, attributeName.c_str());
 			currentAttribLocation++;
 		}
-		attributeLocation = vertexShaderText.find(attributeKeyword, attributeLocation + attributeKeyword.length());
+		attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD, attributeLocation + ATTRIBUTE_KEYWORD.length());
 	}
 }
 
 void ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
-	const std::string UNIFORM_KEY = "uniform";
 	std::vector<UniformStruct> structs = FindUniformStructs(shaderText);
 	int temp = 0;
 	for (std::vector<UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
@@ -288,7 +286,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		++temp;
 	}
 	
-	size_t uniformLocation = shaderText.find(UNIFORM_KEY);
+	size_t uniformLocation = shaderText.find(UNIFORM_KEYWORD);
 	while(uniformLocation != std::string::npos)
 	{
 		/**
@@ -310,7 +308,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		}
 		if(!isCommented)
 		{
-			size_t begin = uniformLocation + UNIFORM_KEY.length();
+			size_t begin = uniformLocation + UNIFORM_KEYWORD.length();
 			size_t end = shaderText.find(";", begin);
 			std::string uniformLine = shaderText.substr(begin + 1, end-begin - 1);
 			
@@ -326,7 +324,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 		{
 			DEBUG_LOG("Uniform is commented out");
 		}
-		uniformLocation = shaderText.find(UNIFORM_KEY, uniformLocation + UNIFORM_KEY.length());
+		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
 	}
 	for (std::map<std::string, unsigned int>::const_iterator it = uniformMap.begin(); it != uniformMap.end(); ++it)
 	{

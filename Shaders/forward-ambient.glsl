@@ -1,3 +1,8 @@
+/* this is a one line multiline comment */
+
+/* this is a multi
+line multiline comment
+*/
 #include "common.glh"
 
 varying vec2 texCoord0;

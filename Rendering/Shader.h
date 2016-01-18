@@ -33,6 +33,12 @@ struct UniformStruct
 class ShaderData : public Utility::ReferenceCounter
 {
 /* ==================== Static variables and functions begin ==================== */
+private:
+	static const std::string ATTRIBUTE_KEYWORD;
+	static const std::string UNIFORM_KEYWORD;
+	static const std::string SINGLE_LINE_COMMENT;
+	static const std::string MULTI_LINE_COMMENT_BEGIN;
+	static const std::string MULTI_LINE_COMMENT_END;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

@@ -5,7 +5,7 @@ attribute vec3 tangent;
 //attribute vec3 biTangent;
 out float gl_ClipDistance[1];
 
-uniform mat4 T_model;
+uniform mat4 T_model; // this is a comment
 uniform mat4 T_MVP;
 
 uniform vec4 R_clipPlane;
