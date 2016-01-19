@@ -124,8 +124,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API Shader(const std::string& fileName);
-	RENDERING_API ~Shader(void);
+	Shader(const std::string& fileName);
+	~Shader(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -133,16 +133,16 @@ public:
 	GLuint GetProgramID() const { return m_shaderData->GetProgram(); }
 	void Bind() const;
 	bool IsBound() const;
-	RENDERING_API void Unbind() const;
-	RENDERING_API void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
+	void Unbind() const;
+	void UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const;
 
-	RENDERING_API void SetUniformi(const std::string& uniformName, int value) const;
-	RENDERING_API void SetUniformf(const std::string& uniformName, Math::Real value) const;
-	RENDERING_API void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
-	RENDERING_API void SetUniformVector4D(const std::string& uniformName, const Math::Vector4D& vector) const;
-	RENDERING_API void SetUniformVector4D(const std::string& uniformName, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const;
-	RENDERING_API void SetUniformColor(const std::string& uniformName, const Color& color) const;
-	RENDERING_API void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
+	void SetUniformi(const std::string& uniformName, int value) const;
+	void SetUniformf(const std::string& uniformName, Math::Real value) const;
+	void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
+	void SetUniformVector4D(const std::string& uniformName, const Math::Vector4D& vector) const;
+	void SetUniformVector4D(const std::string& uniformName, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const;
+	void SetUniformColor(const std::string& uniformName, const Color& color) const;
+	void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 protected:
 private:
 	/**

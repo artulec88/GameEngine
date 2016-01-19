@@ -53,8 +53,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
-	RENDERING_API virtual ~Renderer(void);
+	Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
+	virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer);
 	void operator=(const Renderer& renderer);
@@ -65,12 +65,12 @@ public:
 	RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
-	RENDERING_API inline void SwapBuffers()
+	inline void SwapBuffers()
 	{
 		glfwSwapBuffers(m_window);
 	}
 
-	RENDERING_API GLFWwindow* GetThreadWindow()
+	GLFWwindow* GetThreadWindow()
 	{
 		return m_threadWindow;
 	}
@@ -83,44 +83,44 @@ public:
 	/// This function must be called after AntTweakBar library is initialized. See Rendering::InitializeTweakBars().
 	/// </remarks>
 	RENDERING_API void InitializeTweakBars();
-	RENDERING_API void CheckCameraIndexChange();
+	void CheckCameraIndexChange();
 #endif
 	
 	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
-	RENDERING_API inline const Lighting::BaseLight* GetCurrentLight() const
+	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
 		return m_currentLight;
 	}
-	RENDERING_API inline const Lighting::PointLight* GetPointLight() const
+	inline const Lighting::PointLight* GetPointLight() const
 	{
 		return m_pointLight;
 	}
-	//RENDERING_API inline const Lighting::SpotLight* GetSpotLight() const { return m_spotLight; }
-	RENDERING_API inline const Math::Vector3D& GetAmbientDayLight() const
+	//inline const Lighting::SpotLight* GetSpotLight() const { return m_spotLight; }
+	inline const Math::Vector3D& GetAmbientDayLight() const
 	{
 		return m_ambientDaytimeColor;
 	}
-	RENDERING_API inline const Math::Vector3D& GetAmbientNightLight() const
+	inline const Math::Vector3D& GetAmbientNightLight() const
 	{
 		return m_ambientNighttimeColor;
 	}
 	
-	RENDERING_API inline CameraBase& GetCurrentCamera()
+	inline CameraBase& GetCurrentCamera()
 	{
 		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return *m_currentCamera;
 	}
 
-	RENDERING_API size_t GetCurrentCameraIndex() const
+	size_t GetCurrentCameraIndex() const
 	{
 		return m_currentCameraIndex;
 	}
-	RENDERING_API size_t NextCamera();
-	RENDERING_API size_t PrevCamera();
-	RENDERING_API size_t SetCurrentCamera(size_t cameraIndex);
-	RENDERING_API void SetCursorPos(Math::Real xPos, Math::Real yPos) const
+	size_t NextCamera();
+	size_t PrevCamera();
+	size_t SetCurrentCamera(size_t cameraIndex);
+	void SetCursorPos(Math::Real xPos, Math::Real yPos) const
 	{
 		glfwSetCursorPos(m_window, xPos, yPos);
 	}
@@ -132,12 +132,12 @@ public:
 		return samplerItr->second;
 	}
 
-	RENDERING_API inline bool IsCloseRequested() const
+	inline bool IsCloseRequested() const
 	{
 		return glfwWindowShouldClose(m_window) != 0;
 	}
 
-	RENDERING_API inline Math::Matrix4D GetLightMatrix() const
+	inline Math::Matrix4D GetLightMatrix() const
 	{
 		return m_lightMatrix;
 	}
@@ -160,53 +160,53 @@ public:
 	/// <summary>
 	/// Adds a line segment to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
+	void AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
 		Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds a wireframe sphere to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddSphere(const Math::Sphere& sphere, const Color& color,
+	void AddSphere(const Math::Sphere& sphere, const Color& color,
 		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds an axis-aligned cross (3 lines converging at a point) to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
+	void AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
 		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds a circle to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius,
+	void AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius,
 		const Color& color, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds a set of coordinate axes depicting the position and orientation of the given transformation to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddAxes(const Transform& transform, const Color& color, Math::Real size,
+	void AddAxes(const Transform& transform, const Color& color, Math::Real size,
 		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds a wireframe triangle to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2,
+	void AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2,
 		const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds an axis-aligned bounding box to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+	void AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds an oriented bounding box to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+	void AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth = REAL_ONE, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
 	/// Adds a text string to the debug drawing queue.
 	/// </summary>
-	RENDERING_API void AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
+	void AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 #endif
 
 protected:
