@@ -417,7 +417,7 @@ void BillboardMesh::Draw() const
 
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Math::Vector3D), (GLvoid*)0); // world position
-	glDrawArrays(m_mode, 0, 3);
+	glDrawArrays(m_mode, 0, 1);
 	glDisableVertexAttribArray(0);
 }
 

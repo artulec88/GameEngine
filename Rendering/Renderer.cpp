@@ -569,8 +569,6 @@ void Renderer::Render(const GameNode& gameNode)
 	ClearScreen();
 	m_currentCamera = m_cameras[m_currentCameraIndex];
 
-	RenderBillboardNodes(); // rendering billboards
-
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
@@ -642,6 +640,7 @@ void Renderer::Render(const GameNode& gameNode)
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 	RenderWaterNodes(); // normal rendering of water quads
+	RenderBillboardNodes(); // rendering billboards
 
 	RenderSkybox();
 
