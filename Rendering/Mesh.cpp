@@ -62,14 +62,14 @@ MeshData::~MeshData(void)
 }
 
 Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(),
+	m_fileName(""),
 	m_mode(mode),
 	m_meshData(NULL)
 {
 }
 
 Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(),
+	m_fileName(""),
 	m_mode(mode),
 	m_meshData(NULL)
 {
@@ -109,7 +109,7 @@ void Mesh::Initialize()
 		return;
 	}
 
-	if (m_fileName.empty())
+	if (m_fileName.empty() || m_fileName.compare("") == 0) // TODO: Are these conditions the same?
 	{
 		ERROR_LOG("Mesh data cannot be initialized. File name is not specified");
 	}
@@ -416,7 +416,7 @@ void BillboardMesh::Draw() const
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Math::Vector3D), (GLvoid*)0); // world position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0); // world position
 	glDrawArrays(m_mode, 0, 1);
 	glDisableVertexAttribArray(0);
 }
