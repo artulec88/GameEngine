@@ -1188,11 +1188,6 @@ void Renderer::AddCamera(CameraBase* camera)
 #endif
 }
 
-void Renderer::UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType)
-{
-	ERROR_LOG("Uniform name \"%s\" of type \"%s\" is not supported by the rendering engine", uniformName.c_str(), uniformType.c_str());
-}
-
 void Renderer::BindAsRenderTarget()
 {
 	int width, height;

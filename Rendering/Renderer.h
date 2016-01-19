@@ -131,7 +131,6 @@ public:
 		CHECK_CONDITION_EXIT_ALWAYS(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return samplerItr->second;
 	}
-	RENDERING_API void UpdateUniformStruct(const Transform& transform, const Material& material, const Shader& shader, const std::string& uniformName, const std::string& uniformType);
 
 	RENDERING_API inline bool IsCloseRequested() const
 	{

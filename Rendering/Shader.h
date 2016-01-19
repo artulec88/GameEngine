@@ -18,10 +18,38 @@
 namespace Rendering
 {
 
+namespace Uniforms
+{
+	enum UniformType
+	{
+		VEC_2D = 0,
+		VEC_3D,
+		VEC_4D,
+		MATRIX_4x4,
+		REAL,
+		SAMPLER_2D,
+		SAMPLER_CUBE,
+		BASE_LIGHT,
+		DIRECTIONAL_LIGHT,
+		POINT_LIGHT,
+		SPOT_LIGHT,
+		ATTENUATION
+	};
+
+	UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
+	std::string ConvertUniformTypeToString(UniformType uniformType);
+} /* end namespace Uniforms */
+
 struct TypedData
 {
-	std::string name;
-	std::string type;
+	TypedData(const std::string& _name, Uniforms::UniformType _uniformType) :
+		name(_name),
+		uniformType(_uniformType)
+	{
+	}
+
+	const std::string name;
+	const Uniforms::UniformType uniformType;
 };
 
 struct UniformStruct
@@ -39,6 +67,7 @@ private:
 	static const std::string SINGLE_LINE_COMMENT;
 	static const std::string MULTI_LINE_COMMENT_BEGIN;
 	static const std::string MULTI_LINE_COMMENT_END;
+	static const char* UniformTypeNames[];
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -53,11 +82,10 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	GLuint GetProgram() const { return m_programID; }
-	std::vector<int>& GetShaders() { return shaders; }
-	std::vector<std::string>& GetUniformNames() { return uniformNames; }
-	std::vector<std::string>& GetUniformTypes() { return uniformTypes; }
-	std::map<std::string, unsigned int>& GetUniformMap() { return uniformMap; }
-	bool IsUniformPresent(const std::string& uniformName, std::map<std::string, unsigned int>::const_iterator& itr) const;
+	std::vector<std::string>& GetUniformNames() { return m_uniformNames; }
+	std::vector<Uniforms::UniformType>& GetUniformTypes() { return m_uniformTypes; }
+	std::map<std::string, GLint>& GetUniformMap() { return m_uniformMap; }
+	bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 private:
 	std::string LoadShaderData(const std::string& fileName) const;
 	void AddVertexShader(const std::string& vertexShaderText);
@@ -67,7 +95,7 @@ private:
 
 	void AddAllAttributes(const std::string& vertexShaderText);
 	void AddShaderUniforms(const std::string& shaderText);
-	void AddUniform(const std::string& uniformName, const std::string& uniformType, const std::vector<UniformStruct>& structs);
+	void AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<UniformStruct>& structs);
 
 	std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& shaderText) const;
 	std::string ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const;
@@ -80,10 +108,10 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	GLuint m_programID;
-	std::vector<int> shaders;
-	std::vector<std::string> uniformNames;
-	std::vector<std::string> uniformTypes;
-	std::map<std::string, unsigned int> uniformMap;
+	std::vector<GLuint> m_shaders;
+	std::vector<std::string> m_uniformNames;
+	std::vector<Uniforms::UniformType> m_uniformTypes;
+	std::map<std::string, GLint> m_uniformMap;
 	/* ==================== Non-static member variables end ==================== */
 }; /* end class ShaderData */
 
