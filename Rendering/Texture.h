@@ -44,20 +44,28 @@ private:
 protected:
 	GLenum m_textureTarget;
 
-	/// <summary> The number of textures hold by the TextureData object.
-	/// Used to associate more than one rendering targets for the texture. </summary>
-	/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 7:00)
+	/// <summary>
+	/// The number of textures held by the TextureData object.
+	/// It is used to associate more than one rendering targets for the texture.
+	/// </summary>
+	/// <remarks>
+	/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 7:00).
+	/// </remarks>
 	int m_texturesCount;
 	GLuint* m_textureID;
 	int m_width;
 	int m_height;
 
-	/// <summary> The framebuffer. In fact, not every texture is going to need a framebuffer,
-	/// because we are not going to render to every texture in the scene. </summary>
+	/// <summary>
+	/// The framebuffer. In fact, not every texture is going to need a framebuffer,
+	/// because we are not going to render to every texture in the scene.
+	/// </summary>
 	GLuint m_framebuffer;
 
 	/// <summary> The rendering buffer. </summary>
-	/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 40:00)
+	/// <remarks>
+	/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 40:00).
+	/// </remarks>
 	GLuint m_renderbuffer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TextureData */

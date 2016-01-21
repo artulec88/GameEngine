@@ -9,17 +9,17 @@ class Material;
 class Shader;
 
 // TODO: Inherit from IRenderable interface or use it in the Mesh class instead.
-class RENDERING_API MeshRenderer : public GameComponent
+class MeshRenderer : public GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MeshRenderer(Mesh* mesh, Material* material);
-	virtual ~MeshRenderer(void);
+	RENDERING_API MeshRenderer(Mesh* mesh, Material* material);
+	RENDERING_API virtual ~MeshRenderer(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Render(Shader* shader, Renderer* renderer);
+	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

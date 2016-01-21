@@ -42,18 +42,18 @@ namespace Rendering
 			PUSH
 		}; /* end enum TransitionType */
 
-		class RENDERING_API GameStateTransition
+		class GameStateTransition
 		{
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
-			GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
+			RENDERING_API GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
 				m_transitionType(transitionType),
 				m_gameState(gameState),
 				m_modalityType(modalityType)
 			{
 			}
 
-			~GameStateTransition()
+			RENDERING_API ~GameStateTransition()
 			{
 				SAFE_DELETE(m_gameState);
 			}
@@ -61,9 +61,9 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			GameState* GetGameState() const { return m_gameState; }
-			TransitionType GetTransitionType() const { return m_transitionType; }
-			GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
+			RENDERING_API GameState* GetGameState() const { return m_gameState; }
+			RENDERING_API TransitionType GetTransitionType() const { return m_transitionType; }
+			RENDERING_API GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

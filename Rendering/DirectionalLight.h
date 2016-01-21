@@ -10,8 +10,10 @@
 namespace Rendering { namespace Lighting
 {
 
-/// <summary> The directional light representation.</summary>
-class RENDERING_API DirectionalLight : public BaseLight
+/// <summary>
+/// The directional light representation.
+/// </summary>
+class DirectionalLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
 private:

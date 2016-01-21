@@ -57,18 +57,18 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	unsigned int GetVBO() const { return m_vbo; }
-	unsigned int GetIBO() const { return m_ibo; }
+	GLuint GetVBO() const { return m_vbo; }
+	GLuint GetIBO() const { return m_ibo; }
 	size_t GetSize() const { return m_size; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 	/// <summary> Vertex buffer object. </summary>
-	unsigned int m_vbo;
+	GLuint m_vbo;
 	
 	/// <summary> Index buffer object. </summary>
-	unsigned int m_ibo;
+	GLuint m_ibo;
 	
 	/// <summary> The size. </summary>
 	size_t m_size;

@@ -217,6 +217,10 @@ protected:
 	/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
 	/// </remarks>
 	void RenderWaterTextures(const GameNode& gameNode);
+
+	/// <summary>
+	/// Renders the registered water nodes using the reflection and refraction textures created during the earlier stage of rendering pass.
+	/// </summary>
 	void RenderWaterNodes();
 	void RenderBillboardNodes();
 	void RenderWaterReflectionTexture(const GameNode& gameNode);

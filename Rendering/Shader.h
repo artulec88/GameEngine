@@ -145,12 +145,19 @@ public:
 	void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 protected:
 private:
-	/**
-	 * BaseLight object is absolutely enough to get all the information necessary for the directional light.
-	 * Color and intensity are directly stored in the BaseLight object and the direction can be easily retrieved from the transformation.
-	 */
+	/// <summary>
+	/// Sets the directional light uniform. Although the <paramref name="directionalLight"/> is specified as the BaseLight instance
+	/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the BaseLight object
+	/// and the direction can be easily retrieved from the transformation.
+	/// </summary>
 	void SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const;
+	/// <summary>
+	/// Sets the point light uniform.
+	/// </summary>
 	void SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const;
+	/// <summary>
+	/// Sets the spot light uniform.
+	/// </summary>
 	void SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const;
 /* ==================== Non-static member functions end ==================== */
 

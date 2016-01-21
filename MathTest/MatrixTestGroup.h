@@ -53,32 +53,29 @@ protected:
 	bool m_expectedCompareResult;
 }; /* end class MatrixTestCompare */
 
-template <class T> // T may stand for Vector3D or Matrix4D
-class MatrixTestMultiplyOperator : public MatrixTestBase
+class MatrixTestMultiplyByMatrixOperator : public MatrixTestBase
 {
 public:
-	MatrixTestMultiplyOperator(const Math::Matrix4D& matrix1, const T& values, const T& expectedMultiplyResult) :
-		MatrixTestBase(matrix1),
-		m_values(values),
-		m_expectedMultiplyResult(expectedMultiplyResult)
-	{
-	}
-	virtual ~MatrixTestMultiplyOperator()
-	{
-	}
+	MatrixTestMultiplyByMatrixOperator(const Math::Matrix4D& matrix1, const Math::Matrix4D& matrix2, const Math::Matrix4D& expectedMultiplyResultMatrix);
+	virtual ~MatrixTestMultiplyByMatrixOperator();
 public:
-	virtual void StartTest()
-	{
-		T multiplyResult = m_matrix * m_values;
-		CHECK_CONDITION_ALWAYS(multiplyResult == m_expectedMultiplyResult, Utility::Error,
-			"The multiplication of matrix %s and %s equals %s. It is different than expected %s",
-			m_matrix.ToString().c_str(), m_values.ToString().c_str(), multiplyResult.ToString().c_str(),
-			m_expectedMultiplyResult.ToString().c_str());
-	}
+	virtual void StartTest();
 protected:
-	T m_values;
-	T m_expectedMultiplyResult;
-}; /* end class MatrixTestMultiplyOperator */
+	Math::Matrix4D m_matrix2;
+	Math::Matrix4D m_expectedMultiplyResultMatrix;
+}; /* end class MatrixTestMultiplyByMatrixOperator */
+
+class MatrixTestMultiplyByVectorOperator : public MatrixTestBase
+{
+public:
+	MatrixTestMultiplyByVectorOperator(const Math::Matrix4D& matrix1, const Math::Vector3D& vector, const Math::Vector3D& expectedMultiplyResultVector);
+	virtual ~MatrixTestMultiplyByVectorOperator();
+public:
+	virtual void StartTest();
+protected:
+	Math::Vector3D m_vector;
+	Math::Vector3D m_expectedMultiplyResultVector;
+}; /* end class MatrixTestMultiplyByVectorOperator */
 
 } /* end namespace MathTest */
 

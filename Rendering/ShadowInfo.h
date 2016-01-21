@@ -20,7 +20,7 @@ struct ShadowCameraTransform
 	Math::Quaternion m_rot;
 };
 
-class RENDERING_API ShadowInfo
+class ShadowInfo
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

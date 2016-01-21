@@ -10,7 +10,7 @@
 namespace Rendering { namespace Lighting
 {
 
-class RENDERING_API SpotLight : public PointLight
+class SpotLight : public PointLight
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
@@ -39,13 +39,13 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	/**
-	 * Stores a value of a cosine (from range between -1 and +1).
-	 * If the value of the cosine between a light direction and spot light direction vectors is
-	 * smaller than cutoff then the point is not in the spot light cone.
-	 * If cutoff = 0 then FoV = 180 degrees.
-	 * If cutoff = 1 then FoV = 0 degrees.
-	 */
+	/// <summary>
+	/// Stores a value of a cosine (so it is in range between -1 and +1) between .....
+	/// If the value of the cosine between a light direction and spot light direction vectors is
+	/// smaller than cutoff then the point is not in the spot light cone.
+	/// If cutoff = 0 then field of view = 180 degrees.
+	/// If cutoff = 1 then field of view = 0 degrees.
+	/// </summary>
 	Math::Real m_cutoff;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class SpotLight */

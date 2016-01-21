@@ -8,7 +8,7 @@ namespace Rendering
 {
 
 /// <summary> The class representing the gradual loss in intensity of light. </summary>
-class RENDERING_API Attenuation
+class Attenuation
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

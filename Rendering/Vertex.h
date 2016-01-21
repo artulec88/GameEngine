@@ -14,7 +14,7 @@
 namespace Rendering
 {
 
-struct RENDERING_API Vertex
+struct Vertex
 {
 	/* ==================== Constructors and destructors begin ==================== */
 	Vertex(const Math::Vector3D& position,

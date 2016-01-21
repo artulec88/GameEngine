@@ -8,7 +8,7 @@
 namespace Rendering { namespace Lighting
 {
 
-class RENDERING_API PointLight : public BaseLight
+class PointLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
 public:

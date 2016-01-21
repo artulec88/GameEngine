@@ -86,7 +86,7 @@ public:
 	/// <param name="key">The keyboard key that was pressed or released.</param>
 	/// <param name="scancode">The system-specific scancode of the key.</param>
 	/// <param name="action">GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT.</param>
-	/// <param name="mods">Bit field describing which modifier keys were held down.</param>
+	/// <param name="mods">Bit field describing which modifier keys were held down when key event was dispatched.</param>
 	void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
 	void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
 	void MousePosEvent(GLFWwindow* window, double xPos, double yPos);

@@ -12,7 +12,7 @@
 namespace Rendering
 {
 
-class RENDERING_API CameraBase
+class CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
@@ -20,8 +20,8 @@ public:
 private:
 	static Math::Real sensitivity;
 public:
-	static Math::Real GetSensitivity();
-	static void InitializeCameraSensitivity();
+	RENDERING_API static Math::Real GetSensitivity();
+	RENDERING_API static void InitializeCameraSensitivity();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -50,7 +50,7 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CameraBase */
 
-class RENDERING_API Camera : public CameraBase
+class Camera : public CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -74,16 +74,16 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Camera */
 
-class RENDERING_API CameraComponent : public CameraBase, public GameComponent
+class CameraComponent : public CameraBase, public GameComponent
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CameraComponent(const Math::Matrix4D& projectionMatrix);
-	CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
-	virtual ~CameraComponent(void);
+	RENDERING_API CameraComponent(const Math::Matrix4D& projectionMatrix);
+	RENDERING_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+	RENDERING_API virtual ~CameraComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

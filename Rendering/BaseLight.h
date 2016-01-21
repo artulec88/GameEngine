@@ -21,7 +21,7 @@ class Renderer;
 namespace Lighting
 {
 
-class RENDERING_API BaseLight : public GameComponent
+class BaseLight : public GameComponent
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

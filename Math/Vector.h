@@ -27,6 +27,7 @@ public:
 	inline Real GetY() const { return m_y; }
 	inline void SetX(Real x) { m_x = x; }
 	inline void SetY(Real y) { m_y = y; }
+	inline void Set(Real x, Real y) { m_x = x; m_y = y; }
 
 	Real SumOfComponents() const { return m_x + m_y; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y); }
@@ -130,9 +131,10 @@ public:
 	inline Real GetX() const { return m_x; }
 	inline Real GetY() const { return m_y; }
 	inline Real GetZ() const { return m_z; }
-	void SetX(Real x) { m_x = x; }
-	void SetY(Real y) { m_y = y; }
-	void SetZ(Real z) { m_z = z; }
+	inline void SetX(Real x) { m_x = x; }
+	inline void SetY(Real y) { m_y = y; }
+	inline void SetZ(Real z) { m_z = z; }
+	inline void Set(Real x, Real y, Real z) { m_x = x; m_y = y; m_z = z; }
 
 	Real SumOfComponents() const { return m_x + m_y + m_z; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z); }
@@ -258,10 +260,11 @@ public:
 	inline Real GetY() const { return m_y; }
 	inline Real GetZ() const { return m_z; }
 	inline Real GetW() const { return m_w; }
-	void SetX(Real x) { m_x = x; }
-	void SetY(Real y) { m_y = y; }
-	void SetZ(Real z) { m_z = z; }
-	void SetW(Real w) { m_w = w; }
+	inline void SetX(Real x) { m_x = x; }
+	inline void SetY(Real y) { m_y = y; }
+	inline void SetZ(Real z) { m_z = z; }
+	inline void SetW(Real w) { m_w = w; }
+	inline void Set(Real x, Real y, Real z, Real w) { m_x = x; m_y = y; m_z = z; m_w = w; }
 
 	Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }

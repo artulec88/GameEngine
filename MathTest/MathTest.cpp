@@ -314,20 +314,56 @@ void MatrixTest()
 	{
 		return;
 	}
+	MathTest::MatrixTestGroup matrixTests;
+
+	Matrix4D matrix1;
+	Matrix4D matrix2(REAL_ONE); // the scale matrix with scaleFactor = REAL_ONE is indeed an identity matrix
+	Matrix4D matrix3(2.0f);
+	Matrix4D matrix4(REAL_ZERO, REAL_ZERO, REAL_ZERO); // translation matrix with translation vector equal to zero is indeed an identity matrix
+	Matrix4D matrix5(3.0f, -5.0f, 2.0f); // translation matrix
+	Matrix4D matrix6(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 100.0f); // ortographic projection
+	Matrix4D matrix7(Angle(30.0f), Angle(60.0f)); // rotation matrix
+	Matrix4D matrix8(Angle(30.0f), Angle(60.0f), Angle(0.0f));
+	Matrix4D matrix9(matrix6);
+	Matrix4D matrix10(Vector3D(5.0f, 10.0f, 15.0f)); // translation matrix
+	Matrix4D matrix11(5.0f, 10.0f, 15.0f); // translation matrix
+	Matrix4D matrix12(Angle(75.0f), 1.333f, 0.1f, 1000.0f); // perspective projection
+	Matrix4D matrix13(Vector2D(5.0f, -2.0f), Vector2D(0.5f, 1.2f));
+	Matrix4D matrix14(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f)); // rotation matrix
+	Matrix4D matrix15(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f), Vector3D(0.0f, 2.0f, 5.0f)); // rotation matrix
+
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix1, Matrix4D::IDENTITY_MATRIX, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(Matrix4D::IDENTITY_MATRIX, matrix1, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix1, matrix2, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix2, matrix1, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix2, Matrix4D::IDENTITY_MATRIX, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(Matrix4D::IDENTITY_MATRIX, matrix2, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix4, Matrix4D::IDENTITY_MATRIX, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix7, matrix8, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix7, Matrix4D::IDENTITY_MATRIX, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix9, matrix6, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix9, matrix9, true)); // comparing the matrix with itself
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix10, matrix11, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix11, matrix10, true));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, Matrix4D::IDENTITY_MATRIX, Matrix4D::IDENTITY_MATRIX));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, matrix3, matrix3));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, matrix5, matrix5));
+
+	matrixTests.StartTests();
 
 	Matrix4D identityMatrix1(Matrix4D::IDENTITY_MATRIX);
 	Matrix4D identityMatrix2(Matrix4D::IDENTITY_MATRIX);
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
 	const int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
-	Matrix4D matrix1(Matrix4D::IDENTITY_MATRIX);
-	TestReport(matrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
+	Matrix4D testMatrix1(Matrix4D::IDENTITY_MATRIX);
+	TestReport(testMatrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 
 	Timing::Timer timer;
 	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
-		Matrix4D matrix2(Matrix4D::IDENTITY_MATRIX);
+		Matrix4D testMatrix2(Matrix4D::IDENTITY_MATRIX);
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrix creation:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);

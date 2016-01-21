@@ -209,6 +209,10 @@ private:
 	StrToVec4DMap m_vec4DMap;
 	StrToRealMap realMap;
 	StrToTextureMap textureMap;
+
+	// TODO: Default texture, vector3D and vector4D are all the same for all MappedValues instances so
+	// there is no need to store as many instances of these as many MappedValues instances there are.
+	// We should store them only once in memory. Flyweight design pattern would be a perfect solution here.
 	Texture* m_defaultTexture;
 	Math::Vector3D m_defaultVector3D;
 	Math::Vector4D m_defaultVector4D;

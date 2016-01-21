@@ -23,19 +23,19 @@ class CoreEngine;
  * the third one storing only associated components which can be updated and the fourth one with game components that can be rendered.
  * This way we could prevent the application from calling empty functions. As game components functions are used very often this should help in FPS / SPF.
  */
-class RENDERING_API GameComponent
+class GameComponent
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	GameComponent();
-	virtual ~GameComponent(void);
+	RENDERING_API GameComponent();
+	RENDERING_API virtual ~GameComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Input(Math::Real delta);
-	virtual void Update(Math::Real delta);
-	virtual void Render(Shader* shader, Renderer* renderer);
+	RENDERING_API virtual void Input(Math::Real delta);
+	RENDERING_API virtual void Update(Math::Real delta);
+	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer);
 
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();

@@ -10,7 +10,7 @@ namespace Rendering
 
 /// <summary>The representation of color in the game engine.</summary>
 /// <remarks>It could possibly be merged together with the <code>Vector4D</code> class in the Math library.</remarks>
-class RENDERING_API Color
+class Color
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
