@@ -30,9 +30,9 @@ unsigned int outerLoops = 10000;
 double elapsedTime;
 
 unsigned int testNumber = 0;
-bool angleTestEnabled = true;
+bool angleTestEnabled = false;
 bool vectorTestEnabled = false;
-bool matrixTestEnabled = false;
+bool matrixTestEnabled = true;
 bool quaternionTestEnabled = true;
 bool sortingTestEnabled = false;
 bool kdTreeTestEnabled = false;
@@ -321,7 +321,7 @@ void MatrixTest()
 	Matrix4D matrix3(2.0f);
 	Matrix4D matrix4(REAL_ZERO, REAL_ZERO, REAL_ZERO); // translation matrix with translation vector equal to zero is indeed an identity matrix
 	Matrix4D matrix5(3.0f, -5.0f, 2.0f); // translation matrix
-	Matrix4D matrix6(-10.0f, 10.0f, -10.0f, 10.0f, 0.0f, 100.0f); // ortographic projection
+	Matrix4D matrix6(-10.0f, 10.0f, -10.0f, 10.0f, 0.1f, 100.0f); // ortographic projection
 	Matrix4D matrix7(Angle(30.0f), Angle(60.0f)); // rotation matrix
 	Matrix4D matrix8(Angle(30.0f), Angle(60.0f), Angle(0.0f));
 	Matrix4D matrix9(matrix6);
@@ -331,6 +331,9 @@ void MatrixTest()
 	Matrix4D matrix13(Vector2D(5.0f, -2.0f), Vector2D(0.5f, 1.2f));
 	Matrix4D matrix14(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f)); // rotation matrix
 	Matrix4D matrix15(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f), Vector3D(0.0f, 2.0f, 5.0f)); // rotation matrix
+	Matrix4D matrix16(1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 1);
+	Matrix4D matrix17(-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15, 16);
+	Matrix4D matrix18(-38, 44, -50, 56, -98, 116, -134, 152, -158, 188, -218, 248, -231, 274, -317, 360);
 
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix1, Matrix4D::IDENTITY_MATRIX, true));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(Matrix4D::IDENTITY_MATRIX, matrix1, true));
@@ -340,7 +343,7 @@ void MatrixTest()
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(Matrix4D::IDENTITY_MATRIX, matrix2, true));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix4, Matrix4D::IDENTITY_MATRIX, true));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix7, matrix8, true));
-	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix7, Matrix4D::IDENTITY_MATRIX, true));
+	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix7, Matrix4D::IDENTITY_MATRIX, false));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix9, matrix6, true));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix9, matrix9, true)); // comparing the matrix with itself
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix10, matrix11, true));
@@ -348,6 +351,27 @@ void MatrixTest()
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, Matrix4D::IDENTITY_MATRIX, Matrix4D::IDENTITY_MATRIX));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, matrix3, matrix3));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, matrix5, matrix5));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix12, Matrix4D::IDENTITY_MATRIX, matrix12));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix3, Matrix4D::IDENTITY_MATRIX, matrix3));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix16, matrix17, matrix18));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix1, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix2, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix3, Vector3D(2, 3, 5), Vector3D(4, 6, 10)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix4, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix5, Vector3D(2, 3, 5), Vector3D(5, -2, 7)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix6, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix7, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix8, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix9, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix10, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix11, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix12, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix13, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix14, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix15, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix16, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix17, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix18, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 
 	matrixTests.StartTests();
 

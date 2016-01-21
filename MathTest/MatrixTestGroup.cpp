@@ -21,6 +21,7 @@ void MatrixTestGroup::StartTests()
 	{
 		return;
 	}
+	TestGroup::StartTests();
 }
 /* ==================== class MatrixTestGroup end ==================== */
 
@@ -97,7 +98,7 @@ void MatrixTestMultiplyByVectorOperator::StartTest()
 {
 	Math::Vector3D multiplyResultVector = m_matrix * m_vector;
 	CHECK_CONDITION_ALWAYS(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Error,
-		"The multiplication of matrix %s and vector %s equals %s. It is different than expected %s",
+		"The multiplication of matrix:\n%s and vector %s equals %s. It is different than expected %s.",
 		m_matrix.ToString().c_str(), m_vector.ToString().c_str(), multiplyResultVector.ToString().c_str(),
 		m_expectedMultiplyResultVector.ToString().c_str());
 }

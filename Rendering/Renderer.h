@@ -325,7 +325,7 @@ private:
 	const Math::Angle m_skyboxAngleStep;
 	GameNode* m_skyboxNode;
 	Shader* m_skyboxShader;
-	Shader* m_skyboxShaderProcedural;
+	Shader* m_skyboxProceduralShader;
 	Texture* m_skyboxTextureDay;
 	Texture* m_skyboxTextureNight;
 

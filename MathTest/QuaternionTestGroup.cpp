@@ -22,6 +22,7 @@ void QuaternionTestGroup::StartTests()
 	{
 		return;
 	}
+	TestGroup::StartTests();
 }
 /* ==================== class QuaternionTestGroup end ==================== */
 

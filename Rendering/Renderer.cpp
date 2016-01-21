@@ -23,6 +23,7 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
+// FIXME: TRANSFORMATIONS ORDER
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */));
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
@@ -82,7 +83,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN), // TODO: This variable should be dependant of the clock speed in CoreEngine.
 	m_skyboxNode(NULL),
 	m_skyboxShader(NULL),
-	m_skyboxShaderProcedural(NULL),
+	m_skyboxProceduralShader(NULL),
 	m_skyboxTextureDay(NULL),
 	m_skyboxTextureNight(NULL),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),
@@ -128,7 +129,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_cameraType()
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
-	, m_guiTextures(NULL),
+	,m_guiTextures(NULL),
 	m_debugQuad(NULL),
 	m_debugShader(NULL)
 #endif
@@ -296,7 +297,7 @@ Renderer::~Renderer(void)
 	//SAFE_DELETE(altCameraNode);
 	//SAFE_DELETE(m_skyboxNode);
 	SAFE_DELETE(m_skyboxShader);
-	SAFE_DELETE(m_skyboxShaderProcedural);
+	SAFE_DELETE(m_skyboxProceduralShader);
 	SAFE_DELETE(m_cubeShadowMap);
 	SAFE_DELETE(m_filterMaterial);
 	SAFE_DELETE(m_filterMesh);
@@ -396,7 +397,7 @@ void Renderer::InitializeCubeMap()
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_skyboxNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader"));
-	m_skyboxShaderProcedural = new Shader(GET_CONFIG_VALUE_STR("skyboxShaderProcedural", "skybox-shader-procedural"));
+	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShaderProcedural", "skybox-shader-procedural"));
 	STOP_PROFILING;
 }
 
@@ -452,42 +453,12 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 			cubeMapNegZFaceFileName += (*filenameItr);
 		}
 	}
-	if (!cubeMapPosXFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the right face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
-	if (!cubeMapNegXFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the left face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
-	if (!cubeMapPosYFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the up face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
-	if (!cubeMapNegYFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the down face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
-	if (!cubeMapPosZFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the front face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
-	if (!cubeMapNegZFaceFileFound)
-	{
-		ERROR_LOG("Cannot locate the back face of the cube map");
-		// TODO: Set default texture for the missing face instead of just exiting
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(cubeMapPosXFaceFileFound, Utility::Error, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegXFaceFileFound, Utility::Error, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapPosYFaceFileFound, Utility::Error, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegYFaceFileFound, Utility::Error, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapPosZFaceFileFound, Utility::Error, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegZFaceFileFound, Utility::Error, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 	Texture* cubeMapTexture = new Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
@@ -586,8 +557,7 @@ void Renderer::Render(const GameNode& gameNode)
 		CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 		SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 		m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-		glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+		ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
 		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
 		{
 			m_altCamera.SetProjection(shadowInfo->GetProjection());
@@ -596,7 +566,7 @@ void Renderer::Render(const GameNode& gameNode)
 			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
 			//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
-			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection();
+			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: TRANSFORMATIONS ORDER
 
 			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
@@ -723,8 +693,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* add 0.1f to remove some glitches on the water surface */);
 	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
-	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	ClearScreen(Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO));
 
 	glDisable(GL_DEPTH_TEST);
 	RenderSkybox();

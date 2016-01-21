@@ -50,7 +50,7 @@ Matrix4D Transform::GetTransformation() const
 		Matrix4D translationMatrix(m_pos);
 		Matrix4D scaleMatrix(m_scale);
 
-		m_transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix;
+		m_transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix; // FIXME: TRANSFORMATIONS ORDER
 		m_isChanged = false;
 	}
 	else /* if (! IsHierarchyChanged()) */
@@ -73,7 +73,7 @@ Matrix4D Transform::GetTransformation() const
 	{
 		CalculateParentTransformation();
 		//parentTransformation = parentTransform->GetTransformation();
-		return m_parentTransformation * m_transformation;
+		return m_parentTransformation * m_transformation; // FIXME: TRANSFORMATIONS ORDER
 	}
 }
 

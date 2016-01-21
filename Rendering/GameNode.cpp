@@ -13,7 +13,7 @@ using namespace std;
 /* static */ int GameNode::gameNodeCount = 0;
 
 GameNode::GameNode(void) :
-	m_ID(GameNode::gameNodeCount++)
+	m_ID(++GameNode::gameNodeCount)
 {
 	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//INFO_LOG("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
