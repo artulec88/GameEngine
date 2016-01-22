@@ -164,6 +164,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetReal("fogEnd", m_fogEnd);
 	SetReal("fogDensityFactor", m_fogDensityFactor);
 	SetVector3D("ambientIntensity", m_ambientLight);
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
 
 	//SetTexture("shadowMap",
@@ -530,9 +531,13 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 	CheckCameraIndexChange();
 #endif
-	RenderWaterTextures(gameNode);
+	if (!m_waterNodes.empty())
+	{
+		RenderWaterTextures(gameNode);
+	}
 
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	//BindAsRenderTarget();
@@ -609,8 +614,14 @@ void Renderer::Render(const GameNode& gameNode)
 	}
 	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
-	RenderWaterNodes(); // normal rendering of water quads
-	RenderBillboardNodes(); // rendering billboards
+	if (!m_waterNodes.empty())
+	{
+		RenderWaterNodes(); // normal rendering of water quads
+	}
+	if (!m_billboardNodes.empty())
+	{
+		RenderBillboardNodes(); // rendering billboards
+	}
 
 	RenderSkybox();
 
@@ -626,6 +637,7 @@ void Renderer::Render(const GameNode& gameNode)
 void Renderer::RenderWaterTextures(const GameNode& gameNode)
 {
 	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 	CHECK_CONDITION(m_waterNodes.size() == 1, Utility::Warning, "For now the rendering engine supports only one water node in the game engine, but there are %d created.", m_waterNodes.size());
 	RenderWaterReflectionTexture(gameNode);
@@ -637,14 +649,15 @@ void Renderer::RenderWaterTextures(const GameNode& gameNode)
 	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
 	// and as a result we render the whole scene.
 	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring
-	BindAsRenderTarget();
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+	//BindAsRenderTarget();
 	STOP_PROFILING;
 }
 
 void Renderer::RenderWaterNodes()
 {
 	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
 	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
 	SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
 	SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
@@ -683,6 +696,7 @@ void Renderer::RenderBillboardNodes()
 void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 {
 	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
 	
 	Transform& cameraTransform = m_currentCamera->GetTransform();
 	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
@@ -748,6 +762,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 {
 	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
 
 	m_waterRefractionClippingPlane.SetW(m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
 	SetVector4D("clipPlane", m_waterRefractionClippingPlane);

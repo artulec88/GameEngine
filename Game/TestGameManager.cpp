@@ -227,7 +227,7 @@ void TestGameManager::Load()
 		Math::Real x = static_cast<Real>(rand() % 50) - 25.0f;
 		Math::Real z = static_cast<Real>(rand() % 50) - 25.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
-		billboardNode->AddComponent(new MeshRenderer(new BillboardMesh(Math::Vector3D(x, y, z)), new Material(new Texture("Tree1.png"))));
+		billboardNode->AddComponent(new MeshRenderer(new BillboardMesh(Math::Vector3D(x, y, z)), new Material(new Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png")))));
 		AddBillboardNode(billboardNode);
 	}
 

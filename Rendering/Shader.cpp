@@ -819,6 +819,7 @@ void Shader::SetUniformColor(const std::string& uniformName, const Color& color)
 
 void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
+	//DEBUG_LOG("Setting uniform matrix \"%s\":\n%s", name.c_str(), matrix.ToString().c_str());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData->IsUniformPresent(name, itr))
 	{
