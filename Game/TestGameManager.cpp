@@ -184,35 +184,35 @@ void TestGameManager::Load()
 	//monkeyNode2->AddComponent(new LookAtComponent());
 	AddToSceneRoot(monkeyNode2);
 
-	GameNode* earthNode = new GameNode();
-	earthNode->AddComponent(new MeshRenderer(new Mesh("earth.obj"), new Material(new Texture("earth.jpg"))));
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
-	AddToSceneRoot(earthNode);
+	//GameNode* earthNode = new GameNode();
+	//earthNode->AddComponent(new MeshRenderer(new Mesh("earth.obj"), new Material(new Texture("earth.jpg"))));
+	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
+	//earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
+	//AddToSceneRoot(earthNode);
 
-	GameNode* sphereNode = new GameNode();
-	sphereNode->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	m_resourcesLoaded += 2;
-	sphereNode->GetTransform().SetPos(-3.0f, 1.5f, -3.0f);
-	AddToSceneRoot(sphereNode);
+	//GameNode* sphereNode = new GameNode();
+	//sphereNode->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
+	//m_resourcesLoaded += 2;
+	//sphereNode->GetTransform().SetPos(-3.0f, 1.5f, -3.0f);
+	//AddToSceneRoot(sphereNode);
 
-	GameNode* sphereNode2 = new GameNode();
-	sphereNode2->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	m_resourcesLoaded += 2;
-	sphereNode2->GetTransform().SetPos(-3.0f, 2.0f, 3.0f);
-	AddToSceneRoot(sphereNode2);
+	//GameNode* sphereNode2 = new GameNode();
+	//sphereNode2->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
+	//m_resourcesLoaded += 2;
+	//sphereNode2->GetTransform().SetPos(-3.0f, 2.0f, 3.0f);
+	//AddToSceneRoot(sphereNode2);
 
-	GameNode* sphereNode3 = new GameNode();
-	sphereNode3->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	m_resourcesLoaded += 2;
-	sphereNode3->GetTransform().SetPos(3.0f, 2.5f, -3.0f);
-	AddToSceneRoot(sphereNode3);
+	//GameNode* sphereNode3 = new GameNode();
+	//sphereNode3->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
+	//m_resourcesLoaded += 2;
+	//sphereNode3->GetTransform().SetPos(3.0f, 2.5f, -3.0f);
+	//AddToSceneRoot(sphereNode3);
 
-	GameNode* sphereNode4 = new GameNode();
-	sphereNode4->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	m_resourcesLoaded += 2;
-	sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
-	AddToSceneRoot(sphereNode4);
+	//GameNode* sphereNode4 = new GameNode();
+	//sphereNode4->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
+	//m_resourcesLoaded += 2;
+	//sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
+	//AddToSceneRoot(sphereNode4);
 
 	GameNode* waterNode = new GameNode();
 	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), new Material(new Texture("water.jpg"))));
