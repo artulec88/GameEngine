@@ -64,13 +64,13 @@ Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m0
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Vector2D& position, const Vector2D& scale)
+Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
 {
 	START_PROFILING;
-	Matrix4D translateMatrix(position.GetX(), position.GetY(), REAL_ZERO);
+	Matrix4D translateMatrix(screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO);
 	Matrix4D scaleMatrix;
 	scaleMatrix.SetScaleMatrix(scale.GetX(), scale.GetY(), REAL_ONE);
 	Matrix4D result = translateMatrix * scaleMatrix;
