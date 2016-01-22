@@ -32,23 +32,23 @@ void main()
 	
 	pos -= (right * 0.5);
 	gl_Position = T_VP * vec4(pos, 1.0);
-	texCoord0 = vec2(0.0, 0.0);
+	texCoord0 = vec2(0.0, 1.0);
 	EmitVertex();
 	
 	pos.y += 1.0;
 	gl_Position = T_VP * vec4(pos, 1.0);
-	texCoord0 = vec2(0.0, 1.0);
+	texCoord0 = vec2(0.0, 0.0);
 	EmitVertex();
 	
 	pos.y -= 1.0;
 	pos += right;
 	gl_Position = T_VP * vec4(pos, 1.0);
-	texCoord0 = vec2(1.0, 0.0);
+	texCoord0 = vec2(1.0, 1.0);
 	EmitVertex();
 	
 	pos.y += 1.0;
 	gl_Position = T_VP * vec4(pos, 1.0);
-	texCoord0 = vec2(1.0, 1.0);
+	texCoord0 = vec2(1.0, 0.0);
 	EmitVertex();
 	
 	EndPrimitive();
@@ -63,10 +63,10 @@ DeclareFragOutput(0, vec4);
 void main()
 {
 	vec4 fragColor = texture2D(diffuse, texCoord0);
-	//if (fragColor.r == 0 && fragColor.g == 0 && fragColor.b == 0)
-	//{
-	//	discard;
-	//}
+	/*if (fragColor.r < 0.01 && fragColor.g < 0.01 && fragColor.b < 0.01)
+	{
+		discard;
+	}*/
 	SetFragOutput(0, fragColor);
 }
 #endif
