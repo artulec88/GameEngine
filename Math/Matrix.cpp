@@ -338,7 +338,7 @@ Matrix4D::~Matrix4D()
 
 std::string Matrix4D::ToString() const
 {
-	const std::string INDENTATION_STRING = " ";
+	const std::string INDENTATION_STRING = "\t";
 	std::stringstream s("");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	s << m[0][0] << INDENTATION_STRING;
