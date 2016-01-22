@@ -150,10 +150,10 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 #endif
 {
 	START_PROFILING;
-	Real xSin = angleX.Sin();
-	Real xCos = angleX.Cos();
-	Real ySin = angleY.Sin();
-	Real yCos = angleY.Cos();
+	const Real xSin = angleX.Sin();
+	const Real xCos = angleX.Cos();
+	const Real ySin = angleY.Sin();
+	const Real yCos = angleY.Cos();
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = yCos;			m[0][1] = REAL_ZERO;	m[0][2] = ySin;			m[0][3] = REAL_ZERO;
 	m[1][0] = -xSin * ySin;	m[1][1] = xCos;			m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
