@@ -39,7 +39,7 @@ MeshData::MeshData() :
 	glGenBuffers(1, &m_vbo);
 }
 
-MeshData::MeshData(size_t indexSize) :
+MeshData::MeshData(GLsizei indexSize) :
 	m_vbo(0),
 	m_ibo(0),
 	m_size(indexSize)
@@ -212,7 +212,7 @@ void Mesh::Initialize()
 
 void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled /* = true */)
 {
-	m_meshData = new MeshData(indicesCount);
+	m_meshData = new MeshData(static_cast<GLsizei>(indicesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	if (calcNormalsEnabled)
 	{
@@ -283,7 +283,7 @@ void Mesh::Draw() const
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D))); // tangents
 	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
 
-	glDrawElements(m_mode /* GL_TRIANGLES / GL_LINES */, static_cast<GLsizei>(m_meshData->GetSize()), GL_UNSIGNED_INT, 0);
+	glDrawElements(m_mode, m_meshData->GetSize(), GL_UNSIGNED_INT, 0);
 
 	UnbindBuffers();
 }

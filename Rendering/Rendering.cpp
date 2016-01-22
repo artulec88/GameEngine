@@ -179,12 +179,7 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
 {
 	DEBUG_LOG("Initializing GLFW started");
-	if( !glfwInit() )
-	{
-		CRITICAL_LOG("Failed to initalize GLFW");
-		exit(EXIT_FAILURE);
-		// throw FileNotFoundException(); // TODO: throw another exception in the future
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
 	
 	glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
     threadWindow = glfwCreateWindow( 1, 1, "Thread Window", NULL, NULL );

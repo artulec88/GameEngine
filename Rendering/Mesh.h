@@ -45,10 +45,10 @@ class MeshData : public Utility::ReferenceCounter
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary>
-	/// Simple mesh data without index buffer object.
+	/// Simple mesh data constructor without index buffer object.
 	/// </summary>
 	MeshData();
-	MeshData(size_t indexSize);
+	MeshData(GLsizei indexSize);
 	virtual ~MeshData(void);
 private:
 	MeshData(const MeshData& meshData) {} // don't implement
@@ -57,21 +57,41 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	/// <summary>
+	/// Returns the handle for the vertex buffer object.
+	/// </summary>
+	/// <returns> A handle to the vertex buffer object. </returns>
 	GLuint GetVBO() const { return m_vbo; }
+
+	/// <summary>
+	/// Returns the handle for the index buffer object.
+	/// </summary>
+	/// <returns> A handle to the index buffer object. </returns>
 	GLuint GetIBO() const { return m_ibo; }
-	size_t GetSize() const { return m_size; }
+
+	/// <summary>
+	/// Returns the size of the mesh.
+	/// </summary>
+	/// <returns> The size of the mesh. </returns>
+	GLsizei GetSize() const { return m_size; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	/// <summary> Vertex buffer object. </summary>
+	/// <summary>
+	/// Vertex buffer object. A handle to vertices making up the whole mesh.
+	/// </summary>
 	GLuint m_vbo;
 	
-	/// <summary> Index buffer object. </summary>
+	/// <summary>
+	/// Index buffer object.
+	/// </summary>
 	GLuint m_ibo;
 	
-	/// <summary> The size. </summary>
-	size_t m_size;
+	/// <summary>
+	/// The size. It represents how much data there is in the vertex buffer object.
+	/// </summary>
+	GLsizei m_size;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MeshData */
 
