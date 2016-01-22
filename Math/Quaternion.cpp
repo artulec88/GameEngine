@@ -19,7 +19,7 @@ Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 // From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
 Quaternion::Quaternion(const Matrix4D& rotMatrix)
 {
-	// SEEMS TO BE CHECKED
+	// FIXME: TRANSFORMATIONS ORDER
 	/*Real m00 = rotMatrix.GetElement(0, 0);
 	Real m11 = rotMatrix.GetElement(1, 1);
 	Real m22 = rotMatrix.GetElement(2, 2);
@@ -117,6 +117,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 
 Matrix4D Quaternion::ToRotationMatrix() const
 {
+	// FIXME: TRANSFORMATIONS ORDER
 	// This function was tested and proved to be the fastest of 6 variants of the same function.
 	// It prooved to be faster even than inline functions.
 	return Matrix4D(Vector3D(2.0f * (GetX() * GetZ() - GetW() * GetY()), 2.0f * (GetY() * GetZ() + GetW() * GetX()), 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY())),
@@ -169,11 +170,11 @@ bool Quaternion::IsNormalized() const
 
 Quaternion Quaternion::operator*(const Quaternion& q) const
 {
-	// CHECKED
-	Real w = m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ();
+	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
 	Real x = m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY();
 	Real y = m_y * q.GetW() + m_w * q.GetY() + m_z * q.GetX() - m_x * q.GetZ();
 	Real z = m_z * q.GetW() + m_w * q.GetZ() + m_x * q.GetY() - m_y * q.GetX();
+	Real w = m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ();
 
 	return Quaternion(x, y, z, w);
 }

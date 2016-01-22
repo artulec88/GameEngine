@@ -10,6 +10,10 @@
 namespace Math
 {
 
+/// <summary>
+/// Quaternion representation. Quaternion uses the imaginary component (in contrary to a simple 4D vector) which makes rotation a lot easier to do.
+/// The rotation when using the quaternions can be performed by multiplication.
+/// </summary>
 class MATH_API Quaternion
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -84,9 +88,24 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	/// <summary>
+	/// Imaginary X component of the quaternion.
+	/// </summary>
 	Real m_x;
+
+	/// <summary>
+	/// Imaginary Y component of the quaternion.
+	/// </summary>
 	Real m_y;
+
+	/// <summary>
+	/// Imaginary Z component of the quaternion.
+	/// </summary>
 	Real m_z;
+
+	/// <summary>
+	/// Real W component of the quaternion.
+	/// </summary>
 	Real m_w;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Quaternion */
