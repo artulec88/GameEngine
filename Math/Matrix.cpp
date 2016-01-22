@@ -41,6 +41,29 @@ Matrix4D::Matrix4D()
 	STOP_PROFILING;
 }
 
+Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m03,
+	Math::Real m10, Math::Real m11, Math::Real m12, Math::Real m13,
+	Math::Real m20, Math::Real m21, Math::Real m22, Math::Real m23,
+	Math::Real m30, Math::Real m31, Math::Real m32, Math::Real m33)
+#ifdef CALCULATE_MATH_STATS
+	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	m[0][0] = m00;	m[0][1] = m01;	m[0][2] = m02;	m[0][3] = m03;
+	m[1][0] = m10;	m[1][1] = m11;	m[1][2] = m12;	m[1][3] = m13;
+	m[2][0] = m20;	m[2][1] = m21;	m[2][2] = m22;	m[2][3] = m23;
+	m[3][0] = m30;	m[3][1] = m31;	m[3][2] = m32;	m[3][3] = m33;
+#else
+	m[0] = m00;		m[1] = m01;		m[2] = m02;		m[3] = m03;
+	m[4] = m10;		m[5] = m11;		m[6] = m12;		m[7] = m13;
+	m[8] = m20;		m[9] = m21;		m[10] = m22;	m[11] = m23;
+	m[12] = m30;	m[13] = m31;	m[14] = m32;	m[15] = m33;
+#endif
+	STOP_PROFILING;
+}
+
 Matrix4D::Matrix4D(const Vector2D& position, const Vector2D& scale)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
@@ -494,6 +517,24 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 	//return Vector3D((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw,
 	//	(m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw,
 	//	(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
+}
+
+Vector4D Matrix4D::operator*(const Vector4D& vec) const
+{
+	START_PROFILING;
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	Real x = m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3];
+	Real y = m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[1][3];
+	Real z = m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[2][3];
+	Real w = m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3];
+#else
+	Real x = m[0] * vec.GetX() + m[1] * vec.GetY() + m[2] * vec.GetZ() + m[3];
+	Real y = m[4] * vec.GetX() + m[5] * vec.GetY() + m[6] * vec.GetZ() + m[7];
+	Real z = m[8] * vec.GetX() + m[9] * vec.GetY() + m[10] * vec.GetZ() + m[11];
+	Real w = m[12] * vec.GetX() + m[13] * vec.GetY() + m[14] * vec.GetZ() + m[15];
+#endif
+	STOP_PROFILING;
+	return Vector4D(x, y, z, w);
 }
 
 /**

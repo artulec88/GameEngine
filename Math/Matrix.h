@@ -20,6 +20,10 @@ namespace Math
 {
 
 /// <summary> The class representing the 4x4 matrix. </summary>
+/// <remarks>
+///	The matrix is defined in a column-major ordering.
+/// See http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf for details.
+/// </remarks>
 class MATH_API Matrix4D
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -37,9 +41,18 @@ public:
 	/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
 	/// <returns>Identity matrix.</returns>
 	Matrix4D();
+	/// <summary>
+	/// Creates a 4x4 matrix and assigns a specified value for each of all 16 elements.
+	/// </summary>
+	Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m03,
+		Math::Real m10, Math::Real m11, Math::Real m12, Math::Real m13,
+		Math::Real m20, Math::Real m21, Math::Real m22, Math::Real m23,
+		Math::Real m30, Math::Real m31, Math::Real m32, Math::Real m33);
 	/// <summary> Creates a matrix based on the screen position and the scale. </summary>
-	/// <remarks> The function is used for the gui textures </remarks>
-	Matrix4D(const Vector2D& position, const Vector2D& scale);
+	/// <param name='screenPosition'> The position on the screen </param>
+	/// <param name='scale'> The scale </param>
+	/// <remarks> The function is used for the gui textures. </remarks>
+	Matrix4D(const Vector2D& screenPosition, const Vector2D& scale);
 	/// <summary>Creates scale matrix based on the specified parameter.</summary>
 	/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
 	/// <returns>Scale matrix.</returns>
@@ -64,6 +77,7 @@ public:
 	/// <param name='angleY'>The rotation angle around Y axis.</param>
 	/// <param name='angleZ'>The rotation angle around Z axis.</param>
 	/// <returns>Rotation matrix.</returns>
+	/// <remarks> See http://planning.cs.uiuc.edu/node102.html </remarks>
 	Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
 	/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 	/// <param name='forward'>The forward vector.</param>
@@ -108,6 +122,7 @@ public:
 	
 	Matrix4D operator*(const Matrix4D& m) const;
 	Vector3D operator*(const Vector3D& vec) const;
+	Vector4D operator*(const Vector4D& vec) const;
 	bool operator==(const Matrix4D& m) const;
 	bool operator!=(const Matrix4D& m) const;
 	Matrix4D& operator=(const Matrix4D& mat);
