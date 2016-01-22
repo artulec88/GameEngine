@@ -790,7 +790,11 @@ void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real near
 	//m[2][0] = 0.0;		m[2][1] = 0.0;	m[2][2] = (farPlane + nearPlane) * div;	m[2][3] = 2.0 * farPlane * nearPlane * div;
 	//m[3][0] = 0.0;		m[3][1] = 0.0;	m[3][2] = -1.0;							m[3][3] = 0.0;
 
-	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 begin */
+	/*
+	* IMPLEMENTATION FROM
+	* https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 and
+	* http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf
+	*/
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = f / aspect;	m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;											m[0][3] = REAL_ZERO;
 	m[1][0] = REAL_ZERO;	m[1][1] = f;			m[1][2] = REAL_ZERO;											m[1][3] = REAL_ZERO;
