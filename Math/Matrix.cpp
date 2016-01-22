@@ -175,15 +175,14 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ
 #endif
 {
 	START_PROFILING; // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
+	const Real xSin = angleX.Sin();
+	const Real xCos = angleX.Cos();
+	const Real ySin = angleY.Sin();
+	const Real yCos = angleY.Cos();
+	const Real zSin = angleZ.Sin();
+	const Real zCos = angleZ.Cos();
 	/* ==================== SOLUTION #1 begin ==================== */
 	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
-
-	//Real xSin = angleX.Sin();
-	//Real xCos = angleX.Cos();
-	//Real ySin = angleY.Sin();
-	//Real yCos = angleY.Cos();
-	//Real zSin = angleZ.Sin();
-	//Real zCos = angleZ.Cos();
 
 	//rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
 	//rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
@@ -204,12 +203,6 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ
 	/* ==================== SOLUTION #1 end ==================== */
 
 	/* ==================== SOLUTION #2 begin ==================== */
-	const Real xSin = angleX.Sin();
-	const Real xCos = angleX.Cos();
-	const Real ySin = angleY.Sin();
-	const Real yCos = angleY.Cos();
-	const Real zSin = angleZ.Sin();
-	const Real zCos = angleZ.Cos();
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = yCos * zCos;							m[0][1] = yCos * zSin;							m[0][2] = ySin;			m[0][3] = REAL_ZERO;
 	m[1][0] = -xSin * ySin * zCos - xCos * zSin;	m[1][1] = -xSin * ySin * zSin + xCos * zCos;	m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
