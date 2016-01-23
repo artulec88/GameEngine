@@ -55,7 +55,7 @@ GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
-	INFO_LOG("Game node (ID=%d) destruction finished", m_ID);
+	DEBUG_LOG("Game node (ID=%d) destruction finished", m_ID);
 }
 
 GameNode* GameNode::AddChild(GameNode* child)

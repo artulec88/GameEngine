@@ -480,6 +480,10 @@ void Renderer::RegisterTerrainNode(GameNode* terrainNode)
 void Renderer::AddWaterNode(GameNode* waterNode)
 {
 	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
+	if (m_waterNodes.empty())
+	{
+		INFO_LOG("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
+	}
 	m_waterNodes.push_back(waterNode);
 }
 
@@ -707,7 +711,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* add 0.1f to remove some glitches on the water surface */);
 	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
-	ClearScreen(Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
 
 	glDisable(GL_DEPTH_TEST);
 	RenderSkybox();
@@ -767,8 +771,7 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	m_waterRefractionClippingPlane.SetW(m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
 	SetVector4D("clipPlane", m_waterRefractionClippingPlane);
 	m_waterRefractionTexture->BindAsRenderTarget();
-	glClearColor(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
 
 	//glDisable(GL_DEPTH_TEST);
 	RenderSkybox();

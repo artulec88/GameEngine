@@ -63,10 +63,10 @@ DeclareFragOutput(0, vec4);
 void main()
 {
 	vec4 fragColor = texture2D(diffuse, texCoord0);
-	/*if (fragColor.r < 0.01 && fragColor.g < 0.01 && fragColor.b < 0.01)
+	if (fragColor.r > 0.5 && fragColor.g > 0.5 && fragColor.b > 0.5)
 	{
 		discard;
-	}*/
+	}
 	SetFragOutput(0, fragColor);
 }
 #endif

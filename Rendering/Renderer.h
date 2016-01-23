@@ -249,6 +249,11 @@ protected:
 		glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+	inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+	{
+		glClearColor(red, green, blue, alpha);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 
 	inline void SetSamplerSlot(const std::string& name, unsigned int value)
 	{
