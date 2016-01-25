@@ -137,7 +137,7 @@ public:
 		return glfwWindowShouldClose(m_window) != 0;
 	}
 
-	inline Math::Matrix4D GetLightMatrix() const
+	inline const Math::Matrix4D& GetLightMatrix() const
 	{
 		return m_lightMatrix;
 	}
