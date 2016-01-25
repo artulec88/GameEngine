@@ -73,7 +73,7 @@ Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
 	Matrix4D translateMatrix(screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO);
 	Matrix4D scaleMatrix;
 	scaleMatrix.SetScaleMatrix(scale.GetX(), scale.GetY(), REAL_ONE);
-	Matrix4D result = translateMatrix * scaleMatrix;
+	Matrix4D result = translateMatrix * scaleMatrix; // FIXME: Check matrix multiplication
 
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	for (int i = 0; i < MATRIX_SIZE; ++i)

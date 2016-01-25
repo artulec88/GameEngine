@@ -23,8 +23,7 @@ using namespace Rendering;
 using namespace Utility;
 using namespace Math;
 
-// FIXME: TRANSFORMATIONS ORDER
-/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */));
+/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
 Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
@@ -575,7 +574,7 @@ void Renderer::Render(const GameNode& gameNode)
 			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
 			//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
-			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: TRANSFORMATIONS ORDER
+			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
 
 			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());

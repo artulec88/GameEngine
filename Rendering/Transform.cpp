@@ -50,7 +50,7 @@ Matrix4D Transform::GetTransformation() const
 		Matrix4D translationMatrix(m_pos);
 		Matrix4D scaleMatrix(m_scale);
 
-		m_transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix; // FIXME: TRANSFORMATIONS ORDER
+		m_transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix; // FIXME: Check matrix multiplication
 		m_isChanged = false;
 	}
 	else /* if (! IsHierarchyChanged()) */
@@ -73,7 +73,7 @@ Matrix4D Transform::GetTransformation() const
 	{
 		CalculateParentTransformation();
 		//parentTransformation = parentTransform->GetTransformation();
-		return m_parentTransformation * m_transformation; // FIXME: TRANSFORMATIONS ORDER
+		return m_parentTransformation * m_transformation; // FIXME: Check matrix multiplication
 	}
 }
 
@@ -95,7 +95,7 @@ void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
 void Transform::Rotate(const Quaternion& rot)
 {
 	//DEBUG_LOG("Started...");
-	m_rotation = (rot * m_rotation).Normalized();
+	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
 }
 

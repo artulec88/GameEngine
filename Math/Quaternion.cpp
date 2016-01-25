@@ -198,11 +198,12 @@ Real Quaternion::Dot(const Quaternion& q) const
 Quaternion Quaternion::Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
 	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
-	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();
+	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();  // FIXME: Check quaternion multiplication
 }
 
 Quaternion Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
+	// FIXME: Check quaternion multiplication
 	if (shortest && Dot(q) < REAL_ZERO)
 	{
 		return Quaternion((-q.GetX() - m_x) * nlerpFactor + m_x, (-q.GetY() - m_y) * nlerpFactor + m_y, (-q.GetZ() - m_z) * nlerpFactor + m_z, (-q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
@@ -237,7 +238,7 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 	Real srcFactor = static_cast<Real>(sin((REAL_ONE - slerpFactor) * angle)) * invSinus;
 	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
 
-	return Quaternion((*this) * srcFactor + fixedQ * destFactor);
+	return Quaternion((*this) * srcFactor + fixedQ * destFactor); // FIXME: Check quaternion multiplication
 }
 
 Vector3D Quaternion::GetBack() const

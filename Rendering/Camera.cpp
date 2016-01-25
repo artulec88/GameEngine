@@ -75,7 +75,7 @@ Matrix4D CameraBase::GetViewProjection() const
 	// Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
-	return m_projection * cameraRotation * cameraTranslation;
+	return m_projection * cameraRotation * cameraTranslation; // FIXME: Check matrix multiplication
 }
 
 

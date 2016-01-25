@@ -237,7 +237,7 @@ Vector3D Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 
 Vector3D Vector3D::Rotate(const Quaternion& rotation) const
 {
-	Quaternion w = rotation * (*this) * rotation.Conjugate();
+	Quaternion w = rotation * (*this) * rotation.Conjugate(); // FIXME: Check quaternion multiplication
 	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
 

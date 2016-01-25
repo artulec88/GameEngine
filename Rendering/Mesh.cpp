@@ -644,7 +644,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	}
 #elif defined HEIGHTMAP_KD_TREE
 #ifdef MEASURE_TIME_ENABLED
-	clock_t begin = clock();
+	clock_t begin = clock(); // TODO: Replace with Utility::Timer
 #endif
 	DEBUG_LOG("Terrain consists of %d positions", positions.size());
 	std::unordered_set<Math::Vector3D> verticesSet;
@@ -655,7 +655,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	std::vector<Math::Vector3D> uniquePositions;
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_TIME_ENABLED
-	clock_t end = clock();
+	clock_t end = clock(); // TODO: Replace with Utility::Timer
 	DEBUG_LOG("Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 
@@ -685,7 +685,7 @@ void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 	for (int i = 0; i < m_positionsCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
-		m_positions[i] = transformationMatrix * m_positions[i];
+		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
 		//if ((i % 1000 == 0) || (i == positionsCount - 1))
 		//{
 		//	DELOCUST_LOG("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());

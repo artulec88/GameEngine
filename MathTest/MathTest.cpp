@@ -398,7 +398,7 @@ void MatrixTest()
 	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
-		Matrix4D result = identityMatrix1 * identityMatrix2;
+		Matrix4D result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
 		CHECK_CONDITION(result == identityMatrix1 * identityMatrix2, Utility::Error, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
@@ -412,7 +412,7 @@ void MatrixTest()
 	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
-		Matrix4D result = mat1 * mat2;
+		Matrix4D result = mat1 * mat2; // FIXME: Check matrix multiplication
 		//CHECK_CONDITION(result == mat1 * mat2, Utility::Error, "Random matrix multiplication result is incorrect.");
 	}
 	timer.Stop();

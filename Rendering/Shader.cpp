@@ -571,7 +571,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 	/* ==================== SOLUTION #1 end ==================== */
 	/* ==================== SOLUTION #2 begin ==================== */
 	Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection() * worldMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
-																							  // FIXME: TRANSFORMATIONS ORDER
+																							  // FIXME: Check matrix multiplication
 	/* ==================== SOLUTION #2 end ==================== */
 	/* ==================== SOLUTION #3 begin ==================== */
 	//Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
@@ -597,7 +597,7 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			{
 				//CRITICAL_LOG("Renderer->GetLightMatrix() = \"%s\"", renderer->GetLightMatrix().ToString().c_str());
 				//CRITICAL_LOG("WorldMatrix = \"%s\"", worldMatrix.ToString().c_str());
-				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix); // FIXME: TRANSFORMATIONS ORDER
+				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix); // FIXME: Check matrix multiplication
 			}
 			else if ((uniformType == Uniforms::SAMPLER_2D) || (uniformType == Uniforms::SAMPLER_CUBE))
 			{

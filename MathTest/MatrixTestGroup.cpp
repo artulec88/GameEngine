@@ -74,7 +74,7 @@ MatrixTestMultiplyByMatrixOperator::~MatrixTestMultiplyByMatrixOperator()
 
 void MatrixTestMultiplyByMatrixOperator::StartTest()
 {
-	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2;
+	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS(multiplyResultMatrix == m_expectedMultiplyResultMatrix, Utility::Error,
 		"The multiplication of matrices %s and %s equals %s. It is different than expected %s",
 		m_matrix.ToString().c_str(), m_matrix2.ToString().c_str(), multiplyResultMatrix.ToString().c_str(),
@@ -96,7 +96,7 @@ MatrixTestMultiplyByVectorOperator::~MatrixTestMultiplyByVectorOperator()
 
 void MatrixTestMultiplyByVectorOperator::StartTest()
 {
-	Math::Vector3D multiplyResultVector = m_matrix * m_vector;
+	Math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Error,
 		"The multiplication of matrix:\n%s and vector %s equals %s. It is different than expected %s.",
 		m_matrix.ToString().c_str(), m_vector.ToString().c_str(), multiplyResultVector.ToString().c_str(),

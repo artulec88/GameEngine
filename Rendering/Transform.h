@@ -47,8 +47,7 @@ public:
 		{
 			return m_rotation;
 		}
-		// FIXME: TRANSFORMATIONS ORDER
-		return m_parentTransform->GetTransformedRot() * m_rotation;
+		return m_parentTransform->GetTransformedRot() * m_rotation; // FIXME: Check quaternion multiplication
 	}
 
 	void SetPos(const Math::Vector3D& pos) { m_pos = pos; m_isChanged = true; }

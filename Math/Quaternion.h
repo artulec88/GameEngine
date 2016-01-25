@@ -12,20 +12,28 @@ namespace Math
 
 /// <summary>
 /// Quaternion representation. Quaternion uses the imaginary component (in contrary to a simple 4D vector) which makes rotation a lot easier to do.
-/// The rotation when using the quaternions can be performed by multiplication.
+/// The rotation when using the quaternions can be performed by simple multiplication.
 /// </summary>
-class MATH_API Quaternion
+class Quaternion
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Quaternion() : m_x(REAL_ZERO), m_y(REAL_ZERO), m_z(REAL_ZERO), m_w(REAL_ONE) { };
-	Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
-	Quaternion(const Vector3D& axis, const Angle& angle);
-	Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW()) { };
-	Quaternion(const Matrix4D& rotMatrix);
+	/// <summary>
+	/// Default constructor of the quaternion. The quaternion is set up in a way to represent no rotation at all.
+	/// </summary>
+	MATH_API Quaternion() : m_x(REAL_ZERO), m_y(REAL_ZERO), m_z(REAL_ZERO), m_w(REAL_ONE) { };
+	MATH_API Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w) { };
+	/// <summary>
+	/// Creates a new quaternion based on the axis given as parameter <paramref name="axis"/> around we want to rotate by the angle <paramref name="angle"/>.
+	/// </summary>
+	/// <param name="axis">An axis around which we want to rotate.</param>
+	/// <param name="axis">An angle by which we want to rotate.</param>
+	MATH_API Quaternion(const Vector3D& axis, const Angle& angle);
+	MATH_API Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW()) { };
+	MATH_API Quaternion(const Matrix4D& rotMatrix);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -35,8 +43,8 @@ public:
 	inline Real GetZ() const { return m_z; };
 	inline Real GetW() const { return m_w; };
 
-	Real Length() const;
-	Real LengthSquared() const;
+	MATH_API Real Length() const;
+	MATH_API Real LengthSquared() const;
 
 	/// <summary>
 	/// Pitch inversion function.
@@ -44,46 +52,52 @@ public:
 	/// <remarks>
 	/// The pitch is described in the video: https://www.youtube.com/watch?v=PoxDDZmctnU&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=19.
 	/// </remarks
-	void InvertPitch();
+	MATH_API void InvertPitch();
 	
+	/// <summary>
+	/// Calculates the conjugate of the quaternion.
+	/// </summary>
 	inline Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 	
 	// See http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/arithmetic/index.htm for quaternion arithmetics.
 	Quaternion operator+(const Quaternion& q) const { return Quaternion(m_x + q.GetX(), m_y + q.GetY(), m_z + q.GetZ(), m_w + q.GetW()); };
 	Quaternion operator-() const { return Quaternion(-m_x, -m_y, -m_z, -m_w); };
 	Quaternion operator-(const Quaternion& q) const { return Quaternion(m_x - q.GetX(), m_y - q.GetY(), m_z - q.GetZ(), m_w - q.GetW()); };
-	Quaternion operator*(Real s) const { return Quaternion(s * m_x, s * m_y, s * m_z, s * m_w); };
-	Quaternion operator*(const Quaternion& q) const;
-	Quaternion operator*(const Vector3D& vec) const;
+	MATH_API Quaternion operator*(Real s) const { return Quaternion(s * m_x, s * m_y, s * m_z, s * m_w); };
+	MATH_API Quaternion operator*(const Quaternion& q) const;
+	MATH_API Quaternion operator*(const Vector3D& vec) const;
 	Quaternion operator/(Real s) const { return Quaternion(m_x / s, m_y / s, m_z / s, m_w / s); };
-	Quaternion& operator=(const Quaternion& v);
-	bool operator==(const Quaternion& v) const;
-	bool operator!=(const Quaternion& v) const;
+	MATH_API Quaternion& operator=(const Quaternion& v);
+	MATH_API bool operator==(const Quaternion& v) const;
+	MATH_API bool operator!=(const Quaternion& v) const;
 
-	Quaternion Normalized() const;
-	void Normalize();
-	bool IsNormalized() const;
+	MATH_API Quaternion Normalized() const;
+	MATH_API void Normalize();
+	MATH_API bool IsNormalized() const;
 
-	Real Dot(const Quaternion& q) const;
+	MATH_API Real Dot(const Quaternion& q) const;
 
-	Quaternion Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const;
-	Quaternion Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const;
-	Quaternion Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const;
+	MATH_API Quaternion Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const;
+	MATH_API Quaternion Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const;
+	MATH_API Quaternion Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const;
 
 	inline Vector3D GetForward() const
 	{
 		return Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE).Rotate(*this);
 	}
-	Vector3D GetUp() const;
-	Vector3D GetRight() const;
+	MATH_API Vector3D GetUp() const;
+	MATH_API Vector3D GetRight() const;
 
-	Vector3D GetBack() const;
-	Vector3D GetDown() const;
-	Vector3D GetLeft() const;
+	MATH_API Vector3D GetBack() const;
+	MATH_API Vector3D GetDown() const;
+	MATH_API Vector3D GetLeft() const;
 
-	Matrix4D ToRotationMatrix() const;
+	/// <summary>
+	/// Converts the quaternion to the respective matrix representing the same rotation.
+	/// </summary>
+	MATH_API Matrix4D ToRotationMatrix() const;
 
-	std::string ToString() const;
+	MATH_API std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
