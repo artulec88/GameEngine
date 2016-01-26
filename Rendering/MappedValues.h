@@ -123,8 +123,9 @@ public:
 		}
 	}
 
-	RENDERING_API inline const Math::Vector3D GetVec3D(const std::string& name) const
+	RENDERING_API inline const Math::Vector3D& GetVec3D(const std::string& name) const
 	{
+		// TODO: Return a reference instead of value.
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
@@ -134,8 +135,9 @@ public:
 		return itr->second;
 	}
 
-	RENDERING_API inline const Math::Vector4D GetVec4D(const std::string& name) const
+	RENDERING_API inline const Math::Vector4D& GetVec4D(const std::string& name) const
 	{
+		// TODO: Return a reference instead of value.
 		std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
 		if (itr == m_vec4DMap.end()) // vector not found
 		{

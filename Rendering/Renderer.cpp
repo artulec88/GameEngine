@@ -115,7 +115,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_waterNormalMap(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
+	m_waterLightReflectionEnabled(true),
 	m_waterShader(NULL),
+	m_waterNoDirectionalLightShader(NULL),
 	m_billboardShader(NULL),
 	m_billboardNodes()
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -242,6 +244,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
 	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "water-shader"));
+	m_waterNoDirectionalLightShader = new Shader(GET_CONFIG_VALUE_STR("waterNoDirectionalLightShader", "water-no-directional-light-shader"));
 
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
@@ -318,6 +321,7 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterRefractionTexture);
 	SAFE_DELETE(m_waterReflectionTexture);
 	SAFE_DELETE(m_waterShader);
+	SAFE_DELETE(m_waterNoDirectionalLightShader);
 	
 	SAFE_DELETE(m_billboardShader);
 	for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
@@ -671,6 +675,7 @@ void Renderer::RenderWaterNodes()
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
+		CHECK_CONDITION_ALWAYS(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
 	}
 	SetReal("waterMoveFactor", m_waterMoveFactor);
 	SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
@@ -680,7 +685,14 @@ void Renderer::RenderWaterNodes()
 	SetReal("waterReflectivity", m_waterReflectivity);
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
-		(*waterNodeItr)->RenderAll(m_waterShader, this);
+		if (m_waterLightReflectionEnabled)
+		{
+			(*waterNodeItr)->RenderAll(m_waterShader, this);
+		}
+		else
+		{
+			(*waterNodeItr)->RenderAll(m_waterNoDirectionalLightShader, this);
+		}
 	}
 	STOP_PROFILING;
 }
@@ -1139,6 +1151,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 	if (directionalLight != NULL)
 	{
 		INFO_LOG("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		m_waterLightReflectionEnabled = true;
 		m_directionalAndSpotLights.push_back(directionalLight);
 	}
 	else
@@ -1295,10 +1308,11 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMin", TW_TYPE_REAL, &m_fxaaReduceMin, " min=0.00001 step=0.000002 label='Min reduce' group='FXAA' ");
 	TwAddVarRW(m_propertiesBar, "fxaaReduceMul", TW_TYPE_REAL, &m_fxaaReduceMul, " min=0.0 step=0.01 label='Reduce scale' group='FXAA' ");
+	TwAddVarRW(m_propertiesBar, "waterLightReflectionEnabled", TW_TYPE_BOOLCPP, &m_waterLightReflectionEnabled, " label='Reflection enabled' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterWaveStrength", TW_TYPE_REAL, &m_waterWaveStrength, " min=0.001 step=0.001 label='Wave strength' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterShineDamper", TW_TYPE_REAL, &m_waterShineDamper, " min=0.2 max=100.0 step=0.2 label='Shine damper' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterReflectivity", TW_TYPE_REAL, &m_waterReflectivity, " min=0.02 max=10.0 step=0.02 label='Reflectivity' group='Water' ");
-	TwAddVarRW(m_propertiesBar, "waterWaveSpeed", TW_TYPE_REAL, &m_waterWaveSpeed, " min=0.0 step=0.000001 label='Wave speed' group='Water' ");
+	TwAddVarRW(m_propertiesBar, "waterWaveSpeed", TW_TYPE_REAL, &m_waterWaveSpeed, " min=0.0 step=0.0001 label='Wave speed' group='Water' ");
 	TwAddVarRO(m_propertiesBar, "waterMoveFactor", TW_TYPE_REAL, &m_waterMoveFactor, " min=0.001 step=0.001 label='Move factor' group='Water' ");
 	//TwAddVarRO(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlane.GetNormal(), " label='Normal' group='Refraction' ");
 	//TwAddVarRW(m_propertiesBar, "refractionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterRefractionClippingPlane.GetDistance(), " label='Origin distance' group='Refraction' ");

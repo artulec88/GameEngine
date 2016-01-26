@@ -18,7 +18,6 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ const Vector3D CameraBase::AXIS_Y(REAL_ZERO, REAL_ONE, REAL_ZERO);
 /* static */ Real CameraBase::sensitivity;
 
 /* static */
@@ -60,6 +59,10 @@ CameraBase::~CameraBase(void)
 
 Matrix4D CameraBase::GetViewProjection() const
 {
+	// This function is performed quiet often. Maybe we could, instead of multiplying three matrices (projection, rotation, translation),
+	// just remember the result in some member variable and reuse it. Of course, we would have to perform the multiplication again if any of these matrices were changed.
+	// It would probably lead to better performance.
+
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
 	/* ==================== SOLUTION #1 begin ==================== */
 	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();

@@ -2,6 +2,7 @@
 #define __RENDERING_GAME_COMMAND_H__
 
 #include "Rendering.h"
+#include "Utility\ILogger.h"
 
 namespace Rendering
 {

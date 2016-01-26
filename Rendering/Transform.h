@@ -25,8 +25,10 @@ public:
 	RENDERING_API Math::Matrix4D GetTransformation() const;
 	//Math::Matrix4D GetProjectedTransformation(const CameraBase& camera) const;
 
+	Math::Vector3D& GetPos() { return m_pos; }
 	const Math::Vector3D& GetPos() const { return m_pos; }
 	const Math::Quaternion& GetRot() const { return m_rotation; }
+	Math::Quaternion& GetRot() { return m_rotation; }
 	Math::Real GetScale() const { return m_scale; }
 
 	void LookAt(const Math::Vector3D& point, const Math::Vector3D& up);
@@ -66,11 +68,6 @@ public:
 		CHECK_CONDITION_RETURN_VOID(m_parentTransform != NULL, Utility::Error, "Parent transform is NULL.");
 		m_parentTransformation = m_parentTransform->GetTransformation();
 	}
-
-#ifdef ANT_TWEAK_BAR_ENABLED
-	Math::Vector3D& GetPos() { return m_pos; }
-	Math::Quaternion& GetRot() { return m_rotation; }
-#endif
 
 	/**
 	 * @brief returns true if the transformation itself or any parent transformation is changed

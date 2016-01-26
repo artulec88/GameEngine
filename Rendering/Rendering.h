@@ -16,6 +16,11 @@
 
 #define CALCULATE_RENDERING_STATS
 #define ANT_TWEAK_BAR_ENABLED
+#ifdef ANT_TWEAK_BAR_ENABLED
+#define CONST_IF_TWEAK_BAR_ENABLED
+#else
+#define CONST_IF_TWEAK_BAR_ENABLED const
+#endif
 
 /// <summary>
 /// If enabled the Rendering engine will be able to make simple debug drawing commands

@@ -62,9 +62,6 @@ Matrix4D Transform::GetTransformation() const
 		//}
 	}
 
-	/**
-	 * Apply TRANSLATION, then ROTATION and SCALING
-	 */
 	if (m_parentTransform == NULL)
 	{
 		return m_transformation;

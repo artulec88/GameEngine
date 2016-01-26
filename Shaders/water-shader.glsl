@@ -5,7 +5,7 @@ varying vec3 worldPos0;
 varying vec2 texCoord0;
 
 #if defined(VS_BUILD)
-attribute vec3 position;
+attribute vec3 position; // TODO: Pass only a vec2 instead of vec3. Water is flat so Y component is useless either way.
 
 uniform mat4 T_MVP;
 uniform mat4 T_model;
@@ -17,7 +17,7 @@ void main()
 	worldPos0 = (T_model * vec4(position, 1.0)).xyz;
 	clipSpacePosition = T_MVP * vec4(position, 1.0);
     gl_Position = clipSpacePosition;
-	texCoord0 = vec2(clipSpacePosition.x / 2.0 + 0.5, clipSpacePosition.y / 2.0 + 0.5) * TILING;
+	texCoord0 = vec2(position.x / 2.0 + 0.5, position.z / 2.0 + 0.5) * TILING;
 }
 #elif defined(FS_BUILD)
 #include "lighting.glh"
@@ -56,9 +56,9 @@ void main()
 	float waterSurfaceDistance = 2.0 * R_nearPlane * R_farPlane / (R_farPlane + R_nearPlane - (2.0 * gl_FragCoord.z - 1.0) * (R_farPlane - R_nearPlane)); // the distance from the camera to the water surface.
 	float waterDepth = floorDistance - waterSurfaceDistance;
 	
-	vec2 distortedTexCoords = texture(R_waterDUDVMap, vec2(texCoord0.x + R_waterMoveFactor, texCoord0.y)).rg * 0.1;
+	vec2 distortedTexCoords = texture2D(R_waterDUDVMap, vec2(texCoord0.x + R_waterMoveFactor, texCoord0.y)).rg * 0.1;
 	distortedTexCoords = texCoord0 + vec2(distortedTexCoords.x, distortedTexCoords.y + R_waterMoveFactor);
-	vec2 totalDistortion = (texture(R_waterDUDVMap, distortedTexCoords).rg * 2.0 - 1.0) * R_waterWaveStrength * clamp(waterDepth / 40.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
+	vec2 totalDistortion = (texture2D(R_waterDUDVMap, distortedTexCoords).rg * 2.0 - 1.0) * R_waterWaveStrength * clamp(waterDepth / 40.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
 	
 	reflectionTexCoord += totalDistortion;
 	refractionTexCoord += totalDistortion;
@@ -76,7 +76,7 @@ void main()
 	vec4 refractionColor = texture2D(R_waterRefractionTexture, refractionTexCoord);
 	
 	vec4 normalMapColor = texture2D(R_waterNormalMap, distortedTexCoords);
-	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0 /* to make the normals a little bit more vertical */, normalMapColor.g * 2.0 - 1.0));
+	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 1.1 /* to make the normals a little bit more vertical */, normalMapColor.g * 2.0 - 1.0));
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	float refractiveFactor = clamp(pow(dot(directionToEye, normal), 2.0 /* the bigger the more reflective water will be */), 0.0, 1.0);

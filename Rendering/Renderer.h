@@ -39,6 +39,34 @@
 namespace Rendering
 {
 
+namespace Water
+{
+	enum WaterDistortionType
+	{
+		DISTORTION_X = 0,
+		DISTORTION_Z = 1,
+		DISTORTION_XZ = 2,
+	};
+
+	enum WaterFresnelEffect
+	{
+		FRESNEL_EFFECT_ENABLED = 0,
+		FRESNEL_EFFECT_DISABLED = 1
+	};
+
+	enum WaterReflectionEffect
+	{
+		REFLECTION_EFFECT_ENABLED = 0,
+		REFLECTION_EFFECT_DISABLED = 1
+	};
+
+	enum WaterDepthEffect
+	{
+		DEPTH_EFFECT_ENABLED = 0,
+		DEPTH_EFFECT_DISABLED = 1
+	};
+} /* end namespace Water */
+
 class Mesh;
 class TextRenderer;
 
@@ -271,8 +299,8 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
-	bool m_applyFilterEnabled;
-	Color m_backgroundColor;
+	CONST_IF_TWEAK_BAR_ENABLED bool m_applyFilterEnabled;
+	CONST_IF_TWEAK_BAR_ENABLED Color m_backgroundColor;
 	//bool m_shadowsEnabled;
 	//bool m_pointLightShadowsEnabled;
 	GLFWwindow* m_window;
@@ -280,18 +308,18 @@ private:
 	//GLuint framebuffer;
 	GLuint m_vao; // vertex array id
 
-	bool m_fogEnabled;
-	Math::Vector3D m_fogColor;
-	Math::Real m_fogStart;
-	Math::Real m_fogEnd;
-	Math::Real m_fogDensityFactor;
-	FogEffect::FogFallOffType m_fogFallOffType;
-	FogEffect::FogCalculationType m_fogCalculationType;
+	CONST_IF_TWEAK_BAR_ENABLED bool m_fogEnabled;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Vector3D m_fogColor;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fogStart;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fogEnd;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fogDensityFactor;
+	CONST_IF_TWEAK_BAR_ENABLED FogEffect::FogFallOffType m_fogFallOffType;
+	CONST_IF_TWEAK_BAR_ENABLED FogEffect::FogCalculationType m_fogCalculationType;
 
-	bool m_ambientLightEnabled;
-	const Math::Vector3D m_ambientDaytimeColor;
-	const Math::Vector3D m_ambientSunNearHorizonColor;
-	const Math::Vector3D m_ambientNighttimeColor;
+	CONST_IF_TWEAK_BAR_ENABLED bool m_ambientLightEnabled;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Vector3D m_ambientDaytimeColor;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Vector3D m_ambientSunNearHorizonColor;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Vector3D m_ambientNighttimeColor;
 	Math::Vector3D m_ambientLight;
 	Lighting::BaseLight* m_currentLight;
 	Lighting::PointLight* m_pointLight; // current point light
@@ -322,9 +350,9 @@ private:
 	Shader* m_gaussBlurFilterShader;
 	Shader* m_fxaaFilterShader;
 
-	Math::Real m_fxaaSpanMax;
-	Math::Real m_fxaaReduceMin;
-	Math::Real m_fxaaReduceMul;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fxaaSpanMax;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fxaaReduceMin;
+	CONST_IF_TWEAK_BAR_ENABLED Math::Real m_fxaaReduceMul;
 
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
@@ -373,7 +401,9 @@ private:
 	Texture* m_waterNormalMap;
 	Texture* m_waterRefractionTexture;
 	Texture* m_waterReflectionTexture;
+	bool m_waterLightReflectionEnabled;
 	Shader* m_waterShader;
+	Shader* m_waterNoDirectionalLightShader;
 
 	Shader* m_billboardShader;
 	std::vector<GameNode*> m_billboardNodes;

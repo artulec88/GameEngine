@@ -4,6 +4,7 @@
 #include "Utility\ReferenceCounter.h"
 #include <string>
 #include <map>
+#include "Math\Matrix.h"
 
 namespace Rendering
 {

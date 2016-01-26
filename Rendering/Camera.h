@@ -12,12 +12,16 @@
 namespace Rendering
 {
 
+/// <summary>
+/// The base class representing the camera.
+/// </summary>
 class CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
-public:
-	static const Math::Vector3D AXIS_Y;
 private:
+	/// <summary>
+	/// The camera sensitivity. The amount representing how fast the camera reacts to player's input.
+	/// </summary>
 	static Math::Real sensitivity;
 public:
 	RENDERING_API static Math::Real GetSensitivity();
@@ -26,8 +30,24 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
+	/// <summary>
+	/// The constructor of the camera base object.
+	/// </summary>
+	/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 	CameraBase(const Math::Matrix4D& projectionMatrix);
-	CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+
+	/// <summary>
+	/// The constructor of the camera base object.
+	/// </summary>
+	/// <param name="fov">The field of view of the camera.</param>
+	/// <param name="aspectRatio">The aspect ratio of the camera.</param>
+	/// <param name="zNearPlane">The near plane of the camera.</param>
+	/// <param name="zFarPlane">The far plane of the camera.</param>
+	CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+
+	/// <summary>
+	/// The destructor of the camera object.
+	/// </summary>
 	virtual ~CameraBase(void);
 /* ==================== Constructors and destructors end ==================== */
 

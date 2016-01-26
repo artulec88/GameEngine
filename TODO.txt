@@ -7,19 +7,16 @@
 7.	Filename class member variable in several resource-related classes should be moved to their base class (which for now is called ReferenceCounter, but should be renamed to e.g. Resource)
 8.	Create a possibility to display a light direction (current solution does not work correctly)
 9.	Create a script probing the application and creating a report on how much CPU and memory it uses.
-10.	Expand the CameraBar using AntTweakBar library with rotation of the selected camera.
-11.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
-12.	HUD/GUI
-13.	Text alignment
-14.	Skybox is not seamless
-15.	Text shader should automatically detect window size. Even better would be to calculate vertex coordinates in world space on CPU and not in the shader.
-16.	Create a decorator class (http://en.wikipedia.org/wiki/Decorator_pattern#C.2B.2B) for the GameManager::Load method. The decorator sets/checks the state of the GameManager::m_isGameLoaded member variable, calls the GameManager::Load method and sets/checks the state of the GameManager::m_isGameLoaded member variable again.
-17.	Use QueryPerformanceFrequency() should only be queried upon application initialization. So call it once and store the value in some globally-accessible constant variable.
-18.	The night texture should be displayed much later than right now.
-19.	Use forwardlighting.vsh in the forward-ambient.glsl
-20.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
-21.	Water rendering. DU/DV maps.
-22.	Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-23.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.
-24.	Add Renderer::m_skyboxAngleStep to the tweak bars.
-25.	Closing the game with the "X" button in the right top corner of the window during the loading phase of the game causes an exception (only probably, needs to be checked!)
+10.	Read about "Light space perspective shadow maps" and "Shadow volumes" (for enabling shadows in point lights)
+11.	Skybox is not seamless
+12.	Create a decorator class (http://en.wikipedia.org/wiki/Decorator_pattern#C.2B.2B) for the GameManager::Load method. The decorator sets/checks the state of the GameManager::m_isGameLoaded member variable, calls the GameManager::Load method and sets/checks the state of the GameManager::m_isGameLoaded member variable again.
+13.	The night texture should be displayed much later than right now.
+14.	Use forwardlighting.vsh in the forward-ambient.glsl
+15.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
+16.	Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
+17.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.
+18.	Add Renderer::m_skyboxAngleStep to the tweak bars.
+19.	Closing the game with the "X" button in the right top corner of the window during the loading phase of the game causes an exception (only probably, needs to be checked!)
+20. Ambient occlussion.
+21. Water rendering. When looking in horizontal direction the distortion of the water texture is huge. Generally, it increases with the camera getting closer to the "horizontal" direction. The distortion should not depend on the viewing angle of the camera.
+22. When water is ON (there is at least one water node added) the billboards are not rendered correctly. When being seen from the close distance it is fine, but the farther they are the more dark they become. One thing (water rendering) should not influence the billboards at all.
