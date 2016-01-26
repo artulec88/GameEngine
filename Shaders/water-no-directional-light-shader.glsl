@@ -35,6 +35,7 @@ uniform DirectionalLight R_directionalLight;
 uniform float R_nearPlane;
 uniform float R_farPlane;
 uniform float R_waterWaveStrength;
+uniform float R_waterFresnelEffectFactor;
 
 DeclareFragOutput(0, vec4);
 void main()
@@ -77,7 +78,7 @@ void main()
 	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 3.0 /* to make the normals a little bit more vertical */, normalMapColor.g * 2.0 - 1.0));
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
-	float refractiveFactor = clamp(pow(dot(directionToEye, normal), 2.0 /* the bigger the more reflective water will be */), 0.0, 1.0);
+	float refractiveFactor = clamp(pow(dot(directionToEye, normal), R_waterFresnelEffectFactor), 0.0, 1.0);
 	
 	vec4 outColor = mix(reflectionColor, refractionColor, refractiveFactor);
 	outColor = mix(outColor, vec4(0.0, 0.3, 0.5, 1.0), 0.2);
