@@ -117,6 +117,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_waterReflectionTexture(NULL),
 	m_waterLightReflectionEnabled(true),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE("waterFresnelEffectFactor", 2.0f)),
+	m_waterNormalVerticalFactor(GET_CONFIG_VALUE("waterNormalVerticalFactor", 3.0f)),
 	m_waterShader(NULL),
 	m_waterNoDirectionalLightShader(NULL),
 	m_billboardShader(NULL),
@@ -685,6 +686,7 @@ void Renderer::RenderWaterNodes()
 	SetReal("waterShineDamper", m_waterShineDamper);
 	SetReal("waterReflectivity", m_waterReflectivity);
 	SetReal("waterFresnelEffectFactor", m_waterFresnelEffectFactor);
+	SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
 	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
 	{
 		if (m_waterLightReflectionEnabled)
@@ -1315,6 +1317,7 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "waterShineDamper", TW_TYPE_REAL, &m_waterShineDamper, " min=0.2 max=100.0 step=0.2 label='Shine damper' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterReflectivity", TW_TYPE_REAL, &m_waterReflectivity, " min=0.02 max=10.0 step=0.02 label='Reflectivity' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterFresnelEffectFactor", TW_TYPE_REAL, &m_waterFresnelEffectFactor, " min=0.1 max=20.0 step=0.1 label='Fresnel factor' group='Water' ");
+	TwAddVarRW(m_propertiesBar, "waterNormalVerticalFactor", TW_TYPE_REAL, &m_waterNormalVerticalFactor, " min=0.05 max=10.0 step=0.05 label='Normal vertical factor' group='Water' ");
 	TwAddVarRW(m_propertiesBar, "waterWaveSpeed", TW_TYPE_REAL, &m_waterWaveSpeed, " min=0.0 step=0.0001 label='Wave speed' group='Water' ");
 	TwAddVarRO(m_propertiesBar, "waterMoveFactor", TW_TYPE_REAL, &m_waterMoveFactor, " min=0.001 step=0.001 label='Move factor' group='Water' ");
 	//TwAddVarRO(m_propertiesBar, "refractionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterRefractionClippingPlane.GetNormal(), " label='Normal' group='Refraction' ");

@@ -400,6 +400,10 @@ private:
 	/// The greater the more reflective water will be.
 	/// </summary>
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_waterFresnelEffectFactor;
+	/// <summary>
+	/// The greater the more vertical water normal values will be.
+	/// </summary>
+	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_waterNormalVerticalFactor;
 	Shader* m_waterShader;
 	Shader* m_waterNoDirectionalLightShader;
 

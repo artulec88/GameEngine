@@ -38,6 +38,7 @@ uniform float R_waterWaveStrength;
 uniform float R_waterShineDamper;
 uniform float R_waterReflectivity;
 uniform float R_waterFresnelEffectFactor;
+uniform float R_waterNormalVerticalFactor;
 
 DeclareFragOutput(0, vec4);
 void main()
@@ -77,7 +78,7 @@ void main()
 	vec4 refractionColor = texture2D(R_waterRefractionTexture, refractionTexCoord);
 	
 	vec4 normalMapColor = texture2D(R_waterNormalMap, distortedTexCoords);
-	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * 1.1 /* to make the normals a little bit more vertical */, normalMapColor.g * 2.0 - 1.0));
+	vec3 normal = normalize(vec3(normalMapColor.r * 2.0 - 1.0, normalMapColor.b * R_waterNormalVerticalFactor, normalMapColor.g * 2.0 - 1.0));
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	float refractiveFactor = clamp(pow(dot(directionToEye, normal), R_waterFresnelEffectFactor), 0.0, 1.0);
@@ -87,7 +88,7 @@ void main()
 	vec3 specularHighlights = R_directionalLight.base.color.xyz * specular * R_waterReflectivity * clamp(waterDepth / 2.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8;
 	
 	vec4 outColor = mix(reflectionColor, refractionColor, refractiveFactor);
-	outColor = mix(outColor, vec4(0.0, 0.3, 0.5, 1.0), 0.2) + vec4(specularHighlights, 0.0);
+	outColor = mix(outColor, vec4(0.0, 0.3, 0.55, 1.0), 0.2) + vec4(specularHighlights, 0.0);
 	outColor.a = clamp(waterDepth / 2.0, 0.0, 1.0); // https://www.youtube.com/watch?v=qgDPSnZPGMA&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=8
 	SetFragOutput(0, outColor);
 }
