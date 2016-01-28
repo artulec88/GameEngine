@@ -35,8 +35,8 @@ void MeshRenderer::Render(Shader* shader, Renderer* renderer)
 {
 	CHECK_CONDITION_RETURN_VOID(shader != NULL, Utility::Emergency, "Rendering a mesh failed. Shader instance is NULL.");
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Rendering a mesh failed. Rendering engine is NULL.");
-	CHECK_CONDITION_RETURN_VOID(m_material != NULL, Utility::Error, "Rendering a mesh failed. Material instance is NULL.");
+	CHECK_CONDITION(m_material != NULL, Utility::Warning, "Rendering a mesh while the material is NULL.");
 	shader->Bind();
-	shader->UpdateUniforms(GetTransform(), *m_material, renderer);
+	shader->UpdateUniforms(GetTransform(), m_material, renderer);
 	m_mesh->Draw();
 }

@@ -557,7 +557,7 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
-void Shader::UpdateUniforms(const Transform& transform, const Material& material, Renderer* renderer) const
+void Shader::UpdateUniforms(const Transform& transform, const Material* material, Renderer* renderer) const
 {
 	CHECK_CONDITION_EXIT(renderer != NULL, Critical, "Cannot update uniforms. Rendering engine is NULL.");
 	CHECK_CONDITION_EXIT(m_shaderData != NULL, Critical, "Cannot update uniforms. Shader data is NULL.");
@@ -660,14 +660,14 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 			}
 			else
 			{
-				//renderer->UpdateUniformStruct(transform, material, *this, uniformName, uniformType);
+				//renderer->UpdateUniformStruct(transform, *material, *this, uniformName, uniformType);
 				ERROR_LOG("Uniform name \"%s\" of type %d is not supported by the rendering engine", uniformName.c_str(), uniformType);
 			}
 		}
 		else if ((uniformType == Uniforms::SAMPLER_2D) || (uniformType == Uniforms::SAMPLER_CUBE))
 		{
 			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
-			Texture* texture = material.GetTexture(uniformName);
+			Texture* texture = material->GetTexture(uniformName);
 			CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Material texture \"%s\" is NULL.", uniformName.c_str());
 			texture->Bind(samplerSlot);
 			SetUniformi(uniformName, samplerSlot);
@@ -708,15 +708,15 @@ void Shader::UpdateUniforms(const Transform& transform, const Material& material
 		{
 			if (uniformType == Uniforms::VEC_3D)
 			{
-				SetUniformVector3D(uniformName, material.GetVec3D(uniformName));
+				SetUniformVector3D(uniformName, material->GetVec3D(uniformName));
 			}
 			else if (uniformType == Uniforms::VEC_4D)
 			{
-				SetUniformVector4D(uniformName, material.GetVec4D(uniformName));
+				SetUniformVector4D(uniformName, material->GetVec4D(uniformName));
 			}
 			else if (uniformType == Uniforms::REAL)
 			{
-				SetUniformf(uniformName, material.GetReal(uniformName));
+				SetUniformf(uniformName, material->GetReal(uniformName));
 			}
 			else
 			{

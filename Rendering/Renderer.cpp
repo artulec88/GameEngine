@@ -162,10 +162,10 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	glGenVertexArrays(1, &m_vao);
 
 #ifndef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("fogColor", m_fogColor);
-	SetReal("fogStart", m_fogStart);
-	SetReal("fogEnd", m_fogEnd);
-	SetReal("fogDensityFactor", m_fogDensityFactor);
+	SetVector3D("ambientFogColor", m_fogColor);
+	SetReal("ambientFogStart", m_fogStart);
+	SetReal("ambientFogEnd", m_fogEnd);
+	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
@@ -532,10 +532,10 @@ void Renderer::Render(const GameNode& gameNode)
 	AdjustAmbientLightAccordingToCurrentTime();
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("fogColor", m_fogColor);
-	SetReal("fogStart", m_fogStart);
-	SetReal("fogEnd", m_fogEnd);
-	SetReal("fogDensityFactor", m_fogDensityFactor);
+	SetVector3D("ambientFogColor", m_fogColor);
+	SetReal("ambientFogStart", m_fogStart);
+	SetReal("ambientFogEnd", m_fogEnd);
+	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -545,7 +545,7 @@ void Renderer::Render(const GameNode& gameNode)
 #endif
 	if (!m_waterNodes.empty())
 	{
-		//RenderWaterTextures(gameNode);
+		RenderWaterTextures(gameNode);
 	}
 
 	GetTexture("displayTexture")->BindAsRenderTarget();
@@ -556,7 +556,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSceneWithAmbientLight(gameNode);
 
-	//RenderSceneWithPointLights(gameNode);
+	RenderSceneWithPointLights(gameNode);
 
 	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
@@ -625,17 +625,17 @@ void Renderer::Render(const GameNode& gameNode)
 
 	if (!m_waterNodes.empty())
 	{
-		//RenderWaterNodes(); // normal rendering of water quads
+		RenderWaterNodes(); // normal rendering of water quads
 	}
 	if (!m_billboardNodes.empty())
 	{
-		//RenderBillboardNodes(); // rendering billboards
+		RenderBillboardNodes(); // rendering billboards
 	}
 
-	//RenderSkybox();
+	RenderSkybox();
 
 #ifdef DEBUG_RENDERING_ENABLED
-	//RenderDebugNodes();
+	RenderDebugNodes();
 #endif
 
 
@@ -879,7 +879,7 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
-	INFO_LOG("Rendering scene with light.");
+	DEBUG_LOG("Rendering scene with light.");
 	glCullFace(Rendering::glCullFaceMode);
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
@@ -1084,7 +1084,7 @@ void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader->Bind();
-	filterShader->UpdateUniforms(m_filterTransform, *m_filterMaterial, this);
+	filterShader->UpdateUniforms(m_filterTransform, m_filterMaterial, this);
 	m_filterMesh->Draw();
 
 	m_currentCamera = temp;

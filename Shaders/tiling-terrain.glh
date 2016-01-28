@@ -1,3 +1,4 @@
+//#define TILING_ENABLED
 #ifdef TILING_ENABLED
-const float TILING = 2.0;
+const float TILING = 3.0;
 #endif

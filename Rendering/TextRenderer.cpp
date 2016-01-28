@@ -192,7 +192,7 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	m_fontMaterial->SetVector3D("textColor", fontColor);
 	m_fontMaterial->SetReal("screenWidth", m_windowWidth);
 	m_fontMaterial->SetReal("screenHeight", m_windowHeight);
-	m_textShader.UpdateUniforms(m_transform, *m_fontMaterial, renderer);
+	m_textShader.UpdateUniforms(m_transform, m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
