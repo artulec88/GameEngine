@@ -215,7 +215,7 @@ void TestGameManager::Load()
 	//AddToSceneRoot(sphereNode4);
 
 	GameNode* waterNode = new GameNode();
-	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), new Material(new Texture("water.jpg"))));
+	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	m_resourcesLoaded += 2;
 	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
 	waterNode->GetTransform().SetScale(3.0f);
