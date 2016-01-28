@@ -250,7 +250,7 @@ protected:
 	void RenderSkybox();
 	void RenderSceneWithAmbientLight(const GameNode& gameNode);
 	void RenderSceneWithPointLights(const GameNode& gameNode);
-	void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode);
+	void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
 	void SetCallbacks();
 
 	inline void ClearScreen() const

@@ -49,6 +49,8 @@ public:
 	Math::Real GetIntensity() const { return m_intensity; }
 	inline Shader* GetShader() { return m_shader; }
 	inline Shader* GetTerrainShader() { return m_terrainShader; }
+	inline Shader* GetNoShadowShader() { return m_noShadowShader; }
+	inline Shader* GetNoShadowTerrainShader() { return m_noShadowTerrainShader; }
 	inline ShadowInfo* GetShadowInfo() { return m_shadowInfo; }
 	virtual bool IsEnabled() const { return m_isEnabled; }
 	
@@ -58,6 +60,8 @@ public:
 
 	void SetShader(Shader* shader);
 	void SetTerrainShader(Shader* terrainShader);
+	void SetNoShadowShader(Shader* noShadowShader);
+	void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -78,6 +82,12 @@ protected:
 
 	/// <summary>The terrain shader for the light.</summary>
 	Shader* m_terrainShader;
+
+	/// <summary> The default shader with no shadow calculation for the light. </summary>
+	Shader* m_noShadowShader;
+
+	/// <summary> The terrain shader with no shadow calculation for the light. </summary>
+	Shader* m_noShadowTerrainShader;
 
 	/// <summary>The information about the shadow that the light casts.</summary>
 	ShadowInfo* m_shadowInfo;

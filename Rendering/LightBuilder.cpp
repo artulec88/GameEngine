@@ -83,7 +83,9 @@ void DirectionalLightBuilder::BuildPart2()
 
 	// Setting shaders
 	directionalLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-	directionalLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightShaderTerrain", "forward-directional-terrain")));
+	directionalLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightTerrainShader", "forward-directional-terrain")));
+	directionalLight->SetNoShadowShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightNoShadowShader", "forward-directional-no-shadows")));
+	directionalLight->SetNoShadowTerrainShader(new Shader(GET_CONFIG_VALUE_STR("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows")));
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting additional directional light information
@@ -186,6 +188,8 @@ void PointLightBuilder::BuildPart2()
 	// Setting shaders
 	pointLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
 	pointLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
+	pointLight->SetNoShadowShader(new Shader(GET_CONFIG_VALUE_STR("pointLightNoShadowShader", "forward-point-no-shadows")));
+	pointLight->SetNoShadowTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows")));
 
 	// Setting shadow info
 	// Setting additional point light information
@@ -285,6 +289,8 @@ void SpotLightBuilder::BuildPart2()
 	// Setting shaders
 	spotLight->SetShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
 	spotLight->SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot-terrain")));
+	spotLight->SetNoShadowShader(new Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowShader", "forward-spot-no-shadows")));
+	spotLight->SetNoShadowTerrainShader(new Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows")));
 
 	m_spotLightNode->AddComponent(spotLight);
 

@@ -176,31 +176,31 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
 	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("ambientLightShader", "ForwardAmbient"));
-	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderTerrain", "forward-ambient-terrain"));
+	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("ambientLightTerrainShader", "forward-ambient-terrain"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBased", "forward-ambient-fog-linear-plane-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBased", "forward-ambient-fog-exponential-plane-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBased", "forward-ambient-fog-exponential-squared-plane-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredPlaneBasedShader", "forward-ambient-fog-exponential-squared-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBased", "forward-ambient-fog-linear-range-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBased", "forward-ambient-fog-exponential-range-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBased", "forward-ambient-fog-exponential-squared-range-based"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredRangeBasedShader", "forward-ambient-fog-exponential-squared-range-based"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearPlaneBasedTerrain", "forward-ambient-fog-linear-plane-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialPlaneBasedTerrain", "forward-ambient-fog-exponential-plane-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredPlaneBasedTerrain", "forward-ambient-fog-exponential-squared-plane-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredPlaneBasedTerrainShader", "forward-ambient-fog-exponential-squared-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogLinearRangeBasedTerrain", "forward-ambient-fog-linear-range-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialRangeBasedTerrain", "forward-ambient-fog-exponential-range-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightShaderFogExponentialSquaredRangeBasedTerrain", "forward-ambient-fog-exponential-squared-range-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredRangeBasedTerrainShader", "forward-ambient-fog-exponential-squared-range-based-terrain"));
 
 	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
 	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
@@ -403,7 +403,7 @@ void Renderer::InitializeCubeMap()
 	m_skyboxNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_skyboxNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader"));
-	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShaderProcedural", "skybox-shader-procedural"));
+	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR("skyboxProceduralShader", "skybox-procedural"));
 	STOP_PROFILING;
 }
 
@@ -545,7 +545,7 @@ void Renderer::Render(const GameNode& gameNode)
 #endif
 	if (!m_waterNodes.empty())
 	{
-		RenderWaterTextures(gameNode);
+		//RenderWaterTextures(gameNode);
 	}
 
 	GetTexture("displayTexture")->BindAsRenderTarget();
@@ -556,7 +556,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSceneWithAmbientLight(gameNode);
 
-	RenderSceneWithPointLights(gameNode);
+	//RenderSceneWithPointLights(gameNode);
 
 	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
@@ -625,17 +625,17 @@ void Renderer::Render(const GameNode& gameNode)
 
 	if (!m_waterNodes.empty())
 	{
-		RenderWaterNodes(); // normal rendering of water quads
+		//RenderWaterNodes(); // normal rendering of water quads
 	}
 	if (!m_billboardNodes.empty())
 	{
-		RenderBillboardNodes(); // rendering billboards
+		//RenderBillboardNodes(); // rendering billboards
 	}
 
-	RenderSkybox();
+	//RenderSkybox();
 
 #ifdef DEBUG_RENDERING_ENABLED
-	RenderDebugNodes();
+	//RenderDebugNodes();
 #endif
 
 
@@ -733,30 +733,15 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	//{
-	//	m_currentLight = (*lightItr);
-	//	if (!m_currentLight->IsEnabled())
-	//	{
-	//		continue;
-	//	}
-
-		//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-		//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-		//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-		//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-		//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-		//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-		//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-		// we set the light matrix this way so that, if no shadow should be cast
-		// everything in the scene will be mapped to the same point
-	//	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	//	SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-	//	SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
-
-	//	RenderSceneWithLight(m_currentLight, gameNode);
-	//}
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	{
+		m_currentLight = (*lightItr);
+		if (!m_currentLight->IsEnabled())
+		{
+			continue;
+		}
+		RenderSceneWithLight(m_currentLight, gameNode, false);
+	}
 	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
 
 	glEnable(GL_DEPTH_TEST);
@@ -793,30 +778,16 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	//{
-	//	m_currentLight = (*lightItr);
-	//	if (!m_currentLight->IsEnabled())
-	//	{
-	//		continue;
-	//	}
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	{
+		m_currentLight = (*lightItr);
+		if (!m_currentLight->IsEnabled())
+		{
+			continue;
+		}
 
-	//ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-	//int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	//CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-	//SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-	//m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-	//glClearColor(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO); // everything is in light (we can clear the COLOR_BUFFER_BIT in the next step)
-	//glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-	// we set the light matrix this way so that, if no shadow should be cast
-	// everything in the scene will be mapped to the same point
-	//	m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	//	SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-	//	SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
-
-	//	RenderSceneWithLight(m_currentLight, gameNode);
-	//}
+		RenderSceneWithLight(m_currentLight, gameNode, false);
+	}
 	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
 
 	//glEnable(GL_DEPTH_TEST);
@@ -904,10 +875,11 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 	STOP_PROFILING;
 }
 
-void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode)
+void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
+	INFO_LOG("Rendering scene with light.");
 	glCullFace(Rendering::glCullFaceMode);
 	GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
@@ -918,8 +890,8 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
-	m_terrainNode->RenderAll(light->GetTerrainShader(), this);
-	gameNode.RenderAll(light->GetShader(), this);
+	m_terrainNode->RenderAll(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
+	gameNode.RenderAll(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
 
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glDepthMask(GL_TRUE);

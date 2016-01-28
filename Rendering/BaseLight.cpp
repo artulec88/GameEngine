@@ -13,6 +13,8 @@ BaseLight::BaseLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZE
 	m_intensity(intensity),
 	m_shader(NULL),
 	m_terrainShader(NULL),
+	m_noShadowShader(NULL),
+	m_noShadowTerrainShader(NULL),
 	m_shadowInfo(NULL),
 	m_isEnabled(true),
 	m_isShadowingEnabled(true)
@@ -26,6 +28,8 @@ BaseLight::~BaseLight(void)
 	SAFE_DELETE(m_shader);
 	SAFE_DELETE(m_terrainShader);
 	SAFE_DELETE(m_shadowInfo);
+	SAFE_DELETE(m_noShadowShader);
+	SAFE_DELETE(m_noShadowTerrainShader);
 }
 
 void BaseLight::SetShader(Rendering::Shader* shader)
@@ -50,6 +54,30 @@ void BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
 		SAFE_DELETE(m_terrainShader);
 	}
 	m_terrainShader = terrainShader;
+}
+
+void BaseLight::SetNoShadowShader(Rendering::Shader* noShadowShader)
+{
+	// TODO: delete shader if it's not referenced by any other object
+	//SAFE_DELETE(this->shader);
+	if (m_noShadowShader != NULL)
+	{
+		WARNING_LOG("Setting new \"no-shadow\" shader for the light seems dubious.");
+		SAFE_DELETE(m_noShadowShader);
+	}
+	m_noShadowShader = noShadowShader;
+}
+
+void BaseLight::SetNoShadowTerrainShader(Rendering::Shader* noShadowTerrainShader)
+{
+	// TODO: delete shader if it's not referenced by any other object
+	//SAFE_DELETE(m_terrainShader);
+	if (m_noShadowTerrainShader != NULL)
+	{
+		WARNING_LOG("Setting new \"no-shadow\" terrain shader for the light seems dubious.");
+		SAFE_DELETE(m_noShadowTerrainShader);
+	}
+	m_noShadowTerrainShader = noShadowTerrainShader;
 }
 
 void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
