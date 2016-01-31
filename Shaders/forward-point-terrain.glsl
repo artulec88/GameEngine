@@ -4,7 +4,6 @@ varying vec3 worldPos0;
 varying mat3 tbnMatrix;
 
 #if defined(VS_BUILD)
-#include "tiling-terrain.glh"
 // forwardLighting is not OK for the point light due to the fact that shadows are calculated in a different way than for either directional or spot lights.
 attribute vec3 position;
 attribute vec2 texCoord;

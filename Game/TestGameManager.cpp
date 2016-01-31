@@ -101,7 +101,10 @@ void TestGameManager::Load()
 		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
+	terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
 	terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture3", "mud.png")), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture4", "path.png")), "diffuse4");
 	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new MeshRenderer(m_terrainMesh, terrainMaterial));

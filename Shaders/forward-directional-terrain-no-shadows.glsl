@@ -2,7 +2,6 @@
 #include "forward-lighting-no-shadows.glh"
 
 #if defined(VS_BUILD)
-#include "tiling-terrain.glh"
 #include "forward-lighting-no-shadows.vsh"
 #elif defined(FS_BUILD)
 

@@ -109,7 +109,7 @@ ShaderData::ShaderData(const std::string& fileName) :
 
 	if (! Compile())
 	{
-		CRITICAL_LOG("Error while compiling shader program %d", m_programID);
+		CRITICAL_LOG("Error while compiling shader program %d for shader file \"%s\"", m_programID, fileName.c_str());
 		exit(EXIT_FAILURE);
 	}
 	AddShaderUniforms(shaderText);

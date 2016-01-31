@@ -154,6 +154,9 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetSamplerSlot("cubeMapNight", 1);
 	SetSamplerSlot("filterTexture", 0);
 	SetSamplerSlot("diffuse2", 4);
+	SetSamplerSlot("diffuse3", 5);
+	SetSamplerSlot("diffuse4", 6);
+	SetSamplerSlot("blendMap", 7);
 	SetSamplerSlot("waterReflectionTexture", 0);
 	SetSamplerSlot("waterRefractionTexture", 1);
 	SetSamplerSlot("waterDUDVMap", 2);

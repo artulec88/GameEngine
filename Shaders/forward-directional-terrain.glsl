@@ -2,10 +2,9 @@
 #include "forward-lighting.glh"
 
 #if defined(VS_BUILD)
-#include "tiling-terrain.glh"
 #include "forward-lighting.vsh"
 #elif defined(FS_BUILD)
-
+#include "tiling-terrain.glh"
 #include "lighting.glh"
 
 uniform vec3 C_eyePos;

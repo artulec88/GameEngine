@@ -53,11 +53,7 @@ Material::Material(Texture* texture, const std::string& textureName)
 
 void Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
-	if (texture == NULL)
-	{
-		WARNING_LOG("Cannot set the additional texture for material. The texture is NULL.");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID(texture != NULL, Utility::Warning, "Cannot set the additional texture for material. The texture is NULL.");
 	m_hasMultipleTextures = true;
 	SetTexture(textureName, texture);
 }
