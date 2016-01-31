@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __RENDERING_MESH_RENDERER_H__
+#define __RENDERING_MESH_RENDERER_H__
+
 #include "GameComponent.h"
 
 namespace Rendering
@@ -30,3 +32,5 @@ protected:
 }; /* end class MeshRenderer */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_MESH_RENDERER_H__ */

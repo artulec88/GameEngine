@@ -44,6 +44,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fogStart(GET_CONFIG_VALUE("fogStart", 8.0f)),
 	m_fogEnd(GET_CONFIG_VALUE("fogEnd", 50.0f)),
 	m_fogDensityFactor(GET_CONFIG_VALUE("fogDensityFactor", 0.2f)),
+	m_fogGradient(GET_CONFIG_VALUE("fogGradient", 0.005f)),
 	m_fogFallOffType(static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE("fogFallOffType", 0))),
 	m_fogCalculationType(static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE("fogCalculationType", 0))),
 	m_ambientLightEnabled(GET_CONFIG_VALUE("ambientLightEnabled", true)),
@@ -166,6 +167,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	SetReal("ambientFogStart", m_fogStart);
 	SetReal("ambientFogEnd", m_fogEnd);
 	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+	SetReal("ambientFogGradient", m_fogGradient);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
@@ -181,26 +183,18 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredPlaneBasedShader", "forward-ambient-fog-exponential-squared-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredRangeBasedShader", "forward-ambient-fog-exponential-squared-range-based"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredPlaneBasedTerrainShader", "forward-ambient-fog-exponential-squared-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
 		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::SQUARED_EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialSquaredRangeBasedTerrainShader", "forward-ambient-fog-exponential-squared-range-based-terrain"));
 
 	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
 	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
@@ -536,6 +530,7 @@ void Renderer::Render(const GameNode& gameNode)
 	SetReal("ambientFogStart", m_fogStart);
 	SetReal("ambientFogEnd", m_fogEnd);
 	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+	SetReal("ambientFogGradient", m_fogGradient);
 	SetVector3D("ambientIntensity", m_ambientLight);
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -1273,7 +1268,8 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fogColor", TW_TYPE_COLOR3F, &m_fogColor, " label='Color' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "fogStart", TW_TYPE_REAL, &m_fogStart, " label='Start' group='Fog' step=0.5 min=0.5");
 	TwAddVarRW(m_propertiesBar, "fogEnd", TW_TYPE_REAL, &m_fogEnd, " label='End' group='Fog' step=0.5 min=1.0");
-	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, &m_fogDensityFactor, " label='Density factor' group='Fog' step=0.02 min=0.01 max=5.0 ");
+	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, &m_fogDensityFactor, " label='Density factor' group='Fog' step=0.0001 min=0.0001 max=2.0 ");
+	TwAddVarRW(m_propertiesBar, "fogGradient", TW_TYPE_REAL, &m_fogGradient, " label='Gradient' group='Fog' step=0.1 min=0.1 max=20.0 ");
 	TwAddVarRW(m_propertiesBar, "fogFallOffType", fogFallOffType, &m_fogFallOffType, " label='Fall-off type' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "fogCalculationType", fogCalculationType, &m_fogCalculationType, " label='Calculation type' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");

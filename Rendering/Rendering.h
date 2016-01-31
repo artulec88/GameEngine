@@ -74,8 +74,7 @@ namespace Rendering
 		enum FogFallOffType
 		{
 			LINEAR = 0,
-			EXPONENTIAL = 1,
-			SQUARED_EXPONENTIAL = 2
+			EXPONENTIAL = 1
 		};
 
 		// must match the values in the FogFallOffType

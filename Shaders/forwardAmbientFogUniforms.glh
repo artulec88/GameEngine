@@ -2,3 +2,4 @@ uniform vec3 R_ambientFogColor;
 uniform float R_ambientFogStart;
 uniform float R_ambientFogEnd;
 uniform float R_ambientFogDensityFactor;
+uniform float R_ambientFogGradient;

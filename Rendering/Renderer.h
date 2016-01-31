@@ -306,7 +306,13 @@ private:
 	CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_fogColor;
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogStart;
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogEnd;
+	/// <summary> Represent the thickness of the fog. Increasing this value will generally decrease the visibility of the scene. </summary>
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogDensityFactor;
+	/// <summary>
+	/// Represents how fast the transition between no-fog and complete fog is performed.
+	/// In other words it determines how quickly the visibility of the scene decreases with distance.
+	/// </summary>
+	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogGradient;
 	CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogFallOffType m_fogFallOffType;
 	CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogCalculationType m_fogCalculationType;
 

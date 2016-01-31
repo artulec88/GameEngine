@@ -1,4 +1,4 @@
-float CalcFogFactor(float fogStart, float fogEnd, float fogDensity, float distance)
+float CalcFogFactor(float fogStart, float fogEnd, float fogDensity, float gradient, float distance)
 {
-	return 1.0 - clamp(exp(-distance * fogDensity), 0.0, 1.0);
+	return 1.0 - clamp(exp(-pow(distance * fogDensity, gradient)), 0.0, 1.0);
 }

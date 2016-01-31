@@ -18,10 +18,9 @@ TwType Rendering::shadowInfoType;
 {
 	TwEnumVal fogFallOffTypeEV[] = {
 		{ Rendering::FogEffect::LINEAR, "Linear" },
-		{ Rendering::FogEffect::EXPONENTIAL, "Exponential" },
-		{ Rendering::FogEffect::SQUARED_EXPONENTIAL, "Squared exponential" }
+		{ Rendering::FogEffect::EXPONENTIAL, "Exponential" }
 	};
-	fogFallOffType = TwDefineEnum("FogFallOffType", fogFallOffTypeEV, 3);
+	fogFallOffType = TwDefineEnum("FogFallOffType", fogFallOffTypeEV, 2);
 	
 	TwEnumVal fogCalculationTypeEV[] = {
 		{ Rendering::FogEffect::PLANE_BASED, "Plane-based" },

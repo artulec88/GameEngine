@@ -11,8 +11,8 @@ uniform float displacementBias;
 DeclareFragOutput(0, vec4);
 void main()
 {
-	float distance = CalcFogDistance(C_eyePos, worldPos0, gl_FragCoord);
-	float fogFactor = CalcFogFactor(R_ambientFogStart, R_ambientFogEnd, R_ambientFogDensityFactor, distance);
+	float distance = CalcFogDistance(C_eyePos, worldPos0);
+	float fogFactor = CalcFogFactor(R_ambientFogStart, R_ambientFogEnd, R_ambientFogDensityFactor, R_ambientFogGradient, distance);
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);

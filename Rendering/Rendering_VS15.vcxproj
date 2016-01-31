@@ -200,6 +200,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="MenuEntry.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshGroupRenderer.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="QuitGameCommand.h" />
@@ -253,6 +254,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="MenuEntry.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshGroupRenderer.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="QuitGameCommand.cpp" />
