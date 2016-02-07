@@ -1,7 +1,8 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Entered	1	1	5971.1	5971.1	5971.1
-MouseButtonEvent	4	4	11541.2	11541.2	2885.29
-MousePosEvent	76	76	1342.24	1342.24	17.6611
-Input	4603	4603	5957.51	5957.51	1.29427
-Render	94	94	111885	111885	1190.26
-Update	4603	4603	47498	47498	10.3189
+Entered	1	1	6319.7	6319.7	6319.7
+MouseButtonEvent	4	4	6945.01	6945.01	1736.25
+MousePosEvent	64	64	68.4238	68.4238	1.06912
+KeyEvent	28	28	4.18145	4.18145	0.149338
+Input	25246	25246	9581.04	9581.04	0.379507
+Render	367	367	1.0168e+06	1.0168e+06	2770.58
+Update	25246	25246	203745	203745	8.07038

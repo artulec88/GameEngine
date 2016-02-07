@@ -3,6 +3,7 @@
 #include "ISort.h"
 #include "SortingParameters.h"
 #include <sstream>
+#include "Utility\ILogger.h"
 
 using namespace Math;
 
@@ -17,6 +18,7 @@ KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSam
 #endif
 {
 	START_PROFILING;
+	CHECK_CONDITION_EXIT(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
 	m_minDistancePositions = new Vector3D[m_numberOfSamples];
 	m_minDistances = new Real[m_numberOfSamples];
 	BuildTree(positions, positionsCount, 0);

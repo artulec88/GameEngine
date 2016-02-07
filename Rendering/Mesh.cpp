@@ -144,16 +144,10 @@ void Mesh::Initialize()
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace);
 
-	if (scene == NULL)
-	{
-		CRITICAL_LOG("Error while loading a mesh \"%s\"", name.c_str());
-		exit(EXIT_FAILURE);
-	}
-	if ((scene->mMeshes == NULL) || (scene->mNumMeshes < 1))
-	{
-		EMERGENCY_LOG("Incorrect number of meshes loaded- %d- check the model. One of the possible solutions is to check whether the model has any additional lines at the end.", scene->mNumMeshes);
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT(scene != NULL, Utility::Critical, "Error while loading a mesh \"%s\"", name.c_str());
+	CHECK_CONDITION_EXIT((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::Critical,
+		"Incorrect number of meshes loaded- %d- check the model \"%s\". One of the possible solutions is to check whether the model has any additional lines at the end.",
+		scene->mNumMeshes, name.c_str());
 
 	const aiMesh* model = scene->mMeshes[0];
 	std::vector<Vertex> vertices;
@@ -169,7 +163,7 @@ void Mesh::Initialize()
 		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
 		if (pTangent == NULL)
 		{
-			ERROR_LOG("Tangent calculated incorrectly");
+			ERROR_LOG("Tangent calculated incorrectly for the mesh file name \"%s\"", name.c_str());
 			pTangent = &aiZeroVector;
 		}
 		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
@@ -194,7 +188,7 @@ void Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION(face.mNumIndices == 3, Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
+		CHECK_CONDITION_ALWAYS(face.mNumIndices == 3, Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -212,6 +206,16 @@ void Mesh::Initialize()
 
 void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled /* = true */)
 {
+#ifdef DELOCUST_ENABLED
+	for (size_t i = 0; i < verticesCount; ++i)
+	{
+		DELOCUST_LOG("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, vertices[i].m_pos.ToString().c_str(), vertices[i].m_texCoord.ToString().c_str(), vertices[i].m_normal.ToString().c_str());
+	}
+	for (size_t i = 0; i < indicesCount; ++i)
+	{
+		DELOCUST_LOG("index[%d]: %d", i, indices[i]);
+	}
+#endif
 	m_meshData = new MeshData(static_cast<GLsizei>(indicesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	if (calcNormalsEnabled)
@@ -465,6 +469,62 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 {
 }
 
+TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode /* = GL_TRIANGLES */) :
+	Mesh(mode),
+	m_x(gridX),
+	m_z(gridZ),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_positions(NULL),
+	m_positionsCount(VERTEX_COUNT * VERTEX_COUNT),
+	m_lastX(REAL_ZERO),
+	m_lastY(REAL_ZERO),
+	m_lastZ(REAL_ZERO)
+#ifdef HEIGHTMAP_SORT_TABLE
+	, m_lastClosestPositionIndex(0)
+#elif defined HEIGHTMAP_KD_TREE
+	, m_kdTree(NULL),
+	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+#endif
+{
+	const int vertexCountMinusOne = VERTEX_COUNT - 1;
+	std::vector<Math::Vector3D> positions;
+	std::vector<Vertex> vertices;
+	int indices[INDICES_COUNT];
+	for (int i = 0; i < VERTEX_COUNT; ++i)
+	{
+		const Math::Real iReal = static_cast<Math::Real>(i);
+		for (int j = 0; j < VERTEX_COUNT; ++j)
+		{
+			const Math::Real jReal = static_cast<Math::Real>(j);
+			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, REAL_ZERO, iReal / vertexCountMinusOne * SIZE);
+			positions.push_back(position);
+			Math::Vector2D texCoord(jReal / vertexCountMinusOne, iReal / vertexCountMinusOne);
+			Math::Vector3D normal(REAL_ZERO, REAL_ONE, REAL_ONE);
+			vertices.push_back(Vertex(position, texCoord, normal));
+		}
+	}
+	int pointer = 0;
+	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
+	{
+		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
+		{
+			int topLeft = (gz * VERTEX_COUNT) + gx;
+			int topRight = topLeft + 1;
+			int bottomLeft = ((gz + 1) * VERTEX_COUNT) + gx;
+			int bottomRight = bottomLeft + 1;
+			indices[pointer] = topLeft;
+			indices[++pointer] = bottomLeft;
+			indices[++pointer] = topRight;
+			indices[++pointer] = topRight;
+			indices[++pointer] = bottomLeft;
+			indices[++pointer] = bottomRight;
+		}
+	}
+	
+	SavePositions(positions);
+	AddVertices(&vertices[0], m_positionsCount, &indices[0], INDICES_COUNT, false);
+}
+
 TerrainMesh::~TerrainMesh(void)
 {
 	SAFE_DELETE_JUST_TABLE(m_positions);
@@ -682,6 +742,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
 	DEBUG_LOG("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
+	CHECK_CONDITION_EXIT(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
 	for (int i = 0; i < m_positionsCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();

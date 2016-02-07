@@ -86,6 +86,7 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new GameNode();
+	//m_terrainMesh = new TerrainMesh(REAL_ZERO, REAL_ZERO);
 	m_terrainMesh = new TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
@@ -109,7 +110,7 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new MeshRenderer(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	m_terrainNode->GetTransform().SetScale(20.0f);
+	//m_terrainNode->GetTransform().SetScale(20.0f);
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	RegisterTerrainNode(m_terrainNode);

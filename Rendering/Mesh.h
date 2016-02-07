@@ -208,12 +208,20 @@ private:
 class TerrainMesh : public Mesh
 {
 /* ==================== Static variables begin ==================== */
+private:
+	/// <summary> The size of the single squared-size terrain tile. </summary>
+	static const int SIZE = 200;
+	/// <summary> The number of vertices along each side of the single terrain tile. </summary>
+	static const int VERTEX_COUNT = 16;
+	/// <summary> The number of indices. </summary>
+	static const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1);
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-	virtual ~TerrainMesh(void);
+	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode = GL_TRIANGLES);
+	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
 	//TerrainMesh(TerrainMesh& terrainMesh) : Mesh(terrainMesh) {}
 	//void operator=(TerrainMesh& terrainMesh) : Mesh(terrainMesh) {}
@@ -230,6 +238,11 @@ protected:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	/// <summary> The position of the single terrain tile along the X axis. </summary>
+	Math::Real m_x;
+	/// <summary> The position of the single terrain tile along the Z axis. </summary>
+	Math::Real m_z;
+
 	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
 	size_t m_positionsCount;
