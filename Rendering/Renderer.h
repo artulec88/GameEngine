@@ -339,7 +339,7 @@ private:
 	Transform m_filterTransform;
 	Mesh* m_filterMesh;
 
-	GameNode* m_terrainNode;
+	std::vector<GameNode*> m_terrainNodes;
 	Shader* m_ambientShaderTerrain;
 	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledMap;
 	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledTerrainMap;

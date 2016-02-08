@@ -69,7 +69,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_filterMaterial(NULL),
 	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
-	m_terrainNode(NULL),
+	m_terrainNodes(),
 	m_ambientShaderTerrain(NULL),
 	m_ambientShader(NULL),
 	m_shadowMapShader(NULL),
@@ -475,8 +475,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 void Renderer::AddTerrainNode(GameNode* terrainNode)
 {
 	CHECK_CONDITION(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
-	CHECK_CONDITION(m_terrainNode == NULL, Utility::Warning, "Replacing already set terrain noed with a different one.");
-	m_terrainNode = terrainNode;
+	m_terrainNodes.push_back(terrainNode);
 }
 
 void Renderer::AddWaterNode(GameNode* waterNode)
@@ -590,7 +589,10 @@ void Renderer::Render(const GameNode& gameNode)
 			{
 				glCullFace(GL_FRONT);
 			}
-			m_terrainNode->RenderAll(m_shadowMapShader, this);
+			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+			{
+				(*terrainNodeItr)->RenderAll(m_shadowMapShader, this);
+			}
 			gameNode.RenderAll(m_shadowMapShader, this);
 			if (shadowInfo->IsFlipFacesEnabled())
 			{
@@ -814,12 +816,18 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
 		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
-		m_terrainNode->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
+		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+		{
+			(*terrainNodeItr)->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
+		}
 		gameNode.RenderAll(fogShader, this); // Ambient rendering with fog enabled
 	}
 	else if (m_ambientLightEnabled)
 	{
-		m_terrainNode->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
+		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+		{
+			(*terrainNodeItr)->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
+		}
 		gameNode.RenderAll(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
 	STOP_PROFILING;
@@ -860,7 +868,10 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 			CameraBase* temp = m_currentCamera;
 			m_currentCamera = &m_altCamera;
 
-			m_terrainNode->RenderAll(m_cubeMapShader, this);
+			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+			{
+				(*terrainNodeItr)->RenderAll(m_cubeMapShader, this);
+			}
 			gameNode.RenderAll(m_cubeMapShader, this);
 
 			m_currentCamera = temp;
@@ -888,7 +899,10 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
-	m_terrainNode->RenderAll(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
+	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+	{
+		(*terrainNodeItr)->RenderAll(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
+	}
 	gameNode.RenderAll(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
 
 	glDepthFunc(Rendering::glDepthTestFunc);
