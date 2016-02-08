@@ -173,9 +173,9 @@ void GameManager::AddBillboardNode(GameNode* billboardNode)
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddBillboardNode(billboardNode);
 }
 
-void GameManager::RegisterTerrainNode(GameNode* terrainNode)
+void GameManager::AddTerrainNode(GameNode* terrainNode)
 {
-	CoreEngine::GetCoreEngine()->GetRenderer()->RegisterTerrainNode(terrainNode);
+	CoreEngine::GetCoreEngine()->GetRenderer()->AddTerrainNode(terrainNode);
 }
 
 void GameManager::Render(Renderer* renderer)

@@ -74,7 +74,7 @@ public:
 	RENDERING_API void PopState();
 	RENDERING_API void RequestGameQuit() const;
 protected:
-	RENDERING_API void RegisterTerrainNode(GameNode* terrainNode);
+	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
 	RENDERING_API void AddToSceneRoot(GameNode* child);
 	RENDERING_API void AddWaterNode(GameNode* waterNode);
 	RENDERING_API void AddBillboardNode(GameNode* billboardNode);

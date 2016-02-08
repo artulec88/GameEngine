@@ -113,7 +113,7 @@ void TestGameManager::Load()
 	//m_terrainNode->GetTransform().SetScale(20.0f);
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
-	RegisterTerrainNode(m_terrainNode);
+	AddTerrainNode(m_terrainNode);
 
 	m_boxNode = new GameNode();
 #ifdef ANT_TWEAK_BAR_ENABLED

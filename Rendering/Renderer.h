@@ -168,7 +168,7 @@ public:
 	{
 		glfwSetWindowShouldClose(m_window, GL_TRUE);
 	}
-	void RegisterTerrainNode(GameNode* terrainNode);
+	void AddTerrainNode(GameNode* terrainNode);
 	void AddWaterNode(GameNode* waterNode);
 	void AddBillboardNode(GameNode* billboardNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
