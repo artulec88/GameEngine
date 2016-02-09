@@ -27,7 +27,7 @@ using namespace Rendering;
 
 TestGameManager::TestGameManager() :
 	GameManager(),
-	RESOURCES_TO_LOAD(34),
+	RESOURCES_TO_LOAD(36),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_terrainMesh(NULL),
@@ -251,6 +251,16 @@ void TestGameManager::Load()
 	//castleNode->AddComponent(new MeshRenderer(new Mesh("castle.obj"), new Material(new Texture("HumanSkin.jpg"), 0.5f, 8.0f)));
 	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
 	//AddToSceneRoot(castleNode);
+
+	GameNode* playerNode = new GameNode();
+	const Math::Real playerPositionX = 3.0f;
+	const Math::Real playerPositionZ = 1.0f;
+	const Math::Real playerPositionY = 0.0f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
+	playerNode->AddComponent(new MeshRenderer(new Mesh("person.obj"), new Material(new Texture("player.png"))));
+	playerNode->GetTransform().SetScale(0.05f);
+	m_resourcesLoaded += 2;
+	AddToSceneRoot(playerNode);
 
 	GameNode* teapotNode = new GameNode();
 	teapotNode->GetTransform().SetPos(3.0f, 4.0f, REAL_ONE);
