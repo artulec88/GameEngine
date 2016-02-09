@@ -1,5 +1,5 @@
-#ifndef __RENDERING_IINPUTABLE_H__
-#define __RENDERING_IINPUTABLE_H__
+#ifndef __RENDERING_INPUT_IINPUTABLE_H__
+#define __RENDERING_INPUT_IINPUTABLE_H__
 
 #include "Rendering.h"
 #include <vector>
@@ -40,4 +40,4 @@ public:
 
 } /* end namespace Rendering */
 
-#endif /* __RENDERING_IINPUTABLE_H__ */
+#endif /* __RENDERING_INPUT_IINPUTABLE_H__ */

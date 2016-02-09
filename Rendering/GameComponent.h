@@ -33,10 +33,6 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API virtual void Input(Math::Real delta);
-	RENDERING_API virtual void Update(Math::Real delta);
-	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer);
-
 	void SetParent(GameNode* parentGameNode);
 	Transform& GetTransform();
 	const Transform& GetTransform() const;

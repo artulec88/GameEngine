@@ -2,6 +2,9 @@
 
 #include "Rendering.h"
 #include "Transform.h"
+#include "IRenderable.h"
+#include "IInputable.h"
+#include "IUpdateable.h"
 #include "Math\Math.h"
 #include <vector>
 
@@ -50,7 +53,10 @@ private:
 protected:
 	int m_ID; // just for easier debugging purposes
 	std::vector<GameNode*> m_childrenGameNodes;
-	std::vector<GameComponent*> m_components; // See TODO comment in GameComponent.h file.
+	std::vector<GameComponent*> m_components;
+	std::vector<IRenderable*> m_renderableComponents;
+	std::vector<Input::IInputable*> m_inputableComponents;
+	std::vector<IUpdateable*> m_updateableComponents;
 	Transform m_transform;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */

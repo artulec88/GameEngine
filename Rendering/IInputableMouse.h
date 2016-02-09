@@ -1,5 +1,5 @@
-#ifndef __RENDERING_IINPUTABLE_MOUSE_H__
-#define __RENDERING_IINPUTABLE_MOUSE_H__
+#ifndef __RENDERING_INPUT_IINPUTABLE_MOUSE_H__
+#define __RENDERING_INPUT_IINPUTABLE_MOUSE_H__
 
 #include "Rendering.h"
 #include "IInputable.h"
@@ -34,4 +34,4 @@ public:
 
 } /* end namespace Rendering */
 
-#endif /* __RENDERING_IINPUTABLE_MOUSE_H__ */
+#endif /* __RENDERING_INPUT_IINPUTABLE_MOUSE_H__ */

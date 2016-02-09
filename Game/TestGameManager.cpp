@@ -27,7 +27,7 @@ using namespace Rendering;
 
 TestGameManager::TestGameManager() :
 	GameManager(),
-	RESOURCES_TO_LOAD(36),
+	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_terrainMesh(NULL),
@@ -56,6 +56,7 @@ TestGameManager::TestGameManager() :
 
 	m_gameStateManager->Push(new MenuGameState());
 	//m_gameStateManager->Push(new InGameState());
+	srand((unsigned int)time(NULL));
 }
 
 
@@ -115,20 +116,6 @@ void TestGameManager::Load()
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	AddTerrainNode(m_terrainNode);
 
-	m_boxNode = new GameNode();
-#ifdef ANT_TWEAK_BAR_ENABLED
-	boxMaterial = new Material(new Texture("crateBox2.jpg"), 1.0f, 2.0f);
-	m_boxNode->AddComponent(new MeshRenderer(
-		new Mesh("SimpleCrate\\CrateModel.obj"), boxMaterial));
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-#else
-	m_boxNode->AddComponent(new MeshRenderer(
-		new Mesh("SimpleCrate\\CrateModel.obj"), new Material(new Texture("crateBox2.jpg"), 1.0f, 2.0f)));
-#endif
-	m_boxNode->GetTransform().SetPos(12.0f, 3.5f, 9.0f);
-	m_boxNode->GetTransform().SetScale(0.05f);
-	AddToSceneRoot(m_boxNode);
-
 	////Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
 	////Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };
 	////int indices [] = { 0, 1 };
@@ -136,22 +123,10 @@ void TestGameManager::Load()
 	////	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
 	////	new Material(new Texture("DirectionalLight.png"))));
 
-	GameNode* boxNode2 = new GameNode();
-	boxNode2->AddComponent(new MeshRenderer(
-		new Mesh("cube.obj"),
-		new Material(new Texture("bricks2.jpg"), 1.0f, 8.0f,
-			new Texture("bricks2_normal.jpg"),
-			new Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
-	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	boxNode2->GetTransform().SetPos(8.0f, 0.5f, 5.0f);
-	boxNode2->GetTransform().Rotate(Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(30.0f)));
-	boxNode2->GetTransform().SetScale(0.5f);
-	AddToSceneRoot(boxNode2);
-
 	GameNode* testMesh1 = new GameNode();
-	testMesh1->GetTransform().SetPos(-2.0f, 2.5f, 2.0f);
+	testMesh1->GetTransform().SetPos(-2.0f, m_terrainMesh->GetHeightAt(Math::Vector2D(-2.0f, 2.0f)), 2.0f);
 	testMesh1->GetTransform().SetRot(Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
-	testMesh1->GetTransform().SetScale(1.5f);
+	testMesh1->GetTransform().SetScale(0.1f);
 	GameNode* testMesh2 = new GameNode();
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	//testMesh2->GetTransform().SetScale(1.5f);
@@ -167,65 +142,37 @@ void TestGameManager::Load()
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
 
-	GameNode* monkeyNode1 = new GameNode();
-	monkeyNode1->AddComponent(new MeshRenderer(
-		new Mesh("monkey4.obj"),
-		new Material(new Texture("chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
-	monkeyNode1->AddComponent(new LookAtComponent());
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
-	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
+	//GameNode* monkeyNode1 = new GameNode();
+	//monkeyNode1->AddComponent(new MeshRenderer(
+	//	new Mesh("monkey4.obj"),
+	//	new Material(new Texture("chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
 	//monkeyNode1->AddComponent(new LookAtComponent());
-	AddToSceneRoot(monkeyNode1);
-
-	GameNode* monkeyNode2 = new GameNode();
-	monkeyNode2->AddComponent(new MeshRenderer(
-		new Mesh("monkey3.obj"),
-		new Material(new Texture("bricks.jpg"), 2.0f, 32.0f)));
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
-	//monkeyNode2->AddComponent(new LookAtComponent());
-	AddToSceneRoot(monkeyNode2);
-
-	//GameNode* earthNode = new GameNode();
-	//earthNode->AddComponent(new MeshRenderer(new Mesh("earth.obj"), new Material(new Texture("earth.jpg"))));
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	//earthNode->GetTransform().SetPos(12.0f, 2.0f, -2.0f);
-	//AddToSceneRoot(earthNode);
+	//monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
+	////monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
+	////INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
+	////monkeyNode1->AddComponent(new LookAtComponent());
+	//AddToSceneRoot(monkeyNode1);
 
-	//GameNode* sphereNode = new GameNode();
-	//sphereNode->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	//m_resourcesLoaded += 2;
-	//sphereNode->GetTransform().SetPos(-3.0f, 1.5f, -3.0f);
-	//AddToSceneRoot(sphereNode);
-
-	//GameNode* sphereNode2 = new GameNode();
-	//sphereNode2->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	//m_resourcesLoaded += 2;
-	//sphereNode2->GetTransform().SetPos(-3.0f, 2.0f, 3.0f);
-	//AddToSceneRoot(sphereNode2);
-
-	//GameNode* sphereNode3 = new GameNode();
-	//sphereNode3->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	//m_resourcesLoaded += 2;
-	//sphereNode3->GetTransform().SetPos(3.0f, 2.5f, -3.0f);
-	//AddToSceneRoot(sphereNode3);
-
-	//GameNode* sphereNode4 = new GameNode();
-	//sphereNode4->AddComponent(new MeshRenderer(new Mesh("sphere.obj"), new Material(new Texture("rust.jpg"))));
-	//m_resourcesLoaded += 2;
-	//sphereNode4->GetTransform().SetPos(3.0f, 3.0f, 3.0f);
-	//AddToSceneRoot(sphereNode4);
+	//GameNode* monkeyNode2 = new GameNode();
+	//monkeyNode2->AddComponent(new MeshRenderer(
+	//	new Mesh("monkey3.obj"),
+	//	new Material(new Texture("bricks.jpg"), 2.0f, 32.0f)));
+	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
+	//monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
+	////monkeyNode2->AddComponent(new LookAtComponent());
+	//AddToSceneRoot(monkeyNode2);
 
 	GameNode* waterNode = new GameNode();
-	waterNode->AddComponent(new MeshRenderer(new Mesh("plane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
+	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
+	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
+	waterNode->AddComponent(new MeshRenderer(new Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	m_resourcesLoaded += 2;
 	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
 	waterNode->GetTransform().SetScale(3.0f);
 	AddWaterNode(waterNode);
 
-	for (int i = 0; i < 200; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
 		GameNode* billboardNode = new GameNode();
 		Math::Real x = static_cast<Real>(rand() % 50) - 25.0f;
@@ -235,17 +182,15 @@ void TestGameManager::Load()
 		AddBillboardNode(billboardNode);
 	}
 
-	srand((unsigned int)time(NULL));
-
-	humanNodes = new GameNode* [HUMAN_NODES_COUNT];
-	for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
-	{
-		humanNodes[i] = new GameNode();
-		humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(new Texture("HumanSkin.jpg"), 2.0f, 32.0f)));
-		humanNodes[i]->GetTransform().SetPos(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
-		AddToSceneRoot(humanNodes[i]);
-	}
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
+	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
+	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
+	//{
+	//	humanNodes[i] = new GameNode();
+	//	humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(new Texture("HumanSkin.jpg"), 2.0f, 32.0f)));
+	//	humanNodes[i]->GetTransform().SetPos(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
+	//	AddToSceneRoot(humanNodes[i]);
+	//}
+	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 
 	//castleNode = new GameNode();
 	//castleNode->AddComponent(new MeshRenderer(new Mesh("castle.obj"), new Material(new Texture("HumanSkin.jpg"), 0.5f, 8.0f)));
@@ -255,18 +200,12 @@ void TestGameManager::Load()
 	GameNode* playerNode = new GameNode();
 	const Math::Real playerPositionX = 3.0f;
 	const Math::Real playerPositionZ = 1.0f;
-	const Math::Real playerPositionY = 0.0f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->AddComponent(new MeshRenderer(new Mesh("person.obj"), new Material(new Texture("player.png"))));
-	playerNode->GetTransform().SetScale(0.05f);
+	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
-
-	GameNode* teapotNode = new GameNode();
-	teapotNode->GetTransform().SetPos(3.0f, 4.0f, REAL_ONE);
-	teapotNode->AddComponent(new MeshRenderer(new Mesh("teapot.obj"), new Material(new Texture("chessboard3.jpg"))));
-	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	AddToSceneRoot(teapotNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 

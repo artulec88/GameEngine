@@ -4,6 +4,9 @@
 #include "Rendering.h"
 #include "GameComponent.h"
 #include "Transform.h"
+#ifdef ANT_TWEAK_BAR_ENABLED
+#include "IInputable.h"
+#endif
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
@@ -95,6 +98,9 @@ protected:
 }; /* end class Camera */
 
 class CameraComponent : public CameraBase, public GameComponent
+#ifdef ANT_TWEAK_BAR_ENABLED
+	, public Input::IInputable
+#endif
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

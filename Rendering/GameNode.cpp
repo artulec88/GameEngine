@@ -3,6 +3,9 @@
 #include "GameComponent.h"
 //#include "Renderer.h"
 #include "CoreEngine.h"
+#include "IRenderable.h"
+#include "IInputable.h"
+#include "IUpdateable.h"
 
 #include "Utility\ILogger.h"
 
@@ -69,6 +72,21 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 {
 	m_components.push_back(child);
 	child->SetParent(this);
+	IRenderable* renderableComponent = dynamic_cast<IRenderable*>(child);
+	if (renderableComponent != NULL)
+	{
+		m_renderableComponents.push_back(renderableComponent);
+	}
+	Input::IInputable* inputableComponent = dynamic_cast<Input::IInputable*>(child);
+	if (inputableComponent != NULL)
+	{
+		m_inputableComponents.push_back(inputableComponent);
+	}
+	IUpdateable* updateableComponent = dynamic_cast<IUpdateable*>(child);
+	if (updateableComponent != NULL)
+	{
+		m_updateableComponents.push_back(updateableComponent);
+	}
 	return this;
 }
 
@@ -86,7 +104,7 @@ void GameNode::Input(Math::Real delta)
 {
 	//transform.Update();
 
-	for (std::vector<GameComponent*>::iterator gameComponentItr = m_components.begin(); gameComponentItr != m_components.end(); ++gameComponentItr)
+	for (std::vector<Input::IInputable*>::iterator gameComponentItr = m_inputableComponents.begin(); gameComponentItr != m_inputableComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Input(delta);
 	}
@@ -104,7 +122,7 @@ void GameNode::UpdateAll(Math::Real delta)
 
 void GameNode::Update(Math::Real delta)
 {
-	for (std::vector<GameComponent*>::iterator gameComponentItr = m_components.begin(); gameComponentItr != m_components.end(); ++gameComponentItr)
+	for (std::vector<IUpdateable*>::iterator gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Update(delta);
 	}
@@ -122,7 +140,7 @@ void GameNode::RenderAll(Shader* shader, Renderer* renderer) const
 
 void GameNode::Render(Shader* shader, Renderer* renderer) const
 {
-	for (std::vector<GameComponent*>::const_iterator gameComponentItr = m_components.begin(); gameComponentItr != m_components.end(); ++gameComponentItr)
+	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Render(shader, renderer);
 	}

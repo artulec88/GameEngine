@@ -3,6 +3,7 @@
 #include "StartGameCommand.h"
 #include "Rendering\GameManager.h"
 #include "Rendering\GameCommand.h"
+#include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 #include "LoadGameState.h"
@@ -114,7 +115,7 @@ void MenuGameState::Input(Math::Real elapsedTime)
 	STOP_PROFILING;
 }
 
-void MenuGameState::Render(Renderer* renderer)
+void MenuGameState::Render(Shader* shader, Renderer* renderer)
 {
 	START_PROFILING;
 	DELOCUST_LOG("MAIN MENU game state rendering");

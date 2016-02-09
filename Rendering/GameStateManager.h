@@ -141,8 +141,9 @@ public:
 	virtual void Update(Math::Real deltaTime) = 0;
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
-	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
-	virtual void Render(Renderer* renderer) = 0;
+	/// <param name="shader"> The shader to be used for rendering. </param>
+	/// <param name="renderer"> The rendering engine. </param>
+	virtual void Render(Shader* shader, Renderer* renderer) = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
 
@@ -218,8 +219,9 @@ public:
 	void Update(Math::Real deltaTime);
 
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
-	/// <param name="elapsedFrameTime"> Elapsed simulation time at the frame </param>
-	void Render(Renderer* renderer);
+	/// <param name="shader"> The shader to be used for rendering. </param>
+	/// <param name="renderer"> The rendering engine. </param>
+	void Render(Shader* shader, Renderer* renderer);
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it

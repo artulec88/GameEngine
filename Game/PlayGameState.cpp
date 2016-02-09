@@ -3,6 +3,7 @@
 #include "Utility\ILogger.h"
 #include "PlayMenuGameState.h"
 #include "Rendering\CoreEngine.h"
+#include "Rendering\Shader.h"
 #include "Rendering\GameNode.h"
 
 #include "Math\FloatingPoint.h"
@@ -10,7 +11,6 @@
 #include "tinythread.h"
 
 using namespace Game;
-using namespace Rendering;
 
 PlayGameState::PlayGameState(void) :
 	GameState(),
@@ -30,11 +30,11 @@ void PlayGameState::Entered()
 	START_PROFILING;
 	INFO_LOG("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	GameManager* gameManager = GameManager::GetGameManager();
+	Rendering::GameManager* gameManager = Rendering::GameManager::GetGameManager();
 	CHECK_CONDITION(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
 	gameManager->InitializeTweakBars();
-	CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
+	Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
 #endif
 
 #ifdef CALCULATE_STATS
@@ -47,7 +47,7 @@ void PlayGameState::Leaving()
 {
 	INFO_LOG("PLAY game state is about to be removed from the game state manager");
 #ifdef CALCULATE_STATS
-	CoreEngine::GetCoreEngine()->StopSamplingSpf();
+	Rendering::CoreEngine::GetCoreEngine()->StopSamplingSpf();
 #endif
 }
 
@@ -70,7 +70,7 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 		m_isMouseLocked = ! m_isMouseLocked;
 		if (m_isMouseLocked)
 		{
-			CoreEngine::GetCoreEngine()->CentralizeCursor();
+			Rendering::CoreEngine::GetCoreEngine()->CentralizeCursor();
 		}
 		INFO_LOG("Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
@@ -93,8 +93,8 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 		return;
 	}
 
-	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
-	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
+	int width = Rendering::CoreEngine::GetCoreEngine()->GetWindowWidth();
+	int height = Rendering::CoreEngine::GetCoreEngine()->GetWindowHeight();
 	Math::Vector2D centerPosition(static_cast<Math::Real>(width) / 2, static_cast<Math::Real>(height) / 2);
 	Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
 	deltaPosition -= centerPosition;
@@ -104,8 +104,8 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 
 	if (rotX || rotY)
 	{
-		Transform& transform = CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
-		const Math::Real sensitivity = static_cast<Math::Real>(CameraBase::GetSensitivity());
+		Rendering::Transform& transform = Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
+		const Math::Real sensitivity = static_cast<Math::Real>(Rendering::CameraBase::GetSensitivity());
 		if (rotX)
 		{
 			transform.Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * sensitivity));
@@ -114,7 +114,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 		{
 			transform.Rotate(transform.GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * sensitivity));
 		}
-		CoreEngine::GetCoreEngine()->CentralizeCursor();
+		Rendering::CoreEngine::GetCoreEngine()->CentralizeCursor();
 	}
 	STOP_PROFILING;
 }
@@ -143,7 +143,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_PRESS)
 		{
-			GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), GameStateTransitioning::PUSH, GameStateModality::EXCLUSIVE));
+			Rendering::GameManager::GetGameManager()->SetTransition(new Rendering::GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), Rendering::GameStateTransitioning::PUSH, Rendering::GameStateModality::EXCLUSIVE));
 		}
 		break;
 	case GLFW_KEY_C:
@@ -218,18 +218,18 @@ void PlayGameState::Input(Math::Real elapsedTime)
 {
 	START_PROFILING;
 	DEBUG_LOG("PLAY game state input processing");
-	GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
+	Rendering::GameManager::GetGameManager()->GetRootGameNode().InputAll(elapsedTime);
 	//m_rootGameNode.InputAll(elapsedTime);
 	STOP_PROFILING;
 }
 
-void PlayGameState::Render(Renderer* renderer)
+void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer)
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG("PLAY game state rendering");
 
-	renderer->Render(GameManager::GetGameManager()->GetRootGameNode());
+	renderer->Render(Rendering::GameManager::GetGameManager()->GetRootGameNode());
 	STOP_PROFILING;
 }
 
@@ -241,9 +241,9 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	DEBUG_LOG("PLAY game state updating");
 
 	//m_rootGameNode.UpdateAll(elapsedTime);
-	GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);
+	Rendering::GameManager::GetGameManager()->GetRootGameNode().UpdateAll(elapsedTime);
 
-	Transform& transform = CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
+	Rendering::Transform& transform = Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	//
@@ -257,7 +257,7 @@ void PlayGameState::Update(Math::Real elapsedTime)
 	//}
 	///* ==================== Adjusting camera vertical position begin ==================== */
 
-	const Math::Real sensitivity = static_cast< Math::Real>(Camera::GetSensitivity());
+	const Math::Real sensitivity = static_cast< Math::Real>(Rendering::Camera::GetSensitivity());
 	Math::Vector3D acceleration;
 	if (forward)
 	{

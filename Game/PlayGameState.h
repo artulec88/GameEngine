@@ -16,6 +16,8 @@
 namespace Game
 {
 
+	class Rendering::Shader;
+
 class PlayGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard,
 	public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
@@ -53,7 +55,7 @@ public:
 	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Input(Math::Real elapsedTime);
-	virtual void Render(Rendering::Renderer* renderer);
+	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer);
 	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */
 

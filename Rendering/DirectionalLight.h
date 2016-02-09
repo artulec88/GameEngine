@@ -7,6 +7,10 @@
 
 #define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
 
+#ifdef SIMULATE_SUN_BEHAVIOR
+#include "IUpdateable.h"
+#endif
+
 namespace Rendering { namespace Lighting
 {
 
@@ -14,6 +18,9 @@ namespace Rendering { namespace Lighting
 /// The directional light representation.
 /// </summary>
 class DirectionalLight : public BaseLight
+#ifdef SIMULATE_SUN_BEHAVIOR
+	, public IUpdateable
+#endif
 {
 /* ==================== Static variables and functions begin ==================== */
 private:

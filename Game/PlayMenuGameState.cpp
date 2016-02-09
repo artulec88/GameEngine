@@ -1,6 +1,7 @@
 #include "PlayMenuGameState.h"
 #include "Rendering\GameManager.h"
 #include "Rendering\GameCommand.h"
+#include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 #include "QuitCommand.h"
@@ -109,7 +110,7 @@ void PlayMenuGameState::Input(Math::Real elapsedTime)
 	DEBUG_LOG("PLAY MAIN MENU game state input processing");
 }
 
-void PlayMenuGameState::Render(Rendering::Renderer* renderer)
+void PlayMenuGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer)
 {
 	DEBUG_LOG("PLAY MAIN MENU game state rendering");
 	renderer->RenderMainMenu(*m_currentMenuEntry);

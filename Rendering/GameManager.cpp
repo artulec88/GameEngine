@@ -180,7 +180,7 @@ void GameManager::AddTerrainNode(GameNode* terrainNode)
 
 void GameManager::Render(Renderer* renderer)
 {
-	m_gameStateManager->Render(renderer);
+	m_gameStateManager->Render(NULL, renderer);
 }
 
 void GameManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)

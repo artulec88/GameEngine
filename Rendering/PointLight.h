@@ -3,12 +3,13 @@
 #include "Rendering.h"
 #include "Attenuation.h"
 #include "BaseLight.h"
+#include "IUpdateable.h"
 #include "Color.h"
 
 namespace Rendering { namespace Lighting
 {
 
-class PointLight : public BaseLight
+class PointLight : public BaseLight, public IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 public:

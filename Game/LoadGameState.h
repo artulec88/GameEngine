@@ -16,6 +16,8 @@
 namespace Game
 {
 
+	class Rendering::Shader;
+
 /* TODO: Consider inheriting from Rendering::IUpdateable class */
 class LoadGameState : public Rendering::GameState, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
@@ -50,7 +52,7 @@ public:
 	 */
 	virtual void Revealed();
 
-	virtual void Render(Rendering::Renderer* renderer);
+	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer);
 	
 	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */

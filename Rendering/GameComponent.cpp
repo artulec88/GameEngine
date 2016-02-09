@@ -25,21 +25,6 @@ GameComponent::~GameComponent(void)
 	//}
 }
 
-void GameComponent::Input(Math::Real delta)
-{
-	// TODO: Empty definitions wastes CPU time.
-}
-
-void GameComponent::Update(Math::Real delta)
-{
-	// TODO: Empty definitions wastes CPU time.
-}
-
-void GameComponent::Render(Shader* shader, Renderer* renderingEngine)
-{
-	// TODO: Empty definitions wastes CPU time.
-}
-
 void GameComponent::SetParent(GameNode* parentGameNode)
 {
 	CHECK_CONDITION_EXIT(parentGameNode != NULL, Utility::Error, "Cannot assign a parent to the game component. Parent game node is NULL.");

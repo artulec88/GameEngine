@@ -2,6 +2,7 @@
 #define __RENDERING_MESH_RENDERER_H__
 
 #include "GameComponent.h"
+#include "IRenderable.h"
 
 namespace Rendering
 {
@@ -11,7 +12,7 @@ class Material;
 class Shader;
 
 // TODO: Inherit from IRenderable interface or use it in the Mesh class instead.
-class MeshRenderer : public GameComponent
+class MeshRenderer : public GameComponent, public IRenderable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

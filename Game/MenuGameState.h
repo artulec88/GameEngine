@@ -20,6 +20,8 @@
 namespace Game
 {
 
+	class Rendering::Shader;
+
 class MenuGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -55,7 +57,7 @@ public:
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Input(Math::Real elapsedTime);
-	virtual void Render(Rendering::Renderer* renderer);
+	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

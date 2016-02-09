@@ -2,13 +2,14 @@
 
 #include "Rendering.h"
 #include "GameComponent.h"
+#include "IUpdateable.h"
 #include "Math\Vector.h"
 
 namespace Rendering
 {
 
 // TODO: Inherit from IUpdateable interface.
-class LookAtComponent : public GameComponent
+class LookAtComponent : public GameComponent, public IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
