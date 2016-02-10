@@ -18,27 +18,17 @@ using namespace Rendering;
 using namespace Math;
 using namespace Utility;
 
-/* static */ Real CameraBase::sensitivity;
+/* static */ const Math::Real CameraBase::DEFAULT_CAMERA_SENSITIVITY = 0.005f;
 
-/* static */
-Real CameraBase::GetSensitivity()
-{
-	return CameraBase::sensitivity;
-}
-
-/* static */
-void CameraBase::InitializeCameraSensitivity()
-{
-	CameraBase::sensitivity = GET_CONFIG_VALUE("cameraSensitivity", 0.5f);
-}
-
-CameraBase::CameraBase(const Matrix4D& projectionMatrix) :
-	m_projection(projectionMatrix)
+CameraBase::CameraBase(const Matrix4D& projectionMatrix, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+	m_projection(projectionMatrix),
+	m_sensitivity(sensitivity)
 {
 }
 
-CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
-	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane)
+CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
+	m_sensitivity(sensitivity)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_prevFov(FoV),
 	m_fov(FoV),
@@ -82,14 +72,14 @@ Matrix4D CameraBase::GetViewProjection() const
 }
 
 
-Camera::Camera(const Matrix4D& projectionMatrix, const Transform& transform) :
-	CameraBase(projectionMatrix),
+Camera::Camera(const Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity) :
+	CameraBase(projectionMatrix, sensitivity),
 	m_transform(transform)
 {
 }
 
-Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, const Transform& transform) :
-	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane),
+Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, const Transform& transform, Math::Real sensitivity) :
+	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_transform(transform)
 {
 }
@@ -99,8 +89,8 @@ Camera::~Camera(void)
 {
 }
 
-CameraComponent::CameraComponent(const Matrix4D& projectionMatrix) :
-	CameraBase(projectionMatrix),
+CameraComponent::CameraComponent(const Matrix4D& projectionMatrix, Math::Real sensitivity) :
+	CameraBase(projectionMatrix, sensitivity),
 	GameComponent(),
 	m_forward(false),
 	m_backward(false),
@@ -113,8 +103,8 @@ CameraComponent::CameraComponent(const Matrix4D& projectionMatrix) :
 {
 }
 
-CameraComponent::CameraComponent(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane) :
-	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane),
+CameraComponent::CameraComponent(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, Math::Real sensitivity) :
+	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	GameComponent(),
 	m_forward(false),
 	m_backward(false),
@@ -345,7 +335,7 @@ void CameraComponent::Update(Real delta)
 	{
 		acceleration -= GetTransform().GetRot().GetUp().Normalized();
 	}
-	m_velocity += acceleration * delta * GetSensitivity() * 0.01f;
+	m_velocity += acceleration * delta * m_sensitivity;
 	const Math::Real step = 0.1f;
 	const Math::Real approachedValue = 0.0f; // must be ZERO!
 	if (Math::AlmostEqual(acceleration.GetX(), approachedValue))

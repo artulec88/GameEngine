@@ -128,7 +128,8 @@ void DebugGameManager::AddCameras()
 		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
 		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
 		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
-		m_cameraNodes[i]->AddComponent(new CameraComponent(fov, aspectRatio, zNearPlane, zFarPlane));
+		Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + cameraIndexStr, 0.005f);
+		m_cameraNodes[i]->AddComponent(new CameraComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity));
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(m_cameraNodes[i]);
 	}

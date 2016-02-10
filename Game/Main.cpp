@@ -100,7 +100,6 @@ int main (int argc, char* argv[])
 	}
 	/* ==================== Initializing textures directory end ==================== */
 
-	CameraBase::InitializeCameraSensitivity();
 	ICommand::DeleteCommand();
 	/* ==================== Reading settings and parameters end ==================== */
 

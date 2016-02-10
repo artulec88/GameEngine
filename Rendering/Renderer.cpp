@@ -64,7 +64,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_currentCameraIndex(0),
 	m_currentCamera(NULL),
 	m_mainMenuCamera(NULL),
-	m_altCamera(Math::Matrix4D(), Transform()),
+	m_altCamera(Math::Matrix4D(), Transform(), 0.005f),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
 	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
@@ -264,7 +264,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	Real aspectRatio = GET_CONFIG_VALUE("mainMenuCameraAspectRatio", defaultAspectRatio);
 	Real zNearPlane = GET_CONFIG_VALUE("mainMenuCameraNearPlane", defaultNearPlane);
 	Real zFarPlane = GET_CONFIG_VALUE("mainMenuCameraFarPlane", defaultFarPlane);
-	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Transform());
+	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Transform(), 0.005f);
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 #ifdef DEBUG_RENDERING_ENABLED

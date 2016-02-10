@@ -21,13 +21,7 @@ class CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
-	/// <summary>
-	/// The camera sensitivity. The amount representing how fast the camera reacts to player's input.
-	/// </summary>
-	static Math::Real sensitivity;
-public:
-	RENDERING_API static Math::Real GetSensitivity();
-	RENDERING_API static void InitializeCameraSensitivity();
+	static const Math::Real DEFAULT_CAMERA_SENSITIVITY;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -36,7 +30,8 @@ public:
 	/// The constructor of the camera base object.
 	/// </summary>
 	/// <param name="projectionMatrix">The projection matrix of the camera.</param>
-	CameraBase(const Math::Matrix4D& projectionMatrix);
+	/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
+	CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity = DEFAULT_CAMERA_SENSITIVITY);
 
 	/// <summary>
 	/// The constructor of the camera base object.
@@ -45,7 +40,8 @@ public:
 	/// <param name="aspectRatio">The aspect ratio of the camera.</param>
 	/// <param name="zNearPlane">The near plane of the camera.</param>
 	/// <param name="zFarPlane">The far plane of the camera.</param>
-	CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+	/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
+	CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity = DEFAULT_CAMERA_SENSITIVITY);
 
 	/// <summary>
 	/// The destructor of the camera object.
@@ -64,6 +60,10 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	Math::Matrix4D m_projection;
+	/// <summary>
+	/// The camera sensitivity. The amount representing how fast the camera reacts to player's input.
+	/// </summary>
+	Math::Real m_sensitivity;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Math::Angle m_prevFov, m_fov;
 	Math::Real m_prevAspectRatio, m_aspectRatio;
@@ -79,8 +79,8 @@ class Camera : public CameraBase
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Camera(const Math::Matrix4D& projectionMatrix, const Transform& transform);
-	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Transform& transform);
+	Camera(const Math::Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity);
+	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Transform& transform, Math::Real sensitivity);
 	virtual ~Camera(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -103,8 +103,8 @@ class CameraComponent : public CameraBase, public GameComponent, public Input::I
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CameraComponent(const Math::Matrix4D& projectionMatrix);
-	RENDERING_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane);
+	RENDERING_API CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
+	RENDERING_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
 	RENDERING_API virtual ~CameraComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
