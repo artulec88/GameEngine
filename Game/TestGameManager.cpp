@@ -5,6 +5,7 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
+#include "Rendering\PlayerComponent.h"
 #include "Rendering\LookAtComponent.h"
 #include "Rendering\Color.h"
 #include "Rendering\LightBuilder.h"
@@ -203,6 +204,7 @@ void TestGameManager::Load()
 	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->AddComponent(new MeshRenderer(new Mesh("person.obj"), new Material(new Texture("player.png"))));
+	playerNode->AddComponent(new PlayerComponent(0.2f));
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
@@ -371,13 +373,6 @@ void TestGameManager::AddCameras()
 //	stdlog(Info, LOGPLACE, "The game is being cleaned up");
 //}
 
-void TestGameManager::Input(Real delta)
-{
-	START_PROFILING;
-	m_gameStateManager->Input(delta);
-	STOP_PROFILING;
-}
-
 // TODO: Remove in the future
 Real temp = 0.0;
 bool isMouseLocked = false;
@@ -389,9 +384,9 @@ void TestGameManager::Update(Real delta)
 	STOP_PROFILING;
 }
 
-void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void TestGameManager::WindowResizeEvent(int width, int height)
 {
-	GameManager::WindowResizeEvent(window, width, height);
+	GameManager::WindowResizeEvent(width, height);
 }
 
 /**
@@ -400,9 +395,9 @@ void TestGameManager::WindowResizeEvent(GLFWwindow* window, int width, int heigh
  * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
  * @param mods Bit field describing which modifier keys were held down
  */
-void TestGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void TestGameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	GameManager::KeyEvent(window, key, scancode, action, mods);
+	GameManager::KeyEvent(key, scancode, action, mods);
 	m_gameStateManager->KeyEvent(key, scancode, action, mods);
 }
 
@@ -411,7 +406,7 @@ void TestGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int ac
  * GLFW_MOUSE_BUTTON_2 = right mouse button
  * GLFW_MOUSE_BUTTON_3 = middle mouse button
  */
-void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void TestGameManager::MouseButtonEvent(int button, int action, int mods)
 {
 	// TODO: Pass the event to the Input function in the current game state.
 	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
@@ -424,7 +419,7 @@ void TestGameManager::MouseButtonEvent(GLFWwindow* window, int button, int actio
 	m_gameStateManager->MouseButtonEvent(button, action, mods);
 }
 
-void TestGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void TestGameManager::MousePosEvent(double xPos, double yPos)
 {
 	m_gameStateManager->MousePosEvent(xPos, yPos);
 }
