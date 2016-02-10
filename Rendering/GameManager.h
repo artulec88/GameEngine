@@ -11,6 +11,8 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Camera.h"
+#include "IUpdateable.h"
+#include "IRenderable.h"
 #include "Math\Math.h"
 
 namespace Rendering
@@ -18,7 +20,7 @@ namespace Rendering
 
 class Renderer;
 
-class GameManager
+class GameManager : public IUpdateable
 {
 /* ==================== Static variables begin ==================== */
 protected:
@@ -43,9 +45,7 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API virtual void Load() = 0; // Loads the game
-	RENDERING_API virtual void Input(Math::Real delta) = 0;
-	RENDERING_API virtual void Update(Math::Real delta) = 0;
-	RENDERING_API void Render(Renderer* renderer);
+	RENDERING_API void Render(Renderer* renderer) const;
 
 	RENDERING_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 
@@ -59,12 +59,12 @@ public:
 #endif
 
 	// TODO: Think about removing the window parameter from the event handling functions below.
-	RENDERING_API virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
-	RENDERING_API virtual void CloseWindowEvent(GLFWwindow* window);
-	RENDERING_API virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
-	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
-	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
-	RENDERING_API virtual void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset);
+	RENDERING_API virtual void WindowResizeEvent(int width, int height);
+	RENDERING_API virtual void CloseWindowEvent();
+	RENDERING_API virtual void KeyEvent(int key, int scancode, int action, int mods);
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+	RENDERING_API virtual void ScrollEvent(double xOffset, double yOffset);
 
 	/// <summary> Sets the game state transition object. The transition itself is not performed.
 	/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>

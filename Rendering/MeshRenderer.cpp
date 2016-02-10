@@ -31,7 +31,7 @@ MeshRenderer::~MeshRenderer(void)
 	SAFE_DELETE(m_material);
 }
 
-void MeshRenderer::Render(Shader* shader, Renderer* renderer)
+void MeshRenderer::Render(Shader* shader, Renderer* renderer) const
 {
 	CHECK_CONDITION_RETURN_VOID(shader != NULL, Utility::Emergency, "Rendering a mesh failed. Shader instance is NULL.");
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Rendering a mesh failed. Rendering engine is NULL.");

@@ -259,6 +259,7 @@ void CoreEngine::Stop()
 	}
 	
 	m_isRunning = false;
+	m_renderer->RequestWindowClose();
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	NOTICE_LOG("The core engine has stopped");
 
@@ -373,9 +374,9 @@ void CoreEngine::Run()
 			/* ==================== REGION #2_1 end ====================*/
 			
 			/* ==================== REGION #2_2 begin ====================*/
-			RESET_TIMER(innerTimer);
-			m_game.Input(m_frameTime);
-			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
+			//RESET_TIMER(innerTimer);
+			//m_game.Input(m_frameTime);
+			//STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
 			//Input::Update();
@@ -465,32 +466,32 @@ void CoreEngine::Run()
 
 void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
-	m_game.WindowResizeEvent(window, width, height);
+	m_game.WindowResizeEvent(width, height);
 }
 
 void CoreEngine::CloseWindowEvent(GLFWwindow* window)
 {
-	m_game.CloseWindowEvent(window);
+	m_game.CloseWindowEvent();
 }
 
 void CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	m_game.KeyEvent(window, key, scancode, action, mods);
+	m_game.KeyEvent(key, scancode, action, mods);
 }
 
 void CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	m_game.MouseButtonEvent(window, button, action, mods);
+	m_game.MouseButtonEvent(button, action, mods);
 }
 
 void CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	m_game.MousePosEvent(window, xPos, yPos);
+	m_game.MousePosEvent(xPos, yPos);
 }
 
 void CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
-	m_game.ScrollEvent(window, xOffset, yOffset);
+	m_game.ScrollEvent(xOffset, yOffset);
 }
 
 void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const

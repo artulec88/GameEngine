@@ -49,7 +49,7 @@ void LoadGameState::Revealed()
 	INFO_LOG("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
-void LoadGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer)
+void LoadGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG("LOAD game state rendering");

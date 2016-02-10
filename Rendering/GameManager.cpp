@@ -3,7 +3,6 @@
 #include "GameStateManager.h"
 #include "CoreEngine.h"
 #include "Vertex.h"
-#include "Input.h"
 #include "Renderer.h"
 #include "Attenuation.h"
 #include "PointLight.h"
@@ -79,16 +78,16 @@ GameManager::~GameManager(void)
 	DEBUG_LOG("Game manager destruction finished");
 }
 
-void GameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void GameManager::WindowResizeEvent(int width, int height)
 {
 	NOTICE_LOG("Window resize event (width = %d, height = %d)", width, height);
 	// TODO: Check if core engine finds out about the resizing of the window.
 }
 
-void GameManager::CloseWindowEvent(GLFWwindow* window)
+void GameManager::CloseWindowEvent()
 {
 	NOTICE_LOG("Close window event");
-	glfwSetWindowShouldClose(window, GL_TRUE);
+	CoreEngine::GetCoreEngine()->Stop();
 }
 
 /**
@@ -97,7 +96,7 @@ void GameManager::CloseWindowEvent(GLFWwindow* window)
  * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
  * @param mods Bit field describing which modifier keys were held down
  */
-void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void GameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
 	DELOCUST_LOG("Key event with key = %d", key);
 
@@ -108,12 +107,12 @@ void GameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action
 	//}
 	if ((key == GLFW_KEY_F3) && (mods & GLFW_MOD_ALT))
 	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
+		CoreEngine::GetCoreEngine()->Stop();
 		return;
 	}
 }
 
-void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void GameManager::MouseButtonEvent(int button, int action, int mods)
 {
 	DELOCUST_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
@@ -136,12 +135,12 @@ void GameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, i
 	}
 }
 
-void GameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void GameManager::MousePosEvent(double xPos, double yPos)
 {
 	DEBUG_LOG("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
 }
 
-void GameManager::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+void GameManager::ScrollEvent(double xOffset, double yOffset)
 {
 	DEBUG_LOG("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
@@ -178,7 +177,7 @@ void GameManager::AddTerrainNode(GameNode* terrainNode)
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddTerrainNode(terrainNode);
 }
 
-void GameManager::Render(Renderer* renderer)
+void GameManager::Render(Renderer* renderer) const
 {
 	m_gameStateManager->Render(NULL, renderer);
 }

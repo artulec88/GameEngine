@@ -26,15 +26,14 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Load();
-	virtual void Input(Math::Real delta);
 	virtual void Update(Math::Real delta);
 
 	virtual Math::Real GetLoadingProgress() const;
 
-	virtual void WindowResizeEvent(GLFWwindow* window, int width, int height);
-	virtual void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods);
-	virtual void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods);
-	virtual void MousePosEvent(GLFWwindow* window, double xPos, double yPos);
+	virtual void WindowResizeEvent(int width, int height);
+	virtual void KeyEvent(int key, int scancode, int action, int mods);
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void InitializeTweakBars();
 #endif

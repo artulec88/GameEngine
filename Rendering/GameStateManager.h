@@ -132,10 +132,6 @@ public:
 
 	virtual void MousePosEvent(double xPos, double yPos) = 0;
 
-	/// <summary> Processes player's input according to current game state </summary>
-	/// <param name="elapsedTime"> Elapsed simulation time </param>
-	virtual void Input(Math::Real elapsedTime) = 0;
-
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
 	virtual void Update(Math::Real deltaTime) = 0;
@@ -143,7 +139,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	virtual void Render(Shader* shader, Renderer* renderer) = 0;
+	virtual void Render(Shader* shader, Renderer* renderer) const = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
 
@@ -210,10 +206,6 @@ public:
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 
-	/// <summary> Processes player's input according to current game state </summary>
-	/// <param name="elapsedTime> Elapsed simulation time </param>
-	virtual void Input(Math::Real elapsedTime);
-
 	/// <summary> Advances the time of the active game states </summary>
 	/// <param name="deltaTime"> Elapsed simulation time </param>
 	void Update(Math::Real deltaTime);
@@ -221,7 +213,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	void Render(Shader* shader, Renderer* renderer);
+	void Render(Shader* shader, Renderer* renderer) const;
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it
@@ -260,7 +252,6 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::vector<GameStateModalityTypePair> m_activeStates;
-	std::vector<Input::IInputable*> m_exposedInputables;
 	std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
 	std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 	std::vector<IRenderable*> m_exposedRenderables;

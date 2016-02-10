@@ -4,9 +4,8 @@
 #include "Rendering.h"
 #include "GameComponent.h"
 #include "Transform.h"
-#ifdef ANT_TWEAK_BAR_ENABLED
-#include "IInputable.h"
-#endif
+#include "IInputableKeyboard.h"
+#include "IUpdateable.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
@@ -97,10 +96,7 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Camera */
 
-class CameraComponent : public CameraBase, public GameComponent
-#ifdef ANT_TWEAK_BAR_ENABLED
-	, public Input::IInputable
-#endif
+class CameraComponent : public CameraBase, public GameComponent, public Input::IInputableKeyboard, public IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -114,14 +110,17 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-#ifdef ANT_TWEAK_BAR_ENABLED
-	virtual void Input(Math::Real delta);
-#endif
+	virtual void KeyEvent(int key, int scancode, int action, int mods);
+	virtual void Update(Math::Real delta);
 	virtual Transform& GetTransform() { return GameComponent::GetTransform(); }
 	virtual const Transform& GetTransform() const { return GameComponent::GetTransform(); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
+private:
+	bool m_forward, m_backward, m_left, m_right, m_up, m_down;
+	Math::Vector3D m_velocity;
+	Math::Real m_maxSpeed;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Camera */
 

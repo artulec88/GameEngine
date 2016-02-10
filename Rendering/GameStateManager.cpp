@@ -95,7 +95,6 @@ DefaultGameStateManager::~DefaultGameStateManager()
 
 void DefaultGameStateManager::ClearAllIntefaceLists()
 {
-	m_exposedInputables.clear();
 	m_exposedInputablesKeyboard.clear();
 	m_exposedInputablesMouse.clear();
 	m_exposedRenderables.clear();
@@ -190,14 +189,6 @@ void DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 	}
 }
 
-void DefaultGameStateManager::Input(Math::Real elapsedTime)
-{
-	for (std::vector<Input::IInputable*>::iterator gameStateItr = m_exposedInputables.begin(); gameStateItr != m_exposedInputables.end(); ++gameStateItr)
-	{
-		(*gameStateItr)->Input(elapsedTime);
-	}
-}
-
 void DefaultGameStateManager::Update(Math::Real deltaTime)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
@@ -206,9 +197,9 @@ void DefaultGameStateManager::Update(Math::Real deltaTime)
 	}
 }
 
-void DefaultGameStateManager::Render(Shader* shader, Renderer* renderer)
+void DefaultGameStateManager::Render(Shader* shader, Renderer* renderer) const
 {
-	for (std::vector<IRenderable*>::iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
+	for (std::vector<IRenderable*>::const_iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->Render(shader, renderer);
 	}
@@ -217,23 +208,17 @@ void DefaultGameStateManager::Render(Shader* shader, Renderer* renderer)
 void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG("Adding to interfaces started");
-	Input::IInputable* inputable = dynamic_cast<Input::IInputable*>(gameState);
-	if (inputable != NULL)
+	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+	if (inputableKeyboard != NULL)
 	{
-		DEBUG_LOG("Adding to INPUT interface");
-		m_exposedInputables.push_back(inputable);
-		Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
-		if (inputableKeyboard != NULL)
-		{
-			DEBUG_LOG("Adding to KEYBOARD INPUT interface");
-			m_exposedInputablesKeyboard.push_back(inputableKeyboard);
-		}
-		Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
-		if (inputableMouse != NULL)
-		{
-			DEBUG_LOG("Adding to MOUSE INPUT interface");
-			m_exposedInputablesMouse.push_back(inputableMouse);
-		}
+		DEBUG_LOG("Adding to KEYBOARD INPUT interface");
+		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
+	}
+	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+	if (inputableMouse != NULL)
+	{
+		DEBUG_LOG("Adding to MOUSE INPUT interface");
+		m_exposedInputablesMouse.push_back(inputableMouse);
 	}
 
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
@@ -254,20 +239,15 @@ void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 
 void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
-	Input::IInputable* inputable = dynamic_cast<Input::IInputable*>(gameState);
-	if (inputable != NULL)
+	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+	if (inputableKeyboard != NULL)
 	{
-		m_exposedInputables.push_back(inputable);
-		Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
-		if (inputableKeyboard != NULL)
-		{
-			m_exposedInputablesKeyboard.push_back(inputableKeyboard);
-		}
-		Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
-		if (inputableMouse != NULL)
-		{
-			m_exposedInputablesMouse.push_back(inputableMouse);
-		}
+		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
+	}
+	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+	if (inputableMouse != NULL)
+	{
+		m_exposedInputablesMouse.push_back(inputableMouse);
 	}
 
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);

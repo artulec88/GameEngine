@@ -71,7 +71,7 @@ private: // disable copy constructor
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API void Start();
-	void Stop();
+	RENDERING_API void Stop();
 	size_t GetCurrentCameraIndex() const;
 	size_t NextCamera() const;
 	size_t PrevCamera() const;

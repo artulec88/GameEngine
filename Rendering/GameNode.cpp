@@ -77,10 +77,10 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	{
 		m_renderableComponents.push_back(renderableComponent);
 	}
-	Input::IInputable* inputableComponent = dynamic_cast<Input::IInputable*>(child);
-	if (inputableComponent != NULL)
+	Input::IInputableKeyboard* inputableKeyboardComponent = dynamic_cast<Input::IInputableKeyboard*>(child);
+	if (inputableKeyboardComponent != NULL)
 	{
-		m_inputableComponents.push_back(inputableComponent);
+		m_inputableKeyboardComponents.push_back(inputableKeyboardComponent);
 	}
 	IUpdateable* updateableComponent = dynamic_cast<IUpdateable*>(child);
 	if (updateableComponent != NULL)
@@ -90,33 +90,57 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	return this;
 }
 
-void GameNode::InputAll(Math::Real delta)
-{
-	Input(delta);
-
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
-	{
-		(*gameNodeItr)->InputAll(delta);
-	}
-}
-
-void GameNode::Input(Math::Real delta)
-{
+//void GameNode::InputAll(Math::Real delta)
+//{
 	//transform.Update();
 
-	for (std::vector<Input::IInputable*>::iterator gameComponentItr = m_inputableComponents.begin(); gameComponentItr != m_inputableComponents.end(); ++gameComponentItr)
-	{
-		(*gameComponentItr)->Input(delta);
-	}
-}
+	//for (std::vector<Input::IInputable*>::iterator gameComponentItr = m_inputableComponents.begin(); gameComponentItr != m_inputableComponents.end(); ++gameComponentItr)
+	//{
+	//	(*gameComponentItr)->Input(delta);
+	//}
 
-void GameNode::UpdateAll(Math::Real delta)
+	//for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	//{
+	//	(*gameNodeItr)->InputAll(delta);
+	//}
+//}
+
+void GameNode::KeyEvent(int key, int scancode, int action, int mods)
 {
-	Update(delta);
+	for (std::vector<Input::IInputableKeyboard*>::iterator gameComponentItr = m_inputableKeyboardComponents.begin(); gameComponentItr != m_inputableKeyboardComponents.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->KeyEvent(key, scancode, action, mods);
+	}
 
 	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->UpdateAll(delta);
+		(*gameNodeItr)->KeyEvent(key, scancode, action, mods);
+	}
+}
+
+void GameNode::MouseButtonEvent(int button, int action, int mods)
+{
+	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->MouseButtonEvent(button, action, mods);
+	}
+
+	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->MouseButtonEvent(button, action, mods);
+	}
+}
+
+void GameNode::MousePosEvent(double xPos, double yPos)
+{
+	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->MousePosEvent(xPos, yPos);
+	}
+
+	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->MousePosEvent(xPos, yPos);
 	}
 }
 
@@ -126,15 +150,10 @@ void GameNode::Update(Math::Real delta)
 	{
 		(*gameComponentItr)->Update(delta);
 	}
-}
 
-void GameNode::RenderAll(Shader* shader, Renderer* renderer) const
-{
-	Render(shader, renderer);
-
-	for (std::vector<GameNode*>::const_iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
-		(*gameNodeItr)->RenderAll(shader, renderer);
+		(*gameNodeItr)->Update(delta);
 	}
 }
 
@@ -143,6 +162,11 @@ void GameNode::Render(Shader* shader, Renderer* renderer) const
 	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{
 		(*gameComponentItr)->Render(shader, renderer);
+	}
+
+	for (std::vector<GameNode*>::const_iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->Render(shader, renderer);
 	}
 }
 

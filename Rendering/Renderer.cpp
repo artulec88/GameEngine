@@ -591,9 +591,9 @@ void Renderer::Render(const GameNode& gameNode)
 			}
 			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 			{
-				(*terrainNodeItr)->RenderAll(m_shadowMapShader, this);
+				(*terrainNodeItr)->Render(m_shadowMapShader, this);
 			}
-			gameNode.RenderAll(m_shadowMapShader, this);
+			gameNode.Render(m_shadowMapShader, this);
 			if (shadowInfo->IsFlipFacesEnabled())
 			{
 				glCullFace(GL_BACK);
@@ -691,11 +691,11 @@ void Renderer::RenderWaterNodes()
 	{
 		if (m_waterLightReflectionEnabled)
 		{
-			(*waterNodeItr)->RenderAll(m_waterShader, this);
+			(*waterNodeItr)->Render(m_waterShader, this);
 		}
 		else
 		{
-			(*waterNodeItr)->RenderAll(m_waterNoDirectionalLightShader, this);
+			(*waterNodeItr)->Render(m_waterNoDirectionalLightShader, this);
 		}
 	}
 	STOP_PROFILING;
@@ -707,7 +707,7 @@ void Renderer::RenderBillboardNodes()
 	DEBUG_LOG("Rendering billboards started");
 	for (std::vector<GameNode*>::const_iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
 	{
-		(*billboardNodeItr)->RenderAll(m_billboardShader, this);
+		(*billboardNodeItr)->Render(m_billboardShader, this);
 	}
 	STOP_PROFILING;
 }
@@ -818,17 +818,17 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 		{
-			(*terrainNodeItr)->RenderAll(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
+			(*terrainNodeItr)->Render(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
 		}
-		gameNode.RenderAll(fogShader, this); // Ambient rendering with fog enabled
+		gameNode.Render(fogShader, this); // Ambient rendering with fog enabled
 	}
 	else if (m_ambientLightEnabled)
 	{
 		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 		{
-			(*terrainNodeItr)->RenderAll(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
+			(*terrainNodeItr)->Render(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
 		}
-		gameNode.RenderAll(m_ambientShader, this); // Ambient rendering with disabled fog
+		gameNode.Render(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
 	STOP_PROFILING;
 }
@@ -870,9 +870,9 @@ void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 
 			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 			{
-				(*terrainNodeItr)->RenderAll(m_cubeMapShader, this);
+				(*terrainNodeItr)->Render(m_cubeMapShader, this);
 			}
-			gameNode.RenderAll(m_cubeMapShader, this);
+			gameNode.Render(m_cubeMapShader, this);
 
 			m_currentCamera = temp;
 		}
@@ -901,9 +901,9 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 
 	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 	{
-		(*terrainNodeItr)->RenderAll(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
+		(*terrainNodeItr)->Render(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
 	}
-	gameNode.RenderAll(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
+	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
 
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glDepthMask(GL_TRUE);
@@ -1031,7 +1031,7 @@ void Renderer::RenderSkybox()
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	glDepthFunc(GL_LEQUAL);
-	m_skyboxNode->RenderAll(m_skyboxShader, this);
+	m_skyboxNode->Render(m_skyboxShader, this);
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glCullFace(Rendering::glCullFaceMode);
 	//glEnable(GL_DEPTH_TEST);

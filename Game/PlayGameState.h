@@ -54,8 +54,7 @@ public:
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Input(Math::Real elapsedTime);
-	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer);
+	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */
 

@@ -22,7 +22,7 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer);
+	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

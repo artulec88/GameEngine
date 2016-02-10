@@ -118,6 +118,9 @@
     <ClCompile Include="MeshGroupRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntTweakBarTypes.h">
@@ -250,6 +253,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshGroupRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

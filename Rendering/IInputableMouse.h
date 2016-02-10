@@ -2,14 +2,14 @@
 #define __RENDERING_INPUT_IINPUTABLE_MOUSE_H__
 
 #include "Rendering.h"
-#include "IInputable.h"
+//#include "IInputable.h"
 
 namespace Rendering { namespace Input
 {
 /// <summary>
 /// Interface for objects which can react to player's mouse input
 /// </summary>
-class IInputableMouse : public virtual IInputable
+class IInputableMouse // : public virtual IInputable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

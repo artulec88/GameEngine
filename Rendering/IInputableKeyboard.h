@@ -2,7 +2,7 @@
 #define __RENDERING_IINPUTABLE_KEYBOARD_H__
 
 #include "Rendering.h"
-#include "IInputable.h"
+//#include "IInputable.h"
 
 namespace Rendering { namespace Input
 {
@@ -10,7 +10,7 @@ namespace Rendering { namespace Input
 /// <summary>
 /// Interface for objects which can react to player's keyboard input
 /// </summary>
-class IInputableKeyboard : public virtual IInputable
+class IInputableKeyboard // : public virtual IInputable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

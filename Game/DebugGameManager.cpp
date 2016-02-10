@@ -142,13 +142,6 @@ void DebugGameManager::AddCameras()
 //	stdlog(Info, LOGPLACE, "The game is being cleaned up");
 //}
 
-void DebugGameManager::Input(Real delta)
-{
-	START_PROFILING;
-	m_gameStateManager->Input(delta);
-	STOP_PROFILING;
-}
-
 void DebugGameManager::Update(Real delta)
 {
 	START_PROFILING;
@@ -156,9 +149,9 @@ void DebugGameManager::Update(Real delta)
 	STOP_PROFILING;
 }
 
-void DebugGameManager::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void DebugGameManager::WindowResizeEvent(int width, int height)
 {
-	GameManager::WindowResizeEvent(window, width, height);
+	GameManager::WindowResizeEvent(width, height);
 }
 
 /**
@@ -167,9 +160,9 @@ void DebugGameManager::WindowResizeEvent(GLFWwindow* window, int width, int heig
 * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
 * @param mods Bit field describing which modifier keys were held down
 */
-void DebugGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void DebugGameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	GameManager::KeyEvent(window, key, scancode, action, mods);
+	GameManager::KeyEvent(key, scancode, action, mods);
 	m_gameStateManager->KeyEvent(key, scancode, action, mods);
 }
 
@@ -178,7 +171,7 @@ void DebugGameManager::KeyEvent(GLFWwindow* window, int key, int scancode, int a
 * GLFW_MOUSE_BUTTON_2 = right mouse button
 * GLFW_MOUSE_BUTTON_3 = middle mouse button
 */
-void DebugGameManager::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void DebugGameManager::MouseButtonEvent(int button, int action, int mods)
 {
 	// TODO: Pass the event to the Input function in the current game state.
 	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
@@ -191,7 +184,7 @@ void DebugGameManager::MouseButtonEvent(GLFWwindow* window, int button, int acti
 	m_gameStateManager->MouseButtonEvent(button, action, mods);
 }
 
-void DebugGameManager::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+void DebugGameManager::MousePosEvent(double xPos, double yPos)
 {
 	m_gameStateManager->MousePosEvent(xPos, yPos);
 }

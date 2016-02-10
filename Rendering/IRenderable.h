@@ -29,7 +29,7 @@ namespace Rendering
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(Shader* shader, Renderer* renderer) = 0;
+		virtual void Render(Shader* shader, Renderer* renderer) const = 0;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
