@@ -39,6 +39,7 @@ public:
 	RENDERING_API virtual void KeyEvent(int key, int scancode, int action, int mods);
 	RENDERING_API virtual void MouseButtonEvent(int button, int action, int mods);
 	RENDERING_API virtual void MousePosEvent(double xPos, double yPos);
+	RENDERING_API virtual void ScrollEvent(double xOffset, double yOffset);
 
 	//RENDERING_API void InputAll(Math::Real delta);
 	RENDERING_API virtual void Update(Math::Real elapsedTime);

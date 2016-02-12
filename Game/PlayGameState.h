@@ -53,6 +53,7 @@ public:
 
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
+	virtual void ScrollEvent(double xOffset, double yOffset);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	virtual void Update(Math::Real elapsedTime);

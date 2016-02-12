@@ -402,6 +402,12 @@ void TestGameManager::KeyEvent(int key, int scancode, int action, int mods)
 	m_gameStateManager->KeyEvent(key, scancode, action, mods);
 }
 
+void TestGameManager::ScrollEvent(double xOffset, double yOffset)
+{
+	GameManager::ScrollEvent(xOffset, yOffset);
+	m_gameStateManager->ScrollEvent(xOffset, yOffset);
+}
+
 /**
  * GLFW_MOUSE_BUTTON_1 = left mouse button
  * GLFW_MOUSE_BUTTON_2 = right mouse button

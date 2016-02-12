@@ -124,6 +124,8 @@ public:
 	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
 	virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
 
+	virtual void ScrollEvent(double xOffset, double yOffset) = 0;
+
 	/// <summary> Collects mouse button input according to current game state </summary>
 	/// <param name="key"> The mouse button that triggered the event </param>
 	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
@@ -202,6 +204,8 @@ public:
 	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
 	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
+
+	virtual void ScrollEvent(double xOffset, double yOffset);
 
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);

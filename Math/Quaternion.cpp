@@ -137,7 +137,7 @@ Real Quaternion::LengthSquared() const
 
 void Quaternion::InvertPitch()
 {
-	// TODO: Warning. This function has not yet been tested. Use with precaution.
+	// TODO: Warning. This function has not yet been tested. Use with caution.
 	m_x = -m_x;
 	m_z = -m_z;
 }

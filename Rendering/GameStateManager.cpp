@@ -161,6 +161,20 @@ void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mo
 	//ERROR_LOG("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
+void DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
+{
+	if (m_exposedInputablesMouse.empty())
+	{
+		return;
+	}
+	DEBUG_LOG("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
+		m_exposedInputablesMouse.size(), xOffset, yOffset);
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	{
+		(*gameStateItr)->ScrollEvent(xOffset, yOffset);
+	}
+}
+
 void DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 {
 	if (m_exposedInputablesMouse.empty())

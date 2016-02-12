@@ -82,6 +82,11 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	{
 		m_inputableKeyboardComponents.push_back(inputableKeyboardComponent);
 	}
+	Input::IInputableMouse* inputableMouseComponent = dynamic_cast<Input::IInputableMouse*>(child);
+	if (inputableMouseComponent != NULL)
+	{
+		m_inputableMouseComponents.push_back(inputableMouseComponent);
+	}
 	IUpdateable* updateableComponent = dynamic_cast<IUpdateable*>(child);
 	if (updateableComponent != NULL)
 	{
@@ -141,6 +146,19 @@ void GameNode::MousePosEvent(double xPos, double yPos)
 	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
 	{
 		(*gameNodeItr)->MousePosEvent(xPos, yPos);
+	}
+}
+
+void GameNode::ScrollEvent(double xOffset, double yOffset)
+{
+	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
+	{
+		(*gameComponentItr)->ScrollEvent(xOffset, yOffset);
+	}
+
+	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+	{
+		(*gameNodeItr)->ScrollEvent(xOffset, yOffset);
 	}
 }
 

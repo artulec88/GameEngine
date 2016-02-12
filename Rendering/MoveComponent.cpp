@@ -107,3 +107,7 @@ void Rendering::MoveComponent::MouseButtonEvent(int button, int action, int mods
 void Rendering::MoveComponent::MousePosEvent(double xPos, double yPos)
 {
 }
+
+void Rendering::MoveComponent::ScrollEvent(double xOffset, double yOffset)
+{
+}

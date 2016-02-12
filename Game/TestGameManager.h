@@ -35,6 +35,7 @@ public:
 
 	virtual void WindowResizeEvent(int width, int height);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
+	virtual void ScrollEvent(double xOffset, double yOffset);
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 #ifdef ANT_TWEAK_BAR_ENABLED

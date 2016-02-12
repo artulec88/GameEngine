@@ -328,21 +328,113 @@ void CameraMoveComponent::Update(Math::Real deltaTime)
 //	return ss.str();
 //}
 
+/* static */ const Math::Real CameraFollowComponent::MINIMUM_DISTANCE_TO_ENTITY = 0.1f;
+/* static */ const Math::Real CameraFollowComponent::MAXIMUM_DISTANCE_TO_ENTITY = 0.5f;
+/* static */ const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE(5.0f);
+/* static */ const Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
+
 CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow) :
 	CameraComponent(projectionMatrix, sensitivity),
-	m_gameEntityToFollow(entityToFollow)
+	m_gameEntityToFollow(entityToFollow),
+	m_distanceFromEntity(0.25f /* TODO: Don't use hard-coded values */),
+	m_changingAngleAroundEntity(false),
+	m_angleAroundEntitySpeed(0.24f),
+	m_currentAngleAroundEntity(REAL_ZERO),
+	m_changingPitch(false),
+	m_pitchRotationSpeed(0.1f),
+	m_currentPitchAngle(30.0f),
+	m_lastCursorPositionX(REAL_ZERO),
+	m_lastCursorPositionY(REAL_ZERO)
 {
 }
 
 CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, GameNode* entityToFollow) :
 	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	m_gameEntityToFollow(entityToFollow)
+	m_gameEntityToFollow(entityToFollow),
+	m_distanceFromEntity(0.25f /* TODO: Don't use hard-coded values */),
+	m_changingAngleAroundEntity(false),
+	m_angleAroundEntitySpeed(0.24f),
+	m_currentAngleAroundEntity(REAL_ZERO),
+	m_changingPitch(false),
+	m_pitchRotationSpeed(0.1f),
+	m_currentPitchAngle(30.0f),
+	m_lastCursorPositionX(REAL_ZERO),
+	m_lastCursorPositionY(REAL_ZERO)
 {
 }
 
 
 CameraFollowComponent::~CameraFollowComponent(void)
 {
+}
+
+void CameraFollowComponent::MouseButtonEvent(int button, int action, int mods)
+{
+	if (!m_isActive)
+	{
+		return;
+	}
+	DEBUG_LOG("Mouse button event for the camera following an entity (button = %d, action = %d, mods = %d)", button, action, mods);
+	switch (button)
+	{
+	case GLFW_MOUSE_BUTTON_LEFT:
+		m_changingAngleAroundEntity = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the angle around the entity
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		m_changingPitch = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the pitch
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		break;
+	}
+}
+
+void CameraFollowComponent::MousePosEvent(double xPos, double yPos)
+{
+	if (!m_isActive)
+	{
+		m_lastCursorPositionX = static_cast<Math::Real>(xPos);
+		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
+		return;
+	}
+	DEBUG_LOG("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+
+	if (m_changingPitch)
+	{
+		m_currentPitchAngle += m_pitchRotationSpeed * (static_cast<Math::Real>(yPos) - m_lastCursorPositionY);
+		if (m_currentPitchAngle < MINIMUM_PITCH_ANGLE)
+		{
+			m_currentPitchAngle = MINIMUM_PITCH_ANGLE;
+		}
+		else if (m_currentPitchAngle > MAXIMUM_PITCH_ANGLE)
+		{
+			m_currentPitchAngle = MAXIMUM_PITCH_ANGLE;
+		}
+	}
+	if (m_changingAngleAroundEntity)
+	{
+		m_currentAngleAroundEntity += m_angleAroundEntitySpeed * (static_cast<Math::Real>(xPos) - m_lastCursorPositionX);
+	}
+	m_lastCursorPositionX = static_cast<Math::Real>(xPos);
+	m_lastCursorPositionY = static_cast<Math::Real>(yPos);
+}
+
+void CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
+{
+	if (!m_isActive)
+	{
+		return;
+	}
+	DEBUG_LOG("Scroll event for the camera following an entity (xOffset = %.3f; yOffset = %.3f)", xOffset, yOffset);
+
+	m_distanceFromEntity -= static_cast<Math::Real>(yOffset) * 0.03f;
+	if (m_distanceFromEntity < MINIMUM_DISTANCE_TO_ENTITY)
+	{
+		m_distanceFromEntity = MINIMUM_DISTANCE_TO_ENTITY;
+	}
+	else if (m_distanceFromEntity > MAXIMUM_DISTANCE_TO_ENTITY)
+	{
+		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
+	}
 }
 
 void CameraFollowComponent::Update(Math::Real deltaTime)
@@ -352,7 +444,14 @@ void CameraFollowComponent::Update(Math::Real deltaTime)
 		return;
 	}
 	CameraComponent::Update(deltaTime);
-	GetTransform().SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(REAL_ZERO, 0.02f, -0.3f));
+
+	Math::Real horizontalDistance = m_distanceFromEntity * m_currentPitchAngle.Cos();
+	Math::Real verticalDistance = m_distanceFromEntity * m_currentPitchAngle.Sin();
+	Math::Real xOffset = horizontalDistance * m_currentAngleAroundEntity.Sin();
+	Math::Real zOffset = horizontalDistance * m_currentAngleAroundEntity.Cos();
+	GetTransform().SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(-xOffset, verticalDistance + 0.03f /* to focus on upperbody instead of feet */, -zOffset));
+
+	GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentAngleAroundEntity) * Math::Quaternion(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), m_currentPitchAngle));
 }
 
 //std::string CameraComponent::ToString() const

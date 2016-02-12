@@ -5,6 +5,7 @@
 #include "GameComponent.h"
 #include "Transform.h"
 #include "IInputableKeyboard.h"
+#include "IInputableMouse.h"
 #include "IUpdateable.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
@@ -153,9 +154,14 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CameraMoveComponent */
 
-class CameraFollowComponent : public CameraComponent
+class CameraFollowComponent : public CameraComponent, public Input::IInputableMouse
 {
 /* ==================== Static variables and functions begin ==================== */
+private:
+	static const Math::Real MINIMUM_DISTANCE_TO_ENTITY;
+	static const Math::Real MAXIMUM_DISTANCE_TO_ENTITY;
+	static const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE;
+	static const Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -168,11 +174,39 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Update(Math::Real delta);
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+	virtual void ScrollEvent(double xOffset, double yOffset);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	/// <summary>
+	/// Entity to follow.
+	/// </summary>
 	GameNode* m_gameEntityToFollow;
+	
+	/// <summary>
+	/// The value representing the zoom. In other words, it defines how close to the entity being followed the camera should be placed.
+	/// </summary>
+	Math::Real m_distanceFromEntity;
+
+	bool m_changingAngleAroundEntity;
+	/// <summary>
+	/// The angle around the player.
+	/// </summary>
+	const Math::Angle m_angleAroundEntitySpeed;
+	Math::Angle m_currentAngleAroundEntity;
+
+	/// <summary>
+	/// <code>true</code> if the camera is in the "changing pitch" phase (right mouse button pressed).
+	/// </summary>
+	bool m_changingPitch;
+	const Math::Angle m_pitchRotationSpeed;
+	Math::Angle m_currentPitchAngle;
+
+	Math::Real m_lastCursorPositionX;
+	Math::Real m_lastCursorPositionY;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CameraFollowComponent */
 

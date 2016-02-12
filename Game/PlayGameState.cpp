@@ -121,6 +121,13 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	STOP_PROFILING;
 }
 
+void PlayGameState::ScrollEvent(double xOffset, double yOffset)
+{
+	START_PROFILING;
+	Rendering::GameManager::GetGameManager()->GetRootGameNode().ScrollEvent(xOffset, yOffset);
+	STOP_PROFILING;
+}
+
 bool forward = false;
 bool backward = false;
 bool left = false;
