@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "CoreEngine.h"
 #include "Renderer.h"
+#include "GameNode.h"
 #include "Input.h"
 
 #include "Math\Quaternion.h"
@@ -15,20 +16,21 @@
 #include <sstream>
 
 using namespace Rendering;
-using namespace Math;
 using namespace Utility;
 
 /* static */ const Math::Real CameraBase::DEFAULT_CAMERA_SENSITIVITY = 0.005f;
 
-CameraBase::CameraBase(const Matrix4D& projectionMatrix, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
 	m_projection(projectionMatrix),
-	m_sensitivity(sensitivity)
+	m_sensitivity(sensitivity),
+	m_isActive(false)
 {
 }
 
-CameraBase::CameraBase(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+CameraBase::CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
 	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
-	m_sensitivity(sensitivity)
+	m_sensitivity(sensitivity),
+	m_isActive(false)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_prevFov(FoV),
 	m_fov(FoV),
@@ -47,7 +49,7 @@ CameraBase::~CameraBase(void)
 {
 }
 
-Matrix4D CameraBase::GetViewProjection() const
+Math::Matrix4D CameraBase::GetViewProjection() const
 {
 	// This function is performed quiet often. Maybe we could, instead of multiplying three matrices (projection, rotation, translation),
 	// just remember the result in some member variable and reuse it. Of course, we would have to perform the multiplication again if any of these matrices were changed.
@@ -58,27 +60,27 @@ Matrix4D CameraBase::GetViewProjection() const
 	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Vector3D cameraPos = GetTransform().GetTransformedPos();
-	Matrix4D cameraTranslation(cameraPos.Negated());
+	Math::Vector3D cameraPos = GetTransform().GetTransformedPos();
+	Math::Matrix4D cameraTranslation(cameraPos.Negated());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
-	Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
+	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
 	/* ==================== SOLUTION #2 end ==================== */
 	/* ==================== SOLUTION #3 begin ==================== */
-	// Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
+	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
 	return m_projection * cameraRotation * cameraTranslation; // FIXME: Check matrix multiplication
 }
 
 
-Camera::Camera(const Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity) :
+Camera::Camera(const Math::Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity) :
 	CameraBase(projectionMatrix, sensitivity),
 	m_transform(transform)
 {
 }
 
-Camera::Camera(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, const Transform& transform, Math::Real sensitivity) :
+Camera::Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Transform& transform, Math::Real sensitivity) :
 	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_transform(transform)
 {
@@ -89,31 +91,15 @@ Camera::~Camera(void)
 {
 }
 
-CameraComponent::CameraComponent(const Matrix4D& projectionMatrix, Math::Real sensitivity) :
+CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	CameraBase(projectionMatrix, sensitivity),
-	GameComponent(),
-	m_forward(false),
-	m_backward(false),
-	m_left(false),
-	m_right(false),
-	m_up(false),
-	m_down(false),
-	m_velocity(),
-	m_maxSpeed(REAL_ONE)
+	GameComponent()
 {
 }
 
-CameraComponent::CameraComponent(const Angle& FoV, Real aspectRatio, Real zNearPlane, Real zFarPlane, Math::Real sensitivity) :
+CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
 	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	GameComponent(),
-	m_forward(false),
-	m_backward(false),
-	m_left(false),
-	m_right(false),
-	m_up(false),
-	m_down(false),
-	m_velocity(),
-	m_maxSpeed(REAL_ONE)
+	GameComponent()
 {
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(this);
 }
@@ -123,85 +109,64 @@ CameraComponent::~CameraComponent(void)
 {
 }
 
-//void Camera::SetPos(const Vector3D& pos)
-//{
-//	this->pos = pos;
-//}
-
-//void Camera::SetForward(const Vector3D& forward)
-//{
-//	this->forward = forward;
-//	this->forward.Normalize();
-//}
-
-//void Camera::SetUp(const Vector3D& up)
-//{
-//	this->up = up;
-//	this->up.Normalize();
-//}
-
-//void Camera::Move(const Vector3D& dir, Math::Real amount)
-//{
-//	Transform& t = GetTransform();
-//	DEBUG_LOG("Camera position = %s", t.GetPos().ToString().c_str());
-//	t.SetTranslation(t.GetPos() + (dir * amount));
-//	DEBUG_LOG("Camera position = %s", t.GetPos().ToString().c_str());
-//	DELOCUST_LOG("%s", ToString().c_str());
-//}
-
-//Vector3D Camera::GetLeft() const
-//{
-//	Vector3D left = forward.Cross(up);
-//	left.Normalize(); // TODO: Check whether Normalize() is necessary
-//	return left;
-//}
-
-//Math::Vector3D Camera::GetRight() const
-//{
-//	//Vector3D right = GetLeft();
-//	//right.Negate();
-//
-//	Vector3D right = up.Cross(forward);
-//	right.Normalize(); // TODO: Check whether Normalize() is necessary
-//	return right;
-//}
-
-//void CameraComponent::AddToEngine(CoreEngine* coreEngine)
-//{
-//	if (coreEngine == NULL)
-//	{
-//		ERROR_LOG("Cannot add camera to the core engine. Core engine is NULL.");
-//		return;
-//	}
-//	coreEngine->GetRenderer()->AddCamera(this);
-//}
-
-//void CameraComponent::RotateX(const Angle& angle)
-//{
-//	Vector3D horizontalAxis = CameraBase::yAxis.Cross(forward);
-//	horizontalAxis.Normalize(); // TODO: Check whether Normalize() is necessary
-//
-//	forward.Rotate(horizontalAxis, angle);
-//	forward.Normalize(); // TODO: Check whether Normalize() is necessary
-//
-//	up = forward.Cross(horizontalAxis);
-//	up.Normalize(); // TODO: Check whether Normalize() is necessary
-//}
-
-//void CameraComponent::RotateY(const Angle& angle)
-//{
-//	Vector3D horizontalAxis = CameraBase::yAxis.Cross(forward);
-//	horizontalAxis.Normalize(); // TODO: Check whether Normalize() is necessary
-//
-//	forward.Rotate(CameraBase::yAxis, angle);
-//	forward.Normalize(); // TODO: Check whether Normalize() is necessary
-//
-//	up = forward.Cross(horizontalAxis);
-//	up.Normalize(); // TODO: Check whether Normalize() is necessary
-//}
-
-void CameraComponent::KeyEvent(int key, int scancode, int action, int mods)
+void CameraComponent::Update(Math::Real deltaTime)
 {
+	if (!m_isActive)
+	{
+		return;
+	}
+#ifdef ANT_TWEAK_BAR_ENABLED
+	if ((!Math::AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!Math::AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!Math::AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov))
+	{
+		INFO_LOG("Recalculating the projection matrix for the selected camera");
+
+		m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+
+		m_prevFov = m_fov;
+		m_prevAspectRatio = m_aspectRatio;
+		m_prevNearPlane = m_nearPlane;
+		m_prevFarPlane = m_farPlane;
+	}
+#endif
+}
+
+CameraMoveComponent::CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
+	CameraComponent(projectionMatrix, sensitivity),
+	m_forward(false),
+	m_backward(false),
+	m_left(false),
+	m_right(false),
+	m_up(false),
+	m_down(false),
+	m_velocity(),
+	m_maxSpeed(REAL_ONE)
+{
+}
+
+CameraMoveComponent::CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
+	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+	m_forward(false),
+	m_backward(false),
+	m_left(false),
+	m_right(false),
+	m_up(false),
+	m_down(false),
+	m_velocity(),
+	m_maxSpeed(REAL_ONE)
+{
+}
+
+
+CameraMoveComponent::~CameraMoveComponent(void)
+{
+}
+
+void CameraMoveComponent::KeyEvent(int key, int scancode, int action, int mods)
+{
+	if (!m_isActive)
+	{
+		return;
+	}
 	// TODO: Set delta to correct value
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
@@ -255,48 +220,39 @@ void CameraComponent::KeyEvent(int key, int scancode, int action, int mods)
 		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
 		break;
 	case GLFW_KEY_UP: // rotation around X axis
-		//transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
+					  //transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
 		break;
 	case GLFW_KEY_DOWN: // rotation around X axis
-		//transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
+						//transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
 		break;
 	case GLFW_KEY_LEFT: // rotation around Y axis
-		//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(-sensitivity));
+						//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(-sensitivity));
 		break;
 	case GLFW_KEY_RIGHT: // rotation around Y axis
-		//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(sensitivity));
+						 //transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(sensitivity));
 		break;
 	case GLFW_KEY_N: // next camera
-		//if (action == GLFW_PRESS)
-		//{
-		//	CoreEngine::GetCoreEngine()->NextCamera();
-		//}
+					 //if (action == GLFW_PRESS)
+					 //{
+					 //	CoreEngine::GetCoreEngine()->NextCamera();
+					 //}
 		break;
 	case GLFW_KEY_P: // prev camera
-		//if (action == GLFW_PRESS)
-		//{
-		//	CoreEngine::GetCoreEngine()->PrevCamera();
-		//}
+					 //if (action == GLFW_PRESS)
+					 //{
+					 //	CoreEngine::GetCoreEngine()->PrevCamera();
+					 //}
 		break;
 	}
 }
 
-void CameraComponent::Update(Real delta)
+void CameraMoveComponent::Update(Math::Real deltaTime)
 {
-#ifdef ANT_TWEAK_BAR_ENABLED
-	if ( (!AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov) )
+	if (!m_isActive)
 	{
-		INFO_LOG("Recalculating the projection matrix for the selected camera");
-
-		m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
-
-		m_prevFov = m_fov;
-		m_prevAspectRatio = m_aspectRatio;
-		m_prevNearPlane = m_nearPlane;
-		m_prevFarPlane = m_farPlane;
+		return;
 	}
-#endif
-
+	CameraComponent::Update(deltaTime);
 	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
 	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
 	//
@@ -335,7 +291,7 @@ void CameraComponent::Update(Real delta)
 	{
 		acceleration -= GetTransform().GetRot().GetUp().Normalized();
 	}
-	m_velocity += acceleration * delta * m_sensitivity;
+	m_velocity += acceleration * deltaTime * m_sensitivity;
 	const Math::Real step = 0.1f;
 	const Math::Real approachedValue = 0.0f; // must be ZERO!
 	if (Math::AlmostEqual(acceleration.GetX(), approachedValue))
@@ -355,6 +311,48 @@ void CameraComponent::Update(Real delta)
 	//velocity -= slowDownVec;
 	//DEBUG_LOG("Acceleration = %s\tVelocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 	GetTransform().SetPos(GetTransform().GetPos() + m_velocity);
+}
+
+//std::string CameraComponent::ToString() const
+//{
+//	std::stringstream ss("");
+//
+//	ss << "Camera = { pos = ";
+//	ss << GetTransform().GetPos().ToString();
+//	ss << "; forward = ";
+//	ss << GetTransform().GetRot().GetForward().ToString();
+//	ss << "; up = ";
+//	ss << GetTransform().GetRot().GetUp().ToString();
+//	ss << " } ";
+//
+//	return ss.str();
+//}
+
+CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow) :
+	CameraComponent(projectionMatrix, sensitivity),
+	m_gameEntityToFollow(entityToFollow)
+{
+}
+
+CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, GameNode* entityToFollow) :
+	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+	m_gameEntityToFollow(entityToFollow)
+{
+}
+
+
+CameraFollowComponent::~CameraFollowComponent(void)
+{
+}
+
+void CameraFollowComponent::Update(Math::Real deltaTime)
+{
+	if (!m_isActive)
+	{
+		return;
+	}
+	CameraComponent::Update(deltaTime);
+	GetTransform().SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(REAL_ZERO, 0.02f, -0.3f));
 }
 
 //std::string CameraComponent::ToString() const

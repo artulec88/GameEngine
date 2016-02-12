@@ -5,7 +5,7 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
-#include "Rendering\PlayerComponent.h"
+#include "Rendering\MoveComponent.h"
 #include "Rendering\LookAtComponent.h"
 #include "Rendering\Color.h"
 #include "Rendering\LightBuilder.h"
@@ -204,14 +204,14 @@ void TestGameManager::Load()
 	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->AddComponent(new MeshRenderer(new Mesh("person.obj"), new Material(new Texture("player.png"))));
-	playerNode->AddComponent(new PlayerComponent(0.2f));
+	playerNode->AddComponent(new MoveComponent(0.06f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
-	AddCameras(); // Adding cameras
+	AddCameras(playerNode); // Adding cameras
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
@@ -307,7 +307,7 @@ void TestGameManager::AddSpotLights()
 	}
 }
 
-void TestGameManager::AddCameras()
+void TestGameManager::AddCameras(GameNode* entityToFollow)
 {
 	START_PROFILING;
 	if (cameraCount < 1)
@@ -360,7 +360,7 @@ void TestGameManager::AddCameras()
 		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
 		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
 		Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + cameraIndexStr, 0.005f);
-		cameraNodes[i]->AddComponent(new CameraComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity));
+		cameraNodes[i]->AddComponent(new CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, entityToFollow));
 		//testMesh2->AddChild(cameraNodes[i]);
 		AddToSceneRoot(cameraNodes[i]);
 	}

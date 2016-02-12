@@ -45,7 +45,7 @@ private:
 	void AddDirectionalLight();
 	void AddPointLights();
 	void AddSpotLights();
-	void AddCameras();
+	void AddCameras(Rendering::GameNode* entityToFollow);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

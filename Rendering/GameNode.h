@@ -60,6 +60,7 @@ protected:
 	std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 	std::vector<IUpdateable*> m_updateableComponents;
 	Transform m_transform;
+	// TODO: set of commands (GameCommand objects) to be performed by the game entity in the UPDATE step
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
 

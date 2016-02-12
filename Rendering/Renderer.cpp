@@ -1125,7 +1125,9 @@ size_t Renderer::PrevCamera()
 size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 {
 	CHECK_CONDITION((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
+	m_cameras[m_currentCameraIndex]->Deactivate();
 	m_currentCameraIndex = cameraIndex;
+	m_cameras[m_currentCameraIndex]->Activate();
 #ifndef ANT_TWEAK_BAR_ENABLED
 	NOTICE_LOG("Switched to camera #%d", m_currentCameraIndex + 1);
 	//DEBUG_LOG("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
@@ -1169,6 +1171,10 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 
 void Renderer::AddCamera(CameraBase* camera)
 {
+	if (m_cameras.empty())
+	{
+		camera->Activate();
+	}
 	m_cameras.push_back(camera);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	++m_cameraCountMinusOne;
