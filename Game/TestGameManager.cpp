@@ -206,7 +206,7 @@ void TestGameManager::Load()
 	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->AddComponent(new MeshRenderer(new Mesh("person.obj"), new Material(new Texture("player.png"))));
-	playerNode->AddComponent(new MoveComponent(0.26f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	playerNode->AddComponent(new MoveComponent(0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);

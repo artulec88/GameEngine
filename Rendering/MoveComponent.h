@@ -22,7 +22,7 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API MoveComponent(Math::Real movementSpeed, const Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
+		RENDERING_API MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
 		RENDERING_API virtual ~MoveComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -38,6 +38,13 @@ namespace Rendering
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const Math::Real m_movementSpeed;
+		/// <summary>
+		/// Specifies the ratio between running speed and the standard walking speed.
+		/// </summary>
+		/// <remarks>
+		/// The value should be greater or equal to 1.0.
+		/// </remarks>
+		const Math::Real m_runSpeedFactor;
 		const Math::Angle m_rotationSpeed;
 		const Math::Real m_strafeSpeed;
 		const Math::Real m_jumpSpeed;

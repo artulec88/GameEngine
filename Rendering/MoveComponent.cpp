@@ -5,9 +5,10 @@
 
 /* static */ const Math::Real Rendering::MoveComponent::GRAVITY = 0.001f;
 
-Rendering::MoveComponent::MoveComponent(Math::Real movementSpeed, const Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
+Rendering::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
 	GameComponent(),
 	m_movementSpeed(movementSpeed),
+	m_runSpeedFactor(runSpeedFactor),
 	m_rotationSpeed(rotationSpeed),
 	m_strafeSpeed(strafeSpeed),
 	m_jumpSpeed(jumpSpeed),
@@ -53,8 +54,22 @@ void Rendering::MoveComponent::KeyEvent(int key, int scancode, int action, int m
 	DEBUG_LOG("key = %d, scancode = %d, action = %d, mods = %d", key, scancode, action, mods);
 	switch (key)
 	{
+	case GLFW_KEY_LEFT_SHIFT:
+		if (action == GLFW_PRESS)
+		{
+			m_currentMovementSpeed *= m_runSpeedFactor;
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			m_currentMovementSpeed /= m_runSpeedFactor;
+		}
+		break;
 	case GLFW_KEY_W:
 		m_currentMovementSpeed = ((action == GLFW_PRESS) || (action == GLFW_REPEAT)) ? m_movementSpeed : REAL_ZERO;
+		if ((GLFW_MOD_SHIFT & mods) == GLFW_MOD_SHIFT)
+		{
+			m_currentMovementSpeed *= m_runSpeedFactor;
+		}
 		break;
 	case GLFW_KEY_S:
 		m_currentMovementSpeed = ((action == GLFW_PRESS) || (action == GLFW_REPEAT)) ? -m_movementSpeed : REAL_ZERO;
