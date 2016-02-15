@@ -8,8 +8,8 @@
 #include "Rendering\MoveComponent.h"
 #include "Rendering\LookAtComponent.h"
 #include "Rendering\Color.h"
-#include "Rendering\LightBuilder.h"
-#include "Rendering\LightBuilderDirector.h"
+#include "Rendering\Builder.h"
+#include "Rendering\BuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -180,6 +180,8 @@ void TestGameManager::Load()
 		Math::Real z = static_cast<Real>(rand() % 50) - 25.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		billboardNode->AddComponent(new MeshRenderer(new BillboardMesh(Math::Vector3D(x, y, z)), new Material(new Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png")))));
+		// TODO: Scaling the billboards
+		//billboardNode->GetTransform().SetScale(0.2f);
 		AddBillboardNode(billboardNode);
 	}
 
@@ -259,9 +261,9 @@ void TestGameManager::AddDirectionalLight()
 	NOTICE_LOG("Directional lights enabled");
 
 	Rendering::DirectionalLightBuilder directionalLightBuilder;
-	Rendering::LightBuilderDirector lightBuilderDirector(directionalLightBuilder);
+	Rendering::BuilderDirector lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
-	GameNode* directionalLightNode = directionalLightBuilder.GetLightNode();
+	GameNode* directionalLightNode = directionalLightBuilder.GetGameNode();
 	AddToSceneRoot(directionalLightNode);
 }
 
@@ -273,12 +275,12 @@ void TestGameManager::AddPointLights()
 	}
 
 	Rendering::PointLightBuilder pointLightBuilder;
-	Rendering::LightBuilderDirector lightBuilderDirector(pointLightBuilder);
+	Rendering::BuilderDirector lightBuilderDirector(pointLightBuilder);
 	for (int i = 0; i < pointLightCount; ++i)
 	{
-		pointLightBuilder.SetPointLightIndex(i);
+		pointLightBuilder.SetLightIndex(i);
 		lightBuilderDirector.Construct();
-		GameNode* pointLightNode = pointLightBuilder.GetLightNode();
+		GameNode* pointLightNode = pointLightBuilder.GetGameNode();
 		AddToSceneRoot(pointLightNode);
 		
 		//GameNode* bulbNode = new GameNode();
@@ -297,12 +299,12 @@ void TestGameManager::AddSpotLights()
 	}
 
 	Rendering::SpotLightBuilder spotLightBuilder;
-	Rendering::LightBuilderDirector lightBuilderDirector(spotLightBuilder);
+	Rendering::BuilderDirector lightBuilderDirector(spotLightBuilder);
 	for (int i = 0; i < spotLightCount; ++i)
 	{
-		spotLightBuilder.SetSpotLightIndex(i);
+		spotLightBuilder.SetLightIndex(i);
 		lightBuilderDirector.Construct();
-		GameNode* spotLightNode = spotLightBuilder.GetLightNode();
+		GameNode* spotLightNode = spotLightBuilder.GetGameNode();
 		AddToSceneRoot(spotLightNode);
 	}
 }
@@ -310,59 +312,19 @@ void TestGameManager::AddSpotLights()
 void TestGameManager::AddCameras(GameNode* entityToFollow)
 {
 	START_PROFILING;
-	if (cameraCount < 1)
-	{
-		ERROR_LOG("No cameras defined.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT_ALWAYS(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
 	
 	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
-	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
-	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
-	const Real defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f);
-	const Real defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f);
-	
-	const Vector3D defaultCameraPos(GET_CONFIG_VALUE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE("defaultCameraPosZ", 0.0f));
-	const Angle defaultCameraRotationX(GET_CONFIG_VALUE("defaultCameraAngleX", -45.0f));
-	const Angle defaultCameraRotationY(GET_CONFIG_VALUE("defaultCameraAngleY", 0.0f));
-	const Angle defaultCameraRotationZ(GET_CONFIG_VALUE("defaultCameraAngleZ", 0.0f));
-
-	cameraNodes = new GameNode* [cameraCount];
+	Rendering::CameraBuilder cameraBuilder;
+	Rendering::BuilderDirector cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		std::string cameraIndexStr = ss.str();
-
-		cameraNodes[i] = new GameNode();
-		Real xPos = GET_CONFIG_VALUE("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
-		Real yPos = GET_CONFIG_VALUE("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
-		Real zPos = GET_CONFIG_VALUE("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
-		cameraNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
-		
-		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
-		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
-		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix(angleX, angleY, angleZ);
-		DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
-		Quaternion rot(rotMatrix);
-		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		//DELOCUST_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-		//	rotMatrix.ToString().c_str(),
-		//	rot.ToString().c_str(),
-		//	rot.ToRotationMatrix().ToString().c_str(),
-		//	rot2.ToRotationMatrix().ToString().c_str());
-		cameraNodes[i]->GetTransform().SetRot(rot);
-
-		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Unit::DEGREE);
-		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
-		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
-		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
-		Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + cameraIndexStr, 0.005f);
-		cameraNodes[i]->AddComponent(new CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, entityToFollow));
-		//testMesh2->AddChild(cameraNodes[i]);
-		AddToSceneRoot(cameraNodes[i]);
+		cameraBuilder.SetCameraIndex(i);
+		cameraBuilder.SetEntityToFollow(entityToFollow);
+		cameraBuilderDirector.Construct();
+		GameNode* cameraNode = cameraBuilder.GetGameNode();
+		AddToSceneRoot(cameraNode);
 	}
 	DEBUG_LOG("%d camera(-s) created", cameraCount);
 	STOP_PROFILING;

@@ -43,12 +43,6 @@
     <ClCompile Include="Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LightBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LightBuilderDirector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="LookAtComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -121,6 +115,12 @@
     <ClCompile Include="MoveComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BuilderDirector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Builder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntTweakBarTypes.h">
@@ -178,12 +178,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IUpdateable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightBuilderDirector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LookAtComponent.h">
@@ -256,6 +250,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MoveComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BuilderDirector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Builder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

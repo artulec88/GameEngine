@@ -101,7 +101,6 @@ CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio,
 	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	GameComponent()
 {
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(this);
 }
 
 

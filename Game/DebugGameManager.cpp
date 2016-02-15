@@ -7,8 +7,8 @@
 #include "Rendering\MeshRenderer.h"
 #include "Rendering\LookAtComponent.h"
 #include "Rendering\Color.h"
-#include "Rendering\LightBuilder.h"
-#include "Rendering\LightBuilderDirector.h"
+#include "Rendering\Builder.h"
+#include "Rendering\BuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
