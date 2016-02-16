@@ -329,7 +329,7 @@ void CameraMoveComponent::Update(Math::Real deltaTime)
 
 /* static */ const Math::Real CameraFollowComponent::MINIMUM_DISTANCE_TO_ENTITY = 0.1f;
 /* static */ const Math::Real CameraFollowComponent::MAXIMUM_DISTANCE_TO_ENTITY = 0.5f;
-/* static */ const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE(5.0f);
+/* static */ const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
 /* static */ const Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
 
 CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow) :
