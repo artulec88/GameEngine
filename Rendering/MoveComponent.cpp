@@ -3,7 +3,7 @@
 #include "Transform.h"
 #include "Math\Quaternion.h"
 
-/* static */ const Math::Real Rendering::MoveComponent::GRAVITY = 0.001f;
+/* static */ const Math::Real Rendering::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
 Rendering::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
 	GameComponent(),

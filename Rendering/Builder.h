@@ -212,6 +212,10 @@ namespace Rendering
 		const Math::Real M_DEFAULT_CAMERA_NEAR_PLANE;
 		const Math::Real M_DEFAULT_CAMERA_FAR_PLANE;
 		const Math::Real M_DEFAULT_CAMERA_SENSITIVITY;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
+		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 		int m_cameraIndex;
 		std::string m_cameraIndexStr;
 		GameNode* m_gameNodeToFollow;

@@ -341,6 +341,10 @@ Rendering::CameraBuilder::CameraBuilder() :
 	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f)),
 	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f)),
 	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE("defaultCameraSensitivity", 0.005f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE("defaultCameraFollowEntityInitialDistance", 0.25f)),
+	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
+	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE("defaultCameraFollowPitchRotationSpeed", 0.1f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE("defaultCameraFollowInitialPitchAngle", 30.0f)),
 	m_cameraIndex(0),
 	m_cameraIndexStr("0")
 {
@@ -402,7 +406,13 @@ void Rendering::CameraBuilder::SetupCameraParams()
 	Math::Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
 	Math::Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
 
-	Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow);
+	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
+	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
+	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
+	Math::Angle initialPitchAngle(GET_CONFIG_VALUE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.GetAngleInDegrees()));
+
+	Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
+		initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 	m_gameNode->AddComponent(camera);
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
 }

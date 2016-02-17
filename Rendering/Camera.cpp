@@ -137,7 +137,7 @@ CameraMoveComponent::CameraMoveComponent(const Math::Matrix4D& projectionMatrix,
 	m_right(false),
 	m_up(false),
 	m_down(false),
-	m_velocity(),
+	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_maxSpeed(REAL_ONE)
 {
 }
@@ -150,7 +150,7 @@ CameraMoveComponent::CameraMoveComponent(const Math::Angle& FoV, Math::Real aspe
 	m_right(false),
 	m_up(false),
 	m_down(false),
-	m_velocity(),
+	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_maxSpeed(REAL_ONE)
 {
 }
@@ -332,31 +332,33 @@ void CameraMoveComponent::Update(Math::Real deltaTime)
 /* static */ const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
 /* static */ const Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
 
-CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow) :
+CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(projectionMatrix, sensitivity),
 	m_gameEntityToFollow(entityToFollow),
-	m_distanceFromEntity(0.25f /* TODO: Don't use hard-coded values */),
+	m_distanceFromEntity(initialDistanceFromEntity),
 	m_changingAngleAroundEntity(false),
-	m_angleAroundEntitySpeed(0.24f),
+	m_angleAroundEntitySpeed(angleAroundEntitySpeed),
 	m_currentAngleAroundEntity(REAL_ZERO),
 	m_changingPitch(false),
-	m_pitchRotationSpeed(0.1f),
-	m_currentPitchAngle(30.0f),
+	m_pitchRotationSpeed(pitchRotationSpeed),
+	m_currentPitchAngle(initialPitchAngle),
 	m_lastCursorPositionX(REAL_ZERO),
 	m_lastCursorPositionY(REAL_ZERO)
 {
 }
 
-CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, GameNode* entityToFollow) :
+CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, GameNode* entityToFollow,
+	Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_gameEntityToFollow(entityToFollow),
-	m_distanceFromEntity(0.25f /* TODO: Don't use hard-coded values */),
+	m_distanceFromEntity(initialDistanceFromEntity),
 	m_changingAngleAroundEntity(false),
-	m_angleAroundEntitySpeed(0.24f),
+	m_angleAroundEntitySpeed(angleAroundEntitySpeed),
 	m_currentAngleAroundEntity(REAL_ZERO),
 	m_changingPitch(false),
-	m_pitchRotationSpeed(0.1f),
-	m_currentPitchAngle(30.0f),
+	m_pitchRotationSpeed(pitchRotationSpeed),
+	m_currentPitchAngle(initialPitchAngle),
 	m_lastCursorPositionX(REAL_ZERO),
 	m_lastCursorPositionY(REAL_ZERO)
 {
