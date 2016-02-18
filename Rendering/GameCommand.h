@@ -1,10 +1,10 @@
-#ifndef __RENDERING_GAME_COMMAND_H__
-#define __RENDERING_GAME_COMMAND_H__
+#ifndef __CORE_GAME_COMMAND_H__
+#define __CORE_GAME_COMMAND_H__
 
 #include "Rendering.h"
 #include "Utility\ILogger.h"
 
-namespace Rendering
+namespace Core
 {
 
 /// <summary>
@@ -57,6 +57,6 @@ public:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class EmptyGameCommand */
 
-} /* end namespace Rendering */
+} /* end namespace Core */
 
-#endif /* __RENDERING_GAME_COMMAND_H__ */
+#endif /* __CORE_GAME_COMMAND_H__ */

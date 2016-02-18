@@ -18,7 +18,7 @@ namespace Rendering
 
 	namespace CameraTypes
 	{
-		enum CameraType
+		enum CameraBehaviorType
 		{
 			STATIC_CAMERA = 0,
 			ROTATION_ONLY_CAMERA,
@@ -123,9 +123,9 @@ class CameraComponent : public CameraBase, public GameComponent, public IUpdatea
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
-	RENDERING_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
-	RENDERING_API virtual ~CameraComponent(void);
+	CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
+	CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
+	virtual ~CameraComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -146,9 +146,9 @@ class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyb
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
-	RENDERING_API CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
-	RENDERING_API virtual ~CameraMoveComponent(void);
+	CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
+	CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
+	virtual ~CameraMoveComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -177,11 +177,11 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow,
+	CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow,
 		Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
-	RENDERING_API CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity,
+	CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity,
 		GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
-	RENDERING_API virtual ~CameraFollowComponent(void);
+	virtual ~CameraFollowComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

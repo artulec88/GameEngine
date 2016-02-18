@@ -7,14 +7,14 @@
 namespace Game
 {
 
-class QuitCommand : public Rendering::GameCommand
+class QuitCommand : public Core::GameCommand
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	QuitCommand(Rendering::GameManager* gameManager);
+	QuitCommand(Core::GameManager* gameManager);
 	virtual ~QuitCommand();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -25,7 +25,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Rendering::GameManager& m_gameManager;
+	Core::GameManager& m_gameManager;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class QuitCommand */
 

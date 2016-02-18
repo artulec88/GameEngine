@@ -371,14 +371,14 @@ Renderer::~Renderer(void)
 void Renderer::SetCallbacks()
 {
 	CHECK_CONDITION_EXIT(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
-	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
-	glfwSetWindowSizeCallback(m_window, CoreEngine::WindowResizeCallback);
-	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
-	//glfwSetCharCallback(m_window, CoreEngine::CharEventCallback);
-	//glfwSetMousePosCallback(m_window, CoreEngine::MouseMotionCallback);
-	glfwSetCursorPosCallback(m_window, &CoreEngine::MousePosCallback);
-	glfwSetMouseButtonCallback(m_window, &CoreEngine::MouseEventCallback);
-	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
+	glfwSetWindowCloseCallback(m_window, &Core::CoreEngine::WindowCloseEventCallback);
+	glfwSetWindowSizeCallback(m_window, &Core::CoreEngine::WindowResizeCallback);
+	glfwSetKeyCallback(m_window, &Core::CoreEngine::KeyEventCallback);
+	//glfwSetCharCallback(m_window, Core::CoreEngine::CharEventCallback);
+	//glfwSetMousePosCallback(m_window, Core::CoreEngine::MouseMotionCallback);
+	glfwSetCursorPosCallback(m_window, &Core::CoreEngine::MousePosCallback);
+	glfwSetMouseButtonCallback(m_window, &Core::CoreEngine::MouseEventCallback);
+	glfwSetScrollCallback(m_window, &Core::CoreEngine::ScrollEventCallback);
 }
 
 void Renderer::InitializeCubeMap()
@@ -416,7 +416,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
 
 	FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
 	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
@@ -673,7 +673,7 @@ void Renderer::RenderWaterNodes()
 	SetTexture("waterDUDVMap", m_waterDUDVTexture);
 	SetTexture("waterNormalMap", m_waterNormalMap);
 	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
-	m_waterMoveFactor += m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed();
+	m_waterMoveFactor += m_waterWaveSpeed * Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
@@ -975,7 +975,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime()
 	START_PROFILING;
 	/* ==================== Adjusting the time variables begin ==================== */
 	Math::Real daytimeTransitionFactor, dayNightMixFactor;
-	Rendering::GameTime::Daytime daytime = CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
+	Rendering::GameTime::Daytime daytime = Core::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 
 	switch (daytime)
 	{

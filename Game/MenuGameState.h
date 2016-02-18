@@ -61,7 +61,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Rendering::GameCommand& m_quitCommand;
+	const Core::GameCommand& m_quitCommand;
 
 	Rendering::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS

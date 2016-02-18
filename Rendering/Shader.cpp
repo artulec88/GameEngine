@@ -145,7 +145,7 @@ std::string ShaderData::LoadShaderData(const std::string& fileName) const
 	}
 	DEBUG_LOG("Loading shader data from file \"%s\"", name.c_str());
 
-	std::ifstream file((CoreEngine::GetCoreEngine()->GetShadersDirectory() + fileName).c_str());
+	std::ifstream file((Core::CoreEngine::GetCoreEngine()->GetShadersDirectory() + fileName).c_str());
 	if (!file.is_open())
 	{
 		ERROR_LOG("Unable to open shader file \"%s\". Check the path.", name.c_str());

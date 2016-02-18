@@ -13,7 +13,7 @@ namespace Game
 /// This class is a stateless representation of pure behavior so having more than one instance of that class wastes memory since all instances are equivalent.
 /// The Flyweight pattern addresses that.
 /// </remarks>
-class GoToMenuEntryCommand : public Rendering::GameCommand
+class GoToMenuEntryCommand : public Core::GameCommand
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

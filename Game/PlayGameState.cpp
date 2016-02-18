@@ -30,11 +30,11 @@ void PlayGameState::Entered()
 	START_PROFILING;
 	INFO_LOG("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	Rendering::GameManager* gameManager = Rendering::GameManager::GetGameManager();
+	Core::GameManager* gameManager = Core::GameManager::GetGameManager();
 	CHECK_CONDITION(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
 	gameManager->InitializeTweakBars();
-	Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
+	Core::CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
 #endif
 
 #ifdef CALCULATE_STATS
@@ -64,7 +64,7 @@ void PlayGameState::Revealed()
 void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
 	START_PROFILING;
-	Rendering::GameManager::GetGameManager()->GetRootGameNode().MouseButtonEvent(button, action, mods);
+	Core::GameManager::GetGameManager()->GetRootGameNode().MouseButtonEvent(button, action, mods);
 	//switch (action)
 	//{
 	//case GLFW_PRESS:
@@ -88,7 +88,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 {
 	START_PROFILING;
 	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
-	Rendering::GameManager::GetGameManager()->GetRootGameNode().MousePosEvent(xPos, yPos);
+	Core::GameManager::GetGameManager()->GetRootGameNode().MousePosEvent(xPos, yPos);
 	//if (!m_isMouseLocked)
 	//{
 	//	STOP_PROFILING;
@@ -124,7 +124,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 void PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
 	START_PROFILING;
-	Rendering::GameManager::GetGameManager()->GetRootGameNode().ScrollEvent(xOffset, yOffset);
+	Core::GameManager::GetGameManager()->GetRootGameNode().ScrollEvent(xOffset, yOffset);
 	STOP_PROFILING;
 }
 
@@ -137,7 +137,7 @@ bool down = false;
 void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
 	START_PROFILING;
-	Rendering::GameManager::GetGameManager()->GetRootGameNode().KeyEvent(key, scancode, action, mods);
+	Core::GameManager::GetGameManager()->GetRootGameNode().KeyEvent(key, scancode, action, mods);
 	STOP_PROFILING;
 }
 
@@ -147,7 +147,7 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG("PLAY game state rendering");
 
-	renderer->Render(Rendering::GameManager::GetGameManager()->GetRootGameNode());
+	renderer->Render(Core::GameManager::GetGameManager()->GetRootGameNode());
 	STOP_PROFILING;
 }
 
@@ -155,6 +155,6 @@ void PlayGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
 	DEBUG_LOG("PLAY game state updating");
-	Rendering::GameManager::GetGameManager()->GetRootGameNode().Update(elapsedTime);
+	Core::GameManager::GetGameManager()->GetRootGameNode().Update(elapsedTime);
 	STOP_PROFILING;
 }

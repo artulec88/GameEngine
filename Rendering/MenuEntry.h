@@ -42,7 +42,7 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MenuEntry();
-	RENDERING_API MenuEntry(const GameCommand* gameCommand, const std::string& text);
+	RENDERING_API MenuEntry(const Core::GameCommand* gameCommand, const std::string& text);
 	RENDERING_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -69,7 +69,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const GameCommand* m_gameCommand;
+	const Core::GameCommand* m_gameCommand;
 	std::string m_text;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;

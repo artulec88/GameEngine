@@ -7,14 +7,14 @@
 namespace Game
 {
 
-	class StartGameCommand : public Rendering::GameCommand
+	class StartGameCommand : public Core::GameCommand
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		StartGameCommand(Rendering::GameManager& gameManager);
+		StartGameCommand(Core::GameManager& gameManager);
 		virtual ~StartGameCommand();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -25,7 +25,7 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::GameManager& m_gameManager;
+		Core::GameManager& m_gameManager;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class StartGameCommand */
 

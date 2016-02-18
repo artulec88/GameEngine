@@ -82,7 +82,7 @@ Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(con
 
 void DirectionalLight::Update(Math::Real delta)
 {
-	CoreEngine* coreEngine = CoreEngine::GetCoreEngine();
+	Core::CoreEngine* coreEngine = Core::CoreEngine::GetCoreEngine();
 	Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
 	Math::Angle sunElevation = coreEngine->GetSunElevation();
 	Math::Angle sunAzimuth = coreEngine->GetSunAzimuth();

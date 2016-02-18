@@ -12,7 +12,7 @@
 namespace Game
 {
 
-class DebugGameManager : public Rendering::GameManager
+class DebugGameManager : public Core::GameManager
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -38,7 +38,7 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 private:
-	void AddCameras();
+	void AddCameras(Rendering::GameNode* entityToFollow);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -138,7 +138,7 @@ void Mesh::Initialize()
 	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile((CoreEngine::GetCoreEngine()->GetModelsDirectory() + m_fileName).c_str(),
+	const aiScene* scene = importer.ReadFile((Core::CoreEngine::GetCoreEngine()->GetModelsDirectory() + m_fileName).c_str(),
 		aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |

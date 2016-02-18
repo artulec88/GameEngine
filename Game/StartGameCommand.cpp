@@ -2,7 +2,7 @@
 #include "Rendering\GameStateManager.h"
 #include "LoadGameState.h"
 
-Game::StartGameCommand::StartGameCommand(Rendering::GameManager& gameManager) :
+Game::StartGameCommand::StartGameCommand(Core::GameManager& gameManager) :
 	m_gameManager(gameManager)
 {
 }

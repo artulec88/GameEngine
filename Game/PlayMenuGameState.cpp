@@ -11,7 +11,7 @@ using namespace Game;
 
 PlayMenuGameState::PlayMenuGameState(void) :
 	Rendering::GameState(),
-	m_quitCommand(QuitCommand(Rendering::GameManager::GetGameManager())),
+	m_quitCommand(QuitCommand(Core::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
@@ -23,12 +23,12 @@ PlayMenuGameState::PlayMenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(new Rendering::EmptyGameCommand(), "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(new Rendering::EmptyGameCommand(), "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Rendering::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(new ResumeGameCommand(*Rendering::GameManager::GetGameManager()), "Resume"));
+	m_currentMenuEntry = new Rendering::MenuEntry(new Core::EmptyGameCommand(), "Main menu");
+	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(new Core::EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(new ResumeGameCommand(*Core::GameManager::GetGameManager()), "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(&m_quitCommand, "Quit"));
 }

@@ -2,11 +2,11 @@
 #include "GameCommand.h"
 
 
-Rendering::GameCommand::GameCommand()
+Core::GameCommand::GameCommand()
 {
 }
 
 
-Rendering::GameCommand::~GameCommand()
+Core::GameCommand::~GameCommand()
 {
 }

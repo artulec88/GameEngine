@@ -1,10 +1,10 @@
-#ifndef __RENDERING_QUIT_GAME_COMMAND_H__
-#define __RENDERING_QUIT_GAME_COMMAND_H__
+#ifndef __CORE_QUIT_GAME_COMMAND_H__
+#define __CORE_QUIT_GAME_COMMAND_H__
 
 #include "Rendering.h"
 #include "GameCommand.h"
 
-namespace Rendering
+namespace Core
 {
 
 class GameManager;
@@ -31,6 +31,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class QuitGameCommand */
 
-} /* end namespace Rendering */
+} /* end namespace Core */
 
-#endif /* __RENDERING_QUIT_GAME_COMMAND_H__ */
+#endif /* __GAME_ENGINE_QUIT_GAME_COMMAND_H__ */

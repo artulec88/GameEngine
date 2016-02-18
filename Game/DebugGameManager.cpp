@@ -73,7 +73,7 @@ void DebugGameManager::Load()
 
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 
-	AddCameras(); // Adding cameras
+	AddCameras(triangleNode); // Adding cameras
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
@@ -81,59 +81,25 @@ void DebugGameManager::Load()
 	NOTICE_LOG("Initalizing debug game finished");
 }
 
-void DebugGameManager::AddCameras()
+void DebugGameManager::AddCameras(Rendering::GameNode* entityToFollow)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_ALWAYS(m_cameraCount >= 1, Utility::Critical, "No cameras defined");
-	NOTICE_LOG("Creating %d camera(-s)...", m_cameraCount);
+	int cameraCount = 3;
+	CHECK_CONDITION_EXIT_ALWAYS(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
 
-	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
-	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
-	const Real defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f);
-	const Real defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f);
+	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
-	const Vector3D defaultCameraPos(GET_CONFIG_VALUE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE("defaultCameraPosZ", 0.0f));
-	const Angle defaultCameraRotationX(GET_CONFIG_VALUE("defaultCameraAngleX", -45.0f));
-	const Angle defaultCameraRotationY(GET_CONFIG_VALUE("defaultCameraAngleY", 0.0f));
-	const Angle defaultCameraRotationZ(GET_CONFIG_VALUE("defaultCameraAngleZ", 0.0f));
-
-	m_cameraNodes = new GameNode*[m_cameraCount];
-	for (int i = 0; i < m_cameraCount; ++i)
+	Rendering::CameraBuilder cameraBuilder;
+	Rendering::BuilderDirector cameraBuilderDirector(cameraBuilder);
+	for (int i = 0; i < cameraCount; ++i)
 	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		std::string cameraIndexStr = ss.str();
-
-		m_cameraNodes[i] = new GameNode();
-		Real xPos = GET_CONFIG_VALUE("cameraPosX_" + cameraIndexStr, defaultCameraPos.GetX());
-		Real yPos = GET_CONFIG_VALUE("cameraPosY_" + cameraIndexStr, defaultCameraPos.GetY());
-		Real zPos = GET_CONFIG_VALUE("cameraPosZ_" + cameraIndexStr, defaultCameraPos.GetZ());
-		m_cameraNodes[i]->GetTransform().SetPos(xPos, yPos, zPos);
-
-		Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + cameraIndexStr, defaultCameraRotationX.GetAngleInDegrees()));
-		Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + cameraIndexStr, defaultCameraRotationY.GetAngleInDegrees()));
-		Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + cameraIndexStr, defaultCameraRotationZ.GetAngleInDegrees()));
-		Matrix4D rotMatrix(angleX, angleY, angleZ);
-		DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
-		Quaternion rot(rotMatrix);
-		Quaternion rot2(Vector3D(1, 0, 0), angleX);
-		//DELOCUST_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-		//	rotMatrix.ToString().c_str(),
-		//	rot.ToString().c_str(),
-		//	rot.ToRotationMatrix().ToString().c_str(),
-		//	rot2.ToRotationMatrix().ToString().c_str());
-		m_cameraNodes[i]->GetTransform().SetRot(rot);
-
-		Angle fov(GET_CONFIG_VALUE("cameraFoV_" + cameraIndexStr, defaultFoV), Unit::DEGREE);
-		Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + cameraIndexStr, defaultAspectRatio);
-		Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + cameraIndexStr, defaultNearPlane);
-		Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + cameraIndexStr, defaultFarPlane);
-		Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + cameraIndexStr, 0.005f);
-		m_cameraNodes[i]->AddComponent(new CameraComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity));
-		//testMesh2->AddChild(cameraNodes[i]);
-		AddToSceneRoot(m_cameraNodes[i]);
+		cameraBuilder.SetCameraIndex(i);
+		cameraBuilder.SetEntityToFollow(entityToFollow);
+		cameraBuilderDirector.Construct();
+		GameNode* cameraNode = cameraBuilder.GetGameNode();
+		AddToSceneRoot(cameraNode);
 	}
-	DEBUG_LOG("%d camera(-s) created", m_cameraCount);
+	DEBUG_LOG("%d camera(-s) created", cameraCount);
 	STOP_PROFILING;
 }
 

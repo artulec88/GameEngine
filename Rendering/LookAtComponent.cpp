@@ -11,7 +11,7 @@ using namespace Rendering;
 LookAtComponent::LookAtComponent(GameNode* gameNode) :
 	GameComponent(),
 	m_entityToLookAtTransform(gameNode->GetTransform()),
-	renderer(CoreEngine::GetCoreEngine()->GetRenderer())
+	renderer(Core::CoreEngine::GetCoreEngine()->GetRenderer())
 {
 }
 

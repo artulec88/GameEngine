@@ -3,7 +3,6 @@
 #include "CoreEngine.h"
 #include "Renderer.h"
 #include "GameNode.h"
-#include "Input.h"
 
 #include "Math\Quaternion.h"
 #ifdef ANT_TWEAK_BAR_ENABLED

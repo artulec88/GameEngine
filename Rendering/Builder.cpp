@@ -136,7 +136,7 @@ void Rendering::DirectionalLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(directionalLight);
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(directionalLight);
+	Core::CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(directionalLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -226,7 +226,7 @@ void Rendering::PointLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(pointLight);
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(pointLight);
+	Core::CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(pointLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -314,7 +314,7 @@ void Rendering::SpotLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(spotLight);
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(spotLight);
+	Core::CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(spotLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -414,7 +414,7 @@ void Rendering::CameraBuilder::SetupCameraParams()
 	Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
 		initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 	m_gameNode->AddComponent(camera);
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
+	Core::CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
 }
 
 #ifdef BUILD_MESH_RENDERER

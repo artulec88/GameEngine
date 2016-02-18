@@ -20,7 +20,7 @@ using namespace Rendering;
 }
 
 MenuEntry::MenuEntry(void) :
-	m_gameCommand(new EmptyGameCommand()),
+	m_gameCommand(new Core::EmptyGameCommand()),
 	m_text(),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
@@ -28,7 +28,7 @@ MenuEntry::MenuEntry(void) :
 {
 }
 
-MenuEntry::MenuEntry(const GameCommand* gameCommand, const std::string& text) :
+MenuEntry::MenuEntry(const Core::GameCommand* gameCommand, const std::string& text) :
 	m_gameCommand(gameCommand),
 	m_text(text),
 	m_parentMenuEntry(NULL),

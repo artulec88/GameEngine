@@ -7,26 +7,26 @@
 namespace Game
 {
 
-	class ResumeGameCommand : public Rendering::GameCommand
+	class ResumeGameCommand : public Core::GameCommand
 	{
-		/* ==================== Static variables and functions begin ==================== */
-		/* ==================== Static variables and functions end ==================== */
+	/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ResumeGameCommand(Rendering::GameManager& gameManager);
+		ResumeGameCommand(Core::GameManager& gameManager);
 		virtual ~ResumeGameCommand();
-		/* ==================== Constructors and destructors end ==================== */
+	/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+	/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void Execute() const;
-		/* ==================== Non-static member functions end ==================== */
+	/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::GameManager& m_gameManager;
-		/* ==================== Non-static member variables end ==================== */
+		Core::GameManager& m_gameManager;
+	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ResumeGameCommand */
 
 } /* end namespace Game */

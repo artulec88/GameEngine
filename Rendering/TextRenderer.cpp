@@ -17,8 +17,8 @@ TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* =
 	m_defaultFontSize(defaultFontSize),
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
 	m_textShader(GET_CONFIG_VALUE_STR("textShader", "text-shader")),
-	m_windowWidth(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowWidth())),
-	m_windowHeight(static_cast<Math::Real>(CoreEngine::GetCoreEngine()->GetWindowHeight())),
+	m_windowWidth(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowWidth())),
+	m_windowHeight(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowHeight())),
 	m_transform(), /* TODO: Fix transform. */
 	m_projection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE)
 {

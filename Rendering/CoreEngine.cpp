@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "CoreEngine.h"
-#include "Input.h"
 #include "tinythread.h"
 
 #include "Utility\ILogger.h"
@@ -14,7 +13,7 @@
 #include <iostream>
 //#include <GLFW\glfw3.h>
 
-using namespace Rendering;
+using namespace Core;
 using namespace Utility;
 using namespace std;
 
@@ -169,7 +168,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	CreateRenderer(width, height, title);
 
-	m_fpsTextRenderer = new TextRenderer(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
+	m_fpsTextRenderer = new Rendering::TextRenderer(new Rendering::Texture("Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
 
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
 	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
@@ -228,7 +227,7 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	GLFWwindow* threadWindow = NULL;
 	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
 	//DEBUG_LOG("Thread window address: %p", threadWindow);
-	m_renderer = new Renderer(window, threadWindow);
+	m_renderer = new Rendering::Renderer(window, threadWindow);
 
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
 	STOP_PROFILING;
@@ -615,7 +614,7 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
 	}
 
-	GameTime::Daytime prevDaytime = m_daytime;
+	Rendering::GameTime::Daytime prevDaytime = m_daytime;
 	if (m_sunElevation < M_FIRST_ELEVATION_LEVEL)
 	{
 		m_daytime = Rendering::GameTime::NIGHT;
@@ -672,7 +671,7 @@ Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTr
 #ifdef ANT_TWEAK_BAR_ENABLED
 void CoreEngine::InitializeTweakBars()
 {
-	AntTweakBarTypes::InitializeTweakBarTypes();
+	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
 
 	TwWindowSize(m_windowWidth, m_windowHeight);
 
@@ -688,11 +687,11 @@ void CoreEngine::InitializeTweakBars()
 	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
 	
-	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", angleType, &m_sunElevation, " label='Sun elevation' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", angleType, &m_sunAzimuth, " label='Sun azimuth' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", Rendering::angleType, &m_sunElevation, " label='Sun elevation' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", Rendering::angleType, &m_sunAzimuth, " label='Sun azimuth' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", Rendering::angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", Rendering::angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
+	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", Rendering::angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
 	
 	TwDefine(" CoreEnginePropertiesBar refresh=0.5 ");
 	//double refreshRate = 0.2;

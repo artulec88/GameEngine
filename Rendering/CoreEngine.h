@@ -1,5 +1,5 @@
-#ifndef __RENDERING_CORE_ENGINE_H__
-#define __RENDERING_CORE_ENGINE_H__
+#ifndef __CORE_CORE_ENGINE_H__
+#define __CORE_CORE_ENGINE_H__
 
 #include "Rendering\Rendering.h"
 #include "Rendering\Renderer.h"
@@ -38,7 +38,7 @@
 
 //#endif
 
-namespace Rendering
+namespace Core
 {
 
 class CoreEngine
@@ -59,13 +59,13 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
+	RENDERING_API CoreEngine(int width, int height, const char* title, int maxFrameRate, Core::GameManager& game,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
 		const std::string& texturesDirectory = "..\\Textures\\");
 	RENDERING_API ~CoreEngine(void);
 private: // disable copy constructor
-	CoreEngine(const CoreEngine& app);
-	void operator=(const CoreEngine& app);
+	CoreEngine(const CoreEngine& coreEngine);
+	void operator=(const CoreEngine& coreEngine);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -75,7 +75,7 @@ public:
 	size_t GetCurrentCameraIndex() const;
 	size_t NextCamera() const;
 	size_t PrevCamera() const;
-	Renderer* GetRenderer() const { return m_renderer; }
+	Rendering::Renderer* GetRenderer() const { return m_renderer; }
 
 	void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	void CloseWindowEvent(GLFWwindow* window);
@@ -151,11 +151,11 @@ private:
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
-	GameManager& m_game;
-	Renderer* m_renderer;
-	TextRenderer* m_fpsTextRenderer;
+	Core::GameManager& m_game;
+	Rendering::Renderer* m_renderer;
+	Rendering::TextRenderer* m_fpsTextRenderer;
 
-	QuitGameCommand m_quitGameCommand;
+	Core::QuitGameCommand m_quitGameCommand;
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;
@@ -223,8 +223,8 @@ private:
 	const Math::Real m_clockSpeed;
 #endif
 /* ==================== Non-static member variables end ==================== */
-}; /* end class CoreEngine */
+}; /* end class GameEngine */
 
-} /* end namespace Rendering */
+} /* end namespace CoreEngine */
 
-#endif /* __RENDERING_CORE_ENGINE_H__ */
+#endif /* __CORE_CORE_ENGINE_H__ */

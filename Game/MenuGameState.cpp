@@ -14,7 +14,7 @@ using namespace Rendering;
 
 MenuGameState::MenuGameState(void) :
 	GameState(),
-	m_quitCommand(QuitCommand(GameManager::GetGameManager())),
+	m_quitCommand(QuitCommand(Core::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
@@ -25,12 +25,12 @@ MenuGameState::MenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new MenuEntry(new EmptyGameCommand(), "Main menu");
-	MenuEntry* optionsMenuEntry = new MenuEntry(new EmptyGameCommand(), "Options");
-	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new MenuEntry(new EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new MenuEntry(new StartGameCommand(*GameManager::GetGameManager()), "Start"));
+	m_currentMenuEntry = new MenuEntry(new Core::EmptyGameCommand(), "Main menu");
+	MenuEntry* optionsMenuEntry = new MenuEntry(new Core::EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new MenuEntry(new StartGameCommand(*Core::GameManager::GetGameManager()), "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new MenuEntry(&m_quitCommand, "Quit"));
 }

@@ -1,5 +1,5 @@
-#ifndef __RENDERING_GAME_MANAGER_H__
-#define __RENDERING_GAME_MANAGER_H__
+#ifndef __CORE_GAME_MANAGER_H__
+#define __CORE_GAME_MANAGER_H__
 
 #include "Rendering.h"
 #include "GameNode.h"
@@ -15,12 +15,12 @@
 #include "IRenderable.h"
 #include "Math\Math.h"
 
-namespace Rendering
+namespace Core
 {
 
 class Renderer;
 
-class GameManager : public IUpdateable
+class GameManager : public Rendering::IUpdateable
 {
 /* ==================== Static variables begin ==================== */
 protected:
@@ -45,9 +45,9 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API virtual void Load() = 0; // Loads the game
-	RENDERING_API void Render(Renderer* renderer) const;
+	RENDERING_API void Render(Rendering::Renderer* renderer) const;
 
-	RENDERING_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
+	RENDERING_API inline Rendering::GameNode& GetRootGameNode() { return m_rootGameNode; }
 
 	RENDERING_API virtual Math::Real GetLoadingProgress() const = 0;
 	RENDERING_API bool IsGameLoaded() const { return m_isGameLoaded; }
@@ -69,26 +69,26 @@ public:
 	/// <summary> Sets the game state transition object. The transition itself is not performed.
 	/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>
 	/// <see cref="PerformStateTransition">
-	RENDERING_API void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
+	RENDERING_API void SetTransition(Rendering::GameStateTransitioning::GameStateTransition* gameStateTransition);
 	RENDERING_API void PerformStateTransition();
 	RENDERING_API void PopState();
 	RENDERING_API void RequestGameQuit() const;
 protected:
-	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
-	RENDERING_API void AddToSceneRoot(GameNode* child);
-	RENDERING_API void AddWaterNode(GameNode* waterNode);
-	RENDERING_API void AddBillboardNode(GameNode* billboardNode);
+	RENDERING_API void AddTerrainNode(Rendering::GameNode* terrainNode);
+	RENDERING_API void AddToSceneRoot(Rendering::GameNode* child);
+	RENDERING_API void AddWaterNode(Rendering::GameNode* waterNode);
+	RENDERING_API void AddBillboardNode(Rendering::GameNode* billboardNode);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	GameNode m_rootGameNode;
-	GameNode* m_terrainNode;
-	GameStateManager* m_gameStateManager;
+	Rendering::GameNode m_rootGameNode;
+	Rendering::GameNode* m_terrainNode;
+	Rendering::GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 
-} /* end namespace Rendering */
+} /* end namespace Core */
 
-#endif // __RENDERING_GAME_MANAGER_H__
+#endif // __CORE_GAME_MANAGER_H__

@@ -46,7 +46,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_REPEAT)
 		{
-			GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new MenuGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
+			Core::GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new MenuGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
 			break;
 		}
 	default:

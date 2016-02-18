@@ -15,7 +15,7 @@
 namespace Game
 {
 
-class TestGameManager : public Rendering::GameManager
+class TestGameManager : public Core::GameManager
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
