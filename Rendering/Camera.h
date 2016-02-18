@@ -16,14 +16,25 @@ namespace Rendering
 {
 	class GameNode;
 
+	namespace CameraTypes
+	{
+		enum CameraType
+		{
+			STATIC_CAMERA = 0,
+			ROTATION_ONLY_CAMERA,
+			MOVEMENT_ONLY_CAMERA,
+			MOVE_FREELY_CAMERA,
+			FOLLOW_ENTITY_CAMERA,
+			FOLLOW_ENTITY_WITH_ROTATION_CAMERA
+		};
+	}
+
 /// <summary>
 /// The base class representing the camera.
 /// </summary>
 class CameraBase
 {
 /* ==================== Static variables and functions begin ==================== */
-private:
-	static const Math::Real DEFAULT_CAMERA_SENSITIVITY;
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -33,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 	/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-	CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity = DEFAULT_CAMERA_SENSITIVITY);
+	CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
 
 	/// <summary>
 	/// The constructor of the camera base object.
@@ -43,7 +54,7 @@ public:
 	/// <param name="zNearPlane">The near plane of the camera.</param>
 	/// <param name="zFarPlane">The far plane of the camera.</param>
 	/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-	CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity = DEFAULT_CAMERA_SENSITIVITY);
+	CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
 
 	/// <summary>
 	/// The destructor of the camera object.

@@ -18,16 +18,14 @@
 using namespace Rendering;
 using namespace Utility;
 
-/* static */ const Math::Real CameraBase::DEFAULT_CAMERA_SENSITIVITY = 0.005f;
-
-CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	m_projection(projectionMatrix),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
 {
 }
 
-CameraBase::CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity /* = DEFAULT_CAMERA_SENSITIVITY */) :
+CameraBase::CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
 	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
