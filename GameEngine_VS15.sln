@@ -17,7 +17,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Physics_VS15", "Physics\Phy
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UtilityTest_VS15", "UtilityTest\UtilityTest_VS15.vcxproj", "{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CoreEngine_VS15", "CoreEngine\CoreEngine_VS15.vcxproj", "{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core_VS15", "Core\Core_VS15.vcxproj", "{DAC9AF85-9210-41E5-BA01-3EBF1BC8812D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
