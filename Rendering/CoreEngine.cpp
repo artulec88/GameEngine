@@ -36,6 +36,11 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	return s_coreEngine;
 }
 
+/* static */ void CoreEngine::ErrorCallback(int errorCode, const char* description)
+{
+	GetCoreEngine()->ErrorCallback(errorCode, description);
+}
+
 /* static */ void CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
 {
 	GetCoreEngine()->CloseWindowEvent(window);
@@ -226,6 +231,7 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	START_PROFILING;
 	GLFWwindow* threadWindow = NULL;
 	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
+	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG("Thread window address: %p", threadWindow);
 	m_renderer = new Rendering::Renderer(window, threadWindow);
 
@@ -466,6 +472,43 @@ void CoreEngine::Run()
 void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	m_game.WindowResizeEvent(width, height);
+}
+
+void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
+{
+	switch (errorCode)
+	{
+	case GLFW_NOT_INITIALIZED:
+		ERROR_LOG("GLFW has not been initialized. %s", description);
+		break;
+	case GLFW_NO_CURRENT_CONTEXT:
+		ERROR_LOG("No context is current for this thread. %s", description);
+		break;
+	case GLFW_INVALID_ENUM:
+		ERROR_LOG("One of the arguments to the function was an invalid enum value. %s", description);
+		break;
+	case GLFW_INVALID_VALUE:
+		ERROR_LOG("One of the arguments to the function was an invalid value. %s", description);
+		break;
+	case GLFW_OUT_OF_MEMORY:
+		ERROR_LOG("A memory allocation failed. %s", description);
+		break;
+	case GLFW_API_UNAVAILABLE:
+		ERROR_LOG("GLFW could not find support for the requested client API on the system. %s", description);
+		break;
+	case GLFW_VERSION_UNAVAILABLE:
+		ERROR_LOG("The requested OpenGL or OpenGL ES version is not available. %s", description);
+		break;
+	case GLFW_PLATFORM_ERROR:
+		ERROR_LOG("A platform-specific error occurred that does not match any of the more specific categories. %s", description);
+		break;
+	case GLFW_FORMAT_UNAVAILABLE:
+		ERROR_LOG("The requested format is not supported or available. %s", description);
+		break;
+	default:
+		ERROR_LOG("Unknown GLFW error event occurred with code %d and message: %s", errorCode, description);
+	}
+	exit(EXIT_FAILURE);
 }
 
 void CoreEngine::CloseWindowEvent(GLFWwindow* window)

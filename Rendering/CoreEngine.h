@@ -48,6 +48,7 @@ protected:
 	RENDERING_API static CoreEngine* s_coreEngine;
 public:
 	RENDERING_API static CoreEngine* GetCoreEngine();
+	static void ErrorCallback(int errorCode, const char* description);
 	static void WindowCloseEventCallback(GLFWwindow* window);
 	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
 	static void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -78,6 +79,12 @@ public:
 	Rendering::Renderer* GetRenderer() const { return m_renderer; }
 
 	void WindowResizeEvent(GLFWwindow* window, int width, int height);
+	/// <summary>
+	/// Error callback.
+	/// </summary>
+	/// <param name="errorCode"> The error code. See http://www.glfw.org/docs/latest/group__errors.html. </param>
+	/// <param name="description"> The description of the error. </param>
+	void ErrorCallbackEvent(int errorCode, const char* description);
 	void CloseWindowEvent(GLFWwindow* window);
 	
 	/// <summary>
