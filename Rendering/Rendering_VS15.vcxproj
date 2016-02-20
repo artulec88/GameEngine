@@ -181,7 +181,6 @@
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="GameCommand.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
@@ -197,13 +196,11 @@
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
-    <ClInclude Include="MenuEntry.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshGroupRenderer.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="PointLight.h" />
-    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="Resource.h" />
@@ -238,7 +235,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="GameCommand.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />
@@ -250,13 +246,11 @@
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
-    <ClCompile Include="MenuEntry.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshGroupRenderer.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="PointLight.cpp" />
-    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Resource.cpp" />

@@ -1,10 +1,10 @@
-#ifndef __CORE_GAME_COMMAND_H__
-#define __CORE_GAME_COMMAND_H__
+#ifndef __ENGINE_GAME_COMMAND_H__
+#define __ENGINE_GAME_COMMAND_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "Utility\ILogger.h"
 
-namespace Core
+namespace Engine
 {
 
 /// <summary>
@@ -14,13 +14,13 @@ class GameCommand
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API GameCommand();
-	RENDERING_API virtual ~GameCommand();
+	ENGINE_API GameCommand();
+	ENGINE_API virtual ~GameCommand();
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API virtual void Execute() const = 0;
+	ENGINE_API virtual void Execute() const = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -35,18 +35,18 @@ class EmptyGameCommand : public GameCommand
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API EmptyGameCommand() :
+	ENGINE_API EmptyGameCommand() :
 		GameCommand()
 	{
 	}
-	RENDERING_API virtual ~EmptyGameCommand()
+	ENGINE_API virtual ~EmptyGameCommand()
 	{
 	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API virtual void Execute() const
+	ENGINE_API virtual void Execute() const
 	{
 		DEBUG_LOG("Do-nothing command started. Remember that executing a DO-NOTHING command wastes precious CPU time.");
 		// Do nothing
@@ -57,6 +57,6 @@ public:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class EmptyGameCommand */
 
-} /* end namespace Core */
+} /* end namespace Engine */
 
-#endif /* __CORE_GAME_COMMAND_H__ */
+#endif /* __ENGINE_GAME_COMMAND_H__ */

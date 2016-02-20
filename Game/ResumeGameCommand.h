@@ -1,13 +1,13 @@
 #ifndef __GAME_RESUME_GAME_COMMAND_H__
 #define __GAME_RESUME_GAME_COMMAND_H__
 
-#include "Rendering\GameCommand.h"
+#include "Engine\GameCommand.h"
 #include "Rendering\GameManager.h"
 
 namespace Game
 {
 
-	class ResumeGameCommand : public Core::GameCommand
+	class ResumeGameCommand : public Engine::GameCommand
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */

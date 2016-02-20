@@ -11,7 +11,7 @@
 #include "Material.h"
 #include "Shader.h"
 #include "Color.h"
-#include "MenuEntry.h"
+//#include "MenuEntry.h"
 #include "CubeShadowMap.h"
 
 #include "Math\Angle.h"
@@ -85,7 +85,8 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	RENDERING_API void Render(const GameNode& node);
-	RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
+	//RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
+	RENDERING_API void RenderMainMenu(/* TODO: Additional parameters */);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 	inline void SwapBuffers()
 	{

@@ -1,10 +1,10 @@
-#ifndef __CORE_CORE_H__
-#define __CORE_CORE_H__
+#ifndef __ENGINE_ENGINE_H__
+#define __ENGINE_ENGINE_H__
 
-#ifdef CORE_EXPORTS
-#define CORE_API __declspec(dllexport)
+#ifdef ENGINE_EXPORTS
+#define ENGINE_API __declspec(dllexport)
 #else
-#define CORE_API __declspec(dllimport)
+#define ENGINE_API __declspec(dllimport)
 #endif
 
 #include "stdafx.h"
@@ -18,7 +18,7 @@
 #define STOP_PROFILING
 #endif
 
-namespace Core
+namespace ENGINE
 {
 	namespace GameTime
 	{
@@ -32,6 +32,6 @@ namespace Core
 			AFTER_DUSK
 		};
 	}
-} /* end namespace Core */
+} /* end namespace Engine */
 
-#endif /* __CORE_CORE_H__ */
+#endif /* __ENGINE_ENGINE_H__ */

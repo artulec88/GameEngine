@@ -1,6 +1,6 @@
 #include "PlayMenuGameState.h"
 #include "Rendering\GameManager.h"
-#include "Rendering\GameCommand.h"
+#include "Engine\GameCommand.h"
 #include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
@@ -23,14 +23,14 @@ PlayMenuGameState::PlayMenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new Rendering::MenuEntry(new Core::EmptyGameCommand(), "Main menu");
-	Rendering::MenuEntry* optionsMenuEntry = new Rendering::MenuEntry(new Core::EmptyGameCommand(), "Options");
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new Rendering::MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(new ResumeGameCommand(*Core::GameManager::GetGameManager()), "Resume"));
+	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu");
+	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new ResumeGameCommand(*Core::GameManager::GetGameManager()), "Resume"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Rendering::MenuEntry(&m_quitCommand, "Quit"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit"));
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)
@@ -108,5 +108,6 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 void PlayMenuGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	DEBUG_LOG("PLAY MAIN MENU game state rendering");
-	renderer->RenderMainMenu(*m_currentMenuEntry);
+	//renderer->RenderMainMenu(*m_currentMenuEntry);
+	renderer->RenderMainMenu();
 }

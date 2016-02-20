@@ -6,7 +6,7 @@
 #include "Rendering\TextRenderer.h"
 #include "Rendering\GameManager.h"
 #include "Rendering\GameStateManager.h"
-#include "Rendering\QuitGameCommand.h"
+//#include "Rendering\QuitGameCommand.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -162,7 +162,7 @@ private:
 	Rendering::Renderer* m_renderer;
 	Rendering::TextRenderer* m_fpsTextRenderer;
 
-	Core::QuitGameCommand m_quitGameCommand;
+	//Engine::QuitGameCommand m_quitGameCommand;
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;

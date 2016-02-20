@@ -1,7 +1,7 @@
 #ifndef __GAME_GO_TO_MENU_ENTRY_COMMAND_H__
 #define __GAME_GO_TO_MENU_ENTRY_COMMAND_H__
 
-#include "Rendering\GameCommand.h"
+#include "Engine\GameCommand.h"
 
 namespace Game
 {
@@ -13,7 +13,7 @@ namespace Game
 /// This class is a stateless representation of pure behavior so having more than one instance of that class wastes memory since all instances are equivalent.
 /// The Flyweight pattern addresses that.
 /// </remarks>
-class GoToMenuEntryCommand : public Core::GameCommand
+class GoToMenuEntryCommand : public Engine::GameCommand
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

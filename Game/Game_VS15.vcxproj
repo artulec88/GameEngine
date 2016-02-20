@@ -99,7 +99,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\AntTweakBar\lib;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Debug;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Math_VS15.lib;Utility_VS15.lib;Rendering_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math_VS15.lib;Utility_VS15.lib;Rendering_VS15.lib;Engine_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -139,7 +139,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\AntTweakBar\lib;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Release;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\AntTweakBar\lib;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Math_VS15.lib;Utility_VS15.lib;Rendering_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Math_VS15.lib;Utility_VS15.lib;Rendering_VS15.lib;Engine_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

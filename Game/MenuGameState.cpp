@@ -2,7 +2,7 @@
 #include "QuitCommand.h"
 #include "StartGameCommand.h"
 #include "Rendering\GameManager.h"
-#include "Rendering\GameCommand.h"
+#include "Engine\GameCommand.h"
 #include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
@@ -25,14 +25,14 @@ MenuGameState::MenuGameState(void) :
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
 	 * the new operations must not be called.
 	 */ 
-	m_currentMenuEntry = new MenuEntry(new Core::EmptyGameCommand(), "Main menu");
-	MenuEntry* optionsMenuEntry = new MenuEntry(new Core::EmptyGameCommand(), "Options");
-	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new MenuEntry(new Core::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new MenuEntry(new StartGameCommand(*Core::GameManager::GetGameManager()), "Start"));
+	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu");
+	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options");
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Core::GameManager::GetGameManager()), "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new MenuEntry(&m_quitCommand, "Quit"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit"));
 }
 
 MenuGameState::~MenuGameState(void)
@@ -90,7 +90,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	case GLFW_KEY_ENTER:
 	{
-		MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
+		Engine::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
 		if (selectedChild->HasChildren())
 		{
 			m_currentMenuEntry = selectedChild;
@@ -112,6 +112,7 @@ void MenuGameState::Render(Shader* shader, Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG("MAIN MENU game state rendering");
-	renderer->RenderMainMenu(*m_currentMenuEntry);
+	//renderer->RenderMainMenu(*m_currentMenuEntry);
+	renderer->RenderMainMenu();
 	STOP_PROFILING;
 }

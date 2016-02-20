@@ -1,13 +1,13 @@
 #ifndef __GAME_START_GAME_COMMAND_H__
 #define __GAME_START_GAME_COMMAND_H__
 
-#include "Rendering\GameCommand.h"
+#include "Engine\GameCommand.h"
 #include "Rendering\GameManager.h"
 
 namespace Game
 {
 
-	class StartGameCommand : public Core::GameCommand
+	class StartGameCommand : public Engine::GameCommand
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */

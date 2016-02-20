@@ -1,10 +1,10 @@
-#ifndef __CORE_QUIT_GAME_COMMAND_H__
-#define __CORE_QUIT_GAME_COMMAND_H__
+#ifndef __ENGINE_QUIT_GAME_COMMAND_H__
+#define __ENGINE_QUIT_GAME_COMMAND_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "GameCommand.h"
 
-namespace Core
+namespace Engine
 {
 
 	class GameManager;
@@ -16,21 +16,22 @@ namespace Core
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API QuitGameCommand(const GameManager& gameManager);
-		RENDERING_API virtual ~QuitGameCommand();
+		//ENGINE_API QuitGameCommand(const GameManager& gameManager);
+		ENGINE_API QuitGameCommand();
+		ENGINE_API virtual ~QuitGameCommand();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual void Execute() const;
+		ENGINE_API virtual void Execute() const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		const GameManager& m_gameManager;
+		//const GameManager& m_gameManager;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class QuitGameCommand */
 
-} /* end namespace Core */
+} /* end namespace Engine */
 
-#endif /* __CORE_QUIT_GAME_COMMAND_H__ */
+#endif /* __ENGINE_QUIT_GAME_COMMAND_H__ */

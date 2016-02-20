@@ -1,13 +1,13 @@
-#ifndef __RENDERING_MENU_ENTRY_H__
-#define __RENDERING_MENU_ENTRY_H__
+#ifndef __ENGINE_MENU_ENTRY_H__
+#define __ENGINE_MENU_ENTRY_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "GameCommand.h"
 #include "Math\Vector.h"
 #include <string>
 #include <vector>
 
-namespace Rendering
+namespace Engine
 {
 
 // TODO: Consider moving this namespace to another file (e.g. Actions.h)
@@ -41,9 +41,9 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API MenuEntry();
-	RENDERING_API MenuEntry(const Core::GameCommand* gameCommand, const std::string& text);
-	RENDERING_API virtual ~MenuEntry(void);
+	ENGINE_API MenuEntry();
+	ENGINE_API MenuEntry(const GameCommand* gameCommand, const std::string& text);
+	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -56,20 +56,20 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	void SelectChildMenuEntry(int index);
 
-	RENDERING_API void ExecuteCommand() const { m_gameCommand->Execute(); }
-	RENDERING_API void AddChildren(MenuEntry* child);
-	RENDERING_API bool HasParent() const { return m_parentMenuEntry != NULL; }
-	RENDERING_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
-	RENDERING_API bool DoesSelectedChildHaveChildren() const;
-	RENDERING_API void SelectPrevChildMenuEntry();
-	RENDERING_API void SelectNextChildMenuEntry();
-	RENDERING_API MenuEntry* GetParent();
-	RENDERING_API MenuEntry* GetSelectedChild();
+	ENGINE_API void ExecuteCommand() const { m_gameCommand->Execute(); }
+	ENGINE_API void AddChildren(MenuEntry* child);
+	ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
+	ENGINE_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
+	ENGINE_API bool DoesSelectedChildHaveChildren() const;
+	ENGINE_API void SelectPrevChildMenuEntry();
+	ENGINE_API void SelectNextChildMenuEntry();
+	ENGINE_API MenuEntry* GetParent();
+	ENGINE_API MenuEntry* GetSelectedChild();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Core::GameCommand* m_gameCommand;
+	const GameCommand* m_gameCommand;
 	std::string m_text;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;
@@ -77,6 +77,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MenuEntry */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_MENU_ENTRY_H__ */
+#endif /* __ENGINE_MENU_ENTRY_H__ */

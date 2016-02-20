@@ -918,7 +918,36 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 	STOP_PROFILING;
 }
 
-void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
+//void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
+//{
+//	START_PROFILING;
+//	BindAsRenderTarget();
+//	ClearScreen(m_backgroundColor);
+//	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
+//	{
+//		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
+//		m_currentCamera = m_mainMenuCamera;
+//	}
+//	else
+//	{
+//		m_currentCamera = m_cameras[m_currentCameraIndex];
+//	}
+//
+//	//double time = glfwGetTime();
+//	//std::stringstream ss;
+//	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
+//	//m_textRenderer->DrawString(0, 5800, ss.str(), this);
+//	//m_textRenderer->DrawString(0, 50, "This is main menu", this);
+//	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
+//	for (int i = 0; i < menuEntryChildrenCount; ++i)
+//	{
+//		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
+//			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
+//	}
+//	STOP_PROFILING;
+//}
+
+void Renderer::RenderMainMenu()
 {
 	START_PROFILING;
 	BindAsRenderTarget();
@@ -938,11 +967,12 @@ void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
 	//m_textRenderer->DrawString(0, 5800, ss.str(), this);
 	//m_textRenderer->DrawString(0, 50, "This is main menu", this);
-	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
-	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	//int menuEntryChildrenCount = menuEntry.GetChildrenCount();
+	std::string texts[3] = { "Start", "Options", "Exit" };
+	Math::Vector3D colors[3] = { Math::Vector3D(REAL_ONE, REAL_ONE, REAL_ONE), Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO) };
+	for (int i = 0; i < 3; ++i)
 	{
-		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
-			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
+		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, texts[i], this, colors[i]);
 	}
 	STOP_PROFILING;
 }
