@@ -2,7 +2,6 @@
 
 #include "PointLight.h"
 #include "Attenuation.h"
-#include "Transform.h"
 
 #include "Math\Vector.h"
 #include "Math\Angle.h"

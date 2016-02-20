@@ -71,13 +71,13 @@ Math::Matrix4D CameraBase::GetViewProjection() const
 }
 
 
-Camera::Camera(const Math::Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity) :
+Camera::Camera(const Math::Matrix4D& projectionMatrix, const Math::Transform& transform, Math::Real sensitivity) :
 	CameraBase(projectionMatrix, sensitivity),
 	m_transform(transform)
 {
 }
 
-Camera::Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Transform& transform, Math::Real sensitivity) :
+Camera::Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Math::Transform& transform, Math::Real sensitivity) :
 	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_transform(transform)
 {

@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Math\Matrix.h"
 #include "Math\Vector.h"
+#include "Math\Transform.h"
 #include <string>
 
 namespace Rendering
@@ -13,7 +14,6 @@ namespace Rendering
 
 class Material;
 class Renderer;
-class Transform;
 
 namespace Text
 {
@@ -58,7 +58,7 @@ private:
 	Math::Real m_windowWidth;
 	Math::Real m_windowHeight;
 
-	Transform m_transform;
+	Math::Transform m_transform;
 	Math::Matrix4D m_projection;
 
 	GLuint m_vaoID;

@@ -2,7 +2,7 @@
 
 #include "Rendering.h"
 //#include "CoreEngine.h"
-#include "Math\Math.h"
+#include "Math\Transform.h"
 
 namespace Rendering
 {
@@ -11,7 +11,6 @@ namespace Rendering
 class Renderer;
 class GameNode;
 class Shader;
-class Transform;
 class CoreEngine;
 
 
@@ -34,8 +33,8 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void SetParent(GameNode* parentGameNode);
-	Transform& GetTransform();
-	const Transform& GetTransform() const;
+	Math::Transform& GetTransform();
+	const Math::Transform& GetTransform() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

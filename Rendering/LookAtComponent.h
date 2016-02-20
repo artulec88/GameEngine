@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "GameComponent.h"
 #include "IUpdateable.h"
-#include "Transform.h"
+#include "Math\Transform.h"
 #include "Math\Vector.h"
 
 namespace Rendering
@@ -26,7 +26,7 @@ namespace Rendering
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Transform& m_entityToLookAtTransform;
+		const Math::Transform& m_entityToLookAtTransform;
 		Renderer* renderer;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class LookAtComponent */

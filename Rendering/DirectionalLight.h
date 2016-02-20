@@ -2,7 +2,7 @@
 
 #include "Rendering.h"
 #include "BaseLight.h"
-#include "Transform.h"
+#include "Math\Transform.h"
 #include "Math\Angle.h"
 
 #define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place

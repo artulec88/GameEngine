@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Rendering.h"
-#include "Transform.h"
 #include "IRenderable.h"
 #include "IInputableKeyboard.h"
 #include "IInputableMouse.h"
 #include "IUpdateable.h"
-#include "Math\Math.h"
+
+#include "Math\Transform.h"
+
 #include <vector>
 
 namespace Rendering
@@ -45,8 +46,8 @@ public:
 	RENDERING_API virtual void Update(Math::Real elapsedTime);
 	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer) const;
 
-	RENDERING_API Transform& GetTransform() { return m_transform; };
-	RENDERING_API const Transform& GetTransform() const { return m_transform; }
+	RENDERING_API Math::Transform& GetTransform() { return m_transform; };
+	RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
 
 	RENDERING_API std::vector<GameNode*> GetAllDescendants() const;
 /* ==================== Non-static member functions end ==================== */
@@ -60,7 +61,7 @@ protected:
 	std::vector<Input::IInputableKeyboard*> m_inputableKeyboardComponents;
 	std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 	std::vector<IUpdateable*> m_updateableComponents;
-	Transform m_transform;
+	Math::Transform m_transform;
 	// TODO: set of commands (GameCommand objects) to be performed by the game entity in the UPDATE step
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */

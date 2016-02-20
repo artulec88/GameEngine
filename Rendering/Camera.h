@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "GameComponent.h"
-#include "Transform.h"
+#include "Math\Transform.h"
 #include "IInputableKeyboard.h"
 #include "IInputableMouse.h"
 #include "IUpdateable.h"
@@ -69,8 +69,8 @@ public:
 	inline bool IsActive() const { return m_isActive; }
 	inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
 	Math::Matrix4D GetViewProjection() const;
-	virtual Transform& GetTransform() = 0;
-	virtual const Transform& GetTransform() const = 0;
+	virtual Math::Transform& GetTransform() = 0;
+	virtual const Math::Transform& GetTransform() const = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -99,20 +99,20 @@ class Camera : public CameraBase
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Camera(const Math::Matrix4D& projectionMatrix, const Transform& transform, Math::Real sensitivity);
-	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Transform& transform, Math::Real sensitivity);
+	Camera(const Math::Matrix4D& projectionMatrix, const Math::Transform& transform, Math::Real sensitivity);
+	Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Math::Transform& transform, Math::Real sensitivity);
 	virtual ~Camera(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual Transform& GetTransform() { return m_transform; }
-	virtual const Transform& GetTransform() const { return m_transform; }
+	virtual Math::Transform& GetTransform() { return m_transform; }
+	virtual const Math::Transform& GetTransform() const { return m_transform; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Rendering::Transform m_transform;
+	Math::Transform m_transform;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Camera */
 
@@ -131,8 +131,8 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Update(Math::Real deltaTime);
-	virtual Transform& GetTransform() { return GameComponent::GetTransform(); }
-	virtual const Transform& GetTransform() const { return GameComponent::GetTransform(); }
+	virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+	virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -3,13 +3,15 @@
 #include "Rendering.h"
 #include "Material.h"
 #include "Renderer.h"
-#include "Transform.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
+#include "Color.h"
+
+#include "Math\Transform.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
-#include "Color.h"
+
 #include "Utility\ReferenceCounter.h"
 #include <map>
 #include <vector>
@@ -134,7 +136,7 @@ public:
 	void Bind() const;
 	bool IsBound() const;
 	void Unbind() const;
-	void UpdateUniforms(const Transform& transform, const Material* material, Renderer* renderer) const;
+	void UpdateUniforms(const Math::Transform& transform, const Material* material, Renderer* renderer) const;
 
 	void SetUniformi(const std::string& uniformName, int value) const;
 	void SetUniformf(const std::string& uniformName, Math::Real value) const;

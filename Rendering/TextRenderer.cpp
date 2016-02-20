@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "TextRenderer.h"
 #include "Material.h"
-#include "Transform.h"
 #include "Renderer.h"
 #include "CoreEngine.h"
 #include "Utility\IConfig.h"

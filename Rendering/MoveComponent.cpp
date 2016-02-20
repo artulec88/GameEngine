@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "MoveComponent.h"
-#include "Transform.h"
+#include "Math\Transform.h"
 #include "Math\Quaternion.h"
 
 /* static */ const Math::Real Rendering::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
@@ -27,7 +27,7 @@ Rendering::MoveComponent::~MoveComponent()
 
 void Rendering::MoveComponent::Update(Math::Real deltaTime)
 {
-	Transform& transform = GetTransform();
+	Math::Transform& transform = GetTransform();
 	transform.SetRot(transform.GetRot() * Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
 	Math::Vector3D distanceToMove = transform.GetRot().GetForward() * m_currentMovementSpeed * deltaTime;
 	//if (m_currentMovementSpeed > 0.0000001f)

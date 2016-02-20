@@ -9,7 +9,6 @@
 #include "SpotLight.h"
 #include "MappedValues.h"
 #include "Material.h"
-#include "Transform.h"
 #include "Shader.h"
 #include "Color.h"
 #include "MenuEntry.h"
@@ -18,6 +17,7 @@
 #include "Math\Angle.h"
 #include "Math\Vector.h"
 #include "Math\Plane.h"
+#include "Math\Transform.h"
 #ifdef DEBUG_RENDERING_ENABLED
 #include "Math\Sphere.h"
 #include "Math\AABB.h"
@@ -206,7 +206,7 @@ public:
 	/// <summary>
 	/// Adds a set of coordinate axes depicting the position and orientation of the given transformation to the debug drawing queue.
 	/// </summary>
-	void AddAxes(const Transform& transform, const Color& color, Math::Real size,
+	void AddAxes(const Math::Transform& transform, const Color& color, Math::Real size,
 		Math::Real duration = REAL_ZERO, bool isDepthTestEnabled = true);
 
 	/// <summary>
@@ -336,7 +336,7 @@ private:
 	Camera m_altCamera;
 	Texture* m_filterTexture;
 	Material* m_filterMaterial;
-	Transform m_filterTransform;
+	Math::Transform m_filterTransform;
 	Mesh* m_filterMesh;
 
 	std::vector<GameNode*> m_terrainNodes;

@@ -1,12 +1,11 @@
 #include "StdAfx.h"
 #include "Transform.h"
-#include "Camera.h"
+
 #include "Utility\ILogger.h"
 
-using namespace Rendering;
 using namespace Math;
 
-Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real scale /* = REAL_ONE */) :
+Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
 	m_pos(pos),
 	m_rotation(rot),
 	m_scale(scale),
@@ -83,7 +82,7 @@ Matrix4D Transform::GetTransformation() const
 //	return result;
 //}
 
-void Transform::Rotate(const Math::Vector3D& axis, const Math::Angle& angle)
+void Transform::Rotate(const Vector3D& axis, const Angle& angle)
 {
 	Rotate(Quaternion(axis, angle));
 	m_isChanged = true;
@@ -96,28 +95,28 @@ void Transform::Rotate(const Quaternion& rot)
 	m_isChanged = true;
 }
 
-void Transform::LookAt(const Math::Vector3D& point, const Math::Vector3D& up)
+void Transform::LookAt(const Vector3D& point, const Vector3D& up)
 {
 	m_rotation = GetLookAtRotation(point, up);
 	m_isChanged = true;
 }
 
-Math::Quaternion Transform::GetLookAtRotation(const Math::Vector3D& point, const Math::Vector3D& up) const
+Quaternion Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& up) const
 {
-	return Quaternion(Math::Matrix4D((point - m_pos).Normalized(), up));
-	//Math::Vector3D forward = point - pos;
+	return Quaternion(Matrix4D((point - m_pos).Normalized(), up));
+	//Vector3D forward = point - pos;
 	//forward.Normalize();
 	//
-	////Math::Vector3D right = forward.Cross(up);
-	//Math::Vector3D right = (up.Normalized());
+	////Vector3D right = forward.Cross(up);
+	//Vector3D right = (up.Normalized());
 	//right = right.Cross(forward);
 	//right.Normalize();
 
-	//Math::Vector3D u = forward.Cross(right);
+	//Vector3D u = forward.Cross(right);
 	//u.Normalize();
 
-	//Math::Matrix4D rotMatrix(forward, u, right); // rotation from vectors
-	//return Math::Quaternion(rotMatrix);
+	//Matrix4D rotMatrix(forward, u, right); // rotation from vectors
+	//return Quaternion(rotMatrix);
 }
 
 void Transform::SetParent(Transform* t)

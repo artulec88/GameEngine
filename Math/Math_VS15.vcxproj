@@ -161,6 +161,7 @@
     <ClInclude Include="SortingParameters.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Statistics.h" />
+    <ClInclude Include="Transform.h" />
     <ClInclude Include="UtmostTimeSamples.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="stdafx.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="SortingParameters.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Statistics.cpp" />
+    <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UtmostTimeSamples.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="stdafx.cpp">
