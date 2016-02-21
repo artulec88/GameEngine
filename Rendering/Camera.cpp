@@ -135,7 +135,8 @@ CameraMoveComponent::CameraMoveComponent(const Math::Matrix4D& projectionMatrix,
 	m_up(false),
 	m_down(false),
 	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-	m_maxSpeed(REAL_ONE)
+	m_maxSpeed(REAL_ONE),
+	m_isLocked(false)
 {
 }
 
@@ -148,7 +149,8 @@ CameraMoveComponent::CameraMoveComponent(const Math::Angle& FoV, Math::Real aspe
 	m_up(false),
 	m_down(false),
 	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-	m_maxSpeed(REAL_ONE)
+	m_maxSpeed(REAL_ONE),
+	m_isLocked(false)
 {
 }
 
@@ -240,6 +242,61 @@ void CameraMoveComponent::KeyEvent(int key, int scancode, int action, int mods)
 					 //}
 		break;
 	}
+}
+
+void CameraMoveComponent::MouseButtonEvent(int button, int action, int mods)
+{
+	if (!m_isActive)
+	{
+		return;
+	}
+	DEBUG_LOG("Mouse button event for the moving camera (button = %d, action = %d, mods = %d)", button, action, mods);
+	switch (button)
+	{
+	case GLFW_MOUSE_BUTTON_LEFT:
+		m_isLocked = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the angle around the entity
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		//m_changingPitch = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the pitch
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		break;
+	}
+}
+
+void CameraMoveComponent::MousePosEvent(double xPos, double yPos)
+{
+	if (!m_isActive || !m_isLocked)
+	{
+		return;
+	}
+	DEBUG_LOG("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+
+	int width = Core::CoreEngine::GetCoreEngine()->GetWindowWidth();
+	int height = Core::CoreEngine::GetCoreEngine()->GetWindowHeight();
+	Math::Vector2D centerPosition(static_cast<Math::Real>(width) / 2, static_cast<Math::Real>(height) / 2);
+	Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
+	deltaPosition -= centerPosition;
+
+	bool rotX = !Math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
+	bool rotY = !Math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
+
+	if (rotX || rotY)
+	{
+		if (rotX)
+		{
+			GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * m_sensitivity));
+		}
+		if (rotY)
+		{
+			GetTransform().Rotate(GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * m_sensitivity));
+		}
+		Core::CoreEngine::GetCoreEngine()->CentralizeCursor();
+	}
+}
+
+void CameraMoveComponent::ScrollEvent(double xOffset, double yOffset)
+{
 }
 
 void CameraMoveComponent::Update(Math::Real deltaTime)

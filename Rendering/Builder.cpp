@@ -411,8 +411,9 @@ void Rendering::CameraBuilder::SetupCameraParams()
 	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
 	Math::Angle initialPitchAngle(GET_CONFIG_VALUE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.GetAngleInDegrees()));
 
-	Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
-		initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
+	//Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
+	//	initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
+	Rendering::CameraComponent* camera = new Rendering::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	m_gameNode->AddComponent(camera);
 	Core::CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
 }

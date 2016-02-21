@@ -139,7 +139,7 @@ public:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CameraComponent */
 
-class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyboard
+class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyboard, public Input::IInputableMouse
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -154,6 +154,9 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+	virtual void ScrollEvent(double xOffset, double yOffset);
 	virtual void Update(Math::Real deltaTime);
 /* ==================== Non-static member functions end ==================== */
 
@@ -162,6 +165,7 @@ private:
 	bool m_forward, m_backward, m_left, m_right, m_up, m_down;
 	Math::Vector3D m_velocity;
 	Math::Real m_maxSpeed;
+	bool m_isLocked;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class CameraMoveComponent */
 
