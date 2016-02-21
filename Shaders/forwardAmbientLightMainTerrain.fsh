@@ -15,8 +15,10 @@ uniform float displacementBias;
 DeclareFragOutput(0, vec4);
 void main()
 {
+#if defined(FOG_ENABLED)
 	float distance = CalcFogDistance(C_eyePos, worldPos0);
 	float fogFactor = CalcFogFactor(R_ambientFogStart, R_ambientFogEnd, R_ambientFogDensityFactor, R_ambientFogGradient, distance);
+#endif
 	
 	vec3 directionToEye = normalize(C_eyePos - worldPos0);
 	vec2 texCoords = CalcParallaxTexCoords(displacementMap, tbnMatrix, directionToEye, texCoord0, displacementScale, displacementBias);
@@ -31,5 +33,9 @@ void main()
 	
 	vec4 totalColor = diffuseTextureColor + diffuse2TextureColor + diffuse3TextureColor + diffuse4TextureColor;
 	
+#if defined(FOG_ENABLED)
 	SetFragOutput(0, mix(totalColor, vec4(R_ambientFogColor, 1.0), fogFactor) * vec4(R_ambientIntensity, 1));
+#else
+	SetFragOutput(0, totalColor * vec4(R_ambientIntensity, 1));
+#endif
 }

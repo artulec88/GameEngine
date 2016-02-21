@@ -8,10 +8,11 @@ varying mat3 tbnMatrix;
 #include "forwardAmbientLighting.vsh"
 #elif defined(FS_BUILD)
 #include "parallaxMapping.glh"
-#include "sampling.glh"
 #include "forwardAmbientFogUniforms.glh"
 #include "fogFallOffCalculationExponential.glh"
 #include "fogDistanceCalculationPlaneBased.glh"
 
+#define FOG_ENABLED
 #include "forwardAmbientLightMain.fsh"
+
 #endif

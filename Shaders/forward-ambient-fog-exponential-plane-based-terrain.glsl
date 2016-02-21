@@ -12,5 +12,6 @@ varying mat3 tbnMatrix;
 #include "fogFallOffCalculationExponential.glh"
 #include "fogDistanceCalculationPlaneBased.glh"
 
+#define FOG_ENABLED
 #include "forwardAmbientLightMainTerrain.fsh"
 #endif

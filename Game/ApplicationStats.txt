@@ -6442,3 +6442,183 @@ Median SPF =	2.471 [ms]
 [Notice] [2016-02-07 19:10:26] Renderer.cpp(368) : Rendering engine destroyed
 [Notice] [2016-02-07 19:10:26] CoreEngine.cpp(219) : Core engine destruction finished
 [Info] [2016-02-07 19:10:26] GameManager.cpp(75) : Game manager destruction finished
+[Info] [2016-02-21 16:10:42] IStatisticsStorage.cpp(59) : Total elapsed time: 1.27198 [s]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "MenuGameState"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 	Total time: 65.94 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 	Total time excluding nested calls: 65.94 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 5.2%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Game::MenuGameState::Render"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 185
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time: 65.94 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 65.94 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 356.41 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 100.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 5.2%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "TestGameManager"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 	Total time: 218.57 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 	Total time excluding nested calls: 218.57 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Game::TestGameManager::Update"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1002
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 218.57 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 218.57 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.22 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 100.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "CoreEngine"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(443) : 	Total time: 2.52 [s]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(443) : 	Total time excluding nested calls: 1.26 [s]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 99.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Core::CoreEngine::CoreEngine"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time: 664.08 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 664.08 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 664.08 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 52.7%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 52.2%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Core::CoreEngine::CreateRenderer"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 663.28 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 663.28 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 52.7%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 52.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Core::CoreEngine::Start"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time: 595.28 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 595.28 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 595.28 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 47.3%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 46.8%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Core::CoreEngine::Stop"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 1.12 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 1.12 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Core::CoreEngine::Run"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 593.50 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 593.50 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 47.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 46.7%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "Renderer"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(443) : 	Total time: 1.20 [s]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 	Total time excluding nested calls: 613.90 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 48.3%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Rendering::Renderer::Renderer"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time: 548.52 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 548.52 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 548.52 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 89.3%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 43.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Rendering::Renderer::InitializeCubeMap"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 304.56 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 304.56 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 49.6%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 23.9%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Rendering::Renderer::InitializeCubeMapTexture"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 2
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 285.85 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Average time: 142.93 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 46.6%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 22.5%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Rendering::Renderer::RenderMainMenu"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 185
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time: 65.38 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 		Total time including nested calls: 65.38 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 353.41 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 10.7%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 5.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "Angle"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 	Total time: 0.76 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 	Total time excluding nested calls: 0.76 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Angle::GetAngleInDegrees"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 8
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.76 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.76 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.10 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 100.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Angle::GetAngleInRadians"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 2
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Angle::Sin"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 3
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Angle::Cos"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 8
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Angle::Tan"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(376) : Class: "Matrix4D"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 	Total time: 1.18 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(447) : 	Total time excluding nested calls: 1.07 [ms]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(388) : 	Application usage: 0.1%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Matrix4D::Matrix4D"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 4484
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 449.31 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 562.97 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.13 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 52.9%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Matrix4D::operator *"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 2225
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 615.81 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 615.81 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.28 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 57.8%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Matrix4D::operator ="
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 2
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Matrix4D::SetScaleMatrix"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 4
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 0.38 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 0.10 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(392) : 	Method: "Math::Matrix4D::SetPerspectiveProjection"
+[Info] [2016-02-21 16:10:42] Statistics.cpp(393) : 		Invocations count: 1
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time: 0.00 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Total time including nested calls: 4.94 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(452) : 		Average time: 4.94 [us]
+[Info] [2016-02-21 16:10:42] Statistics.cpp(403) : 		Class usage: 0.5%
+[Info] [2016-02-21 16:10:42] Statistics.cpp(404) : 		Application usage: 0.0%
+[Info] [2016-02-21 16:10:42] CoreEngine.cpp(213) : SPF (Seconds Per Frame) statistics during gameplay:
+Samples =	1
+Average SPF =	2.722 [ms]
+Median SPF =	2.722 [ms]
+[Info] [2016-02-21 16:10:42] Renderer.cpp(285) : Destroying rendering engine...
+[Notice] [2016-02-21 16:10:42] Renderer.cpp(368) : Rendering engine destroyed
+[Notice] [2016-02-21 16:10:42] CoreEngine.cpp(223) : Core engine destruction finished
+[Info] [2016-02-21 16:10:42] GameManager.cpp(73) : Game manager destruction finished
