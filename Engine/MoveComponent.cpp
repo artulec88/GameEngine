@@ -3,10 +3,10 @@
 #include "Math\Transform.h"
 #include "Math\Quaternion.h"
 
-/* static */ const Math::Real Rendering::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
+/* static */ const Math::Real Engine::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
-Rendering::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
-	GameComponent(),
+Engine::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
+	Rendering::GameComponent(),
 	m_movementSpeed(movementSpeed),
 	m_runSpeedFactor(runSpeedFactor),
 	m_rotationSpeed(rotationSpeed),
@@ -21,11 +21,11 @@ Rendering::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real run
 }
 
 
-Rendering::MoveComponent::~MoveComponent()
+Engine::MoveComponent::~MoveComponent()
 {
 }
 
-void Rendering::MoveComponent::Update(Math::Real deltaTime)
+void Engine::MoveComponent::Update(Math::Real deltaTime)
 {
 	Math::Transform& transform = GetTransform();
 	transform.SetRot(transform.GetRot() * Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
@@ -49,7 +49,7 @@ void Rendering::MoveComponent::Update(Math::Real deltaTime)
 	//m_currentStrafeSpeed = REAL_ZERO;
 }
 
-void Rendering::MoveComponent::KeyEvent(int key, int scancode, int action, int mods)
+void Engine::MoveComponent::KeyEvent(int key, int scancode, int action, int mods)
 {
 	DEBUG_LOG("key = %d, scancode = %d, action = %d, mods = %d", key, scancode, action, mods);
 	switch (key)
@@ -114,15 +114,15 @@ void Rendering::MoveComponent::KeyEvent(int key, int scancode, int action, int m
 	}
 }
 
-void Rendering::MoveComponent::MouseButtonEvent(int button, int action, int mods)
+void Engine::MoveComponent::MouseButtonEvent(int button, int action, int mods)
 {
 	// TODO: Primary attack action
 }
 
-void Rendering::MoveComponent::MousePosEvent(double xPos, double yPos)
+void Engine::MoveComponent::MousePosEvent(double xPos, double yPos)
 {
 }
 
-void Rendering::MoveComponent::ScrollEvent(double xOffset, double yOffset)
+void Engine::MoveComponent::ScrollEvent(double xOffset, double yOffset)
 {
 }

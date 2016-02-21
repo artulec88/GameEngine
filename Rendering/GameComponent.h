@@ -33,8 +33,8 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	void SetParent(GameNode* parentGameNode);
-	Math::Transform& GetTransform();
-	const Math::Transform& GetTransform() const;
+	RENDERING_API Math::Transform& GetTransform();
+	RENDERING_API const Math::Transform& GetTransform() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

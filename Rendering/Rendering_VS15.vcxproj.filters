@@ -37,9 +37,6 @@
     <ClCompile Include="IInputableMouse.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LookAtComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MappedValues.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -92,9 +89,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshGroupRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BuilderDirector.cpp">
@@ -159,9 +153,6 @@
     <ClInclude Include="IUpdateable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LookAtComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MappedValues.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -214,9 +205,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MeshGroupRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MoveComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BuilderDirector.h">

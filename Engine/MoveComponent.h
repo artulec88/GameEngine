@@ -1,19 +1,19 @@
-#ifndef __RENDERING_PLAYER_COMPONENT_H__
-#define __RENDERING_PLAYER_COMPONENT_H__
+#ifndef __ENGINE_PLAYER_COMPONENT_H__
+#define __ENGINE_PLAYER_COMPONENT_H__
 
-#include "Rendering.h"
-#include "GameComponent.h"
-#include "IUpdateable.h"
-#include "IInputableKeyboard.h"
-#include "IInputableMouse.h"
+#include "Engine.h"
+#include "Rendering\GameComponent.h"
+#include "Rendering\IUpdateable.h"
+#include "Rendering\IInputableKeyboard.h"
+#include "Rendering\IInputableMouse.h"
 #include "Math\Math.h"
 #include "Math\Angle.h"
 
-namespace Rendering
+namespace Engine
 {
 	class GameNode;
 
-	class MoveComponent : public GameComponent, public IUpdateable, public Input::IInputableKeyboard, public Input::IInputableMouse
+	class MoveComponent : public Rendering::GameComponent, public Rendering::IUpdateable, public Rendering::Input::IInputableKeyboard, public Rendering::Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	private:
@@ -57,6 +57,6 @@ namespace Rendering
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayerComponent */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_PLAYER_COMPONENT_H__ */
+#endif /* __ENGINE_PLAYER_COMPONENT_H__ */

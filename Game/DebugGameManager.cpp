@@ -5,7 +5,7 @@
 #include "Rendering\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
-#include "Rendering\LookAtComponent.h"
+#include "Engine\LookAtComponent.h"
 #include "Rendering\Color.h"
 #include "Rendering\Builder.h"
 #include "Rendering\BuilderDirector.h"

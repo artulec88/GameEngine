@@ -1,26 +1,20 @@
 #include "StdAfx.h"
 #include "LookAtComponent.h"
-#include "GameNode.h"
-#include "Renderer.h"
 #include "Utility\ILogger.h"
 #include "Math\Quaternion.h"
-#include "CoreEngine.h"
 
-using namespace Rendering;
-
-LookAtComponent::LookAtComponent(GameNode* gameNode) :
+Engine::LookAtComponent::LookAtComponent(Rendering::GameNode* gameNode) :
 	GameComponent(),
-	m_entityToLookAtTransform(gameNode->GetTransform()),
-	renderer(Core::CoreEngine::GetCoreEngine()->GetRenderer())
+	m_entityToLookAtTransform(gameNode->GetTransform())
 {
 }
 
 
-LookAtComponent::~LookAtComponent(void)
+Engine::LookAtComponent::~LookAtComponent(void)
 {
 }
 
-void LookAtComponent::Update(Math::Real delta)
+void Engine::LookAtComponent::Update(Math::Real delta)
 {
 	CHECK_CONDITION(renderer != NULL, Utility::Critical, "Cannot update lookup component due to renderer object being NULL.");
 	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
