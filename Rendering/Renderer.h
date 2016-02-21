@@ -111,7 +111,7 @@ public:
 	
 	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
-	inline const Lighting::BaseLight* GetCurrentLight() const
+	inline const Lighting::BaseLightComponent* GetCurrentLight() const
 	{
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
 		return m_currentLight;
@@ -322,7 +322,7 @@ private:
 	CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientSunNearHorizonColor;
 	CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientNighttimeColor;
 	Math::Vector3D m_ambientLight;
-	Lighting::BaseLight* m_currentLight;
+	Lighting::BaseLightComponent* m_currentLight;
 	Lighting::PointLight* m_pointLight; // current point light
 	Lighting::SpotLight* m_spotLight; // current spot light
 
@@ -371,7 +371,7 @@ private:
 	Texture* m_shadowMapTempTargets[SHADOW_MAPS_COUNT];
 
 	std::vector<Lighting::BaseLight*> m_lights;
-	std::vector<Lighting::BaseLight*> m_directionalAndSpotLights;
+	std::vector<Lighting::BaseLightComponent*> m_directionalAndSpotLights;
 	std::vector<Lighting::PointLight*> m_pointLights;
 	//std::vector<Lighting::SpotLight*> m_spotLights;
 

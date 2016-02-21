@@ -10,7 +10,7 @@ using namespace Utility;
 
 PointLight::PointLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
 		const Rendering::Attenuation& attenuation /* = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */) :
-	BaseLight(color, intensity),
+	BaseLightComponent(color, intensity),
 	m_attenuation(attenuation)
 {
 	CalculateRange();
@@ -53,7 +53,7 @@ bool PointLight::IsEnabled() const
 	{
 		return false;
 	}
-	return BaseLight::IsEnabled();
+	return BaseLightComponent::IsEnabled();
 }
 
 float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.

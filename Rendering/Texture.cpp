@@ -141,6 +141,7 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 			//glTexParameterf(textureTarget, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE); // TODO: Check if this parameter is ok for all texture targets. It is ok though for GL_TEXTURE_CUBE_MAP texture target. What about GL_TEXTURE_2D?
 		}
 
+		// If we want to use mipmapping we must submit the data to the texture before.
 		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
 
 		if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
@@ -150,10 +151,13 @@ void TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* i
 		{
 			glGenerateMipmap(m_textureTarget);
 			CheckErrorCode(__FUNCTION__, "Generating mipmaps");
-			GLfloat maxAnisotropy; // the maximum number of samples per pixel used for mipmapping filtering
-			glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
-			glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math::Clamp(0.0f, 8.0f, maxAnisotropy));
-			//glTexParameterf(m_textureTarget, GL_TEXTURE_LOD_BIAS, 0.4f /* the lower the value the higher the resolution->lower performance */); TODO: The value we give here is crucial for the performance. Reasearch that!
+			// Watch https://www.youtube.com/watch?v=psD5Eoabbng&index=19&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 8:30) to know more about anisotropic filtering.
+			// Basically, anisotropic filtering is for making the mipmapping work a little bit better when viewing the textured model from a very shallow angle.
+			//GLfloat maxAnisotropy; // the maximum number of samples per pixel used for mipmapping filtering
+			//glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAnisotropy);
+			//DEBUG_LOG("Maximum anisotropy supported = %.5f", maxAnisotropy);
+			//glTexParameterf(m_textureTarget, GL_TEXTURE_MAX_ANISOTROPY_EXT, Math::Clamp(0.0f, 8.0f, maxAnisotropy));
+			glTexParameterf(m_textureTarget, GL_TEXTURE_LOD_BIAS, -0.4f /* the lower the value the higher the resolution->lower performance */); //TODO: The value we give here is crucial for the performance. Reasearch that!
 		}
 		else
 		{

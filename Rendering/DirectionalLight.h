@@ -17,7 +17,7 @@ namespace Rendering { namespace Lighting
 /// <summary>
 /// The directional light representation.
 /// </summary>
-class DirectionalLight : public BaseLight
+class DirectionalLight : public BaseLightComponent
 #ifdef SIMULATE_SUN_BEHAVIOR
 	, public IUpdateable
 #endif
@@ -50,6 +50,8 @@ public:
 	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
 	void SetSunNearHorizonColor(const Color& sunNearHorizonColor) { m_sunNearHorizonColor = sunNearHorizonColor; }
 	void SetSunlightNighttimeColor(const Color& sunlightNighttimeColor) { m_sunlightNighttimeColor = sunlightNighttimeColor; }
+
+	std::string ToString() const;
 
 #ifdef SIMULATE_SUN_BEHAVIOR
 	virtual void Update(Math::Real delta);

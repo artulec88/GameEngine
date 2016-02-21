@@ -555,7 +555,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSceneWithPointLights(gameNode);
 
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())
@@ -733,7 +733,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())
@@ -778,7 +778,7 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())
@@ -824,11 +824,11 @@ void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
 	}
 	else if (m_ambientLightEnabled)
 	{
+		gameNode.Render(m_ambientShader, this); // Ambient rendering with disabled fog
 		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 		{
 			(*terrainNodeItr)->Render(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
 		}
-		gameNode.Render(m_ambientShader, this); // Ambient rendering with disabled fog
 	}
 	STOP_PROFILING;
 }
@@ -896,14 +896,14 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 		glEnable(GL_BLEND);
 	}
 	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
-	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 
+	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
 	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 	{
 		(*terrainNodeItr)->Render(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
 	}
-	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
 
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glDepthMask(GL_TRUE);

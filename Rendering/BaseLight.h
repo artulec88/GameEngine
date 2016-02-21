@@ -21,7 +21,7 @@ class Renderer;
 namespace Lighting
 {
 
-class BaseLight : public GameComponent
+class BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -56,7 +56,7 @@ public:
 	
 	bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
 
-	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) = 0;
 
 	void SetShader(Shader* shader);
 	void SetTerrainShader(Shader* terrainShader);
@@ -65,7 +65,7 @@ public:
 	void SetShadowInfo(ShadowInfo* shadowInfo);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	virtual void InitializeTweakBar(TwBar* lightsBar);
+	virtual void InitializeTweakBar(TwBar* lightsBar) = 0;
 #endif
 /* ==================== Non-static member functions end ==================== */
 
@@ -99,6 +99,38 @@ protected:
 	bool m_isShadowingEnabled;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BaseLight */
+
+	class BaseLightComponent : public BaseLight, public GameComponent
+	{
+	/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions end ==================== */
+
+	/* ==================== Constructors and destructors begin ==================== */
+	public:
+		/// <summary>The constructor.</summary>
+		/// <param name="color">The color of the light.</param>
+		/// <param name="intensity">The intensity of the light.</param>
+		/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLightComponent</code>.</remarks>
+		explicit BaseLightComponent(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO);
+
+		/// <summary>The destructor.</summary>
+		virtual ~BaseLightComponent(void);
+	private:
+		BaseLightComponent(const BaseLightComponent& baseLightComponent) {} // Copy constructor disabled
+		void operator=(BaseLightComponent& baseLightComponent) {} // Assignment operator disabled
+	/* ==================== Constructors and destructors end ==================== */
+
+	/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+#ifdef ANT_TWEAK_BAR_ENABLED
+		virtual void InitializeTweakBar(TwBar* lightsBar);
+#endif
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end class BaseLightComponent */
 
 } /* end namespace Lighting */
 

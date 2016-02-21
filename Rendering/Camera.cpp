@@ -433,6 +433,7 @@ void CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 	{
 		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
 	}
+	DELOCUST_LOG("Distance from entity = %.5f", m_distanceFromEntity);
 }
 
 void CameraFollowComponent::Update(Math::Real deltaTime)

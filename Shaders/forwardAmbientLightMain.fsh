@@ -22,5 +22,6 @@ void main()
 	SetFragOutput(0, mix(texture2D(diffuse, texCoords), vec4(R_ambientFogColor, 1.0), fogFactor) * vec4(R_ambientIntensity, 1));
 #else
 	SetFragOutput(0, texture2D(diffuse, texCoords) * vec4(R_ambientIntensity, 1));
+	//SetFragOutput(0, vec4(texCoords, 0.0, 1.0));
 #endif
 }

@@ -152,7 +152,7 @@ private:
 	/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the BaseLight object
 	/// and the direction can be easily retrieved from the transformation.
 	/// </summary>
-	void SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const;
+	void SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLightComponent& directionalLight) const;
 	/// <summary>
 	/// Sets the point light uniform.
 	/// </summary>

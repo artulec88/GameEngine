@@ -9,7 +9,7 @@
 namespace Rendering { namespace Lighting
 {
 
-class PointLight : public BaseLight, public IUpdateable
+class PointLight : public BaseLightComponent, public IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 public:

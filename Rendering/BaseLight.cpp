@@ -8,7 +8,6 @@
 using namespace Rendering::Lighting;
 
 BaseLight::BaseLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
-	Rendering::GameComponent(),
 	m_color(color),
 	m_intensity(intensity),
 	m_shader(NULL),
@@ -90,14 +89,25 @@ void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
 	}
 	m_shadowInfo = shadowInfo;
 }
+/* end class BaseLight ==================== */
 
-Rendering::ShadowCameraTransform BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+BaseLightComponent::BaseLightComponent(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
+	BaseLight(color, intensity),
+	GameComponent()
+{
+}
+
+BaseLightComponent::~BaseLightComponent(void)
+{
+}
+
+Rendering::ShadowCameraTransform BaseLightComponent::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
 	return ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void BaseLight::InitializeTweakBar(TwBar* lightsBar)
+void BaseLightComponent::InitializeTweakBar(TwBar* lightsBar)
 {
 	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");

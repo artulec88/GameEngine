@@ -16,7 +16,7 @@ DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL
 	Math::Real shadowSoftness /* = REAL_ONE */,
 	Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
 	Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */) :
-	BaseLight(color, intensity),
+	BaseLightComponent(color, intensity),
 	m_halfShadowArea(halfShadowArea)
 {
 	if ((shadowMapSizeAsPowerOf2 != 0) /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */)
@@ -47,7 +47,7 @@ bool DirectionalLight::IsEnabled() const
 	{
 		return false;
 	}
-	return BaseLight::IsEnabled();
+	return BaseLightComponent::IsEnabled();
 }
 
 Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
@@ -78,8 +78,14 @@ Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(con
 	return shadowCameraTransform;
 }
 
-#ifdef SIMULATE_SUN_BEHAVIOR
+std::string DirectionalLight::ToString() const
+{
+	std::stringstream ss("");
+	ss << "(Intensity=" << m_intensity << "; Color=" << m_color.ToString() << "; Direction=" << GetTransform().GetTransformedRot().GetForward().ToString() << ")";
+	return ss.str();
+}
 
+#ifdef SIMULATE_SUN_BEHAVIOR
 void DirectionalLight::Update(Math::Real delta)
 {
 	Core::CoreEngine* coreEngine = Core::CoreEngine::GetCoreEngine();
