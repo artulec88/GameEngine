@@ -9,7 +9,7 @@
 namespace Rendering { namespace Lighting
 {
 
-class PointLight : public BaseLightComponent, public IUpdateable
+class PointLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
@@ -20,8 +20,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
-		const Attenuation& attenuation = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE));
+	RENDERING_API PointLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Attenuation& attenuation);
 	RENDERING_API virtual ~PointLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -30,8 +29,6 @@ public:
 	Attenuation GetAttenuation() const { return m_attenuation; };
 	Math::Real GetRange() const { return m_range; };
 	virtual bool IsEnabled() const;
-
-	virtual void Update(Math::Real deltaTime);
 protected:
 	void CalculateRange();
 /* ==================== Non-static member functions end ==================== */

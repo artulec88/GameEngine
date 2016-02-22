@@ -3,14 +3,12 @@
 #include "Shader.h"
 #include "Utility\IConfig.h"
 
-using namespace Rendering::Lighting;
 using namespace Utility;
 
-/* static */ bool PointLight::pointLightsEnabled = true;
+/* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
 
-PointLight::PointLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */,
-		const Rendering::Attenuation& attenuation /* = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE) */) :
-	BaseLightComponent(color, intensity),
+Rendering::Lighting::PointLight::PointLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Rendering::Attenuation& attenuation) :
+	BaseLight(transform, color, intensity),
 	m_attenuation(attenuation)
 {
 	CalculateRange();
@@ -18,11 +16,11 @@ PointLight::PointLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_
 	// Beware of using new operator in the constructor (See e.g. http://herbsutter.com/2008/07/25/constructor-exceptions-in-c-c-and-java/)
 }
 
-PointLight::~PointLight(void)
+Rendering::Lighting::PointLight::~PointLight(void)
 {
 }
 
-void PointLight::CalculateRange()
+void Rendering::Lighting::PointLight::CalculateRange()
 {
 	Math::Real a = m_attenuation.GetExponent();
 	Math::Real b = m_attenuation.GetLinear();
@@ -47,24 +45,24 @@ void PointLight::CalculateRange()
 //	CHECK_CONDITION_EXIT(m_terrainShader != NULL, Utility::Critical, "Cannot initialize point light. Terrain shader is NULL.");
 //}
 
-bool PointLight::IsEnabled() const
+bool Rendering::Lighting::PointLight::IsEnabled() const
 {
 	if (!pointLightsEnabled)
 	{
 		return false;
 	}
-	return BaseLightComponent::IsEnabled();
+	return BaseLight::IsEnabled();
 }
 
 float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
 
-void PointLight::Update(Math::Real deltaTime)
-{
-	gTemp += deltaTime * 0.0001f; // TODO: Do not use hard-coded values! Ever!
-	if (gTemp > 20.0f * Math::PI) // TODO: Do not use hard-coded values! Ever!
-	{
-		gTemp = REAL_ZERO;
-	}
-	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 2000, cos(gTemp) / 4000, cos(gTemp) / 2000))); // TODO: Do not use hard-coded values! Ever!
-	//GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(REAL_ZERO, cos(gTemp) / 2000, REAL_ZERO)));
-}
+//void PointLight::Update(Math::Real deltaTime)
+//{
+//	gTemp += deltaTime * 0.0001f; // TODO: Do not use hard-coded values! Ever!
+//	if (gTemp > 20.0f * Math::PI) // TODO: Do not use hard-coded values! Ever!
+//	{
+//		gTemp = REAL_ZERO;
+//	}
+//	GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(sin(gTemp) / 2000, cos(gTemp) / 4000, cos(gTemp) / 2000))); // TODO: Do not use hard-coded values! Ever!
+//	//GetTransform().SetPos(GetTransform().GetPos() + (Math::Vector3D(REAL_ZERO, cos(gTemp) / 2000, REAL_ZERO)));
+//}

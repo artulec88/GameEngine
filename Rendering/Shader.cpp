@@ -638,7 +638,7 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 			{
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
-				const Lighting::BaseLightComponent* directionalLight = renderer->GetCurrentLight();
+				const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
 				CHECK_CONDITION_EXIT(directionalLight != NULL, Error, "Cannot update directional light uniform. Directional light instance is NULL.");
 				SetUniformDirectionalLight(uniformName, *directionalLight);
 			}
@@ -832,10 +832,10 @@ void Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& mat
 }
 
 /**
- * BaseLightComponent object is absolutely enough to get all the information necessary for the directional light.
+ * BaseLight object is absolutely enough to get all the information necessary for the directional light.
  * Color and intensity are directly stored in the BaseLight object and the direction can be easily retrieved from the transformation.
  */
-void Shader::SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLightComponent& directionalLight) const
+void Shader::SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const
 {
 	DELOCUST_LOG("Directional light:\n\tIntensity = %.4f\n\tColor = %s\n\tDirection = %s", directionalLight.GetIntensity(), directionalLight.GetColor().ToString().c_str(), directionalLight.GetTransform().GetTransformedRot().GetForward().ToString().c_str());
 	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());

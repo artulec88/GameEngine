@@ -534,7 +534,7 @@ void Renderer::Render(const GameNode& gameNode)
 
 	RenderSceneWithPointLights(gameNode);
 
-	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())
@@ -712,7 +712,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())
@@ -757,7 +757,7 @@ void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
 	RenderSceneWithAmbientLight(gameNode);
 
 	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLightComponent*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	{
 		m_currentLight = (*lightItr);
 		if (!m_currentLight->IsEnabled())

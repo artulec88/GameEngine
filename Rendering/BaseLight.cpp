@@ -5,9 +5,8 @@
 #include "Shader.h"
 #include "Utility\ILogger.h"
 
-using namespace Rendering::Lighting;
-
-BaseLight::BaseLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
+Rendering::Lighting::BaseLight::BaseLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity) :
+	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
 	m_shader(NULL),
@@ -20,7 +19,7 @@ BaseLight::BaseLight(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZE
 {
 }
 
-BaseLight::~BaseLight(void)
+Rendering::Lighting::BaseLight::~BaseLight(void)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	// TODO: Think how to deallocate resources.
@@ -31,7 +30,7 @@ BaseLight::~BaseLight(void)
 	SAFE_DELETE(m_noShadowTerrainShader);
 }
 
-void BaseLight::SetShader(Rendering::Shader* shader)
+void Rendering::Lighting::BaseLight::SetShader(Rendering::Shader* shader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(this->shader);
@@ -43,7 +42,7 @@ void BaseLight::SetShader(Rendering::Shader* shader)
 	m_shader = shader;
 }
 
-void BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
+void Rendering::Lighting::BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(m_terrainShader);
@@ -55,7 +54,7 @@ void BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
 	m_terrainShader = terrainShader;
 }
 
-void BaseLight::SetNoShadowShader(Rendering::Shader* noShadowShader)
+void Rendering::Lighting::BaseLight::SetNoShadowShader(Rendering::Shader* noShadowShader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(this->shader);
@@ -67,7 +66,7 @@ void BaseLight::SetNoShadowShader(Rendering::Shader* noShadowShader)
 	m_noShadowShader = noShadowShader;
 }
 
-void BaseLight::SetNoShadowTerrainShader(Rendering::Shader* noShadowTerrainShader)
+void Rendering::Lighting::BaseLight::SetNoShadowTerrainShader(Rendering::Shader* noShadowTerrainShader)
 {
 	// TODO: delete shader if it's not referenced by any other object
 	//SAFE_DELETE(m_terrainShader);
@@ -79,7 +78,7 @@ void BaseLight::SetNoShadowTerrainShader(Rendering::Shader* noShadowTerrainShade
 	m_noShadowTerrainShader = noShadowTerrainShader;
 }
 
-void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
+void Rendering::Lighting::BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
 {
 	//SAFE_DELETE(this->shadowInfo);
 	if (m_shadowInfo != NULL)
@@ -89,25 +88,14 @@ void BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
 	}
 	m_shadowInfo = shadowInfo;
 }
-/* end class BaseLight ==================== */
 
-BaseLightComponent::BaseLightComponent(const Rendering::Color& color /* = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Math::Real intensity /* = REAL_ZERO */) :
-	BaseLight(color, intensity),
-	GameComponent()
+Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
-}
-
-BaseLightComponent::~BaseLightComponent(void)
-{
-}
-
-Rendering::ShadowCameraTransform BaseLightComponent::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
-{
-	return ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
+	return Rendering::ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void BaseLightComponent::InitializeTweakBar(TwBar* lightsBar)
+void Rendering::Lighting::BaseLight::InitializeTweakBar(TwBar* lightsBar)
 {
 	TwAddVarRW(lightsBar, "lightPos", vector3DType, &GetTransform().GetPos(), " label='Pos' group='Base lights' ");
 	TwAddVarRW(lightsBar, "lightRot", TW_TYPE_QUAT4F, &GetTransform().GetRot(), " label='Rot' group='Base lights' ");
@@ -117,3 +105,5 @@ void BaseLightComponent::InitializeTweakBar(TwBar* lightsBar)
 	TwAddVarRW(lightsBar, "lightEnabled", TW_TYPE_BOOLCPP, &m_isEnabled, " label='Enabled' group='Base lights' ");
 }
 #endif
+/* ==================== end class BaseLight ==================== */
+

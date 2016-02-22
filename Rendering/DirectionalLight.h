@@ -5,22 +5,13 @@
 #include "Math\Transform.h"
 #include "Math\Angle.h"
 
-#define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
-
-#ifdef SIMULATE_SUN_BEHAVIOR
-#include "IUpdateable.h"
-#endif
-
 namespace Rendering { namespace Lighting
 {
 
 /// <summary>
 /// The directional light representation.
 /// </summary>
-class DirectionalLight : public BaseLightComponent
-#ifdef SIMULATE_SUN_BEHAVIOR
-	, public IUpdateable
-#endif
+class DirectionalLight : public BaseLight
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
@@ -32,10 +23,8 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API DirectionalLight(const Color& color = Color(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE), Math::Real intensity = REAL_ONE,
-		Math::Real halfShadowArea = REAL_ONE, int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
-		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-		Math::Real minVariance = static_cast<Math::Real>(0.00002f));
+	RENDERING_API DirectionalLight(Math::Transform& transform, const Color& color, Math::Real intensity, Math::Real halfShadowArea,
+		int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 	RENDERING_API virtual ~DirectionalLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -45,7 +34,10 @@ public:
 
 	//virtual void InitializeShaders();
 	virtual bool IsEnabled() const;
+	
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+	virtual Math::Transform& GetTransform() { return m_transform; }
+	virtual const Math::Transform& GetTransform() const { return m_transform; }
 
 	void SetMaxIntensity(Math::Real maxIntensity) { m_maxIntensity = maxIntensity; }
 	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
@@ -53,10 +45,6 @@ public:
 	void SetSunlightNighttimeColor(const Color& sunlightNighttimeColor) { m_sunlightNighttimeColor = sunlightNighttimeColor; }
 
 	std::string ToString() const;
-
-#ifdef SIMULATE_SUN_BEHAVIOR
-	virtual void Update(Math::Real delta);
-#endif
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

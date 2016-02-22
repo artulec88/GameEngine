@@ -2,6 +2,9 @@
 #include "Builder.h"
 #include "CoreEngine.h"
 #include "CameraComponent.h"
+#include "DirectionalLightComponent.h"
+#include "PointLightComponent.h"
+#include "SpotLightComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
 
@@ -120,7 +123,7 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("directionalLightLightBleedingReductionAmount", defaultDirectionalLightLightBleedingReductionAmount);
 	Math::Real minVariance = GET_CONFIG_VALUE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
 
-	Rendering::Lighting::DirectionalLight* directionalLight = new Rendering::Lighting::DirectionalLight(color, intensity, halfShadowArea, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+	Rendering::Lighting::DirectionalLight* directionalLight = new Rendering::Lighting::DirectionalLight(m_gameNode->GetTransform(), color, intensity, halfShadowArea, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 
 	// Setting shaders
 	directionalLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
@@ -135,7 +138,7 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 	directionalLight->SetSunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
 	directionalLight->SetSunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO)));
 
-	m_gameNode->AddComponent(directionalLight);
+	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight));
 
 	Engine::CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(directionalLight);
 }
@@ -215,7 +218,7 @@ void Engine::PointLightBuilder::SetupLightParams()
 	Math::Real exponent = GET_CONFIG_VALUE("pointLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
 	Rendering::Attenuation attenuation(constant, linear, exponent);
 
-	Rendering::Lighting::PointLight* pointLight = new Rendering::Lighting::PointLight(color, intensity, attenuation);
+	Rendering::Lighting::PointLight* pointLight = new Rendering::Lighting::PointLight(m_gameNode->GetTransform(), color, intensity, attenuation);
 
 	// Setting shaders
 	pointLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
@@ -226,7 +229,7 @@ void Engine::PointLightBuilder::SetupLightParams()
 	// Setting shadow info
 	// Setting additional point light information
 
-	m_gameNode->AddComponent(pointLight);
+	m_gameNode->AddComponent(new PointLightComponent(pointLight));
 
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(pointLight);
 }
@@ -306,7 +309,8 @@ void Engine::SpotLightBuilder::SetupLightParams()
 	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("spotLightLightBleedingReductionAmount_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT);
 	Math::Real minVariance = GET_CONFIG_VALUE("spotLightMinVariance_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
 
-	Rendering::Lighting::SpotLight* spotLight = new Rendering::Lighting::SpotLight(color, intensity, attenuation, viewAngle, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+	Rendering::Lighting::SpotLight* spotLight = new Rendering::Lighting::SpotLight(m_gameNode->GetTransform(), color, intensity, attenuation, viewAngle,
+		shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 
 	// Setting shaders
 	spotLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
@@ -314,7 +318,7 @@ void Engine::SpotLightBuilder::SetupLightParams()
 	spotLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowShader", "forward-spot-no-shadows")));
 	spotLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows")));
 
-	m_gameNode->AddComponent(spotLight);
+	m_gameNode->AddComponent(new SpotLightComponent(spotLight));
 
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(spotLight);
 }

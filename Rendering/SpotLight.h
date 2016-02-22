@@ -5,6 +5,7 @@
 
 #include "Math\Vector.h"
 #include "Math\Angle.h"
+#include "Math\Transform.h"
 
 namespace Rendering { namespace Lighting
 {
@@ -20,11 +21,8 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API SpotLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
-		const Attenuation& attenuation = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE), const Math::Angle& viewAngle = Math::Angle(170.0f),
-		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
-		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );
+	RENDERING_API SpotLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Attenuation& attenuation,
+		const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 	RENDERING_API virtual ~SpotLight(void);
 /* ==================== Constructors and destructors end ==================== */
 

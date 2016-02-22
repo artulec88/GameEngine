@@ -5,18 +5,11 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-using namespace Rendering::Lighting;
+/* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
 
-/* static */ bool DirectionalLight::directionalLightsEnabled = true;
-
-DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE) */,
-	Math::Real intensity /* = REAL_ONE */,
-	Math::Real halfShadowArea /* = REAL_ONE */,
-	int shadowMapSizeAsPowerOf2 /* = 0 */,
-	Math::Real shadowSoftness /* = REAL_ONE */,
-	Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
-	Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */) :
-	BaseLightComponent(color, intensity),
+Rendering::Lighting::DirectionalLight::DirectionalLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, Math::Real halfShadowArea,
+	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance) :
+	BaseLight(transform, color, intensity),
 	m_halfShadowArea(halfShadowArea)
 {
 	if ((shadowMapSizeAsPowerOf2 != 0) /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */)
@@ -28,7 +21,7 @@ DirectionalLight::DirectionalLight(const Rendering::Color& color /* = Color(REAL
 }
 
 
-DirectionalLight::~DirectionalLight(void)
+Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
 {
 }
 
@@ -41,19 +34,19 @@ DirectionalLight::~DirectionalLight(void)
 //	CHECK_CONDITION_EXIT(m_terrainShader != NULL, Utility::Critical, "Cannot initialize directional light. Terrain shader is NULL.");
 //}
 
-bool DirectionalLight::IsEnabled() const
+bool Rendering::Lighting::DirectionalLight::IsEnabled() const
 {
 	if (!directionalLightsEnabled)
 	{
 		return false;
 	}
-	return BaseLightComponent::IsEnabled();
+	return BaseLight::IsEnabled();
 }
 
-Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
 	// This function in directional light allows the directional light to be casting shadows only in the area around the camera current position
-	ShadowCameraTransform shadowCameraTransform(cameraPos + cameraRot.GetForward() * m_halfShadowArea, GetTransform().GetTransformedRot());
+	Rendering::ShadowCameraTransform shadowCameraTransform(cameraPos + cameraRot.GetForward() * m_halfShadowArea, GetTransform().GetTransformedRot());
 
 	/**
 	 * The reoccurring shimmering is caused by the moving shadow camera by the value less than
@@ -78,54 +71,9 @@ Rendering::ShadowCameraTransform DirectionalLight::CalcShadowCameraTransform(con
 	return shadowCameraTransform;
 }
 
-std::string DirectionalLight::ToString() const
+std::string Rendering::Lighting::DirectionalLight::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(Intensity=" << m_intensity << "; Color=" << m_color.ToString() << "; Direction=" << GetTransform().GetTransformedRot().GetForward().ToString() << ")";
 	return ss.str();
 }
-
-#ifdef SIMULATE_SUN_BEHAVIOR
-void DirectionalLight::Update(Math::Real delta)
-{
-	DELOCUST_LOG("Directional light update with delta time = %.5f", delta);
-
-	//Core::CoreEngine* coreEngine = Core::CoreEngine::GetCoreEngine();
-	//Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
-	//Math::Angle sunElevation = coreEngine->GetSunElevation();
-	//Math::Angle sunAzimuth = coreEngine->GetSunAzimuth();
-	//Math::Real daytimeTransitionFactor;
-	//Rendering::GameTime::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
-
-	//m_isEnabled = (daytime != Rendering::GameTime::NIGHT);
-
-	//switch (daytime)
-	//{
-	//case GameTime::NIGHT:
-	//	m_color = m_sunlightNighttimeColor;
-	//	break;
-	//case GameTime::BEFORE_DAWN:
-	//	m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-	//	m_intensity = daytimeTransitionFactor * m_maxIntensity;
-	//	break;
-	//case GameTime::SUNRISE:
-	//	m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-	//	m_intensity = m_maxIntensity;
-	//	break;
-	//case GameTime::DAY:
-	//	m_color = m_sunlightDaytimeColor;
-	//	break;
-	//case GameTime::SUNSET:
-	//	m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-	//	m_intensity = m_maxIntensity;
-	//	break;
-	//case GameTime::AFTER_DUSK:
-	//	m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-	//	m_intensity = daytimeTransitionFactor * m_maxIntensity;
-	//	break;
-	//}
-	//Math::Matrix4D rotMatrix(-sunElevation, -sunAzimuth);
-	//GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
-}
-
-#endif
