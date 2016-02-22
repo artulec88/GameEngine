@@ -15,10 +15,14 @@ class IInputableKeyboard // : public virtual IInputable
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Creates the keyboard inputable object. </summary>
-	RENDERING_API IInputableKeyboard();
+	RENDERING_API IInputableKeyboard()
+	{
+	}
 
 	/// <summary> Destroys the keyboard inputable object. </summary>
-	RENDERING_API virtual ~IInputableKeyboard(void);
+	RENDERING_API virtual ~IInputableKeyboard(void)
+	{
+	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

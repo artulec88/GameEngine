@@ -14,10 +14,14 @@ class IInputableMouse // : public virtual IInputable
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Creates the mouse inputable object. </summary>
-	RENDERING_API IInputableMouse();
+	RENDERING_API IInputableMouse()
+	{
+	}
 
 	/// <summary> Destroys the mouse inputable object. </summary>
-	RENDERING_API virtual ~IInputableMouse(void);
+	RENDERING_API virtual ~IInputableMouse(void)
+	{
+	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

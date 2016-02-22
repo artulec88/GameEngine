@@ -228,8 +228,6 @@
     </ClCompile>
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameNode.cpp" />
-    <ClCompile Include="IInputableKeyboard.cpp" />
-    <ClCompile Include="IInputableMouse.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />

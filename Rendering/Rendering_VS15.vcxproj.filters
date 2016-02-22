@@ -25,12 +25,6 @@
     <ClCompile Include="GameNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IInputableKeyboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="IInputableMouse.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MappedValues.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
