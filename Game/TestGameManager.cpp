@@ -2,14 +2,14 @@
 #include "MenuGameState.h"
 //#include "PlayGameState.h"
 
-#include "Rendering\CoreEngine.h"
+#include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
 #include "Engine\MoveComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Rendering\Color.h"
-#include "Rendering\Builder.h"
-#include "Rendering\BuilderDirector.h"
+#include "Engine\Builder.h"
+#include "Engine\BuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -260,8 +260,8 @@ void TestGameManager::AddDirectionalLight()
 	}
 	NOTICE_LOG("Directional lights enabled");
 
-	Rendering::DirectionalLightBuilder directionalLightBuilder;
-	Rendering::BuilderDirector lightBuilderDirector(directionalLightBuilder);
+	Engine::DirectionalLightBuilder directionalLightBuilder;
+	Engine::BuilderDirector lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
 	GameNode* directionalLightNode = directionalLightBuilder.GetGameNode();
 	AddToSceneRoot(directionalLightNode);
@@ -274,8 +274,8 @@ void TestGameManager::AddPointLights()
 		return;
 	}
 
-	Rendering::PointLightBuilder pointLightBuilder;
-	Rendering::BuilderDirector lightBuilderDirector(pointLightBuilder);
+	Engine::PointLightBuilder pointLightBuilder;
+	Engine::BuilderDirector lightBuilderDirector(pointLightBuilder);
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		pointLightBuilder.SetLightIndex(i);
@@ -298,8 +298,8 @@ void TestGameManager::AddSpotLights()
 		return;
 	}
 
-	Rendering::SpotLightBuilder spotLightBuilder;
-	Rendering::BuilderDirector lightBuilderDirector(spotLightBuilder);
+	Engine::SpotLightBuilder spotLightBuilder;
+	Engine::BuilderDirector lightBuilderDirector(spotLightBuilder);
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		spotLightBuilder.SetLightIndex(i);
@@ -316,8 +316,8 @@ void TestGameManager::AddCameras(GameNode* entityToFollow)
 	
 	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
-	Rendering::CameraBuilder cameraBuilder;
-	Rendering::BuilderDirector cameraBuilderDirector(cameraBuilder);
+	Engine::CameraBuilder cameraBuilder;
+	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
 		cameraBuilder.SetCameraIndex(i);

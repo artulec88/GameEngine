@@ -2,7 +2,7 @@
 
 
 
-Game::QuitCommand::QuitCommand(Core::GameManager* gameManager) :
+Game::QuitCommand::QuitCommand(Engine::GameManager* gameManager) :
 	m_gameManager(*gameManager)
 {
 }

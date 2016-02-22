@@ -146,9 +146,9 @@ class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyb
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
-	CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
-	virtual ~CameraMoveComponent(void);
+	RENDERING_API CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
+	RENDERING_API CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
+	RENDERING_API virtual ~CameraMoveComponent(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

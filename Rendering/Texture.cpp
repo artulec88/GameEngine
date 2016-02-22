@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Texture.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "stb_image.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
@@ -268,7 +268,8 @@ Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTU
 		//DELOCUST_LOG("Extension is = \"%s\"", extension.c_str());
 
 		int x, y, bytesPerPixel;
-		unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
+		//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
+		unsigned char* data = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 
 		CHECK_CONDITION_EXIT(data != NULL, Utility::Error, "Unable to load texture from the file \"%s\"", name.c_str());
 		m_textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
@@ -295,7 +296,8 @@ Texture::Texture(const std::string& posXFileName, const std::string& negXFileNam
 	const std::string filenames [NUMBER_OF_CUBE_MAP_FACES] = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		cubeMapData[i] = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		//cubeMapData[i] = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		cubeMapData[i] = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
 		if (cubeMapData[i] == NULL)
 		{
 			std::string name = filenames[i];

@@ -18,20 +18,9 @@
 #define STOP_PROFILING
 #endif
 
-namespace ENGINE
+namespace Engine
 {
-	namespace GameTime
-	{
-		enum Daytime
-		{
-			NIGHT = 0,
-			BEFORE_DAWN,
-			SUNRISE,
-			DAY,
-			SUNSET,
-			AFTER_DUSK
-		};
-	}
+
 } /* end namespace Engine */
 
 #endif /* __ENGINE_ENGINE_H__ */

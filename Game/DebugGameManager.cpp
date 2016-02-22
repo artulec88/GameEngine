@@ -2,13 +2,13 @@
 #include "MenuGameState.h"
 //#include "PlayGameState.h"
 
-#include "Rendering\CoreEngine.h"
+#include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Rendering\MeshRenderer.h"
 #include "Engine\LookAtComponent.h"
 #include "Rendering\Color.h"
-#include "Rendering\Builder.h"
-#include "Rendering\BuilderDirector.h"
+#include "Engine\Builder.h"
+#include "Engine\BuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -89,8 +89,8 @@ void DebugGameManager::AddCameras(Rendering::GameNode* entityToFollow)
 
 	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
-	Rendering::CameraBuilder cameraBuilder;
-	Rendering::BuilderDirector cameraBuilderDirector(cameraBuilder);
+	Engine::CameraBuilder cameraBuilder;
+	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
 		cameraBuilder.SetCameraIndex(i);

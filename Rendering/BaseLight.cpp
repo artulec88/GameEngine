@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Utility\ILogger.h"

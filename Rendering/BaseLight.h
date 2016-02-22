@@ -32,10 +32,10 @@ public:
 	/// <param name="color">The color of the light.</param>
 	/// <param name="intensity">The intensity of the light.</param>
 	/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLight</code>.</remarks>
-	explicit BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO);
+	RENDERING_API  BaseLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO);
 	
 	/// <summary>The destructor.</summary>
-	virtual ~BaseLight(void);
+	RENDERING_API virtual ~BaseLight(void);
 private:
 	BaseLight(const BaseLight& baseLight) {} // Copy constructor disabled
 	void operator=(BaseLight& baseLight) {} // Assignment operator disabled
@@ -58,10 +58,10 @@ public:
 
 	virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) = 0;
 
-	void SetShader(Shader* shader);
-	void SetTerrainShader(Shader* terrainShader);
-	void SetNoShadowShader(Shader* noShadowShader);
-	void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
+	RENDERING_API void SetShader(Shader* shader);
+	RENDERING_API void SetTerrainShader(Shader* terrainShader);
+	RENDERING_API void SetNoShadowShader(Shader* noShadowShader);
+	RENDERING_API void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
 	void SetShadowInfo(ShadowInfo* shadowInfo);
 
 #ifdef ANT_TWEAK_BAR_ENABLED

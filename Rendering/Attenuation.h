@@ -19,14 +19,14 @@ public:
 	/// <param name="constant"> Constant attribute of attenuation </param>
 	/// <param name="linear"> Linear attribute of attenuation </param>
 	/// <param name="exponent"> Exponent attribute of attenuation </param>
-	Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) :
+	RENDERING_API Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) :
 		m_constant(constant),
 		m_linear(linear),
 		m_exponent(exponent)
 	{
 	}
 	/// <summary> The destructor </summary>
-	~Attenuation(void)
+	RENDERING_API ~Attenuation(void)
 	{
 	}
 /* ==================== Constructors and destructors end ==================== */

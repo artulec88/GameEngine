@@ -1,12 +1,14 @@
-#ifndef __CORE_CORE_ENGINE_H__
-#define __CORE_CORE_ENGINE_H__
+#ifndef __ENGINE_CORE_ENGINE_H__
+#define __ENGINE_CORE_ENGINE_H__
 
-#include "Rendering\Rendering.h"
+#include "Engine.h"
+#include "GameManager.h"
+#include "GameStateManager.h"
+#include "QuitGameCommand.h"
+
+
 #include "Rendering\Renderer.h"
 #include "Rendering\TextRenderer.h"
-#include "Rendering\GameManager.h"
-#include "Rendering\GameStateManager.h"
-//#include "Rendering\QuitGameCommand.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -38,16 +40,16 @@
 
 //#endif
 
-namespace Core
+namespace Engine
 {
 
 class CoreEngine
 {
 /* ==================== Static variables and functions begin ==================== */
 protected:
-	RENDERING_API static CoreEngine* s_coreEngine;
+	ENGINE_API static CoreEngine* s_coreEngine;
 public:
-	RENDERING_API static CoreEngine* GetCoreEngine();
+	ENGINE_API static CoreEngine* GetCoreEngine();
 	static void ErrorCallback(int errorCode, const char* description);
 	static void WindowCloseEventCallback(GLFWwindow* window);
 	static void WindowResizeCallback(GLFWwindow* window, int width, int height);
@@ -60,10 +62,10 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API CoreEngine(int width, int height, const char* title, int maxFrameRate, Core::GameManager& game,
+	ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
 		const std::string& texturesDirectory = "..\\Textures\\");
-	RENDERING_API ~CoreEngine(void);
+	ENGINE_API ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& coreEngine);
 	void operator=(const CoreEngine& coreEngine);
@@ -71,8 +73,18 @@ private: // disable copy constructor
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API void Start();
-	RENDERING_API void Stop();
+	ENGINE_API void Start();
+	ENGINE_API void Stop();
+	inline void RequestWindowClose() const
+	{
+		glfwSetWindowShouldClose(m_window, GL_TRUE);
+	}
+	void InitGlew();
+	GLFWwindow* GetThreadWindow() const
+	{
+		return m_threadWindow;
+	}
+
 	size_t GetCurrentCameraIndex() const;
 	size_t NextCamera() const;
 	size_t PrevCamera() const;
@@ -103,7 +115,7 @@ public:
 	int GetWindowHeight() const { return m_windowHeight; };
 	
 	void SetCursorPos(Math::Real xPos, Math::Real yPos);
-	RENDERING_API void CentralizeCursor();
+	ENGINE_API void CentralizeCursor();
 
 	Math::Real GetTime() const;
 	void ClearScreen() const;
@@ -111,13 +123,17 @@ public:
 	Math::Angle GetSunElevation() const { return m_sunElevation; }
 	Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
 	Math::Real GetClockSpeed() const { return m_clockSpeed; }
-	Rendering::GameTime::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
+	ENGINE_API Utility::Timing::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
 	std::string GetShadersDirectory() const { return m_shadersDirectory; }
 	std::string GetModelsDirectory() const { return m_modelsDirectory; }
 	std::string GetTexturesDirectory() const { return m_texturesDirectory; }
+
+	void AddWaterNode(Rendering::GameNode* waterNode);
+	void AddTerrainNode(Rendering::GameNode* terrainNode);
+	void AddBillboardNode(Rendering::GameNode* billboardNode);
 private:
 	void CreateRenderer(int width, int height, const std::string& title);
 	void Run();
@@ -133,6 +149,9 @@ public:
 	void StartSamplingSpf() const { m_isSamplingSpf = true; }
 	void StopSamplingSpf() const { m_isSamplingSpf = false; }
 private:
+	void InitGraphics(int width, int height, const std::string& title);
+	void InitGlfw(int width, int height, const std::string& title);
+	void SetCallbacks();
 	void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostTimeSamples& minMaxTime, double& timeSum) const
 	{
 		if (timer.IsRunning())
@@ -153,16 +172,18 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	GLFWwindow* m_window;
+	GLFWwindow* m_threadWindow;
 	bool m_isRunning;
 	int m_windowWidth;
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
-	Core::GameManager& m_game;
+	GameManager& m_game;
 	Rendering::Renderer* m_renderer;
 	Rendering::TextRenderer* m_fpsTextRenderer;
 
-	//Engine::QuitGameCommand m_quitGameCommand;
+	QuitGameCommand m_quitGameCommand;
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;
@@ -173,7 +194,7 @@ private:
 	const int DAYS_PER_YEAR; // the number of days during one year
 	int m_dayNumber;
 	Math::Real m_timeOfDay;
-	Rendering::GameTime::Daytime m_daytime;
+	Utility::Timing::Daytime m_daytime;
 	Math::Angle m_sunElevation;
 	Math::Angle m_sunAzimuth;
 
@@ -232,6 +253,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameEngine */
 
-} /* end namespace CoreEngine */
+} /* end namespace Engine */
 
-#endif /* __CORE_CORE_ENGINE_H__ */
+#endif /* __ENGINE_CORE_ENGINE_H__ */

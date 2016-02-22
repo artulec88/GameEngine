@@ -1,8 +1,8 @@
 #include "StartGameCommand.h"
-#include "Rendering\GameStateManager.h"
+#include "Engine\GameStateManager.h"
 #include "LoadGameState.h"
 
-Game::StartGameCommand::StartGameCommand(Core::GameManager& gameManager) :
+Game::StartGameCommand::StartGameCommand(Engine::GameManager& gameManager) :
 	m_gameManager(gameManager)
 {
 }
@@ -15,5 +15,5 @@ Game::StartGameCommand::~StartGameCommand()
 void Game::StartGameCommand::Execute() const
 {
 	CRITICAL_LOG("Start game command started");
-	m_gameManager.SetTransition(new Rendering::GameStateTransitioning::GameStateTransition(new LoadGameState(), Rendering::GameStateTransitioning::SWITCH, Rendering::GameStateModality::EXCLUSIVE));
+	m_gameManager.SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new LoadGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 }

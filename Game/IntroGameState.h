@@ -2,7 +2,7 @@
 #define __INTRO_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\GameState.h"
+#include "Engine\GameState.h"
 #include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IRenderable.h"
 //#include "Rendering\GameCommand.h"
@@ -16,7 +16,7 @@
 namespace Game
 {
 
-class IntroGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
+class IntroGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

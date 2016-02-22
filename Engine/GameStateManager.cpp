@@ -2,20 +2,19 @@
 #include "GameStateManager.h"
 #include "Utility\ILogger.h"
 
-using namespace Rendering;
 
-GameStateManager::GameStateManager() :
+Engine::GameStateManager::GameStateManager() :
 	m_gameStateTransition(NULL)
 {
 }
 
 
-GameStateManager::~GameStateManager(void)
+Engine::GameStateManager::~GameStateManager(void)
 {
 	SAFE_DELETE(m_gameStateTransition);
 }
 
-bool GameStateManager::IsInGameTimeCalculationEnabled() const
+bool Engine::GameStateManager::IsInGameTimeCalculationEnabled() const
 {
 	GameState* currentState = Peek();
 	if (currentState == NULL)
@@ -26,7 +25,7 @@ bool GameStateManager::IsInGameTimeCalculationEnabled() const
 	return currentState->IsInGameTimeCalculationEnabled();
 }
 
-void GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
+void Engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
 	if (gameStateTransition == NULL)
 	{
@@ -39,7 +38,7 @@ void GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition
 	m_gameStateTransition = gameStateTransition;
 }
 
-void GameStateManager::PerformStateTransition()
+void Engine::GameStateManager::PerformStateTransition()
 {
 	if (m_gameStateTransition == NULL) // No pending state transition
 	{
@@ -63,7 +62,7 @@ void GameStateManager::PerformStateTransition()
 	m_gameStateTransition = NULL;
 }
 
-GameState* GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
+Engine::GameState* Engine::GameStateManager::Switch(GameState* gameState, GameStateModality::ModalityType modality /* = GameStateModality::EXCLUSIVE */)
 {
 	GameState* currentState = Peek();
 	if (currentState != NULL)
@@ -75,12 +74,12 @@ GameState* GameStateManager::Switch(GameState* gameState, GameStateModality::Mod
 	return currentState;
 }
 
-DefaultGameStateManager::DefaultGameStateManager() :
+Engine::DefaultGameStateManager::DefaultGameStateManager() :
 	GameStateManager()
 {
 }
 
-DefaultGameStateManager::~DefaultGameStateManager()
+Engine::DefaultGameStateManager::~DefaultGameStateManager()
 {
 	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
 	{
@@ -93,7 +92,7 @@ DefaultGameStateManager::~DefaultGameStateManager()
 	//std::vector<IUpdateable*> m_exposedUpdateables;
 }
 
-void DefaultGameStateManager::ClearAllIntefaceLists()
+void Engine::DefaultGameStateManager::ClearAllIntefaceLists()
 {
 	m_exposedInputablesKeyboard.clear();
 	m_exposedInputablesMouse.clear();
@@ -101,12 +100,12 @@ void DefaultGameStateManager::ClearAllIntefaceLists()
 	m_exposedUpdateables.clear();
 }
 
-GameState* DefaultGameStateManager::Peek() const
+Engine::GameState* Engine::DefaultGameStateManager::Peek() const
 {
 	return (m_activeStates.empty()) ? NULL : m_activeStates.back().first;
 }
 
-void DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
+void Engine::DefaultGameStateManager::Push(GameState* gameState, GameStateModality::ModalityType modalityType /* = GameStateModality::EXCLUSIVE */)
 {
 	m_activeStates.push_back(std::make_pair(gameState, modalityType));
 	
@@ -120,7 +119,7 @@ void DefaultGameStateManager::Push(GameState* gameState, GameStateModality::Moda
 	gameState->Entered();
 }
 
-GameState* DefaultGameStateManager::Pop()
+Engine::GameState* Engine::DefaultGameStateManager::Pop()
 {
 	if (m_activeStates.empty())
 	{
@@ -145,7 +144,7 @@ GameState* DefaultGameStateManager::Pop()
 	return poppedPair.first;
 }
 
-void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
+void Engine::DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
 	//ERROR_LOG("Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 	if (m_exposedInputablesKeyboard.empty())
@@ -154,14 +153,14 @@ void DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mo
 	}
 	DEBUG_LOG("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
 		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
-	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
+	for (std::vector<Rendering::Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
 	//ERROR_LOG("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
-void DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
+void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
@@ -169,13 +168,13 @@ void DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
 	}
 	DEBUG_LOG("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
 		m_exposedInputablesMouse.size(), xOffset, yOffset);
-	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->ScrollEvent(xOffset, yOffset);
 	}
 }
 
-void DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
+void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
@@ -183,13 +182,13 @@ void DefaultGameStateManager::MouseButtonEvent(int button, int action, int mods)
 		return;
 	}
 	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
-	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MouseButtonEvent(button, action, mods);
 	}
 }
 
-void DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
+void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
@@ -197,13 +196,13 @@ void DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 		return;
 	}
 	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
-	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MousePosEvent(xPos, yPos);
 	}
 }
 
-void DefaultGameStateManager::Update(Math::Real deltaTime)
+void Engine::DefaultGameStateManager::Update(Math::Real deltaTime)
 {
 	for (std::vector<IUpdateable*>::iterator gameStateItr = m_exposedUpdateables.begin(); gameStateItr != m_exposedUpdateables.end(); ++gameStateItr)
 	{
@@ -211,7 +210,7 @@ void DefaultGameStateManager::Update(Math::Real deltaTime)
 	}
 }
 
-void DefaultGameStateManager::Render(Shader* shader, Renderer* renderer) const
+void Engine::DefaultGameStateManager::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
 	{
@@ -219,16 +218,16 @@ void DefaultGameStateManager::Render(Shader* shader, Renderer* renderer) const
 	}
 }
 
-void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
+void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG("Adding to interfaces started");
-	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+	Rendering::Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Rendering::Input::IInputableKeyboard*>(gameState);
 	if (inputableKeyboard != NULL)
 	{
 		DEBUG_LOG("Adding to KEYBOARD INPUT interface");
 		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 	}
-	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+	Rendering::Input::IInputableMouse* inputableMouse = dynamic_cast<Rendering::Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
 		DEBUG_LOG("Adding to MOUSE INPUT interface");
@@ -251,14 +250,14 @@ void DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 	DELOCUST_LOG("Adding to interfaces finished");
 }
 
-void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
+void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
-	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
+	Rendering::Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Rendering::Input::IInputableKeyboard*>(gameState);
 	if (inputableKeyboard != NULL)
 	{
 		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 	}
-	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
+	Rendering::Input::IInputableMouse* inputableMouse = dynamic_cast<Rendering::Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
 		m_exposedInputablesMouse.push_back(inputableMouse);
@@ -277,7 +276,7 @@ void DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 	}
 }
 
-void DefaultGameStateManager::RebuildInterfaceQueues()
+void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 {
 	INFO_LOG("Clearing game state interface queues");
 	ClearAllIntefaceLists();
@@ -306,7 +305,7 @@ void DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 }
 
-void DefaultGameStateManager::NotifyObscuredStates()
+void Engine::DefaultGameStateManager::NotifyObscuredStates()
 {
 	if (m_activeStates.size() < 2)
 	{
@@ -332,7 +331,7 @@ void DefaultGameStateManager::NotifyObscuredStates()
 	}
 }
 
-void DefaultGameStateManager::NotifyRevealedStates()
+void Engine::DefaultGameStateManager::NotifyRevealedStates()
 {
 	if (m_activeStates.empty())
 	{

@@ -1,7 +1,7 @@
 #include "MenuGameState.h"
 #include "QuitCommand.h"
 #include "StartGameCommand.h"
-#include "Rendering\GameManager.h"
+#include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
 #include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
@@ -14,7 +14,7 @@ using namespace Rendering;
 
 MenuGameState::MenuGameState(void) :
 	GameState(),
-	m_quitCommand(QuitCommand(Core::GameManager::GetGameManager())),
+	m_quitCommand(QuitCommand(Engine::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
@@ -30,7 +30,7 @@ MenuGameState::MenuGameState(void) :
 	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
 	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
 	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Core::GameManager::GetGameManager()), "Start"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Engine::GameManager::GetGameManager()), "Start"));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
 	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit"));
 }

@@ -1,20 +1,18 @@
 #include "StdAfx.h"
 #include "BuilderDirector.h"
 
-using namespace Rendering;
-
-BuilderDirector::BuilderDirector(Builder& builder) :
+Engine::BuilderDirector::BuilderDirector(Builder& builder) :
 	m_builder(builder)
 {
 }
 
 
-BuilderDirector::~BuilderDirector(void)
+Engine::BuilderDirector::~BuilderDirector(void)
 {
 }
 
 
-void BuilderDirector::Construct() const
+void Engine::BuilderDirector::Construct() const
 {
 	m_builder.BuildPart1();
 	m_builder.BuildPart2();

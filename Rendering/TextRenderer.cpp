@@ -2,7 +2,7 @@
 #include "TextRenderer.h"
 #include "Material.h"
 #include "Renderer.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
@@ -11,15 +11,16 @@ using namespace Rendering;
 const int vertexTempID = 0;
 const int uvTempID = 1;
 
-TextRenderer::TextRenderer(Texture* fontTexture, Math::Real defaultFontSize /* = 32.0f */) :
+TextRenderer::TextRenderer(Renderer* renderer, Texture* fontTexture, Math::Real defaultFontSize /* = 32.0f */) :
+	m_renderer(renderer),
 	m_fontMaterial(NULL),
 	m_defaultFontSize(defaultFontSize),
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
 	m_textShader(GET_CONFIG_VALUE_STR("textShader", "text-shader")),
-	m_windowWidth(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowWidth())),
-	m_windowHeight(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowHeight())),
+	//m_windowWidth(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowWidth())),
+	//m_windowHeight(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowHeight())),
 	m_transform(), /* TODO: Fix transform. */
-	m_projection(REAL_ZERO, m_windowWidth, REAL_ZERO, m_windowHeight, -REAL_ONE, REAL_ONE)
+	m_projection(REAL_ZERO, renderer->GetWindowWidth(), REAL_ZERO, renderer->GetWindowHeight(), -REAL_ONE, REAL_ONE)
 {
 	if (fontTexture == NULL)
 	{
@@ -107,11 +108,11 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 		x = 0;
 		break;
 	case Text::RIGHT:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
+		x = static_cast<int>(m_renderer->GetWindowWidth() - str.size() * fontSize);
 		break;
 	case Text::CENTER:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
-		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
+		x = static_cast<int>(m_renderer->GetWindowWidth() - str.size() * fontSize) / 2;
+		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_renderer->GetWindowWidth());
 		break;
 	default:
 		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
@@ -143,8 +144,8 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
 	Math::Real yReal = static_cast<Math::Real>(y);
-	const Math::Real screenHalfWidth = m_windowWidth / 2;
-	const Math::Real screenHalfHeight = m_windowHeight / 2;
+	const Math::Real screenHalfWidth = m_renderer->GetWindowWidth() / 2;
+	const Math::Real screenHalfHeight = m_renderer->GetWindowHeight() / 2;
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{
 		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
@@ -189,8 +190,8 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
-	m_fontMaterial->SetReal("screenWidth", m_windowWidth);
-	m_fontMaterial->SetReal("screenHeight", m_windowHeight);
+	m_fontMaterial->SetReal("screenWidth", m_renderer->GetWindowWidth());
+	m_fontMaterial->SetReal("screenHeight", m_renderer->GetWindowHeight());
 	m_textShader.UpdateUniforms(m_transform, m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);

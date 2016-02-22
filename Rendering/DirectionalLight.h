@@ -27,15 +27,16 @@ private:
 	static bool directionalLightsEnabled;
 public:
 	static bool* GetDirectionalLightsEnabled() { return &directionalLightsEnabled; }
+
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	DirectionalLight(const Color& color = Color(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE), Math::Real intensity = REAL_ONE,
+	RENDERING_API DirectionalLight(const Color& color = Color(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE), Math::Real intensity = REAL_ONE,
 		Math::Real halfShadowArea = REAL_ONE, int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
 		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 		Math::Real minVariance = static_cast<Math::Real>(0.00002f));
-	virtual ~DirectionalLight(void);
+	RENDERING_API virtual ~DirectionalLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

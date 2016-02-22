@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "GameComponent.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Renderer.h"
 #include "GameNode.h"
 #include "Shader.h"

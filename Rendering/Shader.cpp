@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Shader.h"
 
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
 #include "Utility\StringUtility.h"
@@ -145,7 +145,7 @@ std::string ShaderData::LoadShaderData(const std::string& fileName) const
 	}
 	DEBUG_LOG("Loading shader data from file \"%s\"", name.c_str());
 
-	std::ifstream file((Core::CoreEngine::GetCoreEngine()->GetShadersDirectory() + fileName).c_str());
+	std::ifstream file(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\" + fileName).c_str());
 	if (!file.is_open())
 	{
 		ERROR_LOG("Unable to open shader file \"%s\". Check the path.", name.c_str());

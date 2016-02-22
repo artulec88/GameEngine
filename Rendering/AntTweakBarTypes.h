@@ -16,7 +16,7 @@ namespace Rendering
 	class AntTweakBarTypes
 	{
 	public:
-		static void InitializeTweakBarTypes();
+		RENDERING_API static void InitializeTweakBarTypes();
 	};
 
 	/// <summary> The fog fall-off type. </summary>
@@ -25,7 +25,7 @@ namespace Rendering
 	/// <summary> The fog calculation strategy. </summary>
 	extern TwType fogCalculationType;
 	extern TwType angleUnitType;
-	extern TwType angleType;
+	RENDERING_API extern TwType angleType;
 	extern TwType vector3DType;
 	extern TwType matrix4DRowType;
 	extern TwType matrix4DType;

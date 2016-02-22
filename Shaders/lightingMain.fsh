@@ -11,7 +11,7 @@ uniform float displacementBias;
 uniform sampler2D R_shadowMap;
 uniform float R_shadowVarianceMin;
 uniform float R_shadowLightBleedingReductionFactor;
-uniform float R_dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day
+//uniform float R_dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day
 
 bool InRange(float val)
 {
@@ -28,8 +28,8 @@ float CalcShadowAmount(sampler2D shadowMap, vec4 initialShadowMapCoords)
 	}
 	else
 	{
-		//return 1.0;
-		return R_dayNightMixFactor; // point is outside the range, so we render it in light
+		return 1.0;
+		//return R_dayNightMixFactor; // point is outside the range, so we render it in light
 		// TODO: When we have in-game night we should instead return 0.0 here.
 	}
 }

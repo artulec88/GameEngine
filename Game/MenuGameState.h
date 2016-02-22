@@ -2,7 +2,7 @@
 #define __MENU_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\GameState.h"
+#include "Engine\GameState.h"
 #include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IRenderable.h"
 #include "Math\Math.h"
@@ -22,7 +22,7 @@ namespace Game
 
 	class Rendering::Shader;
 
-class MenuGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
+class MenuGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

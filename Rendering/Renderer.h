@@ -75,8 +75,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Renderer(GLFWwindow* window, GLFWwindow* threadWindow);
-	virtual ~Renderer(void);
+	RENDERING_API Renderer(int windowWidth, int windowHeight);
+	RENDERING_API virtual ~Renderer(void);
 private:
 	Renderer(const Renderer& renderer);
 	void operator=(const Renderer& renderer);
@@ -88,15 +88,6 @@ public:
 	//RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void RenderMainMenu(/* TODO: Additional parameters */);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
-	inline void SwapBuffers()
-	{
-		glfwSwapBuffers(m_window);
-	}
-
-	GLFWwindow* GetThreadWindow()
-	{
-		return m_threadWindow;
-	}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>
@@ -108,6 +99,10 @@ public:
 	RENDERING_API void InitializeTweakBars();
 	void CheckCameraIndexChange();
 #endif
+	int GetWindowWidth() const { return m_windowWidth; }
+	int GetWindowHeight() const { return m_windowHeight; }
+	RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
+	RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 	
 	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
@@ -140,13 +135,9 @@ public:
 	{
 		return m_currentCameraIndex;
 	}
-	size_t NextCamera();
-	size_t PrevCamera();
+	RENDERING_API size_t NextCamera();
+	RENDERING_API size_t PrevCamera();
 	size_t SetCurrentCamera(size_t cameraIndex);
-	void SetCursorPos(Math::Real xPos, Math::Real yPos) const
-	{
-		glfwSetCursorPos(m_window, xPos, yPos);
-	}
 	
 	inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
@@ -155,23 +146,16 @@ public:
 		return samplerItr->second;
 	}
 
-	inline bool IsCloseRequested() const
-	{
-		return glfwWindowShouldClose(m_window) != 0;
-	}
-
 	inline const Math::Matrix4D& GetLightMatrix() const
 	{
 		return m_lightMatrix;
 	}
 
-	void RequestWindowClose() const
-	{
-		glfwSetWindowShouldClose(m_window, GL_TRUE);
-	}
-	void AddTerrainNode(GameNode* terrainNode);
-	void AddWaterNode(GameNode* waterNode);
-	void AddBillboardNode(GameNode* billboardNode);
+	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
+
+	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
+	RENDERING_API void AddWaterNode(GameNode* waterNode);
+	RENDERING_API void AddBillboardNode(GameNode* billboardNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -252,7 +236,6 @@ protected:
 	void RenderSceneWithAmbientLight(const GameNode& gameNode);
 	void RenderSceneWithPointLights(const GameNode& gameNode);
 	void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
-	void SetCallbacks();
 
 	inline void ClearScreen() const
 	{
@@ -285,7 +268,6 @@ protected:
 private:
 	void InitializeCubeMap();
 	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
-	void AdjustAmbientLightAccordingToCurrentTime();
 	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
@@ -293,13 +275,12 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	int m_windowWidth, m_windowHeight;
 	// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 	CONST_IF_TWEAK_BAR_DISABLED bool m_applyFilterEnabled;
 	CONST_IF_TWEAK_BAR_DISABLED Color m_backgroundColor;
 	//bool m_shadowsEnabled;
 	//bool m_pointLightShadowsEnabled;
-	GLFWwindow* m_window;
-	GLFWwindow* m_threadWindow;
 	//GLuint framebuffer;
 	GLuint m_vao; // vertex array id
 

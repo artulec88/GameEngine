@@ -22,17 +22,17 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
-		RENDERING_API virtual ~MoveComponent(void);
+		ENGINE_API MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
+		ENGINE_API virtual ~MoveComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual void Update(Math::Real deltaTime);
-		RENDERING_API virtual void KeyEvent(int key, int scancode, int action, int mods);
-		RENDERING_API virtual void MouseButtonEvent(int button, int action, int mods);
-		RENDERING_API virtual void MousePosEvent(double xPos, double yPos);
-		RENDERING_API virtual void ScrollEvent(double xOffset, double yOffset);
+		ENGINE_API virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
+		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
+		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
+		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

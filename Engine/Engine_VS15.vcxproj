@@ -107,7 +107,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Libs;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utility_VS15.lib;Math_VS15.lib;Rendering_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utility_VS15.lib;Math_VS15.lib;Rendering_VS15.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -144,15 +144,21 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Libs;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Utility_VS15.lib;Math_VS15.lib;Rendering_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Utility_VS15.lib;Math_VS15.lib;Rendering_VS15.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Builder.h" />
+    <ClInclude Include="BuilderDirector.h" />
+    <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameCommand.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MenuEntry.h" />
     <ClInclude Include="MoveComponent.h" />
@@ -161,6 +167,9 @@
     <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Builder.cpp" />
+    <ClCompile Include="BuilderDirector.cpp" />
+    <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -176,6 +185,8 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameCommand.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />
     <ClCompile Include="MoveComponent.cpp" />

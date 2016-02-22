@@ -13,7 +13,7 @@
 #include <iostream>
 //#include <GLFW\glfw3.h>
 
-using namespace Core;
+using namespace Engine;
 using namespace Utility;
 using namespace std;
 
@@ -38,7 +38,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ void CoreEngine::ErrorCallback(int errorCode, const char* description)
 {
-	GetCoreEngine()->ErrorCallback(errorCode, description);
+	GetCoreEngine()->ErrorCallbackEvent(errorCode, description);
 }
 
 /* static */ void CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
@@ -60,6 +60,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ void CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	DEBUG_LOG("Key event callback (key = %d; scancode = %d; action = %d; mods = %d", key, scancode, action, mods);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventKeyGLFW(key, action))  // send event to AntTweakBar
 	{
@@ -95,6 +96,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #else
 	GetCoreEngine()->MousePosEvent(window, xPos, yPos);
 #endif
+	//GetCoreEngine()->CentralizeCursor();
 }
 
 /* static */ void CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
@@ -112,6 +114,8 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */) :
+	m_window(NULL),
+	m_threadWindow(NULL),
 	m_isRunning(false),
 	m_windowWidth(width),
 	m_windowHeight(height),
@@ -219,7 +223,7 @@ CoreEngine::~CoreEngine(void)
 	// SAFE_DELETE(m_game);
 	SAFE_DELETE(m_renderer);
 	SAFE_DELETE(m_fpsTextRenderer);
-
+	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG("Core engine destruction finished");
 
 	ILogger::GetLogger().ResetConsoleColor();
@@ -229,14 +233,135 @@ CoreEngine::~CoreEngine(void)
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
 	START_PROFILING;
-	GLFWwindow* threadWindow = NULL;
-	GLFWwindow* window = Rendering::InitGraphics(width, height, title, threadWindow);
+	InitGraphics(width, height, title);
+	Rendering::InitGraphics(width, height);
+
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG("Thread window address: %p", threadWindow);
-	m_renderer = new Rendering::Renderer(window, threadWindow);
+	m_renderer = new Rendering::Renderer(width, height);
 
 	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
 	STOP_PROFILING;
+}
+
+void CoreEngine::InitGraphics(int width, int height, const std::string& title)
+{
+	InitGlfw(width, height, title);
+	InitGlew();
+	SetCallbacks();
+}
+
+void CoreEngine::InitGlfw(int width, int height, const std::string& title)
+{
+	DEBUG_LOG("Initializing GLFW started");
+	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
+
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, NULL);
+	if (m_threadWindow == NULL)
+	{
+		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+
+	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
+	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
+	switch (antiAliasingMethod)
+	{
+	case Rendering::Aliasing::NONE:
+		/**
+		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
+		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
+		*/
+		glfwWindowHint(GLFW_SAMPLES, 0);
+		INFO_LOG("No anti-aliasing algorithm chosen");
+		break;
+	case Rendering::Aliasing::FXAA:
+		/**
+		* TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
+		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
+		*/
+		glfwWindowHint(GLFW_SAMPLES, 0);
+		INFO_LOG("FXAA anti-aliasing algorithm chosen");
+		break;
+	case Rendering::Aliasing::MSAA:
+		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
+		INFO_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		break;
+	default:
+		WARNING_LOG("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
+		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
+	}
+	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
+	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
+#ifdef _DEBUG
+	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // So that glBegin / glEnd etc. work
+#else
+	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#endif
+
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
+	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
+
+	GLFWmonitor* monitor = NULL;
+	bool fullscreenEnabled = GET_CONFIG_VALUE("fullscreenEnabled", false);
+	if (fullscreenEnabled)
+	{
+		monitor = glfwGetPrimaryMonitor();
+	}
+	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, m_threadWindow); // Open a window and create its OpenGL context
+	if (m_window == NULL)
+	{
+		CRITICAL_LOG("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+	glfwMakeContextCurrent(m_window);
+	glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
+	glfwSetCursorPos(m_window, width / 2, height / 2); // Set cursor position to the middle point
+													 //glfwSwapInterval(1);
+	glfwSetTime(REAL_ZERO);
+	DEBUG_LOG("Initializing GLFW finished successfully");
+}
+
+void CoreEngine::InitGlew()
+{
+	INFO_LOG("Initializing GLEW started");
+	glewExperimental = true; // Needed in core profile
+	GLenum err = glewInit();
+
+	if (GLEW_OK != err)
+	{
+		ERROR_LOG("Error while initializing GLEW: %s", glewGetErrorString(err));
+		exit(EXIT_FAILURE);
+	}
+	if (GLEW_VERSION_2_0)
+	{
+		DEBUG_LOG("OpenGL 2.0 supported");
+	}
+	else
+	{
+		ERROR_LOG("Initializing GLEW failed. OpenGL 2.0 NOT supported");
+		exit(EXIT_FAILURE);
+	}
+
+	INFO_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
+	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
+}
+
+void CoreEngine::SetCallbacks()
+{
+	CHECK_CONDITION_EXIT_ALWAYS(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
+	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
+	glfwSetWindowSizeCallback(m_window, &CoreEngine::WindowResizeCallback);
+	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
+	//glfwSetCharCallback(m_window, &CoreEngine::CharEventCallback);
+	//glfwSetMousePosCallback(m_window, &CoreEngine::MouseMotionCallback);
+	glfwSetCursorPosCallback(m_window, &CoreEngine::MousePosCallback);
+	glfwSetMouseButtonCallback(m_window, &CoreEngine::MouseEventCallback);
+	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
 }
 
 void CoreEngine::Start()
@@ -264,7 +389,7 @@ void CoreEngine::Stop()
 	}
 	
 	m_isRunning = false;
-	m_renderer->RequestWindowClose();
+	RequestWindowClose();
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	NOTICE_LOG("The core engine has stopped");
 
@@ -324,7 +449,7 @@ void CoreEngine::Run()
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
 			if (m_timeOfDay > SECONDS_PER_DAY)
 			{
-				m_timeOfDay -= SECONDS_PER_DAY;
+				m_timeOfDay -= SECONDS_PER_DAY; // this will not work if m_clockSpeed > SECONDS_PER_DAY. The time of day will increase until going out of range [0; SECONDS_PER_DAY).
 			}
 			CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
 			ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
@@ -367,7 +492,7 @@ void CoreEngine::Run()
 			 *TODO: The function IsCloseRequested() is called thousand times before actually returning true and closing the application.
 			 * Instead we should only check it from time to time or maybe only in some specific game states (e.g. PlayMenuGameState)
 			 */
-			if (m_renderer->IsCloseRequested())
+			if (glfwWindowShouldClose(m_window) != 0)
 			{
 				STOP_PROFILING;
 				return;
@@ -449,7 +574,7 @@ void CoreEngine::Run()
 #ifdef ANT_TWEAK_BAR_ENABLED
 			TwDraw();
 #endif
-			m_renderer->SwapBuffers();
+			glfwSwapBuffers(m_window);
 #ifdef CALCULATE_RENDERING_STATS
 			++m_renderingRequiredCount;
 #endif
@@ -471,6 +596,8 @@ void CoreEngine::Run()
 
 void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
+	m_renderer->SetWindowWidth(width);
+	m_renderer->SetWindowHeight(height);
 	m_game.WindowResizeEvent(width, height);
 }
 
@@ -479,34 +606,34 @@ void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 	switch (errorCode)
 	{
 	case GLFW_NOT_INITIALIZED:
-		ERROR_LOG("GLFW has not been initialized. %s", description);
+		ERROR_LOG("GLFW has not been initialized. Error description: %s", description);
 		break;
 	case GLFW_NO_CURRENT_CONTEXT:
-		ERROR_LOG("No context is current for this thread. %s", description);
+		ERROR_LOG("No context is current for this thread. Error description: %s", description);
 		break;
 	case GLFW_INVALID_ENUM:
-		ERROR_LOG("One of the arguments to the function was an invalid enum value. %s", description);
+		ERROR_LOG("One of the arguments to the function was an invalid enum value. Error description: %s", description);
 		break;
 	case GLFW_INVALID_VALUE:
-		ERROR_LOG("One of the arguments to the function was an invalid value. %s", description);
+		ERROR_LOG("One of the arguments to the function was an invalid value. Error description: %s", description);
 		break;
 	case GLFW_OUT_OF_MEMORY:
-		ERROR_LOG("A memory allocation failed. %s", description);
+		ERROR_LOG("A memory allocation failed. Error description: %s", description);
 		break;
 	case GLFW_API_UNAVAILABLE:
-		ERROR_LOG("GLFW could not find support for the requested client API on the system. %s", description);
+		ERROR_LOG("GLFW could not find support for the requested client API on the system. Error description: %s", description);
 		break;
 	case GLFW_VERSION_UNAVAILABLE:
-		ERROR_LOG("The requested OpenGL or OpenGL ES version is not available. %s", description);
+		ERROR_LOG("The requested OpenGL or OpenGL ES version is not available. Error description: %s", description);
 		break;
 	case GLFW_PLATFORM_ERROR:
-		ERROR_LOG("A platform-specific error occurred that does not match any of the more specific categories. %s", description);
+		ERROR_LOG("A platform-specific error occurred that does not match any of the more specific categories. Error description: %s", description);
 		break;
 	case GLFW_FORMAT_UNAVAILABLE:
-		ERROR_LOG("The requested format is not supported or available. %s", description);
+		ERROR_LOG("The requested format is not supported or available. Error description: %s", description);
 		break;
 	default:
-		ERROR_LOG("Unknown GLFW error event occurred with code %d and message: %s", errorCode, description);
+		ERROR_LOG("Unknown GLFW error event occurred with code %d and message: Error description: %s", errorCode, description);
 	}
 	exit(EXIT_FAILURE);
 }
@@ -611,7 +738,7 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
-	m_renderer->SetCursorPos(xPos, yPos);
+	glfwSetCursorPos(m_window, xPos, yPos);
 }
 
 void CoreEngine::CentralizeCursor()
@@ -621,7 +748,7 @@ void CoreEngine::CentralizeCursor()
 		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
-	m_renderer->SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
+	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
 void CoreEngine::CalculateSunElevationAndAzimuth()
@@ -657,22 +784,22 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
 	}
 
-	Rendering::GameTime::Daytime prevDaytime = m_daytime;
+	Utility::Timing::Daytime prevDaytime = m_daytime;
 	if (m_sunElevation < M_FIRST_ELEVATION_LEVEL)
 	{
-		m_daytime = Rendering::GameTime::NIGHT;
+		m_daytime = Utility::Timing::NIGHT;
 	}
 	else if (m_sunElevation < M_SECOND_ELEVATION_LEVEL)
 	{
-		m_daytime = (isAfternoon) ? Rendering::GameTime::AFTER_DUSK : Rendering::GameTime::BEFORE_DAWN;
+		m_daytime = (isAfternoon) ? Utility::Timing::AFTER_DUSK : Utility::Timing::BEFORE_DAWN;
 	}
 	else if (m_sunElevation < M_THIRD_ELEVATION_LEVEL)
 	{
-		m_daytime = (isAfternoon) ? Rendering::GameTime::SUNSET : Rendering::GameTime::SUNRISE;
+		m_daytime = (isAfternoon) ? Utility::Timing::SUNSET : Utility::Timing::SUNRISE;
 	}
 	else
 	{
-		m_daytime = Rendering::GameTime::DAY;
+		m_daytime = Utility::Timing::DAY;
 	}
 	//if (prevDaytime != m_daytime)
 	//{
@@ -681,27 +808,29 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	//DEBUG_LOG("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
-Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
+Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
 {
 	switch (m_daytime)
 	{
-	case Rendering::GameTime::NIGHT:
-	case Rendering::GameTime::DAY:
+	case Utility::Timing::NIGHT:
 		daytimeTransitionFactor = REAL_ZERO;
 		break;
-	case Rendering::GameTime::BEFORE_DAWN:
+	case Utility::Timing::DAY:
+		daytimeTransitionFactor = REAL_ZERO; // TODO: Check if this is correct
+		break;
+	case Utility::Timing::BEFORE_DAWN:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::GameTime::SUNRISE:
+	case Utility::Timing::SUNRISE:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::GameTime::SUNSET:
+	case Utility::Timing::SUNSET:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
-	case Rendering::GameTime::AFTER_DUSK:
+	case Utility::Timing::AFTER_DUSK:
 		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
@@ -709,6 +838,21 @@ Rendering::GameTime::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTr
 		ERROR_LOG("Incorrect daytime %d", m_daytime);
 	}
 	return m_daytime;
+}
+
+void CoreEngine::AddWaterNode(Rendering::GameNode* waterNode)
+{
+	m_renderer->AddWaterNode(waterNode);
+}
+
+void CoreEngine::AddTerrainNode(Rendering::GameNode* terrainNode)
+{
+	m_renderer->AddTerrainNode(terrainNode);
+}
+
+void CoreEngine::AddBillboardNode(Rendering::GameNode* billboardNode)
+{
+	m_renderer->AddBillboardNode(billboardNode);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -725,8 +869,8 @@ void CoreEngine::InitializeTweakBars()
 	TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
 	TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
 	
-	TwEnumVal daytimeEV[] = { { Rendering::GameTime::NIGHT, "Night" }, { Rendering::GameTime::BEFORE_DAWN, "Before dawn" }, { Rendering::GameTime::SUNRISE, "Sunrise" },
-		{ Rendering::GameTime::DAY, "Day" }, { Rendering::GameTime::SUNSET, "Sunset" }, { Rendering::GameTime::AFTER_DUSK, "After dusk" }};
+	TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
+		{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" }};
 	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
 	

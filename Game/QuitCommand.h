@@ -2,7 +2,7 @@
 #define __GAME_QUIT_COMMAND_H__
 
 #include "Engine\GameCommand.h"
-#include "Rendering\GameManager.h"
+#include "Engine\GameManager.h"
 
 namespace Game
 {
@@ -14,7 +14,7 @@ class QuitCommand : public Engine::GameCommand
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	QuitCommand(Core::GameManager* gameManager);
+	QuitCommand(Engine::GameManager* gameManager);
 	virtual ~QuitCommand();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -25,7 +25,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Core::GameManager& m_gameManager;
+	Engine::GameManager& m_gameManager;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class QuitCommand */
 

@@ -1,6 +1,6 @@
 #include "LoadGameState.h"
-#include "Rendering\GameManager.h"
-#include "Rendering\CoreEngine.h"
+#include "Engine\GameManager.h"
+#include "Engine\CoreEngine.h"
 #include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
@@ -11,7 +11,7 @@ using namespace Game;
 using namespace Rendering;
 
 LoadGameState::LoadGameState(void) :
-	Rendering::GameState(),
+	Engine::GameState(),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
 #ifdef CALCULATE_GAME_STATS
@@ -30,7 +30,7 @@ void LoadGameState::Entered()
 	START_PROFILING;
 	INFO_LOG("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG("Starting the loading thread");
-	m_loadingThread = new tthread::thread(Core::GameManager::Load, Core::GameManager::GetGameManager());
+	m_loadingThread = new tthread::thread(Engine::GameManager::Load, Engine::GameManager::GetGameManager());
 	STOP_PROFILING;
 }
 
@@ -61,18 +61,18 @@ void LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
 	DELOCUST_LOG("LOAD game state updating");
-	m_loadingProgress = Core::GameManager::GetGameManager()->GetLoadingProgress();
+	m_loadingProgress = Engine::GameManager::GetGameManager()->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
 	{
 		m_loadingProgress = REAL_ONE;
 	}
 
-	if (Core::GameManager::GetGameManager()->IsGameLoaded())
+	if (Engine::GameManager::GetGameManager()->IsGameLoaded())
 	{
 		NOTICE_LOG("The game is loaded");
 		m_loadingThread->join();
-		Core::GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
+		Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new PlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 	}
 	STOP_PROFILING;
 }

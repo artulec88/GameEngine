@@ -126,8 +126,8 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Shader(const std::string& fileName);
-	~Shader(void);
+	RENDERING_API Shader(const std::string& fileName);
+	RENDERING_API ~Shader(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

@@ -20,9 +20,9 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
+	RENDERING_API PointLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
 		const Attenuation& attenuation = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE));
-	virtual ~PointLight(void);
+	RENDERING_API virtual ~PointLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

@@ -2,7 +2,7 @@
 #define __PLAY_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\GameState.h"
+#include "Engine\GameState.h"
 #include "Rendering\IInputableKeyboard.h"
 #include "Rendering\IInputableMouse.h"
 #include "Rendering\IRenderable.h"
@@ -18,7 +18,7 @@ namespace Game
 
 	class Rendering::Shader;
 
-class PlayGameState : public Rendering::GameState, public virtual Rendering::Input::IInputableKeyboard,
+class PlayGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard,
 	public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */

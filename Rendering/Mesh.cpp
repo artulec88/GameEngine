@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "Mesh.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 //#include "OBJModel.h"
 #include "Math\Vector.h"
 #include "Math\FloatingPoint.h"
@@ -138,7 +138,7 @@ void Mesh::Initialize()
 	INFO_LOG("Loading model from file \"%s\"", name.c_str());
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile((Core::CoreEngine::GetCoreEngine()->GetModelsDirectory() + m_fileName).c_str(),
+	const aiScene* scene = importer.ReadFile(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\" + m_fileName).c_str(),
 		aiProcess_Triangulate |
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |

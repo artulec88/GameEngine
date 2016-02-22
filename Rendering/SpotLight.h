@@ -20,12 +20,12 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	SpotLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
+	RENDERING_API SpotLight(const Color& color = Color(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Real intensity = REAL_ZERO,
 		const Attenuation& attenuation = Attenuation(REAL_ZERO, REAL_ZERO, REAL_ONE), const Math::Angle& viewAngle = Math::Angle(170.0f),
 		int shadowMapSizeAsPowerOf2 = 0, Math::Real shadowSoftness = REAL_ONE,
 		Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 		Math::Real minVariance = static_cast<Math::Real>(0.00002f) );
-	virtual ~SpotLight(void);
+	RENDERING_API virtual ~SpotLight(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */

@@ -13,6 +13,16 @@
 
 namespace Utility { namespace Timing
 {
+	enum Daytime
+	{
+		NIGHT = 0,
+		BEFORE_DAWN,
+		SUNRISE,
+		DAY,
+		SUNSET,
+		AFTER_DUSK
+	};
+
 	/// <summary> Possible time units. </summary>
 	enum TimeUnit
 	{

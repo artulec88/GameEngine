@@ -1,14 +1,14 @@
-#ifndef __RENDERING_BUILDER_H__
-#define __RENDERING_BUILDER_H__
+#ifndef __ENGINE_BUILDER_H__
+#define __ENGINE_BUILDER_H__
 
-#include "Rendering.h"
-#include "GameNode.h"
-#include "SpotLight.h"
+#include "Engine.h"
+#include "Rendering\GameNode.h"
+#include "Rendering\SpotLight.h"
 #include <string>
 
 #define BUILD_MESH_RENDERER
 
-namespace Rendering
+namespace Engine
 {
 
 	class Builder
@@ -18,8 +18,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Builder();
-		RENDERING_API virtual ~Builder(void);
+		ENGINE_API Builder();
+		ENGINE_API virtual ~Builder(void);
 	private:
 		Builder(Builder& builder) {}
 		void operator=(Builder& builder) {}
@@ -33,12 +33,12 @@ namespace Rendering
 		virtual void BuildMeshRenderer() = 0;
 #endif
 
-		GameNode* GetGameNode() { return m_gameNode; }
+		Rendering::GameNode* GetGameNode() { return m_gameNode; }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		GameNode* m_gameNode;
+		Rendering::GameNode* m_gameNode;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Builder */
 
@@ -49,8 +49,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API LightBuilder();
-		RENDERING_API virtual ~LightBuilder(void);
+		ENGINE_API LightBuilder();
+		ENGINE_API virtual ~LightBuilder(void);
 	private:
 		LightBuilder(LightBuilder& lightBuilder) {}
 		void operator=(LightBuilder& lightBuilder) {}
@@ -64,7 +64,7 @@ namespace Rendering
 		virtual void BuildMeshRenderer();
 #endif
 
-		RENDERING_API void SetLightIndex(int lightIndex);
+		ENGINE_API void SetLightIndex(int lightIndex);
 	protected:
 		virtual void SetupLightTransform() = 0;
 		virtual void SetupLightParams() = 0;
@@ -84,8 +84,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API DirectionalLightBuilder() : LightBuilder() { };
-		RENDERING_API virtual ~DirectionalLightBuilder(void) { };
+		ENGINE_API DirectionalLightBuilder() : LightBuilder() { };
+		ENGINE_API virtual ~DirectionalLightBuilder(void) { };
 	private:
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) {}
 		void operator=(DirectionalLightBuilder& directionalLightBuilder) {}
@@ -111,8 +111,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API PointLightBuilder();
-		RENDERING_API virtual ~PointLightBuilder(void) { };
+		ENGINE_API PointLightBuilder();
+		ENGINE_API virtual ~PointLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -130,9 +130,9 @@ namespace Rendering
 		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X;
 		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y;
 		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z;
-		const Color M_DEFAULT_POINT_LIGHT_COLOR;
+		const Rendering::Color M_DEFAULT_POINT_LIGHT_COLOR;
 		const Math::Real M_DEFAULT_POINT_LIGHT_INTENSITY;
-		const Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION;
+		const Rendering::Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class PointLightBuilder */
 
@@ -143,8 +143,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API SpotLightBuilder();
-		RENDERING_API virtual ~SpotLightBuilder(void) { };
+		ENGINE_API SpotLightBuilder();
+		ENGINE_API virtual ~SpotLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -162,9 +162,9 @@ namespace Rendering
 		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X;
 		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y;
 		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z;
-		const Color M_DEFAULT_SPOT_LIGHT_COLOR;
+		const Rendering::Color M_DEFAULT_SPOT_LIGHT_COLOR;
 		const Math::Real M_DEFAULT_SPOT_LIGHT_INTENSITY;
-		const Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION;
+		const Rendering::Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION;
 		const Math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
 		const int M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2;
 		const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS;
@@ -180,8 +180,8 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API CameraBuilder();
-		RENDERING_API virtual ~CameraBuilder(void);
+		ENGINE_API CameraBuilder();
+		ENGINE_API virtual ~CameraBuilder(void);
 	private:
 		CameraBuilder(CameraBuilder& cameraBuilder);
 		void operator=(CameraBuilder& cameraBuilder) {}
@@ -194,8 +194,8 @@ namespace Rendering
 #ifdef BUILD_MESH_RENDERER
 		virtual void BuildMeshRenderer();
 #endif
-		RENDERING_API void SetCameraIndex(int cameraIndex);
-		RENDERING_API void SetEntityToFollow(GameNode* gameNodeToFollow);
+		ENGINE_API void SetCameraIndex(int cameraIndex);
+		ENGINE_API void SetEntityToFollow(Rendering::GameNode* gameNodeToFollow);
 	protected:
 		void SetupCameraTransform();
 		void SetupCameraParams();
@@ -218,10 +218,10 @@ namespace Rendering
 		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 		int m_cameraIndex;
 		std::string m_cameraIndexStr;
-		GameNode* m_gameNodeToFollow;
+		Rendering::GameNode* m_gameNodeToFollow;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif // __RENDERING_BUILDER_H__
+#endif // __ENGINE_BUILDER_H__

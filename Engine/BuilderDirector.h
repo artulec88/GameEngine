@@ -1,10 +1,10 @@
-#ifndef __RENDERING_BUILDER_DIRECTOR_H__
-#define __RENDERING_BUILDER_DIRECTOR_H__
+#ifndef __ENGINE_BUILDER_DIRECTOR_H__
+#define __ENGINE_BUILDER_DIRECTOR_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "Builder.h"
 
-namespace Rendering
+namespace Engine
 {
 
 	class BuilderDirector
@@ -14,13 +14,13 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API BuilderDirector(Builder& builder);
-		RENDERING_API virtual ~BuilderDirector(void);
+		ENGINE_API BuilderDirector(Builder& builder);
+		ENGINE_API virtual ~BuilderDirector(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual void Construct() const;
+		ENGINE_API virtual void Construct() const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -29,6 +29,6 @@ namespace Rendering
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class BuilderDirector */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif // __RENDERING_BUILDER_DIRECTOR_H__
+#endif // __ENGINE_BUILDER_DIRECTOR_H__

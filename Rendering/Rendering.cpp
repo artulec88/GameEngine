@@ -119,12 +119,9 @@ void Rendering::PrintGlReport()
 	//INFO_LOG("OpenGL extensions: ", (const char*)glGetString(GL_EXTENSIONS));
 }
 
-GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
+void Rendering::InitGraphics(int width, int height)
 {
 	NOTICE_LOG("Initializing graphics started");
-
-	GLFWwindow* window = InitGlfw(width, height, title, threadWindow);
-	InitGlew();
 
 	DetermineGlVersion();
 	PrintGlReport();
@@ -168,112 +165,11 @@ GLFWwindow* Rendering::InitGraphics(int width, int height, const std::string& ti
 	glEnable(GL_TEXTURE_CUBE_MAP);
 	//glEnable(GL_FRAMEBUFFER_SRGB); // Essentialy gives free gamma correction for better contrast. TODO: Test it!
 	glEnable(GL_CLIP_DISTANCE0); // Enabled plane clipping // glEnable(GL_CLIP_PLANE0)
-								 
+
 	// TODO: Use GL_LINE instead of GL_FILL to make the scene rendered in wireframe. Make it an option in the AntTweakBar to switch between normal and wireframe modes.
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	NOTICE_LOG("Initializing graphics finished successfully");
-	return window;
-}
-
-GLFWwindow* Rendering::InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow)
-{
-	DEBUG_LOG("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
-	
-	glfwWindowHint( GLFW_VISIBLE, GL_FALSE );
-    threadWindow = glfwCreateWindow( 1, 1, "Thread Window", NULL, NULL );
-	if (threadWindow == NULL)
-	{
-		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
-	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
-	switch (Rendering::antiAliasingMethod)
-	{
-	case Aliasing::NONE:
-		/**
-		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
-		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
-		 */
-		glfwWindowHint(GLFW_SAMPLES, 0);
-		INFO_LOG("No anti-aliasing algorithm chosen");
-		break;
-	case Aliasing::FXAA:
-		/**
-		 * TODO: For this option it seems that when SwapBuffers() is called in Render function the screen blinks from time to time.
-		 * Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
-		 */
-		glfwWindowHint(GLFW_SAMPLES, 0);
-		INFO_LOG("FXAA anti-aliasing algorithm chosen");
-		break;
-	case Aliasing::MSAA:
-		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-		INFO_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
-		break;
-	default:
-		WARNING_LOG("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
-		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-	}
-	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
-	glfwWindowHint(GLFW_VERSION_MINOR, 3); // TODO: Do not hard-code any values
-#ifdef _DEBUG
-	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // So that glBegin / glEnd etc. work
-#else
-	glfwWindowHint(GLFW_OPENGL_ANY_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#endif
-
-	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	glfwWindowHint(GLFW_VISIBLE, GL_TRUE);
-	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
-
-	GLFWmonitor* monitor = NULL;
-	bool fullscreenEnabled = GET_CONFIG_VALUE("fullscreenEnabled", false);
-	if (fullscreenEnabled)
-	{
-		monitor = glfwGetPrimaryMonitor();
-	}
-	GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), monitor, threadWindow); // Open a window and create its OpenGL context
-	if (window == NULL)
-	{
-		CRITICAL_LOG("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
-	glfwSetCursorPos(window, width / 2, height / 2); // Set cursor position to the middle point
-	//glfwSwapInterval(1);
-	glfwSetTime(REAL_ZERO);
-	DEBUG_LOG("Initializing GLFW finished successfully");
-	return window;
-}
-
-void Rendering::InitGlew()
-{
-	INFO_LOG("Initializing GLEW started");
-	glewExperimental = true; // Needed in core profile
-	GLenum err = glewInit();
-
-	if (GLEW_OK != err)
-	{
-		ERROR_LOG("Error while initializing GLEW: %s", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
-	if (GLEW_VERSION_2_0)
-	{
-		DEBUG_LOG("OpenGL 2.0 supported");
-	}
-	else
-	{
-		ERROR_LOG("Initializing GLEW failed. OpenGL 2.0 NOT supported");
-		exit(EXIT_FAILURE);
-	}
-
-	INFO_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
-	CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
 /**

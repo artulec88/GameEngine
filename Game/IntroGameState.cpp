@@ -1,5 +1,5 @@
 #include "IntroGameState.h"
-#include "Rendering\GameManager.h"
+#include "Engine\GameManager.h"
 #include "Utility\ILogger.h"
 #include "MenuGameState.h"
 
@@ -46,7 +46,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_REPEAT)
 		{
-			Core::GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new MenuGameState(), GameStateTransitioning::SWITCH, GameStateModality::EXCLUSIVE));
+			Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new MenuGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 			break;
 		}
 	default:

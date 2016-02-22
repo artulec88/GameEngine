@@ -2,11 +2,12 @@
 #include "GameManager.h"
 #include "GameStateManager.h"
 #include "CoreEngine.h"
-#include "Vertex.h"
-#include "Renderer.h"
-#include "Attenuation.h"
-#include "PointLight.h"
-#include "Texture.h"
+
+#include "Rendering\Vertex.h"
+#include "Rendering\Renderer.h"
+#include "Rendering\Attenuation.h"
+#include "Rendering\PointLight.h"
+#include "Rendering\Texture.h"
 
 #include "Math\Math.h"
 #include "Math\Vector.h"
@@ -24,29 +25,27 @@
 using namespace Utility;
 using namespace Math;
 
-Core::GameManager* Core::GameManager::s_gameManager = NULL;
+Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 
-/* static */ Core::GameManager* Core::GameManager::GetGameManager()
+/* static */ Engine::GameManager* Engine::GameManager::GetGameManager()
 {
 	return s_gameManager;
 }
 
-/* static */ void Core::GameManager::Load(void* arg)
+/* static */ void Engine::GameManager::Load(void* arg)
 {
-	Core::GameManager* gameManager = static_cast<Core::GameManager*>(arg);
+	Engine::GameManager* gameManager = static_cast<Engine::GameManager*>(arg);
 	if (gameManager == NULL)
 	{
 		EMERGENCY_LOG("Cannot load the game. Passed parameter is not a game manager object.");
 		exit(EXIT_FAILURE);
 	}
-	//CoreEngine::GetCoreEngine()->GetRenderer()
-	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetRenderer()->GetThreadWindow());
-	Rendering::InitGlew();
-	// glew init
+	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
+	Engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
 	gameManager->Load();
 }
 
-Core::GameManager::GameManager() :
+Engine::GameManager::GameManager() :
 	m_rootGameNode(),
 	m_terrainNode(NULL),
 	m_gameStateManager(NULL),
@@ -56,19 +55,19 @@ Core::GameManager::GameManager() :
 	//rootGameNode = new GameNode();
 	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
-	if (Core::GameManager::s_gameManager != NULL)
+	if (Engine::GameManager::s_gameManager != NULL)
 	{
 		ERROR_LOG("Constructor called when a singleton instance of CoreEngine class has already been created");
-		SAFE_DELETE(Core::GameManager::s_gameManager);
+		SAFE_DELETE(Engine::GameManager::s_gameManager);
 	}
-	m_gameStateManager = new Rendering::DefaultGameStateManager();
+	m_gameStateManager = new Engine::DefaultGameStateManager();
 
-	Core::GameManager::s_gameManager = this;
+	Engine::GameManager::s_gameManager = this;
 	DEBUG_LOG("Game manager construction finished");
 }
 
 
-Core::GameManager::~GameManager(void)
+Engine::GameManager::~GameManager(void)
 {
 	INFO_LOG("Game manager destruction finished");
 	//SAFE_DELETE(m_rootGameNode);
@@ -77,13 +76,13 @@ Core::GameManager::~GameManager(void)
 	DEBUG_LOG("Game manager destruction finished");
 }
 
-void Core::GameManager::WindowResizeEvent(int width, int height)
+void Engine::GameManager::WindowResizeEvent(int width, int height)
 {
 	NOTICE_LOG("Window resize event (width = %d, height = %d)", width, height);
 	// TODO: Check if core engine finds out about the resizing of the window.
 }
 
-void Core::GameManager::CloseWindowEvent()
+void Engine::GameManager::CloseWindowEvent()
 {
 	NOTICE_LOG("Close window event");
 	CoreEngine::GetCoreEngine()->Stop();
@@ -95,7 +94,7 @@ void Core::GameManager::CloseWindowEvent()
  * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
  * @param mods Bit field describing which modifier keys were held down
  */
-void Core::GameManager::KeyEvent(int key, int scancode, int action, int mods)
+void Engine::GameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
 	DELOCUST_LOG("Key event with key = %d", key);
 
@@ -111,7 +110,7 @@ void Core::GameManager::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void Core::GameManager::MouseButtonEvent(int button, int action, int mods)
+void Engine::GameManager::MouseButtonEvent(int button, int action, int mods)
 {
 	DELOCUST_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
@@ -134,12 +133,12 @@ void Core::GameManager::MouseButtonEvent(int button, int action, int mods)
 	}
 }
 
-void Core::GameManager::MousePosEvent(double xPos, double yPos)
+void Engine::GameManager::MousePosEvent(double xPos, double yPos)
 {
 	DEBUG_LOG("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
 }
 
-void Core::GameManager::ScrollEvent(double xOffset, double yOffset)
+void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 {
 	DEBUG_LOG("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
@@ -156,56 +155,56 @@ void Core::GameManager::ScrollEvent(double xOffset, double yOffset)
 //	return shader;
 //}
 
-void Core::GameManager::AddToSceneRoot(Rendering::GameNode* child)
+void Engine::GameManager::AddToSceneRoot(Rendering::GameNode* child)
 {
 	m_rootGameNode.AddChild(child);
 }
 
-void Core::GameManager::AddWaterNode(Rendering::GameNode* waterNode)
+void Engine::GameManager::AddWaterNode(Rendering::GameNode* waterNode)
 {
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddWaterNode(waterNode);
+	CoreEngine::GetCoreEngine()->AddWaterNode(waterNode);
 }
 
-void Core::GameManager::AddBillboardNode(Rendering::GameNode* billboardNode)
+void Engine::GameManager::AddBillboardNode(Rendering::GameNode* billboardNode)
 {
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddBillboardNode(billboardNode);
+	CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
 }
 
-void Core::GameManager::AddTerrainNode(Rendering::GameNode* terrainNode)
+void Engine::GameManager::AddTerrainNode(Rendering::GameNode* terrainNode)
 {
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddTerrainNode(terrainNode);
+	CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);
 }
 
-void Core::GameManager::Render(Rendering::Renderer* renderer) const
+void Engine::GameManager::Render(Rendering::Renderer* renderer) const
 {
 	m_gameStateManager->Render(NULL, renderer);
 }
 
-void Core::GameManager::SetTransition(Rendering::GameStateTransitioning::GameStateTransition* gameStateTransition)
+void Engine::GameManager::SetTransition(Engine::GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
 	m_gameStateManager->SetTransition(gameStateTransition);
 }
 
-void Core::GameManager::PerformStateTransition()
+void Engine::GameManager::PerformStateTransition()
 {
 	m_gameStateManager->PerformStateTransition();
 }
 
-void Core::GameManager::PopState()
+void Engine::GameManager::PopState()
 {
 	m_gameStateManager->Pop();
 }
 
-void Core::GameManager::RequestGameQuit() const
+void Engine::GameManager::RequestGameQuit() const
 {
 	// TODO: Ask the user to save the game if the inGameState can be found in the game states stack
 	//glfwSetWindowShouldClose(window, GL_TRUE); // Doesn't work, because we don't have a window
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->RequestWindowClose();
+	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Core::GameManager::InitializeTweakBars()
+void Engine::GameManager::InitializeTweakBars()
 {
 }
 #endif

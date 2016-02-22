@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "Renderer.h"
-#include "GameManager.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -26,7 +25,9 @@ using namespace Math;
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
-Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
+Renderer::Renderer(int windowWidth, int windowHeight) :
+	m_windowWidth(windowWidth),
+	m_windowHeight(windowHeight),
 	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
 	m_backgroundColor(GET_CONFIG_VALUE("ClearColorRed", REAL_ZERO),
 		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
@@ -34,8 +35,6 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
 	//m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
-	m_window(window),
-	m_threadWindow(threadWindow),
 	m_vao(0),
 	m_fogEnabled(GET_CONFIG_VALUE("fogEnabled", true)),
 	m_fogColor(GET_CONFIG_VALUE("fogColor_x", 0.7f),
@@ -143,7 +142,6 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 {
 	NOTICE_LOG("Creating Renderer instance started");
 	START_PROFILING;
-	SetCallbacks();
 
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
@@ -205,9 +203,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
-	int width, height;
-	glfwGetWindowSize(m_window, &width, &height);
-	m_filterTexture = new Texture(width, height, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_filterTexture = new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	m_filterMaterial = new Material(m_filterTexture);
 	m_filterMesh = new Mesh("plane4.obj");
@@ -218,7 +214,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 	m_cubeMapShader = new Shader(GET_CONFIG_VALUE_STR("cubeShadowMapShader", "CubeShadowMapGenerator"));
 	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
 	m_cubeShadowMap = new CubeShadowMap();
-	m_cubeShadowMap->Init(width, height);
+	m_cubeShadowMap->Init(windowWidth, windowHeight);
 
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
@@ -247,7 +243,7 @@ Renderer::Renderer(GLFWwindow* window, GLFWwindow* threadWindow) :
 
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
-	SetTexture("displayTexture", new Texture(width, height, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+	SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -362,23 +358,9 @@ Renderer::~Renderer(void)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
 #endif
-	glfwTerminate(); // Terminate GLFW
 
 	STOP_PROFILING;
 	NOTICE_LOG("Rendering engine destroyed");
-}
-
-void Renderer::SetCallbacks()
-{
-	CHECK_CONDITION_EXIT(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
-	glfwSetWindowCloseCallback(m_window, &Core::CoreEngine::WindowCloseEventCallback);
-	glfwSetWindowSizeCallback(m_window, &Core::CoreEngine::WindowResizeCallback);
-	glfwSetKeyCallback(m_window, &Core::CoreEngine::KeyEventCallback);
-	//glfwSetCharCallback(m_window, Core::CoreEngine::CharEventCallback);
-	//glfwSetMousePosCallback(m_window, Core::CoreEngine::MouseMotionCallback);
-	glfwSetCursorPosCallback(m_window, &Core::CoreEngine::MousePosCallback);
-	glfwSetMouseButtonCallback(m_window, &Core::CoreEngine::MouseEventCallback);
-	glfwSetScrollCallback(m_window, &Core::CoreEngine::ScrollEventCallback);
 }
 
 void Renderer::InitializeCubeMap()
@@ -416,7 +398,7 @@ Texture* Renderer::InitializeCubeMapTexture(const std::string& cubeMapTextureDir
 	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
 
 	FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + cubeMapTextureDirectory);
 	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
@@ -524,8 +506,6 @@ void Renderer::Render(const GameNode& gameNode)
 	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
 	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
 		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
-
-	AdjustAmbientLightAccordingToCurrentTime();
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	SetVector3D("ambientFogColor", m_fogColor);
@@ -673,7 +653,7 @@ void Renderer::RenderWaterNodes()
 	SetTexture("waterDUDVMap", m_waterDUDVTexture);
 	SetTexture("waterNormalMap", m_waterNormalMap);
 	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
-	m_waterMoveFactor += m_waterWaveSpeed * Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
+	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
@@ -1000,42 +980,41 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	STOP_PROFILING;
 }
 
-void Renderer::AdjustAmbientLightAccordingToCurrentTime()
+void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
 {
 	START_PROFILING;
 	/* ==================== Adjusting the time variables begin ==================== */
-	Math::Real daytimeTransitionFactor, dayNightMixFactor;
-	Rendering::GameTime::Daytime daytime = Core::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 
-	switch (daytime)
+	Math::Real dayNightMixFactor;
+
+	switch (dayTime)
 	{
-	case GameTime::NIGHT:
+	case Utility::Timing::NIGHT:
 		dayNightMixFactor = REAL_ZERO;
 		m_ambientLight = m_ambientNighttimeColor;
 		break;
-	case GameTime::BEFORE_DAWN:
+	case Utility::Timing::BEFORE_DAWN:
 		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor);
 		break;
-	case GameTime::SUNRISE:
-		dayNightMixFactor = daytimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
+	case Utility::Timing::SUNRISE:
+		dayNightMixFactor = dayTimeTransitionFactor;
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor);
 		break;
-	case GameTime::DAY:
+	case Utility::Timing::DAY:
 		dayNightMixFactor = REAL_ONE;
 		m_ambientLight = m_ambientDaytimeColor;
 		break;
-	case GameTime::SUNSET:
-		dayNightMixFactor = daytimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, daytimeTransitionFactor);
+	case Utility::Timing::SUNSET:
+		dayNightMixFactor = dayTimeTransitionFactor;
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor);
 		break;
-	case GameTime::AFTER_DUSK:
+	case Utility::Timing::AFTER_DUSK:
 		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, daytimeTransitionFactor);
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor);
 		break;
 	}
-	//DEBUG_LOG("Sunset started. Time = %.1f\tDayNightMixFactor = %.4f. Ambient light = (%s)",
-	//	timeOfDay, dayNightMixFactor, m_ambientLight.ToString().c_str());
+
 	SetReal("dayNightMixFactor", dayNightMixFactor);
 	/* ==================== Adjusting the time variables end ==================== */
 	STOP_PROFILING;
@@ -1213,10 +1192,8 @@ void Renderer::AddCamera(CameraBase* camera)
 
 void Renderer::BindAsRenderTarget()
 {
-	int width, height;
-	glfwGetWindowSize(m_window, &width, &height);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, m_windowWidth, m_windowHeight);
 }
 
 void Renderer::BindCubeShadowMap(unsigned int textureUnit) const

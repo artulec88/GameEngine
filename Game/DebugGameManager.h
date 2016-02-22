@@ -1,7 +1,7 @@
 #ifndef __GAME_DEBUG_GAME_MANAGER_H__
 #define __GAME_DEBUG_GAME_MANAGER_H__
 
-#include <Rendering\GameManager.h>
+#include <Engine\GameManager.h>
 #include <Rendering\GameNode.h>
 
 #include "GameStats.h"
@@ -12,7 +12,7 @@
 namespace Game
 {
 
-class DebugGameManager : public Core::GameManager
+class DebugGameManager : public Engine::GameManager
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

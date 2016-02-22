@@ -1,6 +1,6 @@
 #include "ResumeGameCommand.h"
 
-Game::ResumeGameCommand::ResumeGameCommand(Core::GameManager& gameManager) :
+Game::ResumeGameCommand::ResumeGameCommand(Engine::GameManager& gameManager) :
 	m_gameManager(gameManager)
 {
 }

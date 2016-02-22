@@ -2,7 +2,7 @@
 #define __LOAD_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\GameState.h"
+#include "Engine\GameState.h"
 #include "Rendering\IRenderable.h"
 #include "Rendering\IUpdateable.h"
 #include "Rendering\GameNode.h"
@@ -19,7 +19,7 @@ namespace Game
 	class Rendering::Shader;
 
 /* TODO: Consider inheriting from Rendering::IUpdateable class */
-class LoadGameState : public Rendering::GameState, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
+class LoadGameState : public Engine::GameState, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

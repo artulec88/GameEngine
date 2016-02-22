@@ -15,13 +15,13 @@ namespace Engine
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API LookAtComponent(Rendering::GameNode* gameNode);
-		RENDERING_API virtual ~LookAtComponent(void);
+		ENGINE_API LookAtComponent(Rendering::GameNode* gameNode);
+		ENGINE_API virtual ~LookAtComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual void Update(Math::Real delta);
+		virtual void Update(Math::Real delta);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

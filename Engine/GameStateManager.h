@@ -1,17 +1,17 @@
-#ifndef __RENDERING_GAME_STATE_MANAGER_H__
-#define __RENDERING_GAME_STATE_MANAGER_H__
+#ifndef __ENGINE_GAME_STATE_MANAGER_H__
+#define __ENGINE_GAME_STATE_MANAGER_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "GameState.h"
-#include "IInputableKeyboard.h"
-#include "IInputableMouse.h"
-#include "IRenderable.h"
-#include "IUpdateable.h"
+#include "Rendering\IInputableKeyboard.h"
+#include "Rendering\IInputableMouse.h"
+#include "Rendering\IRenderable.h"
+#include "Rendering\IUpdateable.h"
 #include "Math\Math.h"
 #include <vector>
 #include <stack>
 
-namespace Rendering
+namespace Engine
 {
 	namespace GameStateModality
 	{
@@ -46,14 +46,14 @@ namespace Rendering
 		{
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
+			ENGINE_API GameStateTransition(GameState* gameState, TransitionType transitionType, GameStateModality::ModalityType modalityType) :
 				m_transitionType(transitionType),
 				m_gameState(gameState),
 				m_modalityType(modalityType)
 			{
 			}
 
-			RENDERING_API ~GameStateTransition()
+			ENGINE_API ~GameStateTransition()
 			{
 				SAFE_DELETE(m_gameState);
 			}
@@ -61,9 +61,9 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			RENDERING_API GameState* GetGameState() const { return m_gameState; }
-			RENDERING_API TransitionType GetTransitionType() const { return m_transitionType; }
-			RENDERING_API GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
+			ENGINE_API GameState* GetGameState() const { return m_gameState; }
+			ENGINE_API TransitionType GetTransitionType() const { return m_transitionType; }
+			ENGINE_API GameStateModality::ModalityType GetModalityType() const { return m_modalityType; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -78,15 +78,15 @@ namespace Rendering
 /// <summary>
 /// Interface for a stack-based game state manager.
 /// </summary>
-class GameStateManager : public virtual Input::IInputableKeyboard, public virtual Input::IInputableMouse, public virtual IRenderable, public virtual IUpdateable
+class GameStateManager : public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API GameStateManager();
+	ENGINE_API GameStateManager();
 	/// <summary>
 	/// Destroys the game state manager, leaving and dropping any active game state.
 	/// </summary>
-	RENDERING_API virtual ~GameStateManager(void);
+	ENGINE_API virtual ~GameStateManager(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -141,7 +141,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	virtual void Render(Shader* shader, Renderer* renderer) const = 0;
+	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
 
@@ -175,10 +175,10 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Initializes a new game state manager </summary>
-	RENDERING_API DefaultGameStateManager();
+	ENGINE_API DefaultGameStateManager();
 
 	/// <summary> Destroys the game state manager, leaving and dropping any active game state. </summary>
-	RENDERING_API virtual ~DefaultGameStateManager(void);
+	ENGINE_API virtual ~DefaultGameStateManager(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -217,7 +217,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	void Render(Shader* shader, Renderer* renderer) const;
+	void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it
@@ -256,13 +256,13 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::vector<GameStateModalityTypePair> m_activeStates;
-	std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
-	std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
-	std::vector<IRenderable*> m_exposedRenderables;
-	std::vector<IUpdateable*> m_exposedUpdateables;
+	std::vector<Rendering::Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
+	std::vector<Rendering::Input::IInputableMouse*> m_exposedInputablesMouse;
+	std::vector<Rendering::IRenderable*> m_exposedRenderables;
+	std::vector<Rendering::IUpdateable*> m_exposedUpdateables;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DefaultGameStateManager */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_GAME_STATE_MANAGER_H__ */
+#endif /* __ENGINE_GAME_STATE_MANAGER_H__ */

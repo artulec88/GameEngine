@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "DirectionalLight.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "Shader.h"
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
@@ -88,46 +88,44 @@ std::string DirectionalLight::ToString() const
 #ifdef SIMULATE_SUN_BEHAVIOR
 void DirectionalLight::Update(Math::Real delta)
 {
-	Core::CoreEngine* coreEngine = Core::CoreEngine::GetCoreEngine();
-	Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
-	Math::Angle sunElevation = coreEngine->GetSunElevation();
-	Math::Angle sunAzimuth = coreEngine->GetSunAzimuth();
-	Math::Real daytimeTransitionFactor;
-	Rendering::GameTime::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
+	DELOCUST_LOG("Directional light update with delta time = %.5f", delta);
 
-	m_isEnabled = (daytime != Rendering::GameTime::NIGHT);
+	//Core::CoreEngine* coreEngine = Core::CoreEngine::GetCoreEngine();
+	//Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();
+	//Math::Angle sunElevation = coreEngine->GetSunElevation();
+	//Math::Angle sunAzimuth = coreEngine->GetSunAzimuth();
+	//Math::Real daytimeTransitionFactor;
+	//Rendering::GameTime::Daytime daytime = coreEngine->GetCurrentDaytime(daytimeTransitionFactor);
 
-	switch (daytime)
-	{
-	case GameTime::NIGHT:
-		m_color = m_sunlightNighttimeColor;
-		break;
-	case GameTime::BEFORE_DAWN:
-		m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-		m_intensity = daytimeTransitionFactor * m_maxIntensity;
-		break;
-	case GameTime::SUNRISE:
-		m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-		m_intensity = m_maxIntensity;
-		break;
-	case GameTime::DAY:
-		m_color = m_sunlightDaytimeColor;
-		break;
-	case GameTime::SUNSET:
-		m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
-		m_intensity = m_maxIntensity;
-		break;
-	case GameTime::AFTER_DUSK:
-		m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
-		m_intensity = daytimeTransitionFactor * m_maxIntensity;
-		break;
-	}
-	Math::Matrix4D rotMatrix(-sunElevation, -sunAzimuth);
-	GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
-	// e.g. GetTransform().SetRot(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), 0.5f, true));
+	//m_isEnabled = (daytime != Rendering::GameTime::NIGHT);
 
-	//GetTransform().Rotate(GetTransform().GetRot().Slerp(Math::Quaternion(rotMatrix), delta * 5, true));
-	//GetTransform().Rotate(Math::Quaternion(rotMatrix));
+	//switch (daytime)
+	//{
+	//case GameTime::NIGHT:
+	//	m_color = m_sunlightNighttimeColor;
+	//	break;
+	//case GameTime::BEFORE_DAWN:
+	//	m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
+	//	m_intensity = daytimeTransitionFactor * m_maxIntensity;
+	//	break;
+	//case GameTime::SUNRISE:
+	//	m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
+	//	m_intensity = m_maxIntensity;
+	//	break;
+	//case GameTime::DAY:
+	//	m_color = m_sunlightDaytimeColor;
+	//	break;
+	//case GameTime::SUNSET:
+	//	m_color = m_sunNearHorizonColor.Lerp(m_sunlightDaytimeColor, daytimeTransitionFactor);
+	//	m_intensity = m_maxIntensity;
+	//	break;
+	//case GameTime::AFTER_DUSK:
+	//	m_color = m_sunlightNighttimeColor.Lerp(m_sunNearHorizonColor, daytimeTransitionFactor);
+	//	m_intensity = daytimeTransitionFactor * m_maxIntensity;
+	//	break;
+	//}
+	//Math::Matrix4D rotMatrix(-sunElevation, -sunAzimuth);
+	//GetTransform().SetRot(Math::Quaternion(rotMatrix)); // TODO: Use quaternion interpolation to smoothly go from one rotation to another (see LookAtComponent.cpp)
 }
 
 #endif

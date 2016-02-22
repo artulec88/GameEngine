@@ -54,20 +54,6 @@
 
 namespace Rendering
 {
-	// TODO: This namespace should be a part of the CoreEngine project and should not be contained in the Rendering namespace.
-	namespace GameTime
-	{
-		enum Daytime
-		{
-			NIGHT = 0,
-			BEFORE_DAWN,
-			SUNRISE,
-			DAY,
-			SUNSET,
-			AFTER_DUSK
-		};
-	}
-
 	namespace FogEffect
 	{
 		// must match the values in the FogCalculationType
@@ -114,9 +100,7 @@ namespace Rendering
 	void DetermineGlVersion();
 	void PrintGlReport();
 
-	GLFWwindow* InitGraphics(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
-	GLFWwindow* InitGlfw(int width, int height, const std::string& title, GLFWwindow*& threadWindow);
-	void InitGlew();
+	RENDERING_API void InitGraphics(int width, int height);
 	void CheckErrorCode(const char* functionName, const char* comment);
 	void CheckFramebufferStatus();
 
@@ -193,8 +177,8 @@ namespace Rendering
 #ifdef ANT_TWEAK_BAR_ENABLED
 	void TW_CALL TweakBarErrorHandler(const char* errorMessage);
 
-	void InitializeTweakBars();
-	void CheckChangesAndUpdateGLState();
+	RENDERING_API void InitializeTweakBars();
+	RENDERING_API void CheckChangesAndUpdateGLState();
 	void UpdateBlendParameters();
 	void UpdateColorLogicOperationParameters();
 	void UpdateCullFaceParameters();

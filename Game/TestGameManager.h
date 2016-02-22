@@ -1,7 +1,7 @@
 #ifndef __GAME_TEST_GAME_MANAGER_H__
 #define __GAME_TEST_GAME_MANAGER_H__
 
-#include <Rendering\GameManager.h>
+#include <Engine\GameManager.h>
 #include <Rendering\GameNode.h>
 #include <Rendering\DirectionalLight.h>
 #include <Rendering\PointLight.h>
@@ -15,7 +15,7 @@
 namespace Game
 {
 
-class TestGameManager : public Core::GameManager
+class TestGameManager : public Engine::GameManager
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

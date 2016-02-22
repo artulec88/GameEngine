@@ -2,7 +2,7 @@
 #define __GAME_RESUME_GAME_COMMAND_H__
 
 #include "Engine\GameCommand.h"
-#include "Rendering\GameManager.h"
+#include "Engine\GameManager.h"
 
 namespace Game
 {
@@ -14,7 +14,7 @@ namespace Game
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ResumeGameCommand(Core::GameManager& gameManager);
+		ResumeGameCommand(Engine::GameManager& gameManager);
 		virtual ~ResumeGameCommand();
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -25,7 +25,7 @@ namespace Game
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		Core::GameManager& m_gameManager;
+		Engine::GameManager& m_gameManager;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ResumeGameCommand */
 

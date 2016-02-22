@@ -2,7 +2,7 @@
 #include "GameNode.h"
 #include "GameComponent.h"
 //#include "Renderer.h"
-#include "CoreEngine.h"
+//#include "CoreEngine.h"
 #include "IRenderable.h"
 #include "IInputable.h"
 #include "IUpdateable.h"
