@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Builder.h"
 #include "CoreEngine.h"
+#include "CameraComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
 
@@ -414,7 +415,7 @@ void Engine::CameraBuilder::SetupCameraParams()
 
 	//Rendering::CameraComponent* camera = new Rendering::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
 	//	initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
-	Rendering::CameraComponent* camera = new Rendering::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
+	Engine::CameraComponent* camera = new Engine::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	m_gameNode->AddComponent(camera);
 	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
 }

@@ -20,7 +20,7 @@ TextRenderer::TextRenderer(Renderer* renderer, Texture* fontTexture, Math::Real 
 	//m_windowWidth(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowWidth())),
 	//m_windowHeight(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowHeight())),
 	m_transform(), /* TODO: Fix transform. */
-	m_projection(REAL_ZERO, renderer->GetWindowWidth(), REAL_ZERO, renderer->GetWindowHeight(), -REAL_ONE, REAL_ONE)
+	m_projection(REAL_ZERO, static_cast<Math::Real>(renderer->GetWindowWidth()), REAL_ZERO, static_cast<Math::Real>(renderer->GetWindowHeight()), -REAL_ONE, REAL_ONE)
 {
 	if (fontTexture == NULL)
 	{
@@ -144,8 +144,8 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
 	Math::Real yReal = static_cast<Math::Real>(y);
-	const Math::Real screenHalfWidth = m_renderer->GetWindowWidth() / 2;
-	const Math::Real screenHalfHeight = m_renderer->GetWindowHeight() / 2;
+	const int screenHalfWidth = m_renderer->GetWindowWidth() / 2;
+	const int screenHalfHeight = m_renderer->GetWindowHeight() / 2;
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{
 		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
@@ -190,8 +190,8 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 
 	//Updating uniforms
 	m_fontMaterial->SetVector3D("textColor", fontColor);
-	m_fontMaterial->SetReal("screenWidth", m_renderer->GetWindowWidth());
-	m_fontMaterial->SetReal("screenHeight", m_renderer->GetWindowHeight());
+	m_fontMaterial->SetReal("screenWidth", static_cast<Math::Real>(m_renderer->GetWindowWidth()));
+	m_fontMaterial->SetReal("screenHeight", static_cast<Math::Real>(m_renderer->GetWindowHeight()));
 	m_textShader.UpdateUniforms(m_transform, m_fontMaterial, renderer);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);

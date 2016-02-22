@@ -226,7 +226,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	}
 
 	m_fontTexture = new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	m_textRenderer = new TextRenderer(m_fontTexture);
 
 	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
 	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR("waterNormalMap", "waterNormalMap.png"));
@@ -703,7 +702,7 @@ void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
 	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
 	cameraTransform.GetRot().InvertPitch();
 
-	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* add 0.1f to remove some glitches on the water surface */);
+	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 	m_waterReflectionTexture->BindAsRenderTarget();
 	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
@@ -901,6 +900,10 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 //void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 //{
 //	START_PROFILING;
+//	if (m_textRenderer == NULL)
+//	{
+//		m_textRenderer = new TextRenderer(this, m_fontTexture);
+//	}
 //	BindAsRenderTarget();
 //	ClearScreen(m_backgroundColor);
 //	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
@@ -930,6 +933,10 @@ void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& 
 void Renderer::RenderMainMenu()
 {
 	START_PROFILING;
+	if (m_textRenderer == NULL)
+	{
+		m_textRenderer = new TextRenderer(this, m_fontTexture);
+	}
 	BindAsRenderTarget();
 	ClearScreen(m_backgroundColor);
 	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
@@ -960,6 +967,7 @@ void Renderer::RenderMainMenu()
 void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 {
 	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID(m_textRenderer != NULL, Utility::Error, "Loading screen cannot be rendered. The text renderer is NULL.");
 	BindAsRenderTarget();
 	ClearScreen();
 	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
