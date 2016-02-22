@@ -6,8 +6,8 @@
 
 using namespace Rendering;
 
-MeshRenderer::MeshRenderer(Mesh* mesh, Material* material) :
-	GameComponent(),
+MeshRenderer::MeshRenderer(Math::Transform& transform, Mesh* mesh, Material* material) :
+	m_transform(transform),
 	m_mesh(mesh),
 	m_material(material)
 {

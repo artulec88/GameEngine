@@ -4,8 +4,8 @@
 #include "Material.h"
 #include "Shader.h"
 
-Rendering::MeshGroupRenderer::MeshGroupRenderer(Rendering::Mesh* mesh, Rendering::Material* material) :
-	Rendering::GameComponent(),
+Rendering::MeshGroupRenderer::MeshGroupRenderer(Math::Transform& transform, Rendering::Mesh* mesh, Rendering::Material* material) :
+	m_transform(transform),
 	m_mesh(mesh),
 	m_material(material)
 {

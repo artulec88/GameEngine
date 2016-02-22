@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "Rendering\GameNode.h"
 #include "Rendering\SpotLight.h"
+#include "Rendering\Texture.h"
 #include <string>
 
 #define BUILD_MESH_RENDERER
@@ -221,6 +222,35 @@ namespace Engine
 		Rendering::GameNode* m_gameNodeToFollow;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
+
+	class SkyboxBuilder : public Builder
+	{
+	/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions end ==================== */
+
+	/* ==================== Constructors and destructors begin ==================== */
+	public:
+		ENGINE_API SkyboxBuilder();
+		ENGINE_API virtual ~SkyboxBuilder(void);
+	private:
+		SkyboxBuilder(SkyboxBuilder& skyboxBuilder);
+		void operator=(SkyboxBuilder& skyboxBuilder);
+	/* ==================== Constructors and destructors end ==================== */
+
+	/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void BuildPart1();
+		virtual void BuildPart2();
+#ifdef BUILD_MESH_RENDERER
+		virtual void BuildMeshRenderer();
+#endif
+	private:
+		Rendering::Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end class SkyboxBuilder */
 
 } /* end namespace Engine */
 

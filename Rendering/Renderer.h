@@ -106,6 +106,11 @@ public:
 	
 	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
+	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
+	RENDERING_API void AddWaterNode(GameNode* waterNode);
+	RENDERING_API void AddBillboardNode(GameNode* billboardNode);
+	RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
+
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
@@ -153,9 +158,6 @@ public:
 
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
-	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
-	RENDERING_API void AddWaterNode(GameNode* waterNode);
-	RENDERING_API void AddBillboardNode(GameNode* billboardNode);
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -266,7 +268,6 @@ protected:
 		m_samplerMap[name] = value;
 	}
 private:
-	void InitializeCubeMap();
 	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
 	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
@@ -341,8 +342,6 @@ private:
 	GameNode* m_skyboxNode;
 	Shader* m_skyboxShader;
 	Shader* m_skyboxProceduralShader;
-	Texture* m_skyboxTextureDay;
-	Texture* m_skyboxTextureNight;
 
 	const Math::Real m_defaultShadowMinVariance;
 	Shader* m_cubeMapShader; // for use by the point lights

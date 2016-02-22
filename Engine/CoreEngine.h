@@ -131,6 +131,9 @@ public:
 	std::string GetModelsDirectory() const { return m_modelsDirectory; }
 	std::string GetTexturesDirectory() const { return m_texturesDirectory; }
 
+	void AddLight(Rendering::Lighting::BaseLight* light);
+	void AddCamera(Rendering::CameraBase* camera);
+	void AddSkyboxNode(Rendering::GameNode* skyboxNode);
 	void AddWaterNode(Rendering::GameNode* waterNode);
 	void AddTerrainNode(Rendering::GameNode* terrainNode);
 	void AddBillboardNode(Rendering::GameNode* billboardNode);

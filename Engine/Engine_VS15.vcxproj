@@ -163,6 +163,8 @@
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MenuEntry.h" />
+    <ClInclude Include="MeshGroupRendererComponent.h" />
+    <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="QuitGameCommand.h" />
@@ -195,6 +197,8 @@
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />
+    <ClCompile Include="MeshGroupRendererComponent.cpp" />
+    <ClCompile Include="MeshRendererComponent.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="QuitGameCommand.cpp" />

@@ -840,6 +840,21 @@ Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransi
 	return m_daytime;
 }
 
+void CoreEngine::AddLight(Rendering::Lighting::BaseLight* light)
+{
+	m_renderer->AddLight(light);
+}
+
+void CoreEngine::AddCamera(Rendering::CameraBase* camera)
+{
+	m_renderer->AddCamera(camera);
+}
+
+void CoreEngine::AddSkyboxNode(Rendering::GameNode* skyboxNode)
+{
+	m_renderer->AddSkyboxNode(skyboxNode);
+}
+
 void CoreEngine::AddWaterNode(Rendering::GameNode* waterNode)
 {
 	m_renderer->AddWaterNode(waterNode);

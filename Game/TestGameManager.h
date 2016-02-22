@@ -47,6 +47,7 @@ private:
 	void AddPointLights();
 	void AddSpotLights();
 	void AddCameras(Rendering::GameNode* entityToFollow);
+	void AddSkybox() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

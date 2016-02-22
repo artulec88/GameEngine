@@ -5,8 +5,10 @@
 #include "DirectionalLightComponent.h"
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
+#include "MeshRendererComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
+#include "Utility\FileManager.h"
 
 #ifdef BUILD_MESH_RENDERER
 #include "Rendering\MeshRenderer.h"
@@ -140,7 +142,7 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight));
 
-	Engine::CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(directionalLight);
+	Engine::CoreEngine::GetCoreEngine()->AddLight(directionalLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -151,9 +153,8 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("DirectionalLight.png"), 1, 8);
 
 	m_gameNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
-	m_gameNode->AddComponent(new Rendering::MeshRenderer(
-		new Rendering::Mesh("DirectionalLight.obj"),
-		new Rendering::Material(new Rendering::Texture("DirectionalLight.png"), 1.0f, 8.0f)));
+	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(new Rendering::Texture("DirectionalLight.png"), 1.0f, 8.0f));
+	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
 		
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -231,16 +232,15 @@ void Engine::PointLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(new PointLightComponent(pointLight));
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(pointLight);
+	CoreEngine::GetCoreEngine()->AddLight(pointLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
 void Engine::PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
-	m_gameNode->AddComponent(new Rendering::MeshRenderer(
-		/* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"),
-		new Rendering::Material(new Rendering::Texture("PointLight.png"), 1.0f, 8.0f)));
+	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), /* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(new Rendering::Texture("PointLight.png"), 1.0f, 8.0f));
+	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
 	m_gameNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -320,16 +320,15 @@ void Engine::SpotLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(new SpotLightComponent(spotLight));
 
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddLight(spotLight);
+	CoreEngine::GetCoreEngine()->AddLight(spotLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
 void Engine::SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
-	m_gameNode->AddComponent(new Rendering::MeshRenderer(
-		new Rendering::Mesh("SpotLight.obj"),
-		new Rendering::Material(new Rendering::Texture("SpotLight.png"), 1.0f, 8.0f)));
+	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(new Rendering::Texture("SpotLight.png"), 1.0f, 8.0f));
+	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
 	m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -421,7 +420,7 @@ void Engine::CameraBuilder::SetupCameraParams()
 	//	initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 	Engine::CameraComponent* camera = new Engine::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	m_gameNode->AddComponent(camera);
-	CoreEngine::GetCoreEngine()->GetRenderer()->AddCamera(camera);
+	CoreEngine::GetCoreEngine()->AddCamera(camera);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -434,4 +433,116 @@ void Engine::CameraBuilder::BuildMeshRenderer()
 	//m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
+/* ==================== CameraBuilder implementation end ==================== */
+
+
+/* ==================== SkyboxBuilder implementation begin ==================== */
+Engine::SkyboxBuilder::SkyboxBuilder() :
+	Builder()
+{
+}
+
+Engine::SkyboxBuilder::~SkyboxBuilder()
+{
+}
+
+void Engine::SkyboxBuilder::BuildPart1()
+{
+	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
+	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
+	Rendering::Texture* skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
+	Rendering::Texture* skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
+
+	//SetTexture("cubeMapDay", m_skyboxTextureDay);
+	//SetTexture("cubeMapNight", m_skyboxTextureNight);
+
+	Rendering::Material* skyboxMaterial = new Rendering::Material(skyboxTextureDay, "cubeMapDay");
+	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
+
+	m_gameNode = new Rendering::GameNode();
+	m_gameNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_gameNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
+	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), skyboxMaterial);
+	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
+
+	CoreEngine::GetCoreEngine()->AddSkyboxNode(m_gameNode);
+}
+
+void Engine::SkyboxBuilder::BuildPart2()
+{
+}
+
+#ifdef BUILD_MESH_RENDERER
+void Engine::SkyboxBuilder::BuildMeshRenderer()
+{
+}
+#endif
+
+Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
+{
+	//START_PROFILING;
+	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
+	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
+	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
+	const std::string EXPECTED_POS_Y_FACE_FILENAME = "up";
+	const std::string EXPECTED_NEG_Y_FACE_FILENAME = "down";
+	const std::string EXPECTED_POS_Z_FACE_FILENAME = "front";
+	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
+
+	Utility::FileManager fileManager;
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
+	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	bool cubeMapNegYFaceFileFound = false; std::string cubeMapNegYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	bool cubeMapPosZFaceFileFound = false; std::string cubeMapPosZFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	bool cubeMapNegZFaceFileFound = false; std::string cubeMapNegZFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
+	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
+	{
+		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_X_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapPosXFaceFileFound = true;
+			cubeMapPosXFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_X_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapNegXFaceFileFound = true;
+			cubeMapNegXFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Y_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapPosYFaceFileFound = true;
+			cubeMapPosYFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Y_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapNegYFaceFileFound = true;
+			cubeMapNegYFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Z_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapPosZFaceFileFound = true;
+			cubeMapPosZFaceFileName += (*filenameItr);
+		}
+		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Z_FACE_FILENAME) != std::string::npos))
+		{
+			cubeMapNegZFaceFileFound = true;
+			cubeMapNegZFaceFileName += (*filenameItr);
+		}
+	}
+	CHECK_CONDITION_EXIT(cubeMapPosXFaceFileFound, Utility::Error, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegXFaceFileFound, Utility::Error, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapPosYFaceFileFound, Utility::Error, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegYFaceFileFound, Utility::Error, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapPosZFaceFileFound, Utility::Error, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT(cubeMapNegZFaceFileFound, Utility::Error, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	Rendering::Texture* cubeMapTexture = new Rendering::Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
+	if (cubeMapTexture == NULL)
+	{
+		ERROR_LOG("Cube map texture is NULL");
+		exit(EXIT_FAILURE);
+	}
+	//STOP_PROFILING;
+	return cubeMapTexture;
+}
 /* ==================== CameraBuilder implementation end ==================== */
