@@ -108,9 +108,6 @@
     <ClInclude Include="GameNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IInputable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IInputableKeyboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>

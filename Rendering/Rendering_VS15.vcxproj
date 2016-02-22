@@ -182,7 +182,6 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameNode.h" />
-    <ClInclude Include="IInputable.h" />
     <ClInclude Include="IInputableKeyboard.h" />
     <ClInclude Include="IInputableMouse.h" />
     <ClInclude Include="IRenderable.h" />
