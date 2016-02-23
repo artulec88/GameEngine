@@ -52,6 +52,17 @@
 
 namespace Rendering
 {
+	namespace Text
+	{
+		enum Alignment
+		{
+			LEFT = 0,
+			RIGHT,
+			CENTER,
+			//JUSTIFY // TODO: Implement JUSTIFY alignment
+		}; /* end enum Alignment */
+	} /* end namespace Text */
+
 	namespace FogEffect
 	{
 		// must match the values in the FogCalculationType

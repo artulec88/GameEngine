@@ -31,12 +31,12 @@ class MenuEntry
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
-	static const Math::Vector3D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
-	static const Math::Vector3D SELECTED_MENU_ENTRY_TEXT_COLOR;
+	static const Math::Vector4D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
+	static const Math::Vector4D SELECTED_MENU_ENTRY_TEXT_COLOR;
 public:
 	//static void InitializeMenuColors();
-	static const Math::Vector3D& GetNotSelectedMenuEntryTextColor();
-	static const Math::Vector3D& GetSelectedMenuEntryTextColor();
+	ENGINE_API static const Math::Vector4D& GetNotSelectedMenuEntryTextColor();
+	ENGINE_API static const Math::Vector4D& GetSelectedMenuEntryTextColor();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -50,8 +50,8 @@ public:
 public:
 	std::string GetText() const { return m_text; }
 	void SetParent(MenuEntry* parent) { m_parentMenuEntry = parent; }
-	int GetChildrenCount() const;
-	std::string GetChildrenText(int index) const;
+	ENGINE_API int GetChildrenCount() const;
+	ENGINE_API std::string GetChildrenText(int index) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	void SelectChildMenuEntry(int index);

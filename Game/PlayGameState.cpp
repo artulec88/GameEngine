@@ -151,7 +151,8 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 	Utility::Timing::Daytime daytime = Engine::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 	renderer->AdjustAmbientLightAccordingToCurrentTime(daytime, daytimeTransitionFactor);
 
-	renderer->RenderMainMenu();
+	renderer->ClearScreen();
+	renderer->RenderString(Rendering::Text::CENTER, 350 - 100, "PlayGameState");
 	//renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
 	STOP_PROFILING;
 }

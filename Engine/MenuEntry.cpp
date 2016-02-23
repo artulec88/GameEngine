@@ -3,16 +3,16 @@
 #include "Utility\IConfig.h"
 #include <sstream>
 
-/* static */ const Math::Vector3D Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ZERO, REAL_ZERO);
-/* static */ const Math::Vector3D Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ONE, REAL_ONE);
+/* static */ const Math::Vector4D Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ONE);
+/* static */ const Math::Vector4D Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
 ///* static */ void MenuEntry::InitializeMenuColors()
 //{
 //}
-/* static */ const Math::Vector3D& Engine::MenuEntry::GetNotSelectedMenuEntryTextColor()
+/* static */ const Math::Vector4D& Engine::MenuEntry::GetNotSelectedMenuEntryTextColor()
 {
 	return Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
 }
-/* static */ const Math::Vector3D& Engine::MenuEntry::GetSelectedMenuEntryTextColor()
+/* static */ const Math::Vector4D& Engine::MenuEntry::GetSelectedMenuEntryTextColor()
 {
 	return Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR;
 }

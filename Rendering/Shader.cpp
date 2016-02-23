@@ -557,7 +557,7 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
-void Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, Renderer* renderer) const
+void Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
 	CHECK_CONDITION_EXIT(renderer != NULL, Critical, "Cannot update uniforms. Rendering engine is NULL.");
 	CHECK_CONDITION_EXIT(m_shaderData != NULL, Critical, "Cannot update uniforms. Shader data is NULL.");
@@ -610,7 +610,7 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 				else
 				{
 					unsigned int multitextureIndex = 0; // used only by the multitextures
-					Texture* texture = renderer->GetTexture(unprefixedName, &multitextureIndex);
+					const Texture* texture = renderer->GetTexture(unprefixedName, &multitextureIndex);
 					CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Rendering engine texture \"%s\" is NULL.", unprefixedName.c_str());
 					texture->Bind(samplerSlot, multitextureIndex);
 				}
@@ -667,7 +667,7 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 		else if ((uniformType == Uniforms::SAMPLER_2D) || (uniformType == Uniforms::SAMPLER_CUBE))
 		{
 			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
-			Texture* texture = material->GetTexture(uniformName);
+			const Texture* texture = material->GetTexture(uniformName);
 			CHECK_CONDITION_EXIT(texture != NULL, Critical, "Updating uniforms operation failed. Material texture \"%s\" is NULL.", uniformName.c_str());
 			texture->Bind(samplerSlot);
 			SetUniformi(uniformName, samplerSlot);

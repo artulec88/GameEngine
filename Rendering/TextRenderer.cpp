@@ -12,13 +12,6 @@ const int vertexTempID = 0;
 const int uvTempID = 1;
 
 TextRenderer::TextRenderer(Renderer* renderer, Texture* fontTexture, Math::Real defaultFontSize /* = 32.0f */) :
-	m_renderer(renderer),
-	m_fontMaterial(NULL),
-	m_defaultFontSize(defaultFontSize),
-	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO)),
-	m_textShader(GET_CONFIG_VALUE_STR("textShader", "text-shader")),
-	//m_windowWidth(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowWidth())),
-	//m_windowHeight(static_cast<Math::Real>(Core::CoreEngine::GetCoreEngine()->GetWindowHeight())),
 	m_transform(), /* TODO: Fix transform. */
 	m_projection(REAL_ZERO, static_cast<Math::Real>(renderer->GetWindowWidth()), REAL_ZERO, static_cast<Math::Real>(renderer->GetWindowHeight()), -REAL_ONE, REAL_ONE)
 {
@@ -84,22 +77,22 @@ TextRenderer::~TextRenderer(void)
 	DEBUG_LOG("Text renderer destruction finished");
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const
+void TextRenderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const
 {
-	DrawString(alignment, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
+	RenderString(alignment, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+void TextRenderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
 {
-	DrawString(alignment, y, str, renderer, fontSize, m_defaultFontColor);
+	RenderString(alignment, y, str, renderer, fontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+void TextRenderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
 {
-	DrawString(alignment, y, str, renderer, m_defaultFontSize, fontColor);
+	RenderString(alignment, y, str, renderer, m_defaultFontSize, fontColor);
 }
 
-void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
+void TextRenderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	int x = 0;
 	switch (alignment)
@@ -117,29 +110,29 @@ void TextRenderer::DrawString(Text::Alignment alignment, int y, const std::strin
 	default:
 		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
 	}
-	DrawString(x, y, str, renderer, fontSize, fontColor);
+	RenderString(x, y, str, renderer, fontSize, fontColor);
 }
 
-void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer) const
+void TextRenderer::RenderString(int x, int y, const std::string& str, Renderer* renderer) const
 {
-	DrawString(x, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
+	RenderString(x, y, str, renderer, m_defaultFontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
+void TextRenderer::RenderString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const
 {
-	DrawString(x, y, str, renderer, fontSize, m_defaultFontColor);
+	RenderString(x, y, str, renderer, fontSize, m_defaultFontColor);
 }
 
-void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
+void TextRenderer::RenderString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const
 {
-	DrawString(x, y, str, renderer, m_defaultFontSize, fontColor);
+	RenderString(x, y, str, renderer, m_defaultFontSize, fontColor);
 }
 
-void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
+void TextRenderer::RenderString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const
 {
 	DELOCUST_LOG("Started drawing string \"%s\"", str.c_str());
 
-	Rendering::CheckErrorCode("TextRenderer::DrawString", "Started drawing a string");
+	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
 
 	std::vector<Math::Vector2D> vertices;
 	std::vector<Math::Vector2D> uvs;
@@ -245,5 +238,5 @@ void TextRenderer::DrawString(int x, int y, const std::string& str, Renderer* re
 	{
 		glEnable(GL_DEPTH_TEST);
 	}
-	Rendering::CheckErrorCode("TextRenderer::DrawString", "Finishing drawing a string");
+	Rendering::CheckErrorCode("TextRenderer::RenderString", "Finishing drawing a string");
 }

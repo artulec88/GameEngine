@@ -118,6 +118,10 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 void PlayMenuGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	DEBUG_LOG("PLAY MAIN MENU game state rendering");
-	//renderer->RenderMainMenu(*m_currentMenuEntry);
-	renderer->RenderMainMenu();
+	int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	{
+		renderer->RenderString(Rendering::Text::CENTER, 350 - 100 * i, m_currentMenuEntry->GetChildrenText(i),
+			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
+	}
 }

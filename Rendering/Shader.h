@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_SHADER_H__
+#define __RENDERING_SHADER_H__
 
 #include "Rendering.h"
 #include "Material.h"
@@ -136,7 +137,7 @@ public:
 	void Bind() const;
 	bool IsBound() const;
 	void Unbind() const;
-	void UpdateUniforms(const Math::Transform& transform, const Material* material, Renderer* renderer) const;
+	void UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const;
 
 	void SetUniformi(const std::string& uniformName, int value) const;
 	void SetUniformf(const std::string& uniformName, Math::Real value) const;
@@ -171,3 +172,5 @@ protected:
 }; /* end class Shader */
 
 } /* end namespace Rendering */
+
+#endif // __RENDERING_SHADER_H__

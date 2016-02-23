@@ -123,7 +123,6 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_frameTime(1.0f / maxFrameRate),
 	m_game(game),
 	m_renderer(NULL),
-	m_fpsTextRenderer(NULL),
 	//m_quitGameCommand(m_game),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
@@ -177,8 +176,6 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	CreateRenderer(width, height, title);
 
-	m_fpsTextRenderer = new Rendering::TextRenderer(m_renderer, new Rendering::Texture("Holstein.tga", GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true, GL_COLOR_ATTACHMENT0), 16.0f /* TODO: Configurable font size */);
-
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
 	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	if (m_timeOfDay < REAL_ZERO)
@@ -222,7 +219,6 @@ CoreEngine::~CoreEngine(void)
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
 	SAFE_DELETE(m_renderer);
-	SAFE_DELETE(m_fpsTextRenderer);
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG("Core engine destruction finished");
 
@@ -542,7 +538,7 @@ void CoreEngine::Run()
 #ifdef DRAW_FPS
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
-			m_fpsTextRenderer->DrawString(0, 570, ss.str(), m_renderer);
+			m_renderer->RenderString(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game.IsInGameTimeCalculationEnabled())
@@ -550,7 +546,7 @@ void CoreEngine::Run()
 #ifndef DRAW_FPS
 				std::stringstream ss;
 #endif
-				ss.str(std::string());
+				ss.str("");
 				// TODO: Leading zeros (setfill('0') << setw(5))
 				if (inGameHours < 10) { ss << "Time: 0"; }
 				else { ss << "Time: "; }
@@ -567,7 +563,7 @@ void CoreEngine::Run()
 						ss << ":" << inGameSeconds;
 					}
 				}
-				m_fpsTextRenderer->DrawString(0, 550, ss.str(), m_renderer);
+				m_renderer->RenderString(0, 550, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
 			}
 #endif
 #endif

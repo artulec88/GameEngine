@@ -20,14 +20,14 @@ void main()
 }
 
 #elif defined(FS_BUILD)
-uniform vec3 textColor;
+uniform vec4 textColor;
 uniform sampler2D diffuse; // font texture
 
 DeclareFragOutput(0, vec4);
 void main()
 {
 	//vec4 vFragColor = texture(diffuse, texCoord0.st) * vec4(1.0, 0.0, 0.0, 1.0);
-	vec4 vFragColor = texture(diffuse, texCoord0.st) * vec4(textColor, 1.0);
+	vec4 vFragColor = texture(diffuse, texCoord0.st) * textColor;
 	if (vFragColor.rgb == vec3(0.0, 0.0, 0.0))
 	{
 		//SetFragOutput(0, vec4(0.0, 1.0, 0.0, 1.0));

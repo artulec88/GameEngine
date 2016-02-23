@@ -122,7 +122,14 @@ void MenuGameState::Render(Shader* shader, Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG("MAIN MENU game state rendering");
-	//renderer->RenderMainMenu(*m_currentMenuEntry);
-	renderer->RenderMainMenu();
+
+	renderer->BindAsRenderTarget();
+	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
+	int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	{
+		renderer->RenderString(Rendering::Text::CENTER, 350 - 100 * i, m_currentMenuEntry->GetChildrenText(i),
+			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
+	}
 	STOP_PROFILING;
 }

@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Rendering.h"
+#include "Shader.h"
 #include "Camera.h"
-#include "BaseLight.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "MappedValues.h"
 #include "Material.h"
-#include "Shader.h"
+#include "BaseLight.h"
 #include "Color.h"
 //#include "MenuEntry.h"
 #include "CubeShadowMap.h"
@@ -61,7 +61,6 @@ namespace Water
 } /* end namespace Water */
 
 class Mesh;
-class TextRenderer;
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit
 class Renderer : public MappedValues
@@ -83,10 +82,20 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
+	//RENDERING_API void InitRenderScene();
+	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
+	//RENDERING_API void FinalizeRenderScene();
 	//RENDERING_API void Render(const GameNode& node);
-	//RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
-	RENDERING_API void RenderMainMenu(/* TODO: Additional parameters */);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
+
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Math::Real fontSize) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>
@@ -110,6 +119,30 @@ public:
 	//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
 	//RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
 
+	RENDERING_API inline void ClearScreen() const
+	{
+		if (m_fogEnabled)
+		{
+			Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
+			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
+		}
+		else
+		{
+			glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
+		}
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	RENDERING_API inline void ClearScreen(const Color& clearColor) const
+	{
+		glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	RENDERING_API inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+	{
+		glClearColor(red, green, blue, alpha);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
@@ -129,7 +162,7 @@ public:
 		return m_ambientNighttimeColor;
 	}
 	
-	inline CameraBase& GetCurrentCamera()
+	inline const CameraBase& GetCurrentCamera() const
 	{
 		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return *m_currentCamera;
@@ -141,7 +174,10 @@ public:
 	}
 	RENDERING_API size_t NextCamera();
 	RENDERING_API size_t PrevCamera();
+	//RENDERING_API void SetMenuCameraAsCurrent();
 	size_t SetCurrentCamera(size_t cameraIndex);
+
+	RENDERING_API void BindAsRenderTarget();
 	
 	inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
@@ -231,36 +267,12 @@ protected:
 	/// <summary>
 	/// Renders the registered water nodes using the reflection and refraction textures created during the earlier stage of rendering pass.
 	/// </summary>
-	void RenderWaterNodes();
-	void RenderBillboardNodes();
-	void RenderSkybox();
+	//void RenderWaterNodes();
+	//void RenderBillboardNodes();
+	//void RenderSkybox();
 	//void RenderSceneWithAmbientLight(const GameNode& gameNode);
 	//void RenderSceneWithPointLights(const GameNode& gameNode);
 	//void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
-
-	inline void ClearScreen() const
-	{
-		if (m_fogEnabled)
-		{
-			Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
-			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
-		}
-		else
-		{
-			glClearColor(m_backgroundColor.GetRed(), m_backgroundColor.GetGreen(), m_backgroundColor.GetBlue(), m_backgroundColor.GetAlpha());
-		}
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-	inline void ClearScreen(const Color& clearColor) const
-	{
-		glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
-	inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
-	{
-		glClearColor(red, green, blue, alpha);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	}
 
 	inline void SetSamplerSlot(const std::string& name, unsigned int value)
 	{
@@ -268,7 +280,6 @@ protected:
 	}
 private:
 	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
-	void BindAsRenderTarget();
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
 	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
@@ -358,8 +369,12 @@ private:
 	std::map<std::string, unsigned int> m_samplerMap;
 	Math::Matrix4D m_lightMatrix;
 
-	Texture* m_fontTexture;
-	TextRenderer* m_textRenderer;
+	Material* m_fontMaterial;
+	Math::Real m_defaultFontSize;
+	Math::Vector4D m_defaultFontColor;
+	Shader* m_textShader;
+	GLuint m_textVertexBuffer;
+	GLuint m_textTextureCoordBuffer;
 
 	/// <summary>
 	/// The default clip plane which is used for the normal scene rendering pass.

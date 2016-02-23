@@ -92,8 +92,15 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_cameras(),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
-	m_fontTexture(NULL),
-	m_textRenderer(NULL),
+	m_fontMaterial(NULL),
+	m_defaultFontSize(GET_CONFIG_VALUE("defaultFontSize", 32.0f)),
+	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE),
+		GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO),
+		GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO),
+		GET_CONFIG_VALUE("defaultTextColorAlpha", REAL_ZERO)),
+	m_textShader(NULL),
+	m_textVertexBuffer(0),
+	m_textTextureCoordBuffer(0),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
 	m_waterWaveStrength(GET_CONFIG_VALUE("waterWaveStrength", 0.04f)),
 	m_waterShineDamper(GET_CONFIG_VALUE("waterShineDamper", 20.0f)),
@@ -220,7 +227,10 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	m_fontTexture = new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_fontMaterial = new Material(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+	glGenBuffers(1, &m_textVertexBuffer);
+	glGenBuffers(1, &m_textTextureCoordBuffer);
+	m_textShader = new Shader(GET_CONFIG_VALUE_STR("textShader", "text-shader"));
 
 	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
 	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR("waterNormalMap", "waterNormalMap.png"));
@@ -255,6 +265,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	Real zNearPlane = GET_CONFIG_VALUE("mainMenuCameraNearPlane", defaultNearPlane);
 	Real zFarPlane = GET_CONFIG_VALUE("mainMenuCameraFarPlane", defaultFarPlane);
 	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Math::Transform(), 0.005f);
+	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -277,6 +288,9 @@ Renderer::~Renderer(void)
 
 	glDeleteVertexArrays(1, &m_vao);
 
+	glDeleteBuffers(1, &m_textVertexBuffer);
+	glDeleteBuffers(1, &m_textTextureCoordBuffer);
+
 	//SAFE_DELETE(m_currentLight);
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
@@ -296,8 +310,8 @@ Renderer::~Renderer(void)
 	// TODO: m_fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
 	//SetTexture("fontTexture", NULL);
-	//SAFE_DELETE(m_fontTexture);
-	SAFE_DELETE(m_textRenderer);
+	SAFE_DELETE(m_fontMaterial);
+	SAFE_DELETE(m_textShader);
 
 	SetTexture("waterReflectionTexture", NULL);
 	SetMultitexture("waterRefractionTexture", NULL, 0);
@@ -408,6 +422,54 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
 	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
+
+//void Renderer::InitRenderScene()
+//{
+//	START_PROFILING;
+//
+//	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
+//
+//	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+//		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+//
+//#ifdef ANT_TWEAK_BAR_ENABLED
+//	SetVector3D("ambientFogColor", m_fogColor);
+//	SetReal("ambientFogStart", m_fogStart);
+//	SetReal("ambientFogEnd", m_fogEnd);
+//	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+//	SetReal("ambientFogGradient", m_fogGradient);
+//	SetVector3D("ambientIntensity", m_ambientLight);
+//	SetReal("fxaaSpanMax", m_fxaaSpanMax);
+//	SetReal("fxaaReduceMin", m_fxaaReduceMin);
+//	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+//	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+//	CheckCameraIndexChange();
+//#endif
+//
+//	GetTexture("displayTexture")->BindAsRenderTarget();
+//	
+//	ClearScreen();
+//	m_currentCamera = m_cameras[m_currentCameraIndex];
+//
+//	STOP_PROFILING;
+//}
+
+//void Renderer::FinalizeRenderScene()
+//{
+//	START_PROFILING;
+//	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
+//	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
+//	STOP_PROFILING;
+//}
+
+//void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
+//{
+//	START_PROFILING;
+//	shader->Bind();
+//	shader->UpdateUniforms(transform, material, this);
+//	mesh.Draw();
+//	STOP_PROFILING;
+//}
 
 //void Renderer::Render(const GameNode& gameNode)
 //{
@@ -805,94 +867,191 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 //	STOP_PROFILING;
 //}
 
-//void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
-//{
-//	START_PROFILING;
-//	if (m_textRenderer == NULL)
-//	{
-//		m_textRenderer = new TextRenderer(this, m_fontTexture);
-//	}
-//	BindAsRenderTarget();
-//	ClearScreen(m_backgroundColor);
-//	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
-//	{
-//		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
-//		m_currentCamera = m_mainMenuCamera;
-//	}
-//	else
-//	{
-//		m_currentCamera = m_cameras[m_currentCameraIndex];
-//	}
-//
-//	//double time = glfwGetTime();
-//	//std::stringstream ss;
-//	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
-//	//m_textRenderer->DrawString(0, 5800, ss.str(), this);
-//	//m_textRenderer->DrawString(0, 50, "This is main menu", this);
-//	int menuEntryChildrenCount = menuEntry.GetChildrenCount();
-//	for (int i = 0; i < menuEntryChildrenCount; ++i)
-//	{
-//		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, menuEntry.GetChildrenText(i), this,
-//			menuEntry.IsChildMenuEntrySelected(i) ? MenuEntry::GetSelectedMenuEntryTextColor() : MenuEntry::GetNotSelectedMenuEntryTextColor());
-//	}
-//	STOP_PROFILING;
-//}
-
-void Renderer::RenderMainMenu()
+void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str) const
 {
-	START_PROFILING;
-	if (m_textRenderer == NULL)
-	{
-		m_textRenderer = new TextRenderer(this, m_fontTexture);
-	}
-	BindAsRenderTarget();
-	ClearScreen(m_backgroundColor);
-	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
-	{
-		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
-		m_currentCamera = m_mainMenuCamera;
-	}
-	else
-	{
-		m_currentCamera = m_cameras[m_currentCameraIndex];
-	}
+	RenderString(alignment, y, str, m_defaultFontSize, m_defaultFontColor);
+}
 
-	//double time = glfwGetTime();
-	//std::stringstream ss;
-	//ss << "FPS: " << std::setprecision(2) << time << " [ms]";
-	//m_textRenderer->DrawString(0, 5800, ss.str(), this);
-	//m_textRenderer->DrawString(0, 50, "This is main menu", this);
-	//int menuEntryChildrenCount = menuEntry.GetChildrenCount();
-	std::string texts[3] = { "Start", "Options", "Exit" };
-	Math::Vector3D colors[3] = { Math::Vector3D(REAL_ONE, REAL_ONE, REAL_ONE), Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO) };
-	for (int i = 0; i < 3; ++i)
+void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
+{
+	RenderString(alignment, y, str, fontSize, m_defaultFontColor);
+}
+
+void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
+{
+	RenderString(alignment, y, str, m_defaultFontSize, fontColor);
+}
+
+void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+{
+	int x = 0;
+	switch (alignment)
 	{
-		m_textRenderer->DrawString(Text::CENTER, 350 - 100 * i, texts[i], this, colors[i]);
+	case Text::LEFT:
+		x = 0;
+		break;
+	case Text::RIGHT:
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
+		break;
+	case Text::CENTER:
+		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
+		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
+		break;
+	default:
+		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
 	}
-	STOP_PROFILING;
+	RenderString(x, y, str, fontSize, fontColor);
+}
+
+void Renderer::RenderString(int x, int y, const std::string& str) const
+{
+	RenderString(x, y, str, m_defaultFontSize, m_defaultFontColor);
+}
+
+void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fontSize) const
+{
+	RenderString(x, y, str, fontSize, m_defaultFontColor);
+}
+
+void Renderer::RenderString(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
+{
+	RenderString(x, y, str, m_defaultFontSize, fontColor);
+}
+
+void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+{
+	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
+	DELOCUST_LOG("Started drawing string \"%s\"", str.c_str());
+
+	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
+
+	std::vector<Math::Vector2D> vertices;
+	std::vector<Math::Vector2D> uvs;
+	Math::Real yReal = static_cast<Math::Real>(y);
+	const int screenHalfWidth = m_windowWidth / 2;
+	const int screenHalfHeight = m_windowHeight / 2;
+	for (std::string::size_type i = 0; i < str.size(); ++i)
+	{
+		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
+		// below from the screen space coordinates ([0..screenWidth][0..screenHeight]) to clip space coordinates ([-1..1][-1..1]).
+		// The conversion is done by first subtracting the half of width / height (for X and Y components respectively) and then dividing the result by the same value.
+		Math::Vector2D upLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D upRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D downRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, (static_cast<Math::Real>(yReal) - screenHalfHeight) / screenHalfHeight);
+		Math::Vector2D downLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, (yReal - screenHalfHeight) / screenHalfHeight);
+		//CRITICAL_LOG("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
+
+		vertices.push_back(upLeftVec);
+		vertices.push_back(downLeftVec);
+		vertices.push_back(upRightVec);
+		vertices.push_back(downRightVec);
+		vertices.push_back(upRightVec);
+		vertices.push_back(downLeftVec);
+
+		const Math::Real oneOverSixteen = REAL_ONE / 16.0f;
+		int ch = static_cast<int>(str[i]);
+		Math::Real xUV = static_cast<Math::Real>(ch % 16) * oneOverSixteen;
+		Math::Real yUV = REAL_ONE - ((static_cast<Math::Real>(ch / 16) * oneOverSixteen) + oneOverSixteen);
+		//INFO_LOG("character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
+
+		Math::Vector2D upLeftUV(xUV, REAL_ONE - (yUV + oneOverSixteen));
+		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
+		Math::Vector2D downRightUV(xUV + oneOverSixteen, REAL_ONE - yUV);
+		Math::Vector2D downLeftUV(xUV, REAL_ONE - yUV);
+		uvs.push_back(upLeftUV);
+		uvs.push_back(downLeftUV);
+		uvs.push_back(upRightUV);
+		uvs.push_back(downRightUV);
+		uvs.push_back(upRightUV);
+		uvs.push_back(downLeftUV);
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Math::Vector2D), &vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
+	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(Math::Vector2D), &uvs[0], GL_STATIC_DRAW);
+
+	m_textShader->Bind();
+
+	//Updating uniforms
+	m_fontMaterial->SetVector4D("textColor", fontColor);
+	m_fontMaterial->SetReal("screenWidth", static_cast<Math::Real>(m_windowWidth));
+	m_fontMaterial->SetReal("screenHeight", static_cast<Math::Real>(m_windowHeight));
+	m_textShader->UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
+	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
+	//fontTexture->Bind(25);
+	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	// 2nd attribute buffer : UVs
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	glCullFace(GL_FRONT);
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
+	//glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
+	//glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+	/**
+	* TODO: We should first save the blend-specific parameters and restore them once glDrawArrays function is finished.
+	* See how it is done for GL_DEPTH_TEST here, in this function.
+	*/
+	// Save the current blending state
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	/**
+	* This effectively means:
+	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
+	* (1 - currentAlphaInFramebuffer) * shader's output color
+	*/
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
+	// Now restore the blending state
+	glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+	glCullFace(Rendering::glCullFaceMode);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	//glCullFace(GL_BACK);
+	if (Rendering::glDepthTestEnabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
 void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID(m_textRenderer != NULL, Utility::Error, "Loading screen cannot be rendered. The text renderer is NULL.");
 	BindAsRenderTarget();
 	ClearScreen();
-	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
-	{
-		//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
-		m_currentCamera = m_mainMenuCamera;
-	}
-	else
-	{
-		m_currentCamera = m_cameras[m_currentCameraIndex];
-	}
+	//if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
+	//{
+	//	//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
+	//	m_currentCamera = m_mainMenuCamera;
+	//}
+	//else
+	//{
+	//	m_currentCamera = m_cameras[m_currentCameraIndex];
+	//}
 
 	std::stringstream ss;
 	int progress = static_cast<int>(loadingProgress * 100.0f);
 	ss << progress << "%";
-	m_textRenderer->DrawString(Text::CENTER, 350, "Loading...", this);
-	m_textRenderer->DrawString(Text::CENTER, 250, ss.str(), this);
+	RenderString(Text::CENTER, 350, "Loading...");
+	RenderString(Text::CENTER, 250, ss.str());
 	STOP_PROFILING;
 }
 
@@ -1046,6 +1205,11 @@ size_t Renderer::PrevCamera()
 	}
 	return SetCurrentCamera(m_currentCameraIndex - 1);
 }
+
+//void Renderer::SetMenuCameraAsCurrent()
+//{
+//	m_currentCamera = m_mainMenuCamera;
+//}
 
 size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 {

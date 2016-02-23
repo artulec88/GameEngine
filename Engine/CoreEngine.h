@@ -8,7 +8,6 @@
 
 
 #include "Rendering\Renderer.h"
-#include "Rendering\TextRenderer.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -185,7 +184,6 @@ private:
 	const Math::Real m_frameTime;
 	GameManager& m_game;
 	Rendering::Renderer* m_renderer;
-	Rendering::TextRenderer* m_fpsTextRenderer;
 
 	QuitGameCommand m_quitGameCommand;
 

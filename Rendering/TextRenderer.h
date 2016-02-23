@@ -15,17 +15,6 @@ namespace Rendering
 class Material;
 class Renderer;
 
-namespace Text
-{
-	enum Alignment
-	{
-		LEFT = 0,
-		RIGHT,
-		CENTER,
-		//JUSTIFY // TODO: Implement JUSTIFY alignment
-	}; /* end enum Alignment */
-} /* end namespace Text */
-
 class TextRenderer
 {
 /* ==================== Constructors and destructors begin ==================== */
@@ -36,32 +25,27 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const;
-	RENDERING_API void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
-	RENDERING_API void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
-	RENDERING_API void DrawString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
-	RENDERING_API void DrawString(int x, int y, const std::string& str, Renderer* renderer) const;
-	RENDERING_API void DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
-	RENDERING_API void DrawString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
-	RENDERING_API void DrawString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
+	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Renderer* renderer) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Renderer* renderer, const Math::Vector3D& fontColor) const;
+	RENDERING_API void RenderString(int x, int y, const std::string& str, Renderer* renderer, Math::Real fontSize, const Math::Vector3D& fontColor) const;
 
 	//void SetFontSize(Math::Real fontSize);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Renderer* m_renderer;
-	Material* m_fontMaterial;
-	Math::Real m_defaultFontSize;
-	Math::Vector3D m_defaultFontColor;
-	Shader m_textShader;
 
 	Math::Transform m_transform;
 	Math::Matrix4D m_projection;
 
 	GLuint m_vaoID;
-	GLuint m_texCoordBuffer;
-	GLuint m_vertexBuffer;
+	GLuint m_textTextureCoordBuffer;
+	GLuint m_textVertexBuffer;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TextRenderer */
 

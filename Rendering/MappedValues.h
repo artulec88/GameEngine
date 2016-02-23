@@ -4,6 +4,7 @@
 #include <string>
 
 #include "Rendering.h"
+#include "Color.h"
 #include "Math\Vector.h"
 
 #include "Utility\ILogger.h"
@@ -22,6 +23,8 @@ class MappedValues
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API MappedValues(void) :
+		m_defaultValue(REAL_ZERO),
+		//m_defaultColor(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE),
 		m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 		m_defaultVector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 		m_defaultVector4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO)
@@ -44,6 +47,20 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	//RENDERING_API inline void SetColor(const std::string& colorName, const Color& color)
+	//{
+	//	if (colorMap.find(colorName) == colorMap.end())
+	//	{
+	//		DEBUG_LOG("Color with name \"%s\" cannot be found in the map. Creating a new color with this name.", colorName.c_str());
+	//		colorMap.insert(std::pair<std::string, Color>(colorName, color));
+	//	}
+	//	else
+	//	{
+	//		DELOCUST_LOG("Replacing the color \"%s\" with values \"%s\" to color \"%s\"", colorName.c_str(), colorMap[colorName].ToString().c_str(), color.ToString().c_str());
+	//		colorMap[colorName] = color;
+	//	}
+	//}
+
 	RENDERING_API inline void SetVector3D(const std::string& name, const Math::Vector3D& vec)
 	{
 		if (vec3DMap.find(name) == vec3DMap.end())
@@ -123,6 +140,18 @@ public:
 		}
 	}
 
+	//RENDERING_API inline const Color& GetColor(const std::string& colorName) const
+	//{
+	//	// TODO: Return a reference instead of value.
+	//	std::map<std::string, Color>::const_iterator itr = colorMap.find(colorName);
+	//	if (itr == colorMap.end()) // color not found
+	//	{
+	//		WARNING_LOG("Color with name \"%s\" has not been found. Returning default color instead.", colorName.c_str());
+	//		return m_defaultColor;
+	//	}
+	//	return itr->second;
+	//}
+
 	RENDERING_API inline const Math::Vector3D& GetVec3D(const std::string& name) const
 	{
 		// TODO: Return a reference instead of value.
@@ -147,18 +176,18 @@ public:
 		return itr->second;
 	}
 
-	RENDERING_API inline Math::Real GetReal(const std::string& name) const
+	RENDERING_API inline const Math::Real& GetReal(const std::string& name) const
 	{
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
 		{
 			WARNING_LOG("Real number with name \"%s\" has not been found", name.c_str());
-			return REAL_ZERO;
+			return m_defaultValue;
 		}
 		return itr->second;
 	}
 
-	RENDERING_API inline Texture* GetTexture(const std::string& textureName) const
+	RENDERING_API inline const Texture* GetTexture(const std::string& textureName) const
 	{
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
@@ -169,7 +198,7 @@ public:
 		return itr->second;
 	}
 
-	RENDERING_API inline Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
+	RENDERING_API inline const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
 	{
 		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
@@ -203,14 +232,19 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	//typedef std::map<std::string, Color> StrToColorMap;
 	typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
 	typedef std::map<std::string, Math::Vector4D> StrToVec4DMap;
 	typedef std::map<std::string, Math::Real> StrToRealMap;
 	typedef std::map<std::string, Texture*> StrToTextureMap;
+	//StrToColorMap colorMap;
 	StrToVec3DMap vec3DMap;
 	StrToVec4DMap m_vec4DMap;
 	StrToRealMap realMap;
 	StrToTextureMap textureMap;
+
+	Math::Real m_defaultValue;
+	//Color m_defaultColor;
 
 	// TODO: Default texture, vector3D and vector4D are all the same for all MappedValues instances so
 	// there is no need to store as many instances of these as many MappedValues instances there are.
