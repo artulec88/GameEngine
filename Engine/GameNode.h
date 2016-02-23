@@ -1,22 +1,23 @@
-#pragma once
+#ifndef __ENGINE_GAME_NODE_H__
+#define __ENGINE_GAME_NODE_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "IRenderable.h"
 #include "IInputableKeyboard.h"
 #include "IInputableMouse.h"
 #include "IUpdateable.h"
 
+#include "Rendering\Renderer.h"
+#include "Rendering\Shader.h"
+
 #include "Math\Transform.h"
 
 #include <vector>
 
-namespace Rendering
+namespace Engine
 {
 
 class GameComponent;
-class Shader;
-class Renderer;
-class CoreEngine;
 
 class GameNode : public Input::IInputableKeyboard, public Input::IInputableMouse, public IUpdateable, public IRenderable
 {
@@ -27,29 +28,29 @@ private:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API GameNode();
-	RENDERING_API virtual ~GameNode(void);
+	ENGINE_API GameNode();
+	ENGINE_API virtual ~GameNode(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API int GetID() const { return m_ID; }; // just for easier debugging purposes
-	RENDERING_API GameNode* AddChild(GameNode* child);
-	RENDERING_API GameNode* AddComponent(GameComponent* component);
+	ENGINE_API int GetID() const { return m_ID; }; // just for easier debugging purposes
+	ENGINE_API GameNode* AddChild(GameNode* child);
+	ENGINE_API GameNode* AddComponent(GameComponent* component);
 
-	RENDERING_API virtual void KeyEvent(int key, int scancode, int action, int mods);
-	RENDERING_API virtual void MouseButtonEvent(int button, int action, int mods);
-	RENDERING_API virtual void MousePosEvent(double xPos, double yPos);
-	RENDERING_API virtual void ScrollEvent(double xOffset, double yOffset);
+	ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
+	ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
+	ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
+	ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
 
-	//RENDERING_API void InputAll(Math::Real delta);
-	RENDERING_API virtual void Update(Math::Real elapsedTime);
-	RENDERING_API virtual void Render(Shader* shader, Renderer* renderer) const;
+	//ENGINE_API void InputAll(Math::Real delta);
+	ENGINE_API virtual void Update(Math::Real elapsedTime);
+	ENGINE_API virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 
-	RENDERING_API Math::Transform& GetTransform() { return m_transform; };
-	RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
+	ENGINE_API Math::Transform& GetTransform() { return m_transform; };
+	ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }
 
-	RENDERING_API std::vector<GameNode*> GetAllDescendants() const;
+	ENGINE_API std::vector<GameNode*> GetAllDescendants() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -66,4 +67,6 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
+
+#endif // __ENGINE_GAME_NODE_H__

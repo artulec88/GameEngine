@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "CameraComponent.h"
-#include "Math\FloatingPoint.h"
-#include "Rendering\GameNode.h"
+#include "GameNode.h"
 
+#include "Math\FloatingPoint.h"
+
+#include <GLFW\glfw3.h>
 
 Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	CameraBase(projectionMatrix, sensitivity),
@@ -90,7 +92,7 @@ void Engine::CameraMoveComponent::KeyEvent(int key, int scancode, int action, in
 	case GLFW_KEY_ESCAPE:
 		//if (action == GLFW_PRESS)
 		//{
-		//	Rendering::GameManager::GetGameManager()->SetTransition(new Rendering::GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), Rendering::GameStateTransitioning::PUSH, Rendering::GameStateModality::EXCLUSIVE));
+		//	GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), GameStateTransitioning::PUSH, GameStateModality::EXCLUSIVE));
 		//}
 		break;
 	case GLFW_KEY_C:
@@ -302,7 +304,7 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 /* static */ const Math::Angle Engine::CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
 /* static */ const Math::Angle Engine::CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
 
-Engine::CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, Rendering::GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+Engine::CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(projectionMatrix, sensitivity),
 	m_gameEntityToFollow(entityToFollow),
@@ -319,7 +321,7 @@ Engine::CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& proje
 }
 
 Engine::CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity,
-	Rendering::GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
+	GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
 	m_gameEntityToFollow(entityToFollow),
 	m_distanceFromEntity(initialDistanceFromEntity),

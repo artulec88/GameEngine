@@ -4,18 +4,13 @@
 //#include "Renderer.h"
 //#include "CoreEngine.h"
 #include "IRenderable.h"
-#include "IInputable.h"
 #include "IUpdateable.h"
 
 #include "Utility\ILogger.h"
 
-using namespace Rendering;
-using namespace Utility;
-using namespace std;
+/* static */ int Engine::GameNode::gameNodeCount = 0;
 
-/* static */ int GameNode::gameNodeCount = 0;
-
-GameNode::GameNode(void) :
+Engine::GameNode::GameNode(void) :
 	m_ID(++GameNode::gameNodeCount)
 {
 	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
@@ -24,7 +19,7 @@ GameNode::GameNode(void) :
 }
 
 
-GameNode::~GameNode(void)
+Engine::GameNode::~GameNode(void)
 {
 	DEBUG_LOG("Game node (ID=%d) destruction started", m_ID);
 	//DEBUG_LOG("Destroying components started for game node with ID=%d", this->ID);
@@ -61,14 +56,14 @@ GameNode::~GameNode(void)
 	DEBUG_LOG("Game node (ID=%d) destruction finished", m_ID);
 }
 
-GameNode* GameNode::AddChild(GameNode* child)
+Engine::GameNode* Engine::GameNode::AddChild(GameNode* child)
 {
 	m_childrenGameNodes.push_back(child);
 	child->GetTransform().SetParent(&m_transform);
 	return this;
 }
 
-GameNode* GameNode::AddComponent(GameComponent* child)
+Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
 {
 	m_components.push_back(child);
 	child->SetParent(this);
@@ -95,7 +90,7 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	return this;
 }
 
-//void GameNode::InputAll(Math::Real delta)
+//void Engine::GameNode::InputAll(Math::Real delta)
 //{
 	//transform.Update();
 
@@ -110,7 +105,7 @@ GameNode* GameNode::AddComponent(GameComponent* child)
 	//}
 //}
 
-void GameNode::KeyEvent(int key, int scancode, int action, int mods)
+void Engine::GameNode::KeyEvent(int key, int scancode, int action, int mods)
 {
 	for (std::vector<Input::IInputableKeyboard*>::iterator gameComponentItr = m_inputableKeyboardComponents.begin(); gameComponentItr != m_inputableKeyboardComponents.end(); ++gameComponentItr)
 	{
@@ -123,7 +118,7 @@ void GameNode::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void GameNode::MouseButtonEvent(int button, int action, int mods)
+void Engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -136,7 +131,7 @@ void GameNode::MouseButtonEvent(int button, int action, int mods)
 	}
 }
 
-void GameNode::MousePosEvent(double xPos, double yPos)
+void Engine::GameNode::MousePosEvent(double xPos, double yPos)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -149,7 +144,7 @@ void GameNode::MousePosEvent(double xPos, double yPos)
 	}
 }
 
-void GameNode::ScrollEvent(double xOffset, double yOffset)
+void Engine::GameNode::ScrollEvent(double xOffset, double yOffset)
 {
 	for (std::vector<Input::IInputableMouse*>::iterator gameComponentItr = m_inputableMouseComponents.begin(); gameComponentItr != m_inputableMouseComponents.end(); ++gameComponentItr)
 	{
@@ -162,7 +157,7 @@ void GameNode::ScrollEvent(double xOffset, double yOffset)
 	}
 }
 
-void GameNode::Update(Math::Real delta)
+void Engine::GameNode::Update(Math::Real delta)
 {
 	for (std::vector<IUpdateable*>::iterator gameComponentItr = m_updateableComponents.begin(); gameComponentItr != m_updateableComponents.end(); ++gameComponentItr)
 	{
@@ -175,7 +170,7 @@ void GameNode::Update(Math::Real delta)
 	}
 }
 
-void GameNode::Render(Shader* shader, Renderer* renderer) const
+void Engine::GameNode::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{
@@ -188,7 +183,7 @@ void GameNode::Render(Shader* shader, Renderer* renderer) const
 	}
 }
 
-std::vector<GameNode*> GameNode::GetAllDescendants() const
+std::vector<Engine::GameNode*> Engine::GameNode::GetAllDescendants() const
 {
 	std::vector<GameNode*> descendants;
 	

@@ -1,10 +1,10 @@
-#ifndef __RENDERING_IUPDATEABLE_H__
-#define __RENDERING_IUPDATEABLE_H__
+#ifndef __ENGINE_IUPDATEABLE_H__
+#define __ENGINE_IUPDATEABLE_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "Math\Math.h"
 
-namespace Rendering
+namespace Engine
 {
 	/// <summary>
 	/// Interface for objects which can be updated in the game engine.
@@ -14,12 +14,12 @@ namespace Rendering
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Creates the updateable object. </summary>
-		RENDERING_API IUpdateable()
+		ENGINE_API IUpdateable()
 		{
 		}
 
 		/// <summary> Destroys the updateable object. </summary>
-		RENDERING_API virtual ~IUpdateable(void)
+		ENGINE_API virtual ~IUpdateable(void)
 		{
 		}
 	/* ==================== Constructors and destructors end ==================== */
@@ -38,6 +38,6 @@ namespace Rendering
 	/* ==================== Non-static member variables end ==================== */
 }; /* end class IUpdateable */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_IUPDATEABLE_H__ */
+#endif /* __ENGINE_IUPDATEABLE_H__ */

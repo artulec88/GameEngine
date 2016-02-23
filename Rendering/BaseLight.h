@@ -2,7 +2,6 @@
 #define __RENDERING_BASE_LIGHT_H__
 
 #include "Rendering.h"
-#include "GameComponent.h"
 #include "ShadowInfo.h"
 #include "Color.h"
 #include "Math\Vector.h"

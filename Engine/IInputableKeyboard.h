@@ -1,33 +1,32 @@
-#ifndef __RENDERING_IINPUTABLE_KEYBOARD_H__
-#define __RENDERING_IINPUTABLE_KEYBOARD_H__
+#ifndef __ENGINE_IINPUTABLE_KEYBOARD_H__
+#define __ENGINE_IINPUTABLE_KEYBOARD_H__
 
-#include "Rendering.h"
-//#include "IInputable.h"
+#include "Engine.h"
 
-namespace Rendering { namespace Input
+namespace Engine { namespace Input
 {
 
 /// <summary>
 /// Interface for objects which can react to player's keyboard input
 /// </summary>
-class IInputableKeyboard // : public virtual IInputable
+class IInputableKeyboard
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Creates the keyboard inputable object. </summary>
-	RENDERING_API IInputableKeyboard()
+	ENGINE_API IInputableKeyboard()
 	{
 	}
 
 	/// <summary> Destroys the keyboard inputable object. </summary>
-	RENDERING_API virtual ~IInputableKeyboard(void)
+	ENGINE_API virtual ~IInputableKeyboard(void)
 	{
 	}
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
+	ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -36,6 +35,6 @@ public:
 
 } /* end namespace Input */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_IINPUTABLE_KEYBOARD_H__ */
+#endif /* __ENGINE_IINPUTABLE_KEYBOARD_H__ */

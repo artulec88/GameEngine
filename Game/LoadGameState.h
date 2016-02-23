@@ -3,9 +3,9 @@
 
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
-#include "Rendering\IRenderable.h"
-#include "Rendering\IUpdateable.h"
-#include "Rendering\GameNode.h"
+#include "Engine\IRenderable.h"
+#include "Engine\IUpdateable.h"
+#include "Engine\GameNode.h"
 #include "Math\Math.h"
 #include "tinythread.h"
 #include "GameStats.h"
@@ -19,7 +19,7 @@ namespace Game
 	class Rendering::Shader;
 
 /* TODO: Consider inheriting from Rendering::IUpdateable class */
-class LoadGameState : public Engine::GameState, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
+class LoadGameState : public Engine::GameState, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

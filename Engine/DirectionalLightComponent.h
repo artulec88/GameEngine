@@ -3,10 +3,11 @@
 
 #include "Engine.h"
 #include "Rendering\DirectionalLight.h"
+#include "GameComponent.h"
 
 namespace Engine
 {
-	class DirectionalLightComponent : public Rendering::GameComponent
+	class DirectionalLightComponent : public GameComponent
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -19,8 +20,8 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//virtual Math::Transform& GetTransform() { return Rendering::GameComponent::GetTransform(); }
-		//virtual const Math::Transform& GetTransform() const { return Rendering::GameComponent::GetTransform(); }
+		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

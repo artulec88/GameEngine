@@ -1,7 +1,6 @@
 #ifndef __RENDERING_TEXT_RENDERER_H__
 #define __RENDERING_TEXT_RENDERER_H__
 
-#include "GameComponent.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Renderer.h"

@@ -3,16 +3,16 @@
 
 #include "Engine.h"
 #include "GameStateManager.h"
+#include "IUpdateable.h"
+#include "IRenderable.h"
+#include "GameNode.h"
 
-#include "Rendering\GameNode.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Shader.h"
 #include "Rendering\Material.h"
 #include "Rendering\PointLight.h"
 #include "Rendering\SpotLight.h"
 #include "Rendering\Camera.h"
-#include "Rendering\IUpdateable.h"
-#include "Rendering\IRenderable.h"
 
 #include "Math\Transform.h"
 #include "Math\Math.h"
@@ -20,7 +20,7 @@
 namespace Engine
 {
 
-class GameManager : public Rendering::IUpdateable
+class GameManager : public IUpdateable
 {
 /* ==================== Static variables begin ==================== */
 protected:
@@ -47,7 +47,9 @@ public:
 	ENGINE_API virtual void Load() = 0; // Loads the game
 	ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
-	ENGINE_API inline Rendering::GameNode& GetRootGameNode() { return m_rootGameNode; }
+	ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
+	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
+	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 
 	ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 	ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
@@ -74,16 +76,18 @@ public:
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
 protected:
-	ENGINE_API void AddTerrainNode(Rendering::GameNode* terrainNode);
-	ENGINE_API void AddToSceneRoot(Rendering::GameNode* child);
-	ENGINE_API void AddWaterNode(Rendering::GameNode* waterNode);
-	ENGINE_API void AddBillboardNode(Rendering::GameNode* billboardNode);
+	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
+	ENGINE_API void AddToSceneRoot(GameNode* child);
+	ENGINE_API void AddWaterNode(GameNode* waterNode);
+	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
+	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
-	Rendering::GameNode m_rootGameNode;
-	Rendering::GameNode* m_terrainNode;
+	GameNode m_rootGameNode;
+	GameNode* m_terrainNode;
+	GameNode* m_skyboxNode;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 /* ==================== Non-static member variables end ==================== */

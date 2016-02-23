@@ -3,10 +3,10 @@
 
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IRenderable.h"
+#include "Engine\IInputableKeyboard.h"
+#include "Engine\IRenderable.h"
 #include "Math\Math.h"
-#include "Rendering\GameNode.h"
+#include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 
@@ -22,7 +22,7 @@ namespace Game
 
 	class Rendering::Shader;
 
-class MenuGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
+class MenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

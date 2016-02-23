@@ -3,7 +3,6 @@
 #include "Rendering.h"
 #include "Attenuation.h"
 #include "BaseLight.h"
-#include "IUpdateable.h"
 #include "Color.h"
 
 namespace Rendering { namespace Lighting

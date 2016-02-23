@@ -3,10 +3,10 @@
 
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IInputableMouse.h"
-#include "Rendering\IRenderable.h"
-#include "Rendering\IUpdateable.h"
+#include "Engine\IInputableKeyboard.h"
+#include "Engine\IInputableMouse.h"
+#include "Engine\IRenderable.h"
+#include "Engine\IUpdateable.h"
 #include "Math\Math.h"
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
@@ -18,8 +18,8 @@ namespace Game
 
 	class Rendering::Shader;
 
-class PlayGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard,
-	public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
+class PlayGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard,
+	public virtual Engine::Input::IInputableMouse, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

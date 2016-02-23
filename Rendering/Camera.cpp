@@ -1,8 +1,6 @@
 #include "StdAfx.h"
 #include "Camera.h"
-//#include "CoreEngine.h"
 #include "Renderer.h"
-#include "GameNode.h"
 
 #include "Math\Quaternion.h"
 #ifdef ANT_TWEAK_BAR_ENABLED

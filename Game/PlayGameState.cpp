@@ -4,7 +4,7 @@
 #include "PlayMenuGameState.h"
 #include "Engine\CoreEngine.h"
 #include "Rendering\Shader.h"
-#include "Rendering\GameNode.h"
+#include "Engine\GameNode.h"
 
 #include "Math\FloatingPoint.h"
 
@@ -151,7 +151,8 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 	Utility::Timing::Daytime daytime = Engine::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 	renderer->AdjustAmbientLightAccordingToCurrentTime(daytime, daytimeTransitionFactor);
 
-	renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
+	renderer->RenderMainMenu();
+	//renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
 	STOP_PROFILING;
 }
 

@@ -3,7 +3,7 @@
 
 
 Engine::SpotLightComponent::SpotLightComponent(Rendering::Lighting::SpotLight* spotLight) :
-	Rendering::GameComponent(),
+	GameComponent(),
 	m_spotLight(spotLight)
 {
 }

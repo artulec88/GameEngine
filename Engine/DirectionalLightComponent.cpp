@@ -3,7 +3,7 @@
 
 
 Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight) :
-	Rendering::GameComponent(),
+	GameComponent(),
 	m_directionalLight(directionalLight)
 {
 }

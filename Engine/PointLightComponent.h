@@ -2,11 +2,13 @@
 #define __ENGINE_POINT_LIGHT_COMPONENT_H__
 
 #include "Engine.h"
+#include "GameComponent.h"
+
 #include "Rendering\PointLight.h"
 
 namespace Engine
 {
-	class PointLightComponent : public Rendering::GameComponent
+	class PointLightComponent : public GameComponent
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -19,8 +21,8 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//virtual Math::Transform& GetTransform() { return Rendering::GameComponent::GetTransform(); }
-		//virtual const Math::Transform& GetTransform() const { return Rendering::GameComponent::GetTransform(); }
+		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

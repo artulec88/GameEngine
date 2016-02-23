@@ -2,7 +2,7 @@
 #define __ENGINE_BUILDER_H__
 
 #include "Engine.h"
-#include "Rendering\GameNode.h"
+#include "GameNode.h"
 #include "Rendering\SpotLight.h"
 #include "Rendering\Texture.h"
 #include <string>
@@ -34,12 +34,12 @@ namespace Engine
 		virtual void BuildMeshRenderer() = 0;
 #endif
 
-		Rendering::GameNode* GetGameNode() { return m_gameNode; }
+		GameNode* GetGameNode() { return m_gameNode; }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::GameNode* m_gameNode;
+		GameNode* m_gameNode;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Builder */
 
@@ -196,7 +196,7 @@ namespace Engine
 		virtual void BuildMeshRenderer();
 #endif
 		ENGINE_API void SetCameraIndex(int cameraIndex);
-		ENGINE_API void SetEntityToFollow(Rendering::GameNode* gameNodeToFollow);
+		ENGINE_API void SetEntityToFollow(GameNode* gameNodeToFollow);
 	protected:
 		void SetupCameraTransform();
 		void SetupCameraParams();
@@ -219,7 +219,7 @@ namespace Engine
 		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 		int m_cameraIndex;
 		std::string m_cameraIndexStr;
-		Rendering::GameNode* m_gameNodeToFollow;
+		GameNode* m_gameNodeToFollow;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 

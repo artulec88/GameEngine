@@ -2,11 +2,12 @@
 #define __ENGINE_CAMERA_COMPONENT_H__
 
 #include "Engine.h"
+#include "GameComponent.h"
+#include "IUpdateable.h"
+#include "IInputableKeyboard.h"
+#include "IInputableMouse.h"
+
 #include "Rendering\Camera.h"
-#include "Rendering\GameComponent.h"
-#include "Rendering\IUpdateable.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IInputableMouse.h"
 
 namespace Engine
 {
@@ -23,7 +24,7 @@ namespace Engine
 		};
 	}
 
-	class CameraComponent : public Rendering::CameraBase, public Rendering::GameComponent, public Rendering::IUpdateable
+	class CameraComponent : public Rendering::CameraBase, public GameComponent, public IUpdateable
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -46,7 +47,7 @@ namespace Engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraComponent */
 
-	class CameraMoveComponent : public CameraComponent, public Rendering::Input::IInputableKeyboard, public Rendering::Input::IInputableMouse
+	class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyboard, public Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -76,7 +77,7 @@ namespace Engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraMoveComponent */
 
-	class CameraFollowComponent : public CameraComponent, public Rendering::Input::IInputableMouse
+	class CameraFollowComponent : public CameraComponent, public Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	private:
@@ -88,10 +89,10 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, Rendering::GameNode* entityToFollow,
+		CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow,
 			Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
 		CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity,
-			Rendering::GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
+			GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
 		virtual ~CameraFollowComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -108,7 +109,7 @@ namespace Engine
 		/// <summary>
 		/// Entity to follow.
 		/// </summary>
-		Rendering::GameNode* m_gameEntityToFollow;
+		GameNode* m_gameEntityToFollow;
 
 		/// <summary>
 		/// The value representing the zoom. In other words, it defines how close to the entity being followed the camera should be placed.

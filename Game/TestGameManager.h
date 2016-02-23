@@ -2,7 +2,7 @@
 #define __GAME_TEST_GAME_MANAGER_H__
 
 #include <Engine\GameManager.h>
-#include <Rendering\GameNode.h>
+#include <Engine\GameNode.h>
 #include <Rendering\DirectionalLight.h>
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>
@@ -46,7 +46,7 @@ private:
 	void AddDirectionalLight();
 	void AddPointLights();
 	void AddSpotLights();
-	void AddCameras(Rendering::GameNode* entityToFollow);
+	void AddCameras(Engine::GameNode* entityToFollow);
 	void AddSkybox() const;
 /* ==================== Non-static member functions end ==================== */
 
@@ -59,7 +59,7 @@ protected:
 	Rendering::TerrainMesh* m_terrainMesh;
 	Math::Real m_timeToUpdateCameraHeight;
 	
-	Rendering::GameNode* m_boxNode;
+	Engine::GameNode* m_boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::Material* terrainMaterial;
 	Rendering::Material* boxMaterial;
@@ -69,13 +69,13 @@ protected:
 #endif
 
 	const int HUMAN_NODES_COUNT;
-	Rendering::GameNode** humanNodes;
+	Engine::GameNode** humanNodes;
 	const int pointLightCount;
 	const int spotLightCount;
 	const int cameraCount;
-	Rendering::GameNode** cameraNodes;
+	Engine::GameNode** cameraNodes;
 	bool m_heightMapCalculationEnabled;
-	//Rendering::GameNode* castleNode;
+	//Engine::GameNode* castleNode;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

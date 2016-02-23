@@ -2,20 +2,21 @@
 #define __ENGINE_LOOK_AT_COMPONENT_H__
 
 #include "Engine.h"
-#include "Rendering\GameComponent.h"
-#include "Rendering\IUpdateable.h"
-#include "Rendering\GameNode.h"
+#include "GameComponent.h"
+#include "IUpdateable.h"
+#include "GameNode.h"
+
 #include "Math\Transform.h"
 #include "Math\Vector.h"
 
 namespace Engine
 {
 
-	class LookAtComponent : public Rendering::GameComponent, public Rendering::IUpdateable
+	class LookAtComponent : public GameComponent, public IUpdateable
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API LookAtComponent(Rendering::GameNode* gameNode);
+		ENGINE_API LookAtComponent(GameNode* gameNode);
 		ENGINE_API virtual ~LookAtComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Rendering.h"
-#include "GameNode.h"
 #include "Camera.h"
 #include "BaseLight.h"
 #include "DirectionalLight.h"
@@ -84,7 +83,7 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	RENDERING_API void Render(const GameNode& node);
+	//RENDERING_API void Render(const GameNode& node);
 	//RENDERING_API void RenderMainMenu(const MenuEntry& menuEntry);
 	RENDERING_API void RenderMainMenu(/* TODO: Additional parameters */);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
@@ -106,10 +105,10 @@ public:
 	
 	RENDERING_API inline void AddLight(Lighting::BaseLight* light);
 	RENDERING_API inline void AddCamera(CameraBase* camera);
-	RENDERING_API void AddTerrainNode(GameNode* terrainNode);
-	RENDERING_API void AddWaterNode(GameNode* waterNode);
-	RENDERING_API void AddBillboardNode(GameNode* billboardNode);
-	RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
+	//RENDERING_API void AddTerrainNode(GameNode* terrainNode);
+	//RENDERING_API void AddWaterNode(GameNode* waterNode);
+	//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
+	//RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
 
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
@@ -225,19 +224,19 @@ protected:
 	/// <remarks>
 	/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
 	/// </remarks>
-	void RenderWaterTextures(const GameNode& gameNode);
+	//void RenderWaterTextures(const GameNode& gameNode);
+	//void RenderWaterReflectionTexture(const GameNode& gameNode);
+	//void RenderWaterRefractionTexture(const GameNode& gameNode);
 
 	/// <summary>
 	/// Renders the registered water nodes using the reflection and refraction textures created during the earlier stage of rendering pass.
 	/// </summary>
 	void RenderWaterNodes();
 	void RenderBillboardNodes();
-	void RenderWaterReflectionTexture(const GameNode& gameNode);
-	void RenderWaterRefractionTexture(const GameNode& gameNode);
 	void RenderSkybox();
-	void RenderSceneWithAmbientLight(const GameNode& gameNode);
-	void RenderSceneWithPointLights(const GameNode& gameNode);
-	void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
+	//void RenderSceneWithAmbientLight(const GameNode& gameNode);
+	//void RenderSceneWithPointLights(const GameNode& gameNode);
+	//void RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled = true);
 
 	inline void ClearScreen() const
 	{
@@ -322,7 +321,7 @@ private:
 	Math::Transform m_filterTransform;
 	Mesh* m_filterMesh;
 
-	std::vector<GameNode*> m_terrainNodes;
+	//std::vector<GameNode*> m_terrainNodes;
 	Shader* m_ambientShaderTerrain;
 	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledMap;
 	std::map<FogEffect::FogKey, Shader*> m_ambientShadersFogEnabledTerrainMap;
@@ -339,7 +338,7 @@ private:
 
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
-	GameNode* m_skyboxNode;
+	//GameNode* m_skyboxNode;
 	Shader* m_skyboxShader;
 	Shader* m_skyboxProceduralShader;
 
@@ -372,7 +371,7 @@ private:
 	Math::Real m_waterReflectivity;
 	Math::Real m_waterWaveSpeed;
 	Math::Real m_waterMoveFactor;
-	std::vector<GameNode*> m_waterNodes;
+	//std::vector<GameNode*> m_waterNodes;
 	Math::Vector4D m_waterRefractionClippingPlane; // TODO: Consider using Math::Plane instead
 	Math::Vector4D m_waterReflectionClippingPlane; // TODO: Consider using Math::Plane instead
 	/// <summary>
@@ -395,7 +394,7 @@ private:
 	Shader* m_waterNoDirectionalLightShader;
 
 	Shader* m_billboardShader;
-	std::vector<GameNode*> m_billboardNodes;
+	//std::vector<GameNode*> m_billboardNodes;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int m_cameraCountMinusOne;

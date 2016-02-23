@@ -16,6 +16,7 @@
 #include "Utility\Time.h"
 
 #include <string>
+#include "GLFW\glfw3.h"
 
 #ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
@@ -133,10 +134,10 @@ public:
 
 	void AddLight(Rendering::Lighting::BaseLight* light);
 	void AddCamera(Rendering::CameraBase* camera);
-	void AddSkyboxNode(Rendering::GameNode* skyboxNode);
-	void AddWaterNode(Rendering::GameNode* waterNode);
-	void AddTerrainNode(Rendering::GameNode* terrainNode);
-	void AddBillboardNode(Rendering::GameNode* billboardNode);
+	void AddSkyboxNode(GameNode* skyboxNode);
+	void AddWaterNode(GameNode* waterNode);
+	void AddTerrainNode(GameNode* terrainNode);
+	void AddBillboardNode(GameNode* billboardNode);
 private:
 	void CreateRenderer(int width, int height, const std::string& title);
 	void Run();

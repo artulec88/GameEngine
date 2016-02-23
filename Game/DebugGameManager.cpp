@@ -21,7 +21,6 @@
 using namespace Game;
 using namespace Utility;
 using namespace Math;
-using namespace Rendering;
 
 DebugGameManager::DebugGameManager() :
 	GameManager(),
@@ -61,8 +60,8 @@ void DebugGameManager::Load()
 	START_PROFILING;
 	CHECK_CONDITION_ALWAYS(!m_isGameLoaded, Utility::Error, "Loading the game run into a problem. The game has already been loaded.");
 
-	GameNode* triangleNode = new GameNode();
-	Material* triangleMaterial = new Material(new Texture("crateBox2.jpg"), 1.0f, 2.0f);
+	Engine::GameNode* triangleNode = new Engine::GameNode();
+	Rendering::Material* triangleMaterial = new Rendering::Material(new Rendering::Texture("crateBox2.jpg"), 1.0f, 2.0f);
 	//Vertex vertices[] = { Vertex(Vector3D(-1, -1, 0)), Vertex(Vector3D(0, 1, 0)), Vertex(Vector3D(1, -1, 0)) };
 	//int indices[] = { 0, 1, 2, 0 };
 	//Mesh* triangleMesh = new Mesh(vertices, 3, indices, 4);
@@ -81,7 +80,7 @@ void DebugGameManager::Load()
 	NOTICE_LOG("Initalizing debug game finished");
 }
 
-void DebugGameManager::AddCameras(Rendering::GameNode* entityToFollow)
+void DebugGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING;
 	int cameraCount = 3;
@@ -96,7 +95,7 @@ void DebugGameManager::AddCameras(Rendering::GameNode* entityToFollow)
 		cameraBuilder.SetCameraIndex(i);
 		cameraBuilder.SetEntityToFollow(entityToFollow);
 		cameraBuilderDirector.Construct();
-		GameNode* cameraNode = cameraBuilder.GetGameNode();
+		Engine::GameNode* cameraNode = cameraBuilder.GetGameNode();
 		AddToSceneRoot(cameraNode);
 	}
 	DEBUG_LOG("%d camera(-s) created", cameraCount);

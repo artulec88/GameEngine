@@ -158,9 +158,15 @@
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameCommand.h" />
+    <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameNode.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateManager.h" />
+    <ClInclude Include="IInputableKeyboard.h" />
+    <ClInclude Include="IInputableMouse.h" />
+    <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="IUpdateable.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MenuEntry.h" />
     <ClInclude Include="MeshGroupRendererComponent.h" />
@@ -193,7 +199,9 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameCommand.cpp" />
+    <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />

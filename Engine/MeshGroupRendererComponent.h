@@ -2,13 +2,13 @@
 #define __ENGINE_MESH_GROUP_RENDERER_COMPONENT_H__
 
 #include "Engine.h"
-#include "Rendering\GameComponent.h"
-#include "Rendering\IRenderable.h"
+#include "GameComponent.h"
+#include "IRenderable.h"
 #include "Rendering\MeshGroupRenderer.h"
 
 namespace Engine
 {
-	class MeshGroupRendererComponent : public Rendering::GameComponent, public Rendering::IRenderable
+	class MeshGroupRendererComponent : public GameComponent, public IRenderable
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:

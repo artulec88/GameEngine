@@ -20,6 +20,7 @@
 #include "AntTweakBar\include\AntTweakBar.h"
 #endif
 
+#include <GLFW\glfw3.h>
 #include <fstream>
 
 using namespace Utility;
@@ -48,6 +49,7 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 Engine::GameManager::GameManager() :
 	m_rootGameNode(),
 	m_terrainNode(NULL),
+	m_skyboxNode(NULL),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false)
 {
@@ -73,6 +75,7 @@ Engine::GameManager::~GameManager(void)
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
+	SAFE_DELETE(m_skyboxNode);
 	DEBUG_LOG("Game manager destruction finished");
 }
 
@@ -155,24 +158,31 @@ void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 //	return shader;
 //}
 
-void Engine::GameManager::AddToSceneRoot(Rendering::GameNode* child)
+void Engine::GameManager::AddToSceneRoot(GameNode* child)
 {
 	m_rootGameNode.AddChild(child);
 }
 
-void Engine::GameManager::AddWaterNode(Rendering::GameNode* waterNode)
+void Engine::GameManager::AddWaterNode(GameNode* waterNode)
 {
 	CoreEngine::GetCoreEngine()->AddWaterNode(waterNode);
 }
 
-void Engine::GameManager::AddBillboardNode(Rendering::GameNode* billboardNode)
+void Engine::GameManager::AddBillboardNode(GameNode* billboardNode)
 {
 	CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
 }
 
-void Engine::GameManager::AddTerrainNode(Rendering::GameNode* terrainNode)
+void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)
 {
-	CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);
+	//CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);
+	m_terrainNode = terrainNode;
+}
+
+void Engine::GameManager::AddSkyboxNode(GameNode* skyboxNode)
+{
+	//CoreEngine::GetCoreEngine()->AddSkyboxNode(skyboxNode);
+	m_skyboxNode = skyboxNode;
 }
 
 void Engine::GameManager::Render(Rendering::Renderer* renderer) const

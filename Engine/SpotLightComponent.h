@@ -3,10 +3,11 @@
 
 #include "Engine.h"
 #include "Rendering\SpotLight.h"
+#include "GameComponent.h"
 
 namespace Engine
 {
-	class SpotLightComponent : public Rendering::GameComponent
+	class SpotLightComponent : public GameComponent
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -19,8 +20,8 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		//virtual Math::Transform& GetTransform() { return Rendering::GameComponent::GetTransform(); }
-		//virtual const Math::Transform& GetTransform() const { return Rendering::GameComponent::GetTransform(); }
+		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

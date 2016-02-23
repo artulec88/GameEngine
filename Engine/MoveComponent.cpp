@@ -6,7 +6,7 @@
 /* static */ const Math::Real Engine::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
 Engine::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
-	Rendering::GameComponent(),
+	GameComponent(),
 	m_movementSpeed(movementSpeed),
 	m_runSpeedFactor(runSpeedFactor),
 	m_rotationSpeed(rotationSpeed),

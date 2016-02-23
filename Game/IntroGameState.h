@@ -3,11 +3,11 @@
 
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IRenderable.h"
+#include "Engine\IInputableKeyboard.h"
+#include "Engine\IRenderable.h"
 //#include "Rendering\GameCommand.h"
 #include "Math\Math.h"
-#include "Rendering\GameNode.h"
+#include "Engine\GameNode.h"
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
@@ -16,7 +16,7 @@
 namespace Game
 {
 
-class IntroGameState : public Engine::GameState, public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::IRenderable
+class IntroGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:

@@ -2,18 +2,20 @@
 #define __ENGINE_PLAYER_COMPONENT_H__
 
 #include "Engine.h"
-#include "Rendering\GameComponent.h"
-#include "Rendering\IUpdateable.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IInputableMouse.h"
+#include "GameComponent.h"
+#include "IUpdateable.h"
+#include "IInputableKeyboard.h"
+#include "IInputableMouse.h"
 #include "Math\Math.h"
 #include "Math\Angle.h"
+
+#include <GLFW\glfw3.h>
 
 namespace Engine
 {
 	class GameNode;
 
-	class MoveComponent : public Rendering::GameComponent, public Rendering::IUpdateable, public Rendering::Input::IInputableKeyboard, public Rendering::Input::IInputableMouse
+	class MoveComponent : public GameComponent, public IUpdateable, public Input::IInputableKeyboard, public Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	private:

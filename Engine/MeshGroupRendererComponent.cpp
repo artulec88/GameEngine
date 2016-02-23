@@ -2,8 +2,8 @@
 #include "MeshGroupRendererComponent.h"
 
 Engine::MeshGroupRendererComponent::MeshGroupRendererComponent(Rendering::MeshGroupRenderer* meshGroupRenderer) :
-	Rendering::GameComponent(),
-	Rendering::IRenderable(),
+	GameComponent(),
+	IRenderable(),
 	m_meshGroupRenderer(meshGroupRenderer)
 {
 }

@@ -2,7 +2,7 @@
 #define __GAME_DEBUG_GAME_MANAGER_H__
 
 #include <Engine\GameManager.h>
-#include <Rendering\GameNode.h>
+#include <Engine\GameNode.h>
 
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
@@ -38,7 +38,7 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 private:
-	void AddCameras(Rendering::GameNode* entityToFollow);
+	void AddCameras(Engine::GameNode* entityToFollow);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -47,7 +47,7 @@ protected:
 	int m_resourcesLoaded;
 
 	const int m_cameraCount;
-	Rendering::GameNode** m_cameraNodes;
+	Engine::GameNode** m_cameraNodes;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

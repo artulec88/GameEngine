@@ -68,7 +68,7 @@ void Engine::LightBuilder::SetLightIndex(int lightIndex)
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
 void Engine::DirectionalLightBuilder::SetupLightTransform()
 {
-	m_gameNode = new Rendering::GameNode();
+	m_gameNode = new GameNode();
 
 	// Setting position
 	const Math::Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
@@ -185,7 +185,7 @@ Engine::PointLightBuilder::PointLightBuilder() :
 
 void Engine::PointLightBuilder::SetupLightTransform()
 {
-	m_gameNode = new Rendering::GameNode();
+	m_gameNode = new GameNode();
 
 	// Setting position
 	Math::Real xPos = GET_CONFIG_VALUE("pointLightPosX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetX());
@@ -266,7 +266,7 @@ Engine::SpotLightBuilder::SpotLightBuilder() :
 
 void Engine::SpotLightBuilder::SetupLightTransform()
 {
-	m_gameNode = new Rendering::GameNode();
+	m_gameNode = new GameNode();
 
 	// Setting position
 	Math::Real xPos = GET_CONFIG_VALUE("spotLightPosX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetX());
@@ -367,7 +367,7 @@ void Engine::CameraBuilder::SetCameraIndex(int cameraIndex)
 	m_cameraIndexStr = ss.str();
 }
 
-void Engine::CameraBuilder::SetEntityToFollow(Rendering::GameNode* gameNodeToFollow)
+void Engine::CameraBuilder::SetEntityToFollow(GameNode* gameNodeToFollow)
 {
 	m_gameNodeToFollow = gameNodeToFollow;
 }
@@ -384,7 +384,7 @@ void Engine::CameraBuilder::BuildPart2()
 
 void Engine::CameraBuilder::SetupCameraTransform()
 {
-	m_gameNode = new Rendering::GameNode();
+	m_gameNode = new GameNode();
 
 	// Setting position
 	Math::Real xPos = GET_CONFIG_VALUE("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
@@ -459,7 +459,7 @@ void Engine::SkyboxBuilder::BuildPart1()
 	Rendering::Material* skyboxMaterial = new Rendering::Material(skyboxTextureDay, "cubeMapDay");
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
-	m_gameNode = new Rendering::GameNode();
+	m_gameNode = new GameNode();
 	m_gameNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_gameNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
 	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), skyboxMaterial);

@@ -3,7 +3,7 @@
 
 
 Engine::PointLightComponent::PointLightComponent(Rendering::Lighting::PointLight* pointLight) :
-	Rendering::GameComponent(),
+	GameComponent(),
 	m_pointLight(pointLight)
 {
 }

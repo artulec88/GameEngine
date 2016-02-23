@@ -4,8 +4,8 @@
 #include "Rendering\Renderer.h"
 
 Engine::MeshRendererComponent::MeshRendererComponent(Rendering::MeshRenderer* meshRenderer) :
-	Rendering::GameComponent(),
-	Rendering::IRenderable(),
+	GameComponent(),
+	IRenderable(),
 	m_meshRenderer(meshRenderer)
 {
 }

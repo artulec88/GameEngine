@@ -7,6 +7,12 @@
 #include "QuitCommand.h"
 #include "ResumeGameCommand.h"
 
+// TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
+// It would be much better if instead we could use our own input keys and map them together in the Engine library.
+// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
+// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
+#include <GLFW\glfw3.h>
+
 using namespace Game;
 
 PlayMenuGameState::PlayMenuGameState(void) :
@@ -60,6 +66,10 @@ void PlayMenuGameState::Revealed()
 
 void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
+	// TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
+	// It would be much better if instead we could use our own input keys and map them together in the Engine library.
+	// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
+	// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
 	if (action != GLFW_PRESS)
 	{
 		return;

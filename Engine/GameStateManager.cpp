@@ -153,7 +153,7 @@ void Engine::DefaultGameStateManager::KeyEvent(int key, int scancode, int action
 	}
 	DEBUG_LOG("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
 		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
-	for (std::vector<Rendering::Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
+	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
@@ -168,7 +168,7 @@ void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset
 	}
 	DEBUG_LOG("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
 		m_exposedInputablesMouse.size(), xOffset, yOffset);
-	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->ScrollEvent(xOffset, yOffset);
 	}
@@ -182,7 +182,7 @@ void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, i
 		return;
 	}
 	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
-	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MouseButtonEvent(button, action, mods);
 	}
@@ -196,7 +196,7 @@ void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 		return;
 	}
 	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
-	for (std::vector<Rendering::Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
+	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MousePosEvent(xPos, yPos);
 	}
@@ -221,13 +221,13 @@ void Engine::DefaultGameStateManager::Render(Rendering::Shader* shader, Renderin
 void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG("Adding to interfaces started");
-	Rendering::Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Rendering::Input::IInputableKeyboard*>(gameState);
+	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
 	if (inputableKeyboard != NULL)
 	{
 		DEBUG_LOG("Adding to KEYBOARD INPUT interface");
 		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 	}
-	Rendering::Input::IInputableMouse* inputableMouse = dynamic_cast<Rendering::Input::IInputableMouse*>(gameState);
+	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
 		DEBUG_LOG("Adding to MOUSE INPUT interface");
@@ -252,12 +252,12 @@ void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 
 void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
-	Rendering::Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Rendering::Input::IInputableKeyboard*>(gameState);
+	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
 	if (inputableKeyboard != NULL)
 	{
 		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 	}
-	Rendering::Input::IInputableMouse* inputableMouse = dynamic_cast<Rendering::Input::IInputableMouse*>(gameState);
+	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
 		m_exposedInputablesMouse.push_back(inputableMouse);

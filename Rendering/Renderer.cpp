@@ -68,7 +68,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_filterMaterial(NULL),
 	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
-	m_terrainNodes(),
 	m_ambientShaderTerrain(NULL),
 	m_ambientShader(NULL),
 	m_shadowMapShader(NULL),
@@ -80,7 +79,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN), // TODO: This variable should be dependant of the clock speed in CoreEngine.
-	m_skyboxNode(NULL),
 	m_skyboxShader(NULL),
 	m_skyboxProceduralShader(NULL),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),
@@ -102,7 +100,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterReflectivity(GET_CONFIG_VALUE("waterReflectivity", 0.5f)),
 	m_waterWaveSpeed(GET_CONFIG_VALUE("waterWaveSpeed", 0.0003f)),
 	m_waterMoveFactor(GET_CONFIG_VALUE("waterMoveFactor", 0.0f)),
-	m_waterNodes(),
 	m_waterRefractionClippingPlane(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE("waterRefractionClippingPlaneOriginDistance", 10.0f)),
@@ -118,8 +115,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE("waterNormalVerticalFactor", 3.0f)),
 	m_waterShader(NULL),
 	m_waterNoDirectionalLightShader(NULL),
-	m_billboardShader(NULL),
-	m_billboardNodes()
+	m_billboardShader(NULL)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -291,7 +287,6 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_gaussBlurFilterShader);
 	SAFE_DELETE(m_fxaaFilterShader);
 	//SAFE_DELETE(altCameraNode);
-	SAFE_DELETE(m_skyboxNode);
 	SAFE_DELETE(m_skyboxShader);
 	SAFE_DELETE(m_skyboxProceduralShader);
 	SAFE_DELETE(m_cubeShadowMap);
@@ -317,11 +312,11 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterNoDirectionalLightShader);
 	
 	SAFE_DELETE(m_billboardShader);
-	for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
-	{
-		SAFE_DELETE(*billboardNodeItr);
-	}
-	m_billboardNodes.clear();
+	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
+	//{
+	//	SAFE_DELETE(*billboardNodeItr);
+	//}
+	//m_billboardNodes.clear();
 
 	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
 	ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
@@ -361,34 +356,34 @@ Renderer::~Renderer(void)
 	NOTICE_LOG("Rendering engine destroyed");
 }
 
-void Renderer::AddTerrainNode(GameNode* terrainNode)
-{
-	CHECK_CONDITION(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
-	m_terrainNodes.push_back(terrainNode);
-}
+//void Renderer::AddTerrainNode(GameNode* terrainNode)
+//{
+//	CHECK_CONDITION(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
+//	m_terrainNodes.push_back(terrainNode);
+//}
 
-void Renderer::AddWaterNode(GameNode* waterNode)
-{
-	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
-	if (m_waterNodes.empty())
-	{
-		INFO_LOG("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
-	}
-	m_waterNodes.push_back(waterNode);
-}
+//void Renderer::AddWaterNode(GameNode* waterNode)
+//{
+//	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
+//	if (m_waterNodes.empty())
+//	{
+//		INFO_LOG("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
+//	}
+//	m_waterNodes.push_back(waterNode);
+//}
 
-void Renderer::AddBillboardNode(GameNode* billboardNode)
-{
-	CHECK_CONDITION_EXIT(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
-	m_billboardNodes.push_back(billboardNode);
-}
+//void Renderer::AddBillboardNode(GameNode* billboardNode)
+//{
+//	CHECK_CONDITION_EXIT(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
+//	m_billboardNodes.push_back(billboardNode);
+//}
 
-RENDERING_API void Renderer::AddSkyboxNode(GameNode* skyboxNode)
-{
-	CHECK_CONDITION_EXIT(skyboxNode != NULL, Utility::Emergency, "Adding skybox node failed. The given skybox node is NULL.");
-	CHECK_CONDITION(m_skyboxNode == NULL, Utility::Warning, "The currently assigned skybox node is being overwritten");
-	m_skyboxNode = skyboxNode;
-}
+//void Renderer::AddSkyboxNode(GameNode* skyboxNode)
+//{
+//	CHECK_CONDITION_EXIT(skyboxNode != NULL, Utility::Emergency, "Adding skybox node failed. The given skybox node is NULL.");
+//	CHECK_CONDITION(m_skyboxNode == NULL, Utility::Warning, "The currently assigned skybox node is being overwritten");
+//	m_skyboxNode = skyboxNode;
+//}
 
 /* TODO: Remove in the future */
 struct CameraDirection
@@ -414,403 +409,401 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
-void Renderer::Render(const GameNode& gameNode)
-{
-	START_PROFILING;
-	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
-	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
-		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+//void Renderer::Render(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	Rendering::CheckErrorCode("Renderer::Render", "Started main render function");
+//	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+//		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+//
+//#ifdef ANT_TWEAK_BAR_ENABLED
+//	SetVector3D("ambientFogColor", m_fogColor);
+//	SetReal("ambientFogStart", m_fogStart);
+//	SetReal("ambientFogEnd", m_fogEnd);
+//	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+//	SetReal("ambientFogGradient", m_fogGradient);
+//	SetVector3D("ambientIntensity", m_ambientLight);
+//	SetReal("fxaaSpanMax", m_fxaaSpanMax);
+//	SetReal("fxaaReduceMin", m_fxaaReduceMin);
+//	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+//	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+//	CheckCameraIndexChange();
+//#endif
+//	if (!m_waterNodes.empty())
+//	{
+//		RenderWaterTextures(gameNode);
+//	}
+//
+//	GetTexture("displayTexture")->BindAsRenderTarget();
+//
+//	ClearScreen();
+//	m_currentCamera = m_cameras[m_currentCameraIndex];
+//
+//	RenderSceneWithAmbientLight(gameNode);
+//
+//	RenderSceneWithPointLights(gameNode);
+//
+//	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+//	{
+//		m_currentLight = (*lightItr);
+//		if (!m_currentLight->IsEnabled())
+//		{
+//			continue;
+//		}
+//
+//		ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+//		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+//		CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+//		SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+//		m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+//		ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
+//		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
+//		{
+//			m_altCamera.SetProjection(shadowInfo->GetProjection());
+//			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
+//			m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
+//			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
+//
+//			//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
+//			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
+//
+//			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+//			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
+//
+//			CameraBase* temp = m_currentCamera;
+//			m_currentCamera = &m_altCamera;
+//
+//			if (shadowInfo->IsFlipFacesEnabled())
+//			{
+//				glCullFace(GL_FRONT);
+//			}
+//			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+//			{
+//				(*terrainNodeItr)->Render(m_shadowMapShader, this);
+//			}
+//			gameNode.Render(m_shadowMapShader, this);
+//			if (shadowInfo->IsFlipFacesEnabled())
+//			{
+//				glCullFace(GL_BACK);
+//			}
+//
+//			m_currentCamera = temp;
+//
+//			if (m_applyFilterEnabled)
+//			{
+//				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+//				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+//				if (!AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
+//				{
+//					BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
+//				}
+//			}
+//		}
+//		else // current light does not cast shadow or shadowing is disabled at all
+//		{
+//			// we set the light matrix this way so that, if no shadow should be cast
+//			// everything in the scene will be mapped to the same point
+//			m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+//			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+//			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+//		}
+//		RenderSceneWithLight(m_currentLight, gameNode);
+//	}
+//	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+//
+//	if (!m_waterNodes.empty())
+//	{
+//		RenderWaterNodes(); // normal rendering of water quads
+//	}
+//	if (!m_billboardNodes.empty())
+//	{
+//		RenderBillboardNodes(); // rendering billboards
+//	}
+//
+//	RenderSkybox();
+//
+//#ifdef DEBUG_RENDERING_ENABLED
+//	RenderDebugNodes();
+//#endif
+//
+//	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
+//	STOP_PROFILING;
+//}
 
-#ifdef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("ambientFogColor", m_fogColor);
-	SetReal("ambientFogStart", m_fogStart);
-	SetReal("ambientFogEnd", m_fogEnd);
-	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
-	SetReal("ambientFogGradient", m_fogGradient);
-	SetVector3D("ambientIntensity", m_ambientLight);
-	SetReal("fxaaSpanMax", m_fxaaSpanMax);
-	SetReal("fxaaReduceMin", m_fxaaReduceMin);
-	SetReal("fxaaReduceMul", m_fxaaReduceMul);
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
-	CheckCameraIndexChange();
-#endif
-	if (!m_waterNodes.empty())
-	{
-		RenderWaterTextures(gameNode);
-	}
+//void Renderer::RenderWaterTextures(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
+//	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
+//	CHECK_CONDITION(m_waterNodes.size() == 1, Utility::Warning, "For now the rendering engine supports only one water node in the game engine, but there are %d created.", m_waterNodes.size());
+//	RenderWaterReflectionTexture(gameNode);
+//	RenderWaterRefractionTexture(gameNode);
+//	
+//	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
+//	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
+//	// below glDisable(GL_CLIP_DISTANCE0) call, so we need a trick. In order to have no clipping we simply
+//	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
+//	// and as a result we render the whole scene.
+//	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
+//	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+//	//BindAsRenderTarget();
+//	STOP_PROFILING;
+//}
 
-	GetTexture("displayTexture")->BindAsRenderTarget();
-	//BindAsRenderTarget();
+//void Renderer::RenderWaterNodes()
+//{
+//	START_PROFILING;
+//	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
+//	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
+//	SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
+//	SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
+//	SetTexture("waterDUDVMap", m_waterDUDVTexture);
+//	SetTexture("waterNormalMap", m_waterNormalMap);
+//	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
+//	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
+//	if (m_waterMoveFactor > REAL_ONE)
+//	{
+//		m_waterMoveFactor -= REAL_ONE;
+//		CHECK_CONDITION_ALWAYS(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+//	}
+//	SetReal("waterMoveFactor", m_waterMoveFactor);
+//	SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
+//	SetReal("farPlane", 1000.0f /* TODO: This value should be always equal to the far plane of the current camera, but it is not easy for us to get this value */);
+//	SetReal("waterWaveStrength", m_waterWaveStrength);
+//	SetReal("waterShineDamper", m_waterShineDamper);
+//	SetReal("waterReflectivity", m_waterReflectivity);
+//	SetReal("waterFresnelEffectFactor", m_waterFresnelEffectFactor);
+//	SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
+//	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
+//	{
+//		if (m_waterLightReflectionEnabled)
+//		{
+//			(*waterNodeItr)->Render(m_waterShader, this);
+//		}
+//		else
+//		{
+//			(*waterNodeItr)->Render(m_waterNoDirectionalLightShader, this);
+//		}
+//	}
+//	STOP_PROFILING;
+//}
 
-	ClearScreen();
-	m_currentCamera = m_cameras[m_currentCameraIndex];
+//void Renderer::RenderBillboardNodes()
+//{
+//	START_PROFILING;
+//	DEBUG_LOG("Rendering billboards started");
+//	for (std::vector<GameNode*>::const_iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
+//	{
+//		(*billboardNodeItr)->Render(m_billboardShader, this);
+//	}
+//	STOP_PROFILING;
+//}
 
-	RenderSceneWithAmbientLight(gameNode);
+//void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
+//	
+//	Transform& cameraTransform = m_currentCamera->GetTransform();
+//	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+//	Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+//	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+//	cameraTransform.GetRot().InvertPitch();
+//
+//	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
+//	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
+//	m_waterReflectionTexture->BindAsRenderTarget();
+//	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
+//
+//	glDisable(GL_DEPTH_TEST);
+//	RenderSkybox();
+//	RenderSceneWithAmbientLight(gameNode);
+//
+//	RenderSceneWithPointLights(gameNode);
+//	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+//	{
+//		m_currentLight = (*lightItr);
+//		if (!m_currentLight->IsEnabled())
+//		{
+//			continue;
+//		}
+//		RenderSceneWithLight(m_currentLight, gameNode, false);
+//	}
+//	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
+//
+//	glEnable(GL_DEPTH_TEST);
+//
+//	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+//	//{
+//	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+//	//}
+//	//else
+//	//{
+//	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+//	//}
+//
+//	//BindAsRenderTarget();
+//	
+//	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+//	cameraTransform.GetRot().InvertPitch();
+//
+//	STOP_PROFILING;
+//}
 
-	RenderSceneWithPointLights(gameNode);
+//void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
+//
+//	m_waterRefractionClippingPlane.SetW(m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
+//	SetVector4D("clipPlane", m_waterRefractionClippingPlane);
+//	m_waterRefractionTexture->BindAsRenderTarget();
+//	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
+//
+//	//glDisable(GL_DEPTH_TEST);
+//	RenderSkybox();
+//	RenderSceneWithAmbientLight(gameNode);
+//
+//	RenderSceneWithPointLights(gameNode);
+//	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+//	{
+//		m_currentLight = (*lightItr);
+//		if (!m_currentLight->IsEnabled())
+//		{
+//			continue;
+//		}
+//
+//		RenderSceneWithLight(m_currentLight, gameNode, false);
+//	}
+//	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
+//
+//	//glEnable(GL_DEPTH_TEST);
+//
+//	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+//	//{
+//	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+//	//}
+//	//else
+//	//{
+//	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+//	//}
+//
+//	//BindAsRenderTarget();
+//
+//	STOP_PROFILING;
+//}
+//
+//void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	if (m_fogEnabled)
+//	{
+//		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+//		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
+//		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
+//		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+//		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
+//		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+//		{
+//			(*terrainNodeItr)->Render(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
+//		}
+//		gameNode.Render(fogShader, this); // Ambient rendering with fog enabled
+//	}
+//	else if (m_ambientLightEnabled)
+//	{
+//		gameNode.Render(m_ambientShader, this); // Ambient rendering with disabled fog
+//		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+//		{
+//			(*terrainNodeItr)->Render(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
+//		}
+//	}
+//	STOP_PROFILING;
+//}
 
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	{
-		m_currentLight = (*lightItr);
-		if (!m_currentLight->IsEnabled())
-		{
-			continue;
-		}
+//void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
+//{
+//	START_PROFILING;
+//	if (!Lighting::PointLight::ArePointLightsEnabled())
+//	{
+//		STOP_PROFILING;
+//		return;
+//	}
+//
+//	for (std::vector<Lighting::PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
+//	{
+//		m_pointLight = (*pointLightItr);
+//		if (!m_pointLight->IsEnabled())
+//		{
+//			continue;
+//		}
+//		//if (m_shadowsEnabled && m_pointLightShadowsEnabled)
+//		//{
+//		glCullFace(GL_FRONT);
+//		const int NUMBER_OF_CUBE_MAP_FACES = 6;
+//
+//		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
+//		m_altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
+//		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
+//		{
+//			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
+//			//DEBUG_LOG("Binding the cube face #%d", i);
+//			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
+//			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+//
+//			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
+//
+//			CameraBase* temp = m_currentCamera;
+//			m_currentCamera = &m_altCamera;
+//
+//			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+//			{
+//				(*terrainNodeItr)->Render(m_cubeMapShader, this);
+//			}
+//			gameNode.Render(m_cubeMapShader, this);
+//
+//			m_currentCamera = temp;
+//		}
+//		//}
+//
+//		RenderSceneWithLight(m_pointLight, gameNode);
+//	}
+//	m_pointLight = NULL;
+//	STOP_PROFILING;
+//}
 
-		ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
-		int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-		CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-		SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-		m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
-		ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
-		if (/*(m_shadowsEnabled) && */ (shadowInfo != NULL)) // The currentLight casts shadows
-		{
-			m_altCamera.SetProjection(shadowInfo->GetProjection());
-			ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
-			m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
-			m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
-
-			//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
-			m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
-
-			SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
-			SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
-
-			CameraBase* temp = m_currentCamera;
-			m_currentCamera = &m_altCamera;
-
-			if (shadowInfo->IsFlipFacesEnabled())
-			{
-				glCullFace(GL_FRONT);
-			}
-			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-			{
-				(*terrainNodeItr)->Render(m_shadowMapShader, this);
-			}
-			gameNode.Render(m_shadowMapShader, this);
-			if (shadowInfo->IsFlipFacesEnabled())
-			{
-				glCullFace(GL_BACK);
-			}
-
-			m_currentCamera = temp;
-
-			if (m_applyFilterEnabled)
-			{
-				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-				//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-				if (!AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
-				{
-					BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
-				}
-			}
-		}
-		else // current light does not cast shadow or shadowing is disabled at all
-		{
-			// we set the light matrix this way so that, if no shadow should be cast
-			// everything in the scene will be mapped to the same point
-			m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-			SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-			SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
-		}
-		RenderSceneWithLight(m_currentLight, gameNode);
-	}
-	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
-
-	if (!m_waterNodes.empty())
-	{
-		RenderWaterNodes(); // normal rendering of water quads
-	}
-	if (!m_billboardNodes.empty())
-	{
-		RenderBillboardNodes(); // rendering billboards
-	}
-
-	RenderSkybox();
-
-#ifdef DEBUG_RENDERING_ENABLED
-	RenderDebugNodes();
-#endif
-
-
-	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
-	STOP_PROFILING;
-}
-
-void Renderer::RenderWaterTextures(const GameNode& gameNode)
-{
-	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
-	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
-	CHECK_CONDITION(m_waterNodes.size() == 1, Utility::Warning, "For now the rendering engine supports only one water node in the game engine, but there are %d created.", m_waterNodes.size());
-	RenderWaterReflectionTexture(gameNode);
-	RenderWaterRefractionTexture(gameNode);
-	
-	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
-	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
-	// below glDisable(GL_CLIP_DISTANCE0) call, so we need a trick. In order to have no clipping we simply
-	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
-	// and as a result we render the whole scene.
-	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
-	//BindAsRenderTarget();
-	STOP_PROFILING;
-}
-
-void Renderer::RenderWaterNodes()
-{
-	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
-	SetTexture("waterReflectionTexture", m_waterReflectionTexture);
-	SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
-	SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
-	SetTexture("waterDUDVMap", m_waterDUDVTexture);
-	SetTexture("waterNormalMap", m_waterNormalMap);
-	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
-	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
-	if (m_waterMoveFactor > REAL_ONE)
-	{
-		m_waterMoveFactor -= REAL_ONE;
-		CHECK_CONDITION_ALWAYS(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
-	}
-	SetReal("waterMoveFactor", m_waterMoveFactor);
-	SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
-	SetReal("farPlane", 1000.0f /* TODO: This value should be always equal to the far plane of the current camera, but it is not easy for us to get this value */);
-	SetReal("waterWaveStrength", m_waterWaveStrength);
-	SetReal("waterShineDamper", m_waterShineDamper);
-	SetReal("waterReflectivity", m_waterReflectivity);
-	SetReal("waterFresnelEffectFactor", m_waterFresnelEffectFactor);
-	SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
-	for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
-	{
-		if (m_waterLightReflectionEnabled)
-		{
-			(*waterNodeItr)->Render(m_waterShader, this);
-		}
-		else
-		{
-			(*waterNodeItr)->Render(m_waterNoDirectionalLightShader, this);
-		}
-	}
-	STOP_PROFILING;
-}
-
-void Renderer::RenderBillboardNodes()
-{
-	START_PROFILING;
-	DEBUG_LOG("Rendering billboards started");
-	for (std::vector<GameNode*>::const_iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
-	{
-		(*billboardNodeItr)->Render(m_billboardShader, this);
-	}
-	STOP_PROFILING;
-}
-
-void Renderer::RenderWaterReflectionTexture(const GameNode& gameNode)
-{
-	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
-	
-	Transform& cameraTransform = m_currentCamera->GetTransform();
-	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
-	Math::Real distance = 2.0f * (cameraHeight - m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
-	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
-
-	m_waterReflectionClippingPlane.SetW(-m_waterNodes.front()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
-	SetVector4D("clipPlane", m_waterReflectionClippingPlane);
-	m_waterReflectionTexture->BindAsRenderTarget();
-	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
-
-	glDisable(GL_DEPTH_TEST);
-	RenderSkybox();
-	RenderSceneWithAmbientLight(gameNode);
-
-	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	{
-		m_currentLight = (*lightItr);
-		if (!m_currentLight->IsEnabled())
-		{
-			continue;
-		}
-		RenderSceneWithLight(m_currentLight, gameNode, false);
-	}
-	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
-
-	glEnable(GL_DEPTH_TEST);
-
-	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
-	//{
-	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
-	//}
-	//else
-	//{
-	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
-	//}
-
-	//BindAsRenderTarget();
-	
-	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
-
-	STOP_PROFILING;
-}
-
-void Renderer::RenderWaterRefractionTexture(const GameNode& gameNode)
-{
-	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(!m_waterNodes.empty(), Utility::Debug, "There are no water nodes registered in the rendering engine");
-
-	m_waterRefractionClippingPlane.SetW(m_waterNodes.front()->GetTransform().GetTransformedPos().GetY());
-	SetVector4D("clipPlane", m_waterRefractionClippingPlane);
-	m_waterRefractionTexture->BindAsRenderTarget();
-	ClearScreen(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
-
-	//glDisable(GL_DEPTH_TEST);
-	RenderSkybox();
-	RenderSceneWithAmbientLight(gameNode);
-
-	RenderSceneWithPointLights(gameNode);
-	for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
-	{
-		m_currentLight = (*lightItr);
-		if (!m_currentLight->IsEnabled())
-		{
-			continue;
-		}
-
-		RenderSceneWithLight(m_currentLight, gameNode, false);
-	}
-	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
-
-	//glEnable(GL_DEPTH_TEST);
-
-	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
-	//{
-	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
-	//}
-	//else
-	//{
-	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
-	//}
-
-	//BindAsRenderTarget();
-
-	STOP_PROFILING;
-}
-
-void Renderer::RenderSceneWithAmbientLight(const GameNode& gameNode)
-{
-	START_PROFILING;
-	if (m_fogEnabled)
-	{
-		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
-		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
-		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
-		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
-		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
-		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-		{
-			(*terrainNodeItr)->Render(fogTerrainShader, this); // Ambient rendering with fog enabled for terrain node
-		}
-		gameNode.Render(fogShader, this); // Ambient rendering with fog enabled
-	}
-	else if (m_ambientLightEnabled)
-	{
-		gameNode.Render(m_ambientShader, this); // Ambient rendering with disabled fog
-		for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-		{
-			(*terrainNodeItr)->Render(m_ambientShaderTerrain, this); // Ambient rendering with fog disabled for terrain node
-		}
-	}
-	STOP_PROFILING;
-}
-
-void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
-{
-	START_PROFILING;
-	if (!Lighting::PointLight::ArePointLightsEnabled())
-	{
-		STOP_PROFILING;
-		return;
-	}
-
-	for (std::vector<Lighting::PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
-	{
-		m_pointLight = (*pointLightItr);
-		if (!m_pointLight->IsEnabled())
-		{
-			continue;
-		}
-		//if (m_shadowsEnabled && m_pointLightShadowsEnabled)
-		//{
-		glCullFace(GL_FRONT);
-		const int NUMBER_OF_CUBE_MAP_FACES = 6;
-
-		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-		m_altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
-		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
-		{
-			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-			//DEBUG_LOG("Binding the cube face #%d", i);
-			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
-			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
-			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
-
-			CameraBase* temp = m_currentCamera;
-			m_currentCamera = &m_altCamera;
-
-			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-			{
-				(*terrainNodeItr)->Render(m_cubeMapShader, this);
-			}
-			gameNode.Render(m_cubeMapShader, this);
-
-			m_currentCamera = temp;
-		}
-		//}
-
-		RenderSceneWithLight(m_pointLight, gameNode);
-	}
-	m_pointLight = NULL;
-	STOP_PROFILING;
-}
-
-void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
-{
-	START_PROFILING;
-	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
-	DEBUG_LOG("Rendering scene with light.");
-	glCullFace(Rendering::glCullFaceMode);
-	GetTexture("displayTexture")->BindAsRenderTarget();
-	if (!Rendering::glBlendEnabled)
-	{
-		glEnable(GL_BLEND);
-	}
-	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
-	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
-	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-
-	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
-	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-	{
-		(*terrainNodeItr)->Render(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
-	}
-
-	glDepthFunc(Rendering::glDepthTestFunc);
-	glDepthMask(GL_TRUE);
-	if (!Rendering::glBlendEnabled)
-	{
-		glDisable(GL_BLEND);
-	}
-	else
-	{
-		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
-	}
-	STOP_PROFILING;
-}
+//void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
+//{
+//	START_PROFILING;
+//	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
+//	DEBUG_LOG("Rendering scene with light.");
+//	glCullFace(Rendering::glCullFaceMode);
+//	GetTexture("displayTexture")->BindAsRenderTarget();
+//	if (!Rendering::glBlendEnabled)
+//	{
+//		glEnable(GL_BLEND);
+//	}
+//	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
+//	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
+//	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+//
+//	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
+//	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
+//	{
+//		(*terrainNodeItr)->Render(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
+//	}
+//
+//	glDepthFunc(Rendering::glDepthTestFunc);
+//	glDepthMask(GL_TRUE);
+//	if (!Rendering::glBlendEnabled)
+//	{
+//		glDisable(GL_BLEND);
+//	}
+//	else
+//	{
+//		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+//	}
+//	STOP_PROFILING;
+//}
 
 //void Renderer::RenderMainMenu(const MenuEntry& menuEntry)
 //{
@@ -943,33 +936,33 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime
 	STOP_PROFILING;
 }
 
-void Renderer::RenderSkybox()
-{
-	START_PROFILING;
-	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
-	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_skyboxAngle));
-	m_skyboxAngle += m_skyboxAngleStep;
-	if (m_fogEnabled)
-	{
-		STOP_PROFILING;
-		return;
-	}
-
-	//glDisable(GL_DEPTH_TEST);
-	glCullFace(GL_FRONT);
-	/**
-	 * By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
-	 * However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
-	 * To make it part of the scene we change the depth function to "less than or equal".
-	 */
-	glDepthFunc(GL_LEQUAL);
-	m_skyboxNode->Render(m_skyboxShader, this);
-	glDepthFunc(Rendering::glDepthTestFunc);
-	glCullFace(Rendering::glCullFaceMode);
-	//glEnable(GL_DEPTH_TEST);
-	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
-	STOP_PROFILING;
-}
+//void Renderer::RenderSkybox()
+//{
+//	START_PROFILING;
+//	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
+//	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_skyboxAngle));
+//	m_skyboxAngle += m_skyboxAngleStep;
+//	if (m_fogEnabled)
+//	{
+//		STOP_PROFILING;
+//		return;
+//	}
+//
+//	//glDisable(GL_DEPTH_TEST);
+//	glCullFace(GL_FRONT);
+//	/**
+//	 * By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
+//	 * However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
+//	 * To make it part of the scene we change the depth function to "less than or equal".
+//	 */
+//	glDepthFunc(GL_LEQUAL);
+//	m_skyboxNode->Render(m_skyboxShader, this);
+//	glDepthFunc(Rendering::glDepthTestFunc);
+//	glCullFace(Rendering::glCullFaceMode);
+//	//glEnable(GL_DEPTH_TEST);
+//	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
+//	STOP_PROFILING;
+//}
 
 void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
 {

@@ -3,11 +3,18 @@
 
 #include "Engine.h"
 #include "GameState.h"
-#include "Rendering\IInputableKeyboard.h"
-#include "Rendering\IInputableMouse.h"
-#include "Rendering\IRenderable.h"
-#include "Rendering\IUpdateable.h"
+#include "IInputableKeyboard.h"
+#include "IInputableMouse.h"
+#include "IRenderable.h"
+#include "IUpdateable.h"
+
+#include "Rendering\Shader.h"
+#include "Rendering\Renderer.h"
+
 #include "Math\Math.h"
+
+#include "Utility\Utility.h"
+
 #include <vector>
 #include <stack>
 
@@ -78,7 +85,7 @@ namespace Engine
 /// <summary>
 /// Interface for a stack-based game state manager.
 /// </summary>
-class GameStateManager : public virtual Rendering::Input::IInputableKeyboard, public virtual Rendering::Input::IInputableMouse, public virtual Rendering::IRenderable, public virtual Rendering::IUpdateable
+class GameStateManager : public virtual Input::IInputableKeyboard, public virtual Input::IInputableMouse, public virtual IRenderable, public virtual IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -256,10 +263,10 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::vector<GameStateModalityTypePair> m_activeStates;
-	std::vector<Rendering::Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
-	std::vector<Rendering::Input::IInputableMouse*> m_exposedInputablesMouse;
-	std::vector<Rendering::IRenderable*> m_exposedRenderables;
-	std::vector<Rendering::IUpdateable*> m_exposedUpdateables;
+	std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
+	std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
+	std::vector<IRenderable*> m_exposedRenderables;
+	std::vector<IUpdateable*> m_exposedUpdateables;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DefaultGameStateManager */
 

@@ -850,24 +850,25 @@ void CoreEngine::AddCamera(Rendering::CameraBase* camera)
 	m_renderer->AddCamera(camera);
 }
 
-void CoreEngine::AddSkyboxNode(Rendering::GameNode* skyboxNode)
+void CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
 {
-	m_renderer->AddSkyboxNode(skyboxNode);
+	//m_game.
+	//m_renderer->AddSkyboxNode(skyboxNode);
 }
 
-void CoreEngine::AddWaterNode(Rendering::GameNode* waterNode)
+void CoreEngine::AddWaterNode(GameNode* waterNode)
 {
-	m_renderer->AddWaterNode(waterNode);
+	//m_renderer->AddWaterNode(waterNode);
 }
 
-void CoreEngine::AddTerrainNode(Rendering::GameNode* terrainNode)
+void CoreEngine::AddTerrainNode(GameNode* terrainNode)
 {
-	m_renderer->AddTerrainNode(terrainNode);
+	//m_renderer->AddTerrainNode(terrainNode);
 }
 
-void CoreEngine::AddBillboardNode(Rendering::GameNode* billboardNode)
+void CoreEngine::AddBillboardNode(GameNode* billboardNode)
 {
-	m_renderer->AddBillboardNode(billboardNode);
+	//m_renderer->AddBillboardNode(billboardNode);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

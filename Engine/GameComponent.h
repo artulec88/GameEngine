@@ -1,33 +1,35 @@
-#ifndef __ENGINE_MESH_RENDERER_COMPONENT_H__
-#define __ENGINE_MESH_RENDERER_COMPONENT_H__
+#ifndef __ENGINE_GAME_COMPONENT_H__
+#define __ENGINE_GAME_COMPONENT_H__
 
 #include "Engine.h"
-#include "GameComponent.h"
-#include "IRenderable.h"
-#include "Rendering\MeshRenderer.h"
+#include "GameNode.h"
+
+#include "Math\Transform.h"
 
 namespace Engine
 {
 
-	class MeshRendererComponent : public GameComponent, public IRenderable
+	class GameComponent
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MeshRendererComponent(Rendering::MeshRenderer* meshRenderer);
-		ENGINE_API virtual ~MeshRendererComponent(void);
+		ENGINE_API GameComponent();
+		ENGINE_API virtual ~GameComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		void SetParent(GameNode* parentGameNode);
+		Math::Transform& GetTransform();
+		const Math::Transform& GetTransform() const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::MeshRenderer* m_meshRenderer;
+		GameNode* m_parentGameNode;
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class MeshRendererComponent */
+	}; /* end class GameComponent */
 
 } /* end namespace Engine */
 
-#endif /* __ENGINE_MESH_RENDERER_COMPONENT_H__ */
+#endif // __ENGINE_GAME_COMPONENT_H__

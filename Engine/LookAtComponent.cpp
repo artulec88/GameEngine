@@ -3,7 +3,7 @@
 #include "Utility\ILogger.h"
 #include "Math\Quaternion.h"
 
-Engine::LookAtComponent::LookAtComponent(Rendering::GameNode* gameNode) :
+Engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 	GameComponent(),
 	m_entityToLookAtTransform(gameNode->GetTransform())
 {
