@@ -18,20 +18,15 @@
 #include <unordered_set>
 #include <fstream>
 
-using namespace Rendering;
-using namespace Utility;
-using namespace std;
-using namespace Math;
-
 #ifndef MEASURE_TIME_ENABLED
 #undef START_TIMER
 #undef RESET_TIMER
 #undef STOP_TIMER
 #endif
 
-/* static */ std::map<std::string, MeshData*> Mesh::meshResourceMap;
+/* static */ std::map<std::string, Rendering::MeshData*> Rendering::Mesh::meshResourceMap;
 
-MeshData::MeshData() :
+Rendering::MeshData::MeshData() :
 	m_vbo(0),
 	m_ibo(0),
 	m_size(0)
@@ -39,7 +34,7 @@ MeshData::MeshData() :
 	glGenBuffers(1, &m_vbo);
 }
 
-MeshData::MeshData(GLsizei indexSize) :
+Rendering::MeshData::MeshData(GLsizei indexSize) :
 	m_vbo(0),
 	m_ibo(0),
 	m_size(indexSize)
@@ -49,7 +44,7 @@ MeshData::MeshData(GLsizei indexSize) :
 }
 
 
-MeshData::~MeshData(void)
+Rendering::MeshData::~MeshData(void)
 {
 	if (m_vbo)
 	{
@@ -61,14 +56,14 @@ MeshData::~MeshData(void)
 	}
 }
 
-Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
+Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(""),
 	m_mode(mode),
 	m_meshData(NULL)
 {
 }
 
-Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(""),
 	m_mode(mode),
 	m_meshData(NULL)
@@ -76,14 +71,14 @@ Mesh::Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, 
 	AddVertices(vertices, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(fileName),
 	m_mode(mode),
 	m_meshData(NULL)
 {
 }
 
-Mesh::~Mesh(void)
+Rendering::Mesh::~Mesh(void)
 {
 	ASSERT(m_meshData != NULL);
 	if (m_meshData == NULL)
@@ -101,7 +96,7 @@ Mesh::~Mesh(void)
 	}
 }
 
-void Mesh::Initialize()
+void Rendering::Mesh::Initialize()
 {
 	if (m_meshData != NULL)
 	{
@@ -188,7 +183,7 @@ void Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS(face.mNumIndices == 3, Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
+		CHECK_CONDITION_ALWAYS(face.mNumIndices == 3, Utility::Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -204,7 +199,7 @@ void Mesh::Initialize()
 #endif
 }
 
-void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled /* = true */)
+void Rendering::Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled /* = true */)
 {
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
@@ -235,7 +230,7 @@ void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indice
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 }
 
-//void Mesh::CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
+//void Rendering::Mesh::CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const
 //{
 //	/**
 //	 * TODO: Improve this code as described here:
@@ -258,7 +253,7 @@ void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indice
 //	}
 //}
 
-//bool Mesh::GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const
+//bool Rendering::Mesh::GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const
 //{
 //	// Lame linear search
 //	for (unsigned int i = 0; i < indexedVertices.size(); ++i)
@@ -275,24 +270,24 @@ void Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const int* indice
 //	return false;
 //}
 
-void Mesh::Draw() const
+void Rendering::Mesh::Draw() const
 {
 	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
 
 	BindBuffers();
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)0); // positions
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Vector3D)); // texture coordinates
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D))); // normals
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D))); // tangents
-	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Vector3D) + sizeof(Vector2D) + sizeof(Vector3D) + sizeof(Vector3D))); // bitangents
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)sizeof(Math::Vector3D)); // texture coordinates
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D))); // normals
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D) + sizeof(Math::Vector3D))); // tangents
+	//glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(sizeof(Math::Vector3D) + sizeof(Math::Vector2D) + sizeof(Math::Vector3D) + sizeof(Math::Vector3D))); // bitangents
 
 	glDrawElements(m_mode, m_meshData->GetSize(), GL_UNSIGNED_INT, 0);
 
 	UnbindBuffers();
 }
 
-void Mesh::BindBuffers() const
+void Rendering::Mesh::BindBuffers() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetIBO());
@@ -304,7 +299,7 @@ void Mesh::BindBuffers() const
 	//glEnableVertexAttribArray(4);
 }
 
-void Mesh::UnbindBuffers() const
+void Rendering::Mesh::UnbindBuffers() const
 {
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -313,13 +308,13 @@ void Mesh::UnbindBuffers() const
 	//glDisableVertexAttribArray(4);
 }
 
-bool Mesh::Compare(const Mesh& mesh) const
+bool Rendering::Mesh::Compare(const Mesh& mesh) const
 {
 	CHECK_CONDITION_RETURN(m_meshData != NULL && mesh.m_meshData != NULL, false, Utility::Error, "Cannot compare two meshes' VBOs, because mesh(-es) data is/are NULL.");
 	return m_meshData->GetVBO() < mesh.m_meshData->GetVBO();
 }
 
-void Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const
+void Rendering::Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (GL_QUADS, GL_LINES) this iterationStep variable will be incorrect
@@ -330,9 +325,9 @@ void Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indice
 		int i1 = indices[i + 1];
 		int i2 = indices[i + 2];
 		
-		Vector3D v1 = vertices[i1].m_pos - vertices[i0].m_pos;
-		Vector3D v2 = vertices[i2].m_pos - vertices[i0].m_pos;
-		Vector3D normalVec = v1.Cross(v2).Normalized();
+		Math::Vector3D v1 = vertices[i1].m_pos - vertices[i0].m_pos;
+		Math::Vector3D v2 = vertices[i2].m_pos - vertices[i0].m_pos;
+		Math::Vector3D normalVec = v1.Cross(v2).Normalized();
 		
 		vertices[i0].m_normal += normalVec;
 		vertices[i1].m_normal += normalVec;
@@ -345,7 +340,7 @@ void Mesh::CalcNormals(Vertex* vertices, size_t verticesCount, const int* indice
 	}
 }
 
-void Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
+void Rendering::Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
 	// For different modes (Gl_QUADS, GL_LINES) this iterationStep variable will be incorrect
@@ -400,7 +395,7 @@ void Mesh::CalcTangents(Vertex* vertices, size_t verticesCount) const
 	//}
 }
 
-BillboardMesh::BillboardMesh(const Math::Vector3D& worldPosition) :
+Rendering::BillboardMesh::BillboardMesh(const Math::Vector3D& worldPosition) :
 	Mesh(GL_POINTS),
 	m_worldPosition(worldPosition)
 {
@@ -409,11 +404,11 @@ BillboardMesh::BillboardMesh(const Math::Vector3D& worldPosition) :
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vector3D), &m_worldPosition, GL_STATIC_DRAW);
 }
 
-BillboardMesh::~BillboardMesh()
+Rendering::BillboardMesh::~BillboardMesh()
 {
 }
 
-void BillboardMesh::Draw() const
+void Rendering::BillboardMesh::Draw() const
 {
 	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
 
@@ -425,7 +420,7 @@ void BillboardMesh::Draw() const
 	glDisableVertexAttribArray(0);
 }
 
-GuiMesh::GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount) :
+Rendering::GuiMesh::GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount) :
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount)
 {
@@ -436,11 +431,11 @@ GuiMesh::GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount) :
 	glBufferData(GL_ARRAY_BUFFER, positionsCount * sizeof(Math::Vector2D), positions, GL_STATIC_DRAW);
 }
 
-GuiMesh::~GuiMesh()
+Rendering::GuiMesh::~GuiMesh()
 {
 }
 
-void GuiMesh::Draw() const
+void Rendering::GuiMesh::Draw() const
 {
 	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
 
@@ -452,7 +447,7 @@ void GuiMesh::Draw() const
 	glDisableVertexAttribArray(0);
 }
 
-TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
@@ -469,7 +464,7 @@ TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANG
 {
 }
 
-TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
@@ -525,7 +520,7 @@ TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode /* = GL
 	AddVertices(&vertices[0], m_positionsCount, &indices[0], INDICES_COUNT, false);
 }
 
-TerrainMesh::~TerrainMesh(void)
+Rendering::TerrainMesh::~TerrainMesh(void)
 {
 	SAFE_DELETE_JUST_TABLE(m_positions);
 #ifdef HEIGHTMAP_KD_TREE
@@ -537,7 +532,7 @@ TerrainMesh::~TerrainMesh(void)
  * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
  * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
  */
-Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */)
+Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */)
 {
 #ifdef MEASURE_TIME_ENABLED
 	Utility::Timing::Timer timer;
@@ -632,7 +627,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionH
 
 	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_KD_TREE
-	if (AlmostEqual(xz.GetX(), m_lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
+	if (Math::AlmostEqual(xz.GetX(), m_lastX) && Math::AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
 	{
 		return m_lastY;
 	}
@@ -649,7 +644,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionH
 
 #ifdef MEASURE_TIME_ENABLED
 	timer.Stop();
-	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Timing::MICROSECOND).ToString());
+	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString().c_str());
 #endif
 
 	return y;
@@ -659,7 +654,7 @@ Math::Real TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionH
  * TODO: See this page for a possible ways to optimize this function
  * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
  */
-void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
+void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 {
 #ifdef HEIGHTMAP_BRUTE_FORCE
 	positionsCount = vertices.size();
@@ -739,7 +734,7 @@ void TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 	 */
 }
 
-void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
+void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
 	DEBUG_LOG("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 	CHECK_CONDITION_EXIT(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
@@ -752,5 +747,5 @@ void TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 		//	DELOCUST_LOG("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	m_kdTree = new KDTree(m_positions, m_positionsCount, m_kdTreeSamples);
+	m_kdTree = new Math::KDTree(m_positions, m_positionsCount, m_kdTreeSamples);
 }

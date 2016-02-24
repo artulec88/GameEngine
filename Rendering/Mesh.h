@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_MESH_H__
+#define __RENDERING_MESH_H__
 
 #include "Rendering.h"
 #include "Vertex.h"
@@ -257,3 +258,5 @@ private:
 }; /* end class TerrainMesh */
 
 } /* end namespace Rendering */
+
+#endif // __RENDERING_MESH_H__
