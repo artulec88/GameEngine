@@ -351,7 +351,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 	{
 		DEBUG_LOG("struct.name = \"%s\"", itr->name.c_str());
 #ifdef DELOCUST_LOGGING_ENABLED
-		for (std::vector<Uniforms::TypedData>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
+		for (std::vector<Uniforms::Uniform>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
 		{
 			DELOCUST_LOG("\t .memberName.name = \"%s\"\t .memberName.uniformType = %d", innerItr->name.c_str(), innerItr->uniformType);
 		}
@@ -370,8 +370,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 
 		const std::string uniformName = uniformLine.substr(begin + 1);
 		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin));
-		m_uniformNames.push_back(uniformName);
-		m_uniformTypes.push_back(uniformType);
+		m_uniforms.push_back(Uniforms::Uniform(uniformName, uniformType));
 		AddUniform(uniformName, uniformType, structs);
 		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
 	}
@@ -392,7 +391,7 @@ void ShaderData::AddUniform(const std::string& uniformName, Uniforms::UniformTyp
 	{
 		if (structItr->name == uniformTypeStr)
 		{
-			for (std::vector<Uniforms::TypedData>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
+			for (std::vector<Uniforms::Uniform>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
 			{
 				AddUniform(uniformName + "." + structMemberNameItr->name, structMemberNameItr->uniformType, structs);
 			}
@@ -442,12 +441,12 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
 }
 
-std::vector<Uniforms::TypedData> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
+std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
 {
 	const char charsToIgnore[] = { ' ', '\n', '\t', '{' };
 	const size_t UNSIGNED_NEG_ONE = (size_t)-1;
 
-	std::vector<Uniforms::TypedData> result;
+	std::vector<Uniforms::Uniform> result;
 	std::vector<std::string> structLines;
 	const char delimChars[] = { '\n', ';' };
 	Utility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
@@ -486,7 +485,7 @@ std::vector<Uniforms::TypedData> ShaderData::FindUniformStructComponents(const s
 		if (nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
 			continue;
 
-		result.push_back(Uniforms::TypedData(structLines[i].substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLines[i].substr(nameBegin, nameEnd - nameBegin))));
+		result.push_back(Uniforms::Uniform(structLines[i].substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLines[i].substr(nameBegin, nameEnd - nameBegin))));
 	}
 	return result;
 }
@@ -584,20 +583,19 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 	/* ==================== SOLUTION #2 begin ==================== */
 	Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection() * worldMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
 																							  // FIXME: Check matrix multiplication
-																							  /* ==================== SOLUTION #2 end ==================== */
-																							  /* ==================== SOLUTION #3 begin ==================== */
-																							  //Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
-																							  /* ==================== SOLUTION #3 end ==================== */
-																							  /* ==================== SOLUTION #4 begin ==================== */
-																							  //Matrix4D projectedMatrix;
-																							  //renderer->GetCurrentCamera().GetViewProjection(projectedMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
-																							  //projectedMatrix *= worldMatrix;
-																							  /* ==================== SOLUTION #4 end ==================== */
-	std::vector<Uniforms::UniformType>::const_iterator uniformTypeItr = m_shaderData->GetUniformTypes().begin();
-	for (std::vector<std::string>::const_iterator uniformItr = m_shaderData->GetUniformNames().begin(); uniformItr != m_shaderData->GetUniformNames().end(); ++uniformItr, ++uniformTypeItr)
+	/* ==================== SOLUTION #2 end ==================== */
+	/* ==================== SOLUTION #3 begin ==================== */
+	//Matrix4D projectedMatrix = renderer->GetCurrentCamera().GetViewProjection() * worldMatrix; // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	/* ==================== SOLUTION #3 end ==================== */
+	/* ==================== SOLUTION #4 begin ==================== */
+	//Matrix4D projectedMatrix;
+	//renderer->GetCurrentCamera().GetViewProjection(projectedMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
+	//projectedMatrix *= worldMatrix;
+	/* ==================== SOLUTION #4 end ==================== */
+	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_shaderData->GetUniforms().begin(); uniformItr != m_shaderData->GetUniforms().end(); ++uniformItr)
 	{
-		const std::string uniformName = *uniformItr;
-		const Uniforms::UniformType uniformType = *uniformTypeItr;
+		const std::string& uniformName = uniformItr->name;
+		const Uniforms::UniformType& uniformType = uniformItr->uniformType;
 		DEBUG_LOG("Updating uniform with name = \"%s\" and type = %d.", uniformName.c_str(), uniformType);
 
 		const std::string uniformNamePrefix = uniformName.substr(0, 2);

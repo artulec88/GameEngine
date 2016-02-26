@@ -147,9 +147,12 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 
 	renderer->InitRenderScene();
 	
-	m_gameManager->GetRootGameNode().Render(renderer->GetAmbientShader(), renderer);
+	Rendering::Shader* ambientShader = renderer->GetAmbientShader();
+	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
+	m_gameManager->GetTerrainNode()->Render(ambientShader, renderer);
 	//renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
 
+	renderer->FinalizeRenderScene();
 
 	STOP_PROFILING;
 }
