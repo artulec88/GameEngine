@@ -345,13 +345,13 @@ void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 
 void ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
-	std::vector<UniformStruct> structs = FindUniformStructs(shaderText);
+	std::vector<Uniforms::UniformStruct> structs = FindUniformStructs(shaderText);
 #ifdef DEBUG_LOGGING_ENABLED
-	for (std::vector<UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
+	for (std::vector<Uniforms::UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
 	{
 		DEBUG_LOG("struct.name = \"%s\"", itr->name.c_str());
 #ifdef DELOCUST_LOGGING_ENABLED
-		for (std::vector<Uniform>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
+		for (std::vector<Uniforms::Uniform>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
 		{
 			DELOCUST_LOG("\t .memberName.name = \"%s\"\t .memberName.uniformType = %d", innerItr->name.c_str(), innerItr->uniformType);
 		}
@@ -370,7 +370,7 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 
 		const std::string uniformName = uniformLine.substr(begin + 1);
 		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin));
-		m_uniforms.push_back(Uniform(uniformName, uniformType));
+		m_uniforms.push_back(Uniforms::Uniform(uniformName, uniformType));
 		AddUniform(uniformName, uniformType, structs);
 		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
 	}
@@ -382,16 +382,16 @@ void ShaderData::AddShaderUniforms(const std::string& shaderText)
 #endif
 }
 
-void ShaderData::AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<UniformStruct>& structs)
+void ShaderData::AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStruct>& structs)
 {
 	DEBUG_LOG("Adding uniform \"%s\" of type %d", uniformName.c_str(), uniformType);
 
 	const std::string uniformTypeStr = Uniforms::ConvertUniformTypeToString(uniformType);
-	for (std::vector<UniformStruct>::const_iterator structItr = structs.begin(); structItr != structs.end(); ++structItr)
+	for (std::vector<Uniforms::UniformStruct>::const_iterator structItr = structs.begin(); structItr != structs.end(); ++structItr)
 	{
 		if (structItr->name == uniformTypeStr)
 		{
-			for (std::vector<Uniform>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
+			for (std::vector<Uniforms::Uniform>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
 			{
 				AddUniform(uniformName + "." + structMemberNameItr->name, structMemberNameItr->uniformType, structs);
 			}
@@ -405,10 +405,10 @@ void ShaderData::AddUniform(const std::string& uniformName, Uniforms::UniformTyp
 	m_uniformMap.insert(std::pair<std::string, GLint>(uniformName, location));
 }
 
-std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& shaderText) const
+std::vector<Uniforms::UniformStruct> ShaderData::FindUniformStructs(const std::string& shaderText) const
 {
 	const std::string STRUCT_KEY = "struct";
-	std::vector<UniformStruct> result;
+	std::vector<Uniforms::UniformStruct> result;
 	
 	size_t structLocation = shaderText.find(STRUCT_KEY);
 	DELOCUST_LOG("structLocation = %d; std::string::npos = %d", structLocation, std::string::npos);
@@ -419,7 +419,7 @@ std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& sha
 		size_t braceOpening = shaderText.find("{", structLocation);
 		size_t braceClosing = shaderText.find("}", braceOpening);
 		
-		UniformStruct newStruct;
+		Uniforms::UniformStruct newStruct;
 		newStruct.name = FindUniformStructName(shaderText.substr(structLocation, braceOpening - structLocation));
 		newStruct.memberNames = FindUniformStructComponents(shaderText.substr(braceOpening, braceClosing - braceOpening));
 		
@@ -441,12 +441,12 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
 }
 
-std::vector<Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
+std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
 {
 	const char charsToIgnore[] = {' ', '\n', '\t', '{'};
 	const size_t UNSIGNED_NEG_ONE = (size_t)-1;
 	
-	std::vector<Uniform> result;
+	std::vector<Uniforms::Uniform> result;
 	std::vector<std::string> structLines;
 	const char delimChars[] = { '\n', ';' };
 	Utility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
@@ -485,7 +485,7 @@ std::vector<Uniform> ShaderData::FindUniformStructComponents(const std::string& 
 		if(nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
 			continue;
 
-		result.push_back(Uniform(structLines[i].substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLines[i].substr(nameBegin, nameEnd - nameBegin))));
+		result.push_back(Uniforms::Uniform(structLines[i].substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLines[i].substr(nameBegin, nameEnd - nameBegin))));
 	}
 	return result;
 }
@@ -592,7 +592,7 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 	//renderer->GetCurrentCamera().GetViewProjection(projectedMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
 	//projectedMatrix *= worldMatrix;
 	/* ==================== SOLUTION #4 end ==================== */
-	for (std::vector<Uniform>::const_iterator uniformItr = m_shaderData->GetUniforms().begin(); uniformItr != m_shaderData->GetUniforms().end(); ++uniformItr, ++uniformItr)
+	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_shaderData->GetUniforms().begin(); uniformItr != m_shaderData->GetUniforms().end(); ++uniformItr, ++uniformItr)
 	{
 		const std::string& uniformName = uniformItr->name;
 		const Uniforms::UniformType& uniformType = uniformItr->uniformType;

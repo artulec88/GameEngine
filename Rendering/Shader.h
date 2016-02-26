@@ -41,25 +41,25 @@ namespace Uniforms
 
 	UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
 	std::string ConvertUniformTypeToString(UniformType uniformType);
-} /* end namespace Uniforms */
 
-struct Uniform
-{
-	Uniform(const std::string& _name, Uniforms::UniformType _uniformType) :
-		name(_name),
-		uniformType(_uniformType)
+	struct Uniform
 	{
-	}
+		Uniform(const std::string& _name, Uniforms::UniformType _uniformType) :
+			name(_name),
+			uniformType(_uniformType)
+		{
+		}
 
-	const std::string name;
-	const Uniforms::UniformType uniformType;
-};
+		const std::string name;
+		const Uniforms::UniformType uniformType;
+	};
 
-struct UniformStruct
-{
-	std::string name;
-	std::vector<Uniform> memberNames;
-};
+	struct UniformStruct
+	{
+		std::string name;
+		std::vector<Uniform> memberNames;
+	};
+} /* end namespace Uniforms */
 
 class ShaderData : public Utility::ReferenceCounter
 {
@@ -85,7 +85,7 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	GLuint GetProgram() const { return m_programID; }
-	const std::vector<Uniform>& GetUniforms() const { return m_uniforms; }
+	const std::vector<Uniforms::Uniform>& GetUniforms() const { return m_uniforms; }
 	const std::map<std::string, GLint>& GetUniformMap() const { return m_uniformMap; }
 	bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 private:
@@ -97,11 +97,11 @@ private:
 
 	void AddAllAttributes(const std::string& vertexShaderText);
 	void AddShaderUniforms(const std::string& shaderText);
-	void AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<UniformStruct>& structs);
+	void AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStruct>& structs);
 
-	std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& shaderText) const;
-	std::string ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const;
-	std::vector<Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
+	std::vector<Uniforms::UniformStruct> FindUniformStructs(const std::string& shaderText) const;
+	std::string FindUniformStructName(const std::string& structStartToOpeningBrace) const;
+	std::vector<Uniforms::Uniform> FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
 	
 	bool Compile();
 	bool CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength);
@@ -111,11 +111,11 @@ private:
 private:
 	GLuint m_programID;
 	std::vector<GLuint> m_shaders;
-	std::vector<Uniform> m_uniforms;
+	std::vector<Uniforms::Uniform> m_uniforms;
 
-	//std::vector<Uniform> m_uniformsRenderer;
-	//std::vector<Uniform> m_uniformsMaterial;
-	//std::vector<Uniform> m_uniformsOthers;
+	//std::vector<Uniforms::Uniform> m_uniformsRenderer;
+	//std::vector<Uniforms::Uniform> m_uniformsMaterial;
+	//std::vector<Uniforms::Uniform> m_uniformsOthers;
 
 	std::map<std::string, GLint> m_uniformMap;
 	/* ==================== Non-static member variables end ==================== */
