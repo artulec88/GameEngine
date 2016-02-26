@@ -43,9 +43,9 @@ namespace Uniforms
 	std::string ConvertUniformTypeToString(UniformType uniformType);
 } /* end namespace Uniforms */
 
-struct TypedData
+struct Uniform
 {
-	TypedData(const std::string& _name, Uniforms::UniformType _uniformType) :
+	Uniform(const std::string& _name, Uniforms::UniformType _uniformType) :
 		name(_name),
 		uniformType(_uniformType)
 	{
@@ -58,7 +58,7 @@ struct TypedData
 struct UniformStruct
 {
 	std::string name;
-	std::vector<TypedData> memberNames;
+	std::vector<Uniform> memberNames;
 };
 
 class ShaderData : public Utility::ReferenceCounter
@@ -85,9 +85,8 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	GLuint GetProgram() const { return m_programID; }
-	std::vector<std::string>& GetUniformNames() { return m_uniformNames; }
-	std::vector<Uniforms::UniformType>& GetUniformTypes() { return m_uniformTypes; }
-	std::map<std::string, GLint>& GetUniformMap() { return m_uniformMap; }
+	const std::vector<Uniform>& GetUniforms() const { return m_uniforms; }
+	const std::map<std::string, GLint>& GetUniformMap() const { return m_uniformMap; }
 	bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 private:
 	std::string LoadShaderData(const std::string& fileName) const;
@@ -102,7 +101,7 @@ private:
 
 	std::vector<UniformStruct> ShaderData::FindUniformStructs(const std::string& shaderText) const;
 	std::string ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const;
-	std::vector<TypedData> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
+	std::vector<Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const;
 	
 	bool Compile();
 	bool CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength);
@@ -112,8 +111,12 @@ private:
 private:
 	GLuint m_programID;
 	std::vector<GLuint> m_shaders;
-	std::vector<std::string> m_uniformNames;
-	std::vector<Uniforms::UniformType> m_uniformTypes;
+	std::vector<Uniform> m_uniforms;
+
+	//std::vector<Uniform> m_uniformsRenderer;
+	//std::vector<Uniform> m_uniformsMaterial;
+	//std::vector<Uniform> m_uniformsOthers;
+
 	std::map<std::string, GLint> m_uniformMap;
 	/* ==================== Non-static member variables end ==================== */
 }; /* end class ShaderData */
