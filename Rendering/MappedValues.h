@@ -34,7 +34,7 @@ public:
 	}
 	RENDERING_API virtual ~MappedValues(void)
 	{
-		std::map<std::string, Texture*>::iterator itr = textureMap.begin();
+		std::map<std::string, const Texture*>::iterator itr = textureMap.begin();
 		while (itr != textureMap.end())
 		{
 			if (itr->second != NULL) // if texture is not NULL
@@ -105,18 +105,18 @@ public:
 		}
 	}
 	
-	RENDERING_API inline void SetTexture(const std::string& textureName, Texture* texture)
+	RENDERING_API inline void SetTexture(const std::string& textureName, const Texture* texture)
 	{
 		//if (texture == NULL)
 		//{
 		//	WARNING_LOG("Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
 		//	//return;
 		//}
-		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(textureName);
+		std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(textureName);
 		if (textureItr == textureMap.end())
 		{
 			DEBUG_LOG("The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
-			textureMap.insert(std::pair<std::string, Texture*>(textureName, texture));
+			textureMap.insert(std::pair<std::string, const Texture*>(textureName, texture));
 		}
 		else
 		{
@@ -126,14 +126,14 @@ public:
 		//textureMap[textureName] = texture;
 	}
 
-	RENDERING_API inline void SetMultitexture(const std::string& textureName, Texture* texture, unsigned int textureIndex)
+	RENDERING_API inline void SetMultitexture(const std::string& textureName, const Texture* texture, unsigned int textureIndex)
 	{
 		const std::string multitextureName = textureName + " " + std::to_string(textureIndex);
-		std::map<std::string, Texture*>::iterator textureItr = textureMap.find(multitextureName);
+		std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(multitextureName);
 		if (textureItr == textureMap.end())
 		{
 			DEBUG_LOG("The multitexture with name \"%s\" is not found in the map. Creating a new texture with this name.", multitextureName.c_str());
-			textureMap.insert(std::pair<std::string, Texture*>(multitextureName, texture));
+			textureMap.insert(std::pair<std::string, const Texture*>(multitextureName, texture));
 		}
 		else
 		{
@@ -191,7 +191,7 @@ public:
 
 	RENDERING_API inline const Texture* GetTexture(const std::string& textureName) const
 	{
-		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
+		std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
 			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
@@ -202,11 +202,11 @@ public:
 
 	RENDERING_API inline const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const
 	{
-		std::map<std::string, Texture*>::const_iterator itr = textureMap.find(textureName);
+		std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
 			// The texture with the specified name has not been found. However, there is still hope- we should look for it in the multitextures.
-			for (std::map<std::string, Texture*>::const_iterator textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
+			for (std::map<std::string, const Texture*>::const_iterator textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
 			{
 				const std::string& textureNameItr = textureItr->first;
 				size_t spacePos = textureNameItr.find(" ");
@@ -272,7 +272,7 @@ private:
 	typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
 	typedef std::map<std::string, Math::Vector4D> StrToVec4DMap;
 	typedef std::map<std::string, Math::Real> StrToRealMap;
-	typedef std::map<std::string, Texture*> StrToTextureMap;
+	typedef std::map<std::string, const Texture*> StrToTextureMap;
 	//StrToColorMap colorMap;
 	StrToVec3DMap vec3DMap;
 	StrToVec4DMap m_vec4DMap;

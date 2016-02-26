@@ -453,22 +453,22 @@ void Renderer::InitRenderScene()
 	STOP_PROFILING;
 }
 
-//void Renderer::FinalizeRenderScene()
-//{
-//	START_PROFILING;
-//	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
-//	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
-//	STOP_PROFILING;
-//}
+void Renderer::FinalizeRenderScene()
+{
+	START_PROFILING;
+	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
+	STOP_PROFILING;
+}
 
-//void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
-//{
-//	START_PROFILING;
-//	shader->Bind();
-//	shader->UpdateUniforms(transform, material, this);
-//	mesh.Draw();
-//	STOP_PROFILING;
-//}
+void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
+{
+	//START_PROFILING;
+	shader->Bind();
+	shader->UpdateUniforms(transform, material, this);
+	mesh.Draw();
+	//STOP_PROFILING;
+}
 
 //void Renderer::Render(const GameNode& gameNode)
 //{
@@ -1169,7 +1169,7 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
-void Renderer::ApplyFilter(Shader* filterShader, Texture* source, Texture* dest)
+void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(filterShader != NULL, Utility::Critical, "Cannot apply a filter. Filtering shader is NULL.");

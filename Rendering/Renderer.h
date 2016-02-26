@@ -84,7 +84,8 @@ private:
 public:
 	RENDERING_API void InitRenderScene();
 	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
-	//RENDERING_API void FinalizeRenderScene();
+	RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
+	RENDERING_API void FinalizeRenderScene();
 	//RENDERING_API void Render(const GameNode& node);
 	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
 
@@ -282,7 +283,7 @@ protected:
 private:
 	Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
 	void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
-	void ApplyFilter(Shader* filterShader, Texture* source, Texture* dest);
+	void ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest);
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
