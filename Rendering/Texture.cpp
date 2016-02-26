@@ -246,6 +246,24 @@ void TextureData::BindAsRenderTarget() const
 	glViewport(0, 0, m_width, m_height);
 }
 
+bool TextureData::Compare(const TextureData& textureData) const
+{
+	if ((m_textureTarget != textureData.m_textureTarget) || (m_width != textureData.m_width) || (m_height != textureData.m_height) ||
+		(m_framebuffer != textureData.m_framebuffer) || (m_renderbuffer != textureData.m_renderbuffer) || (m_texturesCount != textureData.m_texturesCount))
+	{
+		return false;
+	}
+
+	for (int i = 0; i < m_texturesCount; ++i)
+	{
+		if (m_textureID[i] != textureData.m_textureID[i])
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 /* static */ std::map<std::string, TextureData*> Texture::s_textureResourceMap;
 
 Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :

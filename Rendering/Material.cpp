@@ -10,15 +10,16 @@ Material::Material(Texture* diffuseTexture,
 	Texture* displacementMap /* = NULL */,
 	Math::Real displacementScale /* = REAL_ZERO */,
 	Math::Real displacementOffset /* = REAL_ZERO */) :
+		m_mappedValues(),
 		m_hasMultipleTextures(false)
 {
 	if (diffuseTexture == NULL)
 	{
 		ERROR_LOG("The material is given the NULL diffuse texture");
 	}
-	SetTexture("diffuse", diffuseTexture);
-	SetReal("specularIntensity", specularIntensity);
-	SetReal("specularPower", specularPower);
+	m_mappedValues.SetTexture("diffuse", diffuseTexture);
+	m_mappedValues.SetReal("specularIntensity", specularIntensity);
+	m_mappedValues.SetReal("specularPower", specularPower);
 	if (normalMap == NULL)
 	{
 		DEBUG_LOG("The material is not using any normal maps");
@@ -27,7 +28,7 @@ Material::Material(Texture* diffuseTexture,
 		normalMap = new Texture(defaultNormalMapStr);
 		//INFO_LOG("Adding default normal map (\"%s\") to the material", defaultNormalMapStr.c_str());
 	}
-	SetTexture("normalMap", normalMap);
+	m_mappedValues.SetTexture("normalMap", normalMap);
 
 	if (displacementMap == NULL)
 	{
@@ -35,11 +36,11 @@ Material::Material(Texture* diffuseTexture,
 		displacementMap = new Texture("defaultDisplacementMap.jpg");
 		//INFO_LOG("Adding displacement map to the material");
 	}
-	SetTexture("displacementMap", displacementMap);
+	m_mappedValues.SetTexture("displacementMap", displacementMap);
 
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
-	SetReal("displacementScale", displacementScale);
-	SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
+	m_mappedValues.SetReal("displacementScale", displacementScale);
+	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
 Material::Material(Texture* texture, const std::string& textureName)
@@ -48,12 +49,19 @@ Material::Material(Texture* texture, const std::string& textureName)
 	{
 		ERROR_LOG("The material is given the NULL main texture");
 	}
-	SetTexture(textureName, texture);
+	m_mappedValues.SetTexture(textureName, texture);
 }
 
 void Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
 	CHECK_CONDITION_RETURN_VOID(texture != NULL, Utility::Warning, "Cannot set the additional texture for material. The texture is NULL.");
 	m_hasMultipleTextures = true;
-	SetTexture(textureName, texture);
+	m_mappedValues.SetTexture(textureName, texture);
 }
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void Material::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
+{
+	m_mappedValues.InitializeTweakBar(tweakBar, groupName);
+}
+#endif

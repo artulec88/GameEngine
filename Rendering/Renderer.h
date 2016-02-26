@@ -82,7 +82,7 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	//RENDERING_API void InitRenderScene();
+	RENDERING_API void InitRenderScene();
 	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 	//RENDERING_API void FinalizeRenderScene();
 	//RENDERING_API void Render(const GameNode& node);
@@ -191,6 +191,7 @@ public:
 		return m_lightMatrix;
 	}
 
+	RENDERING_API Shader* GetAmbientShader();
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;

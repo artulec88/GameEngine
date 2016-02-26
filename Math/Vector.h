@@ -10,15 +10,15 @@ namespace Math
 {
 class Quaternion;
 
-class MATH_API Vector2D
+class Vector2D
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Vector2D();
-	explicit Vector2D(Real xy);
-	Vector2D(Real x, Real y);
-	Vector2D(const Vector2D& v);
-	~Vector2D();
+	MATH_API Vector2D();
+	MATH_API explicit Vector2D(Real xy);
+	MATH_API Vector2D(Real x, Real y);
+	MATH_API Vector2D(const Vector2D& v);
+	MATH_API ~Vector2D();
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -32,8 +32,8 @@ public:
 	Real SumOfComponents() const { return m_x + m_y; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y); }
 
-	Real Length() const; // CHECKED!
-	Real LengthSquared() const; // CHECKED!
+	MATH_API Real Length() const; // CHECKED!
+	MATH_API Real LengthSquared() const; // CHECKED!
 	
 	void Negate() { m_x = -m_x; m_y = -m_y; }; // creates negation vector
 	
@@ -45,15 +45,15 @@ public:
 	Vector2D operator/(Real s) const { return Vector2D(m_x / s, m_y / s); }
 	Vector2D operator/(const Vector2D& v) const { return Vector2D(m_x / v.GetX(), m_y / v.GetY()); }
 	
-	Vector2D& operator+=(const Vector2D& v);
-	Vector2D& operator-=(const Vector2D& v);
-	Vector2D& operator*=(Real s);
-	Vector2D& operator*=(const Vector2D& v);
-	Vector2D& operator/=(Real s);
-	Vector2D& operator/=(const Vector2D& v);
-	Vector2D& operator=(const Vector2D& v);
-	bool operator!=(const Vector2D& v) const;
-	bool operator==(const Vector2D& v) const;
+	MATH_API Vector2D& operator+=(const Vector2D& v);
+	MATH_API Vector2D& operator-=(const Vector2D& v);
+	MATH_API Vector2D& operator*=(Real s);
+	MATH_API Vector2D& operator*=(const Vector2D& v);
+	MATH_API Vector2D& operator/=(Real s);
+	MATH_API Vector2D& operator/=(const Vector2D& v);
+	MATH_API Vector2D& operator=(const Vector2D& v);
+	MATH_API bool operator!=(const Vector2D& v) const;
+	MATH_API bool operator==(const Vector2D& v) const;
 
 	Vector2D Normalized() const
 	{
@@ -80,7 +80,7 @@ public:
 		m_x /= length;
 		m_y /= length;
 	}
-	bool IsNormalized() const;
+	MATH_API bool IsNormalized() const;
 
 	/// <summary>
 	/// Given a two-dimensional vector (x, y) the function returns a two-dimensional vector perpendicular to it.
@@ -103,7 +103,7 @@ public:
 	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 public:
-	std::string ToString() const;
+	MATH_API std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -115,15 +115,15 @@ private:
 }; /* end class Vector2D */
 
 
-class MATH_API Vector3D
+class Vector3D
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Vector3D();
-	explicit Vector3D(Real xyz);
-	Vector3D(Real x, Real y, Real z);
-	Vector3D(const Vector3D& v);
-	~Vector3D();
+	MATH_API Vector3D();
+	MATH_API explicit Vector3D(Real xyz);
+	MATH_API Vector3D(Real x, Real y, Real z);
+	MATH_API Vector3D(const Vector3D& v);
+	MATH_API ~Vector3D();
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -139,8 +139,8 @@ public:
 	Real SumOfComponents() const { return m_x + m_y + m_z; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z); }
 
-	Real Length() const; // CHECKED!
-	Real LengthSquared() const; // CHECKED!
+	MATH_API Real Length() const; // CHECKED!
+	MATH_API Real LengthSquared() const; // CHECKED!
 	
 	/// <summary> Negates all components in the vector. </summary>
 	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; };
@@ -155,15 +155,15 @@ public:
 	Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); };
 	Vector3D operator/(const Vector3D v) const { return Vector3D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); };
 
-	Vector3D& operator+=(const Vector3D& v);
-	Vector3D& operator-=(const Vector3D& v);
-	Vector3D& operator*=(Real s);
-	Vector3D& operator*=(const Vector3D& v);
-	Vector3D& operator/=(Real s);
-	Vector3D& operator/=(const Vector3D& v);
-	Vector3D& operator=(const Vector3D& v);
-	bool operator!=(const Vector3D& v) const;
-	bool operator==(const Vector3D& v) const;
+	MATH_API Vector3D& operator+=(const Vector3D& v);
+	MATH_API Vector3D& operator-=(const Vector3D& v);
+	MATH_API Vector3D& operator*=(Real s);
+	MATH_API Vector3D& operator*=(const Vector3D& v);
+	MATH_API Vector3D& operator/=(Real s);
+	MATH_API Vector3D& operator/=(const Vector3D& v);
+	MATH_API Vector3D& operator=(const Vector3D& v);
+	MATH_API bool operator!=(const Vector3D& v) const;
+	MATH_API bool operator==(const Vector3D& v) const;
 	
 	/**
 	 * Type cast operator created to allow using std::unordered_set in the TerrainMesh::SavePositions function
@@ -194,11 +194,11 @@ public:
 //#endif
 		(*this) /= Length();
 	}
-	bool IsNormalized() const;
+	MATH_API bool IsNormalized() const;
 
 	//Vector3D Rotate(Real angle);
 	Vector3D Rotate(const Vector3D& axis, const Angle& angle);
-	Vector3D Rotate(const Quaternion& rotation) const;
+	MATH_API Vector3D Rotate(const Quaternion& rotation) const;
 	
 	Real Dot(const Vector3D& v) const
 	{
@@ -223,15 +223,15 @@ public:
 	Vector2D GetZY() const { return Vector2D(m_z, m_y); }
 
 	void Approach(Real step, const Vector3D& approachedVector);
-	void ApproachX(Real step, Real approachedValue);
-	void ApproachY(Real step, Real approachedValue);
-	void ApproachZ(Real step, Real approachedValue);
-	void Threshold(Real maxLength);
+	MATH_API void ApproachX(Real step, Real approachedValue);
+	MATH_API void ApproachY(Real step, Real approachedValue);
+	MATH_API void ApproachZ(Real step, Real approachedValue);
+	MATH_API void Threshold(Real maxLength);
 
 	// interpolation LERP
-	Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
+	MATH_API Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
-	std::string ToString() const;
+	MATH_API std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
@@ -243,15 +243,15 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Vector3D */
 
-class MATH_API Vector4D
+class Vector4D
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	Vector4D();
-	explicit Vector4D(Real xyzw);
-	Vector4D(Real x, Real y, Real z, Real w);
-	Vector4D(const Vector4D& v);
-	~Vector4D();
+	MATH_API Vector4D();
+	MATH_API explicit Vector4D(Real xyzw);
+	MATH_API Vector4D(Real x, Real y, Real z, Real w);
+	MATH_API Vector4D(const Vector4D& v);
+	MATH_API ~Vector4D();
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -269,8 +269,8 @@ public:
 	Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
 	Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }
 
-	Real Length() const;
-	Real LengthSquared() const;
+	MATH_API Real Length() const;
+	MATH_API Real LengthSquared() const;
 	
 	/// <summary> Negates all components in the vector. </summary>
 	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; m_w = -m_w; };
@@ -285,15 +285,15 @@ public:
 	Vector4D operator/(Real s) const { return Vector4D(m_x / s, m_y / s, m_z / s, m_w / s); }
 	Vector4D operator/(const Vector4D v) const { return Vector4D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); };
 
-	Vector4D& operator+=(const Vector4D& v);
-	Vector4D& operator-=(const Vector4D& v);
-	Vector4D& operator*=(Real s);
-	Vector4D& operator*=(const Vector4D& v);
-	Vector4D& operator/=(Real s);
-	Vector4D& operator/=(const Vector4D& v);
-	Vector4D& operator=(const Vector4D& v);
-	bool operator!=(const Vector4D& v) const;
-	bool operator==(const Vector4D& v) const;
+	MATH_API Vector4D& operator+=(const Vector4D& v);
+	MATH_API Vector4D& operator-=(const Vector4D& v);
+	MATH_API Vector4D& operator*=(Real s);
+	MATH_API Vector4D& operator*=(const Vector4D& v);
+	MATH_API Vector4D& operator/=(Real s);
+	MATH_API Vector4D& operator/=(const Vector4D& v);
+	MATH_API Vector4D& operator=(const Vector4D& v);
+	MATH_API bool operator!=(const Vector4D& v) const;
+	MATH_API bool operator==(const Vector4D& v) const;
 
 	Vector4D Normalized() const
 	{
@@ -313,7 +313,7 @@ public:
 //#endif
 		(*this) /= static_cast<Real>(sqrt(length));
 	}
-	bool IsNormalized() const;
+	MATH_API bool IsNormalized() const;
 	
 	Real Dot(const Vector4D& v) const
 	{
@@ -366,7 +366,7 @@ public:
 	// interpolation LERP
 	Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 
-	std::string ToString() const;
+	MATH_API std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

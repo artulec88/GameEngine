@@ -1,8 +1,8 @@
 #ifndef __MATH_QUATERNION_H__
 #define __MATH_QUATERNION_H__
 
-#include "Angle.h"
 #include "Math.h"
+#include "Angle.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include <string> // for ToString() method

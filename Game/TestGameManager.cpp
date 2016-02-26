@@ -4,7 +4,6 @@
 
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
-#include "Rendering\MeshRenderer.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\MoveComponent.h"
 #include "Engine\LookAtComponent.h"
@@ -110,7 +109,7 @@ void TestGameManager::Load()
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture4", "path.png")), "diffuse4");
 	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(m_terrainNode->GetTransform(), m_terrainMesh, terrainMaterial)));
+	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	//m_terrainNode->GetTransform().SetScale(20.0f);
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
@@ -132,9 +131,9 @@ void TestGameManager::Load()
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	//testMesh2->GetTransform().SetScale(1.5f);
 	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
-	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(testMesh1->GetTransform(), new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f))));
+	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(testMesh2->GetTransform(), new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0))));
+	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0)));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
@@ -163,7 +162,7 @@ void TestGameManager::Load()
 	Engine::GameNode* waterNode = new Engine::GameNode();
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	waterNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(waterNode->GetTransform(), new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */)));
+	waterNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	m_resourcesLoaded += 2;
 	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
 	waterNode->GetTransform().SetScale(3.0f);
@@ -175,7 +174,7 @@ void TestGameManager::Load()
 		Math::Real x = static_cast<Real>(rand() % 50) - 25.0f;
 		Math::Real z = static_cast<Real>(rand() % 50) - 25.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
-		billboardNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(billboardNode->GetTransform(), new Rendering::BillboardMesh(Math::Vector3D(x, y, z)), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png"))))));
+		billboardNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::BillboardMesh(Math::Vector3D(x, y, z)), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png")))));
 		// TODO: Scaling the billboards
 		//billboardNode->GetTransform().SetScale(0.2f);
 		AddBillboardNode(billboardNode);
@@ -201,7 +200,7 @@ void TestGameManager::Load()
 	const Math::Real playerPositionZ = 1.0f;
 	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::MeshRenderer(playerNode->GetTransform(), new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR)))));
+	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::MoveComponent(0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;

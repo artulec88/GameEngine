@@ -5,13 +5,12 @@
 #include "DirectionalLightComponent.h"
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
-#include "MeshRendererComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
 
 #ifdef BUILD_MESH_RENDERER
-#include "Rendering\MeshRenderer.h"
+#include "MeshRendererComponent.h"
 #endif
 
 /* ==================== Builder implementation begin ==================== */
@@ -153,8 +152,7 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("DirectionalLight.png"), 1, 8);
 
 	m_gameNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
-	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(new Rendering::Texture("DirectionalLight.png"), 1.0f, 8.0f));
-	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(new Rendering::Texture("DirectionalLight.png"), 1.0f, 8.0f)));
 		
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -239,8 +237,7 @@ void Engine::PointLightBuilder::SetupLightParams()
 void Engine::PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
-	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), /* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(new Rendering::Texture("PointLight.png"), 1.0f, 8.0f));
-	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
+	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(new Rendering::Texture("PointLight.png"), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -327,8 +324,7 @@ void Engine::SpotLightBuilder::SetupLightParams()
 void Engine::SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
-	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(new Rendering::Texture("SpotLight.png"), 1.0f, 8.0f));
-	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(new Rendering::Texture("SpotLight.png"), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -462,8 +458,7 @@ void Engine::SkyboxBuilder::BuildPart1()
 	m_gameNode = new GameNode();
 	m_gameNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_gameNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
-	Rendering::MeshRenderer* meshRenderer = new Rendering::MeshRenderer(m_gameNode->GetTransform(), new Rendering::Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), skyboxMaterial);
-	m_gameNode->AddComponent(new MeshRendererComponent(meshRenderer));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), skyboxMaterial));
 
 	CoreEngine::GetCoreEngine()->AddSkyboxNode(m_gameNode);
 }

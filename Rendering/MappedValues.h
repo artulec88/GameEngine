@@ -5,6 +5,7 @@
 
 #include "Rendering.h"
 #include "Color.h"
+
 #include "Math\Vector.h"
 
 #include "Utility\ILogger.h"
@@ -25,6 +26,7 @@ public:
 	RENDERING_API MappedValues(void) :
 		m_defaultValue(REAL_ZERO),
 		//m_defaultColor(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE),
+		// TODO: There is no need to create new default texture for each instance of MappedValues. Instead, use Flyweight pattern to minimize dynamic memory allocation.
 		m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 		m_defaultVector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 		m_defaultVector4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO)
@@ -228,6 +230,40 @@ public:
 #ifdef ANT_TWEAK_BAR_ENABLED
 	RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif
+
+	//bool Compare(const MappedValues& mappedValues)
+	//{
+	//	for (StrToRealMap::const_iterator realItr = realMap.begin(); realItr != realMap.end(); ++realItr)
+	//	{
+	//		Math::Real rValue = mappedValues.GetReal(realItr->first);
+	//		if ((realItr->second < rValue) || (realItr->second > rValue))
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	for (StrToVec3DMap::const_iterator vec3DItr = vec3DMap.begin(); vec3DItr != vec3DMap.end(); ++vec3DItr)
+	//	{
+	//		if (mappedValues.GetVec3D(vec3DItr->first) != vec3DItr->second)
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	for (StrToVec4DMap::const_iterator vec4DItr = m_vec4DMap.begin(); vec4DItr != m_vec4DMap.end(); ++vec4DItr)
+	//	{
+	//		if (mappedValues.GetVec4D(vec4DItr->first) != vec4DItr->second)
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	for (StrToTextureMap::const_iterator textureItr = textureMap.begin(); textureItr != textureMap.end(); ++textureItr)
+	//	{
+	//		if (mappedValues.GetTexture(textureItr->first) != textureItr->second)
+	//		{
+	//			return false;
+	//		}
+	//	}
+	//	return true;
+	//}
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

@@ -14,7 +14,7 @@ class Transform
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), const Quaternion& rot = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Real scale = REAL_ONE);
+	MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), const Quaternion& rot = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Real scale = REAL_ONE);
 	MATH_API ~Transform();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -99,6 +99,6 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Transform */
 
-} /* end namespace Rendering */
+} /* end namespace Math */
 
 #endif /* __MATH_TRANSFORM_H__ */

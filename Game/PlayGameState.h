@@ -1,14 +1,19 @@
 #ifndef __PLAY_GAME_STATE_H__
 #define __PLAY_GAME_STATE_H__
 
-#include "Rendering\Renderer.h"
+#include "GameStats.h"
+
+#include "Engine\GameManager.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
+
+#include "Rendering\Shader.h"
+#include "Rendering\Renderer.h"
+
 #include "Math\Math.h"
-#include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
 #endif
@@ -16,14 +21,12 @@
 namespace Game
 {
 
-	class Rendering::Shader;
-
 class PlayGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard,
 	public virtual Engine::Input::IInputableMouse, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayGameState();
+	PlayGameState(Engine::GameManager* gameManager);
 	virtual ~PlayGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -63,6 +66,7 @@ public:
 private:
 	//Rendering::GameNode& m_rootGameNode;
 	bool m_isMouseLocked;
+	Engine::GameManager* m_gameManager;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

@@ -4,7 +4,8 @@
 #include "Engine.h"
 #include "GameComponent.h"
 #include "IRenderable.h"
-#include "Rendering\MeshGroupRenderer.h"
+#include "Rendering\Mesh.h"
+#include "Rendering\Material.h"
 
 namespace Engine
 {
@@ -12,7 +13,7 @@ namespace Engine
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MeshGroupRendererComponent(Rendering::MeshGroupRenderer* meshGroupRenderer);
+		ENGINE_API MeshGroupRendererComponent(Rendering::Mesh* mesh, Rendering::Material* material);
 		ENGINE_API virtual ~MeshGroupRendererComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -23,7 +24,8 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::MeshGroupRenderer* m_meshGroupRenderer;
+		Rendering::Mesh* m_mesh;
+		Rendering::Material* m_material;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshGroupRendererComponent */
 

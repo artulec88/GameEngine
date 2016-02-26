@@ -4,9 +4,8 @@
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
-#include "TextRenderer.h"
 #include "ShadowInfo.h"
-//#include "MeshRenderer.h"
+#include "Mesh.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Utility\FileManager.h"
@@ -423,36 +422,36 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
-//void Renderer::InitRenderScene()
-//{
-//	START_PROFILING;
-//
-//	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
-//
-//	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
-//		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
-//
-//#ifdef ANT_TWEAK_BAR_ENABLED
-//	SetVector3D("ambientFogColor", m_fogColor);
-//	SetReal("ambientFogStart", m_fogStart);
-//	SetReal("ambientFogEnd", m_fogEnd);
-//	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
-//	SetReal("ambientFogGradient", m_fogGradient);
-//	SetVector3D("ambientIntensity", m_ambientLight);
-//	SetReal("fxaaSpanMax", m_fxaaSpanMax);
-//	SetReal("fxaaReduceMin", m_fxaaReduceMin);
-//	SetReal("fxaaReduceMul", m_fxaaReduceMul);
-//	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
-//	CheckCameraIndexChange();
-//#endif
-//
-//	GetTexture("displayTexture")->BindAsRenderTarget();
-//	
-//	ClearScreen();
-//	m_currentCamera = m_cameras[m_currentCameraIndex];
-//
-//	STOP_PROFILING;
-//}
+void Renderer::InitRenderScene()
+{
+	START_PROFILING;
+
+	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
+
+	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+	SetVector3D("ambientFogColor", m_fogColor);
+	SetReal("ambientFogStart", m_fogStart);
+	SetReal("ambientFogEnd", m_fogEnd);
+	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+	SetReal("ambientFogGradient", m_fogGradient);
+	SetVector3D("ambientIntensity", m_ambientLight);
+	SetReal("fxaaSpanMax", m_fxaaSpanMax);
+	SetReal("fxaaReduceMin", m_fxaaReduceMin);
+	SetReal("fxaaReduceMul", m_fxaaReduceMul);
+	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+	CheckCameraIndexChange();
+#endif
+
+	GetTexture("displayTexture")->BindAsRenderTarget();
+	
+	ClearScreen();
+	m_currentCamera = m_cameras[m_currentCameraIndex];
+
+	STOP_PROFILING;
+}
 
 //void Renderer::FinalizeRenderScene()
 //{
@@ -1052,6 +1051,26 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	ss << progress << "%";
 	RenderString(Text::CENTER, 350, "Loading...");
 	RenderString(Text::CENTER, 250, ss.str());
+	STOP_PROFILING;
+}
+
+Shader* Renderer::GetAmbientShader()
+{
+	START_PROFILING;
+	if (m_fogEnabled)
+	{
+		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
+		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
+		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
+		return fogShader;
+	}
+	else if (m_ambientLightEnabled)
+	{
+		return m_ambientShader;
+	}
+	return NULL;
 	STOP_PROFILING;
 }
 

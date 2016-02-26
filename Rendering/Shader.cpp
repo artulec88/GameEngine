@@ -557,6 +557,18 @@ void Shader::Unbind() const
 	glUseProgram(0);
 }
 
+void Shader::UpdateRendererUniforms(const Renderer* renderer) const
+{
+}
+
+void Shader::UpdateMaterialUniforms(const Material* material) const
+{
+}
+
+void Shader::UpdateTransformUniforms(const Math::Transform& transform) const
+{
+}
+
 void Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
 	CHECK_CONDITION_EXIT(renderer != NULL, Critical, "Cannot update uniforms. Rendering engine is NULL.");

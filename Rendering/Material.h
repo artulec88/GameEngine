@@ -12,7 +12,7 @@
 namespace Rendering
 {
 
-class Material : public MappedValues
+class Material
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -40,12 +40,25 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	const Math::Real& GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
+	const Math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
+	const Math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
+	const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }
+	
+	void SetReal(const std::string& realValueName, Math::Real realValue) { m_mappedValues.SetReal(realValueName, realValue); }
+	void SetVector3D(const std::string& vectorName, const Math::Vector3D& vec3D) { m_mappedValues.SetVector3D(vectorName, vec3D); }
+	void SetVector4D(const std::string& vectorName, const Math::Vector4D& vec4D) { return m_mappedValues.SetVector4D(vectorName, vec4D); }
+
 	RENDERING_API void SetAdditionalTexture(Texture* texture, const std::string& textureName);
+#ifdef ANT_TWEAK_BAR_ENABLED
+	RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
+#endif
 	bool HasMultipleTextures() const { return m_hasMultipleTextures; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	MappedValues m_mappedValues;
 	bool m_hasMultipleTextures;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Material */

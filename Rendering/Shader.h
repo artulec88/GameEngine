@@ -137,6 +137,9 @@ public:
 	void Bind() const;
 	bool IsBound() const;
 	void Unbind() const;
+	void UpdateRendererUniforms(const Renderer* renderer) const;
+	void UpdateMaterialUniforms(const Material* material) const;
+	void UpdateTransformUniforms(const Math::Transform& transform) const;
 	void UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const;
 
 	void SetUniformi(const std::string& uniformName, int value) const;

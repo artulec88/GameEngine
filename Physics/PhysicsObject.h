@@ -9,15 +9,15 @@ namespace Physics
 /**
  * The representation of the physics object
  */
-class PHYSICS_API PhysicsObject
+class PhysicsObject
 {
 /* ==================== Static variables begin ==================== */
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PhysicsObject(const Math::Vector3D& postion, const Math::Vector3D& velocity);
-	~PhysicsObject(void);
+	PHYSICS_API PhysicsObject(const Math::Vector3D& postion, const Math::Vector3D& velocity);
+	PHYSICS_API ~PhysicsObject(void);
 private:
 	//PhysicsObject(const PhysicsObject& physicObject) {} // don't implement
 	//void operator=(const PhysicsObject& physicObject) {} // don't implement
@@ -25,9 +25,9 @@ private:
 
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
-	void Integrate(Math::Real delta);
-	inline const Math::Vector3D& GetPosition() const { return m_position; }
-	inline const Math::Vector3D& GetVelocity() const { return m_velocity; }
+	PHYSICS_API void Integrate(Math::Real delta);
+	PHYSICS_API inline const Math::Vector3D& GetPosition() const { return m_position; }
+	PHYSICS_API inline const Math::Vector3D& GetVelocity() const { return m_velocity; }
 /* ==================== Non-static, non-virtual member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

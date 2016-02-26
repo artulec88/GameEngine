@@ -61,18 +61,19 @@ void LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
 	DELOCUST_LOG("LOAD game state updating");
-	m_loadingProgress = Engine::GameManager::GetGameManager()->GetLoadingProgress();
+	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
+	m_loadingProgress = gameManager->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
 	if (m_loadingProgress > REAL_ONE)
 	{
 		m_loadingProgress = REAL_ONE;
 	}
 
-	if (Engine::GameManager::GetGameManager()->IsGameLoaded())
+	if (gameManager->IsGameLoaded())
 	{
 		NOTICE_LOG("The game is loaded");
 		m_loadingThread->join();
-		Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new PlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new PlayGameState(gameManager), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 	}
 	STOP_PROFILING;
 }

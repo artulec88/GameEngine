@@ -4,7 +4,6 @@
 
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
-#include "Rendering\MeshRenderer.h"
 #include "Engine\LookAtComponent.h"
 #include "Rendering\Color.h"
 #include "Engine\Builder.h"

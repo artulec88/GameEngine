@@ -36,6 +36,7 @@ public:
 	void BindAsRenderTarget() const;
 	inline int GetWidth() const { return m_width; }
 	inline int GetHeight() const { return m_height; }
+	bool Compare(const TextureData& textureData) const;
 private:
 	void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled);
 	void InitRenderTargets(GLenum* attachments);
@@ -98,6 +99,7 @@ public:
 	RENDERING_API void BindAsRenderTarget() const;
 	RENDERING_API inline int GetWidth() const { return m_textureData->GetWidth(); }
 	RENDERING_API inline int GetHeight() const { return m_textureData->GetHeight(); }
+	bool Compare(const Texture& texture) const { return m_textureData->Compare(*texture.m_textureData); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

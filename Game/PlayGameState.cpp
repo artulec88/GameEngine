@@ -12,9 +12,10 @@
 
 using namespace Game;
 
-PlayGameState::PlayGameState(void) :
+PlayGameState::PlayGameState(Engine::GameManager* gameManager) :
 	GameState(),
-	m_isMouseLocked(false)
+	m_isMouseLocked(false),
+	m_gameManager(gameManager)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
@@ -30,10 +31,9 @@ void PlayGameState::Entered()
 	START_PROFILING;
 	INFO_LOG("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
-	CHECK_CONDITION(gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
+	CHECK_CONDITION(m_gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
-	gameManager->InitializeTweakBars();
+	m_gameManager->InitializeTweakBars();
 	Engine::CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
 #endif
 
@@ -64,7 +64,7 @@ void PlayGameState::Revealed()
 void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
 	START_PROFILING;
-	Engine::GameManager::GetGameManager()->GetRootGameNode().MouseButtonEvent(button, action, mods);
+	m_gameManager->GetRootGameNode().MouseButtonEvent(button, action, mods);
 	//switch (action)
 	//{
 	//case GLFW_PRESS:
@@ -88,7 +88,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 {
 	START_PROFILING;
 	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
-	Engine::GameManager::GetGameManager()->GetRootGameNode().MousePosEvent(xPos, yPos);
+	m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
 	//if (!m_isMouseLocked)
 	//{
 	//	STOP_PROFILING;
@@ -124,20 +124,14 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 void PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
 	START_PROFILING;
-	Engine::GameManager::GetGameManager()->GetRootGameNode().ScrollEvent(xOffset, yOffset);
+	m_gameManager->GetRootGameNode().ScrollEvent(xOffset, yOffset);
 	STOP_PROFILING;
 }
 
-bool forward = false;
-bool backward = false;
-bool left = false;
-bool right = false;
-bool up = false;
-bool down = false;
 void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 {
 	START_PROFILING;
-	Engine::GameManager::GetGameManager()->GetRootGameNode().KeyEvent(key, scancode, action, mods);
+	m_gameManager->GetRootGameNode().KeyEvent(key, scancode, action, mods);
 	STOP_PROFILING;
 }
 
@@ -151,9 +145,12 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 	Utility::Timing::Daytime daytime = Engine::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
 	renderer->AdjustAmbientLightAccordingToCurrentTime(daytime, daytimeTransitionFactor);
 
-	renderer->ClearScreen();
-	renderer->RenderString(Rendering::Text::CENTER, 350 - 100, "PlayGameState");
+	renderer->InitRenderScene();
+	
+	m_gameManager->GetRootGameNode().Render(renderer->GetAmbientShader(), renderer);
 	//renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
+
+
 	STOP_PROFILING;
 }
 

@@ -127,7 +127,7 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	void Initialize();
+	RENDERING_API void Initialize(); // TODO: Try to remove it, the initialization should be handled in the constructor
 	virtual void Draw() const;
 	void BindBuffers() const;
 	void UnbindBuffers() const;
