@@ -22,6 +22,7 @@ using namespace Utility;
 using namespace Math;
 
 /* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
+///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
 Renderer::Renderer(int windowWidth, int windowHeight) :
@@ -459,6 +460,7 @@ void Renderer::InitRenderScene()
 void Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;
+	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 #ifdef DEBUG_RENDERING_ENABLED
 	RenderDebugNodes();
@@ -1435,7 +1437,7 @@ void Renderer::RenderDebugNodes()
 		m_debugShader->SetUniformi("guiTexture", 0);
 		m_debugQuad->Draw();
 	}
-	Math::Matrix4D transformationMatrix(Math::Vector2D(0.7f, 0.7f), Math::Vector2D(0.25f, 0.25f));
+	Math::Matrix4D transformationMatrix(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	m_shadowMaps[9]->Bind();
 	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix);
 	m_debugShader->SetUniformi("guiTexture", 0);

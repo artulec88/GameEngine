@@ -201,8 +201,8 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 			// Render scene using shadow mapping shader
 			m_gameManager->GetTerrainNode()->Render(renderer->GetShadowMapShader(), renderer); // TODO: Probably unnecessary
 			m_gameManager->GetRootGameNode().Render(renderer->GetShadowMapShader(), renderer);
+			renderer->FinalizeShadowMapRendering();
 		}
-		renderer->FinalizeShadowMapRendering();
 
 		renderer->InitLightRendering();
 		// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).

@@ -45,6 +45,8 @@ bool Rendering::Lighting::DirectionalLight::IsEnabled() const
 
 Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
 {
+	//return BaseLight::CalcShadowCameraTransform(cameraPos, cameraRot);
+
 	// This function in directional light allows the directional light to be casting shadows only in the area around the camera current position
 	Rendering::ShadowCameraTransform shadowCameraTransform(cameraPos + cameraRot.GetForward() * m_halfShadowArea, GetTransform().GetTransformedRot());
 
