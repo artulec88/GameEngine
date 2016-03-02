@@ -844,21 +844,24 @@ void CoreEngine::AddLight(Rendering::Lighting::BaseLight* light)
 void CoreEngine::AddCamera(Rendering::CameraBase* camera)
 {
 	m_renderer->AddCamera(camera);
+	//m_game.AddCamera(camera);
 }
 
 void CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
 {
-	//m_game.
+	m_game.AddSkyboxNode(skyboxNode);
 	//m_renderer->AddSkyboxNode(skyboxNode);
 }
 
 void CoreEngine::AddWaterNode(GameNode* waterNode)
 {
+	//m_game.AddWaterNode(waterNode);
 	//m_renderer->AddWaterNode(waterNode);
 }
 
 void CoreEngine::AddTerrainNode(GameNode* terrainNode)
 {
+	m_game.AddTerrainNode(terrainNode);
 	//m_renderer->AddTerrainNode(terrainNode);
 }
 

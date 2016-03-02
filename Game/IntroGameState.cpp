@@ -73,7 +73,7 @@ void IntroGameState::Input(Math::Real elapsedTime)
 	STOP_PROFILING;
 }
 
-void IntroGameState::Render(Renderer* renderer)
+void IntroGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DEBUG_LOG("INTRO game state rendering");

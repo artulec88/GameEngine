@@ -115,7 +115,7 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	}
 }
 
-void PlayMenuGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	DEBUG_LOG("PLAY MAIN MENU game state rendering");
 	int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();

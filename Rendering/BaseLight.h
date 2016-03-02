@@ -48,11 +48,11 @@ namespace Lighting
 		//virtual void Render(Shader* shader, Renderer* renderer);
 		Color GetColor() const { return m_color; }
 		Math::Real GetIntensity() const { return m_intensity; }
-		inline Shader* GetShader() { return m_shader; }
-		inline Shader* GetTerrainShader() { return m_terrainShader; }
-		inline Shader* GetNoShadowShader() { return m_noShadowShader; }
-		inline Shader* GetNoShadowTerrainShader() { return m_noShadowTerrainShader; }
-		inline ShadowInfo* GetShadowInfo() { return m_shadowInfo; }
+		RENDERING_API inline const Shader* GetShader() const { return m_shader; }
+		RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
+		RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
+		RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
+		RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo; }
 		virtual bool IsEnabled() const { return m_isEnabled; }
 	
 		bool IsShadowingEnabled() const { return m_isShadowingEnabled; }

@@ -118,7 +118,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	STOP_PROFILING;
 }
 
-void MenuGameState::Render(Shader* shader, Renderer* renderer) const
+void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG("MAIN MENU game state rendering");

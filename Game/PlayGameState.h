@@ -58,8 +58,12 @@ public:
 	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void ScrollEvent(double xOffset, double yOffset);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	virtual void Update(Math::Real elapsedTime);
+private:
+	void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
+	void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
+	void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

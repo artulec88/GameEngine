@@ -57,10 +57,11 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 		GET_CONFIG_VALUE("ambientNighttimeColorBlue", 0.02f)),
 	m_ambientLight(m_ambientDaytimeColor),
 	m_currentLight(NULL),
-	m_pointLight(NULL),
+	m_currentPointLight(NULL),
 	m_spotLight(NULL),
 	m_currentCameraIndex(0),
 	m_currentCamera(NULL),
+	m_tempCamera(NULL),
 	m_mainMenuCamera(NULL),
 	m_altCamera(Math::Matrix4D(), Math::Transform(), 0.005f),
 	m_filterTexture(NULL),
@@ -1031,7 +1032,7 @@ void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fon
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
+void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 {
 	START_PROFILING;
 	BindAsRenderTarget();
@@ -1054,24 +1055,110 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress)
 	STOP_PROFILING;
 }
 
-Shader* Renderer::GetAmbientShader()
+bool Renderer::InitShadowMap()
+{
+	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+	CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+	SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
+
+	if ( /* (m_shadowEnabled) && */ (shadowInfo != NULL))
+	{
+		m_altCamera.SetProjection(shadowInfo->GetProjection());
+		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
+		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
+		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
+
+		//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
+		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
+		SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+		SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
+
+		m_tempCamera = m_currentCamera;
+		m_currentCamera = &m_altCamera;
+
+		if (shadowInfo->IsFlipFacesEnabled())
+		{
+			glCullFace(GL_FRONT);
+		}
+		return true; // shadows enabled
+	}
+	else // current light does not cast shadow or shadowing is disabled at all
+	{
+		// we set the light matrix this way so that, if no shadow should be cast
+		// everything in the scene will be mapped to the same point
+		m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+		SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+		SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+		return false; // shadows disabled
+	}
+}
+
+void Renderer::FinalizeShadowMapRendering()
+{
+	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
+	if (shadowInfo != NULL)
+	{
+		int shadowMapIndex = shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
+		if (shadowInfo->IsFlipFacesEnabled())
+		{
+			glCullFace(GL_BACK);
+		}
+
+		m_currentCamera = m_tempCamera;
+
+		if (m_applyFilterEnabled)
+		{
+			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+			if (!AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
+			{
+				BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
+			}
+		}
+	}
+}
+
+const Shader* Renderer::GetAmbientShader() const
 {
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
 		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
-		Shader* fogShader = m_ambientShadersFogEnabledMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
-		Shader* fogTerrainShader = m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType)];
-		CHECK_CONDITION_EXIT(fogShader != NULL, Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
-		CHECK_CONDITION_EXIT(fogTerrainShader != NULL, Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
-		return fogShader;
+		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
+		CHECK_CONDITION_EXIT(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+		STOP_PROFILING;
+		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second;
 	}
 	else if (m_ambientLightEnabled)
 	{
+		STOP_PROFILING;
 		return m_ambientShader;
 	}
-	return NULL;
 	STOP_PROFILING;
+	return NULL;
+}
+
+const Shader* Renderer::GetAmbientTerrainShader() const
+{
+	START_PROFILING;
+	if (m_fogEnabled)
+	{
+		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		std::map<FogEffect::FogKey, Shader*>::const_iterator fogTerrainShaderItr = m_ambientShadersFogEnabledTerrainMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
+		CHECK_CONDITION_EXIT(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
+		STOP_PROFILING;
+		return (fogTerrainShaderItr == m_ambientShadersFogEnabledTerrainMap.end()) ? NULL : fogTerrainShaderItr->second;
+	}
+	else if (m_ambientLightEnabled)
+	{
+		STOP_PROFILING;
+		return m_ambientShaderTerrain;
+	}
+	STOP_PROFILING;
+	return NULL;
 }
 
 void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
@@ -1289,10 +1376,37 @@ void Renderer::AddCamera(CameraBase* camera)
 #endif
 }
 
-void Renderer::BindAsRenderTarget()
+void Renderer::BindAsRenderTarget() const
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_windowWidth, m_windowHeight);
+}
+
+void Renderer::InitLightRendering() const
+{
+	glCullFace(Rendering::glCullFaceMode);
+	GetTexture("displayTexture")->BindAsRenderTarget();
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
+	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
+	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
+}
+
+void Renderer::FinalizeLightRendering() const
+{
+	glDepthFunc(Rendering::glDepthTestFunc);
+	glDepthMask(GL_TRUE);
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+	else
+	{
+		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+	}
 }
 
 void Renderer::BindCubeShadowMap(unsigned int textureUnit) const

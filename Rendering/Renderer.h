@@ -87,7 +87,10 @@ public:
 	RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
 	RENDERING_API void FinalizeRenderScene();
 	//RENDERING_API void Render(const GameNode& node);
-	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress);
+	RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress) const;
+
+	RENDERING_API bool InitShadowMap();
+	RENDERING_API void FinalizeShadowMapRendering();
 
 	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str) const;
 	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
@@ -144,14 +147,34 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
+	inline size_t GetDirectionalAndSpotLightsCount() const
+	{
+		return m_directionalAndSpotLights.size();
+	}
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
 		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
 		return m_currentLight;
 	}
-	inline const Lighting::PointLight* GetPointLight() const
+	inline const Lighting::BaseLight* SetCurrentLight(size_t index)
 	{
-		return m_pointLight;
+		// TODO: Index range checking
+		m_currentLight = m_directionalAndSpotLights[index];
+		return m_currentLight;
+	}
+	inline size_t GetPointLightsCount() const
+	{
+		return m_pointLights.size();
+	}
+	inline const Lighting::PointLight* GetCurrentPointLight() const
+	{
+		return m_currentPointLight;
+	}
+	inline const Lighting::PointLight* SetCurrentPointLight(size_t index)
+	{
+		// TODO: Index range checking
+		m_currentPointLight = m_pointLights[index];
+		return m_currentPointLight;
 	}
 	//inline const Lighting::SpotLight* GetSpotLight() const { return m_spotLight; }
 	inline const Math::Vector3D& GetAmbientDayLight() const
@@ -178,7 +201,9 @@ public:
 	//RENDERING_API void SetMenuCameraAsCurrent();
 	size_t SetCurrentCamera(size_t cameraIndex);
 
-	RENDERING_API void BindAsRenderTarget();
+	RENDERING_API void BindAsRenderTarget() const;
+	RENDERING_API void InitLightRendering() const;
+	RENDERING_API void FinalizeLightRendering() const;
 	
 	inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
@@ -192,7 +217,12 @@ public:
 		return m_lightMatrix;
 	}
 
-	RENDERING_API Shader* GetAmbientShader();
+	RENDERING_API const Shader* GetAmbientShader() const;
+	RENDERING_API const Shader* GetAmbientTerrainShader() const;
+	RENDERING_API const Shader* GetShadowMapShader() const
+	{
+		return m_shadowMapShader;
+	}
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
@@ -317,11 +347,15 @@ private:
 	CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientNighttimeColor;
 	Math::Vector3D m_ambientLight;
 	Lighting::BaseLight* m_currentLight;
-	Lighting::PointLight* m_pointLight; // current point light
+	/// <summary>
+	/// Current point light.
+	/// </summary>
+	Lighting::PointLight* m_currentPointLight;
 	Lighting::SpotLight* m_spotLight; // current spot light
 
 	size_t m_currentCameraIndex;
 	CameraBase* m_currentCamera;
+	CameraBase* m_tempCamera;
 	
 	/// <summary> The main menu camera. This camera will be used
 	/// in the main menu rendering when there are no game cameras set up. </summary>

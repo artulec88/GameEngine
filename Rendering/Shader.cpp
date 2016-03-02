@@ -656,7 +656,7 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 			{
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
-				const Lighting::PointLight* pointLight = renderer->GetPointLight();
+				const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
 				CHECK_CONDITION_EXIT(pointLight != NULL, Error, "Cannot update point light uniform. Point light instance is NULL.");
 				SetUniformPointLight(uniformName, *pointLight);
 			}

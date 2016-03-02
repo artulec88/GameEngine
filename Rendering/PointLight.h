@@ -14,7 +14,7 @@ class PointLight : public BaseLight
 public:
 	static bool pointLightsEnabled;
 public:
-	static bool* ArePointLightsEnabled() { return &pointLightsEnabled; }
+	RENDERING_API static bool* ArePointLightsEnabled() { return &pointLightsEnabled; }
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

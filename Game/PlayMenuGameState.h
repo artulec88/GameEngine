@@ -56,7 +56,7 @@ public:
 	virtual void Revealed();
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

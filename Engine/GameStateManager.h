@@ -148,7 +148,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
+	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
 	
 	bool IsInGameTimeCalculationEnabled() const;
 
@@ -224,7 +224,7 @@ public:
 	/// <summary> Instructs the active game states to render themselves or to update the scene graph </summary>
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
-	void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+	void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it

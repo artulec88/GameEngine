@@ -48,7 +48,7 @@ public:
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Input(Math::Real elapsedTime);
-	virtual void Render(Rendering::Renderer* renderer);
+	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

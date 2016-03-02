@@ -52,7 +52,7 @@ public:
 	 */
 	virtual void Revealed();
 
-	virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	
 	virtual void Update(Math::Real elapsedTime);
 /* ==================== Non-static member functions end ==================== */

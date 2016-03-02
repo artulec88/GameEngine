@@ -75,12 +75,13 @@ public:
 	ENGINE_API void PerformStateTransition();
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
-protected:
+public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
-	ENGINE_API void AddToSceneRoot(GameNode* child);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
 	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
+protected:
+	ENGINE_API void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

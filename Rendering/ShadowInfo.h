@@ -36,12 +36,12 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	inline Math::Matrix4D GetProjection() const { return m_projectionMatrix; }
-	inline Math::Real GetShadowSoftness() const { return m_shadowSoftness; }
-	inline Math::Real GetMinVariance() const { return m_minVariance; }
-	inline Math::Real GetLightBleedingReductionAmount() const { return m_lightBleedingReductionAmount; }
-	inline bool IsFlipFacesEnabled() const { return m_flipFacesEnabled; }
-	inline int GetShadowMapSizeAsPowerOf2() const { return m_shadowMapSizeAsPowerOf2; }
+	RENDERING_API inline Math::Matrix4D GetProjection() const { return m_projectionMatrix; }
+	RENDERING_API inline Math::Real GetShadowSoftness() const { return m_shadowSoftness; }
+	RENDERING_API inline Math::Real GetMinVariance() const { return m_minVariance; }
+	RENDERING_API inline Math::Real GetLightBleedingReductionAmount() const { return m_lightBleedingReductionAmount; }
+	RENDERING_API inline bool IsFlipFacesEnabled() const { return m_flipFacesEnabled; }
+	RENDERING_API inline int GetShadowMapSizeAsPowerOf2() const { return m_shadowMapSizeAsPowerOf2; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

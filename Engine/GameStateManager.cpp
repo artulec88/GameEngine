@@ -210,7 +210,7 @@ void Engine::DefaultGameStateManager::Update(Math::Real deltaTime)
 	}
 }
 
-void Engine::DefaultGameStateManager::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void Engine::DefaultGameStateManager::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
 	{

@@ -135,7 +135,7 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 	STOP_PROFILING;
 }
 
-void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
@@ -147,14 +147,69 @@ void PlayGameState::Render(Rendering::Shader* shader, Rendering::Renderer* rende
 
 	renderer->InitRenderScene();
 	
-	Rendering::Shader* ambientShader = renderer->GetAmbientShader();
-	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
-	m_gameManager->GetTerrainNode()->Render(ambientShader, renderer);
-	//renderer->Render(Engine::GameManager::GetGameManager()->GetRootGameNode());
+	//RenderScene(, renderer); // Ambient rendering
+	RenderSceneWithAmbientLight(renderer);
+	//m_gameManager->GetRootGameNode().Render(shader, renderer);
+	//RenderSceneWithPointLights(renderer); // Point light rendering
+	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
 	renderer->FinalizeRenderScene();
 
 	STOP_PROFILING;
+}
+
+void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
+{
+	m_gameManager->GetRootGameNode().Render(renderer->GetAmbientShader(), renderer);
+	m_gameManager->GetTerrainNode()->Render(renderer->GetAmbientTerrainShader(), renderer);
+}
+
+void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
+{
+	if (!Rendering::Lighting::PointLight::ArePointLightsEnabled())
+	{
+		DEBUG_LOG("All point lights are disabled");
+		return;
+	}
+
+	for (size_t i = 0; i < renderer->GetPointLightsCount(); ++i)
+	{
+		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(i);
+		if (currentPointLight->IsEnabled())
+		{
+			DEBUG_LOG("Point light at index %d is disabled", i);
+			continue;
+		}
+		m_gameManager->GetRootGameNode().Render(currentPointLight->GetShader(), renderer);
+		m_gameManager->GetTerrainNode()->Render(currentPointLight->GetTerrainShader(), renderer);
+	}
+}
+
+void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
+{
+	for (size_t i = 0; i < renderer->GetDirectionalAndSpotLightsCount(); ++i)
+	{
+		const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(i);
+		if (!currentLight->IsEnabled())
+		{
+			DEBUG_LOG("Light at index %d is disabled", i);
+			continue;
+		}
+		if (renderer->InitShadowMap())
+		{
+			DEBUG_LOG("Shadow mapping enabled for light %d", i);
+			// Render scene using shadow mapping shader
+			m_gameManager->GetTerrainNode()->Render(renderer->GetShadowMapShader(), renderer); // TODO: Probably unnecessary
+			m_gameManager->GetRootGameNode().Render(renderer->GetShadowMapShader(), renderer);
+		}
+		renderer->FinalizeShadowMapRendering();
+
+		renderer->InitLightRendering();
+		// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
+		m_gameManager->GetRootGameNode().Render(currentLight->GetShader(), renderer);
+		m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
+		renderer->FinalizeLightRendering();
+	}
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)

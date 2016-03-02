@@ -30,7 +30,7 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
+		ENGINE_API virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

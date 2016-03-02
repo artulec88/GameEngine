@@ -45,7 +45,7 @@ public:
 
 	//ENGINE_API void InputAll(Math::Real delta);
 	ENGINE_API virtual void Update(Math::Real elapsedTime);
-	ENGINE_API virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+	ENGINE_API virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 
 	ENGINE_API Math::Transform& GetTransform() { return m_transform; };
 	ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }

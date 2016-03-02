@@ -19,7 +19,7 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(Rendering::Shader* shader, Rendering::Renderer* renderer);
+		virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
