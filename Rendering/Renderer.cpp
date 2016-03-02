@@ -221,9 +221,11 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
 		int shadowMapSize = 1 << (i + 1); // generates a sequence of numbers: 2, 4, 8, 16, ..., 2^(SHADOW_MAPS_COUNT).
-		m_shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
-			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-		m_shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_LINEAR,
+		m_shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_NEAREST,
+			GL_RG32F /* 2 components- R and G- for mean and variance */,
+			GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */,
+			GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
+		m_shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_NEAREST,
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
@@ -457,6 +459,11 @@ void Renderer::InitRenderScene()
 void Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;
+
+#ifdef DEBUG_RENDERING_ENABLED
+	RenderDebugNodes();
+#endif
+
 	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING;
@@ -1428,6 +1435,12 @@ void Renderer::RenderDebugNodes()
 		m_debugShader->SetUniformi("guiTexture", 0);
 		m_debugQuad->Draw();
 	}
+	Math::Matrix4D transformationMatrix(Math::Vector2D(0.7f, 0.7f), Math::Vector2D(0.25f, 0.25f));
+	m_shadowMaps[9]->Bind();
+	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix);
+	m_debugShader->SetUniformi("guiTexture", 0);
+	m_debugQuad->Draw();
+
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 }

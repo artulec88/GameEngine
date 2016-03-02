@@ -134,12 +134,12 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting additional directional light information
-	directionalLight->SetMaxIntensity(directionalLight->GetIntensity());
-	directionalLight->SetSunlightDaytimeColor(directionalLight->GetColor());
-	directionalLight->SetSunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
-	directionalLight->SetSunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO)));
+	Math::Real maxIntensity = directionalLight->GetIntensity();
+	const Rendering::Color sunlightDaytimeColor(directionalLight->GetColor());
+	const Rendering::Color sunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
+	const Rendering::Color sunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO)));
 
-	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight));
+	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor));
 
 	Engine::CoreEngine::GetCoreEngine()->AddLight(directionalLight);
 }

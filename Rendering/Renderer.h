@@ -231,7 +231,7 @@ public:
 	/// <summary>
 	/// Rendering debug nodes, i.e. the nodes that do not belong to the scene, but can be used to see the intermediate results of some other processing (e.g. how shadow map looks).
 	/// </summary>
-	void RenderDebugNodes();
+	RENDERING_API void RenderDebugNodes();
 
 	/// <summary>
 	/// Adds a line segment to the debug drawing queue.

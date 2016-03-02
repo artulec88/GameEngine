@@ -61,6 +61,9 @@ namespace Lighting
 		Math::Transform& GetTransform() { return m_transform; }
 		const Math::Transform& GetTransform() const { return m_transform; }
 
+		RENDERING_API void SetColor(Color color) { m_color = color; }
+		RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
+		RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 		RENDERING_API void SetShader(Shader* shader);
 		RENDERING_API void SetTerrainShader(Shader* terrainShader);
 		RENDERING_API void SetNoShadowShader(Shader* noShadowShader);

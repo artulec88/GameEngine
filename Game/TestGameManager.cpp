@@ -112,6 +112,7 @@ void TestGameManager::Load()
 	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	//m_terrainNode->GetTransform().SetScale(20.0f);
+	//m_terrainMesh->Initialize();
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	AddTerrainNode(m_terrainNode);
@@ -137,6 +138,26 @@ void TestGameManager::Load()
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
+	Engine::GameNode* testMesh3 = new Engine::GameNode();
+	testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
+	testMesh3->GetTransform().SetRot(Matrix4D(Angle(0.0f), Angle(0.0f), Angle(-180.0f)));
+	testMesh3->GetTransform().SetScale(0.25f);
+	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));;
+	AddToSceneRoot(testMesh3);
+
+	const int treeCount = 100;
+	for (int i = 0; i < treeCount; ++i)
+	{
+		Engine::GameNode* treeNode = new Engine::GameNode();
+		Math::Real x = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 4.0f;
+		Math::Real z = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 4.0f;
+		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		treeNode->GetTransform().SetPos(x, y, z);
+		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 90), Angle(0.0f))));
+		treeNode->GetTransform().SetScale(0.01f);
+		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
+		AddToSceneRoot(treeNode);
+	}
 
 	//GameNode* monkeyNode1 = new GameNode();
 	//monkeyNode1->AddComponent(new MeshRenderer(

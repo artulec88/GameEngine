@@ -39,27 +39,11 @@ public:
 	virtual Math::Transform& GetTransform() { return m_transform; }
 	virtual const Math::Transform& GetTransform() const { return m_transform; }
 
-	void SetMaxIntensity(Math::Real maxIntensity) { m_maxIntensity = maxIntensity; }
-	void SetSunlightDaytimeColor(const Color& sunlightDaytimeColor) { m_sunlightDaytimeColor = sunlightDaytimeColor; }
-	void SetSunNearHorizonColor(const Color& sunNearHorizonColor) { m_sunNearHorizonColor = sunNearHorizonColor; }
-	void SetSunlightNighttimeColor(const Color& sunlightNighttimeColor) { m_sunlightNighttimeColor = sunlightNighttimeColor; }
-
 	std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	///<summary>The maximum intensity of the directional light.</summary>
-	Math::Real m_maxIntensity;
-
-	///<summary>The daytime color of the directional light.</summary>
-	Color m_sunlightDaytimeColor;
-
-	///<summary>The near-horizon color of the directional light.</summary>
-	Color m_sunNearHorizonColor;
-
-	///<summary>The nighttime color of the directional light.</summary>
-	Color m_sunlightNighttimeColor;
 	Math::Real m_halfShadowArea;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class DirectionalLight */

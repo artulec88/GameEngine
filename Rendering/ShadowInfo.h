@@ -46,6 +46,9 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	/// <summary>
+	/// The projection matrix used by the camera when rendering to the shadow map (e.g. for directional light this is an orthogonal projection matrix).
+	/// </summary>
 	Math::Matrix4D m_projectionMatrix;
 	bool m_flipFacesEnabled;
 	int m_shadowMapSizeAsPowerOf2;

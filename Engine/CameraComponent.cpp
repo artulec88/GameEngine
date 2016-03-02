@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CameraComponent.h"
 #include "GameNode.h"
+#include "CoreEngine.h"
 
 #include "Math\FloatingPoint.h"
 
@@ -190,8 +191,8 @@ void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 	}
 	DEBUG_LOG("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
 
-	int width = 1600; // TODO: Replace with Core::CoreEngine::GetCoreEngine()->GetWindowWidth();
-	int height = 900; // TODO: Replace with Core::CoreEngine::GetCoreEngine()->GetWindowHeight();
+	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
+	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
 	Math::Vector2D centerPosition(static_cast<Math::Real>(width) / 2, static_cast<Math::Real>(height) / 2);
 	Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
 	deltaPosition -= centerPosition;
@@ -209,7 +210,7 @@ void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 		{
 			GetTransform().Rotate(GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * m_sensitivity));
 		}
-		//Core::CoreEngine::GetCoreEngine()->CentralizeCursor(); // TODO: Uncomment after moving CoreEngine to Engine library.
+		CoreEngine::GetCoreEngine()->CentralizeCursor();
 	}
 }
 
