@@ -111,7 +111,7 @@ void TestGameManager::Load()
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	m_terrainNode->GetTransform().SetScale(20.0f);
+	//m_terrainNode->GetTransform().SetScale(20.0f);
 	//m_terrainMesh->Initialize();
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
@@ -145,7 +145,7 @@ void TestGameManager::Load()
 	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));;
 	AddToSceneRoot(testMesh3);
 
-	const int treeCount = 3;
+	const int treeCount = 30;
 	for (int i = 0; i < treeCount; ++i)
 	{
 		Engine::GameNode* treeNode = new Engine::GameNode();
@@ -154,8 +154,8 @@ void TestGameManager::Load()
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z)) + (static_cast<Real>(rand() % 5000) / 5000.0f) * 2.0f;
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 90), Angle(0.0f))));
-		treeNode->GetTransform().SetScale(5.2f);
-		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("monkey4.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
+		treeNode->GetTransform().SetScale(0.01f);
+		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
 		AddToSceneRoot(treeNode);
 	}
 
