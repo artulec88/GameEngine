@@ -9,6 +9,7 @@
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
+#include "Engine\MousePicker.h"
 
 #include <vector>
 
@@ -65,6 +66,7 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	Engine::MousePicker m_mousePicker;
 	const Engine::GameCommand& m_quitCommand;
 
 	Engine::MenuEntry* m_currentMenuEntry;

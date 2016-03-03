@@ -20,6 +20,7 @@ using namespace Rendering;
 
 MenuGameState::MenuGameState(void) :
 	GameState(),
+	m_mousePicker(),
 	m_quitCommand(QuitCommand(Engine::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
 #ifdef CALCULATE_GAME_STATS
@@ -140,6 +141,7 @@ void MenuGameState::MouseButtonEvent(int button, int action, int mods)
 
 void MenuGameState::MousePosEvent(double xPos, double yPos)
 {
+	//m_mousePicker.CalculateCurrentRay(xPos, yPos);
 }
 
 void MenuGameState::ScrollEvent(double xOffset, double yOffset)

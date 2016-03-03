@@ -324,36 +324,36 @@ public:
 	Vector4D Max(const Vector4D& v) const;
 
 	/* ==================== Vector swizzling begin ==================== */
-	//Vector2D GetXY() const { return Vector2D(m_x, m_y); }
-	//Vector2D GetXZ() const { return Vector2D(m_x, m_z); }
-	//Vector2D GetYZ() const { return Vector2D(m_y, m_z); }
-	//Vector2D GetYX() const { return Vector2D(m_y, m_x); }
-	//Vector2D GetZX() const { return Vector2D(m_z, m_x); }
-	//Vector2D GetZY() const { return Vector2D(m_z, m_y); }
-	//Vector3D GetXYZ() const { return Vector3D(m_x, m_y, m_z); }
-	//Vector3D GetXYW() const { return Vector3D(m_x, m_y, m_w); }
-	//Vector3D GetXZY() const { return Vector3D(m_x, m_z, m_y); }
-	//Vector3D GetXZW() const { return Vector3D(m_x, m_z, m_w); }
-	//Vector3D GetXWY() const { return Vector3D(m_x, m_w, m_y); }
-	//Vector3D GetXWZ() const { return Vector3D(m_x, m_w, m_z); }
-	//Vector3D GetYXZ() const { return Vector3D(m_y, m_x, m_z); }
-	//Vector3D GetYXW() const { return Vector3D(m_y, m_x, m_w); }
-	//Vector3D GetYZX() const { return Vector3D(m_y, m_z, m_x); }
-	//Vector3D GetYZW() const { return Vector3D(m_y, m_z, m_w); }
-	//Vector3D GetYWX() const { return Vector3D(m_y, m_w, m_x); }
-	//Vector3D GetYWZ() const { return Vector3D(m_y, m_w, m_z); }
-	//Vector3D GetZXY() const { return Vector3D(m_z, m_x, m_y); }
-	//Vector3D GetZXW() const { return Vector3D(m_z, m_x, m_w); }
-	//Vector3D GetZYX() const { return Vector3D(m_z, m_y, m_x); }
-	//Vector3D GetZYW() const { return Vector3D(m_z, m_y, m_w); }
-	//Vector3D GetZWX() const { return Vector3D(m_z, m_w, m_x); }
-	//Vector3D GetZWY() const { return Vector3D(m_z, m_w, m_y); }
-	//Vector3D GetWXY() const { return Vector3D(m_w, m_x, m_y); }
-	//Vector3D GetWXZ() const { return Vector3D(m_w, m_x, m_z); }
-	//Vector3D GetWYX() const { return Vector3D(m_w, m_y, m_x); }
-	//Vector3D GetWYZ() const { return Vector3D(m_w, m_y, m_z); }
-	//Vector3D GetWZX() const { return Vector3D(m_w, m_z, m_x); }
-	//Vector3D GetWZY() const { return Vector3D(m_w, m_z, m_y); }
+	MATH_API Vector2D GetXY() const { return Vector2D(m_x, m_y); }
+	Vector2D GetXZ() const { return Vector2D(m_x, m_z); }
+	Vector2D GetYZ() const { return Vector2D(m_y, m_z); }
+	Vector2D GetYX() const { return Vector2D(m_y, m_x); }
+	Vector2D GetZX() const { return Vector2D(m_z, m_x); }
+	Vector2D GetZY() const { return Vector2D(m_z, m_y); }
+	MATH_API Vector3D GetXYZ() const { return Vector3D(m_x, m_y, m_z); }
+	Vector3D GetXYW() const { return Vector3D(m_x, m_y, m_w); }
+	Vector3D GetXZY() const { return Vector3D(m_x, m_z, m_y); }
+	Vector3D GetXZW() const { return Vector3D(m_x, m_z, m_w); }
+	Vector3D GetXWY() const { return Vector3D(m_x, m_w, m_y); }
+	Vector3D GetXWZ() const { return Vector3D(m_x, m_w, m_z); }
+	Vector3D GetYXZ() const { return Vector3D(m_y, m_x, m_z); }
+	Vector3D GetYXW() const { return Vector3D(m_y, m_x, m_w); }
+	Vector3D GetYZX() const { return Vector3D(m_y, m_z, m_x); }
+	Vector3D GetYZW() const { return Vector3D(m_y, m_z, m_w); }
+	Vector3D GetYWX() const { return Vector3D(m_y, m_w, m_x); }
+	Vector3D GetYWZ() const { return Vector3D(m_y, m_w, m_z); }
+	Vector3D GetZXY() const { return Vector3D(m_z, m_x, m_y); }
+	Vector3D GetZXW() const { return Vector3D(m_z, m_x, m_w); }
+	Vector3D GetZYX() const { return Vector3D(m_z, m_y, m_x); }
+	Vector3D GetZYW() const { return Vector3D(m_z, m_y, m_w); }
+	Vector3D GetZWX() const { return Vector3D(m_z, m_w, m_x); }
+	Vector3D GetZWY() const { return Vector3D(m_z, m_w, m_y); }
+	Vector3D GetWXY() const { return Vector3D(m_w, m_x, m_y); }
+	Vector3D GetWXZ() const { return Vector3D(m_w, m_x, m_z); }
+	Vector3D GetWYX() const { return Vector3D(m_w, m_y, m_x); }
+	Vector3D GetWYZ() const { return Vector3D(m_w, m_y, m_z); }
+	Vector3D GetWZX() const { return Vector3D(m_w, m_z, m_x); }
+	Vector3D GetWZY() const { return Vector3D(m_w, m_z, m_y); }
 	/* ==================== Vector swizzling end ==================== */
 
 	void Approach(Real step, const Vector4D& approachedVector);

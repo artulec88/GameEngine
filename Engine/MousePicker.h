@@ -4,10 +4,17 @@
 #include "Engine.h"
 
 #include "Math\Vector.h"
+#include "Math\Matrix.h"
 
 namespace Engine
 {
-
+	/// <summary>
+	/// The mouse picker class. It casts a ray from the camera's position in the specified direction.
+	/// It is a basic object to use when determining which entity in the scene or which menu entry the user wants to select.
+	/// </summary>
+	/// <remarks>
+	/// The class was based on the following article http://antongerdelan.net/opengl/raycasting.html.
+	/// </remarks>
 	class MousePicker
 	{
 	/* ==================== Static variables and functions begin ==================== */
@@ -24,6 +31,13 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// </summary>
+		/// <param name="xPos">The X component of the 2D viewport coordinates.</param>
+		/// <param name="yPos">The Y component of the 2D viewport coordinates.</param>
+		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
+		/// <param name="viewMatrix">The view matrix of the camera.</param>
+		ENGINE_API void CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
