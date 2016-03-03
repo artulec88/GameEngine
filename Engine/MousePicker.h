@@ -14,6 +14,7 @@ namespace Engine
 	/// </summary>
 	/// <remarks>
 	/// The class was based on the following article http://antongerdelan.net/opengl/raycasting.html.
+	/// Only one instance of this class is needed by the engine, so we should only create one instance of this object.
 	/// </remarks>
 	class MousePicker
 	{

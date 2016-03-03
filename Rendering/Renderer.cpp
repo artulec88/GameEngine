@@ -123,7 +123,8 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE("waterNormalVerticalFactor", 3.0f)),
 	m_waterShader(NULL),
 	m_waterNoDirectionalLightShader(NULL),
-	m_billboardShader(NULL)
+	m_billboardShader(NULL),
+	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -250,7 +251,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
-	SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -316,11 +317,11 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_fontMaterial);
 	SAFE_DELETE(m_textShader);
 
-	SetTexture("waterReflectionTexture", NULL);
-	SetMultitexture("waterRefractionTexture", NULL, 0);
-	SetMultitexture("waterDepthMap", NULL, 1);
-	SetTexture("waterDUDVMap", NULL);
-	SetTexture("waterNormalMap", NULL);
+	m_mappedValues.SetTexture("waterReflectionTexture", NULL);
+	m_mappedValues.SetMultitexture("waterRefractionTexture", NULL, 0);
+	m_mappedValues.SetMultitexture("waterDepthMap", NULL, 1);
+	m_mappedValues.SetTexture("waterDUDVMap", NULL);
+	m_mappedValues.SetTexture("waterNormalMap", NULL);
 	SAFE_DELETE(m_waterDUDVTexture);
 	SAFE_DELETE(m_waterNormalMap);
 	SAFE_DELETE(m_waterRefractionTexture);
@@ -348,7 +349,7 @@ Renderer::~Renderer(void)
 	}
 	m_ambientShadersFogEnabledTerrainMap.clear();
 
-	SetTexture("shadowMap", NULL);
+	m_mappedValues.SetTexture("shadowMap", NULL);
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
 	{
 		SAFE_DELETE(m_shadowMaps[i]);
@@ -436,20 +437,20 @@ void Renderer::InitRenderScene()
 		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("ambientFogColor", m_fogColor);
-	SetReal("ambientFogStart", m_fogStart);
-	SetReal("ambientFogEnd", m_fogEnd);
-	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
-	SetReal("ambientFogGradient", m_fogGradient);
-	SetVector3D("ambientIntensity", m_ambientLight);
-	SetReal("fxaaSpanMax", m_fxaaSpanMax);
-	SetReal("fxaaReduceMin", m_fxaaReduceMin);
-	SetReal("fxaaReduceMul", m_fxaaReduceMul);
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
+	m_mappedValues.SetReal("ambientFogStart", m_fogStart);
+	m_mappedValues.SetReal("ambientFogEnd", m_fogEnd);
+	m_mappedValues.SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+	m_mappedValues.SetReal("ambientFogGradient", m_fogGradient);
+	m_mappedValues.SetVector3D("ambientIntensity", m_ambientLight);
+	m_mappedValues.SetReal("fxaaSpanMax", m_fxaaSpanMax);
+	m_mappedValues.SetReal("fxaaReduceMin", m_fxaaReduceMin);
+	m_mappedValues.SetReal("fxaaReduceMul", m_fxaaReduceMul);
+	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 	CheckCameraIndexChange();
 #endif
 
-	GetTexture("displayTexture")->BindAsRenderTarget();
+	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 	
 	ClearScreen();
 	m_currentCamera = m_cameras[m_currentCameraIndex];
@@ -460,13 +461,14 @@ void Renderer::InitRenderScene()
 void Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;
-	SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / GetTexture("displayTexture")->GetWidth(), REAL_ONE / GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+	m_mappedValues.SetVector3D("inverseFilterTextureSize",
+		Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 #ifdef DEBUG_RENDERING_ENABLED
 	RenderDebugNodes();
 #endif
 
-	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, GetTexture("displayTexture"), NULL);
+	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING;
 }
@@ -1069,7 +1071,7 @@ bool Renderer::InitShadowMap()
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 	CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
-	SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+	m_mappedValues.SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
 
@@ -1082,8 +1084,8 @@ bool Renderer::InitShadowMap()
 
 		//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
-		SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
-		SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
+		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+		m_mappedValues.SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 
 		m_tempCamera = m_currentCamera;
 		m_currentCamera = &m_altCamera;
@@ -1099,8 +1101,8 @@ bool Renderer::InitShadowMap()
 		// we set the light matrix this way so that, if no shadow should be cast
 		// everything in the scene will be mapped to the same point
 		m_lightMatrix.SetScaleMatrix(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-		SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
-		SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
+		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", REAL_ZERO);
+		m_mappedValues.SetReal("shadowVarianceMin", m_defaultShadowMinVariance);
 		return false; // shadows disabled
 	}
 }
@@ -1205,7 +1207,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime
 		break;
 	}
 
-	SetReal("dayNightMixFactor", dayNightMixFactor);
+	m_mappedValues.SetReal("dayNightMixFactor", dayNightMixFactor);
 	/* ==================== Adjusting the time variables end ==================== */
 	STOP_PROFILING;
 }
@@ -1256,10 +1258,10 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 		return;
 	}
 
-	SetVector3D("blurScale", Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
 	ApplyFilter(m_gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
 	
-	SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
 	ApplyFilter(m_gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
 	STOP_PROFILING;
 }
@@ -1284,7 +1286,7 @@ void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, co
 
 	//DEBUG_LOG("Applying a filter to the source texture");
 	
-	SetTexture("filterTexture", source);
+	m_mappedValues.SetTexture("filterTexture", source);
 
 	m_altCamera.SetProjection(Math::Matrix4D::IDENTITY_MATRIX);
 	m_altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
@@ -1299,7 +1301,7 @@ void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, co
 	m_filterMesh->Draw();
 
 	m_currentCamera = temp;
-	SetTexture("filterTexture", NULL);
+	m_mappedValues.SetTexture("filterTexture", NULL);
 	STOP_PROFILING;
 }
 
@@ -1394,7 +1396,7 @@ void Renderer::BindAsRenderTarget() const
 void Renderer::InitLightRendering() const
 {
 	glCullFace(Rendering::glCullFaceMode);
-	GetTexture("displayTexture")->BindAsRenderTarget();
+	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
 	{
 		glEnable(GL_BLEND);

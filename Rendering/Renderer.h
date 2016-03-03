@@ -40,8 +40,7 @@ namespace Rendering
 
 class Mesh;
 
-// TODO: Consider creating Singleton template class from which Renderer would inherit
-class Renderer : public MappedValues
+class Renderer
 {
 /* ==================== Static variables begin ==================== */
 private:
@@ -204,6 +203,12 @@ public:
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
+
+	Math::Real GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
+	const Math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
+	const Math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
+	const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }
+	const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const { return m_mappedValues.GetTexture(textureName, multitextureIndex); }
 
 #ifdef DEBUG_RENDERING_ENABLED
 	/// <summary>
@@ -424,6 +429,8 @@ private:
 
 	Shader* m_billboardShader;
 	//std::vector<GameNode*> m_billboardNodes;
+
+	MappedValues m_mappedValues;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int m_cameraCountMinusOne;

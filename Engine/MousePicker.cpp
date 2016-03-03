@@ -15,6 +15,8 @@ Engine::MousePicker::~MousePicker()
 
 void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix)
 {
+	WARNING_LOG("This function has not been tested yet. Use it with caution.");
+
 	// Transforming into 3D normalised device space
 	Math::Real normalisedDeviceSpaceX = (2.0f * xPos / CoreEngine::GetCoreEngine()->GetWindowWidth()) - 1.0f;
 	Math::Real normalisedDeviceSpaceY = 1.0f - (2.0f * yPos / CoreEngine::GetCoreEngine()->GetWindowHeight());

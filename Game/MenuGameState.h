@@ -59,9 +59,9 @@ public:
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 
-	ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
-	ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
-	ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+	virtual void ScrollEvent(double xOffset, double yOffset);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
