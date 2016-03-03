@@ -458,6 +458,16 @@ void Renderer::BindDisplayTexture()
 	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 }
 
+void Renderer::BindWaterReflectionTexture()
+{
+	m_waterReflectionTexture->BindAsRenderTarget();
+}
+
+void Renderer::BindWaterRefractionTexture()
+{
+	m_waterRefractionTexture->BindAsRenderTarget();
+}
+
 void Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;
@@ -622,6 +632,23 @@ void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Tr
 //	//BindAsRenderTarget();
 //	STOP_PROFILING;
 //}
+
+//void Renderer::SetClippingPlane(const Math::Vector4D& clippingPlane)
+//{
+//	m_mappedValues.SetVector4D("clipPlane", clippingPlane);
+//}
+
+void Renderer::EnableWaterReflectionClippingPlane(Math::Real height)
+{
+	m_waterReflectionClippingPlane.SetW(height);
+	m_mappedValues.SetVector4D("clipPlane", m_waterReflectionClippingPlane);
+}
+
+void Renderer::EnableWaterRefractionClippingPlane(Math::Real height)
+{
+	m_waterRefractionClippingPlane.SetW(height);
+	m_mappedValues.SetVector4D("clipPlane", m_waterRefractionClippingPlane);
+}
 
 void Renderer::DisableClippingPlanes()
 {
@@ -1456,7 +1483,8 @@ void Renderer::RenderDebugNodes()
 		m_debugQuad->Draw();
 	}
 	Math::Matrix4D transformationMatrix(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
-	m_shadowMaps[9]->Bind();
+	//m_shadowMaps[9]->Bind();
+	m_waterReflectionTexture->Bind();
 	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix);
 	m_debugShader->SetUniformi("guiTexture", 0);
 	m_debugQuad->Draw();

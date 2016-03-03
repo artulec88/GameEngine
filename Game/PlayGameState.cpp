@@ -228,14 +228,69 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID(!m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
-	//RenderWaterReflectionTexture();
-	//RenderWaterRefractionTexture();
+	RenderWaterReflectionTexture(renderer);
+	RenderWaterRefractionTexture(renderer);
 	
-	//renderer->DisableClippingPlanes();
+	renderer->DisableClippingPlanes();
 	STOP_PROFILING;
+}
+
+void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	
+	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
+	Math::Transform& cameraTransform = renderer->GetCurrentCameraTransform();
+	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+	Math::Real distance = 2.0f * (cameraHeight - m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
+	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
+
+	renderer->EnableWaterReflectionClippingPlane(-m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
+	renderer->BindWaterReflectionTexture();
+	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
+
+	renderer->SetDepthTest(false);
+	//RenderSkybox();
+	RenderSceneWithAmbientLight(renderer);
+
+	//RenderSceneWithPointLights(renderer);
+	//for (std::vector<Rendering::Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	//{
+	//	m_currentLight = (*lightItr);
+	//	if (!m_currentLight->IsEnabled())
+	//	{
+	//		continue;
+	//	}
+	//	RenderSceneWithLight(m_currentLight, gameNode, false);
+	//}
+	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
+
+	renderer->SetDepthTest(true);
+
+	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//{
+	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+	//}
+	//else
+	//{
+	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+	//}
+
+	//BindAsRenderTarget();
+	
+	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	cameraTransform.GetRot().InvertPitch();
+
+	STOP_PROFILING;
+}
+
+void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
+{
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)

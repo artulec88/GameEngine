@@ -61,6 +61,8 @@ private:
 public:
 	RENDERING_API void InitRenderScene();
 	RENDERING_API void BindDisplayTexture();
+	RENDERING_API void BindWaterReflectionTexture();
+	RENDERING_API void BindWaterRefractionTexture();
 	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 	RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
 	RENDERING_API void FinalizeRenderScene();
@@ -125,6 +127,14 @@ public:
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
+	/// <summary>
+	/// Enables or disables the depth test in the rendering engine.
+	/// </summary>
+	RENDERING_API inline void SetDepthTest(bool enabled)
+	{
+		enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+	}
+
 	inline size_t GetDirectionalAndSpotLightsCount() const
 	{
 		return m_directionalAndSpotLights.size();
@@ -169,6 +179,16 @@ public:
 		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return *m_currentCamera;
 	}
+	RENDERING_API inline const Math::Transform& GetCurrentCameraTransform() const
+	{
+		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
+		return m_currentCamera->GetTransform();
+	}
+	RENDERING_API inline Math::Transform& GetCurrentCameraTransform()
+	{
+		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
+		return m_currentCamera->GetTransform();
+	}
 
 	size_t GetCurrentCameraIndex() const
 	{
@@ -212,6 +232,9 @@ public:
 	const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }
 	const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const { return m_mappedValues.GetTexture(textureName, multitextureIndex); }
 
+	//RENDERING_API void SetClippingPlane(const Math::Vector4D& clippingPlane);
+	RENDERING_API void EnableWaterReflectionClippingPlane(Math::Real height);
+	RENDERING_API void EnableWaterRefractionClippingPlane(Math::Real height);
 	RENDERING_API void DisableClippingPlanes();
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -273,15 +296,6 @@ public:
 #endif
 
 protected:
-	/// <summary>
-	/// Water textures (reflection, refraction) rendering pass.
-	/// </summary>
-	/// <remarks>
-	/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
-	/// </remarks>
-	//void RenderWaterTextures(const GameNode& gameNode);
-	//void RenderWaterReflectionTexture(const GameNode& gameNode);
-	//void RenderWaterRefractionTexture(const GameNode& gameNode);
 
 	/// <summary>
 	/// Renders the registered water nodes using the reflection and refraction textures created during the earlier stage of rendering pass.

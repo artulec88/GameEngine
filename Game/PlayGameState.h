@@ -64,7 +64,16 @@ private:
 	void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
 	void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
 	void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
+	
+	/// <summary>
+	/// Water textures (reflection, refraction) rendering pass.
+	/// </summary>
+	/// <remarks>
+	/// The implementation is based on the tutorial: https://www.youtube.com/watch?v=0NH9k4zTAqk.
+	/// </remarks>
 	void RenderWaterTextures(Rendering::Renderer* renderer) const;
+	void RenderWaterReflectionTexture(Rendering::Renderer* renderer) const;
+	void RenderWaterRefractionTexture(Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
