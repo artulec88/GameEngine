@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "Shader.h"
+#include "Renderer.h"
 
 //#include "CoreEngine.h"
 #include "Utility\Utility.h"

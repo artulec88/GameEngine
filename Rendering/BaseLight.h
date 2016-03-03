@@ -14,102 +14,100 @@
 
 namespace Rendering
 {
-
 	class Shader;
-	class Renderer;
 
-namespace Lighting
-{
-
-	class BaseLight
+	namespace Lighting
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
-	public:
-		/// <summary>The constructor.</summary>
-		/// <param name="transform">The transform of the light.</param>
-		/// <param name="color">The color of the light.</param>
-		/// <param name="intensity">The intensity of the light.</param>
-		/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLight</code>.</remarks>
-		RENDERING_API BaseLight(Math::Transform& transform, const Color& color, Math::Real intensity);
-	
-		/// <summary>The destructor.</summary>
-		RENDERING_API virtual ~BaseLight(void);
-	private:
-		BaseLight(const BaseLight& baseLight); // Copy constructor disabled
-		void operator=(BaseLight& baseLight); // Assignment operator disabled
-	/* ==================== Constructors and destructors end ==================== */
+		class BaseLight
+		{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		//virtual void Update(Math::Real delta);
-		//virtual void Render(Shader* shader, Renderer* renderer);
-		Color GetColor() const { return m_color; }
-		Math::Real GetIntensity() const { return m_intensity; }
-		RENDERING_API inline const Shader* GetShader() const { return m_shader; }
-		RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
-		RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
-		RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
-		RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo; }
-		virtual bool IsEnabled() const { return m_isEnabled; }
-	
-		bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
+		/* ==================== Constructors and destructors begin ==================== */
+		public:
+			/// <summary>The constructor.</summary>
+			/// <param name="transform">The transform of the light.</param>
+			/// <param name="color">The color of the light.</param>
+			/// <param name="intensity">The intensity of the light.</param>
+			/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLight</code>.</remarks>
+			RENDERING_API BaseLight(Math::Transform& transform, const Color& color, Math::Real intensity);
 
-		virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
-		Math::Transform& GetTransform() { return m_transform; }
-		const Math::Transform& GetTransform() const { return m_transform; }
+			/// <summary>The destructor.</summary>
+			RENDERING_API virtual ~BaseLight(void);
+		private:
+			BaseLight(const BaseLight& baseLight); // Copy constructor disabled
+			void operator=(BaseLight& baseLight); // Assignment operator disabled
+		/* ==================== Constructors and destructors end ==================== */
 
-		RENDERING_API void SetColor(Color color) { m_color = color; }
-		RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
-		RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
-		RENDERING_API void SetShader(Shader* shader);
-		RENDERING_API void SetTerrainShader(Shader* terrainShader);
-		RENDERING_API void SetNoShadowShader(Shader* noShadowShader);
-		RENDERING_API void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
-		void SetShadowInfo(ShadowInfo* shadowInfo);
+		/* ==================== Non-static member functions begin ==================== */
+		public:
+			//virtual void Update(Math::Real delta);
+			//virtual void Render(Shader* shader, Renderer* renderer);
+			Color GetColor() const { return m_color; }
+			Math::Real GetIntensity() const { return m_intensity; }
+			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
+			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
+			RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
+			RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
+			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo; }
+			virtual bool IsEnabled() const { return m_isEnabled; }
 
-	#ifdef ANT_TWEAK_BAR_ENABLED
-		virtual void InitializeTweakBar(TwBar* lightsBar);
-	#endif
-	/* ==================== Non-static member functions end ==================== */
+			bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
 
-	/* ==================== Non-static member variables begin ==================== */
-	protected:
-		/// <summary> The base light transform. </summary>
-		Math::Transform& m_transform;
+			virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+			Math::Transform& GetTransform() { return m_transform; }
+			const Math::Transform& GetTransform() const { return m_transform; }
 
-		/// <summary>The light color.</summary>
-		Color m_color;
+			RENDERING_API void SetColor(Color color) { m_color = color; }
+			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
+			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
+			RENDERING_API void SetShader(Shader* shader);
+			RENDERING_API void SetTerrainShader(Shader* terrainShader);
+			RENDERING_API void SetNoShadowShader(Shader* noShadowShader);
+			RENDERING_API void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
+			void SetShadowInfo(ShadowInfo* shadowInfo);
 
-		/// <summary>The light intensity.</summary>
-		Math::Real m_intensity;
+#ifdef ANT_TWEAK_BAR_ENABLED
+			virtual void InitializeTweakBar(TwBar* lightsBar);
+#endif
+		/* ==================== Non-static member functions end ==================== */
 
-		/// <summary>The default shader for the light.</summary>
-		Shader* m_shader;
+		/* ==================== Non-static member variables begin ==================== */
+		protected:
+			/// <summary> The base light transform. </summary>
+			Math::Transform& m_transform;
 
-		/// <summary>The terrain shader for the light.</summary>
-		Shader* m_terrainShader;
+			/// <summary>The light color.</summary>
+			Color m_color;
 
-		/// <summary> The default shader with no shadow calculation for the light. </summary>
-		Shader* m_noShadowShader;
+			/// <summary>The light intensity.</summary>
+			Math::Real m_intensity;
 
-		/// <summary> The terrain shader with no shadow calculation for the light. </summary>
-		Shader* m_noShadowTerrainShader;
+			/// <summary>The default shader for the light.</summary>
+			Shader* m_shader;
 
-		/// <summary>The information about the shadow that the light casts.</summary>
-		ShadowInfo* m_shadowInfo;
+			/// <summary>The terrain shader for the light.</summary>
+			Shader* m_terrainShader;
 
-		/// <summary>The information whether the light is enabled or not.</summary>
-		bool m_isEnabled;
+			/// <summary> The default shader with no shadow calculation for the light. </summary>
+			Shader* m_noShadowShader;
 
-		/// <summary>The information about whether the light casts shadows or not.</summary>
-		bool m_isShadowingEnabled;
-	/* ==================== Non-static member variables end ==================== */
-	}; /* end class BaseLight */
+			/// <summary> The terrain shader with no shadow calculation for the light. </summary>
+			Shader* m_noShadowTerrainShader;
 
-} /* end namespace Lighting */
+			/// <summary>The information about the shadow that the light casts.</summary>
+			ShadowInfo* m_shadowInfo;
+
+			/// <summary>The information whether the light is enabled or not.</summary>
+			bool m_isEnabled;
+
+			/// <summary>The information about whether the light casts shadows or not.</summary>
+			bool m_isShadowingEnabled;
+		/* ==================== Non-static member variables end ==================== */
+		}; /* end class BaseLight */
+
+	} /* end namespace Lighting */
 
 } /* end namespace Rendering */
 

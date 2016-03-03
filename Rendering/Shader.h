@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "Material.h"
-#include "Renderer.h"
+//#include "Renderer.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -20,6 +20,7 @@
 
 namespace Rendering
 {
+	class Renderer;
 
 	namespace Uniforms
 	{
