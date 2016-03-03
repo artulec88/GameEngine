@@ -133,3 +133,15 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	}
 	STOP_PROFILING;
 }
+
+void MenuGameState::MouseButtonEvent(int button, int action, int mods)
+{
+}
+
+void MenuGameState::MousePosEvent(double xPos, double yPos)
+{
+}
+
+void MenuGameState::ScrollEvent(double xOffset, double yOffset)
+{
+}

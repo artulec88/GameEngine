@@ -171,6 +171,7 @@
     <ClInclude Include="MenuEntry.h" />
     <ClInclude Include="MeshGroupRendererComponent.h" />
     <ClInclude Include="MeshRendererComponent.h" />
+    <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="QuitGameCommand.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="MenuEntry.cpp" />
     <ClCompile Include="MeshGroupRendererComponent.cpp" />
     <ClCompile Include="MeshRendererComponent.cpp" />
+    <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="QuitGameCommand.cpp" />

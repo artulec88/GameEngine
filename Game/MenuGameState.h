@@ -22,7 +22,7 @@ namespace Game
 
 	class Rendering::Shader;
 
-class MenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable
+class MenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable, public virtual Engine::Input::IInputableMouse
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -57,6 +57,10 @@ public:
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+
+	ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
+	ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
+	ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

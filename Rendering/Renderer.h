@@ -38,28 +38,6 @@
 namespace Rendering
 {
 
-namespace Water
-{
-	enum WaterDistortionType
-	{
-		DISTORTION_X = 0,
-		DISTORTION_Z = 1,
-		DISTORTION_XZ = 2,
-	};
-
-	enum WaterReflectionEffect
-	{
-		REFLECTION_EFFECT_ENABLED = 0,
-		REFLECTION_EFFECT_DISABLED = 1
-	};
-
-	enum WaterDepthEffect
-	{
-		DEPTH_EFFECT_ENABLED = 0,
-		DEPTH_EFFECT_DISABLED = 1
-	};
-} /* end namespace Water */
-
 class Mesh;
 
 // TODO: Consider creating Singleton template class from which Renderer would inherit

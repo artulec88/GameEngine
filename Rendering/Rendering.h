@@ -94,7 +94,29 @@ namespace Rendering
 			FogFallOffType fallOffType;
 			FogCalculationType calculationType;
 		};
-	}
+	} /* end namespace FogEffect */
+
+	namespace WaterEffect
+	{
+		enum WaterDistortionType
+		{
+			DISTORTION_X = 0,
+			DISTORTION_Z = 1,
+			DISTORTION_XZ = 2,
+		};
+
+		enum WaterReflectionEffect
+		{
+			REFLECTION_EFFECT_ENABLED = 0,
+			REFLECTION_EFFECT_DISABLED = 1
+		};
+
+		enum WaterDepthEffect
+		{
+			DEPTH_EFFECT_ENABLED = 0,
+			DEPTH_EFFECT_DISABLED = 1
+		};
+	} /* end namespace WaterEffect */
 
 	namespace Aliasing
 	{
