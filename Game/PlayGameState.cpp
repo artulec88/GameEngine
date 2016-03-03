@@ -147,7 +147,12 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 	renderer->InitRenderScene();
 	
-	//RenderScene(, renderer); // Ambient rendering
+	RenderWaterTextures(renderer);
+
+	renderer->BindDisplayTexture();
+	renderer->ClearScreen();
+	renderer->SetCurrentCamera();
+
 	RenderSceneWithAmbientLight(renderer);
 	//m_gameManager->GetRootGameNode().Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
@@ -160,8 +165,16 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
-	m_gameManager->GetRootGameNode().Render(renderer->GetAmbientShader(), renderer);
-	m_gameManager->GetTerrainNode()->Render(renderer->GetAmbientTerrainShader(), renderer);
+	const Rendering::Shader* ambientShader = renderer->GetAmbientShader();
+	const Rendering::Shader* ambientTerrainShader = renderer->GetAmbientTerrainShader();
+	if (ambientShader != NULL)
+	{
+		m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
+	}
+	if (ambientTerrainShader != NULL)
+	{
+		m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
+	}
 }
 
 void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
@@ -210,6 +223,19 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 		m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
 		renderer->FinalizeLightRendering();
 	}
+}
+
+void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID(!m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
+
+	//RenderWaterReflectionTexture();
+	//RenderWaterRefractionTexture();
+	
+	//renderer->DisableClippingPlanes();
+	STOP_PROFILING;
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)

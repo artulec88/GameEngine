@@ -450,12 +450,12 @@ void Renderer::InitRenderScene()
 	CheckCameraIndexChange();
 #endif
 
-	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
-	
-	ClearScreen();
-	m_currentCamera = m_cameras[m_currentCameraIndex];
-
 	STOP_PROFILING;
+}
+
+void Renderer::BindDisplayTexture()
+{
+	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 }
 
 void Renderer::FinalizeRenderScene()
@@ -622,6 +622,17 @@ void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Tr
 //	//BindAsRenderTarget();
 //	STOP_PROFILING;
 //}
+
+void Renderer::DisableClippingPlanes()
+{
+	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
+	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
+	// below glDisable(GL_CLIP_DISTANCE0) call, so we need a trick. In order to have no clipping we simply
+	// set the clipping plane distance from the origin very high. This way there are no fragments that can be culled
+	// and as a result we render the whole scene.
+	// glDisable(GL_CLIP_DISTANCE0); // Disabled plane clipping // glDisable(GL_CLIP_PLANE0);
+	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+}
 
 //void Renderer::RenderWaterNodes()
 //{
@@ -1327,6 +1338,11 @@ size_t Renderer::PrevCamera()
 //{
 //	m_currentCamera = m_mainMenuCamera;
 //}
+
+void Renderer::SetCurrentCamera()
+{
+	m_currentCamera = m_cameras[m_currentCameraIndex];
+}
 
 size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 {

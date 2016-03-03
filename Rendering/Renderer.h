@@ -60,6 +60,7 @@ private:
 /* ==================== Non-static, non-virtual member functions begin ==================== */
 public:
 	RENDERING_API void InitRenderScene();
+	RENDERING_API void BindDisplayTexture();
 	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 	RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
 	RENDERING_API void FinalizeRenderScene();
@@ -176,6 +177,7 @@ public:
 	RENDERING_API size_t NextCamera();
 	RENDERING_API size_t PrevCamera();
 	//RENDERING_API void SetMenuCameraAsCurrent();
+	RENDERING_API void SetCurrentCamera();
 	size_t SetCurrentCamera(size_t cameraIndex);
 
 	RENDERING_API void BindAsRenderTarget() const;
@@ -209,6 +211,8 @@ public:
 	const Math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
 	const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }
 	const Texture* GetTexture(const std::string& textureName, unsigned int* multitextureIndex) const { return m_mappedValues.GetTexture(textureName, multitextureIndex); }
+
+	RENDERING_API void DisableClippingPlanes();
 
 #ifdef DEBUG_RENDERING_ENABLED
 	/// <summary>

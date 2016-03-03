@@ -48,6 +48,7 @@ public:
 	ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
 	ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
+	ENGINE_API inline GameNode* GetWaterNode() { return m_waterNode; }
 	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 
@@ -89,6 +90,7 @@ protected:
 	GameNode m_rootGameNode;
 	GameNode* m_terrainNode;
 	GameNode* m_skyboxNode;
+	GameNode* m_waterNode;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 /* ==================== Non-static member variables end ==================== */

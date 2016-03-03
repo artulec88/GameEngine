@@ -50,6 +50,7 @@ Engine::GameManager::GameManager() :
 	m_rootGameNode(),
 	m_terrainNode(NULL),
 	m_skyboxNode(NULL),
+	m_waterNode(NULL),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false)
 {
@@ -165,7 +166,7 @@ void Engine::GameManager::AddToSceneRoot(GameNode* child)
 
 void Engine::GameManager::AddWaterNode(GameNode* waterNode)
 {
-	CoreEngine::GetCoreEngine()->AddWaterNode(waterNode);
+	m_waterNode = waterNode;
 }
 
 void Engine::GameManager::AddBillboardNode(GameNode* billboardNode)

@@ -64,6 +64,7 @@ private:
 	void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
 	void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
 	void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
+	void RenderWaterTextures(Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
