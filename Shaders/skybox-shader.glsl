@@ -37,6 +37,11 @@ void main()
 uniform float R_dayNightMixFactor; // within range [0; 1] where 0 means total night and 1 means total day
 uniform samplerCube cubeMapDay;
 uniform samplerCube cubeMapNight;
+uniform vec3 R_ambientFogColor;
+
+// https://www.youtube.com/watch?v=rqx9IDLKV28&index=28&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP
+const float LOWER_LIMIT = 0.0f;
+const float UPPER_LIMIT = 0.5f;
 
 DeclareFragOutput(0, vec4);
 void main()
@@ -70,6 +75,11 @@ void main()
 	{
 		fixedTexCoords.z = 1.0 - sizeFactor;
 	}
-	SetFragOutput(0, mix(texture(cubeMapNight, fixedTexCoords), texture(cubeMapDay, fixedTexCoords), R_dayNightMixFactor));
+	vec4 skyboxColor = mix(texture(cubeMapNight, fixedTexCoords), texture(cubeMapDay, fixedTexCoords), R_dayNightMixFactor);
+	
+	// The factor is in range [0; 1] where 0 means that the point is below the LOWER_LIMIT and 1 that it is above the UPPER_LIMIT.
+	// We can use the texture coordinate to determine the height of the current fragment because the texture coordinates are the same as the fragment position.
+	float factor = clamp((texCoord0.y - LOWER_LIMIT) / (UPPER_LIMIT - LOWER_LIMIT), 0.0, 1.0);
+	SetFragOutput(0, mix(vec4(R_ambientFogColor, 1.0), skyboxColor, factor));
 }
 #endif

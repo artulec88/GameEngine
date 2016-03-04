@@ -890,7 +890,7 @@ const Shader* Renderer::GetAmbientShader() const
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
 		CHECK_CONDITION_EXIT(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		STOP_PROFILING;
-		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second;
+		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second; // TODO: add logging. refactor
 	}
 	else if (m_ambientLightEnabled)
 	{
@@ -1288,7 +1288,7 @@ void Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fogColor", TW_TYPE_COLOR3F, &m_fogColor, " label='Color' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "fogStart", TW_TYPE_REAL, &m_fogStart, " label='Start' group='Fog' step=0.5 min=0.5");
 	TwAddVarRW(m_propertiesBar, "fogEnd", TW_TYPE_REAL, &m_fogEnd, " label='End' group='Fog' step=0.5 min=1.0");
-	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, &m_fogDensityFactor, " label='Density factor' group='Fog' step=0.0001 min=0.0001 max=2.0 ");
+	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, &m_fogDensityFactor, " label='Density factor' group='Fog' step=0.0002 min=0.0002 max=2.0 ");
 	TwAddVarRW(m_propertiesBar, "fogGradient", TW_TYPE_REAL, &m_fogGradient, " label='Gradient' group='Fog' step=0.1 min=0.1 max=20.0 ");
 	TwAddVarRW(m_propertiesBar, "fogFallOffType", fogFallOffType, &m_fogFallOffType, " label='Fall-off type' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "fogCalculationType", fogCalculationType, &m_fogCalculationType, " label='Calculation type' group='Fog' ");

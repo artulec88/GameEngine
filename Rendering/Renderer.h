@@ -108,8 +108,8 @@ public:
 	{
 		if (m_fogEnabled)
 		{
-			Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
-			glClearColor(fogColor.GetX(), fogColor.GetY(), fogColor.GetZ(), REAL_ONE);
+			//Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
+			glClearColor(m_fogColor.GetX(), m_fogColor.GetY(), m_fogColor.GetZ(), REAL_ONE);
 		}
 		else
 		{
