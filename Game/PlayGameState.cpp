@@ -137,6 +137,8 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 
 void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
+	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
+	// in this function is not good. This should be done in the Update function (or maybe not?).
 	START_PROFILING;
 	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG("PLAY game state rendering");
@@ -159,6 +161,8 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
 	RenderWaterNodes(renderer);
+
+	RenderBillboardNodes(renderer);
 
 	RenderSkybox(renderer);
 
@@ -389,6 +393,17 @@ void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//	}
 	//}
 	m_gameManager->GetWaterNode()->Render(renderer->GetWaterShader(), renderer);
+	STOP_PROFILING;
+}
+
+void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	DEBUG_LOG("Rendering billboards started");
+	for (std::vector<Engine::GameNode*>::const_iterator billboardNodeItr = m_gameManager->GetBillboardNodes().begin(); billboardNodeItr != m_gameManager->GetBillboardNodes().end(); ++billboardNodeItr)
+	{
+		(*billboardNodeItr)->Render(renderer->GetBillboardShader(), renderer);
+	}
 	STOP_PROFILING;
 }
 

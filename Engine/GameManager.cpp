@@ -174,7 +174,9 @@ void Engine::GameManager::AddWaterNode(GameNode* waterNode)
 
 void Engine::GameManager::AddBillboardNode(GameNode* billboardNode)
 {
-	CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
+	//CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
+	// TODO: Check conditions
+	m_billboardNodes.push_back(billboardNode);
 }
 
 void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)

@@ -244,6 +244,10 @@ public:
 	{
 		return (m_waterLightReflectionEnabled) ? m_waterShader : m_waterNoDirectionalLightShader;
 	}
+	RENDERING_API const Shader* GetBillboardShader() const
+	{
+		return m_billboardShader;
+	}
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
@@ -466,7 +470,6 @@ private:
 	Shader* m_waterNoDirectionalLightShader;
 
 	Shader* m_billboardShader;
-	//std::vector<GameNode*> m_billboardNodes;
 
 	MappedValues m_mappedValues;
 

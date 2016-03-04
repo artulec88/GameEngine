@@ -17,6 +17,8 @@
 #include "Math\Transform.h"
 #include "Math\Math.h"
 
+#include <vector>
+
 namespace Engine
 {
 
@@ -51,6 +53,7 @@ public:
 	ENGINE_API inline GameNode* GetWaterNode() { return m_waterNode; }
 	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
+	ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardNodes; }
 
 	ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 	ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
@@ -91,6 +94,7 @@ protected:
 	GameNode* m_terrainNode;
 	GameNode* m_skyboxNode;
 	GameNode* m_waterNode;
+	std::vector<GameNode*> m_billboardNodes;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 

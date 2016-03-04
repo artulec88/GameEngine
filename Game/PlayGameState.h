@@ -76,6 +76,7 @@ private:
 	void RenderWaterTextures(Rendering::Renderer* renderer) const;
 	void RenderWaterReflectionTexture(Rendering::Renderer* renderer) const;
 	void RenderWaterRefractionTexture(Rendering::Renderer* renderer) const;
+	void RenderBillboardNodes(Rendering::Renderer* renderer) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
