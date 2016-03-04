@@ -466,6 +466,30 @@ void Renderer::BindWaterRefractionTexture()
 	m_waterRefractionTexture->BindAsRenderTarget();
 }
 
+void Renderer::InitWaterNodesRendering()
+{
+	m_mappedValues.SetTexture("waterReflectionTexture", m_waterReflectionTexture);
+	m_mappedValues.SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
+	m_mappedValues.SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
+	m_mappedValues.SetTexture("waterDUDVMap", m_waterDUDVTexture);
+	m_mappedValues.SetTexture("waterNormalMap", m_waterNormalMap);
+	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
+	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
+	if (m_waterMoveFactor > REAL_ONE)
+	{
+		m_waterMoveFactor -= REAL_ONE;
+		CHECK_CONDITION_ALWAYS(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+	}
+	m_mappedValues.SetReal("waterMoveFactor", m_waterMoveFactor);
+	m_mappedValues.SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
+	m_mappedValues.SetReal("farPlane", 1000.0f /* TODO: This value should be always equal to the far plane of the current camera, but it is not easy for us to get this value */);
+	m_mappedValues.SetReal("waterWaveStrength", m_waterWaveStrength);
+	m_mappedValues.SetReal("waterShineDamper", m_waterShineDamper);
+	m_mappedValues.SetReal("waterReflectivity", m_waterReflectivity);
+	m_mappedValues.SetReal("waterFresnelEffectFactor", m_waterFresnelEffectFactor);
+	m_mappedValues.SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
+}
+
 void Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;

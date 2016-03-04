@@ -64,6 +64,7 @@ private:
 	void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
 	void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
 	void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
+	void RenderWaterNodes(Rendering::Renderer* renderer) const;
 	void RenderSkybox(Rendering::Renderer* renderer) const;
 	
 	/// <summary>

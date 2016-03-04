@@ -158,6 +158,8 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	//RenderSceneWithPointLights(renderer); // Point light rendering
 	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
+	RenderWaterNodes(renderer);
+
 	RenderSkybox(renderer);
 
 	renderer->FinalizeRenderScene();
@@ -365,6 +367,28 @@ void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) 
 	
 	//BindAsRenderTarget();
 	
+	STOP_PROFILING;
+}
+
+void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	renderer->InitWaterNodesRendering();
+
+	// TODO: In the future there might be more than one water node.
+	//for (std::vector<GameNode*>::const_iterator waterNodeItr = m_waterNodes.begin(); waterNodeItr != m_waterNodes.end(); ++waterNodeItr)
+	//{
+	//	if (m_waterLightReflectionEnabled)
+	//	{
+	//		(*waterNodeItr)->Render(m_waterShader, this);
+	//	}
+	//	else
+	//	{
+	//		(*waterNodeItr)->Render(m_waterNoDirectionalLightShader, this);
+	//	}
+	//}
+	m_gameManager->GetWaterNode()->Render(renderer->GetWaterShader(), renderer);
 	STOP_PROFILING;
 }
 

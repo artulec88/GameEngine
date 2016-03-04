@@ -63,6 +63,7 @@ public:
 	RENDERING_API void BindDisplayTexture();
 	RENDERING_API void BindWaterReflectionTexture();
 	RENDERING_API void BindWaterRefractionTexture();
+	RENDERING_API void InitWaterNodesRendering();
 	//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 	RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
 	RENDERING_API void FinalizeRenderScene();
@@ -238,6 +239,10 @@ public:
 	RENDERING_API const Shader* GetSkyboxShader() const
 	{
 		return m_skyboxShader; // TODO: In some cases we should return m_skyboxProceduralShader
+	}
+	RENDERING_API const Shader* GetWaterShader() const
+	{
+		return (m_waterLightReflectionEnabled) ? m_waterShader : m_waterNoDirectionalLightShader;
 	}
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
