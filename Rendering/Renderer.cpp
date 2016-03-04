@@ -78,8 +78,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
-	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
-	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN), // TODO: This variable should be dependant of the clock speed in CoreEngine.
 	m_skyboxShader(NULL),
 	m_skyboxProceduralShader(NULL),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),

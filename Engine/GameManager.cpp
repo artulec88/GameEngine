@@ -14,6 +14,7 @@
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
 #include "Utility\ILogger.h"
+#include "Utility\IConfig.h"
 #include "Utility\Time.h"
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -52,7 +53,9 @@ Engine::GameManager::GameManager() :
 	m_skyboxNode(NULL),
 	m_waterNode(NULL),
 	m_gameStateManager(NULL),
-	m_isGameLoaded(false)
+	m_isGameLoaded(false),
+	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
+	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN)
 {
 	INFO_LOG("Game manager construction started");
 	//rootGameNode = new GameNode();

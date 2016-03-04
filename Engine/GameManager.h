@@ -93,6 +93,9 @@ protected:
 	GameNode* m_waterNode;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
+
+	Math::Angle m_skyboxAngle;
+	const Math::Angle m_skyboxAngleStep;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

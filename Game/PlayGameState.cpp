@@ -158,6 +158,8 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	//RenderSceneWithPointLights(renderer); // Point light rendering
 	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
+	RenderSkybox(renderer);
+
 	renderer->FinalizeRenderScene();
 
 	STOP_PROFILING;
@@ -200,6 +202,7 @@ void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) co
 
 void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
 {
+	START_PROFILING;
 	for (size_t i = 0; i < renderer->GetDirectionalAndSpotLightsCount(); ++i)
 	{
 		const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(i);
@@ -223,6 +226,39 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 		m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
 		renderer->FinalizeLightRendering();
 	}
+	STOP_PROFILING;
+}
+
+void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	DEBUG_LOG("Skybox rendering started");
+
+	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
+	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCameraTransform().GetTransformedPos());
+	//skyboxNode->GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), skyboxNode->GetTransfom));
+	//m_skyboxAngle += m_skyboxAngleStep;
+	//if (m_fogEnabled)
+	//{
+	//	STOP_PROFILING;
+	//	return;
+	//}
+	
+	//glDisable(GL_DEPTH_TEST);
+	renderer->SetCullFaceFront();
+	/**
+	 * By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
+	 * However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
+	 * To make it part of the scene we change the depth function to "less than or equal".
+	 */
+	renderer->SetDepthFuncLessOrEqual();
+	skyboxNode->Render(renderer->GetSkyboxShader(), renderer);
+	renderer->SetDepthFuncDefault();
+	renderer->SetCullFaceDefault();
+	//glEnable(GL_DEPTH_TEST);
+	//Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
+
+	STOP_PROFILING;
 }
 
 void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const

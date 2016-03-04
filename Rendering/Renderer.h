@@ -134,6 +134,19 @@ public:
 	{
 		enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 	}
+	RENDERING_API inline void SetCullFaceFront() { glCullFace(GL_FRONT); }
+	RENDERING_API inline void SetCullFaceBack() { glCullFace(GL_BACK); }
+	RENDERING_API inline void SetCullFaceFrontAndBack() { glCullFace(GL_FRONT_AND_BACK); }
+	RENDERING_API inline void SetCullFaceDefault() { glCullFace(Rendering::glCullFaceMode); }
+	RENDERING_API inline void SetDepthFuncNever() { glDepthFunc(GL_NEVER); }
+	RENDERING_API inline void SetDepthFuncLess() { glDepthFunc(GL_LESS); }
+	RENDERING_API inline void SetDepthFuncEqual() { glDepthFunc(GL_EQUAL); }
+	RENDERING_API inline void SetDepthFuncLessOrEqual() { glDepthFunc(GL_LEQUAL); }
+	RENDERING_API inline void SetDepthFuncGreater() { glDepthFunc(GL_GREATER); }
+	RENDERING_API inline void SetDepthFuncNotEqual() { glDepthFunc(GL_NOTEQUAL); }
+	RENDERING_API inline void SetDepthFuncGreaterOrEqual() { glDepthFunc(GL_GEQUAL); }
+	RENDERING_API inline void SetDepthFuncAlways() { glDepthFunc(GL_ALWAYS); }
+	RENDERING_API inline void SetDepthFuncDefault() { glDepthFunc(Rendering::glDepthTestFunc); }
 
 	inline size_t GetDirectionalAndSpotLightsCount() const
 	{
@@ -221,6 +234,10 @@ public:
 	RENDERING_API const Shader* GetShadowMapShader() const
 	{
 		return m_shadowMapShader;
+	}
+	RENDERING_API const Shader* GetSkyboxShader() const
+	{
+		return m_skyboxShader; // TODO: In some cases we should return m_skyboxProceduralShader
 	}
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
@@ -384,8 +401,6 @@ private:
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMin;
 	CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMul;
 
-	Math::Angle m_skyboxAngle;
-	const Math::Angle m_skyboxAngleStep;
 	//GameNode* m_skyboxNode;
 	Shader* m_skyboxShader;
 	Shader* m_skyboxProceduralShader;

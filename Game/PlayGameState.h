@@ -64,6 +64,7 @@ private:
 	void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
 	void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
 	void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
+	void RenderSkybox(Rendering::Renderer* renderer) const;
 	
 	/// <summary>
 	/// Water textures (reflection, refraction) rendering pass.
@@ -81,6 +82,7 @@ private:
 	//Rendering::GameNode& m_rootGameNode;
 	bool m_isMouseLocked;
 	Engine::GameManager* m_gameManager;
+
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif
