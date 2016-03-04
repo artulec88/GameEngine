@@ -236,6 +236,7 @@ void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 
 	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
 	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCameraTransform().GetTransformedPos());
+	// TODO: Rotating the skybox
 	//skyboxNode->GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), skyboxNode->GetTransfom));
 	//m_skyboxAngle += m_skyboxAngleStep;
 	//if (m_fogEnabled)
@@ -291,7 +292,7 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 
 	renderer->SetDepthTest(false);
-	//RenderSkybox();
+	RenderSkybox(renderer);
 	RenderSceneWithAmbientLight(renderer);
 
 	//RenderSceneWithPointLights(renderer);
@@ -327,6 +328,44 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 
 void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
+	START_PROFILING;
+	CHECK_CONDITION_RETURN_VOID(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	
+	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
+	renderer->BindWaterRefractionTexture();
+	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
+	
+	//glDisable(GL_DEPTH_TEST);
+	RenderSkybox(renderer);
+	RenderSceneWithAmbientLight(renderer);
+	
+	//RenderSceneWithPointLights(renderer);
+	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	//{
+	//	m_currentLight = (*lightItr);
+	//	if (!m_currentLight->IsEnabled())
+	//	{
+	//		continue;
+	//	}
+	//
+	//	RenderSceneWithLight(m_currentLight, gameNode, false);
+	//}
+	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
+	
+	//glEnable(GL_DEPTH_TEST);
+	
+	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
+	//{
+	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+	//}
+	//else
+	//{
+	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+	//}
+	
+	//BindAsRenderTarget();
+	
+	STOP_PROFILING;
 }
 
 void PlayGameState::Update(Math::Real elapsedTime)

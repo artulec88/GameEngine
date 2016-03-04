@@ -1480,11 +1480,16 @@ void Renderer::RenderDebugNodes()
 		m_debugShader->SetUniformi("guiTexture", 0);
 		m_debugQuad->Draw();
 	}
-	Math::Matrix4D transformationMatrix(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
+	Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	//m_shadowMaps[9]->Bind();
 	m_waterReflectionTexture->Bind();
-	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix);
+	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
 	m_debugShader->SetUniformi("guiTexture", 0);
+	m_debugQuad->Draw();
+
+	Math::Matrix4D transformationMatrix2(Math::Vector2D(0.74f, -0.24f), Math::Vector2D(0.25f, 0.25f));
+	m_waterRefractionTexture->Bind();
+	m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
 	m_debugQuad->Draw();
 
 	glDisable(GL_BLEND);
