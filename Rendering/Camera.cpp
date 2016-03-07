@@ -44,6 +44,25 @@ CameraBase::~CameraBase(void)
 {
 }
 
+Math::Matrix4D CameraBase::GetViewMatrix() const
+{
+	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
+	/* ==================== SOLUTION #1 begin ==================== */
+	// return GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
+	/* ==================== SOLUTION #1 end ==================== */
+
+	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negated());
+	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
+	/* ==================== SOLUTION #2 begin ==================== */
+	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
+	/* ==================== SOLUTION #2 end ==================== */
+	/* ==================== SOLUTION #3 begin ==================== */
+	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
+	/* ==================== SOLUTION #3 end ==================== */
+
+	return cameraRotation * cameraTranslation; // FIXME: Check matrix multiplication
+}
+
 Math::Matrix4D CameraBase::GetViewProjection() const
 {
 	// This function is performed quiet often. Maybe we could, instead of multiplying three matrices (projection, rotation, translation),
@@ -55,8 +74,7 @@ Math::Matrix4D CameraBase::GetViewProjection() const
 	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Math::Vector3D cameraPos = GetTransform().GetTransformedPos();
-	Math::Matrix4D cameraTranslation(cameraPos.Negated());
+	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negated());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
 	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());

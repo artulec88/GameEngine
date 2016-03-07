@@ -49,7 +49,9 @@ namespace Rendering
 		void Activate() { m_isActive = true; }
 		void Deactivate() { m_isActive = false; }
 		inline bool IsActive() const { return m_isActive; }
+		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projection; }
 		inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
+		RENDERING_API Math::Matrix4D GetViewMatrix() const;
 		Math::Matrix4D GetViewProjection() const;
 		virtual Math::Transform& GetTransform() = 0;
 		virtual const Math::Transform& GetTransform() const = 0;

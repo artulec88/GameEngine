@@ -1,6 +1,7 @@
 #include "MenuGameState.h"
 #include "QuitCommand.h"
 #include "StartGameCommand.h"
+#include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
 #include "Rendering\Shader.h"
@@ -141,7 +142,8 @@ void MenuGameState::MouseButtonEvent(int button, int action, int mods)
 
 void MenuGameState::MousePosEvent(double xPos, double yPos)
 {
-	//m_mousePicker.CalculateCurrentRay(xPos, yPos);
+	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+	m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 }
 
 void MenuGameState::ScrollEvent(double xOffset, double yOffset)

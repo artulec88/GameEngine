@@ -159,17 +159,18 @@ void TestGameManager::Load()
 		AddToSceneRoot(treeNode);
 	}
 
-	//GameNode* monkeyNode1 = new GameNode();
-	//monkeyNode1->AddComponent(new MeshRenderer(
-	//	new Mesh("monkey4.obj"),
-	//	new Material(new Texture("chessboard3.jpg", GL_TEXTURE_2D, GL_LINEAR_MIPMAP_LINEAR), 1.0f, 8.0f)));
+	Engine::GameNode* monkeyNode1 = new Engine::GameNode();
+	monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
+		new Rendering::Mesh("monkey3.obj"),
+		new Rendering::Material(new Rendering::Texture("chessboard3.jpg"))));
+	//monkeyNode1->AddComponent(new Engine::LookAtComponent());
+	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
+	monkeyNode1->GetTransform().SetPos(-3.0f, 0.75f, 4.0f);
+	monkeyNode1->GetTransform().SetScale(0.1f);
+	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
+	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
-	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	//monkeyNode1->GetTransform().SetPos(-5.0f, 3.75f, 4.0f);
-	////monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	////INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
-	////monkeyNode1->AddComponent(new LookAtComponent());
-	//AddToSceneRoot(monkeyNode1);
+	AddToSceneRoot(monkeyNode1);
 
 	//GameNode* monkeyNode2 = new GameNode();
 	//monkeyNode2->AddComponent(new MeshRenderer(

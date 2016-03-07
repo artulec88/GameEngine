@@ -15,7 +15,7 @@ Engine::MousePicker::~MousePicker()
 
 void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Math::Matrix4D& projectionMatrix, const Math::Matrix4D& viewMatrix)
 {
-	WARNING_LOG("This function has not been tested yet. Use it with caution.");
+	//WARNING_LOG("This function has not been tested yet. Use it with caution.");
 
 	// Transforming into 3D normalised device space
 	Math::Real normalisedDeviceSpaceX = (2.0f * xPos / CoreEngine::GetCoreEngine()->GetWindowWidth()) - 1.0f;
@@ -38,5 +38,5 @@ void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Ma
 	// Transforming into 4D world coordinates
 	Math::Vector3D worldSpaceRay((viewMatrix.Inversion() * eyeSpaceRay).GetXYZ());
 	worldSpaceRay.Normalize();
-	DEBUG_LOG("World space ray = %s", worldSpaceRay.ToString().c_str());
+	CRITICAL_LOG("World space ray = %s", worldSpaceRay.ToString().c_str());
 }

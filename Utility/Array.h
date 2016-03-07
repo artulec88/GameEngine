@@ -6,7 +6,8 @@
 namespace Utility { namespace Container {
 
 /// <summary>
-/// The array template class encapsulates dynamically resizable, contiguous storage of objects. The template parameter class need only implement the default constructor, the copy constructor, and the assignment operator.
+/// The array template class encapsulates dynamically resizable, contiguous storage of objects.
+/// The template parameter class need only implement the default constructor, the copy constructor, and the assignment operator.
 /// </summary>
 template <class T>
 class Array

@@ -165,13 +165,13 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	glGenVertexArrays(1, &m_vao);
 
 #ifndef ANT_TWEAK_BAR_ENABLED
-	SetVector3D("ambientFogColor", m_fogColor);
-	SetReal("ambientFogStart", m_fogStart);
-	SetReal("ambientFogEnd", m_fogEnd);
-	SetReal("ambientFogDensityFactor", m_fogDensityFactor);
-	SetReal("ambientFogGradient", m_fogGradient);
-	SetVector3D("ambientIntensity", m_ambientLight);
-	SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
+	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
+	m_mappedValues.SetReal("ambientFogStart", m_fogStart);
+	m_mappedValues.SetReal("ambientFogEnd", m_fogEnd);
+	m_mappedValues.SetReal("ambientFogDensityFactor", m_fogDensityFactor);
+	m_mappedValues.SetReal("ambientFogGradient", m_fogGradient);
+	m_mappedValues.SetVector3D("ambientIntensity", m_ambientLight);
+	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
 
 	//SetTexture("shadowMap",
