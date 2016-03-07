@@ -15,8 +15,8 @@ using namespace Game;
 PlayGameState::PlayGameState(Engine::GameManager* gameManager) :
 	GameState(),
 	m_isMouseLocked(false),
-	m_gameManager(gameManager)//,
-	//m_mousePicker()
+	m_gameManager(gameManager),
+	m_mousePicker()
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
@@ -90,8 +90,8 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	START_PROFILING;
 	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
 
-	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
-	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
+	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+	m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 
 	m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
 	//if (!m_isMouseLocked)

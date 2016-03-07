@@ -371,7 +371,6 @@ void CoreEngine::Start()
 	NOTICE_LOG("The core engine started");
 
 	Run();
-	Stop();
 	STOP_PROFILING;
 }
 

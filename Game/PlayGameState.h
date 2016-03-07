@@ -9,7 +9,7 @@
 #include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
-//#include "Engine\MousePicker.h"
+#include "Engine\MousePicker.h"
 
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
@@ -85,7 +85,7 @@ private:
 	//Rendering::GameNode& m_rootGameNode;
 	bool m_isMouseLocked;
 	Engine::GameManager* m_gameManager;
-	//Engine::MousePicker m_mousePicker;
+	Engine::MousePicker m_mousePicker;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

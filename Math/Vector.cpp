@@ -4,6 +4,7 @@
 #include "FloatingPoint.h"
 #include <math.h>
 #include <sstream>
+#include <iomanip>
 
 using namespace Math;
 
@@ -186,7 +187,7 @@ Vector3D::~Vector3D()
 std::string Vector3D::ToString() const
 {
 	std::stringstream ss("");
-	ss << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << ")";
+	ss << std::setprecision(4) << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << ")";
 	return ss.str();
 }
 
