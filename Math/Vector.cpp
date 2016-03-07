@@ -129,6 +129,16 @@ Vector2D Vector2D::Perp(bool normalizingEnabled /* = false */) const
 	return Vector2D(m_y, -m_x);
 }
 
+Real Vector2D::Max() const
+{
+	return (m_x > m_y) ? m_x : m_y;
+}
+
+Vector2D Vector2D::Max(const Vector2D& v) const
+{
+	return Vector2D((m_x > v.GetX()) ? m_x : v.GetX(), m_y > v.GetY() ? m_y : v.GetY());
+}
+
 Vector2D Vector2D::Rotate(const Angle& angle)
 {
 	const Real cosine = angle.Cos();

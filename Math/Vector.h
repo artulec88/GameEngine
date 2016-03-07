@@ -98,6 +98,8 @@ public:
 		return (m_x * v.GetX() + m_y * v.GetY());
 	}
 
+	Real Max() const;
+	Vector2D Max(const Vector2D& v) const;
 	Vector2D Rotate(const Angle& angle);
 
 	Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!

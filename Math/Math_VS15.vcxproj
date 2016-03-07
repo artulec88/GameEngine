@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="Angle.h" />
+    <ClInclude Include="AABR.h" />
     <ClInclude Include="BSPTree.h" />
     <ClInclude Include="FloatingPoint.h" />
     <ClInclude Include="Interpolation.h" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Angle.cpp" />
+    <ClCompile Include="AABR.cpp" />
     <ClCompile Include="BSPTree.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>

@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "GameCommand.h"
 #include "Math\Vector.h"
+#include "Math\AABR.h"
 #include <string>
 #include <vector>
 
@@ -41,25 +42,31 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ENGINE_API MenuEntry();
-	ENGINE_API MenuEntry(const GameCommand* gameCommand, const std::string& text);
+	ENGINE_API MenuEntry(const GameCommand* gameCommand, const std::string& text, const Math::Vector2D& screenPosition, Math::Real fontSize = 16.0f);
 	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	std::string GetText() const { return m_text; }
+	const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
+	const Math::AABR& GetAABR() const { return m_aabr; }
+	Math::Real GetFontSize() const { return m_fontSize; }
 	void SetParent(MenuEntry* parent) { m_parentMenuEntry = parent; }
 	ENGINE_API int GetChildrenCount() const;
-	ENGINE_API std::string GetChildrenText(int index) const;
+	ENGINE_API std::string GetChildText(int index) const;
+	ENGINE_API const Math::Vector2D& GetChildScreenPosition(int index) const;
+	ENGINE_API Math::Real GetChildFontSize(int index) const;
+	ENGINE_API bool DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
-	void SelectChildMenuEntry(int index);
+	ENGINE_API void SelectChildMenuEntry(int index);
 
 	ENGINE_API void ExecuteCommand() const { m_gameCommand->Execute(); }
 	ENGINE_API void AddChildren(MenuEntry* child);
 	ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	ENGINE_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
+	ENGINE_API bool DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const;
 	ENGINE_API bool DoesSelectedChildHaveChildren() const;
 	ENGINE_API void SelectPrevChildMenuEntry();
 	ENGINE_API void SelectNextChildMenuEntry();
@@ -71,6 +78,10 @@ public:
 private:
 	const GameCommand* m_gameCommand;
 	std::string m_text;
+	Math::Vector2D m_screenPosition;
+	/// <summary> Menu entry bounding rectangle. </summary>
+	Math::AABR m_aabr;
+	Math::Real m_fontSize;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;
 	int m_selectedMenuEntryIndex;

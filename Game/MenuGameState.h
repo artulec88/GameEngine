@@ -62,10 +62,14 @@ public:
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void ScrollEvent(double xOffset, double yOffset);
+
+private:
+	void ChooseCurrentMenuEntry();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;
 	const Engine::GameCommand& m_quitCommand;
 

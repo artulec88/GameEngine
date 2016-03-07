@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "MenuEntry.h"
+#include "Math\IntersectInfo.h"
 #include "Utility\IConfig.h"
 #include <sstream>
 
@@ -17,23 +18,18 @@
 	return Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR;
 }
 
-Engine::MenuEntry::MenuEntry(void) :
-	m_gameCommand(new Engine::EmptyGameCommand()),
-	m_text(),
-	m_parentMenuEntry(NULL),
-	m_childrenMenuEntries(),
-	m_selectedMenuEntryIndex(0)
-{
-}
-
-Engine::MenuEntry::MenuEntry(const Engine::GameCommand* gameCommand, const std::string& text) :
+Engine::MenuEntry::MenuEntry(const Engine::GameCommand* gameCommand, const std::string& text, const Math::Vector2D& screenPosition, Math::Real fontSize /* = 16.0f */) :
 	m_gameCommand(gameCommand),
 	m_text(text),
+	m_screenPosition(screenPosition),
+	m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
+	m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
 {
 	DELOCUST_LOG("MenuEntry \"%s\" constructor", text.c_str());
+	CRITICAL_LOG("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
 }
 
 
@@ -59,11 +55,37 @@ int Engine::MenuEntry::GetChildrenCount() const
 	return static_cast<int>(m_childrenMenuEntries.size());
 }
 
-std::string Engine::MenuEntry::GetChildrenText(int index) const
+std::string Engine::MenuEntry::GetChildText(int index) const
 {
 	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
 		"Cannot find child menu entry text. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
 	return m_childrenMenuEntries[index]->GetText();
+}
+
+const Math::Vector2D& Engine::MenuEntry::GetChildScreenPosition(int index) const
+{
+	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
+		"Cannot find child menu entry screen position. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
+	return m_childrenMenuEntries[index]->GetScreenPosition();
+}
+
+Math::Real Engine::MenuEntry::GetChildFontSize(int index) const
+{
+	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
+		"Cannot find child menu entry font size. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
+	return m_childrenMenuEntries[index]->GetFontSize();
+}
+
+bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const
+{
+	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
+		"Cannot find child menu entry AABR. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
+	return m_childrenMenuEntries[index]->GetAABR().DoesContainPoint(xPos, yPos).IsIntersecting();
+}
+
+bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
+{
+	return m_aabr.DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 
 void Engine::MenuEntry::SelectPrevChildMenuEntry()

@@ -21,6 +21,8 @@ using namespace Rendering;
 
 MenuGameState::MenuGameState(void) :
 	GameState(),
+	m_mousePosX(REAL_ZERO),
+	m_mousePosY(REAL_ZERO),
 	m_mousePicker(),
 	m_quitCommand(QuitCommand(Engine::GameManager::GetGameManager())),
 	m_currentMenuEntry(NULL)
@@ -31,16 +33,20 @@ MenuGameState::MenuGameState(void) :
 	//EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
 	/**
 	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
-	 * the new operations must not be called.
-	 */ 
-	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu");
-	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options");
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound"));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics"));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls"));
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Engine::GameManager::GetGameManager()), "Start"));
+	 * the new operations must not be called. I think the CoreEngine itself can contain two main menu entries one for the MenuGameState and one for the PlayMenuGameState.
+	 * Each one would be a root in the hierarchy of menu entries. The constructor of MenuGameState and PlayMenuGameState would have one parameter pointing to the instances contained in the CoreEngine class.
+	 * This way we wouldn't have to create menus each time we go to menuGameState or PlayMenuGameState.
+	 *
+	 * TODO 2: Another thing to do is calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
+	 */
+	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu", Math::Vector2D(0.0f, 0.0f));
+	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options", Math::Vector2D(450.0f, 450.0f));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound", Math::Vector2D(450.0f, 350.0f)));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics", Math::Vector2D(450.0f, 450.0f)));
+	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls", Math::Vector2D(450.0f, 550.0f)));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Engine::GameManager::GetGameManager()), "Start", Math::Vector2D(450.0f, 350.0f)));
 	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit"));
+	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit", Math::Vector2D(450.0f, 550.0f)));
 }
 
 MenuGameState::~MenuGameState(void)
@@ -102,15 +108,8 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	case GLFW_KEY_ENTER:
 	{
-		Engine::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
-		if (selectedChild->HasChildren())
-		{
-			m_currentMenuEntry = selectedChild;
-		}
-		else
-		{
-			selectedChild->ExecuteCommand();
-		}
+		// TODO: The same is handled in the MouseButtonEvent function, so the two should be moved into one function.
+		ChooseCurrentMenuEntry();
 		break;
 	}
 	default:
@@ -120,6 +119,19 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	STOP_PROFILING;
 }
 
+void MenuGameState::ChooseCurrentMenuEntry()
+{
+	Engine::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
+	if (selectedChild->HasChildren())
+	{
+		m_currentMenuEntry = selectedChild;
+	}
+	else
+	{
+		selectedChild->ExecuteCommand();
+	}
+}
+
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
@@ -127,10 +139,11 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		renderer->RenderString(Rendering::Text::CENTER, 350 - 100 * i, m_currentMenuEntry->GetChildrenText(i),
+		renderer->RenderString(m_currentMenuEntry->GetChildScreenPosition(i).GetX(), m_currentMenuEntry->GetChildScreenPosition(i).GetY(), m_currentMenuEntry->GetChildText(i),
+			m_currentMenuEntry->GetChildFontSize(i),
 			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
 	STOP_PROFILING;
@@ -138,12 +151,37 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 void MenuGameState::MouseButtonEvent(int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		if (m_currentMenuEntry->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
+		{
+			ChooseCurrentMenuEntry();
+		}
+		else
+		{
+			CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+		}
+	}
 }
 
 void MenuGameState::MousePosEvent(double xPos, double yPos)
 {
-	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
-	m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
+	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
+
+	m_mousePosX = static_cast<Math::Real>(xPos);
+	m_mousePosY = static_cast<Math::Real>(yPos);
+
+	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	//CRITICAL_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	{
+		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
+		{
+			//CRITICAL_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
+			m_currentMenuEntry->SelectChildMenuEntry(i);
+		}
+	}
 }
 
 void MenuGameState::ScrollEvent(double xOffset, double yOffset)

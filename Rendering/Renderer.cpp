@@ -686,19 +686,21 @@ void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fon
 	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
 
 	std::vector<Math::Vector2D> vertices;
-	std::vector<Math::Vector2D> uvs;
+	std::vector<Math::Vector2D> textureCoords;
 	Math::Real yReal = static_cast<Math::Real>(y);
-	const int screenHalfWidth = m_windowWidth / 2;
-	const int screenHalfHeight = m_windowHeight / 2;
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{
 		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
 		// below from the screen space coordinates ([0..screenWidth][0..screenHeight]) to clip space coordinates ([-1..1][-1..1]).
 		// The conversion is done by first subtracting the half of width / height (for X and Y components respectively) and then dividing the result by the same value.
-		Math::Vector2D upLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
-		Math::Vector2D upRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, ((yReal + fontSize) - screenHalfHeight) / screenHalfHeight);
-		Math::Vector2D downRightVec(((x + i * fontSize + fontSize) - screenHalfWidth) / screenHalfWidth, (static_cast<Math::Real>(yReal) - screenHalfHeight) / screenHalfHeight);
-		Math::Vector2D downLeftVec(((x + i * fontSize) - screenHalfWidth) / screenHalfWidth, (yReal - screenHalfHeight) / screenHalfHeight);
+		const Math::Real leftX = ((2.0f * (x + (i * fontSize) - m_windowWidth)) / m_windowWidth) + 1.0f;
+		const Math::Real rightX = ((2.0f * (x + (i * fontSize) + fontSize - m_windowWidth)) / m_windowWidth) + 1.0f;
+		const Math::Real bottomY = (2.0f * (m_windowHeight - (yReal + fontSize)) / m_windowHeight) - 1.0f;
+		const Math::Real topY = (2.0f * (m_windowHeight - yReal) / m_windowHeight) - 1.0f;
+		const Math::Vector2D upLeftVec(leftX, topY);
+		const Math::Vector2D upRightVec(rightX, topY);
+		const Math::Vector2D downRightVec(rightX, bottomY);
+		const Math::Vector2D downLeftVec(leftX, bottomY);
 		//CRITICAL_LOG("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);
@@ -718,17 +720,17 @@ void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fon
 		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
 		Math::Vector2D downRightUV(xUV + oneOverSixteen, REAL_ONE - yUV);
 		Math::Vector2D downLeftUV(xUV, REAL_ONE - yUV);
-		uvs.push_back(upLeftUV);
-		uvs.push_back(downLeftUV);
-		uvs.push_back(upRightUV);
-		uvs.push_back(downRightUV);
-		uvs.push_back(upRightUV);
-		uvs.push_back(downLeftUV);
+		textureCoords.push_back(upLeftUV);
+		textureCoords.push_back(downLeftUV);
+		textureCoords.push_back(upRightUV);
+		textureCoords.push_back(downRightUV);
+		textureCoords.push_back(upRightUV);
+		textureCoords.push_back(downLeftUV);
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Math::Vector2D), &vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
-	glBufferData(GL_ARRAY_BUFFER, uvs.size() * sizeof(Math::Vector2D), &uvs[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(Math::Vector2D), &textureCoords[0], GL_STATIC_DRAW);
 
 	m_textShader->Bind();
 
