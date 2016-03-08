@@ -54,7 +54,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
-		if (action == GLFW_REPEAT)
+		if (action == GLFW_PRESS)
 		{
 			Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
 			gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetMainMenuGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
@@ -77,7 +77,9 @@ void IntroGameState::Input(Math::Real elapsedTime)
 void IntroGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CRITICAL_LOG("INTRO game state rendering");
-	renderer->RenderString(450, 450, "Intro (click ESC x2)");
+	DEBUG_LOG("INTRO game state rendering");
+	renderer->BindAsRenderTarget();
+	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
+	renderer->RenderString(450, 450, "Intro (click ESC)");
 	STOP_PROFILING;
 }

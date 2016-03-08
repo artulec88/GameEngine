@@ -27,7 +27,6 @@ PlayMenuGameState::PlayMenuGameState(Engine::MenuEntry* playMainMenuRootEntry) :
 
 PlayMenuGameState::~PlayMenuGameState(void)
 {
-	SAFE_DELETE(m_currentMenuEntry);
 }
 
 void PlayMenuGameState::Entered()

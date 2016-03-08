@@ -31,7 +31,6 @@ MenuGameState::MenuGameState(Engine::MenuEntry* mainMenuRootEntry) :
 
 MenuGameState::~MenuGameState(void)
 {
-	SAFE_DELETE(m_currentMenuEntry);
 }
 
 void MenuGameState::Entered()

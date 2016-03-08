@@ -38,7 +38,7 @@ Engine::MenuEntry::~MenuEntry(void)
 	DELOCUST_LOG("MenuEntry \"%s\" destructor", m_text.c_str());
 	for (std::vector<MenuEntry*>::iterator childrenMenuEntryItr = m_childrenMenuEntries.begin(); childrenMenuEntryItr != m_childrenMenuEntries.end(); ++childrenMenuEntryItr)
 	{
-		delete (*childrenMenuEntryItr);
+		SAFE_DELETE(*childrenMenuEntryItr);
 	}
 	m_childrenMenuEntries.clear();
 	// TODO: Removing m_gameCommand

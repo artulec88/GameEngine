@@ -32,6 +32,7 @@ TestGameManager::TestGameManager() :
 	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
+	m_introGameState(NULL),
 	m_menuGameState(NULL),
 	m_playGameState(NULL),
 	m_playMainMenuGameState(NULL),
@@ -85,8 +86,8 @@ TestGameManager::TestGameManager() :
 	m_playMainMenuRootEntry.AddChildren(playMenuOptionsMenuEntry);
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 750.0f), m_quitGameCommand));
 
-	//m_gameStateManager->Push(new IntroGameState());
-	m_gameStateManager->Push(GetMainMenuGameState());
+	m_gameStateManager->Push(GetIntroGameState());
+	//m_gameStateManager->Push(GetMainMenuGameState());
 	srand((unsigned int)time(NULL));
 }
 
@@ -95,6 +96,10 @@ TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
+	SAFE_DELETE(m_introGameState); // TODO: Removing the game states here will lead to errors because GameStateManager's destructor does the same thing
+	SAFE_DELETE(m_menuGameState);
+	SAFE_DELETE(m_playGameState);
+	SAFE_DELETE(m_playMainMenuGameState);
 }
 
 Math::Real TestGameManager::GetLoadingProgress() const
@@ -105,6 +110,15 @@ Math::Real TestGameManager::GetLoadingProgress() const
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
+}
+
+Engine::GameState* TestGameManager::GetIntroGameState()
+{
+	if (m_introGameState == NULL)
+	{
+		m_introGameState = new IntroGameState();
+	}
+	return m_introGameState;
 }
 
 Engine::GameState* TestGameManager::GetMainMenuGameState()

@@ -39,6 +39,7 @@ public:
 
 	virtual Math::Real GetLoadingProgress() const;
 
+	virtual Engine::GameState* GetIntroGameState();
 	virtual Engine::GameState* GetMainMenuGameState();
 	virtual Engine::GameState* GetPlayGameState();
 	virtual Engine::GameState* GetPlayMainMenuGameState();
@@ -66,6 +67,7 @@ protected:
 	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	int m_resourcesLoaded;
 	
+	Engine::GameState* m_introGameState;
 	Engine::GameState* m_menuGameState;
 	Engine::GameState* m_playGameState;
 	Engine::GameState* m_playMainMenuGameState;

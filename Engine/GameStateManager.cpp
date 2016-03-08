@@ -81,10 +81,11 @@ Engine::DefaultGameStateManager::DefaultGameStateManager() :
 
 Engine::DefaultGameStateManager::~DefaultGameStateManager()
 {
-	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
-	{
-		SAFE_DELETE(activeStateItr->first);
-	}
+	//for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
+	//{
+	//	SAFE_DELETE(activeStateItr->first);
+	//}
+
 	//std::vector<GameStateModalityTypePair> m_activeStates;
 	//std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
 	//std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;

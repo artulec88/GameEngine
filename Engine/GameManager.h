@@ -66,6 +66,7 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 
+	ENGINE_API virtual GameState* GetIntroGameState() = 0;
 	ENGINE_API virtual GameState* GetMainMenuGameState() = 0;
 	ENGINE_API virtual GameState* GetPlayGameState() = 0;
 	ENGINE_API virtual GameState* GetPlayMainMenuGameState() = 0;

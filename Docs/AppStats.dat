@@ -1,7 +1,7 @@
 "Class name"	"Total time"	"Total time excluding nested calls"
-MenuGameState	223627.9	223627.9
-TestGameManager	565.3	565.3
-Renderer	33850576.0	33850576.0
-CoreEngine	72807736.0	36402812.0
-Angle	1.9	1.9
-Matrix4D	7323.9	6555.7
+IntroGameState	80663.9	80663.9
+TestGameManager	566.8	566.8
+Renderer	297047.4	297047.4
+CoreEngine	4077648.5	2037753.3
+Angle	0.8	0.8
+Matrix4D	2624.8	2371.6
