@@ -11,6 +11,7 @@ namespace Math
 
 	/// <summary>
 	/// The mathematical representation of the axis-aligned bounding rectangle for 2D objects.
+	/// The AABR's are very similar to the AABB's. They are simply the 2D representation of the AABB.
 	/// An axis-aligned bounding rectangle (AABR) is a 2D rectangle whose four faces are aligned with a particular
 	/// coordinate frame's mutually orthogonal axes. As such, an AABR can be represented by a four values
 	/// containing the minimum and maximum coordinates along each of the 2 principal axes,
@@ -50,6 +51,9 @@ namespace Math
 		MATH_API IntersectInfo DoesIntersectAABR(const AABR& aabr) const;
 		MATH_API inline const Vector2D& GetBottomLeftPos() const { return m_bottomLeftPos; }
 		MATH_API inline const Vector2D& GetTopRightPos() const { return m_topRightPos; }
+	private:
+		Math::Real CalcDistanceToNearestFaceX(Math::Real x) const;
+		Math::Real CalcDistanceToNearestFaceY(Math::Real y) const;
 	/* ==================== Non-static, non-virtual member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

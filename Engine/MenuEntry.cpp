@@ -85,6 +85,10 @@ bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math
 
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
+	//Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
+	//CRITICAL_LOG("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
+	//return intersectInfo.IsIntersecting();
+
 	return m_aabr.DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 

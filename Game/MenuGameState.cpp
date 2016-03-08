@@ -153,13 +153,13 @@ void MenuGameState::MouseButtonEvent(int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 	{
-		if (m_currentMenuEntry->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
+		if (m_currentMenuEntry->GetSelectedChild()->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
 		{
 			ChooseCurrentMenuEntry();
 		}
 		else
 		{
-			CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+			//CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 		}
 	}
 }
