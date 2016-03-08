@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameManager.h"
 #include "GameStateManager.h"
-#include "QuitGameCommand.h"
 
 
 #include "Rendering\Renderer.h"
@@ -184,8 +183,6 @@ private:
 	const Math::Real m_frameTime;
 	GameManager& m_game;
 	Rendering::Renderer* m_renderer;
-
-	QuitGameCommand m_quitGameCommand;
 
 	const Math::Angle LATITUDE;
 	const Math::Angle LONGITUDE;

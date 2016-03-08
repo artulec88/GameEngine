@@ -4,7 +4,6 @@
 #include "Rendering\Shader.h"
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
-#include "QuitCommand.h"
 #include "ResumeGameCommand.h"
 
 // TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
@@ -15,28 +14,13 @@
 
 using namespace Game;
 
-PlayMenuGameState::PlayMenuGameState(void) :
+PlayMenuGameState::PlayMenuGameState(Engine::MenuEntry* playMainMenuRootEntry) :
 	Engine::GameState(),
-	m_quitCommand(QuitCommand(Engine::GameManager::GetGameManager())),
-	m_currentMenuEntry(NULL)
+	m_currentMenuEntry(playMainMenuRootEntry)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
 #endif
 {
-	//Rendering::EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
-
-	/**
-	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
-	 * the new operations must not be called.
-	 */ 
-	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu", Math::Vector2D(0.0f, 0.0f));
-	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options", Math::Vector2D(450.0f, 450.0f));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound", Math::Vector2D(450.0f, 550.0f)));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics", Math::Vector2D(450.0f, 450.0f)));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls", Math::Vector2D(450.0f, 350.0f)));
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new ResumeGameCommand(*Engine::GameManager::GetGameManager()), "Resume", Math::Vector2D(450.0f, 550.0f)));
-	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit", Math::Vector2D(450.0f, 350.0f)));
 }
 
 PlayMenuGameState::~PlayMenuGameState(void)

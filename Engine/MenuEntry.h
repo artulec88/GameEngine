@@ -42,7 +42,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ENGINE_API MenuEntry(const GameCommand* gameCommand, const std::string& text, const Math::Vector2D& screenPosition, Math::Real fontSize = 16.0f);
+	ENGINE_API MenuEntry(const std::string& text, const Math::Vector2D& screenPosition, const GameCommand& gameCommand, Math::Real fontSize = 32.0f);
 	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -62,7 +62,7 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	ENGINE_API void SelectChildMenuEntry(int index);
 
-	ENGINE_API void ExecuteCommand() const { m_gameCommand->Execute(); }
+	ENGINE_API void ExecuteCommand() const { m_gameCommand.Execute(); }
 	ENGINE_API void AddChildren(MenuEntry* child);
 	ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	ENGINE_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
@@ -70,15 +70,15 @@ public:
 	ENGINE_API bool DoesSelectedChildHaveChildren() const;
 	ENGINE_API void SelectPrevChildMenuEntry();
 	ENGINE_API void SelectNextChildMenuEntry();
-	ENGINE_API MenuEntry* GetParent();
-	ENGINE_API MenuEntry* GetSelectedChild();
+	ENGINE_API MenuEntry* GetParent() const;
+	ENGINE_API MenuEntry* GetSelectedChild() const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const GameCommand* m_gameCommand;
 	std::string m_text;
 	Math::Vector2D m_screenPosition;
+	const GameCommand& m_gameCommand;
 	/// <summary> Menu entry bounding rectangle. </summary>
 	Math::AABR m_aabr;
 	Math::Real m_fontSize;

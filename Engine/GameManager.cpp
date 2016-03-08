@@ -55,7 +55,10 @@ Engine::GameManager::GameManager() :
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
-	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN)
+	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
+	m_emptyGameCommand(),
+	m_mainMenuRootEntry("Main menu", Math::Vector2D(0.0f, 0.0f), m_emptyGameCommand),
+	m_playMainMenuRootEntry("Play main menu", Math::Vector2D(0.0f, 0.0f), m_emptyGameCommand)
 {
 	INFO_LOG("Game manager construction started");
 	//rootGameNode = new GameNode();

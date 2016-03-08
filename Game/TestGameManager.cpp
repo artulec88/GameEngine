@@ -1,5 +1,6 @@
 #include "TestGameManager.h"
 #include "MenuGameState.h"
+#include "StartGameCommand.h"
 //#include "PlayGameState.h"
 
 #include "Engine\CoreEngine.h"
@@ -30,6 +31,10 @@ TestGameManager::TestGameManager() :
 	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
+	m_quitGameCommand(),
+	m_startGameCommand(),
+	m_saveGameCommand(),
+	m_loadGameCommand(),
 	m_terrainMesh(NULL),
 	m_timeToUpdateCameraHeight(REAL_ZERO),
 	m_boxNode(NULL),
@@ -54,8 +59,28 @@ TestGameManager::TestGameManager() :
 {
 	DEBUG_LOG("TestGame is being constructed");
 
-	m_gameStateManager->Push(new MenuGameState());
-	//m_gameStateManager->Push(new InGameState());
+	/**
+	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
+	*/
+	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::MenuEntry("Options", Math::Vector2D(450.0f, 450.0f), m_emptyGameCommand /* TODO: Create GoTo "Options" game command */);
+	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Sound", Math::Vector2D(450.0f, 350.0f), m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */));
+	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Graphics", Math::Vector2D(450.0f, 450.0f), m_emptyGameCommand /* TODO: Create GoTo "Graphics" game command */));
+	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Controls", Math::Vector2D(450.0f, 550.0f), m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */));
+	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Start", Math::Vector2D(450.0f, 350.0f), m_startGameCommand));
+	m_mainMenuRootEntry.AddChildren(mainMenuOptionsMenuEntry);
+	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 550.0f), m_quitGameCommand));
+
+	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::MenuEntry("Options", Math::Vector2D(450.0f, 650.0f), m_emptyGameCommand /* TODO: Create GoTo "Options" game command */);
+	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Sound", Math::Vector2D(450.0f, 350.0f), m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */));
+	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Graphics", Math::Vector2D(450.0f, 450.0f), m_emptyGameCommand /* TODO: Create GoTo "Graphics" game command */));
+	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Controls", Math::Vector2D(450.0f, 550.0f), m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */));
+	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Resume", Math::Vector2D(450.0f, 350.0f), m_startGameCommand));
+	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Save", Math::Vector2D(450.0f, 450.0f), m_saveGameCommand));
+	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Load", Math::Vector2D(450.0f, 550.0f), m_loadGameCommand));
+	m_playMainMenuRootEntry.AddChildren(playMenuOptionsMenuEntry);
+	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 750.0f), m_quitGameCommand));
+
+	m_gameStateManager->Push(new MenuGameState(&m_mainMenuRootEntry));
 	srand((unsigned int)time(NULL));
 }
 

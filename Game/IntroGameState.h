@@ -20,7 +20,7 @@ class IntroGameState : public Engine::GameState, public virtual Engine::Input::I
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	IntroGameState();
+	IntroGameState(Engine::GameState& mainMenuGameState);
 	virtual ~IntroGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -54,6 +54,7 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	//Rendering::GameCommand* quitIntroCommand;
+	Engine::GameState& m_mainMenuGameState;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

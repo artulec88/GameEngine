@@ -30,7 +30,7 @@ class MenuGameState : public Engine::GameState, public virtual Engine::Input::II
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MenuGameState();
+	MenuGameState(Engine::MenuEntry* mainMenuRootEntry);
 	virtual ~MenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -71,7 +71,6 @@ private:
 private:
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;
-	const Engine::GameCommand& m_quitCommand;
 
 	Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS

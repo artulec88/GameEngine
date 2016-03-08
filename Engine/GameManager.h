@@ -6,6 +6,8 @@
 #include "IUpdateable.h"
 #include "IRenderable.h"
 #include "GameNode.h"
+#include "MenuEntry.h"
+#include "GameCommand.h"
 
 #include "Rendering\Mesh.h"
 #include "Rendering\Shader.h"
@@ -40,8 +42,8 @@ public:
 	ENGINE_API GameManager();
 	ENGINE_API virtual ~GameManager(void);
 private:
-	GameManager(GameManager& gameManager) {}
-	void operator=(GameManager& gameManager) {}
+	GameManager(GameManager& gameManager);
+	void operator=(GameManager& gameManager);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -76,7 +78,7 @@ public:
 	/// The transition itself is performed in the <code>PerformStateTransition</code> method.</summary>
 	/// <see cref="PerformStateTransition">
 	ENGINE_API void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
-	ENGINE_API void PerformStateTransition();
+	void PerformStateTransition();
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
 public:
@@ -100,6 +102,11 @@ protected:
 
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
+
+	EmptyGameCommand m_emptyGameCommand;
+
+	MenuEntry m_mainMenuRootEntry;
+	MenuEntry m_playMainMenuRootEntry;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

@@ -31,6 +31,7 @@ public:
 /// <summary>
 /// A class representing a "Do-nothing" action.
 /// </summary>
+/// TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
 class EmptyGameCommand : public GameCommand
 {
 /* ==================== Constructors and destructors begin ==================== */

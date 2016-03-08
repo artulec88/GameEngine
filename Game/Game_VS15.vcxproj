@@ -143,31 +143,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DebugGameManager.cpp" />
     <ClCompile Include="GoToMenuEntryCommand.cpp" />
     <ClCompile Include="IntroGameState.cpp" />
+    <ClCompile Include="LoadGameCommand.cpp" />
     <ClCompile Include="LoadGameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuGameState.cpp" />
     <ClCompile Include="PlayGameState.cpp" />
     <ClCompile Include="PlayMenuGameState.cpp" />
-    <ClCompile Include="QuitCommand.cpp" />
+    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="ResumeGameCommand.cpp" />
+    <ClCompile Include="SaveGameCommand.cpp" />
     <ClCompile Include="StartGameCommand.cpp" />
     <ClCompile Include="TestGameManager.cpp" />
     <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DebugGameManager.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="GoToMenuEntryCommand.h" />
     <ClInclude Include="IntroGameState.h" />
+    <ClInclude Include="LoadGameCommand.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />
-    <ClInclude Include="QuitCommand.h" />
+    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="ResumeGameCommand.h" />
+    <ClInclude Include="SaveGameCommand.h" />
     <ClInclude Include="StartGameCommand.h" />
     <ClInclude Include="TestGameManager.h" />
     <ClInclude Include="tinythread.h" />

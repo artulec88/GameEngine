@@ -18,10 +18,10 @@
 	return Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR;
 }
 
-Engine::MenuEntry::MenuEntry(const Engine::GameCommand* gameCommand, const std::string& text, const Math::Vector2D& screenPosition, Math::Real fontSize /* = 16.0f */) :
-	m_gameCommand(gameCommand),
+Engine::MenuEntry::MenuEntry(const std::string& text, const Math::Vector2D& screenPosition, const Engine::GameCommand& gameCommand, Math::Real fontSize /* = 32.0f */) :
 	m_text(text),
 	m_screenPosition(screenPosition),
+	m_gameCommand(gameCommand),
 	m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
 	m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
@@ -117,12 +117,12 @@ void Engine::MenuEntry::SelectChildMenuEntry(int index)
 	m_selectedMenuEntryIndex = index % GetChildrenCount();
 }
 
-Engine::MenuEntry* Engine::MenuEntry::GetParent()
+Engine::MenuEntry* Engine::MenuEntry::GetParent() const
 {
 	return m_parentMenuEntry;
 }
 
-Engine::MenuEntry* Engine::MenuEntry::GetSelectedChild()
+Engine::MenuEntry* Engine::MenuEntry::GetSelectedChild() const
 {
 	CHECK_CONDITION_RETURN(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), NULL, Utility::Error,
 		"Cannot return currently selected child menu entry. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());

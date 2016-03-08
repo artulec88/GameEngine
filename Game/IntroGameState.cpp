@@ -1,7 +1,6 @@
 #include "IntroGameState.h"
 #include "Engine\GameManager.h"
 #include "Utility\ILogger.h"
-#include "MenuGameState.h"
 
 // TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
 // It would be much better if instead we could use our own input keys and map them together in the Engine library.
@@ -12,8 +11,9 @@
 using namespace Game;
 using namespace Rendering;
 
-IntroGameState::IntroGameState(void) :
-	GameState()
+IntroGameState::IntroGameState(Engine::GameState& mainMenuGameState) :
+	GameState(),
+	m_mainMenuGameState(mainMenuGameState)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
 #endif
@@ -56,7 +56,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_REPEAT)
 		{
-			Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new MenuGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+			Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(&m_mainMenuGameState, Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 			break;
 		}
 	default:

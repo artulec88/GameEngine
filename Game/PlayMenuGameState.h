@@ -29,7 +29,7 @@ class PlayMenuGameState : public Engine::GameState, public virtual Engine::Input
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayMenuGameState();
+	PlayMenuGameState(Engine::MenuEntry* playMainMenuRootEntry);
 	virtual ~PlayMenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -61,7 +61,6 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	const Engine::GameCommand& m_quitCommand;
 	Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;

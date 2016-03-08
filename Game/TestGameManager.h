@@ -1,13 +1,18 @@
 #ifndef __GAME_TEST_GAME_MANAGER_H__
 #define __GAME_TEST_GAME_MANAGER_H__
 
+#include "QuitGameCommand.h"
+#include "StartGameCommand.h"
+#include "SaveGameCommand.h"
+#include "LoadGameCommand.h"
+#include "GameStats.h"
+
 #include <Engine\GameManager.h>
 #include <Engine\GameNode.h>
 #include <Rendering\DirectionalLight.h>
 #include <Rendering\PointLight.h>
 #include <Rendering\SpotLight.h>
 
-#include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
 #endif
@@ -56,6 +61,11 @@ protected:
 	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	int m_resourcesLoaded;
 	
+	QuitGameCommand m_quitGameCommand;
+	StartGameCommand m_startGameCommand;
+	SaveGameCommand m_saveGameCommand;
+	LoadGameCommand m_loadGameCommand;
+
 	Rendering::TerrainMesh* m_terrainMesh;
 	Math::Real m_timeToUpdateCameraHeight;
 	

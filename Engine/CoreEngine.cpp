@@ -123,7 +123,6 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_frameTime(1.0f / maxFrameRate),
 	m_game(game),
 	m_renderer(NULL),
-	//m_quitGameCommand(m_game),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
 	TROPIC_OF_CANCER_SINUS(0.39794863131f),

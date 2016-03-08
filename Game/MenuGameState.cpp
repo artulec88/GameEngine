@@ -1,5 +1,4 @@
 #include "MenuGameState.h"
-#include "QuitCommand.h"
 #include "StartGameCommand.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
@@ -8,7 +7,6 @@
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 #include "LoadGameState.h"
-#include "QuitCommand.h"
 
 // TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
 // It would be much better if instead we could use our own input keys and map them together in the Engine library.
@@ -19,34 +17,16 @@
 using namespace Game;
 using namespace Rendering;
 
-MenuGameState::MenuGameState(void) :
+MenuGameState::MenuGameState(Engine::MenuEntry* mainMenuRootEntry) :
 	GameState(),
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_mousePicker(),
-	m_quitCommand(QuitCommand(Engine::GameManager::GetGameManager())),
-	m_currentMenuEntry(NULL)
+	m_currentMenuEntry(mainMenuRootEntry)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
 {
-	//EmptyGameCommand emptyGameCommand; // TODO: Use Flyweight pattern because EmptyGameCommand is a stateless chunk of pure behavior. There is no need to store more than one instance of this class.
-	/**
-	 * TODO: Make sure the new operator is performed only once. When switching state back to MenuGameState
-	 * the new operations must not be called. I think the CoreEngine itself can contain two main menu entries one for the MenuGameState and one for the PlayMenuGameState.
-	 * Each one would be a root in the hierarchy of menu entries. The constructor of MenuGameState and PlayMenuGameState would have one parameter pointing to the instances contained in the CoreEngine class.
-	 * This way we wouldn't have to create menus each time we go to menuGameState or PlayMenuGameState.
-	 *
-	 * TODO 2: Another thing to do is calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
-	 */
-	m_currentMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Main menu", Math::Vector2D(0.0f, 0.0f));
-	Engine::MenuEntry* optionsMenuEntry = new Engine::MenuEntry(new Engine::EmptyGameCommand(), "Options", Math::Vector2D(450.0f, 450.0f));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Sound" settings */, "Sound", Math::Vector2D(450.0f, 350.0f)));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Graphics" settings */, "Graphics", Math::Vector2D(450.0f, 450.0f)));
-	optionsMenuEntry->AddChildren(new Engine::MenuEntry(new Engine::EmptyGameCommand() /* TODO: Go to "Controls" settings */, "Controls", Math::Vector2D(450.0f, 550.0f)));
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(new StartGameCommand(*Engine::GameManager::GetGameManager()), "Start", Math::Vector2D(450.0f, 350.0f)));
-	m_currentMenuEntry->AddChildren(optionsMenuEntry);
-	m_currentMenuEntry->AddChildren(new Engine::MenuEntry(&m_quitCommand, "Quit", Math::Vector2D(450.0f, 550.0f)));
 }
 
 MenuGameState::~MenuGameState(void)

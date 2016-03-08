@@ -174,7 +174,6 @@
     <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
-    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="tinythread.h" />
@@ -211,7 +210,6 @@
     <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
-    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="SpotLightComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -25,19 +25,22 @@
     <ClCompile Include="tinythread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QuitCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GoToMenuEntryCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="StartGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ResumeGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DebugGameManager.cpp">
+    <ClCompile Include="StartGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuitGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveGameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,19 +69,22 @@
     <ClInclude Include="tinythread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QuitCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GoToMenuEntryCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="StartGameCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResumeGameCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugGameManager.h">
+    <ClInclude Include="StartGameCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuitGameCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveGameCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadGameCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
