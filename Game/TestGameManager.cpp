@@ -1,7 +1,8 @@
 #include "TestGameManager.h"
 #include "MenuGameState.h"
-#include "StartGameCommand.h"
-//#include "PlayGameState.h"
+#include "IntroGameState.h"
+#include "PlayGameState.h"
+#include "PlayMenuGameState.h"
 
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
@@ -31,8 +32,12 @@ TestGameManager::TestGameManager() :
 	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
+	m_menuGameState(NULL),
+	m_playGameState(NULL),
+	m_playMainMenuGameState(NULL),
 	m_quitGameCommand(),
 	m_startGameCommand(),
+	m_resumeGameCommand(),
 	m_saveGameCommand(),
 	m_loadGameCommand(),
 	m_terrainMesh(NULL),
@@ -74,13 +79,14 @@ TestGameManager::TestGameManager() :
 	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Sound", Math::Vector2D(450.0f, 350.0f), m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */));
 	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Graphics", Math::Vector2D(450.0f, 450.0f), m_emptyGameCommand /* TODO: Create GoTo "Graphics" game command */));
 	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Controls", Math::Vector2D(450.0f, 550.0f), m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */));
-	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Resume", Math::Vector2D(450.0f, 350.0f), m_startGameCommand));
+	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Resume", Math::Vector2D(450.0f, 350.0f), m_resumeGameCommand));
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Save", Math::Vector2D(450.0f, 450.0f), m_saveGameCommand));
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Load", Math::Vector2D(450.0f, 550.0f), m_loadGameCommand));
 	m_playMainMenuRootEntry.AddChildren(playMenuOptionsMenuEntry);
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 750.0f), m_quitGameCommand));
 
-	m_gameStateManager->Push(new MenuGameState(&m_mainMenuRootEntry));
+	//m_gameStateManager->Push(new IntroGameState());
+	m_gameStateManager->Push(GetMainMenuGameState());
 	srand((unsigned int)time(NULL));
 }
 
@@ -99,6 +105,33 @@ Math::Real TestGameManager::GetLoadingProgress() const
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
+}
+
+Engine::GameState* TestGameManager::GetMainMenuGameState()
+{
+	if (m_menuGameState == NULL)
+	{
+		m_menuGameState = new MenuGameState(&m_mainMenuRootEntry);
+	}
+	return m_menuGameState;
+}
+
+Engine::GameState* TestGameManager::GetPlayGameState()
+{
+	if (m_playGameState == NULL)
+	{
+		m_playGameState = new PlayGameState(this);
+	}
+	return m_playGameState;
+}
+
+Engine::GameState* TestGameManager::GetPlayMainMenuGameState()
+{
+	if (m_playMainMenuGameState == NULL)
+	{
+		m_playMainMenuGameState = new PlayMenuGameState(&m_playMainMenuRootEntry);
+	}
+	return m_playMainMenuGameState;
 }
 
 void TestGameManager::Load()

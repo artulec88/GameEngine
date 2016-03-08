@@ -4,6 +4,7 @@
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
+#include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Math\Math.h"
 #include "Engine\GameNode.h"

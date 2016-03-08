@@ -14,7 +14,7 @@ namespace Game
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ResumeGameCommand(Engine::GameManager& gameManager);
+		ResumeGameCommand();
 		virtual ~ResumeGameCommand();
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -24,8 +24,6 @@ namespace Game
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
-	private:
-		Engine::GameManager& m_gameManager;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ResumeGameCommand */
 

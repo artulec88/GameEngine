@@ -25,9 +25,6 @@
     <ClCompile Include="tinythread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GoToMenuEntryCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ResumeGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -67,9 +64,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tinythread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GoToMenuEntryCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResumeGameCommand.h">

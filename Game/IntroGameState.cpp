@@ -1,6 +1,7 @@
 #include "IntroGameState.h"
 #include "Engine\GameManager.h"
 #include "Utility\ILogger.h"
+#include "MenuGameState.h"
 
 // TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
 // It would be much better if instead we could use our own input keys and map them together in the Engine library.
@@ -11,9 +12,8 @@
 using namespace Game;
 using namespace Rendering;
 
-IntroGameState::IntroGameState(Engine::GameState& mainMenuGameState) :
-	GameState(),
-	m_mainMenuGameState(mainMenuGameState)
+IntroGameState::IntroGameState() :
+	Engine::GameState()
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
 #endif
@@ -56,7 +56,8 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 	case GLFW_KEY_ESCAPE:
 		if (action == GLFW_REPEAT)
 		{
-			Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(&m_mainMenuGameState, Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+			Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
+			gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetMainMenuGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 			break;
 		}
 	default:
@@ -76,6 +77,7 @@ void IntroGameState::Input(Math::Real elapsedTime)
 void IntroGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	DEBUG_LOG("INTRO game state rendering");
+	CRITICAL_LOG("INTRO game state rendering");
+	renderer->RenderString(450, 450, "Intro (click ESC x2)");
 	STOP_PROFILING;
 }

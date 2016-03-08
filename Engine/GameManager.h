@@ -66,6 +66,10 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 
+	ENGINE_API virtual GameState* GetMainMenuGameState() = 0;
+	ENGINE_API virtual GameState* GetPlayGameState() = 0;
+	ENGINE_API virtual GameState* GetPlayMainMenuGameState() = 0;
+
 	// TODO: Think about removing the window parameter from the event handling functions below.
 	ENGINE_API virtual void WindowResizeEvent(int width, int height);
 	ENGINE_API virtual void CloseWindowEvent();

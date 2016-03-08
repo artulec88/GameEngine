@@ -18,7 +18,7 @@ using namespace Game;
 using namespace Rendering;
 
 MenuGameState::MenuGameState(Engine::MenuEntry* mainMenuRootEntry) :
-	GameState(),
+	Engine::GameState(),
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_mousePicker(),
@@ -88,7 +88,6 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	case GLFW_KEY_ENTER:
 	{
-		// TODO: The same is handled in the MouseButtonEvent function, so the two should be moved into one function.
 		ChooseCurrentMenuEntry();
 		break;
 	}

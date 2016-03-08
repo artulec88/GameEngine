@@ -4,6 +4,7 @@
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
+#include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Math\Math.h"
 #include "Engine\GameNode.h"
@@ -22,7 +23,7 @@ namespace Game
 
 class Rendering::Shader;
 
-class PlayMenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable
+class PlayMenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable, public virtual Engine::Input::IInputableMouse
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
@@ -57,10 +58,18 @@ public:
 
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+
+	virtual void MouseButtonEvent(int button, int action, int mods);
+	virtual void MousePosEvent(double xPos, double yPos);
+	virtual void ScrollEvent(double xOffset, double yOffset);
+
+private:
+	void ChooseCurrentMenuEntry();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;

@@ -73,7 +73,7 @@ void LoadGameState::Update(Math::Real elapsedTime)
 	{
 		NOTICE_LOG("The game is loaded");
 		m_loadingThread->join();
-		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new PlayGameState(gameManager), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 	}
 	STOP_PROFILING;
 }

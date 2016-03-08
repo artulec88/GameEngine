@@ -24,7 +24,7 @@ void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Ma
 	Math::Real normalisedDeviceSpaceY = 1.0f - (2.0f * yPos / CoreEngine::GetCoreEngine()->GetWindowHeight());
 	Math::Real normalisedDeviceSpaceZ = 1.0f; // we don't actually need Z component yet, but whatever...
 	Math::Vector3D normalisedDeviceSpaceRay(normalisedDeviceSpaceX, normalisedDeviceSpaceY, normalisedDeviceSpaceZ);
-	CRITICAL_LOG("Normalised device space mouse position for viewport coordinates (%.2f, %.2f) = %s", xPos, yPos, normalisedDeviceSpaceRay.ToString().c_str());
+	DEBUG_LOG("Normalised device space mouse position for viewport coordinates (%.2f, %.2f) = %s", xPos, yPos, normalisedDeviceSpaceRay.ToString().c_str());
 
 	// Transforming into homogeneous clip coordinates
 	Math::Vector4D homogeneousClipCoordinatesRay(normalisedDeviceSpaceX, normalisedDeviceSpaceY, -1.0f, 1.0f);
@@ -40,5 +40,5 @@ void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Ma
 	// Transforming into 4D world coordinates
 	Math::Vector3D worldSpaceRay((viewMatrix.Inversion() * eyeSpaceRay).GetXYZ());
 	worldSpaceRay.Normalize();
-	CRITICAL_LOG("World space ray for position (%.2f, %.2f) = %s", xPos, yPos, worldSpaceRay.ToString().c_str());
+	DEBUG_LOG("World space ray for position (%.2f, %.2f) = %s", xPos, yPos, worldSpaceRay.ToString().c_str());
 }

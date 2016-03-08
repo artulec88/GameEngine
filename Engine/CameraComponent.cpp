@@ -91,10 +91,6 @@ void Engine::CameraMoveComponent::KeyEvent(int key, int scancode, int action, in
 	switch (key)
 	{
 	case GLFW_KEY_ESCAPE:
-		//if (action == GLFW_PRESS)
-		//{
-		//	GameManager::GetGameManager()->SetTransition(new GameStateTransitioning::GameStateTransition(new PlayMenuGameState(), GameStateTransitioning::PUSH, GameStateModality::EXCLUSIVE));
-		//}
 		break;
 	case GLFW_KEY_C:
 		//DEBUG_LOG("transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());

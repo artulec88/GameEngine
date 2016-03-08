@@ -16,6 +16,8 @@ using namespace Game;
 
 PlayMenuGameState::PlayMenuGameState(Engine::MenuEntry* playMainMenuRootEntry) :
 	Engine::GameState(),
+	m_mousePosX(REAL_ZERO),
+	m_mousePosY(REAL_ZERO),
 	m_currentMenuEntry(playMainMenuRootEntry)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
@@ -54,6 +56,7 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	// It would be much better if instead we could use our own input keys and map them together in the Engine library.
 	// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
 	// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
+	START_PROFILING;
 	if (action != GLFW_PRESS)
 	{
 		return;
@@ -67,46 +70,95 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		}
 		else
 		{
-				
+			Engine::GameManager::GetGameManager()->PopState();
 		}
 		//INFO_LOG("To exit the game click \"QUIT\"");
 		break;
 	case GLFW_KEY_UP:
-		//INFO_LOG("Selected menu entry changed from %d to %d",
-		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
-		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
+		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
 		m_currentMenuEntry->SelectPrevChildMenuEntry();
 		break;
 	case GLFW_KEY_DOWN:
-		//INFO_LOG("Selected menu entry changed from %d to %d",
-		//	m_currentMenuEntry->GetSelectedMenuEntryIndex(),
-		//	m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
+		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
 		m_currentMenuEntry->SelectNextChildMenuEntry();
 		break;
 	case GLFW_KEY_ENTER:
-		if (m_currentMenuEntry->GetSelectedChild()->HasChildren())
-		{
-			m_currentMenuEntry = m_currentMenuEntry->GetSelectedChild();
-		}
-		else
-		{
-			m_currentMenuEntry->GetSelectedChild()->ExecuteCommand();
-		}
+	{
+		ChooseCurrentMenuEntry();
 		break;
+	}
 	default:
-		DEBUG_LOG("The key %d is not supported by the menu game state", key);
+		DEBUG_LOG("The key %d is not supported by the play menu game state", key);
 		break;
+	}
+	STOP_PROFILING;
+}
+
+void PlayMenuGameState::ChooseCurrentMenuEntry()
+{
+	Engine::MenuEntry* selectedChild = m_currentMenuEntry->GetSelectedChild();
+	if (selectedChild->HasChildren())
+	{
+		m_currentMenuEntry = selectedChild;
+	}
+	else
+	{
+		selectedChild->ExecuteCommand();
 	}
 }
 
 void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
-	DEBUG_LOG("PLAY MAIN MENU game state rendering");
-	int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	START_PROFILING;
+	DELOCUST_LOG("PLAY MAIN MENU game state rendering");
+
+	renderer->BindAsRenderTarget();
+	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
+	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
 		renderer->RenderString(m_currentMenuEntry->GetChildScreenPosition(i).GetX(), m_currentMenuEntry->GetChildScreenPosition(i).GetY(), m_currentMenuEntry->GetChildText(i),
 			m_currentMenuEntry->GetChildFontSize(i),
 			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
+	STOP_PROFILING;
+}
+
+void PlayMenuGameState::MouseButtonEvent(int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+	{
+		if (m_currentMenuEntry->GetSelectedChild()->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
+		{
+			ChooseCurrentMenuEntry();
+		}
+		else
+		{
+			//CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+		}
+	}
+}
+
+void PlayMenuGameState::MousePosEvent(double xPos, double yPos)
+{
+	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
+
+	m_mousePosX = static_cast<Math::Real>(xPos);
+	m_mousePosY = static_cast<Math::Real>(yPos);
+
+	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
+	//CRITICAL_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+	for (int i = 0; i < menuEntryChildrenCount; ++i)
+	{
+		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
+		{
+			//CRITICAL_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
+			m_currentMenuEntry->SelectChildMenuEntry(i);
+		}
+	}
+}
+
+void PlayMenuGameState::ScrollEvent(double xOffset, double yOffset)
+{
 }

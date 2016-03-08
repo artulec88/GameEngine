@@ -3,6 +3,7 @@
 
 #include "QuitGameCommand.h"
 #include "StartGameCommand.h"
+#include "ResumeGameCommand.h"
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
 #include "GameStats.h"
@@ -38,6 +39,10 @@ public:
 
 	virtual Math::Real GetLoadingProgress() const;
 
+	virtual Engine::GameState* GetMainMenuGameState();
+	virtual Engine::GameState* GetPlayGameState();
+	virtual Engine::GameState* GetPlayMainMenuGameState();
+
 	virtual void WindowResizeEvent(int width, int height);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void ScrollEvent(double xOffset, double yOffset);
@@ -61,8 +66,13 @@ protected:
 	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	int m_resourcesLoaded;
 	
+	Engine::GameState* m_menuGameState;
+	Engine::GameState* m_playGameState;
+	Engine::GameState* m_playMainMenuGameState;
+
 	QuitGameCommand m_quitGameCommand;
 	StartGameCommand m_startGameCommand;
+	ResumeGameCommand m_resumeGameCommand;
 	SaveGameCommand m_saveGameCommand;
 	LoadGameCommand m_loadGameCommand;
 
