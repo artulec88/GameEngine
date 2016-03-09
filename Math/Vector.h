@@ -35,7 +35,22 @@ public:
 	MATH_API Real Length() const; // CHECKED!
 	MATH_API Real LengthSquared() const; // CHECKED!
 	
-	void Negate() { m_x = -m_x; m_y = -m_y; }; // creates negation vector
+	/// <summary>
+	/// Creates a negation of the vector and returns it. The current vector stays untouched.
+	/// </summary>
+	Vector2D Negated() const
+	{
+		return Vector2D(-m_x, -m_y);
+	}
+	/// <summary>
+	/// Negates all vector components and returns itself.
+	/// </summary>
+	Vector2D& Negate()
+	{
+		m_x = -m_x;
+		m_y = -m_y;
+		return *this;
+	}
 	
 	Vector2D operator+(const Vector2D& v) const { return Vector2D(m_x + v.GetX(), m_y + v.GetY()); }
 	Vector2D operator-() const { return Vector2D(-m_x, -m_y); }
@@ -67,7 +82,7 @@ public:
 		Real length = Length();
 		return Vector2D(m_x / length, m_y / length);
 	}
-	void Normalize()
+	Vector2D& Normalize()
 	{
 		//Real length = LengthSquared();
 		//if (AlmostEqual(length, REAL_ZERO))
@@ -79,6 +94,7 @@ public:
 		Real length = Length();
 		m_x /= length;
 		m_y /= length;
+		return *this;
 	}
 	MATH_API bool IsNormalized() const;
 
@@ -144,10 +160,23 @@ public:
 	MATH_API Real Length() const; // CHECKED!
 	MATH_API Real LengthSquared() const; // CHECKED!
 	
-	/// <summary> Negates all components in the vector. </summary>
-	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; };
-	/// <summary> Negates all components and returns the reference to the vector. </summary>
-	Vector3D& Negated() { Negate(); return *this; }
+	/// <summary>
+	/// Creates a negation of the vector and returns it. The current vector stays untouched.
+	/// </summary>
+	Vector3D Negated() const
+	{
+		return Vector3D(-m_x, -m_y, -m_z);
+	}
+	/// <summary>
+	/// Negates all vector components and returns itself.
+	/// </summary>
+	Vector3D& Negate()
+	{
+		m_x = -m_x;
+		m_y = -m_y;
+		m_z = -m_z;
+		return *this;
+	}
 	
 	Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); }
 	Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
@@ -184,7 +213,7 @@ public:
 		Real length = Length();
 		return Vector3D(m_x / length, m_y / length, m_z / length);
 	}
-	void Normalize()
+	Vector3D& Normalize()
 	{
 //#ifdef _DEBUG
 //		Real length = LengthSquared();
@@ -195,6 +224,7 @@ public:
 //		}
 //#endif
 		(*this) /= Length();
+		return *this;
 	}
 	MATH_API bool IsNormalized() const;
 
@@ -274,10 +304,24 @@ public:
 	MATH_API Real Length() const;
 	MATH_API Real LengthSquared() const;
 	
-	/// <summary> Negates all components in the vector. </summary>
-	void Negate() { m_x = -m_x; m_y = -m_y; m_z = -m_z; m_w = -m_w; };
-	/// <summary> Negates all components and returns the reference to the vector. </summary>
-	Vector4D& Negated() { Negate(); return *this; }
+	/// <summary>
+	/// Creates a negation of the vector and returns it. The current vector stays untouched.
+	/// </summary>
+	Vector4D Negated() const
+	{
+		return Vector4D(-m_x, -m_y, -m_z, -m_w);
+	}
+	/// <summary>
+	/// Negates all vector components and returns itself.
+	/// </summary>
+	Vector4D& Negate()
+	{
+		m_x = -m_x;
+		m_y = -m_y;
+		m_z = -m_z;
+		m_w = -m_w;
+		return *this;
+	}
 	
 	Vector4D operator+(const Vector4D& v) const { return Vector4D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ(), m_w + v.GetW()); }
 	Vector4D operator-() const { return Vector4D(-m_x, -m_y, -m_z, -m_w); }
@@ -303,7 +347,7 @@ public:
 		copyVec.Normalize();
 		return copyVec;
 	}
-	void Normalize()
+	Vector4D& Normalize()
 	{
 		Real length = LengthSquared();
 //#ifdef _DEBUG
@@ -314,6 +358,7 @@ public:
 //		}
 //#endif
 		(*this) /= static_cast<Real>(sqrt(length));
+		return *this;
 	}
 	MATH_API bool IsNormalized() const;
 	

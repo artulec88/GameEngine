@@ -51,7 +51,7 @@ Math::Matrix4D CameraBase::GetViewMatrix() const
 	// return GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negated());
+	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negate());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
 	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
@@ -74,7 +74,7 @@ Math::Matrix4D CameraBase::GetViewProjection() const
 	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negated());
+	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negate());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
 	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());

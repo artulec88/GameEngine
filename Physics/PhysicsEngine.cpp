@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "PhysicsEngine.h"
+#include "Math\IntersectInfo.h"
 #include "Utility\Utility.h"
 
 Physics::PhysicsEngine::PhysicsEngine() :
@@ -22,10 +23,31 @@ void Physics::PhysicsEngine::AddPhysicsObject(const PhysicsObject& physicsObject
 	m_physicsObjects.push_back(physicsObject);
 }
 
-void Physics::PhysicsEngine::Simulate(Math::Real delta)
+void Physics::PhysicsEngine::Simulate(Math::Real passedTime)
 {
-	for (std::vector<PhysicsObject>::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
+	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
 	{
-		(*physicsObjectItr).Integrate(delta);
+		(*physicsObjectItr).Integrate(passedTime);
+	}
+}
+
+void Physics::PhysicsEngine::HandleCollisions()
+{
+	// TODO: Sounds like a template design pattern (?)
+	// 1. Check which objects collide with each other
+	// 2. For objects that collide perform the collision response.
+
+	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
+	{
+		for (PhysicObjectsContainer::iterator otherPhysicsObjectItr = physicsObjectItr + 1; otherPhysicsObjectItr != m_physicsObjects.end(); ++otherPhysicsObjectItr)
+		{
+			Math::IntersectInfo intersectInfo = physicsObjectItr->Intersect(*otherPhysicsObjectItr);
+			if (intersectInfo.IsIntersecting())
+			{
+				DEBUG_LOG("The objects collided"); // TODO: Better log message
+				physicsObjectItr->GetVelocity().Negate();
+				otherPhysicsObjectItr->GetVelocity().Negate();
+			}
+		}
 	}
 }
