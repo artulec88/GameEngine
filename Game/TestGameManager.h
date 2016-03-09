@@ -3,6 +3,7 @@
 
 #include "QuitGameCommand.h"
 #include "StartGameCommand.h"
+#include "ShowIntroCommand.h"
 #include "ResumeGameCommand.h"
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
@@ -76,6 +77,7 @@ protected:
 
 	QuitGameCommand m_quitGameCommand;
 	StartGameCommand m_startGameCommand;
+	ShowIntroCommand m_showIntroGameCommand;
 	ResumeGameCommand m_resumeGameCommand;
 	SaveGameCommand m_saveGameCommand;
 	LoadGameCommand m_loadGameCommand;

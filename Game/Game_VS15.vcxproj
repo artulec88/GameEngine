@@ -153,6 +153,7 @@
     <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="ResumeGameCommand.cpp" />
     <ClCompile Include="SaveGameCommand.cpp" />
+    <ClCompile Include="ShowIntroCommand.cpp" />
     <ClCompile Include="StartGameCommand.cpp" />
     <ClCompile Include="TestGameManager.cpp" />
     <ClCompile Include="tinythread.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="ResumeGameCommand.h" />
     <ClInclude Include="SaveGameCommand.h" />
+    <ClInclude Include="ShowIntroCommand.h" />
     <ClInclude Include="StartGameCommand.h" />
     <ClInclude Include="TestGameManager.h" />
     <ClInclude Include="tinythread.h" />

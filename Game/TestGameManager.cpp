@@ -40,6 +40,7 @@ TestGameManager::TestGameManager() :
 	m_playMainMenuGameState(NULL),
 	m_quitGameCommand(),
 	m_startGameCommand(),
+	m_showIntroGameCommand(),
 	m_resumeGameCommand(),
 	m_saveGameCommand(),
 	m_loadGameCommand(),
@@ -76,7 +77,8 @@ TestGameManager::TestGameManager() :
 	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Controls", Math::Vector2D(450.0f, 550.0f), m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */));
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Start", Math::Vector2D(450.0f, 350.0f), m_startGameCommand));
 	m_mainMenuRootEntry.AddChildren(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 550.0f), m_quitGameCommand));
+	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Intro", Math::Vector2D(450.0f, 550.0f), m_showIntroGameCommand));
+	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 650.0f), m_quitGameCommand));
 
 	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::MenuEntry("Options", Math::Vector2D(450.0f, 650.0f), m_emptyGameCommand /* TODO: Create GoTo "Options" game command */);
 	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry("Sound", Math::Vector2D(450.0f, 350.0f), m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */));
@@ -88,6 +90,7 @@ TestGameManager::TestGameManager() :
 	m_playMainMenuRootEntry.AddChildren(playMenuOptionsMenuEntry);
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 750.0f), m_quitGameCommand));
 
+	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	m_gameStateManager->Push(GetIntroGameState());
 	//m_gameStateManager->Push(GetMainMenuGameState());
 	srand((unsigned int)time(NULL));
