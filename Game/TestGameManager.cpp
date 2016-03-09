@@ -3,6 +3,7 @@
 #include "IntroGameState.h"
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
+#include "LoadGameState.h"
 
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
@@ -34,6 +35,7 @@ TestGameManager::TestGameManager() :
 	m_resourcesLoaded(0),
 	m_introGameState(NULL),
 	m_menuGameState(NULL),
+	m_loadGameState(NULL),
 	m_playGameState(NULL),
 	m_playMainMenuGameState(NULL),
 	m_quitGameCommand(),
@@ -98,6 +100,7 @@ TestGameManager::~TestGameManager(void)
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
 	SAFE_DELETE(m_introGameState); // TODO: Removing the game states here will lead to errors because GameStateManager's destructor does the same thing
 	SAFE_DELETE(m_menuGameState);
+	SAFE_DELETE(m_loadGameState);
 	SAFE_DELETE(m_playGameState);
 	SAFE_DELETE(m_playMainMenuGameState);
 }
@@ -110,6 +113,15 @@ Math::Real TestGameManager::GetLoadingProgress() const
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
+}
+
+Engine::GameState* TestGameManager::GetLoadGameState()
+{
+	if (m_loadGameState == NULL)
+	{
+		m_loadGameState = new LoadGameState();
+	}
+	return m_loadGameState;
 }
 
 Engine::GameState* TestGameManager::GetIntroGameState()

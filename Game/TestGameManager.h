@@ -41,6 +41,7 @@ public:
 
 	virtual Engine::GameState* GetIntroGameState();
 	virtual Engine::GameState* GetMainMenuGameState();
+	virtual Engine::GameState* GetLoadGameState();
 	virtual Engine::GameState* GetPlayGameState();
 	virtual Engine::GameState* GetPlayMainMenuGameState();
 
@@ -69,6 +70,7 @@ protected:
 	
 	Engine::GameState* m_introGameState;
 	Engine::GameState* m_menuGameState;
+	Engine::GameState* m_loadGameState;
 	Engine::GameState* m_playGameState;
 	Engine::GameState* m_playMainMenuGameState;
 

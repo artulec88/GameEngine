@@ -16,5 +16,6 @@ Game::StartGameCommand::~StartGameCommand()
 void Game::StartGameCommand::Execute(/* Engine::GameManager& gameManager */) const
 {
 	DEBUG_LOG("Start game command started");
-	Engine::GameManager::GetGameManager()->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(new LoadGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
+	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
+	gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetLoadGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 }
