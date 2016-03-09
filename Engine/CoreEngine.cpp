@@ -122,6 +122,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
 	m_game(game),
+	m_physicsEngine(NULL),
 	m_renderer(NULL),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
@@ -217,12 +218,20 @@ CoreEngine::~CoreEngine(void)
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
+	SAFE_DELETE(m_physicsEngine);
 	SAFE_DELETE(m_renderer);
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG("Core engine destruction finished");
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
+}
+
+void CoreEngine::CreatePhysicsEngine()
+{
+	m_physicsEngine = new Physics::PhysicsEngine();
+
+	CHECK_CONDITION_EXIT(m_physicsEngine != NULL, Utility::Critical, "Failed to create a physics engine.");
 }
 
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)

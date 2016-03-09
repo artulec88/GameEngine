@@ -141,8 +141,8 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {
-	NOTICE_LOG("Creating Renderer instance started");
 	START_PROFILING;
+	NOTICE_LOG("Creating Renderer instance started");
 
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
@@ -278,8 +278,8 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_debugShader = new Shader("debug-shader");
 #endif
 
-	STOP_PROFILING;
 	NOTICE_LOG("Creating Renderer instance finished");
+	STOP_PROFILING;
 }
 
 

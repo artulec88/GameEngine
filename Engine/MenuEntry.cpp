@@ -29,7 +29,7 @@ Engine::MenuEntry::MenuEntry(const std::string& text, const Math::Vector2D& scre
 	m_selectedMenuEntryIndex(0)
 {
 	DELOCUST_LOG("MenuEntry \"%s\" constructor", text.c_str());
-	CRITICAL_LOG("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
+	DELOCUST_LOG("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
 }
 
 
@@ -86,7 +86,7 @@ bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
 	//Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
-	//CRITICAL_LOG("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
+	//DEBUG_LOG("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
 	//return intersectInfo.IsIntersecting();
 
 	return m_aabr.DoesContainPoint(xPos, yPos).IsIntersecting();

@@ -6,6 +6,8 @@
 #define PHYSICS_API __declspec(dllimport)
 #endif
 
+#define CALCULATE_PHYSICS_STATS
+
 namespace Physics
 {
 } /* end namespace Physics */

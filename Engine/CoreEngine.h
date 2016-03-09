@@ -5,6 +5,8 @@
 #include "GameManager.h"
 #include "GameStateManager.h"
 
+#include "Physics\PhysicsEngine.h"
+
 #include "Rendering\Renderer.h"
 
 #include "Math\Math.h"
@@ -137,6 +139,7 @@ public:
 
 	const Rendering::CameraBase& GetCurrentCamera() const { return m_renderer->GetCurrentCamera(); }
 private:
+	void CreatePhysicsEngine();
 	void CreateRenderer(int width, int height, const std::string& title);
 	void Run();
 	void PollEvents();
@@ -184,6 +187,7 @@ private:
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
 	GameManager& m_game;
+	Physics::PhysicsEngine* m_physicsEngine;
 	Rendering::Renderer* m_renderer;
 
 	const Math::Angle LATITUDE;
