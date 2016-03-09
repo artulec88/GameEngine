@@ -5,7 +5,6 @@
 #include "GameManager.h"
 #include "GameStateManager.h"
 
-
 #include "Rendering\Renderer.h"
 
 #include "Math\Math.h"
@@ -87,7 +86,6 @@ public:
 	size_t GetCurrentCameraIndex() const;
 	size_t NextCamera() const;
 	size_t PrevCamera() const;
-	Rendering::Renderer* GetRenderer() const { return m_renderer; }
 
 	void WindowResizeEvent(GLFWwindow* window, int width, int height);
 	/// <summary>
@@ -136,6 +134,8 @@ public:
 	void AddWaterNode(GameNode* waterNode);
 	void AddTerrainNode(GameNode* terrainNode);
 	void AddBillboardNode(GameNode* billboardNode);
+
+	const Rendering::CameraBase& GetCurrentCamera() const { return m_renderer->GetCurrentCamera(); }
 private:
 	void CreateRenderer(int width, int height, const std::string& title);
 	void Run();
@@ -169,6 +169,8 @@ private:
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	void InitializeTweakBars();
+public:
+	ENGINE_API void InitializeGameTweakBars();
 #endif
 /* ==================== Non-static member functions end ==================== */
 

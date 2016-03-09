@@ -40,8 +40,7 @@ void PlayGameState::Entered()
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
 	CHECK_CONDITION(m_gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
-	m_gameManager->InitializeTweakBars();
-	Engine::CoreEngine::GetCoreEngine()->GetRenderer()->InitializeTweakBars();
+	Engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
 #endif
 
 #ifdef CALCULATE_STATS
@@ -96,7 +95,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	START_PROFILING;
 	DEBUG_LOG("Cursor position = (%.2f, %.2f)", xPos, yPos);
 
-	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
 	m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 
 	m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);

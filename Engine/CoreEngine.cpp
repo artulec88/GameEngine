@@ -899,6 +899,12 @@ void CoreEngine::InitializeTweakBars()
 
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 }
+
+void CoreEngine::InitializeGameTweakBars()
+{
+	m_game.InitializeTweakBars();
+	m_renderer->InitializeTweakBars();
+}
 #endif
 
 //#ifdef CALCULATE_RENDERING_STATS
