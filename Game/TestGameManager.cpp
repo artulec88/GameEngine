@@ -91,8 +91,8 @@ TestGameManager::TestGameManager() :
 	m_playMainMenuRootEntry.AddChildren(new Engine::MenuEntry("Quit", Math::Vector2D(450.0f, 750.0f), m_quitGameCommand));
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
-	m_gameStateManager->Push(GetIntroGameState());
-	//m_gameStateManager->Push(GetMainMenuGameState());
+	//m_gameStateManager->Push(GetIntroGameState());
+	m_gameStateManager->Push(GetMainMenuGameState());
 	srand((unsigned int)time(NULL));
 }
 
