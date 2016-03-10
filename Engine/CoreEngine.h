@@ -136,6 +136,7 @@ public:
 	void AddWaterNode(GameNode* waterNode);
 	void AddTerrainNode(GameNode* terrainNode);
 	void AddBillboardNode(GameNode* billboardNode);
+	ENGINE_API void AddPhysicsObject(Physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
 
 	const Rendering::CameraBase& GetCurrentCamera() const { return m_renderer->GetCurrentCamera(); }
 private:

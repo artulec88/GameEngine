@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __PHYSICS_PHYSICS_ENGINE_H__
+#define __PHYSICS_PHYSICS_ENGINE_H__
 
 #include "Physics.h"
 #include "PhysicsObject.h"
@@ -65,3 +66,5 @@ namespace Physics
 	}; /* end class PhysicsEngine */
 
 } /* end namespace Physics */
+
+#endif // __PHYSICS_PHYSICS_ENGINE_H__

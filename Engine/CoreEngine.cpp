@@ -174,6 +174,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	}
 	s_coreEngine = this;
 
+	CreatePhysicsEngine();
 	CreateRenderer(width, height, title);
 
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
@@ -510,13 +511,16 @@ void CoreEngine::Run()
 			//RESET_TIMER(innerTimer);
 			//m_game.Input(m_frameTime);
 			//STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
+			RESET_TIMER(innerTimer);
+			m_game.Update(m_frameTime);
+			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
 			//Input::Update();
 			
 			/* ==================== REGION #2_3 begin ====================*/
 			RESET_TIMER(innerTimer);
-			m_game.Update(m_frameTime);
+			m_physicsEngine->Simulate(m_frameTime);
 			STOP_TIMER(innerTimer, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
 			/* ==================== REGION #2_3 end ====================*/
 
@@ -875,6 +879,11 @@ void CoreEngine::AddTerrainNode(GameNode* terrainNode)
 void CoreEngine::AddBillboardNode(GameNode* billboardNode)
 {
 	//m_renderer->AddBillboardNode(billboardNode);
+}
+
+void CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
+{
+	m_physicsEngine->AddPhysicsObject(*physicsObject);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

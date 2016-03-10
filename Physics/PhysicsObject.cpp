@@ -3,9 +3,9 @@
 
 using namespace Physics;
 
-PhysicsObject::PhysicsObject(Math::Real mass, Math::Vector3D& position, const Math::Vector3D& velocity) :
+PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& velocity) :
+	m_transform(transform),
 	m_mass(mass),
-	m_position(position),
 	m_velocity(velocity),
 	m_collider(NULL)
 {
@@ -17,7 +17,7 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::Integrate(Math::Real passedTime)
 {
-	m_position += m_velocity * passedTime;
+	m_transform.SetPos(m_transform.GetPos() + m_velocity * passedTime);
 }
 
 void PhysicsObject::AddCollider(Collider* collider)

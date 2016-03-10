@@ -1,9 +1,11 @@
-#pragma once
+#ifndef __PHYSICS_PHYSICS_OBJECT_H__
+#define __PHYSICS_PHYSICS_OBJECT_H__
 
 #include "Physics.h"
 #include "Collider.h"
 
 #include "Math\Vector.h"
+#include "Math\Transform.h"
 #include "Math\IntersectInfo.h"
 
 namespace Physics
@@ -19,7 +21,7 @@ namespace Physics
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PHYSICS_API PhysicsObject(Math::Real mass, Math::Vector3D& postion, const Math::Vector3D& velocity);
+		PHYSICS_API PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& velocity);
 		PHYSICS_API ~PhysicsObject(void);
 	private:
 		//PhysicsObject(const PhysicsObject& physicObject) {} // don't implement
@@ -29,12 +31,12 @@ namespace Physics
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		/// <summary>
-		/// Based on the velocity of the physics object the function updates its position.
+		/// Based on the velocity of the physics object the function updates its physical state.
 		/// </summary>
 		/// <param name="passedTime">The representation of time for the physics object. It represent the amount of time the object should simulate forward in time.</param>
 		PHYSICS_API void Integrate(Math::Real passedTime);
 		PHYSICS_API Math::Real GetMass() const { return m_mass; }
-		PHYSICS_API inline const Math::Vector3D& GetPosition() const { return m_position; }
+		PHYSICS_API inline const Math::Transform& GetTransform() const { return m_transform; }
 		PHYSICS_API inline const Math::Vector3D& GetVelocity() const { return m_velocity; }
 		PHYSICS_API inline Math::Vector3D& GetVelocity() { return m_velocity; }
 		PHYSICS_API void SetVelocity(const Math::Vector3D& velocity) { m_velocity = velocity; }
@@ -46,10 +48,13 @@ namespace Physics
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
+		/// <summary>
+		/// The transformation of the physical object. It gives information about object's position, rotation and scale.
+		/// </summary>
+		Math::Transform& m_transform;
 		Math::Real m_mass;
-		Math::Vector3D m_position;
 		Math::Vector3D m_velocity;
-		
+
 		/// <summary>
 		/// The collider that the physics object may use to check if it collides with other objects.
 		/// </summary>
@@ -62,3 +67,5 @@ namespace Physics
 	}; /* end class PhysicsObject */
 
 } /* end namespace Physics */
+
+#endif // __PHYSICS_PHYSICS_OBJECT_H__

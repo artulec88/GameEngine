@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __PHYSICS_COLLIDER_H__
+#define __PHYSICS_COLLIDER_H__
 
 #include "Physics.h"
 #include "Math\IntersectInfo.h"
@@ -46,3 +47,5 @@ namespace Physics
 	}; /* end class Collider */
 
 } /* end namespace Physics */
+
+#endif // __PHYSICS_COLLIDER_H__

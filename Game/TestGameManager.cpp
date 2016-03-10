@@ -18,6 +18,8 @@
 #include "Math\Quaternion.h"
 //#include "Math\Vector.h"
 
+#include "Physics\PhysicsObject.h"
+
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
@@ -314,6 +316,9 @@ void TestGameManager::Load()
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
+
+	Physics::PhysicsObject* physicsObject = new Physics::PhysicsObject(playerNode->GetTransform(), 2.0f, Math::Vector3D(0.1f, 0.1f, 0.1f));
+	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(physicsObject);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
