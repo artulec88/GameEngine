@@ -3,7 +3,8 @@
 
 using namespace Physics;
 
-PhysicsObject::PhysicsObject(const Math::Vector3D& position, const Math::Vector3D& velocity) :
+PhysicsObject::PhysicsObject(Math::Real mass, Math::Vector3D& position, const Math::Vector3D& velocity) :
+	m_mass(mass),
 	m_position(position),
 	m_velocity(velocity),
 	m_collider(NULL)

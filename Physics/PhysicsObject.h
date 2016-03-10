@@ -19,7 +19,7 @@ namespace Physics
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PHYSICS_API PhysicsObject(const Math::Vector3D& postion, const Math::Vector3D& velocity);
+		PHYSICS_API PhysicsObject(Math::Real mass, Math::Vector3D& postion, const Math::Vector3D& velocity);
 		PHYSICS_API ~PhysicsObject(void);
 	private:
 		//PhysicsObject(const PhysicsObject& physicObject) {} // don't implement
@@ -33,6 +33,7 @@ namespace Physics
 		/// </summary>
 		/// <param name="passedTime">The representation of time for the physics object. It represent the amount of time the object should simulate forward in time.</param>
 		PHYSICS_API void Integrate(Math::Real passedTime);
+		PHYSICS_API Math::Real GetMass() const { return m_mass; }
 		PHYSICS_API inline const Math::Vector3D& GetPosition() const { return m_position; }
 		PHYSICS_API inline const Math::Vector3D& GetVelocity() const { return m_velocity; }
 		PHYSICS_API inline Math::Vector3D& GetVelocity() { return m_velocity; }
@@ -45,6 +46,7 @@ namespace Physics
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
+		Math::Real m_mass;
 		Math::Vector3D m_position;
 		Math::Vector3D m_velocity;
 		

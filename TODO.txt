@@ -20,3 +20,7 @@
 20. Ambient occlussion.
 21. Water rendering. When looking in horizontal direction the distortion of the water texture is huge. Generally, it increases with the camera getting closer to the "horizontal" direction. The distortion should not depend on the viewing angle of the camera.
 22. When water is ON (there is at least one water node added) the billboards are not rendered correctly. When being seen from the close distance it is fine, but the farther they are the more dark they become. One thing (water rendering) should not influence the billboards at all.
+23. The book "3D game engine design: a practical approach to real-time computer graphics" asks the following questions:
+"How do I select points on a curve that are equally spaced along the curve?"
+"How do I move a camera with constant speed along a curved path?"
+The answer to these questions is to use reparameterization by arc length. Read more in the "Curves" chapter.
