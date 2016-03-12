@@ -7,16 +7,16 @@ PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const 
 	m_massCenter(/* TODO: must be calculated from given points and point masses */),
 	m_mass(mass),
 	m_intertia(/* TODO: Specify intertia */),
-	m_frictionCoefficientStatic( /* TODO: Specify static friction coefficient */ ),
-	m_frictionCoefficientKinetic( /* TODO: Specify static friction coefficient */ ),
-	m_restitutionCoefficient( /* TODO: Specify restitution coefficient */ ),
+	m_frictionCoefficientStatic( /* TODO: Specify static friction coefficient */),
+	m_frictionCoefficientKinetic( /* TODO: Specify static friction coefficient */),
+	m_restitutionCoefficient( /* TODO: Specify restitution coefficient */),
 	m_transform(transform),
 	m_linearVelocity(linearVelocity),
-	m_angularVelocity( /* TODO: Specify angular velocity maybe using quaternions */ ),
+	m_angularVelocity( /* TODO: Specify angular velocity maybe using quaternions */),
 	m_totalForce(REAL_ZERO, REAL_ZERO, REAL_ZERO), // TODO: What about gravity?
-	m_totalTorque( /* TODO: Specify total torque */ ),
-	m_frictionForce( /* TODO: Specify friction force */ ),
-	m_totalImpulse( /* TODO: Specify total impulse */ ),
+	m_totalTorque( /* TODO: Specify total torque */),
+	m_frictionForce( /* TODO: Specify friction force */),
+	m_totalImpulse( /* TODO: Specify total impulse */),
 	m_collider(NULL)
 {
 }
@@ -30,13 +30,17 @@ void PhysicsObject::Simulate(Math::Real passedTime)
 {
 	DELOCUST_LOG("Simulating physics object. Passed time = %.3f", passedTime);
 	m_linearVelocity += (m_totalForce / m_mass) * passedTime;
+	if (m_totalForce.LengthSquared() > REAL_ZERO)
+	{
+		//CRITICAL_LOG("Total force = %s", m_totalForce.ToString().c_str());
+	}
 	//CRITICAL_LOG("Total force = %s; Linear velocity = %s", m_totalForce.ToString().c_str(), m_linearVelocity.ToString().c_str());
 	m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 
 	//m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 
 	// Reset forces
-	//m_totalForce.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_totalForce.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	//m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 }
 

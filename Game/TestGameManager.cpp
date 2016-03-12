@@ -8,10 +8,9 @@
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Engine\MeshRendererComponent.h"
-#include "Engine\MoveComponent.h"
+#include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
-#include "Engine\TerrainCollisionComponent.h"
 #include "Rendering\Color.h"
 #include "Engine\Builder.h"
 #include "Engine\BuilderDirector.h"
@@ -67,7 +66,7 @@ TestGameManager::TestGameManager() :
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
 #ifdef CALCULATE_GAME_STATS
-	,m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
+	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {
 	DEBUG_LOG("TestGame is being constructed");
@@ -246,7 +245,9 @@ void TestGameManager::Load()
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 90), Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
+		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
+		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
 
@@ -311,15 +312,13 @@ void TestGameManager::Load()
 	Engine::GameNode* playerNode = new Engine::GameNode();
 	const Math::Real playerPositionX = 3.0f;
 	const Math::Real playerPositionZ = 1.0f;
-	const Math::Real playerPositionY = 5.0f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
-	Physics::PhysicsObject* playerPhysicsObject = new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(playerPhysicsObject);
-	playerNode->AddComponent(new Engine::MoveComponent(playerPhysicsObject, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	playerNode->AddComponent(new Engine::GravityComponent(playerPhysicsObject));
-	playerNode->AddComponent(new Engine::TerrainCollisionComponent(playerPhysicsObject, m_terrainMesh));
 	playerNode->GetTransform().SetScale(0.005f);
+	playerNode->SetPhysicsObject(new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
+	playerNode->AddComponent(new Engine::PhysicsComponent(2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -396,7 +395,7 @@ void TestGameManager::AddPointLights()
 		lightBuilderDirector.Construct();
 		Engine::GameNode* pointLightNode = pointLightBuilder.GetGameNode();
 		AddToSceneRoot(pointLightNode);
-		
+
 		//GameNode* bulbNode = new GameNode();
 		//bulbNode->AddComponent(new MeshRenderer(new Mesh("Bulb\\Bulb.obj") /* new Mesh("PointLight.obj") */, new Material(new Texture("PointLight.png"), 1.0f, 8.0f)));
 		//bulbNode->GetTransform().SetPos(REAL_ZERO, REAL_ONE, REAL_ZERO);
@@ -427,7 +426,7 @@ void TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT_ALWAYS(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
-	
+
 	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
 
 	Engine::CameraBuilder cameraBuilder;
@@ -481,11 +480,11 @@ void TestGameManager::WindowResizeEvent(int width, int height)
 }
 
 /**
- * @param key the keyboard key that was pressed or released
- * @param scancode the system-specific scancode of the key
- * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
- * @param mods Bit field describing which modifier keys were held down
- */
+* @param key the keyboard key that was pressed or released
+* @param scancode the system-specific scancode of the key
+* @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
+* @param mods Bit field describing which modifier keys were held down
+*/
 void TestGameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
 	GameManager::KeyEvent(key, scancode, action, mods);
@@ -499,17 +498,17 @@ void TestGameManager::ScrollEvent(double xOffset, double yOffset)
 }
 
 /**
- * GLFW_MOUSE_BUTTON_1 = left mouse button
- * GLFW_MOUSE_BUTTON_2 = right mouse button
- * GLFW_MOUSE_BUTTON_3 = middle mouse button
- */
+* GLFW_MOUSE_BUTTON_1 = left mouse button
+* GLFW_MOUSE_BUTTON_2 = right mouse button
+* GLFW_MOUSE_BUTTON_3 = middle mouse button
+*/
 void TestGameManager::MouseButtonEvent(int button, int action, int mods)
 {
 	// TODO: Pass the event to the Input function in the current game state.
 	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
 	// I would expect here something as follows:
 	// currentGameState->MouseInput(...)
-	
+
 	// DEBUG_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	//GameManager::MouseButtonEvent(window, button, action, mods);

@@ -9,8 +9,7 @@
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
-
-#include "Physics\PhysicsObject.h"
+#include "Math\Vector.h"
 
 #include <GLFW\glfw3.h> // TODO: Just so that we can check the key bindings. Remove in the future.
 
@@ -18,35 +17,30 @@ namespace Engine
 {
 	class GameNode;
 
-	class PhysicsComponent : public GameComponent, public Input::IInputableKeyboard
+	class PhysicsComponent : public GameComponent, public IUpdateable, public Input::IInputableKeyboard
 	{
-	/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions begin ==================== */
 	private:
 		//static const Math::Real GRAVITY;
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API PhysicsComponent(Physics::PhysicsObject* physicsObject);
+		ENGINE_API PhysicsComponent(Math::Real jumpForce);
 		ENGINE_API virtual ~PhysicsComponent(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Update(Math::Real deltaTime);
 		ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		/// <summary>
-		/// Specifies the ratio between running speed and the standard walking speed.
-		/// </summary>
-		/// <remarks>
-		/// The value should be greater or equal to 1.0.
-		/// </remarks>
-		Physics::PhysicsObject* m_physicsObject;
-	/* ==================== Non-static member variables end ==================== */
+		Math::Vector3D m_jumpAcceleration;
+		bool m_isJumping;
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PlayerComponent */
 
 } /* end namespace Engine */

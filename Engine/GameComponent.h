@@ -22,6 +22,7 @@ namespace Engine
 		void SetParent(GameNode* parentGameNode);
 		Math::Transform& GetTransform();
 		const Math::Transform& GetTransform() const;
+		Physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

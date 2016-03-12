@@ -2,7 +2,7 @@
 #include "GameNode.h"
 #include "GameComponent.h"
 //#include "Renderer.h"
-//#include "CoreEngine.h"
+#include "CoreEngine.h"
 #include "IRenderable.h"
 #include "IUpdateable.h"
 
@@ -10,8 +10,9 @@
 
 /* static */ int Engine::GameNode::gameNodeCount = 0;
 
-Engine::GameNode::GameNode(void) :
-	m_ID(++GameNode::gameNodeCount)
+Engine::GameNode::GameNode() :
+	m_ID(++GameNode::gameNodeCount),
+	m_physicsObject(NULL)
 {
 	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//INFO_LOG("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
@@ -53,7 +54,17 @@ Engine::GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
+	SAFE_DELETE(m_physicsObject);
 	DEBUG_LOG("Game node (ID=%d) destruction finished", m_ID);
+}
+
+void Engine::GameNode::SetPhysicsObject(Physics::PhysicsObject* physicsObject)
+{
+	m_physicsObject = physicsObject;
+	if (m_physicsObject != NULL)
+	{
+		Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject);
+	}
 }
 
 Engine::GameNode* Engine::GameNode::AddChild(GameNode* child)
@@ -92,17 +103,17 @@ Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
 
 //void Engine::GameNode::InputAll(Math::Real delta)
 //{
-	//transform.Update();
+//transform.Update();
 
-	//for (std::vector<Input::IInputable*>::iterator gameComponentItr = m_inputableComponents.begin(); gameComponentItr != m_inputableComponents.end(); ++gameComponentItr)
-	//{
-	//	(*gameComponentItr)->Input(delta);
-	//}
+//for (std::vector<Input::IInputable*>::iterator gameComponentItr = m_inputableComponents.begin(); gameComponentItr != m_inputableComponents.end(); ++gameComponentItr)
+//{
+//	(*gameComponentItr)->Input(delta);
+//}
 
-	//for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
-	//{
-	//	(*gameNodeItr)->InputAll(delta);
-	//}
+//for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
+//{
+//	(*gameNodeItr)->InputAll(delta);
+//}
 //}
 
 void Engine::GameNode::KeyEvent(int key, int scancode, int action, int mods)
@@ -186,7 +197,7 @@ void Engine::GameNode::Render(const Rendering::Shader* shader, Rendering::Render
 std::vector<Engine::GameNode*> Engine::GameNode::GetAllDescendants() const
 {
 	std::vector<GameNode*> descendants;
-	
+
 	for (std::vector<GameNode*>::const_iterator itr = m_childrenGameNodes.begin(); itr != m_childrenGameNodes.end(); ++itr)
 	{
 		descendants.push_back(*itr);

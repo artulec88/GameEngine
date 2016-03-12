@@ -17,19 +17,19 @@ namespace Physics
 	/// </summary>
 	class PhysicsObject
 	{
-	/* ==================== Static variables begin ==================== */
-	/* ==================== Static variables end ==================== */
+		/* ==================== Static variables begin ==================== */
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		PHYSICS_API PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& linearVelocity);
 		PHYSICS_API ~PhysicsObject(void);
 	private:
 		//PhysicsObject(const PhysicsObject& physicObject) {} // don't implement
 		//void operator=(const PhysicsObject& physicObject) {} // don't implement
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static, non-virtual member functions begin ==================== */
+		/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		/// <summary>
 		/// Based on the velocity of the physics object the function updates its physical state.
@@ -53,17 +53,17 @@ namespace Physics
 		PHYSICS_API inline Math::Real GetFrictionCoefficientStatic() const { return m_frictionCoefficientStatic; }
 		PHYSICS_API inline Math::Real GetFrictionCoefficientKinetic() const { return m_frictionCoefficientKinetic; }
 		PHYSICS_API inline Math::Real GetRestitutionCoefficient() const { return m_restitutionCoefficient; }
-		
-		
+
+		PHYSICS_API void Stop() { m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
 		PHYSICS_API void SetLinearVelocity(const Math::Vector3D& linearVelocity) { m_linearVelocity = linearVelocity; }
 
 		const Collider* GetCollider() const { return m_collider; }
-		void AddCollider(Collider* collider);		
+		void AddCollider(Collider* collider);
 		Math::IntersectInfo Intersect(const PhysicsObject& otherPhysicsObject) const;
 		void HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal);
-	/* ==================== Non-static, non-virtual member functions end ==================== */
+		/* ==================== Non-static, non-virtual member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		// Physical attributes
 		/// <summary>
@@ -116,7 +116,7 @@ namespace Physics
 		/// The root collider could be the AABB, next BoundingSphere, etc. It is important that for each pair of parent-child colliders the parent must fully contain the child.
 		/// </remarks>
 		Collider* m_collider;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PhysicsObject */
 
 } /* end namespace Physics */
