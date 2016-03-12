@@ -30,13 +30,17 @@ void PhysicsObject::Simulate(Math::Real passedTime)
 {
 	DELOCUST_LOG("Simulating physics object. Passed time = %.3f", passedTime);
 	m_linearVelocity += (m_totalForce / m_mass) * passedTime;
+	if (m_totalForce.LengthSquared() > REAL_ZERO)
+	{
+		//CRITICAL_LOG("Total force = %s", m_totalForce.ToString().c_str());
+	}
 	//CRITICAL_LOG("Total force = %s; Linear velocity = %s", m_totalForce.ToString().c_str(), m_linearVelocity.ToString().c_str());
 	m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 
 	//m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 
 	// Reset forces
-	//m_totalForce.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_totalForce.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	//m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 }
 

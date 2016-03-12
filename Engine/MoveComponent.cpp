@@ -31,6 +31,11 @@ void Engine::MoveComponent::Update(Math::Real deltaTime)
 	Math::Vector3D distanceToMove = transform.GetRot().GetForward() * m_currentMovementSpeed * deltaTime;
 	transform.SetPos(transform.GetPos() + distanceToMove);
 
+	if (m_isJumping)
+	{
+		// todo: jump physical entity
+		m_isJumping = false;
+	}
 	//m_currentJumpSpeed -= GRAVITY * deltaTime;
 	//Math::Real y = transform.GetPos().GetY() + m_currentJumpSpeed;
 	//if (y < REAL_ZERO /* terrain height */) // TODO: Terrain height calculation
