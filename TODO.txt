@@ -25,7 +25,17 @@
 "How do I move a camera with constant speed along a curved path?"
 The answer to these questions is to use reparameterization by arc length. Read more in the "Curves" chapter.
 24. "Batch-rendering": the IRenderable components do not draw. Instead, they just add the rendering command to the rendering engine. The rendering engine stores the collection of rendering commands. The core engine calls the rendering engine (at one specific correct time) to render all rendering commands. The rendering engine should store three maps:
-map<Shader, vector<Mesh>>
-map<Mesh, vector<Material>>
-map<Material, vector<Transform>>.
+map<Shader, vector<Mesh>> shader2meshes
+map<Mesh, vector<Material>> mesh2materials
+map<Material, vector<Transform>> material2transforms.
 These maps should be updated when new rendering command is specified. When "final" render call is done the maps are iterated one by one to minimize the number of unnecessary OpenGL calls (e.g. binding the same shader, texture several times). Afterwards, the maps should be cleared to be empty for the next frame processing (and new rendering commands will appear).
+The "final" rendering call should be something like:
+for (Shader shader : shader2meshes.keys)
+{
+	shader.Bind();
+	shader.UpdateRenderUniforms();
+	for (Mesh mesh : shader2meshes.values)
+	{
+	
+	}
+}

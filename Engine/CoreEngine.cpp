@@ -883,7 +883,7 @@ void CoreEngine::AddBillboardNode(GameNode* billboardNode)
 
 void CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
 {
-	m_physicsEngine->AddPhysicsObject(*physicsObject);
+	m_physicsEngine->AddPhysicsObject(physicsObject);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED

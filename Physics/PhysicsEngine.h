@@ -36,7 +36,7 @@ namespace Physics
 		/// <summary>
 		/// Adds physics object for the physics simulation process.
 		/// </summary>
-		PHYSICS_API void AddPhysicsObject(const PhysicsObject& physicsObject);
+		PHYSICS_API void AddPhysicsObject(PhysicsObject* physicsObject);
 
 		/// <summary>
 		/// Simulates the physical behavior of all physical objects in the engine for a certain period of time.
@@ -57,7 +57,7 @@ namespace Physics
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		typedef std::vector<PhysicsObject> PhysicObjectsContainer;
+		typedef std::vector<PhysicsObject*> PhysicObjectsContainer;
 		PhysicObjectsContainer m_physicsObjects;
 #ifdef CALCULATE_PHYSICS_STATS
 		Math::Statistics::ClassStats& m_classStats;

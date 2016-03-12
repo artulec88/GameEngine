@@ -18,7 +18,7 @@ Physics::PhysicsEngine::~PhysicsEngine()
 {
 }
 
-void Physics::PhysicsEngine::AddPhysicsObject(const PhysicsObject& physicsObject)
+void Physics::PhysicsEngine::AddPhysicsObject(PhysicsObject* physicsObject)
 {
 	m_physicsObjects.push_back(physicsObject);
 }
@@ -27,7 +27,7 @@ void Physics::PhysicsEngine::Simulate(Math::Real passedTime)
 {
 	for (PhysicObjectsContainer::iterator physicsObjectItr = m_physicsObjects.begin(); physicsObjectItr != m_physicsObjects.end(); ++physicsObjectItr)
 	{
-		(*physicsObjectItr).Integrate(passedTime);
+		(*physicsObjectItr)->Simulate(passedTime);
 	}
 }
 
@@ -41,12 +41,12 @@ void Physics::PhysicsEngine::HandleCollisions()
 	{
 		for (PhysicObjectsContainer::iterator otherPhysicsObjectItr = physicsObjectItr + 1; otherPhysicsObjectItr != m_physicsObjects.end(); ++otherPhysicsObjectItr)
 		{
-			Math::IntersectInfo intersectInfo = physicsObjectItr->Intersect(*otherPhysicsObjectItr);
+			Math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(*(*otherPhysicsObjectItr));
 			if (intersectInfo.IsIntersecting())
 			{
 				DEBUG_LOG("The objects collided"); // TODO: Better log message
-				physicsObjectItr->GetVelocity().Negate();
-				otherPhysicsObjectItr->GetVelocity().Negate();
+				(*physicsObjectItr)->GetLinearVelocity().Negate();
+				(*otherPhysicsObjectItr)->GetLinearVelocity().Negate();
 			}
 		}
 	}

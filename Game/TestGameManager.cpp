@@ -10,6 +10,8 @@
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\MoveComponent.h"
 #include "Engine\LookAtComponent.h"
+#include "Engine\GravityComponent.h"
+#include "Engine\TerrainCollisionComponent.h"
 #include "Rendering\Color.h"
 #include "Engine\Builder.h"
 #include "Engine\BuilderDirector.h"
@@ -309,16 +311,17 @@ void TestGameManager::Load()
 	Engine::GameNode* playerNode = new Engine::GameNode();
 	const Math::Real playerPositionX = 3.0f;
 	const Math::Real playerPositionZ = 1.0f;
-	const Math::Real playerPositionY = m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const Math::Real playerPositionY = 5.0f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
-	playerNode->AddComponent(new Engine::MoveComponent(0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	Physics::PhysicsObject* playerPhysicsObject = new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
+	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(playerPhysicsObject);
+	playerNode->AddComponent(new Engine::MoveComponent(playerPhysicsObject, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	playerNode->AddComponent(new Engine::GravityComponent(playerPhysicsObject));
+	playerNode->AddComponent(new Engine::TerrainCollisionComponent(playerPhysicsObject, m_terrainMesh));
 	playerNode->GetTransform().SetScale(0.005f);
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
-
-	Physics::PhysicsObject* physicsObject = new Physics::PhysicsObject(playerNode->GetTransform(), 2.0f, Math::Vector3D(0.1f, 0.1f, 0.1f));
-	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(physicsObject);
 
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 

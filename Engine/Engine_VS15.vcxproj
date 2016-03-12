@@ -173,9 +173,12 @@
     <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="GravityComponent.h" />
+    <ClInclude Include="TerrainCollisionComponent.h" />
     <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +212,7 @@
     <ClCompile Include="MeshRendererComponent.cpp" />
     <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="SpotLightComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -217,6 +221,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="GravityComponent.cpp" />
+    <ClCompile Include="TerrainCollisionComponent.cpp" />
     <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

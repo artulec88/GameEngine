@@ -532,7 +532,7 @@ Rendering::TerrainMesh::~TerrainMesh(void)
  * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
  * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
  */
-Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */)
+Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */) const
 {
 #ifdef MEASURE_TIME_ENABLED
 	Utility::Timing::Timer timer;

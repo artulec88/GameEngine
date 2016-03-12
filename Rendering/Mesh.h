@@ -230,7 +230,7 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false);
+	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false) const;
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
@@ -247,7 +247,7 @@ private:
 	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
 	size_t m_positionsCount;
-	Math::Real m_lastX, m_lastY, m_lastZ;
+	mutable Math::Real m_lastX, m_lastY, m_lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int m_lastClosestPositionIndex;
 #elif defined HEIGHTMAP_KD_TREE

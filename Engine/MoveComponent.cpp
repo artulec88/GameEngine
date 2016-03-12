@@ -3,10 +3,9 @@
 #include "Math\Transform.h"
 #include "Math\Quaternion.h"
 
-/* static */ const Math::Real Engine::MoveComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
-
-Engine::MoveComponent::MoveComponent(Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
+Engine::MoveComponent::MoveComponent(Physics::PhysicsObject* physicsObject, Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed) :
 	GameComponent(),
+	m_physicsObject(physicsObject),
 	m_movementSpeed(movementSpeed),
 	m_runSpeedFactor(runSpeedFactor),
 	m_rotationSpeed(rotationSpeed),
@@ -30,20 +29,18 @@ void Engine::MoveComponent::Update(Math::Real deltaTime)
 	Math::Transform& transform = GetTransform();
 	transform.SetRot(transform.GetRot() * Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentRotationSpeed * deltaTime));
 	Math::Vector3D distanceToMove = transform.GetRot().GetForward() * m_currentMovementSpeed * deltaTime;
-	//if (m_currentMovementSpeed > 0.0000001f)
-	//{
-		//CRITICAL_LOG("m_currentMovementSpeed = %.2f, deltaTime = %.6f, distanceToMove = %s", m_currentMovementSpeed, deltaTime, distanceToMove.ToString().c_str());
-	//}
-	m_currentJumpSpeed -= GRAVITY * deltaTime;
 	transform.SetPos(transform.GetPos() + distanceToMove);
-	Math::Real y = transform.GetPos().GetY() + m_currentJumpSpeed;
-	if (y < REAL_ZERO /* terrain height */) // TODO: Terrain height calculation
-	{
-		y = REAL_ZERO;
-		m_currentJumpSpeed = REAL_ZERO;
-		m_isJumping = false;
-	}
-	transform.GetPos().SetY(y);
+
+	//m_currentJumpSpeed -= GRAVITY * deltaTime;
+	//Math::Real y = transform.GetPos().GetY() + m_currentJumpSpeed;
+	//if (y < REAL_ZERO /* terrain height */) // TODO: Terrain height calculation
+	//{
+	//	y = REAL_ZERO;
+	//	m_currentJumpSpeed = REAL_ZERO;
+	//	m_isJumping = false;
+	//}
+	//transform.GetPos().SetY(y);
+
 	//m_currentMovementSpeed = REAL_ZERO;
 	//m_currentRotationSpeed = Math::Angle(REAL_ZERO);
 	//m_currentStrafeSpeed = REAL_ZERO;
