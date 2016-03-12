@@ -5,9 +5,11 @@
 #include "GameComponent.h"
 #include "IUpdateable.h"
 
-#include "Rendering\Mesh.h"
+//#include "Rendering\Mesh.h"
 
 #include "Math\Vector.h"
+
+#include "Physics\PhysicsObject.h"
 
 namespace Engine
 {
@@ -22,7 +24,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GravityComponent(Rendering::TerrainMesh const* terrainMesh);
+		ENGINE_API GravityComponent(Physics::PhysicsObject* physicsObject);
 		ENGINE_API virtual ~GravityComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -33,7 +35,7 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::TerrainMesh const* m_terrainMesh;
+		Physics::PhysicsObject* m_physicsObject;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class GravityComponent */
 
