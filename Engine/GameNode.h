@@ -12,8 +12,6 @@
 
 #include "Math\Transform.h"
 
-#include "Physics\PhysicsObject.h"
-
 #include <vector>
 
 namespace Engine
@@ -52,9 +50,6 @@ public:
 	ENGINE_API Math::Transform& GetTransform() { return m_transform; };
 	ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }
 
-	ENGINE_API Physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject; }
-	ENGINE_API void SetPhysicsObject(Physics::PhysicsObject* physicsObject);
-
 	ENGINE_API std::vector<GameNode*> GetAllDescendants() const;
 /* ==================== Non-static member functions end ==================== */
 
@@ -68,7 +63,6 @@ protected:
 	std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 	std::vector<IUpdateable*> m_updateableComponents;
 	Math::Transform m_transform;
-	Physics::PhysicsObject* m_physicsObject;
 	// TODO: set of commands (GameCommand objects) to be performed by the game entity in the UPDATE step
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameNode */
