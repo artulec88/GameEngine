@@ -5,8 +5,9 @@
 
 ///* static */ const Math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
-Engine::PhysicsComponent::PhysicsComponent(Math::Real jumpForce) :
+Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce) :
 	GameComponent(),
+	m_moveSpeed(movementSpeed),
 	m_jumpAcceleration(REAL_ZERO, jumpForce, REAL_ZERO),
 	m_isJumping(false)
 {
@@ -23,7 +24,7 @@ void Engine::PhysicsComponent::Update(Math::Real deltaTime)
 	if (m_isJumping)
 	{
 		GetPhysicsObject()->ApplyLinearAcceleration(m_jumpAcceleration);
-		m_isJumping = false;
+		m_isJumping = false; // TODO: make it false when landing on the surface.
 	}
 	//m_physicsObject->Integrate(deltaTime);
 }
@@ -36,22 +37,45 @@ void Engine::PhysicsComponent::KeyEvent(int key, int scancode, int action, int m
 	case GLFW_KEY_LEFT_SHIFT:
 		break;
 	case GLFW_KEY_W:
+		if (action == GLFW_PRESS)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(GetTransform().GetTransformedRot().GetForward() * m_moveSpeed);
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(-GetTransform().GetTransformedRot().GetForward() * m_moveSpeed);
+		}
 		break;
 	case GLFW_KEY_S:
+		if (action == GLFW_PRESS)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(-GetTransform().GetTransformedRot().GetForward() * m_moveSpeed);
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(GetTransform().GetTransformedRot().GetForward() * m_moveSpeed);
+		}
 		break;
 	case GLFW_KEY_A:
-		if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
+		if (action == GLFW_PRESS)
 		{
-			//m_currentStrafeSpeed -= m_strafeSpeed;
+			GetPhysicsObject()->ApplyLinearAcceleration(GetTransform().GetTransformedRot().GetLeft() * m_moveSpeed);
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(-GetTransform().GetTransformedRot().GetLeft() * m_moveSpeed);
 		}
 		//DEBUG_LOG("Left = %d", left);
 		break;
 	case GLFW_KEY_D:
-		if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
+		if (action == GLFW_PRESS)
 		{
-			//m_currentStrafeSpeed += m_strafeSpeed;
+			GetPhysicsObject()->ApplyLinearAcceleration(GetTransform().GetTransformedRot().GetRight() * m_moveSpeed);
 		}
-		//DEBUG_LOG("Right = %d", right);
+		else if (action == GLFW_RELEASE)
+		{
+			GetPhysicsObject()->ApplyLinearAcceleration(-GetTransform().GetTransformedRot().GetRight() * m_moveSpeed);
+		}
 		break;
 	case GLFW_KEY_SPACE: // move up
 		if (!m_isJumping && (action == GLFW_PRESS || action == GLFW_REPEAT))

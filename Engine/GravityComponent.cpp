@@ -30,7 +30,7 @@ void Engine::GravityComponent::Update(Math::Real deltaTime)
 	else
 	{
 		// Applying an impulse to stop the physics object immediately
-		GetPhysicsObject()->Stop();
+		GetPhysicsObject()->GetLinearVelocity().SetY(REAL_ZERO);
 		position.SetY(terrainHeight);
 	}
 

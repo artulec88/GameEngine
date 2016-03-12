@@ -5,7 +5,7 @@
 #include "GameComponent.h"
 #include "IUpdateable.h"
 #include "IInputableKeyboard.h"
-#include "IInputableMouse.h"
+//#include "IInputableMouse.h"
 
 #include "Math\Math.h"
 #include "Math\Angle.h"
@@ -26,7 +26,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API PhysicsComponent(Math::Real jumpForce);
+		ENGINE_API PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce);
 		ENGINE_API virtual ~PhysicsComponent(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -38,6 +38,7 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
+		Math::Real m_moveSpeed;
 		Math::Vector3D m_jumpAcceleration;
 		bool m_isJumping;
 		/* ==================== Non-static member variables end ==================== */
