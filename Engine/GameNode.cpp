@@ -2,7 +2,7 @@
 #include "GameNode.h"
 #include "GameComponent.h"
 //#include "Renderer.h"
-//#include "CoreEngine.h"
+#include "CoreEngine.h"
 #include "IRenderable.h"
 #include "IUpdateable.h"
 
@@ -10,8 +10,9 @@
 
 /* static */ int Engine::GameNode::gameNodeCount = 0;
 
-Engine::GameNode::GameNode(void) :
-	m_ID(++GameNode::gameNodeCount)
+Engine::GameNode::GameNode() :
+	m_ID(++GameNode::gameNodeCount),
+	m_physicsObject(NULL)
 {
 	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//INFO_LOG("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
@@ -53,7 +54,17 @@ Engine::GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
+	SAFE_DELETE(m_physicsObject);
 	DEBUG_LOG("Game node (ID=%d) destruction finished", m_ID);
+}
+
+void Engine::GameNode::SetPhysicsObject(Physics::PhysicsObject* physicsObject)
+{
+	m_physicsObject = physicsObject;
+	if (m_physicsObject != NULL)
+	{
+		Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject);
+	}
 }
 
 Engine::GameNode* Engine::GameNode::AddChild(GameNode* child)

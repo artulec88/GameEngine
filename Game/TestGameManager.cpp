@@ -8,10 +8,9 @@
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
 #include "Engine\MeshRendererComponent.h"
-#include "Engine\MoveComponent.h"
+#include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
-#include "Engine\TerrainCollisionComponent.h"
 #include "Rendering\Color.h"
 #include "Engine\Builder.h"
 #include "Engine\BuilderDirector.h"
@@ -246,7 +245,9 @@ void TestGameManager::Load()
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 90), Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
+		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
+		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
 
@@ -311,15 +312,13 @@ void TestGameManager::Load()
 	Engine::GameNode* playerNode = new Engine::GameNode();
 	const Math::Real playerPositionX = 3.0f;
 	const Math::Real playerPositionZ = 1.0f;
-	const Math::Real playerPositionY = 5.0f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
-	Physics::PhysicsObject* playerPhysicsObject = new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(playerPhysicsObject);
-	playerNode->AddComponent(new Engine::MoveComponent(playerPhysicsObject, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	playerNode->AddComponent(new Engine::GravityComponent(playerPhysicsObject));
-	playerNode->AddComponent(new Engine::TerrainCollisionComponent(playerPhysicsObject, m_terrainMesh));
 	playerNode->GetTransform().SetScale(0.005f);
+	playerNode->SetPhysicsObject(new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
+	playerNode->AddComponent(new Engine::PhysicsComponent(2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
