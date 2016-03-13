@@ -241,13 +241,13 @@ void TestGameManager::Load()
 		Engine::GameNode* treeNode = new Engine::GameNode();
 		Math::Real x = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 20.0f;
 		Math::Real z = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 20.0f;
-		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z)) + (static_cast<Real>(rand() % 5000) / 5000.0f) * 2.0f;
+		Math::Real y = 2.0f; //m_terrainMesh->GetHeightAt(Math::Vector2D(x, z)) + (static_cast<Real>(rand() % 5000) / 5000.0f) * 2.0f;
 		treeNode->GetTransform().SetPos(x, y, z);
-		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 90), Angle(0.0f))));
+		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
-		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+		treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
-		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+		treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
 
@@ -279,7 +279,7 @@ void TestGameManager::Load()
 	waterNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	m_resourcesLoaded += 2;
 	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
-	waterNode->GetTransform().SetScale(3.0f);
+	waterNode->GetTransform().SetScale(0.2f);
 	AddWaterNode(waterNode);
 
 	for (int i = 0; i < 20; ++i)
@@ -318,7 +318,7 @@ void TestGameManager::Load()
 	playerNode->SetPhysicsObject(new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh)); // TODO: Remove this line and FPS will again be ~50 (Why????!!!!)
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

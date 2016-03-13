@@ -86,6 +86,11 @@ void KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int dep
 
 Real KDTree::SearchNearestValue(const Vector2D& position) const
 {
+	return SearchNearestValue(position.GetX(), position.GetY());
+}
+
+Real KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
+{
 	START_PROFILING;
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
 	// If we wanted to check that condition we would have to store the number of nodes in the separate member variable.
@@ -104,7 +109,7 @@ Real KDTree::SearchNearestValue(const Vector2D& position) const
 	}
 	
 	//numberOfPositionsChecked = 0;
-	SearchNearestValue(position, 0, m_minDistancePositions, m_minDistances);
+	SearchNearestValue(posX, posZ, 0, m_minDistancePositions, m_minDistances);
 	//DEBUG_LOG("Number of positions checked during the search for the nearest positions = %d", numberOfPositionsChecked);
 
 	//return minDistancePositions[0].GetY(); // return the nearest position's Y component
@@ -159,10 +164,15 @@ Real KDTree::SearchNearestValue(const Vector2D& position) const
 
 void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const
 {
+	return SearchNearestValue(position.GetX(), position.GetY(), depth, minDistancePositions, minDistances);
+}
+
+void KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, Vector3D* minDistancePositions, Real* minDistances) const
+{
 	START_PROFILING;
 	//++numberOfPositionsChecked;
 	//DELOCUST_LOG("Visiting the node with position (%s) and value %.2f", m_position.ToString().c_str(), m_value);
-	Real distance = (position - m_position).LengthSquared();
+	Real distance = (x - m_position.GetX()) * (x - m_position.GetX()) + (z - m_position.GetY()) * (z - m_position.GetY());
 	int j = m_numberOfSamples - 1;
 	while ( (j >= 0) && (minDistances[j] > distance) )
 	{
@@ -186,7 +196,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		return;
 	}
 
-	Real positionComponentValue = ((depth % 2) == 0) ? position.GetX() : position.GetY();
+	Real positionComponentValue = ((depth % 2) == 0) ? x : z;
 	Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.GetX() : m_position.GetY();
 	bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
 
@@ -194,7 +204,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 	{
 		if (((m_leftTree != NULL)) && (positionComponentValue - minDistances[m_numberOfSamples - 1] <= nodePositionComponentValue))
 		{
-			m_leftTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+			m_leftTree->SearchNearestValue(x, z, depth + 1, minDistancePositions, minDistances);
 		}
 		else if (m_leftTree != NULL)
 		{
@@ -202,7 +212,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
-			m_rightTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+			m_rightTree->SearchNearestValue(x, z, depth + 1, minDistancePositions, minDistances);
 		}
 		else if (m_rightTree != NULL)
 		{
@@ -213,7 +223,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 	{
 		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
-			m_rightTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+			m_rightTree->SearchNearestValue(x, z, depth + 1, minDistancePositions, minDistances);
 		}
 		else if (m_rightTree != NULL)
 		{
@@ -221,7 +231,7 @@ void KDTree::SearchNearestValue(const Vector2D& position, int depth, Vector3D* m
 		}
 		if ((m_leftTree != NULL) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
 		{
-			m_leftTree->SearchNearestValue(position, depth + 1, minDistancePositions, minDistances);
+			m_leftTree->SearchNearestValue(x, z, depth + 1, minDistancePositions, minDistances);
 		}
 		else if (m_leftTree != NULL)
 		{

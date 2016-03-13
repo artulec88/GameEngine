@@ -20,7 +20,7 @@
 #include "Math\KDTree.h"
 #endif
 
-#define MEASURE_TIME_ENABLED
+//#define MEASURE_MESH_TIME_ENABLED
 
 // Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
 namespace std
@@ -224,13 +224,16 @@ public:
 	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
-	//TerrainMesh(TerrainMesh& terrainMesh) : Mesh(terrainMesh) {}
-	//void operator=(TerrainMesh& terrainMesh) : Mesh(terrainMesh) {}
+	TerrainMesh(TerrainMesh& terrainMesh);
+	void operator=(TerrainMesh& terrainMesh);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false) const;
+	RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y, bool headPositionHeightAdjustmentEnabled = false) const;
+	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled = false) const;
+	RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled = false) const;
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
@@ -247,7 +250,6 @@ private:
 	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
 	size_t m_positionsCount;
-	mutable Math::Real m_lastX, m_lastY, m_lastZ;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int m_lastClosestPositionIndex;
 #elif defined HEIGHTMAP_KD_TREE

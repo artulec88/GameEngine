@@ -18,7 +18,7 @@
 #include <unordered_set>
 #include <fstream>
 
-#ifndef MEASURE_TIME_ENABLED
+#ifndef MEASURE_MESH_TIME_ENABLED
 #undef START_TIMER
 #undef RESET_TIMER
 #undef STOP_TIMER
@@ -126,7 +126,7 @@ void Rendering::Mesh::Initialize()
 		m_meshData->AddReference();
 		return;
 	}
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
 	timer.Start();
 #endif
@@ -193,7 +193,7 @@ void Rendering::Mesh::Initialize()
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(m_fileName, m_meshData));
 
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
 	INFO_LOG("Loading model took %s", timer.GetTimeSpan().ToString().c_str());
 #endif
@@ -451,10 +451,7 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	Mesh(fileName, mode),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
-	m_positionsCount(0),
-	m_lastX(REAL_ZERO),
-	m_lastY(REAL_ZERO),
-	m_lastZ(REAL_ZERO)
+	m_positionsCount(0)
 #ifdef HEIGHTMAP_SORT_TABLE
 	,m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
@@ -470,10 +467,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 	m_z(gridZ),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
-	m_positionsCount(VERTEX_COUNT * VERTEX_COUNT),
-	m_lastX(REAL_ZERO),
-	m_lastY(REAL_ZERO),
-	m_lastZ(REAL_ZERO)
+	m_positionsCount(VERTEX_COUNT * VERTEX_COUNT)
 #ifdef HEIGHTMAP_SORT_TABLE
 	, m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
@@ -528,13 +522,134 @@ Rendering::TerrainMesh::~TerrainMesh(void)
 #endif
 }
 
+Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */) const
+{
+	return GetHeightAt(xz.GetX(), xz.GetY(), headPositionHeightAdjustmentEnabled);
+}
+
 /**
  * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
  * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
  */
-Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */) const
+Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool headPositionHeightAdjustmentEnabled /* = false */) const
 {
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
+	Utility::Timing::Timer timer;
+	timer.Start();
+#endif
+#ifdef HEIGHTMAP_BRUTE_FORCE
+	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
+	{
+		return lastY;
+	}
+
+	/**
+	* TODO: Calculate the y value. Add additional parameter to GetHeightAt function which indicates the interpolation method.
+	* This interpolation method would be used for situations when the pair (x, z) is not found in the this->positions table.
+	*/
+	/**
+	* TODO: Optimization!!!
+	*/
+	const int SAMPLES = 4;
+	Math::Vector3D closestPositions[SAMPLES];
+	Math::Real closestPositionsDistances[SAMPLES];
+	for (int i = 0; i < SAMPLES; ++i)
+	{
+		closestPositions[i].SetX(REAL_MAX);
+		closestPositions[i].SetY(REAL_MAX);
+		closestPositions[i].SetZ(REAL_MAX);
+		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
+	}
+	Math::Real y = REAL_ZERO;
+	bool foundPerfectMatch = false;
+	for (int i = 0; i < positionsCount; ++i)
+	{
+		//if (i % 10000 == 0)
+		//{
+		//	DEBUG_LOG("i = %d", i);
+		//}
+
+
+		/**
+		* Checking the closestPositions table and adding new position if distance(positions[i], (x, z)) < closestPositions[SAMPLES]
+		*/
+		Math::Real distance = (positions[i].GetXZ() - xz).LengthSquared();
+		//INFO_LOG("distance = %.2f", distance);
+		if (AlmostEqual(distance, REAL_ZERO))
+		{
+			y = positions[i].GetY();
+			foundPerfectMatch = true;
+			break;
+		}
+		int index = SAMPLES;
+		for (; index > 0; --index)
+		{
+			if (distance >= closestPositionsDistances[index - 1])
+			{
+				break;
+			}
+		}
+		//INFO_LOG("index = %d", index);
+		if (index < SAMPLES)
+		{
+			for (int j = SAMPLES - 1; j > index; --j)
+			{
+				closestPositionsDistances[j] = closestPositionsDistances[j - 1];
+				closestPositions[j] = closestPositions[j - 1];
+			}
+			closestPositionsDistances[index] = distance;
+			closestPositions[index] = positions[i];
+		}
+	}
+
+	//INFO_LOG("closestPositions = { %s, %s, %s, %s }", closestPositions[0].ToString().c_str(), closestPositions[1].ToString().c_str(),
+	//	closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
+
+	if (!foundPerfectMatch)
+	{
+		y = REAL_ZERO;
+		for (int i = 0; i < SAMPLES; ++i)
+		{
+			y += closestPositions[i].GetY();
+		}
+		y /= static_cast<Math::Real>(SAMPLES);
+	}
+
+	lastX = xz.GetX();
+	lastZ = xz.GetY(); // in this case GetY() returns Z
+
+	if (headPositionHeightAdjustmentEnabled)
+	{
+		y += m_headPositionHeightAdjustment; // head position adjustment
+	}
+	lastY = y;
+
+	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+#elif defined HEIGHTMAP_KD_TREE
+	Math::Real y = m_kdTree->SearchNearestValue(x, z);
+	if (headPositionHeightAdjustmentEnabled)
+	{
+		y += m_headPositionHeightAdjustment; // head position adjustment
+	}
+	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+#endif
+
+#ifdef MEASURE_MESH_TIME_ENABLED
+	timer.Stop();
+	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString().c_str());
+#endif
+
+	return y;
+}
+
+Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled /* = false */) const
+{
+	return GetHeightAt(xz.GetX(), xz.GetY(), lastX, lastZ, lastHeight, headPositionHeightAdjustmentEnabled);
+}
+
+Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled /* = false */) const
+{
+#ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
 	timer.Start();
 #endif
@@ -627,22 +742,19 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool he
 
 	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_KD_TREE
-	if (Math::AlmostEqual(xz.GetX(), m_lastX) && Math::AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, m_lastZ))
+	if (Math::AlmostEqual(x, lastX) && Math::AlmostEqual(z, lastZ))
 	{
-		return m_lastY;
+		return lastHeight;
 	}
-	Math::Real y = m_kdTree->SearchNearestValue(xz);
-	m_lastX = xz.GetX();
-	m_lastZ = xz.GetY(); // in this case GetY() returns Z
+	Math::Real y = m_kdTree->SearchNearestValue(x, z);
 	if (headPositionHeightAdjustmentEnabled)
 	{
 		y += m_headPositionHeightAdjustment; // head position adjustment
 	}
-	m_lastY = y;
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #endif
 
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
 	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString().c_str());
 #endif
@@ -698,7 +810,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 		positions[i] = uniquePositions[i];
 	}
 #elif defined HEIGHTMAP_KD_TREE
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t begin = clock(); // TODO: Replace with Utility::Timer
 #endif
 	DEBUG_LOG("Terrain consists of %d positions", positions.size());
@@ -709,7 +821,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 	}
 	std::vector<Math::Vector3D> uniquePositions;
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
-#ifdef MEASURE_TIME_ENABLED
+#ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t end = clock(); // TODO: Replace with Utility::Timer
 	DEBUG_LOG("Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif

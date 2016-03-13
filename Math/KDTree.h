@@ -37,6 +37,15 @@ public:
 	MATH_API Real SearchNearestValue(const Vector2D& position) const;
 
 	/// <summary>
+	/// Searches the tree to find specific number of (<see cref="m_numberOfSamples"/>) closest tree nodes to the given <paramref name="position"/>.
+	/// Then it interpolates their values based on their distances to the specified <paramref name="position"/> and returns the result.
+	/// </summary>
+	/// <param name="posX">The X component of the position for which we want to determine the nearest value.</param>
+	/// <param name="posZ">The Z component of the position for which we want to determine the nearest value.</param>
+	/// <returns>The interpolated nearest value for the given <paramref name="position"/>.</returns>
+	MATH_API Real SearchNearestValue(Math::Real posX, Math::Real posZ) const;
+
+	/// <summary>
 	/// Returns <code>true</code> if current node is a leaf in a tree hierarchy. If current node has left or right child <code>false</code> is returned.
 	/// </summary>
 	/// <returns><code>true</code> if current node is a leaf and <code>false</code> otherwise.</returns>
@@ -54,6 +63,7 @@ public:
 private:
 	void BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth);
 	void SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
+	void SearchNearestValue(Math::Real x, Math::Real z, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
 	std::string ToString(int depth) const;
 /* ==================== Non-static member functions end ==================== */
 

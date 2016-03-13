@@ -15,26 +15,27 @@ namespace Engine
 
 	class GravityComponent : public GameComponent, public IUpdateable
 	{
-		/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions begin ==================== */
 	private:
 		static const Math::Vector3D GRAVITY_ACCELERATION;
-		/* ==================== Static variables and functions end ==================== */
+	/* ==================== Static variables and functions end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GravityComponent(Rendering::TerrainMesh const* terrainMesh);
+		ENGINE_API GravityComponent(const Rendering::TerrainMesh* terrainMesh);
 		ENGINE_API virtual ~GravityComponent(void);
-		/* ==================== Constructors and destructors end ==================== */
+	/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+	/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Update(Math::Real deltaTime);
-		/* ==================== Non-static member functions end ==================== */
+	/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::TerrainMesh const* m_terrainMesh;
-		/* ==================== Non-static member variables end ==================== */
+		const Rendering::TerrainMesh* m_terrainMesh;
+		Math::Real m_lastX, m_lastZ, m_lastHeight;
+	/* ==================== Non-static member variables end ==================== */
 	}; /* end class GravityComponent */
 
 } /* end namespace Engine */
