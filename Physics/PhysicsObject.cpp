@@ -17,13 +17,13 @@ PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const 
 	m_totalTorque( /* TODO: Specify total torque */),
 	m_frictionForce( /* TODO: Specify friction force */),
 	m_totalImpulse( /* TODO: Specify total impulse */),
-	m_collider(NULL)
+	m_aabbCollider(NULL)
 {
 }
 
 PhysicsObject::~PhysicsObject()
 {
-	SAFE_DELETE(m_collider);
+	SAFE_DELETE(m_aabbCollider);
 }
 
 void PhysicsObject::Simulate(Math::Real passedTime)
@@ -72,16 +72,16 @@ void PhysicsObject::ApplyFriction(Math::Real gravity)
 void PhysicsObject::AddCollider(Collider* collider)
 {
 	// TODO: For now there is only one collider supported.
-	m_collider = collider;
+	m_aabbCollider = collider;
 }
 
 Math::IntersectInfo PhysicsObject::Intersect(const PhysicsObject& otherPhysicsObject) const
 {
-	if ((m_collider == NULL) || (otherPhysicsObject.GetCollider() == NULL))
+	if ((m_aabbCollider == NULL) || (otherPhysicsObject.GetAABBCollider() == NULL))
 	{
 		return Math::IntersectInfo(false, 0.0f /* some arbitrary value */);
 	}
-	return m_collider->Intersect(*otherPhysicsObject.GetCollider());
+	return m_aabbCollider->Intersect(*otherPhysicsObject.GetAABBCollider());
 }
 
 void PhysicsObject::HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal)

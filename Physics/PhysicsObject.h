@@ -57,8 +57,8 @@ namespace Physics
 		PHYSICS_API void Stop() { m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
 		PHYSICS_API void SetLinearVelocity(const Math::Vector3D& linearVelocity) { m_linearVelocity = linearVelocity; }
 
-		const Collider* GetCollider() const { return m_collider; }
-		void AddCollider(Collider* collider);
+		const Collider* GetAABBCollider() const { return m_aabbCollider; }
+		PHYSICS_API void AddCollider(Collider* aabbCollider);
 		Math::IntersectInfo Intersect(const PhysicsObject& otherPhysicsObject) const;
 		void HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal);
 	/* ==================== Non-static, non-virtual member functions end ==================== */
@@ -115,7 +115,7 @@ namespace Physics
 		/// In the future this should be turned into a tree hierarchy (or other type of hierarchy) of colliders.
 		/// The root collider could be the AABB, next BoundingSphere, etc. It is important that for each pair of parent-child colliders the parent must fully contain the child.
 		/// </remarks>
-		Collider* m_collider;
+		Collider* m_aabbCollider;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class PhysicsObject */
 

@@ -151,6 +151,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABBColliderComponent.h" />
     <ClInclude Include="Builder.h" />
     <ClInclude Include="BuilderDirector.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -181,6 +182,7 @@
     <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AABBColliderComponent.cpp" />
     <ClCompile Include="Builder.cpp" />
     <ClCompile Include="BuilderDirector.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
