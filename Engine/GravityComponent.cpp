@@ -16,7 +16,6 @@ Engine::GravityComponent::GravityComponent(const Rendering::TerrainMesh* terrain
 	m_lastZ(REAL_ZERO),
 	m_lastHeight(REAL_ZERO)
 {
-	CRITICAL_LOG("terrain mesh = %p", terrainMesh);
 	//m_physicsObject->ApplyLinearAcceleration(GRAVITY_ACCELERATION);
 }
 

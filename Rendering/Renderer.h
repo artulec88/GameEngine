@@ -149,9 +149,13 @@ public:
 	RENDERING_API inline void SetDepthFuncAlways() { glDepthFunc(GL_ALWAYS); }
 	RENDERING_API inline void SetDepthFuncDefault() { glDepthFunc(Rendering::glDepthTestFunc); }
 
-	inline size_t GetDirectionalAndSpotLightsCount() const
+	inline size_t GetDirectionalLightsCount() const
 	{
-		return m_directionalAndSpotLights.size();
+		return m_directionalLightsCount;
+	}
+	inline size_t GetSpotLightsCount() const
+	{
+		return m_directionalAndSpotLights.size() - m_directionalLightsCount;
 	}
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
@@ -242,7 +246,7 @@ public:
 	}
 	RENDERING_API const Shader* GetWaterShader() const
 	{
-		return (m_waterLightReflectionEnabled) ? m_waterShader : m_waterNoDirectionalLightShader;
+		return (m_waterLightReflectionEnabled && m_directionalLightsCount > 0 /* && directional light is enabled */) ? m_waterShader : m_waterNoDirectionalLightShader;
 	}
 	RENDERING_API const Shader* GetBillboardShader() const
 	{
@@ -421,6 +425,7 @@ private:
 	Texture* m_shadowMaps[SHADOW_MAPS_COUNT];
 	Texture* m_shadowMapTempTargets[SHADOW_MAPS_COUNT];
 
+	size_t m_directionalLightsCount;
 	std::vector<Lighting::BaseLight*> m_lights;
 	std::vector<Lighting::BaseLight*> m_directionalAndSpotLights;
 	std::vector<Lighting::PointLight*> m_pointLights;

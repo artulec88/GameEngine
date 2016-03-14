@@ -224,7 +224,8 @@ void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) co
 void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	for (size_t i = 0; i < renderer->GetDirectionalAndSpotLightsCount(); ++i)
+	size_t lightsCount = renderer->GetDirectionalLightsCount() + renderer->GetSpotLightsCount();
+	for (size_t i = 0; i < lightsCount; ++i)
 	{
 		const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(i);
 		if (!currentLight->IsEnabled())

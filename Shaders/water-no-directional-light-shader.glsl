@@ -30,8 +30,6 @@ uniform sampler2D R_waterDepthMap;
 uniform sampler2D R_waterDUDVMap;
 uniform sampler2D R_waterNormalMap;
 
-uniform DirectionalLight R_directionalLight;
-
 uniform float R_nearPlane;
 uniform float R_farPlane;
 uniform float R_waterWaveStrength;

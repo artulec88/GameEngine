@@ -85,6 +85,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_cubeShadowMap(NULL),
 	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	//m_shadowMapTempTargets(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
+	m_directionalLightsCount(0),
 	m_lights(),
 	m_directionalAndSpotLights(),
 	m_pointLights(),
@@ -116,7 +117,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterNormalMap(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
-	m_waterLightReflectionEnabled(true),
+	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE("waterNormalVerticalFactor", 3.0f)),
 	m_waterShader(NULL),
@@ -1104,6 +1105,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 	{
 		INFO_LOG("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
 		m_waterLightReflectionEnabled = true;
+		++m_directionalLightsCount;
 		m_directionalAndSpotLights.push_back(directionalLight);
 	}
 	else
