@@ -134,7 +134,7 @@ void Rendering::Mesh::Initialize()
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\" + m_fileName).c_str(),
-		aiProcess_Triangulate |
+		aiProcess_Triangulate | /* aiProcess_FlipWindingOrder | */
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace);
@@ -479,7 +479,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 	std::vector<Math::Vector3D> positions;
 	std::vector<Vertex> vertices;
 	int indices[INDICES_COUNT];
-	for (int i = 0; i < VERTEX_COUNT; ++i)
+	for (int i = vertexCountMinusOne; i >= 0; --i)
 	{
 		const Math::Real iReal = static_cast<Math::Real>(i);
 		for (int j = 0; j < VERTEX_COUNT; ++j)
@@ -492,7 +492,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 			vertices.push_back(Vertex(position, texCoord, normal));
 		}
 	}
-	int pointer = 0;
+	int pointer = -1;
 	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
 	{
 		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
@@ -501,15 +501,27 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 			int topRight = topLeft + 1;
 			int bottomLeft = ((gz + 1) * VERTEX_COUNT) + gx;
 			int bottomRight = bottomLeft + 1;
-			indices[pointer] = topLeft;
-			indices[++pointer] = bottomLeft;
-			indices[++pointer] = topRight;
+			indices[++pointer] = topLeft;
 			indices[++pointer] = topRight;
 			indices[++pointer] = bottomLeft;
+			indices[++pointer] = bottomLeft;
+			indices[++pointer] = topRight;
 			indices[++pointer] = bottomRight;
 		}
 	}
 	
+//#ifdef DELOCUST_ENABLED
+	//int i = 0;
+	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
+	//{
+	//	CRITICAL_LOG("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, vertexItr->m_pos.ToString().c_str(), vertexItr->m_texCoord.ToString().c_str(), vertexItr->m_normal.ToString().c_str());
+	//}
+	//for (size_t i = 0; i < INDICES_COUNT; ++i)
+	//{
+	//	ERROR_LOG("index[%d]: %d", i, indices[i]);
+	//}
+//#endif
+
 	SavePositions(positions);
 	AddVertices(&vertices[0], m_positionsCount, &indices[0], INDICES_COUNT, false);
 }

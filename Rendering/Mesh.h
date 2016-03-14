@@ -211,9 +211,9 @@ class TerrainMesh : public Mesh
 /* ==================== Static variables begin ==================== */
 private:
 	/// <summary> The size of the single squared-size terrain tile. </summary>
-	static const int SIZE = 200;
+	static const int SIZE = 800;
 	/// <summary> The number of vertices along each side of the single terrain tile. </summary>
-	static const int VERTEX_COUNT = 16;
+	static const int VERTEX_COUNT = 128;
 	/// <summary> The number of indices. </summary>
 	static const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1);
 /* ==================== Static variables end ==================== */
