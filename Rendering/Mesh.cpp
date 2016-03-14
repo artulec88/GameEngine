@@ -4,6 +4,7 @@
 //#include "OBJModel.h"
 #include "Math\Vector.h"
 #include "Math\FloatingPoint.h"
+#include "stb_image.h"
 
 #include "Utility\Utility.h"
 #include "Utility\IConfig.h"
@@ -149,6 +150,7 @@ void Rendering::Mesh::Initialize()
 	std::vector<Math::Vector3D> positions;
 	std::vector<int> indices;
 
+	//Math::Vector3D tangentsSum;
 	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	for (unsigned int i = 0; i < model->mNumVertices; ++i)
 	{
@@ -175,10 +177,15 @@ void Rendering::Mesh::Initialize()
 		Math::Vector3D vertexTangent(pTangent->x, pTangent->y, pTangent->z);
 		//Math::Vector3D vertexBitangent(pBitangent->x, pBitangent->y, pBitangent->z);
 		
+		//tangentsSum += vertexTangent;
+
 		//Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent, vertexBitangent);
 		Vertex vertex(vertexPos, vertexTexCoord, vertexNormal, vertexTangent);
 		vertices.push_back(vertex);
 	}
+
+	//Math::Vector3D averageTangent = (tangentsSum / model->mNumVertices).Normalized();
+	//CRITICAL_LOG("Average tangent for mesh %s = %s", name.c_str(), averageTangent.ToString().c_str());
 
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
@@ -447,11 +454,17 @@ void Rendering::GuiMesh::Draw() const
 	glDisableVertexAttribArray(0);
 }
 
+/* static */ const float Rendering::TerrainMesh::MAX_HEIGHT = 40.0f;
+/* static */ const float Rendering::TerrainMesh::MAX_PIXEL_COLOR = 255.0f;
+
 Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
-	m_positionsCount(0)
+	m_positionsCount(0),
+	m_heightMapWidth(0),
+	m_heightMapHeight(0),
+	m_heightMapData(NULL)
 #ifdef HEIGHTMAP_SORT_TABLE
 	,m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
@@ -461,13 +474,16 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 {
 }
 
-Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
 	m_positions(NULL),
-	m_positionsCount(VERTEX_COUNT * VERTEX_COUNT)
+	m_positionsCount(0),
+	m_heightMapWidth(0),
+	m_heightMapHeight(0),
+	m_heightMapData(NULL)
 #ifdef HEIGHTMAP_SORT_TABLE
 	, m_lastClosestPositionIndex(0)
 #elif defined HEIGHTMAP_KD_TREE
@@ -475,24 +491,51 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #endif
 {
+	/* Loading heightmap begin */
+	std::string name = heightMapFileName;
+	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
+	if (tmp != NULL)
+	{
+		name.assign(tmp + 1);
+	}
+	int bytesPerPixel;
+	//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
+	m_heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
+		&m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
+	CHECK_CONDITION_EXIT(m_heightMapData != NULL, Utility::Error, "Unable to load terrain height map from the file \"%s\"", name.c_str());
+	//for (int i = 0; i < m_heightMapWidth; ++i)
+	//{
+	//	for (int j = 0; j < m_heightMapHeight; ++j)
+	//	{
+	//		CRITICAL_LOG("HeightMap[%d][%d] = %d", i, j, m_heightMapData[i * m_heightMapWidth + j]);
+	//	}
+	//}
+	/* Loading heightmap finished */
+
+	const int VERTEX_COUNT = m_heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
+	m_positionsCount = VERTEX_COUNT * VERTEX_COUNT;
+	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
+
 	const int vertexCountMinusOne = VERTEX_COUNT - 1;
 	std::vector<Math::Vector3D> positions;
 	std::vector<Vertex> vertices;
-	int indices[INDICES_COUNT];
 	for (int i = vertexCountMinusOne; i >= 0; --i)
 	{
 		const Math::Real iReal = static_cast<Math::Real>(i);
 		for (int j = 0; j < VERTEX_COUNT; ++j)
 		{
 			const Math::Real jReal = static_cast<Math::Real>(j);
-			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, REAL_ZERO, iReal / vertexCountMinusOne * SIZE);
+			Math::Real terrainHeight = GetHeightAt(j, i);
+			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, terrainHeight, iReal / vertexCountMinusOne * SIZE);
 			positions.push_back(position);
 			Math::Vector2D texCoord(jReal / vertexCountMinusOne, iReal / vertexCountMinusOne);
-			Math::Vector3D normal(REAL_ZERO, REAL_ONE, REAL_ONE);
-			vertices.push_back(Vertex(position, texCoord, normal));
+			Math::Vector3D normal = CalculateNormal(j, i);
+			Math::Vector3D tangent(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
+			vertices.push_back(Vertex(position, texCoord, normal,tangent));
 		}
 	}
-	int pointer = -1;
+	
+	std::vector<int> indices;
 	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
 	{
 		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
@@ -501,12 +544,12 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 			int topRight = topLeft + 1;
 			int bottomLeft = ((gz + 1) * VERTEX_COUNT) + gx;
 			int bottomRight = bottomLeft + 1;
-			indices[++pointer] = topLeft;
-			indices[++pointer] = topRight;
-			indices[++pointer] = bottomLeft;
-			indices[++pointer] = bottomLeft;
-			indices[++pointer] = topRight;
-			indices[++pointer] = bottomRight;
+			indices.push_back(topLeft);
+			indices.push_back(topRight);
+			indices.push_back(bottomLeft);
+			indices.push_back(bottomLeft);
+			indices.push_back(topRight);
+			indices.push_back(bottomRight);
 		}
 	}
 	
@@ -523,15 +566,36 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum m
 //#endif
 
 	SavePositions(positions);
-	AddVertices(&vertices[0], m_positionsCount, &indices[0], INDICES_COUNT, false);
+	AddVertices(&vertices[0], m_positionsCount, &indices[0], indices.size(), false);
 }
 
 Rendering::TerrainMesh::~TerrainMesh(void)
 {
 	SAFE_DELETE_JUST_TABLE(m_positions);
+	stbi_image_free(m_heightMapData);
 #ifdef HEIGHTMAP_KD_TREE
 	SAFE_DELETE(m_kdTree);
 #endif
+}
+
+Math::Real Rendering::TerrainMesh::GetHeightAt(int x, int z) const
+{
+	// TODO: Range checking
+	CHECK_CONDITION_RETURN(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
+		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
+	Math::Real height = static_cast<Math::Real>(m_heightMapData[x * m_heightMapWidth + z]);
+	return ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
+}
+
+Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z) const
+{
+	Math::Real heightLeft = GetHeightAt(x - 1, z);
+	Math::Real heightRight = GetHeightAt(x + 1, z);
+	Math::Real heightDown = GetHeightAt(x, z - 1);
+	Math::Real heightUp = GetHeightAt(x, z + 1);
+	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+	normal.Normalize();
+	return normal;
 }
 
 Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */) const

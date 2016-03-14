@@ -177,7 +177,7 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new Engine::GameNode();
-	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO);
+	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
 	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);

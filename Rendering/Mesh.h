@@ -212,16 +212,18 @@ class TerrainMesh : public Mesh
 private:
 	/// <summary> The size of the single squared-size terrain tile. </summary>
 	static const int SIZE = 800;
-	/// <summary> The number of vertices along each side of the single terrain tile. </summary>
-	static const int VERTEX_COUNT = 128;
-	/// <summary> The number of indices. </summary>
-	static const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1);
+	/// <summary> The maximal height of the terrain.
+	/// The negative value represents the minimal height of the terrain. In other words, the terrain height always lies in range [-MAX_HEIGHT; MAX_HEIGHT].
+	/// </summary>
+	static const float MAX_HEIGHT;
+	/// <summary> The maximum value for color of the single pixel in the height map. </summary>
+	static const float MAX_PIXEL_COLOR;
 /* ==================== Static variables end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
 	TerrainMesh(TerrainMesh& terrainMesh);
@@ -237,6 +239,9 @@ public:
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
+private:
+	Math::Real GetHeightAt(int x, int z) const;
+	Math::Vector3D CalculateNormal(int x, int z) const;
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -250,6 +255,9 @@ private:
 	const Math::Real m_headPositionHeightAdjustment;
 	Math::Vector3D* m_positions;
 	size_t m_positionsCount;
+
+	int m_heightMapWidth, m_heightMapHeight;
+	unsigned char* m_heightMapData;
 #ifdef HEIGHTMAP_SORT_TABLE
 	int m_lastClosestPositionIndex;
 #elif defined HEIGHTMAP_KD_TREE
