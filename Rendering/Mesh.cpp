@@ -459,17 +459,18 @@ void Rendering::GuiMesh::Draw() const
 
 Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
-	m_positions(NULL),
+	m_x(REAL_ZERO),
+	m_z(REAL_ZERO),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f))
+#ifdef HEIGHTMAP_KD_TREE
+	,m_positions(NULL),
 	m_positionsCount(0),
-	m_heightMapWidth(0),
-	m_heightMapHeight(0),
-	m_heightMapData(NULL)
-#ifdef HEIGHTMAP_SORT_TABLE
-	,m_lastClosestPositionIndex(0)
-#elif defined HEIGHTMAP_KD_TREE
-	,m_kdTree(NULL),
+	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+#elif defined HEIGHTMAP_HEIGHTS
+	,m_heightMapWidth(0),
+	m_heightMapHeight(0),
+	m_heights(NULL)
 #endif
 {
 }
@@ -478,17 +479,16 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
-	m_positions(NULL),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f))
+#ifdef HEIGHTMAP_KD_TREE
+	, m_positions(NULL),
 	m_positionsCount(0),
-	m_heightMapWidth(0),
-	m_heightMapHeight(0),
-	m_heightMapData(NULL)
-#ifdef HEIGHTMAP_SORT_TABLE
-	, m_lastClosestPositionIndex(0)
-#elif defined HEIGHTMAP_KD_TREE
-	, m_kdTree(NULL),
+	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+#elif defined HEIGHTMAP_HEIGHTS
+	, m_heightMapWidth(0),
+	m_heightMapHeight(0),
+	m_heights(NULL)
 #endif
 {
 	/* Loading heightmap begin */
@@ -498,10 +498,10 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	{
 		name.assign(tmp + 1);
 	}
-	int bytesPerPixel;
+	int heightMapWidth, heightMapHeight, bytesPerPixel;
 	//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
-	m_heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
-		&m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
+	unsigned char* heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
+		&heightMapWidth, &heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
 	CHECK_CONDITION_EXIT(m_heightMapData != NULL, Utility::Error, "Unable to load terrain height map from the file \"%s\"", name.c_str());
 	//for (int i = 0; i < m_heightMapWidth; ++i)
 	//{
@@ -512,8 +512,12 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	//}
 	/* Loading heightmap finished */
 
-	const int VERTEX_COUNT = m_heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
+	const int VERTEX_COUNT = heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
+#ifdef HEIGHTMAP_KD_TREE
 	m_positionsCount = VERTEX_COUNT * VERTEX_COUNT;
+#else
+	m_heights = new Math::Real[VERTEX_COUNT * VERTEX_COUNT];
+#endif
 	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
 
 	const int vertexCountMinusOne = VERTEX_COUNT - 1;
@@ -525,15 +529,16 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 		for (int j = 0; j < VERTEX_COUNT; ++j)
 		{
 			const Math::Real jReal = static_cast<Math::Real>(j);
-			Math::Real terrainHeight = GetHeightAt(j, i);
+			Math::Real terrainHeight = GetHeightAt(j, i, heightMapData, heightMapWidth, heightMapHeight);
 			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, terrainHeight, iReal / vertexCountMinusOne * SIZE);
 			positions.push_back(position);
 			Math::Vector2D texCoord(jReal / vertexCountMinusOne, iReal / vertexCountMinusOne);
-			Math::Vector3D normal = CalculateNormal(j, i);
+			Math::Vector3D normal = CalculateNormal(j, i, heightMapData, heightMapWidth, heightMapHeight);
 			Math::Vector3D tangent(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
 			vertices.push_back(Vertex(position, texCoord, normal,tangent));
 		}
 	}
+	stbi_image_free(heightMapData);
 	
 	std::vector<int> indices;
 	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
@@ -566,33 +571,36 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 //#endif
 
 	SavePositions(positions);
-	AddVertices(&vertices[0], m_positionsCount, &indices[0], indices.size(), false);
+	AddVertices(&vertices[0], vertices.size(), &indices[0], indices.size(), false);
 }
 
 Rendering::TerrainMesh::~TerrainMesh(void)
 {
-	SAFE_DELETE_JUST_TABLE(m_positions);
-	stbi_image_free(m_heightMapData);
 #ifdef HEIGHTMAP_KD_TREE
+	SAFE_DELETE_JUST_TABLE(m_positions);
 	SAFE_DELETE(m_kdTree);
 #endif
 }
 
-Math::Real Rendering::TerrainMesh::GetHeightAt(int x, int z) const
+Math::Real Rendering::TerrainMesh::GetHeightAt(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const
 {
 	// TODO: Range checking
-	CHECK_CONDITION_RETURN(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
+	CHECK_CONDITION_RETURN(x >= 0 && x < heightMapWidth && z >= 0 && z < heightMapHeight, REAL_ZERO,
 		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
-	Math::Real height = static_cast<Math::Real>(m_heightMapData[x * m_heightMapWidth + z]);
-	return ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
+	Math::Real height = static_cast<Math::Real>(heightMapData[x * heightMapWidth + z]);
+	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
+#ifdef HEIGHTMAP_HEIGHTS
+	m_heights[x * heightMapWidth + z] = height;
+#endif
+	return height;
 }
 
-Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z) const
+Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const
 {
-	Math::Real heightLeft = GetHeightAt(x - 1, z);
-	Math::Real heightRight = GetHeightAt(x + 1, z);
-	Math::Real heightDown = GetHeightAt(x, z - 1);
-	Math::Real heightUp = GetHeightAt(x, z + 1);
+	Math::Real heightLeft = GetHeightAt(x - 1, z, heightMapData, heightMapWidth, heightMapHeight);
+	Math::Real heightRight = GetHeightAt(x + 1, z, heightMapData, heightMapWidth, heightMapHeight);
+	Math::Real heightDown = GetHeightAt(x, z - 1, heightMapData, heightMapWidth, heightMapHeight);
+	Math::Real heightUp = GetHeightAt(x, z + 1, heightMapData, heightMapWidth, heightMapHeight);
 	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;
@@ -708,126 +716,8 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 		y += m_headPositionHeightAdjustment; // head position adjustment
 	}
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
-#endif
-
-#ifdef MEASURE_MESH_TIME_ENABLED
-	timer.Stop();
-	DEBUG_LOG("Camera's height calculation took %s", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString().c_str());
-#endif
-
-	return y;
-}
-
-Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled /* = false */) const
-{
-	return GetHeightAt(xz.GetX(), xz.GetY(), lastX, lastZ, lastHeight, headPositionHeightAdjustmentEnabled);
-}
-
-Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled /* = false */) const
-{
-#ifdef MEASURE_MESH_TIME_ENABLED
-	Utility::Timing::Timer timer;
-	timer.Start();
-#endif
-#ifdef HEIGHTMAP_BRUTE_FORCE
-	if (AlmostEqual(xz.GetX(), lastX) && AlmostEqual(xz.GetY() /* in this case GetY() returns Z */, lastZ))
-	{
-		return lastY;
-	}
-
-	/**
-	 * TODO: Calculate the y value. Add additional parameter to GetHeightAt function which indicates the interpolation method.
-	 * This interpolation method would be used for situations when the pair (x, z) is not found in the this->positions table.
-	 */
-	/**
-	 * TODO: Optimization!!!
-	 */
-	const int SAMPLES = 4;
-	Math::Vector3D closestPositions [SAMPLES];
-	Math::Real closestPositionsDistances [SAMPLES];
-	for (int i = 0; i < SAMPLES; ++i)
-	{
-		closestPositions[i].SetX(REAL_MAX);
-		closestPositions[i].SetY(REAL_MAX);
-		closestPositions[i].SetZ(REAL_MAX);
-		closestPositionsDistances[i] = (closestPositions[i].GetXZ() - xz).LengthSquared();
-	}
-	Math::Real y = REAL_ZERO;
-	bool foundPerfectMatch = false;
-	for (int i = 0; i < positionsCount; ++i)
-	{
-		//if (i % 10000 == 0)
-		//{
-		//	DEBUG_LOG("i = %d", i);
-		//}
-
-
-		/**
-		 * Checking the closestPositions table and adding new position if distance(positions[i], (x, z)) < closestPositions[SAMPLES]
-		 */
-		Math::Real distance = (positions[i].GetXZ() - xz).LengthSquared();
-		//INFO_LOG("distance = %.2f", distance);
-		if (AlmostEqual(distance, REAL_ZERO))
-		{
-			y = positions[i].GetY();
-			foundPerfectMatch = true;
-			break;
-		}
-		int index = SAMPLES;
-		for (; index > 0; --index)
-		{
-			if (distance >= closestPositionsDistances[index - 1])
-			{
-				break;
-			}
-		}
-		//INFO_LOG("index = %d", index);
-		if (index < SAMPLES)
-		{
-			for (int j = SAMPLES - 1; j > index; --j)
-			{
-				closestPositionsDistances[j] = closestPositionsDistances[j - 1];
-				closestPositions[j] = closestPositions[j - 1];
-			}
-			closestPositionsDistances[index] = distance;
-			closestPositions[index] = positions[i];
-		}
-	}
-
-	//INFO_LOG("closestPositions = { %s, %s, %s, %s }", closestPositions[0].ToString().c_str(), closestPositions[1].ToString().c_str(),
-	//	closestPositions[2].ToString().c_str(), closestPositions[3].ToString().c_str());
-
-	if (!foundPerfectMatch)
-	{
-		y = REAL_ZERO;
-		for (int i = 0; i < SAMPLES; ++i)
-		{
-			y += closestPositions[i].GetY();
-		}
-		y /= static_cast<Math::Real>(SAMPLES);
-	}
-
-	lastX = xz.GetX();
-	lastZ = xz.GetY(); // in this case GetY() returns Z
-
-	if (headPositionHeightAdjustmentEnabled)
-	{
-		y += m_headPositionHeightAdjustment; // head position adjustment
-	}
-	lastY = y;
-
-	//NOTICE_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
-#elif defined HEIGHTMAP_KD_TREE
-	if (Math::AlmostEqual(x, lastX) && Math::AlmostEqual(z, lastZ))
-	{
-		return lastHeight;
-	}
-	Math::Real y = m_kdTree->SearchNearestValue(x, z);
-	if (headPositionHeightAdjustmentEnabled)
-	{
-		y += m_headPositionHeightAdjustment; // head position adjustment
-	}
-	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+#elif defined HEIGHTMAP_HEIGHTS
+	Math::Real y = m_heights[0];
 #endif
 
 #ifdef MEASURE_MESH_TIME_ENABLED
@@ -844,48 +734,7 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, Math:
  */
 void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
 {
-#ifdef HEIGHTMAP_BRUTE_FORCE
-	positionsCount = vertices.size();
-	INFO_LOG("Terrain consists of %d positions", positionsCount);
-	positions = new Math::Vector3D[positionsCount];
-	for (unsigned int i = 0; i < positionsCount; ++i)
-	{
-		positions[i] = vertices[i].pos;
-	}
-#elif defined HEIGHTMAP_SORT_TABLE
-	INFO_LOG("Terrain consists of %d positions", vertices.size());
-	std::vector<Math::Vector3D> uniquePositions;
-	for (unsigned int i = 0; i < vertices.size(); ++i)
-	{
-		bool isPositionUnique = true;
-		for (unsigned int j = 0; j < uniquePositions.size(); ++j)
-		{
-			if (uniquePositions[j] == vertices[i].pos)
-			{
-				isPositionUnique = false;
-				break;
-				//EMERGENCY_LOG("Positions %d and %d are equal (%s == %s)", i, j,
-				//	positions[i].ToString().c_str(), positions[j].ToString().c_str());
-			}
-		}
-		if (isPositionUnique)
-		{
-			uniquePositions.push_back(vertices[i].pos);
-		}
-	}
-
-	//std::sort
-
-	ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_X);
-
-	positionsCount = uniquePositions.size();;
-	INFO_LOG("Terrain consists of %d unique positions", positionsCount);
-	positions = new Math::Vector3D[positionsCount];
-	for (unsigned int i = 0; i < positionsCount; ++i)
-	{
-		positions[i] = uniquePositions[i];
-	}
-#elif defined HEIGHTMAP_KD_TREE
+#ifdef HEIGHTMAP_KD_TREE
 #ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t begin = clock(); // TODO: Replace with Utility::Timer
 #endif
@@ -924,6 +773,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 
 void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
+#ifdef HEIGHTMAP_KD_TREE
 	DEBUG_LOG("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 	CHECK_CONDITION_EXIT(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
 	for (int i = 0; i < m_positionsCount; ++i)
@@ -936,4 +786,5 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 		//}
 	}
 	m_kdTree = new Math::KDTree(m_positions, m_positionsCount, m_kdTreeSamples);
+#endif
 }

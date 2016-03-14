@@ -13,8 +13,8 @@
 #include <vector>
 
 //#define HEIGHTMAP_BRUTE_FORCE
-//#define HEIGHTMAP_SORT_TABLE
 #define HEIGHTMAP_KD_TREE
+//#define HEIGHTMAP_HEIGHTS
 
 #ifdef HEIGHTMAP_KD_TREE
 #include "Math\KDTree.h"
@@ -234,14 +234,12 @@ private: // disable copy constructor and assignment operator
 public:
 	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false) const;
 	RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y, bool headPositionHeightAdjustmentEnabled = false) const;
-	RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled = false) const;
-	RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y, Math::Real lastX, Math::Real lastZ, Math::Real lastHeight, bool headPositionHeightAdjustmentEnabled = false) const;
 	RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
 private:
-	Math::Real GetHeightAt(int x, int z) const;
-	Math::Vector3D CalculateNormal(int x, int z) const;
+	Math::Real GetHeightAt(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const;
+	Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const;
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -253,16 +251,13 @@ private:
 	Math::Real m_z;
 
 	const Math::Real m_headPositionHeightAdjustment;
+#ifdef HEIGHTMAP_KD_TREE
 	Math::Vector3D* m_positions;
 	size_t m_positionsCount;
-
-	int m_heightMapWidth, m_heightMapHeight;
-	unsigned char* m_heightMapData;
-#ifdef HEIGHTMAP_SORT_TABLE
-	int m_lastClosestPositionIndex;
-#elif defined HEIGHTMAP_KD_TREE
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
+#elif defined HEIGHTMAP_HEIGHTS
+	float* m_heights;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TerrainMesh */
