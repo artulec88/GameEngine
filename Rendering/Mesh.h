@@ -251,9 +251,9 @@ private:
 	Math::Real m_z;
 
 	const Math::Real m_headPositionHeightAdjustment;
+	size_t m_vertexCount;
 #ifdef HEIGHTMAP_KD_TREE
 	Math::Vector3D* m_positions;
-	size_t m_positionsCount;
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
 #elif defined HEIGHTMAP_HEIGHTS

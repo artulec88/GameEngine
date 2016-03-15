@@ -461,10 +461,10 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	Mesh(fileName, mode),
 	m_x(REAL_ZERO),
 	m_z(REAL_ZERO),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f))
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_vertexCount(0)
 #ifdef HEIGHTMAP_KD_TREE
 	,m_positions(NULL),
-	m_positionsCount(0),
 	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #elif defined HEIGHTMAP_HEIGHTS
@@ -479,10 +479,10 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f))
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_vertexCount(0)
 #ifdef HEIGHTMAP_KD_TREE
 	, m_positions(NULL),
-	m_positionsCount(0),
 	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #elif defined HEIGHTMAP_HEIGHTS
@@ -514,7 +514,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 
 	const int VERTEX_COUNT = heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
 #ifdef HEIGHTMAP_KD_TREE
-	m_positionsCount = VERTEX_COUNT * VERTEX_COUNT;
+	m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 #else
 	m_heights = new Math::Real[VERTEX_COUNT * VERTEX_COUNT];
 #endif
@@ -755,10 +755,10 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 	//INFO_LOG("The minimum value is %s", uniquePositions[0].ToString().c_str());
 	//INFO_LOG("The maximum value is %s", uniquePositions[uniquePositions.size() - 1].ToString().c_str());
 
-	m_positionsCount = uniquePositions.size();
-	INFO_LOG("Terrain consists of %d unique positions", m_positionsCount);
-	m_positions = new Math::Vector3D[m_positionsCount];
-	for (int i = 0; i < m_positionsCount; ++i)
+	m_vertexCount = uniquePositions.size();
+	INFO_LOG("Terrain consists of %d unique positions", m_vertexCount);
+	m_positions = new Math::Vector3D[m_vertexCount];
+	for (int i = 0; i < m_vertexCount; ++i)
 	{
 		m_positions[i] = uniquePositions[i];
 	}
@@ -776,15 +776,15 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 #ifdef HEIGHTMAP_KD_TREE
 	DEBUG_LOG("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
 	CHECK_CONDITION_EXIT(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
-	for (int i = 0; i < m_positionsCount; ++i)
+	for (int i = 0; i < m_vertexCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
 		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
-		//if ((i % 1000 == 0) || (i == positionsCount - 1))
+		//if ((i % 1000 == 0) || (i == m_vertexCount - 1))
 		//{
 		//	DELOCUST_LOG("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
 		//}
 	}
-	m_kdTree = new Math::KDTree(m_positions, m_positionsCount, m_kdTreeSamples);
+	m_kdTree = new Math::KDTree(m_positions, m_vertexCount, m_kdTreeSamples);
 #endif
 }
