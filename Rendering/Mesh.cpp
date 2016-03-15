@@ -6,7 +6,6 @@
 #include "Math\FloatingPoint.h"
 #include "stb_image.h"
 
-#include "Utility\Utility.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
@@ -468,9 +467,7 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #elif defined HEIGHTMAP_HEIGHTS
-	,m_heightMapWidth(0),
-	m_heightMapHeight(0),
-	m_heights(NULL)
+	, m_heights(NULL)
 #endif
 {
 }
@@ -486,9 +483,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	m_kdTree(NULL),
 	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
 #elif defined HEIGHTMAP_HEIGHTS
-	, m_heightMapWidth(0),
-	m_heightMapHeight(0),
-	m_heights(NULL)
+	, m_heights(NULL)
 #endif
 {
 	/* Loading heightmap begin */
@@ -512,24 +507,31 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	//}
 	/* Loading heightmap finished */
 
-	const int VERTEX_COUNT = heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
+	m_vertexCount = heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
 #ifdef HEIGHTMAP_KD_TREE
-	m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
+	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 #else
-	m_heights = new Math::Real[VERTEX_COUNT * VERTEX_COUNT];
+	m_heights = new Math::Real*[m_vertexCount];
+	for (int i = 0; i < m_vertexCount; ++i)
+	{
+		m_heights[i] = new Math::Real[m_vertexCount];
+	}
 #endif
 	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
 
-	const int vertexCountMinusOne = VERTEX_COUNT - 1;
+	const int vertexCountMinusOne = m_vertexCount - 1;
 	std::vector<Math::Vector3D> positions;
 	std::vector<Vertex> vertices;
 	for (int i = vertexCountMinusOne; i >= 0; --i)
 	{
 		const Math::Real iReal = static_cast<Math::Real>(i);
-		for (int j = 0; j < VERTEX_COUNT; ++j)
+		for (int j = 0; j < m_vertexCount; ++j)
 		{
 			const Math::Real jReal = static_cast<Math::Real>(j);
 			Math::Real terrainHeight = GetHeightAt(j, i, heightMapData, heightMapWidth, heightMapHeight);
+#ifdef HEIGHTMAP_HEIGHTS
+			m_heights[i][j] = terrainHeight;
+#endif
 			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, terrainHeight, iReal / vertexCountMinusOne * SIZE);
 			positions.push_back(position);
 			Math::Vector2D texCoord(jReal / vertexCountMinusOne, iReal / vertexCountMinusOne);
@@ -545,9 +547,9 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	{
 		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
 		{
-			int topLeft = (gz * VERTEX_COUNT) + gx;
+			int topLeft = (gz * m_vertexCount) + gx;
 			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * VERTEX_COUNT) + gx;
+			int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
 			int bottomRight = bottomLeft + 1;
 			indices.push_back(topLeft);
 			indices.push_back(topRight);
@@ -579,6 +581,8 @@ Rendering::TerrainMesh::~TerrainMesh(void)
 #ifdef HEIGHTMAP_KD_TREE
 	SAFE_DELETE_JUST_TABLE(m_positions);
 	SAFE_DELETE(m_kdTree);
+#elif defined HEIGHTMAP_HEIGHTS
+	SAFE_DELETE_WHOLE_TABLE(m_heights, m_vertexCount);
 #endif
 }
 
@@ -588,11 +592,7 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(int x, int z, unsigned char* heig
 	CHECK_CONDITION_RETURN(x >= 0 && x < heightMapWidth && z >= 0 && z < heightMapHeight, REAL_ZERO,
 		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
 	Math::Real height = static_cast<Math::Real>(heightMapData[x * heightMapWidth + z]);
-	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
-#ifdef HEIGHTMAP_HEIGHTS
-	m_heights[x * heightMapWidth + z] = height;
-#endif
-	return height;
+	return ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
 }
 
 Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const
@@ -717,7 +717,7 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 	}
 	//DEBUG_LOG("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
 #elif defined HEIGHTMAP_HEIGHTS
-	Math::Real y = m_heights[0];
+	Math::Real y = m_heights[0][0];
 #endif
 
 #ifdef MEASURE_MESH_TIME_ENABLED

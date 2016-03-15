@@ -257,7 +257,7 @@ private:
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
 #elif defined HEIGHTMAP_HEIGHTS
-	float* m_heights;
+	float** m_heights; // TODO: Make it one-dimensional
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TerrainMesh */
