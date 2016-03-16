@@ -167,6 +167,8 @@ void Rendering::InitGraphics(int width, int height)
 	glEnable(GL_CLIP_DISTANCE0); // Enabled plane clipping // glEnable(GL_CLIP_PLANE0)
 
 	// TODO: Use GL_LINE instead of GL_FILL to make the scene rendered in wireframe. Make it an option in the AntTweakBar to switch between normal and wireframe modes.
+	//glEnable(GL_POLYGON_OFFSET_LINE);
+	//glPolygonOffset(-1, -1);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	NOTICE_LOG("Initializing graphics finished successfully");

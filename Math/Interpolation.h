@@ -2,10 +2,19 @@
 #define __MATH_INTERPOLATION_H__
 
 #include "Math.h"
+#include "Vector.h"
 
-namespace Math {
+namespace Math
+{
+
 namespace Interpolation
 {
+	MATH_API Math::Real BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos);
+	MATH_API Math::Real BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
+		Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
+		Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
+		Math::Real xPos, Math::Real zPos);
+
 	/// <summary> Interpolator class serves as a base class for all types of interpolation methods. </summary>
 	template <class T>
 	class Interpolator
@@ -32,16 +41,16 @@ namespace Interpolation
 	template <class T>
 	class LinearInterpolator : public Interpolator<T>
 	{
-		/* ==================== Constructors and destructors begin ==================== */
+	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		MATH_API LinearInterpolator(const T* interpolationObjects, int interpolationObjectsCount);
 		MATH_API virtual ~LinearInterpolator();
-		/* ==================== Constructors and destructors end ==================== */
+	/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+	/* ==================== Non-static member functions begin ==================== */
 	public:
 		MATH_API virtual T Interpolate(Real time, const Real* times) const;
-		/* ==================== Non-static member functions end ==================== */
+	/* ==================== Non-static member functions end ==================== */
 	}; /* end class LinearInterpolator */
 
 	/// <summary> Hermite interpolator class. </summary>
@@ -68,6 +77,26 @@ namespace Interpolation
 		T* m_derivatives;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class HermiteInterpolator */
+
+	/// <summary> Barycentric interpolator class. </summary>
+	template <class T>
+	class BarycentricInterpolator : public Interpolator<T>
+	{
+	/* ==================== Constructors and destructors begin ==================== */
+	public:
+		MATH_API BarycentricInterpolator(const T* interpolationObjects, int interpolationObjectsCount);
+		MATH_API virtual ~BarycentricInterpolator();
+	/* ==================== Constructors and destructors end ==================== */
+
+	/* ==================== Non-static member functions begin ==================== */
+	public:
+		MATH_API virtual T Interpolate(Real time, const Real* times) const;
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+	private:
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end class BarycentricInterpolator */
 
 } /* end namespace Interpolation */
 

@@ -13,8 +13,8 @@
 #include <vector>
 
 //#define HEIGHTMAP_BRUTE_FORCE
-#define HEIGHTMAP_KD_TREE
-//#define HEIGHTMAP_HEIGHTS
+//#define HEIGHTMAP_KD_TREE
+#define HEIGHTMAP_HEIGHTS
 
 #ifdef HEIGHTMAP_KD_TREE
 #include "Math\KDTree.h"
@@ -257,7 +257,8 @@ private:
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
 #elif defined HEIGHTMAP_HEIGHTS
-	float** m_heights; // TODO: Make it one-dimensional
+	Math::Real** m_heights; // TODO: Make it one-dimensional
+	Math::Real m_gridSquareSize;
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TerrainMesh */

@@ -4,6 +4,23 @@
 #include "Quaternion.h"
 #include "Utility\ILogger.h"
 
+Math::Real Math::Interpolation::BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos)
+{
+	return BarycentricInterpolation(pos1.GetX(), pos1.GetY(), pos1.GetZ(), pos2.GetX(), pos2.GetY(), pos2.GetZ(), pos3.GetX(), pos3.GetY(), pos3.GetZ(), xPos, zPos);
+}
+
+Math::Real Math::Interpolation::BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
+	Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
+	Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
+	Math::Real xPos, Math::Real zPos)
+{
+	Math::Real det = (zPos2 - zPos3) * (xPos1 - xPos3) + (xPos3 - xPos2) * (zPos1 - zPos3);
+	Math::Real l1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
+	Math::Real l2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
+	Math::Real l3 = 1.0f - l1 - l2;
+	return l1 * yPos1 + l2 * yPos2 + l3 * yPos3;
+}
+
 /* ==================== class Interpolator begin ==================== */
 template <class T>
 Math::Interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, int interpolationObjectsCount) :
@@ -152,6 +169,50 @@ T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time, cons
 	return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
 }
 /* ==================== class HermiteInterpolator end ==================== */
+
+/* ==================== class BarycentricInterpolator begin ==================== */
+template <class T>
+Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T* interpolationObjects, int interpolationObjectsCount) :
+	Interpolator(interpolationObjects, interpolationObjectsCount)
+{
+}
+
+template <class T>
+Math::Interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
+{
+}
+
+template <class T>
+T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time, const Math::Real* times) const
+{
+	WARNING_LOG("This function has not been tested yet");
+	// Handle boundary conditions
+	if (time < times[0])
+	{
+		return m_interpolationObjects[0];
+	}
+	else if (time > times[m_interpolationObjectsCount - 1])
+	{
+		return m_interpolationObjects[m_interpolationObjectsCount - 1];
+	}
+
+	// Find segment and parameter
+	unsigned int index = 0;
+	for (; index < m_interpolationObjectsCount; ++index)
+	{
+		if (t < times[index + 1])
+		{
+			break;
+		}
+	}
+	Math::Real time0 = times[index];
+	Math::Real time1 = times[index + 1];
+	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+
+	// Evaluate the interpolation
+	return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
+}
+/* ==================== class BarycentricInterpolator end ==================== */
 
 // TODO: For all template classes perform the steps described in https://anteru.net/2008/11/19/318/.
 // The same steps have already been performed for the Utility::Container::Array<T> class.
