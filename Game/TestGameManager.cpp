@@ -239,15 +239,15 @@ void TestGameManager::Load()
 	for (int i = 0; i < treeCount; ++i)
 	{
 		Engine::GameNode* treeNode = new Engine::GameNode();
-		Math::Real x = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 20.0f;
-		Math::Real z = ((static_cast<Real>(rand() % 5000) / 2500.0f) - 1.0f) * 20.0f;
-		Math::Real y = 2.0f; //m_terrainMesh->GetHeightAt(Math::Vector2D(x, z)) + (static_cast<Real>(rand() % 5000) / 5000.0f) * 2.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 200.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 200.0f;
+		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
-		treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
-		treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
 
