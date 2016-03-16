@@ -239,8 +239,8 @@ void TestGameManager::Load()
 	for (int i = 0; i < treeCount; ++i)
 	{
 		Engine::GameNode* treeNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 200.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 200.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
@@ -249,6 +249,23 @@ void TestGameManager::Load()
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
 		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
+	}
+
+	const int boulderCount = 30;
+	for (int i = 0; i < boulderCount; ++i)
+	{
+		Engine::GameNode* boulderNode = new Engine::GameNode();
+		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
+		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		boulderNode->GetTransform().SetPos(x, y, z);
+		boulderNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
+		boulderNode->GetTransform().SetScale(0.01f);
+		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
+			new Rendering::Material(new Rendering::Texture("boulder.png"), 0.5f, 2.0f, new Rendering::Texture("boulderNormal.png"))));
+		//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+		AddToSceneRoot(boulderNode);
 	}
 
 	Engine::GameNode* monkeyNode1 = new Engine::GameNode();

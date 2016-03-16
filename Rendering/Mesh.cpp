@@ -454,7 +454,7 @@ void Rendering::GuiMesh::Draw() const
 	glDisableVertexAttribArray(0);
 }
 
-/* static */ const int Rendering::TerrainMesh::SIZE = 200;
+/* static */ const int Rendering::TerrainMesh::SIZE = 800;
 /* static */ const float Rendering::TerrainMesh::MAX_HEIGHT = 5.0f;
 /* static */ const float Rendering::TerrainMesh::MAX_PIXEL_COLOR = 255.0f;
 
