@@ -238,8 +238,9 @@ public:
 protected:
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
 private:
-	Math::Real GetHeightAt(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const;
-	Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const;
+	int GetHeightMapIndex(int x, int z) const;
+	Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData) const;
+	Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData) const;
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -257,7 +258,8 @@ private:
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
 #elif defined HEIGHTMAP_HEIGHTS
-	Math::Real** m_heights; // TODO: Make it one-dimensional
+	int m_heightMapWidth, m_heightMapHeight;
+	Math::Real* m_heights;
 	Math::Real m_gridSquareSize;
 #endif
 /* ==================== Non-static member variables end ==================== */

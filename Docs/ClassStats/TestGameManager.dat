@@ -1,6 +1,2 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Load	1	1	6.03812e+06	6.03812e+06	6.03812e+06
-AddLights	1	0	76505.3	0	76505.3
-AddCameras	1	0	704.377	0	704.377
-AddSkybox	1	0	442435	0	442435
-Update	16255	4179	10638.2	6456.76	0.654457
+Update	1792	1792	174.478	174.478	0.0973652

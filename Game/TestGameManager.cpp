@@ -310,8 +310,8 @@ void TestGameManager::Load()
 	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
-	const Math::Real playerPositionX = 33.0f;
-	const Math::Real playerPositionZ = 31.0f;
+	const Math::Real playerPositionX = 0.0f;
+	const Math::Real playerPositionZ = 0.0f;
 	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.005f);
