@@ -454,7 +454,8 @@ void Rendering::GuiMesh::Draw() const
 	glDisableVertexAttribArray(0);
 }
 
-/* static */ const float Rendering::TerrainMesh::MAX_HEIGHT = 40.0f;
+/* static */ const int Rendering::TerrainMesh::SIZE = 16;
+/* static */ const float Rendering::TerrainMesh::MAX_HEIGHT = 5.0f;
 /* static */ const float Rendering::TerrainMesh::MAX_PIXEL_COLOR = 255.0f;
 
 Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
@@ -502,11 +503,11 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 		&heightMapWidth, &heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
 	CHECK_CONDITION_EXIT(m_heightMapData != NULL, Utility::Error, "Unable to load terrain height map from the file \"%s\"", name.c_str());
 	CHECK_CONDITION(heightMapWidth < 32768 && heightMapHeight < 32768, Utility::Emergency, "The heightmap's size is too big to be used in the rendering engine.");
-	//for (int i = 0; i < m_heightMapWidth; ++i)
+	//for (int i = 0; i < heightMapWidth; ++i)
 	//{
-	//	for (int j = 0; j < m_heightMapHeight; ++j)
+	//	for (int j = 0; j < heightMapHeight; ++j)
 	//	{
-	//		CRITICAL_LOG("HeightMap[%d][%d] = %d", i, j, m_heightMapData[i * m_heightMapWidth + j]);
+	//		CRITICAL_LOG("HeightMap[%d] ([%d][%d]) = %d", i * heightMapWidth + j, i, j, heightMapData[i * heightMapWidth + j]);
 	//	}
 	//}
 	/* Loading heightmap finished */
@@ -535,9 +536,10 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 			const Math::Real jReal = static_cast<Math::Real>(j);
 			Math::Real terrainHeight = GetHeightAt(j, i, heightMapData, heightMapWidth, heightMapHeight);
 #ifdef HEIGHTMAP_HEIGHTS
-			m_heights[j][i] = terrainHeight;
+			m_heights[i][j] = terrainHeight;
 #endif
 			Math::Vector3D position(jReal / vertexCountMinusOne * SIZE, terrainHeight, iReal / vertexCountMinusOne * SIZE);
+			CRITICAL_LOG("counter = %d; i = %d; j = %d; Position = %s", positions.size(), i, j, position.ToString().c_str());
 			positions.push_back(position);
 			Math::Vector2D texCoord(jReal / vertexCountMinusOne, iReal / vertexCountMinusOne);
 			Math::Vector3D normal = CalculateNormal(j, i, heightMapData, heightMapWidth, heightMapHeight);
@@ -596,16 +598,20 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(int x, int z, unsigned char* heig
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN(x >= 0 && x < heightMapWidth && z >= 0 && z < heightMapHeight, REAL_ZERO,
 		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
-	Math::Real height = static_cast<Math::Real>(heightMapData[x * heightMapWidth + z]);
+	const int heightMapIndex = (heightMapWidth * heightMapHeight) - ((z + 1) * heightMapWidth) + x;
+	CHECK_CONDITION(heightMapIndex >= 0 && heightMapIndex < heightMapWidth * heightMapHeight, Utility::Error,
+		"The heightmap index calculation is incorrect. Calculated index (%d) is out of range [0; %d)", heightMapIndex, heightMapWidth * heightMapHeight);
+	//DEBUG_LOG("Heightmap index for [%d, %d] = %d", x, z, heightMapIndex);
+	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
 	return ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * MAX_HEIGHT;
 }
 
 Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData, int heightMapWidth, int heightMapHeight) const
 {
-	Math::Real heightLeft = GetHeightAt(x - 1, z, heightMapData, heightMapWidth, heightMapHeight);
-	Math::Real heightRight = GetHeightAt(x + 1, z, heightMapData, heightMapWidth, heightMapHeight);
-	Math::Real heightDown = GetHeightAt(x, z - 1, heightMapData, heightMapWidth, heightMapHeight);
-	Math::Real heightUp = GetHeightAt(x, z + 1, heightMapData, heightMapWidth, heightMapHeight);
+	Math::Real heightLeft = (x - 1) >= 0 ? GetHeightAt(x - 1, z, heightMapData, heightMapWidth, heightMapHeight) : REAL_ZERO;
+	Math::Real heightRight = (x + 1) < heightMapWidth ? GetHeightAt(x + 1, z, heightMapData, heightMapWidth, heightMapHeight) : REAL_ZERO;
+	Math::Real heightDown = (z - 1) >= 0 ? GetHeightAt(x, z - 1, heightMapData, heightMapWidth, heightMapHeight) : REAL_ZERO;
+	Math::Real heightUp = (z + 1) < heightMapHeight ? GetHeightAt(x, z + 1, heightMapData, heightMapWidth, heightMapHeight) : REAL_ZERO;
 	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;
@@ -724,8 +730,8 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 #elif defined HEIGHTMAP_HEIGHTS
 	Math::Real terrainX = x - m_x;
 	Math::Real terrainZ = z - m_z;
-	int gridX = Math::Floor(terrainX / m_gridSquareSize);
-	int gridZ = Math::Floor(terrainZ / m_gridSquareSize);
+	int gridX = Math::Floor(terrainX / m_gridSquareSize) - 1;
+	int gridZ = Math::Floor(terrainZ / m_gridSquareSize) - 1;
 	if (gridX < 0 || gridX >= m_vertexCount - 1 || gridZ < 0 || gridZ >= m_vertexCount - 1)
 	{
 		return REAL_ZERO;

@@ -1,14 +1,12 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Entered	1	1	5691.76	5691.76	5691.76
-MouseButtonEvent	6	6	12.5445	12.5445	2.09074
-MousePosEvent	407	407	30884.8	30884.8	75.8841
-KeyEvent	81	81	290.043	290.043	3.58078
-Render	540	540	2.01928e+06	2.01928e+06	3739.41
-RenderSceneWithDirectionalAndSpotLights	540	0	845558	0	1565.85
-RenderSkybox	1620	0	69098.7	0	42.6535
-RenderWaterTextures	540	0	569759	0	1055.11
-RenderWaterReflectionTexture	540	0	306588	0	567.755
-RenderWaterRefractionTexture	540	0	246683	0	456.82
-RenderWaterNodes	540	0	204222	0	378.189
-RenderBillboardNodes	540	0	81906.2	0	151.678
-Update	59135	59135	9.87006e+06	9.87006e+06	166.907
+Entered	1	1	2878.71	2878.71	2878.71
+MousePosEvent	32	32	1913.94	1913.94	59.8107
+Render	68	68	181878	181878	2674.68
+RenderSceneWithDirectionalAndSpotLights	68	0	81702.4	0	1201.51
+RenderSkybox	204	0	5652.12	0	27.7065
+RenderWaterTextures	68	0	47211.5	0	694.287
+RenderWaterReflectionTexture	68	0	26604.8	0	391.247
+RenderWaterRefractionTexture	68	0	19194.9	0	282.279
+RenderWaterNodes	68	0	20011.8	0	294.292
+RenderBillboardNodes	68	0	7307.58	0	107.464
+Update	2406	2406	5069.81	5069.81	2.10715

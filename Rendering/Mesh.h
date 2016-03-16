@@ -211,7 +211,7 @@ class TerrainMesh : public Mesh
 /* ==================== Static variables begin ==================== */
 private:
 	/// <summary> The size of the single squared-size terrain tile. </summary>
-	static const int SIZE = 800;
+	static const int SIZE;
 	/// <summary> The maximal height of the terrain.
 	/// The negative value represents the minimal height of the terrain. In other words, the terrain height always lies in range [-MAX_HEIGHT; MAX_HEIGHT].
 	/// </summary>
