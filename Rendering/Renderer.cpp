@@ -628,22 +628,22 @@ void Renderer::DisableClippingPlanes()
 //	STOP_PROFILING;
 //}
 
-void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str) const
+void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str) const
 {
-	RenderString(alignment, y, str, m_defaultFontSize, m_defaultFontColor);
+	RenderText(alignment, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
+void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
 {
-	RenderString(alignment, y, str, fontSize, m_defaultFontColor);
+	RenderText(alignment, y, str, fontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
 {
-	RenderString(alignment, y, str, m_defaultFontSize, fontColor);
+	RenderText(alignment, y, str, m_defaultFontSize, fontColor);
 }
 
-void Renderer::RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	int x = 0;
 	switch (alignment)
@@ -661,25 +661,25 @@ void Renderer::RenderString(Text::Alignment alignment, int y, const std::string&
 	default:
 		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
 	}
-	RenderString(x, y, str, fontSize, fontColor);
+	RenderText(x, y, str, fontSize, fontColor);
 }
 
-void Renderer::RenderString(int x, int y, const std::string& str) const
+void Renderer::RenderText(int x, int y, const std::string& str) const
 {
-	RenderString(x, y, str, m_defaultFontSize, m_defaultFontColor);
+	RenderText(x, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fontSize) const
+void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize) const
 {
-	RenderString(x, y, str, fontSize, m_defaultFontColor);
+	RenderText(x, y, str, fontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderString(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Renderer::RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
 {
-	RenderString(x, y, str, m_defaultFontSize, fontColor);
+	RenderText(x, y, str, m_defaultFontSize, fontColor);
 }
 
-void Renderer::RenderString(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
 	DELOCUST_LOG("Started drawing string \"%s\"", str.c_str());
@@ -813,8 +813,8 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 	std::stringstream ss;
 	int progress = static_cast<int>(loadingProgress * 100.0f);
 	ss << progress << "%";
-	RenderString(Text::CENTER, 350, "Loading...");
-	RenderString(Text::CENTER, 250, ss.str());
+	RenderText(Text::CENTER, 350, "Loading...");
+	RenderText(Text::CENTER, 250, ss.str());
 	STOP_PROFILING;
 }
 

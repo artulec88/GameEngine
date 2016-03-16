@@ -80,6 +80,6 @@ void IntroGameState::Render(const Rendering::Shader* shader, Rendering::Renderer
 	DEBUG_LOG("INTRO game state rendering");
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	renderer->RenderString(450, 450, "Intro (click ESC)");
+	renderer->RenderText(450, 450, "Intro (click ESC)");
 	STOP_PROFILING;
 }

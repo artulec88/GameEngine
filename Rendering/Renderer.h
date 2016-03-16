@@ -73,14 +73,14 @@ public:
 	RENDERING_API bool InitShadowMap();
 	RENDERING_API void FinalizeShadowMapRendering();
 
-	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str) const;
-	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
-	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const;
-	RENDERING_API void RenderString(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
-	RENDERING_API void RenderString(int x, int y, const std::string& str) const;
-	RENDERING_API void RenderString(int x, int y, const std::string& str, Math::Real fontSize) const;
-	RENDERING_API void RenderString(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
-	RENDERING_API void RenderString(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str) const;
+	RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
+	RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderText(int x, int y, const std::string& str) const;
+	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize) const;
+	RENDERING_API void RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>

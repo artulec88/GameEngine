@@ -549,7 +549,7 @@ void CoreEngine::Run()
 #ifdef DRAW_FPS
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
-			m_renderer->RenderString(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
+			m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game.IsInGameTimeCalculationEnabled())
@@ -574,7 +574,7 @@ void CoreEngine::Run()
 						ss << ":" << inGameSeconds;
 					}
 				}
-				m_renderer->RenderString(0, 550, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
+				m_renderer->RenderText(0, 550, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
 			}
 #endif
 #endif

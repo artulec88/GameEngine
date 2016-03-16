@@ -120,7 +120,7 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		renderer->RenderString(m_currentMenuEntry->GetChildScreenPosition(i).GetX(), m_currentMenuEntry->GetChildScreenPosition(i).GetY(), m_currentMenuEntry->GetChildText(i),
+		renderer->RenderText(m_currentMenuEntry->GetChildScreenPosition(i).GetX(), m_currentMenuEntry->GetChildScreenPosition(i).GetY(), m_currentMenuEntry->GetChildText(i),
 			m_currentMenuEntry->GetChildFontSize(i),
 			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
 	}
