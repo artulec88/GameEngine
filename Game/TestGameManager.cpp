@@ -263,7 +263,7 @@ void TestGameManager::Load()
 		boulderNode->GetTransform().SetScale(0.01f);
 		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
-			new Rendering::Material(new Rendering::Texture("boulder.png"), 0.5f, 2.0f, new Rendering::Texture("boulderNormal.png"))));
+			new Rendering::Material(new Rendering::Texture("boulder.png", GL_TEXTURE_2D, GL_LINEAR), 0.01f, 22.0f, new Rendering::Texture("boulderNormal.png"))));
 		//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(boulderNode);
 	}
@@ -327,8 +327,8 @@ void TestGameManager::Load()
 	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
-	const Math::Real playerPositionX = 1.0f;
-	const Math::Real playerPositionZ = 1.0f;
+	const Math::Real playerPositionX = 11.2f;
+	const Math::Real playerPositionZ = 1.95f;
 	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.005f);
