@@ -60,7 +60,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// Converts the specified <paramref name="str"/> to an integer. Note that a string exception is thrown if it is invalid.
 	/// </summary>
-	int ToInt(const std::string& str);
+	UTILITY_API int ToInt(const std::string& str);
 
 	/// <summary>
 	/// Converts the specified <paramref name="str"/> to a floating-point number. Note that a string exception is thrown if it is invalid.

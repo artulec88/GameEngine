@@ -169,6 +169,7 @@ std::string ShaderData::LoadShaderData(const std::string& fileName) const
 			//DEBUG_LOG("#Include directive found in Line = \"%s\"", line.c_str());
 
 			std::vector<std::string> tokens;
+			DEBUG_LOG("Shader line \"%s\"", line.c_str());
 			CutToTokens(line, tokens, ' ');
 			//for (int i = 0; i < tokens.size(); ++i)
 			//{
@@ -177,7 +178,7 @@ std::string ShaderData::LoadShaderData(const std::string& fileName) const
 			CHECK_CONDITION_EXIT_ALWAYS(tokens.size() > 1, Utility::Error, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
 			std::string includeFileName = tokens[1];
 			//DEBUG_LOG("Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
-			includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
+			//includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
 			//DEBUG_LOG("Loading an include shader file \"%s\"", includeFileName.c_str());
 
 			std::string fragmentToAppend = LoadShaderData(includeFileName);

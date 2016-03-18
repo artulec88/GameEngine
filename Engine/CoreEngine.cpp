@@ -113,7 +113,8 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 }
 
 CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
-	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */) :
+	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
+	const std::string& fontsDirectory /* = "..\\Fonts\\" */) :
 	m_window(NULL),
 	m_threadWindow(NULL),
 	m_isRunning(false),
@@ -136,8 +137,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_shadersDirectory(shadersDirectory),
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory),
+	m_fontsDirectory(fontsDirectory)
 #ifdef CALCULATE_RENDERING_STATS
-	m_countStats1(0),
+	,m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
 	m_countStats2(0),
 	m_timeSum2(REAL_ZERO),

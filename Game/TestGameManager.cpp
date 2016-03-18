@@ -335,7 +335,7 @@ void TestGameManager::Load()
 	playerNode->SetPhysicsObject(new Physics::PhysicsObject(playerNode->GetTransform(), 82.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh)); // TODO: Remove this line and FPS will again be ~50 (Why????!!!!)
+	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

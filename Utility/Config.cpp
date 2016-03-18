@@ -35,26 +35,28 @@ Config::Config() : isInitialized(false)
 	cfgValues.clear();
 	//cfgNotDefinedValues.clear();
 
-	std::string name, value, line;
+	std::string value, line;
 	while (!file.eof())
 	{
-		file >> name;
+		//file >> name;
 		if (file.fail())
 		{
-			EMERGENCY_LOG("Fail occured in the stream while reading the configuration file");
+			EMERGENCY_LOG("Error occured in the stream while reading the configuration file \"%s\"", fileName.c_str());
 			exit(EXIT_FAILURE);
 		}
 		std::getline(file, line);
-		if ((name.empty()) || (name[0] == '#')) // ignore comment lines
+		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{
 			continue;
 		}
 
 		line = line.substr(0, line.find_first_of('#'));
 		StringUtility::RightTrim(line);
-		DELOCUST_LOG("Line after = \"%s\"", line.c_str());
+		DELOCUST_LOG("Line after trimming = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		CutToTokens(line, tokens, ' ');
+		CHECK_CONDITION(tokens[1].compare("=") == 0, Utility::Error, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
+			line.c_str(), tokens[1].c_str());
 		value = tokens[2];
 		if (tokens.size() > 3)
 		{
@@ -68,9 +70,11 @@ Config::Config() : isInitialized(false)
 				value += " " + tokens[i];
 			}
 		}
-		DEBUG_LOG("Configuration parameter \"%s\" = \"%s\"", name.c_str(), value.c_str());
-		cfgValues[name] = value;
+		DEBUG_LOG("Configuration parameter \"%s\" = \"%s\"", tokens[0].c_str(), value.c_str());
+		cfgValues[tokens[0]] = value;
 	}
+
+	file.close();
 
 	isInitialized = true;
 }

@@ -64,7 +64,7 @@ public:
 public:
 	ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
-		const std::string& texturesDirectory = "..\\Textures\\");
+		const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\");
 	ENGINE_API ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& coreEngine);
@@ -126,9 +126,10 @@ public:
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
-	std::string GetShadersDirectory() const { return m_shadersDirectory; }
-	std::string GetModelsDirectory() const { return m_modelsDirectory; }
-	std::string GetTexturesDirectory() const { return m_texturesDirectory; }
+	const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
+	const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
+	const std::string& GetTexturesDirectory() const { return m_texturesDirectory; }
+	const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
 
 	void AddLight(Rendering::Lighting::BaseLight* light);
 	void AddCamera(Rendering::CameraBase* camera);
@@ -210,6 +211,8 @@ private:
 	const std::string m_modelsDirectory;
 	/// <summary> Specifies where to look for the texture files. </summary>
 	const std::string m_texturesDirectory;
+	/// <summary> Specifies where to look for the fonts files. </summary>
+	const std::string m_fontsDirectory;
 
 #ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;

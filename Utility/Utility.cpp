@@ -47,35 +47,61 @@ void Utility::CutToTokens(const string& str, vector<string>& tokens, const char*
 	//	temp = "";
 	//	ss >> temp;
 	//}
+	const char QUOTE_SIGN = '"';
     const char* cstr = str.c_str();
     unsigned int strLength = static_cast<unsigned int>(str.length());
     unsigned int start = 0;
     unsigned int end = 0;
-        
-    while(end <= strLength)
-    {
-        while(end <= strLength)
-        {
-			bool delimFound = false;
-			for (int i = 0; i < delimCount; ++i)
+	
+	//std::cout << "str = \"" << str << "\"." << std::endl;
+	bool quoteFound = false;
+	while (end <= strLength)
+	{
+		while (end <= strLength)
+		{
+			if (cstr[end] == QUOTE_SIGN)
 			{
-				if(cstr[end] == delim[i])
+				++start; // to omit the QUOTE_SIGN
+				for (end = end + 1; end < strLength; ++end)
 				{
-					delimFound = true;
+					if (cstr[end] == QUOTE_SIGN)
+					{
+						quoteFound = true;
+						break;
+					}
+				}
+				if (quoteFound)
+				{
 					break;
 				}
 			}
-			if (delimFound)
+			else
 			{
-				break;
+				bool delimFound = false;
+				for (int i = 0; i < delimCount; ++i)
+				{
+					if (cstr[end] == delim[i])
+					{
+						delimFound = true;
+						break;
+					}
+				}
+				if (delimFound)
+				{
+					break;
+				}
 			}
-            end++;
-        }
+			++end;
+		}
 		//std::string token;
 		//Trim(str.substr(start, end - start), token);
 		std::string token = str.substr(start, end - start);
 		StringUtility::Trim(token);
-		tokens.push_back(token);
+		if (!token.empty() || quoteFound)
+		{
+			quoteFound = false;
+			tokens.push_back(token);
+		}
         start = end + 1;
         end = start;
     }

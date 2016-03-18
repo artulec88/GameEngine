@@ -181,6 +181,7 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -217,6 +218,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />

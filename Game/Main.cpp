@@ -100,6 +100,18 @@ int main (int argc, char* argv[])
 	}
 	/* ==================== Initializing textures directory end ==================== */
 
+	/* ==================== Initializing fonts directory begin ==================== */
+	std::string fontsDirectory = "..\\Fonts\\";
+	if (ICommand::GetCommand().IsPresent("-fonts"))
+	{
+		fontsDirectory = ICommand::GetCommand().Get("-fonts", "..\\Fonts\\");
+	}
+	else
+	{
+		fontsDirectory = GET_CONFIG_VALUE_STR("fontsDirectory", "..\\Fonts\\");
+	}
+	/* ==================== Initializing fonts directory end ==================== */
+
 	ICommand::DeleteCommand();
 	/* ==================== Reading settings and parameters end ==================== */
 
@@ -107,7 +119,7 @@ int main (int argc, char* argv[])
 	Game::TestGameManager game;
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	Engine::CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
-		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), game, shaderDirectory, modelsDirectory, texturesDirectory);
+		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), game, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory);
 	engine.Start();
 	return EXIT_SUCCESS;
 }

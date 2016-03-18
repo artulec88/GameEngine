@@ -181,7 +181,7 @@ private:
 }; /* end class BillboardMesh */
 
 /// <summary>
-/// The mesh that is going to be rendered on the screen.
+/// The simple GUI mesh that is going to be rendered on the screen.
 /// </summary>
 class GuiMesh : public Mesh
 {

@@ -10,7 +10,7 @@
 #include "Material.h"
 #include "BaseLight.h"
 #include "Color.h"
-//#include "MenuEntry.h"
+#include "Font.h"
 #include "CubeShadowMap.h"
 
 #include "Math\Angle.h"
@@ -435,6 +435,7 @@ private:
 	std::map<std::string, unsigned int> m_samplerMap;
 	Math::Matrix4D m_lightMatrix;
 
+	Text::Font m_defaultFont;
 	Material* m_fontMaterial;
 	Math::Real m_defaultFontSize;
 	Math::Vector4D m_defaultFontColor;
