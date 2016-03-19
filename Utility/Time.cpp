@@ -72,7 +72,7 @@ void TimeSpan::operator=(const TimeSpan& timeSpan)
 
 bool TimeSpan::operator<(const TimeSpan &timeSpan) const
 {
-	WARNING_LOG("The function has not been tested yet.");
+	//WARNING_LOG("The function has not been tested yet.");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value < timeSpan.GetValue();
@@ -83,7 +83,7 @@ bool TimeSpan::operator<(const TimeSpan &timeSpan) const
 
 bool TimeSpan::operator>(const TimeSpan &timeSpan) const
 {
-	WARNING_LOG("The function has not been tested yet");
+	//WARNING_LOG("The function has not been tested yet");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value > timeSpan.GetValue();
