@@ -22,7 +22,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> at its end.
 	/// </summary>
-	void UTILITY_API RightTrim(std::string& s);
+	UTILITY_API void RightTrim(std::string& s);
 
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> from both ends.
@@ -69,6 +69,20 @@ namespace Utility { namespace StringUtility
 
 	/// <summary> Returns <code>true</code> if the specified character <paramref name="c"/> is numeric. </summary>
 	bool IsNumeric(char c);
+
+	/// <summary>
+	/// Cuts the given <code>String</code> parameter <paramref name="str"/> into tokens.
+	/// The string is split accordingly to specified character <paramref name="delim"/>.
+	/// The final result will be pushed at the end of the given vector.
+	/// If there is some data in the vector before starting this function this data will still be there when the functions is finished.
+	/// All white spaces are removed.
+	/// </summary>
+	/// <param name="str"> The <code>std::string</code> we want to split into tokens. </param>
+	/// <param name="tokens"> The result vector of tokens. </param>
+	/// <param name="delim"> The delimeter character based on which the <paramref name="str"/> is split. </param>
+	/// <returns>The vector with appended tokens.</returns>
+	UTILITY_API void CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim);
+	UTILITY_API void CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, int delimCount);
 } /* end namespace StringUtility */
 
 } /* end namespace Utility */

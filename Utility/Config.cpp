@@ -54,7 +54,7 @@ Config::Config() : isInitialized(false)
 		StringUtility::RightTrim(line);
 		DELOCUST_LOG("Line after trimming = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
-		CutToTokens(line, tokens, ' ');
+		StringUtility::CutToTokens(line, tokens, ' ');
 		CHECK_CONDITION(tokens[1].compare("=") == 0, Utility::Error, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
 			line.c_str(), tokens[1].c_str());
 		value = tokens[2];

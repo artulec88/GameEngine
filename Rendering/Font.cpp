@@ -42,7 +42,7 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 		std::getline(file, line);
 		//Utility::StringUtility::RightTrim(line);
 		std::vector<std::string> tokens;
-		Utility::CutToTokens(line, tokens, META_DATA_SPLITTER, 2);
+		Utility::StringUtility::CutToTokens(line, tokens, META_DATA_SPLITTER, 2);
 
 		if (tokens.empty())
 		{
@@ -57,7 +57,7 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				"No \"padding\" attribute found in the font meta data file \"%s\"", fontMetaDataFileName);
 			const std::string padding = *(tokenItr + 1);
 			std::vector<std::string> subTokens;
-			Utility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
+			Utility::StringUtility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
 			CHECK_CONDITION(subTokens.size() == 4, Utility::Error, "The \"padding\" attribute must define 4 values instead of %d", subTokens.size());
 			for (size_t index = 0; index < subTokens.size(); ++index)
 			{

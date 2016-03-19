@@ -82,20 +82,6 @@ namespace Utility
 	//{
 	//	return (value1 > value2) ? value1 : value2;
 	//}
-
-	/**
-	 * @brief Cut the string into tokens.
-	 *
-	 * Tokens in str are separated by some number of spaces. 
-	 * Tokens are added to the end of tokens vector -- it is not cleared at the beginning.
-	 * Notably, if str == "" or "  " there will be no tokens added to vector.
-	 * All the spaces are removed.
-	 * 
-	 * @param str string containing tokens separated by spaces
-	 * @param tokens vector to which the tokes are added
-	 */
-	UTILITY_API void CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char delim);
-	UTILITY_API void CutToTokens(const std::string& str, std::vector<std::string>& tokens, const char* delim, int delimCount);
 } /* end namespace Utility */
 
 #endif /* __UTILITY_UTILITY_H__ */

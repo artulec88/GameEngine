@@ -170,7 +170,7 @@ std::string ShaderData::LoadShaderData(const std::string& fileName) const
 
 			std::vector<std::string> tokens;
 			DEBUG_LOG("Shader line \"%s\"", line.c_str());
-			CutToTokens(line, tokens, ' ');
+			StringUtility::CutToTokens(line, tokens, ' ');
 			//for (int i = 0; i < tokens.size(); ++i)
 			//{
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
@@ -434,7 +434,7 @@ std::vector<Uniforms::UniformStruct> ShaderData::FindUniformStructs(const std::s
 std::string ShaderData::FindUniformStructName(const std::string& structStartToOpeningBrace) const
 {
 	std::vector<std::string> tokens;
-	Utility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
+	Utility::StringUtility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
 	std::string result;
 	Utility::StringUtility::RightTrim(tokens[0]);
 	//DELOCUST_LOG("tokens[0] = \"%s\"", tokens[0].c_str());
@@ -445,13 +445,14 @@ std::string ShaderData::FindUniformStructName(const std::string& structStartToOp
 
 std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
 {
-	const char charsToIgnore[] = { ' ', '\n', '\t', '{' };
+	const int CHARS_TO_IGNORE_COUNT = 4;
+	const char charsToIgnore[CHARS_TO_IGNORE_COUNT] = { ' ', '\n', '\t', '{' };
 	const size_t UNSIGNED_NEG_ONE = (size_t)-1;
 
 	std::vector<Uniforms::Uniform> result;
 	std::vector<std::string> structLines;
 	const char delimChars[] = { '\n', ';' };
-	Utility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
+	Utility::StringUtility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
 
 	for (unsigned int i = 0; i < structLines.size(); ++i)
 	{
@@ -466,7 +467,7 @@ std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std
 		for (unsigned int j = 0; j < structLines[i].length(); ++j)
 		{
 			bool isIgnoreableCharacter = false;
-			for (unsigned int k = 0; k < sizeof(charsToIgnore) / sizeof(char); ++k)
+			for (unsigned int k = 0; k < CHARS_TO_IGNORE_COUNT; ++k)
 			{
 				if (structLines[i][j] == charsToIgnore[k])
 				{
