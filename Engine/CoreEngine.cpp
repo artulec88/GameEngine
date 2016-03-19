@@ -123,6 +123,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
 	m_game(game),
+	m_audioEngine(NULL),
 	m_physicsEngine(NULL),
 	m_renderer(NULL),
 	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
@@ -221,6 +222,7 @@ CoreEngine::~CoreEngine(void)
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
+	SAFE_DELETE(m_audioEngine);
 	SAFE_DELETE(m_physicsEngine);
 	SAFE_DELETE(m_renderer);
 	glfwTerminate(); // Terminate GLFW
@@ -228,6 +230,12 @@ CoreEngine::~CoreEngine(void)
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
+}
+
+void CoreEngine::CreateAudioEngine()
+{
+	m_audioEngine = new Audio::AudioEngine();
+	CHECK_CONDITION_EXIT(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
 void CoreEngine::CreatePhysicsEngine()

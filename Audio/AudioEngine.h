@@ -13,8 +13,8 @@ namespace Audio
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AudioEngine();
-		virtual ~AudioEngine(void);
+		AUDIO_API AudioEngine();
+		AUDIO_API virtual ~AudioEngine(void);
 	private:
 		AudioEngine(const AudioEngine& audioEngine);
 		void operator=(const AudioEngine& audioEngine);

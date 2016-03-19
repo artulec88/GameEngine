@@ -5,6 +5,8 @@
 #include "GameManager.h"
 #include "GameStateManager.h"
 
+#include "Audio\AudioEngine.h"
+
 #include "Physics\PhysicsEngine.h"
 
 #include "Rendering\Renderer.h"
@@ -141,6 +143,7 @@ public:
 
 	const Rendering::CameraBase& GetCurrentCamera() const { return m_renderer->GetCurrentCamera(); }
 private:
+	void CreateAudioEngine();
 	void CreatePhysicsEngine();
 	void CreateRenderer(int width, int height, const std::string& title);
 	void Run();
@@ -189,6 +192,7 @@ private:
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
 	GameManager& m_game;
+	Audio::AudioEngine* m_audioEngine;
 	Physics::PhysicsEngine* m_physicsEngine;
 	Rendering::Renderer* m_renderer;
 
@@ -260,7 +264,7 @@ private:
 	const Math::Real m_clockSpeed;
 #endif
 /* ==================== Non-static member variables end ==================== */
-}; /* end class GameEngine */
+}; /* end class CoreEngine */
 
 } /* end namespace Engine */
 
