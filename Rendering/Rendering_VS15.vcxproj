@@ -182,6 +182,7 @@
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="GuiText.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -219,6 +220,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GuiText.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />

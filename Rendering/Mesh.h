@@ -96,7 +96,7 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class MeshData */
 
-class Mesh// : public Utility::ReferenceCounter
+class Mesh
 {
 public:
 	class MeshComparator
@@ -264,6 +264,38 @@ private:
 #endif
 /* ==================== Non-static member variables end ==================== */
 }; /* end class TerrainMesh */
+
+/// <summary>
+/// The text mesh that is going to be rendered on the screen.
+/// </summary>
+class TextMesh : public Mesh
+{
+/* ==================== Static variables begin ==================== */
+/* ==================== Static variables end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	RENDERING_API TextMesh(Math::Vector2D* positions, int positionsCount, Math::Vector2D* textureCoords, int textureCoordsCount, GLenum mode = GL_TRIANGLES)
+	{
+	}
+	RENDERING_API virtual ~TextMesh(void)
+	{
+	}
+private: // disable copy constructor and assignment operator
+	TextMesh(TextMesh& textMesh);
+	void operator=(TextMesh& textMesh);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	//virtual void Draw() const;
+/* ==================== Non-static member functions end ==================== */
+
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+/* ==================== Non-static member variables end ==================== */
+}; /* end class TextMesh */
 
 } /* end namespace Rendering */
 

@@ -1,0 +1,137 @@
+#include "stdafx.h"
+#include "GuiText.h"
+
+Rendering::Text::GuiText::Word::Word(Math::Real fontSize) :
+	m_width(REAL_ZERO),
+	m_wordFontSize(fontSize)
+{
+}
+
+Rendering::Text::GuiText::Word::~Word(void)
+{
+}
+
+Rendering::Text::GuiText::Line::Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength) :
+	m_spaceSize(spaceWidth * fontSize),
+	m_maxLength(maxLength)
+{
+}
+
+Rendering::Text::GuiText::Line::~Line(void)
+{
+}
+
+bool Rendering::Text::GuiText::Line::AttemptToAddWord(const Word& word)
+{
+	Math::Real additionalLength = word.GetWordWidth();
+	if (!m_words.empty())
+	{
+		additionalLength += m_spaceSize;
+	}
+	if (m_currentLineLength + additionalLength > m_maxLength)
+	{
+		return false;
+	}
+	m_words.push_back(word);
+	m_currentLineLength += additionalLength;
+	return true;
+}
+
+
+Rendering::Text::GuiText::GuiText(const std::string& text, const Font& font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength, bool isCentered /* = false */) :
+	m_text(text),
+	m_font(font),
+	m_fontSize(fontSize),
+	m_color(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+	m_screenPosition(screenPosition),
+	m_maxLineLength(maxLineLength),
+	m_linesCount(0),
+	m_isCentered(isCentered),
+	m_mesh(NULL)
+{
+	const char* chars = text.c_str();
+	std::vector<Line> lines;
+	Line currentLine(m_font.GetSpaceWidth(), m_fontSize, m_maxLineLength);
+	Word currentWord(m_fontSize);
+	bool added;
+	for (std::string::const_iterator textItr = text.begin(); textItr != text.end(); ++textItr)
+	{
+		const int asciiCode = static_cast<int>((*textItr));
+		if (asciiCode == Font::SPACE_ASCII_CODE)
+		{
+			added = currentLine.AttemptToAddWord(currentWord);
+			if (!added)
+			{
+				lines.push_back(currentLine);
+				currentLine.Reset();
+				currentLine.AttemptToAddWord(currentWord);
+			}
+			currentWord.Reset();
+			continue;
+		}
+		currentWord.AddCharacter(m_font.GetCharacter(asciiCode));
+	}
+	// Completing the lines structure
+	added = currentLine.AttemptToAddWord(currentWord);
+	if (!added)
+	{
+		lines.push_back(currentLine);
+		currentLine.Reset();
+		currentLine.AttemptToAddWord(currentWord);
+	}
+	lines.push_back(currentLine);
+	
+	// Creating quad vertices based on the lines vector
+	m_linesCount = lines.size();
+	Math::Real cursorX = REAL_ZERO;
+	Math::Real cursorY = REAL_ZERO;
+	std::vector<Math::Vector2D> positions;
+	std::vector<Math::Vector2D> textureCoords;
+	for (std::vector<Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
+	{
+		if (m_isCentered)
+		{
+			cursorX = (m_maxLineLength - lineItr->GetLineLength()) / 2.0f;
+		}
+		for (std::vector<Word>::const_iterator wordItr = lineItr->GetWords().begin(); wordItr != lineItr->GetWords().end(); ++wordItr)
+		{
+			for (std::vector<Character>::const_iterator characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
+			{
+				// Adding positions
+				const Math::Real x = cursorX + (characterItr->GetOffset().GetX() * m_fontSize);
+				const Math::Real y = cursorY + (characterItr->GetOffset().GetY() * m_fontSize);
+				const Math::Real maxX = x + (characterItr->GetSize().GetX() * m_fontSize);
+				const Math::Real maxY = y + (characterItr->GetSize().GetY() * m_fontSize);
+				const Math::Real properX = (2.0f * x) - 1.0f;
+				const Math::Real properY = (-2.0f * y) + 1.0f;
+				const Math::Real properMaxX = (2.0f * maxX) + 1.0f;
+				const Math::Real properMaxY = (-2.0f * maxY) + 1.0f;
+				positions.push_back(Math::Vector2D(properX, properY));
+				positions.push_back(Math::Vector2D(properX, properMaxY));
+				positions.push_back(Math::Vector2D(properMaxX, properMaxY)); // once...
+				positions.push_back(Math::Vector2D(properMaxX, properMaxY)); // ... and twice (sic!)
+				positions.push_back(Math::Vector2D(properMaxX, properY));
+				positions.push_back(Math::Vector2D(properX, properY));
+
+				// Adding texture coords
+				textureCoords.push_back(characterItr->GetTextureCoords());
+				textureCoords.push_back(Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()));
+				textureCoords.push_back(characterItr->GetMaxTextureCoords()); // once...
+				textureCoords.push_back(characterItr->GetMaxTextureCoords()); // ... and twice (sic!)
+				textureCoords.push_back(Math::Vector2D(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY()));
+				textureCoords.push_back(characterItr->GetTextureCoords());
+
+				cursorX += m_font.GetSpaceWidth() * m_fontSize;
+			}
+			cursorX += m_font.GetSpaceWidth() * m_fontSize;
+		}
+		cursorX = REAL_ZERO;
+		cursorY += Font::LINE_HEIGHT * m_fontSize;
+	}
+	m_mesh = new TextMesh(&positions[0], positions.size(), &textureCoords[0], textureCoords.size());
+}
+
+
+Rendering::Text::GuiText::~GuiText()
+{
+}

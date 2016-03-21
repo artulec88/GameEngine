@@ -14,9 +14,10 @@ namespace Rendering
 		class Font
 		{
 		/* ==================== Static variables begin ==================== */
-		private:
+		public:
 			static const Math::Real LINE_HEIGHT;
 			static const int SPACE_ASCII_CODE;
+		private:
 			static const int PADDING_TOP;
 			static const int PADDING_LEFT;
 			static const int PADDING_BOTTOM;
@@ -32,13 +33,14 @@ namespace Rendering
 			RENDERING_API Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
 			RENDERING_API virtual ~Font(void);
 		private:
-			Font(const Font& font);
-			void operator=(const Font& font);
+			Font(const Font& font) {};
+			void operator=(const Font& font) {};
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
 			const Character& GetCharacter(int asciiCode) const;
+			Math::Real GetSpaceWidth() const { return m_spaceWidth; }
 		private:
 			void ReadMetaDataFile(const std::string& fontMetaDataFileName);
 			void AddCharacter(std::vector<std::string>& tokens, int imageWidth);

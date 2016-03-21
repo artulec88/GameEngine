@@ -3,6 +3,7 @@
 #include "Utility\Time.h"
 #include "Utility\Array.h"
 #include "Utility\Array_impl.h"
+#include "Utility\StringUtility.h"
 
 #include <ctime>
 #include <string>
@@ -13,6 +14,7 @@ using namespace Utility;
 unsigned int testNumber = 0;
 
 bool arrayTestEnabled = true;
+bool stringUtilityTestEnabled = true;
 
 void PrintHelp()
 {
@@ -70,6 +72,37 @@ void ArrayTest()
 	NOTICE_LOG("Array test finished");
 }
 
+void StringUtilityTest()
+{
+	if (!stringUtilityTestEnabled)
+	{
+		return;
+	}
+
+	NOTICE_LOG("String utility test started");
+	/* ==================== STRING UTILITY TEST #1- left trimming operation- begin ==================== */
+	std::string str1("	\n\t  str1  \t	");
+	StringUtility::LeftTrim(str1);
+	std::string str2("str1");
+	std::string str3("str1  \t	");
+	TestReport(str1.compare(str2) != 0, "Left-trimming operation failed. The given strings should not be equal to each other but they are.");
+	TestReport(str1.compare(str3) == 0, "Left-trimming operation failed. The given strings should be equal to each other but they are not.");
+	/* ==================== STRING UTILITY TEST #1- left trimming operation- end ==================== */
+
+	/* ==================== STRING UTILITY TEST #2- right trimming operation- begin ==================== */
+	str1 = "	\n\t  str4		\n	\t ";
+	StringUtility::RightTrim(str1);
+	str2 = "str1";
+	str3 = "	\n\t  str4";
+	TestReport(str1.compare(str2) != 0, "Right-trimming operation failed. The given strings should not be equal to each other but they are.");
+	TestReport(str1.compare(str3) == 0, "Right-trimming operation failed. The given strings should be equal to each other but they are not.");
+	/* ==================== STRING UTILITY TEST #2- right trimming operation- end ==================== */
+
+	/* ==================== STRING UTILITY TEST #3- trimming operation- begin ==================== */
+	/* ==================== STRING UTILITY TEST #3- trimming operation- end ==================== */
+	NOTICE_LOG("String utility test finished");
+}
+
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -83,6 +116,7 @@ int main(int argc, char* argv[])
 	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
 
 	ArrayTest();
+	StringUtilityTest();
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

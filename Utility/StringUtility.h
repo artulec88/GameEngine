@@ -17,7 +17,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> from its start.
 	/// </summary>
-	void LeftTrim(std::string& s);
+	UTILITY_API void LeftTrim(std::string& s);
 
 	/// <summary>
 	/// Trims the given string <paramref name="s"/> at its end.
