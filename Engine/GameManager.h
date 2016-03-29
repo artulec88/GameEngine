@@ -15,6 +15,8 @@
 #include "Rendering\PointLight.h"
 #include "Rendering\SpotLight.h"
 #include "Rendering\Camera.h"
+#include "Rendering\Font.h"
+#include "Rendering\GuiText.h"
 
 #include "Math\Transform.h"
 #include "Math\Math.h"
@@ -26,6 +28,7 @@ namespace Engine
 
 class GameManager : public IUpdateable
 {
+	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>, Rendering::Text::FontComparator> FontMap;
 /* ==================== Static variables begin ==================== */
 protected:
 	static GameManager* s_gameManager;
@@ -56,6 +59,7 @@ public:
 	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 	ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardNodes; }
+	ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 	ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 	ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
@@ -91,6 +95,7 @@ public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
 	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
+	ENGINE_API void AddText(const Rendering::Text::GuiText& text);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
 protected:
 	ENGINE_API void AddToSceneRoot(GameNode* child);
@@ -103,6 +108,7 @@ protected:
 	GameNode* m_skyboxNode;
 	GameNode* m_waterNode;
 	std::vector<GameNode*> m_billboardNodes;
+	FontMap m_texts;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
 

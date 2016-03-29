@@ -32,15 +32,17 @@ namespace Rendering
 		public:
 			RENDERING_API Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
 			RENDERING_API virtual ~Font(void);
-		private:
-			Font(const Font& font) {};
-			void operator=(const Font& font) {};
+		//private:
+		//	Font(const Font& font);
+		//	void operator=(const Font& font);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			const Character& GetCharacter(int asciiCode) const;
-			Math::Real GetSpaceWidth() const { return m_spaceWidth; }
+			RENDERING_API const Character& GetCharacter(int asciiCode) const;
+			RENDERING_API Math::Real GetSpaceWidth() const { return m_spaceWidth; }
+			RENDERING_API const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
+			RENDERING_API void Bind() const { m_textureAtlas.Bind(0); }
 		private:
 			void ReadMetaDataFile(const std::string& fontMetaDataFileName);
 			void AddCharacter(std::vector<std::string>& tokens, int imageWidth);
@@ -49,6 +51,7 @@ namespace Rendering
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
 			Texture m_textureAtlas;
+			const std::string m_metaDataFileName;
 
 			Math::Real m_aspectRatio;
 
@@ -61,6 +64,14 @@ namespace Rendering
 			std::map<int, Character> m_metaData;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class Font */
+
+		struct FontComparator
+		{
+			bool operator() (const Font* font1, const Font* font2) const
+			{
+				return font1->GetMetaDataFileName().compare(font2->GetMetaDataFileName()) < 0;
+			}
+		};
 	} /* end namespace Text */
 } /* end namespace Rendering */
 

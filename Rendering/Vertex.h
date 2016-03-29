@@ -14,6 +14,30 @@
 namespace Rendering
 {
 
+	struct Vertex2D
+	{
+	/* ==================== Constructors and destructors begin ==================== */
+		Vertex2D(const Math::Vector2D& position,
+			const Math::Vector2D& texCoord = Math::Vector2D(REAL_ZERO, REAL_ZERO));
+	/* ==================== Constructors and destructors end ==================== */
+
+	/* ==================== Non-static member functions begin ==================== */
+		bool operator==(const Vertex2D& vertex2D) const;
+		bool operator!=(const Vertex2D& vertex2D) const;
+
+#ifdef _DEBUG
+		std::string ToString() const;
+#endif
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+		Math::Vector2D m_pos;
+		Math::Vector2D m_texCoord;
+		// TODO: Memory layout- add additional padding variable or
+		// use a table of Math::Vector3D objects with size 2 where [0], [1] store position and texture coordinates respectively.
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end struct Vertex2D */
+
 struct Vertex
 {
 	/* ==================== Constructors and destructors begin ==================== */

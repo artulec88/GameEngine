@@ -182,6 +182,18 @@ void Engine::GameManager::AddBillboardNode(GameNode* billboardNode)
 	m_billboardNodes.push_back(billboardNode);
 }
 
+void Engine::GameManager::AddText(const Rendering::Text::GuiText& guiText)
+{
+	//FontMap::const_iterator textItr = m_texts.find(guiText.GetFont());
+	//if (textItr == m_texts.end())
+	//{
+	//}
+	//std::vector<Rendering::Text::GuiText>::const_iterator guiTextItr = std::find(m_texts[guiText.GetFont()].begin(), m_texts[guiText.GetFont()].end(), guiText);
+	//m_texts[guiText.GetFont()].push_back(guiText); // TODO: What about duplicates?
+	m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>>(guiText.GetFont(), std::vector<Rendering::Text::GuiText>()));
+	//m_texts[guiText.GetFont()].push_back(guiText);
+}
+
 void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)
 {
 	//CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);

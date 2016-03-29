@@ -229,7 +229,7 @@ void Rendering::Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const 
 	//	this->CalcTangents(vertices, verticesCount);
 	//}
 
-	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 
@@ -279,7 +279,7 @@ void Rendering::Mesh::AddVertices(Vertex* vertices, size_t verticesCount, const 
 
 void Rendering::Mesh::Draw() const
 {
-	CHECK_CONDITION_EXIT(meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
 
 	BindBuffers();
 
@@ -845,4 +845,46 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 	}
 	m_kdTree = new Math::KDTree(m_positions, m_vertexCount, m_kdTreeSamples);
 #endif
+}
+
+Rendering::TextMesh::TextMesh(const Vertex2D* screenVertices, int screenVerticesCount, GLenum mode /* = GL_TRIANGLES */) :
+	Mesh(mode)
+{
+	m_meshData = new MeshData(screenVerticesCount);
+
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	glBufferData(GL_ARRAY_BUFFER, screenVerticesCount * sizeof(Vertex2D), screenVertices, GL_STATIC_DRAW);
+}
+
+Rendering::TextMesh::~TextMesh(void)
+{
+}
+
+void Rendering::TextMesh::Draw() const
+{
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+
+	BindBuffers();
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (GLvoid*)0); // positions
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex2D), (GLvoid*)sizeof(Math::Vector2D)); // texture coordinates
+
+	glDrawArrays(m_mode, 0, m_meshData->GetSize());
+
+	UnbindBuffers();
+}
+
+void Rendering::TextMesh::BindBuffers() const
+{
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+}
+
+void Rendering::TextMesh::UnbindBuffers() const
+{
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
 }

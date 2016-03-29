@@ -17,7 +17,8 @@
 /* static */ const char Rendering::Text::Font::NUMBER_SEPARATOR = ',';
 
 Rendering::Text::Font::Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName) :
-	m_textureAtlas(fontTextureAtlasFileName, GL_TEXTURE_2D)
+	m_textureAtlas(fontTextureAtlasFileName, GL_TEXTURE_2D),
+	m_metaDataFileName(fontMetaDataFileName)
 {
 	m_aspectRatio = static_cast<Math::Real>(1600) / 900; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
 	ReadMetaDataFile("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\" + fontMetaDataFileName);

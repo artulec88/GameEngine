@@ -11,6 +11,7 @@
 #include "BaseLight.h"
 #include "Color.h"
 #include "Font.h"
+#include "GuiText.h"
 #include "CubeShadowMap.h"
 
 #include "Math\Angle.h"
@@ -81,6 +82,7 @@ public:
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize) const;
 	RENDERING_API void RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
+	RENDERING_API void RenderText(const Text::GuiText& guiText) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>
@@ -436,10 +438,12 @@ private:
 	Math::Matrix4D m_lightMatrix;
 
 	Text::Font m_defaultFont;
+	//std::vector<Text::GuiText> m_texts;
 	Material* m_fontMaterial;
 	Math::Real m_defaultFontSize;
 	Math::Vector4D m_defaultFontColor;
 	Shader* m_textShader;
+	Shader* m_textShader2;
 	GLuint m_textVertexBuffer;
 	GLuint m_textTextureCoordBuffer;
 

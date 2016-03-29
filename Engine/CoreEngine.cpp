@@ -422,6 +422,7 @@ void CoreEngine::Stop()
 void CoreEngine::Run()
 {
 	START_PROFILING;
+	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
@@ -559,7 +560,10 @@ void CoreEngine::Run()
 #ifdef DRAW_FPS
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
-			m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
+			//m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
+			Rendering::Text::GuiText guiText("This is a GUI text", &font, 1.0f, Math::Vector2D(0.0f, 0.0f), 1.0f, false);
+			//exit(EXIT_FAILURE);
+			m_renderer->RenderText(guiText);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game.IsInGameTimeCalculationEnabled())

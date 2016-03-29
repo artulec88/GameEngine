@@ -8,6 +8,37 @@
 using namespace Rendering;
 using namespace Math;
 
+Vertex2D::Vertex2D(const Vector2D& position, const Vector2D& texCoord /* = Vector2D(REAL_ZERO, REAL_ZERO) */) :
+	m_pos(position),
+	m_texCoord(texCoord)
+{
+}
+
+bool Vertex2D::operator==(const Vertex2D& vertex2D) const
+{
+	return ((m_pos == vertex2D.m_pos) && (m_texCoord == vertex2D.m_texCoord));
+}
+
+bool Vertex2D::operator!=(const Vertex2D& vertex2D) const
+{
+	return (!((*this) == vertex2D));
+}
+
+#ifdef _DEBUG
+std::string Vertex2D::ToString() const
+{
+	std::stringstream ss("");
+
+	ss << "{ pos = ";
+	ss << m_pos.ToString();
+	ss << "; texCoord = ";
+	ss << m_texCoord.ToString();
+	ss << " } ";
+
+	return ss.str();
+}
+#endif
+
 //Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Vector2D(REAL_ZERO, REAL_ZERO) */, const Vector3D& normal /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
 //	const Math::Vector3D& tangent /* = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Math::Vector3D& bitangent /* = Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */) :
 Vertex::Vertex(const Vector3D& position, const Vector2D& texCoord /* = Vector2D(REAL_ZERO, REAL_ZERO) */, const Vector3D& normal /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,

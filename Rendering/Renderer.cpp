@@ -100,6 +100,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 		GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO),
 		GET_CONFIG_VALUE("defaultTextColorAlpha", REAL_ZERO)),
 	m_textShader(NULL),
+	m_textShader2(NULL),
 	m_textVertexBuffer(0),
 	m_textTextureCoordBuffer(0),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
@@ -232,9 +233,11 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	}
 
 	m_fontMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("fontTextureAtlas", "Holstein.tga"), GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
+	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
 	glGenBuffers(1, &m_textVertexBuffer);
 	glGenBuffers(1, &m_textTextureCoordBuffer);
 	m_textShader = new Shader(GET_CONFIG_VALUE_STR("textShader", "text-shader"));
+	m_textShader2 = new Shader(GET_CONFIG_VALUE_STR("textShader2", "text-shader-2"));
 
 	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
 	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR("waterNormalMap", "waterNormalMap.png"));
@@ -316,6 +319,7 @@ Renderer::~Renderer(void)
 	//SetTexture("fontTexture", NULL);
 	SAFE_DELETE(m_fontMaterial);
 	SAFE_DELETE(m_textShader);
+	SAFE_DELETE(m_textShader2);
 
 	m_mappedValues.SetTexture("waterReflectionTexture", NULL);
 	m_mappedValues.SetMultitexture("waterRefractionTexture", NULL, 0);
@@ -792,6 +796,43 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);
+	}
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
+}
+
+void Renderer::RenderText(const Text::GuiText& guiText) const
+{
+	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
+	//CRITICAL_LOG("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	/**
+	* This effectively means:
+	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
+	* (1 - currentAlphaInFramebuffer) * shader's output color
+	*/
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	m_textShader2->Bind();
+	m_textShader2->SetUniformVector3D("translation", Math::Vector3D(guiText.GetScreenPosition().GetX(), guiText.GetScreenPosition().GetY(), 0.0f));
+	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
+	m_textShader2->SetUniformi("fontAtlas", 0);
+	
+	guiText.Draw();
+
+	if (Rendering::glDepthTestEnabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
 	}
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }

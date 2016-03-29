@@ -48,6 +48,8 @@ namespace Rendering
 					m_width = REAL_ZERO;
 					m_characters.clear();
 				}
+
+				std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -129,29 +131,33 @@ namespace Rendering
 			/// based on this line length value.
 			/// </param>
 			/// <param name="isCentered"> Specified whether the text should be centered or not. </param>
-			RENDERING_API GuiText(const std::string& text, const Font& font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength, bool isCentered = false);
+			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength, bool isCentered = false);
 			RENDERING_API ~GuiText(void);
-		private:
-			GuiText(GuiText& guiText);
-			void operator=(GuiText& guiText);
+		//private:
+			//GuiText(GuiText& guiText);
+			//void operator=(GuiText& guiText);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>
-			const Font& GetFont() const { return m_font; }
+			RENDERING_API const Font* GetFont() const { return m_font; }
 
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
-			const Math::Vector3D& GetColor() const { return m_color; }
+			RENDERING_API const Math::Vector3D& GetColor() const { return m_color; }
+
+			/// <summary> Sets the color of this GUI text. </summary>
+			/// <param name="textColor"> The color we want to set for the GUI text. </param>
+			RENDERING_API void SetColor(const Math::Vector3D& textColor) { m_color.Set(textColor.GetX(), textColor.GetY(), textColor.GetZ()); }
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
 			/// based on the length of the text and the specified maximum line length.
 			/// </summary>
 			/// <returns> The number of lines of text. </returns>
-			int GetLinesCount() const { return m_linesCount; }
+			RENDERING_API int GetLinesCount() const { return m_linesCount; }
 
 			/// <summary>
 			/// The position of the top-left corner of the text in screen-space.
@@ -160,15 +166,17 @@ namespace Rendering
 			/// <returns>
 			/// The screen-space position of the top-left corner of this GUI text.
 			/// </returns>
-			const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
+			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
 
-			bool IsCentered() const { return m_isCentered; }
+			RENDERING_API bool IsCentered() const { return m_isCentered; }
+
+			RENDERING_API void Draw() const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
 			std::string m_text;
-			const Font& m_font;
+			const Font* m_font;
 			Math::Real m_fontSize;
 			Math::Vector3D m_color;
 			Math::Vector2D m_screenPosition;

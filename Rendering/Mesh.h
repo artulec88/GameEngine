@@ -129,15 +129,15 @@ private: // disable copy constructor and assignment operator
 public:
 	RENDERING_API void Initialize(); // TODO: Try to remove it, the initialization should be handled in the constructor
 	virtual void Draw() const;
-	void BindBuffers() const;
-	void UnbindBuffers() const;
+	virtual void BindBuffers() const;
+	virtual void UnbindBuffers() const;
 protected:
 	void AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled = true);
 	void CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const;
 	void CalcTangents(Vertex* vertices, size_t verticesCount) const;
 	//void CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
-	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ };
+	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ }; // TODO: Remove this function
 	bool Compare(const Mesh& mesh) const;
 /* ==================== Non-static member functions end ==================== */
 
@@ -275,12 +275,8 @@ class TextMesh : public Mesh
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API TextMesh(Math::Vector2D* positions, int positionsCount, Math::Vector2D* textureCoords, int textureCoordsCount, GLenum mode = GL_TRIANGLES)
-	{
-	}
-	RENDERING_API virtual ~TextMesh(void)
-	{
-	}
+	RENDERING_API TextMesh(const Vertex2D* screenVertices, int screenVerticesCount, GLenum mode = GL_TRIANGLES);
+	RENDERING_API virtual ~TextMesh(void);
 private: // disable copy constructor and assignment operator
 	TextMesh(TextMesh& textMesh);
 	void operator=(TextMesh& textMesh);
@@ -288,7 +284,9 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	//virtual void Draw() const;
+	virtual void Draw() const;
+	virtual void BindBuffers() const;
+	virtual void UnbindBuffers() const;
 /* ==================== Non-static member functions end ==================== */
 
 
