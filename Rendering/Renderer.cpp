@@ -92,7 +92,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_cameras(),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
-	m_defaultFont(GET_CONFIG_VALUE_STR("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("defaultFontMetaData", "segoe.fnt")),
+	//m_defaultFont(GET_CONFIG_VALUE_STR("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("defaultFontMetaData", "segoe.fnt")),
 	m_fontMaterial(NULL),
 	m_defaultFontSize(GET_CONFIG_VALUE("defaultFontSize", 32.0f)),
 	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE),
@@ -232,7 +232,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
 	}
 
-	m_fontMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("fontTextureAtlas", "Holstein.tga"), GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
+	m_fontMaterial = new Material(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
 	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
 	glGenBuffers(1, &m_textVertexBuffer);
 	glGenBuffers(1, &m_textTextureCoordBuffer);
@@ -278,7 +278,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 #ifdef DEBUG_RENDERING_ENABLED
 	//m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
-	m_guiTextures.push_back(new GuiTexture("segoe.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
+	//m_guiTextures.push_back(new GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
 	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
 	m_debugShader = new Shader("debug-shader");

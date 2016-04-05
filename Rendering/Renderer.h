@@ -437,7 +437,7 @@ private:
 	std::map<std::string, unsigned int> m_samplerMap;
 	Math::Matrix4D m_lightMatrix;
 
-	Text::Font m_defaultFont;
+	//Text::Font m_defaultFont;
 	//std::vector<Text::GuiText> m_texts;
 	Material* m_fontMaterial;
 	Math::Real m_defaultFontSize;
