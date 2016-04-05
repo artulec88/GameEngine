@@ -278,6 +278,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 #ifdef DEBUG_RENDERING_ENABLED
 	//m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiTextures.push_back(new GuiTexture("segoe.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
 	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
 	m_debugShader = new Shader("debug-shader");
@@ -804,6 +805,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
 	//CRITICAL_LOG("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+	//glDisable(GL_CULL_FACE);
 	if (Rendering::glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -822,6 +824,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	m_textShader2->Bind();
 	m_textShader2->SetUniformVector3D("translation", Math::Vector3D(guiText.GetScreenPosition().GetX(), guiText.GetScreenPosition().GetY(), 0.0f));
 	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
+	guiText.GetFont()->Bind();
 	m_textShader2->SetUniformi("fontAtlas", 0);
 	
 	guiText.Draw();
@@ -834,6 +837,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	{
 		glDisable(GL_BLEND);
 	}
+	//glEnable(GL_CULL_FACE);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 

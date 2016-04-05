@@ -18,10 +18,10 @@ namespace Rendering
 			static const Math::Real LINE_HEIGHT;
 			static const int SPACE_ASCII_CODE;
 		private:
-			static const int PADDING_TOP;
-			static const int PADDING_LEFT;
-			static const int PADDING_BOTTOM;
-			static const int PADDING_RIGHT;
+			static const int PADDING_TOP_INDEX;
+			static const int PADDING_LEFT_INDEX;
+			static const int PADDING_BOTTOM_INDEX;
+			static const int PADDING_RIGHT_INDEX;
 			static const int DESIRED_PADDING;
 
 			static const char META_DATA_SPLITTER[2];

@@ -762,6 +762,10 @@ void Shader::SetUniformi(const std::string& name, int value) const
 	{
 		glUniform1i(itr->second, value);
 	}
+	else
+	{
+		EMERGENCY_LOG("Uniform \"%s\" is not defined in the shader \"%s\"", name.c_str(), m_fileName.c_str());
+	}
 }
 
 void Shader::SetUniformf(const std::string& name, Math::Real value) const

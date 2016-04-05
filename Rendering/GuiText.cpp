@@ -98,6 +98,7 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 	Math::Real cursorX = REAL_ZERO;
 	Math::Real cursorY = REAL_ZERO;
 	std::vector<Vertex2D> vertices;
+	int tempCount = 0;
 	for (std::vector<Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
 	{
 		if (m_isCentered)
@@ -117,6 +118,9 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 				const Math::Real properY = (-2.0f * y) + 1.0f;
 				const Math::Real properMaxX = (2.0f * maxX) - 1.0f;
 				const Math::Real properMaxY = (-2.0f * maxY) + 1.0f;
+
+				//CRITICAL_LOG("%d)\n\t(x, y) = (%.3f, %.3f);\n\t(maxX,maxY) = (%.3f, %.3f);\n\t(properX, properY) = (%.3f, %.3f);\n\t(properMaxX, properMaxY) = (%.3f, %.3f);",
+				//	tempCount++, x, y, maxX, maxY, properX, properY, properMaxX, properMaxY);
 
 				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), characterItr->GetTextureCoords())); // 0
 				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()))); // 1
@@ -139,6 +143,20 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 				vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()))); // 1
 				vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), characterItr->GetTextureCoords())); // 0
 
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetTextureCoords().GetY())));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properY), Math::Vector2D(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY())));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY())));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY())));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY())));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetTextureCoords().GetY())));
+
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(0.0f, 0.0f)));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properY), Math::Vector2D(1.0f, 0.0f)));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(1.0f, 1.0f)));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(1.0f, 1.0f)));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(0.0f, 1.0f)));
+				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(0.0f, 0.0f)));
+
 				cursorX += m_font->GetSpaceWidth() * m_fontSize;
 			}
 			cursorX += m_font->GetSpaceWidth() * m_fontSize;
@@ -146,11 +164,11 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 		cursorX = REAL_ZERO;
 		cursorY += Font::LINE_HEIGHT * m_fontSize;
 	}
-	int tempCounter = 0;
-	for (std::vector<Vertex2D>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++tempCounter)
-	{
-		ERROR_LOG("%d) vertexItr.pos = %s; vertexItr.texCoord = %s", tempCounter, vertexItr->m_pos.ToString().c_str(), vertexItr->m_texCoord.ToString().c_str());
-	}
+	//int tempCounter = 0;
+	//for (std::vector<Vertex2D>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++tempCounter)
+	//{
+	//	ERROR_LOG("%d) vertexItr.pos = %s; vertexItr.texCoord = %s", tempCounter, vertexItr->m_pos.ToString().c_str(), vertexItr->m_texCoord.ToString().c_str());
+	//}
 	m_mesh = new TextMesh(&vertices[0], vertices.size());
 }
 
