@@ -65,7 +65,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// Converts the specified <paramref name="str"/> to a floating-point number. Note that a string exception is thrown if it is invalid.
 	/// </summary>
-	float ToFloat(const std::string& str);
+	UTILITY_API float ToFloat(const std::string& str);
 
 	/// <summary> Returns <code>true</code> if the specified character <paramref name="c"/> is numeric. </summary>
 	bool IsNumeric(char c);

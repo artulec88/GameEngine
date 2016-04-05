@@ -561,7 +561,7 @@ void CoreEngine::Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			//m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
-			Rendering::Text::GuiText guiText("This is a GUI text", &font, 8.0f, Math::Vector2D(0.0f, 0.0f), 1.0f, false);
+			Rendering::Text::GuiText guiText("This is a GUI text", &font, 1.0f, Math::Vector2D(0.0f, 0.0f), 1.0f, false);
 			m_renderer->RenderText(guiText);
 #endif
 #ifdef DRAW_GAME_TIME

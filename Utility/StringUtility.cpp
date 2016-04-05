@@ -96,7 +96,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 
 float Utility::StringUtility::ToFloat(const std::string& str)
 {
-	CRITICAL_LOG("This function is not yet implemented correctly.");
+	WARNING_LOG("This function has not been tested yet.");
 
 	float result = 0.0f;
 	std::string inString = Trim(str);

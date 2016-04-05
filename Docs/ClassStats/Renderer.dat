@@ -1,2 +1,2 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Renderer	1	1	261596	261596	261596
+Renderer	1	1	309766	309766	309766

@@ -1,2 +1,2 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Update	1792	1792	174.478	174.478	0.0973652
+Update	20068	20068	883.797	883.797	0.0440401
