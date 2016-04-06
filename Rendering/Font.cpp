@@ -11,7 +11,7 @@
 /* static */ const int Rendering::Text::Font::PADDING_LEFT_INDEX = 1;
 /* static */ const int Rendering::Text::Font::PADDING_BOTTOM_INDEX = 2;
 /* static */ const int Rendering::Text::Font::PADDING_RIGHT_INDEX = 3;
-/* static */ const int Rendering::Text::Font::DESIRED_PADDING = 3;
+/* static */ const int Rendering::Text::Font::DESIRED_PADDING = 8;
 
 /* static */ const char Rendering::Text::Font::META_DATA_SPLITTER[2] = { ' ', '=' };
 /* static */ const char Rendering::Text::Font::NUMBER_SEPARATOR = ',';
