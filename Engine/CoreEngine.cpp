@@ -561,7 +561,12 @@ void CoreEngine::Run()
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
 			//m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
-			Rendering::Text::GuiText guiText("This is a GUI text", &font, 6.0f, Math::Vector2D(0.0f, 0.0f), 0.25f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true);
+			Rendering::Text::GuiText guiText("This is a GUI text", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
+				Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
+				GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.0f), GET_CONFIG_VALUE("offsetFPSY", 0.0f)),
+				Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 0.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
+				GET_CONFIG_VALUE("isCenteredFPS", false), GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f),
+				GET_CONFIG_VALUE("borderWidthFPS", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
 			m_renderer->RenderText(guiText);
 #endif
 #ifdef DRAW_GAME_TIME
