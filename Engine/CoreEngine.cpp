@@ -424,13 +424,15 @@ void CoreEngine::Run()
 	START_PROFILING;
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 
-	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
-	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
+#ifdef DRAW_FPS
+	const Rendering::Text::Font fpsFont(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
+	Rendering::Text::GuiText fpsGuiText("", &fpsFont, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
 		Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
 		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.0f), GET_CONFIG_VALUE("offsetFPSY", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 0.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
 		GET_CONFIG_VALUE("isCenteredFPS", false), GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f),
 		GET_CONFIG_VALUE("borderWidthFPS", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
+#endif
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
 

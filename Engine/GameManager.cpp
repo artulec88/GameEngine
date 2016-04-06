@@ -206,6 +206,11 @@ void Engine::GameManager::AddSkyboxNode(GameNode* skyboxNode)
 	m_skyboxNode = skyboxNode;
 }
 
+void Engine::GameManager::AddParticle(const Rendering::Particle& particle)
+{
+	m_particles.push_back(particle);
+}
+
 void Engine::GameManager::Render(Rendering::Renderer* renderer) const
 {
 	m_gameStateManager->Render(NULL, renderer);

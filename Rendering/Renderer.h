@@ -13,6 +13,7 @@
 #include "Font.h"
 #include "GuiText.h"
 #include "CubeShadowMap.h"
+#include "Particle.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
@@ -83,6 +84,8 @@ public:
 	RENDERING_API void RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
 	RENDERING_API void RenderText(const Text::GuiText& guiText) const;
+
+	RENDERING_API void RenderParticles(const std::vector<Particle>& particles) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>
@@ -250,10 +253,8 @@ public:
 	{
 		return (m_waterLightReflectionEnabled && m_directionalLightsCount > 0 /* && directional light is enabled */) ? m_waterShader : m_waterNoDirectionalLightShader;
 	}
-	RENDERING_API const Shader* GetBillboardShader() const
-	{
-		return m_billboardShader;
-	}
+	RENDERING_API const Shader* GetBillboardShader() const { return m_billboardShader; }
+	RENDERING_API const Shader* GetParticleShader() const { return m_particleShader; }
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
@@ -481,6 +482,9 @@ private:
 	Shader* m_waterNoDirectionalLightShader;
 
 	Shader* m_billboardShader;
+
+	Mesh* m_particleQuad;
+	Shader* m_particleShader;
 
 	MappedValues m_mappedValues;
 

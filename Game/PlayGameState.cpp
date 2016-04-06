@@ -179,6 +179,8 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 	RenderBillboardNodes(renderer);
 
+	RenderParticles(renderer);
+
 	RenderSkybox(renderer);
 
 	renderer->FinalizeRenderScene();
@@ -420,6 +422,14 @@ void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 	{
 		(*billboardNodeItr)->Render(renderer->GetBillboardShader(), renderer);
 	}
+	STOP_PROFILING;
+}
+
+void PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
+{
+	START_PROFILING;
+	DEBUG_LOG("Rendering particles started");
+	renderer->RenderParticles(m_gameManager->GetParticles());
 	STOP_PROFILING;
 }
 

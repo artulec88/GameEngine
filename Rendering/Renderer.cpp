@@ -125,6 +125,8 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterShader(NULL),
 	m_waterNoDirectionalLightShader(NULL),
 	m_billboardShader(NULL),
+	m_particleQuad(NULL),
+	m_particleShader(NULL),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
@@ -254,6 +256,10 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
+	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, 0.5f), Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(0.5f, -0.5f) };
+	m_particleQuad = new GuiMesh(particleVertexPositions, 4);
+	m_particleShader = new Shader(GET_CONFIG_VALUE_STR("particleShader", "particle-shader"));
+
 	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
@@ -335,6 +341,7 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterNoDirectionalLightShader);
 	
 	SAFE_DELETE(m_billboardShader);
+	SAFE_DELETE(m_particleShader);
 	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
 	//{
 	//	SAFE_DELETE(*billboardNodeItr);
@@ -845,6 +852,49 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	}
 	//glEnable(GL_CULL_FACE);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
+}
+
+void Renderer::RenderParticles(const std::vector<Particle>& particles) const
+{
+	if (particles.empty())
+	{
+		return;
+	}
+	m_particleShader->Bind();
+	m_particleQuad->BindBuffers();
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	/**
+	* This effectively means:
+	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
+	* (1 - currentAlphaInFramebuffer) * shader's output color
+	*/
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	CRITICAL_LOG("Rendering particles started. There are %d particles currently in the game.", particles.size());
+	for (std::vector<Particle>::const_iterator particleItr = particles.begin(); particleItr != particles.end(); ++particleItr)
+	{
+		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), Math::Angle(particleItr->GetRotation()));
+		Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
+		m_particleShader->UpdateUniforms(particleTransform, NULL, this);
+		m_particleQuad->Draw();
+	}
+
+	m_particleQuad->UnbindBuffers();
+	if (Rendering::glDepthTestEnabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
 }
 
 void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
