@@ -888,3 +888,17 @@ void Rendering::TextMesh::UnbindBuffers() const
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 }
+
+void Rendering::TextMesh::ReplaceData(const Vertex2D* screenVertices, int screenVerticesCount)
+{
+	//CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, screenVerticesCount * sizeof(Vertex2D), screenVertices);
+
+	SAFE_DELETE(m_meshData);
+
+	m_meshData = new MeshData(screenVerticesCount);
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
+	glBufferData(GL_ARRAY_BUFFER, screenVerticesCount * sizeof(Vertex2D), screenVertices, GL_STATIC_DRAW);
+}

@@ -25,7 +25,8 @@ std::string Rendering::Text::GuiText::Word::ToString() const
 
 Rendering::Text::GuiText::Line::Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength) :
 	m_spaceSize(spaceWidth * fontSize),
-	m_maxLength(maxLength)
+	m_maxLength(maxLength),
+	m_currentLineLength(REAL_ZERO)
 {
 }
 
@@ -69,7 +70,20 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth),
 	m_mesh(NULL)
 {
-	const char* chars = text.c_str();
+	if (!text.empty())
+	{
+		SetText(text);
+	}
+}
+
+
+Rendering::Text::GuiText::~GuiText()
+{
+	SAFE_DELETE(m_mesh);
+}
+
+void Rendering::Text::GuiText::SetText(const std::string& text)
+{
 	std::vector<Line> lines;
 	Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);
 	Word currentWord(m_fontSize);
@@ -136,13 +150,6 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 				vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()))); // 1
 				vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), characterItr->GetTextureCoords())); // 0
 
-				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(0.0f, 0.0f)));
-				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properY), Math::Vector2D(1.0f, 0.0f)));
-				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(1.0f, 1.0f)));
-				//vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), Math::Vector2D(1.0f, 1.0f)));
-				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(0.0f, 1.0f)));
-				//vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), Math::Vector2D(0.0f, 0.0f)));
-
 				cursorX += characterItr->GetXAdvance() * m_fontSize;
 			}
 			cursorX += m_font->GetSpaceWidth() * m_fontSize;
@@ -150,13 +157,14 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 		cursorX = REAL_ZERO;
 		cursorY += Font::LINE_HEIGHT * m_fontSize;
 	}
-	m_mesh = new TextMesh(&vertices[0], vertices.size());
-}
-
-
-Rendering::Text::GuiText::~GuiText()
-{
-	SAFE_DELETE(m_mesh);
+	if (m_mesh == NULL)
+	{
+		m_mesh = new TextMesh(&vertices[0], vertices.size());
+	}
+	else
+	{
+		m_mesh->ReplaceData(&vertices[0], vertices.size());
+	}
 }
 
 void Rendering::Text::GuiText::Draw() const

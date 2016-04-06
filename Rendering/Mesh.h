@@ -287,6 +287,7 @@ public:
 	virtual void Draw() const;
 	virtual void BindBuffers() const;
 	virtual void UnbindBuffers() const;
+	void ReplaceData(const Vertex2D* screenVertices, int screenVerticesCount);
 /* ==================== Non-static member functions end ==================== */
 
 

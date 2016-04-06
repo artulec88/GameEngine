@@ -422,8 +422,15 @@ void CoreEngine::Stop()
 void CoreEngine::Run()
 {
 	START_PROFILING;
-	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
+
+	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
+	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
+		Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
+		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.0f), GET_CONFIG_VALUE("offsetFPSY", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 0.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
+		GET_CONFIG_VALUE("isCenteredFPS", false), GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f),
+		GET_CONFIG_VALUE("borderWidthFPS", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
 
@@ -560,14 +567,8 @@ void CoreEngine::Run()
 #ifdef DRAW_FPS
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
-			//m_renderer->RenderText(0, 570, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
-			Rendering::Text::GuiText guiText("This is a GUI text", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
-				Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
-				GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.0f), GET_CONFIG_VALUE("offsetFPSY", 0.0f)),
-				Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 0.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
-				GET_CONFIG_VALUE("isCenteredFPS", false), GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f),
-				GET_CONFIG_VALUE("borderWidthFPS", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
-			m_renderer->RenderText(guiText);
+			fpsGuiText.SetText(ss.str());
+			m_renderer->RenderText(fpsGuiText);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game.IsInGameTimeCalculationEnabled())

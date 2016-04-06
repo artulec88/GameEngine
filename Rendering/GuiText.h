@@ -29,9 +29,9 @@ namespace Rendering
 				/// <param name="fontSize"> The size of font of the text this word belongs to. </param>
 				Word(Math::Real fontSize);
 				~Word(void);
-			//private:
-			//	Word(Word& word) {};
-			//	void operator=(Word& word) {};
+				//private:
+				//	Word(Word& word) {};
+				//	void operator=(Word& word) {};
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -75,9 +75,9 @@ namespace Rendering
 				/// <param name="maxLength"> The screen-space maximum length of a line. </param>
 				Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength);
 				~Line(void);
-			//private:
-			//	Line(Line& line) {};
-			//	void operator=(Line& line) {};
+				//private:
+				//	Line(Line& line) {};
+				//	void operator=(Line& line) {};
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -148,7 +148,7 @@ namespace Rendering
 				const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false, Math::Real characterWidth = 0.5f,
 				Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API ~GuiText(void);
-		//private:
+			//private:
 			//GuiText(GuiText& guiText);
 			//void operator=(GuiText& guiText);
 		/* ==================== Constructors and destructors end ==================== */
@@ -166,6 +166,8 @@ namespace Rendering
 			/// <summary> Sets the color of this GUI text. </summary>
 			/// <param name="textColor"> The color we want to set for the GUI text. </param>
 			RENDERING_API void SetColor(const Math::Vector3D& textColor) { m_color.Set(textColor.GetX(), textColor.GetY(), textColor.GetZ()); }
+
+			RENDERING_API void SetText(const std::string& text);
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -205,7 +207,7 @@ namespace Rendering
 			Math::Real m_maxLineLength;
 			int m_linesCount;
 			bool m_isCentered;
-			
+
 			Math::Vector2D m_offset;
 			Math::Vector3D m_outlineColor;
 			Math::Real m_characterWidth;
@@ -213,7 +215,7 @@ namespace Rendering
 			Math::Real m_borderWidth;
 			Math::Real m_borderEdgeTransitionWidth;
 
-			Mesh* m_mesh;
+			TextMesh* m_mesh;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiText */
 	}
