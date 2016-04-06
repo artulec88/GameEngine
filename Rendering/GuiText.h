@@ -130,8 +130,23 @@ namespace Rendering
 			/// When text is centered it is centered into the middle of the line,
 			/// based on this line length value.
 			/// </param>
+			/// <param name="offset"> The offset for the second font texture atlas sampling call. </param>
+			/// <param name="outlineColor"> The outline color. </param>
 			/// <param name="isCentered"> Specified whether the text should be centered or not. </param>
-			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength, bool isCentered = false);
+			/// <param name="characterWidth">
+			/// The width of the single character in the text. It has nothing to do with the font size.
+			/// It simply defines how "fat" the single character should be.
+			/// </param>
+			/// <param name="characterEdgeTransitionWidth">
+			/// Together with <paramref name="characterWidth"/> it defines what values of distances should be handled for anti-aliasing of the characters.
+			/// For distances between <paramref name="characterWidth"/> and the sum <paramref name="characterWidth"/> + <paramref name="characterEdgeTransitionWidth"/>
+			/// there will be a smooth transition between the character and the background.
+			/// </param>
+			/// <param name="borderWidth"> The border width. </param>
+			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
+			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
+				const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false, Math::Real characterWidth = 0.5f,
+				Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API ~GuiText(void);
 		//private:
 			//GuiText(GuiText& guiText);
@@ -170,6 +185,13 @@ namespace Rendering
 
 			RENDERING_API bool IsCentered() const { return m_isCentered; }
 
+			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
+			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColor; }
+			RENDERING_API Math::Real GetCharacterWidth() const { return m_characterWidth; }
+			RENDERING_API Math::Real GetCharacterEdgeTransitionWidth() const { return m_characterEdgeTransitionWidth; }
+			RENDERING_API Math::Real GetBorderWidth() const { return m_borderWidth; }
+			RENDERING_API Math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
+
 			RENDERING_API void Draw() const;
 		/* ==================== Non-static member functions end ==================== */
 
@@ -184,6 +206,13 @@ namespace Rendering
 			int m_linesCount;
 			bool m_isCentered;
 			
+			Math::Vector2D m_offset;
+			Math::Vector3D m_outlineColor;
+			Math::Real m_characterWidth;
+			Math::Real m_characterEdgeTransitionWidth;
+			Math::Real m_borderWidth;
+			Math::Real m_borderEdgeTransitionWidth;
+
 			Mesh* m_mesh;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiText */

@@ -28,6 +28,7 @@ public:
 		//m_defaultColor(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE),
 		// TODO: There is no need to create new default texture for each instance of MappedValues. Instead, use Flyweight pattern to minimize dynamic memory allocation.
 		m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
+		m_defaultVector2D(REAL_ZERO, REAL_ZERO),
 		m_defaultVector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 		m_defaultVector4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO)
 	{
@@ -62,6 +63,20 @@ public:
 	//		colorMap[colorName] = color;
 	//	}
 	//}
+
+	RENDERING_API inline void SetVector2D(const std::string& name, const Math::Vector2D& vec)
+	{
+		if (vec2DMap.find(name) == vec2DMap.end())
+		{
+			DEBUG_LOG("Vector2D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
+			vec2DMap.insert(std::pair<std::string, Math::Vector2D>(name, vec));
+		}
+		else
+		{
+			DELOCUST_LOG("Modifying the Vector2D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec2DMap[name].ToString().c_str(), vec.ToString().c_str());
+			vec2DMap[name] = vec;
+		}
+	}
 
 	RENDERING_API inline void SetVector3D(const std::string& name, const Math::Vector3D& vec)
 	{
@@ -153,6 +168,18 @@ public:
 	//	}
 	//	return itr->second;
 	//}
+
+	RENDERING_API inline const Math::Vector2D& GetVec2D(const std::string& name) const
+	{
+		// TODO: Return a reference instead of value.
+		std::map<std::string, Math::Vector2D>::const_iterator itr = vec2DMap.find(name);
+		if (itr == vec2DMap.end()) // vector not found
+		{
+			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			return m_defaultVector2D;
+		}
+		return itr->second;
+	}
 
 	RENDERING_API inline const Math::Vector3D& GetVec3D(const std::string& name) const
 	{
@@ -269,11 +296,13 @@ public:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	//typedef std::map<std::string, Color> StrToColorMap;
+	typedef std::map<std::string, Math::Vector2D> StrToVec2DMap;
 	typedef std::map<std::string, Math::Vector3D> StrToVec3DMap;
 	typedef std::map<std::string, Math::Vector4D> StrToVec4DMap;
 	typedef std::map<std::string, Math::Real> StrToRealMap;
 	typedef std::map<std::string, const Texture*> StrToTextureMap;
 	//StrToColorMap colorMap;
+	StrToVec2DMap vec2DMap;
 	StrToVec3DMap vec3DMap;
 	StrToVec4DMap m_vec4DMap;
 	StrToRealMap realMap;
@@ -286,6 +315,7 @@ private:
 	// there is no need to store as many instances of these as many MappedValues instances there are.
 	// We should store them only once in memory. Flyweight design pattern would be a perfect solution here.
 	Texture* m_defaultTexture;
+	Math::Vector2D m_defaultVector2D;
 	Math::Vector3D m_defaultVector3D;
 	Math::Vector4D m_defaultVector4D;
 /* ==================== Non-static member variables end ==================== */

@@ -143,6 +143,7 @@ namespace Rendering
 
 		void SetUniformi(const std::string& uniformName, int value) const;
 		void SetUniformf(const std::string& uniformName, Math::Real value) const;
+		void SetUniformVector2D(const std::string& uniformName, const Math::Vector2D& vector) const;
 		void SetUniformVector3D(const std::string& uniformName, const Math::Vector3D& vector) const;
 		void SetUniformVector4D(const std::string& uniformName, const Math::Vector4D& vector) const;
 		void SetUniformVector4D(const std::string& uniformName, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const;

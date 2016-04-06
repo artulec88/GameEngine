@@ -643,6 +643,10 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 			{
 				SetUniformVector4D(uniformName, renderer->GetVec4D(unprefixedName));
 			}
+			else if (uniformType == Uniforms::VEC_2D)
+			{
+				SetUniformVector2D(uniformName, renderer->GetVec2D(unprefixedName));
+			}
 			else if (uniformType == Uniforms::REAL)
 			{
 				SetUniformf(uniformName, renderer->GetReal(unprefixedName));
@@ -778,6 +782,17 @@ void Shader::SetUniformf(const std::string& name, Math::Real value) const
 	if (m_shaderData->IsUniformPresent(name, itr))
 	{
 		glUniform1f(itr->second, value);
+	}
+}
+
+void Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
+{
+	std::map<std::string, GLint>::const_iterator itr;
+	if (m_shaderData->IsUniformPresent(name, itr))
+	{
+		glUniform2f(itr->second, vector.GetX(), vector.GetY());
+		//glUniform3fv(itr->second, 1, vector.At());
+		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
 	}
 }
 

@@ -259,6 +259,7 @@ public:
 	void BindCubeShadowMap(unsigned int textureUnit) const;
 
 	Math::Real GetReal(const std::string& realValueName) const { return m_mappedValues.GetReal(realValueName); }
+	const Math::Vector2D& GetVec2D(const std::string& vectorName) const { return m_mappedValues.GetVec2D(vectorName); }
 	const Math::Vector3D& GetVec3D(const std::string& vectorName) const { return m_mappedValues.GetVec3D(vectorName); }
 	const Math::Vector4D& GetVec4D(const std::string& vectorName) const { return m_mappedValues.GetVec4D(vectorName); }
 	const Texture* GetTexture(const std::string& textureName) const { return m_mappedValues.GetTexture(textureName); }

@@ -823,7 +823,13 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 
 	m_textShader2->Bind();
 	m_textShader2->SetUniformVector3D("translation", Math::Vector3D(guiText.GetScreenPosition().GetX(), guiText.GetScreenPosition().GetY(), 0.0f));
+	m_textShader2->SetUniformVector2D("offset", guiText.GetOffset());
 	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
+	m_textShader2->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
+	m_textShader2->SetUniformf("characterWidth", guiText.GetCharacterWidth());
+	m_textShader2->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
+	m_textShader2->SetUniformf("borderWidth", guiText.GetBorderWidth());
+	m_textShader2->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
 	guiText.GetFont()->Bind();
 	m_textShader2->SetUniformi("fontAtlas", 0);
 	

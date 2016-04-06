@@ -18,24 +18,25 @@ void main()
 uniform vec3 textColor;
 uniform sampler2D fontAtlas;
 
-const float width = 0.5;
-const float edgeTransitionDistance = 0.1;
-const float borderWidth = 0.4;
-const float borderEdgeTransitionDistance = 0.05;
-const vec2 offset = vec2(0.0, 0.0);
-const vec3 outlineColor = vec3(0.2, 0.2, 0.2);
+// Watch https://www.youtube.com/watch?v=d8cfgcJR9Tk&index=33&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP
+uniform vec2 offset;
+uniform vec3 outlineColor;
+uniform float characterWidth;
+uniform float characterEdgeTransitionDistance;
+uniform float borderWidth;
+uniform float borderEdgeTransitionDistance;
 
 DeclareFragOutput(0, vec4);
 void main()
 {
 	float distance = 1.0 - texture(fontAtlas, texCoord0).a;
-	float alpha = 1.0 - smoothstep(width, width + edgeTransitionDistance, distance);
+	float alpha = 1.0 - smoothstep(characterWidth, characterWidth + characterEdgeTransitionDistance, distance);
 	
 	float distance2 = 1.0 - texture(fontAtlas, texCoord0 + offset).a;
 	float outlineAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdgeTransitionDistance, distance2);
 	
 	float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
-	vec3 overallColor = mix(outlineColor, textColor, alpha / overallAlpha);
+	vec3 overallColor = mix(outlineColor, textColor, alpha / (overallAlpha + 0.000001));
 	
 	SetFragOutput(0, vec4(overallColor, overallAlpha));
 }
