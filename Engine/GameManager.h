@@ -99,7 +99,8 @@ public:
 	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
 	ENGINE_API void AddText(const Rendering::Text::GuiText& text);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
-	ENGINE_API void AddParticle(const Rendering::Particle& particle);
+	ENGINE_API void AddParticle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor,
+		Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
 protected:
 	ENGINE_API void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */

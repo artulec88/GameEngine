@@ -3,6 +3,7 @@
 
 #include "Rendering.h"
 #include "Math\Vector.h"
+#include "Math\Angle.h"
 
 namespace Rendering
 {
@@ -17,7 +18,16 @@ namespace Rendering
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Particle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor, Math::Real lifespanLimit, Math::Real rotation, Math::Real scale);
+		/// <summary>
+		/// Constructs the particle.
+		/// </summary>
+		/// <param name="position"> The initial position of the particle. </param>
+		/// <param name="velocity"> The initial velocity of the particle. </param>
+		/// <param name="gravityEffectFactor"> Determines how much gravity affects the particle.. </param>
+		/// <param name="lifespanLimit"> The time span (in seconds) representing how long the particle will stay alive for. </param>
+		/// <param name="rotation"> The initial rotation of the particle. </param>
+		/// <param name="scale"> The initial scale of the particle. </param>
+		RENDERING_API Particle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
 		RENDERING_API virtual ~Particle(void);
 	//private:
 	//	Particle(const Particle& particle);
@@ -27,7 +37,7 @@ namespace Rendering
 	/* ==================== Non-static member functions begin ==================== */
 	public:
 		const Math::Vector3D& GetPosition() const { return m_position; }
-		Math::Real GetRotation() const { return m_rotation; }
+		const Math::Angle& GetRotation() const { return m_rotation; }
 		Math::Real GetScale() const { return m_scale; }
 		bool IsAlive() const { return m_lifeSpan < m_lifeSpanLimit; }
 
@@ -35,13 +45,17 @@ namespace Rendering
 		/// Updates the particle's state.
 		/// </summary>
 		/// <returns> <code>true</code> if the particle is still alive and <code>false</code> if particle's lifespan exceeded its lifespan limit (particle is dead).
-		bool Update(Math::Real deltaTime);
+		RENDERING_API bool Update(Math::Real deltaTime);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
+		/// </summary> The vector representing the position of the particle. </summary>
 		Math::Vector3D m_position;
+
+		/// </summary> Represents current velocity of the particle. </summary>
 		Math::Vector3D m_velocity;
+
 		/// </summary>
 		/// The value represents how much the particle is affected by gravity.
 		/// The value <code>1.0f</code> means the particle is affected normally by gravity,
@@ -60,7 +74,7 @@ namespace Rendering
 		Math::Real m_lifeSpan;
 
 		/// <summary> The rotation of the particle. </summary>
-		Math::Real m_rotation;
+		Math::Angle m_rotation;
 
 		/// <summary> The scale of the particle. </summary>
 		Math::Real m_scale;

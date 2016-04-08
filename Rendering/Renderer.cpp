@@ -256,7 +256,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
-	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, 0.5f), Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(0.5f, -0.5f) };
+	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
 	m_particleQuad = new GuiMesh(particleVertexPositions, 4);
 	m_particleShader = new Shader(GET_CONFIG_VALUE_STR("particleShader", "particle-shader"));
 
@@ -856,10 +856,12 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 
 void Renderer::RenderParticles(const std::vector<Particle>& particles) const
 {
+	START_PROFILING;
 	if (particles.empty())
 	{
 		return;
 	}
+	DELOCUST_LOG("Rendering particles started. There are %d particles currently in the game.", particles.size());
 	m_particleShader->Bind();
 	m_particleQuad->BindBuffers();
 	if (Rendering::glDepthTestEnabled)
@@ -877,12 +879,36 @@ void Renderer::RenderParticles(const std::vector<Particle>& particles) const
 	*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	CRITICAL_LOG("Rendering particles started. There are %d particles currently in the game.", particles.size());
+	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
 	for (std::vector<Particle>::const_iterator particleItr = particles.begin(); particleItr != particles.end(); ++particleItr)
 	{
+		Math::Matrix4D modelMatrix(particleItr->GetPosition());
+		// To make the particle always face the camera we can either use the geometry shader (as in the Bilboard shader) or
+		// set the 3x3 top-left submatrix of the model matrix to be a transposed version of the 3x3 top-left submatrix of the camera's view matrix.
+		modelMatrix.SetElement(0, 0, cameraViewMatrix.GetElement(0, 0));
+		modelMatrix.SetElement(0, 1, cameraViewMatrix.GetElement(1, 0));
+		modelMatrix.SetElement(0, 2, cameraViewMatrix.GetElement(2, 0));
+		modelMatrix.SetElement(1, 0, cameraViewMatrix.GetElement(0, 1));
+		modelMatrix.SetElement(1, 1, cameraViewMatrix.GetElement(1, 1));
+		modelMatrix.SetElement(1, 2, cameraViewMatrix.GetElement(2, 1));
+		modelMatrix.SetElement(2, 0, cameraViewMatrix.GetElement(0, 2));
+		modelMatrix.SetElement(2, 1, cameraViewMatrix.GetElement(1, 2));
+		modelMatrix.SetElement(2, 2, cameraViewMatrix.GetElement(2, 2));
+		
 		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), Math::Angle(particleItr->GetRotation()));
-		Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
-		m_particleShader->UpdateUniforms(particleTransform, NULL, this);
+		//Math::Quaternion particleRotation;
+		
+		//modelMatrix = Math::Matrix4D(particleItr->GetScale()) * particleRotation.ToRotationMatrix() * modelMatrix;
+		//modelMatrix = Math::Matrix4D(particleItr->GetScale()) * modelMatrix * particleRotation.ToRotationMatrix();
+		//modelMatrix = particleRotation.ToRotationMatrix() * Math::Matrix4D(particleItr->GetScale()) * modelMatrix;
+		//modelMatrix = particleRotation.ToRotationMatrix() * modelMatrix * Math::Matrix4D(particleItr->GetScale());
+		//modelMatrix = modelMatrix * Math::Matrix4D(particleItr->GetScale()) * particleRotation.ToRotationMatrix();
+		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particleItr->GetScale());
+		
+		//Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
+		//m_particleShader->UpdateUniforms(particleTransform, NULL, this);
+		//m_particleShader->SetUniformMatrix("T_model", modelMatrix);
+		m_particleShader->SetUniformMatrix("T_MVP", m_currentCamera->GetViewProjection() * modelMatrix);
 		m_particleQuad->Draw();
 	}
 
@@ -895,6 +921,7 @@ void Renderer::RenderParticles(const std::vector<Particle>& particles) const
 	{
 		glDisable(GL_BLEND);
 	}
+	STOP_PROFILING;
 }
 
 void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const

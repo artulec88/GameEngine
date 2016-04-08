@@ -206,9 +206,10 @@ void Engine::GameManager::AddSkyboxNode(GameNode* skyboxNode)
 	m_skyboxNode = skyboxNode;
 }
 
-void Engine::GameManager::AddParticle(const Rendering::Particle& particle)
+void Engine::GameManager::AddParticle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor,
+	Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale)
 {
-	m_particles.push_back(particle);
+	m_particles.push_back(Rendering::Particle(position, velocity, gravityEffectFactor, lifespanLimit, rotation, scale));
 }
 
 void Engine::GameManager::Render(Rendering::Renderer* renderer) const

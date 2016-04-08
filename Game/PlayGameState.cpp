@@ -146,6 +146,12 @@ void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
 		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
 		return;
 	}
+	/* Temporary code begin */
+	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+	{
+		m_gameManager->AddParticle(Math::Vector3D(1.0f, 1.0f, 1.0f), Math::Vector3D(0.0f, 0.1f, 0.0f), 0.0f, 4.0f, Math::Angle(30.0f), 0.5f);
+	}
+	/* Temporary code end */
 	m_gameManager->GetRootGameNode().KeyEvent(key, scancode, action, mods);
 	STOP_PROFILING;
 }
@@ -179,9 +185,9 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 	RenderBillboardNodes(renderer);
 
-	RenderParticles(renderer);
-
 	RenderSkybox(renderer);
+
+	RenderParticles(renderer);
 
 	renderer->FinalizeRenderScene();
 

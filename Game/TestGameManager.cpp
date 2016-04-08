@@ -11,6 +11,7 @@
 #include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
+#include "Engine\ParticleGeneratorComponent.h"
 #include "Rendering\Color.h"
 #include "Engine\Builder.h"
 #include "Engine\BuilderDirector.h"
@@ -336,6 +337,7 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, 1, 0.15f, 0.0f, 0.8f));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -487,6 +489,18 @@ bool isMouseLocked = false;
 void TestGameManager::Update(Real delta)
 {
 	START_PROFILING;
+	std::vector<Rendering::Particle>::iterator particleItr = m_particles.begin();
+	while (particleItr != m_particles.end())
+	{
+		if (particleItr->Update(delta))
+		{
+			++particleItr;
+		}
+		else
+		{
+			particleItr = m_particles.erase(particleItr);
+		}
+	}
 	m_gameStateManager->Update(delta);
 	STOP_PROFILING;
 }
