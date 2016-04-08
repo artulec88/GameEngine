@@ -2,6 +2,7 @@
 #define __RENDERING_PARTICLE_H__
 
 #include "Rendering.h"
+#include "Texture.h"
 #include "Math\Vector.h"
 #include "Math\Angle.h"
 
@@ -27,7 +28,8 @@ namespace Rendering
 		/// <param name="lifespanLimit"> The time span (in seconds) representing how long the particle will stay alive for. </param>
 		/// <param name="rotation"> The initial rotation of the particle. </param>
 		/// <param name="scale"> The initial scale of the particle. </param>
-		RENDERING_API Particle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
+		RENDERING_API Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
+			Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
 		RENDERING_API virtual ~Particle(void);
 	//private:
 	//	Particle(const Particle& particle);

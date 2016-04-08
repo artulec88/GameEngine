@@ -145,6 +145,30 @@ protected:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GuiTexture */
 
+class ParticleTexture : public Texture
+{
+/* ==================== Static variables begin ==================== */
+/* ==================== Static variables end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount);
+	RENDERING_API virtual ~ParticleTexture(void);
+private:
+	ParticleTexture(const ParticleTexture& particleTexture);
+	void operator=(const ParticleTexture& particleTexture);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	RENDERING_API int GetRowsCount() const { return m_rowsCount; }
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+protected:
+	int m_rowsCount;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class ParticleTexture */
 
 //class CubeShadowMapTexture : public Texture
 //{

@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "GameStateManager.h"
+#include "ParticleGenerator.h"
 #include "IUpdateable.h"
 #include "IRenderable.h"
 #include "GameNode.h"
@@ -18,6 +19,7 @@
 #include "Rendering\Camera.h"
 #include "Rendering\Font.h"
 #include "Rendering\GuiText.h"
+#include "Rendering\Texture.h"
 
 #include "Math\Transform.h"
 #include "Math\Math.h"
@@ -60,7 +62,7 @@ public:
 	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 	ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardNodes; }
-	ENGINE_API inline const std::vector<Rendering::Particle>& GetParticles() const { return m_particles; }
+	ENGINE_API inline const std::vector<ParticleGenerator*>& GetParticleGenerators() const { return m_particleGenerators; }
 	ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 	ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
@@ -99,8 +101,7 @@ public:
 	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
 	ENGINE_API void AddText(const Rendering::Text::GuiText& text);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
-	ENGINE_API void AddParticle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor,
-		Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
+	ENGINE_API void AddParticleGenerator(ParticleGenerator* particleGenerator);
 protected:
 	ENGINE_API void AddToSceneRoot(GameNode* child);
 /* ==================== Non-static member functions end ==================== */
@@ -112,7 +113,7 @@ protected:
 	GameNode* m_skyboxNode;
 	GameNode* m_waterNode;
 	std::vector<GameNode*> m_billboardNodes;
-	std::vector<Rendering::Particle> m_particles;
+	std::vector<ParticleGenerator*> m_particleGenerators;
 	FontMap m_texts;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;

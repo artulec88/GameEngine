@@ -337,7 +337,7 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, 50, 0.15f, 0.0f, 0.8f));
+	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTextureFire", "particleFire.png"), 1), 10, 0.05f, 0.0f, 1.2f));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -489,18 +489,10 @@ bool isMouseLocked = false;
 void TestGameManager::Update(Real delta)
 {
 	START_PROFILING;
-	std::vector<Rendering::Particle>::iterator particleItr = m_particles.begin();
-	while (particleItr != m_particles.end())
-	{
-		if (particleItr->Update(delta))
-		{
-			++particleItr;
-		}
-		else
-		{
-			particleItr = m_particles.erase(particleItr);
-		}
-	}
+	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
+	//{
+	//	particleGeneratorItr->Update(delta);
+	//}
 	m_gameStateManager->Update(delta);
 	STOP_PROFILING;
 }

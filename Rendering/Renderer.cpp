@@ -854,7 +854,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Renderer::RenderParticles(const std::vector<Particle>& particles) const
+void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std::vector<Particle>& particles) const
 {
 	START_PROFILING;
 	if (particles.empty())
@@ -862,7 +862,9 @@ void Renderer::RenderParticles(const std::vector<Particle>& particles) const
 		return;
 	}
 	DELOCUST_LOG("Rendering particles started. There are %d particles currently in the game.", particles.size());
-	m_particleShader->Bind();
+	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
+	particleTexture->Bind();
+	m_particleShader->SetUniformi("particleTexture", 0);
 	m_particleQuad->BindBuffers();
 	if (Rendering::glDepthTestEnabled)
 	{

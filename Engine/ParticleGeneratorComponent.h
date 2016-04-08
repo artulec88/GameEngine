@@ -21,7 +21,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticleGeneratorComponent(GameManager* gameManager, Math::Real particlesPerSecondCount, Math::Real speed, Math::Real gravityComplient, Math::Real lifeSpanLimit);
+		ENGINE_API ParticleGeneratorComponent(GameManager* gameManager, Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real speed, Math::Real gravityComplient, Math::Real lifeSpanLimit);
 		ENGINE_API virtual ~ParticleGeneratorComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 

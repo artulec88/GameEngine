@@ -413,6 +413,16 @@ GuiTexture::~GuiTexture(void)
 {
 }
 
+ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount) :
+	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE),
+	m_rowsCount(rowsCount)
+{
+}
+
+ParticleTexture::~ParticleTexture(void)
+{
+}
+
 //CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
 //{
 //	GLenum attachments [2] = { GL_DEPTH_ATTACHMENT, GL_COLOR_ATTACHMENT0 };

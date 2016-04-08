@@ -122,7 +122,7 @@ void Rendering::Mesh::Initialize()
 	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(m_fileName);
 	if (itr != meshResourceMap.end()) // the mesh has been already loaded
 	{
-		INFO_LOG("Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
+		DEBUG_LOG("Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
 		m_meshData = itr->second;
 		m_meshData->AddReference();
 		return;

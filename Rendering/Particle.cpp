@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "Particle.h"
+#include "Texture.h"
 
 /* static */ const Math::Real Rendering::Particle::GRAVITY_ACCELERATION = -9.8f; // TODO: The same is defined in the GravityComponent class.
 
-Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity, Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale) :
+Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
+	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale) :
 	m_position(position),
 	m_velocity(velocity),
 	m_gravityEffectFactor(gravityEffectFactor),
