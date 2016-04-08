@@ -37,6 +37,7 @@ namespace Engine
 			m_particles.push_back(Rendering::Particle(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.022f));
 		}
 		ENGINE_API const std::vector<Rendering::Particle>& GetParticles() const { return m_particles; }
+		ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

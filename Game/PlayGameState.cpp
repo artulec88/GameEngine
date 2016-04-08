@@ -430,6 +430,7 @@ void PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DEBUG_LOG("Rendering particles started");
+	m_gameManager->SortParticles(renderer->GetCurrentCameraTransform().GetTransformedPos());
 	for (std::vector<Engine::ParticleGenerator*>::const_iterator particleGeneratorItr = m_gameManager->GetParticleGenerators().begin(); particleGeneratorItr != m_gameManager->GetParticleGenerators().end(); ++particleGeneratorItr)
 	{
 		renderer->RenderParticles((*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles());
