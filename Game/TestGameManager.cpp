@@ -337,7 +337,7 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, 1, 0.15f, 0.0f, 0.8f));
+	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, 50, 0.15f, 0.0f, 0.8f));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

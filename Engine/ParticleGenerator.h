@@ -38,10 +38,12 @@ namespace Engine
 	/* ==================== Non-static member variables begin ==================== */
 	private:
 		GameManager* m_gameManager;
-		Math::Real m_particlesPerSecondCount;
 		Math::Real m_speed;
 		Math::Real m_gravityComplient;
 		Math::Real m_lifeSpanLimit;
+		
+		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
+		Math::Real m_timeForGeneratingOneParticle; // TODO: Replace with timespan object
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticleGenerator */
 
