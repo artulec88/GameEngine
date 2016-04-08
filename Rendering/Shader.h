@@ -30,6 +30,7 @@ namespace Rendering
 			VEC_3D,
 			VEC_4D,
 			MATRIX_4x4,
+			INT,
 			REAL,
 			SAMPLER_2D,
 			SAMPLER_CUBE,

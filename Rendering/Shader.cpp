@@ -15,7 +15,8 @@ using namespace Math;
 
 Uniforms::UniformType Uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
 {
-	if (uniformTypeStr == "float") { return Uniforms::REAL; }
+	if (uniformTypeStr == "int") { return Uniforms::INT; }
+	else if (uniformTypeStr == "float") { return Uniforms::REAL; }
 	else if (uniformTypeStr == "vec2") { return Uniforms::VEC_2D; }
 	else if (uniformTypeStr == "vec3") { return Uniforms::VEC_3D; }
 	else if (uniformTypeStr == "vec4") { return Uniforms::VEC_4D; }
@@ -46,6 +47,8 @@ std::string Uniforms::ConvertUniformTypeToString(UniformType uniformType)
 		return "vec4";
 	case Rendering::Uniforms::MATRIX_4x4:
 		return "mat4";
+	case Rendering::Uniforms::INT:
+		return "int";
 	case Rendering::Uniforms::REAL:
 		return "float";
 	case Rendering::Uniforms::SAMPLER_2D:

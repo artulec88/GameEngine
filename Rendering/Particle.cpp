@@ -26,6 +26,24 @@ bool Rendering::Particle::Update(Math::Real deltaTime)
 	//m_velocity.SetY(m_velocity.GetY() + GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime);
 	m_position += m_velocity * deltaTime;
 	m_lifeSpan += deltaTime;
+
+	// TODO: Calculate CalculateTextureAtlasInfo here?
+
 	return m_lifeSpan < m_lifeSpanLimit;
 	//return IsAlive();
+}
+
+void Rendering::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const
+{
+	/* Updating the texture offsets and the blend factor begin */
+	Math::Real lifeSpanFactor = m_lifeSpan / m_lifeSpanLimit;
+	int stageCount = textureAtlasRowsCount * textureAtlasRowsCount;
+	Math::Real textureAtlasProgression = lifeSpanFactor * stageCount;
+	int index0 = Math::Floor(textureAtlasProgression);
+	int index1 = (index0 == stageCount - 1) ? index0 : index0 + 1;
+	textureAtlasBlendFactor = textureAtlasProgression - static_cast<int>(textureAtlasProgression); // fractional part of the variable
+	
+	SetTextureOffset(textureOffset0, index0, textureAtlasRowsCount);
+	SetTextureOffset(textureOffset1, index1, textureAtlasRowsCount);
+	/* Updating the texture offsets and the blend factor end */
 }

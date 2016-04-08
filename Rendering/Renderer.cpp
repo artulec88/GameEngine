@@ -857,6 +857,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std::vector<Particle>& particles) const
 {
 	START_PROFILING;
+	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
 	if (particles.empty())
 	{
 		return;
@@ -865,6 +866,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
 	m_particleShader->SetUniformi("particleTexture", 0);
+	m_particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
 	m_particleQuad->BindBuffers();
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -879,9 +881,10 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
 	* (1 - currentAlphaInFramebuffer) * shader's output color
 	*/
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE); // we use additive blending (watch https://www.youtube.com/watch?v=POEzdiqEESo&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=35&nohtml5=False around 10:30)
 
 	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
+	int temp = 0;
 	for (std::vector<Particle>::const_iterator particleItr = particles.begin(); particleItr != particles.end(); ++particleItr)
 	{
 		Math::Matrix4D modelMatrix(particleItr->GetPosition());
@@ -911,6 +914,18 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		//m_particleShader->UpdateUniforms(particleTransform, NULL, this);
 		//m_particleShader->SetUniformMatrix("T_model", modelMatrix);
 		m_particleShader->SetUniformMatrix("T_MVP", m_currentCamera->GetViewProjection() * modelMatrix);
+		
+		Math::Vector2D textureOffset0;
+		Math::Vector2D textureOffset1;
+		Math::Real textureAtlasBlendFactor;
+		particleItr->CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
+
+		//CRITICAL_LOG("%d) texOffset0 = %s, texOffset1 = %s, blendFactor = %.3f", temp++, textureOffset0.ToString().c_str(), textureOffset1.ToString().c_str(), textureAtlasBlendFactor);
+
+		m_particleShader->SetUniformVector2D("textureOffset0", textureOffset0);
+		m_particleShader->SetUniformVector2D("textureOffset1", textureOffset1);
+		m_particleShader->SetUniformf("lifeStageBlendFactor", textureAtlasBlendFactor);
+
 		m_particleQuad->Draw();
 	}
 
@@ -923,6 +938,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	{
 		glDisable(GL_BLEND);
 	}
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished particles rendering");
 	STOP_PROFILING;
 }
 

@@ -42,12 +42,26 @@ namespace Rendering
 		const Math::Angle& GetRotation() const { return m_rotation; }
 		Math::Real GetScale() const { return m_scale; }
 		bool IsAlive() const { return m_lifeSpan < m_lifeSpanLimit; }
+		//Math::Real GetLifeSpanFactor() const { return m_lifeSpan / m_lifeSpanLimit; }
+
+		void CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const;
+		//const Math::Vector2D& GetTextureOffsetCurrentState() const { return m_textureOffsetCurrentState; }
+		//const Math::Vector2D& GetTextureOffsetNextState() const { return m_textureOffsetNextState; }
+		//Math::Real GetTextureStateBlendFactor() const { return m_textureStateBlendFactor; }
 
 		/// <summary>
 		/// Updates the particle's state.
 		/// </summary>
 		/// <returns> <code>true</code> if the particle is still alive and <code>false</code> if particle's lifespan exceeded its lifespan limit (particle is dead).
 		RENDERING_API bool Update(Math::Real deltaTime);
+	private:
+		inline void SetTextureOffset(Math::Vector2D& textureOffset, int index, int textureAtlasRowsCount) const
+		{
+			int column = index % textureAtlasRowsCount;
+			int row = index / textureAtlasRowsCount;
+			textureOffset.SetX(static_cast<Math::Real>(column) / textureAtlasRowsCount);
+			textureOffset.SetY(static_cast<Math::Real>(row) / textureAtlasRowsCount);
+		}
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -80,6 +94,19 @@ namespace Rendering
 
 		/// <summary> The scale of the particle. </summary>
 		Math::Real m_scale;
+
+		/// <summary> The texture coordinates offset for the current state the particle is in </summary>
+		//Math::Vector2D m_textureOffsetCurrentState;
+
+		/// <summary> The texture coordinates offset for the next state the particle will be in.
+		/// If the particle is currently in the last stage before dying then this offset should be the same as offset for the current state. </summary>
+		//Math::Vector2D m_textureOffsetNextState;
+
+		/// <summary>
+		/// The blend factor. The value of <code>0</code> means the particle has just recently switched the state to the current one and
+		/// the closer this value is to <code>1</code> the closer the particle is to switch the state to the next one.
+		/// </summary>
+		//Math::Real m_textureStateBlendFactor;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Particle */
 } /* end namespace Rendering */
