@@ -413,9 +413,10 @@ GuiTexture::~GuiTexture(void)
 {
 }
 
-ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount) :
+ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
 	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE),
-	m_rowsCount(rowsCount)
+	m_rowsCount(rowsCount),
+	m_isAdditive(isAdditive)
 {
 }
 

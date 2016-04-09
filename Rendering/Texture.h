@@ -152,7 +152,7 @@ class ParticleTexture : public Texture
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount);
+	RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
 	RENDERING_API virtual ~ParticleTexture(void);
 private:
 	ParticleTexture(const ParticleTexture& particleTexture);
@@ -162,11 +162,13 @@ private:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	RENDERING_API int GetRowsCount() const { return m_rowsCount; }
+	RENDERING_API bool IsAdditive() const { return m_isAdditive; }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	int m_rowsCount;
+	bool m_isAdditive;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ParticleTexture */
 

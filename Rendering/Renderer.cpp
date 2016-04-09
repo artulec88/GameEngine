@@ -881,7 +881,8 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
 	* (1 - currentAlphaInFramebuffer) * shader's output color
 	*/
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // TODO: For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke). Create a variable in ParticleTexture to store that information and use it here.
+	// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke). Create a variable in ParticleTexture to store that information and use it here.
+	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 
 	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
 	int temp = 0;
