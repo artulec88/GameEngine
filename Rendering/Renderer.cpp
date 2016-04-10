@@ -901,14 +901,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		modelMatrix.SetElement(2, 1, cameraViewMatrix.GetElement(1, 2));
 		modelMatrix.SetElement(2, 2, cameraViewMatrix.GetElement(2, 2));
 		
-		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), Math::Angle(particleItr->GetRotation()));
-		//Math::Quaternion particleRotation;
-		
-		//modelMatrix = Math::Matrix4D(particleItr->GetScale()) * particleRotation.ToRotationMatrix() * modelMatrix;
-		//modelMatrix = Math::Matrix4D(particleItr->GetScale()) * modelMatrix * particleRotation.ToRotationMatrix();
-		//modelMatrix = particleRotation.ToRotationMatrix() * Math::Matrix4D(particleItr->GetScale()) * modelMatrix;
-		//modelMatrix = particleRotation.ToRotationMatrix() * modelMatrix * Math::Matrix4D(particleItr->GetScale());
-		//modelMatrix = modelMatrix * Math::Matrix4D(particleItr->GetScale()) * particleRotation.ToRotationMatrix();
+		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particleItr->GetRotation());
 		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particleItr->GetScale());
 		
 		//Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());

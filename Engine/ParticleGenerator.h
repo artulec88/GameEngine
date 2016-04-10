@@ -5,12 +5,14 @@
 #include "Math\Vector.h"
 #include "Rendering\Texture.h"
 #include "Rendering\Particle.h"
+#include <list>
 
 namespace Engine
 {
 
 	class ParticleGenerator
 	{
+		typedef std::vector<Rendering::Particle> ParticleContainer;
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
 
@@ -34,16 +36,16 @@ namespace Engine
 			Math::Vector3D velocity(dirX, 1.0f, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
-			m_particles.push_back(Rendering::Particle(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.022f));
+			m_particles.emplace_back(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.022f);
 		}
-		ENGINE_API const std::vector<Rendering::Particle>& GetParticles() const { return m_particles; }
+		ENGINE_API const ParticleContainer& GetParticles() const { return m_particles; }
 		ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
 		Rendering::ParticleTexture* m_particleTexture;
-		std::vector<Rendering::Particle> m_particles;
+		ParticleContainer m_particles;
 		Math::Real m_particleSpeed;
 		Math::Real m_particleGravityComplient;
 		Math::Real m_particleLifeSpanLimit;

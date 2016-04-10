@@ -40,7 +40,7 @@ class MATH_API Angle
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	// Explicit constructor, so that Real cannot be easily cast to Angle
-	explicit Angle(Real angle = REAL_ZERO, Unit::UnitType unit = Unit::DEGREE) :
+	explicit Angle(Real angle, Unit::UnitType unit = Unit::DEGREE) :
 		m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle)),
 		m_unit(Unit::RADIAN)
 #ifdef CALCULATE_MATH_STATS
@@ -50,6 +50,7 @@ public:
 	}
 
 	Angle(const Angle& angle); // copy constructor
+	Angle(Angle&& angle); // move constructor
 	
 	~Angle()
 	{
@@ -170,7 +171,7 @@ public:
 	Angle& operator*=(Real s);
 	Angle& operator/=(Real s);
 
-	Angle& operator=(const Angle& angle);
+	Angle& operator=(Angle angle);
 	bool operator==(const Angle& angle) const;
 	bool operator!=(const Angle& angle) const;
 	bool operator>(const Angle& angle) const;

@@ -3,17 +3,28 @@
 #include "FloatingPoint.h"
 #include "Utility\ILogger.h"
 #include <sstream>
+#include <algorithm>
 
 using namespace Math;
 
 Angle::Angle(const Angle& angle) :
-	m_angle(angle.GetAngleInRadians()),
-	m_unit(Unit::RADIAN)
+	m_angle(angle.m_angle),
+	m_unit(angle.m_unit)
 #ifdef CALCULATE_MATH_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
 {
 }
+
+Angle::Angle(Angle&& angle) :
+	m_angle(angle.m_angle),
+	m_unit(angle.m_unit)
+#ifdef CALCULATE_MATH_STATS
+	, m_classStats(STATS_STORAGE.GetClassStats("Angle")) // TODO: Maybe use angle.m_classStats?
+#endif
+{
+}
+
 
 Angle Angle::operator-() const
 {
@@ -130,20 +141,14 @@ Angle& Angle::operator/=(Real s)
 	return *this;
 }
 
-Angle& Angle::operator=(const Angle& angle)
+Angle& Angle::operator=(Angle angle)
 {
-	switch (angle.GetUnit())
-	{
-	case Unit::DEGREE:
-		m_angle = angle.GetAngleInDegrees();
-		break;
-	case Unit::RADIAN:
-		m_angle = angle.GetAngleInRadians();
-		break;
-	default:
-		ERROR_LOG("The angle is specified in unknown unit type (%d)", angle.GetUnit());
-	}
-	m_unit = angle.GetUnit();
+	//std::swap(*this, angle);
+	//std::swap(m_angle, angle.m_angle);
+	//std::swap(m_unit, angle.m_unit);
+	//std::swap(m_classStats, angle.m_classStats);
+	m_angle = angle.m_angle;
+	m_unit = angle.m_unit;
 	return (*this);
 }
 

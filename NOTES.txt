@@ -33,4 +33,9 @@ Other topics:
 27.	Vector2D cross product
 28.	Some way to display text
 29.	Eventually, make easier way to generate a mesh
-30.	Eventually, make easier way of generating texture coordinates
+30.	Eventually, make easier way of generating texture coordinates.
+
+std::vector analysis:
+1.	push_back first calls the constructor of the object, then move constructor (copying the object into an instance that will be stored in the vector) and finally the destructor.
+2.	emplace_back calls the constructor. No move constructor or any copying takes place at all. Move constructor may only be necessary if the whole vector needs to be resized.
+3.	Single std::swap in the vector causes 3 move constructors to be called, 2 assignment operators and 3 destructors.

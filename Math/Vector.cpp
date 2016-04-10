@@ -190,6 +190,13 @@ Vector3D::Vector3D(const Vector3D& v) :
 {
 }
 
+Vector3D::Vector3D(Vector3D&& v) :
+	m_x(v.m_x),
+	m_y(v.m_y),
+	m_z(v.m_z)
+{
+}
+
 Vector3D::~Vector3D()
 {
 }
@@ -308,12 +315,11 @@ Vector3D& Vector3D::operator/=(const Vector3D& v)
 	return *this;
 }
 
-Vector3D& Vector3D::operator=(const Vector3D& v)
+Vector3D& Vector3D::operator=(Vector3D v)
 {
-	m_x = v.GetX();
-	m_y = v.GetY();
-	m_z = v.GetZ();
-
+	m_x = v.m_x;
+	m_y = v.m_y;
+	m_z = v.m_z;
 	return *this;
 }
 

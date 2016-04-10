@@ -141,6 +141,7 @@ public:
 	MATH_API explicit Vector3D(Real xyz);
 	MATH_API Vector3D(Real x, Real y, Real z);
 	MATH_API Vector3D(const Vector3D& v);
+	MATH_API Vector3D(Vector3D&& v);
 	MATH_API ~Vector3D();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -192,7 +193,7 @@ public:
 	MATH_API Vector3D& operator*=(const Vector3D& v);
 	MATH_API Vector3D& operator/=(Real s);
 	MATH_API Vector3D& operator/=(const Vector3D& v);
-	MATH_API Vector3D& operator=(const Vector3D& v);
+	MATH_API Vector3D& operator=(Vector3D v);
 	MATH_API bool operator!=(const Vector3D& v) const;
 	MATH_API bool operator==(const Vector3D& v) const;
 	

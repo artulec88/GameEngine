@@ -1,2 +1,2 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Render	874	874	250827	250827	286.987
+Render	701	701	182012	182012	259.646

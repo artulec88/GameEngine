@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ParticleGenerator.h"
-//#include "Math\ISort.h"
+#include <algorithm>
 
 Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
@@ -22,7 +22,7 @@ Engine::ParticleGenerator::~ParticleGenerator()
 void Engine::ParticleGenerator::Update(Math::Real deltaTime)
 {
 	m_currentTimer += deltaTime;
-	std::vector<Rendering::Particle>::iterator particleItr = m_particles.begin();
+	ParticleContainer::iterator particleItr = m_particles.begin();
 	while (particleItr != m_particles.end())
 	{
 		if (particleItr->Update(deltaTime))
@@ -47,22 +47,21 @@ void Engine::ParticleGenerator::GenerateParticles(const Math::Vector3D& initialP
 
 void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
 {
-	//Math::Sorting::ISort::GetSortingObject(Math::Sorting::INSERTION_SORT)->Sort()
-	std::vector<Math::Real> originDistances(m_particles.size());
-	for (size_t i = 0; i < m_particles.size(); ++i)
+	std::vector<Math::Real> originDistances;
+	originDistances.reserve(m_particles.size());
+	for (ParticleContainer::const_iterator particleItr = m_particles.begin(); particleItr != m_particles.end(); ++particleItr)
 	{
-		originDistances.push_back((originPosition - m_particles[i].GetPosition()).LengthSquared());
+		originDistances.push_back((originPosition - particleItr->GetPosition()).LengthSquared());
 	}
 
-	for (size_t i = 1; i < m_particles.size(); ++i)
+	for (size_t i = 1; i < originDistances.size(); ++i)
 	{
+		Math::Real key = originDistances[i];
 		int j = i - 1;
-		while ((j >= 0) && (originDistances[i] < originDistances[j]))
+		while ((j >= 0) && (key > originDistances[j]))
 		{
-			m_particles[j + 1] = m_particles[j];
-			m_particles[j] = m_particles[i];
-			originDistances[j + 1] = originDistances[j];
-			originDistances[j] = originDistances[i];
+			std::swap(originDistances[j + 1], originDistances[j]);
+			std::swap(m_particles[j + 1], m_particles[j]);
 			--j;
 		}
 	}

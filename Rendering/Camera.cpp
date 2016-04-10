@@ -19,6 +19,16 @@ CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensit
 	m_projection(projectionMatrix),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
+#ifdef ANT_TWEAK_BAR_ENABLED
+	, m_prevFov(0.0f),
+	m_fov(0.0f),
+	m_prevAspectRatio(0.0f),
+	m_aspectRatio(0.0f),
+	m_prevNearPlane(0.0f),
+	m_nearPlane(0.0f),
+	m_prevFarPlane(0.0f),
+	m_farPlane(0.0f)
+#endif
 {
 }
 
