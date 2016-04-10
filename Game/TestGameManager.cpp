@@ -337,9 +337,13 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("person.obj"), new Rendering::Material(new Rendering::Texture("player.png", GL_TEXTURE_2D, GL_LINEAR))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTextureFire", "particleFire.png"),
+	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, particleTexture, 1000, 0.02f, 0.0f, 0.8f));
+	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, particleTexture,
+		GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
+		GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
+		GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
+		GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

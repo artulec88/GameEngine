@@ -23,7 +23,7 @@ Rendering::Particle::~Particle()
 
 bool Rendering::Particle::Update(Math::Real deltaTime)
 {
-	//m_velocity.SetY(m_velocity.GetY() + GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime);
+	m_velocity.SetY(m_velocity.GetY() + GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime);
 	m_position += m_velocity * deltaTime;
 	m_lifeSpan += deltaTime;
 
