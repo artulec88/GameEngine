@@ -700,7 +700,9 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
 
 	std::vector<Math::Vector2D> vertices;
+	vertices.reserve(str.size() * 6);
 	std::vector<Math::Vector2D> textureCoords;
+	textureCoords.reserve(str.size() * 6);
 	Math::Real yReal = static_cast<Math::Real>(y);
 	for (std::string::size_type i = 0; i < str.size(); ++i)
 	{

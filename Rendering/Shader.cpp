@@ -220,7 +220,8 @@ bool ShaderData::Compile()
 	if (CheckForErrors(m_programID, GL_LINK_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
-		std::vector<char> errorMessage(infoLogLength + 1);
+		std::vector<char> errorMessage;
+		errorMessage.reserve(infoLogLength + 1);
 		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
 		ERROR_LOG("Error linking shader program %d:\n%s\r", m_programID, &errorMessage[0]);
 	}
@@ -229,7 +230,8 @@ bool ShaderData::Compile()
 	if (CheckForErrors(m_programID, GL_VALIDATE_STATUS, true, infoLogLength))
 	{
 		compileSuccess = false;
-		std::vector<char> errorMessage(infoLogLength + 1);
+		std::vector<char> errorMessage;
+		errorMessage.reserve(infoLogLength + 1);
 		glGetProgramInfoLog(m_programID, infoLogLength, NULL, &errorMessage[0]);
 		ERROR_LOG("Error validating shader program %d:\n%s\r", m_programID, &errorMessage[0]);
 	}
@@ -304,7 +306,8 @@ void ShaderData::AddProgram(const std::string& shaderText, GLenum type)
 	int infoLogLength;
 	if (CheckForErrors(shader, GL_COMPILE_STATUS, false, infoLogLength))
 	{
-		std::vector<char> errorMessage(infoLogLength + 1);
+		std::vector<char> errorMessage;
+		errorMessage.reserve(infoLogLength + 1);
 		glGetShaderInfoLog(shader, infoLogLength, NULL, &errorMessage[0]);
 		ERROR_LOG("Error linking shader program: \"%s\"", &errorMessage[0]);
 		//return;
@@ -457,22 +460,22 @@ std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std
 	const char delimChars[] = { '\n', ';' };
 	Utility::StringUtility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
 
-	for (unsigned int i = 0; i < structLines.size(); ++i)
+	for (std::vector<std::string>::const_iterator structLinesItr = structLines.begin(); structLinesItr != structLines.end(); ++structLinesItr)
 	{
 		//DEBUG_LOG("structLines[%d] = \"%s\"", i, structLines[i].c_str());
-		if (structLines[i].substr(0, 2) == "//")
+		if (structLinesItr->substr(0, 2) == "//")
 		{
 			continue;
 		}
 
 		size_t nameBegin = UNSIGNED_NEG_ONE;
 		size_t nameEnd = UNSIGNED_NEG_ONE;
-		for (unsigned int j = 0; j < structLines[i].length(); ++j)
+		for (unsigned int j = 0; j < structLinesItr->length(); ++j)
 		{
 			bool isIgnoreableCharacter = false;
 			for (unsigned int k = 0; k < CHARS_TO_IGNORE_COUNT; ++k)
 			{
-				if (structLines[i][j] == charsToIgnore[k])
+				if ((*structLinesItr)[j] == charsToIgnore[k])
 				{
 					isIgnoreableCharacter = true;
 					break;
@@ -491,7 +494,7 @@ std::vector<Uniforms::Uniform> ShaderData::FindUniformStructComponents(const std
 		if (nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
 			continue;
 
-		result.push_back(Uniforms::Uniform(structLines[i].substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLines[i].substr(nameBegin, nameEnd - nameBegin))));
+		result.emplace_back(structLinesItr->substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLinesItr->substr(nameBegin, nameEnd - nameBegin)));
 	}
 	return result;
 }

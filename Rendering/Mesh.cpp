@@ -147,8 +147,9 @@ void Rendering::Mesh::Initialize()
 
 	const aiMesh* model = scene->mMeshes[0];
 	std::vector<Vertex> vertices;
+	vertices.reserve(model->mNumVertices);
 	std::vector<Math::Vector3D> positions;
-	std::vector<int> indices;
+	positions.reserve(model->mNumVertices);
 
 	//Math::Vector3D tangentsSum;
 	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -187,6 +188,8 @@ void Rendering::Mesh::Initialize()
 	//Math::Vector3D averageTangent = (tangentsSum / model->mNumVertices).Normalized();
 	//CRITICAL_LOG("Average tangent for mesh %s = %s", name.c_str(), averageTangent.ToString().c_str());
 
+	std::vector<int> indices;
+	indices.reserve(model->mNumFaces * 3 /* each face is a triangle and has 3 vertices */);
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
@@ -525,7 +528,9 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
 
 	std::vector<Math::Vector3D> positions;
+	positions.reserve(m_vertexCount);
 	std::vector<Vertex> vertices;
+	vertices.reserve(m_vertexCount);
 	for (int z = vertexCountMinusOne; z >= 0; --z)
 	{
 		const Math::Real zReal = static_cast<Math::Real>(z);
@@ -545,6 +550,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	stbi_image_free(heightMapData);
 	
 	std::vector<int> indices;
+	indices.reserve(vertexCountMinusOne * vertexCountMinusOne * 6);
 	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
 	{
 		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
