@@ -84,10 +84,10 @@ TestGameManager::TestGameManager() :
 	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */, "Controls", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 1.0f), true));
 	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_startGameCommand, "Start", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.0f, 0.2f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), false));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true));
 	m_mainMenuRootEntry->AddChildren(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_showIntroGameCommand, "Intro", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(0.0f, 1.0f, 0.0f), true));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(0.0f, 1.0f, 0.0f), true, 0.5f, 0.2f, 0.6f, 0.1f));
 	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_quitGameCommand, "Quit", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
 

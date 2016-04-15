@@ -7119,3 +7119,11 @@ Median SPF =	4.675 [ms]
 [Notice] [2016-04-11 19:28:02] Renderer.cpp(382) : Rendering engine destroyed
 [Notice] [2016-04-11 19:28:02] CoreEngine.cpp(232) : Core engine destruction finished
 [Info] [2016-04-11 19:28:02] GameManager.cpp(80) : Game manager destruction finished
+[Info] [2016-04-15 22:45:04] IStatisticsStorage.cpp(59) : Total elapsed time: 5.38438 [s]
+[Info] [2016-04-15 22:45:04] CoreEngine.cpp(221) : SPF (Seconds Per Frame) statistics during gameplay:
+Samples =	6
+Average SPF =	25.088 [ms]
+Median SPF =	31.223 [ms]
+[Info] [2016-04-15 22:45:04] Renderer.cpp(299) : Destroying rendering engine...
+[Notice] [2016-04-15 22:45:04] Renderer.cpp(384) : Rendering engine destroyed
+[Notice] [2016-04-15 22:45:04] CoreEngine.cpp(232) : Core engine destruction finished

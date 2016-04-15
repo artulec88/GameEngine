@@ -106,7 +106,6 @@ public:
 	void PerformStateTransition();
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
-	ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
 public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);

@@ -154,8 +154,12 @@ void MenuGameState::MousePosEvent(double xPos, double yPos)
 	{
 		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 		{
-			INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
+			if (m_currentMenuEntry->GetSelectedMenuEntryIndex() != i)
+			{
+				INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
+			}
 			m_currentMenuEntry->SelectChildMenuEntry(i);
+			break;
 		}
 	}
 }

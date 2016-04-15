@@ -854,15 +854,17 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std::vector<Particle>& particles) const
+void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const
 {
 	START_PROFILING;
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
-	if (particles.empty())
+	//CHECK_CONDITION_ALWAYS(particlesCount <= particles.size(), Utility::Error,
+	//	"The number of alive particles (%d) exceeds the size of the specified vector of particles (%d)", particlesCount, particles.size());
+	if (particlesCount <= 0)
 	{
 		return;
 	}
-	DELOCUST_LOG("Rendering particles started. There are %d particles currently in the game.", particles.size());
+	//DEBUG_LOG("Rendering particles started. There are %d particles currently in the game.", particlesCount);
 	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
 	m_particleShader->SetUniformi("particleTexture", 0);
@@ -879,9 +881,9 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	
 	m_particleInstanceVboData.clear();
 	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
-	for (std::vector<Particle>::const_iterator particleItr = particles.begin(); particleItr != particles.end(); ++particleItr)
+	for (int i = 0; i < particlesCount; ++i)
 	{
-		Math::Matrix4D modelMatrix(particleItr->GetPosition());
+		Math::Matrix4D modelMatrix(particles[i].GetPosition());
 		// To make the particle always face the camera we can either use the geometry shader (as in the Bilboard shader) or
 		// set the 3x3 top-left submatrix of the model matrix to be a transposed version of the 3x3 top-left submatrix of the camera's view matrix.
 		modelMatrix.SetElement(0, 0, cameraViewMatrix.GetElement(0, 0));
@@ -894,8 +896,8 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		modelMatrix.SetElement(2, 1, cameraViewMatrix.GetElement(1, 2));
 		modelMatrix.SetElement(2, 2, cameraViewMatrix.GetElement(2, 2));
 		
-		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particleItr->GetRotation());
-		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particleItr->GetScale());
+		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particles[i].GetRotation());
+		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particles[i].GetScale());
 		
 		//Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
 		//m_particleShader->UpdateUniforms(particleTransform, NULL, this);
@@ -922,7 +924,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		Math::Vector2D textureOffset0;
 		Math::Vector2D textureOffset1;
 		Math::Real textureAtlasBlendFactor;
-		particleItr->CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
+		particles[i].CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
 		//m_particleShader->SetUniformVector2D("textureOffset0", textureOffset0);
 		//m_particleShader->SetUniformVector2D("textureOffset1", textureOffset1);
 		//m_particleShader->SetUniformf("lifeStageBlendFactor", textureAtlasBlendFactor);
@@ -932,7 +934,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		m_particleInstanceVboData.push_back(textureOffset1.GetY());
 		m_particleInstanceVboData.push_back(textureAtlasBlendFactor);
 	}
-	m_particleQuad->Draw(&m_particleInstanceVboData[0], m_particleInstanceVboData.size(), particles.size());
+	m_particleQuad->Draw(&m_particleInstanceVboData[0], m_particleInstanceVboData.size(), particlesCount);
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);

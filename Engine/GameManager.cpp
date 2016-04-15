@@ -245,14 +245,6 @@ void Engine::GameManager::RequestGameQuit() const
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
-void Engine::GameManager::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
-{
-	for (std::vector<Engine::ParticleGenerator*>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
-	{
-		(*particleGeneratorItr)->SortParticles(originPosition);
-	}
-}
-
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Engine::GameManager::InitializeTweakBars()
 {

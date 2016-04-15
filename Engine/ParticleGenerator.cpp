@@ -2,6 +2,8 @@
 #include "ParticleGenerator.h"
 #include <algorithm>
 
+///* static */ const int Engine::ParticleGenerator::MAX_PARTICLES_COUNT = 10000;
+
 Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
@@ -9,7 +11,9 @@ Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particl
 	m_particleGravityComplient(particleGravityComplient),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
 	m_currentTimer(0.0f),
-	m_timeForGeneratingOneParticle(1.0f / particlesPerSecondCount)
+	m_timeForGeneratingOneParticle(1.0f / particlesPerSecondCount),
+	m_aliveParticlesCount(0),
+	m_lastRevivedParticleIndex(0)
 {
 }
 
@@ -22,16 +26,12 @@ Engine::ParticleGenerator::~ParticleGenerator()
 void Engine::ParticleGenerator::Update(Math::Real deltaTime)
 {
 	m_currentTimer += deltaTime;
-	ParticleContainer::iterator particleItr = m_particles.begin();
-	while (particleItr != m_particles.end())
+	m_aliveParticlesCount = 0;
+	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
 	{
-		if (particleItr->Update(deltaTime))
+		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
 		{
-			++particleItr;
-		}
-		else
-		{
-			particleItr = m_particles.erase(particleItr);
+			++m_aliveParticlesCount;
 		}
 	}
 }
@@ -48,13 +48,20 @@ void Engine::ParticleGenerator::GenerateParticles(const Math::Vector3D& initialP
 void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
 {
 	std::vector<Math::Real> originDistances;
-	originDistances.reserve(m_particles.size());
-	for (ParticleContainer::const_iterator particleItr = m_particles.begin(); particleItr != m_particles.end(); ++particleItr)
+	originDistances.reserve(MAX_PARTICLES_COUNT);
+	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
 	{
-		originDistances.push_back((originPosition - particleItr->GetPosition()).LengthSquared());
+		if (m_particles[i].IsAlive())
+		{
+			originDistances.push_back((originPosition - m_particles[i].GetPosition()).LengthSquared());
+		}
+		else
+		{
+			originDistances.push_back(-999999999999.9f); // for particles that are dead we want to store them at the end of the particles array.
+		}
 	}
 
-	for (size_t i = 1; i < originDistances.size(); ++i)
+	for (size_t i = 1; i < MAX_PARTICLES_COUNT; ++i)
 	{
 		Math::Real key = originDistances[i];
 		int j = i - 1;
@@ -65,4 +72,9 @@ void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPositi
 			--j;
 		}
 	}
+
+	//for (int i = 0; i < m_aliveParticlesCount; ++i)
+	//{
+	//	ERROR_LOG("particle[%d] = %.3f", i, originDistances[i]);
+	//}
 }

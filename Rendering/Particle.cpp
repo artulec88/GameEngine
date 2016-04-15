@@ -4,6 +4,17 @@
 
 /* static */ const Math::Real Rendering::Particle::GRAVITY_ACCELERATION = -9.8f; // TODO: The same is defined in the GravityComponent class.
 
+Rendering::Particle::Particle() :
+	m_position(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+	m_gravityEffectFactor(REAL_ZERO),
+	m_lifeSpanLimit(REAL_ZERO),
+	m_lifeSpan(REAL_ONE /* to make the particle dead we make the lifespan greater than lifespan limit */),
+	m_rotation(REAL_ZERO),
+	m_scale(REAL_ZERO)
+{
+}
+
 Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
 	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale) :
 	m_position(position),
@@ -19,6 +30,18 @@ Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector
 
 Rendering::Particle::~Particle()
 {
+}
+
+void Rendering::Particle::Revive(const Math::Vector3D& position, const Math::Vector3D& velocity,
+	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale)
+{
+	m_position = position;
+	m_velocity = velocity;
+	m_gravityEffectFactor = gravityEffectFactor;
+	m_lifeSpanLimit = lifespanLimit;
+	m_lifeSpan = REAL_ZERO;
+	m_rotation = rotation;
+	m_scale = scale;
 }
 
 bool Rendering::Particle::Update(Math::Real deltaTime)

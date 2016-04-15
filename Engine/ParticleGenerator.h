@@ -7,12 +7,15 @@
 #include "Rendering\Particle.h"
 #include <list>
 
+#define MAX_PARTICLES_COUNT 10000
+
 namespace Engine
 {
 
 	class ParticleGenerator
 	{
-		typedef std::vector<Rendering::Particle> ParticleContainer;
+		//typedef std::vector<Rendering::Particle> ParticleContainer;
+		//typedef Rendering::Particle ParticleContainer;
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
 
@@ -36,22 +39,56 @@ namespace Engine
 			Math::Vector3D velocity(dirX, 1.0f, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
-			m_particles.emplace_back(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.022f);
+			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.022f);
 		}
-		ENGINE_API const ParticleContainer& GetParticles() const { return m_particles; }
+		ENGINE_API const Rendering::Particle* GetParticles() const { return &m_particles[0]; }
+		
+		ENGINE_API int GetAliveParticlesCount() const { return m_aliveParticlesCount; }
+		/// <summary>
+		/// Sorts particles according to the distance to the origin point.
+		/// </summary>
+		/// <returns>
+		/// The number of particles that are alive.
+		/// </returns>
 		ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
+	private:
+		inline int FindDeadParticleIndex() const
+		{
+			for (int i = m_lastRevivedParticleIndex; i < MAX_PARTICLES_COUNT; ++i)
+			{
+				if (!m_particles[i].IsAlive())
+				{
+					m_lastRevivedParticleIndex = i;
+					//EMERGENCY_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+					return i;
+				}
+			}
+			for (int i = 0; i < m_lastRevivedParticleIndex; ++i)
+			{
+				if (!m_particles[i].IsAlive())
+				{
+					m_lastRevivedParticleIndex = i;
+					//ERROR_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+					return i;
+				}
+			}
+			//WARNING_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+			return 0; // all particles are alive, override the first one
+		}
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
 		Rendering::ParticleTexture* m_particleTexture;
-		ParticleContainer m_particles;
+		Rendering::Particle m_particles[MAX_PARTICLES_COUNT];
 		Math::Real m_particleSpeed;
 		Math::Real m_particleGravityComplient;
 		Math::Real m_particleLifeSpanLimit;
 		
 		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
 		Math::Real m_timeForGeneratingOneParticle; // TODO: Replace with timespan object
+		int m_aliveParticlesCount;
+		mutable int m_lastRevivedParticleIndex;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticleGenerator */
 

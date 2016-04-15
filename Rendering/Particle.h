@@ -20,6 +20,11 @@ namespace Rendering
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
+		/// Constructs a dead particle (but ready to be revived- see function "Revive").
+		/// </summary>
+		RENDERING_API Particle();
+
+		/// <summary>
 		/// Constructs the particle.
 		/// </summary>
 		/// <param name="position"> The initial position of the particle. </param>
@@ -77,6 +82,13 @@ namespace Rendering
 		//const Math::Vector2D& GetTextureOffsetCurrentState() const { return m_textureOffsetCurrentState; }
 		//const Math::Vector2D& GetTextureOffsetNextState() const { return m_textureOffsetNextState; }
 		//Math::Real GetTextureStateBlendFactor() const { return m_textureStateBlendFactor; }
+
+		/// <summary>
+		/// Instead of removing the particle when it is dead we simply mark it as dead and when time comes to create new particle the dead particle comes back to life
+		/// (instead of creating a completely new particle instance).
+		/// </summary>
+		RENDERING_API void Revive(const Math::Vector3D& position, const Math::Vector3D& velocity,
+			Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
 
 		/// <summary>
 		/// Updates the particle's state.

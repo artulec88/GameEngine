@@ -86,7 +86,7 @@ public:
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
 	RENDERING_API void RenderText(const Text::GuiText& guiText) const;
 
-	RENDERING_API void RenderParticles(const ParticleTexture* particleTexture, const std::vector<Particle>& particles) const;
+	RENDERING_API void RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	/// <summary>
