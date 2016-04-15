@@ -361,7 +361,6 @@ private:
 	//bool m_shadowsEnabled;
 	//bool m_pointLightShadowsEnabled;
 	//GLuint framebuffer;
-	GLuint m_vao; // vertex array id
 
 	CONST_IF_TWEAK_BAR_DISABLED bool m_fogEnabled;
 	CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_fogColor;
@@ -484,8 +483,9 @@ private:
 
 	Shader* m_billboardShader;
 
-	Mesh* m_particleQuad;
+	InstanceMesh* m_particleQuad;
 	Shader* m_particleShader;
+	mutable std::vector<Math::Real> m_particleInstanceVboData;
 
 	MappedValues m_mappedValues;
 

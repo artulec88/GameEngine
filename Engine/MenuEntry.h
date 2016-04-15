@@ -5,6 +5,8 @@
 #include "GameCommand.h"
 #include "Math\Vector.h"
 #include "Math\AABR.h"
+#include "Rendering\Font.h"
+#include "Rendering\GuiText.h"
 #include <string>
 #include <vector>
 
@@ -32,31 +34,28 @@ class MenuEntry
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
-	static const Math::Vector4D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
-	static const Math::Vector4D SELECTED_MENU_ENTRY_TEXT_COLOR;
+	static const Math::Vector3D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
+	static const Math::Vector3D SELECTED_MENU_ENTRY_TEXT_COLOR;
 public:
 	//static void InitializeMenuColors();
-	ENGINE_API static const Math::Vector4D& GetNotSelectedMenuEntryTextColor();
-	ENGINE_API static const Math::Vector4D& GetSelectedMenuEntryTextColor();
+	ENGINE_API static const Math::Vector3D& GetNotSelectedMenuEntryTextColor();
+	ENGINE_API static const Math::Vector3D& GetSelectedMenuEntryTextColor();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ENGINE_API MenuEntry(const std::string& text, const Math::Vector2D& screenPosition, const GameCommand& gameCommand, Math::Real fontSize = 32.0f);
+	ENGINE_API MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
+		Math::Real maxLineLength, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false, Math::Real characterWidth = 0.5f,
+		Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	std::string GetText() const { return m_text; }
-	const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
-	const Math::AABR& GetAABR() const { return m_aabr; }
-	Math::Real GetFontSize() const { return m_fontSize; }
+	ENGINE_API const Rendering::Text::GuiText& GetGuiText() const { return m_guiText; }
+	ENGINE_API const Rendering::Text::GuiText& GetChildGuiText(int index) const { return m_childrenMenuEntries[index]->GetGuiText(); }
 	void SetParent(MenuEntry* parent) { m_parentMenuEntry = parent; }
 	ENGINE_API int GetChildrenCount() const;
-	ENGINE_API std::string GetChildText(int index) const;
-	ENGINE_API const Math::Vector2D& GetChildScreenPosition(int index) const;
-	ENGINE_API Math::Real GetChildFontSize(int index) const;
 	ENGINE_API bool DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
@@ -72,16 +71,16 @@ public:
 	ENGINE_API void SelectNextChildMenuEntry();
 	ENGINE_API MenuEntry* GetParent() const;
 	ENGINE_API MenuEntry* GetSelectedChild() const;
+
+	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
+private:
+	void SetColor(const Math::Vector3D& color) { m_guiText.SetColor(color); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	std::string m_text;
-	Math::Vector2D m_screenPosition;
 	const GameCommand& m_gameCommand;
-	/// <summary> Menu entry bounding rectangle. </summary>
-	Math::AABR m_aabr;
-	Math::Real m_fontSize;
+	Rendering::Text::GuiText m_guiText;
 	MenuEntry* m_parentMenuEntry;
 	std::vector<MenuEntry*> m_childrenMenuEntries;
 	int m_selectedMenuEntryIndex;

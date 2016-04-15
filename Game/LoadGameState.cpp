@@ -30,6 +30,9 @@ void LoadGameState::Entered()
 	START_PROFILING;
 	INFO_LOG("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG("Starting the loading thread");
+
+	// VAOs cannot be shared across multiple window contexts, that is why we don't use additional threads anymore.
+	// See http://stackoverflow.com/questions/23765371/opengl-multitreading-shared-context-and-glgenbuffers.
 	m_loadingThread = new tthread::thread(Engine::GameManager::Load, Engine::GameManager::GetGameManager());
 	STOP_PROFILING;
 }

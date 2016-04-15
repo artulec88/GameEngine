@@ -6,6 +6,7 @@
 #include "Mesh.h"
 
 #include "Math\Vector.h"
+#include "Math\AABR.h"
 
 #include <string>
 #include <vector>
@@ -159,6 +160,9 @@ namespace Rendering
 			/// <returns> The font used by this GUI text. </returns>
 			RENDERING_API const Font* GetFont() const { return m_font; }
 
+			RENDERING_API const std::string& GetText() const { return m_text; }
+			RENDERING_API void SetText(const std::string& text);
+
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
 			RENDERING_API const Math::Vector3D& GetColor() const { return m_color; }
@@ -166,8 +170,6 @@ namespace Rendering
 			/// <summary> Sets the color of this GUI text. </summary>
 			/// <param name="textColor"> The color we want to set for the GUI text. </param>
 			RENDERING_API void SetColor(const Math::Vector3D& textColor) { m_color.Set(textColor.GetX(), textColor.GetY(), textColor.GetZ()); }
-
-			RENDERING_API void SetText(const std::string& text);
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -184,6 +186,8 @@ namespace Rendering
 			/// The screen-space position of the top-left corner of this GUI text.
 			/// </returns>
 			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
+
+			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const { return m_aabr.DoesContainPoint(x, y); }
 
 			RENDERING_API bool IsCentered() const { return m_isCentered; }
 
@@ -216,6 +220,8 @@ namespace Rendering
 			Math::Real m_borderEdgeTransitionWidth;
 
 			TextMesh* m_mesh;
+
+			Math::AABR m_aabr;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiText */
 	}

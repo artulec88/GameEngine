@@ -6,7 +6,7 @@ varying vec2 texCoord0;
 attribute vec2 vVertex; // in clipping space
 attribute vec2 vTexCoord;
 
-uniform vec3 translation;
+uniform vec2 translation;
 
 void main()
 {

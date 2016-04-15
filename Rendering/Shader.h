@@ -68,6 +68,7 @@ namespace Rendering
 	/* ==================== Static variables and functions begin ==================== */
 	private:
 		static const std::string ATTRIBUTE_KEYWORD;
+		static const std::string LOCATION_KEYWORD;
 		static const std::string UNIFORM_KEYWORD;
 		static const std::string SINGLE_LINE_COMMENT;
 		static const std::string MULTI_LINE_COMMENT_BEGIN;

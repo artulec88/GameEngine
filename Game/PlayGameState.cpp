@@ -199,6 +199,7 @@ void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) c
 	}
 	if (ambientTerrainShader != NULL)
 	{
+		CHECK_CONDITION(m_gameManager->GetTerrainNode() != NULL, Utility::Error, "Cannot render terrain. There are no terrain nodes registered.");
 		m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 	}
 }

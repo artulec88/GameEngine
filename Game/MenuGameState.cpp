@@ -120,9 +120,7 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		renderer->RenderText(m_currentMenuEntry->GetChildScreenPosition(i).GetX(), m_currentMenuEntry->GetChildScreenPosition(i).GetY(), m_currentMenuEntry->GetChildText(i),
-			m_currentMenuEntry->GetChildFontSize(i),
-			m_currentMenuEntry->IsChildMenuEntrySelected(i) ? Engine::MenuEntry::GetSelectedMenuEntryTextColor() : Engine::MenuEntry::GetNotSelectedMenuEntryTextColor());
+		renderer->RenderText(m_currentMenuEntry->GetChildGuiText(i));
 	}
 	STOP_PROFILING;
 }
@@ -151,12 +149,12 @@ void MenuGameState::MousePosEvent(double xPos, double yPos)
 	m_mousePosY = static_cast<Math::Real>(yPos);
 
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
-	//CRITICAL_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+	//EMERGENCY_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
 		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 		{
-			//CRITICAL_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
+			INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
 			m_currentMenuEntry->SelectChildMenuEntry(i);
 		}
 	}

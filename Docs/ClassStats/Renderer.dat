@@ -1,2 +1,9 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Renderer	1	1	259258	259258	259258
+Renderer	1	1	311020	311020	311020
+InitRenderScene	2380	2380	165713	165713	69.6273
+FinalizeRenderScene	2380	2380	177348	177348	74.516
+RenderLoadingScreen	14	14	15352.1	15352.1	1096.58
+GetAmbientShader	2380	2380	281.682	281.682	0.118354
+GetAmbientTerrainShader	2380	2380	221.62	221.62	0.0931178
+AdjustAmbientLightAccordingToCurrentTime	2380	2380	11570.9	11570.9	4.86173
+ApplyFilter	2380	0	99849.2	0	41.9534

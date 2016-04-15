@@ -45,7 +45,18 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
+	/// <summary>
+	/// Creates a game manager.
+	/// </summary>
+	/// <remarks>
+	/// One must remember to create a game manager after rendering context is properly setup.
+	/// Game manager will try to create game fonts which require the graphics context to be initialized.
+	/// </remarks>
 	ENGINE_API GameManager();
+
+	/// <summary>
+	/// Destroys the game manager.
+	/// </summary>
 	ENGINE_API virtual ~GameManager(void);
 private:
 	GameManager(GameManager& gameManager);
@@ -63,7 +74,7 @@ public:
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 	ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardNodes; }
 	ENGINE_API inline const std::vector<ParticleGenerator*>& GetParticleGenerators() const { return m_particleGenerators; }
-	ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
+	//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 	ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 	ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
@@ -115,17 +126,20 @@ protected:
 	GameNode* m_waterNode;
 	std::vector<GameNode*> m_billboardNodes;
 	std::vector<ParticleGenerator*> m_particleGenerators;
-	FontMap m_texts;
+	//FontMap m_texts;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
+	
+	Rendering::Text::Font m_mainMenuFont;
+	Math::Real m_mainMenuFontSize;
 
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
 
 	EmptyGameCommand m_emptyGameCommand;
 
-	MenuEntry m_mainMenuRootEntry;
-	MenuEntry m_playMainMenuRootEntry;
+	MenuEntry* m_mainMenuRootEntry;
+	MenuEntry* m_playMainMenuRootEntry;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

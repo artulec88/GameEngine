@@ -72,7 +72,6 @@ private:
 private:
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;
-
 	Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;

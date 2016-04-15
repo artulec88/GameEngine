@@ -73,6 +73,7 @@ std::string Uniforms::ConvertUniformTypeToString(UniformType uniformType)
 
 /* static */ const std::string ShaderData::UNIFORM_KEYWORD = "uniform";
 /* static */ const std::string ShaderData::ATTRIBUTE_KEYWORD = "attribute";
+/* static */ const std::string ShaderData::LOCATION_KEYWORD = "location";
 /* static */ const std::string ShaderData::SINGLE_LINE_COMMENT = "//";
 /* static */ const std::string ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
 /* static */ const std::string ShaderData::MULTI_LINE_COMMENT_END = "*/";
@@ -336,16 +337,30 @@ void ShaderData::AddAllAttributes(const std::string& vertexShaderText)
 
 		if (!isCommented)
 		{
-			size_t begin = attributeLocation + ATTRIBUTE_KEYWORD.length();
+			size_t locationLocation = vertexShaderText.find(LOCATION_KEYWORD, lastLineEnd);
+			if (locationLocation != std::string::npos)
+			{
+				size_t equalLocation = vertexShaderText.find("=", locationLocation);
+				size_t begin = equalLocation + 1;
+				size_t end = vertexShaderText.find(";", begin);
+
+				std::string attributeLine = vertexShaderText.substr(begin, end - begin);
+				Utility::StringUtility::LeftTrim(attributeLine);
+
+				end = attributeLine.find(")");
+				std::string locationNumber = attributeLine.substr(0, end);
+				currentAttribLocation = Utility::StringUtility::ToInt(locationNumber);
+			}
+			size_t begin = attributeLocation + ATTRIBUTE_KEYWORD.length() + 1;
 			size_t end = vertexShaderText.find(";", begin);
 
-			std::string attributeLine = vertexShaderText.substr(begin + 1, end - begin - 1);
+			std::string attributeLine = vertexShaderText.substr(begin, end - begin);
 
 			begin = attributeLine.find(" ");
 			std::string attributeName = attributeLine.substr(begin + 1);
 
 			glBindAttribLocation(m_programID, currentAttribLocation, attributeName.c_str());
-			currentAttribLocation++;
+			++currentAttribLocation;
 		}
 		attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD, attributeLocation + ATTRIBUTE_KEYWORD.length());
 	}

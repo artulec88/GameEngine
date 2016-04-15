@@ -112,7 +112,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
+CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */) :
 	m_window(NULL),
@@ -122,7 +122,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_windowHeight(height),
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
-	m_game(game),
+	m_game(NULL),
 	m_audioEngine(NULL),
 	m_physicsEngine(NULL),
 	m_renderer(NULL),
@@ -274,15 +274,6 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	DEBUG_LOG("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
 
-	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, NULL);
-	if (m_threadWindow == NULL)
-	{
-		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
-		glfwTerminate();
-		exit(EXIT_FAILURE);
-	}
-
 	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
 	switch (antiAliasingMethod)
@@ -329,13 +320,22 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	{
 		monitor = glfwGetPrimaryMonitor();
 	}
-	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, m_threadWindow); // Open a window and create its OpenGL context
+	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
 	if (m_window == NULL)
 	{
 		CRITICAL_LOG("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, m_window);
+	if (m_threadWindow == NULL)
+	{
+		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
+		glfwTerminate();
+		exit(EXIT_FAILURE);
+	}
+
 	glfwMakeContextCurrent(m_window);
 	glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE); // Ensure we can capture the escape key being pressed below
 	glfwSetCursorPos(m_window, width / 2, height / 2); // Set cursor position to the middle point
@@ -382,9 +382,10 @@ void CoreEngine::SetCallbacks()
 	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
 }
 
-void CoreEngine::Start()
+void CoreEngine::Start(GameManager* gameManager)
 {
 	START_PROFILING;
+	m_game = gameManager;
 	if (m_isRunning)
 	{
 		WARNING_LOG("The core engine instance is already running");
@@ -428,13 +429,19 @@ void CoreEngine::Run()
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
-	const Rendering::Text::Font fpsFont(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
-	Rendering::Text::GuiText fpsGuiText("", &fpsFont, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
+	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
+	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
 		Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
 		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.0f), GET_CONFIG_VALUE("offsetFPSY", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 0.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
 		GET_CONFIG_VALUE("isCenteredFPS", false), GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f),
 		GET_CONFIG_VALUE("borderWidthFPS", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
+	Rendering::Text::GuiText inGameTimeGuiText("", &font, GET_CONFIG_VALUE("fontSizeInGameTime", 2.5f),
+		Math::Vector2D(GET_CONFIG_VALUE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE("screenPositionInGameTimeY", 0.0f)),
+		GET_CONFIG_VALUE("maxLineLengthInGameTime", 0.5f), Math::Vector2D(GET_CONFIG_VALUE("offsetInGameTimeX", 0.0f), GET_CONFIG_VALUE("offsetInGameTimeY", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE("outlineColorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE("outlineColorInGameTimeBlue", 0.0f)),
+		GET_CONFIG_VALUE("isCenteredInGameTime", false), GET_CONFIG_VALUE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthInGameTime", 0.1f),
+		GET_CONFIG_VALUE("borderWidthInGameTime", 0.4f), GET_CONFIG_VALUE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
@@ -471,7 +478,7 @@ void CoreEngine::Run()
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
 		
-		if (m_game.IsInGameTimeCalculationEnabled())
+		if (m_game->IsInGameTimeCalculationEnabled())
 		{
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
 			if (m_timeOfDay > SECONDS_PER_DAY)
@@ -535,7 +542,7 @@ void CoreEngine::Run()
 			//m_game.Input(m_frameTime);
 			//STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			RESET_TIMER(innerTimer);
-			m_game.Update(m_frameTime);
+			m_game->Update(m_frameTime);
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
@@ -548,7 +555,7 @@ void CoreEngine::Run()
 			/* ==================== REGION #2_3 end ====================*/
 
 			/* ==================== Switching the game state if necessary begin ==================== */
-			m_game.PerformStateTransition();
+			m_game->PerformStateTransition();
 			/* ==================== Switching the game state if necessary end ==================== */
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -565,7 +572,7 @@ void CoreEngine::Run()
 		if (isRenderRequired)
 		{
 			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
-			m_game.Render(m_renderer);
+			m_game->Render(m_renderer);
 #ifdef COUNT_FPS
 			++framesCount;
 
@@ -576,7 +583,7 @@ void CoreEngine::Run()
 			m_renderer->RenderText(fpsGuiText);
 #endif
 #ifdef DRAW_GAME_TIME
-			if (m_game.IsInGameTimeCalculationEnabled())
+			if (m_game->IsInGameTimeCalculationEnabled())
 			{
 #ifndef DRAW_FPS
 				std::stringstream ss;
@@ -598,7 +605,8 @@ void CoreEngine::Run()
 						ss << ":" << inGameSeconds;
 					}
 				}
-				m_renderer->RenderText(0, 550, ss.str(), 16.0f /* TODO: Never use hard-coded values! */);
+				inGameTimeGuiText.SetText(ss.str());
+				m_renderer->RenderText(inGameTimeGuiText);
 			}
 #endif
 #endif
@@ -629,7 +637,7 @@ void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	m_renderer->SetWindowWidth(width);
 	m_renderer->SetWindowHeight(height);
-	m_game.WindowResizeEvent(width, height);
+	m_game->WindowResizeEvent(width, height);
 }
 
 void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
@@ -671,27 +679,27 @@ void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 
 void CoreEngine::CloseWindowEvent(GLFWwindow* window)
 {
-	m_game.CloseWindowEvent();
+	m_game->CloseWindowEvent();
 }
 
 void CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	m_game.KeyEvent(key, scancode, action, mods);
+	m_game->KeyEvent(key, scancode, action, mods);
 }
 
 void CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	m_game.MouseButtonEvent(button, action, mods);
+	m_game->MouseButtonEvent(button, action, mods);
 }
 
 void CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	m_game.MousePosEvent(xPos, yPos);
+	m_game->MousePosEvent(xPos, yPos);
 }
 
 void CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
-	m_game.ScrollEvent(xOffset, yOffset);
+	m_game->ScrollEvent(xOffset, yOffset);
 }
 
 void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
@@ -884,7 +892,7 @@ void CoreEngine::AddCamera(Rendering::CameraBase* camera)
 
 void CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
 {
-	m_game.AddSkyboxNode(skyboxNode);
+	m_game->AddSkyboxNode(skyboxNode);
 	//m_renderer->AddSkyboxNode(skyboxNode);
 }
 
@@ -896,7 +904,7 @@ void CoreEngine::AddWaterNode(GameNode* waterNode)
 
 void CoreEngine::AddTerrainNode(GameNode* terrainNode)
 {
-	m_game.AddTerrainNode(terrainNode);
+	m_game->AddTerrainNode(terrainNode);
 	//m_renderer->AddTerrainNode(terrainNode);
 }
 
@@ -944,7 +952,7 @@ void CoreEngine::InitializeTweakBars()
 
 void CoreEngine::InitializeGameTweakBars()
 {
-	m_game.InitializeTweakBars();
+	m_game->InitializeTweakBars();
 	m_renderer->InitializeTweakBars();
 }
 #endif

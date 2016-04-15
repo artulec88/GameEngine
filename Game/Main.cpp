@@ -116,10 +116,10 @@ int main (int argc, char* argv[])
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
-	Game::TestGameManager game;
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	Engine::CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
-		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), game, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory);
-	engine.Start();
+		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory);
+	Game::TestGameManager game;
+	engine.Start(&game);
 	return EXIT_SUCCESS;
 }

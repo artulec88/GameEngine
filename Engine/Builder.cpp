@@ -5,13 +5,10 @@
 #include "DirectionalLightComponent.h"
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
+#include "MeshRendererComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
-
-#ifdef BUILD_MESH_RENDERER
-#include "MeshRendererComponent.h"
-#endif
 
 /* ==================== Builder implementation begin ==================== */
 Engine::Builder::Builder(void) :

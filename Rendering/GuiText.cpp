@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GuiText.h"
-#include "Vertex.h"
 #include <sstream>
 
 Rendering::Text::GuiText::Word::Word(Math::Real fontSize) :
@@ -68,7 +67,8 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 	m_characterEdgeTransitionWidth(characterEdgeTransitionWidth),
 	m_borderWidth(borderWidth),
 	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth),
-	m_mesh(NULL)
+	m_mesh(NULL),
+	m_aabr(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO))
 {
 	if (!text.empty())
 	{
@@ -119,12 +119,13 @@ void Rendering::Text::GuiText::SetText(const std::string& text)
 	m_linesCount = lines.size();
 	Math::Real cursorX = REAL_ZERO;
 	Math::Real cursorY = REAL_ZERO;
-	std::vector<Vertex2D> vertices;
+	std::vector<Math::Vector2D> positions;
+	std::vector<Math::Vector2D> textureCoordinates;
 	for (std::vector<Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
 	{
 		if (m_isCentered)
 		{
-			cursorX = (m_maxLineLength - lineItr->GetLineLength()) / 2.0f;
+			cursorX = (m_isCentered) ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
 		}
 		for (std::vector<Word>::const_iterator wordItr = lineItr->GetWords().begin(); wordItr != lineItr->GetWords().end(); ++wordItr)
 		{
@@ -143,32 +144,33 @@ void Rendering::Text::GuiText::SetText(const std::string& text)
 				//CRITICAL_LOG("%d)\n\t(x, y) = (%.3f, %.3f);\n\t(maxX,maxY) = (%.3f, %.3f);\n\t(properX, properY) = (%.3f, %.3f);\n\t(properMaxX, properMaxY) = (%.3f, %.3f);",
 				//	tempCount++, x, y, maxX, maxY, properX, properY, properMaxX, properMaxY);
 
-				vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), characterItr->GetTextureCoords())); // 0
-				vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properY), Math::Vector2D(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY()))); // 4
-				vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), characterItr->GetMaxTextureCoords())); // 2
-				vertices.push_back(Vertex2D(Math::Vector2D(properMaxX, properMaxY), characterItr->GetMaxTextureCoords())); // 2
-				vertices.push_back(Vertex2D(Math::Vector2D(properX, properMaxY), Math::Vector2D(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()))); // 1
-				vertices.push_back(Vertex2D(Math::Vector2D(properX, properY), characterItr->GetTextureCoords())); // 0
+				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0
+				positions.emplace_back(properMaxX, properY); textureCoordinates.emplace_back(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY()); // 4
+				positions.emplace_back(properMaxX, properMaxY); textureCoordinates.push_back(characterItr->GetMaxTextureCoords()); // 2
+				positions.emplace_back(properMaxX, properMaxY); textureCoordinates.push_back(characterItr->GetMaxTextureCoords()); // 2
+				positions.emplace_back(properX, properMaxY); textureCoordinates.emplace_back(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()); // 1
+				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0
 
 				cursorX += characterItr->GetXAdvance() * m_fontSize;
 			}
 			cursorX += m_font->GetSpaceWidth() * m_fontSize;
 		}
-		cursorX = REAL_ZERO;
 		cursorY += Font::LINE_HEIGHT * m_fontSize;
 	}
+	// TODO: Screen width and height are hard-coded here.
+	m_aabr.SetBottomLeftPos(Math::Vector2D(m_screenPosition.GetX() * 1600.0f, (m_screenPosition.GetY() + cursorY) * 900.0f));
+	m_aabr.SetTopRightPos(Math::Vector2D((m_screenPosition.GetX() + cursorX) * 1600.0f, m_screenPosition.GetY() * 900.0f));
 	if (m_mesh == NULL)
 	{
-		m_mesh = new TextMesh(&vertices[0], vertices.size());
+		m_mesh = new TextMesh(&positions[0], &textureCoordinates[0], positions.size());
 	}
 	else
 	{
-		m_mesh->ReplaceData(&vertices[0], vertices.size());
+		m_mesh->ReplaceData(&positions[0], &textureCoordinates[0], positions.size());
 	}
 }
 
 void Rendering::Text::GuiText::Draw() const
 {
-	m_font->Bind();
 	m_mesh->Draw();
 }

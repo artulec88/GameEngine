@@ -167,7 +167,14 @@ public:
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
+	/// <summary>
+	/// The number of rows (and columns too) in the texture atlas.
+	/// </summary>
 	int m_rowsCount;
+
+	/// <summary>
+	/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
+	/// </summary>
 	bool m_isAdditive;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ParticleTexture */

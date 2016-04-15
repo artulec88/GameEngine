@@ -2,11 +2,11 @@
 #define __RENDERING_MESH_H__
 
 #include "Rendering.h"
-#include "Vertex.h"
 
 #include "Math\Matrix.h"
 #include "Math\Vector.h"
 #include "Utility\ReferenceCounter.h"
+#include "Utility\ILogger.h"
 
 #include <string>
 #include <map>
@@ -21,6 +21,8 @@
 #endif
 
 //#define MEASURE_MESH_TIME_ENABLED
+
+#define MESH_DATA_BUFFERS_COUNT 7
 
 // Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
 namespace std
@@ -37,64 +39,120 @@ namespace std
 
 namespace Rendering
 {
+	class MeshData : public Utility::ReferenceCounter
+	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-class MeshData : public Utility::ReferenceCounter
-{
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		/// <summary>
+		/// Simple mesh data constructor without index buffer object.
+		/// </summary>
+		//MeshData();
+		MeshData(GLsizei indexSize);
+		virtual ~MeshData(void);
+	private:
+		MeshData(const MeshData& meshData); // don't implement
+		void operator=(const MeshData& meshData); // don't implement
+	/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	/// <summary>
-	/// Simple mesh data constructor without index buffer object.
-	/// </summary>
-	MeshData();
-	MeshData(GLsizei indexSize);
-	virtual ~MeshData(void);
-private:
-	MeshData(const MeshData& meshData) {} // don't implement
-	void operator=(const MeshData& meshData) {} // don't implement
-/* ==================== Constructors and destructors end ==================== */
+	/* ==================== Non-static member functions begin ==================== */
+	public:
+		GLuint GetVAO() const { return m_vao; }
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	/// <summary>
-	/// Returns the handle for the vertex buffer object.
-	/// </summary>
-	/// <returns> A handle to the vertex buffer object. </returns>
-	GLuint GetVBO() const { return m_vbo; }
+		void CreateVAO();
 
-	/// <summary>
-	/// Returns the handle for the index buffer object.
-	/// </summary>
-	/// <returns> A handle to the index buffer object. </returns>
-	GLuint GetIBO() const { return m_ibo; }
+		inline void Bind() const
+		{
+			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
+			//WARNING_LOG("Binding mesh data %s", ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS(m_vao != 0, Utility::Critical, "Trying to bind the VAO with id=0");
+			glBindVertexArray(m_vao);
+			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
+		}
 
-	/// <summary>
-	/// Returns the size of the mesh.
-	/// </summary>
-	/// <returns> The size of the mesh. </returns>
-	GLsizei GetSize() const { return m_size; }
-/* ==================== Non-static member functions end ==================== */
+		inline void Unbind() const
+		{
+			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
+			//WARNING_LOG("Unbinding mesh data %s", ToString().c_str());
+			//int index = 0;
+			//for (std::vector<GLuint>::const_iterator vboItr = m_vbos.begin(); vboItr != m_vbos.end(); ++vboItr, ++index)
+			//{
+			//	glDisableVertexAttribArray(index);
+			//}
+			glBindVertexArray(0);
+			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data unbinding");
+		}
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	/// <summary>
-	/// Vertex buffer object. A handle to vertices making up the whole mesh.
-	/// </summary>
-	GLuint m_vbo;
+		bool HasVBO(unsigned int index) const
+		{
+			CHECK_CONDITION_EXIT_ALWAYS(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
+			return m_buffers[index] != 0;
+		}
+
+		/// <summary>
+		/// Returns the handle for the vertex buffer object under specified index.
+		/// </summary>
+		/// <param name="index"> The index of the VBO we want to get ID of </param>
+		/// <returns> A handle to the vertex buffer object. </returns>
+		GLuint GetVBO(unsigned int index) const
+		{
+			CHECK_CONDITION_EXIT_ALWAYS(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS(m_buffers[index] != 0, Utility::Critical, "The buffer under index %d is 0. Mesh data = \"%s\"", index, ToString().c_str());
+			return m_buffers[index];
+		}
+
+		//size_t GetVBOsCount() const { return m_vbos.size(); }
+
+		/// <summary>
+		/// Creates the collection of VBOs and stores it in the vector of available VBOs.
+		/// </summary>
+		void CreateVBO(int index);
+
+		/// <summary>
+		/// Creates IBO.
+		/// </summary>
+		//void CreateIBO();
+
+		/// <summary>
+		/// Returns the handle for the index buffer object.
+		/// </summary>
+		/// <returns> A handle to the index buffer object. </returns>
+		//GLuint GetIBO() const { return m_ibo; }
+
+		/// <summary>
+		/// Returns the size of the mesh.
+		/// </summary>
+		/// <returns> The size of the mesh. </returns>
+		GLsizei GetSize() const { return m_size; }
+
+		std::string ToString() const;
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+	private:
+		/// <summary>
+		/// Vertex array object.
+		/// </summary>
+		GLuint m_vao;
+
+		/// <summary>
+		/// Vertex buffer objects. A handle to data representing the whole mesh (positions, texture coordinates, normals, etc.).
+		/// </summary>
+		GLuint m_buffers[MESH_DATA_BUFFERS_COUNT];
 	
-	/// <summary>
-	/// Index buffer object.
-	/// </summary>
-	GLuint m_ibo;
+		/// <summary>
+		/// Index buffer object.
+		/// </summary>
+		//GLuint m_ibo;
 	
-	/// <summary>
-	/// The size. It represents how much data there is in the vertex buffer object.
-	/// </summary>
-	GLsizei m_size;
-/* ==================== Non-static member variables end ==================== */
-}; /* end class MeshData */
+		/// <summary>
+		/// The size. It represents how much data there is in the vertex buffer object.
+		/// </summary>
+		GLsizei m_size;
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end class MeshData */
 
 class Mesh
 {
@@ -116,7 +174,11 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-	RENDERING_API Mesh(Vertex* vertices, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Math::Vector3D* positions, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+	RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~Mesh(void);
 protected:
 	Mesh(GLenum mode = GL_TRIANGLES);
@@ -129,12 +191,11 @@ private: // disable copy constructor and assignment operator
 public:
 	RENDERING_API void Initialize(); // TODO: Try to remove it, the initialization should be handled in the constructor
 	virtual void Draw() const;
-	virtual void BindBuffers() const;
-	virtual void UnbindBuffers() const;
 protected:
-	void AddVertices(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount, bool calcNormalsEnabled = true);
-	void CalcNormals(Vertex* vertices, size_t verticesCount, const int* indices, size_t indicesCount) const;
-	void CalcTangents(Vertex* vertices, size_t verticesCount) const;
+	void AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount);
+	void AddVertices(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
+	void CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const;
+	void CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* positions, Math::Vector2D* textureCoordinates, size_t verticesCount) const;
 	//void CalcIndices(Vertex* vertices, size_t verticesCount, std::vector<Vertex>& indexedVertices, std::vector<int>& indices) const;
 	//bool GetSimilarVertexIndex(const Vertex& vertex, const std::vector<Vertex>& indexedVertices, int& index) const;
 	virtual void SavePositions(const std::vector<Math::Vector3D>& positions) { /* does nothing*/ }; // TODO: Remove this function
@@ -170,7 +231,7 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Draw() const;
+	//virtual void Draw() const;
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -187,7 +248,7 @@ class GuiMesh : public Mesh
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	GuiMesh(const Math::Vector2D* positions, unsigned int positionsCount);
+	GuiMesh(Math::Vector2D* positions, unsigned int positionsCount);
 	virtual ~GuiMesh(void);
 private: // disable copy constructor and assignment operator
 	GuiMesh(GuiMesh& mesh);
@@ -196,15 +257,46 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Draw() const;
+	//virtual void Draw() const;
 /* ==================== Non-static member functions end ==================== */
-
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 	unsigned int m_positionsCount;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GuiMesh */
+
+/// <summary>
+/// The instance mesh that is used by particles.
+/// </summary>
+class InstanceMesh : public Mesh
+{
+/* ==================== Non-static member functions begin ==================== */
+private:
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Constructors and destructors begin ==================== */
+public:
+	InstanceMesh(Math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
+	virtual ~InstanceMesh(void);
+private: // disable copy constructor and assignment operator
+	InstanceMesh(InstanceMesh& mesh);
+	void operator=(InstanceMesh& mesh);
+/* ==================== Constructors and destructors end ==================== */
+
+/* ==================== Non-static member functions begin ==================== */
+public:
+	unsigned int GetInstanceDataLength() const { return m_instanceDataLength; }
+	void Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const;
+/* ==================== Non-static member functions end ==================== */
+
+/* ==================== Non-static member variables begin ==================== */
+private:
+	unsigned int m_positionsCount;
+	unsigned int m_maxParticlesCount;
+	unsigned int m_instanceDataLength;
+/* ==================== Non-static member variables end ==================== */
+}; /* end class InstanceMesh */
 
 class TerrainMesh : public Mesh
 {
@@ -275,7 +367,7 @@ class TextMesh : public Mesh
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API TextMesh(const Vertex2D* screenVertices, int screenVerticesCount, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TextMesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TextMesh(void);
 private: // disable copy constructor and assignment operator
 	TextMesh(TextMesh& textMesh);
@@ -285,9 +377,7 @@ private: // disable copy constructor and assignment operator
 /* ==================== Non-static member functions begin ==================== */
 public:
 	virtual void Draw() const;
-	virtual void BindBuffers() const;
-	virtual void UnbindBuffers() const;
-	void ReplaceData(const Vertex2D* screenVertices, int screenVerticesCount);
+	void ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount);
 /* ==================== Non-static member functions end ==================== */
 
 

@@ -66,7 +66,7 @@ public:
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate, GameManager& game,
+	ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
 		const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\");
 	ENGINE_API ~CoreEngine(void);
@@ -77,17 +77,15 @@ private: // disable copy constructor
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	ENGINE_API void Start();
+	ENGINE_API void Start(GameManager* gameManager);
 	ENGINE_API void Stop();
 	inline void RequestWindowClose() const
 	{
 		glfwSetWindowShouldClose(m_window, GL_TRUE);
 	}
 	void InitGlew();
-	GLFWwindow* GetThreadWindow() const
-	{
-		return m_threadWindow;
-	}
+	//ENGINE_API void MakeMainWindowCurrentContext() const { glfwMakeContextCurrent(m_window); }
+	GLFWwindow* GetThreadWindow() const { return m_threadWindow; }
 
 	size_t GetCurrentCameraIndex() const;
 	size_t NextCamera() const;
@@ -193,7 +191,7 @@ private:
 	int m_windowHeight;
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
-	GameManager& m_game;
+	GameManager* m_game;
 	Audio::AudioEngine* m_audioEngine;
 	Physics::PhysicsEngine* m_physicsEngine;
 	Rendering::Renderer* m_renderer;

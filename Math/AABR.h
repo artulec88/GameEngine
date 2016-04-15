@@ -3,11 +3,10 @@
 
 #include "Math.h"
 #include "Vector.h"
+#include "IntersectInfo.h"
 
 namespace Math
 {
-
-	class IntersectInfo;
 
 	/// <summary>
 	/// The mathematical representation of the axis-aligned bounding rectangle for 2D objects.
@@ -51,6 +50,8 @@ namespace Math
 		MATH_API IntersectInfo DoesIntersectAABR(const AABR& aabr) const;
 		MATH_API inline const Vector2D& GetBottomLeftPos() const { return m_bottomLeftPos; }
 		MATH_API inline const Vector2D& GetTopRightPos() const { return m_topRightPos; }
+		MATH_API void SetBottomLeftPos(const Math::Vector2D& bottomLeftPos) { m_bottomLeftPos = bottomLeftPos; }
+		MATH_API void SetTopRightPos(const Math::Vector2D& topRightPos) { m_topRightPos = topRightPos; }
 	private:
 		Math::Real CalcDistanceToNearestFaceX(Math::Real x) const;
 		Math::Real CalcDistanceToNearestFaceY(Math::Real y) const;

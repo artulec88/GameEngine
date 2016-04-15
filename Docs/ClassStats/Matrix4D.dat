@@ -1,6 +1,8 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Matrix4D	36478	22457	2332.85	2046.61	0.0639523
-operator*	14021	14021	1992.26	1992.26	0.142091
-operator=	2804	2804	133.428	133.428	0.0475848
-SetScaleMatrix	2806	0	145.973	0	0.0520216
-SetPerspectiveProjection	1	0	3.80136	0	3.80136
+Matrix4D	83712	56521	7290.38	6649.86	0.0870889
+operator*	27191	27191	4606.26	4606.26	0.169404
+operator=	34202	34202	2050.42	2050.42	0.0599502
+Det	13680	0	501.016	0	0.036624
+Inversion	684	684	1443.37	1443.37	2.11019
+SetScaleMatrix	3332	0	265.336	0	0.0796327
+SetPerspectiveProjection	2	0	6.84243	0	3.42122

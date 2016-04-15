@@ -35,7 +35,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
 	//m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
 	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
-	m_vao(0),
 	m_fogEnabled(GET_CONFIG_VALUE("fogEnabled", true)),
 	m_fogColor(GET_CONFIG_VALUE("fogColor_x", 0.7f),
 		GET_CONFIG_VALUE("fogColor_y", 0.7f),
@@ -167,8 +166,6 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	SetSamplerSlot("waterNormalMap", 3);
 	SetSamplerSlot("waterDepthMap", 4);
 
-	glGenVertexArrays(1, &m_vao);
-
 #ifndef ANT_TWEAK_BAR_ENABLED
 	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
 	m_mappedValues.SetReal("ambientFogStart", m_fogStart);
@@ -257,8 +254,10 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
 
 	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
-	m_particleQuad = new GuiMesh(particleVertexPositions, 4);
+	const int maxParticlesCount = GET_CONFIG_VALUE("maxParticlesCount", 10000);
+	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 21);
 	m_particleShader = new Shader(GET_CONFIG_VALUE_STR("particleShader", "particle-shader"));
+	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
 
 	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
 #ifndef ANT_TWEAK_BAR_ENABLED
@@ -300,8 +299,6 @@ Renderer::~Renderer(void)
 	INFO_LOG("Destroying rendering engine...");
 	START_PROFILING;
 
-	glDeleteVertexArrays(1, &m_vao);
-
 	glDeleteBuffers(1, &m_textVertexBuffer);
 	glDeleteBuffers(1, &m_textTextureCoordBuffer);
 
@@ -341,6 +338,7 @@ Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterNoDirectionalLightShader);
 	
 	SAFE_DELETE(m_billboardShader);
+	SAFE_DELETE(m_particleQuad);
 	SAFE_DELETE(m_particleShader);
 	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
 	//{
@@ -831,7 +829,7 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	m_textShader2->Bind();
-	m_textShader2->SetUniformVector3D("translation", Math::Vector3D(guiText.GetScreenPosition().GetX(), guiText.GetScreenPosition().GetY(), 0.0f));
+	m_textShader2->SetUniformVector2D("translation", guiText.GetScreenPosition());
 	m_textShader2->SetUniformVector2D("offset", guiText.GetOffset());
 	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
 	m_textShader2->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
@@ -869,7 +867,6 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	particleTexture->Bind();
 	m_particleShader->SetUniformi("particleTexture", 0);
 	m_particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
-	m_particleQuad->BindBuffers();
 	if (Rendering::glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -878,16 +875,10 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 	{
 		glEnable(GL_BLEND);
 	}
-	/**
-	* This effectively means:
-	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
-	* (1 - currentAlphaInFramebuffer) * shader's output color
-	*/
-	// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke). Create a variable in ParticleTexture to store that information and use it here.
 	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
-
+	
+	m_particleInstanceVboData.clear();
 	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
-	int temp = 0;
 	for (std::vector<Particle>::const_iterator particleItr = particles.begin(); particleItr != particles.end(); ++particleItr)
 	{
 		Math::Matrix4D modelMatrix(particleItr->GetPosition());
@@ -909,23 +900,39 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const std
 		//Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
 		//m_particleShader->UpdateUniforms(particleTransform, NULL, this);
 		//m_particleShader->SetUniformMatrix("T_model", modelMatrix);
-		m_particleShader->SetUniformMatrix("T_MVP", m_currentCamera->GetViewProjection() * modelMatrix);
+		//m_particleShader->SetUniformMatrix("T_MVP", m_currentCamera->GetViewProjection() * modelMatrix);
+		Math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 3));
 		
 		Math::Vector2D textureOffset0;
 		Math::Vector2D textureOffset1;
 		Math::Real textureAtlasBlendFactor;
 		particleItr->CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
-
-		//CRITICAL_LOG("%d) texOffset0 = %s, texOffset1 = %s, blendFactor = %.3f", temp++, textureOffset0.ToString().c_str(), textureOffset1.ToString().c_str(), textureAtlasBlendFactor);
-
-		m_particleShader->SetUniformVector2D("textureOffset0", textureOffset0);
-		m_particleShader->SetUniformVector2D("textureOffset1", textureOffset1);
-		m_particleShader->SetUniformf("lifeStageBlendFactor", textureAtlasBlendFactor);
-
-		m_particleQuad->Draw();
+		//m_particleShader->SetUniformVector2D("textureOffset0", textureOffset0);
+		//m_particleShader->SetUniformVector2D("textureOffset1", textureOffset1);
+		//m_particleShader->SetUniformf("lifeStageBlendFactor", textureAtlasBlendFactor);
+		m_particleInstanceVboData.push_back(textureOffset0.GetX());
+		m_particleInstanceVboData.push_back(textureOffset0.GetY());
+		m_particleInstanceVboData.push_back(textureOffset1.GetX());
+		m_particleInstanceVboData.push_back(textureOffset1.GetY());
+		m_particleInstanceVboData.push_back(textureAtlasBlendFactor);
 	}
-
-	m_particleQuad->UnbindBuffers();
+	m_particleQuad->Draw(&m_particleInstanceVboData[0], m_particleInstanceVboData.size(), particles.size());
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);

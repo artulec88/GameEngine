@@ -3,7 +3,6 @@
 #include "GameStateManager.h"
 #include "CoreEngine.h"
 
-#include "Rendering\Vertex.h"
 #include "Rendering\Renderer.h"
 #include "Rendering\Attenuation.h"
 #include "Rendering\PointLight.h"
@@ -54,13 +53,18 @@ Engine::GameManager::GameManager() :
 	m_waterNode(NULL),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
+	m_mainMenuFont(GET_CONFIG_VALUE_STR("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR("mainMenuFontMetaData", "cambria.fnt")),
+	m_mainMenuFontSize(GET_CONFIG_VALUE("mainMenuFontSize", 16.0f)),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
 	m_emptyGameCommand(),
-	m_mainMenuRootEntry("Main menu", Math::Vector2D(0.0f, 0.0f), m_emptyGameCommand),
-	m_playMainMenuRootEntry("Play main menu", Math::Vector2D(0.0f, 0.0f), m_emptyGameCommand)
+	m_mainMenuRootEntry(NULL),
+	m_playMainMenuRootEntry(NULL)
 {
 	INFO_LOG("Game manager construction started");
+	m_mainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
+	// TODO: The PLAY main menu should be created while loading the game, not before. Why create the PLAY main menu if the user starts the application and quits immediately without starting the game?
+	m_playMainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Play main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
 	//rootGameNode = new GameNode();
 	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
@@ -83,6 +87,8 @@ Engine::GameManager::~GameManager(void)
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
 	SAFE_DELETE(m_skyboxNode);
+	SAFE_DELETE(m_mainMenuRootEntry); // may be already removed if the game has been loaded.
+	SAFE_DELETE(m_playMainMenuRootEntry);
 	DEBUG_LOG("Game manager destruction finished");
 }
 
@@ -190,7 +196,7 @@ void Engine::GameManager::AddText(const Rendering::Text::GuiText& guiText)
 	//}
 	//std::vector<Rendering::Text::GuiText>::const_iterator guiTextItr = std::find(m_texts[guiText.GetFont()].begin(), m_texts[guiText.GetFont()].end(), guiText);
 	//m_texts[guiText.GetFont()].push_back(guiText); // TODO: What about duplicates?
-	m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>>(guiText.GetFont(), std::vector<Rendering::Text::GuiText>()));
+	//m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>>(guiText.GetFont(), std::vector<Rendering::Text::GuiText>()));
 	//m_texts[guiText.GetFont()].push_back(guiText);
 }
 
