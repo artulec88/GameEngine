@@ -34,19 +34,18 @@ class MenuEntry
 {
 /* ==================== Static variables and functions begin ==================== */
 private:
-	static const Math::Vector3D NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
-	static const Math::Vector3D SELECTED_MENU_ENTRY_TEXT_COLOR;
+	static Rendering::Text::TextEffectColor NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
+	static Rendering::Text::TextEffectColorGradient SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
 public:
-	//static void InitializeMenuColors();
-	ENGINE_API static const Math::Vector3D& GetNotSelectedMenuEntryTextColor();
-	ENGINE_API static const Math::Vector3D& GetSelectedMenuEntryTextColor();
+	static void InitializeMenuColors();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	ENGINE_API MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-		Math::Real maxLineLength, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false, Math::Real characterWidth = 0.5f,
-		Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
+		Math::Real maxLineLength, Rendering::Text::TextEffectColor* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
+		bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f,
+		Math::Real borderEdgeTransitionWidth = 0.1f);
 	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -74,7 +73,7 @@ public:
 
 	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
 private:
-	void SetColor(const Math::Vector3D& color) { m_guiText.SetColor(color); }
+	void SetColorEffect(Rendering::Text::TextEffectColor* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

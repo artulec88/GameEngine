@@ -187,6 +187,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Interpolation.cpp" />
+    <ClCompile Include="Interpolation_impl.h" />
     <ClCompile Include="IntersectInfo.cpp" />
     <ClCompile Include="ISort.cpp" />
     <ClCompile Include="IStatisticsStorage.cpp" />

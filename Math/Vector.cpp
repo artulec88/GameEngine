@@ -710,3 +710,20 @@ void Vector4D::Threshold(Real maxLength)
 		m_w /= quotient;
 	}
 }
+
+Math::Real Math::Interpolation::BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos)
+{
+	return BarycentricInterpolation(pos1.GetX(), pos1.GetY(), pos1.GetZ(), pos2.GetX(), pos2.GetY(), pos2.GetZ(), pos3.GetX(), pos3.GetY(), pos3.GetZ(), xPos, zPos);
+}
+
+Math::Real Math::Interpolation::BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
+	Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
+	Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
+	Math::Real xPos, Math::Real zPos)
+{
+	Math::Real det = (zPos2 - zPos3) * (xPos1 - xPos3) + (xPos3 - xPos2) * (zPos1 - zPos3);
+	Math::Real l1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
+	Math::Real l2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
+	Math::Real l3 = 1.0f - l1 - l2;
+	return l1 * yPos1 + l2 * yPos2 + l3 * yPos3;
+}

@@ -9,11 +9,6 @@ namespace Math
 
 namespace Interpolation
 {
-	MATH_API Math::Real BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos);
-	MATH_API Math::Real BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
-		Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
-		Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
-		Math::Real xPos, Math::Real zPos);
 
 	/// <summary> Interpolator class serves as a base class for all types of interpolation methods. </summary>
 	template <class T>
@@ -21,19 +16,24 @@ namespace Interpolation
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API Interpolator(const T* interpolationObjects, int interpolationObjectsCount);
-		MATH_API virtual ~Interpolator();
+		Interpolator();
+		Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount);
+		virtual ~Interpolator();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		MATH_API virtual T Interpolate(Real time, const Real* times) const = 0;
+		virtual T Interpolate(Real time) const = 0;
+		void PushInterpolationObject(const T& interpolationObject, Real time);
+		Real GetStartTime() const { return m_times.front(); }
+		Real GetEndTime() const { return m_times.back(); }
+		//std::string ToString() const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const T* m_interpolationObjects;
-		const int m_interpolationObjectsCount;
+		std::vector<T> m_interpolationObjects;
+		std::vector<Real> m_times;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Interpolator */
 
@@ -43,13 +43,14 @@ namespace Interpolation
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API LinearInterpolator(const T* interpolationObjects, int interpolationObjectsCount);
-		MATH_API virtual ~LinearInterpolator();
+		LinearInterpolator();
+		LinearInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount);
+		virtual ~LinearInterpolator();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		MATH_API virtual T Interpolate(Real time, const Real* times) const;
+		virtual T Interpolate(Real time) const;
 	/* ==================== Non-static member functions end ==================== */
 	}; /* end class LinearInterpolator */
 
@@ -59,15 +60,15 @@ namespace Interpolation
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API HermiteInterpolator(const T* interpolationObjects, int interpolationObjectsCount);
-		MATH_API HermiteInterpolator(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN);
-		MATH_API HermiteInterpolator(const T* interpolationObjects, const T* derivatives, int interpolationObjectsCount);
-		MATH_API virtual ~HermiteInterpolator();
+		HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount);
+		HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount, const T& derivative0, const T& derivativeN);
+		HermiteInterpolator(const T* interpolationObjects, const Real* times, const T* derivatives, int interpolationObjectsCount);
+		virtual ~HermiteInterpolator();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		MATH_API virtual T Interpolate(Real time, const Real* times) const;
+		virtual T Interpolate(Real time) const;
 	private:
 		void CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN);
 	/* ==================== Non-static member functions end ==================== */
@@ -84,13 +85,13 @@ namespace Interpolation
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API BarycentricInterpolator(const T* interpolationObjects, int interpolationObjectsCount);
-		MATH_API virtual ~BarycentricInterpolator();
+		BarycentricInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount);
+		virtual ~BarycentricInterpolator();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		MATH_API virtual T Interpolate(Real time, const Real* times) const;
+		virtual T Interpolate(Real time) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

@@ -427,6 +427,14 @@ private:
 /* ==================== Non-static member variables end ==================== */
 }; /* end class Vector4D */
 
+namespace Interpolation
+{
+	MATH_API Math::Real BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos);
+	MATH_API Math::Real BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
+		Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
+		Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
+		Math::Real xPos, Math::Real zPos);
+} /* end namespace Interpolation */
 } /* end namespace Math */
 
 #endif /* __MATH_VECTOR_H__ */

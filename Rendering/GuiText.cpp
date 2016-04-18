@@ -51,12 +51,12 @@ bool Rendering::Text::GuiText::Line::AttemptToAddWord(const Word& word)
 
 
 Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-	const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
-	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+	TextEffectColor* textColorEffect, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered /* = false */,
+	Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_text(text),
 	m_font(font),
 	m_fontSize(fontSize),
-	m_color(REAL_ONE, REAL_ZERO, REAL_ZERO),
+	m_colorEffect(textColorEffect),
 	m_screenPosition(screenPosition),
 	m_maxLineLength(maxLineLength),
 	m_linesCount(0),
@@ -80,6 +80,7 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 Rendering::Text::GuiText::~GuiText()
 {
 	SAFE_DELETE(m_mesh);
+	//SAFE_DELETE(m_colorEffect);
 }
 
 void Rendering::Text::GuiText::SetText(const std::string& text)

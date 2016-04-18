@@ -62,9 +62,9 @@ Engine::GameManager::GameManager() :
 	m_playMainMenuRootEntry(NULL)
 {
 	INFO_LOG("Game manager construction started");
-	m_mainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
+	m_mainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
 	// TODO: The PLAY main menu should be created while loading the game, not before. Why create the PLAY main menu if the user starts the application and quits immediately without starting the game?
-	m_playMainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Play main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
+	m_playMainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Play main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
 	//rootGameNode = new GameNode();
 	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 

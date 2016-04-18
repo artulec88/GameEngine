@@ -1,7 +1,5 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-GetAngleInDegrees	622	622	34.2121	34.2121	0.0550034
-GetAngleInRadians	15372	0	506.337	0	0.0329389
-Sin	57414	57414	2516.07	2516.07	0.0438232
-Cos	57794	57794	2027.98	2027.98	0.0350899
-Tan	2	2	0	0	0
-operator==	7686	7686	1913.95	1913.95	0.249017
+GetAngleInDegrees	8	8	0.380132	0.380132	0.0475165
+Sin	3	3	0	0	0
+Cos	8	8	0.380132	0.380132	0.0475165
+Tan	1	1	0	0	0

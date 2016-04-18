@@ -102,6 +102,9 @@ protected:
 	Engine::GameNode** cameraNodes;
 	bool m_heightMapCalculationEnabled;
 	//Engine::GameNode* castleNode;
+
+	Rendering::Text::TextEffectColor* m_notSelectedMenuEntryColorEffect;
+	Rendering::Text::TextEffectColor* m_selectedMenuEntryColorEffect;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

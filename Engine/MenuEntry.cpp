@@ -4,25 +4,19 @@
 #include "Utility\IConfig.h"
 #include <sstream>
 
-/* static */ const Math::Vector3D Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ZERO, REAL_ZERO);
-/* static */ const Math::Vector3D Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR(REAL_ONE, REAL_ONE, REAL_ONE);
-///* static */ void MenuEntry::InitializeMenuColors()
-//{
-//}
-/* static */ const Math::Vector3D& Engine::MenuEntry::GetNotSelectedMenuEntryTextColor()
+/* static */ Rendering::Text::TextEffectColor Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO));
+/* static */ Rendering::Text::TextEffectColorGradient Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
+
+/* static */ void Engine::MenuEntry::InitializeMenuColors()
 {
-	return Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR;
-}
-/* static */ const Math::Vector3D& Engine::MenuEntry::GetSelectedMenuEntryTextColor()
-{
-	return Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR;
 }
 
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-	Math::Real maxLineLength, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
-	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+	Math::Real maxLineLength, Rendering::Text::TextEffectColor* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
+	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
+	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_gameCommand(gameCommand),
-	m_guiText(text, font, fontSize, screenPosition, maxLineLength, offset, outlineColor, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textEffectColor, offset, outlineColor, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	//m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
 	//m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
@@ -47,6 +41,14 @@ Engine::MenuEntry::~MenuEntry(void)
 
 void Engine::MenuEntry::AddChildren(MenuEntry* child)
 {
+	if (m_childrenMenuEntries.empty())
+	{
+		child->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
+	}
+	else
+	{
+		child->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
+	}
 	child->SetParent(this);
 	m_childrenMenuEntries.push_back(child);
 }
@@ -74,33 +76,33 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 
 void Engine::MenuEntry::SelectPrevChildMenuEntry()
 {
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(NOT_SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 	--m_selectedMenuEntryIndex;
 	if (m_selectedMenuEntryIndex < 0)
 	{
 		m_selectedMenuEntryIndex = GetChildrenCount() - 1;
 	}
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 }
 
 void Engine::MenuEntry::SelectNextChildMenuEntry()
 {
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(NOT_SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 	++m_selectedMenuEntryIndex;
 	if (m_selectedMenuEntryIndex >= GetChildrenCount())
 	{
 		m_selectedMenuEntryIndex = 0;
 	}
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 }
 
 void Engine::MenuEntry::SelectChildMenuEntry(int index)
 {
 	CHECK_CONDITION(index >= 0 && index < GetChildrenCount(), Utility::Warning,
 		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(NOT_SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 	m_selectedMenuEntryIndex = index % GetChildrenCount();
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColor(SELECTED_MENU_ENTRY_TEXT_COLOR);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
 }
 
 Engine::MenuEntry* Engine::MenuEntry::GetParent() const
