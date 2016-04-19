@@ -19,6 +19,8 @@
 #include "Math\IStatisticsStorage.h"
 #endif
 
+#include <vector>
+
 namespace Game
 {
 
@@ -45,8 +47,6 @@ public:
 	virtual Engine::GameState* GetLoadGameState();
 	virtual Engine::GameState* GetPlayGameState();
 	virtual Engine::GameState* GetPlayMainMenuGameState();
-
-	virtual Engine::GameCommand& GetCommand(Engine::GameCommandTypes::GameCommandType gameCommandType);
 
 	virtual void WindowResizeEvent(int width, int height);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
@@ -83,6 +83,10 @@ protected:
 	ResumeGameCommand m_resumeGameCommand;
 	SaveGameCommand m_saveGameCommand;
 	LoadGameCommand m_loadGameCommand;
+
+	std::vector<Rendering::Effects::ColorEffect> m_colorEffects;
+	std::vector<Rendering::Effects::SmoothTransitionColorEffect> m_smoothTransitionColorEffects;
+	std::vector<Rendering::Effects::BlinkColorEffect> m_blinkColorEffects;
 
 	Rendering::TerrainMesh* m_terrainMesh;
 	Math::Real m_timeToUpdateCameraHeight;

@@ -55,7 +55,8 @@ Engine::GameManager::GameManager() :
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_emptyGameCommand()
+	m_gameCommandFactory(),
+	m_colorEffectFactory()
 {
 	INFO_LOG("Game manager construction started");
 	//rootGameNode = new GameNode();

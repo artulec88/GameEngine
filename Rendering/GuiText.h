@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "Font.h"
 #include "Mesh.h"
-#include "TextEffect.h"
+#include "ColorEffect.h"
 
 #include "Math\Vector.h"
 #include "Math\AABR.h"
@@ -147,7 +147,7 @@ namespace Rendering
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
 			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-				TextEffectColor* textColorEffect, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false,
+				Effects::ColorEffect* textColorEffect, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API ~GuiText(void);
 			//private:
@@ -178,7 +178,7 @@ namespace Rendering
 
 			/// <summary> Sets the color of this GUI text. </summary>
 			/// <param name="textColor"> The color we want to set for the GUI text. </param>
-			RENDERING_API void SetColorEffect(TextEffectColor* textColor) { m_colorEffect = textColor; }
+			RENDERING_API void SetColorEffect(Effects::ColorEffect* textColor) { m_colorEffect = textColor; }
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -215,7 +215,7 @@ namespace Rendering
 			std::string m_text;
 			const Font* m_font;
 			Math::Real m_fontSize;
-			TextEffectColor* m_colorEffect;
+			Effects::ColorEffect* m_colorEffect;
 			Math::Vector2D m_screenPosition;
 			Math::Real m_maxLineLength;
 			int m_linesCount;

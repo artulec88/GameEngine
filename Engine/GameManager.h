@@ -11,6 +11,7 @@
 #include "GameCommand.h"
 #include "GameCommandFactory.h"
 
+#include "Rendering\ColorEffect.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Particle.h"
 #include "Rendering\Shader.h"
@@ -30,7 +31,7 @@
 namespace Engine
 {
 
-class GameManager : public IUpdateable, public GameCommandFactory
+class GameManager : public IUpdateable
 {
 	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>, Rendering::Text::FontComparator> FontMap;
 /* ==================== Static variables begin ==================== */
@@ -107,6 +108,14 @@ public:
 	void PerformStateTransition();
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
+	ENGINE_API virtual GameCommand& GetCommand(GameCommandTypes::GameCommandType gameCommandType)
+	{
+		return m_gameCommandFactory.GetCommand(gameCommandType);
+	}
+	ENGINE_API Rendering::Effects::ColorEffect* GetColorEffect(Rendering::Effects::ColorEffectType colorEffectType, unsigned int variant)
+	{
+		return m_colorEffectFactory.GetColorEffect(colorEffectType, variant);
+	}
 public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
@@ -133,7 +142,8 @@ protected:
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
 
-	EmptyGameCommand m_emptyGameCommand;
+	GameCommandFactory m_gameCommandFactory;
+	Rendering::Effects::ColorEffectFactory m_colorEffectFactory;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

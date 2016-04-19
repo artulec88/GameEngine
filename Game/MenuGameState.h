@@ -2,7 +2,7 @@
 #define __MENU_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\TextEffect.h"
+#include "Rendering\ColorEffect.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
@@ -80,8 +80,8 @@ private:
 	// TODO: Create a Factory of TextEffects which creates text effects (but on the heap) and stores them under some special enum key.
 	// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
 	// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
-	Rendering::Text::TextEffectColor* m_notSelectedMenuEntryColorEffect;
-	Rendering::Text::TextEffectColor* m_selectedMenuEntryColorEffect;
+	Rendering::Effects::ColorEffect* m_notSelectedMenuEntryColorEffect;
+	Rendering::Effects::ColorEffect* m_selectedMenuEntryColorEffect;
 
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;

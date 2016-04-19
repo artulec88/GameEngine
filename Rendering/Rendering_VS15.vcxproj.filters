@@ -70,7 +70,7 @@
     <ClCompile Include="Particle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextEffect.cpp">
+    <ClCompile Include="ColorEffect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -150,7 +150,7 @@
     <ClInclude Include="Particle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextEffect.h">
+    <ClInclude Include="ColorEffect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

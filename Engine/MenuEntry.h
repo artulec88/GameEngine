@@ -38,7 +38,7 @@ class MenuEntry
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	ENGINE_API MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-		Math::Real maxLineLength, Rendering::Text::TextEffectColor* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
+		Math::Real maxLineLength, Rendering::Effects::ColorEffect* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
 		bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f,
 		Math::Real borderEdgeTransitionWidth = 0.1f);
 	ENGINE_API virtual ~MenuEntry(void);
@@ -55,8 +55,8 @@ public:
 	ENGINE_API bool DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
-	ENGINE_API void SelectChildMenuEntry(int index, Rendering::Text::TextEffectColor* newColorEffectForPreviouslySelectedEntry,
-		Rendering::Text::TextEffectColor* newColorEffectForCurrentSelectedEntry, bool wrapping = true);
+	ENGINE_API void SelectChildMenuEntry(int index, Rendering::Effects::ColorEffect* newColorEffectForPreviouslySelectedEntry,
+		Rendering::Effects::ColorEffect* newColorEffectForCurrentSelectedEntry, bool wrapping = true);
 
 	ENGINE_API void ExecuteCommand() const { m_gameCommand.Execute(); }
 	ENGINE_API void AddChildren(MenuEntry* child);
@@ -69,7 +69,7 @@ public:
 
 	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
 private:
-	void SetColorEffect(Rendering::Text::TextEffectColor* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }
+	void SetColorEffect(Rendering::Effects::ColorEffect* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

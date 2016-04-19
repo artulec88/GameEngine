@@ -51,7 +51,7 @@ bool Rendering::Text::GuiText::Line::AttemptToAddWord(const Word& word)
 
 
 Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-	TextEffectColor* textColorEffect, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered /* = false */,
+	Effects::ColorEffect* textColorEffect, const Math::Vector2D& offset, const Math::Vector3D& outlineColor, bool isCentered /* = false */,
 	Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_text(text),
 	m_font(font),

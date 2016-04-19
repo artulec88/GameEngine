@@ -33,13 +33,12 @@ PlayMenuGameState::PlayMenuGameState() :
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	m_notSelectedMenuEntryColorEffect = new Rendering::Text::TextEffectColor(Math::Vector3D(GET_CONFIG_VALUE("notSelectedMenuEntryColorRed", 1.0f),
-		GET_CONFIG_VALUE("notSelectedMenuEntryColorGreen", 0.0f), GET_CONFIG_VALUE("notSelectedMenuEntryColorBlue", 0.0f)));
+	m_notSelectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 2);
 	Math::Vector3D colors[] = { Math::Vector3D(GET_CONFIG_VALUE("selectedMenuEntryColorRed_1", 1.0f), GET_CONFIG_VALUE("selectedMenuEntryColorGreen_1", 1.0f),
 		GET_CONFIG_VALUE("selectedMenuEntryColorBlue_1", 1.0f)), Math::Vector3D(GET_CONFIG_VALUE("selectedMenuEntryColorRed_2", 1.0f), GET_CONFIG_VALUE("selectedMenuEntryColorGreen_2", 1.0f),
 			GET_CONFIG_VALUE("selectedMenuEntryColorBlue_2", 1.0f)) };
 	Math::Real times[] = { GET_CONFIG_VALUE("selectedMenuEntryColorEffectTime_1", 0.0f), GET_CONFIG_VALUE("selectedMenuEntryColorEffectTime_2", 1.0f) };
-	m_selectedMenuEntryColorEffect = new Rendering::Text::TextEffectColorGradient(colors, times, 2);
+	m_selectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::BLINK, 2);
 
 	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Options" game command */,
 		"Options", &m_playMainMenuFont, m_playMainMenuFontSize, Math::Vector2D(0.25f, 0.7f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true);

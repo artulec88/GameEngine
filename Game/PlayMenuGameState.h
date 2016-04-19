@@ -72,8 +72,8 @@ private:
 	Rendering::Text::Font m_playMainMenuFont;
 	Math::Real m_playMainMenuFontSize;
 	Engine::MenuEntry m_playMainMenuRootEntry;
-	Rendering::Text::TextEffectColor* m_notSelectedMenuEntryColorEffect;
-	Rendering::Text::TextEffectColor* m_selectedMenuEntryColorEffect;
+	Rendering::Effects::ColorEffect* m_notSelectedMenuEntryColorEffect;
+	Rendering::Effects::ColorEffect* m_selectedMenuEntryColorEffect;
 
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MenuEntry* m_currentMenuEntry;

@@ -28,6 +28,10 @@
 
 #include <sstream>
 
+#define STATIC_COLOR_EFFECTS_COUNT 4
+#define SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT 2
+#define BLINK_COLOR_EFFECTS_COUNT 2
+
 using namespace Game;
 using namespace Utility;
 using namespace Math;
@@ -72,12 +76,64 @@ TestGameManager::TestGameManager() :
 {
 	DEBUG_LOG("TestGame is being constructed");
 
-	CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
-	CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
-	CreateCommand(Engine::GameCommandTypes::RESUME, &m_resumeGameCommand);
-	CreateCommand(Engine::GameCommandTypes::SAVE, &m_saveGameCommand);
-	CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
-	CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::RESUME, &m_resumeGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SAVE, &m_saveGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
+	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
+
+	m_colorEffects.reserve(STATIC_COLOR_EFFECTS_COUNT);
+	for (int i = 0; i < STATIC_COLOR_EFFECTS_COUNT; ++i)
+	{
+		std::stringstream ss("");
+		ss << (i + 1);
+		m_colorEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticColorRed_" + ss.str(), 1.0f),
+			GET_CONFIG_VALUE("staticColorGreen_" + ss.str(), 1.0f), GET_CONFIG_VALUE("staticColorBlue_" + ss.str(), 1.0f)));
+		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::STATIC, &m_colorEffects.back());
+	}
+	m_smoothTransitionColorEffects.reserve(SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT);
+	for (int i = 0; i < SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT; ++i)
+	{
+		std::stringstream ssi("");
+		ssi << (i + 1);
+		size_t smoothColorsCount = GET_CONFIG_VALUE("smoothColorsCount_" + ssi.str(), 2);
+		std::vector<Math::Vector3D> colors;
+		std::vector<Math::Real> times;
+		colors.reserve(smoothColorsCount);
+		times.reserve(smoothColorsCount);
+		for (size_t j = 0; j < smoothColorsCount; ++j)
+		{
+			std::stringstream ssj("");
+			ssj << (j + 1);
+			colors.emplace_back(GET_CONFIG_VALUE("smoothColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
+				GET_CONFIG_VALUE("smoothColorGreen_" + ssi.str() + "_" + ssj.str(), 1.0f), GET_CONFIG_VALUE("smoothColorBlue_" + ssi.str() + "_" + ssj.str(), 1.0f));
+			times.push_back(GET_CONFIG_VALUE("smoothEffectTime_" + ssi.str() + "_" + ssj.str(), 1.0f));
+		}
+		m_smoothTransitionColorEffects.emplace_back(&colors[0], &times[0], smoothColorsCount);
+		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::SMOOTH, &m_smoothTransitionColorEffects.back());
+	}
+	m_blinkColorEffects.reserve(BLINK_COLOR_EFFECTS_COUNT);
+	for (int i = 0; i < BLINK_COLOR_EFFECTS_COUNT; ++i)
+	{
+		std::stringstream ssi("");
+		ssi << (i + 1);
+		size_t blinkColorsCount = GET_CONFIG_VALUE("blinkColorsCount_" + ssi.str(), 2);
+		std::vector<Math::Vector3D> colors;
+		std::vector<Math::Real> durations;
+		colors.reserve(blinkColorsCount);
+		durations.reserve(blinkColorsCount);
+		for (size_t j = 0; j < blinkColorsCount; ++j)
+		{
+			std::stringstream ssj("");
+			ssj << (j + 1);
+			colors.emplace_back(GET_CONFIG_VALUE("blinkColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
+				GET_CONFIG_VALUE("blinkColorGreen_" + ssi.str() + "_" + ssj.str(), 1.0f), GET_CONFIG_VALUE("blinkColorBlue_" + ssi.str() + "_" + ssj.str(), 1.0f));
+			durations.push_back(GET_CONFIG_VALUE("blinkEffectDuration_" + ssi.str() + "_" + ssj.str(), 1.0f));
+		}
+		m_blinkColorEffects.emplace_back(&colors[0], &durations[0], blinkColorsCount);
+		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::BLINK, &m_blinkColorEffects.back());
+	}
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
@@ -150,11 +206,6 @@ Engine::GameState* TestGameManager::GetPlayMainMenuGameState()
 		m_playMainMenuGameState = new PlayMenuGameState();
 	}
 	return m_playMainMenuGameState;
-}
-
-Engine::GameCommand& TestGameManager::GetCommand(Engine::GameCommandTypes::GameCommandType gameCommandType)
-{
-	return *GetCommandPointer(gameCommandType);
 }
 
 void TestGameManager::Load()

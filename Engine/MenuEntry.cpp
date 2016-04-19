@@ -5,7 +5,7 @@
 #include <sstream>
 
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-	Math::Real maxLineLength, Rendering::Text::TextEffectColor* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
+	Math::Real maxLineLength, Rendering::Effects::ColorEffect* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_gameCommand(gameCommand),
@@ -59,8 +59,8 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 	return GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 
-void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Text::TextEffectColor* newColorEffectForPreviouslySelectedEntry,
-	Rendering::Text::TextEffectColor* newColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
+void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Effects::ColorEffect* newColorEffectForPreviouslySelectedEntry,
+	Rendering::Effects::ColorEffect* newColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
 {
 	int previouslySelectedMenuEntryIndex = m_selectedMenuEntryIndex;
 	if (index < 0)

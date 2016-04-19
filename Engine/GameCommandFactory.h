@@ -44,18 +44,16 @@ namespace Engine
 		/// Creates game command based on the specified game command type.
 		/// </summary>
 		/// <param name="gameCommandType> Game comand type we want to instantiate </param>
-		ENGINE_API virtual GameCommand& GetCommand(GameCommandTypes::GameCommandType gameCommandType) = 0;
-	protected:
-		ENGINE_API GameCommand* GetCommandPointer(GameCommandTypes::GameCommandType gameCommandType)
+		ENGINE_API virtual GameCommand& GetCommand(GameCommandTypes::GameCommandType gameCommandType)
 		{
 			if (m_commands[gameCommandType] != NULL)
 			{
-				return m_commands[gameCommandType];
+				return *m_commands[gameCommandType];
 			}
 			else
 			{
 				ERROR_LOG("No game command registered for the specified game command type %d", gameCommandType);
-				return m_commands[GameCommandTypes::EMPTY];
+				return *m_commands[GameCommandTypes::EMPTY];
 			}
 		}
 		ENGINE_API void CreateCommand(GameCommandTypes::GameCommandType gameCommandType, GameCommand* gameCommand)
