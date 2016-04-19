@@ -53,18 +53,11 @@ Engine::GameManager::GameManager() :
 	m_waterNode(NULL),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
-	m_mainMenuFont(GET_CONFIG_VALUE_STR("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR("mainMenuFontMetaData", "cambria.fnt")),
-	m_mainMenuFontSize(GET_CONFIG_VALUE("mainMenuFontSize", 16.0f)),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_emptyGameCommand(),
-	m_mainMenuRootEntry(NULL),
-	m_playMainMenuRootEntry(NULL)
+	m_emptyGameCommand()
 {
 	INFO_LOG("Game manager construction started");
-	m_mainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
-	// TODO: The PLAY main menu should be created while loading the game, not before. Why create the PLAY main menu if the user starts the application and quits immediately without starting the game?
-	m_playMainMenuRootEntry = new MenuEntry(m_emptyGameCommand, "Play main menu", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f));
 	//rootGameNode = new GameNode();
 	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
@@ -87,8 +80,6 @@ Engine::GameManager::~GameManager(void)
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
 	SAFE_DELETE(m_skyboxNode);
-	SAFE_DELETE(m_mainMenuRootEntry); // may be already removed if the game has been loaded.
-	SAFE_DELETE(m_playMainMenuRootEntry);
 	DEBUG_LOG("Game manager destruction finished");
 }
 

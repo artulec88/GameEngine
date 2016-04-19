@@ -65,58 +65,19 @@ TestGameManager::TestGameManager() :
 	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
 	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
 	cameraNodes(NULL),
-	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true)),
-	m_notSelectedMenuEntryColorEffect(NULL),
-	m_selectedMenuEntryColorEffect(NULL)
+	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
 #ifdef CALCULATE_GAME_STATS
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {
 	DEBUG_LOG("TestGame is being constructed");
 
-	/**
-	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
-	*/
-	m_notSelectedMenuEntryColorEffect = new Rendering::Text::TextEffectColor(Math::Vector3D(GET_CONFIG_VALUE("notSelectedMenuEntryColorRed", 1.0f),
-		GET_CONFIG_VALUE("notSelectedMenuEntryColorGreen", 0.0f), GET_CONFIG_VALUE("notSelectedMenuEntryColorBlue", 0.0f)));
-	Math::Vector3D colors[] = { Math::Vector3D(GET_CONFIG_VALUE("selectedMenuEntryColorRed_1", 1.0f), GET_CONFIG_VALUE("selectedMenuEntryColorGreen_1", 1.0f),
-		GET_CONFIG_VALUE("selectedMenuEntryColorBlue_1", 1.0f)), Math::Vector3D(GET_CONFIG_VALUE("selectedMenuEntryColorRed_2", 1.0f), GET_CONFIG_VALUE("selectedMenuEntryColorGreen_2", 1.0f),
-			GET_CONFIG_VALUE("selectedMenuEntryColorBlue_2", 1.0f)) };
-	Math::Real times[] = { GET_CONFIG_VALUE("selectedMenuEntryColorEffectTime_1", 0.0f), GET_CONFIG_VALUE("selectedMenuEntryColorEffectTime_2", 1.0f) };
-	m_selectedMenuEntryColorEffect = new Rendering::Text::TextEffectColorGradient(colors, times, 2);
-	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Options" game command */, "Options", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.4f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true);
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */, "Sound", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.25f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f), true));
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Graphics" game command */, "Graphics", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */, "Controls", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 1.0f), true));
-	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_startGameCommand, "Start", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, m_selectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true));
-	m_mainMenuRootEntry->AddChildren(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_showIntroGameCommand, "Intro", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(0.0f, 1.0f, 0.0f), true, 0.5f, 0.2f, 0.6f, 0.1f));
-	m_mainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_quitGameCommand, "Quit", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
-
-	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Options" game command */, "Options", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.7f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true);
-	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Sound" game command */, "Sound", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.25f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f), true));
-	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Graphics" game command */, "Graphics", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
-	playMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(m_emptyGameCommand /* TODO: Create GoTo "Controls" game command */, "Controls", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 1.0f), true));
-	m_playMainMenuRootEntry->AddChildren(playMenuOptionsMenuEntry);
-	m_playMainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_resumeGameCommand, "Resume", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.1f), 0.5f, m_selectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true));
-	m_playMainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_saveGameCommand, "Save", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.3f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.01f, 0.01f), Math::Vector3D(0.0f, 0.0f, 1.0f), true));
-	m_playMainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_loadGameCommand, "Load", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
-	m_playMainMenuRootEntry->AddChildren(new Engine::MenuEntry(m_quitGameCommand, "Quit", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.9f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f), true));
+	CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
+	CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
+	CreateCommand(Engine::GameCommandTypes::RESUME, &m_resumeGameCommand);
+	CreateCommand(Engine::GameCommandTypes::SAVE, &m_saveGameCommand);
+	CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
+	CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
@@ -134,8 +95,6 @@ TestGameManager::~TestGameManager(void)
 	SAFE_DELETE(m_loadGameState);
 	SAFE_DELETE(m_playGameState);
 	SAFE_DELETE(m_playMainMenuGameState);
-	SAFE_DELETE(m_notSelectedMenuEntryColorEffect);
-	SAFE_DELETE(m_selectedMenuEntryColorEffect);
 }
 
 Math::Real TestGameManager::GetLoadingProgress() const
@@ -170,7 +129,7 @@ Engine::GameState* TestGameManager::GetMainMenuGameState()
 {
 	if (m_menuGameState == NULL)
 	{
-		m_menuGameState = new MenuGameState(m_mainMenuRootEntry);
+		m_menuGameState = new MenuGameState();
 	}
 	return m_menuGameState;
 }
@@ -188,9 +147,14 @@ Engine::GameState* TestGameManager::GetPlayMainMenuGameState()
 {
 	if (m_playMainMenuGameState == NULL)
 	{
-		m_playMainMenuGameState = new PlayMenuGameState(m_playMainMenuRootEntry);
+		m_playMainMenuGameState = new PlayMenuGameState();
 	}
 	return m_playMainMenuGameState;
+}
+
+Engine::GameCommand& TestGameManager::GetCommand(Engine::GameCommandTypes::GameCommandType gameCommandType)
+{
+	return *GetCommandPointer(gameCommandType);
 }
 
 void TestGameManager::Load()
@@ -378,8 +342,6 @@ void TestGameManager::Load()
 	AddCameras(playerNode); // Adding cameras
 
 	AddSkybox(); // Adding skybox
-
-	SAFE_DELETE(m_mainMenuRootEntry); // once we load the game the main menu root entry is not needed anymore.
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");

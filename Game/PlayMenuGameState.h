@@ -30,7 +30,7 @@ class PlayMenuGameState : public Engine::GameState, public virtual Engine::Input
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayMenuGameState(Engine::MenuEntry* playMainMenuRootEntry);
+	PlayMenuGameState();
 	virtual ~PlayMenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -69,6 +69,12 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
+	Rendering::Text::Font m_playMainMenuFont;
+	Math::Real m_playMainMenuFontSize;
+	Engine::MenuEntry m_playMainMenuRootEntry;
+	Rendering::Text::TextEffectColor* m_notSelectedMenuEntryColorEffect;
+	Rendering::Text::TextEffectColor* m_selectedMenuEntryColorEffect;
+
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS

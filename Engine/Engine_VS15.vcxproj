@@ -159,6 +159,7 @@
     <ClInclude Include="DirectionalLightComponent.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameCommand.h" />
+    <ClInclude Include="GameCommandFactory.h" />
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameNode.h" />
@@ -205,6 +206,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GameCommand.cpp" />
+    <ClCompile Include="GameCommandFactory.cpp" />
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameNode.cpp" />

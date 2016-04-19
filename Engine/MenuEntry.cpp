@@ -4,13 +4,6 @@
 #include "Utility\IConfig.h"
 #include <sstream>
 
-/* static */ Rendering::Text::TextEffectColor Engine::MenuEntry::NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO));
-/* static */ Rendering::Text::TextEffectColorGradient Engine::MenuEntry::SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
-
-/* static */ void Engine::MenuEntry::InitializeMenuColors()
-{
-}
-
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
 	Math::Real maxLineLength, Rendering::Text::TextEffectColor* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
@@ -41,14 +34,6 @@ Engine::MenuEntry::~MenuEntry(void)
 
 void Engine::MenuEntry::AddChildren(MenuEntry* child)
 {
-	if (m_childrenMenuEntries.empty())
-	{
-		child->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-	}
-	else
-	{
-		child->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-	}
 	child->SetParent(this);
 	m_childrenMenuEntries.push_back(child);
 }
@@ -74,35 +59,26 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 	return GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 
-void Engine::MenuEntry::SelectPrevChildMenuEntry()
+void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Text::TextEffectColor* newColorEffectForPreviouslySelectedEntry,
+	Rendering::Text::TextEffectColor* newColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
 {
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-	--m_selectedMenuEntryIndex;
-	if (m_selectedMenuEntryIndex < 0)
+	int previouslySelectedMenuEntryIndex = m_selectedMenuEntryIndex;
+	if (index < 0)
 	{
-		m_selectedMenuEntryIndex = GetChildrenCount() - 1;
+		if (wrapping) { m_selectedMenuEntryIndex = GetChildrenCount() - 1; } else { return; }
 	}
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-}
-
-void Engine::MenuEntry::SelectNextChildMenuEntry()
-{
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-	++m_selectedMenuEntryIndex;
-	if (m_selectedMenuEntryIndex >= GetChildrenCount())
+	else if (index >= GetChildrenCount())
 	{
-		m_selectedMenuEntryIndex = 0;
+		if (wrapping) { m_selectedMenuEntryIndex = 0; } else { return; }
 	}
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-}
-
-void Engine::MenuEntry::SelectChildMenuEntry(int index)
-{
-	CHECK_CONDITION(index >= 0 && index < GetChildrenCount(), Utility::Warning,
-		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", index, GetChildrenCount());
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
-	m_selectedMenuEntryIndex = index % GetChildrenCount();
-	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(&SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT);
+	else
+	{
+		m_selectedMenuEntryIndex = index;
+	}
+	CHECK_CONDITION(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), Utility::Error,
+		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", m_selectedMenuEntryIndex, GetChildrenCount());
+	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetColorEffect(newColorEffectForPreviouslySelectedEntry);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(newColorEffectForCurrentSelectedEntry);
 }
 
 Engine::MenuEntry* Engine::MenuEntry::GetParent() const

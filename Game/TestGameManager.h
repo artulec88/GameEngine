@@ -46,6 +46,8 @@ public:
 	virtual Engine::GameState* GetPlayGameState();
 	virtual Engine::GameState* GetPlayMainMenuGameState();
 
+	virtual Engine::GameCommand& GetCommand(Engine::GameCommandTypes::GameCommandType gameCommandType);
+
 	virtual void WindowResizeEvent(int width, int height);
 	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void ScrollEvent(double xOffset, double yOffset);
@@ -103,8 +105,6 @@ protected:
 	bool m_heightMapCalculationEnabled;
 	//Engine::GameNode* castleNode;
 
-	Rendering::Text::TextEffectColor* m_notSelectedMenuEntryColorEffect;
-	Rendering::Text::TextEffectColor* m_selectedMenuEntryColorEffect;
 #ifdef CALCULATE_GAME_STATS
 	Math::Statistics::ClassStats& m_classStats;
 #endif

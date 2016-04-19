@@ -9,6 +9,7 @@
 #include "GameNode.h"
 #include "MenuEntry.h"
 #include "GameCommand.h"
+#include "GameCommandFactory.h"
 
 #include "Rendering\Mesh.h"
 #include "Rendering\Particle.h"
@@ -29,7 +30,7 @@
 namespace Engine
 {
 
-class GameManager : public IUpdateable
+class GameManager : public IUpdateable, public GameCommandFactory
 {
 	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>, Rendering::Text::FontComparator> FontMap;
 /* ==================== Static variables begin ==================== */
@@ -128,17 +129,11 @@ protected:
 	//FontMap m_texts;
 	GameStateManager* m_gameStateManager;
 	bool m_isGameLoaded;
-	
-	Rendering::Text::Font m_mainMenuFont;
-	Math::Real m_mainMenuFontSize;
 
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
 
 	EmptyGameCommand m_emptyGameCommand;
-
-	MenuEntry* m_mainMenuRootEntry;
-	MenuEntry* m_playMainMenuRootEntry;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

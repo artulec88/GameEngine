@@ -431,7 +431,7 @@ void CoreEngine::Run()
 #ifdef DRAW_FPS
 	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
 	Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	Math::Real fpsTimes[] = { 0.0f, 1.0f, 22.5f };
+	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
 	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),

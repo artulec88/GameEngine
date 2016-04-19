@@ -33,11 +33,6 @@ namespace MenuActions
 class MenuEntry
 {
 /* ==================== Static variables and functions begin ==================== */
-private:
-	static Rendering::Text::TextEffectColor NOT_SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
-	static Rendering::Text::TextEffectColorGradient SELECTED_MENU_ENTRY_TEXT_COLOR_EFFECT;
-public:
-	static void InitializeMenuColors();
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
@@ -51,14 +46,17 @@ public:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
+	ENGINE_API Rendering::Text::GuiText& GetGuiText() { return m_guiText; }
 	ENGINE_API const Rendering::Text::GuiText& GetGuiText() const { return m_guiText; }
+	ENGINE_API Rendering::Text::GuiText& GetChildGuiText(int index) { return m_childrenMenuEntries[index]->GetGuiText(); }
 	ENGINE_API const Rendering::Text::GuiText& GetChildGuiText(int index) const { return m_childrenMenuEntries[index]->GetGuiText(); }
 	void SetParent(MenuEntry* parent) { m_parentMenuEntry = parent; }
 	ENGINE_API int GetChildrenCount() const;
 	ENGINE_API bool DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
-	ENGINE_API void SelectChildMenuEntry(int index);
+	ENGINE_API void SelectChildMenuEntry(int index, Rendering::Text::TextEffectColor* newColorEffectForPreviouslySelectedEntry,
+		Rendering::Text::TextEffectColor* newColorEffectForCurrentSelectedEntry, bool wrapping = true);
 
 	ENGINE_API void ExecuteCommand() const { m_gameCommand.Execute(); }
 	ENGINE_API void AddChildren(MenuEntry* child);
@@ -66,8 +64,6 @@ public:
 	ENGINE_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }
 	ENGINE_API bool DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const;
 	ENGINE_API bool DoesSelectedChildHaveChildren() const;
-	ENGINE_API void SelectPrevChildMenuEntry();
-	ENGINE_API void SelectNextChildMenuEntry();
 	ENGINE_API MenuEntry* GetParent() const;
 	ENGINE_API MenuEntry* GetSelectedChild() const;
 
