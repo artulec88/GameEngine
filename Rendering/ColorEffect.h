@@ -1,5 +1,5 @@
-#ifndef __RENDERING_TEXT_EFFECT_H__
-#define __RENDERING_TEXT_EFFECT_H__
+#ifndef __RENDERING_EFFECTS_EFFECT_H__
+#define __RENDERING_EFFECTS_EFFECT_H__
 
 #include "Rendering.h"
 
@@ -151,9 +151,9 @@ namespace Rendering
 		private:
 			std::map<ColorEffectType, std::vector<ColorEffect*>> m_colorEffects;
 		/* ==================== Non-static member variables end ==================== */
-		}; /* end class TextEffectFactory */
+		}; /* end class ColorEffectFactory */
 
 	} /* end namespace Effects */
 } /* end namespace Rendering */
 
-#endif /* __RENDERING_TEXT_EFFECT_H__ */
+#endif /* __RENDERING_EFFECTS_EFFECT_H__ */

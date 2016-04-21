@@ -5,11 +5,11 @@
 #include <sstream>
 
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-	Math::Real maxLineLength, Rendering::Effects::ColorEffect* textEffectColor, const Math::Vector2D& offset, const Math::Vector3D& outlineColor,
+	Math::Real maxLineLength, Rendering::Effects::ColorEffect* textEffectColor, Rendering::Effects::ColorEffect* outlineColorEffect, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_gameCommand(gameCommand),
-	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textEffectColor, offset, outlineColor, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textEffectColor, outlineColorEffect, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	//m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
 	//m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
@@ -60,7 +60,8 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 }
 
 void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Effects::ColorEffect* newColorEffectForPreviouslySelectedEntry,
-	Rendering::Effects::ColorEffect* newColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
+	Rendering::Effects::ColorEffect* newColorEffectForCurrentSelectedEntry, Rendering::Effects::ColorEffect* newOutlineColorEffectForPreviouslySelectedEntry,
+	Rendering::Effects::ColorEffect* newOutlineColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
 {
 	int previouslySelectedMenuEntryIndex = m_selectedMenuEntryIndex;
 	if (index < 0)
@@ -78,7 +79,9 @@ void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Effects::Colo
 	CHECK_CONDITION(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), Utility::Error,
 		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", m_selectedMenuEntryIndex, GetChildrenCount());
 	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetColorEffect(newColorEffectForPreviouslySelectedEntry);
+	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForPreviouslySelectedEntry);
 	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(newColorEffectForCurrentSelectedEntry);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForCurrentSelectedEntry);
 }
 
 Engine::MenuEntry* Engine::MenuEntry::GetParent() const

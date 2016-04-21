@@ -23,9 +23,11 @@ MenuGameState::MenuGameState() :
 	m_mainMenuFont(GET_CONFIG_VALUE_STR("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR("mainMenuFontMetaData", "cambria.fnt")),
 	m_mainMenuFontSize(GET_CONFIG_VALUE("mainMenuFontSize", 16.0f)),
 	m_mainMenuRootEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY), "Main menu", &m_mainMenuFont, m_mainMenuFontSize,
-		Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f)),
+		Math::Vector2D(0.0f, 0.0f), 1.0f, NULL, NULL, Math::Vector2D(0.0f, 0.0f)),
 	m_notSelectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 1)),
 	m_selectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::BLINK, 1)),
+	m_notSelectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 2)),
+	m_selectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 3)),
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_mousePicker(),
@@ -38,20 +40,20 @@ MenuGameState::MenuGameState() :
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
 	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Options" game command */,
-		"Options", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.4f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true);
+		"Options", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.4f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true);
 	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Sound" game command */,
-		"Sound", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.25f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f), true));
+		"Sound", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.25f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true));
 	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Graphics" game command */,
-		"Graphics", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
+		"Graphics", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true));
 	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Controls" game command */,
-		"Controls", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 1.0f), true));
+		"Controls", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true));
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::START), "Start", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, m_selectedMenuEntryColorEffect, Math::Vector2D(0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), true));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, m_selectedMenuEntryColorEffect, m_selectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true));
 	m_mainMenuRootEntry.AddChildren(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::SHOW_INTRO), "Intro", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(0.0f, 1.0f, 0.0f), true, 0.5f, 0.2f, 0.6f, 0.1f));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.006f, 0.006f), true, 0.5f, 0.2f, 0.6f, 0.1f));
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::QUIT), "Quit", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, m_notSelectedMenuEntryColorEffect, Math::Vector2D(0.006f, 0.006f), Math::Vector3D(1.0f, 1.0f, 1.0f), true));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.006f, 0.006f), true));
 }
 
 MenuGameState::~MenuGameState(void)
@@ -104,11 +106,13 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	case GLFW_KEY_UP:
 		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
-		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect);
+		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect,
+			m_notSelectedMenuEntryOutlineColorEffect, m_selectedMenuEntryOutlineColorEffect);
 		break;
 	case GLFW_KEY_DOWN:
 		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
-		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect);
+		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect,
+			m_notSelectedMenuEntryOutlineColorEffect, m_selectedMenuEntryOutlineColorEffect);
 		break;
 	case GLFW_KEY_ENTER:
 	{
@@ -183,7 +187,8 @@ void MenuGameState::MousePosEvent(double xPos, double yPos)
 			{
 				INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
 			}
-			m_currentMenuEntry->SelectChildMenuEntry(i, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect);
+			m_currentMenuEntry->SelectChildMenuEntry(i, m_notSelectedMenuEntryColorEffect, m_selectedMenuEntryColorEffect,
+				m_notSelectedMenuEntryOutlineColorEffect, m_selectedMenuEntryOutlineColorEffect);
 			break;
 		}
 	}
