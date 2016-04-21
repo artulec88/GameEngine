@@ -2,7 +2,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 #include "Utility\Array.h"
-#include "Utility\Array_impl.h"
+//#include "Utility\Array_impl.h"
 #include "Utility\StringUtility.h"
 
 #include <ctime>

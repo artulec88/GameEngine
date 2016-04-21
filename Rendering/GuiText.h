@@ -4,7 +4,7 @@
 #include "Rendering.h"
 #include "Font.h"
 #include "Mesh.h"
-#include "ColorEffect.h"
+#include "Effect.h"
 
 #include "Math\Vector.h"
 #include "Math\AABR.h"
@@ -147,7 +147,7 @@ namespace Rendering
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
 			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-				Effects::ColorEffect* textColorEffect, Effects::ColorEffect* outlineColorEffect, const Math::Vector2D& offset, bool isCentered = false,
+				Effects::Effect<Math::Vector3D>* textColorEffect, Effects::Effect<Math::Vector3D>* outlineColorEffect, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API ~GuiText(void);
 			//private:
@@ -175,17 +175,17 @@ namespace Rendering
 
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
-			RENDERING_API const Math::Vector3D& GetColor() const { return m_colorEffect->GetColor(); }
+			RENDERING_API const Math::Vector3D& GetColor() const { return m_colorEffect->Get(); }
 
-			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColorEffect->GetColor(); }
-
-			/// <summary> Sets the color of this GUI text. </summary>
-			/// <param name="textColor"> The color we want to set for the GUI text. </param>
-			RENDERING_API void SetColorEffect(Effects::ColorEffect* textColor) { m_colorEffect = textColor; }
+			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColorEffect->Get(); }
 
 			/// <summary> Sets the color of this GUI text. </summary>
 			/// <param name="textColor"> The color we want to set for the GUI text. </param>
-			RENDERING_API void SetOutlineColorEffect(Effects::ColorEffect* outlineColorEffect) { m_outlineColorEffect = outlineColorEffect; }
+			RENDERING_API void SetColorEffect(Effects::Effect<Math::Vector3D>* textColor) { m_colorEffect = textColor; }
+
+			/// <summary> Sets the color of this GUI text. </summary>
+			/// <param name="textColor"> The color we want to set for the GUI text. </param>
+			RENDERING_API void SetOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_outlineColorEffect = outlineColorEffect; }
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -221,8 +221,8 @@ namespace Rendering
 			std::string m_text;
 			const Font* m_font;
 			Math::Real m_fontSize;
-			Effects::ColorEffect* m_colorEffect;
-			Effects::ColorEffect* m_outlineColorEffect;
+			Effects::Effect<Math::Vector3D>* m_colorEffect;
+			Effects::Effect<Math::Vector3D>* m_outlineColorEffect;
 			Math::Vector2D m_screenPosition;
 			Math::Real m_maxLineLength;
 			int m_linesCount;

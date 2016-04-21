@@ -20,6 +20,7 @@
 #endif
 
 #include <vector>
+#include <map>
 
 namespace Game
 {
@@ -84,9 +85,15 @@ protected:
 	SaveGameCommand m_saveGameCommand;
 	LoadGameCommand m_loadGameCommand;
 
-	std::vector<Rendering::Effects::ColorEffect> m_colorEffects;
-	std::vector<Rendering::Effects::SmoothTransitionColorEffect> m_smoothTransitionColorEffects;
-	std::vector<Rendering::Effects::BlinkColorEffect> m_blinkColorEffects;
+	std::vector<Rendering::Effects::Effect<Math::Real>> m_singeValueStaticEffects;
+	std::vector<Rendering::Effects::Effect<Math::Vector2D>> m_vec2DStaticEffects;
+	std::vector<Rendering::Effects::Effect<Math::Vector3D>> m_vec3DStaticEffects;
+	std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Real>> m_singeValueSmoothEffects;
+	std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>> m_vec2DSmoothEffects;
+	std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>> m_vec3DSmoothEffects;
+	std::vector<Rendering::Effects::BlinkEffect<Math::Real>> m_singeValueBlinkEffects;
+	std::vector<Rendering::Effects::BlinkEffect<Math::Vector2D>> m_vec2DBlinkEffects;
+	std::vector<Rendering::Effects::BlinkEffect<Math::Vector3D>> m_vec3DBlinkEffects;
 
 	Rendering::TerrainMesh* m_terrainMesh;
 	Math::Real m_timeToUpdateCameraHeight;

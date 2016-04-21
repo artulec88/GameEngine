@@ -11,7 +11,7 @@
 #include "GameCommand.h"
 #include "GameCommandFactory.h"
 
-#include "Rendering\ColorEffect.h"
+#include "Rendering\EffectFactory.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Particle.h"
 #include "Rendering\Shader.h"
@@ -112,9 +112,17 @@ public:
 	{
 		return m_gameCommandFactory.GetCommand(gameCommandType);
 	}
-	ENGINE_API Rendering::Effects::ColorEffect* GetColorEffect(Rendering::Effects::ColorEffectType colorEffectType, unsigned int variant)
+	ENGINE_API Rendering::Effects::Effect<Math::Real>* GetSingleValueEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
 	{
-		return m_colorEffectFactory.GetColorEffect(colorEffectType, variant);
+		return m_effectFactory.GetSingleValueEffect(effectType, variant);
+	}
+	ENGINE_API Rendering::Effects::Effect<Math::Vector2D>* GetVec2DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+	{
+		return m_effectFactory.GetVec2DEffect(effectType, variant);
+	}
+	ENGINE_API Rendering::Effects::Effect<Math::Vector3D>* GetVec3DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+	{
+		return m_effectFactory.GetVec3DEffect(effectType, variant);
 	}
 public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
@@ -143,7 +151,7 @@ protected:
 	const Math::Angle m_skyboxAngleStep;
 
 	GameCommandFactory m_gameCommandFactory;
-	Rendering::Effects::ColorEffectFactory m_colorEffectFactory;
+	Rendering::Effects::EffectFactory m_effectFactory;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

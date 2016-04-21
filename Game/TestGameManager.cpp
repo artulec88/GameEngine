@@ -28,9 +28,9 @@
 
 #include <sstream>
 
-#define STATIC_COLOR_EFFECTS_COUNT 4
-#define SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT 2
-#define BLINK_COLOR_EFFECTS_COUNT 2
+#define STATIC_VEC3D_EFFECTS_COUNT 4
+#define SMOOTH_TRANSITION_VEC3D_EFFECTS_COUNT 2
+#define BLINK_VEC3D_EFFECTS_COUNT 2
 
 using namespace Game;
 using namespace Utility;
@@ -83,56 +83,56 @@ TestGameManager::TestGameManager() :
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
 
-	m_colorEffects.reserve(STATIC_COLOR_EFFECTS_COUNT);
-	for (int i = 0; i < STATIC_COLOR_EFFECTS_COUNT; ++i)
+	m_vec3DStaticEffects.reserve(STATIC_VEC3D_EFFECTS_COUNT);
+	for (int i = 0; i < STATIC_VEC3D_EFFECTS_COUNT; ++i)
 	{
 		std::stringstream ss("");
 		ss << (i + 1);
-		m_colorEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticColorRed_" + ss.str(), 1.0f),
+		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticColorRed_" + ss.str(), 1.0f),
 			GET_CONFIG_VALUE("staticColorGreen_" + ss.str(), 1.0f), GET_CONFIG_VALUE("staticColorBlue_" + ss.str(), 1.0f)));
-		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::STATIC, &m_colorEffects.back());
+		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec3DStaticEffects.back());
 	}
-	m_smoothTransitionColorEffects.reserve(SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT);
-	for (int i = 0; i < SMOOTH_TRANSITION_COLOR_EFFECTS_COUNT; ++i)
+	m_vec3DSmoothEffects.reserve(SMOOTH_TRANSITION_VEC3D_EFFECTS_COUNT);
+	for (int i = 0; i < SMOOTH_TRANSITION_VEC3D_EFFECTS_COUNT; ++i)
 	{
 		std::stringstream ssi("");
 		ssi << (i + 1);
-		size_t smoothColorsCount = GET_CONFIG_VALUE("smoothColorsCount_" + ssi.str(), 2);
-		std::vector<Math::Vector3D> colors;
+		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothColorsCount_" + ssi.str(), 2);
+		std::vector<Math::Vector3D> values;
 		std::vector<Math::Real> times;
-		colors.reserve(smoothColorsCount);
-		times.reserve(smoothColorsCount);
-		for (size_t j = 0; j < smoothColorsCount; ++j)
+		values.reserve(smoothValuesCount);
+		times.reserve(smoothValuesCount);
+		for (size_t j = 0; j < smoothValuesCount; ++j)
 		{
 			std::stringstream ssj("");
 			ssj << (j + 1);
-			colors.emplace_back(GET_CONFIG_VALUE("smoothColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
+			values.emplace_back(GET_CONFIG_VALUE("smoothColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
 				GET_CONFIG_VALUE("smoothColorGreen_" + ssi.str() + "_" + ssj.str(), 1.0f), GET_CONFIG_VALUE("smoothColorBlue_" + ssi.str() + "_" + ssj.str(), 1.0f));
 			times.push_back(GET_CONFIG_VALUE("smoothEffectTime_" + ssi.str() + "_" + ssj.str(), 1.0f));
 		}
-		m_smoothTransitionColorEffects.emplace_back(&colors[0], &times[0], smoothColorsCount);
-		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::SMOOTH, &m_smoothTransitionColorEffects.back());
+		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount);
+		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec3DSmoothEffects.back());
 	}
-	m_blinkColorEffects.reserve(BLINK_COLOR_EFFECTS_COUNT);
-	for (int i = 0; i < BLINK_COLOR_EFFECTS_COUNT; ++i)
+	m_vec3DBlinkEffects.reserve(BLINK_VEC3D_EFFECTS_COUNT);
+	for (int i = 0; i < BLINK_VEC3D_EFFECTS_COUNT; ++i)
 	{
 		std::stringstream ssi("");
 		ssi << (i + 1);
-		size_t blinkColorsCount = GET_CONFIG_VALUE("blinkColorsCount_" + ssi.str(), 2);
-		std::vector<Math::Vector3D> colors;
+		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkValuesCount_" + ssi.str(), 2);
+		std::vector<Math::Vector3D> values;
 		std::vector<Math::Real> durations;
-		colors.reserve(blinkColorsCount);
-		durations.reserve(blinkColorsCount);
-		for (size_t j = 0; j < blinkColorsCount; ++j)
+		values.reserve(blinkValuesCount);
+		durations.reserve(blinkValuesCount);
+		for (size_t j = 0; j < blinkValuesCount; ++j)
 		{
 			std::stringstream ssj("");
 			ssj << (j + 1);
-			colors.emplace_back(GET_CONFIG_VALUE("blinkColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
+			values.emplace_back(GET_CONFIG_VALUE("blinkColorRed_" + ssi.str() + "_" + ssj.str(), 1.0f),
 				GET_CONFIG_VALUE("blinkColorGreen_" + ssi.str() + "_" + ssj.str(), 1.0f), GET_CONFIG_VALUE("blinkColorBlue_" + ssi.str() + "_" + ssj.str(), 1.0f));
 			durations.push_back(GET_CONFIG_VALUE("blinkEffectDuration_" + ssi.str() + "_" + ssj.str(), 1.0f));
 		}
-		m_blinkColorEffects.emplace_back(&colors[0], &durations[0], blinkColorsCount);
-		m_colorEffectFactory.CreateColorEffect(Rendering::Effects::BLINK, &m_blinkColorEffects.back());
+		m_vec3DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
+		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec3DBlinkEffects.back());
 	}
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.

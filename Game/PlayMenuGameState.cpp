@@ -35,10 +35,10 @@ PlayMenuGameState::PlayMenuGameState() :
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	m_notSelectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 2);
-	m_selectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::BLINK, 2);
-	m_notSelectedMenuEntryOutlineColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::STATIC, 1);
-	m_selectedMenuEntryOutlineColorEffect = Engine::GameManager::GetGameManager()->GetColorEffect(Rendering::Effects::SMOOTH, 2);
+	m_notSelectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 2);
+	m_selectedMenuEntryColorEffect = Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::BLINK, 2);
+	m_notSelectedMenuEntryOutlineColorEffect = Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 1);
+	m_selectedMenuEntryOutlineColorEffect = Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::SMOOTH, 2);
 
 	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY) /* TODO: Create GoTo "Options" game command */,
 		"Options", &m_playMainMenuFont, m_playMainMenuFontSize, Math::Vector2D(0.25f, 0.7f), 0.5f, m_notSelectedMenuEntryColorEffect, m_notSelectedMenuEntryOutlineColorEffect, Math::Vector2D(0.0f, 0.0f), true);

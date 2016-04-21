@@ -2,7 +2,7 @@
 #define __MENU_GAME_STATE_H__
 
 #include "Rendering\Renderer.h"
-#include "Rendering\ColorEffect.h"
+#include "Rendering\EffectFactory.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
@@ -80,10 +80,10 @@ private:
 	// TODO: Create a Factory of TextEffects which creates text effects (but on the heap) and stores them under some special enum key.
 	// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
 	// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
-	Rendering::Effects::ColorEffect* m_notSelectedMenuEntryColorEffect;
-	Rendering::Effects::ColorEffect* m_selectedMenuEntryColorEffect;
-	Rendering::Effects::ColorEffect* m_notSelectedMenuEntryOutlineColorEffect;
-	Rendering::Effects::ColorEffect* m_selectedMenuEntryOutlineColorEffect;
+	Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
+	Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
+	Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
+	Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
 
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;
