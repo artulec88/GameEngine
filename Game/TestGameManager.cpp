@@ -143,18 +143,19 @@ void TestGameManager::AddSmoothEffects()
 		std::stringstream ssVariant("");
 		ssVariant << (variant + 1);
 		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothValuesCount_" + ssVariant.str(), 2);
+		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
 		std::vector<Math::Real> values;
-		std::vector<Math::Real> durations;
+		std::vector<Math::Real> times;
 		values.reserve(smoothValuesCount);
-		durations.reserve(smoothValuesCount);
+		times.reserve(smoothValuesCount);
 		for (size_t j = 0; j < smoothValuesCount; ++j)
 		{
 			std::stringstream ss("");
 			ss << (j + 1);
 			values.emplace_back(GET_CONFIG_VALUE("smoothValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("smoothValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+			times.push_back(GET_CONFIG_VALUE("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 		}
-		m_singleValueSmoothEffects.emplace_back(&values[0], &durations[0], smoothValuesCount);
+		m_singleValueSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
 		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_singleValueSmoothEffects.back());
 	}
 	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE("smoothVec2DEffectsCount", 4);
@@ -164,19 +165,20 @@ void TestGameManager::AddSmoothEffects()
 		std::stringstream ssVariant("");
 		ssVariant << (variant + 1);
 		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec2DCount_" + ssVariant.str(), 2);
+		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
 		std::vector<Math::Vector2D> values;
-		std::vector<Math::Real> durations;
+		std::vector<Math::Real> times;
 		values.reserve(smoothValuesCount);
-		durations.reserve(smoothValuesCount);
+		times.reserve(smoothValuesCount);
 		for (size_t j = 0; j < smoothValuesCount; ++j)
 		{
 			std::stringstream ss("");
 			ss << (j + 1);
 			values.emplace_back(GET_CONFIG_VALUE("smoothVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("smoothVec2DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+			times.push_back(GET_CONFIG_VALUE("smoothVec2DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 		}
 
-		m_vec2DSmoothEffects.emplace_back(&values[0], &durations[0], smoothValuesCount);
+		m_vec2DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
 		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec2DSmoothEffects.back());
 	}
 	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE("smoothVec3DEffectsCount", 4);
@@ -185,21 +187,22 @@ void TestGameManager::AddSmoothEffects()
 	{
 		std::stringstream ssVariant("");
 		ssVariant << (variant + 1);
+		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
 		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec3DCount_" + ssVariant.str(), 2);
 		std::vector<Math::Vector3D> values;
-		std::vector<Math::Real> durations;
+		std::vector<Math::Real> times;
 		values.reserve(smoothValuesCount);
-		durations.reserve(smoothValuesCount);
+		times.reserve(smoothValuesCount);
 		for (size_t j = 0; j < smoothValuesCount; ++j)
 		{
 			std::stringstream ss("");
 			ss << (j + 1);
 			values.emplace_back(GET_CONFIG_VALUE("smoothVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
 				GET_CONFIG_VALUE("smoothVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("smoothVec3DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+			times.push_back(GET_CONFIG_VALUE("smoothVec3DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 		}
 
-		m_vec3DSmoothEffects.emplace_back(&values[0], &durations[0], smoothValuesCount);
+		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
 		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec3DSmoothEffects.back());
 	}
 }

@@ -5,11 +5,11 @@
 #include <sstream>
 
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-	Math::Real maxLineLength, Rendering::Effects::Effect<Math::Vector3D>* textEffectColor, Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect, const Math::Vector2D& offset,
-	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
-	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+	Math::Real maxLineLength, Rendering::Effects::Effect<Math::Vector3D>* textEffectColor, Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect,
+	Rendering::Effects::Effect<Math::Vector2D>* offsetEffect, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
+	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_gameCommand(gameCommand),
-	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textEffectColor, outlineColorEffect, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textEffectColor, outlineColorEffect, offsetEffect, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	//m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
 	//m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
@@ -61,7 +61,8 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 
 void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Effects::Effect<Math::Vector3D>* newColorEffectForPreviouslySelectedEntry,
 	Rendering::Effects::Effect<Math::Vector3D>* newColorEffectForCurrentSelectedEntry, Rendering::Effects::Effect<Math::Vector3D>* newOutlineColorEffectForPreviouslySelectedEntry,
-	Rendering::Effects::Effect<Math::Vector3D>* newOutlineColorEffectForCurrentSelectedEntry, bool wrapping /* = true */)
+	Rendering::Effects::Effect<Math::Vector3D>* newOutlineColorEffectForCurrentSelectedEntry, Rendering::Effects::Effect<Math::Vector2D>* newOffsetEffectForPreviouslySelectedEntry,
+	Rendering::Effects::Effect<Math::Vector2D>* newOffsetEffectForCurrentSelectedEntry, bool wrapping /* = true */)
 {
 	int previouslySelectedMenuEntryIndex = m_selectedMenuEntryIndex;
 	if (index < 0)
@@ -80,8 +81,10 @@ void Engine::MenuEntry::SelectChildMenuEntry(int index, Rendering::Effects::Effe
 		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", m_selectedMenuEntryIndex, GetChildrenCount());
 	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetColorEffect(newColorEffectForPreviouslySelectedEntry);
 	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForPreviouslySelectedEntry);
+	m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOffsetEffect(newOffsetEffectForPreviouslySelectedEntry);
 	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetColorEffect(newColorEffectForCurrentSelectedEntry);
 	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForCurrentSelectedEntry);
+	m_childrenMenuEntries[m_selectedMenuEntryIndex]->SetOffsetEffect(newOffsetEffectForCurrentSelectedEntry);
 }
 
 Engine::MenuEntry* Engine::MenuEntry::GetParent() const

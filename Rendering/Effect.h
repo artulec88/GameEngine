@@ -61,7 +61,7 @@ namespace Rendering
 			/// <param name="values"> The values that effect will use. </param>
 			/// <param name="times"> The times that specify when each effect value is to be applied. </param>
 			/// <param name="valuesCount"> The number of values (and times too). </param>
-			SmoothTransitionEffect(const T* values, const Math::Real* times, unsigned int valuesCount);
+			SmoothTransitionEffect(const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled);
 			virtual ~SmoothTransitionEffect();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -77,6 +77,7 @@ namespace Rendering
 		private:
 			Math::Interpolation::LinearInterpolator<T> m_valuesInterpolator;
 			Math::Real m_timer;
+			bool m_isGoingBackAndForthEnabled;
 			bool m_isTimerIncreasing;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class SmoothTransitionEffect */

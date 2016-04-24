@@ -23,10 +23,11 @@ void Rendering::Effects::Effect<T>::Update(Math::Real deltaTime)
 
 /* ==================== SmoothTransitionEffect<T> class begin ==================== */
 template <class T>
-Rendering::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values, const Math::Real* times, unsigned int valuesCount) :
+Rendering::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
 	Effect(values[0]),
 	m_valuesInterpolator(values, times, valuesCount),
 	m_timer(times[0]),
+	m_isGoingBackAndForthEnabled(isGoingBackAndForthEnabled),
 	m_isTimerIncreasing(true)
 {
 }
@@ -44,8 +45,15 @@ void Rendering::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
 		m_timer += deltaTime;
 		if (m_timer > m_valuesInterpolator.GetEndTime())
 		{
-			m_timer = m_valuesInterpolator.GetEndTime() - (m_timer - m_valuesInterpolator.GetEndTime());
-			m_isTimerIncreasing = false;
+			if (m_isGoingBackAndForthEnabled)
+			{
+				m_timer = REAL_ZERO;
+			}
+			else
+			{
+				m_timer = m_valuesInterpolator.GetEndTime() - (m_timer - m_valuesInterpolator.GetEndTime());
+				m_isTimerIncreasing = false;
+			}
 		}
 	}
 	else
