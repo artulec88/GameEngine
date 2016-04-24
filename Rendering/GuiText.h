@@ -188,10 +188,29 @@ namespace Rendering
 			/// <summary> Sets the outline color effect of this GUI text. </summary>
 			/// <param name="textColor"> The outline color effect we want to set for the GUI text. </param>
 			//RENDERING_API void SetOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_outlineColorEffect = outlineColorEffect; }
+			RENDERING_API void ApplyOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect) { outlineColorEffect->SetAttribute(&m_outlineColor); }
 
 			/// <summary> Sets the offset effect of this GUI text. </summary>
 			/// <param name="textColor"> The offset effect we want to set for the GUI text. </param>
 			//RENDERING_API void SetOffsetEffect(Effects::Effect<Math::Vector2D>* offsetEffect) { m_offsetEffect = offsetEffect; }
+			RENDERING_API void ApplyOffsetEffect(Effects::Effect<Math::Vector2D>* offsetEffect) { offsetEffect->SetAttribute(&m_offset); }
+
+			RENDERING_API void ApplyCharacterWidthEffect(Rendering::Effects::Effect<Math::Real>* characterWidthEffect)
+			{
+				characterWidthEffect->SetAttribute(&m_characterWidth);
+			}
+			RENDERING_API void ApplyCharacterEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* characterEdgeTransitionWidthEffect)
+			{
+				characterEdgeTransitionWidthEffect->SetAttribute(&m_characterEdgeTransitionWidth);
+			}
+			RENDERING_API void ApplyBorderWidthEffect(Rendering::Effects::Effect<Math::Real>* borderWidthEffect)
+			{
+				borderWidthEffect->SetAttribute(&m_borderWidth);
+			}
+			RENDERING_API void ApplyBorderEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* borderEdgeTransitionWidthEffect)
+			{
+				borderEdgeTransitionWidthEffect->SetAttribute(&m_borderEdgeTransitionWidth);
+			}
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded

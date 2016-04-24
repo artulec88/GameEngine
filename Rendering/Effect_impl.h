@@ -45,6 +45,10 @@ Rendering::Effects::SmoothTransitionEffect<T>::~SmoothTransitionEffect()
 template <class T>
 void Rendering::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
 {
+	if (m_attribute == NULL)
+	{
+		return;
+	}
 	if (m_isTimerIncreasing)
 	{
 		m_timer += deltaTime;
@@ -107,6 +111,10 @@ Rendering::Effects::BlinkEffect<T>::~BlinkEffect()
 template <class T>
 void Rendering::Effects::BlinkEffect<T>::Update(Math::Real deltaTime)
 {
+	if (m_attribute == NULL)
+	{
+		return;
+	}
 	m_timer += deltaTime;
 	if (m_timer >= m_durations[m_currentIndex])
 	{

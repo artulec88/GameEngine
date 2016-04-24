@@ -68,6 +68,30 @@ public:
 	{
 		m_guiText.ApplyColorEffect(colorEffect);
 	}
+	ENGINE_API void ApplyOutlineColorEffect(Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect)
+	{
+		m_guiText.ApplyOutlineColorEffect(outlineColorEffect);
+	}
+	ENGINE_API void ApplyOffsetEffect(Rendering::Effects::Effect<Math::Vector2D>* offsetEffect)
+	{
+		m_guiText.ApplyOffsetEffect(offsetEffect);
+	}
+	ENGINE_API void ApplyCharacterWidthEffect(Rendering::Effects::Effect<Math::Real>* characterWidthEffect)
+	{
+		m_guiText.ApplyCharacterWidthEffect(characterWidthEffect);
+	}
+	ENGINE_API void ApplyCharacterEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* characterEdgeTransitionWidthEffect)
+	{
+		m_guiText.ApplyCharacterEdgeTransitionWidthEffect(characterEdgeTransitionWidthEffect);
+	}
+	ENGINE_API void ApplyBorderWidthEffect(Rendering::Effects::Effect<Math::Real>* borderWidthEffect)
+	{
+		m_guiText.ApplyBorderWidthEffect(borderWidthEffect);
+	}
+	ENGINE_API void ApplyBorderEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* borderEdgeTransitionWidthEffect)
+	{
+		m_guiText.ApplyBorderEdgeTransitionWidthEffect(borderEdgeTransitionWidthEffect);
+	}
 	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
 private:
 	//void SetColorEffect(Rendering::Effects::Effect<Math::Vector3D>* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }

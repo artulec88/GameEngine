@@ -26,10 +26,18 @@ MenuGameState::MenuGameState() :
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(NULL),
 	m_selectedMenuEntryColorEffect(NULL),
-	//m_notSelectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 2)),
-	//m_selectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::BLINK, 3)),
-	//m_notSelectedMenuEntryOffsetEffect(Engine::GameManager::GetGameManager()->GetVec2DEffect(Rendering::Effects::STATIC, 5)),
-	//m_selectedMenuEntryOffsetEffect(Engine::GameManager::GetGameManager()->GetVec2DEffect(Rendering::Effects::SMOOTH, 1)),
+	m_notSelectedMenuEntryOutlineColorEffect(NULL),
+	m_selectedMenuEntryOutlineColorEffect(NULL),
+	m_notSelectedMenuEntryOffsetEffect(NULL),
+	m_selectedMenuEntryOffsetEffect(NULL),
+	m_notSelectedMenuEntryCharacterWidthEffect(NULL),
+	m_selectedMenuEntryCharacterWidthEffect(NULL),
+	m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(NULL),
+	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect(NULL),
+	m_notSelectedMenuEntryBorderWidthEffect(NULL),
+	m_selectedMenuEntryBorderWidthEffect(NULL),
+	m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect(NULL),
+	m_selectedMenuEntryBorderEdgeTransitionWidthEffect(NULL),
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_mousePicker(),
@@ -57,17 +65,57 @@ MenuGameState::MenuGameState() :
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::QUIT), "Quit", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
-	Math::Vector3D values[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	Math::Real times[] = { 0.0f, 1.0f, 2.0f };
+	Math::Vector3D vectors3D[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
+	Math::Real colorTimes[] = { 0.0f, 1.0f, 2.0f };
 	//m_notSelectedMenuEntryColorEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, values, times, 3, 1);
-	m_selectedMenuEntryColorEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, values, times, 3, false);
-	m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
+	m_selectedMenuEntryColorEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, vectors3D, colorTimes, 3, false);
+
+	Math::Real outlineDurations[] = { 1.0f, 1.0f, 2.0f };
+	m_selectedMenuEntryOutlineColorEffect = new Rendering::Effects::BlinkEffect<Math::Vector3D>(NULL, vectors3D, outlineDurations, 3);
+
+	Math::Vector2D vectors2D[] = { Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) };
+	Math::Real offsetTimes[] = { 0.0f, 0.75f, 1.5f, 2.25f, 3.0f };
+	m_selectedMenuEntryOffsetEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>(NULL, vectors2D, offsetTimes, 5, true);
+
+	Math::Real characterWidths[] = { 0.4f, 0.45f, 0.5f, 0.55f, 0.6f };
+	Math::Real characterTimes[] = { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f };
+	//m_notSelectedMenuEntryCharacterWidthEffect(NULL);
+	m_selectedMenuEntryCharacterWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterWidths, characterTimes, 5, false);
+
+	Math::Real characterEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
+	Math::Real characterEdgeTransitionTimes[] = { 0.0f, 1.5f, 3.0f, 4.5f, 6.0f };
+	//m_notSelectedMenuEntryCharacterEdgeTransitionEffect(NULL);
+	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterEdgeTransitionWidths, characterEdgeTransitionTimes, 5, true);
+	
+	Math::Real borderWidths[] = { 0.0f, 0.12f, 0.24f, 0.36f, 0.48f };
+	Math::Real borderTimes[] = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
+	//m_notSelectedMenuEntryBorderWidthEffect(NULL);
+	m_selectedMenuEntryBorderWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderWidths, borderTimes, 5, false);
+
+	Math::Real borderEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.5f };
+	Math::Real borderEdgeTransitionTimes[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
+	//m_notSelectedMenuEntryBorderEdgeTransitionEffect(NULL);
+	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
+
+	SelectChild(0);
 }
 
 MenuGameState::~MenuGameState(void)
 {
 	SAFE_DELETE(m_notSelectedMenuEntryColorEffect);
 	SAFE_DELETE(m_selectedMenuEntryColorEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryOutlineColorEffect);
+	SAFE_DELETE(m_selectedMenuEntryOutlineColorEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryOffsetEffect);
+	SAFE_DELETE(m_selectedMenuEntryOffsetEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryCharacterWidthEffect);
+	SAFE_DELETE(m_selectedMenuEntryCharacterWidthEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect);
+	SAFE_DELETE(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryBorderWidthEffect);
+	SAFE_DELETE(m_selectedMenuEntryBorderWidthEffect);
+	SAFE_DELETE(m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect);
+	SAFE_DELETE(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 }
 
 void MenuGameState::Entered()
@@ -115,14 +163,10 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		DELOCUST_LOG("To exit the game click \"QUIT\"");
 		break;
 	case GLFW_KEY_UP:
-		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
-		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
-		m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
+		SelectChild(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
 		break;
 	case GLFW_KEY_DOWN:
-		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
-		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
-		m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
+		SelectChild(m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
 		break;
 	case GLFW_KEY_ENTER:
 	{
@@ -147,6 +191,19 @@ void MenuGameState::ChooseCurrentMenuEntry()
 	{
 		selectedChild->ExecuteCommand();
 	}
+}
+
+void MenuGameState::SelectChild(int childIndex)
+{
+	DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
+	m_currentMenuEntry->SelectChildMenuEntry(childIndex);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyOutlineColorEffect(m_selectedMenuEntryOutlineColorEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyOffsetEffect(m_selectedMenuEntryOffsetEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyCharacterWidthEffect(m_selectedMenuEntryCharacterWidthEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
+	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 }
 
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
@@ -197,8 +254,7 @@ void MenuGameState::MousePosEvent(double xPos, double yPos)
 			{
 				INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
 			}
-			m_currentMenuEntry->SelectChildMenuEntry(i);
-			m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
+			SelectChild(i);
 			break;
 		}
 	}
@@ -211,10 +267,11 @@ void MenuGameState::ScrollEvent(double xOffset, double yOffset)
 void MenuGameState::Update(Math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
-	for (int i = 0; i < m_currentMenuEntry->GetChildrenCount(); ++i)
-	{
-		//m_currentMenuEntry->GetChildGuiText(i).Update(deltaTime);
-		//m_textEffects.
-	}
 	m_selectedMenuEntryColorEffect->Update(deltaTime);
+	m_selectedMenuEntryOutlineColorEffect->Update(deltaTime);
+	m_selectedMenuEntryOffsetEffect->Update(deltaTime);
+	m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime);
+	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
+	m_selectedMenuEntryBorderWidthEffect->Update(deltaTime);
+	m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
 }
