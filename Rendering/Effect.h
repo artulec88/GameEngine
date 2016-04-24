@@ -24,23 +24,34 @@ namespace Rendering
 			/// <summary>
 			/// Creates a new effect.
 			/// </summary>
-			/// <param name="color"> The static value of the effect. </param>
-			Effect(const T& staticEffect);
+			/// <param name="value"> The pointer to the attribute we want to apply effect on. </param>
+			Effect(T* attribute);
 			virtual ~Effect();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
+			void SetAttribute(T* attribute)
+			{
+				if (m_attribute != NULL)
+				{
+					*m_attribute = m_initialValue;
+				}
+				m_initialValue = *attribute;
+				m_attribute = attribute;
+			}
+
 			/// <summary>
-			/// Updates the current value accordingly to some specific algorithm.
+			/// Updates the current value of the attribute accordingly to some specific algorithm.
 			/// </summary>
 			virtual void Update(Math::Real deltaTime);
-			const T& Get() const { return m_currentValue; }
+			//const T& Get() const { return m_currentValue; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
-			T m_currentValue;
+			T* m_attribute;
+			T m_initialValue;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class Effect */
 
@@ -61,7 +72,7 @@ namespace Rendering
 			/// <param name="values"> The values that effect will use. </param>
 			/// <param name="times"> The times that specify when each effect value is to be applied. </param>
 			/// <param name="valuesCount"> The number of values (and times too). </param>
-			SmoothTransitionEffect(const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled);
+			SmoothTransitionEffect(T* attribute, const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled);
 			virtual ~SmoothTransitionEffect();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -102,7 +113,7 @@ namespace Rendering
 			/// <param name="values"> The values that effect will use. </param>
 			/// <param name="durations"> The time durations each value is applied for. </param>
 			/// <param name="valuesCount"> The number of values (and durations too). </param>
-			BlinkEffect(const T* values, const Math::Real* durations, unsigned int valuesCount);
+			BlinkEffect(T* attribute, const T* values, const Math::Real* durations, unsigned int valuesCount);
 			virtual ~BlinkEffect();
 		/* ==================== Constructors and destructors end ==================== */
 

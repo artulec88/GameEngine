@@ -38,9 +38,8 @@ class MenuEntry
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	ENGINE_API MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
-		Math::Real maxLineLength, Rendering::Effects::Effect<Math::Vector3D>* textEffectColor, Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect,
-		Rendering::Effects::Effect<Math::Vector2D>* offsetEffect, bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f,
-		Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
+		Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+		Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 	ENGINE_API virtual ~MenuEntry(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -55,10 +54,7 @@ public:
 	ENGINE_API bool DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const;
 	int GetSelectedMenuEntryIndex() const { return m_selectedMenuEntryIndex; }
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
-	ENGINE_API void SelectChildMenuEntry(int index, Rendering::Effects::Effect<Math::Vector3D>* newColorEffectForPreviouslySelectedEntry,
-		Rendering::Effects::Effect<Math::Vector3D>* newColorEffectForCurrentSelectedEntry, Rendering::Effects::Effect<Math::Vector3D>* newOutlineColorEffectForPreviouslySelectedEntry,
-		Rendering::Effects::Effect<Math::Vector3D>* newOutlineColorEffectForCurrentSelectedEntry, Rendering::Effects::Effect<Math::Vector2D>* newOffsetEffectForPreviouslySelectedEntry,
-		Rendering::Effects::Effect<Math::Vector2D>* newOffsetEffectForCurrentSelectedEntry, bool wrapping = true);
+	ENGINE_API void SelectChildMenuEntry(int index, bool wrapping = true);
 
 	ENGINE_API void ExecuteCommand() const { m_gameCommand.Execute(); }
 	ENGINE_API void AddChildren(MenuEntry* child);
@@ -68,12 +64,15 @@ public:
 	ENGINE_API bool DoesSelectedChildHaveChildren() const;
 	ENGINE_API MenuEntry* GetParent() const;
 	ENGINE_API MenuEntry* GetSelectedChild() const;
-
+	ENGINE_API void ApplyColorEffect(Rendering::Effects::Effect<Math::Vector3D>* colorEffect)
+	{
+		m_guiText.ApplyColorEffect(colorEffect);
+	}
 	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
 private:
-	void SetColorEffect(Rendering::Effects::Effect<Math::Vector3D>* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }
-	void SetOutlineColorEffect(Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_guiText.SetOutlineColorEffect(outlineColorEffect); }
-	void SetOffsetEffect(Rendering::Effects::Effect<Math::Vector2D>* offsetEffect) { m_guiText.SetOffsetEffect(offsetEffect); }
+	//void SetColorEffect(Rendering::Effects::Effect<Math::Vector3D>* textEffectColor) { m_guiText.SetColorEffect(textEffectColor); }
+	//void SetOutlineColorEffect(Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_guiText.SetOutlineColorEffect(outlineColorEffect); }
+	//void SetOffsetEffect(Rendering::Effects::Effect<Math::Vector2D>* offsetEffect) { m_guiText.SetOffsetEffect(offsetEffect); }
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */

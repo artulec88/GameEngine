@@ -436,14 +436,16 @@ void CoreEngine::Run()
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
 		Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
-		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), m_game->GetVec3DEffect(Rendering::Effects::SMOOTH, 1), m_game->GetVec3DEffect(Rendering::Effects::SMOOTH, 1),
-		m_game->GetVec2DEffect(Rendering::Effects::STATIC, 1), GET_CONFIG_VALUE("isCenteredFPS", false),
+		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE("colorFPSRed", 1.0f), GET_CONFIG_VALUE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE("colorFPSBlue", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
+		Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.005f), GET_CONFIG_VALUE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE("isCenteredFPS", false),
 		GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
 	Rendering::Text::GuiText inGameTimeGuiText("", &font, GET_CONFIG_VALUE("fontSizeInGameTime", 2.5f),
-		Math::Vector2D(GET_CONFIG_VALUE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE("screenPositionInGameTimeY", 0.0f)),
-		GET_CONFIG_VALUE("maxLineLengthInGameTime", 0.5f), m_game->GetVec3DEffect(Rendering::Effects::SMOOTH, 2), m_game->GetVec3DEffect(Rendering::Effects::SMOOTH, 1),
-		m_game->GetVec2DEffect(Rendering::Effects::STATIC, 2), GET_CONFIG_VALUE("isCenteredInGameTime", false),
+		Math::Vector2D(GET_CONFIG_VALUE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE("maxLineLengthInGameTime", 0.5f),
+		Math::Vector3D(GET_CONFIG_VALUE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE("colorInGameTimeBlue", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE("outlineColorInGameTimeBlue", 0.0f)),
+		Math::Vector2D(GET_CONFIG_VALUE("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE("isCenteredInGameTime", false),
 		GET_CONFIG_VALUE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif

@@ -82,10 +82,10 @@ private:
 	// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
 	Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
 	Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
-	Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
-	Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
-	Rendering::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-	Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
+	//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
+	//Rendering::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
+	//Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
 
 	Math::Real m_mousePosX, m_mousePosY;
 	Engine::MousePicker m_mousePicker;

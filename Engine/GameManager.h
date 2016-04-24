@@ -112,18 +112,18 @@ public:
 	{
 		return m_gameCommandFactory.GetCommand(gameCommandType);
 	}
-	ENGINE_API Rendering::Effects::Effect<Math::Real>* GetSingleValueEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
-	{
-		return m_effectFactory.GetSingleValueEffect(effectType, variant);
-	}
-	ENGINE_API Rendering::Effects::Effect<Math::Vector2D>* GetVec2DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
-	{
-		return m_effectFactory.GetVec2DEffect(effectType, variant);
-	}
-	ENGINE_API Rendering::Effects::Effect<Math::Vector3D>* GetVec3DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
-	{
-		return m_effectFactory.GetVec3DEffect(effectType, variant);
-	}
+	//ENGINE_API Rendering::Effects::Effect<Math::Real>* GetSingleValueEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+	//{
+	//	return m_effectFactory.GetSingleValueEffect(effectType, variant);
+	//}
+	//ENGINE_API Rendering::Effects::Effect<Math::Vector2D>* GetVec2DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+	//{
+	//	return m_effectFactory.GetVec2DEffect(effectType, variant);
+	//}
+	//ENGINE_API Rendering::Effects::Effect<Math::Vector3D>* GetVec3DEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
+	//{
+	//	return m_effectFactory.GetVec3DEffect(effectType, variant);
+	//}
 public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
@@ -151,7 +151,7 @@ protected:
 	const Math::Angle m_skyboxAngleStep;
 
 	GameCommandFactory m_gameCommandFactory;
-	Rendering::Effects::EffectFactory m_effectFactory;
+	//Rendering::Effects::EffectFactory m_effectFactory;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

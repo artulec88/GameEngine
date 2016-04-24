@@ -79,9 +79,9 @@ TestGameManager::TestGameManager() :
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
 
-	AddStaticEffects();
-	AddSmoothEffects();
-	AddBlinkEffects();
+	//AddStaticEffects();
+	//AddSmoothEffects();
+	//AddBlinkEffects();
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
@@ -101,181 +101,181 @@ TestGameManager::~TestGameManager(void)
 	SAFE_DELETE(m_playMainMenuGameState);
 }
 
-void TestGameManager::AddStaticEffects()
-{
-	const int staticSingleValueEffectsCount = GET_CONFIG_VALUE("staticValueEffectsCount", 4);
-	m_singleValueStaticEffects.reserve(staticSingleValueEffectsCount);
-	for (int i = 0; i < staticSingleValueEffectsCount; ++i)
-	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		m_singleValueStaticEffects.emplace_back(GET_CONFIG_VALUE("staticValue_" + ss.str(), 0.2f));
-		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_singleValueStaticEffects.back());
-	}
-	const int staticVec2DEffectsCount = GET_CONFIG_VALUE("staticVec2DEffectsCount", 4);
-	m_vec2DStaticEffects.reserve(staticVec2DEffectsCount);
-	for (int i = 0; i < staticVec2DEffectsCount; ++i)
-	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		m_vec2DStaticEffects.emplace_back(Math::Vector2D(GET_CONFIG_VALUE("staticVector2D_X_" + ss.str(), 1.0f),
-			GET_CONFIG_VALUE("staticVector2D_Y_" + ss.str(), 1.0f)));
-		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec2DStaticEffects.back());
-	}
-	const int staticVec3DEffectsCount = GET_CONFIG_VALUE("staticVec3DEffectsCount", 4);
-	m_vec3DStaticEffects.reserve(staticVec3DEffectsCount);
-	for (int i = 0; i < staticVec3DEffectsCount; ++i)
-	{
-		std::stringstream ss("");
-		ss << (i + 1);
-		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticVector3D_X_" + ss.str(), 1.0f),
-			GET_CONFIG_VALUE("staticVector3D_Y_" + ss.str(), 1.0f), GET_CONFIG_VALUE("staticVector3D_Z_" + ss.str(), 1.0f)));
-		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec3DStaticEffects.back());
-	}
-}
+//void TestGameManager::AddStaticEffects()
+//{
+//	const int staticSingleValueEffectsCount = GET_CONFIG_VALUE("staticValueEffectsCount", 4);
+//	m_singleValueStaticEffects.reserve(staticSingleValueEffectsCount);
+//	for (int i = 0; i < staticSingleValueEffectsCount; ++i)
+//	{
+//		std::stringstream ss("");
+//		ss << (i + 1);
+//		m_singleValueStaticEffects.emplace_back(GET_CONFIG_VALUE("staticValue_" + ss.str(), 0.2f));
+//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_singleValueStaticEffects.back());
+//	}
+//	const int staticVec2DEffectsCount = GET_CONFIG_VALUE("staticVec2DEffectsCount", 4);
+//	m_vec2DStaticEffects.reserve(staticVec2DEffectsCount);
+//	for (int i = 0; i < staticVec2DEffectsCount; ++i)
+//	{
+//		std::stringstream ss("");
+//		ss << (i + 1);
+//		m_vec2DStaticEffects.emplace_back(Math::Vector2D(GET_CONFIG_VALUE("staticVector2D_X_" + ss.str(), 1.0f),
+//			GET_CONFIG_VALUE("staticVector2D_Y_" + ss.str(), 1.0f)));
+//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec2DStaticEffects.back());
+//	}
+//	const int staticVec3DEffectsCount = GET_CONFIG_VALUE("staticVec3DEffectsCount", 4);
+//	m_vec3DStaticEffects.reserve(staticVec3DEffectsCount);
+//	for (int i = 0; i < staticVec3DEffectsCount; ++i)
+//	{
+//		std::stringstream ss("");
+//		ss << (i + 1);
+//		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticVector3D_X_" + ss.str(), 1.0f),
+//			GET_CONFIG_VALUE("staticVector3D_Y_" + ss.str(), 1.0f), GET_CONFIG_VALUE("staticVector3D_Z_" + ss.str(), 1.0f)));
+//		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec3DStaticEffects.back());
+//	}
+//}
 
-void TestGameManager::AddSmoothEffects()
-{
-	const int smoothSingleValueVariantsCount = GET_CONFIG_VALUE("smoothValueEffectsCount", 4);
-	m_singleValueSmoothEffects.reserve(smoothSingleValueVariantsCount);
-	for (int variant = 0; variant < smoothSingleValueVariantsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothValuesCount_" + ssVariant.str(), 2);
-		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
-		std::vector<Math::Real> values;
-		std::vector<Math::Real> times;
-		values.reserve(smoothValuesCount);
-		times.reserve(smoothValuesCount);
-		for (size_t j = 0; j < smoothValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("smoothValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			times.push_back(GET_CONFIG_VALUE("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
-		m_singleValueSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_singleValueSmoothEffects.back());
-	}
-	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE("smoothVec2DEffectsCount", 4);
-	m_vec2DSmoothEffects.reserve(smoothVec2DEffectsCount);
-	for (int variant = 0; variant < smoothVec2DEffectsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec2DCount_" + ssVariant.str(), 2);
-		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
-		std::vector<Math::Vector2D> values;
-		std::vector<Math::Real> times;
-		values.reserve(smoothValuesCount);
-		times.reserve(smoothValuesCount);
-		for (size_t j = 0; j < smoothValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("smoothVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			times.push_back(GET_CONFIG_VALUE("smoothVec2DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
+//void TestGameManager::AddSmoothEffects()
+//{
+//	const int smoothSingleValueVariantsCount = GET_CONFIG_VALUE("smoothValueEffectsCount", 4);
+//	m_singleValueSmoothEffects.reserve(smoothSingleValueVariantsCount);
+//	for (int variant = 0; variant < smoothSingleValueVariantsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothValuesCount_" + ssVariant.str(), 2);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
+//		std::vector<Math::Real> values;
+//		std::vector<Math::Real> times;
+//		values.reserve(smoothValuesCount);
+//		times.reserve(smoothValuesCount);
+//		for (size_t j = 0; j < smoothValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("smoothValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//		m_singleValueSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
+//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_singleValueSmoothEffects.back());
+//	}
+//	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE("smoothVec2DEffectsCount", 4);
+//	m_vec2DSmoothEffects.reserve(smoothVec2DEffectsCount);
+//	for (int variant = 0; variant < smoothVec2DEffectsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec2DCount_" + ssVariant.str(), 2);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
+//		std::vector<Math::Vector2D> values;
+//		std::vector<Math::Real> times;
+//		values.reserve(smoothValuesCount);
+//		times.reserve(smoothValuesCount);
+//		for (size_t j = 0; j < smoothValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("smoothVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE("smoothVec2DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//
+//		m_vec2DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
+//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec2DSmoothEffects.back());
+//	}
+//	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE("smoothVec3DEffectsCount", 4);
+//	m_vec3DSmoothEffects.reserve(smoothVec3DEffectsCount);
+//	for (int variant = 0; variant < smoothVec3DEffectsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec3DCount_" + ssVariant.str(), 2);
+//		std::vector<Math::Vector3D> values;
+//		std::vector<Math::Real> times;
+//		values.reserve(smoothValuesCount);
+//		times.reserve(smoothValuesCount);
+//		for (size_t j = 0; j < smoothValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("smoothVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
+//				GET_CONFIG_VALUE("smoothVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE("smoothVec3DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//
+//		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
+//		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec3DSmoothEffects.back());
+//	}
+//}
 
-		m_vec2DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec2DSmoothEffects.back());
-	}
-	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE("smoothVec3DEffectsCount", 4);
-	m_vec3DSmoothEffects.reserve(smoothVec3DEffectsCount);
-	for (int variant = 0; variant < smoothVec3DEffectsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
-		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec3DCount_" + ssVariant.str(), 2);
-		std::vector<Math::Vector3D> values;
-		std::vector<Math::Real> times;
-		values.reserve(smoothValuesCount);
-		times.reserve(smoothValuesCount);
-		for (size_t j = 0; j < smoothValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("smoothVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
-				GET_CONFIG_VALUE("smoothVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			times.push_back(GET_CONFIG_VALUE("smoothVec3DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
-
-		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
-		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec3DSmoothEffects.back());
-	}
-}
-
-void TestGameManager::AddBlinkEffects()
-{
-	const int blinkSingleValueVariantsCount = GET_CONFIG_VALUE("blinkValueEffectsCount", 4);
-	m_singleValueBlinkEffects.reserve(blinkSingleValueVariantsCount);
-	for (int variant = 0; variant < blinkSingleValueVariantsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkValuesCount_" + ssVariant.str(), 2);
-		std::vector<Math::Real> values;
-		std::vector<Math::Real> durations;
-		values.reserve(blinkValuesCount);
-		durations.reserve(blinkValuesCount);
-		for (size_t j = 0; j < blinkValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("blinkValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("blinkValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
-		m_singleValueBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_singleValueBlinkEffects.back());
-	}
-	const int blinkVec2DEffectsCount = GET_CONFIG_VALUE("blinkVec2DEffectsCount", 4);
-	m_vec2DBlinkEffects.reserve(blinkVec2DEffectsCount);
-	for (int variant = 0; variant < blinkVec2DEffectsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec2DCount_" + ssVariant.str(), 2);
-		std::vector<Math::Vector2D> values;
-		std::vector<Math::Real> durations;
-		values.reserve(blinkValuesCount);
-		durations.reserve(blinkValuesCount);
-		for (size_t j = 0; j < blinkValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("blinkVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("blinkVec2DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
-
-		m_vec2DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec2DBlinkEffects.back());
-	}
-	const int blinkVec3DEffectsCount = GET_CONFIG_VALUE("blinkVec3DEffectsCount", 4);
-	m_vec3DBlinkEffects.reserve(blinkVec3DEffectsCount);
-	for (int variant = 0; variant < blinkVec3DEffectsCount; ++variant)
-	{
-		std::stringstream ssVariant("");
-		ssVariant << (variant + 1);
-		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec3DCount_" + ssVariant.str(), 2);
-		std::vector<Math::Vector3D> values;
-		std::vector<Math::Real> durations;
-		values.reserve(blinkValuesCount);
-		durations.reserve(blinkValuesCount);
-		for (size_t j = 0; j < blinkValuesCount; ++j)
-		{
-			std::stringstream ss("");
-			ss << (j + 1);
-			values.emplace_back(GET_CONFIG_VALUE("blinkVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
-				GET_CONFIG_VALUE("blinkVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-			durations.push_back(GET_CONFIG_VALUE("blinkVec3DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-		}
-
-		m_vec3DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
-		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec3DBlinkEffects.back());
-	}
-}
+//void TestGameManager::AddBlinkEffects()
+//{
+//	const int blinkSingleValueVariantsCount = GET_CONFIG_VALUE("blinkValueEffectsCount", 4);
+//	m_singleValueBlinkEffects.reserve(blinkSingleValueVariantsCount);
+//	for (int variant = 0; variant < blinkSingleValueVariantsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkValuesCount_" + ssVariant.str(), 2);
+//		std::vector<Math::Real> values;
+//		std::vector<Math::Real> durations;
+//		values.reserve(blinkValuesCount);
+//		durations.reserve(blinkValuesCount);
+//		for (size_t j = 0; j < blinkValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("blinkValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE("blinkValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//		m_singleValueBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
+//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_singleValueBlinkEffects.back());
+//	}
+//	const int blinkVec2DEffectsCount = GET_CONFIG_VALUE("blinkVec2DEffectsCount", 4);
+//	m_vec2DBlinkEffects.reserve(blinkVec2DEffectsCount);
+//	for (int variant = 0; variant < blinkVec2DEffectsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec2DCount_" + ssVariant.str(), 2);
+//		std::vector<Math::Vector2D> values;
+//		std::vector<Math::Real> durations;
+//		values.reserve(blinkValuesCount);
+//		durations.reserve(blinkValuesCount);
+//		for (size_t j = 0; j < blinkValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("blinkVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE("blinkVec2DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//
+//		m_vec2DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
+//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec2DBlinkEffects.back());
+//	}
+//	const int blinkVec3DEffectsCount = GET_CONFIG_VALUE("blinkVec3DEffectsCount", 4);
+//	m_vec3DBlinkEffects.reserve(blinkVec3DEffectsCount);
+//	for (int variant = 0; variant < blinkVec3DEffectsCount; ++variant)
+//	{
+//		std::stringstream ssVariant("");
+//		ssVariant << (variant + 1);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec3DCount_" + ssVariant.str(), 2);
+//		std::vector<Math::Vector3D> values;
+//		std::vector<Math::Real> durations;
+//		values.reserve(blinkValuesCount);
+//		durations.reserve(blinkValuesCount);
+//		for (size_t j = 0; j < blinkValuesCount; ++j)
+//		{
+//			std::stringstream ss("");
+//			ss << (j + 1);
+//			values.emplace_back(GET_CONFIG_VALUE("blinkVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
+//				GET_CONFIG_VALUE("blinkVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE("blinkVec3DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//		}
+//
+//		m_vec3DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
+//		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec3DBlinkEffects.back());
+//	}
+//}
 
 Math::Real TestGameManager::GetLoadingProgress() const
 {

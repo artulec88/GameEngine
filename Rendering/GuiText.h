@@ -147,7 +147,7 @@ namespace Rendering
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
 			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-				Effects::Effect<Math::Vector3D>* textColorEffect, Effects::Effect<Math::Vector3D>* outlineColorEffect, Effects::Effect<Math::Vector2D>* offsetEffect, bool isCentered = false,
+				const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API ~GuiText(void);
 			//private:
@@ -162,9 +162,9 @@ namespace Rendering
 			/// </summary>
 			RENDERING_API void Update(Math::Real deltaTime)
 			{
-				m_colorEffect->Update(deltaTime);
-				m_outlineColorEffect->Update(deltaTime);
-				m_offsetEffect->Update(deltaTime);
+				//m_colorEffect->Update(deltaTime);
+				//m_outlineColorEffect->Update(deltaTime);
+				//m_offsetEffect->Update(deltaTime);
 			}
 
 			/// <summary> Returns the font used by this GUI text. </summary>
@@ -176,21 +176,22 @@ namespace Rendering
 
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
-			RENDERING_API const Math::Vector3D& GetColor() const { return m_colorEffect->Get(); }
+			RENDERING_API const Math::Vector3D& GetColor() const { return m_color; }
 
-			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColorEffect->Get(); }
+			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColor; }
 
 			/// <summary> Sets the color effect of this GUI text. </summary>
 			/// <param name="textColor"> The color effect we want to set for the GUI text. </param>
-			RENDERING_API void SetColorEffect(Effects::Effect<Math::Vector3D>* textColor) { m_colorEffect = textColor; }
+			//RENDERING_API void SetColorEffect(Effects::Effect<Math::Vector3D>* textColor) { m_colorEffect = textColor; }
+			RENDERING_API void ApplyColorEffect(Effects::Effect<Math::Vector3D>* colorEffect) { colorEffect->SetAttribute(&m_color); }
 
 			/// <summary> Sets the outline color effect of this GUI text. </summary>
 			/// <param name="textColor"> The outline color effect we want to set for the GUI text. </param>
-			RENDERING_API void SetOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_outlineColorEffect = outlineColorEffect; }
+			//RENDERING_API void SetOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect) { m_outlineColorEffect = outlineColorEffect; }
 
 			/// <summary> Sets the offset effect of this GUI text. </summary>
 			/// <param name="textColor"> The offset effect we want to set for the GUI text. </param>
-			RENDERING_API void SetOffsetEffect(Effects::Effect<Math::Vector2D>* offsetEffect) { m_offsetEffect = offsetEffect; }
+			//RENDERING_API void SetOffsetEffect(Effects::Effect<Math::Vector2D>* offsetEffect) { m_offsetEffect = offsetEffect; }
 
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -212,7 +213,7 @@ namespace Rendering
 
 			RENDERING_API bool IsCentered() const { return m_isCentered; }
 
-			RENDERING_API const Math::Vector2D& GetOffset() const { /* CRITICAL_LOG("%s has offset = %s", m_text.c_str(), m_offsetEffect->Get().ToString().c_str()); */ return m_offsetEffect->Get(); }
+			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
 			RENDERING_API Math::Real GetCharacterWidth() const { return m_characterWidth; }
 			RENDERING_API Math::Real GetCharacterEdgeTransitionWidth() const { return m_characterEdgeTransitionWidth; }
 			RENDERING_API Math::Real GetBorderWidth() const { return m_borderWidth; }
@@ -226,9 +227,9 @@ namespace Rendering
 			std::string m_text;
 			const Font* m_font;
 			Math::Real m_fontSize;
-			Effects::Effect<Math::Vector3D>* m_colorEffect;
-			Effects::Effect<Math::Vector3D>* m_outlineColorEffect;
-			Effects::Effect<Math::Vector2D>* m_offsetEffect;
+			Math::Vector3D m_color;
+			Math::Vector3D m_outlineColor;
+			Math::Vector2D m_offset;
 			Math::Vector2D m_screenPosition;
 			Math::Real m_maxLineLength;
 			int m_linesCount;
