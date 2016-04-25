@@ -75,6 +75,7 @@ MenuGameState::MenuGameState() :
 
 	Math::Vector2D vectors2D[] = { Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) };
 	Math::Real offsetTimes[] = { 0.0f, 0.75f, 1.5f, 2.25f, 3.0f };
+	m_notSelectedMenuEntryOffsetEffect = new Engine::Effects::SmoothTransitionEffect<Math::Vector2D>(NULL, vectors2D, offsetTimes, 5, true);
 	m_selectedMenuEntryOffsetEffect = new Engine::Effects::SmoothTransitionEffect<Math::Vector2D>(NULL, vectors2D, offsetTimes, 5, true);
 
 	Math::Real characterWidths[] = { 0.4f, 0.45f, 0.5f, 0.55f, 0.6f };
@@ -145,7 +146,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
 	// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
 	START_PROFILING;
-	if (action != GLFW_PRESS)
+	if (action == GLFW_RELEASE)
 	{
 		return;
 	}
@@ -196,6 +197,7 @@ void MenuGameState::ChooseCurrentMenuEntry()
 void MenuGameState::SelectChild(int childIndex)
 {
 	DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
+	m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry->SelectChildMenuEntry(childIndex);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyOutlineColorEffect(m_selectedMenuEntryOutlineColorEffect);
@@ -267,11 +269,18 @@ void MenuGameState::ScrollEvent(double xOffset, double yOffset)
 void MenuGameState::Update(Math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
-	m_selectedMenuEntryColorEffect->Update(deltaTime);
-	m_selectedMenuEntryOutlineColorEffect->Update(deltaTime);
-	m_selectedMenuEntryOffsetEffect->Update(deltaTime);
-	m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime);
-	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
-	m_selectedMenuEntryBorderWidthEffect->Update(deltaTime);
-	m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
+	if (m_notSelectedMenuEntryColorEffect != NULL) { m_notSelectedMenuEntryColorEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryColorEffect != NULL) { m_selectedMenuEntryColorEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryOutlineColorEffect != NULL) { m_notSelectedMenuEntryOutlineColorEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryOutlineColorEffect != NULL) { m_selectedMenuEntryOutlineColorEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryOffsetEffect != NULL) { m_notSelectedMenuEntryOffsetEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryOffsetEffect != NULL) { m_selectedMenuEntryOffsetEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryCharacterWidthEffect != NULL) { m_notSelectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryCharacterWidthEffect != NULL) { m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL) { m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryBorderWidthEffect != NULL) { m_notSelectedMenuEntryBorderWidthEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryBorderWidthEffect != NULL) { m_selectedMenuEntryBorderWidthEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
+	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
 }
