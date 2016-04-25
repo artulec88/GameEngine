@@ -181,8 +181,6 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="EffectFactory.h" />
-    <ClInclude Include="Effect_impl.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="GuiText.h" />
     <ClInclude Include="MappedValues.h" />
@@ -198,7 +196,6 @@
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Effect.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tinythread.h" />
   </ItemGroup>
@@ -222,7 +219,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="EffectFactory.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GuiText.cpp" />
     <ClCompile Include="MappedValues.cpp" />
@@ -243,7 +239,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tinythread.cpp" />
   </ItemGroup>

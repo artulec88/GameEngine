@@ -1,12 +1,12 @@
-#ifndef __RENDERING_EFFECTS_EFFECT_H__
-#define __RENDERING_EFFECTS_EFFECT_H__
+#ifndef __ENGINE_EFFECTS_EFFECT_H__
+#define __ENGINE_EFFECTS_EFFECT_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 
 #include "Math\Interpolation.h"
 #include "Math\Interpolation_impl.h"
 
-namespace Rendering
+namespace Engine
 {
 	namespace Effects
 	{
@@ -135,6 +135,6 @@ namespace Rendering
 		}; /* end class BlinkEffect */
 
 	} /* end namespace Effects */
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_EFFECTS_EFFECT_H__ */
+#endif /* __ENGINE_EFFECTS_EFFECT_H__ */

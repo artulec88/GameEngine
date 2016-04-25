@@ -1,6 +1,6 @@
 1.	Test time needed for the Matrix4D::ToString() method
 2.	Create a nice design for loading 3D models
-3.	Config map of values should be refreshed once in a while, so that configuration values can be reconfigured during runtime.
+3.	Config map of values should be refreshed once in a while, so that configuration values can be reconfigured during runtime (?).
 4.	Don't use hard-coded values. Ever!
 5.	Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actual algorithm and logging.
 6.	Memory deallocation
@@ -11,32 +11,31 @@
 11.	Skybox is not seamless
 12.	Create a decorator class (http://en.wikipedia.org/wiki/Decorator_pattern#C.2B.2B) for the GameManager::Load method. The decorator sets/checks the state of the GameManager::m_isGameLoaded member variable, calls the GameManager::Load method and sets/checks the state of the GameManager::m_isGameLoaded member variable again.
 13.	The night texture should be displayed much later than right now.
-14.	Use forwardlighting.vsh in the forward-ambient.glsl
-15.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
-16.	Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-17.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.
-18.	Add Renderer::m_skyboxAngleStep to the tweak bars.
-19.	Closing the game with the "X" button in the right top corner of the window during the loading phase of the game causes an exception (only probably, needs to be checked!)
-20. Ambient occlussion.
-21. Water rendering. When looking in horizontal direction the distortion of the water texture is huge. Generally, it increases with the camera getting closer to the "horizontal" direction. The distortion should not depend on the viewing angle of the camera.
-22. When water is ON (there is at least one water node added) the billboards are not rendered correctly. When being seen from the close distance it is fine, but the farther they are the more dark they become. One thing (water rendering) should not influence the billboards at all.
-23. The book "3D game engine design: a practical approach to real-time computer graphics" asks the following questions:
-"How do I select points on a curve that are equally spaced along the curve?"
-"How do I move a camera with constant speed along a curved path?"
-The answer to these questions is to use reparameterization by arc length. Read more in the "Curves" chapter.
-24. "Batch-rendering": the IRenderable components do not draw. Instead, they just add the rendering command to the rendering engine. The rendering engine stores the collection of rendering commands. The core engine calls the rendering engine (at one specific correct time) to render all rendering commands. The rendering engine should store three maps:
-map<Shader, vector<Mesh>> shader2meshes
-map<Mesh, vector<Material>> mesh2materials
-map<Material, vector<Transform>> material2transforms.
-These maps should be updated when new rendering command is specified. When "final" render call is done the maps are iterated one by one to minimize the number of unnecessary OpenGL calls (e.g. binding the same shader, texture several times). Afterwards, the maps should be cleared to be empty for the next frame processing (and new rendering commands will appear).
-The "final" rendering call should be something like:
-for (Shader shader : shader2meshes.keys)
-{
-	shader.Bind();
-	shader.UpdateRenderUniforms();
-	for (Mesh mesh : shader2meshes.values)
+14.	Use alpha maps for the terrain (and generally for all objects with multitexturing). The alpha map is just another texture with 4 channels (RGBA). Each channel represents how much of the specific texture should be applied on an object. Basically the result should be something like (texture1 * alphaMap.r + texture2 * alphaMap.g + ... ). This way an object may be textured with up to 4 different textures.
+15.	Optimize the AlmostEqual function. Basically, find the fastest way to compare two floating-point numbers.
+16.	Add Renderer::m_skyboxAngleStep to the tweak bars.
+17.	Closing the game with the "X" button in the right top corner of the window during the loading phase of the game causes an exception (only probably, needs to be checked!)
+18.	Ambient occlussion.
+19.	Water rendering. When looking in horizontal direction the distortion of the water texture is huge. Generally, it increases with the camera getting closer to the "horizontal" direction. The distortion should not depend on the viewing angle of the camera.
+20.	When water is ON (there is at least one water node added) the billboards are not rendered correctly. When being seen from the close distance it is fine, but the farther they are the more dark they become. One thing (water rendering) should not influence the billboards at all.
+21.	The book "3D game engine design: a practical approach to real-time computer graphics" asks the following questions:
+		"How do I select points on a curve that are equally spaced along the curve?"
+		"How do I move a camera with constant speed along a curved path?"
+	The answer to these questions is to use reparameterization by arc length. Read more in the "Curves" chapter.
+22.	"Batch-rendering": the IRenderable components do not draw. Instead, they just add the rendering command to the rendering engine. The rendering engine stores the collection of rendering commands. The core engine calls the rendering engine (at one specific correct time) to render all rendering commands. The rendering engine should store three maps:
+		map<Shader, vector<Mesh>> shader2meshes
+		map<Mesh, vector<Material>> mesh2materials
+		map<Material, vector<Transform>> material2transforms.
+	These maps should be updated when new rendering command is specified. When "final" render call is done the maps are iterated one by one to minimize the number of unnecessary OpenGL calls (e.g. binding the same shader, texture several times). Afterwards, the maps should be cleared to be empty for the next frame processing (and new rendering commands will appear).
+	The "final" rendering call should be something like:
+	for (Shader shader : shader2meshes.keys)
 	{
-	
+		shader.Bind();
+		shader.UpdateRenderUniforms();
+		for (Mesh mesh : shader2meshes.values)
+		{
+			
+		}
 	}
-}
-25. Weather effects.
+23. Weather effects.
+24. All game menu related settings should be in the separate config file (maybe an XML?). Maybe there should be several config files: one for the rendering module, one for Physics, one for Audio and so on.

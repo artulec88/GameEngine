@@ -3,30 +3,30 @@
 
 
 /* ==================== EffectFactory class begin ==================== */
-Rendering::Effects::EffectFactory::EffectFactory()
+Engine::Effects::EffectFactory::EffectFactory()
 {
 }
 
-Rendering::Effects::EffectFactory::~EffectFactory()
+Engine::Effects::EffectFactory::~EffectFactory()
 {
 }
 
-void Rendering::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Real>* singleValueEffect)
+void Engine::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Real>* singleValueEffect)
 {
 	m_singleValueEffects[effectType].push_back(singleValueEffect);
 }
 
-void Rendering::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Vector2D>* vec2DEffect)
+void Engine::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Vector2D>* vec2DEffect)
 {
 	m_vec2DEffects[effectType].push_back(vec2DEffect);
 }
 
-void Rendering::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Vector3D>* vec3DEffect)
+void Engine::Effects::EffectFactory::CreateEffect(EffectType effectType, Effect<Math::Vector3D>* vec3DEffect)
 {
 	m_vec3DEffects[effectType].push_back(vec3DEffect);
 }
 
-Rendering::Effects::Effect<Math::Real>* Rendering::Effects::EffectFactory::GetSingleValueEffect(EffectType effectType, unsigned int variant)
+Engine::Effects::Effect<Math::Real>* Engine::Effects::EffectFactory::GetSingleValueEffect(EffectType effectType, unsigned int variant)
 {
 	unsigned int correctVariant;
 	if (variant > m_singleValueEffects[effectType].size())
@@ -46,7 +46,7 @@ Rendering::Effects::Effect<Math::Real>* Rendering::Effects::EffectFactory::GetSi
 	return m_singleValueEffects[effectType][correctVariant - 1 /* because we count variants from 1 in cfg file */];
 }
 
-Rendering::Effects::Effect<Math::Vector2D>* Rendering::Effects::EffectFactory::GetVec2DEffect(EffectType effectType, unsigned int variant)
+Engine::Effects::Effect<Math::Vector2D>* Engine::Effects::EffectFactory::GetVec2DEffect(EffectType effectType, unsigned int variant)
 {
 	unsigned int correctVariant;
 	if (variant > m_vec2DEffects[effectType].size())
@@ -66,7 +66,7 @@ Rendering::Effects::Effect<Math::Vector2D>* Rendering::Effects::EffectFactory::G
 	return m_vec2DEffects[effectType][correctVariant - 1 /* because we count variants from 1 in cfg file */];
 }
 
-Rendering::Effects::Effect<Math::Vector3D>* Rendering::Effects::EffectFactory::GetVec3DEffect(EffectType effectType, unsigned int variant)
+Engine::Effects::Effect<Math::Vector3D>* Engine::Effects::EffectFactory::GetVec3DEffect(EffectType effectType, unsigned int variant)
 {
 	unsigned int correctVariant;
 	if (variant > m_vec3DEffects[effectType].size())

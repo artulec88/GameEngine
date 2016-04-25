@@ -7,6 +7,7 @@
 #include "Math\AABR.h"
 #include "Rendering\Font.h"
 #include "Rendering\GuiText.h"
+#include "Effect.h"
 #include <string>
 #include <vector>
 
@@ -64,33 +65,33 @@ public:
 	ENGINE_API bool DoesSelectedChildHaveChildren() const;
 	ENGINE_API MenuEntry* GetParent() const;
 	ENGINE_API MenuEntry* GetSelectedChild() const;
-	ENGINE_API void ApplyColorEffect(Rendering::Effects::Effect<Math::Vector3D>* colorEffect)
+	ENGINE_API void ApplyColorEffect(Effects::Effect<Math::Vector3D>* colorEffect)
 	{
-		m_guiText.ApplyColorEffect(colorEffect);
+		colorEffect->SetAttribute(m_guiText.GetColorPointer());
 	}
-	ENGINE_API void ApplyOutlineColorEffect(Rendering::Effects::Effect<Math::Vector3D>* outlineColorEffect)
+	ENGINE_API void ApplyOutlineColorEffect(Effects::Effect<Math::Vector3D>* outlineColorEffect)
 	{
-		m_guiText.ApplyOutlineColorEffect(outlineColorEffect);
+		outlineColorEffect->SetAttribute(m_guiText.GetOutlineColorPointer());
 	}
-	ENGINE_API void ApplyOffsetEffect(Rendering::Effects::Effect<Math::Vector2D>* offsetEffect)
+	ENGINE_API void ApplyOffsetEffect(Effects::Effect<Math::Vector2D>* offsetEffect)
 	{
-		m_guiText.ApplyOffsetEffect(offsetEffect);
+		offsetEffect->SetAttribute(m_guiText.GetOffsetPointer());
 	}
-	ENGINE_API void ApplyCharacterWidthEffect(Rendering::Effects::Effect<Math::Real>* characterWidthEffect)
+	ENGINE_API void ApplyCharacterWidthEffect(Effects::Effect<Math::Real>* characterWidthEffect)
 	{
-		m_guiText.ApplyCharacterWidthEffect(characterWidthEffect);
+		characterWidthEffect->SetAttribute(m_guiText.GetCharacterWidthPointer());
 	}
-	ENGINE_API void ApplyCharacterEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* characterEdgeTransitionWidthEffect)
+	ENGINE_API void ApplyCharacterEdgeTransitionWidthEffect(Effects::Effect<Math::Real>* characterEdgeTransitionWidthEffect)
 	{
-		m_guiText.ApplyCharacterEdgeTransitionWidthEffect(characterEdgeTransitionWidthEffect);
+		characterEdgeTransitionWidthEffect->SetAttribute(m_guiText.GetCharacterEdgeTransitionWidthPointer());
 	}
-	ENGINE_API void ApplyBorderWidthEffect(Rendering::Effects::Effect<Math::Real>* borderWidthEffect)
+	ENGINE_API void ApplyBorderWidthEffect(Effects::Effect<Math::Real>* borderWidthEffect)
 	{
-		m_guiText.ApplyBorderWidthEffect(borderWidthEffect);
+		borderWidthEffect->SetAttribute(m_guiText.GetBorderWidthPointer());
 	}
-	ENGINE_API void ApplyBorderEdgeTransitionWidthEffect(Rendering::Effects::Effect<Math::Real>* borderEdgeTransitionWidthEffect)
+	ENGINE_API void ApplyBorderEdgeTransitionWidthEffect(Effects::Effect<Math::Real>* borderEdgeTransitionWidthEffect)
 	{
-		m_guiText.ApplyBorderEdgeTransitionWidthEffect(borderEdgeTransitionWidthEffect);
+		borderEdgeTransitionWidthEffect->SetAttribute(m_guiText.GetBorderEdgeTransitionWidthPointer());
 	}
 	// TODO: Update menu entry. For example, make the currently selected menu entry's GUI text outline color blinking.
 private:

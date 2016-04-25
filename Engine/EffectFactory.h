@@ -1,11 +1,11 @@
-#ifndef __RENDERING_EFFECTS_EFFECT_FACTORY_H__
-#define __RENDERING_EFFECTS_EFFECT_FACTORY_H__
+#ifndef __ENGINE_EFFECTS_EFFECT_FACTORY_H__
+#define __ENGINE_EFFECTS_EFFECT_FACTORY_H__
 
-#include "Rendering.h"
+#include "Engine.h"
 #include "Effect.h"
 #include <map>
 
-namespace Rendering
+namespace Engine
 {
 	namespace Effects
 	{
@@ -30,30 +30,30 @@ namespace Rendering
 			/// <summary>
 			/// Creates a new effect factory.
 			/// </summary>
-			RENDERING_API EffectFactory();
-			RENDERING_API virtual ~EffectFactory();
+			ENGINE_API EffectFactory();
+			ENGINE_API virtual ~EffectFactory();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			RENDERING_API void CreateEffect(EffectType effectType, Effect<Math::Real>* singleValueEffect);
-			RENDERING_API void CreateEffect(EffectType effectType, Effect<Math::Vector2D>* vec2DEffect);
-			RENDERING_API void CreateEffect(EffectType effectType, Effect<Math::Vector3D>* vec3DEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Real>* singleValueEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Vector2D>* vec2DEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Vector3D>* vec3DEffect);
 
 			/// <summary> Returns the specific single value effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The single value effect. </returns>
-			RENDERING_API Effect<Math::Real>* GetSingleValueEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Effect<Math::Real>* GetSingleValueEffect(EffectType effectType, unsigned int variant);
 
 			/// <summary> Returns the specific vector 2D effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The vector 2D effect. </returns>
-			RENDERING_API Effect<Math::Vector2D>* GetVec2DEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Effect<Math::Vector2D>* GetVec2DEffect(EffectType effectType, unsigned int variant);
 
 			/// <summary> Returns the specific vector 3D effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The vector 3D effect. </returns>
-			RENDERING_API Effect<Math::Vector3D>* GetVec3DEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Effect<Math::Vector3D>* GetVec3DEffect(EffectType effectType, unsigned int variant);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -64,6 +64,6 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class EffectFactory */
 	} /* end namespace Effects */
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_EFFECTS_EFFECT_FACTORY_H__ */
+#endif /* __ENGINE_EFFECTS_EFFECT_FACTORY_H__ */

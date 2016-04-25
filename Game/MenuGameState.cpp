@@ -61,41 +61,41 @@ MenuGameState::MenuGameState() :
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChildren(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::SHOW_INTRO), "Intro", &m_mainMenuFont,
-		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true, 0.5f, 0.2f, 0.6f, 0.1f));
+		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::QUIT), "Quit", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	Math::Vector3D vectors3D[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real colorTimes[] = { 0.0f, 1.0f, 2.0f };
 	//m_notSelectedMenuEntryColorEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, values, times, 3, 1);
-	m_selectedMenuEntryColorEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, vectors3D, colorTimes, 3, false);
+	m_selectedMenuEntryColorEffect = new Engine::Effects::SmoothTransitionEffect<Math::Vector3D>(NULL, vectors3D, colorTimes, 3, false);
 
 	Math::Real outlineDurations[] = { 1.0f, 1.0f, 2.0f };
-	m_selectedMenuEntryOutlineColorEffect = new Rendering::Effects::BlinkEffect<Math::Vector3D>(NULL, vectors3D, outlineDurations, 3);
+	m_selectedMenuEntryOutlineColorEffect = new Engine::Effects::BlinkEffect<Math::Vector3D>(NULL, vectors3D, outlineDurations, 3);
 
 	Math::Vector2D vectors2D[] = { Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) };
 	Math::Real offsetTimes[] = { 0.0f, 0.75f, 1.5f, 2.25f, 3.0f };
-	m_selectedMenuEntryOffsetEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>(NULL, vectors2D, offsetTimes, 5, true);
+	m_selectedMenuEntryOffsetEffect = new Engine::Effects::SmoothTransitionEffect<Math::Vector2D>(NULL, vectors2D, offsetTimes, 5, true);
 
 	Math::Real characterWidths[] = { 0.4f, 0.45f, 0.5f, 0.55f, 0.6f };
 	Math::Real characterTimes[] = { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f };
 	//m_notSelectedMenuEntryCharacterWidthEffect(NULL);
-	m_selectedMenuEntryCharacterWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterWidths, characterTimes, 5, false);
+	m_selectedMenuEntryCharacterWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterWidths, characterTimes, 5, false);
 
 	Math::Real characterEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
 	Math::Real characterEdgeTransitionTimes[] = { 0.0f, 1.5f, 3.0f, 4.5f, 6.0f };
 	//m_notSelectedMenuEntryCharacterEdgeTransitionEffect(NULL);
-	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterEdgeTransitionWidths, characterEdgeTransitionTimes, 5, true);
+	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, characterEdgeTransitionWidths, characterEdgeTransitionTimes, 5, true);
 	
 	Math::Real borderWidths[] = { 0.0f, 0.12f, 0.24f, 0.36f, 0.48f };
 	Math::Real borderTimes[] = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
 	//m_notSelectedMenuEntryBorderWidthEffect(NULL);
-	m_selectedMenuEntryBorderWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderWidths, borderTimes, 5, false);
+	m_selectedMenuEntryBorderWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderWidths, borderTimes, 5, false);
 
 	Math::Real borderEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.5f };
 	Math::Real borderEdgeTransitionTimes[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
 	//m_notSelectedMenuEntryBorderEdgeTransitionEffect(NULL);
-	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Rendering::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
+	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
 
 	SelectChild(0);
 }

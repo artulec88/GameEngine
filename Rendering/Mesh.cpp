@@ -1034,7 +1034,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 {
 #ifdef HEIGHTMAP_KD_TREE
 #ifdef MEASURE_MESH_TIME_ENABLED
-	clock_t begin = clock(); // TODO: Replace with Utility::Timer
+	clock_t begin = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 #endif
 	DEBUG_LOG("Terrain consists of %d positions", positions.size());
 	std::unordered_set<Math::Vector3D> verticesSet;
@@ -1045,7 +1045,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 	std::vector<Math::Vector3D> uniquePositions;
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_MESH_TIME_ENABLED
-	clock_t end = clock(); // TODO: Replace with Utility::Timer
+	clock_t end = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 	DEBUG_LOG("Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
 #endif
 

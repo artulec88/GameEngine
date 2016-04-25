@@ -3,7 +3,7 @@
 
 /* ==================== Effect<T> class begin ==================== */
 template <class T>
-Rendering::Effects::Effect<T>::Effect(T* attribute) :
+Engine::Effects::Effect<T>::Effect(T* attribute) :
 	m_attribute(attribute),
 	m_initialValue()
 {
@@ -14,12 +14,12 @@ Rendering::Effects::Effect<T>::Effect(T* attribute) :
 }
 
 template <class T>
-Rendering::Effects::Effect<T>::~Effect()
+Engine::Effects::Effect<T>::~Effect()
 {
 }
 
 template <class T>
-void Rendering::Effects::Effect<T>::Update(Math::Real deltaTime)
+void Engine::Effects::Effect<T>::Update(Math::Real deltaTime)
 {
 	// NOP
 	return;
@@ -28,7 +28,7 @@ void Rendering::Effects::Effect<T>::Update(Math::Real deltaTime)
 
 /* ==================== SmoothTransitionEffect<T> class begin ==================== */
 template <class T>
-Rendering::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(T* attribute, const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
+Engine::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(T* attribute, const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
 	Effect(attribute),
 	m_valuesInterpolator(values, times, valuesCount),
 	m_timer(times[0]),
@@ -38,12 +38,12 @@ Rendering::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(T* attribu
 }
 
 template <class T>
-Rendering::Effects::SmoothTransitionEffect<T>::~SmoothTransitionEffect()
+Engine::Effects::SmoothTransitionEffect<T>::~SmoothTransitionEffect()
 {
 }
 
 template <class T>
-void Rendering::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
+void Engine::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
 {
 	if (m_attribute == NULL)
 	{
@@ -80,10 +80,10 @@ void Rendering::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
 
 /* ==================== BlinkEffect<T> class begin ==================== */
 template <class T>
-/* static */ const Math::Real Rendering::Effects::BlinkEffect<T>::DEFAULT_DURATION = 0.5f;
+/* static */ const Math::Real Engine::Effects::BlinkEffect<T>::DEFAULT_DURATION = 0.5f;
 
 template <class T>
-Rendering::Effects::BlinkEffect<T>::BlinkEffect(T* attribute, const T* values, const Math::Real* durations, unsigned int valuesCount) :
+Engine::Effects::BlinkEffect<T>::BlinkEffect(T* attribute, const T* values, const Math::Real* durations, unsigned int valuesCount) :
 	Effect(attribute),
 	m_currentIndex(0),
 	m_timer(0.0f)
@@ -104,12 +104,12 @@ Rendering::Effects::BlinkEffect<T>::BlinkEffect(T* attribute, const T* values, c
 }
 
 template <class T>
-Rendering::Effects::BlinkEffect<T>::~BlinkEffect()
+Engine::Effects::BlinkEffect<T>::~BlinkEffect()
 {
 }
 
 template <class T>
-void Rendering::Effects::BlinkEffect<T>::Update(Math::Real deltaTime)
+void Engine::Effects::BlinkEffect<T>::Update(Math::Real deltaTime)
 {
 	if (m_attribute == NULL)
 	{

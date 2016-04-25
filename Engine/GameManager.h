@@ -11,7 +11,7 @@
 #include "GameCommand.h"
 #include "GameCommandFactory.h"
 
-#include "Rendering\EffectFactory.h"
+#include "EffectFactory.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Particle.h"
 #include "Rendering\Shader.h"
