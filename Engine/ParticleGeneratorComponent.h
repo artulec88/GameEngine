@@ -32,7 +32,7 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		ParticleGenerator m_particleGenerator;
+		ParticleGenerator* m_particleGenerator;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticleGeneratorComponent */
 

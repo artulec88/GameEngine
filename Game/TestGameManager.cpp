@@ -440,11 +440,16 @@ void TestGameManager::Load()
 		new Rendering::Material(new Rendering::Texture("chessboard3.jpg"))));
 	//monkeyNode1->AddComponent(new Engine::LookAtComponent());
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	monkeyNode1->GetTransform().SetPos(-3.0f, 0.75f, 4.0f);
+	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
 	monkeyNode1->GetTransform().SetScale(0.1f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
+	monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true)),
+		GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
+		GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
+		GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
+		GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
 	AddToSceneRoot(monkeyNode1);
 
 	//GameNode* monkeyNode2 = new GameNode();
@@ -504,11 +509,11 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, particleTexture,
-		GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
-		GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
-		GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
-		GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
+	//playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, particleTexture,
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

@@ -2,6 +2,7 @@
 #include "ParticleGenerator.h"
 #include <algorithm>
 
+/* ==================== ParticleGenerator class begin ==================== */
 ///* static */ const int Engine::ParticleGenerator::MAX_PARTICLES_COUNT = 10000;
 
 Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
@@ -21,28 +22,6 @@ Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particl
 Engine::ParticleGenerator::~ParticleGenerator()
 {
 	SAFE_DELETE(m_particleTexture);
-}
-
-void Engine::ParticleGenerator::Update(Math::Real deltaTime)
-{
-	m_currentTimer += deltaTime;
-	m_aliveParticlesCount = 0;
-	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
-	{
-		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
-		{
-			++m_aliveParticlesCount;
-		}
-	}
-}
-
-void Engine::ParticleGenerator::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
-{
-	while (m_currentTimer > m_timeForGeneratingOneParticle)
-	{
-		EmitParticle(initialPosition);
-		m_currentTimer -= m_timeForGeneratingOneParticle;
-	}
 }
 
 void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
@@ -78,3 +57,80 @@ void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPositi
 	//	ERROR_LOG("particle[%d] = %.3f", i, originDistances[i]);
 	//}
 }
+/* ==================== ParticleGenerator class end ==================== */
+
+/* ==================== FireParticleGenerator class begin ==================== */
+Engine::FireParticleGenerator::FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
+	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
+	ParticleGenerator(particleTexture, particlesPerSecondCount, particleSpeed, particleGravityComplient, particleLifeSpanLimit)
+{
+}
+
+
+Engine::FireParticleGenerator::~FireParticleGenerator()
+{
+}
+
+void Engine::FireParticleGenerator::Update(Math::Real deltaTime)
+{
+	m_currentTimer += deltaTime;
+	m_aliveParticlesCount = 0;
+	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
+	{
+		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
+		{
+			++m_aliveParticlesCount;
+		}
+	}
+}
+
+void Engine::FireParticleGenerator::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+{
+	while (m_currentTimer > m_timeForGeneratingOneParticle)
+	{
+		Math::Real x = initialPosition.GetX() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
+		Math::Real y = initialPosition.GetY() + 0.5f;
+		Math::Real z = initialPosition.GetZ() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
+		EmitParticle(Math::Vector3D(x, y, z));
+		m_currentTimer -= m_timeForGeneratingOneParticle;
+	}
+}
+/* ==================== FreeFallParticleGenerator class end ==================== */
+
+/* ==================== FreeFallParticleGenerator class begin ==================== */
+Engine::FreeFallParticleGenerator::FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
+	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
+	ParticleGenerator(particleTexture, particlesPerSecondCount, particleSpeed, particleGravityComplient, particleLifeSpanLimit)
+{
+}
+
+
+Engine::FreeFallParticleGenerator::~FreeFallParticleGenerator()
+{
+}
+
+void Engine::FreeFallParticleGenerator::Update(Math::Real deltaTime)
+{
+	m_currentTimer += deltaTime;
+	m_aliveParticlesCount = 0;
+	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
+	{
+		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
+		{
+			++m_aliveParticlesCount;
+		}
+	}
+}
+
+void Engine::FreeFallParticleGenerator::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+{
+	while (m_currentTimer > m_timeForGeneratingOneParticle)
+	{
+		Math::Real x = initialPosition.GetX() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
+		Math::Real y = initialPosition.GetY() + 0.5f;
+		Math::Real z = initialPosition.GetZ() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
+		EmitParticle(Math::Vector3D(x, y, z));
+		m_currentTimer -= m_timeForGeneratingOneParticle;
+	}
+}
+/* ==================== FreeFallParticleGenerator class end ==================== */
