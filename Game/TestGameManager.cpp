@@ -447,9 +447,11 @@ void TestGameManager::Load()
 	//monkeyNode1->AddComponent(new LookAtComponent());
 	monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true)),
 		GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
+		GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f),
 		GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
 		GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
-		GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
+		Math::Angle(GET_CONFIG_VALUE("particleGeneratorParticlesRotation", REAL_ZERO)),
+		GET_CONFIG_VALUE("particleGeneratorParticlesScale", 0.005f)));
 	AddToSceneRoot(monkeyNode1);
 
 	//GameNode* monkeyNode2 = new GameNode();
@@ -511,9 +513,9 @@ void TestGameManager::Load()
 		GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true));
 	//playerNode->AddComponent(new Engine::ParticleGeneratorComponent(this, particleTexture,
 	//	GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f),
 	//	GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f)));
+	//	GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f)));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 

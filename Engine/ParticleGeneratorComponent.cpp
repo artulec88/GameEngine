@@ -2,11 +2,11 @@
 #include "ParticleGeneratorComponent.h"
 
 
-Engine::ParticleGeneratorComponent::ParticleGeneratorComponent(GameManager* gameManager, Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-	Math::Real speed, Math::Real gravityComplient, Math::Real lifeSpanLimit) :
+Engine::ParticleGeneratorComponent::ParticleGeneratorComponent(GameManager* gameManager, Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
 	m_particleGenerator(NULL)
 {
-	m_particleGenerator = new FreeFallParticleGenerator(particleTexture, particlesPerSecondCount, speed, gravityComplient, lifeSpanLimit);
+	m_particleGenerator = new FreeFallParticleGenerator(particleTexture, particlesPerSecondCount, particleLifeSpanLimit, particleSpeed, particleGravityComplient, particleRotation, particleScale);
 	gameManager->AddParticleGenerator(m_particleGenerator);
 }
 

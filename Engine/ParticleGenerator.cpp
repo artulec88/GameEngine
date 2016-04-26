@@ -5,11 +5,8 @@
 /* ==================== ParticleGenerator class begin ==================== */
 ///* static */ const int Engine::ParticleGenerator::MAX_PARTICLES_COUNT = 10000;
 
-Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
+Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
-	m_particleSpeed(particleSpeed),
-	m_particleGravityComplient(particleGravityComplient),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
 	m_currentTimer(0.0f),
 	m_timeForGeneratingOneParticle(1.0f / particlesPerSecondCount),
@@ -60,9 +57,13 @@ void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPositi
 /* ==================== ParticleGenerator class end ==================== */
 
 /* ==================== FireParticleGenerator class begin ==================== */
-Engine::FireParticleGenerator::FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
-	ParticleGenerator(particleTexture, particlesPerSecondCount, particleSpeed, particleGravityComplient, particleLifeSpanLimit)
+Engine::FireParticleGenerator::FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
+	ParticleGenerator(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
+	m_particleSpeed(particleSpeed),
+	m_particleGravityComplient(particleGravityComplient),
+	m_particleRotation(particleRotation),
+	m_particleScale(particleScale)
 {
 }
 
@@ -95,9 +96,13 @@ void Engine::FireParticleGenerator::GenerateParticles(const Math::Vector3D& init
 /* ==================== FreeFallParticleGenerator class end ==================== */
 
 /* ==================== FreeFallParticleGenerator class begin ==================== */
-Engine::FreeFallParticleGenerator::FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-	Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit) :
-	ParticleGenerator(particleTexture, particlesPerSecondCount, particleSpeed, particleGravityComplient, particleLifeSpanLimit)
+Engine::FreeFallParticleGenerator::FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
+	ParticleGenerator(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
+	m_particleSpeed(particleSpeed),
+	m_particleGravityComplient(particleGravityComplient),
+	m_particleRotation(particleRotation),
+	m_particleScale(particleScale)
 {
 }
 

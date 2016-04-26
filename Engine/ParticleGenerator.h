@@ -20,8 +20,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit);
+		ENGINE_API ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
 		ENGINE_API virtual ~ParticleGenerator(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -71,8 +70,6 @@ namespace Engine
 	protected:
 		Rendering::ParticleTexture* m_particleTexture;
 		Rendering::Particle m_particles[MAX_PARTICLES_COUNT];
-		Math::Real m_particleSpeed;
-		Math::Real m_particleGravityComplient;
 		Math::Real m_particleLifeSpanLimit;
 
 		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
@@ -89,8 +86,8 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit);
+		ENGINE_API FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
 		ENGINE_API virtual ~FireParticleGenerator(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -107,13 +104,16 @@ namespace Engine
 			Math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
-			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.005f);
+			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
 		}
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-
+		Math::Real m_particleSpeed;
+		Math::Real m_particleGravityComplient;
+		Math::Angle m_particleRotation;
+		Math::Real m_particleScale;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class FireParticleGenerator */
 
@@ -124,8 +124,8 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, Math::Real particleLifeSpanLimit);
+		ENGINE_API FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
 		ENGINE_API virtual ~FreeFallParticleGenerator(void);
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -142,13 +142,16 @@ namespace Engine
 			Math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
-			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.085f);
+			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
 		}
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-
+		Math::Real m_particleSpeed;
+		Math::Real m_particleGravityComplient;
+		Math::Angle m_particleRotation;
+		Math::Real m_particleScale;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class FreeFallParticleGenerator */
 
