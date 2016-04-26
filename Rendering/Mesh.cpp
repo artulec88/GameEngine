@@ -656,9 +656,9 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(12 * sizeof(Math::Real)));
 	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
 	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
-	glVertexAttribPointer(5 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
-	glEnableVertexAttribArray(5 /* MVP_MATRIX_COLUMN_4_LOCATION */);
-	glVertexAttribDivisor(5 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
+	glVertexAttribPointer(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
+	glEnableVertexAttribArray(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */);
+	glVertexAttribDivisor(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 1);
 	glVertexAttribPointer(6 /* BLEND_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(20 * sizeof(Math::Real)));
 	glEnableVertexAttribArray(6 /* BLEND_FACTOR_LOCATION */);
 	glVertexAttribDivisor(6 /* BLEND_FACTOR_LOCATION */, 1);
