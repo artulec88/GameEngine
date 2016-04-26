@@ -6,6 +6,7 @@
 #include "PointLightComponent.h"
 #include "SpotLightComponent.h"
 #include "MeshRendererComponent.h"
+#include "ParticleGeneratorComponent.h"
 #include "Rendering\Shader.h"
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
