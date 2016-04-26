@@ -255,7 +255,11 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 
 	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
 	const int maxParticlesCount = GET_CONFIG_VALUE("maxParticlesCount", 10000);
+#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 21);
+#else
+	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 17);
+#endif
 	m_particleShader = new Shader(GET_CONFIG_VALUE_STR("particleShader", "particle-shader"));
 	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
 
@@ -899,10 +903,6 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Par
 		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particles[i].GetRotation());
 		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particles[i].GetScale());
 		
-		//Math::Transform particleTransform(particleItr->GetPosition(), particleRotation, particleItr->GetScale());
-		//m_particleShader->UpdateUniforms(particleTransform, NULL, this);
-		//m_particleShader->SetUniformMatrix("T_model", modelMatrix);
-		//m_particleShader->SetUniformMatrix("T_MVP", m_currentCamera->GetViewProjection() * modelMatrix);
 		Math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 1));
@@ -920,19 +920,20 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Par
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 1));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 2));
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 3));
-		
+
+#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION		
 		Math::Vector2D textureOffset0;
 		Math::Vector2D textureOffset1;
 		Math::Real textureAtlasBlendFactor;
 		particles[i].CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
-		//m_particleShader->SetUniformVector2D("textureOffset0", textureOffset0);
-		//m_particleShader->SetUniformVector2D("textureOffset1", textureOffset1);
-		//m_particleShader->SetUniformf("lifeStageBlendFactor", textureAtlasBlendFactor);
 		m_particleInstanceVboData.push_back(textureOffset0.GetX());
 		m_particleInstanceVboData.push_back(textureOffset0.GetY());
 		m_particleInstanceVboData.push_back(textureOffset1.GetX());
 		m_particleInstanceVboData.push_back(textureOffset1.GetY());
 		m_particleInstanceVboData.push_back(textureAtlasBlendFactor);
+#else
+		m_particleInstanceVboData.push_back(particles[i].CalculateLifeStageFactor());
+#endif
 	}
 	m_particleQuad->Draw(&m_particleInstanceVboData[0], m_particleInstanceVboData.size(), particlesCount);
 	if (Rendering::glDepthTestEnabled)

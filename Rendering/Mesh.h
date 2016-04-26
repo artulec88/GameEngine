@@ -20,6 +20,7 @@
 #include "Math\KDTree.h"
 #endif
 
+//#define TEXTURE_ATLAS_OFFSET_CALCULATION
 //#define MEASURE_MESH_TIME_ENABLED
 
 #define MESH_DATA_BUFFERS_COUNT 7

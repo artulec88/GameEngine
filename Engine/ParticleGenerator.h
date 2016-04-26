@@ -142,7 +142,7 @@ namespace Engine
 			Math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
-			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.005f);
+			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, Math::Angle(0.0f), 0.085f);
 		}
 	/* ==================== Non-static member functions end ==================== */
 

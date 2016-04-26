@@ -78,6 +78,10 @@ namespace Rendering
 		bool IsAlive() const { return m_lifeSpan < m_lifeSpanLimit; }
 		//Math::Real GetLifeSpanFactor() const { return m_lifeSpan / m_lifeSpanLimit; }
 
+		Math::Real CalculateLifeStageFactor() const
+		{
+			return m_lifeSpan / m_lifeSpanLimit;
+		}
 		void CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const;
 		//const Math::Vector2D& GetTextureOffsetCurrentState() const { return m_textureOffsetCurrentState; }
 		//const Math::Vector2D& GetTextureOffsetNextState() const { return m_textureOffsetNextState; }

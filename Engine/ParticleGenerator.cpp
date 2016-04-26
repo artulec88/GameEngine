@@ -88,10 +88,7 @@ void Engine::FireParticleGenerator::GenerateParticles(const Math::Vector3D& init
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
-		Math::Real x = initialPosition.GetX() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
-		Math::Real y = initialPosition.GetY() + 0.5f;
-		Math::Real z = initialPosition.GetZ() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f);
-		EmitParticle(Math::Vector3D(x, y, z));
+		EmitParticle(initialPosition);
 		m_currentTimer -= m_timeForGeneratingOneParticle;
 	}
 }

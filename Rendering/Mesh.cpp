@@ -657,11 +657,17 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
 	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
 	glVertexAttribPointer(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
+#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	glEnableVertexAttribArray(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */);
 	glVertexAttribDivisor(5 /* TEXTURE_ATLAS_OFFSETS_LOCATION */, 1);
 	glVertexAttribPointer(6 /* BLEND_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(20 * sizeof(Math::Real)));
 	glEnableVertexAttribArray(6 /* BLEND_FACTOR_LOCATION */);
 	glVertexAttribDivisor(6 /* BLEND_FACTOR_LOCATION */, 1);
+#else
+	glVertexAttribPointer(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)(16 * sizeof(Math::Real)));
+	glEnableVertexAttribArray(5 /* LIFE_STAGE_FACTOR_LOCATION */);
+	glVertexAttribDivisor(5 /* LIFE_STAGE_FACTOR_LOCATION */, 1);
+#endif
 
 	m_meshData->Unbind();
 }
