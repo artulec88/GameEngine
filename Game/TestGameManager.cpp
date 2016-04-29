@@ -405,8 +405,8 @@ void TestGameManager::Load()
 	for (int i = 0; i < treeCount; ++i)
 	{
 		Engine::GameNode* treeNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5001) / 2500.0f) * 15.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5001) / 2500.0f) * 10.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
@@ -421,8 +421,8 @@ void TestGameManager::Load()
 	for (int i = 0; i < boulderCount; ++i)
 	{
 		Engine::GameNode* boulderNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5000) / 2500.0f) * 50.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5001) / 2500.0f) * 50.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5001) / 2500.0f) * 50.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		boulderNode->GetTransform().SetPos(x, y, z);
 		boulderNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
@@ -475,12 +475,12 @@ void TestGameManager::Load()
 	for (int i = 0; i < 20; ++i)
 	{
 		Engine::GameNode* billboardNode = new Engine::GameNode();
-		Math::Real x = static_cast<Real>(rand() % 50) - 25.0f;
-		Math::Real z = static_cast<Real>(rand() % 50) - 25.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5001) / 5000.0f) * 15.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5001) / 5000.0f) * 10.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		billboardNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::BillboardMesh(Math::Vector3D(x, y, z)), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png"), GL_TEXTURE_2D, GL_NEAREST))));
 		// TODO: Scaling the billboards
-		//billboardNode->GetTransform().SetScale(0.2f);
+		billboardNode->GetTransform().SetScale(0.1f);
 		AddBillboardNode(billboardNode);
 	}
 

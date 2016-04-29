@@ -724,6 +724,10 @@ void Shader::UpdateUniforms(const Math::Transform& transform, const Material* ma
 			{
 				SetUniformMatrix(uniformName, worldMatrix);
 			}
+			else if (uniformName == "T_scale")
+			{
+				SetUniformf(uniformName, transform.GetScale());
+			}
 			else
 			{
 				//throw "Invalid Transform Uniform: " + uniformName;

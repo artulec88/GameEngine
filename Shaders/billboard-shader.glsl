@@ -15,6 +15,7 @@ layout(max_vertices = 4) out; // We will emit no more than four vertices (we kno
 
 uniform mat4 T_VP;
 uniform vec3 C_eyePos;
+uniform float T_scale;
 
 out vec2 texCoord0;
 
@@ -30,23 +31,23 @@ void main()
 	vec3 right = cross(directionToCamera, upVec);
 	//vec3 right = cross(upVec, directionToCamera);
 	
-	pos -= (right * 0.5);
+	pos -= (right * 0.5 * T_scale);
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(0.0, 1.0);
 	EmitVertex();
 	
-	pos.y += 1.0;
+	pos.y += T_scale;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(0.0, 0.0);
 	EmitVertex();
 	
-	pos.y -= 1.0;
-	pos += right;
+	pos.y -= T_scale;
+	pos += right * T_scale;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(1.0, 1.0);
 	EmitVertex();
 	
-	pos.y += 1.0;
+	pos.y += T_scale;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(1.0, 0.0);
 	EmitVertex();
