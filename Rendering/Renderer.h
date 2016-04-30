@@ -141,6 +141,8 @@ public:
 	{
 		enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 	}
+	RENDERING_API inline void SetBlendingEnabled(bool enabled) { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
+	RENDERING_API inline void SetBlendFunc(GLenum sFactor, GLenum dFactor) { glBlendFunc(sFactor, dFactor); }
 	RENDERING_API inline void SetCullFaceFront() { glCullFace(GL_FRONT); }
 	RENDERING_API inline void SetCullFaceBack() { glCullFace(GL_BACK); }
 	RENDERING_API inline void SetCullFaceFrontAndBack() { glCullFace(GL_FRONT_AND_BACK); }

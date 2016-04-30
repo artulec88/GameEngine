@@ -58,6 +58,7 @@ public:
 	virtual void InitializeTweakBars();
 #endif
 private:
+	void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 	void AddLights();
 	void AddDirectionalLight();
 	void AddPointLights();

@@ -420,10 +420,19 @@ void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DEBUG_LOG("Rendering billboards started");
+	//renderer->SetDepthTest(false);
+	renderer->SetBlendingEnabled(true);
+	//GL_ZERO, GL_ONE, GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR, GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_DST_ALPHA,
+	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
+	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
+	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	for (std::vector<Engine::GameNode*>::const_iterator billboardsRendererItr = m_gameManager->GetBillboardRenderers().begin(); billboardsRendererItr != m_gameManager->GetBillboardRenderers().end(); ++billboardsRendererItr)
 	{
 		(*billboardsRendererItr)->Render(renderer->GetBillboardShader(), renderer);
 	}
+	//renderer->SetDepthTest(true);
+	renderer->SetBlendingEnabled(false);
+	//renderer->SetBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 	STOP_PROFILING;
 }
 
