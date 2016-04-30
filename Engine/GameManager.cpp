@@ -173,11 +173,11 @@ void Engine::GameManager::AddWaterNode(GameNode* waterNode)
 	m_waterNode = waterNode;
 }
 
-void Engine::GameManager::AddBillboardNode(GameNode* billboardNode)
+void Engine::GameManager::AddBillboardsRenderer(GameNode* billboardsRenderer)
 {
 	//CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
 	// TODO: Check conditions
-	m_billboardNodes.push_back(billboardNode);
+	m_billboardsRenderers.push_back(billboardsRenderer);
 }
 
 void Engine::GameManager::AddText(const Rendering::Text::GuiText& guiText)

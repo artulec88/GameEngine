@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABBColliderComponent.h" />
+    <ClInclude Include="BillboardRendererComponent.h" />
     <ClInclude Include="Builder.h" />
     <ClInclude Include="BuilderDirector.h" />
     <ClInclude Include="CameraComponent.h" />
@@ -189,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBColliderComponent.cpp" />
+    <ClCompile Include="BillboardRendererComponent.cpp" />
     <ClCompile Include="Builder.cpp" />
     <ClCompile Include="BuilderDirector.cpp" />
     <ClCompile Include="CameraComponent.cpp" />

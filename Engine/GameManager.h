@@ -74,7 +74,7 @@ public:
 	ENGINE_API inline GameNode* GetWaterNode() { return m_waterNode; }
 	ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 	ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
-	ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardNodes; }
+	ENGINE_API inline const std::vector<GameNode*>& GetBillboardRenderers() const { return m_billboardsRenderers; }
 	ENGINE_API inline const std::vector<ParticleGenerator*>& GetParticleGenerators() const { return m_particleGenerators; }
 	//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
@@ -127,7 +127,7 @@ public:
 public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
-	ENGINE_API void AddBillboardNode(GameNode* billboardNode);
+	ENGINE_API void AddBillboardsRenderer(GameNode* billboardsRenderer);
 	ENGINE_API void AddText(const Rendering::Text::GuiText& text);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
 	ENGINE_API void AddParticleGenerator(ParticleGenerator* particleGenerator);
@@ -141,7 +141,7 @@ protected:
 	GameNode* m_terrainNode;
 	GameNode* m_skyboxNode;
 	GameNode* m_waterNode;
-	std::vector<GameNode*> m_billboardNodes;
+	std::vector<GameNode*> m_billboardsRenderers;
 	std::vector<ParticleGenerator*> m_particleGenerators;
 	//FontMap m_texts;
 	GameStateManager* m_gameStateManager;

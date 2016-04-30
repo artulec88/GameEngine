@@ -223,7 +223,7 @@ class BillboardMesh : public Mesh
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	RENDERING_API BillboardMesh(const Math::Vector3D& worldPosition);
+	RENDERING_API BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
 	RENDERING_API virtual ~BillboardMesh(void);
 private: // disable copy constructor and assignment operator
 	BillboardMesh(BillboardMesh& billboardMesh);
@@ -232,13 +232,13 @@ private: // disable copy constructor and assignment operator
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	//virtual void Draw() const;
+	virtual void Draw() const;
 /* ==================== Non-static member functions end ==================== */
 
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Math::Vector3D m_worldPosition;
+	unsigned int m_billboardsCount;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class BillboardMesh */
 

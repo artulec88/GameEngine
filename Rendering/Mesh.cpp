@@ -575,35 +575,48 @@ void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* po
 	//}
 }
 
-Rendering::BillboardMesh::BillboardMesh(const Math::Vector3D& worldPosition) :
+Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength) :
 	Mesh(GL_POINTS),
-	m_worldPosition(worldPosition)
+	m_billboardsCount(billboardsCount)
 {
-	AddVertices(&m_worldPosition, NULL, NULL, NULL, NULL, 1, NULL, 0, false);
-	//m_meshData = new MeshData(1);
-	//m_meshData->CreateVAO();
-	//m_meshData->Bind();
-	//m_meshData->CreateVBO(POSITIONS_BUFFER); // we will only store positions
-	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(POSITIONS_BUFFER));
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Vector3D), &m_worldPosition, GL_STATIC_DRAW);
-	//glEnableVertexAttribArray(POSITION_ATTRIBUTE_LOCATION);
-	//glVertexAttribPointer(POSITION_ATTRIBUTE_LOCATION, 3, GL_FLOAT, GL_FALSE, 0, 0); // world position
-	//m_meshData->Unbind();
+	AddVertices(&Math::Vector3D(0.0f, 0.0f, 0.0f), NULL, NULL, NULL, NULL, 1, NULL, 0, false);
+
+	CHECK_CONDITION_EXIT(billboardsCount > 0, Utility::Error, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0");
+	CHECK_CONDITION_EXIT(billboardDataLength > 0, Utility::Error, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0");
+
+	m_meshData->Bind();
+	m_meshData->CreateVBO(INSTANCE_BUFFER); // instanced attributes will be stored in this VBO
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(INSTANCE_BUFFER));
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_billboardsCount * billboardDataLength, modelMatricesValues, GL_STATIC_DRAW);
+	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)0);
+	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
+	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
+	glVertexAttribPointer(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(4 * sizeof(Math::Real)));
+	glEnableVertexAttribArray(2 /* MVP_MATRIX_COLUMN_2_LOCATION */);
+	glVertexAttribDivisor(2 /* MVP_MATRIX_COLUMN_2_LOCATION */, 1);
+	glVertexAttribPointer(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(8 * sizeof(Math::Real)));
+	glEnableVertexAttribArray(3 /* MVP_MATRIX_COLUMN_3_LOCATION */);
+	glVertexAttribDivisor(3 /* MVP_MATRIX_COLUMN_3_LOCATION */, 1);
+	glVertexAttribPointer(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)(12 * sizeof(Math::Real)));
+	glEnableVertexAttribArray(4 /* MVP_MATRIX_COLUMN_4_LOCATION */);
+	glVertexAttribDivisor(4 /* MVP_MATRIX_COLUMN_4_LOCATION */, 1);
+
+	m_meshData->Unbind();
 }
 
 Rendering::BillboardMesh::~BillboardMesh()
 {
 }
 
-//void Rendering::BillboardMesh::Draw() const
-//{
-//	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
-//	m_meshData->Bind();
-//
-//	glDrawArrays(m_mode, 0, m_meshData->GetSize());
-//
-//	m_meshData->Unbind();
-//}
+void Rendering::BillboardMesh::Draw() const
+{
+	CHECK_CONDITION_EXIT(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	m_meshData->Bind();
+
+	glDrawArraysInstanced(m_mode, 0, 1, m_billboardsCount);
+
+	m_meshData->Unbind();
+}
 
 Rendering::GuiMesh::GuiMesh(Math::Vector2D* positions, unsigned int positionsCount) :
 	Mesh(GL_TRIANGLE_STRIP),

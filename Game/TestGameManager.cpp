@@ -7,6 +7,7 @@
 
 #include "Engine\CoreEngine.h"
 #include "Rendering\Camera.h"
+#include "Engine\BillboardRendererComponent.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
@@ -472,17 +473,40 @@ void TestGameManager::Load()
 	waterNode->GetTransform().SetScale(0.2f);
 	AddWaterNode(waterNode);
 
-	for (int i = 0; i < 20; ++i)
+	Math::Real angle = 0.0f;
+	const int billboardsCount = GET_CONFIG_VALUE("billboardsTreeCount", 10);
+	std::vector<Math::Real> billboardsModelMatrices;
+	billboardsModelMatrices.reserve(billboardsCount * MATRIX_SIZE * MATRIX_SIZE);
+	for (int i = 0; i < billboardsCount; ++i)
 	{
-		Engine::GameNode* billboardNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5001) / 5000.0f) * 15.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5001) / 5000.0f) * 10.0f;
+		Math::Real x = (static_cast<Real>(rand() % 5001) / 5000.0f) * 150.0f;
+		Math::Real z = (static_cast<Real>(rand() % 5001) / 5000.0f) * 150.0f;
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
-		billboardNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::BillboardMesh(Math::Vector3D(x, y, z)), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png"), GL_TEXTURE_2D, GL_NEAREST))));
-		// TODO: Scaling the billboards
-		billboardNode->GetTransform().SetScale(0.1f);
-		AddBillboardNode(billboardNode);
+
+		Transform billboardTransform(Math::Vector3D(x, y, z), Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
+		//angle += 15.0f;
+		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
+
+		billboardsModelMatrices.push_back(billboardModelMatrix[0][0]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[0][1]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[0][2]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[0][3]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[1][0]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[1][1]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[1][2]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[1][3]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[2][0]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[2][1]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[2][2]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[2][3]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[3][0]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[3][1]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[3][2]);
+		billboardsModelMatrices.push_back(billboardModelMatrix[3][3]);
 	}
+	Engine::GameNode* billboardsRenderer = new Engine::GameNode();
+	billboardsRenderer->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture", "Tree1.png"), GL_TEXTURE_2D, GL_NEAREST))));
+	AddBillboardsRenderer(billboardsRenderer);
 
 	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)

@@ -420,9 +420,9 @@ void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DEBUG_LOG("Rendering billboards started");
-	for (std::vector<Engine::GameNode*>::const_iterator billboardNodeItr = m_gameManager->GetBillboardNodes().begin(); billboardNodeItr != m_gameManager->GetBillboardNodes().end(); ++billboardNodeItr)
+	for (std::vector<Engine::GameNode*>::const_iterator billboardsRendererItr = m_gameManager->GetBillboardRenderers().begin(); billboardsRendererItr != m_gameManager->GetBillboardRenderers().end(); ++billboardsRendererItr)
 	{
-		(*billboardNodeItr)->Render(renderer->GetBillboardShader(), renderer);
+		(*billboardsRendererItr)->Render(renderer->GetBillboardShader(), renderer);
 	}
 	STOP_PROFILING;
 }

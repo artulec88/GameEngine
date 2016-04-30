@@ -1,11 +1,13 @@
 #include "common.glh"
 
 #if defined(VS_BUILD)
-attribute vec3 position;
+layout(location = 0) attribute vec3 position;
+layout(location = 1) attribute mat4 model;
 
 void main()
 {
-    gl_Position = vec4(position, 1.0);
+    //gl_Position = vec4(position.x + model[3][0], position.y + model[3][1], position.z + model[3][2], 1.0);
+	gl_Position = vec4(position.x + model[3][0], position.y + model[3][1], position.z + model[3][2], 1.0);
 }
 
 #elif defined(GS_BUILD)
@@ -15,7 +17,7 @@ layout(max_vertices = 4) out; // We will emit no more than four vertices (we kno
 
 uniform mat4 T_VP;
 uniform vec3 C_eyePos;
-uniform float T_scale;
+//uniform float T_scale;
 
 out vec2 texCoord0;
 
@@ -31,23 +33,23 @@ void main()
 	vec3 right = cross(directionToCamera, upVec);
 	//vec3 right = cross(upVec, directionToCamera);
 	
-	pos -= (right * 0.5 * T_scale);
+	pos -= (right * 0.5);
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(0.0, 1.0);
 	EmitVertex();
 	
-	pos.y += T_scale;
+	pos.y += 1.0;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(0.0, 0.0);
 	EmitVertex();
 	
-	pos.y -= T_scale;
-	pos += right * T_scale;
+	pos.y -= 1.0;
+	pos += right;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(1.0, 1.0);
 	EmitVertex();
 	
-	pos.y += T_scale;
+	pos.y += 1.0;
 	gl_Position = T_VP * vec4(pos, 1.0);
 	texCoord0 = vec2(1.0, 0.0);
 	EmitVertex();

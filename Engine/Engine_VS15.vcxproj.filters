@@ -123,6 +123,9 @@
     <ClInclude Include="EffectFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BillboardRendererComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -210,6 +213,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EffectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardRendererComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
