@@ -241,8 +241,8 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 		{
 			DEBUG_LOG("Shadow mapping enabled for light %d", i);
 			// Render scene using shadow mapping shader
-			m_gameManager->GetTerrainNode()->Render(renderer->GetShadowMapShader(), renderer); // TODO: Probably unnecessary
 			m_gameManager->GetRootGameNode().Render(renderer->GetShadowMapShader(), renderer);
+			m_gameManager->GetTerrainNode()->Render(renderer->GetShadowMapShader(), renderer); // TODO: Probably unnecessary
 			renderer->FinalizeShadowMapRendering();
 		}
 

@@ -246,7 +246,7 @@ void Rendering::Mesh::Initialize()
 		aiProcess_Triangulate | /* aiProcess_FlipWindingOrder | */
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |
-		aiProcess_CalcTangentSpace);
+		aiProcess_CalcTangentSpace );
 
 	CHECK_CONDITION_EXIT(scene != NULL, Utility::Critical, "Error while loading a mesh \"%s\"", name.c_str());
 	CHECK_CONDITION_EXIT((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::Critical,
