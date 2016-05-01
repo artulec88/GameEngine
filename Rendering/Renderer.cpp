@@ -1310,9 +1310,9 @@ void Renderer::InitLightRendering() const
 	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 	if (!Rendering::glBlendEnabled)
 	{
-		//glEnable(GL_BLEND);
+		glEnable(GL_BLEND);
 	}
-	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
+	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
 	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 }
@@ -1323,11 +1323,11 @@ void Renderer::FinalizeLightRendering() const
 	glDepthMask(GL_TRUE);
 	if (!Rendering::glBlendEnabled)
 	{
-		//glDisable(GL_BLEND);
+		glDisable(GL_BLEND);
 	}
 	else
 	{
-		//glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
+		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
 	}
 }
 
