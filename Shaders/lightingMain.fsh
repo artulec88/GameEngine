@@ -28,8 +28,8 @@ float CalcShadowAmount(sampler2D shadowMap, vec4 initialShadowMapCoords)
 	}
 	else
 	{
-		//return 1.0;
-		return R_dayNightMixFactor; // point is outside the range, so we render it in light
+		return 1.0;
+		//return R_dayNightMixFactor; // point is outside the range, so we render it in light
 		// TODO: When we have in-game night we should instead return 0.0 here.
 	}
 }
