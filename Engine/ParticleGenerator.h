@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "Math\Vector.h"
+#include "Math\RandomGeneratorFactory.h"
 #include "Rendering\Texture.h"
 #include "Rendering\Particle.h"
 #include <list>
@@ -76,6 +77,8 @@ namespace Engine
 		Math::Real m_timeForGeneratingOneParticle; // TODO: Replace with timespan object
 		int m_aliveParticlesCount;
 		mutable int m_lastRevivedParticleIndex;
+
+		const Math::Random::RandomGenerator& m_randomGenerator;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticleGenerator */
 
@@ -98,9 +101,9 @@ namespace Engine
 		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			Math::Real dirX = ((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f;
-			Math::Real dirY = 1.0f; //static_cast<Math::Real>(rand() % 20001) / 20000.0f;
-			Math::Real dirZ = ((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f;
+			Math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			Math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			Math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
 			Math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;
@@ -136,9 +139,9 @@ namespace Engine
 		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
 		{
 			// Something about random number generation: http://stackoverflow.com/questions/7560114/random-number-c-in-some-range
-			Math::Real dirX = ((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f;
-			Math::Real dirY = 1.0f; //static_cast<Math::Real>(rand() % 20001) / 20000.0f;
-			Math::Real dirZ = ((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 2.0f) - 1.0f;
+			Math::Real dirX = m_randomGenerator.NextFloat(-1.0f, 1.0f);
+			Math::Real dirY = 1.0f; //m_randomGenerator.NextFloat(0.0f, 1.0f);;
+			Math::Real dirZ = m_randomGenerator.NextFloat(-1.0f, 1.0f);
 			Math::Vector3D velocity(dirX, dirY, dirZ);
 			velocity.Normalize();
 			velocity *= m_particleSpeed;

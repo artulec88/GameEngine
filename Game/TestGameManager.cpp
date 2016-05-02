@@ -19,6 +19,8 @@
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
+#include "Math\HeightsGenerator.h"
+#include "Math\RandomGeneratorFactory.h"
 //#include "Math\Vector.h"
 
 #include "Physics\PhysicsObject.h"
@@ -87,7 +89,6 @@ TestGameManager::TestGameManager() :
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
 	m_gameStateManager->Push(GetMainMenuGameState());
-	srand((unsigned int)time(NULL));
 }
 
 
@@ -344,8 +345,10 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new Engine::GameNode();
-	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
 	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
+	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
+	//Math::HeightsGenerator heightsGenerator(GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f));
+	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, heightsGenerator, GET_CONFIG_VALUE("terrainVertexCount", 128));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -360,7 +363,7 @@ void TestGameManager::Load()
 		new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true), "blendMap");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture3", "mud.png")), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture4", "path.png")), "diffuse4");
@@ -402,15 +405,17 @@ void TestGameManager::Load()
 	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));;
 	AddToSceneRoot(testMesh3);
 
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+
 	const int treeCount = 30;
 	for (int i = 0; i < treeCount; ++i)
 	{
 		Engine::GameNode* treeNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5001) / 2500.0f) * 15.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5001) / 2500.0f) * 10.0f;
+		Math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
+		Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		treeNode->GetTransform().SetPos(x, y, z);
-		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
+		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
 		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
@@ -422,11 +427,11 @@ void TestGameManager::Load()
 	for (int i = 0; i < boulderCount; ++i)
 	{
 		Engine::GameNode* boulderNode = new Engine::GameNode();
-		Math::Real x = (static_cast<Real>(rand() % 5001) / 2500.0f) * 50.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5001) / 2500.0f) * 50.0f;
+		Math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
+		Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		boulderNode->GetTransform().SetPos(x, y, z);
-		boulderNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(rand() % 180), Angle(0.0f))));
+		boulderNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Angle(0.0f))));
 		boulderNode->GetTransform().SetScale(0.01f);
 		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
@@ -482,14 +487,14 @@ void TestGameManager::Load()
 	//{
 	//	humanNodes[i] = new GameNode();
 	//	humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(new Texture("HumanSkin.jpg"), 2.0f, 32.0f)));
-	//	humanNodes[i]->GetTransform().SetPos(static_cast<Real>(rand() % 20), 1.7f, static_cast<Real>(rand() % 20));
+	//	humanNodes[i]->GetTransform().SetPos(randomGenerator.NextFloat(0.0f, 20.0f), 1.7f, randomGenerator.NextFloat(0.0f, 20.0f));
 	//	AddToSceneRoot(humanNodes[i]);
 	//}
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 
 	//castleNode = new GameNode();
 	//castleNode->AddComponent(new MeshRenderer(new Mesh("castle.obj"), new Material(new Texture("HumanSkin.jpg"), 0.5f, 8.0f)));
-	//castleNode->GetTransform().SetPos(static_cast<Real>(rand() % 50), 1.0f, static_cast<Real>(rand() % 50));
+	//castleNode->GetTransform().SetPos(randomGenerator.NextFloat(0.0f, 30.0f), 1.0f, randomGenerator.NextFloat(0.0f, 30.0f));
 	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
@@ -524,13 +529,14 @@ void TestGameManager::Load()
 
 void TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
 {
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 	Math::Real angle = 0.0f;
 	std::vector<Math::Real> billboardsModelMatrices;
 	billboardsModelMatrices.reserve(billboardsCount * MATRIX_SIZE * MATRIX_SIZE);
 	for (int i = 0; i < billboardsCount; ++i)
 	{
-		Math::Real x = (static_cast<Real>(rand() % 5001) / 5000.0f) * 150.0f;
-		Math::Real z = (static_cast<Real>(rand() % 5001) / 5000.0f) * 150.0f;
+		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
+		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 
 		Transform billboardTransform(Math::Vector3D(x, y, z), Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);

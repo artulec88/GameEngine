@@ -146,6 +146,7 @@
     <ClInclude Include="AABR.h" />
     <ClInclude Include="BSPTree.h" />
     <ClInclude Include="FloatingPoint.h" />
+    <ClInclude Include="HeightsGenerator.h" />
     <ClInclude Include="Interpolation.h" />
     <ClInclude Include="IntersectInfo.h" />
     <ClInclude Include="ISort.h" />
@@ -158,6 +159,8 @@
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Line.h" />
+    <ClInclude Include="RandomGenerator.h" />
+    <ClInclude Include="RandomGeneratorFactory.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="SortingParameters.h" />
     <ClInclude Include="Sphere.h" />
@@ -186,6 +189,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="HeightsGenerator.cpp" />
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Interpolation_impl.h" />
     <ClCompile Include="IntersectInfo.cpp" />
@@ -199,6 +203,8 @@
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Line.cpp" />
+    <ClCompile Include="RandomGenerator.cpp" />
+    <ClCompile Include="RandomGeneratorFactory.cpp" />
     <ClCompile Include="Sort.cpp" />
     <ClCompile Include="SortingParameters.cpp" />
     <ClCompile Include="Sphere.cpp" />

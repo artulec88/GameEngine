@@ -5,6 +5,7 @@
 
 #include "Math\Matrix.h"
 #include "Math\Vector.h"
+#include "Math\HeightsGenerator.h"
 #include "Utility\ReferenceCounter.h"
 #include "Utility\ILogger.h"
 
@@ -12,11 +13,10 @@
 #include <map>
 #include <vector>
 
-//#define HEIGHTMAP_BRUTE_FORCE
-//#define HEIGHTMAP_KD_TREE
-#define HEIGHTMAP_HEIGHTS
+//#define HEIGHTS_KD_TREE
+#define HEIGHTS_HEIGHTMAP
 
-#ifdef HEIGHTMAP_KD_TREE
+#ifdef HEIGHTS_KD_TREE
 #include "Math\KDTree.h"
 #endif
 
@@ -306,9 +306,9 @@ private:
 	/// <summary> The size of the single squared-size terrain tile. </summary>
 	static const int SIZE;
 	/// <summary> The maximal height of the terrain.
-	/// The negative value represents the minimal height of the terrain. In other words, the terrain height always lies in range [-MAX_HEIGHT; MAX_HEIGHT].
+	/// The negative value represents the minimal height of the terrain. In other words, the terrain height always lies in range [-HEIGHTMAP_MAX_HEIGHT; HEIGHTMAP_MAX_HEIGHT].
 	/// </summary>
-	static const float MAX_HEIGHT;
+	static const float HEIGHTMAP_MAX_HEIGHT;
 	/// <summary> The maximum value for color of the single pixel in the height map. </summary>
 	static const float MAX_PIXEL_COLOR;
 /* ==================== Static variables end ==================== */
@@ -317,6 +317,7 @@ private:
 public:
 	RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
 	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
 	TerrainMesh(TerrainMesh& terrainMesh);
@@ -333,7 +334,9 @@ protected:
 private:
 	int GetHeightMapIndex(int x, int z) const;
 	Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData) const;
+	Math::Real CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator) const;
 	Math::Vector3D CalculateNormal(int x, int z, unsigned char* heightMapData) const;
+	Math::Vector3D CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator) const;
 /* ==================== Non-static member functions end ==================== */
 
 
@@ -346,11 +349,11 @@ private:
 
 	const Math::Real m_headPositionHeightAdjustment;
 	size_t m_vertexCount;
-#ifdef HEIGHTMAP_KD_TREE
+#ifdef HEIGHTS_KD_TREE
 	Math::Vector3D* m_positions;
 	const int m_kdTreeSamples;
 	Math::KDTree* m_kdTree;
-#elif defined HEIGHTMAP_HEIGHTS
+#elif defined HEIGHTS_HEIGHTMAP
 	int m_heightMapWidth, m_heightMapHeight;
 	Math::Real* m_heights;
 	Math::Real m_gridSquareSize;

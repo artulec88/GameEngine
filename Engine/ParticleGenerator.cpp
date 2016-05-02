@@ -11,7 +11,8 @@ Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particl
 	m_currentTimer(0.0f),
 	m_timeForGeneratingOneParticle(1.0f / particlesPerSecondCount),
 	m_aliveParticlesCount(0),
-	m_lastRevivedParticleIndex(0)
+	m_lastRevivedParticleIndex(0),
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
 {
 }
 
@@ -128,9 +129,9 @@ void Engine::FreeFallParticleGenerator::GenerateParticles(const Math::Vector3D& 
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
-		Math::Real x = initialPosition.GetX() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 6.0f) - 3.0f);
+		Math::Real x = initialPosition.GetX() - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
 		Math::Real y = initialPosition.GetY() + 0.5f;
-		Math::Real z = initialPosition.GetZ() - (((static_cast<Math::Real>(rand() % 20001) / 20000.0f) * 6.0f) - 3.0f);
+		Math::Real z = initialPosition.GetZ() - m_randomGenerator.NextFloat(-3.0f, 3.0f);;
 		EmitParticle(Math::Vector3D(x, y, z));
 		m_currentTimer -= m_timeForGeneratingOneParticle;
 	}

@@ -5,6 +5,7 @@
 #include "Math\Vector.h"
 #include "Math\ISort.h"
 #include "Math\KDTree.h"
+#include "Math\RandomGeneratorFactory.h"
 
 #include "Utility\ICommand.h"
 #include "Utility\ILogger.h"
@@ -38,6 +39,8 @@ bool sortingTestEnabled = false;
 bool kdTreeTestEnabled = false;
 bool statsTestEnabled = false;
 bool otherTestEnabled = true;
+
+const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 
 void ReportError(const std::string& reportStr)
 {
@@ -200,21 +203,14 @@ void VectorTest()
 	vectorTests.StartTests();
 }
 
-Real RandomReal(Real min, Real max)
-{
-	Real realValue = min + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (max - min));
-	CHECK_CONDITION_EXIT_ALWAYS(!(realValue < min || realValue > max), Error, "Generated random value (%.4f) is outside of given range [%.4f; %.4f]", realValue, min, max);
-	return realValue;
-}
-
 Quaternion RandomQuaternion()
 {
 	const Real MIN_COMPONENT = -5.0f;
 	const Real MAX_COMPONENT = 5.0f;
-	const Real x = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real y = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real z = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
-	const Real w = MIN_COMPONENT + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_COMPONENT - MIN_COMPONENT));
+	const Real x = g_randomGenerator.NextFloat(MIN_COMPONENT, MAX_COMPONENT);
+	const Real y = g_randomGenerator.NextFloat(MIN_COMPONENT, MAX_COMPONENT);
+	const Real z = g_randomGenerator.NextFloat(MIN_COMPONENT, MAX_COMPONENT);
+	const Real w = g_randomGenerator.NextFloat(MIN_COMPONENT, MAX_COMPONENT);
 	return Quaternion(x, y, z, w);
 }
 
@@ -262,7 +258,7 @@ void QuaternionTest()
 	{
 		Quaternion q1 = RandomQuaternion();
 		Quaternion q2 = RandomQuaternion();
-		q1.Nlerp1(q2, RandomReal(REAL_ZERO, REAL_ONE), false);
+		q1.Nlerp1(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
 	}
 	timer.Stop();
 	TimeReport("Average time for quaternion linear interpolation function #1", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
@@ -272,7 +268,7 @@ void QuaternionTest()
 	{
 		Quaternion q1 = RandomQuaternion();
 		Quaternion q2 = RandomQuaternion();
-		q1.Nlerp2(q2, RandomReal(REAL_ZERO, REAL_ONE), false);
+		q1.Nlerp2(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
 	}
 	timer.Stop();
 	TimeReport("Average time for quaternion linear interpolation function #2", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
@@ -284,7 +280,7 @@ Angle RandomAngle()
 {
 	const Real MIN_ANGLE = REAL_ZERO;
 	const Real MAX_ANGLE = 360.0f;
-	Angle angle(MIN_ANGLE + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (MAX_ANGLE - MIN_ANGLE)), Unit::DEGREE);
+	Angle angle(g_randomGenerator.NextFloat(MIN_ANGLE, MAX_ANGLE), Unit::DEGREE);
 	return angle;
 }
 
@@ -301,7 +297,7 @@ Matrix4D RandomMatrix(Real min, Real max)
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
-			Real value = min + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (max - min));
+			Real value = g_randomGenerator.NextFloat(min, max);
 			matrix.SetElement(i, j, value);
 		}
 	}
@@ -464,8 +460,8 @@ void SortTest()
 	//initialVectors[11].SetX(-2.0f); initialVectors[4].SetY(5.0f); // sumOfComponents = 3	sumOfAbsComponents = 7	sumOfSquaredComponents = 29
 	for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 	{
-		initialVectors[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
-		initialVectors[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
+		initialVectors[i].SetX(g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X));
+		initialVectors[i].SetY(g_randomGenerator.NextFloat(LOWER_BOUND_Y, HIGHER_BOUND_Y));
 		DEBUG_LOG("initialVectors[%d] = %s", i, initialVectors[i].ToString().c_str());
 	}
 
@@ -884,9 +880,9 @@ void KDTreeTest()
 	positions[5].SetX(7.0f); positions[5].SetY(2.0f); positions[5].SetZ(6.0f);
 	//for (int i = 0; i < NUMBER_OF_POSITIONS; ++i)
 	//{
-	//	positions[i].SetX(LOWER_BOUND_X + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_X - LOWER_BOUND_X)));
-	//	positions[i].SetY(LOWER_BOUND_Y + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Y - LOWER_BOUND_Y)));
-	//	positions[i].SetZ(LOWER_BOUND_Z + static_cast<Math::Real>(rand()) /  static_cast<Math::Real>(RAND_MAX / (HIGHER_BOUND_Z - LOWER_BOUND_Z)));
+	//	positions[i].SetX(g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X));
+	//	positions[i].SetY(g_randomGenerator.NextFloat(LOWER_BOUND_Y, HIGHER_BOUND_Y));
+	//	positions[i].SetZ(g_randomGenerator.NextFloat(LOWER_BOUND_Z, HIGHER_BOUND_Z));
 	//	DEBUG_LOG("positions[%d] = %s", i, positions[i].ToString().c_str());
 	//}
 

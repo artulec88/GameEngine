@@ -3,12 +3,10 @@
 //#pragma warning(disable:4251)
 
 #include <stdarg.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <string>
 #include <sstream>
-//#include <assert.h>
 #include <iostream>
 #include <list>
 #include "Utility.h"
