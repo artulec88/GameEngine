@@ -82,6 +82,12 @@ Math::Interpolation::LinearInterpolator<T>::~LinearInterpolator()
 }
 
 template <class T>
+T Math::Interpolation::LinearInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
+{
+	return (value1 * (REAL_ONE - factor)) + (value2 * factor);
+}
+
+template <class T>
 T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 {
 	// Handle boundary conditions
@@ -107,11 +113,65 @@ T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 	Math::Real time1 = m_times[index];
 	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
 
-	// Evaluate the interpolation
-	return (m_interpolationObjects[index - 1] * (REAL_ONE - interpolationFactor)) + (m_interpolationObjects[index] * interpolationFactor);
+	return Interpolate(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
 /* ==================== class LinearInterpolator end ==================== */
 
+/* ==================== class CosineInterpolator begin ==================== */
+template <class T>
+Math::Interpolation::CosineInterpolator<T>::CosineInterpolator() :
+	Interpolator()
+{
+}
+
+template <class T>
+Math::Interpolation::CosineInterpolator<T>::CosineInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
+	Interpolator(interpolationObjects, times, interpolationObjectsCount)
+{
+}
+
+template <class T>
+Math::Interpolation::CosineInterpolator<T>::~CosineInterpolator()
+{
+}
+
+template <class T>
+T Math::Interpolation::CosineInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
+{
+	const Angle angle(factor * PI, Math::Unit::RADIAN);
+	const Real cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
+	return (value1 * (REAL_ONE - cosineFactor)) + (value2 * cosineFactor);
+}
+
+template <class T>
+T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
+{
+	// Handle boundary conditions
+	if (time < GetStartTime() || (m_times.size() == 1))
+	{
+		return m_interpolationObjects.front();
+	}
+	else if (time > GetEndTime())
+	{
+		return m_interpolationObjects.back();
+	}
+
+	// Find segment and parameter
+	unsigned int index = 1;
+	for (std::vector<Real>::const_iterator timeItr = m_times.begin() + 1; timeItr != m_times.end(); ++timeItr, ++index)
+	{
+		if (time < *timeItr)
+		{
+			break;
+		}
+	}
+	Math::Real time0 = m_times[index - 1];
+	Math::Real time1 = m_times[index];
+	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
+
+	return Interpolate(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
+}
+/* ==================== class CosineInterpolator end ==================== */
 
 /* ==================== class HermiteInterpolator begin ==================== */
 template <class T>

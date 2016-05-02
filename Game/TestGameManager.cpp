@@ -347,8 +347,10 @@ void TestGameManager::Load()
 	m_terrainNode = new Engine::GameNode();
 	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
 	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
-	Math::HeightsGenerator heightsGenerator(GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f));
-	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, heightsGenerator, GET_CONFIG_VALUE("terrainVertexCount", 128));
+	const int terrainVertexCount = GET_CONFIG_VALUE("terrrainVertexCount", 128);
+	Math::HeightsGenerator heightsGenerator(0, 0, terrainVertexCount, GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f),
+		GET_CONFIG_VALUE("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE("terrainHeightGeneratorRoughness", 0.3f));
+	m_terrainMesh = new Rendering::TerrainMesh(0, 0, heightsGenerator, terrainVertexCount);
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
@@ -498,8 +500,8 @@ void TestGameManager::Load()
 	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
-	const Math::Real playerPositionX = 11.2f;
-	const Math::Real playerPositionZ = 1.95f;
+	const Math::Real playerPositionX = GET_CONFIG_VALUE("playerPosition_X", 11.2f);
+	const Math::Real playerPositionZ = GET_CONFIG_VALUE("playerPosition_Z", 1.95f);
 	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.0005f);

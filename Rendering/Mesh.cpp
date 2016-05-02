@@ -708,7 +708,7 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 	m_meshData->Unbind();
 }
 
-/* static */ const int Rendering::TerrainMesh::SIZE = 800;
+/* static */ const int Rendering::TerrainMesh::SIZE = 400;
 /* static */ const float Rendering::TerrainMesh::HEIGHTMAP_MAX_HEIGHT = 5.0f;
 /* static */ const float Rendering::TerrainMesh::MAX_PIXEL_COLOR = 255.0f;
 
@@ -729,7 +729,7 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 {
 }
 
-Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
@@ -837,7 +837,7 @@ Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const st
 	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, positions.size(), &indices[0], indices.size(), false);
 }
 
-Rendering::TerrainMesh::TerrainMesh(Math::Real gridX, Math::Real gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),

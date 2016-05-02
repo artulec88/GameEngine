@@ -316,8 +316,8 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
-	RENDERING_API TerrainMesh(Math::Real gridX, Math::Real gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
 	TerrainMesh(TerrainMesh& terrainMesh);
@@ -343,9 +343,9 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	/// <summary> The position of the single terrain tile along the X axis. </summary>
-	Math::Real m_x;
+	int m_x;
 	/// <summary> The position of the single terrain tile along the Z axis. </summary>
-	Math::Real m_z;
+	int m_z;
 
 	const Math::Real m_headPositionHeightAdjustment;
 	size_t m_vertexCount;

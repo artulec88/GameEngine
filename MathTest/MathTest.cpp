@@ -977,7 +977,9 @@ void OtherTests()
 	timer.Start();
 
 	Math::Real amplitude = 70.0f;
-	Math::HeightsGenerator heightsGenerator(amplitude);
+	int octaves = 3;
+	Math::Real roughness = 0.3f;
+	Math::HeightsGenerator heightsGenerator(0, 0, 128, amplitude, octaves, roughness);
 
 	const int WIDTH = 8;
 	const int HEIGHT = 8;
