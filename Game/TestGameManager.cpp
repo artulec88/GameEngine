@@ -346,9 +346,9 @@ void TestGameManager::Load()
 
 	m_terrainNode = new Engine::GameNode();
 	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
-	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
-	//Math::HeightsGenerator heightsGenerator(GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f));
-	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, heightsGenerator, GET_CONFIG_VALUE("terrainVertexCount", 128));
+	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
+	Math::HeightsGenerator heightsGenerator(GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f));
+	m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, heightsGenerator, GET_CONFIG_VALUE("terrainVertexCount", 128));
 #ifndef ANT_TWEAK_BAR_ENABLED
 	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);

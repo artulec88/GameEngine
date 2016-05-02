@@ -5,6 +5,7 @@
 #include "Math\Vector.h"
 #include "Math\ISort.h"
 #include "Math\KDTree.h"
+#include "Math\HeightsGenerator.h"
 #include "Math\RandomGeneratorFactory.h"
 
 #include "Utility\ICommand.h"
@@ -33,12 +34,12 @@ double elapsedTime;
 unsigned int testNumber = 0;
 bool angleTestEnabled = false;
 bool vectorTestEnabled = false;
-bool matrixTestEnabled = true;
-bool quaternionTestEnabled = true;
+bool matrixTestEnabled = false;
+bool quaternionTestEnabled = false;
 bool sortingTestEnabled = false;
 bool kdTreeTestEnabled = false;
 bool statsTestEnabled = false;
-bool otherTestEnabled = true;
+bool otherTestsEnabled = true;
 
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 
@@ -966,6 +967,39 @@ void StatsTest()
 	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND));
 }
 
+void OtherTests()
+{
+	if (!otherTestsEnabled)
+	{
+		return;
+	}
+	Timing::Timer timer;
+	timer.Start();
+
+	Math::Real amplitude = 70.0f;
+	Math::HeightsGenerator heightsGenerator(amplitude);
+
+	const int WIDTH = 8;
+	const int HEIGHT = 8;
+	Math::Real* heights = new Math::Real[WIDTH * HEIGHT];
+	for (int z = 0; z < HEIGHT; ++z)
+	{
+		for (int x = 0; x < WIDTH; ++x)
+		{
+			heights[z * WIDTH + x] = heightsGenerator.GenerateHeight(x, z);
+			INFO_LOG("heights[%d][%d] = %.2f", z, x, heights[z * WIDTH + x]);
+		}
+	}
+	SAFE_DELETE_JUST_TABLE(heights);
+
+	timer.Stop();
+
+	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
+	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
+	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
+	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::MILLISECOND));
+}
+
 int main (int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -988,6 +1022,8 @@ int main (int argc, char* argv[])
 	KDTreeTest();
 
 	StatsTest();
+
+	OtherTests();
 
 	ILogger::GetLogger().ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

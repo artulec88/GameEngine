@@ -31,6 +31,17 @@ namespace Math
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
 		public:
+			MATH_API unsigned GetSeed() const
+			{
+				return m_seed;
+			}
+
+			MATH_API void SetSeed(unsigned seed) const
+			{
+				// We don't set the m_seed value (and that's fine!).
+				srand(seed);
+			}
+
 			/// <summary>
 			/// Returns a pseudo-random integral number.
 			/// </summary>
@@ -63,6 +74,7 @@ namespace Math
 
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
+			unsigned m_seed;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class RandomGenerator */
 
