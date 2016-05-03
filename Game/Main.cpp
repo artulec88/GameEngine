@@ -112,13 +112,25 @@ int main (int argc, char* argv[])
 	}
 	/* ==================== Initializing fonts directory end ==================== */
 
+	/* ==================== Initializing audio directory begin ==================== */
+	std::string audioDirectory = "..\\Sounds\\";
+	if (ICommand::GetCommand().IsPresent("-audio"))
+	{
+		audioDirectory = ICommand::GetCommand().Get("-audio", "..\\Sounds\\");
+	}
+	else
+	{
+		audioDirectory = GET_CONFIG_VALUE_STR("audioDirectory", "..\\Sounds\\");
+	}
+	/* ==================== Initializing audio directory end ==================== */
+
 	ICommand::DeleteCommand();
 	/* ==================== Reading settings and parameters end ==================== */
 
 	/* ==================== Creating game instance and run ==================== */
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	Engine::CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
-		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory);
+		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
 	Game::TestGameManager game;
 	engine.Start(&game);
 	return EXIT_SUCCESS;

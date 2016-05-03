@@ -114,7 +114,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
-	const std::string& fontsDirectory /* = "..\\Fonts\\" */) :
+	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
 	m_window(NULL),
 	m_threadWindow(NULL),
 	m_isRunning(false),
@@ -141,7 +141,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_shadersDirectory(shadersDirectory),
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory),
-	m_fontsDirectory(fontsDirectory)
+	m_fontsDirectory(fontsDirectory),
+	m_audioDirectory(audioDirectory)
 #ifdef CALCULATE_RENDERING_STATS
 	,m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
@@ -180,6 +181,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	}
 	s_coreEngine = this;
 
+	CreateAudioEngine();
 	CreatePhysicsEngine();
 	CreateRenderer(width, height, title);
 
@@ -237,7 +239,7 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateAudioEngine()
 {
-	m_audioEngine = new Audio::AudioEngine();
+	m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE("audioMaxChannels", 32));
 	CHECK_CONDITION_EXIT(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
@@ -467,6 +469,9 @@ void CoreEngine::Run()
 	Math::Real spf = REAL_ZERO;
 #endif
 
+	m_audioEngine->CreateSound(m_audioDirectory + "\\Kalimba.mp3");
+	m_audioEngine->Play();
+
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
 	int inGameHours, inGameMinutes, inGameSeconds;
@@ -561,6 +566,12 @@ void CoreEngine::Run()
 			m_physicsEngine->Simulate(m_frameTime);
 			STOP_TIMER(innerTimer, m_countStats2_3, m_minMaxTime2_3, m_timeSum2_3);
 			/* ==================== REGION #2_3 end ====================*/
+
+			/* ==================== REGION #2_4 begin ====================*/
+			//RESET_TIMER(innerTimer);
+			m_audioEngine->Update(m_frameTime);
+			//STOP_TIMER(innerTimer, m_countStats2_4, m_minMaxTime2_4, m_timeSum2_4);
+			/* ==================== REGION #2_4 end ====================*/
 
 			/* ==================== Switching the game state if necessary begin ==================== */
 			m_game->PerformStateTransition();

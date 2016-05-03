@@ -93,7 +93,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,7 +131,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;C:\Users\Artur\Documents\Visual Studio 2010\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\lowlevel\inc;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\Include;C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

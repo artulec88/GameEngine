@@ -68,7 +68,8 @@ public:
 public:
 	ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate,
 		const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
-		const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\");
+		const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\",
+		const std::string& audioDirectory = "..\\Sounds\\");
 	ENGINE_API ~CoreEngine(void);
 private: // disable copy constructor
 	CoreEngine(const CoreEngine& coreEngine);
@@ -132,6 +133,7 @@ public:
 	const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
 	const std::string& GetTexturesDirectory() const { return m_texturesDirectory; }
 	const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
+	const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
 	void AddLight(Rendering::Lighting::BaseLight* light);
 	void AddCamera(Rendering::CameraBase* camera);
@@ -217,6 +219,8 @@ private:
 	const std::string m_texturesDirectory;
 	/// <summary> Specifies where to look for the fonts files. </summary>
 	const std::string m_fontsDirectory;
+	/// <summary> Specifies where to look for the audio files. </summary>
+	const std::string m_audioDirectory;
 
 #ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;
