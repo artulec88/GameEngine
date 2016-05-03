@@ -17,7 +17,7 @@ void main()
 DeclareFragOutput(0, vec4);
 void main()
 {
-	const float OFFSET = 0.1; // see http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35 (section "Additional offset to depth values in shadow map")
+	const float OFFSET = 0.001; // see http://www.sunandblackcat.com/tipFullView.php?l=eng&topicid=35 (section "Additional offset to depth values in shadow map")
 	float depth = gl_FragCoord.z + OFFSET;
 
 	float dx = dFdx(depth);

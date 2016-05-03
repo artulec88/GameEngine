@@ -2,6 +2,8 @@
 #define __AUDIO_AUDIO_ENGINE_H__
 
 #include "Audio.h"
+#include "OpenAL\include\al.h"
+#include "OpenAL\include\alc.h"
 
 namespace Audio
 {
