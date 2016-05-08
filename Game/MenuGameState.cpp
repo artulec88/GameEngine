@@ -98,6 +98,8 @@ MenuGameState::MenuGameState() :
 	//m_notSelectedMenuEntryBorderEdgeTransitionEffect(NULL);
 	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
 
+	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine()->LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
+
 	SelectChild(0);
 }
 
@@ -197,6 +199,7 @@ void MenuGameState::ChooseCurrentMenuEntry()
 void MenuGameState::SelectChild(int childIndex)
 {
 	DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::Debug, "Trying to select the child which is already selected (%d).", childIndex);
 	m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry->SelectChildMenuEntry(childIndex);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
@@ -206,6 +209,7 @@ void MenuGameState::SelectChild(int childIndex)
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
+	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine()->PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 0.9f, 1.0f, 0.4f, 1.0f);
 }
 
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const

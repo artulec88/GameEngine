@@ -9,8 +9,7 @@ Physics::PhysicsEngine::PhysicsEngine() :
 #endif
 {
 	START_PROFILING;
-	NOTICE_LOG("Creating Physics engine instance started");
-	NOTICE_LOG("Creating Physics engine instance finished");
+	NOTICE_LOG("Physics engine created");
 	STOP_PROFILING;
 }
 

@@ -129,6 +129,8 @@ public:
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
+	Audio::AudioEngine* GetAudioEngine() { return m_audioEngine; }
+
 	const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 	const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
 	const std::string& GetTexturesDirectory() const { return m_texturesDirectory; }

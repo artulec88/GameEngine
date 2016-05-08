@@ -469,8 +469,8 @@ void CoreEngine::Run()
 	Math::Real spf = REAL_ZERO;
 #endif
 
-	m_audioEngine->CreateSound(m_audioDirectory + "\\Kalimba.mp3");
-	m_audioEngine->Play();
+	m_audioEngine->LoadSong(m_audioDirectory + "\\Kalimba.mp3");
+	m_audioEngine->PlaySong(m_audioDirectory + "\\Kalimba.mp3");
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
