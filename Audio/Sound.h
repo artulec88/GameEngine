@@ -3,6 +3,8 @@
 
 #include "Audio.h"
 #include "Utility\ReferenceCounter.h"
+
+#include "fmod.hpp"
 #include <string>
 
 namespace Audio

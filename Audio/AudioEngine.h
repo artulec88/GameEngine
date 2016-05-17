@@ -3,6 +3,7 @@
 
 #include "Audio.h"
 #include "Sound.h"
+#include "fmod.hpp"
 
 #include "Math\Math.h"
 

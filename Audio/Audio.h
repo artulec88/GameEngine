@@ -7,8 +7,6 @@
 #define AUDIO_API __declspec(dllimport)
 #endif
 
-#include "fmod.hpp"
-
 namespace Audio
 {
 } /* end namespace Audio */

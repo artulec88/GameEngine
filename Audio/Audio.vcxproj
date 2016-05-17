@@ -152,12 +152,19 @@
   <ItemGroup>
     <ClInclude Include="Audio.h" />
     <ClInclude Include="AudioEngine.h" />
+    <ClInclude Include="AudioObject.h" />
+    <ClInclude Include="FMOD_AudioContext.h" />
+    <ClInclude Include="IAudioContext.h" />
+    <ClInclude Include="IAudioData.h" />
+    <ClInclude Include="IAudioDevice.h" />
+    <ClInclude Include="SampleInfo.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="AudioEngine.cpp" />
+    <ClCompile Include="AudioObject.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -172,6 +179,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="FMOD_AudioContext.cpp" />
+    <ClCompile Include="IAudioContext.cpp" />
+    <ClCompile Include="IAudioData.cpp" />
+    <ClCompile Include="IAudioDevice.cpp" />
+    <ClCompile Include="SampleInfo.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
