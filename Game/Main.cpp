@@ -39,23 +39,22 @@ void PrintHelp()
 	std::cout << std::endl;
 }
 
-int main (int argc, char* argv[])
+void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirectory, std::string* modelsDirectory, std::string* texturesDirectory, std::string* fontsDirectory, std::string* audioDirectory)
 {
-	/* ==================== Reading settings and parameters begin ==================== */
-	ICommand::SetCommand(argc, argv);
-	if (ICommand::GetCommand().IsPresent("-help"))
+	std::unique_ptr<ICommand> command = ICommand::CreateCommand(argc, argv);
+	if (command->IsPresent("-help"))
 	{
 		PrintHelp();
 		system("pause");
-		return EXIT_SUCCESS;
+		exit(EXIT_SUCCESS);
 	}
-	IConfig::GetConfig().LoadFromFile(ICommand::GetCommand().Get("-config", "..\\Config\\Config.cfg"));
+	IConfig::GetConfig().LoadFromFile(command->Get("-config", "..\\Config\\Config.cfg"));
 
 	/* ==================== Initializing logger begin ==================== */
 	std::string loggingLevel = "Info";
-	if (ICommand::GetCommand().IsPresent("-log"))
+	if (command->IsPresent("-log"))
 	{
-		loggingLevel = ICommand::GetCommand().Get("-log", "Info");
+		loggingLevel = command->Get("-log", "Info");
 	}
 	else
 	{
@@ -65,69 +64,67 @@ int main (int argc, char* argv[])
 	/* ==================== Initializing logger end ==================== */
 
 	/* ==================== Initializing shader directory begin ==================== */
-	std::string shaderDirectory = "..\\Shaders\\";
-	if (ICommand::GetCommand().IsPresent("-shaders"))
+	if (command->IsPresent("-shaders"))
 	{
-		shaderDirectory = ICommand::GetCommand().Get("-shaders", "..\\Shaders\\");
+		*shaderDirectory = command->Get("-shaders", "..\\Shaders\\");
 	}
 	else
 	{
-		shaderDirectory = GET_CONFIG_VALUE_STR("shadersDirectory", "..\\Shaders\\");
+		*shaderDirectory = GET_CONFIG_VALUE_STR("shadersDirectory", "..\\Shaders\\");
 	}
 	/* ==================== Initializing shader directory end ==================== */
 
 	/* ==================== Initializing mesh / models directory begin ==================== */
-	std::string modelsDirectory = "..\\Models\\";
-	if (ICommand::GetCommand().IsPresent("-models"))
+	if (command->IsPresent("-models"))
 	{
-		modelsDirectory = ICommand::GetCommand().Get("-models", "..\\Models\\");
+		*modelsDirectory = command->Get("-models", "..\\Models\\");
 	}
 	else
 	{
-		modelsDirectory = GET_CONFIG_VALUE_STR("modelsDirectory", "..\\Models\\");
+		*modelsDirectory = GET_CONFIG_VALUE_STR("modelsDirectory", "..\\Models\\");
 	}
 	/* ==================== Initializing mesh / models directory end ==================== */
 
 	/* ==================== Initializing textures directory begin ==================== */
-	std::string texturesDirectory = "..\\Textures\\";
-	if (ICommand::GetCommand().IsPresent("-textures"))
+	if (command->IsPresent("-textures"))
 	{
-		texturesDirectory = ICommand::GetCommand().Get("-textures", "..\\Textures\\");
+		*texturesDirectory = command->Get("-textures", "..\\Textures\\");
 	}
 	else
 	{
-		texturesDirectory = GET_CONFIG_VALUE_STR("texturesDirectory", "..\\Textures\\");
+		*texturesDirectory = GET_CONFIG_VALUE_STR("texturesDirectory", "..\\Textures\\");
 	}
 	/* ==================== Initializing textures directory end ==================== */
 
 	/* ==================== Initializing fonts directory begin ==================== */
-	std::string fontsDirectory = "..\\Fonts\\";
-	if (ICommand::GetCommand().IsPresent("-fonts"))
+	if (command->IsPresent("-fonts"))
 	{
-		fontsDirectory = ICommand::GetCommand().Get("-fonts", "..\\Fonts\\");
+		*fontsDirectory = command->Get("-fonts", "..\\Fonts\\");
 	}
 	else
 	{
-		fontsDirectory = GET_CONFIG_VALUE_STR("fontsDirectory", "..\\Fonts\\");
+		*fontsDirectory = GET_CONFIG_VALUE_STR("fontsDirectory", "..\\Fonts\\");
 	}
 	/* ==================== Initializing fonts directory end ==================== */
 
 	/* ==================== Initializing audio directory begin ==================== */
-	std::string audioDirectory = "..\\Sounds\\";
-	if (ICommand::GetCommand().IsPresent("-audio"))
+	if (command->IsPresent("-audio"))
 	{
-		audioDirectory = ICommand::GetCommand().Get("-audio", "..\\Sounds\\");
+		*audioDirectory = command->Get("-audio", "..\\Sounds\\");
 	}
 	else
 	{
-		audioDirectory = GET_CONFIG_VALUE_STR("audioDirectory", "..\\Sounds\\");
+		*audioDirectory = GET_CONFIG_VALUE_STR("audioDirectory", "..\\Sounds\\");
 	}
 	/* ==================== Initializing audio directory end ==================== */
+}
 
-	ICommand::DeleteCommand();
-	/* ==================== Reading settings and parameters end ==================== */
+int main (int argc, char* argv[])
+{
+	std::string shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
+	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
 
-	/* ==================== Creating game instance and run ==================== */
+	/* ==================== Create game instance and run ==================== */
 	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
 	Engine::CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
 		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);

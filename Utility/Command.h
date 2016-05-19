@@ -28,10 +28,10 @@ public:
 	bool IsArgPosCorrect(int number) const;
 	//bool Read(std::istream& stream);
 	//bool Read(const std::string& line);
-	std::string Get(const std::string& opt, const std::string& defaultValue) const;
+	virtual std::string Get(const std::string& opt, const std::string& defaultValue) const;
 	//int Get(const std::string& opt, int defaultValue) const;
 	bool GetArgPosition(const std::string& opt, int& argPos, int first = 0) const;
-	bool IsPresent(const std::string& opt) const;
+	virtual bool IsPresent(const std::string& opt) const;
 	void Fill(int argc, char* argv[]);
 protected:
 	//template<typename Type> Type Get(int number, const Type& defaultValue) const;

@@ -1005,14 +1005,14 @@ void OtherTests()
 int main (int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
-	ICommand::SetCommand(argc, argv);
+	std::unique_ptr<ICommand> command = ICommand::CreateCommand(argc, argv);
 	//if (Command.IsPresent("-help"))
 	//{
 	//	PrintHelp();
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
+	ILogger::GetLogger().Fill(command->Get("-log", ""), Info);
 
 	AngleTest();
 	VectorTest();

@@ -106,14 +106,14 @@ void StringUtilityTest()
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
-	ICommand::SetCommand(argc, argv);
-	if (ICommand::GetCommand().IsPresent("-help"))
+	std::unique_ptr<ICommand> command = ICommand::CreateCommand(argc, argv);
+	if (command->IsPresent("-help"))
 	{
 		PrintHelp();
 		system("pause");
 		return 0;
 	}
-	ILogger::GetLogger().Fill(ICommand::GetCommand().Get("-log", ""), Info);
+	ILogger::GetLogger().Fill(command->Get("-log", ""), Info);
 
 	ArrayTest();
 	StringUtilityTest();
