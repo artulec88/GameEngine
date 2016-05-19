@@ -28,7 +28,7 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::Simulate(Math::Real passedTime)
 {
-	DELOCUST_LOG("Simulating physics object. Passed time = %.3f", passedTime);
+	DELOCUST_LOG_PHYSICS("Simulating physics object. Passed time = %.3f", passedTime);
 	m_linearVelocity += (m_totalForce / m_mass) * passedTime;
 	if (m_totalForce.LengthSquared() > REAL_ZERO)
 	{

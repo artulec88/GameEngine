@@ -21,12 +21,12 @@ Math::IntersectInfo Collider::Intersect(const Collider& collider) const
 		const Math::Sphere* self = dynamic_cast<const Math::Sphere*>(this);
 		if (self == NULL)
 		{
-			CRITICAL_LOG("Casting collider to BoundingSphere pointer failed.");
+			CRITICAL_LOG_PHYSICS("Casting collider to BoundingSphere pointer failed.");
 			exit(EXIT_FAILURE);
 		}
 		return self->DoesIntersectSphere((Math::Sphere&)collider);
 	}
 
-	CRITICAL_LOG("Only bounding spheres collision is currently handled by the physics engine. Other colliders are not yet supported.");
+	CRITICAL_LOG_PHYSICS("Only bounding spheres collision is currently handled by the physics engine. Other colliders are not yet supported.");
 	return Math::IntersectInfo(false, REAL_ZERO);
 }

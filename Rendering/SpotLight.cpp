@@ -20,7 +20,7 @@ Rendering::Lighting::SpotLight::SpotLight(Math::Transform& transform, const Rend
 		Math::Real spotLightProjectionNearPlane = GET_CONFIG_VALUE_RENDERING("spotLightProjectionNearPlane", 0.1f);
 		Matrix4D projectionMatrix(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, spotLightProjectionNearPlane, m_range);
 		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		CHECK_CONDITION_EXIT(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize spot light. Shadow info is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize spot light. Shadow info is NULL.");
 	}
 }
 

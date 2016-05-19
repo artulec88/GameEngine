@@ -17,8 +17,8 @@ Math::Interpolation::Interpolator<T>::Interpolator()
 template <class T>
 Math::Interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount)
 {
-	CHECK_CONDITION(m_interpolationObjects != NULL, Utility::Warning, "Specified interpolation object array is NULL.");
-	CHECK_CONDITION(m_times != NULL, Utility::Warning, "Specified times array is NULL.");
+	CHECK_CONDITION_MATH(m_interpolationObjects != NULL, Utility::Warning, "Specified interpolation object array is NULL.");
+	CHECK_CONDITION_MATH(m_times != NULL, Utility::Warning, "Specified times array is NULL.");
 	for (int i = 0; i < interpolationObjectsCount; ++i)
 	{
 		m_interpolationObjects.push_back(interpolationObjects[i]);
@@ -207,7 +207,7 @@ template <class T>
 void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN)
 {
 	// TODO: Calculate derivatives according to the "Essential Mathematics for Games and Interactive Applications 2nd Edition"- section 10.2.3 ("Hermite curves").
-	WARNING_LOG("This function has not been tested yet");
+	WARNING_LOG_MATH("This function has not been tested yet");
 	Real* c = new Real[interpolationObjectsCount - 1];
 	T* d = new T[interpolationObjectsCount];
 	c[0] = REAL_ZERO;
@@ -233,7 +233,7 @@ void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 template <class T>
 T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) const
 {
-	WARNING_LOG("This function has not been tested yet");
+	WARNING_LOG_MATH("This function has not been tested yet");
 	// Handle boundary conditions
 	if (time < GetStartTime())
 	{
@@ -277,7 +277,7 @@ Math::Interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
 template <class T>
 T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time) const
 {
-	WARNING_LOG("This function has not been tested yet");
+	WARNING_LOG_MATH("This function has not been tested yet");
 	// Handle boundary conditions
 	if (time < GetStartTime())
 	{

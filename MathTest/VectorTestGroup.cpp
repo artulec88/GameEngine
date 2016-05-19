@@ -7,12 +7,12 @@ using namespace MathTest;
 VectorTestGroup::VectorTestGroup(void) :
 	TestGroup()
 {
-	NOTICE_LOG("Vector tests started");
+	NOTICE_LOG_MATH_TEST("Vector tests started");
 }
 
 VectorTestGroup::~VectorTestGroup(void)
 {
-	NOTICE_LOG("Vector tests finished");
+	NOTICE_LOG_MATH_TEST("Vector tests finished");
 }
 
 void VectorTestGroup::StartTests()
@@ -39,9 +39,9 @@ Vector2DTestCross::~Vector2DTestCross(void)
 
 void Vector2DTestCross::StartTest()
 {
-	DEBUG_LOG("Vector2D cross product testing begins...");
+	DEBUG_LOG_MATH_TEST("Vector2D cross product testing begins...");
 	Math::Real crossResult = m_vector.Cross(m_vector2);
-	CHECK_CONDITION_ALWAYS(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::Error,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::Error,
 		"The cross product of vectors %s and %s equals %.3f. It is different than expected %.3f",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult, m_expectedCrossResult);
 }
@@ -61,9 +61,9 @@ Vector3DTestCross::~Vector3DTestCross(void)
 
 void Vector3DTestCross::StartTest()
 {
-	DEBUG_LOG("Vector3D cross product testing begins...");
+	DEBUG_LOG_MATH_TEST("Vector3D cross product testing begins...");
 	Math::Vector3D crossResult = m_vector.Cross(m_vector2);
-	CHECK_CONDITION_ALWAYS(crossResult == m_expectedCrossResult, Utility::Error,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(crossResult == m_expectedCrossResult, Utility::Error,
 		"The cross product of vectors %s and %s equals %s. It is different than expected %s",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult.ToString().c_str(),
 		m_expectedCrossResult.ToString().c_str());
@@ -86,7 +86,7 @@ void Vector3DTestCross::StartTest()
 //void Vector2DTestRotate::StartTest()
 //{
 //	Math::Vector2D rotateVector = m_vector.Rotate(m_angle);
-//	CHECK_CONDITION_ALWAYS(rotateVector == m_expectedRotateVector, Utility::Error,
+//	CHECK_CONDITION_ALWAYS_MATH_TEST(rotateVector == m_expectedRotateVector, Utility::Error,
 //		"The rotation of vector %s by angle %s is a vector %s. It is different than expected %s",
 //		m_vector.ToString().c_str(), m_angle.ToString().c_str(), rotateVector.ToString().c_str(),
 //		m_expectedRotateVector.ToString().c_str());
@@ -110,7 +110,7 @@ void Vector3DTestCross::StartTest()
 //void Vector2DTestLerp::StartTest()
 //{
 //	Math::Vector2D lerpVector = m_vector.Lerp(m_vector2, m_lerpFactor);
-//	CHECK_CONDITION_ALWAYS(lerpVector == m_expectedLerpVector, Utility::Error,
+//	CHECK_CONDITION_ALWAYS_MATH_TEST(lerpVector == m_expectedLerpVector, Utility::Error,
 //		"The linear interpolation of vectors %s and %s with the factor equal to %.2f is a vector %s. It is different than expected %s",
 //		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), m_lerpFactor, lerpVector.ToString().c_str(),
 //		m_expectedLerpVector.ToString().c_str());

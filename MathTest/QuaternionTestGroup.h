@@ -118,7 +118,7 @@ public:
 	virtual void StartTest()
 	{
 		Math::Quaternion multiplyQuaternion = m_quaternion * m_val;
-		CHECK_CONDITION_ALWAYS(multiplyQuaternion == m_expectedMultiplyQuaternion, Utility::Error,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyQuaternion == m_expectedMultiplyQuaternion, Utility::Error,
 			"The multiplication of quaternion %s and %s is a quaternion %s. It is different than expected %s", // TODO: what if m_val is a Math::Real?
 			m_quaternion.ToString().c_str(), m_val.ToString().c_str(), // TODO: what if m_val is a Math::Real? It doesn't have ToString() method.
 			multiplyQuaternion.ToString().c_str(), m_expectedMultiplyQuaternion.ToString().c_str());

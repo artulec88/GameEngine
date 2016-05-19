@@ -38,7 +38,7 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 	Engine::GameManager* gameManager = static_cast<Engine::GameManager*>(arg);
 	if (gameManager == NULL)
 	{
-		EMERGENCY_LOG("Cannot load the game. Passed parameter is not a game manager object.");
+		EMERGENCY_LOG_ENGINE("Cannot load the game. Passed parameter is not a game manager object.");
 		exit(EXIT_FAILURE);
 	}
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
@@ -58,41 +58,41 @@ Engine::GameManager::GameManager() :
 	m_gameCommandFactory()//,
 	//m_effectFactory()
 {
-	INFO_LOG("Game manager construction started");
+	INFO_LOG_ENGINE("Game manager construction started");
 	//rootGameNode = new GameNode();
-	//CHECK_CONDITION_EXIT(rootGameNode != NULL, Critical, "Root game node construction failed.");
+	//CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, Critical, "Root game node construction failed.");
 
 	if (Engine::GameManager::s_gameManager != NULL)
 	{
-		ERROR_LOG("Constructor called when a singleton instance of CoreEngine class has already been created");
+		ERROR_LOG_ENGINE("Constructor called when a singleton instance of CoreEngine class has already been created");
 		SAFE_DELETE(Engine::GameManager::s_gameManager);
 	}
 	m_gameStateManager = new Engine::DefaultGameStateManager();
 
 	Engine::GameManager::s_gameManager = this;
-	DEBUG_LOG("Game manager construction finished");
+	DEBUG_LOG_ENGINE("Game manager construction finished");
 }
 
 
 Engine::GameManager::~GameManager(void)
 {
-	INFO_LOG("Game manager destruction finished");
+	INFO_LOG_ENGINE("Game manager destruction finished");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
 	SAFE_DELETE(m_skyboxNode);
-	DEBUG_LOG("Game manager destruction finished");
+	DEBUG_LOG_ENGINE("Game manager destruction finished");
 }
 
 void Engine::GameManager::WindowResizeEvent(int width, int height)
 {
-	NOTICE_LOG("Window resize event (width = %d, height = %d)", width, height);
+	NOTICE_LOG_ENGINE("Window resize event (width = %d, height = %d)", width, height);
 	// TODO: Check if core engine finds out about the resizing of the window.
 }
 
 void Engine::GameManager::CloseWindowEvent()
 {
-	NOTICE_LOG("Close window event");
+	NOTICE_LOG_ENGINE("Close window event");
 	CoreEngine::GetCoreEngine()->Stop();
 }
 
@@ -104,7 +104,7 @@ void Engine::GameManager::CloseWindowEvent()
  */
 void Engine::GameManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	DELOCUST_LOG("Key event with key = %d", key);
+	DELOCUST_LOG_ENGINE("Key event with key = %d", key);
 
 	//if (key == GLFW_KEY_ESCAPE)
 	//{
@@ -120,7 +120,7 @@ void Engine::GameManager::KeyEvent(int key, int scancode, int action, int mods)
 
 void Engine::GameManager::MouseButtonEvent(int button, int action, int mods)
 {
-	DELOCUST_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	DELOCUST_LOG_ENGINE("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	/**
 	 * GLFW_MOUSE_BUTTON_1 = left mouse button
@@ -131,35 +131,35 @@ void Engine::GameManager::MouseButtonEvent(int button, int action, int mods)
 	switch (action)
 	{
 	case GLFW_PRESS:
-		DEBUG_LOG("Mouse button pressed: button=%d\t mods=%d", button, mods);
+		DEBUG_LOG_ENGINE("Mouse button pressed: button=%d\t mods=%d", button, mods);
 		break;
 	case GLFW_RELEASE:
-		DEBUG_LOG("Mouse button released: button=%d\t mods=%d", button, mods);
+		DEBUG_LOG_ENGINE("Mouse button released: button=%d\t mods=%d", button, mods);
 		break;
 	default:
-		WARNING_LOG("Unknown action performed with the mouse");
+		WARNING_LOG_ENGINE("Unknown action performed with the mouse");
 	}
 }
 
 void Engine::GameManager::MousePosEvent(double xPos, double yPos)
 {
-	DEBUG_LOG("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
 }
 
 void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 {
-	DEBUG_LOG("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
+	DEBUG_LOG_ENGINE("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
 }
 
 //GameNode& GameManager::GetRootGameNode() const
 //{
-//	CHECK_CONDITION_EXIT(rootGameNode != NULL, Emergency, "Root game node is NULL.");
+//	CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, Emergency, "Root game node is NULL.");
 //	return *rootGameNode;
 //}
 
 //Shader* GameManager::GetShader() const
 //{
-//	CHECK_CONDITION(shader != NULL, Error, "Shader is NULL.");
+//	CHECK_CONDITION_ENGINE(shader != NULL, Error, "Shader is NULL.");
 //	return shader;
 //}
 

@@ -1,4 +1,5 @@
 #include "MatrixTestGroup.h"
+#include "Def.h"
 
 using namespace MathTest;
 
@@ -6,13 +7,13 @@ using namespace MathTest;
 MatrixTestGroup::MatrixTestGroup(void) :
 	TestGroup()
 {
-	NOTICE_LOG("Matrix tests started");
+	NOTICE_LOG_MATH_TEST("Matrix tests started");
 }
 
 
 MatrixTestGroup::~MatrixTestGroup(void)
 {
-	NOTICE_LOG("Matrix tests finished");
+	NOTICE_LOG_MATH_TEST("Matrix tests finished");
 }
 
 void MatrixTestGroup::StartTests()
@@ -52,7 +53,7 @@ MatrixTestCompare::~MatrixTestCompare(void)
 void MatrixTestCompare::StartTest()
 {
 	bool compareResult = (m_matrix == m_compareMatrix);
-	CHECK_CONDITION_ALWAYS(compareResult == m_expectedCompareResult, Utility::Error,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Error,
 		"The matrix %s and matrix %s comparison result is not as expected.",
 		m_matrix.ToString().c_str(), m_compareMatrix.ToString().c_str());
 
@@ -75,7 +76,7 @@ MatrixTestMultiplyByMatrixOperator::~MatrixTestMultiplyByMatrixOperator()
 void MatrixTestMultiplyByMatrixOperator::StartTest()
 {
 	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
-	CHECK_CONDITION_ALWAYS(multiplyResultMatrix == m_expectedMultiplyResultMatrix, Utility::Error,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultMatrix == m_expectedMultiplyResultMatrix, Utility::Error,
 		"The multiplication of matrices %s and %s equals %s. It is different than expected %s",
 		m_matrix.ToString().c_str(), m_matrix2.ToString().c_str(), multiplyResultMatrix.ToString().c_str(),
 		m_expectedMultiplyResultMatrix.ToString().c_str());
@@ -97,7 +98,7 @@ MatrixTestMultiplyByVectorOperator::~MatrixTestMultiplyByVectorOperator()
 void MatrixTestMultiplyByVectorOperator::StartTest()
 {
 	Math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
-	CHECK_CONDITION_ALWAYS(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Error,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Error,
 		"The multiplication of matrix:\n%s and vector %s equals %s. It is different than expected %s.",
 		m_matrix.ToString().c_str(), m_vector.ToString().c_str(), multiplyResultVector.ToString().c_str(),
 		m_expectedMultiplyResultVector.ToString().c_str());

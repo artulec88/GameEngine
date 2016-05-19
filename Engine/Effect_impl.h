@@ -93,7 +93,7 @@ Engine::Effects::BlinkEffect<T>::BlinkEffect(T* attribute, const T* values, cons
 		m_values.push_back(values[i]);
 		if (!(durations[i] > REAL_ZERO))
 		{
-			WARNING_LOG("Blinking effect's duration[%d] equals %.3f which is less than 0.0. Using default duration %.3f", i, durations[i], DEFAULT_DURATION);
+			WARNING_LOG_ENGINE("Blinking effect's duration[%d] equals %.3f which is less than 0.0. Using default duration %.3f", i, durations[i], DEFAULT_DURATION);
 			m_durations.push_back(DEFAULT_DURATION);
 		}
 		else
@@ -120,9 +120,9 @@ void Engine::Effects::BlinkEffect<T>::Update(Math::Real deltaTime)
 	{
 		m_timer = 0.0f;
 		m_currentIndex = (m_currentIndex + 1) % m_values.size();
-		CHECK_CONDITION(m_currentIndex >= 0 && m_currentIndex < m_values.size(), Utility::Error, "Blinking effect's index calculation incorrect. The index %d is out of range [0; %d)",
+		CHECK_CONDITION_ENGINE(m_currentIndex >= 0 && m_currentIndex < m_values.size(), Utility::Error, "Blinking effect's index calculation incorrect. The index %d is out of range [0; %d)",
 			m_currentIndex, m_values.size());
-		DEBUG_LOG("Switching to effect %d", m_currentIndex);
+		DEBUG_LOG_ENGINE("Switching to effect %d", m_currentIndex);
 		*m_attribute = m_values[m_currentIndex];
 	}
 }

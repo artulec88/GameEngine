@@ -103,7 +103,7 @@ protected:
 		case DESCENDING:
 			return (v2 > v1);
 		default:
-			ERROR_LOG("Unknown sorting direction specified.");
+			ERROR_LOG_MATH("Unknown sorting direction specified.");
 			return false;
 			break;
 		}
@@ -117,7 +117,7 @@ protected:
 		SortingKey sortingKey = sortingParameters.GetSortingKey();
 		if (sortingKey == COMPONENT_Z)
 		{
-			ERROR_LOG("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
+			ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 			return false;
 		}
 
@@ -153,7 +153,7 @@ protected:
 		switch (sortingKey)
 		{
 		case VALUE:
-			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 			result = v.GetX();
 			break;
 		case COMPONENT_X:
@@ -163,7 +163,7 @@ protected:
 			result = v.GetY();
 			break;
 		case COMPONENT_Z:
-			EMERGENCY_LOG("Cannot determine the value of the Z component for the 2D vector.");
+			EMERGENCY_LOG_MATH("Cannot determine the value of the Z component for the 2D vector.");
 			exit(EXIT_FAILURE);
 		case SUM_OF_SQUARED_COMPONENTS:
 			result = v.LengthSquared();
@@ -175,7 +175,7 @@ protected:
 			result = v.SumOfAbsoluteComponents();
 			break;
 		default:
-			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
+			EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 			result = v.GetX();
 			break;
 		}
@@ -188,7 +188,7 @@ protected:
 		switch (sortingKey)
 		{
 		case VALUE:
-			WARNING_LOG("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
+			WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 			result = v.GetX();
 			break;
 		case COMPONENT_X:
@@ -210,7 +210,7 @@ protected:
 			result = v.SumOfAbsoluteComponents();
 			break;
 		default:
-			EMERGENCY_LOG("Unknown sorting key specified. Returning X component value by default.");
+			EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 			result = v.GetX();
 			break;
 		}

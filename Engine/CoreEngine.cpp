@@ -60,7 +60,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ void CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	DEBUG_LOG("Key event callback (key = %d; scancode = %d; action = %d; mods = %d", key, scancode, action, mods);
+	DEBUG_LOG_ENGINE("Key event callback (key = %d; scancode = %d; action = %d; mods = %d", key, scancode, action, mods);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventKeyGLFW(key, action))  // send event to AntTweakBar
 	{
@@ -168,7 +168,12 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
-	NOTICE_LOG("Main application construction started");
+	/* ==================== Initializing engine logger begin ==================== */
+	std::string loggingLevel = GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info");
+	Utility::ILogger::GetLogger("Engine").Fill(loggingLevel, Utility::Info);
+	/* ==================== Initializing engine logger end ==================== */
+
+	NOTICE_LOG_ENGINE("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS
 	m_timer.Start();
 #endif
@@ -176,7 +181,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	if (s_coreEngine != NULL)
 	{
-		ERROR_LOG("Constructor called when a singleton instance of MainApp class has already been created");
+		ERROR_LOG_ENGINE("Constructor called when a singleton instance of MainApp class has already been created");
 		SAFE_DELETE(s_coreEngine);
 	}
 	s_coreEngine = this;
@@ -195,24 +200,24 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 
 	STOP_PROFILING;
 
-	NOTICE_LOG("Main application construction finished");
+	NOTICE_LOG_ENGINE("Main application construction finished");
 }
 
 
 CoreEngine::~CoreEngine(void)
 {
-	DEBUG_LOG("Core engine destruction started");
+	DEBUG_LOG_ENGINE("Core engine destruction started");
 
 	/* ==================== Printing stats begin ==================== */
 #ifdef CALCULATE_RENDERING_STATS
-	INFO_LOG("The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
-	INFO_LOG("The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
-	INFO_LOG("\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
-	INFO_LOG("\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
-	INFO_LOG("\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
-	INFO_LOG("The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
-	INFO_LOG("Rendering step performed %d times", m_renderingRequiredCount);
-	INFO_LOG("Rendering step omitted %d times", m_renderingNotRequiredCount);
+	INFO_LOG_ENGINE("The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
+	INFO_LOG_ENGINE("The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
+	INFO_LOG_ENGINE("\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
+	INFO_LOG_ENGINE("\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
+	INFO_LOG_ENGINE("\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
+	INFO_LOG_ENGINE("The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
+	INFO_LOG_ENGINE("Rendering step performed %d times", m_renderingRequiredCount);
+	INFO_LOG_ENGINE("Rendering step omitted %d times", m_renderingNotRequiredCount);
 
 	m_timer.Stop();
 	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND));
@@ -220,8 +225,8 @@ CoreEngine::~CoreEngine(void)
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
-	INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
-	//INFO_LOG("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
+	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
+	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
 #endif
 	/* ==================== Printing stats end ==================== */	
 
@@ -231,23 +236,23 @@ CoreEngine::~CoreEngine(void)
 	SAFE_DELETE(m_physicsEngine);
 	SAFE_DELETE(m_renderer);
 	glfwTerminate(); // Terminate GLFW
-	NOTICE_LOG("Core engine destruction finished");
+	NOTICE_LOG_ENGINE("Core engine destruction finished");
 
-	ILogger::GetLogger().ResetConsoleColor();
+	ILogger::GetLogger("Engine").ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 }
 
 void CoreEngine::CreateAudioEngine()
 {
 	m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE_ENGINE("audioMaxChannels", 32));
-	CHECK_CONDITION_EXIT(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
 void CoreEngine::CreatePhysicsEngine()
 {
 	m_physicsEngine = new Physics::PhysicsEngine();
 
-	CHECK_CONDITION_EXIT(m_physicsEngine != NULL, Utility::Critical, "Failed to create a physics engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Critical, "Failed to create a physics engine.");
 }
 
 void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
@@ -257,10 +262,10 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	Rendering::InitGraphics(width, height);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
-	//DEBUG_LOG("Thread window address: %p", threadWindow);
+	//DEBUG_LOG_ENGINE("Thread window address: %p", threadWindow);
 	m_renderer = new Rendering::Renderer(width, height);
 
-	CHECK_CONDITION_EXIT(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
 	STOP_PROFILING;
 }
 
@@ -273,8 +278,8 @@ void CoreEngine::InitGraphics(int width, int height, const std::string& title)
 
 void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 {
-	DEBUG_LOG("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
+	DEBUG_LOG_ENGINE("Initializing GLFW started");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
 
 	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
@@ -286,7 +291,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		*/
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		INFO_LOG("No anti-aliasing algorithm chosen");
+		INFO_LOG_ENGINE("No anti-aliasing algorithm chosen");
 		break;
 	case Rendering::Aliasing::FXAA:
 		/**
@@ -294,14 +299,14 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 		* Why is it so? See http://www.glfw.org/docs/latest/window.html#window_hints
 		*/
 		glfwWindowHint(GLFW_SAMPLES, 0);
-		INFO_LOG("FXAA anti-aliasing algorithm chosen");
+		INFO_LOG_ENGINE("FXAA anti-aliasing algorithm chosen");
 		break;
 	case Rendering::Aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-		INFO_LOG("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		INFO_LOG_ENGINE("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
 		break;
 	default:
-		WARNING_LOG("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
+		WARNING_LOG_ENGINE("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 	}
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
@@ -325,7 +330,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	m_window = glfwCreateWindow(width, height, title.c_str(), monitor, NULL); // Open a window and create its OpenGL context
 	if (m_window == NULL)
 	{
-		CRITICAL_LOG("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
+		CRITICAL_LOG_ENGINE("Failed to create GLFW main window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -333,7 +338,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	m_threadWindow = glfwCreateWindow(1, 1, "Thread Window", NULL, m_window);
 	if (m_threadWindow == NULL)
 	{
-		CRITICAL_LOG("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
+		CRITICAL_LOG_ENGINE("Failed to create GLFW thread window. If you have an Intel GPU, they are not 3.3 compatible.");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
@@ -343,37 +348,37 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	glfwSetCursorPos(m_window, width / 2, height / 2); // Set cursor position to the middle point
 													 //glfwSwapInterval(1);
 	glfwSetTime(REAL_ZERO);
-	DEBUG_LOG("Initializing GLFW finished successfully");
+	DEBUG_LOG_ENGINE("Initializing GLFW finished successfully");
 }
 
 void CoreEngine::InitGlew()
 {
-	INFO_LOG("Initializing GLEW started");
+	INFO_LOG_ENGINE("Initializing GLEW started");
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
 	if (GLEW_OK != err)
 	{
-		ERROR_LOG("Error while initializing GLEW: %s", glewGetErrorString(err));
+		ERROR_LOG_ENGINE("Error while initializing GLEW: %s", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 	if (GLEW_VERSION_2_0)
 	{
-		DEBUG_LOG("OpenGL 2.0 supported");
+		DEBUG_LOG_ENGINE("OpenGL 2.0 supported");
 	}
 	else
 	{
-		ERROR_LOG("Initializing GLEW failed. OpenGL 2.0 NOT supported");
+		ERROR_LOG_ENGINE("Initializing GLEW failed. OpenGL 2.0 NOT supported");
 		exit(EXIT_FAILURE);
 	}
 
-	INFO_LOG("Using GLEW version %s", glewGetString(GLEW_VERSION));
+	INFO_LOG_ENGINE("Using GLEW version %s", glewGetString(GLEW_VERSION));
 	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
 void CoreEngine::SetCallbacks()
 {
-	CHECK_CONDITION_EXIT_ALWAYS(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(m_window, &CoreEngine::WindowResizeCallback);
 	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
@@ -390,10 +395,10 @@ void CoreEngine::Start(GameManager* gameManager)
 	m_game = gameManager;
 	if (m_isRunning)
 	{
-		WARNING_LOG("The core engine instance is already running");
+		WARNING_LOG_ENGINE("The core engine instance is already running");
 		return;
 	}
-	NOTICE_LOG("The core engine started");
+	NOTICE_LOG_ENGINE("The core engine started");
 
 	Run();
 	STOP_PROFILING;
@@ -404,14 +409,14 @@ void CoreEngine::Stop()
 	START_PROFILING;
 	if (!m_isRunning)
 	{
-		WARNING_LOG("The core engine instance is not running");
+		WARNING_LOG_ENGINE("The core engine instance is not running");
 		return;
 	}
 	
 	m_isRunning = false;
 	RequestWindowClose();
-	CHECK_CONDITION(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
-	NOTICE_LOG("The core engine has stopped");
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
+	NOTICE_LOG_ENGINE("The core engine has stopped");
 
 	// Just for checking whether time calculation is performed correctly
 	//LARGE_INTEGER frequency; // ticks per second
@@ -421,7 +426,7 @@ void CoreEngine::Stop()
 	//tthread::this_thread::sleep_for(tthread::chrono::seconds(1));
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-	//INFO_LOG("Elapsed time = %f [us]", elapsedTime);
+	//INFO_LOG_ENGINE("Elapsed time = %f [us]", elapsedTime);
 	STOP_PROFILING;
 }
 
@@ -452,7 +457,7 @@ void CoreEngine::Run()
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif
 	
-	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
@@ -519,7 +524,7 @@ void CoreEngine::Run()
 				m_stats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
-			DEBUG_LOG("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			DEBUG_LOG_ENGINE("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = REAL_ZERO;
 		}
@@ -639,7 +644,7 @@ void CoreEngine::Run()
 		}
 		else
 		{
-			//INFO_LOG("Rendering is not required. Moving on...");
+			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			//this_thread::sleep_for(chrono::milliseconds(100));
 			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
@@ -664,34 +669,34 @@ void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 	switch (errorCode)
 	{
 	case GLFW_NOT_INITIALIZED:
-		ERROR_LOG("GLFW has not been initialized. Error description: %s", description);
+		ERROR_LOG_ENGINE("GLFW has not been initialized. Error description: %s", description);
 		break;
 	case GLFW_NO_CURRENT_CONTEXT:
-		ERROR_LOG("No context is current for this thread. Error description: %s", description);
+		ERROR_LOG_ENGINE("No context is current for this thread. Error description: %s", description);
 		break;
 	case GLFW_INVALID_ENUM:
-		ERROR_LOG("One of the arguments to the function was an invalid enum value. Error description: %s", description);
+		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid enum value. Error description: %s", description);
 		break;
 	case GLFW_INVALID_VALUE:
-		ERROR_LOG("One of the arguments to the function was an invalid value. Error description: %s", description);
+		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid value. Error description: %s", description);
 		break;
 	case GLFW_OUT_OF_MEMORY:
-		ERROR_LOG("A memory allocation failed. Error description: %s", description);
+		ERROR_LOG_ENGINE("A memory allocation failed. Error description: %s", description);
 		break;
 	case GLFW_API_UNAVAILABLE:
-		ERROR_LOG("GLFW could not find support for the requested client API on the system. Error description: %s", description);
+		ERROR_LOG_ENGINE("GLFW could not find support for the requested client API on the system. Error description: %s", description);
 		break;
 	case GLFW_VERSION_UNAVAILABLE:
-		ERROR_LOG("The requested OpenGL or OpenGL ES version is not available. Error description: %s", description);
+		ERROR_LOG_ENGINE("The requested OpenGL or OpenGL ES version is not available. Error description: %s", description);
 		break;
 	case GLFW_PLATFORM_ERROR:
-		ERROR_LOG("A platform-specific error occurred that does not match any of the more specific categories. Error description: %s", description);
+		ERROR_LOG_ENGINE("A platform-specific error occurred that does not match any of the more specific categories. Error description: %s", description);
 		break;
 	case GLFW_FORMAT_UNAVAILABLE:
-		ERROR_LOG("The requested format is not supported or available. Error description: %s", description);
+		ERROR_LOG_ENGINE("The requested format is not supported or available. Error description: %s", description);
 		break;
 	default:
-		ERROR_LOG("Unknown GLFW error event occurred with code %d and message: Error description: %s", errorCode, description);
+		ERROR_LOG_ENGINE("Unknown GLFW error event occurred with code %d and message: Error description: %s", errorCode, description);
 	}
 	exit(EXIT_FAILURE);
 }
@@ -736,19 +741,19 @@ void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& i
 
 size_t CoreEngine::GetCurrentCameraIndex() const
 {
-	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot get the current camera index. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot get the current camera index. The renderer does not exist.");
 	return m_renderer->GetCurrentCameraIndex();
 }
 
 size_t CoreEngine::NextCamera() const
 {
-	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the next camera. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot move to the next camera. The renderer does not exist.");
 	return m_renderer->NextCamera();
 }
 
 size_t CoreEngine::PrevCamera() const
 {
-	CHECK_CONDITION_EXIT(m_renderer != NULL, Critical, "Cannot move to the previous camera. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot move to the previous camera. The renderer does not exist.");
 	return m_renderer->PrevCamera();
 }
 
@@ -770,7 +775,7 @@ Math::Real CoreEngine::GetCurrentLocalTime() const
 	int result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
 	if (result > SECONDS_PER_DAY)
 	{
-		ERROR_LOG("Incorrect local time");
+		ERROR_LOG_ENGINE("Incorrect local time");
 		// result = REAL_ZERO;
 		result -= SECONDS_PER_DAY;
 	}
@@ -793,7 +798,7 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 {
 	if (m_renderer == NULL)
 	{
-		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
+		CRITICAL_LOG_ENGINE("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
 	glfwSetCursorPos(m_window, xPos, yPos);
@@ -803,7 +808,7 @@ void CoreEngine::CentralizeCursor()
 {
 	if (m_renderer == NULL)
 	{
-		CRITICAL_LOG("Cannot set cursor position. The rendering engine is NULL.");
+		CRITICAL_LOG_ENGINE("Cannot set cursor position. The rendering engine is NULL.");
 		return;
 	}
 	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
@@ -820,19 +825,19 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
 	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
-	//DEBUG_LOG("Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
 
 	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
 	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
-	//DEBUG_LOG("Time correction in seconds = %.5f", timeCorrectionInSeconds);
-	//DEBUG_LOG("Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
+	//DEBUG_LOG_ENGINE("Time correction in seconds = %.5f", timeCorrectionInSeconds);
+	//DEBUG_LOG_ENGINE("Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
 	
 	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
-	//DEBUG_LOG("Hour angle = %.5f", hourAngle.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Hour angle = %.5f", hourAngle.GetAngleInDegrees());
 
 	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
 	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
-	//DEBUG_LOG("Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
 
 	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
@@ -861,9 +866,9 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	}
 	//if (prevDaytime != m_daytime)
 	//{
-	//	INFO_LOG("Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
+	//	INFO_LOG_ENGINE("Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
 	//}
-	//DEBUG_LOG("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
 Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
@@ -893,7 +898,7 @@ Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransi
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
 	default:
-		ERROR_LOG("Incorrect daytime %d", m_daytime);
+		ERROR_LOG_ENGINE("Incorrect daytime %d", m_daytime);
 	}
 	return m_daytime;
 }

@@ -14,34 +14,34 @@ Engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
 	m_physicsObject(NULL)
 {
-	//INFO_LOG("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
-	//INFO_LOG("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
-	//INFO_LOG("Transform.GetScale() = \"%f\"", transform.GetScale());
+	//INFO_LOG_ENGINE("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
+	//INFO_LOG_ENGINE("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
+	//INFO_LOG_ENGINE("Transform.GetScale() = \"%f\"", transform.GetScale());
 }
 
 
 Engine::GameNode::~GameNode(void)
 {
-	DEBUG_LOG("Game node (ID=%d) destruction started", m_ID);
-	//DEBUG_LOG("Destroying components started for game node with ID=%d", this->ID);
+	DEBUG_LOG_ENGINE("Game node (ID=%d) destruction started", m_ID);
+	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=%d", this->ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
 	//	SAFE_DELETE(*itr);
 	//}
-	//DEBUG_LOG("Destroying components finished for game node with ID=%d", this->ID);
+	//DEBUG_LOG_ENGINE("Destroying components finished for game node with ID=%d", this->ID);
 
-	//DEBUG_LOG("Started recursive destruction of game nodes for game node with ID=%d", this->ID);
+	//DEBUG_LOG_ENGINE("Started recursive destruction of game nodes for game node with ID=%d", this->ID);
 	//for (std::vector<GameNode*>::iterator itr = childrenGameNodes.begin(); itr != childrenGameNodes.end(); ++itr)
 	//{
 	//	if ((*itr) != NULL)
 	//	{
-	//		DELOCUST_LOG("Destroying child game node started");
+	//		DELOCUST_LOG_ENGINE("Destroying child game node started");
 	//		delete *itr;
 	//		*itr = NULL;
-	//		DELOCUST_LOG("Destroying child game node finished");
+	//		DELOCUST_LOG_ENGINE("Destroying child game node finished");
 	//	}
 	//}
-	//DEBUG_LOG("Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
+	//DEBUG_LOG_ENGINE("Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
 	//childrenGameNodes.clear();
 
 	for (unsigned int i = 0; i < m_components.size(); ++i)
@@ -55,7 +55,7 @@ Engine::GameNode::~GameNode(void)
 	}
 	m_childrenGameNodes.clear();
 	SAFE_DELETE(m_physicsObject);
-	DEBUG_LOG("Game node (ID=%d) destruction finished", m_ID);
+	DEBUG_LOG_ENGINE("Game node (ID=%d) destruction finished", m_ID);
 }
 
 void Engine::GameNode::SetPhysicsObject(Physics::PhysicsObject* physicsObject)

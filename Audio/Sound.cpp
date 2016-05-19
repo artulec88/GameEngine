@@ -24,7 +24,7 @@ Audio::Sound::~Sound(void)
 	ASSERT(m_soundData != NULL);
 	if (m_soundData == NULL)
 	{
-		WARNING_LOG("Destructing the sound aborted. Sound data is already NULL.");
+		WARNING_LOG_AUDIO("Destructing the sound aborted. Sound data is already NULL.");
 	}
 	//m_soundData->RemoveReference();
 	//if (!m_soundData->IsReferenced())

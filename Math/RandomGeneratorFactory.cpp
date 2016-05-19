@@ -10,7 +10,7 @@
 
 Math::Random::RandomGeneratorFactory::RandomGeneratorFactory()
 {
-	DEBUG_LOG("Random generator factory created");
+	DEBUG_LOG_MATH("Random generator factory created");
 }
 
 
@@ -21,7 +21,7 @@ Math::Random::RandomGeneratorFactory::~RandomGeneratorFactory()
 		SAFE_DELETE(randomGeneratorItr->second);
 	}
 	m_randomGenerators.clear();
-	DEBUG_LOG("Random generator factory destroyed");
+	DEBUG_LOG_MATH("Random generator factory destroyed");
 }
 
 const Math::Random::RandomGenerator& Math::Random::RandomGeneratorFactory::GetRandomGenerator(Generators::Generator randomGenerator, unsigned seed /* = ((unsigned int)time(NULL)) */)

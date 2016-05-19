@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Utility.h"
-#include <Windows.h>
+#include <Windows.h> // TODO: We should not include this file in the interface ILogger.h file.
+#include <map>
+#include <string>
+#include <memory>
 
 #define LOGGING_ENABLED
 #define CRITICAL_LOGGING_ENABLED
@@ -74,51 +77,51 @@
 #endif
 
 #ifdef CRITICAL_LOGGING_ENABLED
-#define CRITICAL_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Critical, LOGPLACE, message, ##__VA_ARGS__)
+#define CRITICAL_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Critical, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define CRITICAL_LOG(message, ...)
+#define CRITICAL_LOG(moduleName, message, ...)
 #endif
 
 #ifdef EMERGENCY_LOGGING_ENABLED
-#define EMERGENCY_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Emergency, LOGPLACE, message, ##__VA_ARGS__)
+#define EMERGENCY_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Emergency, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define EMERGENCY_LOG(message, ...)
+#define EMERGENCY_LOG(moduleName, message, ...)
 #endif
 
 #ifdef ERROR_LOGGING_ENABLED
-#define ERROR_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Error, LOGPLACE, message, ##__VA_ARGS__)
+#define ERROR_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Error, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define ERROR_LOG(message, ...)
+#define ERROR_LOG(moduleName, message, ...)
 #endif
 
 #ifdef WARNING_LOGGING_ENABLED
-#define WARNING_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Warning, LOGPLACE, message, ##__VA_ARGS__)
+#define WARNING_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Warning, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define WARNING_LOG(message, ...)
+#define WARNING_LOG(moduleName, message, ...)
 #endif
 
 #ifdef NOTICE_LOGGING_ENABLED
-#define NOTICE_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Notice, LOGPLACE, message, ##__VA_ARGS__)
+#define NOTICE_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Notice, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define NOTICE_LOG(message, ...)
+#define NOTICE_LOG(moduleName, message, ...)
 #endif
 
 #ifdef INFO_LOGGING_ENABLED
-#define INFO_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Info, LOGPLACE, message, ##__VA_ARGS__)
+#define INFO_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Info, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define INFO_LOG(message, ...)
+#define INFO_LOG(moduleName, message, ...)
 #endif
 
 #ifdef DEBUG_LOGGING_ENABLED
-#define DEBUG_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Debug, LOGPLACE, message, ##__VA_ARGS__)
+#define DEBUG_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Debug, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define DEBUG_LOG(message, ...)
+#define DEBUG_LOG(moduleName, message, ...)
 #endif
 
 #ifdef DELOCUST_LOGGING_ENABLED
-#define DELOCUST_LOG(message, ...) Utility::ILogger::GetLogger().Log(Utility::Delocust, LOGPLACE, message, ##__VA_ARGS__)
+#define DELOCUST_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Delocust, LOGPLACE, message, ##__VA_ARGS__)
 #else
-#define DELOCUST_LOG(message, ...)
+#define DELOCUST_LOG(moduleName, message, ...)
 #endif
 
 namespace Utility
@@ -142,15 +145,15 @@ class ILogger
 {
 /* ==================== Static variables and functions begin ==================== */
 protected:
-	static ILogger* logger;
+	static std::map<std::string, std::unique_ptr<ILogger>> loggers;
 	static const char* LevelNames[];
 public:
-	UTILITY_API static ILogger& GetLogger(/* some parameter based on which the logger implementation class is chosen */);
+	UTILITY_API static ILogger& GetLogger(const std::string& moduleName);
 	//static void Log(LogLevel level, const char *name, int line, const char *format, ...);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
-protected:
+public:
 	ILogger();
 	virtual ~ILogger(void);
 /* ==================== Constructors and destructors end ==================== */

@@ -49,7 +49,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 			// TODO: Recursive search
 			if (isRecursiveSearchEnabled)
 			{
-				WARNING_LOG("The recursive search mode is not yet supported.");
+				WARNING_LOG_UTILITY("The recursive search mode is not yet supported.");
 			}
 		}
 		else
@@ -64,7 +64,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	DWORD dwError = GetLastError();
 	if (dwError != ERROR_NO_MORE_FILES)
 	{
-		ERROR_LOG("No more files.");
+		ERROR_LOG_UTILITY("No more files.");
 	}
 
 	FindClose(hFind);

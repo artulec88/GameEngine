@@ -207,7 +207,7 @@ inline Real Angle::GetAngleInDegrees() const
 		return ToDeg(m_angle);
 	default:
 		STOP_PROFILING;
-		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		ERROR_LOG_MATH("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
 		return m_angle;
 	}
 }
@@ -224,7 +224,7 @@ inline Real Angle::GetAngleInRadians() const
 		STOP_PROFILING;
 		return m_angle;
 	default:
-		ERROR_LOG("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
+		ERROR_LOG_MATH("Incorrect unit type for angle with amount=%.2f and unit=%d", m_angle, m_unit);
 		STOP_PROFILING;
 		return m_angle;
 	}

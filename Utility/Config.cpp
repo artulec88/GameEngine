@@ -67,13 +67,13 @@ void Config::LoadFromFile()
 			{
 				if (tokens[i] == "#")
 				{
-					WARNING_LOG("Comment sign '#' found when it should be already removed");
+					WARNING_LOG_UTILITY("Comment sign '#' found when it should be already removed");
 					break;
 				}
 				value += " " + tokens[i];
 			}
 		}
-		DEBUG_LOG("Configuration parameter \"%s\" = \"%s\"", tokens[0].c_str(), value.c_str());
+		DEBUG_LOG_UTILITY("Configuration parameter \"%s\" = \"%s\"", tokens[0].c_str(), value.c_str());
 		m_cfgValues[tokens[0]] = value;
 	}
 

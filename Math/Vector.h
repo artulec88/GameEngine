@@ -75,7 +75,7 @@ public:
 		//Real length = LengthSquared();
 		//if (AlmostEqual(length, REAL_ZERO))
 		//{
-		//	WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
+		//	WARNING_LOG_MATH("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 		//	return (*this);
 		//}
 		// return (*this) / static_cast<Real>(sqrt(length));
@@ -220,7 +220,7 @@ public:
 //		Real length = LengthSquared();
 //		if (AlmostEqual(length, REAL_ZERO))
 //		{
-//			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
+//			WARNING_LOG_MATH("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 //			return;
 //		}
 //#endif
@@ -354,7 +354,7 @@ public:
 //#ifdef _DEBUG
 //		if (AlmostEqual(length, REAL_ZERO))
 //		{
-//			WARNING_LOG("Trying to normalize the vector with 0 length. 0 length vector is returned.");
+//			WARNING_LOG_MATH("Trying to normalize the vector with 0 length. 0 length vector is returned.");
 //			return;
 //		}
 //#endif

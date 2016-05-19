@@ -165,7 +165,7 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	m[8] = -xCos * ySin;	m[9] = -xSin;		m[10] = xCos * yCos;	m[11] = REAL_ZERO;
 	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
 #endif
-	CHECK_CONDITION((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
+	CHECK_CONDITION_MATH((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
 	STOP_PROFILING;
 }
 
@@ -217,7 +217,7 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ
 	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
 	//if (rot != matrixToCompare)
 	//{
-	//	ERROR_LOG("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//	ERROR_LOG_MATH("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
 	//}
 	STOP_PROFILING;
 	/* ==================== SOLUTION #2 end ==================== */
@@ -328,7 +328,7 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	CHECK_CONDITION((*this) == mat, Utility::Error, "The copy constructor should cause the two matrices to be equal, but they are not.");
+	CHECK_CONDITION_MATH((*this) == mat, Utility::Error, "The copy constructor should cause the two matrices to be equal, but they are not.");
 	STOP_PROFILING;
 }
 
@@ -845,9 +845,9 @@ void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& u
 	//right = right.Cross(forw);
 
 	//Vector3D newUp = forw.Cross(right);
-	CHECK_CONDITION(f.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
-	CHECK_CONDITION(u.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
-	CHECK_CONDITION(r.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+	CHECK_CONDITION_MATH(f.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
+	CHECK_CONDITION_MATH(u.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION_MATH(r.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = r.GetX();		m[0][1] = u.GetX();		m[0][2] = f.GetX();		m[0][3] = REAL_ZERO;
 	m[1][0] = r.GetY();		m[1][1] = u.GetY();		m[1][2] = f.GetY();		m[1][3] = REAL_ZERO;

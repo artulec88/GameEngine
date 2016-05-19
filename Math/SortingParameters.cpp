@@ -25,7 +25,7 @@ void SortingParametersChain::SetSortingKey(SortingKey sortingKey)
 {
 	if ((m_sortingParametersChain != NULL) && (m_sortingParametersChain->GetSortingKey() == sortingKey))
 	{
-		WARNING_LOG("Sorting parameter's child specify the same sorting key so it will be removed");
+		WARNING_LOG_MATH("Sorting parameter's child specify the same sorting key so it will be removed");
 		SAFE_DELETE(m_sortingParametersChain);
 	}
 	m_sortingKey = sortingKey;
@@ -35,12 +35,12 @@ void SortingParametersChain::AddChainLink(SortingParametersChain* sortingParamet
 {
 	if (m_sortingParametersChain != NULL)
 	{
-		INFO_LOG("Replacing the already set-up sorting parameters chain");
+		INFO_LOG_MATH("Replacing the already set-up sorting parameters chain");
 		SAFE_DELETE(m_sortingParametersChain);
 	}
 	if (m_sortingKey == sortingParametersChain->GetSortingKey())
 	{
-		ERROR_LOG("Cannot add sorting parameters chain link when both parent and child link specify the same sorting key");
+		ERROR_LOG_MATH("Cannot add sorting parameters chain link when both parent and child link specify the same sorting key");
 		return;
 	}
 	m_sortingParametersChain = sortingParametersChain;

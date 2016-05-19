@@ -15,7 +15,7 @@ void TimeSpan::AdjustUnitToValue()
 {
 	// This function should make the m_value and m_unit variables easier to read, i.e.
 	// if m_value=123456,789 and m_unit=us then we should change m_value to 123,456789 and m_unit=ms.
-	WARNING_LOG("The function has not been tested yet.");
+	WARNING_LOG_UTILITY("The function has not been tested yet.");
 
 	if ((m_value < Time::ONE_THOUSAND) && (m_value > Time::ONE)) // If value is in range [1; 1000) then we don't need to change the unit.
 	{
@@ -129,7 +129,7 @@ std::string TimeSpan::ToString() const
 	case NANOSECOND:
 		return "[ns]";
 	default:
-		ERROR_LOG("Unknown time unit (%d)", timeUnit);
+		ERROR_LOG_UTILITY("Unknown time unit (%d)", timeUnit);
 		return "Unknown time unit";
 	}
 }
@@ -154,7 +154,7 @@ std::string TimeSpan::ToString() const
 	case 3:
 		return ONE_BILLION;
 	default:
-		ERROR_LOG("Failed determining the time unit conversion factor (fromTimeUnit = %d; toTimeUnit = %d)", fromTimeUnit, toTimeUnit);
+		ERROR_LOG_UTILITY("Failed determining the time unit conversion factor (fromTimeUnit = %d; toTimeUnit = %d)", fromTimeUnit, toTimeUnit);
 		return ONE;
 	}
 }

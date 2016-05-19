@@ -16,7 +16,7 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REA
 
 Transform::~Transform()
 {
-	//DEBUG_LOG("Transform is being destroyed");
+	//DEBUG_LOG_MATH("Transform is being destroyed");
 }
 
 //bool Transform::IsHierarchyChanged() const
@@ -43,7 +43,7 @@ Matrix4D Transform::GetTransformation() const
 		isChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
 		//{
-		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG_MATH("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 
 		Matrix4D translationMatrix(m_pos);
@@ -57,7 +57,7 @@ Matrix4D Transform::GetTransformation() const
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
 		//{
-		//	DEBUG_LOG("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG_MATH("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
 		//}
 	}
 
@@ -90,7 +90,7 @@ void Transform::Rotate(const Vector3D& axis, const Angle& angle)
 
 void Transform::Rotate(const Quaternion& rot)
 {
-	//DEBUG_LOG("Started...");
+	//DEBUG_LOG_MATH("Started...");
 	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
 }

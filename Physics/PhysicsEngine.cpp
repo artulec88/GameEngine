@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PhysicsEngine.h"
 #include "Math\IntersectInfo.h"
-#include "Utility\Utility.h"
+#include "Utility\IConfig.h"
 
 Physics::PhysicsEngine::PhysicsEngine() :
 #ifdef CALCULATE_PHYSICS_STATS
@@ -9,7 +9,12 @@ Physics::PhysicsEngine::PhysicsEngine() :
 #endif
 {
 	START_PROFILING;
-	NOTICE_LOG("Physics engine created");
+	/* ==================== Initializing physics logger begin ==================== */
+	std::string loggingLevel = GET_CONFIG_VALUE_STR_PHYSICS("LoggingLevel", "Info");
+	Utility::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::Info);
+	/* ==================== Initializing physics logger end ==================== */
+
+	NOTICE_LOG_PHYSICS("Physics engine created");
 	STOP_PROFILING;
 }
 
@@ -43,7 +48,7 @@ void Physics::PhysicsEngine::HandleCollisions()
 			Math::IntersectInfo intersectInfo = (*physicsObjectItr)->Intersect(*(*otherPhysicsObjectItr));
 			if (intersectInfo.IsIntersecting())
 			{
-				DEBUG_LOG("The objects collided"); // TODO: Better log message
+				DEBUG_LOG_PHYSICS("The objects collided"); // TODO: Better log message
 				(*physicsObjectItr)->GetLinearVelocity().Negate();
 				(*otherPhysicsObjectItr)->GetLinearVelocity().Negate();
 			}

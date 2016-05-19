@@ -53,7 +53,7 @@ void Engine::MoveComponent::Update(Math::Real deltaTime)
 
 void Engine::MoveComponent::KeyEvent(int key, int scancode, int action, int mods)
 {
-	DEBUG_LOG("key = %d, scancode = %d, action = %d, mods = %d", key, scancode, action, mods);
+	DEBUG_LOG_ENGINE("key = %d, scancode = %d, action = %d, mods = %d", key, scancode, action, mods);
 	switch (key)
 	{
 	case GLFW_KEY_LEFT_SHIFT:
@@ -81,14 +81,14 @@ void Engine::MoveComponent::KeyEvent(int key, int scancode, int action, int mods
 		{
 			//m_currentStrafeSpeed -= m_strafeSpeed;
 		}
-		//DEBUG_LOG("Left = %d", left);
+		//DEBUG_LOG_ENGINE("Left = %d", left);
 		break;
 	case GLFW_KEY_D:
 		if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
 		{
 			//m_currentStrafeSpeed += m_strafeSpeed;
 		}
-		//DEBUG_LOG("Right = %d", right);
+		//DEBUG_LOG_ENGINE("Right = %d", right);
 		break;
 	case GLFW_KEY_SPACE: // move up
 		if (!m_isJumping && (action == GLFW_PRESS || action == GLFW_REPEAT))

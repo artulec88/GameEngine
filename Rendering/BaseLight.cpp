@@ -36,7 +36,7 @@ void Rendering::Lighting::BaseLight::SetShader(Rendering::Shader* shader)
 	//SAFE_DELETE(this->shader);
 	if (m_shader != NULL)
 	{
-		WARNING_LOG("Setting new shader for the light seems dubious.");
+		WARNING_LOG_RENDERING("Setting new shader for the light seems dubious.");
 		SAFE_DELETE(m_shader);
 	}
 	m_shader = shader;
@@ -48,7 +48,7 @@ void Rendering::Lighting::BaseLight::SetTerrainShader(Rendering::Shader* terrain
 	//SAFE_DELETE(m_terrainShader);
 	if (m_terrainShader != NULL)
 	{
-		WARNING_LOG("Setting new terrain shader for the light seems dubious.");
+		WARNING_LOG_RENDERING("Setting new terrain shader for the light seems dubious.");
 		SAFE_DELETE(m_terrainShader);
 	}
 	m_terrainShader = terrainShader;
@@ -60,7 +60,7 @@ void Rendering::Lighting::BaseLight::SetNoShadowShader(Rendering::Shader* noShad
 	//SAFE_DELETE(this->shader);
 	if (m_noShadowShader != NULL)
 	{
-		WARNING_LOG("Setting new \"no-shadow\" shader for the light seems dubious.");
+		WARNING_LOG_RENDERING("Setting new \"no-shadow\" shader for the light seems dubious.");
 		SAFE_DELETE(m_noShadowShader);
 	}
 	m_noShadowShader = noShadowShader;
@@ -72,7 +72,7 @@ void Rendering::Lighting::BaseLight::SetNoShadowTerrainShader(Rendering::Shader*
 	//SAFE_DELETE(m_terrainShader);
 	if (m_noShadowTerrainShader != NULL)
 	{
-		WARNING_LOG("Setting new \"no-shadow\" terrain shader for the light seems dubious.");
+		WARNING_LOG_RENDERING("Setting new \"no-shadow\" terrain shader for the light seems dubious.");
 		SAFE_DELETE(m_noShadowTerrainShader);
 	}
 	m_noShadowTerrainShader = noShadowTerrainShader;
@@ -83,7 +83,7 @@ void Rendering::Lighting::BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadow
 	//SAFE_DELETE(this->shadowInfo);
 	if (m_shadowInfo != NULL)
 	{
-		WARNING_LOG("Setting new shadow info for the light seems dubious.");
+		WARNING_LOG_RENDERING("Setting new shadow info for the light seems dubious.");
 		SAFE_DELETE(m_shadowInfo);
 	}
 	m_shadowInfo = shadowInfo;

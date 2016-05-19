@@ -67,8 +67,8 @@ namespace Rendering
 		inline void Bind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
-			//WARNING_LOG("Binding mesh data %s", ToString().c_str());
-			CHECK_CONDITION_EXIT_ALWAYS(m_vao != 0, Utility::Critical, "Trying to bind the VAO with id=0");
+			//WARNING_LOG_RENDERING("Binding mesh data %s", ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Critical, "Trying to bind the VAO with id=0");
 			glBindVertexArray(m_vao);
 			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
 		}
@@ -76,7 +76,7 @@ namespace Rendering
 		inline void Unbind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
-			//WARNING_LOG("Unbinding mesh data %s", ToString().c_str());
+			//WARNING_LOG_RENDERING("Unbinding mesh data %s", ToString().c_str());
 			//int index = 0;
 			//for (std::vector<GLuint>::const_iterator vboItr = m_vbos.begin(); vboItr != m_vbos.end(); ++vboItr, ++index)
 			//{
@@ -88,7 +88,7 @@ namespace Rendering
 
 		bool HasVBO(unsigned int index) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
 			return m_buffers[index] != 0;
 		}
 
@@ -99,8 +99,8 @@ namespace Rendering
 		/// <returns> A handle to the vertex buffer object. </returns>
 		GLuint GetVBO(unsigned int index) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
-			CHECK_CONDITION_EXIT_ALWAYS(m_buffers[index] != 0, Utility::Critical, "The buffer under index %d is 0. Mesh data = \"%s\"", index, ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Critical, "Cannot access buffer at index %d. Mesh data = \"%s\"", index, ToString().c_str());
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_buffers[index] != 0, Utility::Critical, "The buffer under index %d is 0. Mesh data = \"%s\"", index, ToString().c_str());
 			return m_buffers[index];
 		}
 

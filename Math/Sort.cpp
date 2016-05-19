@@ -374,31 +374,31 @@ void CountingSort::Sort(int* values, size_t valuesCount, SortingDirection sortin
 void CountingSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
 	//Sort<Math::Real>(values, valuesCount, VALUE, sortingDirection);
-	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
+	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
 void CountingSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
+	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
 void CountingSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
+	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
 void CountingSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
-	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
+	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 
 void CountingSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
-	CRITICAL_LOG("Counting sort cannot be used to sort the floating point numbers");
+	CRITICAL_LOG_MATH("Counting sort cannot be used to sort the floating point numbers");
 	return;
 }
 /* ==================== CountingSort class implementation end ==================== */
@@ -419,31 +419,31 @@ void RadixSort::Sort(int* values, size_t valuesCount, SortingDirection sortingDi
 
 void RadixSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
 void RadixSort::Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
 void RadixSort::Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey /* = COMPONENT_X */, SortingDirection sortingDirection /* = ASCENDING */)
 {
-	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
 void RadixSort::Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
-	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 
 void RadixSort::Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 {
-	EMERGENCY_LOG("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
+	EMERGENCY_LOG_MATH("Radix sort cannot be used to sort the floating point numbers, although there are some extensions that can. See this link: http://stereopsis.com/radix.html");
 	return;
 }
 /* ==================== RadixSort class implementation end ==================== */

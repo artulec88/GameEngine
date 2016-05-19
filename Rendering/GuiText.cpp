@@ -142,7 +142,7 @@ void Rendering::Text::GuiText::SetText(const std::string& text)
 				const Math::Real properMaxX = (2.0f * maxX) - 1.0f;
 				const Math::Real properMaxY = (-2.0f * maxY) + 1.0f;
 
-				//CRITICAL_LOG("%d)\n\t(x, y) = (%.3f, %.3f);\n\t(maxX,maxY) = (%.3f, %.3f);\n\t(properX, properY) = (%.3f, %.3f);\n\t(properMaxX, properMaxY) = (%.3f, %.3f);",
+				//CRITICAL_LOG_RENDERING("%d)\n\t(x, y) = (%.3f, %.3f);\n\t(maxX,maxY) = (%.3f, %.3f);\n\t(properX, properY) = (%.3f, %.3f);\n\t(properMaxX, properMaxY) = (%.3f, %.3f);",
 				//	tempCount++, x, y, maxX, maxY, properX, properY, properMaxX, properMaxY);
 
 				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0

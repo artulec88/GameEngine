@@ -49,7 +49,7 @@ namespace Engine
 				if (!m_particles[i].IsAlive())
 				{
 					m_lastRevivedParticleIndex = i;
-					//EMERGENCY_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+					//EMERGENCY_LOG_ENGINE("Dead particle index = %d", m_lastRevivedParticleIndex);
 					return i;
 				}
 			}
@@ -58,11 +58,11 @@ namespace Engine
 				if (!m_particles[i].IsAlive())
 				{
 					m_lastRevivedParticleIndex = i;
-					//ERROR_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+					//ERROR_LOG_ENGINE("Dead particle index = %d", m_lastRevivedParticleIndex);
 					return i;
 				}
 			}
-			//WARNING_LOG("Dead particle index = %d", m_lastRevivedParticleIndex);
+			//WARNING_LOG_ENGINE("Dead particle index = %d", m_lastRevivedParticleIndex);
 			return 0; // all particles are alive, override the first one
 		}
 	/* ==================== Non-static member functions end ==================== */

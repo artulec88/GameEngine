@@ -1,4 +1,5 @@
 #include "LoadGameState.h"
+#include "Def.h"
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
 #include "Rendering\Shader.h"
@@ -28,8 +29,8 @@ LoadGameState::~LoadGameState(void)
 void LoadGameState::Entered()
 {
 	START_PROFILING;
-	INFO_LOG("LOAD game state has been placed in the game state manager");
-	NOTICE_LOG("Starting the loading thread");
+	INFO_LOG_GAME("LOAD game state has been placed in the game state manager");
+	NOTICE_LOG_GAME("Starting the loading thread");
 
 	// VAOs cannot be shared across multiple window contexts, that is why we don't use additional threads anymore.
 	// See http://stackoverflow.com/questions/23765371/opengl-multitreading-shared-context-and-glgenbuffers.
@@ -39,23 +40,23 @@ void LoadGameState::Entered()
 
 void LoadGameState::Leaving()
 {
-	INFO_LOG("LOAD game state is about to be removed from the game state manager");
+	INFO_LOG_GAME("LOAD game state is about to be removed from the game state manager");
 }
 
 void LoadGameState::Obscuring()
 {
-	INFO_LOG("Another game state is about to stack on top of LOAD game state");
+	INFO_LOG_GAME("Another game state is about to stack on top of LOAD game state");
 }
 
 void LoadGameState::Revealed()
 {
-	INFO_LOG("LOAD game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG_GAME("LOAD game state has become the topmost game state in the game state manager's stack");
 }
 
 void LoadGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	DELOCUST_LOG("LOAD game state rendering");
+	DELOCUST_LOG_GAME("LOAD game state rendering");
 	renderer->RenderLoadingScreen(m_loadingProgress);
 	STOP_PROFILING;
 }
@@ -63,7 +64,7 @@ void LoadGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 void LoadGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	DELOCUST_LOG("LOAD game state updating");
+	DELOCUST_LOG_GAME("LOAD game state updating");
 	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
 	m_loadingProgress = gameManager->GetLoadingProgress();
 	// m_loadingProgress += 0.00022f;
@@ -74,7 +75,7 @@ void LoadGameState::Update(Math::Real elapsedTime)
 
 	if (gameManager->IsGameLoaded())
 	{
-		NOTICE_LOG("The game is loaded");
+		NOTICE_LOG_GAME("The game is loaded");
 		m_loadingThread->join();
 		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 	}

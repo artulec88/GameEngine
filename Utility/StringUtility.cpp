@@ -96,7 +96,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 
 float Utility::StringUtility::ToFloat(const std::string& str)
 {
-	WARNING_LOG("This function has not been tested yet.");
+	WARNING_LOG_UTILITY("This function has not been tested yet.");
 
 	float result = 0.0f;
 	std::string inString = Trim(str);
@@ -119,12 +119,12 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 			}
 			else if (inString[j] == decimalMark && decimalMarkFound)
 			{
-				ERROR_LOG(" More than one decimal mark %c found in string \"%s\". The surplus decimal marks will be ignored.", decimalMark, inString.c_str());
+				ERROR_LOG_UTILITY(" More than one decimal mark %c found in string \"%s\". The surplus decimal marks will be ignored.", decimalMark, inString.c_str());
 				continue;
 			}
 			else
 			{
-				ERROR_LOG("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
+				ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
 				return 0;
 			}
 		}

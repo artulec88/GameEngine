@@ -124,22 +124,22 @@ MenuGameState::~MenuGameState(void)
 
 void MenuGameState::Entered()
 {
-	INFO_LOG("Menu game state has been placed in the game state manager");
+	INFO_LOG_GAME("Menu game state has been placed in the game state manager");
 }
 
 void MenuGameState::Leaving()
 {
-	INFO_LOG("Menu game state is about to be removed from the game state manager");
+	INFO_LOG_GAME("Menu game state is about to be removed from the game state manager");
 }
 
 void MenuGameState::Obscuring()
 {
-	INFO_LOG("Another game state is about to stack on top of menu game state");
+	INFO_LOG_GAME("Another game state is about to stack on top of menu game state");
 }
 
 void MenuGameState::Revealed()
 {
-	INFO_LOG("Menu game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG_GAME("Menu game state has become the topmost game state in the game state manager's stack");
 }
 
 void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
@@ -164,7 +164,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		{
 			// TODO: Select the "Quit" menu entry?
 		}
-		DELOCUST_LOG("To exit the game click \"QUIT\"");
+		DELOCUST_LOG_GAME("To exit the game click \"QUIT\"");
 		break;
 	case GLFW_KEY_UP:
 		SelectChild(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
@@ -178,7 +178,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	}
 	default:
-		DEBUG_LOG("The key %d is not supported by the menu game state", key);
+		DEBUG_LOG_GAME("The key %d is not supported by the menu game state", key);
 		break;
 	}
 	STOP_PROFILING;
@@ -199,8 +199,8 @@ void MenuGameState::ChooseCurrentMenuEntry()
 
 void MenuGameState::SelectChild(int childIndex)
 {
-	DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::Debug, "Trying to select the child which is already selected (%d).", childIndex);
+	DEBUG_LOG_GAME("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::Debug, "Trying to select the child which is already selected (%d).", childIndex);
 	m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry->SelectChildMenuEntry(childIndex);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
@@ -216,7 +216,7 @@ void MenuGameState::SelectChild(int childIndex)
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	DELOCUST_LOG("MAIN MENU game state rendering");
+	DELOCUST_LOG_GAME("MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
@@ -238,7 +238,7 @@ void MenuGameState::MouseButtonEvent(int button, int action, int mods)
 		}
 		else
 		{
-			//CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+			//CRITICAL_LOG_GAME("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 		}
 	}
 }
@@ -252,14 +252,14 @@ void MenuGameState::MousePosEvent(double xPos, double yPos)
 	m_mousePosY = static_cast<Math::Real>(yPos);
 
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
-	//EMERGENCY_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+	//EMERGENCY_LOG_GAME("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
 		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 		{
 			if (m_currentMenuEntry->GetSelectedMenuEntryIndex() != i)
 			{
-				INFO_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
+				INFO_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
 			}
 			SelectChild(i);
 			break;

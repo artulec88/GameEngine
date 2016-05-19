@@ -11,11 +11,11 @@
 
 Utility::ICommand::ICommand(int argc, char* argv[])
 {
-	DELOCUST_LOG("ICommand constructor");
+	DELOCUST_LOG_UTILITY("ICommand constructor");
 }
 
 
 Utility::ICommand::~ICommand()
 {
-	DELOCUST_LOG("ICommand destructor");
+	DELOCUST_LOG_UTILITY("ICommand destructor");
 }

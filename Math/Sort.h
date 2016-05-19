@@ -41,7 +41,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table. The specified table is NULL");
 			return;
 		}
 
@@ -98,7 +98,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
 			return;
 		}
 
@@ -151,7 +151,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the selection sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the selection sort algorithm. The specified table is NULL");
 			return;
 		}
 
@@ -215,7 +215,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the merge sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the merge sort algorithm. The specified table is NULL");
 			return;
 		}
 		T* auxiliaryTable = new T [vectorSize];
@@ -392,7 +392,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the quick sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the quick sort algorithm. The specified table is NULL");
 			return;
 		}
 		Sort<T>(vectors, 0, vectorSize - 1, sortingParameters);
@@ -416,32 +416,32 @@ private:
 				if (i > right)
 					break;
 				++i;
-				//DEBUG_LOG("i = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s", i, left, right, i, vectors[i].ToString().c_str(), pivot.ToString().c_str());
+				//DEBUG_LOG_MATH("i = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s", i, left, right, i, vectors[i].ToString().c_str(), pivot.ToString().c_str());
 			} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingParameters)); // TODO: Check this condition more thoroughly
 			do
 			{
 				if (j <= left)
 					break;
 				--j;
-				//DEBUG_LOG("j = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s", j, left, right, j, vectors[j].ToString().c_str(), pivot.ToString().c_str());
+				//DEBUG_LOG_MATH("j = %d; left = %d; right = %d; vectors[%d] = %s; pivot = %s", j, left, right, j, vectors[j].ToString().c_str(), pivot.ToString().c_str());
 			} while(!NeedSwapping(pivot, vectors[j], sortingParameters)); // TODO: Check this condition more thoroughly
 			if (i < j)
 			{
-				//DEBUG_LOG("Swapping vectors[%d] (%s) with vectors[%d] (%s)", i, vectors[i].ToString().c_str(), j, vectors[j].ToString().c_str());
+				//DEBUG_LOG_MATH("Swapping vectors[%d] (%s) with vectors[%d] (%s)", i, vectors[i].ToString().c_str(), j, vectors[j].ToString().c_str());
 				Swap(vectors[i], vectors[j]);
 			}
 		} while (!(i > j));
-		//DEBUG_LOG("left1 = %d; right1 = %d", left, j);
+		//DEBUG_LOG_MATH("left1 = %d; right1 = %d", left, j);
 		//if (j == right)
 		//{
-		//	CRITICAL_LOG("Calling the quick sort with the same indices. Stack overflow exception will occur.");
+		//	CRITICAL_LOG_MATH("Calling the quick sort with the same indices. Stack overflow exception will occur.");
 		//	exit(EXIT_FAILURE);
 		//}
 		Sort(vectors, left, j, sortingParameters);
-		//DEBUG_LOG("left2 = %d; right2 = %d", i, right);
+		//DEBUG_LOG_MATH("left2 = %d; right2 = %d", i, right);
 		//if (i == left)
 		//{
-		//	CRITICAL_LOG("Calling the quick sort with the same indices. Stack overflow exception will occur.");
+		//	CRITICAL_LOG_MATH("Calling the quick sort with the same indices. Stack overflow exception will occur.");
 		//	exit(EXIT_FAILURE);
 		//}
 		Sort(vectors, i, right, sortingParameters);
@@ -484,7 +484,7 @@ private:
 		const size_t QUARTER_VECTOR_SIZE = vectorSize / 4;
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
 			return;
 		}
 		const size_t FIRST_CONST_INDEX = 1;
@@ -508,8 +508,8 @@ private:
 				nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
 			}
 		}
-		CHECK_CONDITION(indices.back() < QUARTER_VECTOR_SIZE, Utility::Error, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = %d and the gap = %d", vectorSize, indices.back());
-		CHECK_CONDITION(indices.front() == FIRST_CONST_INDEX, Utility::Error, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to %d, but is equal to %d", FIRST_CONST_INDEX, indices.front());
+		CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Error, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = %d and the gap = %d", vectorSize, indices.back());
+		CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::Error, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to %d, but is equal to %d", FIRST_CONST_INDEX, indices.front());
 
 		while (!indices.empty())
 		{
@@ -568,7 +568,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
 			return;
 		}
 
@@ -704,7 +704,7 @@ private:
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
 			return;
 		}
 
@@ -722,14 +722,14 @@ private:
 				maxValue = value;
 			}
 		}
-		CHECK_CONDITION(!(maxValue < minValue), Utility::Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
+		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
 	}
 
 	void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
 	{
 		if (vectors == NULL)
 		{
-			EMERGENCY_LOG("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
+			EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
 			return;
 		}
 
@@ -747,7 +747,7 @@ private:
 				maxValue = value;
 			}
 		}
-		CHECK_CONDITION(!(maxValue < minValue), Utility::Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
+		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Error, "Incorrect values for min and max keys. The minimum = %.3f and the maximum = %.3f", minValue, maxValue);
 	}
 
 	template <typename T>
@@ -755,7 +755,7 @@ private:
 	{
 		Math::Real minValue, maxValue;
 		FindMinMax(vectors, vectorSize, sortingKey, minValue, maxValue);
-		//DEBUG_LOG("minValue = %.4f; maxValue = %.4f", minValue, maxValue);
+		//DEBUG_LOG_MATH("minValue = %.4f; maxValue = %.4f", minValue, maxValue);
 
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
 		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
@@ -766,14 +766,14 @@ private:
 		{
 			buckets[i].SetLowBound(bucketLowBound);
 			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
-			//DEBUG_LOG("Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
+			//DEBUG_LOG_MATH("Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
 			bucketLowBound += bucketWidth;
 		}
 
 		for (int i = 0; i < vectorSize; ++i)
 		{
 			Math::Real value = CollectValueByKey(vectors[i], sortingKey);
-			//DEBUG_LOG("vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
+			//DEBUG_LOG_MATH("vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
 			
 			// Calculate the index of the bucket to which we will add the vector
 			int bucketIndex = static_cast<int>(NUMBER_OF_BUCKETS * ((value - minValue) / (maxValue - minValue))); // TODO: Is it possible for minValue == maxValue? If so, then we have a division by 0 problem.
@@ -782,7 +782,7 @@ private:
 				--bucketIndex;
 			}
 
-			CHECK_CONDITION((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Critical, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
+			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Critical, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
@@ -790,7 +790,7 @@ private:
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
 			//{
-			//	DEBUG_LOG("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			//	DEBUG_LOG_MATH("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 			//}
 			if (!buckets[i].IsEmpty())
 			{
@@ -803,7 +803,7 @@ private:
 		//{
 		//	for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
 		//	{
-		//		DEBUG_LOG("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+		//		DEBUG_LOG_MATH("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 		//	}
 		//}
 
@@ -829,7 +829,7 @@ private:
 			}
 			break;
 		default:
-			ERROR_LOG("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
+			ERROR_LOG_MATH("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
 				sortingDirection, ASCENDING, DESCENDING);
 			break;
 		}
@@ -840,7 +840,7 @@ private:
 	{
 		Math::Real minValue, maxValue;
 		FindMinMax(vectors, vectorSize, sortingParameters.GetSortingKey(), minValue, maxValue);
-		//DEBUG_LOG("minValue = %.4f; maxValue = %.4f", minValue, maxValue);
+		//DEBUG_LOG_MATH("minValue = %.4f; maxValue = %.4f", minValue, maxValue);
 
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
 		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
@@ -851,14 +851,14 @@ private:
 		{
 			buckets[i].SetLowBound(bucketLowBound);
 			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
-			//DEBUG_LOG("Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
+			//DEBUG_LOG_MATH("Bucket[%d] takes range [%.3f; %.3f)", i, bucketLowBound, bucketLowBound + bucketWidth);
 			bucketLowBound += bucketWidth;
 		}
 
 		for (int i = 0; i < vectorSize; ++i)
 		{
 			Math::Real value = CollectValueByKey(vectors[i], sortingParameters.GetSortingKey());
-			//DEBUG_LOG("vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
+			//DEBUG_LOG_MATH("vectors[%d] = %s and the value = %.4f", i, vectors[i].ToString().c_str(), value);
 			
 			// Calculate the index of the bucket to which we will add the vector
 			int bucketIndex = static_cast<int>(NUMBER_OF_BUCKETS * ((value - minValue) / (maxValue - minValue))); // TODO: Is it possible for minValue == maxValue? If so, then we have a division by 0 problem.
@@ -867,7 +867,7 @@ private:
 				--bucketIndex;
 			}
 
-			CHECK_CONDITION((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Error, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
+			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Error, "Miscalculated bucket index. Bucket index must be within range [0; %d), but is equal to %d", NUMBER_OF_BUCKETS, bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		ISort* insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
@@ -875,7 +875,7 @@ private:
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
 			//{
-			//	DEBUG_LOG("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+			//	DEBUG_LOG_MATH("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 			//}
 			if (!buckets[i].IsEmpty())
 			{
@@ -888,7 +888,7 @@ private:
 		//{
 		//	for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
 		//	{
-		//		DEBUG_LOG("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
+		//		DEBUG_LOG_MATH("buckets[%d][%d] = %s", i, j, buckets[i].GetVector(j).ToString().c_str());
 		//	}
 		//}
 
@@ -914,7 +914,7 @@ private:
 			}
 			break;
 		default:
-			ERROR_LOG("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
+			ERROR_LOG_MATH("Unknown sorting direction value (%d). Only ASCENDING (%d) and DESCENDING (%d) are acceptable.",
 				sortingParameters.GetSortingDirection(), ASCENDING, DESCENDING);
 			break;
 		}

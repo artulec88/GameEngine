@@ -146,7 +146,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 #endif
 {
 	START_PROFILING;
-	NOTICE_LOG("Creating Renderer instance started");
+	NOTICE_LOG_RENDERING("Creating Renderer instance started");
 
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
@@ -293,14 +293,19 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_debugShader = new Shader("debug-shader");
 #endif
 
-	NOTICE_LOG("Creating Renderer instance finished");
+	/* ==================== Initializing physics logger begin ==================== */
+	std::string loggingLevel = GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info");
+	Utility::ILogger::GetLogger("Rendering").Fill(loggingLevel, Utility::Info);
+	/* ==================== Initializing physics logger end ==================== */
+
+	NOTICE_LOG_RENDERING("Creating Renderer instance finished");
 	STOP_PROFILING;
 }
 
 
 Renderer::~Renderer(void)
 {
-	INFO_LOG("Destroying rendering engine...");
+	INFO_LOG_RENDERING("Destroying rendering engine...");
 	START_PROFILING;
 
 	glDeleteBuffers(1, &m_textVertexBuffer);
@@ -385,35 +390,35 @@ Renderer::~Renderer(void)
 #endif
 
 	STOP_PROFILING;
-	NOTICE_LOG("Rendering engine destroyed");
+	NOTICE_LOG_RENDERING("Rendering engine destroyed");
 }
 
 //void Renderer::AddTerrainNode(GameNode* terrainNode)
 //{
-//	CHECK_CONDITION(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
+//	CHECK_CONDITION_RENDERING(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
 //	m_terrainNodes.push_back(terrainNode);
 //}
 
 //void Renderer::AddWaterNode(GameNode* waterNode)
 //{
-//	CHECK_CONDITION_EXIT(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
 //	if (m_waterNodes.empty())
 //	{
-//		INFO_LOG("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
+//		INFO_LOG_RENDERING("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
 //	}
 //	m_waterNodes.push_back(waterNode);
 //}
 
 //void Renderer::AddBillboardNode(GameNode* billboardNode)
 //{
-//	CHECK_CONDITION_EXIT(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
 //	m_billboardNodes.push_back(billboardNode);
 //}
 
 //void Renderer::AddSkyboxNode(GameNode* skyboxNode)
 //{
-//	CHECK_CONDITION_EXIT(skyboxNode != NULL, Utility::Emergency, "Adding skybox node failed. The given skybox node is NULL.");
-//	CHECK_CONDITION(m_skyboxNode == NULL, Utility::Warning, "The currently assigned skybox node is being overwritten");
+//	CHECK_CONDITION_EXIT_RENDERING(skyboxNode != NULL, Utility::Emergency, "Adding skybox node failed. The given skybox node is NULL.");
+//	CHECK_CONDITION_RENDERING(m_skyboxNode == NULL, Utility::Warning, "The currently assigned skybox node is being overwritten");
 //	m_skyboxNode = skyboxNode;
 //}
 
@@ -447,7 +452,7 @@ void Renderer::InitRenderScene()
 
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
-	CHECK_CONDITION_EXIT(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+	CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
 		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -494,7 +499,7 @@ void Renderer::InitWaterNodesRendering()
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
-		CHECK_CONDITION_ALWAYS(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
 	}
 	m_mappedValues.SetReal("waterMoveFactor", m_waterMoveFactor);
 	m_mappedValues.SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
@@ -584,7 +589,7 @@ void Renderer::DisableClippingPlanes()
 //		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 //		{
 //			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-//			//DEBUG_LOG("Binding the cube face #%d", i);
+//			//DEBUG_LOG_RENDERING("Binding the cube face #%d", i);
 //			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
 //			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 //
@@ -612,8 +617,8 @@ void Renderer::DisableClippingPlanes()
 //void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
 //{
 //	START_PROFILING;
-//	CHECK_CONDITION_EXIT(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
-//	DEBUG_LOG("Rendering scene with light.");
+//	CHECK_CONDITION_EXIT_RENDERING(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
+//	DEBUG_LOG_RENDERING("Rendering scene with light.");
 //	glCullFace(Rendering::glCullFaceMode);
 //	GetTexture("displayTexture")->BindAsRenderTarget();
 //	if (!Rendering::glBlendEnabled)
@@ -671,10 +676,10 @@ void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& s
 		break;
 	case Text::CENTER:
 		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
-		DEBUG_LOG("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
+		DEBUG_LOG_RENDERING("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
 		break;
 	default:
-		WARNING_LOG("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
+		WARNING_LOG_RENDERING("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
 	}
 	RenderText(x, y, str, fontSize, fontColor);
 }
@@ -697,7 +702,7 @@ void Renderer::RenderText(int x, int y, const std::string& str, const Math::Vect
 void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-	DELOCUST_LOG("Started drawing string \"%s\"", str.c_str());
+	DELOCUST_LOG_RENDERING("Started drawing string \"%s\"", str.c_str());
 
 	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
 
@@ -719,7 +724,7 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 		const Math::Vector2D upRightVec(rightX, topY);
 		const Math::Vector2D downRightVec(rightX, bottomY);
 		const Math::Vector2D downLeftVec(leftX, bottomY);
-		//CRITICAL_LOG("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
+		//CRITICAL_LOG_RENDERING("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
 
 		vertices.push_back(upLeftVec);
 		vertices.push_back(downLeftVec);
@@ -732,7 +737,7 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 		int ch = static_cast<int>(str[i]);
 		Math::Real xUV = static_cast<Math::Real>(ch % 16) * oneOverSixteen;
 		Math::Real yUV = REAL_ONE - ((static_cast<Math::Real>(ch / 16) * oneOverSixteen) + oneOverSixteen);
-		//INFO_LOG("character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
+		//INFO_LOG_RENDERING("character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
 
 		Math::Vector2D upLeftUV(xUV, REAL_ONE - (yUV + oneOverSixteen));
 		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
@@ -815,7 +820,7 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 void Renderer::RenderText(const Text::GuiText& guiText) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-	//CRITICAL_LOG("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
 	//glDisable(GL_CULL_FACE);
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -862,13 +867,13 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Par
 {
 	START_PROFILING;
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
-	//CHECK_CONDITION_ALWAYS(particlesCount <= particles.size(), Utility::Error,
+	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::Error,
 	//	"The number of alive particles (%d) exceeds the size of the specified vector of particles (%d)", particlesCount, particles.size());
 	if (particlesCount <= 0)
 	{
 		return;
 	}
-	//DEBUG_LOG("Rendering particles started. There are %d particles currently in the game.", particlesCount);
+	//DEBUG_LOG_RENDERING("Rendering particles started. There are %d particles currently in the game.", particlesCount);
 	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
 	m_particleShader->SetUniformi("particleTexture", 0);
@@ -955,7 +960,7 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 	ClearScreen();
 	//if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
 	//{
-	//	//DELOCUST_LOG("Rendering main menu with a \"main menu camera\".");
+	//	//DELOCUST_LOG_RENDERING("Rendering main menu with a \"main menu camera\".");
 	//	m_currentCamera = m_mainMenuCamera;
 	//}
 	//else
@@ -975,7 +980,7 @@ bool Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	CHECK_CONDITION_EXIT(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 	m_mappedValues.SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
@@ -987,7 +992,7 @@ bool Renderer::InitShadowMap()
 		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
 		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
-		//CRITICAL_LOG("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
+		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
 		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 		m_mappedValues.SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
@@ -1042,9 +1047,9 @@ const Shader* Renderer::GetAmbientShader() const
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
-		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		STOP_PROFILING;
 		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second; // TODO: add logging. refactor
 	}
@@ -1062,9 +1067,9 @@ const Shader* Renderer::GetAmbientTerrainShader() const
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
-		//DEBUG_LOG("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogTerrainShaderItr = m_ambientShadersFogEnabledTerrainMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		STOP_PROFILING;
 		return (fogTerrainShaderItr == m_ambientShadersFogEnabledTerrainMap.end()) ? NULL : fogTerrainShaderItr->second;
 	}
@@ -1152,13 +1157,13 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
 	if (shadowMap == NULL)
 	{
-		ERROR_LOG("Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG_RENDERING("Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
 		STOP_PROFILING;
 		return;
 	}
 	if (shadowMapTempTarget == NULL)
 	{
-		ERROR_LOG("Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG_RENDERING("Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
 		STOP_PROFILING;
 		return;
 	}
@@ -1175,21 +1180,21 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT(filterShader != NULL, Utility::Critical, "Cannot apply a filter. Filtering shader is NULL.");
-	CHECK_CONDITION_EXIT(source != NULL, Utility::Critical, "Cannot apply a filter. Source texture is NULL.");
-	CHECK_CONDITION_EXIT(source != dest, Utility::Critical, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
+	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::Critical, "Cannot apply a filter. Filtering shader is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::Critical, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::Critical, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
 	if (dest == NULL)
 	{
-		DELOCUST_LOG("Binding window as a render target for filtering");
+		DELOCUST_LOG_RENDERING("Binding window as a render target for filtering");
 		BindAsRenderTarget();
 	}
 	else
 	{
-		DELOCUST_LOG("Binding texture as a render target for filtering");
+		DELOCUST_LOG_RENDERING("Binding texture as a render target for filtering");
 		dest->BindAsRenderTarget();
 	}
 
-	//DEBUG_LOG("Applying a filter to the source texture");
+	//DEBUG_LOG_RENDERING("Applying a filter to the source texture");
 	
 	m_mappedValues.SetTexture("filterTexture", source);
 
@@ -1240,13 +1245,13 @@ void Renderer::SetCurrentCamera()
 
 size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 {
-	CHECK_CONDITION((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
 	m_cameras[m_currentCameraIndex]->Deactivate();
 	m_currentCameraIndex = cameraIndex;
 	m_cameras[m_currentCameraIndex]->Activate();
 #ifndef ANT_TWEAK_BAR_ENABLED
-	NOTICE_LOG("Switched to camera #%d", m_currentCameraIndex + 1);
-	//DEBUG_LOG("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG_RENDERING("Switched to camera #%d", m_currentCameraIndex + 1);
+	//DEBUG_LOG_RENDERING("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 #endif
 	return m_currentCameraIndex;
 }
@@ -1256,7 +1261,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
 	if (directionalLight != NULL)
 	{
-		INFO_LOG("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		INFO_LOG_RENDERING("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
 		m_waterLightReflectionEnabled = true;
 		++m_directionalLightsCount;
 		m_directionalAndSpotLights.push_back(directionalLight);
@@ -1266,7 +1271,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 		Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(light);
 		if (spotLight != NULL)
 		{
-			INFO_LOG("Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
+			INFO_LOG_RENDERING("Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
 			m_directionalAndSpotLights.push_back(spotLight);
 		}
 		else
@@ -1274,12 +1279,12 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 			Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(light);
 			if (pointLight != NULL)
 			{
-				INFO_LOG("Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
+				INFO_LOG_RENDERING("Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
 				m_pointLights.push_back(pointLight);
 			}
 			else
 			{
-				EMERGENCY_LOG("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
+				EMERGENCY_LOG_RENDERING("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
 			}
 		}
 	}
@@ -1369,62 +1374,62 @@ void Renderer::RenderDebugNodes()
 void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug line rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug line rendering is not yet supported by the engine");
 }
 
 void Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug sphere rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug sphere rendering is not yet supported by the engine");
 }
 
 void Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug cross rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug cross rendering is not yet supported by the engine");
 }
 
 void Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug circle rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug circle rendering is not yet supported by the engine");
 }
 
 void Renderer::AddAxes(const Transform& transform, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug axes rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug axes rendering is not yet supported by the engine");
 }
 
 void Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug triangle rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug triangle rendering is not yet supported by the engine");
 }
 
 void Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug AABB rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug AABB rendering is not yet supported by the engine");
 }
 
 void Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug OBB rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug OBB rendering is not yet supported by the engine");
 }
 
 void Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
-	WARNING_LOG("Debug text rendering is not yet supported by the engine");
+	WARNING_LOG_RENDERING("Debug text rendering is not yet supported by the engine");
 }
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Renderer::InitializeTweakBars()
 {
-	INFO_LOG("Initializing rendering engine's tweak bars");
+	INFO_LOG_RENDERING("Initializing rendering engine's tweak bars");
 
 #ifdef RENDERER_PROPERTIES_BAR
-	DEBUG_LOG("Initializing rendering engine's properties tweak bar");
+	DEBUG_LOG_RENDERING("Initializing rendering engine's properties tweak bar");
 	// TODO: CameraMembers[0] ("Position") is not displayed correctly, because at 0 address lies the pointer to parentGameNode
 	m_cameraMembers[0].Name = "Projection"; m_cameraMembers[1].Name = "FoV"; m_cameraMembers[2].Name = "AspectRatio"; m_cameraMembers[3].Name = "NearPlane"; m_cameraMembers[4].Name = "FarPlane";
 	m_cameraMembers[0].Type = matrix4DType; m_cameraMembers[1].Type = angleType; m_cameraMembers[2].Type = TW_TYPE_FLOAT; m_cameraMembers[3].Type = TW_TYPE_FLOAT; m_cameraMembers[4].Type = TW_TYPE_FLOAT;
@@ -1472,15 +1477,15 @@ void Renderer::InitializeTweakBars()
 
 	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	DEBUG_LOG("Initializing rendering engine's properties tweak bar finished");
+	DEBUG_LOG_RENDERING("Initializing rendering engine's properties tweak bar finished");
 #endif
 
 #ifdef CAMERA_TWEAK_BAR
-	DEBUG_LOG("Initializing rendering engine's cameras tweak bar");
+	DEBUG_LOG_RENDERING("Initializing rendering engine's cameras tweak bar");
 	m_cameraBar = TwNewBar("CamerasBar");
 	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL)
 	{
-		ERROR_LOG("Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
+		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
 		
 		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
 		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
@@ -1501,7 +1506,7 @@ void Renderer::InitializeTweakBars()
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
 	TwSetParam(m_cameraBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	DEBUG_LOG("Initializing rendering engine's cameras tweak bar finished");
+	DEBUG_LOG_RENDERING("Initializing rendering engine's cameras tweak bar finished");
 #endif
 
 #ifdef LIGHTS_TWEAK_BAR
@@ -1519,7 +1524,7 @@ void Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraPos", vector3DType, &m_altCamera.GetTransform().GetPos(), " label='AltCamera.Pos' group=Camera ");
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &m_altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
-	DEBUG_LOG("Initializing rendering engine's tweak bars finished");
+	DEBUG_LOG_RENDERING("Initializing rendering engine's tweak bars finished");
 }
 
 void Renderer::CheckCameraIndexChange()
@@ -1529,8 +1534,8 @@ void Renderer::CheckCameraIndexChange()
 	{
 		return;
 	}
-	NOTICE_LOG("Switched to camera #%d", m_currentCameraIndex + 1);
-	//DEBUG_LOG("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG_RENDERING("Switched to camera #%d", m_currentCameraIndex + 1);
+	//DEBUG_LOG_RENDERING("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
 
 	TwRemoveAllVars(m_cameraBar);
 	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");

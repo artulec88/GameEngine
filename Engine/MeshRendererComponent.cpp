@@ -9,11 +9,11 @@ Engine::MeshRendererComponent::MeshRendererComponent(Rendering::Mesh* mesh, Rend
 	m_mesh(mesh),
 	m_material(material)
 {
-	CHECK_CONDITION_EXIT(m_mesh != NULL, Utility::Error, "Cannot create a mesh renderer instance. The specified mesh is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(m_mesh != NULL, Utility::Error, "Cannot create a mesh renderer instance. The specified mesh is NULL.");
 	m_mesh->Initialize();
 	if (m_material == NULL)
 	{
-		WARNING_LOG("The material given to the mesh renderer is NULL.");
+		WARNING_LOG_ENGINE("The material given to the mesh renderer is NULL.");
 	}
 	//if (m_mesh != NULL)
 	//{
@@ -30,9 +30,9 @@ Engine::MeshRendererComponent::~MeshRendererComponent(void)
 
 void Engine::MeshRendererComponent::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
-	CHECK_CONDITION_RETURN_VOID(shader != NULL, Utility::Emergency, "Rendering a mesh failed. Shader instance is NULL.");
-	CHECK_CONDITION_EXIT(renderer != NULL, Utility::Critical, "Rendering a mesh failed. Rendering engine is NULL.");
-	CHECK_CONDITION(m_material != NULL, Utility::Warning, "Rendering a mesh while the material is NULL.");
+	CHECK_CONDITION_RETURN_VOID_ENGINE(shader != NULL, Utility::Emergency, "Rendering a mesh failed. Shader instance is NULL.");
+	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Critical, "Rendering a mesh failed. Rendering engine is NULL.");
+	CHECK_CONDITION_ENGINE(m_material != NULL, Utility::Warning, "Rendering a mesh while the material is NULL.");
 
 
 	//const Math::Transform& transform = GetTransform();

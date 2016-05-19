@@ -3,11 +3,9 @@
 #include "Logger.h"
 #include <iostream>
 
-using namespace Utility;
+/* static */ std::map<std::string, std::unique_ptr<Utility::ILogger>> Utility::ILogger::loggers;
 
-/* static */ ILogger* ILogger::logger = NULL;
-
-/* static */ const char* ILogger::LevelNames[] = 
+/* static */ const char* Utility::ILogger::LevelNames[] = 
 {
 	"Critical",
 	"Emergency",
@@ -20,16 +18,16 @@ using namespace Utility;
 	NULL
 };
 
-/* static */ ILogger& ILogger::GetLogger(/* some parameter based on which the logger implementation class is chosen */)
+/* static */ Utility::ILogger& Utility::ILogger::GetLogger(const std::string& moduleName)
 {
-	if (ILogger::logger == NULL)
+	if (ILogger::loggers.find(moduleName) == ILogger::loggers.end())
 	{
-		ILogger::logger = new Logger();
+		ILogger::loggers[moduleName] = std::make_unique<Logger>();
 	}
-	return *logger;
+	return *ILogger::loggers[moduleName];
 }
 
-ILogger::ILogger(void) :
+Utility::ILogger::ILogger(void) :
 	m_level(Notice)
 {
 	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
@@ -37,17 +35,17 @@ ILogger::ILogger(void) :
 }
 
 
-ILogger::~ILogger(void)
+Utility::ILogger::~ILogger(void)
 {
 }
 
-void ILogger::ReadConsoleColorsFromConfigFile()
+void Utility::ILogger::ReadConsoleColorsFromConfigFile()
 {
 	// TODO: Not yet implemented
 	// TODO: Store console colors for each logging level from configuration file
 }
 
-void ILogger::SetConsoleColor(LogLevel level) const
+void Utility::ILogger::SetConsoleColor(LogLevel level) const
 {
 	switch (level)
 	{
@@ -76,17 +74,17 @@ void ILogger::SetConsoleColor(LogLevel level) const
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE );
 		break;
 	default:
-		ERROR_LOG("Incorrect logging level set");
+		ERROR_LOG_UTILITY("Incorrect logging level set");
 		break;
 	}
 }
 
-void ILogger::ResetConsoleColor() const
+void Utility::ILogger::ResetConsoleColor() const
 {
 	SetConsoleTextAttribute(m_console, 15); // set color back to normal
 }
 
-void ILogger::SetLevel(LogLevel level)
+void Utility::ILogger::SetLevel(LogLevel level)
 {
 	//mutex.Lock();
 	//if ((!m_modified) || (level > this->m_level))

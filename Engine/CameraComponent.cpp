@@ -33,7 +33,7 @@ void Engine::CameraComponent::Update(Math::Real deltaTime)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if ((!Math::AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!Math::AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!Math::AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov))
 	{
-		INFO_LOG("Recalculating the projection matrix for the selected camera");
+		INFO_LOG_ENGINE("Recalculating the projection matrix for the selected camera");
 
 		m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
@@ -93,31 +93,31 @@ void Engine::CameraMoveComponent::KeyEvent(int key, int scancode, int action, in
 	case GLFW_KEY_ESCAPE:
 		break;
 	case GLFW_KEY_C:
-		//DEBUG_LOG("transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
+		//DEBUG_LOG_ENGINE("transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
 		break;
 	case GLFW_KEY_W:
 		m_forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG("Forward = %d", forward);
+		//DEBUG_LOG_ENGINE("Forward = %d", forward);
 
 		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_S:
 		m_backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG("Backward = %d", backward);
+		//DEBUG_LOG_ENGINE("Backward = %d", backward);
 
 		//direction -= transform.GetRot().GetForward().Normalized();
 		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
 		break;
 	case GLFW_KEY_A:
 		m_left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG("Left = %d", left);
+		//DEBUG_LOG_ENGINE("Left = %d", left);
 
 		//direction -= transform.GetRot().GetRight().Normalized();
 		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
 		break;
 	case GLFW_KEY_D:
 		m_right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG("Right = %d", right);
+		//DEBUG_LOG_ENGINE("Right = %d", right);
 
 		//direction += transform.GetRot().GetRight().Normalized();
 		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
@@ -165,7 +165,7 @@ void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int m
 	{
 		return;
 	}
-	DEBUG_LOG("Mouse button event for the moving camera (button = %d, action = %d, mods = %d)", button, action, mods);
+	DEBUG_LOG_ENGINE("Mouse button event for the moving camera (button = %d, action = %d, mods = %d)", button, action, mods);
 	switch (button)
 	{
 	case GLFW_MOUSE_BUTTON_LEFT:
@@ -185,7 +185,7 @@ void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 	{
 		return;
 	}
-	DEBUG_LOG("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
 
 	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
 	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
@@ -277,7 +277,7 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 	m_velocity.Threshold(m_maxSpeed);
 	//velocity += acceleration * delta;
 	//velocity -= slowDownVec;
-	//DEBUG_LOG("Acceleration = %s\tVelocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
+	//DEBUG_LOG_ENGINE("Acceleration = %s\tVelocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
 	GetTransform().SetPos(GetTransform().GetPos() + m_velocity);
 }
 
@@ -344,7 +344,7 @@ void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int
 	{
 		return;
 	}
-	DEBUG_LOG("Mouse button event for the camera following an entity (button = %d, action = %d, mods = %d)", button, action, mods);
+	DEBUG_LOG_ENGINE("Mouse button event for the camera following an entity (button = %d, action = %d, mods = %d)", button, action, mods);
 	switch (button)
 	{
 	case GLFW_MOUSE_BUTTON_LEFT:
@@ -366,7 +366,7 @@ void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
 		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
 		return;
 	}
-	DEBUG_LOG("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
 
 	if (m_changingPitch)
 	{
@@ -394,7 +394,7 @@ void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 	{
 		return;
 	}
-	DEBUG_LOG("Scroll event for the camera following an entity (xOffset = %.3f; yOffset = %.3f)", xOffset, yOffset);
+	DEBUG_LOG_ENGINE("Scroll event for the camera following an entity (xOffset = %.3f; yOffset = %.3f)", xOffset, yOffset);
 
 	m_distanceFromEntity -= static_cast<Math::Real>(yOffset) * 0.03f;
 	if (m_distanceFromEntity < MINIMUM_DISTANCE_TO_ENTITY)
@@ -405,7 +405,7 @@ void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 	{
 		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
 	}
-	DELOCUST_LOG("Distance from entity = %.5f", m_distanceFromEntity);
+	DELOCUST_LOG_ENGINE("Distance from entity = %.5f", m_distanceFromEntity);
 }
 
 void Engine::CameraFollowComponent::Update(Math::Real deltaTime)

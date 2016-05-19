@@ -16,13 +16,13 @@ Engine::LookAtComponent::~LookAtComponent(void)
 
 void Engine::LookAtComponent::Update(Math::Real delta)
 {
-	CHECK_CONDITION(renderer != NULL, Utility::Critical, "Cannot update lookup component due to renderer object being NULL.");
+	CHECK_CONDITION_ENGINE(renderer != NULL, Utility::Critical, "Cannot update lookup component due to renderer object being NULL.");
 	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
 	Math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
 
 	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
 
-	//INFO_LOG("Current camera position = %s", currentCameraPos.ToString().c_str());
+	//INFO_LOG_ENGINE("Current camera position = %s", currentCameraPos.ToString().c_str());
 	//Math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, Math::Vector3D(0, 1, 0));
 	//Math::Quaternion interpolatedRotation = GetTransform().GetRot().Slerp(newRot, delta * 5, true);
 	//GetTransform().SetRot(interpolatedRotation);
@@ -31,5 +31,5 @@ void Engine::LookAtComponent::Update(Math::Real delta)
 
 	//GetTransform().SetRot((GetTransform().GetRot() + Math::Quaternion(REAL_ZERO, 0.0001f, REAL_ZERO, REAL_ZERO)).Normalized());
 
-	//DEBUG_LOG("LookAtComponent has just set a new rotation");
+	//DEBUG_LOG_ENGINE("LookAtComponent has just set a new rotation");
 }

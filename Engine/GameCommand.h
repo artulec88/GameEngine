@@ -49,7 +49,7 @@ public:
 public:
 	ENGINE_API virtual void Execute() const
 	{
-		DEBUG_LOG("Do-nothing command started. Remember that executing a DO-NOTHING command wastes precious CPU time.");
+		DEBUG_LOG_ENGINE("Do-nothing command started. Remember that executing a DO-NOTHING command wastes precious CPU time.");
 		// Do nothing
 	}
 /* ==================== Non-static member functions end ==================== */

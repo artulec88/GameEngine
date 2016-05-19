@@ -39,28 +39,28 @@ const T* Utility::Container::Array<T>::GetArray() const
 template <class T>
 T& Utility::Container::Array<T>::operator[](int i)
 {
-	WARNING_LOG("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_ALWAYS(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_ALWAYS(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	WARNING_LOG_UTILITY("This function has not been tested yet");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
 	return m_data[i];
 }
 
 template <class T>
 const T& Utility::Container::Array<T>::operator[](int i) const
 {
-	WARNING_LOG("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_ALWAYS(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_ALWAYS(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	WARNING_LOG_UTILITY("This function has not been tested yet");
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
 	return m_data[i];
 }
 
 template <class T>
 void Utility::Container::Array<T>::Append(const T& dataElement)
 {
-	WARNING_LOG("This function has not been tested yet");
+	WARNING_LOG_UTILITY("This function has not been tested yet");
 	if (m_size == m_maxSize)
 	{
-		WARNING_LOG("The array cannot hold more than %d elements", m_maxSize);
+		WARNING_LOG_UTILITY("The array cannot hold more than %d elements", m_maxSize);
 	}
 	m_data[++m_size] = dataElement;
 }
@@ -68,9 +68,9 @@ void Utility::Container::Array<T>::Append(const T& dataElement)
 template <class T>
 void Utility::Container::Array<T>::SetElement(int i, const T& dataElement)
 {
-	WARNING_LOG("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(i >= 0, Utility::Error, "Cannot set array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(i < m_maxSize, Utility::Warning, "The array cannot hold more than %d elements", m_maxSize);
+	WARNING_LOG_UTILITY("This function has not been tested yet");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::Error, "Cannot set array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_maxSize, Utility::Warning, "The array cannot hold more than %d elements", m_maxSize);
 
 	m_data[i] = dataElement;
 	if (i > m_size)
@@ -82,9 +82,9 @@ void Utility::Container::Array<T>::SetElement(int i, const T& dataElement)
 template<class T>
 void Utility::Container::Array<T>::Remove(int i)
 {
-	WARNING_LOG("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(i >= 0, Utility::Error, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS(i < m_size, Utility::Warning, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	WARNING_LOG_UTILITY("This function has not been tested yet");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::Error, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_size, Utility::Warning, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
 
 	for (int index = i + 1; index < m_size; ++index)
 	{
@@ -96,7 +96,7 @@ void Utility::Container::Array<T>::Remove(int i)
 template<class T>
 void Utility::Container::Array<T>::RemoveAll()
 {
-	WARNING_LOG("This function has not been tested yet");
+	WARNING_LOG_UTILITY("This function has not been tested yet");
 	for (int index = 0; index < m_size; ++index)
 	{
 		m_data[index] = T();
@@ -107,7 +107,7 @@ void Utility::Container::Array<T>::RemoveAll()
 template<class T>
 void Utility::Container::Array<T>::SetMaxSize(int maxSize, bool copy)
 {
-	CRITICAL_LOG("This function is not yet implemented");
+	CRITICAL_LOG_UTILITY("This function is not yet implemented");
 	//if (maxSize == 0)
 	//{
 	//	RemoveAll();

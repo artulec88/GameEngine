@@ -16,8 +16,8 @@ using namespace std;
 
 Command::Command(int argc, char* argv[]) : ICommand(argc, argv)
 {
-	DELOCUST_LOG("Command constructor");
-	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
+	DELOCUST_LOG_UTILITY("Command constructor");
+	CHECK_CONDITION_UTILITY(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	Fill(argc, argv);
 }
 
@@ -35,14 +35,14 @@ Command::Command(int argc, char* argv[]) : ICommand(argc, argv)
 
 Command::~Command()
 {
-	DELOCUST_LOG("Command object gets destroyed");
+	DELOCUST_LOG_UTILITY("Command object gets destroyed");
 	m_commands.clear();
 }
 
 void Command::Fill(int argc, char* argv[])
 {
-	CHECK_CONDITION(argc >= 1, Utility::Error, "Incorrect number of program parameters specified (%d)", argc);
-	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
+	CHECK_CONDITION_UTILITY(argc >= 1, Utility::Error, "Incorrect number of program parameters specified (%d)", argc);
+	CHECK_CONDITION_UTILITY(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	for (int i = 0; i < argc; ++i)
 	{
 		m_commands.push_back(string(argv[i]));

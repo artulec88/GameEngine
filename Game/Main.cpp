@@ -49,6 +49,8 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 		system("pause");
 		exit(EXIT_SUCCESS);
 	}
+	IConfig::CreateConfig("Audio", command->Get("-configAudio", "..\\Config\\ConfigAudio.cfg"));
+	IConfig::CreateConfig("Physics", command->Get("-configPhysics", "..\\Config\\ConfigPhysics.cfg"));
 	IConfig::CreateConfig("Rendering", command->Get("-configRendering", "..\\Config\\ConfigRendering.cfg"));
 	IConfig::CreateConfig("Engine", command->Get("-configEngine", "..\\Config\\ConfigEngine.cfg"));
 	IConfig::CreateConfig("Game", command->Get("-configGame", "..\\Config\\ConfigGame.cfg"));
@@ -63,7 +65,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	{
 		loggingLevel = GET_CONFIG_VALUE_STR_GAME("LoggingLevel", "Info");
 	}
-	ILogger::GetLogger().Fill(loggingLevel, Info);
+	ILogger::GetLogger("Game").Fill(loggingLevel, Info);
 	/* ==================== Initializing logger end ==================== */
 
 	/* ==================== Initializing shader directory begin ==================== */

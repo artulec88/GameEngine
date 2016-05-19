@@ -39,10 +39,10 @@ void Rendering::Lighting::PointLight::CalculateRange()
 //void PointLight::InitializeShaders()
 //{
 //	SetShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("pointLightShader", "forward-point")));
-//	CHECK_CONDITION_EXIT(m_shader != NULL, Utility::Critical, "Cannot initialize point light. Shader is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(m_shader != NULL, Utility::Critical, "Cannot initialize point light. Shader is NULL.");
 //
 //	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("pointLightShaderTerrain", "forward-point-terrain")));
-//	CHECK_CONDITION_EXIT(m_terrainShader != NULL, Utility::Critical, "Cannot initialize point light. Terrain shader is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(m_terrainShader != NULL, Utility::Critical, "Cannot initialize point light. Terrain shader is NULL.");
 //}
 
 bool Rendering::Lighting::PointLight::IsEnabled() const

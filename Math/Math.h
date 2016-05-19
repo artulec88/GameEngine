@@ -28,6 +28,24 @@
 #define REAL_MIN	static_cast<Math::Real>(std::numeric_limits<Math::Real>::min())
 #define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<Math::Real>::max())
 
+#define CRITICAL_LOG_MATH(message, ...) CRITICAL_LOG("Math", message, ##__VA_ARGS__)
+#define EMERGENCY_LOG_MATH(message, ...) EMERGENCY_LOG("Math", message, ##__VA_ARGS__)
+#define ERROR_LOG_MATH(message, ...) ERROR_LOG("Math", message, ##__VA_ARGS__)
+#define WARNING_LOG_MATH(message, ...) WARNING_LOG("Math", message, ##__VA_ARGS__)
+#define NOTICE_LOG_MATH(message, ...) NOTICE_LOG("Math", message, ##__VA_ARGS__)
+#define INFO_LOG_MATH(message, ...) INFO_LOG("Math", message, ##__VA_ARGS__)
+#define DEBUG_LOG_MATH(message, ...) DEBUG_LOG("Math", message, ##__VA_ARGS__)
+#define DELOCUST_LOG_MATH(message, ...) DELOCUST_LOG("Math", message, ##__VA_ARGS__)
+
+#define CHECK_CONDITION_MATH(expr, logLevel, message, ...) CHECK_CONDITION(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_ALWAYS_MATH(expr, logLevel, message, ...) CHECK_CONDITION_ALWAYS(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_EXIT_MATH(expr, logLevel, message, ...) CHECK_CONDITION_EXIT(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_EXIT_ALWAYS_MATH(expr, logLevel, message, ...) CHECK_CONDITION_EXIT_ALWAYS(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_RETURN_VOID_MATH(expr, logLevel, message, ...) CHECK_CONDITION_RETURN_VOID(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(expr, logLevel, message, ...) CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_RETURN_MATH(expr, returnValue, logLevel, message, ...) CHECK_CONDITION_RETURN(expr, returnValue, "Math", logLevel, message, ##__VA_ARGS__)
+#define CHECK_CONDITION_RETURN_ALWAYS_MATH(expr, returnValue, logLevel, message, ...) CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, "Math", logLevel, message, ##__VA_ARGS__)
+
 #include <math.h>
 #include <cmath>
 

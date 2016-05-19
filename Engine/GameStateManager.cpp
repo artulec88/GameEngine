@@ -19,7 +19,7 @@ bool Engine::GameStateManager::IsInGameTimeCalculationEnabled() const
 	GameState* currentState = Peek();
 	if (currentState == NULL)
 	{
-		WARNING_LOG("Cannot determine whether in-game time calculation should be performed. No state currently active.");
+		WARNING_LOG_ENGINE("Cannot determine whether in-game time calculation should be performed. No state currently active.");
 		return false;
 	}
 	return currentState->IsInGameTimeCalculationEnabled();
@@ -29,11 +29,11 @@ void Engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTr
 {
 	if (gameStateTransition == NULL)
 	{
-		WARNING_LOG("There is no need to set game state transition to NULL manually.");
+		WARNING_LOG_ENGINE("There is no need to set game state transition to NULL manually.");
 	}
 	if (m_gameStateTransition != NULL)
 	{
-		EMERGENCY_LOG("Cannot set the game state transition object. Previous transition has not been performed yet.");
+		EMERGENCY_LOG_ENGINE("Cannot set the game state transition object. Previous transition has not been performed yet.");
 	}
 	m_gameStateTransition = gameStateTransition;
 }
@@ -48,15 +48,15 @@ void Engine::GameStateManager::PerformStateTransition()
 	switch (m_gameStateTransition->GetTransitionType())
 	{
 	case GameStateTransitioning::SWITCH:
-		NOTICE_LOG("Switching the topmost state");
+		NOTICE_LOG_ENGINE("Switching the topmost state");
 		Switch(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
 		break;
 	case GameStateTransitioning::PUSH:
-		NOTICE_LOG("Pushing new game state on the stack");
+		NOTICE_LOG_ENGINE("Pushing new game state on the stack");
 		Push(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
 		break;
 	default:
-		ERROR_LOG("Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
+		ERROR_LOG_ENGINE("Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
 	}
 	//SAFE_DELETE(m_gameStateTransition);
 	m_gameStateTransition = NULL;
@@ -124,7 +124,7 @@ Engine::GameState* Engine::DefaultGameStateManager::Pop()
 {
 	if (m_activeStates.empty())
 	{
-		ERROR_LOG("Attempted to pop from an empty game state stack");
+		ERROR_LOG_ENGINE("Attempted to pop from an empty game state stack");
 		return NULL;
 	}
 	GameStateModalityTypePair poppedPair = m_activeStates.back();
@@ -147,18 +147,18 @@ Engine::GameState* Engine::DefaultGameStateManager::Pop()
 
 void Engine::DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
 {
-	//ERROR_LOG("Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
+	//ERROR_LOG_ENGINE("Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 	if (m_exposedInputablesKeyboard.empty())
 	{
 		return;
 	}
-	DEBUG_LOG("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
+	DEBUG_LOG_ENGINE("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
 		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
 	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
 	}
-	//ERROR_LOG("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
+	//ERROR_LOG_ENGINE("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
 void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
@@ -167,7 +167,7 @@ void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset
 	{
 		return;
 	}
-	DEBUG_LOG("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
+	DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
 		m_exposedInputablesMouse.size(), xOffset, yOffset);
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
@@ -179,10 +179,10 @@ void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, i
 {
 	if (m_exposedInputablesMouse.empty())
 	{
-		DEBUG_LOG("The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
+		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
 		return;
 	}
-	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
+	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MouseButtonEvent(button, action, mods);
@@ -193,10 +193,10 @@ void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 {
 	if (m_exposedInputablesMouse.empty())
 	{
-		DEBUG_LOG("The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
+		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
 		return;
 	}
-	//DEBUG_LOG("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
+	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MousePosEvent(xPos, yPos);
@@ -221,34 +221,34 @@ void Engine::DefaultGameStateManager::Render(const Rendering::Shader* shader, Re
 
 void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
-	DEBUG_LOG("Adding to interfaces started");
+	DEBUG_LOG_ENGINE("Adding to interfaces started");
 	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
 	if (inputableKeyboard != NULL)
 	{
-		DEBUG_LOG("Adding to KEYBOARD INPUT interface");
+		DEBUG_LOG_ENGINE("Adding to KEYBOARD INPUT interface");
 		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
 	}
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
-		DEBUG_LOG("Adding to MOUSE INPUT interface");
+		DEBUG_LOG_ENGINE("Adding to MOUSE INPUT interface");
 		m_exposedInputablesMouse.push_back(inputableMouse);
 	}
 
 	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
 	if(renderable != NULL)
 	{
-		DEBUG_LOG("Adding to RENDER interface");
+		DEBUG_LOG_ENGINE("Adding to RENDER interface");
 		m_exposedRenderables.push_back(renderable);
 	}
 	
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
 	if(updateable != NULL)
 	{
-		DEBUG_LOG("Adding to UPDATE interface");
+		DEBUG_LOG_ENGINE("Adding to UPDATE interface");
 		m_exposedUpdateables.push_back(updateable);
 	}
-	DELOCUST_LOG("Adding to interfaces finished");
+	DELOCUST_LOG_ENGINE("Adding to interfaces finished");
 }
 
 void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
@@ -279,7 +279,7 @@ void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 
 void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 {
-	INFO_LOG("Clearing game state interface queues");
+	INFO_LOG_ENGINE("Clearing game state interface queues");
 	ClearAllIntefaceLists();
 
 	if (m_activeStates.empty())
@@ -288,8 +288,8 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
-	DEBUG_LOG("Currently active game states: %d", m_activeStates.size());
-	CHECK_CONDITION_EXIT_ALWAYS(!m_activeStates.empty(), Utility::Emergency, "No active game state is present in the game at the moment.");
+	DEBUG_LOG_ENGINE("Currently active game states: %d", m_activeStates.size());
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), Utility::Emergency, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
@@ -299,7 +299,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 		}
 		--index;
 	}
-	DEBUG_LOG("Calculated game state index equals %d", index);
+	DEBUG_LOG_ENGINE("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
 		AddToInterfaces(m_activeStates[index++].first);
@@ -325,7 +325,7 @@ void Engine::DefaultGameStateManager::NotifyObscuredStates()
 	}
 
 	// Now go forward (up until the second-to-last state) and notify the obscured states
-	DEBUG_LOG("Calculated game state index equals %d", index);
+	DEBUG_LOG_ENGINE("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size() - 1)
 	{
 		m_activeStates[index++].first->Obscuring();
@@ -338,7 +338,7 @@ void Engine::DefaultGameStateManager::NotifyRevealedStates()
 	{
 		return;
 	}
-	INFO_LOG("Notifying revealed game states");
+	INFO_LOG_ENGINE("Notifying revealed game states");
 
 	// Reverse scan until we hit either the beginning or find the next Hiding state
 	std::size_t index = m_activeStates.size() - 1;
@@ -352,7 +352,7 @@ void Engine::DefaultGameStateManager::NotifyRevealedStates()
 	}
 
 	// Now go forward and notify all revealed state
-	INFO_LOG("Calculated game state index equals %d", index);
+	INFO_LOG_ENGINE("Calculated game state index equals %d", index);
 	while (index < m_activeStates.size())
 	{
 		m_activeStates[index++].first->Revealed();

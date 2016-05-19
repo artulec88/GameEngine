@@ -74,7 +74,7 @@ TestGameManager::TestGameManager() :
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {
-	DEBUG_LOG("TestGame is being constructed");
+	DEBUG_LOG_GAME("TestGame is being constructed");
 
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
 	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
@@ -284,7 +284,7 @@ Math::Real TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
-		WARNING_LOG("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, RESOURCES_TO_LOAD);
+		WARNING_LOG_GAME("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, RESOURCES_TO_LOAD);
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
@@ -337,9 +337,9 @@ Engine::GameState* TestGameManager::GetPlayMainMenuGameState()
 
 void TestGameManager::Load()
 {
-	NOTICE_LOG("Initalizing test game");
+	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING;
-	CHECK_CONDITION_ALWAYS(!m_isGameLoaded, Utility::Error, "Loading the game run into a problem. The game has already been loaded.");
+	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Error, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -452,7 +452,7 @@ void TestGameManager::Load()
 	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
 	monkeyNode1->GetTransform().SetScale(0.1f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
+	//INFO_LOG_GAME("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
 	//monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
 	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000),
@@ -525,9 +525,9 @@ void TestGameManager::Load()
 	AddSkybox(); // Adding skybox
 
 	m_isGameLoaded = true;
-	CHECK_CONDITION_ALWAYS(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
+	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
 	STOP_PROFILING;
-	NOTICE_LOG("Initalizing test game finished");
+	NOTICE_LOG_GAME("Initalizing test game finished");
 }
 
 void TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
@@ -574,23 +574,23 @@ void TestGameManager::AddLights()
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
-		NOTICE_LOG("Creating %d point lights", pointLightCount);
+		NOTICE_LOG_GAME("Creating %d point lights", pointLightCount);
 		AddPointLights();
-		DEBUG_LOG("%d point lights created", pointLightCount);
+		DEBUG_LOG_GAME("%d point lights created", pointLightCount);
 	}
 	else
 	{
-		NOTICE_LOG("Point lights disabled");
+		NOTICE_LOG_GAME("Point lights disabled");
 	}
 	if (spotLightCount > 0)
 	{
-		NOTICE_LOG("Creating %d spot lights...", spotLightCount);
+		NOTICE_LOG_GAME("Creating %d spot lights...", spotLightCount);
 		AddSpotLights();
-		DEBUG_LOG("%d spot lights created", spotLightCount);
+		DEBUG_LOG_GAME("%d spot lights created", spotLightCount);
 	}
 	else
 	{
-		NOTICE_LOG("Spot lights disabled");
+		NOTICE_LOG_GAME("Spot lights disabled");
 	}
 	STOP_PROFILING;
 }
@@ -602,10 +602,10 @@ void TestGameManager::AddDirectionalLight()
 	int directionalLightsCount = GET_CONFIG_VALUE_GAME("directionalLightsCount", 1);
 	if (directionalLightsCount == 0)
 	{
-		NOTICE_LOG("Directional lights disabled");
+		NOTICE_LOG_GAME("Directional lights disabled");
 		return;
 	}
-	NOTICE_LOG("Directional lights enabled");
+	NOTICE_LOG_GAME("Directional lights enabled");
 
 	Engine::DirectionalLightBuilder directionalLightBuilder;
 	Engine::BuilderDirector lightBuilderDirector(directionalLightBuilder);
@@ -659,9 +659,9 @@ void TestGameManager::AddSpotLights()
 void TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_ALWAYS(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
+	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
 
-	NOTICE_LOG("Creating %d camera(-s)...", cameraCount);
+	NOTICE_LOG_GAME("Creating %d camera(-s)...", cameraCount);
 
 	Engine::CameraBuilder cameraBuilder;
 	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
@@ -673,7 +673,7 @@ void TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 		Engine::GameNode* cameraNode = cameraBuilder.GetGameNode();
 		AddToSceneRoot(cameraNode);
 	}
-	DEBUG_LOG("%d camera(-s) created", cameraCount);
+	DEBUG_LOG_GAME("%d camera(-s) created", cameraCount);
 	STOP_PROFILING;
 }
 
@@ -681,13 +681,13 @@ void TestGameManager::AddSkybox() const
 {
 	START_PROFILING;
 
-	NOTICE_LOG("Creating a skybox...");
+	NOTICE_LOG_GAME("Creating a skybox...");
 
 	Engine::SkyboxBuilder skyboxBuilder;
 	Engine::BuilderDirector skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
 	//GameNode* skyboxNode = skyboxBuilder.GetGameNode();
-	DEBUG_LOG("The skybox has been created");
+	DEBUG_LOG_GAME("The skybox has been created");
 	STOP_PROFILING;
 }
 
@@ -747,7 +747,7 @@ void TestGameManager::MouseButtonEvent(int button, int action, int mods)
 	// I would expect here something as follows:
 	// currentGameState->MouseInput(...)
 
-	// DEBUG_LOG("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	// DEBUG_LOG_GAME("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	//GameManager::MouseButtonEvent(window, button, action, mods);
 	m_gameStateManager->MouseButtonEvent(button, action, mods);
@@ -764,10 +764,10 @@ void TestGameManager::InitializeTweakBars()
 #ifdef GAME_PROPERTIES_TWEAK_BAR
 	if (!m_isGameLoaded)
 	{
-		WARNING_LOG("Cannot initialize game's tweak bars. The game has not been loaded yet.");
+		WARNING_LOG_GAME("Cannot initialize game's tweak bars. The game has not been loaded yet.");
 		return;
 	}
-	INFO_LOG("Initializing game's tweak bars");
+	INFO_LOG_GAME("Initializing game's tweak bars");
 	// TODO: GAME_PROPERTIES_TWEAK_BAR gives some errors. Investigate why and fix that!
 
 	TwBar* testGamePropertiesBar = TwNewBar("TestGamePropertiesBar");
@@ -778,7 +778,7 @@ void TestGameManager::InitializeTweakBars()
 	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementOffset", TW_TYPE_FLOAT, &terrainDisplacementOffset, " label='Terrain displacement offset' group='Terrain' ");
 	if (terrainMaterial == NULL)
 	{
-		ERROR_LOG("Cannot add terrain material information to tweak bar. The terrain material is NULL.");
+		ERROR_LOG_GAME("Cannot add terrain material information to tweak bar. The terrain material is NULL.");
 		return;
 	}
 
@@ -794,7 +794,7 @@ void TestGameManager::InitializeTweakBars()
 	//TwRemoveVar(testGamePropertiesBar, "temp2");
 
 	TwSetParam(testGamePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-	INFO_LOG("Initializing game's tweak bars finished");
+	INFO_LOG_GAME("Initializing game's tweak bars finished");
 #endif
 }
 #endif

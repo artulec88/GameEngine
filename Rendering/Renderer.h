@@ -167,7 +167,7 @@ public:
 	}
 	inline const Lighting::BaseLight* GetCurrentLight() const
 	{
-		CHECK_CONDITION_EXIT(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_currentLight != NULL, Utility::Error, "Current light is NULL.");
 		return m_currentLight;
 	}
 	inline const Lighting::BaseLight* SetCurrentLight(size_t index)
@@ -202,17 +202,17 @@ public:
 	
 	inline const CameraBase& GetCurrentCamera() const
 	{
-		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return *m_currentCamera;
 	}
 	RENDERING_API inline const Math::Transform& GetCurrentCameraTransform() const
 	{
-		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return m_currentCamera->GetTransform();
 	}
 	RENDERING_API inline Math::Transform& GetCurrentCameraTransform()
 	{
-		CHECK_CONDITION_EXIT(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Emergency, "Current camera is NULL.");
 		return m_currentCamera->GetTransform();
 	}
 
@@ -233,7 +233,7 @@ public:
 	inline unsigned int GetSamplerSlot(const std::string& samplerName) const
 	{
 		std::map<std::string, unsigned int>::const_iterator samplerItr = m_samplerMap.find(samplerName);
-		CHECK_CONDITION_EXIT_ALWAYS(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(samplerItr != m_samplerMap.end(), Utility::Error, "Sampler name \"%s\" has not been found in the sampler map.", samplerName.c_str());
 		return samplerItr->second;
 	}
 

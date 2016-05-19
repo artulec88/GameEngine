@@ -18,12 +18,12 @@ using namespace Math::Statistics;
 
 IStatisticsStorage::IStatisticsStorage()
 {
-	//CRITICAL_LOG("Creating new statistics storage");
+	//CRITICAL_LOG_MATH("Creating new statistics storage");
 }
 
 IStatisticsStorage::~IStatisticsStorage(void)
 {
-	//DEBUG_LOG("IStatisticsStorage destructor");
+	//DEBUG_LOG_MATH("IStatisticsStorage destructor");
 	for (std::map<const char*, ClassStats*>::iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		delete classStatsItr->second;
@@ -36,7 +36,7 @@ ClassStats& IStatisticsStorage::GetClassStats(const char* className)
 	if (classStatsItr == m_classStatistics.end())
 	{
 		std::pair<std::map<const char*, ClassStats*>::iterator, bool /* false if element already existed */> insertRes = m_classStatistics.insert(std::pair<const char*, ClassStats*>(className, new ClassStats(className)));
-		CHECK_CONDITION(insertRes.second, Utility::Error, "Inserted new element in the statistics storage when there has already been the one to use.");
+		CHECK_CONDITION_MATH(insertRes.second, Utility::Error, "Inserted new element in the statistics storage when there has already been the one to use.");
 		return *insertRes.first->second;
 	}
 	return *classStatsItr->second;
@@ -49,14 +49,14 @@ void IStatisticsStorage::PrintSimpleReport() const
 	{
 		ss << classStatsItr->first << " (" << classStatsItr->second->GetTotalNumberOfSamples() << "); ";
 	}
-	INFO_LOG("Simple report = \"%s\"", ss.str().c_str());
+	INFO_LOG_MATH("Simple report = \"%s\"", ss.str().c_str());
 }
 
 void IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
-	Utility::ILogger::GetLogger().AddFile("ApplicationStats.txt");
-	INFO_LOG("Total elapsed time: %s", timeSpan.ToString().c_str());
+	Utility::ILogger::GetLogger("Math").AddFile("ApplicationStats.txt");
+	INFO_LOG_MATH("Total elapsed time: %s", timeSpan.ToString().c_str());
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";

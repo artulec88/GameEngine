@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AudioEngine.h"
+#include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
 #include "Math\RandomGeneratorFactory.h"
@@ -16,22 +17,27 @@ Audio::AudioEngine::AudioEngine(int maxChannelsCount) :
 	m_currentSong(NULL),
 	m_fade(FadeStates::FADE_NONE)
 {
+	/* ==================== Initializing audio logger begin ==================== */
+	std::string loggingLevel = GET_CONFIG_VALUE_STR_AUDIO("LoggingLevel", "Info");
+	Utility::ILogger::GetLogger("Audio").Fill(loggingLevel, Utility::Info);
+	/* ==================== Initializing audio logger end ==================== */
+
 	// Based on tutorial: https://cuboidzone.wordpress.com/category/tutorials/
 	FMOD_RESULT fmodResult = FMOD::System_Create(&m_system); // Create the main system object
-	CHECK_CONDITION_EXIT_ALWAYS(fmodResult == FMOD_OK, Utility::Critical, "Failed to create an audio system with error code %d. %s",
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Critical, "Failed to create an audio system with error code %d. %s",
 		fmodResult, FMOD_ErrorString(fmodResult));
 
 	int driversCount = 0;
 	m_system->getNumDrivers(&driversCount);
-	CHECK_CONDITION_EXIT_ALWAYS(driversCount != 0, Utility::Critical, "Failed to create an audio system. Drivers count = %d", driversCount);
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(driversCount != 0, Utility::Critical, "Failed to create an audio system. Drivers count = %d", driversCount);
 
 	unsigned int version;
 	fmodResult = m_system->getVersion(&version);
-	CHECK_CONDITION_EXIT_ALWAYS(version >= FMOD_VERSION, Utility::Error,
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(version >= FMOD_VERSION, Utility::Error,
 		"Failed to create an audio system. FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
 
 	fmodResult = m_system->init(m_maxChannelsCount, FMOD_INIT_NORMAL, NULL); // initialize FMOD
-	CHECK_CONDITION_EXIT_ALWAYS(fmodResult == FMOD_OK, Utility::Critical, "Initializing audio system has ended with error code %d. %s",
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Critical, "Initializing audio system has ended with error code %d. %s",
 		fmodResult, FMOD_ErrorString(fmodResult));
 
 	// Creating channels groups for each category
@@ -46,7 +52,7 @@ Audio::AudioEngine::AudioEngine(int maxChannelsCount) :
 	m_modes[Categories::SOUND_EFFECT] = FMOD_DEFAULT;
 	m_modes[Categories::SONG] = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL;
 
-	NOTICE_LOG("Audio engine created.");
+	NOTICE_LOG_AUDIO("Audio engine created.");
 }
 
 
@@ -60,7 +66,7 @@ Audio::AudioEngine::~AudioEngine()
 		for (soundItr = m_sounds[i].begin(); soundItr != m_sounds[i].end(); ++soundItr)
 		{
 			fmodResult = soundItr->second->release();
-			CHECK_CONDITION_ALWAYS(fmodResult == FMOD_OK, Utility::Error, "Releasing sound has ended with error code %d. %s",
+			CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Error, "Releasing sound has ended with error code %d. %s",
 				fmodResult, FMOD_ErrorString(fmodResult));
 		}
 		m_sounds[i].clear();
@@ -68,12 +74,12 @@ Audio::AudioEngine::~AudioEngine()
 
 	// Releasing system
 	fmodResult = m_system->close();
-	CHECK_CONDITION_ALWAYS(fmodResult == FMOD_OK, Utility::Error, "Closing audio system has ended with error code %d. %s",
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Error, "Closing audio system has ended with error code %d. %s",
 		fmodResult, FMOD_ErrorString(fmodResult));
 	fmodResult = m_system->release();
-	CHECK_CONDITION_ALWAYS(fmodResult == FMOD_OK, Utility::Error, "Releasing audio system has ended with error code %d. %s",
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Error, "Releasing audio system has ended with error code %d. %s",
 		fmodResult, FMOD_ErrorString(fmodResult));
-	NOTICE_LOG("Audio engine destroyed.");
+	NOTICE_LOG_AUDIO("Audio engine destroyed.");
 }
 
 void Audio::AudioEngine::Update(Math::Real deltaTime)
@@ -89,7 +95,7 @@ void Audio::AudioEngine::Update(Math::Real deltaTime)
 			nextVolume = 1.0f;
 			m_fade = FadeStates::FADE_NONE;
 		}
-		DEBUG_LOG("Increasing volume by %.6f. Current volume = %.2f", nextVolume - volume, nextVolume);
+		DEBUG_LOG_AUDIO("Increasing volume by %.6f. Current volume = %.2f", nextVolume - volume, nextVolume);
 		m_currentSong->setVolume(nextVolume);
 	}
 	else if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_OUT))
@@ -116,7 +122,7 @@ void Audio::AudioEngine::Update(Math::Real deltaTime)
 	}
 
 	FMOD_RESULT fmodResult = m_system->update();
-	CHECK_CONDITION_ALWAYS(fmodResult == FMOD_OK, Utility::Error, "Updating audio system has ended with error code %d. %s",
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Error, "Updating audio system has ended with error code %d. %s",
 		fmodResult, FMOD_ErrorString(fmodResult));
 }
 
@@ -158,7 +164,7 @@ void Audio::AudioEngine::PlaySoundEffect(const std::string& path, Math::Real min
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT].find(path);
 	if (soundItr == m_sounds[Categories::SOUND_EFFECT].end())
 	{
-		WARNING_LOG("The requested sound effect \"%s\" has not been found", path.c_str());
+		WARNING_LOG_AUDIO("The requested sound effect \"%s\" has not been found", path.c_str());
 		return;
 	}
 
@@ -198,7 +204,7 @@ void Audio::AudioEngine::PlaySong(const std::string& path /* TODO: Better parame
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SONG].find(path);
 	if (soundItr == m_sounds[Categories::SONG].end())
 	{
-		WARNING_LOG("Cannot play the requested song \"%s\". It has not been loaded yet", path);
+		WARNING_LOG_AUDIO("Cannot play the requested song \"%s\". It has not been loaded yet", path);
 		return;
 	}
 

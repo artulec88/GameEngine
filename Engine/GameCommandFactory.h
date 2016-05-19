@@ -52,7 +52,7 @@ namespace Engine
 			}
 			else
 			{
-				ERROR_LOG("No game command registered for the specified game command type %d", gameCommandType);
+				ERROR_LOG_ENGINE("No game command registered for the specified game command type %d", gameCommandType);
 				return *m_commands[GameCommandTypes::EMPTY];
 			}
 		}
@@ -60,7 +60,7 @@ namespace Engine
 		{
 			if (m_commands[gameCommandType] != NULL)
 			{
-				WARNING_LOG("Replacing the concrete implementation for the specified %d game command type with a new one.", gameCommandType);
+				WARNING_LOG_ENGINE("Replacing the concrete implementation for the specified %d game command type with a new one.", gameCommandType);
 				SAFE_DELETE(m_commands[gameCommandType]);
 			}
 			m_commands[gameCommandType] = gameCommand;

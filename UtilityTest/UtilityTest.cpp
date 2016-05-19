@@ -16,6 +16,8 @@ unsigned int testNumber = 0;
 bool arrayTestEnabled = true;
 bool stringUtilityTestEnabled = true;
 
+const std::string MODULE_NAME = "UtilityTest";
+
 void PrintHelp()
 {
 	cout << "usage: UtilityTest.exe [OPTIONS]" << endl;
@@ -25,7 +27,7 @@ void PrintHelp()
 
 void ReportError(const std::string& reportStr)
 {
-	ERROR_LOG("Test #%d FAILED. %s", testNumber, reportStr.c_str());
+	ERROR_LOG(MODULE_NAME, "Test #%d FAILED. %s", testNumber, reportStr.c_str());
 }
 
 void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
@@ -35,7 +37,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	{
 		ReportError(reportErrorStr);
 	}
-	INFO_LOG("Test #%d passed", testNumber);
+	INFO_LOG(MODULE_NAME, "Test #%d passed", testNumber);
 }
 
 void ArrayTest()
@@ -45,7 +47,7 @@ void ArrayTest()
 		return;
 	}
 
-	NOTICE_LOG("Array test started");
+	NOTICE_LOG(MODULE_NAME, "Array test started");
 	/* ==================== ARRAY TEST #1- integer array testing- begin ==================== */
 	Container::Array<int> intArray(8, 2);
 	intArray.SetElement(0, 1);
@@ -53,7 +55,7 @@ void ArrayTest()
 	TestReport(intArray.GetSize() == intArray.GetMaxSize(), "The size of the integer array and its maximum size should be equal at this point.");
 	for (int i = 0; i < intArray.GetSize(); ++i)
 	{
-		INFO_LOG("intArray[%d] = %d", i, intArray[i]);
+		INFO_LOG(MODULE_NAME, "intArray[%d] = %d", i, intArray[i]);
 	}
 	/* ==================== ARRAY TEST #1- integer array testing- end ==================== */
 
@@ -66,10 +68,10 @@ void ArrayTest()
 	TestReport(floatArray.GetSize() == floatArray.GetMaxSize(), "The size of the float array and its maximum size should be equal at this point.");
 	for (int i = 0; i < floatArray.GetSize(); ++i)
 	{
-		INFO_LOG("floatArray[%d] = %.3f", i, floatArray[i]);
+		INFO_LOG(MODULE_NAME, "floatArray[%d] = %.3f", i, floatArray[i]);
 	}
 	/* ==================== ARRAY TEST #2- float array testing- end ==================== */
-	NOTICE_LOG("Array test finished");
+	NOTICE_LOG(MODULE_NAME, "Array test finished");
 }
 
 void StringUtilityTest()
@@ -79,7 +81,7 @@ void StringUtilityTest()
 		return;
 	}
 
-	NOTICE_LOG("String utility test started");
+	NOTICE_LOG(MODULE_NAME, "String utility test started");
 	/* ==================== STRING UTILITY TEST #1- left trimming operation- begin ==================== */
 	std::string str1("	\n\t  str1  \t	");
 	StringUtility::LeftTrim(str1);
@@ -100,7 +102,7 @@ void StringUtilityTest()
 
 	/* ==================== STRING UTILITY TEST #3- trimming operation- begin ==================== */
 	/* ==================== STRING UTILITY TEST #3- trimming operation- end ==================== */
-	NOTICE_LOG("String utility test finished");
+	NOTICE_LOG(MODULE_NAME, "String utility test finished");
 }
 
 int main(int argc, char* argv[])
@@ -113,12 +115,12 @@ int main(int argc, char* argv[])
 		system("pause");
 		return 0;
 	}
-	ILogger::GetLogger().Fill(command->Get("-log", ""), Info);
+	ILogger::GetLogger(MODULE_NAME).Fill(command->Get("-log", ""), Info);
 
 	ArrayTest();
 	StringUtilityTest();
 
-	ILogger::GetLogger().ResetConsoleColor();
+	ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 
 	return 0;

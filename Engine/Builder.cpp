@@ -84,10 +84,10 @@ void Engine::DirectionalLightBuilder::SetupLightTransform()
 	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DEBUG_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
+	DEBUG_LOG_ENGINE("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
-	//DEBUG_LOG("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
+	//DEBUG_LOG_ENGINE("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
 	//	rotMatrix.ToString().c_str(),
 	//	rot.ToString().c_str(),
 	//	rot.ToRotationMatrix().ToString().c_str(),
@@ -154,7 +154,7 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 		
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
-	//DELOCUST_LOG("light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s", position.ToString().c_str(),
+	//DELOCUST_LOG_ENGINE("light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s", position.ToString().c_str(),
 	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(), forwardVec.ToString().c_str(), (position + rayEndPosition).ToString().c_str());
 
 	//Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
@@ -391,7 +391,7 @@ void Engine::CameraBuilder::SetupCameraTransform()
 	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
+	DELOCUST_LOG_ENGINE("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 	Math::Quaternion rot(rotMatrix);
 	m_gameNode->GetTransform().SetRot(rot);
 }
@@ -523,16 +523,16 @@ Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::s
 			cubeMapNegZFaceFileName += (*filenameItr);
 		}
 	}
-	CHECK_CONDITION_EXIT(cubeMapPosXFaceFileFound, Utility::Error, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT(cubeMapNegXFaceFileFound, Utility::Error, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT(cubeMapPosYFaceFileFound, Utility::Error, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT(cubeMapNegYFaceFileFound, Utility::Error, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT(cubeMapPosZFaceFileFound, Utility::Error, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT(cubeMapNegZFaceFileFound, Utility::Error, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosXFaceFileFound, Utility::Error, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegXFaceFileFound, Utility::Error, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosYFaceFileFound, Utility::Error, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegYFaceFileFound, Utility::Error, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosZFaceFileFound, Utility::Error, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegZFaceFileFound, Utility::Error, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 	Rendering::Texture* cubeMapTexture = new Rendering::Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{
-		ERROR_LOG("Cube map texture is NULL");
+		ERROR_LOG_ENGINE("Cube map texture is NULL");
 		exit(EXIT_FAILURE);
 	}
 	//STOP_PROFILING;

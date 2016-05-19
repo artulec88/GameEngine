@@ -63,22 +63,22 @@ PlayMenuGameState::~PlayMenuGameState(void)
 
 void PlayMenuGameState::Entered()
 {
-	INFO_LOG("PlayMenu game state has been placed in the game state manager");
+	INFO_LOG_GAME("PlayMenu game state has been placed in the game state manager");
 }
 
 void PlayMenuGameState::Leaving()
 {
-	INFO_LOG("PlayMenu game state is about to be removed from the game state manager");
+	INFO_LOG_GAME("PlayMenu game state is about to be removed from the game state manager");
 }
 
 void PlayMenuGameState::Obscuring()
 {
-	INFO_LOG("Another game state is about to stack on top of PlayMenu game state");
+	INFO_LOG_GAME("Another game state is about to stack on top of PlayMenu game state");
 }
 
 void PlayMenuGameState::Revealed()
 {
-	INFO_LOG("PlayMenu game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG_GAME("PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
 void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
@@ -103,14 +103,14 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		{
 			Engine::GameManager::GetGameManager()->PopState();
 		}
-		//INFO_LOG("To exit the game click \"QUIT\"");
+		//INFO_LOG_GAME("To exit the game click \"QUIT\"");
 		break;
 	case GLFW_KEY_UP:
-		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
+		DEBUG_LOG_GAME("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
 		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() - 1);
 		break;
 	case GLFW_KEY_DOWN:
-		DEBUG_LOG("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
+		DEBUG_LOG_GAME("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
 		m_currentMenuEntry->SelectChildMenuEntry(m_currentMenuEntry->GetSelectedMenuEntryIndex() + 1);
 		break;
 	case GLFW_KEY_ENTER:
@@ -119,7 +119,7 @@ void PlayMenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 		break;
 	}
 	default:
-		DEBUG_LOG("The key %d is not supported by the play menu game state", key);
+		DEBUG_LOG_GAME("The key %d is not supported by the play menu game state", key);
 		break;
 	}
 	STOP_PROFILING;
@@ -141,7 +141,7 @@ void PlayMenuGameState::ChooseCurrentMenuEntry()
 void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	DELOCUST_LOG("PLAY MAIN MENU game state rendering");
+	DELOCUST_LOG_GAME("PLAY MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
@@ -163,7 +163,7 @@ void PlayMenuGameState::MouseButtonEvent(int button, int action, int mods)
 		}
 		else
 		{
-			//CRITICAL_LOG("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+			//CRITICAL_LOG_GAME("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 		}
 	}
 }
@@ -177,12 +177,12 @@ void PlayMenuGameState::MousePosEvent(double xPos, double yPos)
 	m_mousePosY = static_cast<Math::Real>(yPos);
 
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
-	//CRITICAL_LOG("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+	//CRITICAL_LOG_GAME("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
 		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 		{
-			//CRITICAL_LOG("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
+			//CRITICAL_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
 			m_currentMenuEntry->SelectChildMenuEntry(i);
 		}
 	}

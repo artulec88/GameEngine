@@ -15,14 +15,14 @@ Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& 
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
 {
-	DELOCUST_LOG("MenuEntry \"%s\" constructor", m_guiText.GetText().c_str());
-	//DELOCUST_LOG("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
+	DELOCUST_LOG_ENGINE("MenuEntry \"%s\" constructor", m_guiText.GetText().c_str());
+	//DELOCUST_LOG_ENGINE("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
 }
 
 
 Engine::MenuEntry::~MenuEntry(void)
 {
-	DELOCUST_LOG("MenuEntry \"%s\" destructor", m_guiText.GetText().c_str());
+	DELOCUST_LOG_ENGINE("MenuEntry \"%s\" destructor", m_guiText.GetText().c_str());
 	for (std::vector<MenuEntry*>::iterator childrenMenuEntryItr = m_childrenMenuEntries.begin(); childrenMenuEntryItr != m_childrenMenuEntries.end(); ++childrenMenuEntryItr)
 	{
 		SAFE_DELETE(*childrenMenuEntryItr);
@@ -44,7 +44,7 @@ int Engine::MenuEntry::GetChildrenCount() const
 
 bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const
 {
-	CHECK_CONDITION_RETURN(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
+	CHECK_CONDITION_RETURN_ENGINE(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::Error,
 		"Cannot find child menu entry AABR. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
 	return m_childrenMenuEntries[index]->GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
@@ -52,7 +52,7 @@ bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
 	//Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
-	//DEBUG_LOG("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
+	//DEBUG_LOG_ENGINE("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
 	//return intersectInfo.IsIntersecting();
 
 	return GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
@@ -73,7 +73,7 @@ void Engine::MenuEntry::SelectChildMenuEntry(int index, bool wrapping /* = true 
 	{
 		m_selectedMenuEntryIndex = index;
 	}
-	CHECK_CONDITION(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), Utility::Error,
+	CHECK_CONDITION_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), Utility::Error,
 		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", m_selectedMenuEntryIndex, GetChildrenCount());
 	//m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetColorEffect(newColorEffectForPreviouslySelectedEntry);
 	//m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForPreviouslySelectedEntry);
@@ -90,14 +90,14 @@ Engine::MenuEntry* Engine::MenuEntry::GetParent() const
 
 Engine::MenuEntry* Engine::MenuEntry::GetSelectedChild() const
 {
-	CHECK_CONDITION_RETURN(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), NULL, Utility::Error,
+	CHECK_CONDITION_RETURN_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), NULL, Utility::Error,
 		"Cannot return currently selected child menu entry. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 }
 
 bool Engine::MenuEntry::DoesSelectedChildHaveChildren() const
 {
-	CHECK_CONDITION_RETURN(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), false, Utility::Error,
+	CHECK_CONDITION_RETURN_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), false, Utility::Error,
 		"Cannot determine whether currently selected child menu entry has children. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex]->HasChildren();
 }

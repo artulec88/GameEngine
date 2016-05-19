@@ -1,4 +1,5 @@
 #include "IntroGameState.h"
+#include "Def.h"
 #include "Engine\GameManager.h"
 #include "Utility\ILogger.h"
 #include "MenuGameState.h"
@@ -26,22 +27,22 @@ IntroGameState::~IntroGameState(void)
 
 void IntroGameState::Entered()
 {
-	INFO_LOG("Intro game state has been placed in the game state manager");
+	INFO_LOG_GAME("Intro game state has been placed in the game state manager");
 }
 
 void IntroGameState::Leaving()
 {
-	INFO_LOG("Intro game state is about to be removed from the game state manager");
+	INFO_LOG_GAME("Intro game state is about to be removed from the game state manager");
 }
 
 void IntroGameState::Obscuring()
 {
-	INFO_LOG("Another game state is about to stack on top of intro game state");
+	INFO_LOG_GAME("Another game state is about to stack on top of intro game state");
 }
 
 void IntroGameState::Revealed()
 {
-	INFO_LOG("Intro game state has become the topmost game state in the game state manager's stack");
+	INFO_LOG_GAME("Intro game state has become the topmost game state in the game state manager's stack");
 }
 
 void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
@@ -61,7 +62,7 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 			break;
 		}
 	default:
-		INFO_LOG("To skip the intro you have to double-click ESC button");
+		INFO_LOG_GAME("To skip the intro you have to double-click ESC button");
 		break;
 	}
 	STOP_PROFILING;
@@ -70,14 +71,14 @@ void IntroGameState::KeyEvent(int key, int scancode, int action, int mods)
 void IntroGameState::Input(Math::Real elapsedTime)
 {
 	START_PROFILING;
-	DEBUG_LOG("INTRO game state input processing");
+	DEBUG_LOG_GAME("INTRO game state input processing");
 	STOP_PROFILING;
 }
 
 void IntroGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	DEBUG_LOG("INTRO game state rendering");
+	DEBUG_LOG_GAME("INTRO game state rendering");
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
 	renderer->RenderText(450, 450, "Intro (click ESC)");

@@ -54,12 +54,12 @@ public:
 	//{
 	//	if (colorMap.find(colorName) == colorMap.end())
 	//	{
-	//		DEBUG_LOG("Color with name \"%s\" cannot be found in the map. Creating a new color with this name.", colorName.c_str());
+	//		DEBUG_LOG_RENDERING("Color with name \"%s\" cannot be found in the map. Creating a new color with this name.", colorName.c_str());
 	//		colorMap.insert(std::pair<std::string, Color>(colorName, color));
 	//	}
 	//	else
 	//	{
-	//		DELOCUST_LOG("Replacing the color \"%s\" with values \"%s\" to color \"%s\"", colorName.c_str(), colorMap[colorName].ToString().c_str(), color.ToString().c_str());
+	//		DELOCUST_LOG_RENDERING("Replacing the color \"%s\" with values \"%s\" to color \"%s\"", colorName.c_str(), colorMap[colorName].ToString().c_str(), color.ToString().c_str());
 	//		colorMap[colorName] = color;
 	//	}
 	//}
@@ -68,12 +68,12 @@ public:
 	{
 		if (vec2DMap.find(name) == vec2DMap.end())
 		{
-			DEBUG_LOG("Vector2D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
+			DEBUG_LOG_RENDERING("Vector2D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
 			vec2DMap.insert(std::pair<std::string, Math::Vector2D>(name, vec));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the Vector2D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec2DMap[name].ToString().c_str(), vec.ToString().c_str());
+			DELOCUST_LOG_RENDERING("Modifying the Vector2D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec2DMap[name].ToString().c_str(), vec.ToString().c_str());
 			vec2DMap[name] = vec;
 		}
 	}
@@ -82,12 +82,12 @@ public:
 	{
 		if (vec3DMap.find(name) == vec3DMap.end())
 		{
-			DEBUG_LOG("Vector3D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
+			DEBUG_LOG_RENDERING("Vector3D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
 			vec3DMap.insert(std::pair<std::string, Math::Vector3D>(name, vec));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the Vector3D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec3DMap[name].ToString().c_str(), vec.ToString().c_str());
+			DELOCUST_LOG_RENDERING("Modifying the Vector3D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), vec3DMap[name].ToString().c_str(), vec.ToString().c_str());
 			vec3DMap[name] = vec;
 		}
 	}
@@ -96,12 +96,12 @@ public:
 	{
 		if (m_vec4DMap.find(name) == m_vec4DMap.end())
 		{
-			DEBUG_LOG("Vector 4D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
+			DEBUG_LOG_RENDERING("Vector 4D with name \"%s\" cannot be found in the map. Creating a new vector with this name.", name.c_str());
 			m_vec4DMap.insert(std::pair<std::string, Math::Vector4D>(name, vec));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the Vector4D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), m_vec4DMap[name].ToString().c_str(), vec.ToString().c_str());
+			DELOCUST_LOG_RENDERING("Modifying the Vector4D \"%s\" with values \"%s\" to vector \"%s\"", name.c_str(), m_vec4DMap[name].ToString().c_str(), vec.ToString().c_str());
 			m_vec4DMap[name] = vec;
 		}
 	}
@@ -110,12 +110,12 @@ public:
 	{
 		if (realMap.find(name) == realMap.end())
 		{
-			DEBUG_LOG("The real value with name \"%s\" is not found in the map. Creating a new real value with this name.", name.c_str());
+			DEBUG_LOG_RENDERING("The real value with name \"%s\" is not found in the map. Creating a new real value with this name.", name.c_str());
 			realMap.insert(std::pair<std::string, Math::Real>(name, value));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the real value with name \"%s\" from \"%.2f\" to \"%.2f\"", name.c_str(), realMap[name], value);
+			DELOCUST_LOG_RENDERING("Modifying the real value with name \"%s\" from \"%.2f\" to \"%.2f\"", name.c_str(), realMap[name], value);
 			realMap[name] = value;
 		}
 	}
@@ -124,18 +124,18 @@ public:
 	{
 		//if (texture == NULL)
 		//{
-		//	WARNING_LOG("Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
+		//	WARNING_LOG_RENDERING("Adding NULL texture with name \"%s\" to the map of textures", textureName.c_str());
 		//	//return;
 		//}
 		std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(textureName);
 		if (textureItr == textureMap.end())
 		{
-			DEBUG_LOG("The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
+			DEBUG_LOG_RENDERING("The texture with name \"%s\" is not found in the map. Creating a new texture with this name.", textureName.c_str());
 			textureMap.insert(std::pair<std::string, const Texture*>(textureName, texture));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the texture with name \"%s\".", textureName.c_str());
+			DELOCUST_LOG_RENDERING("Modifying the texture with name \"%s\".", textureName.c_str());
 			textureMap[textureName] = texture;
 		}
 		//textureMap[textureName] = texture;
@@ -147,12 +147,12 @@ public:
 		std::map<std::string, const Texture*>::iterator textureItr = textureMap.find(multitextureName);
 		if (textureItr == textureMap.end())
 		{
-			DEBUG_LOG("The multitexture with name \"%s\" is not found in the map. Creating a new texture with this name.", multitextureName.c_str());
+			DEBUG_LOG_RENDERING("The multitexture with name \"%s\" is not found in the map. Creating a new texture with this name.", multitextureName.c_str());
 			textureMap.insert(std::pair<std::string, const Texture*>(multitextureName, texture));
 		}
 		else
 		{
-			DELOCUST_LOG("Modifying the multitexture under index %d with name \"%s\".", textureIndex, textureName.c_str());
+			DELOCUST_LOG_RENDERING("Modifying the multitexture under index %d with name \"%s\".", textureIndex, textureName.c_str());
 			textureMap[multitextureName] = texture;
 		}
 	}
@@ -163,7 +163,7 @@ public:
 	//	std::map<std::string, Color>::const_iterator itr = colorMap.find(colorName);
 	//	if (itr == colorMap.end()) // color not found
 	//	{
-	//		WARNING_LOG("Color with name \"%s\" has not been found. Returning default color instead.", colorName.c_str());
+	//		WARNING_LOG_RENDERING("Color with name \"%s\" has not been found. Returning default color instead.", colorName.c_str());
 	//		return m_defaultColor;
 	//	}
 	//	return itr->second;
@@ -175,7 +175,7 @@ public:
 		std::map<std::string, Math::Vector2D>::const_iterator itr = vec2DMap.find(name);
 		if (itr == vec2DMap.end()) // vector not found
 		{
-			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			WARNING_LOG_RENDERING("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return m_defaultVector2D;
 		}
 		return itr->second;
@@ -187,7 +187,7 @@ public:
 		std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 		if (itr == vec3DMap.end()) // vector not found
 		{
-			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			WARNING_LOG_RENDERING("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return m_defaultVector3D;
 		}
 		return itr->second;
@@ -199,7 +199,7 @@ public:
 		std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
 		if (itr == m_vec4DMap.end()) // vector not found
 		{
-			WARNING_LOG("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
+			WARNING_LOG_RENDERING("Vector with name \"%s\" has not been found. Returning default vector instead.", name.c_str());
 			return m_defaultVector4D;
 		}
 		return itr->second;
@@ -210,7 +210,7 @@ public:
 		std::map<std::string, Math::Real>::const_iterator itr = realMap.find(name);
 		if (itr == realMap.end()) // number not found
 		{
-			WARNING_LOG("Real number with name \"%s\" has not been found", name.c_str());
+			WARNING_LOG_RENDERING("Real number with name \"%s\" has not been found", name.c_str());
 			return m_defaultValue;
 		}
 		return itr->second;
@@ -221,7 +221,7 @@ public:
 		std::map<std::string, const Texture*>::const_iterator itr = textureMap.find(textureName);
 		if (itr == textureMap.end()) // texture not found
 		{
-			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			WARNING_LOG_RENDERING("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
 			return m_defaultTexture;
 		}
 		return itr->second;
@@ -248,7 +248,7 @@ public:
 				}
 			}
 
-			WARNING_LOG("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
+			WARNING_LOG_RENDERING("Texture with name \"%s\" has not been found. Returning default texture instead.", textureName.c_str());
 			return m_defaultTexture;
 		}
 		return itr->second;

@@ -161,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AngleTestGroup.h" />
+    <ClInclude Include="Def.h" />
     <ClInclude Include="MatrixTestGroup.h" />
     <ClInclude Include="QuaternionTestGroup.h" />
     <ClInclude Include="StatsTest.h" />
