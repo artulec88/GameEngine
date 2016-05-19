@@ -12,81 +12,81 @@
 namespace Utility
 {
 
-/**
- * Class used to manage global configuration parameters defined in config.cfg file
- */
-class Config : public IConfig
-{
-/* ==================== Static variables and functions begin ==================== */
-protected:
-	typedef std::map<std::string, std::string> ValuesMap;
-	ValuesMap cfgValues;
-	//ValuesMap cfgNotDefinedValues;
-	bool isInitialized;
-/* ==================== Static variables and functions end ==================== */
+	/// <summary>
+	/// Class used to manage global configuration parameters defined in config.cfg file
+	/// </summary>
+	class Config : public IConfig
+	{
+		typedef std::map<std::string, std::string> ValuesMap;
+	/* ==================== Static variables and functions begin ==================== */
+	/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	Config(void);
-//	Config(const std::string& fileName);
-//	~Config(void);
-/* ==================== Constructors and destructors end ==================== */
+	/* ==================== Constructors and destructors begin ==================== */
+	public:
+		Config(const std::string& fileName);
+		~Config();
+	/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	/**
-	 * Load configuration from a given config file.
-	 *
-	 * The correct format for storing configuration data is:
-	 *	name = value - defines parameter "name" with value "val"
-	 *	lines starting with "#" sign are marked as comments and ignored when file is being parsed
-	 */
-	void LoadFromFile(const std::string& fileName);
+	/* ==================== Non-static member functions begin ==================== */
+	public:
+		/// <summary>
+		/// Load configuration from a given config file.
+		/// The correct format for storing configuration data is:
+		/// <code>name = value</code> - defines parameter "name" with value "val".
+		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed.
+		///
+		void LoadFromFile();
 
-	/**
-	 * Returns the value of given config parameter, or defValue
-	 * if the parameter was not specified in the configuration file.
-	 */
-	//const Type Get(const std::string& name, const Type& defValue)
-	//{
-	//	if (!isInitialized)
-	//	{
-	//		WARNING_LOG("The Config instance is not initalized.");
-	//		//std::string fileName;
-	//		//std::cout << "Specify the configuration file to read:\t";
-	//		// TODO: If the user gives just a filename concatenate it with the string
-	//		// "..\\Config\\"
-	//		// If the user gives whole path use it instead.
-	//		// TODO: Second thing to do is to make stream read the whole line and not stop at first white space.
-	//		//std::cin >> fileName;
-	//		LoadFromFile("..\\Config\\Config.cfg");
-	//	}
+		/**
+		* Returns the value of given config parameter, or defValue
+		* if the parameter was not specified in the configuration file.
+		*/
+		//const Type Get(const std::string& name, const Type& defValue)
+		//{
+		//	if (!isInitialized)
+		//	{
+		//		WARNING_LOG("The Config instance is not initalized.");
+		//		//std::string fileName;
+		//		//std::cout << "Specify the configuration file to read:\t";
+		//		// TODO: If the user gives just a filename concatenate it with the string
+		//		// "..\\Config\\"
+		//		// If the user gives whole path use it instead.
+		//		// TODO: Second thing to do is to make stream read the whole line and not stop at first white space.
+		//		//std::cin >> fileName;
+		//		LoadFromFile("..\\Config\\Config.cfg");
+		//	}
 
-	//	ValuesMap::iterator valueMapIt = cfgValues.find(name);
-	//	if (valueMapIt == cfgValues.end())
-	//	{
-	//		std::stringstream s;
-	//		s << defValue;
-	//		NOTICE_LOG("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), s.str().c_str());
-	//		cfgNotDefinedValues[name] = s.str();
-	//		return defValue;
-	//	}
+		//	ValuesMap::iterator valueMapIt = cfgValues.find(name);
+		//	if (valueMapIt == cfgValues.end())
+		//	{
+		//		std::stringstream s;
+		//		s << defValue;
+		//		NOTICE_LOG("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), s.str().c_str());
+		//		cfgNotDefinedValues[name] = s.str();
+		//		return defValue;
+		//	}
 
-	//	Type value;
-	//	std::stringstream s;
-	//	s << valueMapIt->second;
-	//	s >> value;
-	//	return value;
-	//}
+		//	Type value;
+		//	std::stringstream s;
+		//	s << valueMapIt->second;
+		//	s >> value;
+		//	return value;
+		//}
 
-	std::string GetArg(const std::string& name, const std::string& defValue) const;
+		std::string GetArg(const std::string& name, const std::string& defValue) const;
 
-	/**
-	 * Returns formatted list of configure parameters, that were used but defined in the configuration file,
-	 * together with their last used default value.
-	 */
-	//std::string ReportUndefined();
-/* ==================== Non-static member functions end ==================== */
-}; /* end class Config */
+		/**
+		* Returns formatted list of configure parameters, that were used but defined in the configuration file,
+		* together with their last used default value.
+		*/
+		//std::string ReportUndefined();
+	/* ==================== Non-static member functions end ==================== */
+
+	/* ==================== Non-static member variables begin ==================== */
+	private:
+		ValuesMap m_cfgValues;
+		//ValuesMap m_cfgNotDefinedValues;
+	/* ==================== Non-static member variables end ==================== */
+	}; /* end class Config */
 
 } /* end namespace Utility */

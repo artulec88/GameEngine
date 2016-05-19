@@ -18,6 +18,9 @@
 #define STOP_PROFILING
 #endif
 
+#define GET_CONFIG_VALUE_ENGINE(cfgName, defValue) GET_CONFIG_VALUE("Engine", cfgName, defValue)
+#define GET_CONFIG_VALUE_STR_ENGINE(cfgName, defValue) GET_CONFIG_VALUE_STR("Engine", cfgName, defValue)
+
 namespace Engine
 {
 

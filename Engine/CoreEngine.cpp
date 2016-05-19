@@ -126,15 +126,15 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_audioEngine(NULL),
 	m_physicsEngine(NULL),
 	m_renderer(NULL),
-	LATITUDE(GET_CONFIG_VALUE("latitude", 52.0f)),
-	LONGITUDE(GET_CONFIG_VALUE("longitude", -16.0f)),
+	LATITUDE(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)),
+	LONGITUDE(GET_CONFIG_VALUE_ENGINE("longitude", -16.0f)),
 	TROPIC_OF_CANCER_SINUS(0.39794863131f),
 	SECONDS_PER_MINUTE(60),
 	SECONDS_PER_HOUR(3600),
 	SECONDS_PER_DAY(86400),
 	DAYS_PER_YEAR(365),
-	m_dayNumber(GET_CONFIG_VALUE("startingDayNumber", 172)),
-	m_timeOfDay(GET_CONFIG_VALUE("startingTimeOfDay", REAL_ZERO)),
+	m_dayNumber(GET_CONFIG_VALUE_ENGINE("startingDayNumber", 172)),
+	m_timeOfDay(GET_CONFIG_VALUE_ENGINE("startingTimeOfDay", REAL_ZERO)),
 	m_daytime(Utility::Timing::NIGHT),
 	m_sunElevation(0.0f),
 	m_sunAzimuth(0.0f),
@@ -163,10 +163,10 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_classStats(STATS_STORAGE.GetClassStats("CoreEngine")),
 	m_stats(),
 #endif
-	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightFirstElevationLevel", -REAL_ONE)),
-	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightSecondElevationLevel", REAL_ZERO)),
-	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE("sunlightThirdElevationLevel", REAL_ONE)),
-	m_clockSpeed(GET_CONFIG_VALUE("clockSpeed", REAL_ONE))
+	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightFirstElevationLevel", -REAL_ONE)),
+	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightSecondElevationLevel", REAL_ZERO)),
+	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
+	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
 	NOTICE_LOG("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS
@@ -239,7 +239,7 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateAudioEngine()
 {
-	m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE("audioMaxChannels", 32));
+	m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE_ENGINE("audioMaxChannels", 32));
 	CHECK_CONDITION_EXIT(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
@@ -276,7 +276,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	DEBUG_LOG("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
 
-	int antiAliasingSamples = GET_CONFIG_VALUE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
+	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
 	switch (antiAliasingMethod)
 	{
@@ -317,7 +317,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
 	GLFWmonitor* monitor = NULL;
-	bool fullscreenEnabled = GET_CONFIG_VALUE("fullscreenEnabled", false);
+	bool fullscreenEnabled = GET_CONFIG_VALUE_ENGINE("fullscreenEnabled", false);
 	if (fullscreenEnabled)
 	{
 		monitor = glfwGetPrimaryMonitor();
@@ -428,28 +428,28 @@ void CoreEngine::Stop()
 void CoreEngine::Run()
 {
 	START_PROFILING;
-	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE("threadSleepTime", 10);
+	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
-	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("fontMetaData", "segoe.fnt"));
+	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR_ENGINE("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR_ENGINE("fontMetaData", "segoe.fnt"));
 	Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
 	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
-	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE("fontSizeFPS", 2.5f),
-		Math::Vector2D(GET_CONFIG_VALUE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE("screenPositionFPSY", 0.0f)),
-		GET_CONFIG_VALUE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE("colorFPSRed", 1.0f), GET_CONFIG_VALUE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE("colorFPSBlue", 0.0f)),
-		Math::Vector3D(GET_CONFIG_VALUE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE("outlineColorFPSBlue", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE("offsetFPSX", 0.005f), GET_CONFIG_VALUE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE("isCenteredFPS", false),
-		GET_CONFIG_VALUE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE("borderWidthFPS", 0.4f),
-		GET_CONFIG_VALUE("borderEdgeTransitionWidthFPS", 0.1f));
-	Rendering::Text::GuiText inGameTimeGuiText("", &font, GET_CONFIG_VALUE("fontSizeInGameTime", 2.5f),
-		Math::Vector2D(GET_CONFIG_VALUE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE("maxLineLengthInGameTime", 0.5f),
-		Math::Vector3D(GET_CONFIG_VALUE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE("colorInGameTimeBlue", 0.0f)),
-		Math::Vector3D(GET_CONFIG_VALUE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE("outlineColorInGameTimeBlue", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE("isCenteredInGameTime", false),
-		GET_CONFIG_VALUE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE("borderWidthInGameTime", 0.4f),
-		GET_CONFIG_VALUE("borderEdgeTransitionWidthInGameTime", 0.1f));
+	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f),
+		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
+		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
+		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
+		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
+		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
+	Rendering::Text::GuiText inGameTimeGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f),
+		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
+		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
+		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
+		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredInGameTime", false),
+		GET_CONFIG_VALUE_ENGINE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthInGameTime", 0.4f),
+		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif
 	
 	CHECK_CONDITION(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
@@ -462,7 +462,7 @@ void CoreEngine::Run()
 	m_isRunning = true;
 
 #ifdef COUNT_FPS
-	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
+	Math::Real fpsSample = static_cast<Math::Real>(GET_CONFIG_VALUE_ENGINE("FPSsample", REAL_ONE)); // represents the time after which FPS value is calculated and logged
 	int framesCount = 0;
 	Math::Real frameTimeCounter = REAL_ZERO;
 	int fps = 0;

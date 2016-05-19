@@ -716,12 +716,12 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	Mesh(fileName, mode),
 	m_x(REAL_ZERO),
 	m_z(REAL_ZERO),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
 	,m_positions(NULL),
 	m_kdTree(NULL),
-	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
 	, m_heights(NULL),
 	m_gridSquareSize(0)
@@ -733,12 +733,12 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
 	, m_positions(NULL),
 	m_kdTree(NULL),
-	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
 	, m_heightMapWidth(0),
 	m_heightMapHeight(0),
@@ -841,12 +841,12 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE("headPositionHeightAdjustment", 2.5f)),
+	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(vertexCount)
 #ifdef HEIGHTS_KD_TREE
 	, m_positions(NULL),
 	m_kdTree(NULL),
-	m_kdTreeSamples(GET_CONFIG_VALUE("kdTreeSamples", 8))
+	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
 	, m_heightMapWidth(vertexCount),
 	m_heightMapHeight(vertexCount),

@@ -1,4 +1,5 @@
 #include "PlayMenuGameState.h"
+#include "Def.h"
 #include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
 #include "Rendering\Shader.h"
@@ -17,8 +18,8 @@ using namespace Game;
 
 PlayMenuGameState::PlayMenuGameState() :
 	Engine::GameState(),
-	m_playMainMenuFont(GET_CONFIG_VALUE_STR("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR("mainMenuFontMetaData", "cambria.fnt")),
-	m_playMainMenuFontSize(GET_CONFIG_VALUE("mainMenuFontSize", 16.0f)),
+	m_playMainMenuFont(GET_CONFIG_VALUE_STR_GAME("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR_GAME("mainMenuFontMetaData", "cambria.fnt")),
+	m_playMainMenuFontSize(GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f)),
 	m_playMainMenuRootEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY), "Play main menu", &m_playMainMenuFont,
 		m_playMainMenuFontSize, Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	//m_notSelectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 2)),

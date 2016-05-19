@@ -28,33 +28,33 @@ using namespace Math;
 Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
-	m_applyFilterEnabled(GET_CONFIG_VALUE("applyFilterEnabled", true)),
-	m_backgroundColor(GET_CONFIG_VALUE("ClearColorRed", REAL_ZERO),
-		GET_CONFIG_VALUE("ClearColorGreen", REAL_ZERO),
-		GET_CONFIG_VALUE("ClearColorBlue", REAL_ZERO),
-		GET_CONFIG_VALUE("ClearColorAlpha", REAL_ONE)),
-	//m_shadowsEnabled(GET_CONFIG_VALUE("shadowsEnabled", true)),
-	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE("pointLightShadowsEnabled", false)),
-	m_fogEnabled(GET_CONFIG_VALUE("fogEnabled", true)),
-	m_fogColor(GET_CONFIG_VALUE("fogColor_x", 0.7f),
-		GET_CONFIG_VALUE("fogColor_y", 0.7f),
-		GET_CONFIG_VALUE("fogColor_z", 0.7f)),
-	m_fogStart(GET_CONFIG_VALUE("fogStart", 8.0f)),
-	m_fogEnd(GET_CONFIG_VALUE("fogEnd", 50.0f)),
-	m_fogDensityFactor(GET_CONFIG_VALUE("fogDensityFactor", 0.2f)),
-	m_fogGradient(GET_CONFIG_VALUE("fogGradient", 0.005f)),
-	m_fogFallOffType(static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE("fogFallOffType", 0))),
-	m_fogCalculationType(static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE("fogCalculationType", 0))),
-	m_ambientLightEnabled(GET_CONFIG_VALUE("ambientLightEnabled", true)),
-	m_ambientDaytimeColor(GET_CONFIG_VALUE("ambientDaytimeColorRed", 0.2f),
-		GET_CONFIG_VALUE("ambientDaytimeColorGreen", 0.2f),
-		GET_CONFIG_VALUE("ambientDaytimeColorBlue", 0.2f)),
-	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE("ambientSunNearHorizonColorRed", 0.1f),
-		GET_CONFIG_VALUE("ambientSunNearHorizonColorGreen", 0.1f),
-		GET_CONFIG_VALUE("ambientSunNearHorizonColorBlue", 0.1f)),
-	m_ambientNighttimeColor(GET_CONFIG_VALUE("ambientNighttimeColorRed", 0.02f),
-		GET_CONFIG_VALUE("ambientNighttimeColorGreen", 0.02f),
-		GET_CONFIG_VALUE("ambientNighttimeColorBlue", 0.02f)),
+	m_applyFilterEnabled(GET_CONFIG_VALUE_RENDERING("applyFilterEnabled", true)),
+	m_backgroundColor(GET_CONFIG_VALUE_RENDERING("ClearColorRed", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("ClearColorGreen", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("ClearColorBlue", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("ClearColorAlpha", REAL_ONE)),
+	//m_shadowsEnabled(GET_CONFIG_VALUE_RENDERING("shadowsEnabled", true)),
+	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE_RENDERING("pointLightShadowsEnabled", false)),
+	m_fogEnabled(GET_CONFIG_VALUE_RENDERING("fogEnabled", true)),
+	m_fogColor(GET_CONFIG_VALUE_RENDERING("fogColor_x", 0.7f),
+		GET_CONFIG_VALUE_RENDERING("fogColor_y", 0.7f),
+		GET_CONFIG_VALUE_RENDERING("fogColor_z", 0.7f)),
+	m_fogStart(GET_CONFIG_VALUE_RENDERING("fogStart", 8.0f)),
+	m_fogEnd(GET_CONFIG_VALUE_RENDERING("fogEnd", 50.0f)),
+	m_fogDensityFactor(GET_CONFIG_VALUE_RENDERING("fogDensityFactor", 0.2f)),
+	m_fogGradient(GET_CONFIG_VALUE_RENDERING("fogGradient", 0.005f)),
+	m_fogFallOffType(static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE_RENDERING("fogFallOffType", 0))),
+	m_fogCalculationType(static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE_RENDERING("fogCalculationType", 0))),
+	m_ambientLightEnabled(GET_CONFIG_VALUE_RENDERING("ambientLightEnabled", true)),
+	m_ambientDaytimeColor(GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorRed", 0.2f),
+		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorGreen", 0.2f),
+		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorBlue", 0.2f)),
+	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorRed", 0.1f),
+		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorGreen", 0.1f),
+		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorBlue", 0.1f)),
+	m_ambientNighttimeColor(GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorRed", 0.02f),
+		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorGreen", 0.02f),
+		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorBlue", 0.02f)),
 	m_ambientLight(m_ambientDaytimeColor),
 	m_currentLight(NULL),
 	m_currentPointLight(NULL),
@@ -74,12 +74,12 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_nullFilterShader(NULL),
 	m_gaussBlurFilterShader(NULL),
 	m_fxaaFilterShader(NULL),
-	m_fxaaSpanMax(GET_CONFIG_VALUE("fxaaSpanMax", 8.0f)),
-	m_fxaaReduceMin(GET_CONFIG_VALUE("fxaaReduceMin", REAL_ONE / 128.0f)),
-	m_fxaaReduceMul(GET_CONFIG_VALUE("fxaaReduceMul", REAL_ONE / 8.0f)),
+	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
+	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
+	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
 	m_skyboxShader(NULL),
 	m_skyboxProceduralShader(NULL),
-	m_defaultShadowMinVariance(GET_CONFIG_VALUE("defaultShadowMinVariance", 0.00002f)),
+	m_defaultShadowMinVariance(GET_CONFIG_VALUE_RENDERING("defaultShadowMinVariance", 0.00002f)),
 	m_cubeMapShader(NULL),
 	m_cubeShadowMap(NULL),
 	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
@@ -91,36 +91,36 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_cameras(),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
-	//m_defaultFont(GET_CONFIG_VALUE_STR("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR("defaultFontMetaData", "segoe.fnt")),
+	//m_defaultFont(GET_CONFIG_VALUE_STR_RENDERING("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR_RENDERING("defaultFontMetaData", "segoe.fnt")),
 	m_fontMaterial(NULL),
-	m_defaultFontSize(GET_CONFIG_VALUE("defaultFontSize", 32.0f)),
-	m_defaultFontColor(GET_CONFIG_VALUE("defaultTextColorRed", REAL_ONE),
-		GET_CONFIG_VALUE("defaultTextColorGreen", REAL_ZERO),
-		GET_CONFIG_VALUE("defaultTextColorBlue", REAL_ZERO),
-		GET_CONFIG_VALUE("defaultTextColorAlpha", REAL_ZERO)),
+	m_defaultFontSize(GET_CONFIG_VALUE_RENDERING("defaultFontSize", 32.0f)),
+	m_defaultFontColor(GET_CONFIG_VALUE_RENDERING("defaultTextColorRed", REAL_ONE),
+		GET_CONFIG_VALUE_RENDERING("defaultTextColorGreen", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("defaultTextColorBlue", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("defaultTextColorAlpha", REAL_ZERO)),
 	m_textShader(NULL),
 	m_textShader2(NULL),
 	m_textVertexBuffer(0),
 	m_textTextureCoordBuffer(0),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
-	m_waterWaveStrength(GET_CONFIG_VALUE("waterWaveStrength", 0.04f)),
-	m_waterShineDamper(GET_CONFIG_VALUE("waterShineDamper", 20.0f)),
-	m_waterReflectivity(GET_CONFIG_VALUE("waterReflectivity", 0.5f)),
-	m_waterWaveSpeed(GET_CONFIG_VALUE("waterWaveSpeed", 0.0003f)),
-	m_waterMoveFactor(GET_CONFIG_VALUE("waterMoveFactor", 0.0f)),
-	m_waterRefractionClippingPlane(GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
-		GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE("waterRefractionClippingPlaneNormal_z", REAL_ZERO),
-		GET_CONFIG_VALUE("waterRefractionClippingPlaneOriginDistance", 10.0f)),
-	m_waterReflectionClippingPlane(GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
-		GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
-		GET_CONFIG_VALUE("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
+	m_waterWaveStrength(GET_CONFIG_VALUE_RENDERING("waterWaveStrength", 0.04f)),
+	m_waterShineDamper(GET_CONFIG_VALUE_RENDERING("waterShineDamper", 20.0f)),
+	m_waterReflectivity(GET_CONFIG_VALUE_RENDERING("waterReflectivity", 0.5f)),
+	m_waterWaveSpeed(GET_CONFIG_VALUE_RENDERING("waterWaveSpeed", 0.0003f)),
+	m_waterMoveFactor(GET_CONFIG_VALUE_RENDERING("waterMoveFactor", 0.0f)),
+	m_waterRefractionClippingPlane(GET_CONFIG_VALUE_RENDERING("waterRefractionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("waterRefractionClippingPlaneNormal_y", -REAL_ONE), GET_CONFIG_VALUE_RENDERING("waterRefractionClippingPlaneNormal_z", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("waterRefractionClippingPlaneOriginDistance", 10.0f)),
+	m_waterReflectionClippingPlane(GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
+		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
 	m_waterDUDVTexture(NULL),
 	m_waterNormalMap(NULL),
 	m_waterRefractionTexture(NULL),
 	m_waterReflectionTexture(NULL),
 	m_waterLightReflectionEnabled(false),
-	m_waterFresnelEffectFactor(GET_CONFIG_VALUE("waterFresnelEffectFactor", 2.0f)),
-	m_waterNormalVerticalFactor(GET_CONFIG_VALUE("waterNormalVerticalFactor", 3.0f)),
+	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
+	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
 	m_waterShader(NULL),
 	m_waterNoDirectionalLightShader(NULL),
 	m_billboardShader(NULL),
@@ -181,29 +181,29 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR("ambientLightShader", "ForwardAmbient"));
-	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR("ambientLightTerrainShader", "forward-ambient-terrain"));
+	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightShader", "ForwardAmbient"));
+	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightTerrainShader", "forward-ambient-terrain"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based"));
 	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain"));
 	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain"));
+		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain"));
 
-	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR("shadowMapShader", "ShadowMapGenerator"));
-	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR("nullFilterShader", "Filter-null"));
-	m_gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR("gaussBlurFilterShader", "filter-gaussBlur7x1"));
-	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR("fxaaFilterShader", "filter-fxaa"));
+	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("shadowMapShader", "ShadowMapGenerator"));
+	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("nullFilterShader", "Filter-null"));
+	m_gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("gaussBlurFilterShader", "filter-gaussBlur7x1"));
+	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("fxaaFilterShader", "filter-fxaa"));
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
 	m_filterTexture = new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
@@ -212,10 +212,10 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_filterMesh = new Mesh("plane4.obj");
 	m_filterMesh->Initialize();
 
-	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR("skyboxShader", "skybox-shader"));
-	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR("skyboxProceduralShader", "skybox-procedural"));
+	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("skyboxShader", "skybox-shader"));
+	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("skyboxProceduralShader", "skybox-procedural"));
 
-	m_cubeMapShader = new Shader(GET_CONFIG_VALUE_STR("cubeShadowMapShader", "CubeShadowMapGenerator"));
+	m_cubeMapShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("cubeShadowMapShader", "CubeShadowMapGenerator"));
 	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
 	m_cubeShadowMap = new CubeShadowMap();
 	m_cubeShadowMap->Init(windowWidth, windowHeight);
@@ -232,35 +232,35 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	}
 
 	m_fontMaterial = new Material(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
-	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
+	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR_RENDERING("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
 	glGenBuffers(1, &m_textVertexBuffer);
 	glGenBuffers(1, &m_textTextureCoordBuffer);
-	m_textShader = new Shader(GET_CONFIG_VALUE_STR("textShader", "text-shader"));
-	m_textShader2 = new Shader(GET_CONFIG_VALUE_STR("textShader2", "text-shader-2"));
+	m_textShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("textShader", "text-shader"));
+	m_textShader2 = new Shader(GET_CONFIG_VALUE_STR_RENDERING("textShader2", "text-shader-2"));
 
-	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR("waterDUDVMap", "waterDUDV.png"));
-	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR("waterNormalMap", "waterNormalMap.png"));
-	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png"));
+	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png"));
+	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 	unsigned char* data[] = { NULL, NULL };
 	GLfloat filters[] = { GL_LINEAR, GL_LINEAR };
 	GLenum internalFormats[] = { GL_RGB, GL_DEPTH_COMPONENT32 };
 	GLenum formats[] = { GL_RGBA, GL_DEPTH_COMPONENT };
 	GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
-	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
-	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	m_waterShader = new Shader(GET_CONFIG_VALUE_STR("waterShader", "water-shader"));
-	m_waterNoDirectionalLightShader = new Shader(GET_CONFIG_VALUE_STR("waterNoDirectionalLightShader", "water-no-directional-light-shader"));
+	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
+	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+	m_waterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("waterShader", "water-shader"));
+	m_waterNoDirectionalLightShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("waterNoDirectionalLightShader", "water-no-directional-light-shader"));
 
-	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR("billboardShader", "billboard-shader"));
+	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("billboardShader", "billboard-shader"));
 
 	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
-	const int maxParticlesCount = GET_CONFIG_VALUE("maxParticlesCount", 10000);
+	const int maxParticlesCount = GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000);
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 21);
 #else
 	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 17);
 #endif
-	m_particleShader = new Shader(GET_CONFIG_VALUE_STR("particleShader", "particle-shader"));
+	m_particleShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("particleShader", "particle-shader"));
 	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
 
 	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
@@ -271,15 +271,15 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 #endif
 
 	/* ==================== Creating a "Main menu camera" begin ==================== */
-	const Real defaultFoV = GET_CONFIG_VALUE("defaultCameraFoV", 70.0f);
-	const Real defaultAspectRatio = GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
-	const Real defaultNearPlane = GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f);
-	const Real defaultFarPlane = GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f);
+	const Real defaultFoV = GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f);
+	const Real defaultAspectRatio = GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
+	const Real defaultNearPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f);
+	const Real defaultFarPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f);
 
-	Angle fov(GET_CONFIG_VALUE("mainMenuCameraFoV", defaultFoV), Unit::DEGREE);
-	Real aspectRatio = GET_CONFIG_VALUE("mainMenuCameraAspectRatio", defaultAspectRatio);
-	Real zNearPlane = GET_CONFIG_VALUE("mainMenuCameraNearPlane", defaultNearPlane);
-	Real zFarPlane = GET_CONFIG_VALUE("mainMenuCameraFarPlane", defaultFarPlane);
+	Angle fov(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", defaultFoV), Unit::DEGREE);
+	Real aspectRatio = GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", defaultAspectRatio);
+	Real zNearPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", defaultNearPlane);
+	Real zFarPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", defaultFarPlane);
 	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Math::Transform(), 0.005f);
 	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */

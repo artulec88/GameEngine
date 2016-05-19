@@ -180,7 +180,7 @@ void Rendering::InitGraphics(int width, int height)
  */
 //void Rendering::ReadAlphaTestParameter()
 //{
-//	int alphaTestEnabled = GET_CONFIG_VALUE("GL_ALPHA_TEST_ENABLED", 0);
+//	int alphaTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_ALPHA_TEST_ENABLED", 0);
 //	if (alphaTestEnabled == 0)
 //	{
 //		glDisable(GL_ALPHA_TEST);
@@ -190,8 +190,8 @@ void Rendering::InitGraphics(int width, int height)
 //
 //	glEnable(GL_ALPHA_TEST); // Perform ALPHA testing
 //
-//	std::string alphaFuncStr = GET_CONFIG_VALUE_STR("GL_ALPHA_TEST_FUNC", "GL_LESS");
-//	Math::Real alphaFuncRefValue = GET_CONFIG_VALUE("GL_ALPHA_TEST_REF", 0.1f);
+//	std::string alphaFuncStr = GET_CONFIG_VALUE_STR_RENDERING("GL_ALPHA_TEST_FUNC", "GL_LESS");
+//	Math::Real alphaFuncRefValue = GET_CONFIG_VALUE_RENDERING("GL_ALPHA_TEST_REF", 0.1f);
 //	if (alphaFuncStr == "GL_NEVER") { glAlphaFunc(GL_NEVER, alphaFuncRefValue); }
 //	else if (alphaFuncStr == "GL_LESS") { glAlphaFunc(GL_LESS, alphaFuncRefValue); }
 //	else if (alphaFuncStr == "GL_EQUAL") { glAlphaFunc(GL_EQUAL, alphaFuncRefValue); }
@@ -216,7 +216,7 @@ void Rendering::InitGraphics(int width, int height)
  */
 void Rendering::ReadBlendParameter()
 {
-	glBlendEnabled = GET_CONFIG_VALUE("GL_BLEND_ENABLED", false);
+	glBlendEnabled = GET_CONFIG_VALUE_RENDERING("GL_BLEND_ENABLED", false);
 	glBlendEnabledOld = glBlendEnabled;
 	if (!glBlendEnabled)
 	{
@@ -226,8 +226,8 @@ void Rendering::ReadBlendParameter()
 	}
 
 	glEnable(GL_BLEND);
-	std::string blendSFactorStr = GET_CONFIG_VALUE_STR("GL_BLEND_SFACTOR", "GL_ONE");
-	std::string blendDFactorStr = GET_CONFIG_VALUE_STR("GL_BLEND_DFACTOR", "GL_ZERO");
+	std::string blendSFactorStr = GET_CONFIG_VALUE_STR_RENDERING("GL_BLEND_SFACTOR", "GL_ONE");
+	std::string blendDFactorStr = GET_CONFIG_VALUE_STR_RENDERING("GL_BLEND_DFACTOR", "GL_ZERO");
 	if (blendSFactorStr == "GL_ZERO") { glBlendSfactor = GL_ZERO; }
 	else if (blendSFactorStr == "GL_ONE") { glBlendSfactor = GL_ONE; }
 	else if (blendSFactorStr == "GL_SRC_COLOR") { glBlendSfactor = GL_SRC_COLOR; }
@@ -288,7 +288,7 @@ void Rendering::ReadBlendParameter()
  */
 void Rendering::ReadColorLogicOperationParameter()
 {
-	glColorLogicOperationEnabled = GET_CONFIG_VALUE("GL_COLOR_LOGIC_OP_ENABLED", false);
+	glColorLogicOperationEnabled = GET_CONFIG_VALUE_RENDERING("GL_COLOR_LOGIC_OP_ENABLED", false);
 	glColorLogicOperationEnabledOld = glColorLogicOperationEnabled;
 	if (!glColorLogicOperationEnabled)
 	{
@@ -298,7 +298,7 @@ void Rendering::ReadColorLogicOperationParameter()
 	}
 
 	glEnable(GL_COLOR_LOGIC_OP);
-	std::string logicalOperationStr = GET_CONFIG_VALUE_STR("GL_COLOR_LOGIC_OPERATION", "GL_COPY");
+	std::string logicalOperationStr = GET_CONFIG_VALUE_STR_RENDERING("GL_COLOR_LOGIC_OPERATION", "GL_COPY");
 	if (logicalOperationStr == "GL_CLEAR") { glColorLogicOperationCode = GL_CLEAR; }
 	else if (logicalOperationStr == "GL_SET") { glColorLogicOperationCode = GL_SET; }
 	else if (logicalOperationStr == "GL_COPY") { glColorLogicOperationCode = GL_COPY; }
@@ -336,7 +336,7 @@ void Rendering::ReadColorLogicOperationParameter()
  */
 void Rendering::ReadCullFaceParameter()
 {
-	glCullFaceEnabled = GET_CONFIG_VALUE("GL_CULL_FACE_ENABLED", false);
+	glCullFaceEnabled = GET_CONFIG_VALUE_RENDERING("GL_CULL_FACE_ENABLED", false);
 	glCullFaceEnabledOld = glCullFaceEnabled;
 	if (!glCullFaceEnabled)
 	{
@@ -348,7 +348,7 @@ void Rendering::ReadCullFaceParameter()
 		glEnable(GL_CULL_FACE); // culling faces enabled. Cull triangles which normal is not towards the camera
 	}
 
-	std::string cullFaceModeStr = GET_CONFIG_VALUE_STR("GL_CULL_FACE_MODE", "GL_BACK");
+	std::string cullFaceModeStr = GET_CONFIG_VALUE_STR_RENDERING("GL_CULL_FACE_MODE", "GL_BACK");
 	if (cullFaceModeStr == "GL_FRONT") { glCullFaceMode = GL_FRONT; } // cull the front face
 	else if (cullFaceModeStr == "GL_BACK") { glCullFaceMode = GL_BACK; } // cull the back face
 	else if (cullFaceModeStr == "GL_FRONT_AND_BACK ") { glCullFaceMode = GL_FRONT_AND_BACK; } // cull both back and front faces (only lines, points are rendered)
@@ -374,7 +374,7 @@ void Rendering::ReadCullFaceParameter()
  */
 void Rendering::ReadDepthClampParameter()
 {
-	glDepthClampEnabled = GET_CONFIG_VALUE("GL_DEPTH_CLAMP_ENABLED", false);
+	glDepthClampEnabled = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_CLAMP_ENABLED", false);
 	glDepthClampEnabledOld = glDepthClampEnabled;
 	if (!glDepthClampEnabled)
 	{
@@ -395,7 +395,7 @@ void Rendering::ReadDepthClampParameter()
  */
 void Rendering::ReadDepthTestParameter()
 {
-	glDepthTestEnabled = GET_CONFIG_VALUE("GL_DEPTH_TEST_ENABLED", false);
+	glDepthTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_TEST_ENABLED", false);
 	glDepthTestEnabledOld = glDepthTestEnabled;
 	if (!glDepthTestEnabled)
 	{
@@ -408,7 +408,7 @@ void Rendering::ReadDepthTestParameter()
 	}
 	
 
-	std::string depthTestFuncStr = GET_CONFIG_VALUE_STR("GL_DEPTH_TEST_FUNC", "GL_LESS");
+	std::string depthTestFuncStr = GET_CONFIG_VALUE_STR_RENDERING("GL_DEPTH_TEST_FUNC", "GL_LESS");
 	if (depthTestFuncStr == "GL_NEVER") { glDepthTestFunc = GL_NEVER; }
 	else if (depthTestFuncStr == "GL_LESS") { glDepthTestFunc = GL_LESS; } // Accept fragment if it closer to the camera than the former one
 	else if (depthTestFuncStr == "GL_EQUAL") { glDepthTestFunc = GL_EQUAL; }
@@ -428,8 +428,8 @@ void Rendering::ReadDepthTestParameter()
 	glDepthFunc(glDepthTestFunc);
 
 
-	glDepthRangeNearValue = GET_CONFIG_VALUE("GL_DEPTH_RANGE_NEAR", REAL_ZERO);
-	glDepthRangeFarValue = GET_CONFIG_VALUE("GL_DEPTH_RANGE_FAR", REAL_ONE);
+	glDepthRangeNearValue = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_RANGE_NEAR", REAL_ZERO);
+	glDepthRangeFarValue = GET_CONFIG_VALUE_RENDERING("GL_DEPTH_RANGE_FAR", REAL_ONE);
 	glDepthRangeNearValueOld = glDepthRangeNearValue;
 	glDepthRangeFarValueOld = glDepthRangeFarValue;
 	glDepthRange(glDepthRangeNearValue, glDepthRangeFarValue);
@@ -442,7 +442,7 @@ void Rendering::ReadDepthTestParameter()
  */
 void Rendering::ReadDitherParameter()
 {
-	glDitheringEnabled = GET_CONFIG_VALUE("GL_DITHER_ENABLED", false);
+	glDitheringEnabled = GET_CONFIG_VALUE_RENDERING("GL_DITHER_ENABLED", false);
 	glDitheringEnabledOld = glDitheringEnabled;
 	if (!glDitheringEnabled)
 	{
@@ -462,7 +462,7 @@ void Rendering::ReadDitherParameter()
  */
 void Rendering::ReadFrontFaceParameter()
 {
-	std::string frontFaceStr = GET_CONFIG_VALUE_STR("GL_FRONT_FACE", "GL_CW");
+	std::string frontFaceStr = GET_CONFIG_VALUE_STR_RENDERING("GL_FRONT_FACE", "GL_CW");
 	if (frontFaceStr == "GL_CW") { glFrontFaceMode = GL_CW; } // every face I draw in clockwise order is a front face
 	else if (frontFaceStr == "GL_CCW") { glFrontFaceMode = GL_CCW; } // every face I draw in counter-clockwise order is a front face
 	else /* GL_CCW is default */
@@ -490,7 +490,7 @@ void Rendering::ReadHistogramParameter()
 		CheckErrorCode(__FUNCTION__, "Initializing histogram parameters");
 		return;
 	}
-	int histogramEnabled = GET_CONFIG_VALUE("GL_HISTOGRAM_ENABLED", 0);
+	int histogramEnabled = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_ENABLED", 0);
 	if (histogramEnabled == 0)
 	{
 		glDisable(GL_HISTOGRAM);
@@ -501,7 +501,7 @@ void Rendering::ReadHistogramParameter()
 
 	glEnable(GL_HISTOGRAM);
 
-	std::string histogramTargetStr = GET_CONFIG_VALUE_STR("GL_HISTOGRAM_TARGET", "GL_HISTOGRAM");
+	std::string histogramTargetStr = GET_CONFIG_VALUE_STR_RENDERING("GL_HISTOGRAM_TARGET", "GL_HISTOGRAM");
 	GLenum histogramTarget;
 	if (histogramTargetStr == "GL_HISTOGRAM") { histogramTarget = GL_HISTOGRAM; }
 	else if (histogramTargetStr == "GL_PROXY_HISTOGRAM") { histogramTarget = GL_PROXY_HISTOGRAM; }
@@ -512,9 +512,9 @@ void Rendering::ReadHistogramParameter()
 		histogramTarget = GL_HISTOGRAM;
 	}
 
-	int histogramWidth = GET_CONFIG_VALUE("GL_HISTOGRAM_WIDTH", 16); // must be a power of 2
+	int histogramWidth = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_WIDTH", 16); // must be a power of 2
 
-	std::string histogramInternalFormatStr = GET_CONFIG_VALUE_STR("GL_HISTOGRAM_INTERNAL_FORMAT", "GL_ALPHA");
+	std::string histogramInternalFormatStr = GET_CONFIG_VALUE_STR_RENDERING("GL_HISTOGRAM_INTERNAL_FORMAT", "GL_ALPHA");
 	GLenum histogramInternalFormat;
 	if (histogramInternalFormatStr == "GL_ALPHA") { histogramInternalFormat = GL_ALPHA; }
 	else if (histogramInternalFormatStr == "GL_ALPHA4") { histogramInternalFormat = GL_ALPHA4; }
@@ -556,7 +556,7 @@ void Rendering::ReadHistogramParameter()
 		histogramInternalFormat = GL_RGBA;
 	}
 
-	bool histogramSink = GET_CONFIG_VALUE("GL_HISTOGRAM_SINK", false);
+	bool histogramSink = GET_CONFIG_VALUE_RENDERING("GL_HISTOGRAM_SINK", false);
 	glHistogram(histogramTarget, histogramWidth, histogramInternalFormat, histogramSink);
 
 	if (histogramSink)
@@ -596,7 +596,7 @@ void Rendering::ReadHistogramParameter()
  */
 void Rendering::ReadScissorTestParameter(int width, int height)
 {
-	glScissorTestEnabled = GET_CONFIG_VALUE("GL_SCISSOR_TEST_ENABLED", false);
+	glScissorTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_TEST_ENABLED", false);
 	glScissorTestEnabledOld = glScissorTestEnabled;
 	if (glScissorTestEnabled)
 	{
@@ -608,10 +608,10 @@ void Rendering::ReadScissorTestParameter(int width, int height)
 		DEBUG_LOG("GL_SCISSOR_TEST disabled");
 	}
 	
-	glScissorBoxLowerLeftCornerX = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_X", 0);
-	glScissorBoxLowerLeftCornerY = GET_CONFIG_VALUE("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_Y", 0);
-	glScissorBoxWidth = GET_CONFIG_VALUE("GL_SCISSOR_BOX_WIDTH", width);
-	glScissorBoxHeight = GET_CONFIG_VALUE("GL_SCISSOR_BOX_HEIGHT", height);
+	glScissorBoxLowerLeftCornerX = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_X", 0);
+	glScissorBoxLowerLeftCornerY = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_BOX_LOWER_LEFT_CORNER_Y", 0);
+	glScissorBoxWidth = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_BOX_WIDTH", width);
+	glScissorBoxHeight = GET_CONFIG_VALUE_RENDERING("GL_SCISSOR_BOX_HEIGHT", height);
 	
 	glScissorBoxLowerLeftCornerXOld = glScissorBoxLowerLeftCornerX;
 	glScissorBoxLowerLeftCornerYOld = glScissorBoxLowerLeftCornerY;
@@ -634,7 +634,7 @@ void Rendering::ReadScissorTestParameter(int width, int height)
  */
 void Rendering::ReadStencilTestParameter()
 {
-	int stencilTestEnabled = GET_CONFIG_VALUE("GL_STENCIL_TEST_ENABLED", 0);
+	int stencilTestEnabled = GET_CONFIG_VALUE_RENDERING("GL_STENCIL_TEST_ENABLED", 0);
 	if (stencilTestEnabled == 0)
 	{
 		glDisable(GL_STENCIL_TEST);
@@ -644,7 +644,7 @@ void Rendering::ReadStencilTestParameter()
 
 	glEnable(GL_STENCIL_TEST);
 
-	std::string stencilTestFuncStr = GET_CONFIG_VALUE_STR("GL_STENCIL_TEST_FUNC", "GL_ALWAYS");
+	std::string stencilTestFuncStr = GET_CONFIG_VALUE_STR_RENDERING("GL_STENCIL_TEST_FUNC", "GL_ALWAYS");
 	GLenum stencilTestFunc;
 	if (stencilTestFuncStr == "GL_NEVER") { stencilTestFunc = GL_NEVER; }
 	else if (stencilTestFuncStr == "GL_LESS") { stencilTestFunc = GL_LESS; }
@@ -661,8 +661,8 @@ void Rendering::ReadStencilTestParameter()
 		stencilTestFunc = GL_ALWAYS;
 	}
 
-	GLint stencilTestRefValue = GET_CONFIG_VALUE("GL_STENCIL_TEST_REF", 0);
-	GLuint stencilTestMask = GET_CONFIG_VALUE("GL_STENCIL_TEST_MASK", 1);
+	GLint stencilTestRefValue = GET_CONFIG_VALUE_RENDERING("GL_STENCIL_TEST_REF", 0);
+	GLuint stencilTestMask = GET_CONFIG_VALUE_RENDERING("GL_STENCIL_TEST_MASK", 1);
 
 	glStencilFunc(stencilTestFunc, stencilTestRefValue, stencilTestMask);
 	INFO_LOG("GL_STENCIL_TEST enabled with function \"%s\", reference value = %d and the mask = %d",

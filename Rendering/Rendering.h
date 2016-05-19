@@ -20,6 +20,9 @@
 #define CONST_IF_TWEAK_BAR_DISABLED const
 #endif
 
+#define GET_CONFIG_VALUE_RENDERING(cfgName, defValue) GET_CONFIG_VALUE("Rendering", cfgName, defValue)
+#define GET_CONFIG_VALUE_STR_RENDERING(cfgName, defValue) GET_CONFIG_VALUE_STR("Rendering", cfgName, defValue)
+
 /// <summary>
 /// If enabled the Rendering engine will be able to make simple debug drawing commands
 /// (see section "Debug Drawing Facilities" in "Game Engine Architecture" by Jason Gregory).

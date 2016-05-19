@@ -54,7 +54,7 @@ Engine::GameManager::GameManager() :
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
-	m_skyboxAngleStep(GET_CONFIG_VALUE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
+	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
 	m_gameCommandFactory()//,
 	//m_effectFactory()
 {

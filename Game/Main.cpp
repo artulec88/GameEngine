@@ -19,6 +19,7 @@
 ///* RENDERING end */
 
 #include "TestGameManager.h"
+#include "Def.h"
 
 #ifdef _DEBUG
 //#include <vld.h> // This is going to cause huge (!!!) performance issues, but is very helpful in detecting memory leaks in the application
@@ -48,7 +49,9 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 		system("pause");
 		exit(EXIT_SUCCESS);
 	}
-	IConfig::GetConfig().LoadFromFile(command->Get("-config", "..\\Config\\Config.cfg"));
+	IConfig::CreateConfig("Rendering", command->Get("-configRendering", "..\\Config\\ConfigRendering.cfg"));
+	IConfig::CreateConfig("Engine", command->Get("-configEngine", "..\\Config\\ConfigEngine.cfg"));
+	IConfig::CreateConfig("Game", command->Get("-configGame", "..\\Config\\ConfigGame.cfg"));
 
 	/* ==================== Initializing logger begin ==================== */
 	std::string loggingLevel = "Info";
@@ -58,7 +61,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		loggingLevel = GET_CONFIG_VALUE_STR("LoggingLevel", "Info");
+		loggingLevel = GET_CONFIG_VALUE_STR_GAME("LoggingLevel", "Info");
 	}
 	ILogger::GetLogger().Fill(loggingLevel, Info);
 	/* ==================== Initializing logger end ==================== */
@@ -70,7 +73,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		*shaderDirectory = GET_CONFIG_VALUE_STR("shadersDirectory", "..\\Shaders\\");
+		*shaderDirectory = GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
 	}
 	/* ==================== Initializing shader directory end ==================== */
 
@@ -81,7 +84,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		*modelsDirectory = GET_CONFIG_VALUE_STR("modelsDirectory", "..\\Models\\");
+		*modelsDirectory = GET_CONFIG_VALUE_STR_GAME("modelsDirectory", "..\\Models\\");
 	}
 	/* ==================== Initializing mesh / models directory end ==================== */
 
@@ -92,7 +95,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		*texturesDirectory = GET_CONFIG_VALUE_STR("texturesDirectory", "..\\Textures\\");
+		*texturesDirectory = GET_CONFIG_VALUE_STR_GAME("texturesDirectory", "..\\Textures\\");
 	}
 	/* ==================== Initializing textures directory end ==================== */
 
@@ -103,7 +106,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		*fontsDirectory = GET_CONFIG_VALUE_STR("fontsDirectory", "..\\Fonts\\");
+		*fontsDirectory = GET_CONFIG_VALUE_STR_GAME("fontsDirectory", "..\\Fonts\\");
 	}
 	/* ==================== Initializing fonts directory end ==================== */
 
@@ -114,7 +117,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	}
 	else
 	{
-		*audioDirectory = GET_CONFIG_VALUE_STR("audioDirectory", "..\\Sounds\\");
+		*audioDirectory = GET_CONFIG_VALUE_STR_GAME("audioDirectory", "..\\Sounds\\");
 	}
 	/* ==================== Initializing audio directory end ==================== */
 }
@@ -125,9 +128,9 @@ int main (int argc, char* argv[])
 	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
 
 	/* ==================== Create game instance and run ==================== */
-	std::string windowTitle = GET_CONFIG_VALUE_STR("windowTitle", "Default window title");
-	Engine::CoreEngine engine(GET_CONFIG_VALUE("windowWidth", 1024), GET_CONFIG_VALUE("windowHeight", 600),
-		windowTitle.c_str(), GET_CONFIG_VALUE("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
+	std::string windowTitle = GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title");
+	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
+		windowTitle.c_str(), GET_CONFIG_VALUE_GAME("FPScap", 200), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
 	Game::TestGameManager game;
 	engine.Start(&game);
 	return EXIT_SUCCESS;

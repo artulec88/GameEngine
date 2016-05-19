@@ -30,7 +30,7 @@ void Rendering::Lighting::PointLight::CalculateRange()
 	{
 		maxColorElement = m_color.GetBlue();
 	}
-	const int colorDepth = GET_CONFIG_VALUE("ColorDepth", 256);
+	const int colorDepth = GET_CONFIG_VALUE_RENDERING("ColorDepth", 256);
 	Math::Real c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
 
 	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
@@ -38,10 +38,10 @@ void Rendering::Lighting::PointLight::CalculateRange()
 
 //void PointLight::InitializeShaders()
 //{
-//	SetShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
+//	SetShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("pointLightShader", "forward-point")));
 //	CHECK_CONDITION_EXIT(m_shader != NULL, Utility::Critical, "Cannot initialize point light. Shader is NULL.");
 //
-//	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
+//	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("pointLightShaderTerrain", "forward-point-terrain")));
 //	CHECK_CONDITION_EXIT(m_terrainShader != NULL, Utility::Critical, "Cannot initialize point light. Terrain shader is NULL.");
 //}
 

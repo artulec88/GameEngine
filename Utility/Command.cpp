@@ -16,7 +16,7 @@ using namespace std;
 
 Command::Command(int argc, char* argv[]) : ICommand(argc, argv)
 {
-	CRITICAL_LOG("Command constructor");
+	DELOCUST_LOG("Command constructor");
 	CHECK_CONDITION(argv != NULL, Utility::Error, "Incorrect program parameters specified.");
 	Fill(argc, argv);
 }
@@ -35,7 +35,7 @@ Command::Command(int argc, char* argv[]) : ICommand(argc, argv)
 
 Command::~Command()
 {
-	CRITICAL_LOG("Command object gets destroyed");
+	DELOCUST_LOG("Command object gets destroyed");
 	m_commands.clear();
 }
 

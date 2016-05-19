@@ -68,21 +68,21 @@ void Engine::DirectionalLightBuilder::SetupLightTransform()
 	m_gameNode = new GameNode();
 
 	// Setting position
-	const Math::Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE("defaultDirectionalLightPosZ", 0.0f));
-	Math::Real xPos = GET_CONFIG_VALUE("directionalLightPosX", defaultDirectionalLightPos.GetX());
-	Math::Real yPos = GET_CONFIG_VALUE("directionalLightPosY", defaultDirectionalLightPos.GetY());
-	Math::Real zPos = GET_CONFIG_VALUE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
+	const Math::Vector3D defaultDirectionalLightPos(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightPosX", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightPosZ", 0.0f));
+	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("directionalLightPosX", defaultDirectionalLightPos.GetX());
+	Math::Real yPos = GET_CONFIG_VALUE_ENGINE("directionalLightPosY", defaultDirectionalLightPos.GetY());
+	Math::Real zPos = GET_CONFIG_VALUE_ENGINE("directionalLightPosZ", defaultDirectionalLightPos.GetZ());
 	Math::Vector3D position(xPos, yPos, zPos);
 	m_gameNode->GetTransform().SetPos(position);
 
 
 	// Setting rotation
-	const Math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE("defaultDirectionalLightAngleX", -45.0f));
-	const Math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE("defaultDirectionalLightAngleY", REAL_ZERO));
-	const Math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE("defaultDirectionalLightAngleZ", REAL_ZERO));
-	Math::Angle angleX(GET_CONFIG_VALUE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
+	const Math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleX", -45.0f));
+	const Math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleY", REAL_ZERO));
+	const Math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleZ", REAL_ZERO));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	DEBUG_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
 	Math::Quaternion rot(rotMatrix);
@@ -100,42 +100,42 @@ void Engine::DirectionalLightBuilder::SetupLightTransform()
 void Engine::DirectionalLightBuilder::SetupLightParams()
 {
 	// Setting light
-	const Rendering::Color defaultDirectionalLightColor(GET_CONFIG_VALUE("defaultDirectionalLightColorRed", REAL_ONE), GET_CONFIG_VALUE("defaultDirectionalLightColorGreen", REAL_ONE), GET_CONFIG_VALUE("defaultDirectionalLightColorBlue", REAL_ONE));
-	const Math::Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE("defaultDirectionalLightIntensity", REAL_ONE));
+	const Rendering::Color defaultDirectionalLightColor(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightColorRed", REAL_ONE), GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightColorGreen", REAL_ONE), GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightColorBlue", REAL_ONE));
+	const Math::Real defaultDirectionalLightIntensity(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightIntensity", REAL_ONE));
 
-	Math::Real red = GET_CONFIG_VALUE("directionalLightColorRed", defaultDirectionalLightColor.GetRed());
-	Math::Real green = GET_CONFIG_VALUE("directionalLightColorGreen", defaultDirectionalLightColor.GetGreen());
-	Math::Real blue = GET_CONFIG_VALUE("directionalLightColorBlue", defaultDirectionalLightColor.GetBlue());
+	Math::Real red = GET_CONFIG_VALUE_ENGINE("directionalLightColorRed", defaultDirectionalLightColor.GetRed());
+	Math::Real green = GET_CONFIG_VALUE_ENGINE("directionalLightColorGreen", defaultDirectionalLightColor.GetGreen());
+	Math::Real blue = GET_CONFIG_VALUE_ENGINE("directionalLightColorBlue", defaultDirectionalLightColor.GetBlue());
 	Rendering::Color color(red, green, blue);
 
-	Math::Real intensity = GET_CONFIG_VALUE("directionalLightIntensity", defaultDirectionalLightIntensity);
+	Math::Real intensity = GET_CONFIG_VALUE_ENGINE("directionalLightIntensity", defaultDirectionalLightIntensity);
 
 	// Setting shadow info
-	const Math::Real defaultDirectionalLightShadowArea = GET_CONFIG_VALUE("defaultDirectionalLightShadowArea", 80.0f);
-	const int defaultDirectionalLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("defaultDirectionalLightShadowMapSizeAsPowerOf2", 10);
-	const Math::Real defaultDirectionalLightShadowSoftness = GET_CONFIG_VALUE("defaultDirectionalLightShadowSoftness", 1.0f);
-	const Math::Real defaultDirectionalLightLightBleedingReductionAmount = GET_CONFIG_VALUE("defaultDirectionalLightLightBleedingReductionAmount", 0.2f);
-	const Math::Real defaultDirectionalLightMinVariance = GET_CONFIG_VALUE("defaultDirectionalLightMinVariance", 0.00002f);
-	Math::Real halfShadowArea = GET_CONFIG_VALUE("directionalLightShadowArea", defaultDirectionalLightShadowArea) / 2.0f;
-	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("directionalLightShadowMapSizeAsPowerOf2", defaultDirectionalLightShadowMapSizeAsPowerOf2);
-	Math::Real shadowSoftness = GET_CONFIG_VALUE("directionalLightShadowSoftness", defaultDirectionalLightShadowSoftness);
-	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("directionalLightLightBleedingReductionAmount", defaultDirectionalLightLightBleedingReductionAmount);
-	Math::Real minVariance = GET_CONFIG_VALUE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
+	const Math::Real defaultDirectionalLightShadowArea = GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightShadowArea", 80.0f);
+	const int defaultDirectionalLightShadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightShadowMapSizeAsPowerOf2", 10);
+	const Math::Real defaultDirectionalLightShadowSoftness = GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightShadowSoftness", 1.0f);
+	const Math::Real defaultDirectionalLightLightBleedingReductionAmount = GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightLightBleedingReductionAmount", 0.2f);
+	const Math::Real defaultDirectionalLightMinVariance = GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightMinVariance", 0.00002f);
+	Math::Real halfShadowArea = GET_CONFIG_VALUE_ENGINE("directionalLightShadowArea", defaultDirectionalLightShadowArea) / 2.0f;
+	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE_ENGINE("directionalLightShadowMapSizeAsPowerOf2", defaultDirectionalLightShadowMapSizeAsPowerOf2);
+	Math::Real shadowSoftness = GET_CONFIG_VALUE_ENGINE("directionalLightShadowSoftness", defaultDirectionalLightShadowSoftness);
+	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE_ENGINE("directionalLightLightBleedingReductionAmount", defaultDirectionalLightLightBleedingReductionAmount);
+	Math::Real minVariance = GET_CONFIG_VALUE_ENGINE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
 
 	Rendering::Lighting::DirectionalLight* directionalLight = new Rendering::Lighting::DirectionalLight(m_gameNode->GetTransform(), color, intensity, halfShadowArea, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 
 	// Setting shaders
-	directionalLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("directionalLightShader", "forward-directional")));
-	directionalLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("directionalLightTerrainShader", "forward-directional-terrain")));
-	directionalLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("directionalLightNoShadowShader", "forward-directional-no-shadows")));
-	directionalLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows")));
+	directionalLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("directionalLightShader", "forward-directional")));
+	directionalLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("directionalLightTerrainShader", "forward-directional-terrain")));
+	directionalLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("directionalLightNoShadowShader", "forward-directional-no-shadows")));
+	directionalLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows")));
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	// Setting additional directional light information
 	Math::Real maxIntensity = directionalLight->GetIntensity();
 	const Rendering::Color sunlightDaytimeColor(directionalLight->GetColor());
-	const Rendering::Color sunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
-	const Rendering::Color sunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE("directionalLightNighttimeColorBlue", REAL_ZERO)));
+	const Rendering::Color sunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
+	const Rendering::Color sunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorBlue", REAL_ZERO)));
 
 	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor));
 
@@ -169,13 +169,13 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== PointLightBuilder implementation begin ==================== */
 Engine::PointLightBuilder::PointLightBuilder() :
 	LightBuilder(),
-	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE("defaultPointLightPosZ", REAL_ZERO)),
-	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE("defaultPointLightAngleX", -45.0f)),
-	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE("defaultPointLightAngleY", REAL_ZERO)),
-	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z(GET_CONFIG_VALUE("defaultPointLightAngleZ", REAL_ZERO)),
-	M_DEFAULT_POINT_LIGHT_COLOR(GET_CONFIG_VALUE("defaultPointLightColorRed", REAL_ZERO), GET_CONFIG_VALUE("defaultPointLightColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultPointLightColorBlue", REAL_ONE)),
-	M_DEFAULT_POINT_LIGHT_INTENSITY(GET_CONFIG_VALUE("defaultPointLightIntensity", 10.0f)),
-	M_DEFAULT_POINT_LIGHT_ATTENUATION(GET_CONFIG_VALUE("defaultPointLightAttenuationConstant", REAL_ZERO), GET_CONFIG_VALUE("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultPointLightAttenuationExponent", REAL_ZERO))
+	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE_ENGINE("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightPosZ", REAL_ZERO)),
+	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultPointLightAngleX", -45.0f)),
+	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultPointLightAngleY", REAL_ZERO)),
+	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_ENGINE("defaultPointLightAngleZ", REAL_ZERO)),
+	M_DEFAULT_POINT_LIGHT_COLOR(GET_CONFIG_VALUE_ENGINE("defaultPointLightColorRed", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightColorGreen", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightColorBlue", REAL_ONE)),
+	M_DEFAULT_POINT_LIGHT_INTENSITY(GET_CONFIG_VALUE_ENGINE("defaultPointLightIntensity", 10.0f)),
+	M_DEFAULT_POINT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_ENGINE("defaultPointLightAttenuationConstant", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_ENGINE("defaultPointLightAttenuationExponent", REAL_ZERO))
 {
 }
 
@@ -184,15 +184,15 @@ void Engine::PointLightBuilder::SetupLightTransform()
 	m_gameNode = new GameNode();
 
 	// Setting position
-	Math::Real xPos = GET_CONFIG_VALUE("pointLightPosX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetX());
-	Math::Real yPos = GET_CONFIG_VALUE("pointLightPosY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetY());
-	Math::Real zPos = GET_CONFIG_VALUE("pointLightPosZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetZ());
+	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("pointLightPosX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetX());
+	Math::Real yPos = GET_CONFIG_VALUE_ENGINE("pointLightPosY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetY());
+	Math::Real zPos = GET_CONFIG_VALUE_ENGINE("pointLightPosZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetZ());
 	m_gameNode->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_gameNode->GetTransform().SetRot(rot);
@@ -201,27 +201,27 @@ void Engine::PointLightBuilder::SetupLightTransform()
 void Engine::PointLightBuilder::SetupLightParams()
 {
 	// Setting color
-	Math::Real red = GET_CONFIG_VALUE("pointLightColorRed_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetRed());
-	Math::Real green = GET_CONFIG_VALUE("pointLightColorGreen_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetGreen());
-	Math::Real blue = GET_CONFIG_VALUE("pointLightColorBlue_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetBlue());
+	Math::Real red = GET_CONFIG_VALUE_ENGINE("pointLightColorRed_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetRed());
+	Math::Real green = GET_CONFIG_VALUE_ENGINE("pointLightColorGreen_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetGreen());
+	Math::Real blue = GET_CONFIG_VALUE_ENGINE("pointLightColorBlue_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetBlue());
 	Rendering::Color color(red, green, blue);
 
 	// Setting intensity
-	Math::Real intensity = GET_CONFIG_VALUE("pointLightIntensity_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_INTENSITY);
+	Math::Real intensity = GET_CONFIG_VALUE_ENGINE("pointLightIntensity_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_INTENSITY);
 
 	// Setting attenuation
-	Math::Real constant = GET_CONFIG_VALUE("pointLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetConstant());
-	Math::Real linear = GET_CONFIG_VALUE("pointLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetLinear());
-	Math::Real exponent = GET_CONFIG_VALUE("pointLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
+	Math::Real constant = GET_CONFIG_VALUE_ENGINE("pointLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetConstant());
+	Math::Real linear = GET_CONFIG_VALUE_ENGINE("pointLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetLinear());
+	Math::Real exponent = GET_CONFIG_VALUE_ENGINE("pointLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ATTENUATION.GetExponent());
 	Rendering::Attenuation attenuation(constant, linear, exponent);
 
 	Rendering::Lighting::PointLight* pointLight = new Rendering::Lighting::PointLight(m_gameNode->GetTransform(), color, intensity, attenuation);
 
 	// Setting shaders
-	pointLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("pointLightShader", "forward-point")));
-	pointLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("pointLightShaderTerrain", "forward-point-terrain")));
-	pointLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("pointLightNoShadowShader", "forward-point-no-shadows")));
-	pointLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows")));
+	pointLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("pointLightShader", "forward-point")));
+	pointLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("pointLightShaderTerrain", "forward-point-terrain")));
+	pointLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("pointLightNoShadowShader", "forward-point-no-shadows")));
+	pointLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows")));
 
 	// Setting shadow info
 	// Setting additional point light information
@@ -244,18 +244,18 @@ void Engine::PointLightBuilder::BuildMeshRenderer()
 /* ==================== SpotLightBuilder implementation begin ==================== */
 Engine::SpotLightBuilder::SpotLightBuilder() :
 	LightBuilder(),
-	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE("defaultSpotLightPosZ", REAL_ZERO)),
-	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE("defaultSpotLightAngleX", -45.0f)),
-	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE("defaultSpotLightAngleY", REAL_ZERO)),
-	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z(GET_CONFIG_VALUE("defaultSpotLightAngleZ", REAL_ZERO)),
-	M_DEFAULT_SPOT_LIGHT_COLOR(GET_CONFIG_VALUE("defaultSpotLightColorRed", REAL_ZERO), GET_CONFIG_VALUE("defaultSpotLightColorGreen", REAL_ZERO), GET_CONFIG_VALUE("defaultSpotLightColorBlue", REAL_ONE)),
-	M_DEFAULT_SPOT_LIGHT_INTENSITY(GET_CONFIG_VALUE("defaultSpotLightIntensity", 4.0f)),
-	M_DEFAULT_SPOT_LIGHT_ATTENUATION(GET_CONFIG_VALUE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE("defaultSpotLightAttenuationExponent", 0.05f)),
-	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE("defaultSpotLightViewAngle", 120.0f), Math::Unit::DEGREE),
-	M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2(GET_CONFIG_VALUE("defaultSpotLightShadowMapSizeAsPowerOf2", 10)), // 2 ^ 10 = 1024
-	M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS(GET_CONFIG_VALUE("defaultSpotLightShadowSoftness", REAL_ONE)),
-	M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT(GET_CONFIG_VALUE("defaultSpotLightLightBleedingReductionAmount", 0.2f)),
-	M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE(GET_CONFIG_VALUE("defaultSpotLightMinVariance", 0.00002f))
+	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosZ", REAL_ZERO)),
+	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAngleX", -45.0f)),
+	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAngleY", REAL_ZERO)),
+	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAngleZ", REAL_ZERO)),
+	M_DEFAULT_SPOT_LIGHT_COLOR(GET_CONFIG_VALUE_ENGINE("defaultSpotLightColorRed", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightColorGreen", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightColorBlue", REAL_ONE)),
+	M_DEFAULT_SPOT_LIGHT_INTENSITY(GET_CONFIG_VALUE_ENGINE("defaultSpotLightIntensity", 4.0f)),
+	M_DEFAULT_SPOT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE_ENGINE("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_ENGINE("defaultSpotLightAttenuationExponent", 0.05f)),
+	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE_ENGINE("defaultSpotLightViewAngle", 120.0f), Math::Unit::DEGREE),
+	M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2(GET_CONFIG_VALUE_ENGINE("defaultSpotLightShadowMapSizeAsPowerOf2", 10)), // 2 ^ 10 = 1024
+	M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS(GET_CONFIG_VALUE_ENGINE("defaultSpotLightShadowSoftness", REAL_ONE)),
+	M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT(GET_CONFIG_VALUE_ENGINE("defaultSpotLightLightBleedingReductionAmount", 0.2f)),
+	M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE(GET_CONFIG_VALUE_ENGINE("defaultSpotLightMinVariance", 0.00002f))
 {
 }
 
@@ -264,15 +264,15 @@ void Engine::SpotLightBuilder::SetupLightTransform()
 	m_gameNode = new GameNode();
 
 	// Setting position
-	Math::Real xPos = GET_CONFIG_VALUE("spotLightPosX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetX());
-	Math::Real yPos = GET_CONFIG_VALUE("spotLightPosY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetY());
-	Math::Real zPos = GET_CONFIG_VALUE("spotLightPosZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetZ());
+	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("spotLightPosX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetX());
+	Math::Real yPos = GET_CONFIG_VALUE_ENGINE("spotLightPosY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetY());
+	Math::Real zPos = GET_CONFIG_VALUE_ENGINE("spotLightPosZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetZ());
 	m_gameNode->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_gameNode->GetTransform().SetRot(rot);
@@ -281,37 +281,37 @@ void Engine::SpotLightBuilder::SetupLightTransform()
 void Engine::SpotLightBuilder::SetupLightParams()
 {
 	// Setting color
-	Math::Real red = GET_CONFIG_VALUE("spotLightColorRed_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetRed());
-	Math::Real green = GET_CONFIG_VALUE("spotLightColorGreen_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetGreen());
-	Math::Real blue = GET_CONFIG_VALUE("spotLightColorBlue_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetBlue());
+	Math::Real red = GET_CONFIG_VALUE_ENGINE("spotLightColorRed_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetRed());
+	Math::Real green = GET_CONFIG_VALUE_ENGINE("spotLightColorGreen_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetGreen());
+	Math::Real blue = GET_CONFIG_VALUE_ENGINE("spotLightColorBlue_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetBlue());
 	Rendering::Color color(red, green, blue);
 
 	// Setting intensity
-	Math::Real intensity = GET_CONFIG_VALUE("spotLightIntensity_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_INTENSITY);
+	Math::Real intensity = GET_CONFIG_VALUE_ENGINE("spotLightIntensity_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_INTENSITY);
 
 	// Setting attenuation
-	Math::Real constant = GET_CONFIG_VALUE("spotLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetConstant());
-	Math::Real linear = GET_CONFIG_VALUE("spotLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetLinear());
-	Math::Real exponent = GET_CONFIG_VALUE("spotLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetExponent());
+	Math::Real constant = GET_CONFIG_VALUE_ENGINE("spotLightAttenuationConstant_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetConstant());
+	Math::Real linear = GET_CONFIG_VALUE_ENGINE("spotLightAttenuationLinear_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetLinear());
+	Math::Real exponent = GET_CONFIG_VALUE_ENGINE("spotLightAttenuationExponent_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ATTENUATION.GetExponent());
 	Rendering::Attenuation attenuation(constant, linear, exponent);
 
 	// Setting view angle
-	Math::Angle viewAngle(GET_CONFIG_VALUE("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.GetAngleInRadians()), Math::Unit::RADIAN);
+	Math::Angle viewAngle(GET_CONFIG_VALUE_ENGINE("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.GetAngleInRadians()), Math::Unit::RADIAN);
 
 	// Setting shadow info
-	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE("spotLightShadowMapSizeAsPowerOf2_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2); // 2 ^ 10 = 1024
-	Math::Real shadowSoftness = GET_CONFIG_VALUE("spotLightShadowSoftness_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS);
-	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE("spotLightLightBleedingReductionAmount_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT);
-	Math::Real minVariance = GET_CONFIG_VALUE("spotLightMinVariance_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
+	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE_ENGINE("spotLightShadowMapSizeAsPowerOf2_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2); // 2 ^ 10 = 1024
+	Math::Real shadowSoftness = GET_CONFIG_VALUE_ENGINE("spotLightShadowSoftness_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS);
+	Math::Real lightBleedingReductionAmount = GET_CONFIG_VALUE_ENGINE("spotLightLightBleedingReductionAmount_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT);
+	Math::Real minVariance = GET_CONFIG_VALUE_ENGINE("spotLightMinVariance_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
 
 	Rendering::Lighting::SpotLight* spotLight = new Rendering::Lighting::SpotLight(m_gameNode->GetTransform(), color, intensity, attenuation, viewAngle,
 		shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 
 	// Setting shaders
-	spotLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot")));
-	spotLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightShader", "forward-spot-terrain")));
-	spotLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowShader", "forward-spot-no-shadows")));
-	spotLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows")));
+	spotLight->SetShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("spotLightShader", "forward-spot")));
+	spotLight->SetTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("spotLightShader", "forward-spot-terrain")));
+	spotLight->SetNoShadowShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("spotLightNoShadowShader", "forward-spot-no-shadows")));
+	spotLight->SetNoShadowTerrainShader(new Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows")));
 
 	m_gameNode->AddComponent(new SpotLightComponent(spotLight));
 
@@ -331,19 +331,19 @@ void Engine::SpotLightBuilder::BuildMeshRenderer()
 /* ==================== CameraBuilder implementation begin ==================== */
 Engine::CameraBuilder::CameraBuilder() :
 	Builder(),
-	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE("defaultCameraPosZ", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE("defaultCameraAngleX", -45.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE("defaultCameraAngleY", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE("defaultCameraAngleZ", 0.0f)),
-	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE("defaultCameraFoV", 70.0f)),
-	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
-	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE("defaultCameraNearPlane", 0.1f)),
-	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE("defaultCameraFarPlane", 1000.0f)),
-	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE("defaultCameraSensitivity", 0.005f)),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE("defaultCameraFollowEntityInitialDistance", 0.25f)),
-	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
-	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE("defaultCameraFollowPitchRotationSpeed", 0.1f)),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE("defaultCameraFollowInitialPitchAngle", 30.0f)),
+	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_ENGINE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosZ", 0.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleX", -45.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleY", 0.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleZ", 0.0f)),
+	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_ENGINE("defaultCameraFoV", 70.0f)),
+	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_ENGINE("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
+	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE_ENGINE("defaultCameraNearPlane", 0.1f)),
+	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_ENGINE("defaultCameraFarPlane", 1000.0f)),
+	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_ENGINE("defaultCameraSensitivity", 0.005f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowEntityInitialDistance", 0.25f)),
+	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
+	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowPitchRotationSpeed", 0.1f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowInitialPitchAngle", 30.0f)),
 	m_cameraIndex(0),
 	m_cameraIndexStr("0")
 {
@@ -381,15 +381,15 @@ void Engine::CameraBuilder::SetupCameraTransform()
 	m_gameNode = new GameNode();
 
 	// Setting position
-	Math::Real xPos = GET_CONFIG_VALUE("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
-	Math::Real yPos = GET_CONFIG_VALUE("cameraPosY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetY());
-	Math::Real zPos = GET_CONFIG_VALUE("cameraPosZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetZ());
+	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
+	Math::Real yPos = GET_CONFIG_VALUE_ENGINE("cameraPosY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetY());
+	Math::Real zPos = GET_CONFIG_VALUE_ENGINE("cameraPosZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetZ());
 	m_gameNode->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.GetAngleInDegrees()));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.GetAngleInDegrees()));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	DELOCUST_LOG("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
 	Math::Quaternion rot(rotMatrix);
@@ -399,16 +399,16 @@ void Engine::CameraBuilder::SetupCameraTransform()
 void Engine::CameraBuilder::SetupCameraParams()
 {
 	// Setting camera parameters
-	Math::Angle fov(GET_CONFIG_VALUE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.GetAngleInDegrees()));
-	Math::Real aspectRatio = GET_CONFIG_VALUE("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
-	Math::Real zNearPlane = GET_CONFIG_VALUE("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
-	Math::Real zFarPlane = GET_CONFIG_VALUE("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
-	Math::Real sensitivity = GET_CONFIG_VALUE("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
+	Math::Angle fov(GET_CONFIG_VALUE_ENGINE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.GetAngleInDegrees()));
+	Math::Real aspectRatio = GET_CONFIG_VALUE_ENGINE("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
+	Math::Real zNearPlane = GET_CONFIG_VALUE_ENGINE("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
+	Math::Real zFarPlane = GET_CONFIG_VALUE_ENGINE("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
+	Math::Real sensitivity = GET_CONFIG_VALUE_ENGINE("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
 
-	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
-	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
-	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
-	Math::Angle initialPitchAngle(GET_CONFIG_VALUE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.GetAngleInDegrees()));
+	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_ENGINE("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
+	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
+	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
+	Math::Angle initialPitchAngle(GET_CONFIG_VALUE_ENGINE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.GetAngleInDegrees()));
 
 	//Engine::CameraComponent* camera = new Engine::CameraFollowComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity, m_gameNodeToFollow,
 	//	initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
@@ -442,8 +442,8 @@ Engine::SkyboxBuilder::~SkyboxBuilder()
 
 void Engine::SkyboxBuilder::BuildPart1()
 {
-	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR("skyboxDayDirectory", "SkyboxDebug");
-	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR("skyboxNightDirectory", "SkyboxDebug");
+	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxDayDirectory", "SkyboxDebug");
+	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxNightDirectory", "SkyboxDebug");
 	Rendering::Texture* skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
 	Rendering::Texture* skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
 
@@ -456,7 +456,7 @@ void Engine::SkyboxBuilder::BuildPart1()
 	m_gameNode = new GameNode();
 	m_gameNode->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_gameNode->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
-	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR("skyboxModel", "cube.obj")), skyboxMaterial));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_ENGINE("skyboxModel", "cube.obj")), skyboxMaterial));
 
 	CoreEngine::GetCoreEngine()->AddSkyboxNode(m_gameNode);
 }

@@ -1,4 +1,5 @@
 #include "TestGameManager.h"
+#include "Def.h"
 #include "MenuGameState.h"
 #include "IntroGameState.h"
 #include "PlayGameState.h"
@@ -38,7 +39,7 @@ using namespace Math;
 TestGameManager::TestGameManager() :
 	GameManager(),
 	RESOURCES_TO_LOAD(26),
-	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE("cameraHeightUpdateInterval", 0.01f)),
+	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_introGameState(NULL),
 	m_menuGameState(NULL),
@@ -57,18 +58,18 @@ TestGameManager::TestGameManager() :
 #ifdef ANT_TWEAK_BAR_ENABLED 
 	terrainMaterial(NULL),
 	boxMaterial(NULL),
-	terrainSpecularIntensity(GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f)),
-	terrainSpecularPower(GET_CONFIG_VALUE("defaultSpecularPower", 8.0f)),
-	terrainDisplacementScale(GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f)),
-	terrainDisplacementOffset(GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f)),
+	terrainSpecularIntensity(GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f)),
+	terrainSpecularPower(GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f)),
+	terrainDisplacementScale(GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f)),
+	terrainDisplacementOffset(GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f)),
 #endif
 	HUMAN_NODES_COUNT(2),
 	humanNodes(NULL),
-	pointLightCount(GET_CONFIG_VALUE("pointLightsCount", 1)),
-	spotLightCount(GET_CONFIG_VALUE("spotLightsCount", 1)),
-	cameraCount(GET_CONFIG_VALUE("cameraCount", 3)),
+	pointLightCount(GET_CONFIG_VALUE_GAME("pointLightsCount", 1)),
+	spotLightCount(GET_CONFIG_VALUE_GAME("spotLightsCount", 1)),
+	cameraCount(GET_CONFIG_VALUE_GAME("cameraCount", 3)),
 	cameraNodes(NULL),
-	m_heightMapCalculationEnabled(GET_CONFIG_VALUE("heightmapCalculationEnabled", true))
+	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
 #ifdef CALCULATE_GAME_STATS
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
@@ -105,47 +106,47 @@ TestGameManager::~TestGameManager(void)
 
 //void TestGameManager::AddStaticEffects()
 //{
-//	const int staticSingleValueEffectsCount = GET_CONFIG_VALUE("staticValueEffectsCount", 4);
+//	const int staticSingleValueEffectsCount = GET_CONFIG_VALUE_GAME("staticValueEffectsCount", 4);
 //	m_singleValueStaticEffects.reserve(staticSingleValueEffectsCount);
 //	for (int i = 0; i < staticSingleValueEffectsCount; ++i)
 //	{
 //		std::stringstream ss("");
 //		ss << (i + 1);
-//		m_singleValueStaticEffects.emplace_back(GET_CONFIG_VALUE("staticValue_" + ss.str(), 0.2f));
+//		m_singleValueStaticEffects.emplace_back(GET_CONFIG_VALUE_GAME("staticValue_" + ss.str(), 0.2f));
 //		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_singleValueStaticEffects.back());
 //	}
-//	const int staticVec2DEffectsCount = GET_CONFIG_VALUE("staticVec2DEffectsCount", 4);
+//	const int staticVec2DEffectsCount = GET_CONFIG_VALUE_GAME("staticVec2DEffectsCount", 4);
 //	m_vec2DStaticEffects.reserve(staticVec2DEffectsCount);
 //	for (int i = 0; i < staticVec2DEffectsCount; ++i)
 //	{
 //		std::stringstream ss("");
 //		ss << (i + 1);
-//		m_vec2DStaticEffects.emplace_back(Math::Vector2D(GET_CONFIG_VALUE("staticVector2D_X_" + ss.str(), 1.0f),
-//			GET_CONFIG_VALUE("staticVector2D_Y_" + ss.str(), 1.0f)));
+//		m_vec2DStaticEffects.emplace_back(Math::Vector2D(GET_CONFIG_VALUE_GAME("staticVector2D_X_" + ss.str(), 1.0f),
+//			GET_CONFIG_VALUE_GAME("staticVector2D_Y_" + ss.str(), 1.0f)));
 //		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec2DStaticEffects.back());
 //	}
-//	const int staticVec3DEffectsCount = GET_CONFIG_VALUE("staticVec3DEffectsCount", 4);
+//	const int staticVec3DEffectsCount = GET_CONFIG_VALUE_GAME("staticVec3DEffectsCount", 4);
 //	m_vec3DStaticEffects.reserve(staticVec3DEffectsCount);
 //	for (int i = 0; i < staticVec3DEffectsCount; ++i)
 //	{
 //		std::stringstream ss("");
 //		ss << (i + 1);
-//		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE("staticVector3D_X_" + ss.str(), 1.0f),
-//			GET_CONFIG_VALUE("staticVector3D_Y_" + ss.str(), 1.0f), GET_CONFIG_VALUE("staticVector3D_Z_" + ss.str(), 1.0f)));
+//		m_vec3DStaticEffects.emplace_back(Math::Vector3D(GET_CONFIG_VALUE_GAME("staticVector3D_X_" + ss.str(), 1.0f),
+//			GET_CONFIG_VALUE_GAME("staticVector3D_Y_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("staticVector3D_Z_" + ss.str(), 1.0f)));
 //		m_effectFactory.CreateEffect(Rendering::Effects::STATIC, &m_vec3DStaticEffects.back());
 //	}
 //}
 
 //void TestGameManager::AddSmoothEffects()
 //{
-//	const int smoothSingleValueVariantsCount = GET_CONFIG_VALUE("smoothValueEffectsCount", 4);
+//	const int smoothSingleValueVariantsCount = GET_CONFIG_VALUE_GAME("smoothValueEffectsCount", 4);
 //	m_singleValueSmoothEffects.reserve(smoothSingleValueVariantsCount);
 //	for (int variant = 0; variant < smoothSingleValueVariantsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothValuesCount_" + ssVariant.str(), 2);
-//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothValuesCount_" + ssVariant.str(), 2);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothValuesIsGoingBackAndForth_" + ssVariant.str(), true);
 //		std::vector<Math::Real> values;
 //		std::vector<Math::Real> times;
 //		values.reserve(smoothValuesCount);
@@ -154,20 +155,20 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("smoothValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			times.push_back(GET_CONFIG_VALUE("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("smoothValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE_GAME("smoothValueEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //		m_singleValueSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
 //		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_singleValueSmoothEffects.back());
 //	}
-//	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE("smoothVec2DEffectsCount", 4);
+//	const int smoothVec2DEffectsCount = GET_CONFIG_VALUE_GAME("smoothVec2DEffectsCount", 4);
 //	m_vec2DSmoothEffects.reserve(smoothVec2DEffectsCount);
 //	for (int variant = 0; variant < smoothVec2DEffectsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec2DCount_" + ssVariant.str(), 2);
-//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothVec2DCount_" + ssVariant.str(), 2);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothVec2DIsGoingBackAndForth_" + ssVariant.str(), true);
 //		std::vector<Math::Vector2D> values;
 //		std::vector<Math::Real> times;
 //		values.reserve(smoothValuesCount);
@@ -176,21 +177,21 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("smoothVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			times.push_back(GET_CONFIG_VALUE("smoothVec2DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("smoothVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("smoothVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE_GAME("smoothVec2DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //
 //		m_vec2DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
 //		m_effectFactory.CreateEffect(Rendering::Effects::SMOOTH, &m_vec2DSmoothEffects.back());
 //	}
-//	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE("smoothVec3DEffectsCount", 4);
+//	const int smoothVec3DEffectsCount = GET_CONFIG_VALUE_GAME("smoothVec3DEffectsCount", 4);
 //	m_vec3DSmoothEffects.reserve(smoothVec3DEffectsCount);
 //	for (int variant = 0; variant < smoothVec3DEffectsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
-//		size_t smoothValuesCount = GET_CONFIG_VALUE("smoothVec3DCount_" + ssVariant.str(), 2);
+//		bool isSmoothEffectGoingBackAndForth = GET_CONFIG_VALUE_GAME("smoothVec3DIsGoingBackAndForth_" + ssVariant.str(), true);
+//		size_t smoothValuesCount = GET_CONFIG_VALUE_GAME("smoothVec3DCount_" + ssVariant.str(), 2);
 //		std::vector<Math::Vector3D> values;
 //		std::vector<Math::Real> times;
 //		values.reserve(smoothValuesCount);
@@ -199,9 +200,9 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("smoothVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("smoothVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
-//				GET_CONFIG_VALUE("smoothVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			times.push_back(GET_CONFIG_VALUE("smoothVec3DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("smoothVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("smoothVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
+//				GET_CONFIG_VALUE_GAME("smoothVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			times.push_back(GET_CONFIG_VALUE_GAME("smoothVec3DEffectTime_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //
 //		m_vec3DSmoothEffects.emplace_back(&values[0], &times[0], smoothValuesCount, isSmoothEffectGoingBackAndForth);
@@ -211,13 +212,13 @@ TestGameManager::~TestGameManager(void)
 
 //void TestGameManager::AddBlinkEffects()
 //{
-//	const int blinkSingleValueVariantsCount = GET_CONFIG_VALUE("blinkValueEffectsCount", 4);
+//	const int blinkSingleValueVariantsCount = GET_CONFIG_VALUE_GAME("blinkValueEffectsCount", 4);
 //	m_singleValueBlinkEffects.reserve(blinkSingleValueVariantsCount);
 //	for (int variant = 0; variant < blinkSingleValueVariantsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkValuesCount_" + ssVariant.str(), 2);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkValuesCount_" + ssVariant.str(), 2);
 //		std::vector<Math::Real> values;
 //		std::vector<Math::Real> durations;
 //		values.reserve(blinkValuesCount);
@@ -226,19 +227,19 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("blinkValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			durations.push_back(GET_CONFIG_VALUE("blinkValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("blinkValue_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE_GAME("blinkValueEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //		m_singleValueBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
 //		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_singleValueBlinkEffects.back());
 //	}
-//	const int blinkVec2DEffectsCount = GET_CONFIG_VALUE("blinkVec2DEffectsCount", 4);
+//	const int blinkVec2DEffectsCount = GET_CONFIG_VALUE_GAME("blinkVec2DEffectsCount", 4);
 //	m_vec2DBlinkEffects.reserve(blinkVec2DEffectsCount);
 //	for (int variant = 0; variant < blinkVec2DEffectsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec2DCount_" + ssVariant.str(), 2);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkVec2DCount_" + ssVariant.str(), 2);
 //		std::vector<Math::Vector2D> values;
 //		std::vector<Math::Real> durations;
 //		values.reserve(blinkValuesCount);
@@ -247,20 +248,20 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("blinkVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			durations.push_back(GET_CONFIG_VALUE("blinkVec2DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("blinkVec2D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("blinkVec2D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE_GAME("blinkVec2DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //
 //		m_vec2DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
 //		m_effectFactory.CreateEffect(Rendering::Effects::BLINK, &m_vec2DBlinkEffects.back());
 //	}
-//	const int blinkVec3DEffectsCount = GET_CONFIG_VALUE("blinkVec3DEffectsCount", 4);
+//	const int blinkVec3DEffectsCount = GET_CONFIG_VALUE_GAME("blinkVec3DEffectsCount", 4);
 //	m_vec3DBlinkEffects.reserve(blinkVec3DEffectsCount);
 //	for (int variant = 0; variant < blinkVec3DEffectsCount; ++variant)
 //	{
 //		std::stringstream ssVariant("");
 //		ssVariant << (variant + 1);
-//		size_t blinkValuesCount = GET_CONFIG_VALUE("blinkVec3DCount_" + ssVariant.str(), 2);
+//		size_t blinkValuesCount = GET_CONFIG_VALUE_GAME("blinkVec3DCount_" + ssVariant.str(), 2);
 //		std::vector<Math::Vector3D> values;
 //		std::vector<Math::Real> durations;
 //		values.reserve(blinkValuesCount);
@@ -269,9 +270,9 @@ TestGameManager::~TestGameManager(void)
 //		{
 //			std::stringstream ss("");
 //			ss << (j + 1);
-//			values.emplace_back(GET_CONFIG_VALUE("blinkVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE("blinkVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
-//				GET_CONFIG_VALUE("blinkVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
-//			durations.push_back(GET_CONFIG_VALUE("blinkVec3DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			values.emplace_back(GET_CONFIG_VALUE_GAME("blinkVec3D_X_" + ssVariant.str() + "_" + ss.str(), 1.0f), GET_CONFIG_VALUE_GAME("blinkVec3D_Y_" + ssVariant.str() + "_" + ss.str(), 1.0f),
+//				GET_CONFIG_VALUE_GAME("blinkVec3D_Z_" + ssVariant.str() + "_" + ss.str(), 1.0f));
+//			durations.push_back(GET_CONFIG_VALUE_GAME("blinkVec3DEffectDuration_" + ssVariant.str() + "_" + ss.str(), 1.0f));
 //		}
 //
 //		m_vec3DBlinkEffects.emplace_back(&values[0], &durations[0], blinkValuesCount);
@@ -345,31 +346,31 @@ void TestGameManager::Load()
 	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
 
 	m_terrainNode = new Engine::GameNode();
-	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR("terrainModel", "terrain02.obj"));
-	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR("terrainHeightMap", "terrainHeightMap.png"));
-	const int terrainVertexCount = GET_CONFIG_VALUE("terrrainVertexCount", 128);
-	Math::HeightsGenerator heightsGenerator(0, 0, terrainVertexCount, GET_CONFIG_VALUE("terrainHeightGeneratorAmplitude", 70.0f),
-		GET_CONFIG_VALUE("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE("terrainHeightGeneratorRoughness", 0.3f));
+	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR_GAME("terrainModel", "terrain02.obj"));
+	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR_GAME("terrainHeightMap", "terrainHeightMap.png"));
+	const int terrainVertexCount = GET_CONFIG_VALUE_GAME("terrainVertexCount", 128);
+	Math::HeightsGenerator heightsGenerator(0, 0, terrainVertexCount, GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
+		GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f));
 	m_terrainMesh = new Rendering::TerrainMesh(0, 0, heightsGenerator, terrainVertexCount);
 #ifndef ANT_TWEAK_BAR_ENABLED
-	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE("defaultSpecularIntensity", 1.0f);
-	Math::Real terrainSpecularPower = GET_CONFIG_VALUE("defaultSpecularPower", 8.0f);
-	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE("defaultDisplacementScale", 0.02f);
-	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE("defaultDisplacementOffset", -0.5f);
-	Rendering::Material* terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
-		new Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f);
+	Math::Real terrainSpecularPower = GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f);
+	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f);
+	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f);
+	Rendering::Material* terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #else
-	terrainMaterial = new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainNormalMap", "grass_normal.jpg")),
-		new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	terrainMaterial = new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true), "blendMap");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture3", "mud.png")), "diffuse3");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR("terrainDiffuseTexture4", "path.png")), "diffuse4");
-	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR("terrainMap", "terrainMap.jpg")), "terrainMap");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true), "blendMap");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
+	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR_GAME("terrainMap", "terrainMap.jpg")), "terrainMap");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -453,13 +454,13 @@ void TestGameManager::Load()
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
 	//INFO_LOG("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
-	//monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true)),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f),
-	//	Math::Angle(GET_CONFIG_VALUE("particleGeneratorParticlesRotation", REAL_ZERO)),
-	//	GET_CONFIG_VALUE("particleGeneratorParticlesScale", 0.005f)));
+	//monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
+	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000),
+	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f),
+	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
+	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f),
+	//	Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)),
+	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
 	AddToSceneRoot(monkeyNode1);
 
 	//GameNode* monkeyNode2 = new GameNode();
@@ -476,13 +477,13 @@ void TestGameManager::Load()
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
 	waterNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	m_resourcesLoaded += 2;
-	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE("waterNodePosX", -18.0f), GET_CONFIG_VALUE("waterNodePosY", 0.0f), GET_CONFIG_VALUE("waterNodePosZ", -12.0f));
+	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
 	waterNode->GetTransform().SetScale(0.2f);
 	AddWaterNode(waterNode);
 
-	AddBillboards(GET_CONFIG_VALUE("billboardsTreeCount_1", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture_1", "Tree1.png"))));
-	AddBillboards(GET_CONFIG_VALUE("billboardsTreeCount_2", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture_2", "Tree2.png"))));
-	AddBillboards(GET_CONFIG_VALUE("billboardsTreeCount_3", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR("billboardTreeTexture_3", "Tree3.png"))));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png"))));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png"))));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png"))));
 
 	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
@@ -500,8 +501,8 @@ void TestGameManager::Load()
 	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
-	const Math::Real playerPositionX = GET_CONFIG_VALUE("playerPosition_X", 11.2f);
-	const Math::Real playerPositionZ = GET_CONFIG_VALUE("playerPosition_Z", 1.95f);
+	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
+	const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
 	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.0005f);
@@ -509,11 +510,11 @@ void TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(new Rendering::Texture("mike_d.tga"), 1.0f, 8.0f, new Rendering::Texture("mike_n.tga"))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"),
-		GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(GameManager::GetGameManager(), new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE("particleGeneratorTextureIsAdditive", true)),
-		GET_CONFIG_VALUE("particleGeneratorParticlesPerSecondCount", 1000), GET_CONFIG_VALUE("particleGeneratorParticlesLifeSpanLimit", 0.8f), GET_CONFIG_VALUE("particleGeneratorParticlesSpeed", 0.02f),
-		GET_CONFIG_VALUE("particleGeneratorParticlesGravityComplient", 0.3f), Math::Angle(GET_CONFIG_VALUE("particleGeneratorParticlesRotation", REAL_ZERO)), GET_CONFIG_VALUE("particleGeneratorParticlesScale", 0.005f)));
+	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
+		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
+	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(GameManager::GetGameManager(), new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
+		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
+		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f), Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -598,7 +599,7 @@ void TestGameManager::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
-	int directionalLightsCount = GET_CONFIG_VALUE("directionalLightsCount", 1);
+	int directionalLightsCount = GET_CONFIG_VALUE_GAME("directionalLightsCount", 1);
 	if (directionalLightsCount == 0)
 	{
 		NOTICE_LOG("Directional lights disabled");

@@ -1,4 +1,5 @@
 #include "MenuGameState.h"
+#include "Def.h"
 #include "StartGameCommand.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
@@ -20,8 +21,8 @@ using namespace Rendering;
 
 MenuGameState::MenuGameState() :
 	Engine::GameState(),
-	m_mainMenuFont(GET_CONFIG_VALUE_STR("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR("mainMenuFontMetaData", "cambria.fnt")),
-	m_mainMenuFontSize(GET_CONFIG_VALUE("mainMenuFontSize", 16.0f)),
+	m_mainMenuFont(GET_CONFIG_VALUE_STR_GAME("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR_GAME("mainMenuFontMetaData", "cambria.fnt")),
+	m_mainMenuFontSize(GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f)),
 	m_mainMenuRootEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::GameCommandTypes::EMPTY), "Main menu", &m_mainMenuFont, m_mainMenuFontSize,
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(NULL),
