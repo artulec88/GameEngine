@@ -1,5 +1,5 @@
-#ifndef __UTILITY_ARRAY_H__
-#define __UTILITY_ARRAY_H__
+#ifndef __UTILITY_CONTAINER_ARRAY_H__
+#define __UTILITY_CONTAINER_ARRAY_H__
 
 #include "Utility.h"
 
@@ -88,4 +88,4 @@ private:
 
 } /* end namespace Utility */
 
-#endif /* __UTILITY_ARRAY_H__ */
+#endif /* __UTILITY_CONTAINER_ARRAY_H__ */

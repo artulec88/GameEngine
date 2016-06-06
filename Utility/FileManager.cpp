@@ -36,7 +36,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	HANDLE hFind = FindFirstFile(szDir, &ffd);
 	if (INVALID_HANDLE_VALUE == hFind)
 	{
-		ERROR_LOG("Cannot list files in a directory \"%s\". FindFirstFile() function failed.", directoryPath.c_str());
+		ERROR_LOG_UTILITY("Cannot list files in a directory \"%s\". FindFirstFile() function failed.", directoryPath.c_str());
 		exit(EXIT_FAILURE);
 	}
 
@@ -71,7 +71,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 #endif
 	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	//{
-	//	ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
+	//	ERROR_LOG_UTILITY("Cannot list the files in a given directory. The directory path is too long");
 	//	return;
 	//}
 	//WIN32_FIND_DATA ffd;
@@ -89,7 +89,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//
 	//if (hFind == INVALID_HANDLE_VALUE)
 	//{
-	//	EMERGENCY_LOG("Cannot list the files in a given directory. Invalid directory handle instance.");
+	//	EMERGENCY_LOG_UTILITY("Cannot list the files in a given directory. Invalid directory handle instance.");
 	//	//return dwError;
 	//}
 	//
@@ -115,7 +115,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//if (dwError != ERROR_NO_MORE_FILES)
 	//{
 	//	//DisplayErrorBox(TEXT("FindFirstFile"));
-	//	ERROR_LOG("Listing all files in a directory %s failed.", directoryPath.c_str());
+	//	ERROR_LOG_UTILITY("Listing all files in a directory %s failed.", directoryPath.c_str());
 	//}
 	//
 	//FindClose(hFind);
@@ -125,7 +125,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
 	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	//{
-	//	ERROR_LOG("Cannot list the files in a given directory. The directory path is too long");
+	//	ERROR_LOG_UTILITY("Cannot list the files in a given directory. The directory path is too long");
 	//	return std::vector<std::string>();
 	//}
 	//std::vector<std::string> filenames;
@@ -156,7 +156,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//}
 	//else
 	//{
-	//	ERROR_LOG("Could not open directory \"%s\"", directoryPath.c_str());
+	//	ERROR_LOG_UTILITY("Could not open directory \"%s\"", directoryPath.c_str());
 	//}
 	return filenames;
 }

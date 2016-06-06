@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_ICOMMAND_H__
+#define __UTILITY_ICOMMAND_H__
 
 #include "Utility.h"
 #include <iostream>
@@ -36,3 +37,5 @@ protected:
 }; /* end class ICommand */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_ICOMMAND_H__ */

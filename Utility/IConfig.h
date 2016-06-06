@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_ICONFIG_H__
+#define __UTILITY_ICONFIG_H__
 
 #include "Utility.h"
 #include "ILogger.h"
@@ -67,3 +68,5 @@ namespace Utility
 	}; /* end class IConfig */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_ICONFIG_H__ */

@@ -28,6 +28,9 @@
 #define REAL_MIN	static_cast<Math::Real>(std::numeric_limits<Math::Real>::min())
 #define REAL_MAX	static_cast<Math::Real>(std::numeric_limits<Math::Real>::max())
 
+#define GET_CONFIG_VALUE_MATH(cfgName, defValue) GET_CONFIG_VALUE("Math", cfgName, defValue)
+#define GET_CONFIG_VALUE_STR_MATH(cfgName, defValue) GET_CONFIG_VALUE_STR("Math", cfgName, defValue)
+
 #define CRITICAL_LOG_MATH(message, ...) CRITICAL_LOG("Math", message, ##__VA_ARGS__)
 #define EMERGENCY_LOG_MATH(message, ...) EMERGENCY_LOG("Math", message, ##__VA_ARGS__)
 #define ERROR_LOG_MATH(message, ...) ERROR_LOG("Math", message, ##__VA_ARGS__)

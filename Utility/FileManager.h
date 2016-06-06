@@ -1,5 +1,5 @@
-#ifndef UTILITY_FILE_MANAGER_H
-#define UTILITY_FILE_MANAGER_H
+#ifndef __UTILITY_FILE_MANAGER_H__
+#define __UTILITY_FILE_MANAGER_H__
 
 #include "Utility.h"
 #include <string>
@@ -49,4 +49,4 @@ public:
 
 } /* end namespace Utility */
 
-#endif // UTILITY_FILE_MANAGER_H
+#endif /* __UTILITY_FILE_MANAGER_H__ */

@@ -1,5 +1,5 @@
-#ifndef __UTILITY_UTILITY_H__
-#define __UTILITY_UTILITY_H__
+#ifndef __UTILITY_H__
+#define __UTILITY_H__
 
 #include <vector>
 #include <string>
@@ -71,6 +71,9 @@
 
 #define INVALID_VALUE 0xFFFFFFFF
 
+#define GET_CONFIG_VALUE_UTILITY(cfgName, defValue) GET_CONFIG_VALUE("Utility", cfgName, defValue)
+#define GET_CONFIG_VALUE_STR_UTILITY(cfgName, defValue) GET_CONFIG_VALUE_STR("Utility", cfgName, defValue)
+
 #define CRITICAL_LOG_UTILITY(message, ...) CRITICAL_LOG("Utility", message, ##__VA_ARGS__)
 #define EMERGENCY_LOG_UTILITY(message, ...) EMERGENCY_LOG("Utility", message, ##__VA_ARGS__)
 #define ERROR_LOG_UTILITY(message, ...) ERROR_LOG("Utility", message, ##__VA_ARGS__)
@@ -102,4 +105,4 @@ namespace Utility
 	//}
 } /* end namespace Utility */
 
-#endif /* __UTILITY_UTILITY_H__ */
+#endif /* __UTILITY_H__ */

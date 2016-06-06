@@ -5,6 +5,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\Config.h"
 
+#include "Math\Math.h"
 #include "Math\FloatingPoint.h"
 
 #include <ctime>
@@ -168,10 +169,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
-	/* ==================== Initializing engine logger begin ==================== */
-	std::string loggingLevel = GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info");
-	Utility::ILogger::GetLogger("Engine").Fill(loggingLevel, Utility::Info);
-	/* ==================== Initializing engine logger end ==================== */
+	Utility::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Info); // Initializing engine logger
+	Utility::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Info); // Initializing math logger
+	Utility::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Info); // Initializing utility logger
 
 	NOTICE_LOG_ENGINE("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS

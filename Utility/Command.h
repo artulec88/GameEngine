@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_COMMAND_H__
+#define __UTILITY_COMMAND_H__
 
 //#pragma warning(disable:4251)
 
@@ -46,3 +47,5 @@ protected:
 }; /* end class Command */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_COMMAND_H__ */

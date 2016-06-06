@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_ILOGGER_H__
+#define __UTILITY_ILOGGER_H__
 
 #include "Utility.h"
 #include <Windows.h> // TODO: We should not include this file in the interface ILogger.h file.
@@ -181,3 +182,5 @@ protected:
 }; /* end class ILogger */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_ILOGGER_H__ */

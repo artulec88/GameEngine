@@ -1,5 +1,5 @@
-#ifndef __UTILITY_LIST_H__
-#define __UTILITY_LIST_H__
+#ifndef __UTILITY_CONTAINER_LIST_H__
+#define __UTILITY_CONTAINER_LIST_H__
 
 #include "Utility.h"
 
@@ -82,4 +82,4 @@ private:
 
 } /* end namespace Utility */
 
-#endif /* __UTILITY_LIST_H__ */
+#endif /* __UTILITY_CONTAINER_LIST_H__ */

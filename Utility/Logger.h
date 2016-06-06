@@ -2,6 +2,8 @@
 
 //#pragma warning(disable:4251)
 
+#include "Utility.h"
+#include "ILogger.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,8 +11,6 @@
 #include <sstream>
 #include <iostream>
 #include <list>
-#include "Utility.h"
-#include "ILogger.h"
 
 namespace Utility
 {
@@ -36,6 +36,7 @@ namespace Utility
 		Outs m_outs;
 		bool m_modified;
 		int m_indentDepth;
+		const char* m_dateTimeFormat;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Logger */
 

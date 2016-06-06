@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __UTILITY_CONFIG_H__
+#define __UTILITY_CONFIG_H__
 
 //#pragma warning(disable:4251)
 
@@ -90,3 +91,5 @@ namespace Utility
 	}; /* end class Config */
 
 } /* end namespace Utility */
+
+#endif /* __UTILITY_CONFIG_H__ */

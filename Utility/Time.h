@@ -1,5 +1,5 @@
-#ifndef __UTILITY_TIME_H__
-#define __UTILITY_TIME_H__
+#ifndef __UTILITY_TIMING_TIME_H__
+#define __UTILITY_TIMING_TIME_H__
 
 #include "Utility.h"
 //#include "ISerializable.h"
@@ -103,6 +103,12 @@ namespace Utility { namespace Timing
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// Converts the <code>Time</code> object into the string in a given date/time format.
+		/// </summary>
+		/// <remarks>
+		/// Visit the page http://www.cplusplus.com/reference/ctime/strftime/ for additional supported formats.
+		/// </remarks>
 		std::string ToDateString(const char *format = "%Y-%m-%d %H:%M:%S") const;
 	/* ==================== Non-static member functions end ==================== */
 
@@ -159,4 +165,4 @@ namespace Utility { namespace Timing
 
 } /* end namespace Utility */
 
-#endif /* __UTILITY_TIME_H__ */
+#endif /* __UTILITY_TIMING_TIME_H__ */

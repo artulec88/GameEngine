@@ -54,6 +54,8 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	IConfig::CreateConfig("Rendering", command->Get("-configRendering", "..\\Config\\ConfigRendering.cfg"));
 	IConfig::CreateConfig("Engine", command->Get("-configEngine", "..\\Config\\ConfigEngine.cfg"));
 	IConfig::CreateConfig("Game", command->Get("-configGame", "..\\Config\\ConfigGame.cfg"));
+	IConfig::CreateConfig("Math", command->Get("-configMath", "..\\Config\\ConfigMath.cfg"));
+	IConfig::CreateConfig("Utility", command->Get("-configUtility", "..\\Config\\ConfigUtility.cfg"));
 
 	/* ==================== Initializing logger begin ==================== */
 	std::string loggingLevel = "Info";

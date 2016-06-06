@@ -78,7 +78,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 	std::string inString = Trim(str);
 	if (!FromString<int>(result, inString, std::dec))
 	{
-		ERROR_LOG("Failed to convert \"%s\" to integer. Default 0 will be returned.", inString.c_str());
+		ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. Default 0 will be returned.", inString.c_str());
 		return 0;
 	}
 
@@ -87,7 +87,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 	{
 		if ((j != 0 || isPositive) && !IsNumeric(inString[j]))
 		{
-			ERROR_LOG("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
+			ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
 			return 0;
 		}
 	}
@@ -102,7 +102,7 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 	std::string inString = Trim(str);
 	if (!FromString<float>(result, inString, std::dec))
 	{
-		ERROR_LOG("Failed to convert \"%s\" to floating-point number. Default 0.0 will be returned.", inString.c_str());
+		ERROR_LOG_UTILITY("Failed to convert \"%s\" to floating-point number. Default 0.0 will be returned.", inString.c_str());
 		return 0;
 	}
 

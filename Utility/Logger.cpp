@@ -11,7 +11,8 @@ using namespace std;
 Logger::Logger(FILE *first) :
 	ILogger(),
 	m_modified(false),
-	m_indentDepth(0)
+	m_indentDepth(0),
+	m_dateTimeFormat("%H:%M:%S")
 {
 	if (first)
 	{
@@ -82,7 +83,7 @@ void Logger::Log(LogLevel level, const char *name, int line, const char *format,
 		name = tmp + 1;
 	}
 	Utility::Timing::Time now = Utility::Timing::Time::Now();
-	std::string date = now.ToDateString();
+	std::string date = now.ToDateString("%H:%M:%S");
 
 	//mutex.Lock();
 	//iterate through all the targets of logging

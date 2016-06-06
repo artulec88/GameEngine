@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "Config.h"
 #include "StringUtility.h"
+#include "ILogger.h"
 #include <fstream>
 
 using namespace Utility;
@@ -32,7 +33,7 @@ void Config::LoadFromFile()
 	std::ifstream file(m_fileName.c_str());
 	if (!file.is_open())
 	{
-		ERROR_LOG("Could not open configuration file \"%s\"", m_fileName.c_str());
+		ERROR_LOG_UTILITY("Could not open configuration file \"%s\"", m_fileName.c_str());
 		return;
 	}
 	m_cfgValues.clear();
@@ -42,11 +43,7 @@ void Config::LoadFromFile()
 	while (!file.eof())
 	{
 		//file >> name;
-		if (file.fail())
-		{
-			EMERGENCY_LOG("Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
-			exit(EXIT_FAILURE);
-		}
+		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Emergency, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
 		std::getline(file, line);
 		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{
@@ -55,10 +52,10 @@ void Config::LoadFromFile()
 
 		line = line.substr(0, line.find_first_of('#'));
 		StringUtility::RightTrim(line);
-		DELOCUST_LOG("Line after trimming = \"%s\"", line.c_str());
+		DELOCUST_LOG_UTILITY("Line after trimming = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		StringUtility::CutToTokens(line, tokens, ' ');
-		CHECK_CONDITION(tokens[1].compare("=") == 0, Utility::Error, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
+		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Utility::Error, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
 			line.c_str(), tokens[1].c_str());
 		value = tokens[2];
 		if (tokens.size() > 3)
@@ -85,7 +82,7 @@ std::string Config::GetArg(const std::string& name, const std::string& defValue)
 	ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
 	if (valueMapIt == m_cfgValues.end())
 	{
-		WARNING_LOG("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
+		WARNING_LOG_UTILITY("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
 		//cfgNotDefinedValues[name] = defValue;
 		return defValue;
 	}
