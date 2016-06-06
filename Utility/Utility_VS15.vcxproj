@@ -149,7 +149,7 @@
     <ClInclude Include="ISerializable.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="List_impl.h" />
-    <ClInclude Include="Logger.h" />
+    <ClInclude Include="LoggerWindows.h" />
     <ClInclude Include="ILogger.h" />
     <ClInclude Include="ReferenceCounter.h" />
     <ClInclude Include="stdafx.h" />
@@ -178,7 +178,7 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ICommand.cpp" />
     <ClCompile Include="IConfig.cpp" />
-    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="LoggerWindows.cpp" />
     <ClCompile Include="ILogger.cpp" />
     <ClCompile Include="ReferenceCounter.cpp" />
     <ClCompile Include="stdafx.cpp">

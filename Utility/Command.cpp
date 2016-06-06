@@ -5,7 +5,7 @@
 #include "Time.h"
 
 //#define LOGMODULE "Command"
-#include "Logger.h"
+#include "ILogger.h"
 
 using namespace Utility;
 using namespace std;

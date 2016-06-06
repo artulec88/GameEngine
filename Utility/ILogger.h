@@ -2,7 +2,6 @@
 #define __UTILITY_ILOGGER_H__
 
 #include "Utility.h"
-#include <Windows.h> // TODO: We should not include this file in the interface ILogger.h file.
 #include <map>
 #include <string>
 #include <memory>
@@ -166,17 +165,16 @@ public:
 	UTILITY_API virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
 	virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 	virtual void AddFile(const char *name) = 0;
-	UTILITY_API void ResetConsoleColor() const;
+	UTILITY_API virtual void ResetConsoleColor() const = 0;
 protected:
 	void SetLevel(LogLevel level);
-	void SetConsoleColor(LogLevel level) const;
-	void ReadConsoleColorsFromConfigFile();
+	virtual void SetConsoleColor(LogLevel level) const = 0;
+	virtual void ReadConsoleColorsFromConfigFile() = 0;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 protected:
 	LogLevel m_level;
-	HANDLE m_console; // only in Windows platform
 	// TODO: Store console colors from configuration file
 /* ==================== Non-static member variables end ==================== */
 }; /* end class ILogger */

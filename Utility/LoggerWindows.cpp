@@ -1,14 +1,13 @@
 #include "stdafx.h"
-#include "Logger.h"
+#include "LoggerWindows.h"
 //#include "Command.h"
 #include <string>
 #include "Time.h"
 //#include <Windows.h>
 
-using namespace Utility;
 using namespace std;
 	
-Logger::Logger(FILE *first) :
+Utility::LoggerWindows::LoggerWindows(FILE *first) :
 	ILogger(),
 	m_modified(false),
 	m_indentDepth(0),
@@ -18,13 +17,15 @@ Logger::Logger(FILE *first) :
 	{
 		m_outs.push_back(first);
 	}
+	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
+	ReadConsoleColorsFromConfigFile();
 }
 
-Logger::~Logger()
+Utility::LoggerWindows::~LoggerWindows()
 {
 }
 
-//void Logger::operator()(LogLevel level, const char *name, int line, const char *format, ...)
+//void Utility::LoggerWindows::operator()(LogLevel level, const char *name, int line, const char *format, ...)
 //{
 //	if (m_level < level)
 //	{
@@ -65,7 +66,7 @@ Logger::~Logger()
 //	//mutex.Unlock();
 //}
 
-void Logger::Log(LogLevel level, const char *name, int line, const char *format, ...)
+void Utility::LoggerWindows::Log(LogLevel level, const char *name, int line, const char *format, ...)
 {
 	if (m_level < level)
 	{
@@ -107,7 +108,7 @@ void Logger::Log(LogLevel level, const char *name, int line, const char *format,
 	ResetConsoleColor();
 }
 
-void Logger::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)
+void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
@@ -131,7 +132,7 @@ void Logger::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defa
 }
 
 
-void Logger::AddFile(const char *name)
+void Utility::LoggerWindows::AddFile(const char *name)
 {
 	//mutex.Lock();
 	FILE *file;
@@ -139,4 +140,49 @@ void Logger::AddFile(const char *name)
 	m_outs.push_back(file);
 
 	//mutex.Unlock();
+}
+
+void Utility::LoggerWindows::ResetConsoleColor() const
+{
+	SetConsoleTextAttribute(m_console, 15); // set color back to normal
+}
+
+void Utility::LoggerWindows::ReadConsoleColorsFromConfigFile()
+{
+	// TODO: Not yet implemented
+	// TODO: Store console colors for each logging level from configuration file
+}
+
+void Utility::LoggerWindows::SetConsoleColor(LogLevel level) const
+{
+	switch (level)
+	{
+	case Critical:
+		//SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE );
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_INTENSITY);
+		break;
+	case Emergency:
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED);
+		break;
+	case Error:
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		break;
+	case Warning:
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN);
+		break;
+	case Notice:
+		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		break;
+	case Info:
+		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN);
+		break;
+	case Debug:
+	case Delocust:
+	case DevNull:
+		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+		break;
+	default:
+		ERROR_LOG_UTILITY("Incorrect logging level set");
+		break;
+	}
 }

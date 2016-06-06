@@ -10,17 +10,18 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <Windows.h>
 #include <list>
 
 namespace Utility
 {
-	class Logger : public ILogger
+	class LoggerWindows : public ILogger
 	{
 	typedef std::list<FILE *> Outs;
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		Logger(FILE *first = stdout);
-		~Logger();
+		LoggerWindows(FILE *first = stdout);
+		~LoggerWindows();
 	/* ==================== Constructors and destructors end ==================== */
 	
 	/* ==================== Non-static member functions begin ==================== */
@@ -29,6 +30,10 @@ namespace Utility
 		void Log(LogLevel level, const char *name, int line, const char *format, ...);
 		void Fill(const std::string& strLevel, LogLevel level);
 		void AddFile(const char *name);
+		virtual void ResetConsoleColor() const;
+	protected:
+		virtual void SetConsoleColor(LogLevel level) const;
+		virtual void ReadConsoleColorsFromConfigFile();
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -37,6 +42,7 @@ namespace Utility
 		bool m_modified;
 		int m_indentDepth;
 		const char* m_dateTimeFormat;
+		HANDLE m_console;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Logger */
 

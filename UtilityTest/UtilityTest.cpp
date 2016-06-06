@@ -33,7 +33,7 @@ void ReportError(const std::string& reportStr)
 void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
 {
 	testNumber++;
-	if (statusCode == false)
+	if (!statusCode)
 	{
 		ReportError(reportErrorStr);
 	}

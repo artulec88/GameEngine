@@ -3,165 +3,168 @@
 
 #include "Utility.h"
 //#include "ISerializable.h"
-#include <string>
 #include "ILogger.h"
+#include <string>
+#include <Windows.h> // TODO: This is a platform-dependent header. It shouldn't be directly included here.
 
 #define START_TIMER(timerID) Timing::Timer timerID; timerID.Start();
 #define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) timerID.Stop(); } while (0)
 
-namespace Utility { namespace Timing
-{
-	enum Daytime
+namespace Utility {
+	namespace Timing
 	{
-		NIGHT = 0,
-		BEFORE_DAWN,
-		SUNRISE,
-		DAY,
-		SUNSET,
-		AFTER_DUSK
-	};
-
-	/// <summary> Possible time units. </summary>
-	enum TimeUnit
-	{
-		SECOND = 0,
-		MILLISECOND,
-		MICROSECOND,
-		NANOSECOND
-	};
-
-	class UTILITY_API TimeSpan
-	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
-
-	/* ==================== Constructors and destructors begin ==================== */
-	public:
-		TimeSpan() :
-			m_value(0.0f),
-			m_unit(SECOND)
+		enum Daytime
 		{
-		}
+			NIGHT = 0,
+			BEFORE_DAWN,
+			SUNRISE,
+			DAY,
+			SUNSET,
+			AFTER_DUSK
+		};
 
-		TimeSpan(float timeValue, TimeUnit timeUnit) :
-			m_value(timeValue),
-			m_unit(timeUnit)
+		/// <summary> Possible time units. </summary>
+		enum TimeUnit
 		{
-		}
-		~TimeSpan()
+			SECOND = 0,
+			MILLISECOND,
+			MICROSECOND,
+			NANOSECOND
+		};
+
+		class TimeSpan
 		{
-		}
-	/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		float GetValue() const { return m_value; }
-		TimeUnit GetUnit() const { return m_unit; }
-		void AdjustUnitToValue();
-		TimeSpan& operator/=(int s);
-		void operator=(const TimeSpan& timeSpan);
-		bool operator<(const TimeSpan &timeSpan) const;
-		bool operator>(const TimeSpan &timeSpan) const;
-		std::string ToString() const;
-	/* ==================== Non-static member functions end ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			UTILITY_API TimeSpan() :
+				m_value(0.0f),
+				m_unit(SECOND)
+			{
+			}
 
-	/* ==================== Non-static member variables begin ==================== */
-	private:
-		float m_value;
-		TimeUnit m_unit;
-	/* ==================== Non-static member variables end ==================== */
-	}; /* end class TimeSpan */
+			UTILITY_API TimeSpan(float timeValue, TimeUnit timeUnit) :
+				m_value(timeValue),
+				m_unit(timeUnit)
+			{
+			}
+			
+			UTILITY_API ~TimeSpan()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
 
-	class UTILITY_API Time
-	{
-	/* ==================== Static variables and functions begin ==================== */
-	public:
-		static const float ONE_OVER_BILLION;
-		static const float ONE_OVER_MILLION;
-		static const float ONE_OVER_THOUSAND;
-		static const float ONE;
-		static const float ONE_THOUSAND;
-		static const float ONE_MILLION;
-		static const float ONE_BILLION;
-		static Time Now();
-		static std::string ConvertTimeUnitToString(TimeUnit timeUnit);
-		static float TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit);
-	/* ==================== Static variables and functions end ==================== */
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			UTILITY_API float GetValue() const { return m_value; }
+			UTILITY_API TimeUnit GetUnit() const { return m_unit; }
+			UTILITY_API void AdjustUnitToValue();
+			UTILITY_API TimeSpan& operator/=(int s);
+			UTILITY_API void operator=(const TimeSpan& timeSpan);
+			UTILITY_API bool operator<(const TimeSpan &timeSpan) const;
+			UTILITY_API bool operator>(const TimeSpan &timeSpan) const;
+			UTILITY_API std::string ToString() const;
+			/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
-	public:
-		Time(int seconds, int microseconds) :
-		  m_seconds(seconds),
-		  m_microseconds(microseconds)
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			float m_value;
+			TimeUnit m_unit;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class TimeSpan */
+
+		class Time
 		{
-		}
-		~Time()
+			/* ==================== Static variables and functions begin ==================== */
+		public:
+			UTILITY_API static const float ONE_OVER_BILLION;
+			UTILITY_API static const float ONE_OVER_MILLION;
+			UTILITY_API static const float ONE_OVER_THOUSAND;
+			UTILITY_API static const float ONE;
+			UTILITY_API static const float ONE_THOUSAND;
+			UTILITY_API static const float ONE_MILLION;
+			UTILITY_API static const float ONE_BILLION;
+			UTILITY_API static Time Now();
+			UTILITY_API static std::string ConvertTimeUnitToString(TimeUnit timeUnit);
+			UTILITY_API static float TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit);
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			UTILITY_API Time(int seconds, int microseconds) :
+				m_seconds(seconds),
+				m_microseconds(microseconds)
+			{
+			}
+			UTILITY_API ~Time()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			/// <summary>
+			/// Converts the <code>Time</code> object into the string in a given date/time format.
+			/// </summary>
+			/// <remarks>
+			/// Visit the page http://www.cplusplus.com/reference/ctime/strftime/ for additional supported formats.
+			/// </remarks>
+			UTILITY_API std::string ToDateString(const char *format = "%Y-%m-%d %H:%M:%S") const;
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			int m_seconds;
+			int m_microseconds;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class Time */
+
+		class Timer
 		{
-		}
-	/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Static variables and functions begin ==================== */
+		private:
+			static bool isFrequencyInitialized;
+			static LARGE_INTEGER frequency;
+		public:
+			UTILITY_API static LARGE_INTEGER GetFrequency();
+			/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		/// <summary>
-		/// Converts the <code>Time</code> object into the string in a given date/time format.
-		/// </summary>
-		/// <remarks>
-		/// Visit the page http://www.cplusplus.com/reference/ctime/strftime/ for additional supported formats.
-		/// </remarks>
-		std::string ToDateString(const char *format = "%Y-%m-%d %H:%M:%S") const;
-	/* ==================== Non-static member functions end ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			UTILITY_API Timer();
+			UTILITY_API ~Timer();
+			/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
-	private:
-		int m_seconds;
-		int m_microseconds;
-	/* ==================== Non-static member variables end ==================== */
-	}; /* end class Time */
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			UTILITY_API TimeSpan GetTimeSpan() const;
+			UTILITY_API TimeSpan GetTimeSpan(TimeUnit timeUnit) const;
 
-	class UTILITY_API Timer// : public ISerializable
-	{
-	/* ==================== Static variables and functions begin ==================== */
-	private:
-		static bool isFrequencyInitialized;
-		static LARGE_INTEGER frequency;
-	public:
-		static LARGE_INTEGER GetFrequency();
-	/* ==================== Static variables and functions end ==================== */
+			UTILITY_API void Start();
+			UTILITY_API void Reset();
+			UTILITY_API void Stop();
+			UTILITY_API bool IsRunning() const { return m_isRunning; }
+		private:
+			float CalculateElapsedTimeInMilliseconds() const
+			{
+				//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
+				//INFO_LOG("diff = %d, frequency = %d", diff, GetFrequency().QuadPart);
+				return static_cast<float>(Time::ONE_THOUSAND * (m_stopTime.QuadPart - m_startTime.QuadPart)) / GetFrequency().QuadPart; // in [s]
+			}
+			/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
-	public:
-		Timer();
-		~Timer();
-	/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			bool m_isRunning;
+			LARGE_INTEGER m_startTime;
+			LARGE_INTEGER m_stopTime;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class Timer */
 
-	/* ==================== Non-static member functions begin ==================== */
-	public:
-		TimeSpan GetTimeSpan() const;
-		TimeSpan GetTimeSpan(TimeUnit timeUnit) const;
-
-		void Start();
-		void Reset();
-		void Stop();
-		bool IsRunning() const { return m_isRunning; }
-	private:
-		float CalculateElapsedTimeInMilliseconds() const
-		{
-			//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
-			//INFO_LOG("diff = %d, frequency = %d", diff, GetFrequency().QuadPart);
-			return static_cast<float>(Time::ONE_THOUSAND * (m_stopTime.QuadPart - m_startTime.QuadPart)) / GetFrequency().QuadPart; // in [s]
-		}
-	/* ==================== Non-static member functions end ==================== */
-
-	/* ==================== Non-static member variables begin ==================== */
-	private:
-		bool m_isRunning;
-		LARGE_INTEGER m_startTime;
-		LARGE_INTEGER m_stopTime;
-	/* ==================== Non-static member variables end ==================== */
-	}; /* end class Timer */
-
-} /* end namespace Timing */
+	} /* end namespace Timing */
 
 } /* end namespace Utility */
 
