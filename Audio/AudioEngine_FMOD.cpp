@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AudioEngine.h"
+#include "AudioEngine_FMOD.h"
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
@@ -7,10 +7,11 @@
 
 #include "fmod_errors.h" // for error-checking
 
-/* static */ const Math::Real Audio::AudioEngine::OCTAVE_RATIO = 2.0f;
-/* static */ const Math::Real Audio::AudioEngine::SEMITONE_RATIO = pow(2.0f, 1.0f / 12.0f);
+/* static */ const Math::Real Audio::AudioEngine_FMOD::OCTAVE_RATIO = 2.0f;
+/* static */ const Math::Real Audio::AudioEngine_FMOD::SEMITONE_RATIO = pow(2.0f, 1.0f / 12.0f);
 
-Audio::AudioEngine::AudioEngine(int maxChannelsCount) :
+Audio::AudioEngine_FMOD::AudioEngine_FMOD(int maxChannelsCount) :
+	IAudioEngine(),
 	m_maxChannelsCount(maxChannelsCount),
 	m_system(NULL),
 	m_master(NULL),
@@ -28,12 +29,12 @@ Audio::AudioEngine::AudioEngine(int maxChannelsCount) :
 		fmodResult, FMOD_ErrorString(fmodResult));
 
 	int driversCount = 0;
-	m_system->getNumDrivers(&driversCount);
-	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(driversCount != 0, Utility::Critical, "Failed to create an audio system. Drivers count = %d", driversCount);
+	fmodResult = m_system->getNumDrivers(&driversCount);
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && driversCount != 0, Utility::Critical, "Failed to create an audio system. Drivers count = %d", driversCount);
 
 	unsigned int version;
 	fmodResult = m_system->getVersion(&version);
-	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(version >= FMOD_VERSION, Utility::Error,
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && version >= FMOD_VERSION, Utility::Error,
 		"Failed to create an audio system. FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
 
 	fmodResult = m_system->init(m_maxChannelsCount, FMOD_INIT_NORMAL, NULL); // initialize FMOD
@@ -50,13 +51,14 @@ Audio::AudioEngine::AudioEngine(int maxChannelsCount) :
 
 	// Set up modes for each category
 	m_modes[Categories::SOUND_EFFECT] = FMOD_DEFAULT;
+	m_modes[Categories::SOUND_EFFECT_3D] = FMOD_3D;
 	m_modes[Categories::SONG] = FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL;
 
 	NOTICE_LOG_AUDIO("Audio engine created.");
 }
 
 
-Audio::AudioEngine::~AudioEngine()
+Audio::AudioEngine_FMOD::~AudioEngine_FMOD()
 {
 	FMOD_RESULT fmodResult = FMOD_OK;
 	// Releasing sounds in each category
@@ -82,7 +84,7 @@ Audio::AudioEngine::~AudioEngine()
 	NOTICE_LOG_AUDIO("Audio engine destroyed.");
 }
 
-void Audio::AudioEngine::Update(Math::Real deltaTime)
+void Audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
 {
 	const float fadeTime = 1.0f; // in seconds
 	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
@@ -126,17 +128,22 @@ void Audio::AudioEngine::Update(Math::Real deltaTime)
 		fmodResult, FMOD_ErrorString(fmodResult));
 }
 
-void Audio::AudioEngine::LoadSoundEffect(const std::string& path)
+void Audio::AudioEngine_FMOD::LoadSoundEffect(const std::string& path)
 {
 	Load(Categories::SOUND_EFFECT, path);
 }
 
-void Audio::AudioEngine::LoadSong(const std::string& path)
+void Audio::AudioEngine_FMOD::LoadSoundEffect3D(const std::string& path)
+{
+	Load(Categories::SOUND_EFFECT_3D, path);
+}
+
+void Audio::AudioEngine_FMOD::LoadSong(const std::string& path)
 {
 	Load(Categories::SONG, path);
 }
 
-void Audio::AudioEngine::Load(Categories::Category type, const std::string& path)
+void Audio::AudioEngine_FMOD::Load(Categories::Category type, const std::string& path)
 {
 	if (m_sounds[type].find(path) != m_sounds[type].end())
 	{
@@ -148,17 +155,17 @@ void Audio::AudioEngine::Load(Categories::Category type, const std::string& path
 	m_sounds[type].insert(std::make_pair(path, sound));
 }
 
-Math::Real Audio::AudioEngine::ChangeOctave(Math::Real frequency, Math::Real variation) const
+Math::Real Audio::AudioEngine_FMOD::ChangeOctave(Math::Real frequency, Math::Real variation) const
 {
 	return frequency * pow(OCTAVE_RATIO, variation);
 }
 
-Math::Real Audio::AudioEngine::ChangeSemitone(Math::Real frequency, Math::Real variation) const
+Math::Real Audio::AudioEngine_FMOD::ChangeSemitone(Math::Real frequency, Math::Real variation) const
 {
 	return frequency * pow(SEMITONE_RATIO, variation);
 }
 
-void Audio::AudioEngine::PlaySoundEffect(const std::string& path, Math::Real minVolume, Math::Real maxVolume, Math::Real minPitch, Math::Real maxPitch)
+void Audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, Math::Real volume, Math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT].find(path);
@@ -169,9 +176,9 @@ void Audio::AudioEngine::PlaySoundEffect(const std::string& path, Math::Real min
 	}
 
 	// Calculating random volume and pitch in selected range
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
-	Math::Real volume = randomGenerator.NextFloat(minVolume, maxVolume);
-	Math::Real pitch = randomGenerator.NextFloat(minPitch, maxPitch);
+	//const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	//Math::Real volume = randomGenerator.NextFloat(minVolume, maxVolume);
+	//Math::Real pitch = randomGenerator.NextFloat(minPitch, maxPitch);
 
 	// Playing the sound effect with these initial values
 	FMOD::Channel* channel;
@@ -183,7 +190,30 @@ void Audio::AudioEngine::PlaySoundEffect(const std::string& path, Math::Real min
 	channel->setPaused(false);
 }
 
-void Audio::AudioEngine::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
+void Audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity)
+{
+	// Trying to find sound effect and return if not found
+	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT_3D].find(path);
+	if (soundItr == m_sounds[Categories::SOUND_EFFECT_3D].end())
+	{
+		WARNING_LOG_AUDIO("The requested 3D sound effect \"%s\" has not been found", path.c_str());
+		return;
+	}
+
+	// Playing the sound effect with these initial values
+	FMOD::Channel* channel;
+	m_system->playSound(soundItr->second, m_groups[Categories::SOUND_EFFECT_3D], true, &channel);
+	channel->setVolume(volume);
+	Math::Real frequency;
+	channel->getFrequency(&frequency);
+	channel->setFrequency(ChangeSemitone(frequency, pitch));
+	const FMOD_VECTOR fmodPosition = { position.GetX(), position.GetY(), position.GetZ() };
+	const FMOD_VECTOR fmodVelocity = { velocity.GetX(), velocity.GetY(), velocity.GetZ() };
+	channel->set3DAttributes(&fmodPosition, &fmodVelocity);
+	channel->setPaused(false);
+}
+
+void Audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */)
 {
 	// Ignoring if this song is already playing
 	if (m_currentSongPath == path)
@@ -217,17 +247,17 @@ void Audio::AudioEngine::PlaySong(const std::string& path /* TODO: Better parame
 	m_fade = FadeStates::FADE_IN;
 }
 
-void Audio::AudioEngine::SetMasterVolume(Math::Real volume)
+void Audio::AudioEngine_FMOD::SetMasterVolume(Math::Real volume)
 {
 	m_master->setVolume(volume);
 }
 
-void Audio::AudioEngine::SetSoundEffectsVolume(Math::Real volume)
+void Audio::AudioEngine_FMOD::SetSoundEffectsVolume(Math::Real volume)
 {
 	m_groups[Categories::SOUND_EFFECT]->setVolume(volume);
 }
 
-void Audio::AudioEngine::SetSongsVolume(Math::Real volume)
+void Audio::AudioEngine_FMOD::SetSongsVolume(Math::Real volume)
 {
 	m_groups[Categories::SONG]->setVolume(volume);
 }

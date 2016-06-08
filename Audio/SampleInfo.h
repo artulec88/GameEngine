@@ -5,25 +5,30 @@
 
 namespace Audio
 {
+	/// <summary>
+	/// Holds various properties of the audio, e.g. volume, pitch, loop, panning. They tell how we play the audio data.
+	/// </summary>
 	class SampleInfo
 	{
-	/* ==================== Static variables begin ==================== */
-	/* ==================== Static variables end ==================== */
+		/* ==================== Static variables begin ==================== */
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AUDIO_API explicit SampleInfo(double volume);
+		AUDIO_API explicit SampleInfo(double volume, double pitch);
 		AUDIO_API ~SampleInfo(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		double m_volume;
-	/* ==================== Non-static member variables end ==================== */
+		double m_pitch;
+		// TODO: loop information, panning etc.
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SampleInfo */
 
 } /* end namespace Audio */

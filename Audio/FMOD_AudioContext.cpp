@@ -2,32 +2,39 @@
 #include "FMOD_AudioContext.h"
 
 
-Audio::FmodAudioContext::FmodAudioContext()
+Audio::Fmod::FmodAudioContext::FmodAudioContext()
 {
 }
 
 
-Audio::FmodAudioContext::~FmodAudioContext()
+Audio::Fmod::FmodAudioContext::~FmodAudioContext()
 {
 }
 
-void Audio::FmodAudioContext::PlayAudio(AudioObject& audioObject)
+void Audio::Fmod::FmodAudioContext::PlayAudio(AudioObject& audioObject)
+{
+	RemoveAudio(audioObject);
+	m_playingAudioObjects.push_back(&audioObject);
+}
+
+void Audio::Fmod::FmodAudioContext::PauseAudio(AudioObject& audioObject)
+{
+	RemoveAudio(audioObject);
+}
+
+void Audio::Fmod::FmodAudioContext::StopAudio(AudioObject& audioObject)
+{
+	if (RemoveAudio(audioObject))
+	{
+		audioObject.SetPos(0.0);
+	}
+}
+
+void Audio::Fmod::FmodAudioContext::GenerateSamples(UINT8* stream, int streamLength)
 {
 }
 
-void Audio::FmodAudioContext::PauseAudio(AudioObject& audioObject)
+bool Audio::Fmod::FmodAudioContext::RemoveAudio(AudioObject& audioObject)
 {
-}
-
-void Audio::FmodAudioContext::StopAudio(AudioObject& audioObject)
-{
-
-}
-
-void Audio::FmodAudioContext::GenerateSamples(UINT8* stream, int streamLength)
-{
-}
-
-bool Audio::FmodAudioContext::RemoveAudio(AudioObject& audioObject)
-{
+	return true;
 }

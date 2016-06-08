@@ -6,27 +6,30 @@
 
 namespace Audio
 {
+	/// <summary>
+	/// The interface for basic audio functionality, e.g. playing, pausing and stopping audio.
+	/// </summary>
 	class IAudioContext
 	{
-	/* ==================== Static variables begin ==================== */
-	/* ==================== Static variables end ==================== */
+		/* ==================== Static variables begin ==================== */
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API IAudioContext();
 		AUDIO_API virtual ~IAudioContext(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void PlayAudio(AudioObject& audioObject) = 0;
-		virtual void PauseAudio(AudioObject& audioObject) = 0;
-		virtual void StopAudio(AudioObject& audioObject) = 0;
-	/* ==================== Non-static member functions end ==================== */
+		AUDIO_API virtual void PlayAudio(AudioObject& audioObject) = 0;
+		AUDIO_API virtual void PauseAudio(AudioObject& audioObject) = 0;
+		AUDIO_API virtual void StopAudio(AudioObject& audioObject) = 0;
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioContext */
 
 } /* end namespace Audio */

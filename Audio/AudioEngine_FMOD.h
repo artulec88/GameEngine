@@ -1,40 +1,16 @@
-#ifndef __AUDIO_AUDIO_ENGINE_H__
-#define __AUDIO_AUDIO_ENGINE_H__
+#ifndef __AUDIO_AUDIO_ENGINE_FMOD_H__
+#define __AUDIO_AUDIO_ENGINE_FMOD_H__
 
 #include "Audio.h"
+#include "IAudioEngine.h"
 #include "Sound.h"
 #include "fmod.hpp"
-
-#include "Math\Math.h"
-
-#include <string>
 #include <vector>
 #include <map>
 
 namespace Audio
 {
-	namespace Categories
-	{
-		enum Category
-		{
-			SOUND_EFFECT = 0,
-			//SOUND_EFFECT_3D,
-			SONG,
-			COUNT // The number of categories
-		}; /* end enum Category */
-	} /* end namespace Categories */
-
-	namespace FadeStates
-	{
-		enum FadeState
-		{
-			FADE_NONE = 0,
-			FADE_IN,
-			FADE_OUT
-		}; /* end enum FadeState */
-	} /* end namespace FadeStates */
-
-	class AudioEngine
+	class AudioEngine_FMOD : public IAudioEngine
 	{
 		/* TODO: Better key for more efficient map search ? */
 		typedef std::map<std::string, FMOD::Sound*> Filenames2Sounds;
@@ -46,30 +22,33 @@ namespace Audio
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AUDIO_API explicit AudioEngine(int maxChannelsCount);
-		AUDIO_API ~AudioEngine(void);
+		AUDIO_API explicit AudioEngine_FMOD(int maxChannelsCount);
+		AUDIO_API ~AudioEngine_FMOD(void);
 	private:
-		AudioEngine(const AudioEngine& audioEngine);
-		void operator=(const AudioEngine& audioEngine);
+		AudioEngine_FMOD(const AudioEngine_FMOD& audioEngine);
+		void operator=(const AudioEngine_FMOD& audioEngine);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		AUDIO_API void Update(Math::Real deltaTime);
-		AUDIO_API void LoadSoundEffect(const std::string& path);
-		AUDIO_API void LoadSong(const std::string& path);
-		//AUDIO_API void LoadSoundEffect3D(const std::string& path);
+		AUDIO_API virtual void Update(Math::Real deltaTime);
+		AUDIO_API virtual void LoadSoundEffect(const std::string& path);
+		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path);
+		AUDIO_API virtual void LoadSong(const std::string& path);
 		
 		/// <summary>
 		/// Plays the sound effect specified in the <paramref name="path/>.
-		/// The method searches for the sound in the correct map, and plays it back like before,
-		/// except that it sets the volume and pitch of the sound using random values generated within the selected ranges.
+		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
-		AUDIO_API void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */,
-			Math::Real minVolume, Math::Real maxVolume, Math::Real minPitch, Math::Real maxPitch);
-		AUDIO_API void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */);
-		AUDIO_API void StopSoundEffects() { m_groups[Categories::SOUND_EFFECT]->stop(); }
-		AUDIO_API void StopSong()
+		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch);
+		/// <summary>
+		/// Plays the 3D sound effect specified in the <paramref name="path/>.
+		/// The method searches for the sound in the correct map and plays it back setting the volume, pitch, position and velocity of the source beforehand.
+		/// </summary>
+		AUDIO_API virtual void PlaySoundEffect3D(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch, const Math::Vector3D& position, const Math::Vector3D& velocity);
+		AUDIO_API virtual void PlaySong(const std::string& path /* TODO: Better parameter to identify which song to play? */);
+		AUDIO_API virtual void StopSoundEffects() { m_groups[Categories::SOUND_EFFECT]->stop(); }
+		AUDIO_API virtual void StopSong()
 		{
 			if (m_currentSong != NULL)
 			{
@@ -77,9 +56,9 @@ namespace Audio
 			}
 			m_nextSongPath.clear();
 		}
-		AUDIO_API void SetMasterVolume(Math::Real volume);
-		AUDIO_API void SetSoundEffectsVolume(Math::Real volume);
-		AUDIO_API void SetSongsVolume(Math::Real volume);
+		AUDIO_API virtual void SetMasterVolume(Math::Real volume);
+		AUDIO_API virtual void SetSoundEffectsVolume(Math::Real volume);
+		AUDIO_API virtual void SetSongsVolume(Math::Real volume);
 	private:
 		void Load(Categories::Category type, const std::string& path);
 
@@ -97,7 +76,7 @@ namespace Audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		Math::Real ChangeOctave(Math::Real frequency, Math::Real variation) const;
+		virtual Math::Real ChangeOctave(Math::Real frequency, Math::Real variation) const;
 
 		/// <summary>
 		/// A helper method for calculating the semitones. By using this method it becomes simple to modify the pitch of a sound.
@@ -113,7 +92,7 @@ namespace Audio
 		/// <returns>
 		/// New frequency of a sound.
 		/// </returns>
-		Math::Real ChangeSemitone(Math::Real frequency, Math::Real variation) const;
+		virtual Math::Real ChangeSemitone(Math::Real frequency, Math::Real variation) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
@@ -130,8 +109,8 @@ namespace Audio
 
 		FadeStates::FadeState m_fade;
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class AudioEngine */
+	}; /* end class AudioEngine_FMOD */
 
 } /* end namespace Audio */
 
-#endif /* __AUDIO_AUDIO_ENGINE_H__ */
+#endif /* __AUDIO_AUDIO_ENGINE_FMOD_H__ */

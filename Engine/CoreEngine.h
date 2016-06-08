@@ -5,7 +5,7 @@
 #include "GameManager.h"
 #include "GameStateManager.h"
 
-#include "Audio\AudioEngine.h"
+#include "Audio\IAudioEngine.h"
 
 #include "Physics\PhysicsEngine.h"
 
@@ -129,7 +129,7 @@ public:
 	void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 	void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
-	Audio::AudioEngine* GetAudioEngine() { return m_audioEngine; }
+	Audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
 
 	const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 	const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
@@ -196,7 +196,7 @@ private:
 	const char* m_windowTitle;
 	const Math::Real m_frameTime;
 	GameManager* m_game;
-	Audio::AudioEngine* m_audioEngine;
+	std::unique_ptr<Audio::IAudioEngine> m_audioEngine;
 	Physics::PhysicsEngine* m_physicsEngine;
 	Rendering::Renderer* m_renderer;
 

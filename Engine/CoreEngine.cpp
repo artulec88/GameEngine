@@ -8,6 +8,8 @@
 #include "Math\Math.h"
 #include "Math\FloatingPoint.h"
 
+#include "Audio\AudioEngineFactory.h"
+
 #include <ctime>
 #include <iomanip>
 #include <sstream>
@@ -124,7 +126,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_windowTitle(title),
 	m_frameTime(1.0f / maxFrameRate),
 	m_game(NULL),
-	m_audioEngine(NULL),
+	m_audioEngine(nullptr),
 	m_physicsEngine(NULL),
 	m_renderer(NULL),
 	LATITUDE(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)),
@@ -232,7 +234,6 @@ CoreEngine::~CoreEngine(void)
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
-	SAFE_DELETE(m_audioEngine);
 	SAFE_DELETE(m_physicsEngine);
 	SAFE_DELETE(m_renderer);
 	glfwTerminate(); // Terminate GLFW
@@ -244,7 +245,9 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateAudioEngine()
 {
-	m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE_ENGINE("audioMaxChannels", 32));
+	//m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE_ENGINE("audioMaxChannels", 32));
+	Audio::AudioEngineFactory audioEngineFactory;
+	m_audioEngine = audioEngineFactory.CreateAudioEngine(Audio::AudioEngineTypes::FMOD);
 	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
@@ -474,8 +477,9 @@ void CoreEngine::Run()
 	Math::Real spf = REAL_ZERO;
 #endif
 
-	m_audioEngine->LoadSong(m_audioDirectory + "\\Kalimba.mp3");
-	m_audioEngine->PlaySong(m_audioDirectory + "\\Kalimba.mp3");
+	m_audioEngine->LoadSong(m_audioDirectory + "\\520387_Horizon_short.mp3");
+	m_audioEngine->PlaySong(m_audioDirectory + "\\520387_Horizon_short.mp3");
+	//m_audioEngine->play2D((m_audioDirectory + "520387_Horizon_short.mp3").c_str(), true);
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
@@ -574,7 +578,7 @@ void CoreEngine::Run()
 
 			/* ==================== REGION #2_4 begin ====================*/
 			//RESET_TIMER(innerTimer);
-			m_audioEngine->Update(m_frameTime);
+			//m_audioEngine->Update(m_frameTime);
 			//STOP_TIMER(innerTimer, m_countStats2_4, m_minMaxTime2_4, m_timeSum2_4);
 			/* ==================== REGION #2_4 end ====================*/
 

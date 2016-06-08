@@ -99,7 +99,7 @@ MenuGameState::MenuGameState() :
 	//m_notSelectedMenuEntryBorderEdgeTransitionEffect(NULL);
 	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Engine::Effects::SmoothTransitionEffect<Math::Real>(NULL, borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
 
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine()->LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
+	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
 
 	SelectChild(0);
 }
@@ -210,7 +210,7 @@ void MenuGameState::SelectChild(int childIndex)
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine()->PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 0.9f, 1.0f, 0.4f, 1.0f);
+	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 0.9f, 1.0f);
 }
 
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
