@@ -90,6 +90,18 @@ void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::st
 	m_soundSources[type].insert(std::make_pair(path, sound));
 }
 
+void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */)
+{
+	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
+	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
+	{
+		WARNING_LOG_AUDIO("The requested sound effect \"%s\" has not been found", path.c_str());
+		return;
+	}
+
+	m_engine->play2D(soundItr->second, false, false, false, false);
+}
+
 void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
@@ -174,10 +186,19 @@ void Audio::AudioEngine_IRR_KLANG::SetMasterVolume(Math::Real volume)
 
 void Audio::AudioEngine_IRR_KLANG::SetSoundEffectsVolume(Math::Real volume)
 {
+	SetVolume(Categories::SOUND_EFFECT, volume);
 }
 
 void Audio::AudioEngine_IRR_KLANG::SetSongsVolume(Math::Real volume)
 {
+}
+
+void Audio::AudioEngine_IRR_KLANG::SetVolume(Categories::Category type, Math::Real volume)
+{
+	for (Filenames2SoundSources::iterator soundSourceItr = m_soundSources[type].begin(); soundSourceItr != m_soundSources[type].end(); ++soundSourceItr)
+	{
+		soundSourceItr->second->setDefaultVolume(volume);
+	}
 }
 
 Math::Real Audio::AudioEngine_IRR_KLANG::ChangeOctave(Math::Real frequency, Math::Real variation) const

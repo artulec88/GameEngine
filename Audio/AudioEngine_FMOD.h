@@ -42,7 +42,12 @@ namespace Audio
 		AUDIO_API virtual void LoadSoundEffect(const std::string& path);
 		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path);
 		AUDIO_API virtual void LoadSong(const std::string& path);
-		
+	
+		/// <summary>
+		/// Plays the sound effect specified in the <paramref name="path/>. It starts by first checking if the sound has already been loaded,
+		/// and does nothing if this is the case. The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
+		/// </summary>
+		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */);
 		/// <summary>
 		/// Plays the sound effect specified in the <paramref name="path/>. It starts by first checking if the sound has already been loaded,
 		/// and does nothing if this is the case. The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.

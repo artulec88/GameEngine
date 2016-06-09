@@ -35,6 +35,11 @@ namespace Audio
 		/// Plays the sound effect specified in the <paramref name="path/>.
 		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
+		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */);
+		/// <summary>
+		/// Plays the sound effect specified in the <paramref name="path/>.
+		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
+		/// </summary>
 		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch);
 		/// <summary>
 		/// Plays the 3D sound effect specified in the <paramref name="path/>.
@@ -81,6 +86,8 @@ namespace Audio
 		/// New frequency of a sound.
 		/// </returns>
 		virtual Math::Real ChangeSemitone(Math::Real frequency, Math::Real variation) const;
+
+		void SetVolume(Categories::Category type, Math::Real volume);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

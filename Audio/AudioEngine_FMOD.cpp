@@ -167,6 +167,14 @@ Math::Real Audio::AudioEngine_FMOD::ChangeSemitone(Math::Real frequency, Math::R
 	return frequency * pow(SEMITONE_RATIO, variation);
 }
 
+void Audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path)
+{
+	float volume, pitch;
+	m_groups[Categories::SOUND_EFFECT]->getVolume(&volume);
+	m_groups[Categories::SOUND_EFFECT]->getPitch(&pitch);
+	PlaySoundEffect(path, volume, pitch);
+}
+
 void Audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, Math::Real volume, Math::Real pitch)
 {
 	// Trying to find sound effect and return if not found
