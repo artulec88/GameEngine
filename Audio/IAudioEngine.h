@@ -28,6 +28,9 @@ namespace Audio
 		}; /* end enum FadeState */
 	} /* end namespace FadeStates */
 
+	/// <summary>
+	/// The interface for the audio engine.
+	/// </summary>
 	class IAudioEngine
 	{
 		/* ==================== Static variables begin ==================== */
@@ -35,7 +38,13 @@ namespace Audio
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>
+		/// Audio engine constructor.
+		/// </summary>
 		AUDIO_API IAudioEngine();
+		/// <summary>
+		/// Audio engine destructor.
+		/// </summary>
 		AUDIO_API virtual ~IAudioEngine(void);
 	private:
 		IAudioEngine(const IAudioEngine& audioEngine);
@@ -44,13 +53,16 @@ namespace Audio
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// Updates the state of the audio engine. For irrKlang audio engine running in multithreaded mode this function may be an empty operation.
+		/// </summary>
 		AUDIO_API virtual void Update(Math::Real deltaTime) = 0;
 		AUDIO_API virtual void LoadSoundEffect(const std::string& path) = 0;
 		AUDIO_API virtual void LoadSoundEffect3D(const std::string& path) = 0;
 		AUDIO_API virtual void LoadSong(const std::string& path) = 0;
 
 		/// <summary>
-		/// Plays the sound effect specified in the <paramref name="path/>.
+		/// Plays the sound effect specified in the <paramref name="path/>. If the sound under the specified key has not been loaded yet, the function simply returns.
 		/// The method searches for the sound in the correct map and plays it back setting the volume and pitch beforehand.
 		/// </summary>
 		AUDIO_API virtual void PlaySoundEffect(const std::string& path /* TODO: Better parameter to identify which sound effect to play? */, Math::Real volume, Math::Real pitch) = 0;

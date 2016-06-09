@@ -1,6 +1,6 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-CoreEngine	1	1	433783	433783	433783
-CreateRenderer	1	0	433403	0	433403
-Start	1	1	3.26844e+06	3.26844e+06	3.26844e+06
-Stop	1	0	1687.79	0	1687.79
-Run	1	0	3.2676e+06	0	3.2676e+06
+CoreEngine	1	1	2.02471e+07	2.02471e+07	2.02471e+07
+CreateRenderer	1	0	297315	0	297315
+Start	1	1	2.93433e+06	2.93433e+06	2.93433e+06
+Stop	1	0	1.52052	0	1.52052
+Run	1	0	2.93423e+06	0	2.93423e+06

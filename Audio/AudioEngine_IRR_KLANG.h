@@ -85,8 +85,15 @@ namespace Audio
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		const float M_SONG_FADE_IN_TIME;
 		irrklang::ISoundEngine* m_engine;
 		Filenames2SoundSources m_soundSources[Categories::COUNT];
+
+		irrklang::ISound* m_currentSong;
+		std::string m_currentSongPath;
+		std::string m_nextSongPath;
+		
+		FadeStates::FadeState m_fade;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AudioEngine_IRR_KLANG */
 

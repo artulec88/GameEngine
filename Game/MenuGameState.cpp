@@ -197,6 +197,9 @@ void MenuGameState::ChooseCurrentMenuEntry()
 	}
 }
 
+Math::Real pitch = 1.0f;
+Math::Real pitchStep = 0.0f;
+
 void MenuGameState::SelectChild(int childIndex)
 {
 	DEBUG_LOG_GAME("Selected menu entry changed from %d to %d", m_currentMenuEntry->GetSelectedMenuEntryIndex(), childIndex);
@@ -210,7 +213,12 @@ void MenuGameState::SelectChild(int childIndex)
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	m_mainMenuRootEntry.GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 0.9f, 1.0f);
+	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, pitch);
+	pitch += pitchStep;
+	if (pitch > 10.0f)
+	{
+		pitch = 0.1f;
+	}
 }
 
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const

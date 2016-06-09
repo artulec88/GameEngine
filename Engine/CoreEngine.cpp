@@ -245,9 +245,8 @@ CoreEngine::~CoreEngine(void)
 
 void CoreEngine::CreateAudioEngine()
 {
-	//m_audioEngine = new Audio::AudioEngine(GET_CONFIG_VALUE_ENGINE("audioMaxChannels", 32));
 	Audio::AudioEngineFactory audioEngineFactory;
-	m_audioEngine = audioEngineFactory.CreateAudioEngine(Audio::AudioEngineTypes::FMOD);
+	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<Audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(Audio::AudioEngineTypes::FMOD))));
 	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
 }
 
@@ -477,8 +476,8 @@ void CoreEngine::Run()
 	Math::Real spf = REAL_ZERO;
 #endif
 
-	m_audioEngine->LoadSong(m_audioDirectory + "\\520387_Horizon_short.mp3");
-	m_audioEngine->PlaySong(m_audioDirectory + "\\520387_Horizon_short.mp3");
+	m_audioEngine->LoadSong(m_audioDirectory + "520387_Horizon_short.mp3");
+	m_audioEngine->PlaySong(m_audioDirectory + "520387_Horizon_short.mp3");
 	//m_audioEngine->play2D((m_audioDirectory + "520387_Horizon_short.mp3").c_str(), true);
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
@@ -578,7 +577,7 @@ void CoreEngine::Run()
 
 			/* ==================== REGION #2_4 begin ====================*/
 			//RESET_TIMER(innerTimer);
-			//m_audioEngine->Update(m_frameTime);
+			m_audioEngine->Update(m_frameTime);
 			//STOP_TIMER(innerTimer, m_countStats2_4, m_minMaxTime2_4, m_timeSum2_4);
 			/* ==================== REGION #2_4 end ====================*/
 

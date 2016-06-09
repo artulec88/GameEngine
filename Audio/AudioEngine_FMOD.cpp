@@ -12,10 +12,13 @@
 
 Audio::AudioEngine_FMOD::AudioEngine_FMOD(int maxChannelsCount) :
 	IAudioEngine(),
+	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
 	m_maxChannelsCount(maxChannelsCount),
 	m_system(NULL),
 	m_master(NULL),
 	m_currentSong(NULL),
+	m_currentSongPath(""),
+	m_nextSongPath(""),
 	m_fade(FadeStates::FADE_NONE)
 {
 	/* ==================== Initializing audio logger begin ==================== */
@@ -86,12 +89,11 @@ Audio::AudioEngine_FMOD::~AudioEngine_FMOD()
 
 void Audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
 {
-	const float fadeTime = 1.0f; // in seconds
 	if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_IN))
 	{
 		float volume;
 		m_currentSong->getVolume(&volume);
-		float nextVolume = volume + deltaTime / fadeTime;
+		float nextVolume = volume + deltaTime / M_SONG_FADE_IN_TIME;
 		if (nextVolume >= 1.0f)
 		{
 			nextVolume = 1.0f;
@@ -104,7 +106,7 @@ void Audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
 	{
 		float volume;
 		m_currentSong->getVolume(&volume);
-		float nextVolume = volume - deltaTime / fadeTime;
+		float nextVolume = volume - deltaTime / M_SONG_FADE_IN_TIME;
 		if (nextVolume <= 0.0f)
 		{
 			m_currentSong->stop();
