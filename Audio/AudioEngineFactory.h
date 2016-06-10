@@ -26,7 +26,7 @@ namespace Audio
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AUDIO_API AudioEngineFactory();
-		AUDIO_API virtual ~AudioEngineFactory(void);
+		AUDIO_API ~AudioEngineFactory(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
