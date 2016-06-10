@@ -78,7 +78,7 @@ namespace Math
 		Real m_smoothSidesFactor;
 		Real m_smoothCenterFactor;
 
-		Interpolation::Interpolator<Math::Real>* m_interpolator;
+		std::unique_ptr<Interpolation::Interpolator<Math::Real>> m_interpolator;
 
 		const Random::RandomGenerator& m_randomGenerator;
 	/* ==================== Non-static member variables end ==================== */

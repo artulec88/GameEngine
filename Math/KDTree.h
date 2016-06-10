@@ -22,8 +22,10 @@ class KDTree
 public:
 	MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1);
 	MATH_API ~KDTree(void);
-private:
+protected:
 	KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples, int depth);
+	//KDTree(const KDTree& kdTree) = delete;
+	//KDTree& operator=(const KDTree& kdTree) = delete;
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -62,22 +64,20 @@ public:
 	MATH_API std::string ToString() const;
 private:
 	void BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth);
-	void SearchNearestValue(const Vector2D& position, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
-	void SearchNearestValue(Math::Real x, Math::Real z, int depth, Vector3D* minDistancePositions, Real* minDistances) const;
+	void SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
+	void SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
 	std::string ToString(int depth) const;
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	KDTree* m_leftTree;
-	KDTree* m_rightTree;
+	std::unique_ptr<KDTree> m_leftTree;
+	std::unique_ptr<KDTree> m_rightTree;
+	int m_numberOfSamples;
 	Vector2D m_position;
 	Real m_value;
-	int m_numberOfSamples;
-	Vector3D* m_minDistancePositions; // only root node should allocate memory for this variable
-	Real* m_minDistances; // only root node should allocate memory for this variable
 #ifdef CALCULATE_MATH_STATS
-	Statistics::ClassStats& m_classStats;
+	//Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 

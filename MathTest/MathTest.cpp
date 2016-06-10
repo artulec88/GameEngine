@@ -483,7 +483,7 @@ void SortTest()
 	 */
 	for (int sortingMethodIndex = 0; sortingMethodIndex < NUMBER_OF_SORTING_METHODS; ++sortingMethodIndex)
 	{
-		Sorting::ISort* sorter = Sorting::ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]);
+		std::unique_ptr<Sorting::ISort> sorter = Sorting::ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]);
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending begin ==================== */
 		bool sortingTestCasePassed = true;
 		Sorting::SortingParametersChain sortingParameters(Sorting::COMPONENT_X, Sorting::ASCENDING);
@@ -852,7 +852,6 @@ void SortTest()
 		}
 		TestReport(sortingTestCasePassed, sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " in DESCENDING order by sum of squared components failed.");
 		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending end ==================== */
-		SAFE_DELETE(sorter);
 	}
 
 	SAFE_DELETE_JUST_TABLE(initialVectors);
@@ -889,7 +888,7 @@ void KDTreeTest()
 	//	DEBUG_LOG_MATH_TEST("positions[%d] = %s", i, positions[i].ToString().c_str());
 	//}
 
-	KDTree* kdTree = new KDTree(positions, NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
+	std::unique_ptr<KDTree> kdTree = std::make_unique<KDTree>(positions, NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
 
 	//DEBUG_LOG_MATH_TEST("K-d tree structure:\n%s", kdTree->ToString().c_str());
 
@@ -912,7 +911,6 @@ void KDTreeTest()
 		INFO_LOG_MATH_TEST("The final result for position (%s) in k-d tree search is %.3f", searchPositions[i].ToString().c_str(), height);
 	}
 
-	SAFE_DELETE(kdTree);
 	SAFE_DELETE_JUST_TABLE(searchPositions);
 	SAFE_DELETE_JUST_TABLE(positions);
 }

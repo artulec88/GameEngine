@@ -14,7 +14,7 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	m_smoothCornersFactor(16.0f),
 	m_smoothSidesFactor(8.0f),
 	m_smoothCenterFactor(4.0f),
-	m_interpolator(NULL),
+	m_interpolator(std::make_unique<Interpolation::CosineInterpolator<Math::Real>>()),
 	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE, 1000000000))
 {
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
@@ -30,13 +30,10 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), Utility::Error, "The noise function does not return the same output for a given input (%.4f and %.4f)", noise3, noise4);
 	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), Utility::Error, "The noise function always returns the same output for any input (%.4f)", noise1);
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
-
-	m_interpolator = new Interpolation::CosineInterpolator<Math::Real>();
 }
 
 Math::HeightsGenerator::~HeightsGenerator()
 {
-	SAFE_DELETE(m_interpolator);
 }
 
 Math::Real Math::HeightsGenerator::GenerateHeight(Real x, Real z) const

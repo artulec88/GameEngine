@@ -9,39 +9,39 @@
 
 #define STATS_STORAGE Math::Statistics::IStatisticsStorage::GetStatisticsStorage()
 
-namespace Math { namespace Statistics
-{
+namespace Math {
+	namespace Statistics
+	{
 
-class IStatisticsStorage
-{
-/* ==================== Static variables and functions begin ==================== */
-protected:
-	static IStatisticsStorage* statisticsStorage;
-public:
-	MATH_API static IStatisticsStorage& GetStatisticsStorage();
-/* ==================== Static variables and functions end ==================== */
+		class IStatisticsStorage
+		{
+			typedef std::map<const char*, std::unique_ptr<ClassStats>> ClassNames2ClassStatsMap;
+			/* ==================== Static variables and functions begin ==================== */
+		public:
+			MATH_API static IStatisticsStorage& GetStatisticsStorage();
+			/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	IStatisticsStorage();
-	~IStatisticsStorage(void);
-/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
+		private:
+			IStatisticsStorage();
+			~IStatisticsStorage(void);
+			/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	MATH_API ClassStats& GetClassStats(const char* className);
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			MATH_API ClassStats& GetClassStats(const char* className);
 
-	MATH_API void PrintSimpleReport() const;
-	MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan) const;
-/* ==================== Non-static member functions end ==================== */
+			MATH_API void PrintSimpleReport() const;
+			MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan) const;
+			/* ==================== Non-static member functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	std::map<const char*, ClassStats*> m_classStatistics;
-/* ==================== Non-static member variables end ==================== */
-}; /* end class IStatisticsStorage */
+			/* ==================== Non-static member variables begin ==================== */
+		protected:
+			ClassNames2ClassStatsMap m_classStatistics;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class IStatisticsStorage */
 
-} /* end namespace Statistics */
+	} /* end namespace Statistics */
 
 } /* end namespace Math */
 

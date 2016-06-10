@@ -25,10 +25,13 @@ namespace Engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static int gameNodeCount; // just for easier debugging purposes
-								  /* ==================== Static variables and functions end ==================== */
+		/// <summary>
+		/// The number of entities currently being maintained in the application.
+		/// </summary>
+		static int gameNodeCount;
+		/* ==================== Static variables and functions end ==================== */
 
-								  /* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API GameNode();
 		ENGINE_API virtual ~GameNode(void);
@@ -52,15 +55,18 @@ namespace Engine
 		ENGINE_API Math::Transform& GetTransform() { return m_transform; };
 		ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }
 
-		ENGINE_API Physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject; }
-		ENGINE_API void SetPhysicsObject(Physics::PhysicsObject* physicsObject);
+		ENGINE_API Physics::PhysicsObject* GetPhysicsObject() { return m_physicsObject.get(); }
+		ENGINE_API void CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity);
 
 		ENGINE_API std::vector<GameNode*> GetAllDescendants() const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		int m_ID; // just for easier debugging purposes
+		/// <summary>
+		/// The unique ID of an entity. It simplifies the debugging.
+		/// </summary>
+		int m_ID;
 		std::vector<GameNode*> m_childrenGameNodes;
 		std::vector<GameComponent*> m_components;
 		std::vector<IRenderable*> m_renderableComponents;
@@ -68,7 +74,7 @@ namespace Engine
 		std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 		std::vector<IUpdateable*> m_updateableComponents;
 		Math::Transform m_transform;
-		Physics::PhysicsObject* m_physicsObject;
+		std::unique_ptr<Physics::PhysicsObject> m_physicsObject;
 		// TODO: set of commands (GameCommand objects) to be performed by the game entity in the UPDATE step
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNode */

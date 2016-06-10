@@ -12,7 +12,7 @@
 
 Engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
-	m_physicsObject(NULL)
+	m_physicsObject(nullptr)
 {
 	//INFO_LOG_ENGINE("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
 	//INFO_LOG_ENGINE("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
@@ -54,17 +54,13 @@ Engine::GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
-	SAFE_DELETE(m_physicsObject);
 	DEBUG_LOG_ENGINE("Game node (ID=%d) destruction finished", m_ID);
 }
 
-void Engine::GameNode::SetPhysicsObject(Physics::PhysicsObject* physicsObject)
+void Engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)
 {
-	m_physicsObject = physicsObject;
-	if (m_physicsObject != NULL)
-	{
-		Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject);
-	}
+	m_physicsObject = std::make_unique<Physics::PhysicsObject>(GetTransform(), mass, linearVelocity);
+	Engine::CoreEngine::GetCoreEngine()->AddPhysicsObject(m_physicsObject.get());
 }
 
 Engine::GameNode* Engine::GameNode::AddChild(GameNode* child)

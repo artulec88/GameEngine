@@ -65,7 +65,10 @@ class ISort
 {
 /* ==================== Static variables and functions begin ==================== */
 public:
-	MATH_API static ISort* GetSortingObject(SortingAlgorithm sortingMethod);
+	/// <summary>
+	/// A factory-like method for creating specific sorting objects.
+	/// </summary>
+	MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithm sortingMethod);
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */

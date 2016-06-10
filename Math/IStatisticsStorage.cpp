@@ -3,56 +3,46 @@
 #include <sstream>
 #include <fstream>
 
-using namespace Math::Statistics;
-
-/* static */ IStatisticsStorage* IStatisticsStorage::statisticsStorage = NULL;
-
-/* static */ IStatisticsStorage& IStatisticsStorage::GetStatisticsStorage()
+/* static */ Math::Statistics::IStatisticsStorage& Math::Statistics::IStatisticsStorage::GetStatisticsStorage()
 {
-	if (IStatisticsStorage::statisticsStorage == NULL)
-	{
-		IStatisticsStorage::statisticsStorage = new IStatisticsStorage();
-	}
-	return *IStatisticsStorage::statisticsStorage;
+	static IStatisticsStorage statisticsStorage;
+	return statisticsStorage;
 }
 
-IStatisticsStorage::IStatisticsStorage()
+Math::Statistics::IStatisticsStorage::IStatisticsStorage()
 {
 	//CRITICAL_LOG_MATH("Creating new statistics storage");
 }
 
-IStatisticsStorage::~IStatisticsStorage(void)
+Math::Statistics::IStatisticsStorage::~IStatisticsStorage(void)
 {
 	//DEBUG_LOG_MATH("IStatisticsStorage destructor");
-	for (std::map<const char*, ClassStats*>::iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
-	{
-		delete classStatsItr->second;
-	}
 }
 
-ClassStats& IStatisticsStorage::GetClassStats(const char* className)
+Math::Statistics::ClassStats& Math::Statistics::IStatisticsStorage::GetClassStats(const char* className)
 {
-	std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.find(className);
+	ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.find(className);
 	if (classStatsItr == m_classStatistics.end())
 	{
-		std::pair<std::map<const char*, ClassStats*>::iterator, bool /* false if element already existed */> insertRes = m_classStatistics.insert(std::pair<const char*, ClassStats*>(className, new ClassStats(className)));
+		std::pair<ClassNames2ClassStatsMap::iterator, bool /* false if element already existed */> insertRes =
+			m_classStatistics.insert(std::pair<const char*, std::unique_ptr<ClassStats>>(className, std::make_unique<ClassStats>(className)));
 		CHECK_CONDITION_MATH(insertRes.second, Utility::Error, "Inserted new element in the statistics storage when there has already been the one to use.");
 		return *insertRes.first->second;
 	}
 	return *classStatsItr->second;
 }
 
-void IStatisticsStorage::PrintSimpleReport() const
+void Math::Statistics::IStatisticsStorage::PrintSimpleReport() const
 {
 	std::stringstream ss("");
-	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
+	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		ss << classStatsItr->first << " (" << classStatsItr->second->GetTotalNumberOfSamples() << "); ";
 	}
 	INFO_LOG_MATH("Simple report = \"%s\"", ss.str().c_str());
 }
 
-void IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) const
+void Math::Statistics::IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
 	Utility::ILogger::GetLogger("Math").AddFile("ApplicationStats.txt");
@@ -60,7 +50,7 @@ void IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) 
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";
-	for (std::map<const char*, ClassStats*>::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
+	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
 	{
 		if (!classStatsItr->second->IsEmpty())
 		{
