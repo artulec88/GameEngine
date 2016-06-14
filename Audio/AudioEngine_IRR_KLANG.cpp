@@ -87,6 +87,7 @@ void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::st
 	}
 	irrklang::ISoundSource* sound;
 	sound = m_engine->addSoundSourceFromFile(path.c_str(), irrklang::ESM_AUTO_DETECT, false);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, Utility::Error, "The audio \"%s\" cannot be loaded.", path.c_str());
 	m_soundSources[type].insert(std::make_pair(path, sound));
 }
 

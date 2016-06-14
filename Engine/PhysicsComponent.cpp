@@ -2,6 +2,7 @@
 #include "PhysicsComponent.h"
 #include "Math\Transform.h"
 #include "Math\Quaternion.h"
+#include "CoreEngine.h"
 
 ///* static */ const Math::Real Engine::PhysicsComponent::GRAVITY = 0.001f; // TODO: Don't hard-code any value! Ever!
 
@@ -11,6 +12,7 @@ Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real 
 	m_jumpAcceleration(REAL_ZERO, jumpForce, REAL_ZERO),
 	m_isJumping(false)
 {
+	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\Mario Jump.wav");
 }
 
 
@@ -39,6 +41,7 @@ void Engine::PhysicsComponent::KeyEvent(int key, int scancode, int action, int m
 	case GLFW_KEY_W:
 		if (action == GLFW_PRESS)
 		{
+			//sendEvent(MOVE_FORWARD);
 			GetPhysicsObject()->ApplyLinearAcceleration(GetTransform().GetTransformedRot().GetForward() * m_moveSpeed);
 		}
 		else if (action == GLFW_RELEASE)
@@ -81,6 +84,9 @@ void Engine::PhysicsComponent::KeyEvent(int key, int scancode, int action, int m
 		if (!m_isJumping && (action == GLFW_PRESS || action == GLFW_REPEAT))
 		{
 			//m_physicsObject->ApplyLinearAcceleration(m_jumpAcceleration);
+			// TODO: Think of a more sophisticated way of triggerings sound effects.
+			// SendEvent(JUMP);
+			CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\Mario Jump.wav", 0.1f, 1.0f);
 			m_isJumping = true;
 		}
 		break;

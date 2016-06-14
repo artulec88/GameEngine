@@ -12,7 +12,9 @@
 namespace Math
 {
 
-/// <summary>The implementation of the k-d tree structure. It is used in terrain height calculation.</summary>
+/// <summary>
+/// The implementation of the k-d tree structure.
+/// </summary>
 class KDTree
 {
 /* ==================== Static variables and functions begin ==================== */
@@ -20,10 +22,21 @@ class KDTree
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1);
+	/// <summary>
+	/// Constructs the k-d tree for the specified 3D positions in the world (<paramref name="positions"/>).
+	/// </summary>
+	/// <param name="positions">The 3D positions in the world that we want our k-d tree to operate on.</param>
+	/// <param name="positionsCount">The number of positions in the world.</param>
+	/// <param name="numberOfSamples">The number of positions we want to take into account when calculating the nearest neighbour Y component value.
+	/// Default value is 1, which means that, once found, the nearest position's Y component will be returned.</param>
+	/// <param name="depth">Specified the level of hierarchy this particular k-d tree resides on.
+	/// The k-d tree is a hierarchical structure. The root of this structure is at depth level 0. </param>
+	MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1, int depth = 0);
+	/// <summary>
+	/// k-d tree destructor.
+	/// </summary>
 	MATH_API ~KDTree(void);
 protected:
-	KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples, int depth);
 	//KDTree(const KDTree& kdTree) = delete;
 	//KDTree& operator=(const KDTree& kdTree) = delete;
 /* ==================== Constructors and destructors end ==================== */
@@ -77,7 +90,7 @@ private:
 	Vector2D m_position;
 	Real m_value;
 #ifdef CALCULATE_MATH_STATS
-	//Statistics::ClassStats& m_classStats;
+	Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */
 
