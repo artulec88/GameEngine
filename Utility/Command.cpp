@@ -102,7 +102,7 @@ bool Command::IsArgPosCorrect(int number) const
 //	return (IsArgPosCorrect(number) ? m_commands[number] : defaultValue);
 //}
 
-string Command::Get(const string& opt, const string& defaultValue) const
+const std::string& Command::Get(const string& opt, const string& defaultValue) const
 {
 	int pos;
 	if ( !GetArgPosition(opt, pos) || (pos < 0) || (pos > Size() - 2) )

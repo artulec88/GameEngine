@@ -32,6 +32,52 @@ using namespace std;
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
 #endif
 
+int numberOfAllocs1 = 0; int numberOfDeallocs1 = 0;
+int numberOfAllocs2 = 0; int numberOfDeallocs2 = 0;
+int numberOfAllocs3 = 0; int numberOfDeallocs3 = 0;
+int numberOfAllocs4 = 0; int numberOfDeallocs4 = 0;
+
+void* operator new(std::size_t size) throw(std::bad_alloc)
+{
+	++numberOfAllocs1;
+void* p = malloc(size);
+if (!p)
+{
+	throw std::bad_alloc();
+}
+return p;
+}
+
+void* operator new[](std::size_t size) throw(std::bad_alloc)
+{
+	++numberOfAllocs2;
+	void *p = malloc(size);
+	if (!p)
+	{
+		throw std::bad_alloc();
+	}
+	return p;
+}
+
+void* operator new[](std::size_t size, const std::nothrow_t&) throw()
+{
+	++numberOfAllocs3;
+	return malloc(size);
+}
+
+void* operator new(std::size_t size, const std::nothrow_t&) throw()
+{
+	++numberOfAllocs4;
+return malloc(size);
+}
+
+
+void operator delete(void* ptr) throw() { ++numberOfDeallocs1; free(ptr); }
+void operator delete(void* ptr, const std::nothrow_t&) throw() { ++numberOfDeallocs2; free(ptr); }
+void operator delete[](void* ptr) throw() { ++numberOfDeallocs3; free(ptr); }
+void operator delete[](void* ptr, const std::nothrow_t&) throw() { ++numberOfDeallocs4; free(ptr); }
+
+
 CoreEngine* CoreEngine::s_coreEngine = NULL;
 
 /* static */ CoreEngine* CoreEngine::GetCoreEngine()
@@ -230,7 +276,10 @@ CoreEngine::~CoreEngine(void)
 	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
 	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
 #endif
-	/* ==================== Printing stats end ==================== */	
+	/* ==================== Printing stats end ==================== */
+
+	CRITICAL_LOG_ENGINE("Number of allocs: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+		numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
@@ -489,6 +538,7 @@ void CoreEngine::Run()
 #endif
 	while (m_isRunning)
 	{
+		CRITICAL_LOG_ENGINE("START");
 		/* ==================== REGION #1 begin ====================*/
 		START_TIMER(timer);
 		bool isRenderRequired = false;
@@ -527,7 +577,7 @@ void CoreEngine::Run()
 				m_stats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
-			DEBUG_LOG_ENGINE("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			//DEBUG_LOG_ENGINE("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
 			framesCount = 0;
 			frameTimeCounter = REAL_ZERO;
 		}
@@ -562,8 +612,10 @@ void CoreEngine::Run()
 			//STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			RESET_TIMER(innerTimer);
 			m_game->Update(m_frameTime);
+#ifdef DRAW_FPS
 			fpsGuiText.Update(m_frameTime);
 			inGameTimeGuiText.Update(m_frameTime);
+#endif
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 			
@@ -604,10 +656,16 @@ void CoreEngine::Run()
 			++framesCount;
 
 #ifdef DRAW_FPS
+			ERROR_LOG_ENGINE("1: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 			std::stringstream ss;
-			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf;
+			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
+			ERROR_LOG_ENGINE("2: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 			fpsGuiText.SetText(ss.str());
 			m_renderer->RenderText(fpsGuiText);
+			ERROR_LOG_ENGINE("3: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game->IsInGameTimeCalculationEnabled())
@@ -657,6 +715,7 @@ void CoreEngine::Run()
 		}
 		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
+		CRITICAL_LOG_ENGINE("STOP");
 	}
 }
 

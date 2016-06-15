@@ -70,67 +70,30 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	ILogger::GetLogger("Game").Fill(loggingLevel, Info);
 	/* ==================== Initializing logger end ==================== */
 
-	/* ==================== Initializing shader directory begin ==================== */
-	if (command->IsPresent("-shaders"))
-	{
-		*shaderDirectory = command->Get("-shaders", "..\\Shaders\\");
-	}
-	else
-	{
-		*shaderDirectory = GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
-	}
-	/* ==================== Initializing shader directory end ==================== */
+	// Initializing shader directory
+	*shaderDirectory = (command->IsPresent("-shaders")) ? command->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
 
-	/* ==================== Initializing mesh / models directory begin ==================== */
-	if (command->IsPresent("-models"))
-	{
-		*modelsDirectory = command->Get("-models", "..\\Models\\");
-	}
-	else
-	{
-		*modelsDirectory = GET_CONFIG_VALUE_STR_GAME("modelsDirectory", "..\\Models\\");
-	}
-	/* ==================== Initializing mesh / models directory end ==================== */
+	// Initializing mesh / models directory
+	*modelsDirectory = (command->IsPresent("-models")) ? command->Get("-models", "..\\Models\\") : GET_CONFIG_VALUE_STR_GAME("modelsDirectory", "..\\Models\\");
 
-	/* ==================== Initializing textures directory begin ==================== */
-	if (command->IsPresent("-textures"))
-	{
-		*texturesDirectory = command->Get("-textures", "..\\Textures\\");
-	}
-	else
-	{
-		*texturesDirectory = GET_CONFIG_VALUE_STR_GAME("texturesDirectory", "..\\Textures\\");
-	}
-	/* ==================== Initializing textures directory end ==================== */
+	// Initializing textures directory
+	*texturesDirectory = (command->IsPresent("-textures")) ? command->Get("-textures", "..\\Textures\\") : GET_CONFIG_VALUE_STR_GAME("texturesDirectory", "..\\Textures\\");
 
-	/* ==================== Initializing fonts directory begin ==================== */
-	if (command->IsPresent("-fonts"))
-	{
-		*fontsDirectory = command->Get("-fonts", "..\\Fonts\\");
-	}
-	else
-	{
-		*fontsDirectory = GET_CONFIG_VALUE_STR_GAME("fontsDirectory", "..\\Fonts\\");
-	}
-	/* ==================== Initializing fonts directory end ==================== */
+	// Initializing fonts directory end
+	*fontsDirectory = (command->IsPresent("-fonts")) ? command->Get("-fonts", "..\\Fonts\\") : GET_CONFIG_VALUE_STR_GAME("fontsDirectory", "..\\Fonts\\");
 
-	/* ==================== Initializing audio directory begin ==================== */
-	if (command->IsPresent("-audio"))
-	{
-		*audioDirectory = command->Get("-audio", "..\\Sounds\\");
-	}
-	else
-	{
-		*audioDirectory = GET_CONFIG_VALUE_STR_GAME("audioDirectory", "..\\Sounds\\");
-	}
-	/* ==================== Initializing audio directory end ==================== */
+	// Initializing audio directory
+	*audioDirectory = (command->IsPresent("-audio")) ? command->Get("-audio", "..\\Sounds\\") : GET_CONFIG_VALUE_STR_GAME("audioDirectory", "..\\Sounds\\");
 }
 
-int main (int argc, char* argv[])
+// One has to remember that if we call some method foo(const std::string& text) as follows:
+// foo("bla") then it will most likely not allocate new memory for the string "bla". However if the string were a little longer, e.g. if we call foo("veryLongString")
+// then most likely it will allocate new memory for the string "veryLongString". This will cause "new" operator to be invoked.
+
+int main(int argc, char* argv[])
 {
 	std::string shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
 	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
-
 	/* ==================== Create game instance and run ==================== */
 	std::string windowTitle = GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title");
 	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),

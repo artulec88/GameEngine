@@ -40,7 +40,7 @@
 #define DRAW_FPS
 #endif
 
-#define DRAW_GAME_TIME
+//#define DRAW_GAME_TIME // TODO: Investigate this macro
 
 //#endif
 

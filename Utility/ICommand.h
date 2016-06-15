@@ -30,7 +30,7 @@ public:
 /* ==================== Non-static member functions begin ==================== */
 public:
 	UTILITY_API virtual bool IsPresent(const std::string& opt) const = 0;
-	UTILITY_API virtual std::string Get(const std::string& opt, const std::string& defaultValue) const = 0;
+	UTILITY_API virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const = 0;
 protected:
 	//template<typename Type> Type Get(int number, const Type& defaultValue) const;
 /* ==================== Non-static member functions end ==================== */

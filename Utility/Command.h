@@ -29,7 +29,7 @@ public:
 	bool IsArgPosCorrect(int number) const;
 	//bool Read(std::istream& stream);
 	//bool Read(const std::string& line);
-	virtual std::string Get(const std::string& opt, const std::string& defaultValue) const;
+	virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const;
 	//int Get(const std::string& opt, int defaultValue) const;
 	bool GetArgPosition(const std::string& opt, int& argPos, int first = 0) const;
 	virtual bool IsPresent(const std::string& opt) const;
