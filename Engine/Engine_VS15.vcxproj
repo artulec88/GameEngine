@@ -172,6 +172,10 @@
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="IInputableKeyboard.h" />
     <ClInclude Include="IInputableMouse.h" />
+    <ClInclude Include="InputConstants.h" />
+    <ClInclude Include="InputContext.h" />
+    <ClInclude Include="InputMapping.h" />
+    <ClInclude Include="InputRangeConverter.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
     <ClInclude Include="LookAtComponent.h" />
@@ -221,6 +225,9 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameNode.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
+    <ClCompile Include="InputContext.cpp" />
+    <ClCompile Include="InputMapping.cpp" />
+    <ClCompile Include="InputRangeConverter.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />
     <ClCompile Include="MeshGroupRendererComponent.cpp" />

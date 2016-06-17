@@ -191,7 +191,8 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory),
-	m_audioDirectory(audioDirectory)
+	m_audioDirectory(audioDirectory),
+	m_inputMapping(GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef CALCULATE_RENDERING_STATS
 	,m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
@@ -538,7 +539,7 @@ void CoreEngine::Run()
 #endif
 	while (m_isRunning)
 	{
-		CRITICAL_LOG_ENGINE("START");
+		//CRITICAL_LOG_ENGINE("START");
 		/* ==================== REGION #1 begin ====================*/
 		START_TIMER(timer);
 		bool isRenderRequired = false;
@@ -656,16 +657,16 @@ void CoreEngine::Run()
 			++framesCount;
 
 #ifdef DRAW_FPS
-			ERROR_LOG_ENGINE("1: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("1: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
-			ERROR_LOG_ENGINE("2: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("2: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 			fpsGuiText.SetText(ss.str());
 			m_renderer->RenderText(fpsGuiText);
-			ERROR_LOG_ENGINE("3: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-				numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("3: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
+			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game->IsInGameTimeCalculationEnabled())
@@ -715,7 +716,7 @@ void CoreEngine::Run()
 		}
 		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
-		CRITICAL_LOG_ENGINE("STOP");
+		//CRITICAL_LOG_ENGINE("STOP");
 	}
 }
 

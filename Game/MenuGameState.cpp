@@ -19,6 +19,47 @@
 using namespace Game;
 using namespace Rendering;
 
+//double AxisX = 0;
+//double AxisY = 0;
+//
+//int LastX = 0;
+//int LastY = 0;
+//
+//bool StateOne = false;
+//bool StateTwo = false;
+//bool StateThree = false;
+//
+//void MenuGameStateInputCallback(Engine::Input::MappedInput& input)
+//{
+//	AxisX = input.m_ranges[Engine::Input::Ranges::RANGE_ONE];
+//	AxisY = input.m_ranges[Engine::Input::Ranges::RANGE_TWO];
+//
+//	StateOne = input.m_states.find(Engine::Input::States::STATE_ONE) != input.m_states.end();
+//	StateTwo = input.m_states.find(Engine::Input::States::STATE_TWO) != input.m_states.end();
+//	StateThree = input.m_states.find(Engine::Input::States::STATE_THREE) != input.m_states.end();
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_ONE) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 1 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_TWO) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 2 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_THREE) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 3 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_FOUR) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 4 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_FIVE) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 5 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_SIX) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 6 fired!");
+//
+//	if (input.m_actions.find(Engine::Input::Actions::ACTION_SEVEN) != input.m_actions.end())
+//		CRITICAL_LOG_ENGINE("Action 7 fired!");
+//}
+
 MenuGameState::MenuGameState() :
 	Engine::GameState(),
 	m_mainMenuFont(GET_CONFIG_VALUE_STR_GAME("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR_GAME("mainMenuFontMetaData", "cambria.fnt")),
@@ -102,6 +143,9 @@ MenuGameState::MenuGameState() :
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
 
 	SelectChild(0);
+
+	//m_inputMapping.PushContext("MenuGameStateContext");
+	//m_inputMapping.RegisterCallback(MenuGameStateInputCallback, 0);
 }
 
 MenuGameState::~MenuGameState(void)
@@ -149,6 +193,7 @@ void MenuGameState::KeyEvent(int key, int scancode, int action, int mods)
 	// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
 	// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
 	START_PROFILING;
+
 	if (action == GLFW_RELEASE)
 	{
 		return;
@@ -296,4 +341,8 @@ void MenuGameState::Update(Math::Real deltaTime)
 	if (m_selectedMenuEntryBorderWidthEffect != NULL) { m_selectedMenuEntryBorderWidthEffect->Update(deltaTime); }
 	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
 	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
+
+	//m_inputMapping.Dispatch();
+	//m_inputMapping.ClearActions();
+	//m_inputMapping.ClearRanges();
 }

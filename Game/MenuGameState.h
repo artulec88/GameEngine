@@ -1,18 +1,20 @@
 #ifndef __MENU_GAME_STATE_H__
 #define __MENU_GAME_STATE_H__
 
-#include "Rendering\Renderer.h"
 #include "Engine\EffectFactory.h"
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
-#include "Math\Math.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 #include "Engine\MousePicker.h"
+
+#include "Math\Math.h"
+
+#include "Rendering\Renderer.h"
 
 #include <vector>
 

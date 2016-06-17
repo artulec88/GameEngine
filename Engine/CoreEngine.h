@@ -4,6 +4,7 @@
 #include "Engine.h"
 #include "GameManager.h"
 #include "GameStateManager.h"
+#include "InputMapping.h"
 
 #include "Audio\IAudioEngine.h"
 
@@ -223,6 +224,8 @@ private:
 	const std::string m_fontsDirectory;
 	/// <summary> Specifies where to look for the audio files. </summary>
 	const std::string m_audioDirectory;
+
+	Engine::Input::InputMapping m_inputMapping;
 
 #ifdef CALCULATE_RENDERING_STATS
 	long m_countStats1;
