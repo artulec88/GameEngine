@@ -40,8 +40,8 @@ template <class T>
 T& Utility::Container::Array<T>::operator[](int i)
 {
 	WARNING_LOG_UTILITY("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::ERR, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::ERR, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
 	return m_data[i];
 }
 
@@ -49,8 +49,8 @@ template <class T>
 const T& Utility::Container::Array<T>::operator[](int i) const
 {
 	WARNING_LOG_UTILITY("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::Error, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i >= 0, m_data[0], Utility::ERR, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_ALWAYS_UTILITY(i < m_size, m_data[m_size - 1], Utility::ERR, "The array [] operator cannot access index %d which is outside of range [0; %d)", i, m_size);
 	return m_data[i];
 }
 
@@ -69,8 +69,8 @@ template <class T>
 void Utility::Container::Array<T>::SetElement(int i, const T& dataElement)
 {
 	WARNING_LOG_UTILITY("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::Error, "Cannot set array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_maxSize, Utility::Warning, "The array cannot hold more than %d elements", m_maxSize);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::ERR, "Cannot set array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_maxSize, Utility::WARNING, "The array cannot hold more than %d elements", m_maxSize);
 
 	m_data[i] = dataElement;
 	if (i > m_size)
@@ -83,8 +83,8 @@ template<class T>
 void Utility::Container::Array<T>::Remove(int i)
 {
 	WARNING_LOG_UTILITY("This function has not been tested yet");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::Error, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_size, Utility::Warning, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i >= 0, Utility::ERR, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(i < m_size, Utility::WARNING, "Cannot remove array's element at index %d. The correct index must be in the range [0; %d)", i, m_size);
 
 	for (int index = i + 1; index < m_size; ++index)
 	{

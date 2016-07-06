@@ -3,22 +3,27 @@
 
 #include "Engine.h"
 #include "GameNode.h"
+//#include "InputConstants.h"
+//#include "GameNodeCommand.h"
 
 #include "Math\Transform.h"
+
+//#include <map>
 
 namespace Engine
 {
 
-	class GameComponent
+	class GameComponent //: public GameNodeCommand
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GameComponent();
-		ENGINE_API virtual ~GameComponent(void);
+		GameComponent();
+		virtual ~GameComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
+		//virtual void Execute() const = 0;
 		void SetParent(GameNode* parentGameNode);
 		Math::Transform& GetTransform();
 		const Math::Transform& GetTransform() const;

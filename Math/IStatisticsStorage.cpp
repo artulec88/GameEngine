@@ -26,7 +26,7 @@ Math::Statistics::ClassStats& Math::Statistics::IStatisticsStorage::GetClassStat
 	{
 		std::pair<ClassNames2ClassStatsMap::iterator, bool /* false if element already existed */> insertRes =
 			m_classStatistics.insert(std::pair<const char*, std::unique_ptr<ClassStats>>(className, std::make_unique<ClassStats>(className)));
-		CHECK_CONDITION_MATH(insertRes.second, Utility::Error, "Inserted new element in the statistics storage when there has already been the one to use.");
+		CHECK_CONDITION_MATH(insertRes.second, Utility::ERR, "Inserted new element in the statistics storage when there has already been the one to use.");
 		return *insertRes.first->second;
 	}
 	return *classStatsItr->second;

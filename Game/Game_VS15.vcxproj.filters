@@ -31,9 +31,6 @@
     <ClCompile Include="StartGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="QuitGameCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SaveGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -73,9 +70,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="StartGameCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="QuitGameCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SaveGameCommand.h">

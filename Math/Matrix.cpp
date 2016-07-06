@@ -6,21 +6,18 @@
 
 #include <sstream>
 
-using namespace Math;
-using namespace Utility;
-
 #ifdef CALCULATE_MATH_STATS
-/* static */ Statistics::ClassStats& Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
+/* static */ Math::Statistics::ClassStats& Math::Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
 #endif
 
-/* static */ const Matrix4D Matrix4D::IDENTITY_MATRIX;
+/* static */ const Math::Matrix4D Math::Matrix4D::IDENTITY_MATRIX;
 
-/* static */ int Matrix4D::Signum(int i, int j)
+/* static */ int Math::Matrix4D::Signum(int i, int j)
 {
 	return ((i + j) % 2) ? -1 : 1;
 }
 
-Matrix4D::Matrix4D()
+Math::Matrix4D::Matrix4D()
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -41,7 +38,7 @@ Matrix4D::Matrix4D()
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m03,
+Math::Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m03,
 	Math::Real m10, Math::Real m11, Math::Real m12, Math::Real m13,
 	Math::Real m20, Math::Real m21, Math::Real m22, Math::Real m23,
 	Math::Real m30, Math::Real m31, Math::Real m32, Math::Real m33)
@@ -64,7 +61,7 @@ Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m0
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
+Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -93,7 +90,7 @@ Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(Real scale)
+Math::Matrix4D::Matrix4D(Real scale)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -103,7 +100,7 @@ Matrix4D::Matrix4D(Real scale)
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
+Math::Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -124,7 +121,7 @@ Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Vector3D& pos)
+Math::Matrix4D::Matrix4D(const Vector3D& pos)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -144,7 +141,7 @@ Matrix4D::Matrix4D(const Vector3D& pos)
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
+Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -165,11 +162,11 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	m[8] = -xCos * ySin;	m[9] = -xSin;		m[10] = xCos * yCos;	m[11] = REAL_ZERO;
 	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
 #endif
-	CHECK_CONDITION_MATH((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::Error, "Two RotationEuler functions give different results.");
+	CHECK_CONDITION_MATH((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::ERR, "Two RotationEuler functions give different results.");
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
+Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -223,7 +220,7 @@ Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ
 	/* ==================== SOLUTION #2 end ==================== */
 }
 
-Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -233,7 +230,7 @@ Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& 
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
+Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -246,7 +243,7 @@ Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
+Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -256,7 +253,7 @@ Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect *
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
+Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -282,7 +279,7 @@ Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane,
 	STOP_PROFILING;
 }
 
-Matrix4D::Matrix4D(const Matrix4D& mat)
+Math::Matrix4D::Matrix4D(const Matrix4D& mat)
 #ifdef CALCULATE_MATH_STATS
 	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
@@ -328,15 +325,15 @@ Matrix4D::Matrix4D(const Matrix4D& mat)
 	//}
 	/* ==================== SOLUTION #3 end ==================== */
 	
-	CHECK_CONDITION_MATH((*this) == mat, Utility::Error, "The copy constructor should cause the two matrices to be equal, but they are not.");
+	CHECK_CONDITION_MATH((*this) == mat, Utility::ERR, "The copy constructor should cause the two matrices to be equal, but they are not.");
 	STOP_PROFILING;
 }
 
-Matrix4D::~Matrix4D()
+Math::Matrix4D::~Matrix4D()
 {
 }
 
-std::string Matrix4D::ToString() const
+std::string Math::Matrix4D::ToString() const
 {
 	const std::string INDENTATION_STRING = "\t";
 	std::stringstream s("");
@@ -394,7 +391,7 @@ std::string Matrix4D::ToString() const
 	return s.str();
 }
 	
-Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
+Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 {
 	START_PROFILING;
 	/* ==================== SOLUTION #1 (doesn't work!!!) begin ==================== */
@@ -489,7 +486,7 @@ Matrix4D Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #3 end ==================== */
 }
 
-Vector3D Matrix4D::operator*(const Vector3D& vec) const
+Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -512,7 +509,7 @@ Vector3D Matrix4D::operator*(const Vector3D& vec) const
 	//	(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
 }
 
-Vector4D Matrix4D::operator*(const Vector4D& vec) const
+Math::Vector4D Math::Matrix4D::operator*(const Vector4D& vec) const
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -533,7 +530,7 @@ Vector4D Matrix4D::operator*(const Vector4D& vec) const
 /**
  * @see Matrix4D::IsIdentity
  */
-bool Matrix4D::operator==(const Matrix4D& matrix) const
+bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
 {
 	START_PROFILING;
 	/**
@@ -560,12 +557,12 @@ bool Matrix4D::operator==(const Matrix4D& matrix) const
 	return true;
 }
 
-bool Matrix4D::operator!=(const Matrix4D& matrix) const
+bool Math::Matrix4D::operator!=(const Matrix4D& matrix) const
 {
 	return (!((*this) == matrix));
 }
 
-Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
+Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 {
 	START_PROFILING;
 	// TODO: Check which of the three solution is faster
@@ -610,7 +607,7 @@ Matrix4D& Matrix4D::operator=(const Matrix4D& mat)
 	return *this;
 }
 
-Matrix4D Matrix4D::Transposition() const
+Math::Matrix4D Math::Matrix4D::Transposition() const
 {
 	START_PROFILING;
 	Matrix4D matrix;
@@ -635,7 +632,7 @@ Matrix4D Matrix4D::Transposition() const
 	return matrix;
 }
 
-Real Matrix4D::Det(int p, int q) const
+Math::Real Math::Matrix4D::Det(int p, int q) const
 {
 	START_PROFILING;
 	/*
@@ -675,7 +672,7 @@ Real Matrix4D::Det(int p, int q) const
 	return result;
 }
 
-Matrix4D Matrix4D::Inversion() const
+Math::Matrix4D Math::Matrix4D::Inversion() const
 {
 	START_PROFILING;
 	Real det = 0;
@@ -718,7 +715,7 @@ Matrix4D Matrix4D::Inversion() const
 /**
  * @see Matrix4D::operator ==
  */
-bool Matrix4D::IsIdentity() const
+bool Math::Matrix4D::IsIdentity() const
 {
 	START_PROFILING;
 	/**
@@ -761,7 +758,7 @@ bool Matrix4D::IsIdentity() const
 	return true;
 }
 
-void Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
+void Math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
@@ -778,7 +775,7 @@ void Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 	STOP_PROFILING;
 }
 
-void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
+void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
 {
 	START_PROFILING;
 	Angle halfAngle(fov / static_cast<Real>(2.0));
@@ -811,7 +808,7 @@ void Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real near
 	STOP_PROFILING;
 }
 
-Vector3D Matrix4D::Transform(const Vector3D& vec)
+Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
 {
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	return Vector3D(m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0],
@@ -834,7 +831,7 @@ Vector3D Matrix4D::Transform(const Vector3D& vec)
 	//}
 }
 
-void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
+void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
 {
 	Vector3D f = forward.Normalized();
 	Vector3D u = up.Normalized();
@@ -845,9 +842,9 @@ void Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& u
 	//right = right.Cross(forw);
 
 	//Vector3D newUp = forw.Cross(right);
-	CHECK_CONDITION_MATH(f.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
-	CHECK_CONDITION_MATH(u.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
-	CHECK_CONDITION_MATH(r.IsNormalized(), Utility::Error, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+	CHECK_CONDITION_MATH(f.IsNormalized(), Utility::ERR, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
+	CHECK_CONDITION_MATH(u.IsNormalized(), Utility::ERR, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION_MATH(r.IsNormalized(), Utility::ERR, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	m[0][0] = r.GetX();		m[0][1] = u.GetX();		m[0][2] = f.GetX();		m[0][3] = REAL_ZERO;
 	m[1][0] = r.GetY();		m[1][1] = u.GetY();		m[1][2] = f.GetY();		m[1][3] = REAL_ZERO;

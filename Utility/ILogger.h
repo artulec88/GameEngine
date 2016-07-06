@@ -77,49 +77,49 @@
 #endif
 
 #ifdef CRITICAL_LOGGING_ENABLED
-#define CRITICAL_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Critical, LOGPLACE, message, ##__VA_ARGS__)
+#define CRITICAL_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::CRITICAL, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define CRITICAL_LOG(moduleName, message, ...)
 #endif
 
 #ifdef EMERGENCY_LOGGING_ENABLED
-#define EMERGENCY_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Emergency, LOGPLACE, message, ##__VA_ARGS__)
+#define EMERGENCY_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::EMERGENCY, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define EMERGENCY_LOG(moduleName, message, ...)
 #endif
 
 #ifdef ERROR_LOGGING_ENABLED
-#define ERROR_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Error, LOGPLACE, message, ##__VA_ARGS__)
+#define ERROR_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::ERR, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define ERROR_LOG(moduleName, message, ...)
 #endif
 
 #ifdef WARNING_LOGGING_ENABLED
-#define WARNING_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Warning, LOGPLACE, message, ##__VA_ARGS__)
+#define WARNING_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::WARNING, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define WARNING_LOG(moduleName, message, ...)
 #endif
 
 #ifdef NOTICE_LOGGING_ENABLED
-#define NOTICE_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Notice, LOGPLACE, message, ##__VA_ARGS__)
+#define NOTICE_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::NOTICE, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define NOTICE_LOG(moduleName, message, ...)
 #endif
 
 #ifdef INFO_LOGGING_ENABLED
-#define INFO_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Info, LOGPLACE, message, ##__VA_ARGS__)
+#define INFO_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::INFO, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define INFO_LOG(moduleName, message, ...)
 #endif
 
 #ifdef DEBUG_LOGGING_ENABLED
-#define DEBUG_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Debug, LOGPLACE, message, ##__VA_ARGS__)
+#define DEBUG_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::DEBUG, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define DEBUG_LOG(moduleName, message, ...)
 #endif
 
 #ifdef DELOCUST_LOGGING_ENABLED
-#define DELOCUST_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::Delocust, LOGPLACE, message, ##__VA_ARGS__)
+#define DELOCUST_LOG(moduleName, message, ...) Utility::ILogger::GetLogger(moduleName).Log(Utility::DELOCUST, LOGPLACE, message, ##__VA_ARGS__)
 #else
 #define DELOCUST_LOG(moduleName, message, ...)
 #endif
@@ -129,16 +129,16 @@ namespace Utility
 
 enum LogLevel
 {
-	Critical = 0,
-	Emergency = 1,
-	Error = 2,
-	Warning = 3,
-	Notice = 4,
-	Info = 5,
-	Debug = 6,
-	Delocust = 7,
+	CRITICAL = 0,
+	EMERGENCY = 1,
+	ERR = 2,
+	WARNING = 3,
+	NOTICE = 4,
+	INFO = 5,
+	DEBUG = 6,
+	DELOCUST = 7,
 
-	DevNull = 100
+	DEV_NULL = 100
 }; /* end enum LogLevel */
 
 class ILogger

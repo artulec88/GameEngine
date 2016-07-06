@@ -2,10 +2,19 @@
 #define __ENGINE_GAME_STATE_H__
 
 #include "Engine.h"
+#include "GameCommand.h"
+#include "ActionConstants.h"
+#include "InputConstants.h"
 //#include "IInputable.h"
 //#include "IRenderable.h"
 //#include "IUpdateable.h"
+
+#include "Math\Math.h"
+
 #include "Utility\Utility.h"
+
+#include <string>
+#include <map>
 
 namespace Engine
 {
@@ -16,7 +25,8 @@ namespace Engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GameState()
+		ENGINE_API GameState(const std::string& inputMappingContextName) :
+			m_inputMappingContextName(inputMappingContextName)
 		{
 		}
 
@@ -27,24 +37,64 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		/// <summary>The function invoked after the current game state has been placed in the game state manager.</summary>
+		/// <summary>
+		/// The function invoked after the current game state has been placed in the game state manager.
+		/// </summary>
 		ENGINE_API virtual void Entered() = 0;
 
-		/// <summary>The function invoked before the current game state is removed game state manager.</summary>
+		/// <summary>
+		/// The function invoked before the current game state is removed game state manager.
+		/// </summary>
 		ENGINE_API virtual void Leaving() = 0;
 
-		/// <summary>The function invoked right before another game state is stacked on top of the current one.</summary>
+		/// <summary>
+		/// The function invoked right before another game state is stacked on top of the current one.
+		/// </summary>
 		ENGINE_API virtual void Obscuring() = 0;
 
-		/// <summary>The function invoked right after the game state has become the topmost game state on the stack again.</summary>
+		/// <summary>
+		/// The function invoked right after the game state has become the topmost game state on the stack again.
+		/// </summary>
 		ENGINE_API virtual void Revealed() = 0;
 
-		/// <summary>The function indicating whether the current game state wants in-game time calculation to be performed or not.</summary>
+		/// <summary>
+		/// The function indicating whether the current game state wants in-game time calculation to be performed or not.
+		/// </summary>
+		/// TODO: This function should probably be removed. Instead, when appropriate game state wants in-game time calculation, it should call the game manager to enable it explicitly
+		/// (in the Entered() or Revealed() functions) and disable it explicitly (in the Leaving() or Obscuring() functions).
+		/// The game manager will store the m_isInGameTimeCalculationEnabled member variable and modify it inside the EnableInGameTimeCalculation() and DisableInGameTimeCalculation().
 		ENGINE_API virtual bool IsInGameTimeCalculationEnabled() const { return false; }
+
+		/// <summary>
+		/// Handles the incoming action appropriately.
+		/// </summary>
+		/// <param name="action"> The action that must be handled by the game state. </param>
+		ENGINE_API virtual void Handle(Engine::Actions::Action action) = 0;
+
+		/// <summary>
+		/// Handles the incoming state appropriately.
+		/// </summary>
+		/// <param name="state"> The state that must be handled by the game state. </param>
+		ENGINE_API virtual void Handle(Engine::States::State state) = 0;
+
+		/// <summary>
+		/// Handles the incoming range appropriately.
+		/// </summary>
+		/// <param name="range"> The range that must be handled by the game state. </param>
+		/// <param name="value"> The value associated with the range. </param>
+		ENGINE_API virtual void Handle(Engine::Ranges::Range range, Math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
+	protected:
+		/// <summary>
+		/// The name of the input mapping context. It is used for switching between one input context and the other.
+		/// E.g. we want different input mapping when main game menu is displayed from the one when the game is actually being played.
+		/// </summary>
+		const std::string m_inputMappingContextName;
+		
+		// TODO: The game state should also be able to respond to actions using the game commands instead of a HandleAction(...) function.
+		// std::map<Engine::Input::Actions::Action, Engine::GameCommand*> m_actionsToCommandsMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameState */
 

@@ -1,9 +1,7 @@
 #include "StdAfx.h"
 #include "Material.h"
 
-using namespace Rendering;
-
-Material::Material(Texture* diffuseTexture,
+Rendering::Material::Material(Texture* diffuseTexture,
 	Math::Real specularIntensity /* = REAL_ONE */,
 	Math::Real specularPower /* = 8.0f */,
 	Texture* normalMap /* = NULL */,
@@ -43,7 +41,7 @@ Material::Material(Texture* diffuseTexture,
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
-Material::Material(Texture* texture, const std::string& textureName)
+Rendering::Material::Material(Texture* texture, const std::string& textureName)
 {
 	if (texture == NULL)
 	{
@@ -52,15 +50,15 @@ Material::Material(Texture* texture, const std::string& textureName)
 	m_mappedValues.SetTexture(textureName, texture);
 }
 
-void Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
+void Rendering::Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
-	CHECK_CONDITION_RETURN_VOID_RENDERING(texture != NULL, Utility::Warning, "Cannot set the additional texture for material. The texture is NULL.");
+	CHECK_CONDITION_RETURN_VOID_RENDERING(texture != NULL, Utility::WARNING, "Cannot set the additional texture for material. The texture is NULL.");
 	m_hasMultipleTextures = true;
 	m_mappedValues.SetTexture(textureName, texture);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Material::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
+void Rendering::Material::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
 	m_mappedValues.InitializeTweakBar(tweakBar, groupName);
 }

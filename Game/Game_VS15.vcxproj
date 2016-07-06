@@ -150,7 +150,6 @@
     <ClCompile Include="MenuGameState.cpp" />
     <ClCompile Include="PlayGameState.cpp" />
     <ClCompile Include="PlayMenuGameState.cpp" />
-    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="ResumeGameCommand.cpp" />
     <ClCompile Include="SaveGameCommand.cpp" />
     <ClCompile Include="ShowIntroCommand.cpp" />
@@ -167,7 +166,6 @@
     <ClInclude Include="MenuGameState.h" />
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />
-    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="ResumeGameCommand.h" />
     <ClInclude Include="SaveGameCommand.h" />
     <ClInclude Include="ShowIntroCommand.h" />

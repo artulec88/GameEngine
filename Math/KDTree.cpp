@@ -5,9 +5,7 @@
 #include <sstream>
 #include "Utility\ILogger.h"
 
-using namespace Math;
-
-KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
+Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
 	m_leftTree(nullptr),
 	m_rightTree(nullptr),
 	m_numberOfSamples(numberOfSamples),
@@ -18,16 +16,16 @@ KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSam
 #endif
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
+	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	BuildTree(positions, positionsCount, depth);
 	STOP_PROFILING;
 }
 
-KDTree::~KDTree(void)
+Math::KDTree::~KDTree(void)
 {
 }
 
-void KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
+void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
 {
 	START_PROFILING;
 	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
@@ -61,12 +59,12 @@ void KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int dep
 
 //int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
 
-Real KDTree::SearchNearestValue(const Vector2D& position) const
+Math::Real Math::KDTree::SearchNearestValue(const Vector2D& position) const
 {
 	return SearchNearestValue(position.GetX(), position.GetY());
 }
 
-Real KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
+Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
 {
 	START_PROFILING;
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
@@ -131,12 +129,12 @@ Real KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
 	/* ==================== METHOD #2 end ==================== */
 }
 
-void KDTree::SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void Math::KDTree::SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	return SearchNearestValue(position.GetX(), position.GetY(), depth, minDistanceValues, minDistances);
 }
 
-void KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
 	START_PROFILING;
 	//++numberOfPositionsChecked;
@@ -210,12 +208,12 @@ void KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vect
 	STOP_PROFILING;
 }
 
-std::string KDTree::ToString() const
+std::string Math::KDTree::ToString() const
 {
 	return ToString(0);
 }
 
-std::string KDTree::ToString(int depth) const
+std::string Math::KDTree::ToString(int depth) const
 {
 	static const std::string INDENTATION_STRING = "  ";
 	std::stringstream s("");

@@ -30,7 +30,7 @@ bool Audio::AudioObject::GenerateSamples(float* stream, size_t streamLength)
 
 void Audio::AudioObject::SetPos(double pos)
 {
-	CHECK_CONDITION(!((pos < 0.0) || (pos > 1.0)), Utility::Error,
+	CHECK_CONDITION(!((pos < 0.0) || (pos > 1.0)), Utility::ERR,
 		"Cannot easily set the audio data position. The normalized position's value (%.3f) lies outside of range [0; 1]", pos);
 	double clampedPos = Math::Clamp(pos, 0.0, 1.0);
 	m_audioPos = ConvertPosToAbsolutePos(clampedPos);
@@ -38,7 +38,7 @@ void Audio::AudioObject::SetPos(double pos)
 
 size_t Audio::AudioObject::ConvertPosToAbsolutePos(double pos)
 {
-	CHECK_CONDITION(!((pos < 0.0) || (pos > 1.0)), Utility::Error,
+	CHECK_CONDITION(!((pos < 0.0) || (pos > 1.0)), Utility::ERR,
 		"Cannot convert the audio data normalized position to absolute position. The normalized position's value (%.3f) lies outside of range [0; 1]", pos);
 	return static_cast<size_t>(pos * m_audioLength);
 }

@@ -1,17 +1,13 @@
 #include "stdafx.h"
 #include "Time.h"
-#include <Windows.h>
 #include <stdio.h>
 #include <sstream>
 #include <limits>
 #include <math.h>
 #include "ILogger.h"
 
-using namespace Utility::Timing;
-using namespace std;
-
 /* ==================== TimeSpan class begin ==================== */
-void TimeSpan::AdjustUnitToValue()
+void Utility::Timing::TimeSpan::AdjustUnitToValue()
 {
 	// This function should make the m_value and m_unit variables easier to read, i.e.
 	// if m_value=123456,789 and m_unit=us then we should change m_value to 123,456789 and m_unit=ms.
@@ -58,19 +54,19 @@ void TimeSpan::AdjustUnitToValue()
 	m_unit = static_cast<TimeUnit>(newUnit);
 }
 
-TimeSpan& TimeSpan::operator/=(int s)
+Utility::Timing::TimeSpan& Utility::Timing::TimeSpan::operator/=(int s)
 {
 	m_value /= s;
 	return (*this);
 }
 
-void TimeSpan::operator=(const TimeSpan& timeSpan)
+void Utility::Timing::TimeSpan::operator=(const TimeSpan& timeSpan)
 {
 	m_value = timeSpan.GetValue();
 	m_unit = timeSpan.GetUnit();
 }
 
-bool TimeSpan::operator<(const TimeSpan &timeSpan) const
+bool Utility::Timing::TimeSpan::operator<(const TimeSpan &timeSpan) const
 {
 	//WARNING_LOG("The function has not been tested yet.");
 	if (m_unit == timeSpan.GetUnit())
@@ -81,7 +77,7 @@ bool TimeSpan::operator<(const TimeSpan &timeSpan) const
 	return (m_value * timeUnitConvertingFactor) < timeSpan.GetValue();
 }
 
-bool TimeSpan::operator>(const TimeSpan &timeSpan) const
+bool Utility::Timing::TimeSpan::operator>(const TimeSpan &timeSpan) const
 {
 	//WARNING_LOG("The function has not been tested yet");
 	if (m_unit == timeSpan.GetUnit())
@@ -92,7 +88,7 @@ bool TimeSpan::operator>(const TimeSpan &timeSpan) const
 	return (m_value * timeUnitConvertingFactor) > timeSpan.GetValue();
 }
 
-std::string TimeSpan::ToString() const
+std::string Utility::Timing::TimeSpan::ToString() const
 {
 	std::stringstream ss("");
 	ss << m_value << " " << Time::ConvertTimeUnitToString(m_unit);
@@ -101,22 +97,22 @@ std::string TimeSpan::ToString() const
 /* ==================== TimeSpan class end ==================== */
 
 /* ==================== Time class begin ==================== */
-/* static */ const float Time::ONE_OVER_BILLION = 0.000000001f;
-/* static */ const float Time::ONE_OVER_MILLION = 0.000001f;
-/* static */ const float Time::ONE_OVER_THOUSAND = 0.001f;
-/* static */ const float Time::ONE = 1.0f;
-/* static */ const float Time::ONE_THOUSAND = 1000.0f;
-/* static */ const float Time::ONE_MILLION = 1000000.0f;
-/* static */ const float Time::ONE_BILLION = 1000000000.0f;
+/* static */ const float Utility::Timing::Time::ONE_OVER_BILLION = 0.000000001f;
+/* static */ const float Utility::Timing::Time::ONE_OVER_MILLION = 0.000001f;
+/* static */ const float Utility::Timing::Time::ONE_OVER_THOUSAND = 0.001f;
+/* static */ const float Utility::Timing::Time::ONE = 1.0f;
+/* static */ const float Utility::Timing::Time::ONE_THOUSAND = 1000.0f;
+/* static */ const float Utility::Timing::Time::ONE_MILLION = 1000000.0f;
+/* static */ const float Utility::Timing::Time::ONE_BILLION = 1000000000.0f;
 
-/* static */ Time Time::Now()
+/* static */ Utility::Timing::Time Utility::Timing::Time::Now()
 {
 	SYSTEMTIME st;
 	GetSystemTime(&st);
 	return Time(st.wSecond, st.wMilliseconds);
 }
 
-/* static */ std::string Time::ConvertTimeUnitToString(TimeUnit timeUnit)
+/* static */ std::string Utility::Timing::Time::ConvertTimeUnitToString(TimeUnit timeUnit)
 {
 	switch (timeUnit)
 	{
@@ -134,7 +130,7 @@ std::string TimeSpan::ToString() const
 	}
 }
 
-/* static */ float Time::TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit)
+/* static */ float Utility::Timing::Time::TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit)
 {
 	int timeUnitDiff = toTimeUnit - fromTimeUnit;
 	switch (timeUnitDiff)
@@ -159,7 +155,7 @@ std::string TimeSpan::ToString() const
 	}
 }
 
-std::string Time::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
+std::string Utility::Timing::Time::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
 	//char buffer[80];
 	//memset(buffer, 0, 80);
@@ -183,14 +179,14 @@ std::string Time::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) c
 	{
 		return std::string("time-error");
 	}
-	return string(buffer);
+	return std::string(buffer);
 }
 /* ==================== Time class end ==================== */
 
 /* ==================== Timer class begin ==================== */
-/* static */ bool Timer::isFrequencyInitialized = false;
-/* static */ LARGE_INTEGER Timer::frequency;
-/* static */ LARGE_INTEGER Timer::GetFrequency()
+/* static */ bool Utility::Timing::Timer::isFrequencyInitialized = false;
+/* static */ LARGE_INTEGER Utility::Timing::Timer::frequency;
+/* static */ LARGE_INTEGER Utility::Timing::Timer::GetFrequency()
 {
 	if (!Timer::isFrequencyInitialized)
 	{
@@ -200,18 +196,18 @@ std::string Time::ToDateString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) c
 	return Timer::frequency;
 }
 
-Timer::Timer() :
+Utility::Timing::Timer::Timer() :
 	m_isRunning(false),
 	m_startTime(),
 	m_stopTime()
 {
 }
 
-Timer::~Timer()
+Utility::Timing::Timer::~Timer()
 {
 }
 
-TimeSpan Timer::GetTimeSpan() const
+Utility::Timing::TimeSpan Utility::Timing::Timer::GetTimeSpan() const
 {
 	float elapsedTimeInMillieconds = CalculateElapsedTimeInMilliseconds();
 	if (elapsedTimeInMillieconds > Time::ONE_THOUSAND)
@@ -229,14 +225,14 @@ TimeSpan Timer::GetTimeSpan() const
 	return TimeSpan(elapsedTimeInMillieconds * Time::ONE_MILLION, NANOSECOND);
 }
 
-TimeSpan Timer::GetTimeSpan(TimeUnit timeUnit) const
+Utility::Timing::TimeSpan Utility::Timing::Timer::GetTimeSpan(TimeUnit timeUnit) const
 {
 	float elapsedTimeInMilliseconds = CalculateElapsedTimeInMilliseconds();
 	//INFO_LOG("Elapsed time in seconds = %.2f", elapsedTimeInMilliseconds);
 	return TimeSpan(elapsedTimeInMilliseconds * Time::TimeUnitConvertingFactor(MILLISECOND, timeUnit), timeUnit);
 }
 
-void Timer::Start()
+void Utility::Timing::Timer::Start()
 {
 	//if (m_isRunning)
 	//{
@@ -247,12 +243,12 @@ void Timer::Start()
 	m_isRunning = true;
 }
 
-void Timer::Reset()
+void Utility::Timing::Timer::Reset()
 {
 	Start();
 }
 
-void Timer::Stop()
+void Utility::Timing::Timer::Stop()
 {
 	//if (!m_isRunning)
 	//{

@@ -4,31 +4,29 @@
 #include "ILogger.h"
 #include <fstream>
 
-using namespace Utility;
-
 //Config::ValuesMap Config::cfgValues;
 //Config::ValuesMap Config::cfgNotDefinedValues;
 //bool Config::isInitialized = false;
 
-Config::Config(const std::string& fileName) :
+Utility::Config::Config(const std::string& fileName) :
 	IConfig(fileName)
 {
 	LoadFromFile();
 }
 
-//Config::Config(const std::string& fileName)
+//Utility::Config::Config(const std::string& fileName)
 //{
 //	LoadFromFile(fileName);
 //}
 //
 
-Config::~Config()
+Utility::Config::~Config()
 {
 	m_cfgValues.clear();
 	//m_cfgNotDefinedValues.clear();
 }
 
-void Config::LoadFromFile()
+void Utility::Config::LoadFromFile()
 {
 	std::ifstream file(m_fileName.c_str());
 	if (!file.is_open())
@@ -43,7 +41,7 @@ void Config::LoadFromFile()
 	while (!file.eof())
 	{
 		//file >> name;
-		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Emergency, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
+		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), EMERGENCY, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
 		std::getline(file, line);
 		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{
@@ -55,7 +53,7 @@ void Config::LoadFromFile()
 		DELOCUST_LOG_UTILITY("Line after trimming = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		StringUtility::CutToTokens(line, tokens, ' ');
-		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Utility::Error, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
+		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Utility::ERR, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
 			line.c_str(), tokens[1].c_str());
 		value = tokens[2];
 		if (tokens.size() > 3)
@@ -77,7 +75,7 @@ void Config::LoadFromFile()
 	file.close();
 }
 
-std::string Config::GetArg(const std::string& name, const std::string& defValue) const
+std::string Utility::Config::GetArg(const std::string& name, const std::string& defValue) const
 {
 	ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
 	if (valueMapIt == m_cfgValues.end())
@@ -90,7 +88,7 @@ std::string Config::GetArg(const std::string& name, const std::string& defValue)
 	return valueMapIt->second;
 }
 
-//std::string Config::ReportUndefined()
+//std::string Utility::Config::ReportUndefined()
 //{
 //	std::stringstream stream;
 //	for (ValuesMap::iterator it = cfgNotDefinedValues.begin(); it != cfgNotDefinedValues.end(); ++it)

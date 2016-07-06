@@ -3,67 +3,55 @@
 
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
-#include "Engine\IInputableKeyboard.h"
-#include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Math\Math.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 
-#include <vector>
-
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
 #endif
+
+#include <vector>
+#include <string>
 
 namespace Game
 {
 
 class Rendering::Shader;
 
-class PlayMenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable, public virtual Engine::Input::IInputableMouse
+class PlayMenuGameState : public Engine::GameState, public virtual Engine::IRenderable
 {
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayMenuGameState();
+	PlayMenuGameState(const std::string& inputMappingContextName);
 	virtual ~PlayMenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	/**
-	 * Called after the game state has been placed in the game state manager
-	 */
 	virtual void Entered();
-
-	/**
-	 * Called right before the game state is removed from the game state manager
-	 */
 	virtual void Leaving();
-
-	/**
-	 * Called right before another game state is stacked on top of this one
-	 */
 	virtual void Obscuring();
-
-	/**
-	 * Called after the game state has become the topmost game state on the stack again
-	 */
 	virtual void Revealed();
+	virtual void Handle(Engine::Actions::Action action);
+	virtual void Handle(Engine::States::State state);
+	virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 
-	virtual void MouseButtonEvent(int button, int action, int mods);
-	virtual void MousePosEvent(double xPos, double yPos);
-	virtual void ScrollEvent(double xOffset, double yOffset);
+	//virtual void MouseButtonEvent(int button, int action, int mods);
+	//virtual void MousePosEvent(double xPos, double yPos);
+	//virtual void ScrollEvent(double xOffset, double yOffset);
 
 private:
+	void DeselectAll();
+	void SelectChild(int childIndex);
 	void ChooseCurrentMenuEntry();
 /* ==================== Non-static member functions end ==================== */
 

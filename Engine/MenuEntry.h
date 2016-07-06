@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameCommand.h"
 #include "Math\Vector.h"
-#include "Math\AABR.h"
 #include "Rendering\Font.h"
 #include "Rendering\GuiText.h"
 #include "Effect.h"
@@ -57,7 +56,7 @@ public:
 	bool IsChildMenuEntrySelected(int index) const { return m_selectedMenuEntryIndex == index; }
 	ENGINE_API void SelectChildMenuEntry(int index, bool wrapping = true);
 
-	ENGINE_API void ExecuteCommand() const { m_gameCommand.Execute(); }
+	ENGINE_API void ExecuteCommand() const;
 	ENGINE_API void AddChildren(MenuEntry* child);
 	ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 	ENGINE_API bool HasChildren() const { return !m_childrenMenuEntries.empty(); }

@@ -2,10 +2,9 @@
 #include "CameraComponent.h"
 #include "GameNode.h"
 #include "CoreEngine.h"
+#include "GameNodeMoveCommand.h"
 
 #include "Math\FloatingPoint.h"
-
-#include <GLFW\glfw3.h>
 
 Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	CameraBase(projectionMatrix, sensitivity),
@@ -71,92 +70,12 @@ Engine::CameraMoveComponent::CameraMoveComponent(const Math::Angle& FoV, Math::R
 	m_maxSpeed(REAL_ONE),
 	m_isLocked(false)
 {
+	//m_actionsToGameNodeCommandsMap.insert(std::make_pair(Input::Actions::ACTION_MOVE, std::make_unique<GameNodeMoveCommand>()))
 }
 
 
 Engine::CameraMoveComponent::~CameraMoveComponent(void)
 {
-}
-
-void Engine::CameraMoveComponent::KeyEvent(int key, int scancode, int action, int mods)
-{
-	if (!m_isActive)
-	{
-		return;
-	}
-	// TODO: Set delta to correct value
-	//unsigned int currentCameraIndex = CoreEngine::GetCoreEngine()->GetCurrentCameraIndex();
-	//Transform& transform = cameraNodes[currentCameraIndex]->GetTransform();
-	//const Math::Real sensitivity = static_cast<Math::Real>(CameraBase::GetSensitivity());
-	switch (key)
-	{
-	case GLFW_KEY_ESCAPE:
-		break;
-	case GLFW_KEY_C:
-		//DEBUG_LOG_ENGINE("transform.GetPos() = %s;\t transform.GetRot().GetForward() = %s", transform.GetPos().ToString().c_str(), transform.GetRot().GetForward().ToString().c_str());
-		break;
-	case GLFW_KEY_W:
-		m_forward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG_ENGINE("Forward = %d", forward);
-
-		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetForward() * sensitivity));
-		break;
-	case GLFW_KEY_S:
-		m_backward = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG_ENGINE("Backward = %d", backward);
-
-		//direction -= transform.GetRot().GetForward().Normalized();
-		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetForward() * sensitivity));
-		break;
-	case GLFW_KEY_A:
-		m_left = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG_ENGINE("Left = %d", left);
-
-		//direction -= transform.GetRot().GetRight().Normalized();
-		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetRight() * sensitivity));
-		break;
-	case GLFW_KEY_D:
-		m_right = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//DEBUG_LOG_ENGINE("Right = %d", right);
-
-		//direction += transform.GetRot().GetRight().Normalized();
-		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetRight() * sensitivity));
-		break;
-	case GLFW_KEY_SPACE: // move up
-		m_up = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//direction += transform.GetRot().GetUp().Normalized();
-		//transform.SetPos(transform.GetPos() + (transform.GetRot().GetUp() * sensitivity));
-		break;
-	case GLFW_KEY_LEFT_CONTROL: // move down
-		m_down = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
-		//direction -= transform.GetRot().GetUp().Normalized();
-		//transform.SetPos(transform.GetPos() - (transform.GetRot().GetUp() * sensitivity));
-		break;
-	case GLFW_KEY_UP: // rotation around X axis
-					  //transform.Rotate(transform.GetRot().GetRight(), Angle(-sensitivity));
-		break;
-	case GLFW_KEY_DOWN: // rotation around X axis
-						//transform.Rotate(transform.GetRot().GetRight(), Angle(sensitivity));
-		break;
-	case GLFW_KEY_LEFT: // rotation around Y axis
-						//transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(-sensitivity));
-		break;
-	case GLFW_KEY_RIGHT: // rotation around Y axis
-						 //transform.Rotate(transform.GetTransformedRot().GetUp() /*CameraBase::yAxis*/, Angle(sensitivity));
-		break;
-	case GLFW_KEY_N: // next camera
-					 //if (action == GLFW_PRESS)
-					 //{
-					 //	CoreEngine::GetCoreEngine()->NextCamera();
-					 //}
-		break;
-	case GLFW_KEY_P: // prev camera
-					 //if (action == GLFW_PRESS)
-					 //{
-					 //	CoreEngine::GetCoreEngine()->PrevCamera();
-					 //}
-		break;
-	}
 }
 
 void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int mods)

@@ -19,7 +19,7 @@ namespace Game
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Execute(/*const GameManager& gameManager*/) const;
+		virtual void Execute(Engine::GameManager* gameManager) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

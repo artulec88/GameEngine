@@ -3,9 +3,6 @@
 //#include "Command.h"
 #include <string>
 #include "Time.h"
-//#include <Windows.h>
-
-using namespace std;
 	
 Utility::LoggerWindows::LoggerWindows(FILE *first) :
 	ILogger(),
@@ -108,7 +105,7 @@ void Utility::LoggerWindows::Log(LogLevel level, const char *name, int line, con
 	ResetConsoleColor();
 }
 
-void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = Notice */)
+void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
@@ -122,7 +119,7 @@ void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString *
 	{
 		if (strcmp(strLevel.c_str(), LevelNames[i]) == 0)
 		{
-			//stdlog(Delocust, LOGPLACE, "Setting new logging level from %s to %s", LevelNames[static_cast<int>(stdlog.GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
+			//stdlog(DELOCUST, LOGPLACE, "Setting new logging level from %s to %s", LevelNames[static_cast<int>(stdlog.GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
 			SetLevel((LogLevel)i);
 			return;
 		}
@@ -157,28 +154,28 @@ void Utility::LoggerWindows::SetConsoleColor(LogLevel level) const
 {
 	switch (level)
 	{
-	case Critical:
+	case CRITICAL:
 		//SetConsoleTextAttribute(console, FOREGROUND_RED | FOREGROUND_INTENSITY | BACKGROUND_RED | BACKGROUND_GREEN | BACKGROUND_BLUE );
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_INTENSITY);
 		break;
-	case Emergency:
+	case EMERGENCY:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED);
 		break;
-	case Error:
+	case ERR:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		break;
-	case Warning:
+	case WARNING:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN);
 		break;
-	case Notice:
+	case NOTICE:
 		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		break;
-	case Info:
+	case INFO:
 		SetConsoleTextAttribute(m_console, FOREGROUND_GREEN);
 		break;
-	case Debug:
-	case Delocust:
-	case DevNull:
+	case DEBUG:
+	case DELOCUST:
+	case DEV_NULL:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		break;
 	default:

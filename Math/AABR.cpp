@@ -7,10 +7,10 @@ Math::AABR::AABR(const Math::Vector2D& bottomLeftPos, const Vector2D& topRightPo
 	m_bottomLeftPos(bottomLeftPos),
 	m_topRightPos(topRightPos)
 {
-	CHECK_CONDITION_MATH(!(m_bottomLeftPos.GetX() > m_topRightPos.GetX()), Utility::Error,
+	CHECK_CONDITION_MATH(!(m_bottomLeftPos.GetX() > m_topRightPos.GetX()), Utility::ERR,
 		"The AABR cannot be properly created. The X component of bottom left vertex (%.3f) cannot be greater than X component of the top right vertex (%.3f)",
 		m_bottomLeftPos.GetX(), m_topRightPos.GetX());
-	CHECK_CONDITION_MATH(!(m_bottomLeftPos.GetY() < m_topRightPos.GetY()), Utility::Error,
+	CHECK_CONDITION_MATH(!(m_bottomLeftPos.GetY() < m_topRightPos.GetY()), Utility::ERR,
 		"The AABR cannot be properly created. The Y component of bottom left vertex (%.3f) cannot be less than Y component of the top right vertex (%.3f)",
 		m_bottomLeftPos.GetY(), m_topRightPos.GetY());
 }

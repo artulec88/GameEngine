@@ -2,11 +2,13 @@
 #define __ENGINE_INPUT_CONTEXT_H__
 
 #include "Engine.h"
+#include "ActionConstants.h"
 #include "InputConstants.h"
 #include "InputRangeConverter.h"
 #include <string>
 #include <map>
 #include <memory>
+#include <fstream>
 
 namespace Engine
 {
@@ -22,18 +24,19 @@ namespace Engine
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			explicit InputContext(const std::string& inputContextFileName);
+			explicit InputContext(const std::string& inputContextName);
+			explicit InputContext(std::ifstream& inputContextFile);
 			~InputContext();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary>
-			/// Attempts to map a raw button to an action. If it fails <code>Actions::ACTION_INVALID</code> is returned.
+			/// Attempts to map a raw button to an action. If it fails <code>Actions::INVALID</code> is returned.
 			/// </summary>
 			/// <param name="button">The raw button for which we want to find an associated action. </param>
 			/// <returns>
-			/// An action that is associated with the specified <paramref name="button"/>. If no such action is found then <code>Actions::ACTION_INVALID</code> is returned.
+			/// An action that is associated with the specified <paramref name="button"/>. If no such action is found then <code>Actions::INVALID</code> is returned.
 			/// </returns>
 			Actions::Action MapButtonToAction(RawInputKeys::RawInputKey button) const;
 			/// <summary>

@@ -2,6 +2,7 @@
 #define __ENGINE_INPUT_MAPPING_H__
 
 #include "Engine.h"
+#include "ActionConstants.h"
 #include "InputConstants.h"
 
 #include "Math\Math.h"
@@ -15,6 +16,10 @@ namespace Engine
 {
 	namespace Input
 	{
+		typedef std::set<Actions::Action> ActionsContainer;
+		typedef std::set<States::State> StatesContainer;
+		typedef std::map<Ranges::Range, Math::Real> RangesContainer;
+
 		class InputContext;
 		/// <summary>
 		/// A helper structure.
@@ -25,16 +30,16 @@ namespace Engine
 			ENGINE_API void ConsumeState(States::State state) { m_states.erase(state); }
 			ENGINE_API void ConsumeRange(Ranges::Range range)
 			{
-				std::map<Ranges::Range, Math::Real>::iterator rangeItr = m_ranges.find(range);
+				RangesContainer::iterator rangeItr = m_ranges.find(range);
 				if (rangeItr != m_ranges.end())
 				{
 					m_ranges.erase(rangeItr);
 				}
 			}
 
-			std::set<Actions::Action> m_actions;
-			std::set<States::State> m_states;
-			std::map<Ranges::Range, Math::Real> m_ranges;
+			ActionsContainer m_actions;
+			StatesContainer m_states;
+			RangesContainer m_ranges;
 		}; /* end struct MappedInput */
 
 		typedef void(*InputCallback)(MappedInput& mappedInputs);
@@ -49,13 +54,20 @@ namespace Engine
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			ENGINE_API InputMapping(const std::string& contextListFileName);
+			ENGINE_API InputMapping();
+			ENGINE_API explicit InputMapping(const std::string& contextListFileName);
 			ENGINE_API ~InputMapping();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Clears the actions collection.
+			/// </summary>
 			ENGINE_API void ClearActions();
+			/// <summary>
+			/// Clears the ranges collection.
+			/// </summary>
 			ENGINE_API void ClearRanges();
 			ENGINE_API void SetRawButtonState(RawInputKeys::RawInputKey button, bool pressed, bool previouslyPressed);
 			ENGINE_API void SetRawAxisValue(RawInputAxes::RawInputAxis axis, Math::Real value);
@@ -64,17 +76,24 @@ namespace Engine
 			/// </summary>
 			ENGINE_API void Dispatch() const;
 			/// <summary>
-			/// Input callback registration.
+			/// Input callback registration. Add a callback to the dispatch table.
 			/// </summary>
 			ENGINE_API void RegisterCallback(InputCallback inputCallback, int priority);
 			/// <summary>
-			/// Context management interface.
+			/// Context management interface. Pushes an active input context onto the stack.
 			/// </summary>
 			ENGINE_API void PushContext(const std::string& contextName);
+			/// <summary>
+			/// Context management interface. Pops the current input context off the stack.
+			/// </summary>
 			ENGINE_API void PopContext();
+			ENGINE_API const MappedInput& GetMappedInput() const { return m_currentMappedInput; }
 		private:
 			Actions::Action MapButtonToAction(RawInputKeys::RawInputKey button) const;
 			States::State MapButtonToState(RawInputKeys::RawInputKey button) const;
+			/// <summary>
+			/// Helper method. It consumes all input mapped to a given button.
+			/// </summary>
 			void MapAndConsumeButton(RawInputKeys::RawInputKey button);
 			/* ==================== Non-static member functions end ==================== */
 

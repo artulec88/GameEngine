@@ -9,7 +9,8 @@
 #include "GameNode.h"
 #include "MenuEntry.h"
 #include "GameCommand.h"
-#include "GameCommandFactory.h"
+#include "InputMapping.h"
+//#include "Observer.h"
 
 #include "EffectFactory.h"
 #include "Rendering\Mesh.h"
@@ -26,6 +27,7 @@
 #include "Math\Transform.h"
 #include "Math\Math.h"
 
+#include <amp.h>
 #include <vector>
 
 namespace Engine
@@ -34,6 +36,10 @@ namespace Engine
 class GameManager : public IUpdateable
 {
 	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>, Rendering::Text::FontComparator> FontMap;
+	typedef std::map<Actions::Action, std::list<GameNode*>> ActionsToGameNodesMap;
+	typedef std::map<Actions::Action, const GameCommand*> ActionsToGameCommandsMap;
+	typedef std::map<States::State, std::list<GameNode*>> StatesToGameNodesMap;
+	typedef std::map<States::State, const GameCommand*> StatesToGameCommandsMap;
 /* ==================== Static variables begin ==================== */
 protected:
 	static GameManager* s_gameManager;
@@ -60,14 +66,15 @@ public:
 	/// Destroys the game manager.
 	/// </summary>
 	ENGINE_API virtual ~GameManager(void);
-private:
-	GameManager(GameManager& gameManager);
-	void operator=(GameManager& gameManager);
+	GameManager(GameManager& gameManager) = delete;
+	void operator=(GameManager& gameManager) = delete;
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
 	ENGINE_API virtual void Load() = 0; // Loads the game
+	ENGINE_API virtual void Input(const Engine::Input::MappedInput& input);
+	//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 	ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
 	ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
@@ -96,8 +103,6 @@ public:
 	// TODO: Think about removing the window parameter from the event handling functions below.
 	ENGINE_API virtual void WindowResizeEvent(int width, int height);
 	ENGINE_API virtual void CloseWindowEvent();
-	ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 	ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
 
@@ -108,9 +113,14 @@ public:
 	void PerformStateTransition();
 	ENGINE_API void PopState();
 	ENGINE_API void RequestGameQuit() const;
-	ENGINE_API virtual GameCommand& GetCommand(GameCommandTypes::GameCommandType gameCommandType)
+	ENGINE_API const GameCommand& GetCommand(Actions::Action action) const
 	{
-		return m_gameCommandFactory.GetCommand(gameCommandType);
+		ActionsToGameCommandsMap::const_iterator actionToGameCommandItr = m_actionsToGameCommandsMap.find(action);
+		if (actionToGameCommandItr == m_actionsToGameCommandsMap.end())
+		{
+			return m_emptyGameCommand;
+		}
+		return *actionToGameCommandItr->second;
 	}
 	//ENGINE_API Rendering::Effects::Effect<Math::Real>* GetSingleValueEffect(Rendering::Effects::EffectType effectType, unsigned int variant)
 	//{
@@ -150,8 +160,24 @@ protected:
 	Math::Angle m_skyboxAngle;
 	const Math::Angle m_skyboxAngleStep;
 
-	GameCommandFactory m_gameCommandFactory;
+	const EmptyGameCommand m_emptyGameCommand;
+	ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 	//Rendering::Effects::EffectFactory m_effectFactory;
+
+	/// <summary>
+	/// The list of game nodes that are interested in handling the particular action event that occurred in the game.
+	/// </summary>
+	ActionsToGameNodesMap m_actionsToGameNodesMap;
+
+	/// <summary>
+	/// The map of game commands identified by a state.
+	/// </summary>
+	StatesToGameCommandsMap m_statesToGameCommandsMap;
+	
+	/// <summary>
+	/// The list of game nodes that are interested in handling the particular state that occurred in the game.
+	/// </summary>
+	StatesToGameNodesMap m_statesToGameNodesMap;
 /* ==================== Non-static member variables end ==================== */
 }; /* end class GameManager */
 

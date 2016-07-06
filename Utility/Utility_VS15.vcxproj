@@ -141,10 +141,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
-    <ClInclude Include="Command.h" />
+    <ClInclude Include="CommandLineMapper.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="FileManager.h" />
-    <ClInclude Include="ICommand.h" />
+    <ClInclude Include="ICommandLineMapper.h" />
     <ClInclude Include="IConfig.h" />
     <ClInclude Include="ISerializable.h" />
     <ClInclude Include="List.h" />
@@ -159,7 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Array_impl.h" />
-    <ClCompile Include="Command.cpp" />
+    <ClCompile Include="CommandLineMapper.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
@@ -176,7 +176,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="ICommand.cpp" />
+    <ClCompile Include="ICommandLineMapper.cpp" />
     <ClCompile Include="IConfig.cpp" />
     <ClCompile Include="LoggerWindows.cpp" />
     <ClCompile Include="ILogger.cpp" />

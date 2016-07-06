@@ -2,10 +2,14 @@
 #define __ENGINE_INPUT_RANGE_CONVERTER_H__
 
 #include "Engine.h"
+#include "ActionConstants.h"
 #include "InputConstants.h"
 
+#include "Math\Math.h"
 #include "Math\Interpolation.h"
-#include "Math\Interpolation_impl.h"
+//#include "Math\Interpolation_impl.h"
+
+#include "Utility\ILogger.h"
 
 #include <string>
 #include <map>
@@ -23,10 +27,27 @@ namespace Engine
 		private:
 			struct Converter
 			{
+				Converter() :
+					m_minInput(REAL_ZERO),
+					m_maxInput(REAL_ONE),
+					m_minOutput(REAL_ZERO),
+					m_maxOutput(REAL_ONE)
+				{
+				}
+
+				Converter(Math::Real minInput, Math::Real maxInput, Math::Real minOutput, Math::Real maxOutput) :
+					m_minInput(minInput),
+					m_maxInput(maxInput),
+					m_minOutput(minOutput),
+					m_maxOutput(maxOutput)
+				{
+				}
+
 				template <typename RangeType>
 				RangeType Convert(RangeType inputValue) const
 				{
 					Math::Real v = static_cast<Math::Real>(inputValue);
+					DELOCUST_LOG_ENGINE("v = %.2f; minInput = %.2f; maxInput = %.2f; minOutput = %.2f; maxOutput = %.2f", v, m_minInput, m_maxInput, m_minOutput, m_maxOutput);
 					if (v < m_minInput)
 					{
 						v = m_minInput;
@@ -49,6 +70,7 @@ namespace Engine
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			explicit InputRangeConverter(const std::string& inputContextName);
 			explicit InputRangeConverter(std::ifstream& inFileStream);
 			~InputRangeConverter();
 			/* ==================== Constructors and destructors end ==================== */
@@ -61,6 +83,7 @@ namespace Engine
 				std::map<Ranges::Range, Converter>::const_iterator itr = m_convertersMap.find(rangeId);
 				if (itr == m_convertersMap.end())
 				{
+					WARNING_LOG_ENGINE("There exists no input converter for the range %d.", rangeId);
 					return inputValue;
 				}
 				return itr->second.Convert<RangeType>(inputValue);

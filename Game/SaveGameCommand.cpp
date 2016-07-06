@@ -12,7 +12,7 @@ Game::SaveGameCommand::~SaveGameCommand()
 {
 }
 
-void Game::SaveGameCommand::Execute() const
+void Game::SaveGameCommand::Execute(Engine::GameManager* gameManager) const
 {
 	// TODO: Game saving
 	WARNING_LOG_GAME("The saving game functionality is not supported yet.");

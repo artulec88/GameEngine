@@ -80,32 +80,35 @@ namespace Engine
 				KEY_RIGHT_CONTROL,
 				KEY_RIGHT_ALT,
 				KEY_RIGHT_SUPER,
-				KEY_Q,
-				KEY_W,
-				KEY_E,
-				KEY_R,
-				KEY_T,
-				KEY_Y,
-				KEY_U,
-				KEY_I,
-				KEY_O,
-				KEY_P,
 				KEY_A,
-				KEY_S,
+				KEY_B,
+				KEY_C,
 				KEY_D,
+				KEY_E,
 				KEY_F,
 				KEY_G,
 				KEY_H,
+				KEY_I,
 				KEY_J,
 				KEY_K,
 				KEY_L,
-				KEY_Z,
-				KEY_X,
-				KEY_C,
-				KEY_V,
-				KEY_B,
-				KEY_N,
 				KEY_M,
+				KEY_N,
+				KEY_O,
+				KEY_P,
+				KEY_Q,
+				KEY_R,
+				KEY_S,
+				KEY_T,
+				KEY_U,
+				KEY_V,
+				KEY_W,
+				KEY_X,
+				KEY_Y,
+				KEY_Z,
+				MOUSE_KEY_LEFT,
+				MOUSE_KEY_MIDDLE,
+				MOUSE_KEY_RIGHT
 			}; /* end enum RawInputKey */
 		} /* end namespace RawInputKeys */
 
@@ -118,42 +121,6 @@ namespace Engine
 			}; /* end enum RawInputAxis */
 		} /* end namespace RawInputAxes */
 
-		namespace Actions
-		{
-			enum Action
-			{
-				ACTION_INVALID = 0,
-				ACTION_QUIT_GAME,
-				ACTION_ONE,
-				ACTION_TWO,
-				ACTION_THREE,
-				ACTION_FOUR,
-				ACTION_FIVE,
-				ACTION_SIX,
-				ACTION_SEVEN
-			}; /* end enum Action */
-		} /* end namespace Actions */
-
-		namespace States
-		{
-			enum State
-			{
-				STATE_INVALID = 0,
-				STATE_ONE,
-				STATE_TWO,
-				STATE_THREE
-			}; /* end enum State */
-		} /* end namespace States */
-
-		namespace Ranges
-		{
-			enum Range
-			{
-				RANGE_INVALID = 0,
-				RANGE_ONE,
-				RANGE_TWO
-			}; /* end enum Range */
-		} /* end namespace Ranges */
 	} /* end namespace Input */
 } /* end namspace Engine */
 

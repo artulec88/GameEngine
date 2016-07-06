@@ -17,15 +17,11 @@
 #include <sstream>
 #include <algorithm>
 
-using namespace Rendering;
-using namespace Utility;
-using namespace Math;
-
-/* static */ const Matrix4D Renderer::BIAS_MATRIX(Matrix4D(0.5f /* scale matrix */) * Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
+/* static */ const Math::Matrix4D Rendering::Renderer::BIAS_MATRIX(Math::Matrix4D(0.5f /* scale matrix */) * Math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
-Renderer::Renderer(int windowWidth, int windowHeight) :
+Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
 	m_applyFilterEnabled(GET_CONFIG_VALUE_RENDERING("applyFilterEnabled", true)),
@@ -66,7 +62,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_altCamera(Math::Matrix4D(), Math::Transform(), 0.005f),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
-	m_filterTransform(Vector3D(), Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
+	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
 	m_ambientShaderTerrain(NULL),
 	m_ambientShader(NULL),
@@ -271,15 +267,15 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 #endif
 
 	/* ==================== Creating a "Main menu camera" begin ==================== */
-	const Real defaultFoV = GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f);
-	const Real defaultAspectRatio = GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Real>(800) / 600);
-	const Real defaultNearPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f);
-	const Real defaultFarPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f);
+	const Math::Real defaultFoV = GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f);
+	const Math::Real defaultAspectRatio = GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600);
+	const Math::Real defaultNearPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f);
+	const Math::Real defaultFarPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f);
 
-	Angle fov(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", defaultFoV), Unit::DEGREE);
-	Real aspectRatio = GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", defaultAspectRatio);
-	Real zNearPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", defaultNearPlane);
-	Real zFarPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", defaultFarPlane);
+	Math::Angle fov(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", defaultFoV), Math::Unit::DEGREE);
+	Math::Real aspectRatio = GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", defaultAspectRatio);
+	Math::Real zNearPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", defaultNearPlane);
+	Math::Real zFarPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", defaultFarPlane);
 	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Math::Transform(), 0.005f);
 	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */
@@ -295,7 +291,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 
 	/* ==================== Initializing physics logger begin ==================== */
 	std::string loggingLevel = GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info");
-	Utility::ILogger::GetLogger("Rendering").Fill(loggingLevel, Utility::Info);
+	Utility::ILogger::GetLogger("Rendering").Fill(loggingLevel, Utility::INFO);
 	/* ==================== Initializing physics logger end ==================== */
 
 	NOTICE_LOG_RENDERING("Creating Renderer instance finished");
@@ -303,7 +299,7 @@ Renderer::Renderer(int windowWidth, int windowHeight) :
 }
 
 
-Renderer::~Renderer(void)
+Rendering::Renderer::~Renderer(void)
 {
 	INFO_LOG_RENDERING("Destroying rendering engine...");
 	START_PROFILING;
@@ -395,13 +391,13 @@ Renderer::~Renderer(void)
 
 //void Renderer::AddTerrainNode(GameNode* terrainNode)
 //{
-//	CHECK_CONDITION_RENDERING(terrainNode != NULL, Utility::Error, "Cannot register terrain node. Given terrain node is NULL.");
+//	CHECK_CONDITION_RENDERING(terrainNode != NULL, Utility::ERR, "Cannot register terrain node. Given terrain node is NULL.");
 //	m_terrainNodes.push_back(terrainNode);
 //}
 
 //void Renderer::AddWaterNode(GameNode* waterNode)
 //{
-//	CHECK_CONDITION_EXIT_RENDERING(waterNode != NULL, Utility::Emergency, "Adding water node failed. The water node is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(waterNode != NULL, Utility::EMERGENCY, "Adding water node failed. The water node is NULL.");
 //	if (m_waterNodes.empty())
 //	{
 //		INFO_LOG_RENDERING("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
@@ -411,14 +407,14 @@ Renderer::~Renderer(void)
 
 //void Renderer::AddBillboardNode(GameNode* billboardNode)
 //{
-//	CHECK_CONDITION_EXIT_RENDERING(billboardNode != NULL, Utility::Emergency, "Adding billboard node failed. The given billboard node is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(billboardNode != NULL, Utility::EMERGENCY, "Adding billboard node failed. The given billboard node is NULL.");
 //	m_billboardNodes.push_back(billboardNode);
 //}
 
 //void Renderer::AddSkyboxNode(GameNode* skyboxNode)
 //{
-//	CHECK_CONDITION_EXIT_RENDERING(skyboxNode != NULL, Utility::Emergency, "Adding skybox node failed. The given skybox node is NULL.");
-//	CHECK_CONDITION_RENDERING(m_skyboxNode == NULL, Utility::Warning, "The currently assigned skybox node is being overwritten");
+//	CHECK_CONDITION_EXIT_RENDERING(skyboxNode != NULL, Utility::EMERGENCY, "Adding skybox node failed. The given skybox node is NULL.");
+//	CHECK_CONDITION_RENDERING(m_skyboxNode == NULL, Utility::WARNING, "The currently assigned skybox node is being overwritten");
 //	m_skyboxNode = skyboxNode;
 //}
 
@@ -426,7 +422,7 @@ Renderer::~Renderer(void)
 struct CameraDirection
 {
 	GLenum cubemapFace;
-	Quaternion rotation;
+	Math::Quaternion rotation;
 };
 
 CameraDirection gCameraDirections[6 /* number of cube map faces */] =
@@ -438,22 +434,22 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	//{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) },
 	//{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO) }
 
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Quaternion(Matrix4D(Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Quaternion(Matrix4D(Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Quaternion(Matrix4D(Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
-	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
-	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Quaternion(Matrix4D(Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_X, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_X, Math::Quaternion(Math::Matrix4D(Math::Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Y, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE))) },
+	{ GL_TEXTURE_CUBE_MAP_POSITIVE_Z, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) },
+	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
-void Renderer::InitRenderScene()
+void Rendering::Renderer::InitRenderScene()
 {
 	START_PROFILING;
 
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
 	CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
-		Utility::Emergency, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+		Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
@@ -472,22 +468,22 @@ void Renderer::InitRenderScene()
 	STOP_PROFILING;
 }
 
-void Renderer::BindDisplayTexture()
+void Rendering::Renderer::BindDisplayTexture()
 {
 	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 }
 
-void Renderer::BindWaterReflectionTexture()
+void Rendering::Renderer::BindWaterReflectionTexture()
 {
 	m_waterReflectionTexture->BindAsRenderTarget();
 }
 
-void Renderer::BindWaterRefractionTexture()
+void Rendering::Renderer::BindWaterRefractionTexture()
 {
 	m_waterRefractionTexture->BindAsRenderTarget();
 }
 
-void Renderer::InitWaterNodesRendering()
+void Rendering::Renderer::InitWaterNodesRendering()
 {
 	m_mappedValues.SetTexture("waterReflectionTexture", m_waterReflectionTexture);
 	m_mappedValues.SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
@@ -499,7 +495,7 @@ void Renderer::InitWaterNodesRendering()
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
-		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::Error, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::ERR, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
 	}
 	m_mappedValues.SetReal("waterMoveFactor", m_waterMoveFactor);
 	m_mappedValues.SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
@@ -511,11 +507,11 @@ void Renderer::InitWaterNodesRendering()
 	m_mappedValues.SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
 }
 
-void Renderer::FinalizeRenderScene()
+void Rendering::Renderer::FinalizeRenderScene()
 {
 	START_PROFILING;
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
-		Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
+		Math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 #ifdef DEBUG_RENDERING_ENABLED
 	RenderDebugNodes();
@@ -526,7 +522,7 @@ void Renderer::FinalizeRenderScene()
 	STOP_PROFILING;
 }
 
-void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
+void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
 {
 	//START_PROFILING;
 	shader->Bind();
@@ -540,19 +536,19 @@ void Renderer::Render(const Mesh& mesh, const Material* material, const Math::Tr
 //	m_mappedValues.SetVector4D("clipPlane", clippingPlane);
 //}
 
-void Renderer::EnableWaterReflectionClippingPlane(Math::Real height)
+void Rendering::Renderer::EnableWaterReflectionClippingPlane(Math::Real height)
 {
 	m_waterReflectionClippingPlane.SetW(height);
 	m_mappedValues.SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 }
 
-void Renderer::EnableWaterRefractionClippingPlane(Math::Real height)
+void Rendering::Renderer::EnableWaterRefractionClippingPlane(Math::Real height)
 {
 	m_waterRefractionClippingPlane.SetW(height);
 	m_mappedValues.SetVector4D("clipPlane", m_waterRefractionClippingPlane);
 }
 
-void Renderer::DisableClippingPlanes()
+void Rendering::Renderer::DisableClippingPlanes()
 {
 	// Now that we rendered the scene into the reflection and refraction textures for the water surface,
 	// we want to disable the clipping planes completely. Unfortunately, it seems some drivers simply ignore the
@@ -563,7 +559,7 @@ void Renderer::DisableClippingPlanes()
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 }
 
-//void Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
+//void Rendering::Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 //{
 //	START_PROFILING;
 //	if (!Lighting::PointLight::ArePointLightsEnabled())
@@ -614,10 +610,10 @@ void Renderer::DisableClippingPlanes()
 //	STOP_PROFILING;
 //}
 
-//void Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
+//void Rendering::Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
 //{
 //	START_PROFILING;
-//	CHECK_CONDITION_EXIT_RENDERING(light != NULL, Utility::Emergency, "Cannot render the scene. The light is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(light != NULL, Utility::EMERGENCY, "Cannot render the scene. The light is NULL.");
 //	DEBUG_LOG_RENDERING("Rendering scene with light.");
 //	glCullFace(Rendering::glCullFaceMode);
 //	GetTexture("displayTexture")->BindAsRenderTarget();
@@ -648,22 +644,22 @@ void Renderer::DisableClippingPlanes()
 //	STOP_PROFILING;
 //}
 
-void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str) const
+void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str) const
 {
 	RenderText(alignment, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
+void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
 {
 	RenderText(alignment, y, str, fontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
 {
 	RenderText(alignment, y, str, m_defaultFontSize, fontColor);
 }
 
-void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	int x = 0;
 	switch (alignment)
@@ -684,22 +680,22 @@ void Renderer::RenderText(Text::Alignment alignment, int y, const std::string& s
 	RenderText(x, y, str, fontSize, fontColor);
 }
 
-void Renderer::RenderText(int x, int y, const std::string& str) const
+void Rendering::Renderer::RenderText(int x, int y, const std::string& str) const
 {
 	RenderText(x, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize) const
+void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize) const
 {
 	RenderText(x, y, str, fontSize, m_defaultFontColor);
 }
 
-void Renderer::RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
 {
 	RenderText(x, y, str, m_defaultFontSize, fontColor);
 }
 
-void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
 	DELOCUST_LOG_RENDERING("Started drawing string \"%s\"", str.c_str());
@@ -817,7 +813,7 @@ void Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontS
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Renderer::RenderText(const Text::GuiText& guiText) const
+void Rendering::Renderer::RenderText(const Text::GuiText& guiText) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
 	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
@@ -863,11 +859,11 @@ void Renderer::RenderText(const Text::GuiText& guiText) const
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const
+void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const
 {
 	START_PROFILING;
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
-	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::Error,
+	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::ERR,
 	//	"The number of alive particles (%d) exceeds the size of the specified vector of particles (%d)", particlesCount, particles.size());
 	if (particlesCount <= 0)
 	{
@@ -953,7 +949,7 @@ void Renderer::RenderParticles(const ParticleTexture* particleTexture, const Par
 	STOP_PROFILING;
 }
 
-void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
+void Rendering::Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 {
 	START_PROFILING;
 	BindAsRenderTarget();
@@ -976,11 +972,11 @@ void Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 	STOP_PROFILING;
 }
 
-bool Renderer::InitShadowMap()
+bool Rendering::Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Error, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
 	m_mappedValues.SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
@@ -1017,7 +1013,7 @@ bool Renderer::InitShadowMap()
 	}
 }
 
-void Renderer::FinalizeShadowMapRendering()
+void Rendering::Renderer::FinalizeShadowMapRendering()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	if (shadowInfo != NULL)
@@ -1034,7 +1030,7 @@ void Renderer::FinalizeShadowMapRendering()
 		{
 			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
 			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
-			if (!AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
+			if (!Math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
 			{
 				BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
 			}
@@ -1042,14 +1038,14 @@ void Renderer::FinalizeShadowMapRendering()
 	}
 }
 
-const Shader* Renderer::GetAmbientShader() const
+const Rendering::Shader* Rendering::Renderer::GetAmbientShader() const
 {
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT_RENDERING(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::Emergency, "Cannot render the scene with ambient light. The fog shader is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::EMERGENCY, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		STOP_PROFILING;
 		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second; // TODO: add logging. refactor
 	}
@@ -1062,14 +1058,14 @@ const Shader* Renderer::GetAmbientShader() const
 	return NULL;
 }
 
-const Shader* Renderer::GetAmbientTerrainShader() const
+const Rendering::Shader* Rendering::Renderer::GetAmbientTerrainShader() const
 {
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogTerrainShaderItr = m_ambientShadersFogEnabledTerrainMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT_RENDERING(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::Emergency, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::EMERGENCY, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		STOP_PROFILING;
 		return (fogTerrainShaderItr == m_ambientShadersFogEnabledTerrainMap.end()) ? NULL : fogTerrainShaderItr->second;
 	}
@@ -1082,7 +1078,7 @@ const Shader* Renderer::GetAmbientTerrainShader() const
 	return NULL;
 }
 
-void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
+void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
 {
 	START_PROFILING;
 	/* ==================== Adjusting the time variables begin ==================== */
@@ -1122,7 +1118,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime
 	STOP_PROFILING;
 }
 
-//void Renderer::RenderSkybox()
+//void Rendering::Renderer::RenderSkybox()
 //{
 //	START_PROFILING;
 //	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
@@ -1150,7 +1146,7 @@ void Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime
 //	STOP_PROFILING;
 //}
 
-void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many texels we move per sample */)
+void Rendering::Renderer::BlurShadowMap(int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING;
 	Texture* shadowMap = m_shadowMaps[shadowMapIndex];
@@ -1168,21 +1164,21 @@ void Renderer::BlurShadowMap(int shadowMapIndex, Real blurAmount /* how many tex
 		return;
 	}
 
-	m_mappedValues.SetVector3D("blurScale", Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
 	ApplyFilter(m_gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
 	
-	m_mappedValues.SetVector3D("blurScale", Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
+	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
 	ApplyFilter(m_gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
 	STOP_PROFILING;
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
-void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
+void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::Critical, "Cannot apply a filter. Filtering shader is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::Critical, "Cannot apply a filter. Source texture is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::Critical, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
+	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::CRITICAL, "Cannot apply a filter. Filtering shader is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
 	if (dest == NULL)
 	{
 		DELOCUST_LOG_RENDERING("Binding window as a render target for filtering");
@@ -1199,8 +1195,8 @@ void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, co
 	m_mappedValues.SetTexture("filterTexture", source);
 
 	m_altCamera.SetProjection(Math::Matrix4D::IDENTITY_MATRIX);
-	m_altCamera.GetTransform().SetPos(Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	m_altCamera.GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180.0f)));
+	m_altCamera.GetTransform().SetPos(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	m_altCamera.GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)));
 
 	CameraBase* temp = m_currentCamera;
 	m_currentCamera = &m_altCamera;
@@ -1215,7 +1211,7 @@ void Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, co
 	STOP_PROFILING;
 }
 
-size_t Renderer::NextCamera()
+size_t Rendering::Renderer::NextCamera()
 {
 	if (m_currentCameraIndex == m_cameras.size() - 1)
 	{
@@ -1224,7 +1220,7 @@ size_t Renderer::NextCamera()
 	return SetCurrentCamera(m_currentCameraIndex + 1);
 }
 
-size_t Renderer::PrevCamera()
+size_t Rendering::Renderer::PrevCamera()
 {
 	if (m_currentCameraIndex == 0)
 	{
@@ -1233,19 +1229,19 @@ size_t Renderer::PrevCamera()
 	return SetCurrentCamera(m_currentCameraIndex - 1);
 }
 
-//void Renderer::SetMenuCameraAsCurrent()
+//void Rendering::Renderer::SetMenuCameraAsCurrent()
 //{
 //	m_currentCamera = m_mainMenuCamera;
 //}
 
-void Renderer::SetCurrentCamera()
+void Rendering::Renderer::SetCurrentCamera()
 {
 	m_currentCamera = m_cameras[m_currentCameraIndex];
 }
 
-size_t Renderer::SetCurrentCamera(size_t cameraIndex)
+size_t Rendering::Renderer::SetCurrentCamera(size_t cameraIndex)
 {
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Error, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
 	m_cameras[m_currentCameraIndex]->Deactivate();
 	m_currentCameraIndex = cameraIndex;
 	m_cameras[m_currentCameraIndex]->Activate();
@@ -1256,7 +1252,7 @@ size_t Renderer::SetCurrentCamera(size_t cameraIndex)
 	return m_currentCameraIndex;
 }
 
-void Renderer::AddLight(Lighting::BaseLight* light)
+void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
 {
 	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
 	if (directionalLight != NULL)
@@ -1291,7 +1287,7 @@ void Renderer::AddLight(Lighting::BaseLight* light)
 	m_lights.push_back(light);
 }
 
-void Renderer::AddCamera(CameraBase* camera)
+void Rendering::Renderer::AddCamera(CameraBase* camera)
 {
 	if (m_cameras.empty())
 	{
@@ -1303,13 +1299,13 @@ void Renderer::AddCamera(CameraBase* camera)
 #endif
 }
 
-void Renderer::BindAsRenderTarget() const
+void Rendering::Renderer::BindAsRenderTarget() const
 {
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glViewport(0, 0, m_windowWidth, m_windowHeight);
 }
 
-void Renderer::InitLightRendering() const
+void Rendering::Renderer::InitLightRendering() const
 {
 	glCullFace(Rendering::glCullFaceMode);
 	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
@@ -1322,7 +1318,7 @@ void Renderer::InitLightRendering() const
 	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
 }
 
-void Renderer::FinalizeLightRendering() const
+void Rendering::Renderer::FinalizeLightRendering() const
 {
 	glDepthFunc(Rendering::glDepthTestFunc);
 	glDepthMask(GL_TRUE);
@@ -1336,13 +1332,13 @@ void Renderer::FinalizeLightRendering() const
 	}
 }
 
-void Renderer::BindCubeShadowMap(unsigned int textureUnit) const
+void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 {
 	m_cubeShadowMap->BindForReading(textureUnit);
 }
 
 #ifdef DEBUG_RENDERING_ENABLED
-void Renderer::RenderDebugNodes()
+void Rendering::Renderer::RenderDebugNodes()
 {
 	m_debugShader->Bind();
 	glEnable(GL_BLEND);
@@ -1371,60 +1367,60 @@ void Renderer::RenderDebugNodes()
 	glEnable(GL_DEPTH_TEST);
 }
 
-void Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
+void Rendering::Renderer::AddLine(const Math::Vector3D& fromPosition, const Math::Vector3D& toPosition, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug line rendering is not yet supported by the engine");
 }
 
-void Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
+void Rendering::Renderer::AddSphere(const Math::Sphere& sphere, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug sphere rendering is not yet supported by the engine");
 }
 
-void Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
+void Rendering::Renderer::AddCross(const Math::Vector3D& position, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug cross rendering is not yet supported by the engine");
 }
 
-void Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
+void Rendering::Renderer::AddCircle(const Math::Vector3D& centerPosition, const Math::Vector3D& planeNormal, Math::Real radius, const Color& color,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug circle rendering is not yet supported by the engine");
 }
 
-void Renderer::AddAxes(const Transform& transform, const Color& color, Math::Real size,
+void Rendering::Renderer::AddAxes(const Math::Transform& transform, const Color& color, Math::Real size,
 	Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug axes rendering is not yet supported by the engine");
 }
 
-void Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
+void Rendering::Renderer::AddTriangle(const Math::Vector3D& v0, const Math::Vector3D& v1, const Math::Vector3D& v2, const Color& color,
 	Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug triangle rendering is not yet supported by the engine");
 }
 
-void Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddAABB(const Math::AABB& aabb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug AABB rendering is not yet supported by the engine");
 }
 
-void Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddOBB(const Math::OBB& obb, const Color& color, Math::Real lineWidth /* = REAL_ONE */, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug OBB rendering is not yet supported by the engine");
 }
 
-void Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
+void Rendering::Renderer::AddString(const Math::Vector3D& pos, const char* text, const Color& color, Math::Real duration /* = REAL_ZERO */, bool isDepthTestEnabled /* = true */)
 {
 	WARNING_LOG_RENDERING("Debug text rendering is not yet supported by the engine");
 }
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void Renderer::InitializeTweakBars()
+void Rendering::Renderer::InitializeTweakBars()
 {
 	INFO_LOG_RENDERING("Initializing rendering engine's tweak bars");
 
@@ -1527,7 +1523,7 @@ void Renderer::InitializeTweakBars()
 	DEBUG_LOG_RENDERING("Initializing rendering engine's tweak bars finished");
 }
 
-void Renderer::CheckCameraIndexChange()
+void Rendering::Renderer::CheckCameraIndexChange()
 {
 #ifdef CAMERA_TWEAK_BAR
 	if (m_cameras.empty() || m_previousFrameCameraIndex == m_currentCameraIndex)

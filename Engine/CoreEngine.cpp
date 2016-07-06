@@ -2,23 +2,19 @@
 #include "CoreEngine.h"
 #include "tinythread.h"
 
-#include "Utility\ILogger.h"
-#include "Utility\Config.h"
+#include "Audio\AudioEngineFactory.h"
 
 #include "Math\Math.h"
 #include "Math\FloatingPoint.h"
 
-#include "Audio\AudioEngineFactory.h"
+#include "Utility\ILogger.h"
+#include "Utility\Config.h"
 
 #include <ctime>
 #include <iomanip>
 #include <sstream>
 #include <iostream>
-//#include <GLFW\glfw3.h>
-
-using namespace Engine;
-using namespace Utility;
-using namespace std;
+#include <GLFW\glfw3.h>
 
 /**
  * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
@@ -78,24 +74,24 @@ void operator delete[](void* ptr) throw() { ++numberOfDeallocs3; free(ptr); }
 void operator delete[](void* ptr, const std::nothrow_t&) throw() { ++numberOfDeallocs4; free(ptr); }
 
 
-CoreEngine* CoreEngine::s_coreEngine = NULL;
+Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = NULL;
 
-/* static */ CoreEngine* CoreEngine::GetCoreEngine()
+/* static */ Engine::CoreEngine* Engine::CoreEngine::GetCoreEngine()
 {
 	return s_coreEngine;
 }
 
-/* static */ void CoreEngine::ErrorCallback(int errorCode, const char* description)
+/* static */ void Engine::CoreEngine::ErrorCallback(int errorCode, const char* description)
 {
 	GetCoreEngine()->ErrorCallbackEvent(errorCode, description);
 }
 
-/* static */ void CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
+/* static */ void Engine::CoreEngine::WindowCloseEventCallback(GLFWwindow* window)
 {
 	GetCoreEngine()->CloseWindowEvent(window);
 }
 
-/* static */ void CoreEngine::WindowResizeCallback(GLFWwindow* window, int width, int height)
+/* static */ void Engine::CoreEngine::WindowResizeCallback(GLFWwindow* window, int width, int height)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwWindowSize(width, height))
@@ -107,7 +103,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-/* static */ void CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+/* static */ void Engine::CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	DEBUG_LOG_ENGINE("Key event callback (key = %d; scancode = %d; action = %d; mods = %d", key, scancode, action, mods);
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -121,7 +117,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-/* static */ void CoreEngine::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
+/* static */ void Engine::CoreEngine::MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMouseButtonGLFW(button, action))
@@ -134,7 +130,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-/* static */ void CoreEngine::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
+/* static */ void Engine::CoreEngine::MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMousePosGLFW(static_cast<int>(xPos), static_cast<int>(yPos)))
@@ -148,7 +144,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 	//GetCoreEngine()->CentralizeCursor();
 }
 
-/* static */ void CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
+/* static */ void Engine::CoreEngine::ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 {
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventMouseWheelGLFW(static_cast<int>(yOffset))) // TODO: Check if yOffset here is ok
@@ -161,7 +157,7 @@ CoreEngine* CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
+Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
 	m_window(NULL),
@@ -192,9 +188,18 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory),
 	m_audioDirectory(audioDirectory),
+	m_glfwKeysToRawInputKeysMap({ {GLFW_KEY_A, Input::RawInputKeys::KEY_A}, { GLFW_KEY_B, Input::RawInputKeys::KEY_B },
+		{ GLFW_KEY_C, Input::RawInputKeys::KEY_C }, { GLFW_KEY_D, Input::RawInputKeys::KEY_D }, { GLFW_KEY_E, Input::RawInputKeys::KEY_E }, { GLFW_KEY_F, Input::RawInputKeys::KEY_F },
+		{ GLFW_KEY_G, Input::RawInputKeys::KEY_G }, { GLFW_KEY_H, Input::RawInputKeys::KEY_H }, { GLFW_KEY_I, Input::RawInputKeys::KEY_I }, { GLFW_KEY_J, Input::RawInputKeys::KEY_J },
+		{ GLFW_KEY_K, Input::RawInputKeys::KEY_K }, { GLFW_KEY_L, Input::RawInputKeys::KEY_L }, { GLFW_KEY_M, Input::RawInputKeys::KEY_M }, { GLFW_KEY_N, Input::RawInputKeys::KEY_N },
+		{ GLFW_KEY_O, Input::RawInputKeys::KEY_O }, { GLFW_KEY_P, Input::RawInputKeys::KEY_P }, { GLFW_KEY_Q, Input::RawInputKeys::KEY_Q }, { GLFW_KEY_R, Input::RawInputKeys::KEY_R },
+		{ GLFW_KEY_S, Input::RawInputKeys::KEY_S }, { GLFW_KEY_T, Input::RawInputKeys::KEY_T }, { GLFW_KEY_U, Input::RawInputKeys::KEY_U }, { GLFW_KEY_V, Input::RawInputKeys::KEY_V },
+		{ GLFW_KEY_W, Input::RawInputKeys::KEY_W }, { GLFW_KEY_X, Input::RawInputKeys::KEY_X }, { GLFW_KEY_Y, Input::RawInputKeys::KEY_Y }, { GLFW_KEY_Z, Input::RawInputKeys::KEY_Z },
+		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
+		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT } }),
 	m_inputMapping(GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef CALCULATE_RENDERING_STATS
-	,m_countStats1(0),
+	, m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
 	m_countStats2(0),
 	m_timeSum2(REAL_ZERO),
@@ -218,9 +223,9 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
-	Utility::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Info); // Initializing engine logger
-	Utility::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Info); // Initializing math logger
-	Utility::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Info); // Initializing utility logger
+	Utility::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::INFO); // Initializing engine logger
+	Utility::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::INFO); // Initializing math logger
+	Utility::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::INFO); // Initializing utility logger
 
 	NOTICE_LOG_ENGINE("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS
@@ -253,7 +258,7 @@ CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRat
 }
 
 
-CoreEngine::~CoreEngine(void)
+	Engine::CoreEngine::~CoreEngine(void)
 {
 	DEBUG_LOG_ENGINE("Core engine destruction started");
 
@@ -289,25 +294,25 @@ CoreEngine::~CoreEngine(void)
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG_ENGINE("Core engine destruction finished");
 
-	ILogger::GetLogger("Engine").ResetConsoleColor();
+	Utility::ILogger::GetLogger("Engine").ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 }
 
-void CoreEngine::CreateAudioEngine()
+void Engine::CoreEngine::CreateAudioEngine()
 {
 	Audio::AudioEngineFactory audioEngineFactory;
 	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<Audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(Audio::AudioEngineTypes::FMOD))));
-	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Critical, "Failed to create an audio engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::CRITICAL, "Failed to create an audio engine.");
 }
 
-void CoreEngine::CreatePhysicsEngine()
+void Engine::CoreEngine::CreatePhysicsEngine()
 {
 	m_physicsEngine = new Physics::PhysicsEngine();
 
-	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Critical, "Failed to create a physics engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::CRITICAL, "Failed to create a physics engine.");
 }
 
-void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
+void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 {
 	START_PROFILING;
 	InitGraphics(width, height, title);
@@ -317,21 +322,21 @@ void CoreEngine::CreateRenderer(int width, int height, const std::string& title)
 	//DEBUG_LOG_ENGINE("Thread window address: %p", threadWindow);
 	m_renderer = new Rendering::Renderer(width, height);
 
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Critical, "Failed to create a renderer.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
 	STOP_PROFILING;
 }
 
-void CoreEngine::InitGraphics(int width, int height, const std::string& title)
+void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title)
 {
 	InitGlfw(width, height, title);
 	InitGlew();
 	SetCallbacks();
 }
 
-void CoreEngine::InitGlfw(int width, int height, const std::string& title)
+void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& title)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Critical, "Failed to initialize GLFW.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::CRITICAL, "Failed to initialize GLFW.");
 
 	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
@@ -403,7 +408,7 @@ void CoreEngine::InitGlfw(int width, int height, const std::string& title)
 	DEBUG_LOG_ENGINE("Initializing GLFW finished successfully");
 }
 
-void CoreEngine::InitGlew()
+void Engine::CoreEngine::InitGlew()
 {
 	INFO_LOG_ENGINE("Initializing GLEW started");
 	glewExperimental = true; // Needed in core profile
@@ -428,9 +433,9 @@ void CoreEngine::InitGlew()
 	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
-void CoreEngine::SetCallbacks()
+void Engine::CoreEngine::SetCallbacks()
 {
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Critical, "Setting GLFW callbacks failed. The window is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Utility::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(m_window, &CoreEngine::WindowResizeCallback);
 	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
@@ -441,7 +446,7 @@ void CoreEngine::SetCallbacks()
 	glfwSetScrollCallback(m_window, &CoreEngine::ScrollEventCallback);
 }
 
-void CoreEngine::Start(GameManager* gameManager)
+void Engine::CoreEngine::Start(GameManager* gameManager)
 {
 	START_PROFILING;
 	m_game = gameManager;
@@ -456,7 +461,7 @@ void CoreEngine::Start(GameManager* gameManager)
 	STOP_PROFILING;
 }
 
-void CoreEngine::Stop()
+void Engine::CoreEngine::Stop()
 {
 	START_PROFILING;
 	if (!m_isRunning)
@@ -464,10 +469,10 @@ void CoreEngine::Stop()
 		WARNING_LOG_ENGINE("The core engine instance is not running");
 		return;
 	}
-	
+
 	m_isRunning = false;
 	RequestWindowClose();
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Warning, "Stopping the core engine is not possible as it is simply not running at the moment.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::WARNING, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	NOTICE_LOG_ENGINE("The core engine has stopped");
 
 	// Just for checking whether time calculation is performed correctly
@@ -482,7 +487,7 @@ void CoreEngine::Stop()
 	STOP_PROFILING;
 }
 
-void CoreEngine::Run()
+void Engine::CoreEngine::Run()
 {
 	START_PROFILING;
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
@@ -508,8 +513,8 @@ void CoreEngine::Run()
 		GET_CONFIG_VALUE_ENGINE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif
-	
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Warning, "According to the core engine the game is already running.");
+
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::WARNING, "According to the core engine the game is already running.");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
@@ -547,7 +552,7 @@ void CoreEngine::Run()
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
-		
+
 		if (m_game->IsInGameTimeCalculationEnabled())
 		{
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
@@ -560,7 +565,7 @@ void CoreEngine::Run()
 		}
 
 		previousTime = currentTime;
-		
+
 		// TODO: If unprocessing time is big then each frame it will only get bigger and bigger each frame
 		// FPS will plummet, as a result.
 		unprocessingTime += passedTime;
@@ -606,10 +611,12 @@ void CoreEngine::Run()
 			PollEvents();
 			STOP_TIMER(innerTimer, m_countStats2_1, m_minMaxTime2_1, m_timeSum2_1);
 			/* ==================== REGION #2_1 end ====================*/
-			
+
 			/* ==================== REGION #2_2 begin ====================*/
 			//RESET_TIMER(innerTimer);
-			//m_game.Input(m_frameTime);
+			m_game->Input(m_inputMapping.GetMappedInput());
+			m_inputMapping.ClearActions();
+			m_inputMapping.ClearRanges();
 			//STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			RESET_TIMER(innerTimer);
 			m_game->Update(m_frameTime);
@@ -619,9 +626,7 @@ void CoreEngine::Run()
 #endif
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
-			
-			//Input::Update();
-			
+
 			/* ==================== REGION #2_3 begin ====================*/
 			RESET_TIMER(innerTimer);
 			m_physicsEngine->Simulate(m_frameTime);
@@ -641,12 +646,12 @@ void CoreEngine::Run()
 #ifdef ANT_TWEAK_BAR_ENABLED
 			Rendering::CheckChangesAndUpdateGLState();
 #endif
-			
+
 			unprocessingTime -= m_frameTime;
 		}
 		STOP_TIMER(timer, m_countStats2, m_minMaxTime2, m_timeSum2);
 		/* ==================== REGION #2 end ====================*/
-		
+
 		/* ==================== REGION #3 begin ====================*/
 		RESET_TIMER(timer);
 		if (isRenderRequired)
@@ -693,7 +698,7 @@ void CoreEngine::Run()
 				}
 				inGameTimeGuiText.SetText(ss.str());
 				m_renderer->RenderText(inGameTimeGuiText);
-			}
+		}
 #endif
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -703,7 +708,7 @@ void CoreEngine::Run()
 #ifdef CALCULATE_RENDERING_STATS
 			++m_renderingRequiredCount;
 #endif
-		}
+	}
 		else
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
@@ -717,17 +722,17 @@ void CoreEngine::Run()
 		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 		//CRITICAL_LOG_ENGINE("STOP");
-	}
+}
 }
 
-void CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
+void Engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)
 {
 	m_renderer->SetWindowWidth(width);
 	m_renderer->SetWindowHeight(height);
 	m_game->WindowResizeEvent(width, height);
 }
 
-void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
+void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 {
 	switch (errorCode)
 	{
@@ -764,37 +769,54 @@ void CoreEngine::ErrorCallbackEvent(int errorCode, const char* description)
 	exit(EXIT_FAILURE);
 }
 
-void CoreEngine::CloseWindowEvent(GLFWwindow* window)
+void Engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
 {
 	m_game->CloseWindowEvent();
 }
 
-void CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	m_game->KeyEvent(key, scancode, action, mods);
+	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::ERR, "Key %d not found in the map.");
+	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
+	//m_game->KeyEvent(key, scancode, action, mods);
 }
 
-void CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
+void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
-	m_game->MouseButtonEvent(button, action, mods);
+	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
+	DELOCUST_LOG_ENGINE("Mouse button event: button=%d\t action=%d\t mods=%d", button, action, mods);
+
+	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::ERR, "Key %d not found in the map.");
+	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
+	//m_game->MouseButtonEvent(button, action, mods);
 }
 
-void CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
+//double lastXPos = 0.0;
+//double lastYPos = 0.0;
+
+void Engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	m_game->MousePosEvent(xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position = %.3f, %.3f", xPos, yPos);
+	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
+	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
+	//lastXPos = xPos;
+	//lastYPos = yPos;
+	//m_game->MousePosEvent(xPos, yPos);
 }
 
-void CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
+void Engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
 	m_game->ScrollEvent(xOffset, yOffset);
 }
 
-void CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
+void Engine::CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
 {
 	ConvertTimeOfDay(m_timeOfDay, inGameHours, inGameMinutes, inGameSeconds);
 }
 
-void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
+void Engine::CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
 {
 	inGameHours = static_cast<int>(timeOfDay) / SECONDS_PER_HOUR;
 	Math::Real temp = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_HOUR));
@@ -802,25 +824,25 @@ void CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& i
 	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(SECONDS_PER_MINUTE)));
 }
 
-size_t CoreEngine::GetCurrentCameraIndex() const
+size_t Engine::CoreEngine::GetCurrentCameraIndex() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot get the current camera index. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot get the current camera index. The renderer does not exist.");
 	return m_renderer->GetCurrentCameraIndex();
 }
 
-size_t CoreEngine::NextCamera() const
+size_t Engine::CoreEngine::NextCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot move to the next camera. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot move to the next camera. The renderer does not exist.");
 	return m_renderer->NextCamera();
 }
 
-size_t CoreEngine::PrevCamera() const
+size_t Engine::CoreEngine::PrevCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Critical, "Cannot move to the previous camera. The renderer does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot move to the previous camera. The renderer does not exist.");
 	return m_renderer->PrevCamera();
 }
 
-void CoreEngine::PollEvents()
+void Engine::CoreEngine::PollEvents()
 {
 	glfwPollEvents();
 }
@@ -829,7 +851,7 @@ void CoreEngine::PollEvents()
  * See http://www.cplusplus.com/reference/ctime/localtime/
  * http://www.cplusplus.com/reference/ctime/strftime/
  */
-Math::Real CoreEngine::GetCurrentLocalTime() const
+Math::Real Engine::CoreEngine::GetCurrentLocalTime() const
 {
 	time_t rawtime;
 	struct tm timeinfo;
@@ -845,7 +867,7 @@ Math::Real CoreEngine::GetCurrentLocalTime() const
 	return static_cast<Math::Real>(result);
 }
 
-Math::Real CoreEngine::GetTime() const
+Math::Real Engine::CoreEngine::GetTime() const
 {
 	return static_cast<Math::Real>(glfwGetTime());
 	//return Time(glfwGetTime());
@@ -853,11 +875,11 @@ Math::Real CoreEngine::GetTime() const
 	//return Time::Now();
 }
 
-void CoreEngine::ClearScreen() const
+void Engine::CoreEngine::ClearScreen() const
 {
 }
 
-void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
+void Engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 {
 	if (m_renderer == NULL)
 	{
@@ -867,7 +889,7 @@ void CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 	glfwSetCursorPos(m_window, xPos, yPos);
 }
 
-void CoreEngine::CentralizeCursor()
+void Engine::CoreEngine::CentralizeCursor()
 {
 	if (m_renderer == NULL)
 	{
@@ -877,10 +899,10 @@ void CoreEngine::CentralizeCursor()
 	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
-void CoreEngine::CalculateSunElevationAndAzimuth()
+void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
 {
 	const int timeGMTdifference = 1;
-	
+
 	const Math::Angle b(0.9863014f * (m_dayNumber - 81)); // 0,98630136986301369863013698630137 = 360 / 365
 	const Math::Real bSin = b.Sin();
 	const Math::Real bCos = b.Cos();
@@ -894,7 +916,7 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
 	//DEBUG_LOG_ENGINE("Time correction in seconds = %.5f", timeCorrectionInSeconds);
 	//DEBUG_LOG_ENGINE("Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
-	
+
 	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
 	//DEBUG_LOG_ENGINE("Hour angle = %.5f", hourAngle.GetAngleInDegrees());
 
@@ -934,7 +956,7 @@ void CoreEngine::CalculateSunElevationAndAzimuth()
 	//DEBUG_LOG_ENGINE("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
 }
 
-Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
+Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
 {
 	switch (m_daytime)
 	{
@@ -966,47 +988,57 @@ Utility::Timing::Daytime CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransi
 	return m_daytime;
 }
 
-void CoreEngine::AddLight(Rendering::Lighting::BaseLight* light)
+void Engine::CoreEngine::AddLight(Rendering::Lighting::BaseLight* light)
 {
 	m_renderer->AddLight(light);
 }
 
-void CoreEngine::AddCamera(Rendering::CameraBase* camera)
+void Engine::CoreEngine::AddCamera(Rendering::CameraBase* camera)
 {
 	m_renderer->AddCamera(camera);
 	//m_game.AddCamera(camera);
 }
 
-void CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
+void Engine::CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
 {
 	m_game->AddSkyboxNode(skyboxNode);
 	//m_renderer->AddSkyboxNode(skyboxNode);
 }
 
-void CoreEngine::AddWaterNode(GameNode* waterNode)
+void Engine::CoreEngine::AddWaterNode(GameNode* waterNode)
 {
 	//m_game.AddWaterNode(waterNode);
 	//m_renderer->AddWaterNode(waterNode);
 }
 
-void CoreEngine::AddTerrainNode(GameNode* terrainNode)
+void Engine::CoreEngine::AddTerrainNode(GameNode* terrainNode)
 {
 	m_game->AddTerrainNode(terrainNode);
 	//m_renderer->AddTerrainNode(terrainNode);
 }
 
-void CoreEngine::AddBillboardNode(GameNode* billboardNode)
+void Engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
 {
 	//m_renderer->AddBillboardNode(billboardNode);
 }
 
-void CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
+void Engine::CoreEngine::AddPhysicsObject(Physics::PhysicsObject* physicsObject)
 {
 	m_physicsEngine->AddPhysicsObject(physicsObject);
 }
 
+void Engine::CoreEngine::PushInputContext(const std::string& inputContextName)
+{
+	m_inputMapping.PushContext(inputContextName);
+}
+
+void Engine::CoreEngine::PopInputContext()
+{
+	m_inputMapping.PopContext();
+}
+
 #ifdef ANT_TWEAK_BAR_ENABLED
-void CoreEngine::InitializeTweakBars()
+void Engine::CoreEngine::InitializeTweakBars()
 {
 	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
 
@@ -1018,18 +1050,18 @@ void CoreEngine::InitializeTweakBars()
 	TwAddVarRO(coreEnginePropertiesBar, "frameTime", TW_TYPE_REAL, &m_frameTime, " label='Frame time' ");
 	TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
 	TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
-	
+
 	TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
-		{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" }};
+		{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
 	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
 	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
-	
+
 	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", Rendering::angleType, &m_sunElevation, " label='Sun elevation' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", Rendering::angleType, &m_sunAzimuth, " label='Sun azimuth' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", Rendering::angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", Rendering::angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
 	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", Rendering::angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
-	
+
 	TwDefine(" CoreEnginePropertiesBar refresh=0.5 ");
 	//double refreshRate = 0.2;
 	//TwSetParam(coreEnginePropertiesBar, NULL, "refresh", TW_PARAM_DOUBLE, 1, &refreshRate);
@@ -1037,7 +1069,7 @@ void CoreEngine::InitializeTweakBars()
 	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
 }
 
-void CoreEngine::InitializeGameTweakBars()
+void Engine::CoreEngine::InitializeGameTweakBars()
 {
 	m_game->InitializeTweakBars();
 	m_renderer->InitializeTweakBars();
@@ -1045,7 +1077,7 @@ void CoreEngine::InitializeGameTweakBars()
 #endif
 
 //#ifdef CALCULATE_RENDERING_STATS
-//Math::Real CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
+//Math::Real Engine::CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
 //{
 //	if (m_secondsPerFrameStats.empty())
 //	{

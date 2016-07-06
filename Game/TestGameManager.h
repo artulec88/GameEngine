@@ -1,7 +1,6 @@
 #ifndef __GAME_TEST_GAME_MANAGER_H__
 #define __GAME_TEST_GAME_MANAGER_H__
 
-#include "QuitGameCommand.h"
 #include "StartGameCommand.h"
 #include "ShowIntroCommand.h"
 #include "ResumeGameCommand.h"
@@ -9,11 +8,12 @@
 #include "LoadGameCommand.h"
 #include "GameStats.h"
 
-#include <Engine\GameManager.h>
-#include <Engine\GameNode.h>
-#include <Rendering\DirectionalLight.h>
-#include <Rendering\PointLight.h>
-#include <Rendering\SpotLight.h>
+#include "Engine\QuitGameCommand.h"
+#include "Engine\GameManager.h"
+#include "Engine\GameNode.h"
+#include "Rendering\DirectionalLight.h"
+#include "Rendering\PointLight.h"
+#include "Rendering\SpotLight.h"
 
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
@@ -50,9 +50,7 @@ public:
 	virtual Engine::GameState* GetPlayMainMenuGameState();
 
 	virtual void WindowResizeEvent(int width, int height);
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void ScrollEvent(double xOffset, double yOffset);
-	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	virtual void InitializeTweakBars();
@@ -76,14 +74,14 @@ protected:
 	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
 	int m_resourcesLoaded;
 	
-	Engine::GameState* m_introGameState;
-	Engine::GameState* m_menuGameState;
-	Engine::GameState* m_loadGameState;
-	Engine::GameState* m_playGameState;
-	Engine::GameState* m_playMainMenuGameState;
+	std::unique_ptr<Engine::GameState> m_introGameState;
+	std::unique_ptr<Engine::GameState> m_menuGameState;
+	std::unique_ptr<Engine::GameState> m_loadGameState;
+	std::unique_ptr<Engine::GameState> m_playGameState;
+	std::unique_ptr<Engine::GameState> m_playMainMenuGameState;
 
-	QuitGameCommand m_quitGameCommand;
 	StartGameCommand m_startGameCommand;
+	Engine::QuitGameCommand m_quitGameCommand;
 	ShowIntroCommand m_showIntroGameCommand;
 	ResumeGameCommand m_resumeGameCommand;
 	SaveGameCommand m_saveGameCommand;

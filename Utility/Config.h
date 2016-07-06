@@ -19,16 +19,16 @@ namespace Utility
 	class Config : public IConfig
 	{
 		typedef std::map<std::string, std::string> ValuesMap;
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		Config(const std::string& fileName);
-		~Config();
-	/* ==================== Constructors and destructors end ==================== */
+		explicit Config(const std::string& fileName);
+		virtual ~Config();
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		/// <summary>
 		/// Load configuration from a given config file.

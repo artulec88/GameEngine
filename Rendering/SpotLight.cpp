@@ -5,8 +5,6 @@
 #include "Utility\IConfig.h"
 #include "Math\Matrix.h"
 
-using namespace Math;
-
 /* static */ bool Rendering::Lighting::SpotLight::spotLightsEnabled = true;
 
 Rendering::Lighting::SpotLight::SpotLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Rendering::Attenuation& attenuation,
@@ -18,9 +16,9 @@ Rendering::Lighting::SpotLight::SpotLight(Math::Transform& transform, const Rend
 	if (m_isShadowingEnabled)
 	{
 		Math::Real spotLightProjectionNearPlane = GET_CONFIG_VALUE_RENDERING("spotLightProjectionNearPlane", 0.1f);
-		Matrix4D projectionMatrix(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, spotLightProjectionNearPlane, m_range);
+		Math::Matrix4D projectionMatrix(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, spotLightProjectionNearPlane, m_range);
 		SetShadowInfo(new ShadowInfo(projectionMatrix, false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize spot light. Shadow info is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::CRITICAL, "Cannot initialize spot light. Shadow info is NULL.");
 	}
 }
 
@@ -28,14 +26,6 @@ Rendering::Lighting::SpotLight::SpotLight(Math::Transform& transform, const Rend
 Rendering::Lighting::SpotLight::~SpotLight(void)
 {
 }
-
-//void Rendering::Lighting::SpotLight::SetDirection(const Math::Vector3D& direction)
-//{
-//	this->direction = direction;
-//
-//	//ASSERT(this->direction.IsNormalized());
-//	this->direction.Normalize();
-//}
 
 bool Rendering::Lighting::SpotLight::IsEnabled() const
 {

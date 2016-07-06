@@ -16,7 +16,7 @@ Rendering::Lighting::DirectionalLight::DirectionalLight(Math::Transform& transfo
 	{
 		Math::Matrix4D ortographicProjectionMatrix(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea);
 		SetShadowInfo(new ShadowInfo(ortographicProjectionMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Critical, "Cannot initialize directional light. Shadow info is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
 	}
 }
 
@@ -28,10 +28,10 @@ Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
 //void DirectionalLight::InitializeShaders()
 //{
 //	SetShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("directionalLightShader", "forward-directional")));
-//	CHECK_CONDITION_EXIT_RENDERING(m_shader != NULL, Utility::Critical, "Cannot initialize directional light. Shader is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(m_shader != NULL, Utility::CRITICAL, "Cannot initialize directional light. Shader is NULL.");
 //
 //	SetTerrainShader(new Shader(GET_CONFIG_VALUE_STR_RENDERING("directionalLightShaderTerrain", "forward-directional-terrain")));
-//	CHECK_CONDITION_EXIT_RENDERING(m_terrainShader != NULL, Utility::Critical, "Cannot initialize directional light. Terrain shader is NULL.");
+//	CHECK_CONDITION_EXIT_RENDERING(m_terrainShader != NULL, Utility::CRITICAL, "Cannot initialize directional light. Terrain shader is NULL.");
 //}
 
 bool Rendering::Lighting::DirectionalLight::IsEnabled() const

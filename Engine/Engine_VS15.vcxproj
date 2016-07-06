@@ -152,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABBColliderComponent.h" />
+    <ClInclude Include="ActionConstants.h" />
+    <ClInclude Include="GameNodeMoveCommand.h" />
+    <ClInclude Include="IActionHandler.h" />
     <ClInclude Include="AiComponent.h" />
     <ClInclude Include="BillboardRendererComponent.h" />
     <ClInclude Include="Builder.h" />
@@ -168,6 +171,7 @@
     <ClInclude Include="GameComponent.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameNode.h" />
+    <ClInclude Include="GameNodeCommand.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStateManager.h" />
     <ClInclude Include="IInputableKeyboard.h" />
@@ -184,10 +188,12 @@
     <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="ParticleGenerator.h" />
     <ClInclude Include="ParticleGeneratorComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
+    <ClInclude Include="QuitGameCommand.h" />
     <ClInclude Include="SoundEffectComponent.h" />
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="stdafx.h" />
@@ -224,6 +230,8 @@
     <ClCompile Include="GameComponent.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameNode.cpp" />
+    <ClCompile Include="GameNodeCommand.cpp" />
+    <ClCompile Include="GameNodeMoveCommand.cpp" />
     <ClCompile Include="GameStateManager.cpp" />
     <ClCompile Include="InputContext.cpp" />
     <ClCompile Include="InputMapping.cpp" />
@@ -234,10 +242,12 @@
     <ClCompile Include="MeshRendererComponent.cpp" />
     <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="ParticleGenerator.cpp" />
     <ClCompile Include="ParticleGeneratorComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
+    <ClCompile Include="QuitGameCommand.cpp" />
     <ClCompile Include="SoundEffectComponent.cpp" />
     <ClCompile Include="SpotLightComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -248,6 +258,9 @@
     </ClCompile>
     <ClCompile Include="GravityComponent.cpp" />
     <ClCompile Include="tinythread.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

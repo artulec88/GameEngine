@@ -1,4 +1,4 @@
-#include "Utility\ICommand.h"
+#include "Utility\ICommandLineMapper.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 #include "Utility\Array.h"
@@ -108,14 +108,14 @@ void StringUtilityTest()
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
-	std::unique_ptr<ICommand> command = ICommand::CreateCommand(argc, argv);
-	if (command->IsPresent("-help"))
+	std::unique_ptr<ICommandLineMapper> commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
+	if (commandLineMapper->IsPresent("-help"))
 	{
 		PrintHelp();
 		system("pause");
 		return 0;
 	}
-	ILogger::GetLogger(MODULE_NAME).Fill(command->Get("-log", ""), Info);
+	ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), INFO);
 
 	ArrayTest();
 	StringUtilityTest();

@@ -91,7 +91,7 @@ void Rendering::MeshData::CreateVAO()
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started VAO creation");
 	glGenVertexArrays(1, &m_vao);
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Critical, "VAO has not been created successfully. Its ID is still 0.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::CRITICAL, "VAO has not been created successfully. Its ID is still 0.");
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished VAO creation");
 }
 
@@ -188,11 +188,7 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 
 Rendering::Mesh::~Mesh(void)
 {
-	ASSERT(m_meshData != NULL);
-	if (m_meshData == NULL)
-	{
-		WARNING_LOG_RENDERING("Destructing the mesh aborted. Mesh data is already NULL.");
-	}
+	CHECK_CONDITION_RENDERING(m_meshData != NULL, Utility::WARNING, "Destructing the mesh aborted. Mesh data is already NULL.");
 	m_meshData->RemoveReference();
 	if (!m_meshData->IsReferenced())
 	{
@@ -248,8 +244,8 @@ void Rendering::Mesh::Initialize()
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace );
 
-	CHECK_CONDITION_EXIT_RENDERING(scene != NULL, Utility::Critical, "Error while loading a mesh \"%s\"", name.c_str());
-	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::Critical,
+	CHECK_CONDITION_EXIT_RENDERING(scene != NULL, Utility::CRITICAL, "Error while loading a mesh \"%s\"", name.c_str());
+	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::CRITICAL,
 		"Incorrect number of meshes loaded- %d- check the model \"%s\". One of the possible solutions is to check whether the model has any additional lines at the end.",
 		scene->mNumMeshes, name.c_str());
 
@@ -297,7 +293,7 @@ void Rendering::Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Warning, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
+		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::WARNING, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -329,7 +325,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 #endif
 	m_meshData = new MeshData(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 	m_meshData->CreateVAO();
 	m_meshData->Bind();
 	m_meshData->CreateVBO(POSITIONS_BUFFER);
@@ -375,7 +371,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	//	this->CalcTangents(vertices, verticesCount);
 	//}
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 	m_meshData->CreateVAO();
 	m_meshData->Bind();
 	m_meshData->CreateVBO(POSITIONS_BUFFER);
@@ -474,7 +470,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 void Rendering::Mesh::Draw() const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started drawing the Mesh");
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 
 	m_meshData->Bind();
 
@@ -495,7 +491,7 @@ void Rendering::Mesh::Draw() const
 
 bool Rendering::Mesh::Compare(const Mesh& mesh) const
 {
-	CHECK_CONDITION_RETURN_RENDERING(m_meshData != NULL && mesh.m_meshData != NULL, false, Utility::Error, "Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
+	CHECK_CONDITION_RETURN_RENDERING(m_meshData != NULL && mesh.m_meshData != NULL, false, Utility::ERR, "Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
 	return m_meshData->GetVAO() < mesh.m_meshData->GetVAO();
 }
 
@@ -581,8 +577,8 @@ Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigne
 {
 	AddVertices(&Math::Vector3D(0.0f, 0.0f, 0.0f), NULL, NULL, NULL, NULL, 1, NULL, 0, false);
 
-	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::Error, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0");
-	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::Error, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0");
 
 	m_meshData->Bind();
 	m_meshData->CreateVBO(INSTANCE_BUFFER); // instanced attributes will be stored in this VBO
@@ -610,7 +606,7 @@ Rendering::BillboardMesh::~BillboardMesh()
 
 void Rendering::BillboardMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 	m_meshData->Bind();
 
 	glDrawArraysInstanced(m_mode, 0, 1, m_billboardsCount);
@@ -622,8 +618,8 @@ Rendering::GuiMesh::GuiMesh(Math::Vector2D* positions, unsigned int positionsCou
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::Error, "Cannot create a mesh. Specified number of positions is not greater than 0");
-	CHECK_CONDITION_EXIT_RENDERING(positions != NULL, Utility::Error, "Cannot create a mesh. Specified positions array is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(positions != NULL, Utility::ERR, "Cannot create a mesh. Specified positions array is NULL.");
 	AddVertices(positions, NULL, positionsCount);
 }
 
@@ -633,7 +629,7 @@ Rendering::GuiMesh::~GuiMesh()
 
 //void Rendering::GuiMesh::Draw() const
 //{
-//	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+//	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 //
 //	m_meshData->Bind();
 //
@@ -648,8 +644,8 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	m_maxParticlesCount(maxParticlesCount),
 	m_instanceDataLength(instanceDataLength)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::Error, "Cannot create a mesh. Specified number of positions is not greater than 0");
-	CHECK_CONDITION_EXIT_RENDERING(particlesCount > 0, Utility::Error, "Cannot create a mesh. Specified number of particles is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(particlesCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of particles is not greater than 0");
 	
 	AddVertices(positions, NULL, positionsCount);
 
@@ -691,7 +687,7 @@ Rendering::InstanceMesh::~InstanceMesh()
 
 void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
@@ -757,8 +753,8 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 	unsigned char* heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
 		&m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
-	CHECK_CONDITION_EXIT_RENDERING(m_heightMapData != NULL, Utility::Error, "Unable to load terrain height map from the file \"%s\"", name.c_str());
-	CHECK_CONDITION_RENDERING(heightMapWidth < 32768 && heightMapHeight < 32768, Utility::Emergency, "The heightmap's size is too big to be used in the rendering engine.");
+	CHECK_CONDITION_EXIT_RENDERING(m_heightMapData != NULL, Utility::ERR, "Unable to load terrain height map from the file \"%s\"", name.c_str());
+	CHECK_CONDITION_RENDERING(heightMapWidth < 32768 && heightMapHeight < 32768, Utility::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
 	//for (int i = 0; i < heightMapWidth; ++i)
 	//{
 	//	for (int j = 0; j < heightMapHeight; ++j)
@@ -941,9 +937,9 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
+		Utility::ERR, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
 	const int heightMapIndex = GetHeightMapIndex(x, z);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Error,
+	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::ERR,
 		"The heightmap index calculation is incorrect. Calculated index (%d) is out of range [0; %d)", heightMapIndex, m_heightMapWidth * m_heightMapHeight);
 	//DEBUG_LOG_RENDERING("Heightmap index for [%d, %d] = %d", x, z, heightMapIndex);
 	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
@@ -958,9 +954,9 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::H
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::Error, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
+		Utility::ERR, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
 	const int heightMapIndex = GetHeightMapIndex(x, z);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Error,
+	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::ERR,
 		"The heightmap index calculation is incorrect. Calculated index (%d) is out of range [0; %d)", heightMapIndex, m_heightMapWidth * m_heightMapHeight);
 	//DEBUG_LOG_RENDERING("Heightmap index for [%d, %d] = %d", x, z, heightMapIndex);
 	Math::Real height = heightsGenerator.GenerateHeight(x, z);
@@ -1115,7 +1111,7 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 {
 #ifdef HEIGHTS_KD_TREE
 	DEBUG_LOG_RENDERING("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
-	CHECK_CONDITION_EXIT_RENDERING(m_positions != NULL, Utility::Emergency, "Cannot transform the positions. The positions array is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(m_positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
@@ -1141,7 +1137,7 @@ Rendering::TextMesh::~TextMesh(void)
 
 void Rendering::TextMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 
 	m_meshData->Bind();
 	glDrawArrays(m_mode, 0, m_meshData->GetSize());
@@ -1150,7 +1146,7 @@ void Rendering::TextMesh::Draw() const
 
 void Rendering::TextMesh::ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount)
 {
-	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Critical, "Mesh data instance is NULL");
+	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, screenVerticesCount * sizeof(Vertex2D), screenVertices);
 

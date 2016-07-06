@@ -32,21 +32,16 @@
 
 #include <sstream>
 
-using namespace Game;
-using namespace Utility;
-using namespace Math;
-
-TestGameManager::TestGameManager() :
+Game::TestGameManager::TestGameManager() :
 	GameManager(),
 	RESOURCES_TO_LOAD(26),
 	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("cameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
-	m_introGameState(NULL),
-	m_menuGameState(NULL),
-	m_loadGameState(NULL),
-	m_playGameState(NULL),
-	m_playMainMenuGameState(NULL),
-	m_quitGameCommand(),
+	m_introGameState(nullptr),
+	m_menuGameState(nullptr),
+	m_loadGameState(nullptr),
+	m_playGameState(nullptr),
+	m_playMainMenuGameState(nullptr),
 	m_startGameCommand(),
 	m_showIntroGameCommand(),
 	m_resumeGameCommand(),
@@ -76,16 +71,19 @@ TestGameManager::TestGameManager() :
 {
 	DEBUG_LOG_GAME("TestGame is being constructed");
 
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::RESUME, &m_resumeGameCommand);
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SAVE, &m_saveGameCommand);
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
-	m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::START, &m_startGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::QUIT, &m_quitGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::RESUME, &m_resumeGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SAVE, &m_saveGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::LOAD, &m_loadGameCommand);
+	//m_gameCommandFactory.CreateCommand(Engine::GameCommandTypes::SHOW_INTRO, &m_showIntroGameCommand);
 
 	//AddStaticEffects();
 	//AddSmoothEffects();
 	//AddBlinkEffects();
+
+	m_actionsToGameCommandsMap.insert(std::make_pair(Engine::Actions::START_GAME, &m_startGameCommand));
+	m_actionsToGameCommandsMap.insert(std::make_pair(Engine::Actions::QUIT_GAME, &m_quitGameCommand));
 
 	// TODO: Intro should only be the first game state if the game starts for the first time. In all other cases the main menu should be the initial game state.
 	//m_gameStateManager->Push(GetIntroGameState());
@@ -93,18 +91,13 @@ TestGameManager::TestGameManager() :
 }
 
 
-TestGameManager::~TestGameManager(void)
+Game::TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
 	SAFE_DELETE_JUST_TABLE(cameraNodes);
-	SAFE_DELETE(m_introGameState); // TODO: Removing the game states here will lead to errors because GameStateManager's destructor does the same thing
-	SAFE_DELETE(m_menuGameState);
-	SAFE_DELETE(m_loadGameState);
-	SAFE_DELETE(m_playGameState);
-	SAFE_DELETE(m_playMainMenuGameState);
 }
 
-//void TestGameManager::AddStaticEffects()
+//void Game::TestGameManager::AddStaticEffects()
 //{
 //	const int staticSingleValueEffectsCount = GET_CONFIG_VALUE_GAME("staticValueEffectsCount", 4);
 //	m_singleValueStaticEffects.reserve(staticSingleValueEffectsCount);
@@ -137,7 +130,7 @@ TestGameManager::~TestGameManager(void)
 //	}
 //}
 
-//void TestGameManager::AddSmoothEffects()
+//void Game::TestGameManager::AddSmoothEffects()
 //{
 //	const int smoothSingleValueVariantsCount = GET_CONFIG_VALUE_GAME("smoothValueEffectsCount", 4);
 //	m_singleValueSmoothEffects.reserve(smoothSingleValueVariantsCount);
@@ -210,7 +203,7 @@ TestGameManager::~TestGameManager(void)
 //	}
 //}
 
-//void TestGameManager::AddBlinkEffects()
+//void Game::TestGameManager::AddBlinkEffects()
 //{
 //	const int blinkSingleValueVariantsCount = GET_CONFIG_VALUE_GAME("blinkValueEffectsCount", 4);
 //	m_singleValueBlinkEffects.reserve(blinkSingleValueVariantsCount);
@@ -280,7 +273,7 @@ TestGameManager::~TestGameManager(void)
 //	}
 //}
 
-Math::Real TestGameManager::GetLoadingProgress() const
+Math::Real Game::TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
@@ -290,56 +283,56 @@ Math::Real TestGameManager::GetLoadingProgress() const
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
 }
 
-Engine::GameState* TestGameManager::GetLoadGameState()
+Engine::GameState* Game::TestGameManager::GetLoadGameState()
 {
-	if (m_loadGameState == NULL)
+	if (m_loadGameState == nullptr)
 	{
-		m_loadGameState = new LoadGameState();
+		m_loadGameState = std::make_unique<LoadGameState>("LoadInputContext");
 	}
-	return m_loadGameState;
+	return m_loadGameState.get();
 }
 
-Engine::GameState* TestGameManager::GetIntroGameState()
+Engine::GameState* Game::TestGameManager::GetIntroGameState()
 {
-	if (m_introGameState == NULL)
+	if (m_introGameState == nullptr)
 	{
-		m_introGameState = new IntroGameState();
+		m_introGameState = std::make_unique<IntroGameState>("IntroInputContext");
 	}
-	return m_introGameState;
+	return m_introGameState.get();
 }
 
-Engine::GameState* TestGameManager::GetMainMenuGameState()
+Engine::GameState* Game::TestGameManager::GetMainMenuGameState()
 {
-	if (m_menuGameState == NULL)
+	if (m_menuGameState == nullptr)
 	{
-		m_menuGameState = new MenuGameState();
+		m_menuGameState = std::make_unique<MenuGameState>("MainMenuInputContext");
 	}
-	return m_menuGameState;
+	return m_menuGameState.get();
 }
 
-Engine::GameState* TestGameManager::GetPlayGameState()
+Engine::GameState* Game::TestGameManager::GetPlayGameState()
 {
-	if (m_playGameState == NULL)
+	if (m_playGameState == nullptr)
 	{
-		m_playGameState = new PlayGameState(this);
+		m_playGameState = std::make_unique<PlayGameState>(this, "PlayInputContext");
 	}
-	return m_playGameState;
+	return m_playGameState.get();
 }
 
-Engine::GameState* TestGameManager::GetPlayMainMenuGameState()
+Engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 {
-	if (m_playMainMenuGameState == NULL)
+	if (m_playMainMenuGameState == nullptr)
 	{
-		m_playMainMenuGameState = new PlayMenuGameState();
+		m_playMainMenuGameState = std::make_unique<PlayMenuGameState>("PlayMainMenuInputContext");
 	}
-	return m_playMainMenuGameState;
+	return m_playMainMenuGameState.get();
 }
 
-void TestGameManager::Load()
+void Game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING;
-	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Error, "Loading the game run into a problem. The game has already been loaded.");
+	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -389,12 +382,12 @@ void TestGameManager::Load()
 
 	Engine::GameNode* testMesh1 = new Engine::GameNode();
 	testMesh1->GetTransform().SetPos(-2.0f, m_terrainMesh->GetHeightAt(Math::Vector2D(-2.0f, 2.0f)), 2.0f);
-	testMesh1->GetTransform().SetRot(Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
+	testMesh1->GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1->GetTransform().SetScale(0.1f);
 	Engine::GameNode* testMesh2 = new Engine::GameNode();
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	//testMesh2->GetTransform().SetScale(1.5f);
-	testMesh2->GetTransform().SetRot(Quaternion(Matrix4D(Angle(90.0f), Angle(90.0f), Angle(0.0f))));
+	testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
 	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0)));
@@ -403,7 +396,7 @@ void TestGameManager::Load()
 	testMesh1->AddChild(testMesh2);
 	Engine::GameNode* testMesh3 = new Engine::GameNode();
 	testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
-	testMesh3->GetTransform().SetRot(Matrix4D(Angle(0.0f), Angle(0.0f), Angle(-180.0f)));
+	testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
 	testMesh3->GetTransform().SetScale(0.25f);
 	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));;
 	AddToSceneRoot(testMesh3);
@@ -418,7 +411,7 @@ void TestGameManager::Load()
 		Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		treeNode->GetTransform().SetPos(x, y, z);
-		treeNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Angle(0.0f))));
+		treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
 		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
@@ -434,7 +427,7 @@ void TestGameManager::Load()
 		Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 		boulderNode->GetTransform().SetPos(x, y, z);
-		boulderNode->GetTransform().SetRot(Quaternion(Matrix4D(Angle(0.0f), Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Angle(0.0f))));
+		boulderNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		boulderNode->GetTransform().SetScale(0.01f);
 		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
@@ -525,12 +518,12 @@ void TestGameManager::Load()
 	AddSkybox(); // Adding skybox
 
 	m_isGameLoaded = true;
-	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Critical, "The game has not been loaded properly.");
+	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING;
 	NOTICE_LOG_GAME("Initalizing test game finished");
 }
 
-void TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
+void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
 {
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 	Math::Real angle = 0.0f;
@@ -542,7 +535,7 @@ void TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Mat
 		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
 		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
 
-		Transform billboardTransform(Math::Vector3D(x, y, z), Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
+		Math::Transform billboardTransform(Math::Vector3D(x, y, z), Math::Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
 		//angle += 15.0f;
 		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
 
@@ -568,7 +561,7 @@ void TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Mat
 	AddBillboardsRenderer(billboardsRenderer);
 }
 
-void TestGameManager::AddLights()
+void Game::TestGameManager::AddLights()
 {
 	START_PROFILING;
 	AddDirectionalLight(); // Adding directional light (if enabled)
@@ -595,7 +588,7 @@ void TestGameManager::AddLights()
 	STOP_PROFILING;
 }
 
-void TestGameManager::AddDirectionalLight()
+void Game::TestGameManager::AddDirectionalLight()
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
@@ -614,7 +607,7 @@ void TestGameManager::AddDirectionalLight()
 	AddToSceneRoot(directionalLightNode);
 }
 
-void TestGameManager::AddPointLights()
+void Game::TestGameManager::AddPointLights()
 {
 	if (pointLightCount < 1)
 	{
@@ -638,7 +631,7 @@ void TestGameManager::AddPointLights()
 	}
 }
 
-void TestGameManager::AddSpotLights()
+void Game::TestGameManager::AddSpotLights()
 {
 	if (spotLightCount < 1)
 	{
@@ -656,10 +649,10 @@ void TestGameManager::AddSpotLights()
 	}
 }
 
-void TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
+void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Critical, "No cameras defined in the rendering engine.");
+	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::CRITICAL, "No cameras defined in the rendering engine.");
 
 	NOTICE_LOG_GAME("Creating %d camera(-s)...", cameraCount);
 
@@ -677,7 +670,7 @@ void TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 	STOP_PROFILING;
 }
 
-void TestGameManager::AddSkybox() const
+void Game::TestGameManager::AddSkybox() const
 {
 	START_PROFILING;
 
@@ -694,14 +687,14 @@ void TestGameManager::AddSkybox() const
 //
 //void Game::CleanUp()
 //{
-//	stdlog(Info, LOGPLACE, "The game is being cleaned up");
+//	stdlog(INFO, LOGPLACE, "The game is being cleaned up");
 //}
 
 // TODO: Remove in the future
-Real temp = 0.0;
+Math::Real temp = 0.0f;
 bool isMouseLocked = false;
 
-void TestGameManager::Update(Real delta)
+void Game::TestGameManager::Update(Math::Real delta)
 {
 	START_PROFILING;
 	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
@@ -712,54 +705,24 @@ void TestGameManager::Update(Real delta)
 	STOP_PROFILING;
 }
 
-void TestGameManager::WindowResizeEvent(int width, int height)
+void Game::TestGameManager::WindowResizeEvent(int width, int height)
 {
 	GameManager::WindowResizeEvent(width, height);
 }
 
-/**
-* @param key the keyboard key that was pressed or released
-* @param scancode the system-specific scancode of the key
-* @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
-* @param mods Bit field describing which modifier keys were held down
-*/
-void TestGameManager::KeyEvent(int key, int scancode, int action, int mods)
-{
-	GameManager::KeyEvent(key, scancode, action, mods);
-	m_gameStateManager->KeyEvent(key, scancode, action, mods);
-}
-
-void TestGameManager::ScrollEvent(double xOffset, double yOffset)
+void Game::TestGameManager::ScrollEvent(double xOffset, double yOffset)
 {
 	GameManager::ScrollEvent(xOffset, yOffset);
 	m_gameStateManager->ScrollEvent(xOffset, yOffset);
 }
 
-/**
-* GLFW_MOUSE_BUTTON_1 = left mouse button
-* GLFW_MOUSE_BUTTON_2 = right mouse button
-* GLFW_MOUSE_BUTTON_3 = middle mouse button
-*/
-void TestGameManager::MouseButtonEvent(int button, int action, int mods)
-{
-	// TODO: Pass the event to the Input function in the current game state.
-	// TODO: Create additional functions for mouse, keyboard events (see IInputable class)
-	// I would expect here something as follows:
-	// currentGameState->MouseInput(...)
-
-	// DEBUG_LOG_GAME("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
-
-	//GameManager::MouseButtonEvent(window, button, action, mods);
-	m_gameStateManager->MouseButtonEvent(button, action, mods);
-}
-
-void TestGameManager::MousePosEvent(double xPos, double yPos)
+void Game::TestGameManager::MousePosEvent(double xPos, double yPos)
 {
 	m_gameStateManager->MousePosEvent(xPos, yPos);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void TestGameManager::InitializeTweakBars()
+void Game::TestGameManager::InitializeTweakBars()
 {
 #ifdef GAME_PROPERTIES_TWEAK_BAR
 	if (!m_isGameLoaded)

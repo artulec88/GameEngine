@@ -8,7 +8,7 @@
 #include "Math\HeightsGenerator.h"
 #include "Math\RandomGeneratorFactory.h"
 
-#include "Utility\ICommand.h"
+#include "Utility\ICommandLineMapper.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
@@ -62,7 +62,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Error, "Timer is still running");
+	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), ERR, "Timer is still running");
 	Timing::TimeSpan timeSpan = timer.GetTimeSpan(timeUnit);
 	timeSpan /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
@@ -398,7 +398,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
-		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Error, "Identity matrix multiplication result is incorrect.");
+		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
@@ -412,7 +412,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = mat1 * mat2; // FIXME: Check matrix multiplication
-		//CHECK_CONDITION_MATH_TEST(result == mat1 * mat2, Utility::Error, "Random matrix multiplication result is incorrect.");
+		//CHECK_CONDITION_MATH_TEST(result == mat1 * mat2, Utility::ERR, "Random matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
 	TimeReport("Average time for random matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
@@ -1005,14 +1005,14 @@ void OtherTests()
 int main (int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
-	std::unique_ptr<ICommand> command = ICommand::CreateCommand(argc, argv);
-	//if (Command.IsPresent("-help"))
+	std::unique_ptr<ICommandLineMapper> commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
+	//if (commandLineMapper.IsPresent("-help"))
 	//{
 	//	PrintHelp();
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger(MODULE_NAME).Fill(command->Get("-log", ""), Info);
+	ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), INFO);
 
 	AngleTest();
 	VectorTest();

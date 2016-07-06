@@ -3,109 +3,96 @@
 
 #include "Engine\EffectFactory.h"
 #include "Engine\GameState.h"
-#include "Engine\IInputableKeyboard.h"
-#include "Engine\IInputableMouse.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 #include "Engine\MousePicker.h"
+#include "Engine\QuitGameCommand.h"
 
 #include "Math\Math.h"
 
 #include "Rendering\Renderer.h"
-
-#include <vector>
 
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
 #endif
 
+#include <vector>
+#include <string>
+
 namespace Game
 {
 
 	class Rendering::Shader;
 
-class MenuGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard, public virtual Engine::IRenderable, public virtual Engine::Input::IInputableMouse, public virtual Engine::IUpdateable
-{
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+	class MenuGameState : public Engine::GameState, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
+	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	MenuGameState();
-	virtual ~MenuGameState(void);
-/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		MenuGameState(const std::string& inputMappingContextName);
+		virtual ~MenuGameState(void);
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	/**
-	 * Called after the game state has been placed in the game state manager
-	 */
-	virtual void Entered();
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void Entered();
+		virtual void Leaving();
+		virtual void Obscuring();
+		virtual void Revealed();
+		virtual void Handle(Engine::Actions::Action action);
+		virtual void Handle(Engine::States::State state);
+		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 
-	/**
-	 * Called right before the game state is removed from the game state manager
-	 */
-	virtual void Leaving();
+		virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 
-	/**
-	 * Called right before another game state is stacked on top of this one
-	 */
-	virtual void Obscuring();
+		virtual void Update(Math::Real deltaTime);
+	private:
+		void DeselectAll();
+		void SelectChild(int childIndex);
+		void ChooseCurrentMenuEntry();
+		/* ==================== Non-static member functions end ==================== */
 
-	/**
-	 * Called after the game state has become the topmost game state on the stack again
-	 */
-	virtual void Revealed();
+		/* ==================== Non-static member variables begin ==================== */
+	private:
+		Rendering::Text::Font m_mainMenuFont;
+		Math::Real m_mainMenuFontSize;
+		Engine::MenuEntry m_mainMenuRootEntry;
 
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
-	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.
+		// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
+		// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
+		Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
+		Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
+		Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
+		Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
+		Engine::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
+		Engine::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
+		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
 
-	virtual void MouseButtonEvent(int button, int action, int mods);
-	virtual void MousePosEvent(double xPos, double yPos);
-	virtual void ScrollEvent(double xOffset, double yOffset);
+		Math::Real m_mousePosX, m_mousePosY;
+		bool m_mousePosChanged;
 
-	virtual void Update(Math::Real deltaTime);
-private:
-	void SelectChild(int childIndex);
-	void ChooseCurrentMenuEntry();
-/* ==================== Non-static member functions end ==================== */
-
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Rendering::Text::Font m_mainMenuFont;
-	Math::Real m_mainMenuFontSize;
-	Engine::MenuEntry m_mainMenuRootEntry;
-
-	// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.
-	// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
-	// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
-	Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
-	Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
-	Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
-	Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
-	Engine::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-	Engine::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
-	Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
-	Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
-
-	Math::Real m_mousePosX, m_mousePosY;
-	Engine::MousePicker m_mousePicker;
-	Engine::MenuEntry* m_currentMenuEntry;
+		Engine::MousePicker m_mousePicker;
+		Engine::MenuEntry* m_currentMenuEntry;
+		//Engine::QuitGameCommand m_quitGameCommand;
 #ifdef CALCULATE_GAME_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
-/* ==================== Non-static member variables end ==================== */
-}; /* end class MenuGameState */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class MenuGameState */
 
 } /* end namespace Game */
 

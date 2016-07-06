@@ -28,7 +28,7 @@
 }
 
 Utility::ILogger::ILogger(void) :
-	m_level(Notice)
+	m_level(NOTICE)
 {
 }
 

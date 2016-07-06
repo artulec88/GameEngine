@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameComponent.h"
 #include "IUpdateable.h"
-#include "IInputableKeyboard.h"
 #include "IInputableMouse.h"
 
 #include "Math\Math.h"
@@ -12,14 +11,12 @@
 
 #include "Physics\PhysicsObject.h"
 
-#include <GLFW\glfw3.h>
-
 namespace Engine
 {
 	class GameNode;
 
 	// TODO: This class will probably be replaced with the PhysicsComponent (after all, if some object can move it means it is a physical object).
-	class MoveComponent : public GameComponent, public IUpdateable, public Input::IInputableKeyboard, public Input::IInputableMouse
+	class MoveComponent : public GameComponent, public IUpdateable, public Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -33,7 +30,6 @@ namespace Engine
 	/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Update(Math::Real deltaTime);
-		ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
 		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
 		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
 		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);

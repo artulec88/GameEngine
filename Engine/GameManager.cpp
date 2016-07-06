@@ -20,11 +20,7 @@
 #include "AntTweakBar\include\AntTweakBar.h"
 #endif
 
-#include <GLFW\glfw3.h>
 #include <fstream>
-
-using namespace Utility;
-using namespace Math;
 
 Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 
@@ -47,6 +43,8 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 }
 
 Engine::GameManager::GameManager() :
+	//Observer(),
+	IUpdateable(),
 	m_rootGameNode(),
 	m_terrainNode(NULL),
 	m_skyboxNode(NULL),
@@ -55,12 +53,14 @@ Engine::GameManager::GameManager() :
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_gameCommandFactory()//,
-	//m_effectFactory()
+	m_emptyGameCommand(),
+	m_actionsToGameCommandsMap(),
+	//m_actionsToGameCommandsMap({ { Input::Actions::EMPTY, std::make_unique<EmptyGameCommand>() } }), // cannot do it this way since it requires copying the unique_ptr object
+	m_actionsToGameNodesMap()
 {
 	INFO_LOG_ENGINE("Game manager construction started");
 	//rootGameNode = new GameNode();
-	//CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, Critical, "Root game node construction failed.");
+	//CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, CRITICAL, "Root game node construction failed.");
 
 	if (Engine::GameManager::s_gameManager != NULL)
 	{
@@ -68,6 +68,9 @@ Engine::GameManager::GameManager() :
 		SAFE_DELETE(Engine::GameManager::s_gameManager);
 	}
 	m_gameStateManager = new Engine::DefaultGameStateManager();
+
+	m_actionsToGameCommandsMap.insert(std::make_pair(Actions::EMPTY, &m_emptyGameCommand));
+	//m_actionsToGameCommandsMap.insert(std::make_pair(Input::Actions::Action::EMPTY, std::make_unique<EmptyGameCommand>()));
 
 	Engine::GameManager::s_gameManager = this;
 	DEBUG_LOG_ENGINE("Game manager construction finished");
@@ -96,51 +99,6 @@ void Engine::GameManager::CloseWindowEvent()
 	CoreEngine::GetCoreEngine()->Stop();
 }
 
-/**
- * @param key the keyboard key that was pressed or released
- * @param scancode the system-specific scancode of the key
- * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT
- * @param mods Bit field describing which modifier keys were held down
- */
-void Engine::GameManager::KeyEvent(int key, int scancode, int action, int mods)
-{
-	DELOCUST_LOG_ENGINE("Key event with key = %d", key);
-
-	//if (key == GLFW_KEY_ESCAPE)
-	//{
-	//	glfwSetWindowShouldClose(window, GL_TRUE);
-	//	return;
-	//}
-	if ((key == GLFW_KEY_F3) && (mods & GLFW_MOD_ALT))
-	{
-		CoreEngine::GetCoreEngine()->Stop();
-		return;
-	}
-}
-
-void Engine::GameManager::MouseButtonEvent(int button, int action, int mods)
-{
-	DELOCUST_LOG_ENGINE("Mouse event: button=%d\t action=%d\t mods=%d", button, action, mods);
-
-	/**
-	 * GLFW_MOUSE_BUTTON_1 = left mouse button
-	 * GLFW_MOUSE_BUTTON_2 = right mouse button
-	 * GLFW_MOUSE_BUTTON_3 = middle mouse button
-	 */
-
-	switch (action)
-	{
-	case GLFW_PRESS:
-		DEBUG_LOG_ENGINE("Mouse button pressed: button=%d\t mods=%d", button, mods);
-		break;
-	case GLFW_RELEASE:
-		DEBUG_LOG_ENGINE("Mouse button released: button=%d\t mods=%d", button, mods);
-		break;
-	default:
-		WARNING_LOG_ENGINE("Unknown action performed with the mouse");
-	}
-}
-
 void Engine::GameManager::MousePosEvent(double xPos, double yPos)
 {
 	DEBUG_LOG_ENGINE("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
@@ -153,13 +111,13 @@ void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 
 //GameNode& GameManager::GetRootGameNode() const
 //{
-//	CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, Emergency, "Root game node is NULL.");
+//	CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, EMERGENCY, "Root game node is NULL.");
 //	return *rootGameNode;
 //}
 
 //Shader* GameManager::GetShader() const
 //{
-//	CHECK_CONDITION_ENGINE(shader != NULL, Error, "Shader is NULL.");
+//	CHECK_CONDITION_ENGINE(shader != NULL, ERR, "Shader is NULL.");
 //	return shader;
 //}
 
@@ -208,6 +166,55 @@ void Engine::GameManager::AddParticleGenerator(ParticleGenerator* particleGenera
 {
 	m_particleGenerators.push_back(particleGenerator);
 }
+
+void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
+{
+	for (Input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
+	{
+		const Actions::Action action = *actionItr;
+		ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(action);
+		if (gameCommandItr != m_actionsToGameCommandsMap.end())
+		{
+			gameCommandItr->second->Execute(this);
+		}
+		else
+		{
+			m_gameStateManager->Handle(action);
+			for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[action].begin(); gameNodeItr != m_actionsToGameNodesMap[action].end(); ++gameNodeItr)
+			{
+				(*gameNodeItr)->Handle(action);
+			}
+		}
+	}
+	for (Input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
+	{
+		const States::State state = *stateItr;
+		StatesToGameCommandsMap::const_iterator gameCommandItr = m_statesToGameCommandsMap.find(state);
+		if (gameCommandItr != m_statesToGameCommandsMap.end())
+		{
+			gameCommandItr->second->Execute(this);
+		}
+		else
+		{
+			m_gameStateManager->Handle(state);
+			for (std::list<GameNode*>::iterator gameNodeItr = m_statesToGameNodesMap[state].begin(); gameNodeItr != m_statesToGameNodesMap[state].end(); ++gameNodeItr)
+			{
+				(*gameNodeItr)->Handle(state);
+			}
+		}
+	}
+	for (Input::RangesContainer::const_iterator rangeItr = input.m_ranges.begin(); rangeItr != input.m_ranges.end(); ++rangeItr)
+	{
+		// TODO: Ranges processing.
+		const Ranges::Range range = rangeItr->first;
+		const Math::Real value = rangeItr->second;
+		m_gameStateManager->Handle(range, value);
+	}
+}
+
+//void Engine::GameManager::Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const
+//{
+//}
 
 void Engine::GameManager::Render(Rendering::Renderer* renderer) const
 {

@@ -10,7 +10,7 @@ Game::ResumeGameCommand::~ResumeGameCommand()
 {
 }
 
-void Game::ResumeGameCommand::Execute() const
+void Game::ResumeGameCommand::Execute(Engine::GameManager* gameManager) const
 {
-	Engine::GameManager::GetGameManager()->PopState();
+	gameManager->PopState();
 }

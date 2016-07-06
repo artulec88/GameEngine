@@ -21,11 +21,7 @@ Audio::Sound::Sound(const std::string& audioFileName, FMOD_MODE mode) :
 
 Audio::Sound::~Sound(void)
 {
-	ASSERT(m_soundData != NULL);
-	if (m_soundData == NULL)
-	{
-		WARNING_LOG_AUDIO("Destructing the sound aborted. Sound data is already NULL.");
-	}
+	CHECK_CONDITION_AUDIO(m_soundData != NULL, Utility::WARNING, "Destructing the sound \"%s\" aborted. Sound data is already NULL.", m_audioFileName.c_str());
 	//m_soundData->RemoveReference();
 	//if (!m_soundData->IsReferenced())
 	{

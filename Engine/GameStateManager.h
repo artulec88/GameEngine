@@ -3,7 +3,8 @@
 
 #include "Engine.h"
 #include "GameState.h"
-#include "IInputableKeyboard.h"
+#include "ActionConstants.h"
+#include "InputConstants.h"
 #include "IInputableMouse.h"
 #include "IRenderable.h"
 #include "IUpdateable.h"
@@ -23,27 +24,27 @@ namespace Engine
 /// <summary>
 /// Interface for a stack-based game state manager.
 /// </summary>
-class GameStateManager : public virtual Input::IInputableKeyboard, public virtual Input::IInputableMouse, public virtual IRenderable, public virtual IUpdateable
+class GameStateManager : public virtual Input::IInputableMouse, public virtual IRenderable, public virtual IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	ENGINE_API GameStateManager();
+	GameStateManager();
 	/// <summary>
 	/// Destroys the game state manager, leaving and dropping any active game state.
 	/// </summary>
-	ENGINE_API virtual ~GameStateManager(void);
+	virtual ~GameStateManager(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	/// <summary> Replaces the lastmost game state on the stack </summary>
-    /// <param name="state">State the lastmost state on the stack will be replaced with</param>
-    /// <param name="modality">Whether the state completely obscures the state below it</param>
-    /// <returns>The previously lastmost state on the stack that was replaced</returns>
+	/// <summary> Replaces the lastmost game state on the stack. </summary>
+    /// <param name="state"> State the lastmost state on the stack will be replaced with. </param>
+    /// <param name="modality"> Whether the state completely obscures the state below it. </param>
+    /// <returns> The previously lastmost state on the stack that was replaced. </returns>
     /// <remarks>
-    ///   This method is mostly just syntactic sugar for a call to Pop() followed by Push(),
-    ///   except that it will also work if the game state stack is currently empty, in which
-    ///   case it will equal the Push() method and return an empty smart pointer.
+    /// This method is mostly just syntactic sugar for a call to Pop() followed by Push(),
+    /// except that it will also work if the game state stack is currently empty, in which
+    /// case it will equal the Push() method and return an empty smart pointer.
     /// </remarks>
 	virtual GameState* Switch(GameState* gameState, GameStateModality::ModalityType modality = GameStateModality::EXCLUSIVE);
 
@@ -61,13 +62,6 @@ public:
 	/// </summary>
 	/// <returns> The lastmost game state on the stack </returns>
 	virtual GameState* Peek() const = 0;
-
-	/// <summary> Collects keyboard key input according to current game state </summary>
-	/// <param name="key"> The key that triggered the event </param>
-	/// <param name="scancode"> The system-specific scancode of the key </param>
-	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
-	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
-	virtual void KeyEvent(int key, int scancode, int action, int mods) = 0;
 
 	virtual void ScrollEvent(double xOffset, double yOffset) = 0;
 
@@ -88,6 +82,25 @@ public:
 	/// <param name="renderer"> The rendering engine. </param>
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
 	
+	/// <summary>
+	/// Handles the incoming action appropriately.
+	/// </summary>
+	/// <param name="action"> The action that must be handled by active game states. </param>
+	virtual void Handle(Engine::Actions::Action action) = 0;
+	
+	/// <summary>
+	/// Handles the incoming state appropriately.
+	/// </summary>
+	/// <param name="state"> The state that must be handled by active game states. </param>
+	virtual void Handle(Engine::States::State state) = 0;
+
+	/// <summary>
+	/// Handles the incoming range appropriately.
+	/// </summary>
+	/// <param name="range"> The range that must be handled by active game states. </param>
+	/// <param name="value"> The value associated with the specified range. </param>
+	virtual void Handle(Engine::Ranges::Range range, Math::Real value) = 0;
+
 	bool IsInGameTimeCalculationEnabled() const;
 
 	void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
@@ -120,10 +133,10 @@ private:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	/// <summary> Initializes a new game state manager </summary>
-	ENGINE_API DefaultGameStateManager();
+	DefaultGameStateManager();
 
 	/// <summary> Destroys the game state manager, leaving and dropping any active game state. </summary>
-	ENGINE_API virtual ~DefaultGameStateManager(void);
+	virtual ~DefaultGameStateManager(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -143,13 +156,6 @@ public:
 	/// <returns> The lastmost game state on the stack </returns>
 	virtual GameState* Peek() const;
 
-	/// <summary> Collects input according to current game state </summary>
-	/// <param name="key"> The key that triggered the event </param>
-	/// <param name="scancode"> The system-specific scancode of the key </param>
-	/// <param name="action"> The action (GLFW_PRESS, GLFW_RELEASE, GLFW_REPEAT) </param>
-	/// <param name="mods"> Bit field describing which modifier keys were held down </param>
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
-
 	virtual void ScrollEvent(double xOffset, double yOffset);
 
 	virtual void MouseButtonEvent(int button, int action, int mods);
@@ -163,6 +169,25 @@ public:
 	/// <param name="shader"> The shader to be used for rendering. </param>
 	/// <param name="renderer"> The rendering engine. </param>
 	void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+
+	/// <summary>
+	/// Handles the incoming action appropriately.
+	/// </summary>
+	/// <param name="action"> The action that must be handled by active game state. </param>
+	virtual void Handle(Engine::Actions::Action action);
+
+	/// <summary>
+	/// Handles the incoming state appropriately.
+	/// </summary>
+	/// <param name="state"> The state that must be handled by active game states. </param>
+	virtual void Handle(Engine::States::State state);
+
+	/// <summary>
+	/// Handles the incoming range appropriately.
+	/// </summary>
+	/// <param name="range"> The range that must be handled by active game states. </param>
+	/// <param name="value"> The value associated with the specified range. </param>
+	virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 private:
     /// <summary>
     ///   Adds the specified game state to the exposed Drawables or Updateables if it
@@ -201,7 +226,6 @@ private:
 /* ==================== Non-static member variables begin ==================== */
 private:
 	std::vector<GameStateModalityTypePair> m_activeStates;
-	std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
 	std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 	std::vector<IRenderable*> m_exposedRenderables;
 	std::vector<IUpdateable*> m_exposedUpdateables;

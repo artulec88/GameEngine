@@ -4,7 +4,6 @@
 #include "Engine.h"
 #include "GameComponent.h"
 #include "IUpdateable.h"
-#include "IInputableKeyboard.h"
 #include "IInputableMouse.h"
 
 #include "Rendering\Camera.h"
@@ -47,7 +46,7 @@ namespace Engine
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraComponent */
 
-	class CameraMoveComponent : public CameraComponent, public Input::IInputableKeyboard, public Input::IInputableMouse
+	class CameraMoveComponent : public CameraComponent, public Input::IInputableMouse
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
@@ -61,7 +60,6 @@ namespace Engine
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void KeyEvent(int key, int scancode, int action, int mods);
 		virtual void MouseButtonEvent(int button, int action, int mods);
 		virtual void MousePosEvent(double xPos, double yPos);
 		virtual void ScrollEvent(double xOffset, double yOffset);

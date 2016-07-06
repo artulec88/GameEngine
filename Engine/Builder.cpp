@@ -523,12 +523,12 @@ Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::s
 			cubeMapNegZFaceFileName += (*filenameItr);
 		}
 	}
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosXFaceFileFound, Utility::Error, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegXFaceFileFound, Utility::Error, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosYFaceFileFound, Utility::Error, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegYFaceFileFound, Utility::Error, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosZFaceFileFound, Utility::Error, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegZFaceFileFound, Utility::Error, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosXFaceFileFound, Utility::ERR, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegXFaceFileFound, Utility::ERR, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosYFaceFileFound, Utility::ERR, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegYFaceFileFound, Utility::ERR, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosZFaceFileFound, Utility::ERR, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
+	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegZFaceFileFound, Utility::ERR, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
 	Rendering::Texture* cubeMapTexture = new Rendering::Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
 	if (cubeMapTexture == NULL)
 	{

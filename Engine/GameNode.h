@@ -3,9 +3,12 @@
 
 #include "Engine.h"
 #include "IRenderable.h"
-#include "IInputableKeyboard.h"
+#include "IActionHandler.h"
 #include "IInputableMouse.h"
+#include "ActionConstants.h"
+#include "InputConstants.h"
 #include "IUpdateable.h"
+#include "GameNodeCommand.h"
 
 #include "Rendering\Renderer.h"
 #include "Rendering\Shader.h"
@@ -21,8 +24,10 @@ namespace Engine
 
 	class GameComponent;
 
-	class GameNode : public Input::IInputableKeyboard, public Input::IInputableMouse, public IUpdateable, public IRenderable
+	class GameNode : public IActionHandler, public Input::IInputableMouse, public IUpdateable, public IRenderable
 	{
+		typedef std::map<Actions::Action, GameNodeCommand*> ActionsToGameNodeCommands;
+		typedef std::map<States::State, GameNodeCommand*> StatesToGameNodeCommands;
 		/* ==================== Static variables and functions begin ==================== */
 	private:
 		/// <summary>
@@ -34,7 +39,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API GameNode();
-		ENGINE_API virtual ~GameNode(void);
+		ENGINE_API ~GameNode(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -43,14 +48,35 @@ namespace Engine
 		ENGINE_API GameNode* AddChild(GameNode* child);
 		ENGINE_API GameNode* AddComponent(GameComponent* component);
 
-		ENGINE_API virtual void KeyEvent(int key, int scancode, int action, int mods);
-		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
-		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
-		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
+		ENGINE_API void MouseButtonEvent(int button, int action, int mods);
+		ENGINE_API void MousePosEvent(double xPos, double yPos);
+		ENGINE_API void ScrollEvent(double xOffset, double yOffset);
 
 		//ENGINE_API void InputAll(Math::Real delta);
-		ENGINE_API virtual void Update(Math::Real elapsedTime);
-		ENGINE_API virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		ENGINE_API void Update(Math::Real elapsedTime);
+		ENGINE_API void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		ENGINE_API void RegisterCommandForAction(Actions::Action action, GameNodeCommand* gameNodeCommand)
+		{
+			m_actionsToCommands.insert(std::make_pair(action, gameNodeCommand));
+		}
+		ENGINE_API void Handle(Actions::Action action)
+		{
+			CRITICAL_LOG_ENGINE("Executing action %d for entity %d", action, m_ID);
+			ActionsToGameNodeCommands::iterator actionToCommandItr = m_actionsToCommands.find(action);
+			if (actionToCommandItr != m_actionsToCommands.end())
+			{
+				actionToCommandItr->second->Execute(this);
+			}
+		}
+		ENGINE_API void Handle(States::State state)
+		{
+			CRITICAL_LOG_ENGINE("Handling the state %d for entity", state, m_ID);
+			std::map<States::State, GameNodeCommand*>::iterator stateToCommandItr = m_statesToCommands.find(state);
+			if (stateToCommandItr != m_statesToCommands.end())
+			{
+				stateToCommandItr->second->Execute(this);
+			}
+		}
 
 		ENGINE_API Math::Transform& GetTransform() { return m_transform; };
 		ENGINE_API const Math::Transform& GetTransform() const { return m_transform; }
@@ -70,12 +96,12 @@ namespace Engine
 		std::vector<GameNode*> m_childrenGameNodes;
 		std::vector<GameComponent*> m_components;
 		std::vector<IRenderable*> m_renderableComponents;
-		std::vector<Input::IInputableKeyboard*> m_inputableKeyboardComponents;
 		std::vector<Input::IInputableMouse*> m_inputableMouseComponents;
 		std::vector<IUpdateable*> m_updateableComponents;
 		Math::Transform m_transform;
 		std::unique_ptr<Physics::PhysicsObject> m_physicsObject;
-		// TODO: set of commands (GameCommand objects) to be performed by the game entity in the UPDATE step
+		ActionsToGameNodeCommands m_actionsToCommands;
+		StatesToGameNodeCommands m_statesToCommands;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNode */
 

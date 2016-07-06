@@ -6,8 +6,9 @@
 #include "ILogger.h"
 #include <string>
 #include <Windows.h> // TODO: This is a platform-dependent header. It shouldn't be directly included here.
+//#include <winnt.h>
 
-#define START_TIMER(timerID) Timing::Timer timerID; timerID.Start();
+#define START_TIMER(timerID) Utility::Timing::Timer timerID; timerID.Start();
 #define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) timerID.Stop(); } while (0)
 

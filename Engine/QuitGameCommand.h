@@ -1,31 +1,31 @@
-#ifndef __GAME_QUIT_GAME_COMMAND_H__
-#define __GAME_QUIT_GAME_COMMAND_H__
+#ifndef __ENGINE_QUIT_GAME_COMMAND_H__
+#define __ENGINE_QUIT_GAME_COMMAND_H__
 
-#include "Engine\GameCommand.h"
+#include "GameCommand.h"
 
-namespace Game
+namespace Engine
 {
 
-	class QuitGameCommand : public Engine::GameCommand
+	class QuitGameCommand : public GameCommand
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		QuitGameCommand();
-		virtual ~QuitGameCommand();
+		ENGINE_API QuitGameCommand();
+		ENGINE_API virtual ~QuitGameCommand();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Execute(/*const GameManager& gameManager*/) const;
+		ENGINE_API virtual void Execute(GameManager* gameManager) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class QuitGameCommand */
 
-} /* end namespace Game */
+} /* end namespace Engine */
 
-#endif /* __GAME_QUIT_GAME_COMMAND_H__ */
+#endif /* __ENGINE_QUIT_GAME_COMMAND_H__ */

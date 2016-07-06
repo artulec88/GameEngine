@@ -11,8 +11,8 @@
 using namespace Game;
 using namespace Rendering;
 
-LoadGameState::LoadGameState(void) :
-	Engine::GameState(),
+LoadGameState::LoadGameState(const std::string& inputMappingContextName) :
+	Engine::GameState(inputMappingContextName),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
 #ifdef CALCULATE_GAME_STATS
@@ -29,6 +29,7 @@ LoadGameState::~LoadGameState(void)
 void LoadGameState::Entered()
 {
 	START_PROFILING;
+	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG_GAME("Starting the loading thread");
 
@@ -40,17 +41,32 @@ void LoadGameState::Entered()
 
 void LoadGameState::Leaving()
 {
+	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("LOAD game state is about to be removed from the game state manager");
 }
 
 void LoadGameState::Obscuring()
 {
+	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of LOAD game state");
 }
 
 void LoadGameState::Revealed()
 {
+	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has become the topmost game state in the game state manager's stack");
+}
+
+void LoadGameState::Handle(Engine::Actions::Action action)
+{
+}
+
+void LoadGameState::Handle(Engine::States::State state)
+{
+}
+
+void LoadGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+{
 }
 
 void LoadGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const

@@ -87,7 +87,6 @@ Engine::DefaultGameStateManager::~DefaultGameStateManager()
 	//}
 
 	//std::vector<GameStateModalityTypePair> m_activeStates;
-	//std::vector<Input::IInputableKeyboard*> m_exposedInputablesKeyboard;
 	//std::vector<Input::IInputableMouse*> m_exposedInputablesMouse;
 	//std::vector<IRenderable*> m_exposedRenderables;
 	//std::vector<IUpdateable*> m_exposedUpdateables;
@@ -95,7 +94,6 @@ Engine::DefaultGameStateManager::~DefaultGameStateManager()
 
 void Engine::DefaultGameStateManager::ClearAllIntefaceLists()
 {
-	m_exposedInputablesKeyboard.clear();
 	m_exposedInputablesMouse.clear();
 	m_exposedRenderables.clear();
 	m_exposedUpdateables.clear();
@@ -143,22 +141,6 @@ Engine::GameState* Engine::DefaultGameStateManager::Pop()
 	NotifyRevealedStates();
 
 	return poppedPair.first;
-}
-
-void Engine::DefaultGameStateManager::KeyEvent(int key, int scancode, int action, int mods)
-{
-	//ERROR_LOG_ENGINE("Key event started (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
-	if (m_exposedInputablesKeyboard.empty())
-	{
-		return;
-	}
-	DEBUG_LOG_ENGINE("The KEYBOARD INPUT queue has %d elements (key=%d, scancode=%d, action=%d, mods=%d)",
-		m_exposedInputablesKeyboard.size(), key, scancode, action, mods);
-	for (std::vector<Input::IInputableKeyboard*>::iterator gameStateItr = m_exposedInputablesKeyboard.begin(); gameStateItr != m_exposedInputablesKeyboard.end(); ++gameStateItr)
-	{
-		(*gameStateItr)->KeyEvent(key, scancode, action, mods);
-	}
-	//ERROR_LOG_ENGINE("Key event finished (key=%d, scancode=%d, action=%d, mods=%d)", key, scancode, action, mods);
 }
 
 void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset)
@@ -222,12 +204,6 @@ void Engine::DefaultGameStateManager::Render(const Rendering::Shader* shader, Re
 void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 {
 	DEBUG_LOG_ENGINE("Adding to interfaces started");
-	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
-	if (inputableKeyboard != NULL)
-	{
-		DEBUG_LOG_ENGINE("Adding to KEYBOARD INPUT interface");
-		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
-	}
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
@@ -253,11 +229,6 @@ void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 
 void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 {
-	Input::IInputableKeyboard* inputableKeyboard = dynamic_cast<Input::IInputableKeyboard*>(gameState);
-	if (inputableKeyboard != NULL)
-	{
-		m_exposedInputablesKeyboard.push_back(inputableKeyboard);
-	}
 	Input::IInputableMouse* inputableMouse = dynamic_cast<Input::IInputableMouse*>(gameState);
 	if (inputableMouse != NULL)
 	{
@@ -289,7 +260,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
 	DEBUG_LOG_ENGINE("Currently active game states: %d", m_activeStates.size());
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), Utility::Emergency, "No active game state is present in the game at the moment.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), Utility::EMERGENCY, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
 	{
@@ -356,5 +327,29 @@ void Engine::DefaultGameStateManager::NotifyRevealedStates()
 	while (index < m_activeStates.size())
 	{
 		m_activeStates[index++].first->Revealed();
+	}
+}
+
+void Engine::DefaultGameStateManager::Handle(Engine::Actions::Action action)
+{
+	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
+	{
+		activeStateItr->first->Handle(action);
+	}
+}
+
+void Engine::DefaultGameStateManager::Handle(Engine::States::State state)
+{
+	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
+	{
+		activeStateItr->first->Handle(state);
+	}
+}
+
+void Engine::DefaultGameStateManager::Handle(Engine::Ranges::Range range, Math::Real value)
+{
+	for (std::vector<GameStateModalityTypePair>::iterator activeStateItr = m_activeStates.begin(); activeStateItr != m_activeStates.end(); ++activeStateItr)
+	{
+		activeStateItr->first->Handle(range, value);
 	}
 }

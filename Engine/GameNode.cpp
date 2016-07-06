@@ -79,11 +79,6 @@ Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
 	{
 		m_renderableComponents.push_back(renderableComponent);
 	}
-	Input::IInputableKeyboard* inputableKeyboardComponent = dynamic_cast<Input::IInputableKeyboard*>(child);
-	if (inputableKeyboardComponent != NULL)
-	{
-		m_inputableKeyboardComponents.push_back(inputableKeyboardComponent);
-	}
 	Input::IInputableMouse* inputableMouseComponent = dynamic_cast<Input::IInputableMouse*>(child);
 	if (inputableMouseComponent != NULL)
 	{
@@ -111,19 +106,6 @@ Engine::GameNode* Engine::GameNode::AddComponent(GameComponent* child)
 //	(*gameNodeItr)->InputAll(delta);
 //}
 //}
-
-void Engine::GameNode::KeyEvent(int key, int scancode, int action, int mods)
-{
-	for (std::vector<Input::IInputableKeyboard*>::iterator gameComponentItr = m_inputableKeyboardComponents.begin(); gameComponentItr != m_inputableKeyboardComponents.end(); ++gameComponentItr)
-	{
-		(*gameComponentItr)->KeyEvent(key, scancode, action, mods);
-	}
-
-	for (std::vector<GameNode*>::iterator gameNodeItr = m_childrenGameNodes.begin(); gameNodeItr != m_childrenGameNodes.end(); ++gameNodeItr)
-	{
-		(*gameNodeItr)->KeyEvent(key, scancode, action, mods);
-	}
-}
 
 void Engine::GameNode::MouseButtonEvent(int button, int action, int mods)
 {

@@ -16,7 +16,7 @@ Engine::LookAtComponent::~LookAtComponent(void)
 
 void Engine::LookAtComponent::Update(Math::Real delta)
 {
-	CHECK_CONDITION_ENGINE(renderer != NULL, Utility::Critical, "Cannot update lookup component due to renderer object being NULL.");
+	CHECK_CONDITION_ENGINE(renderer != NULL, Utility::CRITICAL, "Cannot update lookup component due to renderer object being NULL.");
 	//Math::Vector3D currentCameraPos = renderer->GetCurrentCamera().GetTransform().GetPos();
 	Math::Vector3D currentEntityToLookAtPos = m_entityToLookAtTransform.GetTransformedPos();
 

@@ -17,12 +17,15 @@ namespace Rendering
 	{
 		class GuiText
 		{
+			/// <summary>
+			/// The internal representation of a single text word.
+			/// </summary>
 			class Word
 			{
-			/* ==================== Static variables and functions begin ==================== */
-			/* ==================== Static variables and functions end ==================== */
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Constructors and destructors begin ==================== */
+				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				/// <summary>
 				/// Creates a new word.
@@ -37,36 +40,40 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 			public:
+				/// <summary>
+				/// Appends the given character to the current word.
+				/// </summary>
+				/// <param name="character">The character to be appended to the word.</param>
 				void AddCharacter(const Character& character)
 				{
 					m_characters.push_back(character);
-					m_width += character.GetXAdvance() * m_wordFontSize;
+					m_width += character.GetXAdvance() * m_fontSize;
 				}
 				const std::vector<Character>& GetCharacters() const { return m_characters; }
 				Math::Real GetWordWidth() const { return m_width; }
-				void Reset()
+				void Clear()
 				{
 					m_width = REAL_ZERO;
 					m_characters.clear();
 				}
 
 				std::string ToString() const;
-			/* ==================== Non-static member functions end ==================== */
+				/* ==================== Non-static member functions end ==================== */
 
-			/* ==================== Non-static member variables begin ==================== */
+				/* ==================== Non-static member variables begin ==================== */
 			private:
 				std::vector<Character> m_characters;
 				Math::Real m_width;
-				Math::Real m_wordFontSize;
-			/* ==================== Non-static member variables end ==================== */
+				Math::Real m_fontSize;
+				/* ==================== Non-static member variables end ==================== */
 			}; /* end class Word */
 
 			class Line
 			{
-			/* ==================== Static variables and functions begin ==================== */
-			/* ==================== Static variables and functions end ==================== */
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Constructors and destructors begin ==================== */
+				/* ==================== Constructors and destructors begin ==================== */
 			public:
 				/// <summary>
 				/// Creates an empty line.
@@ -93,20 +100,20 @@ namespace Rendering
 				Math::Real GetMaxLength() const { return m_maxLength; }
 				Math::Real GetLineLength() const { return m_currentLineLength; }
 				const std::vector<Word>& GetWords() const { return m_words; }
-				void Reset()
+				void Clear()
 				{
 					m_currentLineLength = REAL_ZERO;
 					m_words.clear();
 				}
-			/* ==================== Non-static member functions end ==================== */
+				/* ==================== Non-static member functions end ==================== */
 
-			/* ==================== Non-static member variables begin ==================== */
+				/* ==================== Non-static member variables begin ==================== */
 			private:
 				Math::Real m_spaceSize;
 				Math::Real m_maxLength;
 				std::vector<Word> m_words;
 				Math::Real m_currentLineLength;
-			/* ==================== Non-static member variables end ==================== */
+				/* ==================== Non-static member variables end ==================== */
 			}; /* end class Line */
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -182,13 +189,6 @@ namespace Rendering
 			RENDERING_API Math::Vector3D* GetOutlineColorPointer() { return &m_outlineColor; }
 
 			/// <summary>
-			/// Returns the number of lines of text. This is determined when the text is loaded
-			/// based on the length of the text and the specified maximum line length.
-			/// </summary>
-			/// <returns> The number of lines of text. </returns>
-			RENDERING_API int GetLinesCount() const { return m_linesCount; }
-
-			/// <summary>
 			/// The position of the top-left corner of the text in screen-space.
 			/// (0, 0) is the top-left corner of the screen, while (1, 1) is the bottom-right corner.
 			/// </summary>
@@ -197,9 +197,13 @@ namespace Rendering
 			/// </returns>
 			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
 
-			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const { return m_aabr.DoesContainPoint(x, y); }
-
-			RENDERING_API bool IsCentered() const { return m_isCentered; }
+			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const
+			{
+				//const Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
+				//CRITICAL_LOG_RENDERING("GUI text \"%s\" intersect info with point (%.2f; %.2f) = %.3f", m_text.c_str(), x, y, intersectInfo.GetDistance());
+				//return intersectInfo;
+				return m_aabr.DoesContainPoint(x, y);
+			}
 
 			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
 			RENDERING_API Math::Vector2D* GetOffsetPointer() { return &m_offset; }
@@ -213,9 +217,21 @@ namespace Rendering
 			RENDERING_API Math::Real* GetBorderEdgeTransitionWidthPointer() { return &m_borderEdgeTransitionWidth; }
 
 			RENDERING_API void Draw() const;
-		/* ==================== Non-static member functions end ==================== */
+		private:
+			/// <summary>
+			/// Returns the number of lines of text. This is determined when the text is loaded
+			/// based on the length of the text and the specified maximum line length.
+			/// </summary>
+			/// <returns> The number of lines of text. </returns>
+			inline int GetLinesCount() const { return m_linesCount; }
+			/// <summary>
+			/// Returns <code>true</code> if the GUI text is centered and <code>false</code> otherwise.
+			/// </summary>
+			/// <returns> The value <code>true</code> if GUI text is centered and <code>false</code> otherwise. </returns>
+			inline bool IsCentered() const { return m_isCentered; }
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables begin ==================== */
 		private:
 			std::string m_text;
 			const Font* m_font;
@@ -233,10 +249,10 @@ namespace Rendering
 			Math::Real m_borderWidth;
 			Math::Real m_borderEdgeTransitionWidth;
 
-			TextMesh* m_mesh;
+			TextMesh* m_mesh; // TODO: Replace with a standard variable or unique_ptr.
 
 			Math::AABR m_aabr;
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiText */
 	}
 } /* end namespace Rendering */

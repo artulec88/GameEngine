@@ -19,46 +19,34 @@
 #include "Math\IStatisticsStorage.h"
 #endif
 
+#include <string>
+
 namespace Game
 {
 
-class PlayGameState : public Engine::GameState, public virtual Engine::Input::IInputableKeyboard,
-	public virtual Engine::Input::IInputableMouse, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
+class PlayGameState : public Engine::GameState, public virtual Engine::Input::IInputableMouse, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
 {
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayGameState(Engine::GameManager* gameManager);
+	PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
 	virtual ~PlayGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	/**
-	 * Called after the game state has been placed in the game state manager
-	 */
 	virtual void Entered();
-
-	/**
-	 * Called right before the game state is removed from the game state manager
-	 */
 	virtual void Leaving();
-
-	/**
-	 * Called right before another game state is stacked on top of this one
-	 */
 	virtual void Obscuring();
-
-	/**
-	 * Called after the game state has become the topmost game state on the stack again
-	 */
 	virtual void Revealed();
+	virtual void Handle(Engine::Actions::Action action);
+	virtual void Handle(Engine::States::State state);
+	virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 	
 	bool IsInGameTimeCalculationEnabled() const { return true; }
 
 	virtual void MouseButtonEvent(int button, int action, int mods);
 	virtual void MousePosEvent(double xPos, double yPos);
 	virtual void ScrollEvent(double xOffset, double yOffset);
-	virtual void KeyEvent(int key, int scancode, int action, int mods);
 	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	virtual void Update(Math::Real elapsedTime);
 private:

@@ -17,8 +17,8 @@ Math::Interpolation::Interpolator<T>::Interpolator()
 template <class T>
 Math::Interpolation::Interpolator<T>::Interpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount)
 {
-	CHECK_CONDITION_MATH(m_interpolationObjects != NULL, Utility::Warning, "Specified interpolation object array is NULL.");
-	CHECK_CONDITION_MATH(m_times != NULL, Utility::Warning, "Specified times array is NULL.");
+	CHECK_CONDITION_MATH(m_interpolationObjects != NULL, Utility::WARNING, "Specified interpolation object array is NULL.");
+	CHECK_CONDITION_MATH(m_times != NULL, Utility::WARNING, "Specified times array is NULL.");
 	for (int i = 0; i < interpolationObjectsCount; ++i)
 	{
 		m_interpolationObjects.push_back(interpolationObjects[i]);

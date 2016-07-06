@@ -12,23 +12,25 @@
 
 namespace Utility
 {
-
+	/// <summary>
+	/// The interface for the application's configuration container. It gives the easy access to configuration parameters and their values.
+	/// </summary>
 	class IConfig
 	{
-	/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions begin ==================== */
 	public:
 		static std::map<std::string, std::unique_ptr<IConfig>> configurations;
 		UTILITY_API static void CreateConfig(const std::string& moduleName, const std::string& configFileName);
 		UTILITY_API static const IConfig& GetConfig(const std::string& moduleName);
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		IConfig(const std::string& fileName);
 		virtual ~IConfig();
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		/// <summary>
 		/// Load configuration from a given config file. The correct format for storing configuration data is:
@@ -59,12 +61,12 @@ namespace Utility
 			resultSS >> result;
 			return result;
 		}
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const std::string m_fileName;
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 	}; /* end class IConfig */
 
 } /* end namespace Utility */

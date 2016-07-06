@@ -12,16 +12,10 @@
 
 #include "tinythread.h"
 
-// TODO: We include glfw3.h header to have access to GLFW_KEY_* values (basically, to be able to respond to user's input).
-// It would be much better if instead we could use our own input keys and map them together in the Engine library.
-// Something like Input::KeyMapping class could map keys to actions (commands) where each game state could implement its own set of key mappings.
-// In the end, we don't want the Game library to depend on GLFW library at all. The GLFW should only be used in the Engine library.
-#include <GLFW\glfw3.h>
-
 using namespace Game;
 
-PlayGameState::PlayGameState(Engine::GameManager* gameManager) :
-	GameState(),
+PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+	GameState(inputMappingContextName),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
 	m_mousePicker()
@@ -38,9 +32,10 @@ PlayGameState::~PlayGameState(void)
 void PlayGameState::Entered()
 {
 	START_PROFILING;
+	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::Error, "PLAY game state has been placed in the game state manager before loading the game.");
+	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
 #endif
@@ -53,6 +48,7 @@ void PlayGameState::Entered()
 
 void PlayGameState::Leaving()
 {
+	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PLAY game state is about to be removed from the game state manager");
 #ifdef CALCULATE_STATS
 	Rendering::CoreEngine::GetCoreEngine()->StopSamplingSpf();
@@ -61,12 +57,36 @@ void PlayGameState::Leaving()
 
 void PlayGameState::Obscuring()
 {
+	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PLAY game state");
 }
 
 void PlayGameState::Revealed()
 {
+	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has become the topmost game state in the game state manager's stack");
+}
+
+void PlayGameState::Handle(Engine::Actions::Action action)
+{
+	START_PROFILING;
+	switch (action)
+	{
+	case Engine::Actions::SHOW_PLAY_MENU:
+		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
+		break;
+	default:
+		INFO_LOG_GAME("Not supported action %d", action);
+	}
+	STOP_PROFILING;
+}
+
+void PlayGameState::Handle(Engine::States::State state)
+{
+}
+
+void PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+{
 }
 
 void PlayGameState::MouseButtonEvent(int button, int action, int mods)
@@ -97,10 +117,12 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	START_PROFILING;
 	DEBUG_LOG_GAME("Cursor position = (%.2f, %.2f)", xPos, yPos);
 
-	const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
-	m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
+	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
+	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 
-	m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
+	//m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
+
+
 	//if (!m_isMouseLocked)
 	//{
 	//	STOP_PROFILING;
@@ -140,24 +162,12 @@ void PlayGameState::ScrollEvent(double xOffset, double yOffset)
 	STOP_PROFILING;
 }
 
-void PlayGameState::KeyEvent(int key, int scancode, int action, int mods)
-{
-	START_PROFILING;
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-	{
-		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
-		return;
-	}
-	m_gameManager->GetRootGameNode().KeyEvent(key, scancode, action, mods);
-	STOP_PROFILING;
-}
-
 void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::Critical, "Cannot render the game. The rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	Math::Real daytimeTransitionFactor;
@@ -200,7 +210,7 @@ void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) c
 	}
 	if (ambientTerrainShader != NULL)
 	{
-		CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Error, "Cannot render terrain. There are no terrain nodes registered.");
+		CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::ERR, "Cannot render terrain. There are no terrain nodes registered.");
 		m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 	}
 }
@@ -292,7 +302,7 @@ void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
 	RenderWaterReflectionTexture(renderer);
@@ -305,7 +315,7 @@ void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
 	Math::Transform& cameraTransform = renderer->GetCurrentCameraTransform();
@@ -356,7 +366,7 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
 	renderer->BindWaterRefractionTexture();
@@ -398,7 +408,7 @@ void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) 
 void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Debug, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
 	// TODO: In the future there might be more than one water node.
