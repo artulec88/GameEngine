@@ -1,64 +1,19 @@
 #include "stdafx.h"
 #include "GuiText.h"
+#include "Line.h"
+#include "Renderer.h"
+
 #include <sstream>
 
-Rendering::Text::GuiText::Word::Word(Math::Real fontSize) :
-	m_width(REAL_ZERO),
-	m_fontSize(fontSize)
-{
-}
-
-Rendering::Text::GuiText::Word::~Word(void)
-{
-}
-
-std::string Rendering::Text::GuiText::Word::ToString() const
-{
-	std::stringstream ss("");
-	for (std::vector<Character>::const_iterator charItr = m_characters.begin(); charItr != m_characters.end(); ++charItr)
-	{
-		ss << charItr->GetAsciiCode() << ",";
-	}
-	return ss.str();
-}
-
-Rendering::Text::GuiText::Line::Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength) :
-	m_spaceSize(spaceWidth * fontSize),
-	m_maxLength(maxLength),
-	m_currentLineLength(REAL_ZERO)
-{
-}
-
-Rendering::Text::GuiText::Line::~Line(void)
-{
-}
-
-bool Rendering::Text::GuiText::Line::AttemptToAddWord(const Word& word)
-{
-	Math::Real additionalLength = word.GetWordWidth();
-	if (!m_words.empty())
-	{
-		additionalLength += m_spaceSize;
-	}
-	if (m_currentLineLength + additionalLength > m_maxLength)
-	{
-		return false;
-	}
-	m_words.push_back(word);
-	m_currentLineLength += additionalLength;
-	return true;
-}
-
-
-Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
+Rendering::Controls::GuiTextControl::GuiTextControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
 	const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
 	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+	GuiControl(screenPosition),
 	m_text(text),
 	m_font(font),
 	m_fontSize(fontSize),
 	m_color(textColor),
 	m_outlineColor(outlineColor),
-	m_screenPosition(screenPosition),
 	m_maxLineLength(maxLineLength),
 	m_linesCount(0),
 	m_isCentered(isCentered),
@@ -66,9 +21,7 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 	m_characterWidth(characterWidth),
 	m_characterEdgeTransitionWidth(characterEdgeTransitionWidth),
 	m_borderWidth(borderWidth),
-	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth),
-	m_mesh(NULL),
-	m_aabr(Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO))
+	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth)
 {
 	if (!text.empty())
 	{
@@ -77,22 +30,21 @@ Rendering::Text::GuiText::GuiText(const std::string& text, const Font* font, Mat
 }
 
 
-Rendering::Text::GuiText::~GuiText()
+Rendering::Controls::GuiTextControl::~GuiTextControl()
 {
-	SAFE_DELETE(m_mesh);
 	//SAFE_DELETE(m_colorEffect);
 }
 
-void Rendering::Text::GuiText::SetText(const std::string& text)
+void Rendering::Controls::GuiTextControl::SetText(const std::string& text)
 {
-	std::vector<Line> lines;
-	Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);
-	Word currentWord(m_fontSize);
+	std::vector<Text::Line> lines;
+	Text::Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);
+	Text::Word currentWord(m_fontSize);
 	bool added;
 	for (std::string::const_iterator textItr = text.begin(); textItr != text.end(); ++textItr)
 	{
 		const int asciiCode = static_cast<int>((*textItr));
-		if (asciiCode == Font::SPACE_ASCII_CODE)
+		if (asciiCode == Text::Font::SPACE_ASCII_CODE)
 		{
 			added = currentLine.AttemptToAddWord(currentWord);
 			if (!added)
@@ -117,22 +69,22 @@ void Rendering::Text::GuiText::SetText(const std::string& text)
 	lines.push_back(currentLine);
 
 	// Creating quad vertices based on the lines vector
-	m_linesCount = lines.size();
+	m_linesCount = static_cast<int>(lines.size());
 	Math::Real minCursorX = REAL_MAX;
 	Math::Real maxCursorX = REAL_MIN;
 	Math::Real cursorY = REAL_ZERO;
 	std::vector<Math::Vector2D> positions;
 	std::vector<Math::Vector2D> textureCoordinates;
-	for (std::vector<Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
+	for (std::vector<Text::Line>::const_iterator lineItr = lines.begin(); lineItr != lines.end(); ++lineItr)
 	{
 		Math::Real cursorX = (m_isCentered) ? (m_maxLineLength - lineItr->GetLineLength()) / 2.0f : REAL_ZERO;
 		if (minCursorX > cursorX)
 		{
 			minCursorX = cursorX;
 		}
-		for (std::vector<Word>::const_iterator wordItr = lineItr->GetWords().begin(); wordItr != lineItr->GetWords().end(); ++wordItr)
+		for (std::vector<Text::Word>::const_iterator wordItr = lineItr->GetWords().begin(); wordItr != lineItr->GetWords().end(); ++wordItr)
 		{
-			for (std::vector<Character>::const_iterator characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
+			for (std::vector<Text::Character>::const_iterator characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
 			{
 				// Adding positions
 				const Math::Real x = cursorX + (characterItr->GetOffset().GetX() * m_fontSize);
@@ -162,22 +114,33 @@ void Rendering::Text::GuiText::SetText(const std::string& text)
 		{
 			maxCursorX = cursorX;
 		}
-		cursorY += Font::LINE_HEIGHT * m_fontSize;
+		cursorY += Text::Font::LINE_HEIGHT * m_fontSize;
 	}
-	m_aabr.SetBottomLeftPos(Math::Vector2D(m_screenPosition.GetX() + minCursorX, (m_screenPosition.GetY() + cursorY)));
-	m_aabr.SetTopRightPos(Math::Vector2D(m_screenPosition.GetX() + maxCursorX, m_screenPosition.GetY()));
-	DELOCUST_LOG_RENDERING("AABR for GUI text \"%s\" is:\n\t%s\n\t%s", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
-	if (m_mesh == NULL)
+	MoveAABR(minCursorX, cursorY, maxCursorX, REAL_ZERO);
+	if (m_mesh == nullptr)
 	{
-		m_mesh = new TextMesh(&positions[0], &textureCoordinates[0], positions.size());
+		m_mesh = std::make_unique<TextMesh>(&positions[0], &textureCoordinates[0], positions.size());
 	}
 	else
 	{
-		m_mesh->ReplaceData(&positions[0], &textureCoordinates[0], positions.size());
+		(static_cast<TextMesh*>(m_mesh.get()))->ReplaceData(&positions[0], &textureCoordinates[0], static_cast<int>(positions.size()));
 	}
 }
 
-void Rendering::Text::GuiText::Draw() const
+void Rendering::Controls::GuiTextControl::Draw(const Rendering::Renderer& renderer) const
 {
+	const Shader* shader = renderer.GetGuiTextShader();
+	shader->Bind();
+	shader->SetUniformVector2D("translation", GetScreenPosition());
+	shader->SetUniformVector2D("offset", m_offset);
+	shader->SetUniformVector3D("textColor", m_color);
+	shader->SetUniformVector3D("outlineColor", m_outlineColor);
+	shader->SetUniformf("characterWidth", m_characterWidth);
+	shader->SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
+	shader->SetUniformf("borderWidth", m_borderWidth);
+	shader->SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
+	shader->SetUniformi("fontAtlas", 0);
+
+	m_font->Bind();
 	m_mesh->Draw();
 }

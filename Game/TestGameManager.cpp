@@ -690,10 +690,6 @@ void Game::TestGameManager::AddSkybox() const
 //	stdlog(INFO, LOGPLACE, "The game is being cleaned up");
 //}
 
-// TODO: Remove in the future
-Math::Real temp = 0.0f;
-bool isMouseLocked = false;
-
 void Game::TestGameManager::Update(Math::Real delta)
 {
 	START_PROFILING;

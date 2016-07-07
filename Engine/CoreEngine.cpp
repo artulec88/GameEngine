@@ -498,14 +498,14 @@ void Engine::CoreEngine::Run()
 	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
 	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
-	Rendering::Text::GuiText fpsGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f),
+	Rendering::Controls::GuiTextControl fpsGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
-	Rendering::Text::GuiText inGameTimeGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f),
+	Rendering::Controls::GuiTextControl inGameTimeGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
@@ -669,7 +669,7 @@ void Engine::CoreEngine::Run()
 			//ERROR_LOG_ENGINE("2: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
 			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 			fpsGuiText.SetText(ss.str());
-			m_renderer->RenderText(fpsGuiText);
+			m_renderer->RenderGuiControl(fpsGuiText);
 			//ERROR_LOG_ENGINE("3: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
 			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
 #endif
@@ -697,7 +697,7 @@ void Engine::CoreEngine::Run()
 					}
 				}
 				inGameTimeGuiText.SetText(ss.str());
-				m_renderer->RenderText(inGameTimeGuiText);
+				m_renderer->RenderGuiControl(inGameTimeGuiText);
 		}
 #endif
 #endif

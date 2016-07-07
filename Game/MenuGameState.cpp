@@ -48,18 +48,18 @@ MenuGameState::MenuGameState(const std::string& inputMappingContextName) :
 	*/
 	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY), "Options", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.4f),
 		0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true);
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Sound" game command */,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Sound" game command */,
 		"Sound", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.25f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Graphics" game command */,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Graphics" game command */,
 		"Graphics", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.5f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Controls" game command */,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::EMPTY) /* TODO: Create GoTo "Controls" game command */,
 		"Controls", &m_mainMenuFont, m_mainMenuFontSize, Math::Vector2D(0.25f, 0.75f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::START_GAME), "Start", &m_mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::START_GAME), "Start", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.2f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChildren(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SHOW_INTRO), "Intro", &m_mainMenuFont,
+	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
+	m_mainMenuRootEntry.AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SHOW_INTRO), "Intro", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChildren(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", &m_mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new Engine::MenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", &m_mainMenuFont,
 		m_mainMenuFontSize, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	Math::Vector3D vectors3D[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
@@ -178,6 +178,7 @@ void MenuGameState::Handle(Engine::Actions::Action action)
 
 void MenuGameState::Handle(Engine::States::State state)
 {
+	//DELOCUST_LOG_GAME("Handling the state %d", state);
 	switch (state)
 	{
 	case Engine::States::MOUSE_KEY_LEFT_PRESSED:
@@ -268,7 +269,7 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
 	for (int i = 0; i < menuEntryChildrenCount; ++i)
 	{
-		renderer->RenderText(m_currentMenuEntry->GetChildGuiText(i));
+		renderer->RenderGuiControl(m_currentMenuEntry->GetChildGuiControl(i));
 	}
 	STOP_PROFILING;
 }
@@ -342,7 +343,7 @@ void MenuGameState::Update(Math::Real deltaTime)
 			{
 				if (m_currentMenuEntry->GetSelectedMenuEntryIndex() != i)
 				{
-					INFO_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
+					//INFO_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiControl(i).GetText().c_str());
 					SelectChild(i);
 				}
 				break;

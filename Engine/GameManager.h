@@ -35,21 +35,18 @@ namespace Engine
 
 class GameManager : public IUpdateable
 {
-	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>, Rendering::Text::FontComparator> FontMap;
+	typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Controls::GuiTextControl>, Rendering::Text::FontComparator> FontMap;
 	typedef std::map<Actions::Action, std::list<GameNode*>> ActionsToGameNodesMap;
 	typedef std::map<Actions::Action, const GameCommand*> ActionsToGameCommandsMap;
 	typedef std::map<States::State, std::list<GameNode*>> StatesToGameNodesMap;
 	typedef std::map<States::State, const GameCommand*> StatesToGameCommandsMap;
-/* ==================== Static variables begin ==================== */
+/* ==================== Static variables and functions begin ==================== */
 protected:
 	static GameManager* s_gameManager;
-/* ==================== Static variables end ==================== */
-
-/* ==================== Static functions begin ==================== */
 public:
 	ENGINE_API static GameManager* GetGameManager();
 	ENGINE_API static void Load(void* arg);
-/* ==================== Static functions end ==================== */
+/* ==================== Static variables and functions end ==================== */
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
@@ -138,7 +135,7 @@ public:
 	ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 	ENGINE_API void AddWaterNode(GameNode* waterNode);
 	ENGINE_API void AddBillboardsRenderer(GameNode* billboardsRenderer);
-	ENGINE_API void AddText(const Rendering::Text::GuiText& text);
+	ENGINE_API void AddText(const Rendering::Controls::GuiTextControl& text);
 	ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
 	ENGINE_API void AddParticleGenerator(ParticleGenerator* particleGenerator);
 protected:

@@ -1,29 +1,34 @@
 #include "StdAfx.h"
 #include "MenuEntry.h"
 #include "GameManager.h"
+
+#include "Rendering\GuiText.h"
+
 #include "Math\IntersectInfo.h"
+
 #include "Utility\IConfig.h"
+
 #include <sstream>
 
 Engine::MenuEntry::MenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
 	Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */,
 	Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_gameCommand(gameCommand),
-	m_guiText(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	m_guiControl(std::make_unique<Rendering::Controls::GuiTextControl>(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth)),
 	//m_aabr(Math::Vector2D(screenPosition.GetX(), screenPosition.GetY() + fontSize), Math::Vector2D(screenPosition.GetX() + (text.size() - 1) * fontSize, screenPosition.GetY())),
 	//m_fontSize(fontSize),
 	m_parentMenuEntry(NULL),
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
 {
-	DELOCUST_LOG_ENGINE("MenuEntry \"%s\" constructor", m_guiText.GetText().c_str());
+	//DELOCUST_LOG_ENGINE("MenuEntry \"%s\" constructor", m_guiControl.GetText().c_str());
 	//DELOCUST_LOG_ENGINE("AABR for menu entry \"%s\" is [%s; %s]", m_text.c_str(), m_aabr.GetBottomLeftPos().ToString().c_str(), m_aabr.GetTopRightPos().ToString().c_str());
 }
 
 
 Engine::MenuEntry::~MenuEntry(void)
 {
-	DELOCUST_LOG_ENGINE("MenuEntry \"%s\" destructor", m_guiText.GetText().c_str());
+	//DELOCUST_LOG_ENGINE("MenuEntry \"%s\" destructor", m_guiControl.GetText().c_str());
 	for (std::vector<MenuEntry*>::iterator childrenMenuEntryItr = m_childrenMenuEntries.begin(); childrenMenuEntryItr != m_childrenMenuEntries.end(); ++childrenMenuEntryItr)
 	{
 		SAFE_DELETE(*childrenMenuEntryItr);
@@ -37,7 +42,7 @@ void Engine::MenuEntry::ExecuteCommand() const
 	m_gameCommand.Execute(GameManager::GetGameManager());
 }
 
-void Engine::MenuEntry::AddChildren(MenuEntry* child)
+void Engine::MenuEntry::AddChild(MenuEntry* child)
 {
 	child->SetParent(this);
 	m_childrenMenuEntries.push_back(child);
@@ -52,7 +57,7 @@ bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math
 {
 	CHECK_CONDITION_RETURN_ENGINE(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::ERR,
 		"Cannot find child menu entry AABR. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
-	return m_childrenMenuEntries[index]->GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
+	return m_childrenMenuEntries[index]->GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
@@ -61,7 +66,7 @@ bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) con
 	//DEBUG_LOG_ENGINE("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
 	//return intersectInfo.IsIntersecting();
 
-	return GetGuiText().DoesContainPoint(xPos, yPos).IsIntersecting();
+	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
 }
 
 void Engine::MenuEntry::SelectChildMenuEntry(int index, bool wrapping /* = true */)

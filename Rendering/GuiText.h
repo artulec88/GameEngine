@@ -2,8 +2,10 @@
 #define __RENDERING_GUI_TEXT_H__
 
 #include "Rendering.h"
+#include "GuiControl.h"
 #include "Font.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 #include "Math\Vector.h"
 #include "Math\AABR.h"
@@ -13,115 +15,17 @@
 
 namespace Rendering
 {
-	namespace Text
+	namespace Controls
 	{
-		class GuiText
+		class GuiTextControl : public GuiControl
 		{
-			/// <summary>
-			/// The internal representation of a single text word.
-			/// </summary>
-			class Word
-			{
-				/* ==================== Static variables and functions begin ==================== */
-				/* ==================== Static variables and functions end ==================== */
-
-				/* ==================== Constructors and destructors begin ==================== */
-			public:
-				/// <summary>
-				/// Creates a new word.
-				/// </summary>
-				/// <param name="fontSize"> The size of font of the text this word belongs to. </param>
-				Word(Math::Real fontSize);
-				~Word(void);
-				//private:
-				//	Word(Word& word) {};
-				//	void operator=(Word& word) {};
-			/* ==================== Constructors and destructors end ==================== */
-
-			/* ==================== Non-static member functions begin ==================== */
-			public:
-				/// <summary>
-				/// Appends the given character to the current word.
-				/// </summary>
-				/// <param name="character">The character to be appended to the word.</param>
-				void AddCharacter(const Character& character)
-				{
-					m_characters.push_back(character);
-					m_width += character.GetXAdvance() * m_fontSize;
-				}
-				const std::vector<Character>& GetCharacters() const { return m_characters; }
-				Math::Real GetWordWidth() const { return m_width; }
-				void Clear()
-				{
-					m_width = REAL_ZERO;
-					m_characters.clear();
-				}
-
-				std::string ToString() const;
-				/* ==================== Non-static member functions end ==================== */
-
-				/* ==================== Non-static member variables begin ==================== */
-			private:
-				std::vector<Character> m_characters;
-				Math::Real m_width;
-				Math::Real m_fontSize;
-				/* ==================== Non-static member variables end ==================== */
-			}; /* end class Word */
-
-			class Line
-			{
-				/* ==================== Static variables and functions begin ==================== */
-				/* ==================== Static variables and functions end ==================== */
-
-				/* ==================== Constructors and destructors begin ==================== */
-			public:
-				/// <summary>
-				/// Creates an empty line.
-				/// </summary>
-				/// <param name="spaceWidth"> The screen-space width of a space character. </param>
-				/// <param name="fontSize"> The size of font being used. </param>
-				/// <param name="maxLength"> The screen-space maximum length of a line. </param>
-				Line(Math::Real spaceWidth, Math::Real fontSize, Math::Real maxLength);
-				~Line(void);
-				//private:
-				//	Line(Line& line) {};
-				//	void operator=(Line& line) {};
-			/* ==================== Constructors and destructors end ==================== */
-
-			/* ==================== Non-static member functions begin ==================== */
-			public:
-				/// <summary>
-				/// Attempts to add a word to the line. If the line can fit the word in without reaching the maximum
-				/// line length then the word is added and the line length is increased.
-				/// </summary>
-				/// <param name="word"> The word to try to add. </param>
-				/// <returns><code>True</code> if the word has successfully been added to the line and <code>false</code> otherwise. </returns>
-				bool AttemptToAddWord(const Word& word);
-				Math::Real GetMaxLength() const { return m_maxLength; }
-				Math::Real GetLineLength() const { return m_currentLineLength; }
-				const std::vector<Word>& GetWords() const { return m_words; }
-				void Clear()
-				{
-					m_currentLineLength = REAL_ZERO;
-					m_words.clear();
-				}
-				/* ==================== Non-static member functions end ==================== */
-
-				/* ==================== Non-static member variables begin ==================== */
-			private:
-				Math::Real m_spaceSize;
-				Math::Real m_maxLength;
-				std::vector<Word> m_words;
-				Math::Real m_currentLineLength;
-				/* ==================== Non-static member variables end ==================== */
-			}; /* end class Line */
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
-			/// Creates a new text, loads the text's quads into a VBO and adds the text to the screen.
+			/// Creates a new GUI text control, loads the text's quads into a VBO and adds the text to the screen.
 			/// </summary>
 			/// <param name="text"> The text. </param>
 			/// <param name="font"> The font that this text should use. </param>
@@ -152,13 +56,13 @@ namespace Rendering
 			/// </param>
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
-			RENDERING_API GuiText(const std::string& text, const Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
+			RENDERING_API GuiTextControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
 				const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
-			RENDERING_API ~GuiText(void);
+			RENDERING_API virtual ~GuiTextControl(void);
 			//private:
-			//GuiText(GuiText& guiText);
-			//void operator=(GuiText& guiText);
+			//GuiTextControl(GuiTextControl& guiText);
+			//void operator=(GuiTextControl& guiText);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -175,7 +79,7 @@ namespace Rendering
 
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>
-			RENDERING_API const Font* GetFont() const { return m_font; }
+			RENDERING_API const Text::Font* GetFont() const { return m_font; }
 
 			RENDERING_API const std::string& GetText() const { return m_text; }
 			RENDERING_API void SetText(const std::string& text);
@@ -188,23 +92,6 @@ namespace Rendering
 			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColor; }
 			RENDERING_API Math::Vector3D* GetOutlineColorPointer() { return &m_outlineColor; }
 
-			/// <summary>
-			/// The position of the top-left corner of the text in screen-space.
-			/// (0, 0) is the top-left corner of the screen, while (1, 1) is the bottom-right corner.
-			/// </summary>
-			/// <returns>
-			/// The screen-space position of the top-left corner of this GUI text.
-			/// </returns>
-			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
-
-			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const
-			{
-				//const Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
-				//CRITICAL_LOG_RENDERING("GUI text \"%s\" intersect info with point (%.2f; %.2f) = %.3f", m_text.c_str(), x, y, intersectInfo.GetDistance());
-				//return intersectInfo;
-				return m_aabr.DoesContainPoint(x, y);
-			}
-
 			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
 			RENDERING_API Math::Vector2D* GetOffsetPointer() { return &m_offset; }
 			RENDERING_API Math::Real GetCharacterWidth() const { return m_characterWidth; }
@@ -216,7 +103,7 @@ namespace Rendering
 			RENDERING_API Math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
 			RENDERING_API Math::Real* GetBorderEdgeTransitionWidthPointer() { return &m_borderEdgeTransitionWidth; }
 
-			RENDERING_API void Draw() const;
+			RENDERING_API virtual void Draw(const Rendering::Renderer& renderer) const;
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -234,12 +121,11 @@ namespace Rendering
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			std::string m_text;
-			const Font* m_font;
+			const Text::Font* m_font;
 			Math::Real m_fontSize;
 			Math::Vector3D m_color;
 			Math::Vector3D m_outlineColor;
 			Math::Vector2D m_offset;
-			Math::Vector2D m_screenPosition;
 			Math::Real m_maxLineLength;
 			int m_linesCount;
 			bool m_isCentered;
@@ -248,12 +134,8 @@ namespace Rendering
 			Math::Real m_characterEdgeTransitionWidth;
 			Math::Real m_borderWidth;
 			Math::Real m_borderEdgeTransitionWidth;
-
-			TextMesh* m_mesh; // TODO: Replace with a standard variable or unique_ptr.
-
-			Math::AABR m_aabr;
 			/* ==================== Non-static member variables end ==================== */
-		}; /* end class GuiText */
+		}; /* end class GuiTextControl */
 	}
 } /* end namespace Rendering */
 

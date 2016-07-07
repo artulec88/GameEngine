@@ -182,7 +182,9 @@
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="GuiControl.h" />
     <ClInclude Include="GuiText.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tinythread.h" />
+    <ClInclude Include="Word.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AntTweakBarTypes.cpp" />
@@ -220,7 +223,9 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GuiControl.cpp" />
     <ClCompile Include="GuiText.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -241,6 +246,7 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tinythread.cpp" />
+    <ClCompile Include="Word.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

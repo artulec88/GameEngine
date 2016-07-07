@@ -11,7 +11,7 @@
 #include "BaseLight.h"
 #include "Color.h"
 #include "Font.h"
-#include "GuiText.h"
+#include "GuiControl.h"
 #include "CubeShadowMap.h"
 #include "Particle.h"
 
@@ -84,7 +84,8 @@ public:
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize) const;
 	RENDERING_API void RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
 	RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
-	RENDERING_API void RenderText(const Text::GuiText& guiText) const;
+	//RENDERING_API void RenderText(const Controls::GuiTextControl& guiText) const;
+	RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl) const;
 
 	RENDERING_API void RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const;
 
@@ -258,6 +259,7 @@ public:
 	}
 	RENDERING_API const Shader* GetBillboardShader() const { return m_billboardShader; }
 	RENDERING_API const Shader* GetParticleShader() const { return m_particleShader; }
+	RENDERING_API const Shader* GetGuiTextShader() const { return m_textShader2; }
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
@@ -442,7 +444,7 @@ private:
 	Math::Matrix4D m_lightMatrix;
 
 	//Text::Font m_defaultFont;
-	//std::vector<Text::GuiText> m_texts;
+	//std::vector<Controls::GuiTextControl> m_guiTexts;
 	Material* m_fontMaterial;
 	Math::Real m_defaultFontSize;
 	Math::Vector4D m_defaultFontColor;

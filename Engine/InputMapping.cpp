@@ -56,22 +56,16 @@ void Engine::Input::InputMapping::SetRawButtonState(RawInputKeys::RawInputKey bu
 		if (!previouslyPressed) // action
 		{
 			Actions::Action action = MapButtonToAction(button);
-			if (action != Actions::INVALID)
-			{
-				m_currentMappedInput.m_actions.insert(action);
-			}
-			else
-			{
-				WARNING_LOG_ENGINE("Invalid action");
-			}
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != Actions::INVALID, Utility::WARNING,
+				"Invalid action for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
+			m_currentMappedInput.m_actions.insert(action);
 		}
 		else // state
 		{
 			States::State state = MapButtonToState(button);
-			if (state != States::INVALID)
-			{
-				m_currentMappedInput.m_states.insert(state);
-			}
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != States::INVALID, Utility::WARNING,
+				"Invalid state for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
+			m_currentMappedInput.m_states.insert(state);
 		}
 	}
 	else

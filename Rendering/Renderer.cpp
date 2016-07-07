@@ -813,10 +813,56 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Rendering::Renderer::RenderText(const Text::GuiText& guiText) const
+//void Rendering::Renderer::RenderText(const Text::GuiTextControl& guiText) const
+//{
+//	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
+//	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+//	//glDisable(GL_CULL_FACE);
+//	if (Rendering::glDepthTestEnabled)
+//	{
+//		glDisable(GL_DEPTH_TEST);
+//	}
+//	if (!Rendering::glBlendEnabled)
+//	{
+//		glEnable(GL_BLEND);
+//	}
+//	/**
+//	* This effectively means:
+//	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
+//	* (1 - currentAlphaInFramebuffer) * shader's output color
+//	*/
+//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//
+//	m_textShader2->Bind();
+//	m_textShader2->SetUniformVector2D("translation", guiText.GetScreenPosition());
+//	m_textShader2->SetUniformVector2D("offset", guiText.GetOffset());
+//	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
+//	m_textShader2->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
+//	m_textShader2->SetUniformf("characterWidth", guiText.GetCharacterWidth());
+//	m_textShader2->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
+//	m_textShader2->SetUniformf("borderWidth", guiText.GetBorderWidth());
+//	m_textShader2->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
+//	guiText.GetFont()->Bind();
+//	m_textShader2->SetUniformi("fontAtlas", 0);
+//	
+//	guiText.Draw();
+//
+//	if (Rendering::glDepthTestEnabled)
+//	{
+//		glEnable(GL_DEPTH_TEST);
+//	}
+//	if (!Rendering::glBlendEnabled)
+//	{
+//		glDisable(GL_BLEND);
+//	}
+//	//glEnable(GL_CULL_FACE);
+//	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
+//}
+
+void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl) const
 {
-	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
+	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"%s\"", guiControl.GetScreenPosition().ToString().c_str());
 	//glDisable(GL_CULL_FACE);
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -832,20 +878,8 @@ void Rendering::Renderer::RenderText(const Text::GuiText& guiText) const
 	* (1 - currentAlphaInFramebuffer) * shader's output color
 	*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	m_textShader2->Bind();
-	m_textShader2->SetUniformVector2D("translation", guiText.GetScreenPosition());
-	m_textShader2->SetUniformVector2D("offset", guiText.GetOffset());
-	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
-	m_textShader2->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
-	m_textShader2->SetUniformf("characterWidth", guiText.GetCharacterWidth());
-	m_textShader2->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
-	m_textShader2->SetUniformf("borderWidth", guiText.GetBorderWidth());
-	m_textShader2->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
-	guiText.GetFont()->Bind();
-	m_textShader2->SetUniformi("fontAtlas", 0);
 	
-	guiText.Draw();
+	guiControl.Draw(*this);
 
 	if (Rendering::glDepthTestEnabled)
 	{

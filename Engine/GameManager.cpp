@@ -138,15 +138,15 @@ void Engine::GameManager::AddBillboardsRenderer(GameNode* billboardsRenderer)
 	m_billboardsRenderers.push_back(billboardsRenderer);
 }
 
-void Engine::GameManager::AddText(const Rendering::Text::GuiText& guiText)
+void Engine::GameManager::AddText(const Rendering::Controls::GuiTextControl& guiText)
 {
 	//FontMap::const_iterator textItr = m_texts.find(guiText.GetFont());
 	//if (textItr == m_texts.end())
 	//{
 	//}
-	//std::vector<Rendering::Text::GuiText>::const_iterator guiTextItr = std::find(m_texts[guiText.GetFont()].begin(), m_texts[guiText.GetFont()].end(), guiText);
+	//std::vector<Rendering::Text::GuiTextControl>::const_iterator guiTextItr = std::find(m_texts[guiText.GetFont()].begin(), m_texts[guiText.GetFont()].end(), guiText);
 	//m_texts[guiText.GetFont()].push_back(guiText); // TODO: What about duplicates?
-	//m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiText>>(guiText.GetFont(), std::vector<Rendering::Text::GuiText>()));
+	//m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiTextControl>>(guiText.GetFont(), std::vector<Rendering::Text::GuiTextControl>()));
 	//m_texts[guiText.GetFont()].push_back(guiText);
 }
 
@@ -189,6 +189,7 @@ void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
 	for (Input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
 	{
 		const States::State state = *stateItr;
+		DEBUG_LOG_ENGINE("Handling the state %d", state);
 		StatesToGameCommandsMap::const_iterator gameCommandItr = m_statesToGameCommandsMap.find(state);
 		if (gameCommandItr != m_statesToGameCommandsMap.end())
 		{
