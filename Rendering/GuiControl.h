@@ -15,6 +15,15 @@ namespace Rendering
 
 	namespace Controls
 	{
+		//enum ControlType
+		//{
+		//	TEXT = 0,
+		//	CHECKBOX,
+		//	COMBOBOX,
+		//	BUTTON,
+		//	MESSAGEBOX
+		//}; /* end enum ControlType */
+
 		/// <summary>
 		/// The GUI control
 		/// </summary>

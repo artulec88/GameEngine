@@ -79,6 +79,9 @@
     <ClCompile Include="Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GuiCheckBoxControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AntTweakBarTypes.h">
@@ -163,6 +166,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GuiCheckBoxControl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

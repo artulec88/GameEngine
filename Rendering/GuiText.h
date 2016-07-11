@@ -136,7 +136,7 @@ namespace Rendering
 			Math::Real m_borderEdgeTransitionWidth;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiTextControl */
-	}
+	} /* end namespace Controls */
 } /* end namespace Rendering */
 
 #endif // __RENDERING_GUI_TEXT_H__

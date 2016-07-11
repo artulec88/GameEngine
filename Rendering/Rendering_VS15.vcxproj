@@ -182,6 +182,7 @@
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="Font.h" />
+    <ClInclude Include="GuiCheckBoxControl.h" />
     <ClInclude Include="GuiControl.h" />
     <ClInclude Include="GuiText.h" />
     <ClInclude Include="Line.h" />
@@ -223,6 +224,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Font.cpp" />
+    <ClCompile Include="GuiCheckBoxControl.cpp" />
     <ClCompile Include="GuiControl.cpp" />
     <ClCompile Include="GuiText.cpp" />
     <ClCompile Include="Line.cpp" />

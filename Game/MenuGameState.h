@@ -55,14 +55,13 @@ namespace Game
 	private:
 		void DeselectAll();
 		void SelectChild(int childIndex);
-		void ChooseCurrentMenuEntry();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		Rendering::Text::Font m_mainMenuFont;
 		Math::Real m_mainMenuFontSize;
-		Engine::MenuEntry m_mainMenuRootEntry;
+		Engine::CompositeMenuEntry m_mainMenuRootEntry;
 
 		// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.
 		// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).

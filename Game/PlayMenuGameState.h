@@ -52,14 +52,13 @@ public:
 private:
 	void DeselectAll();
 	void SelectChild(int childIndex);
-	void ChooseCurrentMenuEntry();
 /* ==================== Non-static member functions end ==================== */
 
 /* ==================== Non-static member variables begin ==================== */
 private:
 	Rendering::Text::Font m_playMainMenuFont;
 	Math::Real m_playMainMenuFontSize;
-	Engine::MenuEntry m_playMainMenuRootEntry;
+	Engine::CompositeMenuEntry m_playMainMenuRootEntry;
 	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
 	//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
 	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
