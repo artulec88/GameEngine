@@ -90,7 +90,7 @@ void Transform::Rotate(const Vector3D& axis, const Angle& angle)
 
 void Transform::Rotate(const Quaternion& rot)
 {
-	//DEBUG_LOG_MATH("Started...");
+	//DEBUG_LOG_MATH("Rotating the transformation by the quaternion %s", rot.ToString().c_str());
 	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
 }

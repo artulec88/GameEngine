@@ -54,7 +54,7 @@ namespace Game
 		virtual void Update(Math::Real deltaTime);
 	private:
 		void DeselectAll();
-		void SelectChild(int childIndex);
+		void SelectChild(size_t childIndex);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

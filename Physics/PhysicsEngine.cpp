@@ -11,7 +11,7 @@ Physics::PhysicsEngine::PhysicsEngine() :
 	START_PROFILING;
 	/* ==================== Initializing physics logger begin ==================== */
 	std::string loggingLevel = GET_CONFIG_VALUE_STR_PHYSICS("LoggingLevel", "Info");
-	Utility::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::INFO);
+	Utility::Logging::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::Logging::INFO);
 	/* ==================== Initializing physics logger end ==================== */
 
 	NOTICE_LOG_PHYSICS("Physics engine created");

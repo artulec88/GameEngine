@@ -408,7 +408,7 @@ void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) 
 void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
 	// TODO: In the future there might be more than one water node.

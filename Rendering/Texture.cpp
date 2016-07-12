@@ -369,7 +369,7 @@ Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned c
 
 Rendering::Texture::~Texture(void)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_textureData != NULL, Utility::ERR, "Error encountered while destructing the texture. Texture data is already NULL.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_textureData != NULL, Utility::Logging::ERR, "Error encountered while destructing the texture. Texture data is already NULL.");
 	
 	m_textureData->RemoveReference();
 	if (! m_textureData->IsReferenced())

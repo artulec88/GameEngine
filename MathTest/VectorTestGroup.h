@@ -67,14 +67,14 @@ public:
 	virtual void StartTest()
 	{
 		bool compareResult = (m_vector == m_compareVector);
-		CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
 			"The vector %s and vector %s comparison result not as expected.",
 			m_vector.ToString().c_str(), m_compareVector.ToString().c_str());
 		bool diffCompareResult = (m_vector != m_compareVector);
-		CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, Utility::Logging::ERR,
 			"The vector %s and vector %s diff operator result not as expected.",
 			m_vector.ToString().c_str(), m_compareVector.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::Logging::ERR,
 			"The operators == and != should always give opposite results.");
 	}
 protected:
@@ -99,10 +99,10 @@ public:
 	{
 		Math::Real lengthSquared = m_vector.LengthSquared();
 		Math::Real length = m_vector.Length();
-		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), Utility::Logging::ERR,
 			"The vector %s has length %.2f, but was expected to have length %.2f",
 			m_vector.ToString().c_str(), length, m_expectedLength);
-		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Logging::ERR,
 			"The vector %s has length %.2f and squared length %.2f, but expected to have squared length %.2f",
 			m_vector.ToString().c_str(), lengthSquared, m_expectedLength * m_expectedLength);
 	}
@@ -127,13 +127,13 @@ public:
 	virtual void StartTest()
 	{
 		T sumVector = m_vector + m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(sumVector == m_expectedSumVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(sumVector == m_expectedSumVector, Utility::Logging::ERR,
 			"The sum of vectors %s and %s is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), sumVector.ToString().c_str(),
 			m_expectedSumVector.ToString().c_str());
 
 		m_vector += m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSumVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSumVector, Utility::Logging::ERR,
 			"The operator += returned different result than operator + (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedSumVector.ToString().c_str());
 	}
@@ -159,13 +159,13 @@ public:
 	virtual void StartTest()
 	{
 		T subtractVector = m_vector - m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(subtractVector == m_expectedSubtractVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(subtractVector == m_expectedSubtractVector, Utility::Logging::ERR,
 			"The subtraction of vectors %s and %s is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), subtractVector.ToString().c_str(),
 			m_expectedSubtractVector.ToString().c_str());
 
 		m_vector -= m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSubtractVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSubtractVector, Utility::Logging::ERR,
 			"The operator -= returned different result than operator - (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedSubtractVector.ToString().c_str());
 	}
@@ -195,23 +195,23 @@ public:
 	{
 		T multiplyVector1 = m_vector * m_vector2;
 		T multiplyVector2 = m_vector * m_value;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector1 == m_expectedMultiplyVector1, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector1 == m_expectedMultiplyVector1, Utility::Logging::ERR,
 			"The multiplication of vectors %s and %s is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), multiplyVector1.ToString().c_str(),
 			m_expectedMultiplyVector1.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector2 == m_expectedMultiplyVector2, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyVector2 == m_expectedMultiplyVector2, Utility::Logging::ERR,
 			"The multiplication of vector %s and value %.2f is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_value, multiplyVector2.ToString().c_str(),
 			m_expectedMultiplyVector2.ToString().c_str());
 
 		T tempVector(m_vector);
 		m_vector *= m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector1, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector1, Utility::Logging::ERR,
 			"The operator *= returned different result than operator * (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedMultiplyVector1.ToString().c_str());
 		m_vector = tempVector;
 		m_vector *= m_value;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector2, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector2, Utility::Logging::ERR,
 			"The operator *= returned different result than operator * (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedMultiplyVector2.ToString().c_str());
 	}
@@ -242,23 +242,23 @@ public:
 	{
 		T divideVector1 = m_vector / m_vector2;
 		T divideVector2 = m_vector / m_value;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector1 == m_expectedDivideVector1, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector1 == m_expectedDivideVector1, Utility::Logging::ERR,
 			"The division of vectors %s and %s is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_vector2.ToString().c_str(), divideVector1.ToString().c_str(),
 			m_expectedDivideVector1.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector2 == m_expectedDivideVector2, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(divideVector2 == m_expectedDivideVector2, Utility::Logging::ERR,
 			"The division of vector %s and value %.2f is a vector %s. It is different than expected %s",
 			m_vector.ToString().c_str(), m_value, divideVector2.ToString().c_str(),
 			m_expectedDivideVector2.ToString().c_str());
 
 		T tempVector(m_vector);
 		m_vector /= m_vector2;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector1, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector1, Utility::Logging::ERR,
 			"The operator /= returned different result than operator / (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedDivideVector1.ToString().c_str());
 		m_vector = tempVector;
 		m_vector /= m_value;
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector2, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector2, Utility::Logging::ERR,
 			"The operator /= returned different result than operator / (%s != %s)",
 			m_vector.ToString().c_str(), m_expectedDivideVector2.ToString().c_str());
 	}
@@ -279,12 +279,12 @@ public:
 	{
 		Math::Real lengthSquared = m_expectedNormalizedVector.LengthSquared();
 		Math::Real length = m_expectedNormalizedVector.Length();
-		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::Logging::ERR,
 			"Given expected normalized vector %s is in fact not normalized.", m_expectedNormalizedVector.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), Utility::Logging::ERR,
 			"Given expected normalized vector %s gives different results for length and squared length (%.7f and %.7f respectively).",
 			m_expectedNormalizedVector.ToString().c_str(), length, lengthSquared);
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedVector.IsNormalized(), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedVector.IsNormalized(), Utility::Logging::ERR,
 			"Given expected normalized vector %s is in fact not normalized.",
 			m_expectedNormalizedVector.ToString().c_str());
 	}
@@ -295,19 +295,19 @@ public:
 	virtual void StartTest()
 	{
 		T normalizedVector = m_vector.Normalized();
-		CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector == m_expectedNormalizedVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector == m_expectedNormalizedVector, Utility::Logging::ERR,
 			"The vector %s after normalization equals %s. It is different than expected %s.",
 			m_vector.ToString().c_str(), normalizedVector.ToString().c_str(),
 			m_expectedNormalizedVector.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector.IsNormalized(), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedVector.IsNormalized(), Utility::Logging::ERR,
 			"Calculated normalized vector %s is in fact not normalized.",
 			normalizedVector.ToString().c_str());
 
 		m_vector.Normalize();
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedNormalizedVector, Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedNormalizedVector, Utility::Logging::ERR,
 			"The vector after normalization %s is different than expected %s",
 			m_vector.ToString().c_str(), m_expectedNormalizedVector.ToString().c_str());
-		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector.IsNormalized(), Utility::ERR,
+		CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector.IsNormalized(), Utility::Logging::ERR,
 			"Calculated normalized vector %s is in fact not normalized.",
 			m_vector.ToString().c_str());
 	}

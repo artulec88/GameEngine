@@ -3,9 +3,9 @@
 #include "LoggerWindows.h"
 #include <iostream>
 
-/* static */ std::map<std::string, std::unique_ptr<Utility::ILogger>> Utility::ILogger::loggers;
+/* static */ std::map<std::string, std::unique_ptr<Utility::Logging::ILogger>> Utility::Logging::ILogger::loggers;
 
-/* static */ const char* Utility::ILogger::LevelNames[] = 
+/* static */ const char* Utility::Logging::ILogger::LevelNames[] =
 {
 	"Critical",
 	"Emergency",
@@ -18,7 +18,7 @@
 	NULL
 };
 
-/* static */ Utility::ILogger& Utility::ILogger::GetLogger(const std::string& moduleName)
+/* static */ Utility::Logging::ILogger& Utility::Logging::ILogger::GetLogger(const std::string& moduleName)
 {
 	if (ILogger::loggers.find(moduleName) == ILogger::loggers.end())
 	{
@@ -27,17 +27,17 @@
 	return *ILogger::loggers[moduleName];
 }
 
-Utility::ILogger::ILogger(void) :
+Utility::Logging::ILogger::ILogger(void) :
 	m_level(NOTICE)
 {
 }
 
 
-Utility::ILogger::~ILogger(void)
+Utility::Logging::ILogger::~ILogger(void)
 {
 }
 
-void Utility::ILogger::SetLevel(LogLevel level)
+void Utility::Logging::ILogger::SetLevel(LogLevel level)
 {
 	//mutex.Lock();
 	//if ((!m_modified) || (level > this->m_level))

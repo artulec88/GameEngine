@@ -16,14 +16,14 @@ Math::Random::RandomGenerator::~RandomGenerator()
 bool Math::Random::RandomGenerator::CheckIfInRange(int value, int lowerBound, int upperBound) const
 {
 	bool isInRange = value >= lowerBound && value <= upperBound;
-	CHECK_CONDITION_ALWAYS_MATH(isInRange, Utility::ERR, "Generated random integer (%d) is outside of given range [%d; %d]", value, lowerBound, upperBound);
+	CHECK_CONDITION_ALWAYS_MATH(isInRange, Utility::Logging::ERR, "Generated random integer (%d) is outside of given range [%d; %d]", value, lowerBound, upperBound);
 	return isInRange;
 }
 
 bool Math::Random::RandomGenerator::CheckIfInRange(Math::Real value, Math::Real lowerBound, Math::Real upperBound) const
 {
 	bool isInRange = !(value < lowerBound || value > upperBound);
-	CHECK_CONDITION_ALWAYS_MATH(isInRange, Utility::ERR, "Generated random floating-point value (%.5f) is outside of given range [%.5f; %.5f]", value, lowerBound, upperBound);
+	CHECK_CONDITION_ALWAYS_MATH(isInRange, Utility::Logging::ERR, "Generated random floating-point value (%.5f) is outside of given range [%.5f; %.5f]", value, lowerBound, upperBound);
 	return isInRange;
 }
 /* ==================== RandomGenerator class end ==================== */

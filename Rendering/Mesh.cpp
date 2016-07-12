@@ -91,7 +91,7 @@ void Rendering::MeshData::CreateVAO()
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started VAO creation");
 	glGenVertexArrays(1, &m_vao);
-	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::CRITICAL, "VAO has not been created successfully. Its ID is still 0.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "VAO has not been created successfully. Its ID is still 0.");
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished VAO creation");
 }
 
@@ -293,7 +293,7 @@ void Rendering::Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::WARNING, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
+		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Logging::WARNING, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);

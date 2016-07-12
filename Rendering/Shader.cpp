@@ -175,7 +175,7 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 			//{
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
 			//}
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, Utility::ERR, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, Utility::Logging::ERR, "Error while reading #include directive in the shader file \"%s\"", name.c_str());
 			std::string includeFileName = tokens[1];
 			//DEBUG_LOG_RENDERING("Tokens[1] = \"%s\". IncludeFileName=\"%s\"", tokens[1].c_str(), includeFileName.c_str());
 			//includeFileName = includeFileName.substr(1, includeFileName.length() - 2);

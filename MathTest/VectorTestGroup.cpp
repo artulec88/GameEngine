@@ -41,7 +41,7 @@ void Vector2DTestCross::StartTest()
 {
 	DEBUG_LOG_MATH_TEST("Vector2D cross product testing begins...");
 	Math::Real crossResult = m_vector.Cross(m_vector2);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::Logging::ERR,
 		"The cross product of vectors %s and %s equals %.3f. It is different than expected %.3f",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult, m_expectedCrossResult);
 }
@@ -63,7 +63,7 @@ void Vector3DTestCross::StartTest()
 {
 	DEBUG_LOG_MATH_TEST("Vector3D cross product testing begins...");
 	Math::Vector3D crossResult = m_vector.Cross(m_vector2);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(crossResult == m_expectedCrossResult, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(crossResult == m_expectedCrossResult, Utility::Logging::ERR,
 		"The cross product of vectors %s and %s equals %s. It is different than expected %s",
 		m_vector.ToString().c_str(), m_vector2.ToString().c_str(), crossResult.ToString().c_str(),
 		m_expectedCrossResult.ToString().c_str());

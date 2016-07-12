@@ -4,7 +4,7 @@
 #include <string>
 #include "Time.h"
 	
-Utility::LoggerWindows::LoggerWindows(FILE *first) :
+Utility::Logging::LoggerWindows::LoggerWindows(FILE *first) :
 	ILogger(),
 	m_modified(false),
 	m_indentDepth(0),
@@ -18,11 +18,11 @@ Utility::LoggerWindows::LoggerWindows(FILE *first) :
 	ReadConsoleColorsFromConfigFile();
 }
 
-Utility::LoggerWindows::~LoggerWindows()
+Utility::Logging::LoggerWindows::~LoggerWindows()
 {
 }
 
-//void Utility::LoggerWindows::operator()(LogLevel level, const char *name, int line, const char *format, ...)
+//void Utility::Logging::LoggerWindows::operator()(LogLevel level, const char *name, int line, const char *format, ...)
 //{
 //	if (m_level < level)
 //	{
@@ -63,7 +63,7 @@ Utility::LoggerWindows::~LoggerWindows()
 //	//mutex.Unlock();
 //}
 
-void Utility::LoggerWindows::Log(LogLevel level, const char *name, int line, const char *format, ...)
+void Utility::Logging::LoggerWindows::Log(LogLevel level, const char *name, int line, const char *format, ...)
 {
 	if (m_level < level)
 	{
@@ -105,12 +105,12 @@ void Utility::LoggerWindows::Log(LogLevel level, const char *name, int line, con
 	ResetConsoleColor();
 }
 
-void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
+void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
 	{
-		DELOCUST_LOG("Setting new logging level from %s to %s", LevelNames[static_cast<int>(GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
+		DELOCUST_LOG_UTILITY("Setting new logging level from %s to %s", LevelNames[static_cast<int>(GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
 		SetLevel(defaultLogLevel);
 		return;
 	}
@@ -129,7 +129,7 @@ void Utility::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString *
 }
 
 
-void Utility::LoggerWindows::AddFile(const char *name)
+void Utility::Logging::LoggerWindows::AddFile(const char *name)
 {
 	//mutex.Lock();
 	FILE *file;
@@ -139,18 +139,18 @@ void Utility::LoggerWindows::AddFile(const char *name)
 	//mutex.Unlock();
 }
 
-void Utility::LoggerWindows::ResetConsoleColor() const
+void Utility::Logging::LoggerWindows::ResetConsoleColor() const
 {
 	SetConsoleTextAttribute(m_console, 15); // set color back to normal
 }
 
-void Utility::LoggerWindows::ReadConsoleColorsFromConfigFile()
+void Utility::Logging::LoggerWindows::ReadConsoleColorsFromConfigFile()
 {
 	// TODO: Not yet implemented
 	// TODO: Store console colors for each logging level from configuration file
 }
 
-void Utility::LoggerWindows::SetConsoleColor(LogLevel level) const
+void Utility::Logging::LoggerWindows::SetConsoleColor(LogLevel level) const
 {
 	switch (level)
 	{

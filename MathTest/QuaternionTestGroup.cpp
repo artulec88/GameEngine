@@ -56,7 +56,7 @@ QuaternionTestCompare::~QuaternionTestCompare(void)
 void QuaternionTestCompare::StartTest()
 {
 	bool compareResult = (m_quaternion == m_compareQuaternion);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
 		"The quaternion %s and quaternion %s comparison result is not as expected.",
 		m_quaternion.ToString().c_str(), m_compareQuaternion.ToString().c_str());
 }
@@ -78,10 +78,10 @@ void QuaternionTestLength::StartTest()
 {
 	Math::Real lengthSquared = m_quaternion.LengthSquared();
 	Math::Real length = m_quaternion.Length();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, m_expectedLength), Utility::Logging::ERR,
 		"The quaternion %s has length %.2f, but was expected to have length %.2f",
 		m_quaternion.ToString().c_str(), length, m_expectedLength);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Logging::ERR,
 		"The quaternion %s has length %.2f and squared length %.2f, but expected to have squared length %.2f",
 		m_quaternion.ToString().c_str(), lengthSquared, m_expectedLength * m_expectedLength);
 }
@@ -102,10 +102,10 @@ QuaternionTestConjugate::~QuaternionTestConjugate(void)
 void QuaternionTestConjugate::StartTest()
 {
 	Math::Quaternion conjugate = m_quaternion.Conjugate();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(conjugate == m_expectedConjugate, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(conjugate == m_expectedConjugate, Utility::Logging::ERR,
 		"The quaternion %s has conjugate %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), conjugate.ToString().c_str(), m_expectedConjugate.ToString().c_str());
-	CHECK_CONDITION_ALWAYS_MATH_TEST(conjugate.Conjugate() == m_quaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(conjugate.Conjugate() == m_quaternion, Utility::Logging::ERR,
 		"The conjugate of a quaternion is supposed to be an involution, but the conjugate of conjugate of a quaternion (%s) is not an original quaternion (%s).",
 		conjugate.Conjugate().ToString().c_str(), m_quaternion.ToString().c_str());
 }
@@ -127,7 +127,7 @@ QuaternionTestAddOperator::~QuaternionTestAddOperator(void)
 void QuaternionTestAddOperator::StartTest()
 {
 	Math::Quaternion sumQuaternion = m_quaternion + m_quaternion2;
-	CHECK_CONDITION_ALWAYS_MATH_TEST(sumQuaternion == m_expectedSumQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(sumQuaternion == m_expectedSumQuaternion, Utility::Logging::ERR,
 		"The sum of quaternions %s and %s is a quaternion %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(),
 		sumQuaternion.ToString().c_str(), m_expectedSumQuaternion.ToString().c_str());
@@ -150,7 +150,7 @@ QuaternionTestSubtractOperator::~QuaternionTestSubtractOperator(void)
 void QuaternionTestSubtractOperator::StartTest()
 {
 	Math::Quaternion subtractQuaternion = m_quaternion - m_quaternion2;
-	CHECK_CONDITION_ALWAYS_MATH_TEST(subtractQuaternion == m_expectedSubtractQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(subtractQuaternion == m_expectedSubtractQuaternion, Utility::Logging::ERR,
 		"The subtraction of quaternions %s and %s is a quaternion %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(),
 		subtractQuaternion.ToString().c_str(), m_expectedSubtractQuaternion.ToString().c_str());
@@ -173,7 +173,7 @@ QuaternionTestDivideOperator::~QuaternionTestDivideOperator(void)
 void QuaternionTestDivideOperator::StartTest()
 {
 	Math::Quaternion divideQuaternion = m_quaternion / m_divideValue;
-	CHECK_CONDITION_ALWAYS_MATH_TEST(divideQuaternion == m_expectedDivideQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(divideQuaternion == m_expectedDivideQuaternion, Utility::Logging::ERR,
 		"The division of quaternion %s by value %.2f is a quaternion %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_divideValue, divideQuaternion.ToString().c_str(),
 		m_expectedDivideQuaternion.ToString().c_str());
@@ -188,12 +188,12 @@ QuaternionTestNormalize::QuaternionTestNormalize(const Math::Quaternion& quatern
 {
 	Math::Real lengthSquared = m_expectedNormalizedQuaternion.LengthSquared();
 	Math::Real length = m_expectedNormalizedQuaternion.Length();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, REAL_ONE), Utility::Logging::ERR,
 		"Given expected normalized quaternion %s is in fact not normalized.", m_expectedNormalizedQuaternion.ToString().c_str());
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(length, lengthSquared), Utility::Logging::ERR,
 		"Given expected normalized quaternion %s gives different results for length and squared length (%.3f and %.3f respectively).",
 		m_expectedNormalizedQuaternion.ToString().c_str(), length, lengthSquared);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedQuaternion.IsNormalized(), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(m_expectedNormalizedQuaternion.IsNormalized(), Utility::Logging::ERR,
 		"Given expected normalized quaternion %s is in fact not normalized.",
 		m_expectedNormalizedQuaternion.ToString().c_str());
 }
@@ -205,19 +205,19 @@ QuaternionTestNormalize::~QuaternionTestNormalize(void)
 void QuaternionTestNormalize::StartTest()
 {
 	Math::Quaternion normalizedQuaternion = m_quaternion.Normalized();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedQuaternion == m_expectedNormalizedQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedQuaternion == m_expectedNormalizedQuaternion, Utility::Logging::ERR,
 		"The quaternion %s after normalization equals %s. It is different than expected %s.",
 		m_quaternion.ToString().c_str(), normalizedQuaternion.ToString().c_str(),
 		m_expectedNormalizedQuaternion.ToString().c_str());
-	CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedQuaternion.IsNormalized(), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(normalizedQuaternion.IsNormalized(), Utility::Logging::ERR,
 		"Calculated normalized quaternion %s is in fact not normalized.",
 		normalizedQuaternion.ToString().c_str());
 
 	m_quaternion.Normalize();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(m_quaternion == m_expectedNormalizedQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(m_quaternion == m_expectedNormalizedQuaternion, Utility::Logging::ERR,
 		"The quaternion after normalization %s is different than expected %s",
 		m_quaternion.ToString().c_str(), m_expectedNormalizedQuaternion.ToString().c_str());
-	CHECK_CONDITION_ALWAYS_MATH_TEST(m_quaternion.IsNormalized(), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(m_quaternion.IsNormalized(), Utility::Logging::ERR,
 		"Calculated normalized quaternion %s is in fact not normalized.",
 		m_quaternion.ToString().c_str());
 }
@@ -239,7 +239,7 @@ QuaternionTestDot::~QuaternionTestDot(void)
 void QuaternionTestDot::StartTest()
 {
 	Math::Real dotResult = m_quaternion.Dot(m_quaternion2);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::Logging::ERR,
 		"The dot product of quaternions %s and %s equals %.3f. It is different than expected %.3f",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(), dotResult, m_expectedDotResult);
 }
@@ -263,7 +263,7 @@ QuaternionTestNlerp::~QuaternionTestNlerp(void)
 void QuaternionTestNlerp::StartTest()
 {
 	Math::Quaternion nlerpQuaternion = m_quaternion.Nlerp1(m_quaternion2, m_nlerpFactor, m_shortest);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(nlerpQuaternion == m_expectedNlerpQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(nlerpQuaternion == m_expectedNlerpQuaternion, Utility::Logging::ERR,
 		"The linear interpolation of quaternions %s and %s with the factor equal to %.2f is a vector %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(), m_nlerpFactor, nlerpQuaternion.ToString().c_str(),
 		m_expectedNlerpQuaternion.ToString().c_str());
@@ -287,7 +287,7 @@ QuaternionTestSlerp::~QuaternionTestSlerp(void)
 void QuaternionTestSlerp::StartTest()
 {
 	Math::Quaternion slerpQuaternion = m_quaternion.Slerp(m_quaternion2, m_slerpFactor, m_shortest);
-	CHECK_CONDITION_ALWAYS_MATH_TEST(slerpQuaternion == m_expectedSlerpQuaternion, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(slerpQuaternion == m_expectedSlerpQuaternion, Utility::Logging::ERR,
 		"The spherical linear interpolation of quaternions %s and %s with the factor equal to %.2f is a vector %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), m_quaternion2.ToString().c_str(), m_slerpFactor, slerpQuaternion.ToString().c_str(),
 		m_expectedSlerpQuaternion.ToString().c_str());
@@ -308,7 +308,7 @@ QuaternionTestForward::~QuaternionTestForward(void)
 void QuaternionTestForward::StartTest()
 {
 	Math::Vector3D forwardVector = m_quaternion.GetForward();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(forwardVector == m_expectedForwardVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(forwardVector == m_expectedForwardVector, Utility::Logging::ERR,
 		"The forward vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), forwardVector.ToString().c_str(),
 		m_expectedForwardVector.ToString().c_str());
@@ -329,7 +329,7 @@ QuaternionTestUp::~QuaternionTestUp(void)
 void QuaternionTestUp::StartTest()
 {
 	Math::Vector3D upVector = m_quaternion.GetUp();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(upVector == m_expectedUpVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(upVector == m_expectedUpVector, Utility::Logging::ERR,
 		"The up vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), upVector.ToString().c_str(),
 		m_expectedUpVector.ToString().c_str());
@@ -350,7 +350,7 @@ QuaternionTestRight::~QuaternionTestRight(void)
 void QuaternionTestRight::StartTest()
 {
 	Math::Vector3D rightVector = m_quaternion.GetRight();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(rightVector == m_expectedRightVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(rightVector == m_expectedRightVector, Utility::Logging::ERR,
 		"The right vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), rightVector.ToString().c_str(),
 		m_expectedRightVector.ToString().c_str());
@@ -371,7 +371,7 @@ QuaternionTestBack::~QuaternionTestBack(void)
 void QuaternionTestBack::StartTest()
 {
 	Math::Vector3D backVector = m_quaternion.GetBack();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(backVector == m_expectedBackVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(backVector == m_expectedBackVector, Utility::Logging::ERR,
 		"The back vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), backVector.ToString().c_str(),
 		m_expectedBackVector.ToString().c_str());
@@ -392,7 +392,7 @@ QuaternionTestDown::~QuaternionTestDown(void)
 void QuaternionTestDown::StartTest()
 {
 	Math::Vector3D downVector = m_quaternion.GetDown();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(downVector == m_expectedDownVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(downVector == m_expectedDownVector, Utility::Logging::ERR,
 		"The down vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), downVector.ToString().c_str(),
 		m_expectedDownVector.ToString().c_str());
@@ -413,7 +413,7 @@ QuaternionTestLeft::~QuaternionTestLeft(void)
 void QuaternionTestLeft::StartTest()
 {
 	Math::Vector3D leftVector = m_quaternion.GetLeft();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(leftVector == m_expectedLeftVector, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(leftVector == m_expectedLeftVector, Utility::Logging::ERR,
 		"The left vector for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), leftVector.ToString().c_str(),
 		m_expectedLeftVector.ToString().c_str());
@@ -434,7 +434,7 @@ QuaternionTestRotationMatrix::~QuaternionTestRotationMatrix(void)
 void QuaternionTestRotationMatrix::StartTest()
 {
 	Math::Matrix4D rotationMatrix = m_quaternion.ToRotationMatrix();
-	CHECK_CONDITION_ALWAYS_MATH_TEST(rotationMatrix == m_expectedRotationMatrix, Utility::ERR,
+	CHECK_CONDITION_ALWAYS_MATH_TEST(rotationMatrix == m_expectedRotationMatrix, Utility::Logging::ERR,
 		"The rotation matrix for quaternion %s is %s. It is different than expected %s",
 		m_quaternion.ToString().c_str(), rotationMatrix.ToString().c_str(),
 		m_expectedRotationMatrix.ToString().c_str());

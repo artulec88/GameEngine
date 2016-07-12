@@ -62,7 +62,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), ERR, "Timer is still running");
+	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
 	Timing::TimeSpan timeSpan = timer.GetTimeSpan(timeUnit);
 	timeSpan /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
@@ -437,7 +437,7 @@ void SortTest()
 		return;
 	}
 
-	ILogger::GetLogger(MODULE_NAME).AddFile("sortingOutput.txt");
+	Logging::ILogger::GetLogger(MODULE_NAME).AddFile("sortingOutput.txt");
 	//ofstream sortingOutputFile;
 	//sortingOutputFile.open("sortingOutput.txt");
 
@@ -1012,7 +1012,7 @@ int main (int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), INFO);
+	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
 
 	AngleTest();
 	VectorTest();
@@ -1027,7 +1027,7 @@ int main (int argc, char* argv[])
 
 	OtherTests();
 
-	ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
+	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 
 	return 0;

@@ -223,9 +223,9 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
 	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
-	Utility::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::INFO); // Initializing engine logger
-	Utility::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::INFO); // Initializing math logger
-	Utility::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::INFO); // Initializing utility logger
+	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
+	Utility::Logging::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing math logger
+	Utility::Logging::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing utility logger
 
 	NOTICE_LOG_ENGINE("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS
@@ -294,7 +294,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG_ENGINE("Core engine destruction finished");
 
-	Utility::ILogger::GetLogger("Engine").ResetConsoleColor();
+	Utility::Logging::ILogger::GetLogger("Engine").ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 }
 
@@ -336,7 +336,7 @@ void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& 
 void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& title)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::CRITICAL, "Failed to initialize GLFW.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
 
 	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
 	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
@@ -435,7 +435,7 @@ void Engine::CoreEngine::InitGlew()
 
 void Engine::CoreEngine::SetCallbacks()
 {
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Utility::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(m_window != NULL, Utility::Logging::CRITICAL, "Setting GLFW callbacks failed. The window is NULL.");
 	glfwSetWindowCloseCallback(m_window, &CoreEngine::WindowCloseEventCallback);
 	glfwSetWindowSizeCallback(m_window, &CoreEngine::WindowResizeCallback);
 	glfwSetKeyCallback(m_window, &CoreEngine::KeyEventCallback);
@@ -777,7 +777,7 @@ void Engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
 void Engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::ERR, "Key %d not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key %d not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
 }
@@ -788,7 +788,7 @@ void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 	DELOCUST_LOG_ENGINE("Mouse button event: button=%d\t action=%d\t mods=%d", button, action, mods);
 
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::ERR, "Key %d not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key %d not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
 }

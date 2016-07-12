@@ -52,7 +52,7 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	Utility::IConfig::CreateConfig("Utility", commandLineMapper->Get("-configUtility", "..\\Config\\ConfigUtility.cfg"));
 
 	// Initializing logger
-	Utility::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-log")) ? commandLineMapper->Get("-log", "Info") : GET_CONFIG_VALUE_STR_GAME("LoggingLevel", "Info"), Utility::INFO);
+	Utility::Logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-log")) ? commandLineMapper->Get("-log", "Info") : GET_CONFIG_VALUE_STR_GAME("LoggingLevel", "Info"), Utility::Logging::INFO);
 
 	// Initializing shader directory
 	*shaderDirectory = (commandLineMapper->IsPresent("-shaders")) ? commandLineMapper->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");

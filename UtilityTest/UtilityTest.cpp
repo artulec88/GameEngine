@@ -115,12 +115,12 @@ int main(int argc, char* argv[])
 		system("pause");
 		return 0;
 	}
-	ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), INFO);
+	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
 
 	ArrayTest();
 	StringUtilityTest();
 
-	ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
+	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
 
 	return 0;

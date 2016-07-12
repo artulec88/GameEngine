@@ -231,9 +231,9 @@ void MenuGameState::DeselectAll()
 	STOP_PROFILING;
 }
 
-void MenuGameState::SelectChild(int childIndex)
+void MenuGameState::SelectChild(size_t childIndex)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::DEBUG, "Trying to select the child which is already selected (%d).", childIndex);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DEBUG, "Trying to select the child which is already selected (%d).", childIndex);
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
 	//m_currentMenuEntry->SelectChildMenuEntry(childIndex);

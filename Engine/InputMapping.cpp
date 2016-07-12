@@ -56,14 +56,14 @@ void Engine::Input::InputMapping::SetRawButtonState(RawInputKeys::RawInputKey bu
 		if (!previouslyPressed) // action
 		{
 			Actions::Action action = MapButtonToAction(button);
-			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != Actions::INVALID, Utility::WARNING,
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != Actions::INVALID, Utility::Logging::WARNING,
 				"Invalid action for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
 			m_currentMappedInput.m_actions.insert(action);
 		}
 		else // state
 		{
 			States::State state = MapButtonToState(button);
-			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != States::INVALID, Utility::WARNING,
+			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != States::INVALID, Utility::Logging::WARNING,
 				"Invalid state for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
 			m_currentMappedInput.m_states.insert(state);
 		}
@@ -107,13 +107,13 @@ void Engine::Input::InputMapping::RegisterCallback(InputCallback callback, int p
 void Engine::Input::InputMapping::PushContext(const std::string& name)
 {
 	std::map<std::string, std::unique_ptr<InputContext>>::iterator iter = m_inputContexts.find(name);
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(iter != m_inputContexts.end(), Utility::EMERGENCY, "Invalid input context pushed");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(iter != m_inputContexts.end(), Utility::Logging::EMERGENCY, "Invalid input context pushed");
 	m_activeContexts.push_front(iter->second.get());
 }
 
 void Engine::Input::InputMapping::PopContext()
 {
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeContexts.empty(), Utility::ERR, "Cannot pop input context. No context is currently active.");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeContexts.empty(), Utility::Logging::ERR, "Cannot pop input context. No context is currently active.");
 	m_activeContexts.pop_front();
 }
 

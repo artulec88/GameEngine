@@ -332,7 +332,7 @@ void Game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING;
-	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::ERR, "Loading the game run into a problem. The game has already been loaded.");
+	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
 	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
@@ -518,7 +518,7 @@ void Game::TestGameManager::Load()
 	AddSkybox(); // Adding skybox
 
 	m_isGameLoaded = true;
-	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::CRITICAL, "The game has not been loaded properly.");
+	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING;
 	NOTICE_LOG_GAME("Initalizing test game finished");
 }
@@ -567,9 +567,9 @@ void Game::TestGameManager::AddLights()
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
-		NOTICE_LOG_GAME("Creating %d point lights", pointLightCount);
+		DEBUG_LOG_GAME("Creating %d point lights", pointLightCount);
 		AddPointLights();
-		DEBUG_LOG_GAME("%d point lights created", pointLightCount);
+		NOTICE_LOG_GAME("%d point lights created", pointLightCount);
 	}
 	else
 	{
@@ -577,9 +577,9 @@ void Game::TestGameManager::AddLights()
 	}
 	if (spotLightCount > 0)
 	{
-		NOTICE_LOG_GAME("Creating %d spot lights...", spotLightCount);
+		DEBUG_LOG_GAME("Creating %d spot lights", spotLightCount);
 		AddSpotLights();
-		DEBUG_LOG_GAME("%d spot lights created", spotLightCount);
+		NOTICE_LOG_GAME("%d spot lights created", spotLightCount);
 	}
 	else
 	{
@@ -652,9 +652,9 @@ void Game::TestGameManager::AddSpotLights()
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING;
-	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::CRITICAL, "No cameras defined in the rendering engine.");
+	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
 
-	NOTICE_LOG_GAME("Creating %d camera(-s)...", cameraCount);
+	DEBUG_LOG_GAME("Creating %d camera(-s)", cameraCount);
 
 	Engine::CameraBuilder cameraBuilder;
 	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
@@ -666,7 +666,7 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 		Engine::GameNode* cameraNode = cameraBuilder.GetGameNode();
 		AddToSceneRoot(cameraNode);
 	}
-	DEBUG_LOG_GAME("%d camera(-s) created", cameraCount);
+	NOTICE_LOG_GAME("%d camera(-s) created", cameraCount);
 	STOP_PROFILING;
 }
 
@@ -674,13 +674,13 @@ void Game::TestGameManager::AddSkybox() const
 {
 	START_PROFILING;
 
-	NOTICE_LOG_GAME("Creating a skybox...");
+	DEBUG_LOG_GAME("Creating a skybox");
 
 	Engine::SkyboxBuilder skyboxBuilder;
 	Engine::BuilderDirector skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
 	//GameNode* skyboxNode = skyboxBuilder.GetGameNode();
-	DEBUG_LOG_GAME("The skybox has been created");
+	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING;
 }
 

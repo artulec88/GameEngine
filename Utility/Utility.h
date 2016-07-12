@@ -41,14 +41,14 @@
 #define SAFE_DELETE_JUST_TABLE(p) if (p != NULL) { delete [] p; p = NULL; }
 
 #ifdef _DEBUG
-#define CHECK_CONDITION(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
-#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
-#define CHECK_CONDITION_EXIT(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
-#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
-#define CHECK_CONDITION_RETURN_VOID(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
-#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
-#define CHECK_CONDITION_RETURN(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
-#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
+#define CHECK_CONDITION(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
+#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
+#define CHECK_CONDITION_EXIT(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_RETURN_VOID(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
+#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
 #define ASSERT(expr) do { if (!(expr)) { printf("ASSERT in file \"%s\" in line \"%d\"\n", __FILENAME__, __LINE__); } } while (0)
 #define SLOW_ASSERTIONS_ENABLED
 #ifdef SLOW_ASSERTIONS_ENABLED
@@ -58,13 +58,13 @@
 #endif
 #else /* _RELEASE */
 #define CHECK_CONDITION(expr, moduleName, logLevel, message, ...)
-#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
+#define CHECK_CONDITION_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); } } while (0)
 #define CHECK_CONDITION_EXIT(expr, moduleName, logLevel, message, ...)
-#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
+#define CHECK_CONDITION_EXIT_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); system("pause"); exit(EXIT_FAILURE); } } while (0)
 #define CHECK_CONDITION_RETURN_VOID(expr, moduleName, logLevel, message, ...)
-#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
+#define CHECK_CONDITION_RETURN_VOID_ALWAYS(expr, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return; } } while (0)
 #define CHECK_CONDITION_RETURN(expr, returnValue, moduleName, logLevel, message, ...)
-#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
+#define CHECK_CONDITION_RETURN_ALWAYS(expr, returnValue, moduleName, logLevel, message, ...) do { ASSERT(expr); if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, message, ##__VA_ARGS__); return returnValue; } } while (0)
 #define ASSERT(expr)
 #define SLOW_ASSERT(expr)
 #endif /* _DEBUG */

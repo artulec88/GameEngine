@@ -41,7 +41,7 @@ void Utility::Config::LoadFromFile()
 	while (!file.eof())
 	{
 		//file >> name;
-		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), EMERGENCY, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
+		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Logging::EMERGENCY, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
 		std::getline(file, line);
 		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{
@@ -53,7 +53,7 @@ void Utility::Config::LoadFromFile()
 		DELOCUST_LOG_UTILITY("Line after trimming = \"%s\"", line.c_str());
 		std::vector<std::string> tokens;
 		StringUtility::CutToTokens(line, tokens, ' ');
-		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Utility::ERR, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
+		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Logging::ERR, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
 			line.c_str(), tokens[1].c_str());
 		value = tokens[2];
 		if (tokens.size() > 3)
