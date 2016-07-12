@@ -154,18 +154,25 @@ namespace Utility
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary>
+			/// Base logger constructor.
+			/// </summary>
 			ILogger();
+
+			/// <summary>
+			/// Base logger destructor.
+			/// </summary>
 			virtual ~ILogger(void);
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			LogLevel GetLevel() const { return m_level; }
+			UTILITY_API LogLevel GetLevel() const { return m_level; }
 			//virtual void operator()(LogLevel level, const char *name, int line, const char *format, ...) = 0;
 			UTILITY_API virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
-			virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
-			virtual void AddFile(const char *name) = 0;
+			UTILITY_API virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 			UTILITY_API virtual void ResetConsoleColor() const = 0;
+			UTILITY_API virtual void AddFile(const char *name) = 0;
 		protected:
 			void SetLevel(LogLevel level);
 			virtual void SetConsoleColor(LogLevel level) const = 0;
