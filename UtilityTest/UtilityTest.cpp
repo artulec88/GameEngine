@@ -27,7 +27,7 @@ void PrintHelp()
 
 void ReportError(const std::string& reportStr)
 {
-	ERROR_LOG(MODULE_NAME, "Test #%d FAILED. %s", testNumber, reportStr.c_str());
+	ERROR_LOG(MODULE_NAME, "Test #", testNumber, " FAILED. ", reportStr);
 }
 
 void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
@@ -37,7 +37,7 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	{
 		ReportError(reportErrorStr);
 	}
-	INFO_LOG(MODULE_NAME, "Test #%d passed", testNumber);
+	INFO_LOG(MODULE_NAME, "Test #", testNumber, " passed");
 }
 
 void ArrayTest()
@@ -55,7 +55,7 @@ void ArrayTest()
 	TestReport(intArray.GetSize() == intArray.GetMaxSize(), "The size of the integer array and its maximum size should be equal at this point.");
 	for (int i = 0; i < intArray.GetSize(); ++i)
 	{
-		INFO_LOG(MODULE_NAME, "intArray[%d] = %d", i, intArray[i]);
+		INFO_LOG(MODULE_NAME, "intArray[", i, "] = ", intArray[i]);
 	}
 	/* ==================== ARRAY TEST #1- integer array testing- end ==================== */
 
@@ -68,7 +68,7 @@ void ArrayTest()
 	TestReport(floatArray.GetSize() == floatArray.GetMaxSize(), "The size of the float array and its maximum size should be equal at this point.");
 	for (int i = 0; i < floatArray.GetSize(); ++i)
 	{
-		INFO_LOG(MODULE_NAME, "floatArray[%d] = %.3f", i, floatArray[i]);
+		INFO_LOG(MODULE_NAME, "floatArray[", i, "] = ", floatArray[i]);
 	}
 	/* ==================== ARRAY TEST #2- float array testing- end ==================== */
 	NOTICE_LOG(MODULE_NAME, "Array test finished");

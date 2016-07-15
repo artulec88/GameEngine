@@ -22,7 +22,7 @@ void Engine::LookAtComponent::Update(Math::Real delta)
 
 	//GetTransform().LookAt(currentCameraPos, Math::Vector3D(0, 1, 0));
 
-	//INFO_LOG_ENGINE("Current camera position = %s", currentCameraPos.ToString().c_str());
+	//INFO_LOG_ENGINE("Current camera position = ", currentCameraPos.ToString());
 	//Math::Quaternion newRot = GetTransform().GetLookAtRotation(currentCameraPos, Math::Vector3D(0, 1, 0));
 	//Math::Quaternion interpolatedRotation = GetTransform().GetRot().Slerp(newRot, delta * 5, true);
 	//GetTransform().SetRot(interpolatedRotation);

@@ -28,10 +28,10 @@ Utility::Config::~Config()
 
 void Utility::Config::LoadFromFile()
 {
-	std::ifstream file(m_fileName.c_str());
+	std::ifstream file(m_fileName);
 	if (!file.is_open())
 	{
-		ERROR_LOG_UTILITY("Could not open configuration file \"%s\"", m_fileName.c_str());
+		ERROR_LOG_UTILITY("Could not open configuration file ", m_fileName);
 		return;
 	}
 	m_cfgValues.clear();
@@ -41,7 +41,7 @@ void Utility::Config::LoadFromFile()
 	while (!file.eof())
 	{
 		//file >> name;
-		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Logging::EMERGENCY, "Error occured in the stream while reading the configuration file \"%s\"", m_fileName.c_str());
+		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Logging::EMERGENCY, "Error occured in the stream while reading the configuration file ", m_fileName);
 		std::getline(file, line);
 		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{
@@ -50,11 +50,10 @@ void Utility::Config::LoadFromFile()
 
 		line = line.substr(0, line.find_first_of('#'));
 		StringUtility::RightTrim(line);
-		DELOCUST_LOG_UTILITY("Line after trimming = \"%s\"", line.c_str());
+		DELOCUST_LOG_UTILITY("Line after trimming = \"", line, "\"");
 		std::vector<std::string> tokens;
 		StringUtility::CutToTokens(line, tokens, ' ');
-		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Logging::ERR, "Failed when parsing the line \"%s\" into tokens. Token[1] is \"%s\" but should be equal to \"=\".",
-			line.c_str(), tokens[1].c_str());
+		CHECK_CONDITION_UTILITY(tokens[1].compare("=") == 0, Logging::ERR, "Failed when parsing the line \"", line, "\" into tokens. Token[1] is \"", tokens[1], "\" but should be equal to \"=\".");
 		value = tokens[2];
 		if (tokens.size() > 3)
 		{
@@ -68,7 +67,7 @@ void Utility::Config::LoadFromFile()
 				value += " " + tokens[i];
 			}
 		}
-		DEBUG_LOG_UTILITY("Configuration parameter \"%s\" = \"%s\"", tokens[0].c_str(), value.c_str());
+		DEBUG_LOG_UTILITY("Configuration parameter \"", tokens[0], "\" = \"", value, "\"");
 		m_cfgValues[tokens[0]] = value;
 	}
 
@@ -80,7 +79,7 @@ std::string Utility::Config::GetArg(const std::string& name, const std::string& 
 	ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
 	if (valueMapIt == m_cfgValues.end())
 	{
-		WARNING_LOG_UTILITY("The parameter \"%s\" has not been specified. Using default value \"%s\"", name.c_str(), defValue.c_str());
+		WARNING_LOG_UTILITY("The parameter \"", name, "\" has not been specified. Using default value \"", defValue, "\"");
 		//cfgNotDefinedValues[name] = defValue;
 		return defValue;
 	}

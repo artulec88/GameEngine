@@ -35,7 +35,7 @@ void Audio::AudioEngine_IRR_KLANG::Update(Math::Real deltaTime)
 			nextVolume = 1.0f;
 			m_fade = FadeStates::FADE_NONE;
 		}
-		DEBUG_LOG_AUDIO("Increasing volume by %.6f. Current volume = %.2f", nextVolume - volume, nextVolume);
+		DEBUG_LOG_AUDIO("Increasing volume by ", nextVolume - volume, ". Current volume = ", nextVolume);
 		m_currentSong->setVolume(nextVolume);
 	}
 	else if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_OUT))
@@ -82,12 +82,12 @@ void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::st
 {
 	if (m_soundSources[type].find(path) != m_soundSources[type].end())
 	{
-		DEBUG_LOG("The sound \"%s\" has been loaded already", path.c_str());
+		DEBUG_LOG_AUDIO("The sound \"", path, "\" has been loaded already");
 		return;
 	}
 	irrklang::ISoundSource* sound;
 	sound = m_engine->addSoundSourceFromFile(path.c_str(), irrklang::ESM_AUTO_DETECT, false);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, Utility::Logging::ERR, "The audio \"%s\" cannot be loaded.", path.c_str());
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, Utility::Logging::ERR, "The audio \"", path, "\" cannot be loaded.");
 	m_soundSources[type].insert(std::make_pair(path, sound));
 }
 
@@ -96,7 +96,7 @@ void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
 	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
 	{
-		WARNING_LOG_AUDIO("The requested sound effect \"%s\" has not been found", path.c_str());
+		WARNING_LOG_AUDIO("The requested sound effect \"", path, "\" has not been found");
 		return;
 	}
 
@@ -109,7 +109,7 @@ void Audio::AudioEngine_IRR_KLANG::PlaySoundEffect(const std::string& path /* TO
 	Filenames2SoundSources::iterator soundItr = m_soundSources[Categories::SOUND_EFFECT].find(path);
 	if (soundItr == m_soundSources[Categories::SOUND_EFFECT].end())
 	{
-		WARNING_LOG_AUDIO("The requested sound effect \"%s\" has not been found", path.c_str());
+		WARNING_LOG_AUDIO("The requested sound effect \"", path, "\" has not been found");
 		return;
 	}
 
@@ -135,7 +135,7 @@ void Audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Bet
 	// Ignoring if this song is already playing
 	if (m_currentSongPath == path)
 	{
-		DEBUG_LOG("The song \"%s\" is already playing", m_currentSongPath.c_str());
+		DEBUG_LOG_AUDIO("The song \"", m_currentSongPath, "\" is already playing");
 		return;
 	}
 
@@ -151,7 +151,7 @@ void Audio::AudioEngine_IRR_KLANG::PlaySong(const std::string& path /* TODO: Bet
 	Filenames2SoundSources::iterator soundSourcesItr = m_soundSources[Categories::SONG].find(path);
 	if (soundSourcesItr == m_soundSources[Categories::SONG].end())
 	{
-		WARNING_LOG_AUDIO("Cannot play the requested song \"%s\". It has not been loaded yet", path);
+		WARNING_LOG_AUDIO("Cannot play the requested song \"", path, "\". It has not been loaded yet");
 		return;
 	}
 

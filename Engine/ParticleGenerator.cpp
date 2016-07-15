@@ -52,7 +52,7 @@ void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPositi
 
 	//for (int i = 0; i < m_aliveParticlesCount; ++i)
 	//{
-	//	ERROR_LOG_ENGINE("particle[%d] = %.3f", i, originDistances[i]);
+	//	ERROR_LOG_ENGINE("particle[", i, "] = ", originDistances[i]);
 	//}
 }
 /* ==================== ParticleGenerator class end ==================== */

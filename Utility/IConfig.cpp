@@ -7,14 +7,14 @@
 /* static */ void Utility::IConfig::CreateConfig(const std::string& moduleName, const std::string& configFileName)
 {
 	CHECK_CONDITION_RETURN_VOID_UTILITY(configurations.find(moduleName) != configurations.end(), Logging::ERR,
-		"Configuration for \"%s\" module \"%s\" has already been created", configFileName.c_str(), moduleName.c_str());
+		"Configuration for \"", configFileName, "\" module \"", moduleName, "\" has already been created");
 	configurations[moduleName] = std::make_unique<Config>(configFileName);
 }
 
 /* static */ const Utility::IConfig& Utility::IConfig::GetConfig(const std::string& moduleName)
 {
 	std::map<std::string, std::unique_ptr<IConfig>>::iterator confItr = configurations.find(moduleName);
-	CHECK_CONDITION(confItr != configurations.end(), Utility::ERR, "There is no configuration registered for module \"%s\"", moduleName.c_str());
+	CHECK_CONDITION_UTILITY(confItr != configurations.end(), Utility::ERR, "There is no configuration registered for module \"", moduleName, "\"");
 	return *confItr->second;
 }
 

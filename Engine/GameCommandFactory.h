@@ -39,7 +39,7 @@
 //			}
 //			else
 //			{
-//				ERROR_LOG_ENGINE("No game command registered for the specified action %d", action);
+//				ERROR_LOG_ENGINE("No game command registered for the specified action ", action);
 //				return *m_commands[Input::Actions::Action::EMPTY];
 //			}
 //		}
@@ -52,7 +52,7 @@
 //		{
 //			if (m_commands[action] != NULL)
 //			{
-//				WARNING_LOG_ENGINE("Replacing the concrete implementation for the specified action %d with a new one.", action);
+//				WARNING_LOG_ENGINE("Replacing the concrete implementation for the specified action ", action, " with a new one.");
 //				SAFE_DELETE(m_commands[action]);
 //			}
 //			m_commands[action] = gameCommand;

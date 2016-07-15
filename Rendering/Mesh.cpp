@@ -58,13 +58,13 @@ Rendering::MeshData::MeshData(GLsizei indexSize) :
 	m_size(indexSize)
 {
 	memset(m_buffers, NULL, sizeof(m_buffers)); // fill the buffers with zeros (or NULLs)
-	DELOCUST_LOG_RENDERING("Created mesh data %s", ToString().c_str());
+	DELOCUST_LOG_RENDERING("Created mesh data: ", ToString());
 }
 
 
 Rendering::MeshData::~MeshData(void)
 {
-	//ERROR_LOG_RENDERING("Deleting mesh data %s", ToString().c_str());
+	//ERROR_LOG_RENDERING("Deleting mesh data ", ToString());
 	//if (m_buffers[0] != 0) // TODO: What if m_buffers = [0, a, b, c, d]? This is possible if INDEX_BUFFER is not used.
 	//{
 	//	glDeleteBuffers(sizeof(m_buffers), m_buffers);
@@ -99,7 +99,7 @@ void Rendering::MeshData::CreateVBO(int index)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started VBO creation");
 	glGenBuffers(1, &m_buffers[index]);
-	DEBUG_LOG_RENDERING("Created VBO at index %d for mesh data \"%s\"", index, ToString().c_str());
+	DEBUG_LOG_RENDERING("Created VBO at index ", index, " for mesh data \"", ToString(), "\"");
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO creation");
 }
 
@@ -108,7 +108,7 @@ void Rendering::MeshData::CreateVBO(int index)
 	// TODO: Check if m_ibo is already created
 	//glGenBuffers(1, &m_ibo);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
-	//EMERGENCY_LOG_RENDERING("Created IBO for mesh data %s", ToString().c_str());
+	//EMERGENCY_LOG_RENDERING("Created IBO for mesh data ", ToString());
 //}
 
 std::string Rendering::MeshData::ToString() const
@@ -221,12 +221,12 @@ void Rendering::Mesh::Initialize()
 		name.assign(tmp + 1);
 	}
 	//std::string extension = name.substr(name.find_last_of(".") + 1);
-	//DELOCUST_LOG_RENDERING("Extension is = \"%s\"", extension.c_str());
+	//DELOCUST_LOG_RENDERING("Extension is = \"", extension, "\"");
 
 	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(m_fileName);
 	if (itr != meshResourceMap.end()) // the mesh has been already loaded
 	{
-		DEBUG_LOG_RENDERING("Model \"%s\" is already loaded. Using already loaded mesh data.", name.c_str());
+		DEBUG_LOG_RENDERING("Model \"", name, "\" is already loaded. Using already loaded mesh data.");
 		m_meshData = itr->second;
 		m_meshData->AddReference();
 		return;
@@ -235,7 +235,7 @@ void Rendering::Mesh::Initialize()
 	Utility::Timing::Timer timer;
 	timer.Start();
 #endif
-	INFO_LOG_RENDERING("Loading model from file \"%s\"", name.c_str());
+	INFO_LOG_RENDERING("Loading model from file \"", name, "\"");
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\" + m_fileName).c_str(),
@@ -244,10 +244,9 @@ void Rendering::Mesh::Initialize()
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace );
 
-	CHECK_CONDITION_EXIT_RENDERING(scene != NULL, Utility::CRITICAL, "Error while loading a mesh \"%s\"", name.c_str());
+	CHECK_CONDITION_EXIT_RENDERING(scene != NULL, Utility::CRITICAL, "Error while loading a mesh \"", name, "\"");
 	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::CRITICAL,
-		"Incorrect number of meshes loaded- %d- check the model \"%s\". One of the possible solutions is to check whether the model has any additional lines at the end.",
-		scene->mNumMeshes, name.c_str());
+		"Incorrect number of meshes loaded- ", scene->mNumMeshes , "- check the model \"", name, "\". One of the possible solutions is to check whether the model has any additional lines at the end.");
 
 	const aiMesh* model = scene->mMeshes[0];
 	std::vector<Math::Vector3D> positions;
@@ -270,7 +269,7 @@ void Rendering::Mesh::Initialize()
 		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
 		if (pTangent == NULL)
 		{
-			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"%s\"", name.c_str());
+			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", name, "\"");
 			pTangent = &aiZeroVector;
 		}
 		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
@@ -293,7 +292,7 @@ void Rendering::Mesh::Initialize()
 	for (unsigned int i = 0; i < model->mNumFaces; ++i)
 	{
 		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Logging::WARNING, "The face has %d indices when only triangle faces are supported.", face.mNumIndices);
+		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Logging::WARNING, "The face has ", face.mNumIndices, " indices when only triangle faces are supported.");
 		indices.push_back(face.mIndices[0]);
 		indices.push_back(face.mIndices[1]);
 		indices.push_back(face.mIndices[2]);
@@ -305,7 +304,7 @@ void Rendering::Mesh::Initialize()
 
 #ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
-	INFO_LOG_RENDERING("Loading model took %s", timer.GetTimeSpan().ToString().c_str());
+	INFO_LOG_RENDERING("Loading model took ", timer.GetTimeSpan().ToString());
 #endif
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished Mesh initialization");
 }
@@ -316,11 +315,11 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, positions[i].ToString().c_str(), textureCoordinates[i].ToString().c_str(), normals[i].ToString().c_str());
+		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i].ToString(), "\n\tTex:\t", textureCoordinates[i].ToString(), "\n\tNormal:\t", normals[i].ToString());
 	}
 	for (size_t i = 0; i < indicesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("index[%d]: %d", i, indices[i]);
+		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
 	m_meshData = new MeshData(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
@@ -353,11 +352,11 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, positions[i].ToString().c_str(), textureCoordinates[i].ToString().c_str(), normals[i].ToString().c_str());
+		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i].ToString(), "\n\tTex:\t", textureCoordinates[i].ToString(), "\n\tNormal:\t", normals[i].ToString());
 	}
 	for (size_t i = 0; i < indicesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("index[%d]: %d", i, indices[i]);
+		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
 	m_meshData = new MeshData(static_cast<GLsizei>((indices != NULL) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
@@ -476,7 +475,7 @@ void Rendering::Mesh::Draw() const
 
 	if (m_meshData->HasVBO(INDEX_BUFFER))
 	{
-		//CRITICAL_LOG_RENDERING("Drawing elements for mesh %s", m_fileName.c_str());
+		//CRITICAL_LOG_RENDERING("Drawing elements for mesh ", m_fileName);
 		glDrawElements(m_mode, m_meshData->GetSize() /* * sizeof(int) */, GL_UNSIGNED_INT, 0);
 		//glDrawArrays(m_mode, 0, m_meshData->GetSize() /* * sizeof(float) */);
 	}
@@ -577,8 +576,8 @@ Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigne
 {
 	AddVertices(&Math::Vector3D(0.0f, 0.0f, 0.0f), NULL, NULL, NULL, NULL, 1, NULL, 0, false);
 
-	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0");
-	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0 (", billboardsCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
 
 	m_meshData->Bind();
 	m_meshData->CreateVBO(INSTANCE_BUFFER); // instanced attributes will be stored in this VBO
@@ -618,7 +617,7 @@ Rendering::GuiMesh::GuiMesh(Math::Vector2D* positions, unsigned int positionsCou
 	Mesh(GL_TRIANGLE_STRIP),
 	m_positionsCount(positionsCount)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0 (", positionsCount, ")");
 	CHECK_CONDITION_EXIT_RENDERING(positions != NULL, Utility::ERR, "Cannot create a mesh. Specified positions array is NULL.");
 	AddVertices(positions, NULL, positionsCount);
 }
@@ -644,8 +643,8 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	m_maxParticlesCount(maxParticlesCount),
 	m_instanceDataLength(instanceDataLength)
 {
-	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0");
-	CHECK_CONDITION_EXIT_RENDERING(particlesCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of particles is not greater than 0");
+	CHECK_CONDITION_EXIT_RENDERING(positionsCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of positions is not greater than 0 (", positionsCount, ")");
+	CHECK_CONDITION_EXIT_RENDERING(particlesCount > 0, Utility::ERR, "Cannot create a mesh. Specified number of particles is not greater than 0 (", particlesCount, ")");
 	
 	AddVertices(positions, NULL, positionsCount);
 
@@ -753,13 +752,13 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 	unsigned char* heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
 		&m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
-	CHECK_CONDITION_EXIT_RENDERING(m_heightMapData != NULL, Utility::ERR, "Unable to load terrain height map from the file \"%s\"", name.c_str());
+	CHECK_CONDITION_EXIT_RENDERING(m_heightMapData != NULL, Utility::ERR, "Unable to load terrain height map from the file \"", name, "\"");
 	CHECK_CONDITION_RENDERING(heightMapWidth < 32768 && heightMapHeight < 32768, Utility::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
 	//for (int i = 0; i < heightMapWidth; ++i)
 	//{
 	//	for (int j = 0; j < heightMapHeight; ++j)
 	//	{
-	//		CRITICAL_LOG_RENDERING("HeightMap[%d] ([%d][%d]) = %d", i * heightMapWidth + j, i, j, heightMapData[i * heightMapWidth + j]);
+	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = ", heightMapData[i * heightMapWidth + j]);
 	//	}
 	//}
 	/* Loading heightmap finished */
@@ -789,7 +788,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
-			//DEBUG_LOG_RENDERING("counter = %d; x = %d; z = %d; Position = %s", positions.size(), x, z, position.ToString().c_str());
+			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position.ToString());
 			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
 			normals.push_back(CalculateNormal(x, z, heightMapData));
@@ -821,11 +820,11 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	//int i = 0;
 	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
 	//{
-	//	CRITICAL_LOG_RENDERING("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, vertexItr->m_pos.ToString().c_str(), vertexItr->m_texCoord.ToString().c_str(), vertexItr->m_normal.ToString().c_str());
+		//CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos.ToString(), "\n\tTex:\t", vertexItr->m_texCoord.ToString(), "\n\tNormal:\t", vertexItr->m_normal.ToString());
 	//}
 	//for (size_t i = 0; i < INDICES_COUNT; ++i)
 	//{
-	//	ERROR_LOG_RENDERING("index[%d]: %d", i, indices[i]);
+	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	//}
 //#endif
 
@@ -874,7 +873,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			Math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
-			//DEBUG_LOG_RENDERING("counter = %d; x = %d; z = %d; Position = %s", positions.size(), x, z, position.ToString().c_str());
+			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position.ToString());
 			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
 			normals.push_back(CalculateNormal(x, z, heightsGenerator));
@@ -905,11 +904,11 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	//int i = 0;
 	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
 	//{
-	//	CRITICAL_LOG_RENDERING("vertex[%d]:\n\tPos:\t%s\n\tTex:\t%s\n\tNormal:\t%s", i, vertexItr->m_pos.ToString().c_str(), vertexItr->m_texCoord.ToString().c_str(), vertexItr->m_normal.ToString().c_str());
+	//	CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos.ToString(), "\n\tTex:\t", vertexItr->m_texCoord.ToString(), "\n\tNormal:\t", vertexItr->m_normal.ToString());
 	//}
 	//for (size_t i = 0; i < INDICES_COUNT; ++i)
 	//{
-	//	ERROR_LOG_RENDERING("index[%d]: %d", i, indices[i]);
+	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	//}
 	//#endif
 
@@ -937,11 +936,11 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::ERR, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
+		Utility::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
 	const int heightMapIndex = GetHeightMapIndex(x, z);
 	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (%d) is out of range [0; %d)", heightMapIndex, m_heightMapWidth * m_heightMapHeight);
-	//DEBUG_LOG_RENDERING("Heightmap index for [%d, %d] = %d", x, z, heightMapIndex);
+		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
+	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
 	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
 	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * HEIGHTMAP_MAX_HEIGHT;
 #ifdef HEIGHTS_HEIGHTMAP
@@ -954,11 +953,11 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::H
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::ERR, "Cannot determine the height of the terrain on (%d, %d) position. It is out of range.", x, z);
+		Utility::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
 	const int heightMapIndex = GetHeightMapIndex(x, z);
 	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (%d) is out of range [0; %d)", heightMapIndex, m_heightMapWidth * m_heightMapHeight);
-	//DEBUG_LOG_RENDERING("Heightmap index for [%d, %d] = %d", x, z, heightMapIndex);
+		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
+	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
 	Math::Real height = heightsGenerator.GenerateHeight(x, z);
 #ifdef HEIGHTS_HEIGHTMAP
 	m_heights[heightMapIndex] = height;
@@ -1009,7 +1008,7 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 	{
 		y += m_headPositionHeightAdjustment; // head position adjustment
 	}
-	//DEBUG_LOG_RENDERING("Height %.2f returned for position \"%s\"", y, xz.ToString().c_str());
+	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz.ToString(), "\"");
 #elif defined HEIGHTS_HEIGHTMAP
 	Math::Real terrainX = x - m_x;
 	Math::Real terrainZ = z - m_z;
@@ -1030,17 +1029,16 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 			xCoord, zCoord);
 		//for (int i = 2; i > -3; --i)
 		//{
-		//	CRITICAL_LOG_RENDERING("%d) Heights: [%d][%d] = %.2f; [%d][%d] = %.2f; [%d][%d] = %.2f; [%d][%d] = %.2f; [%d][%d] = %.2f",
-		//		i, gridX - 2, gridZ + i, ((gridX - 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 2][gridZ + i],
-		//		gridX - 1, gridZ + i, ((gridX - 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 1][gridZ + i],
-		//		gridX, gridZ + i, ((gridX < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX][gridZ + i],
-		//		gridX + 1, gridZ + i, ((gridX + 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 1][gridZ + i],
-		//		gridX + 2, gridZ + i, ((gridX + 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 2][gridZ + i]);
+			//CRITICAL_LOG_RENDERING(i, ") Heights: [", gridX - 2, "][", gridZ + i, "] = ", ((gridX - 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 2][gridZ + i],
+			//	"; [", gridX - 1, "][", gridZ + i, "] = ", ((gridX - 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 1][gridZ + i],
+			//	"; [", gridX, "][", gridZ + i, "] = ", ((gridX < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX][gridZ + i],
+			//	"; [", gridX + 1, "][", gridZ + i, "] = ", ((gridX + 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 1][gridZ + i],
+			//	"; [", gridX + 2, "][", gridZ + i, "] = ", ((gridX + 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 2][gridZ + i]);
 		//}
-		//EMERGENCY_LOG_RENDERING("Grid = [%d, %d]. Coords = [%.3f, %.3f]. Height[%d] = %.3f, Height[%d] = %.3f, Height[%d] = %.3f. Final height = %.3f",
-		//	gridX, gridZ, xCoord, zCoord, GetHeightMapIndex(gridX, gridZ), m_heights[GetHeightMapIndex(gridX, gridZ)],
-		//	GetHeightMapIndex(gridX + 1, gridZ), m_heights[GetHeightMapIndex(gridX + 1, gridZ)],
-		//	GetHeightMapIndex(gridX, gridZ + 1), m_heights[GetHeightMapIndex(gridX, gridZ + 1)], y);
+		EMERGENCY_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX, gridZ), "] = ",
+			m_heights[GetHeightMapIndex(gridX, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
+			m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
+			m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
 	}
 	else
 	{
@@ -1048,17 +1046,17 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], 1.0f,
 			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
 			xCoord, zCoord);
-		//ERROR_LOG_RENDERING("Grid = [%d, %d]. Coords = [%.3f, %.3f]. Height[%d] = %.3f, Height[%d] = %.3f, Height[%d] = %.3f. Final height = %.3f",
-		//	gridX, gridZ, xCoord, zCoord, GetHeightMapIndex(gridX + 1, gridZ), m_heights[GetHeightMapIndex(gridX + 1, gridZ)],
-		//	GetHeightMapIndex(gridX + 1, gridZ + 1), m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)],
-		//	GetHeightMapIndex(gridX, gridZ + 1), m_heights[GetHeightMapIndex(gridX, gridZ + 1)], y);
+		//ERROR_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
+		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ + 1), "] = ",
+		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
+		//	m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
 	}
 	//y -= 0.35f;
 #endif
 
 #ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
-	DEBUG_LOG_RENDERING("Camera's height calculation took %s", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString().c_str());
+	DEBUG_LOG_RENDERING("Camera's height calculation took ", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString());
 #endif
 
 	return y;
@@ -1074,7 +1072,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 #ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t begin = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 #endif
-	DEBUG_LOG_RENDERING("Terrain consists of %d positions", positions.size());
+	DEBUG_LOG_RENDERING("Terrain consists of ", positions.size(), " positions");
 	std::unordered_set<Math::Vector3D> verticesSet;
 	for (unsigned int i = 0; i < positions.size(); ++i)
 	{
@@ -1084,15 +1082,15 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
 #ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t end = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-	DEBUG_LOG_RENDERING("Removing duplicates from the vector of positions took %.2f [ms]", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC));
+	DEBUG_LOG_RENDERING("Removing duplicates from the vector of positions took ", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC), " [ms]", );
 #endif
 
 	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_Y);
-	//INFO_LOG_RENDERING("The minimum value is %s", uniquePositions[0].ToString().c_str());
-	//INFO_LOG_RENDERING("The maximum value is %s", uniquePositions[uniquePositions.size() - 1].ToString().c_str());
+	//INFO_LOG_RENDERING("The minimum value is ", uniquePositions[0].ToString());
+	//INFO_LOG_RENDERING("The maximum value is ", uniquePositions[uniquePositions.size() - 1].ToString());
 
 	m_vertexCount = uniquePositions.size();
-	INFO_LOG_RENDERING("Terrain consists of %d unique positions", m_vertexCount);
+	INFO_LOG_RENDERING("Terrain consists of ", m_vertexCount, " unique positions");
 	m_positions = new Math::Vector3D[m_vertexCount];
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
@@ -1110,7 +1108,7 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
 #ifdef HEIGHTS_KD_TREE
-	DEBUG_LOG_RENDERING("Transformation matrix = \n%s", transformationMatrix.ToString().c_str());
+	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix.ToString());
 	CHECK_CONDITION_EXIT_RENDERING(m_positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
@@ -1118,7 +1116,7 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
 		//if ((i % 1000 == 0) || (i == m_vertexCount - 1))
 		//{
-		//	DELOCUST_LOG_RENDERING("%d) Old position = %s. New Position = %s", i, oldPos.c_str(), positions[i].ToString().c_str());
+		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i].ToString());
 		//}
 	}
 	m_kdTree = new Math::KDTree(m_positions, m_vertexCount, m_kdTreeSamples);

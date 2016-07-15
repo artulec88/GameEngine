@@ -209,14 +209,14 @@ Engine::MenuEntry* Engine::ValueMenuEntry::Execute()
 //bool Engine::MenuEntry::DoesMouseHoverOverChild(int index, Math::Real xPos, Math::Real yPos) const
 //{
 //	CHECK_CONDITION_RETURN_ENGINE(index >= 0 && index < GetChildrenCount(), "Incorrect index", Utility::ERR,
-//		"Cannot find child menu entry AABR. The given index (%d) is not within range [0;%d)", index, GetChildrenCount());
+//		"Cannot find child menu entry AABR. The given index (", index, ") is not within range [0;", GetChildrenCount(), ")");
 //	return m_childrenMenuEntries[index]->GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
 //}
 //
 //bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 //{
 //	//Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(xPos, yPos);
-//	//DEBUG_LOG_ENGINE("DoesMouseHoverOver(xPos = %.2f, yPos = %.2f) = %.3f", xPos, yPos, intersectInfo.GetDistance());
+//	//DEBUG_LOG_ENGINE("DoesMouseHoverOver(xPos = ", xPos, ", yPos = ", yPos, ") = ", intersectInfo.GetDistance());
 //	//return intersectInfo.IsIntersecting();
 //
 //	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
@@ -238,7 +238,7 @@ Engine::MenuEntry* Engine::ValueMenuEntry::Execute()
 //		m_selectedMenuEntryIndex = index;
 //	}
 //	CHECK_CONDITION_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), Utility::ERR,
-//		"Incorrect child menu entry selected. Given index equals %d while it must be in range [0; %d)", m_selectedMenuEntryIndex, GetChildrenCount());
+//		"Incorrect child menu entry selected. Given index equals ", m_selectedMenuEntryIndex, " while it must be in range [0; ", GetChildrenCount(), ")");
 //	//m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetColorEffect(newColorEffectForPreviouslySelectedEntry);
 //	//m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOutlineColorEffect(newOutlineColorEffectForPreviouslySelectedEntry);
 //	//m_childrenMenuEntries[previouslySelectedMenuEntryIndex]->SetOffsetEffect(newOffsetEffectForPreviouslySelectedEntry);
@@ -255,13 +255,13 @@ Engine::MenuEntry* Engine::ValueMenuEntry::Execute()
 //Engine::MenuEntry* Engine::MenuEntry::GetSelectedChild() const
 //{
 //	CHECK_CONDITION_RETURN_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), NULL, Utility::ERR,
-//		"Cannot return currently selected child menu entry. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
+//		"Cannot return currently selected child menu entry. The index (", m_selectedMenuEntryIndex, ") is not within range [0;", GetChildrenCount(), ")");
 //	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 //}
 //
 //bool Engine::MenuEntry::DoesSelectedChildHaveChildren() const
 //{
 //	CHECK_CONDITION_RETURN_ENGINE(m_selectedMenuEntryIndex >= 0 && m_selectedMenuEntryIndex < GetChildrenCount(), false, Utility::ERR,
-//		"Cannot determine whether currently selected child menu entry has children. The index (%d) is not within range [0;%d)", m_selectedMenuEntryIndex, GetChildrenCount());
+//		"Cannot determine whether currently selected child menu entry has children. The index (", m_selectedMenuEntryIndex, ") is not within range [0;", GetChildrenCount(), ")");
 //	return m_childrenMenuEntries[m_selectedMenuEntryIndex]->HasChildren();
 //}

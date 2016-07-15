@@ -23,7 +23,7 @@ FileManager::~FileManager(void)
 
 std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
 {
-	DEBUG_LOG("Listing all files in a directory %s (recursive search = %d)", directoryPath.c_str(), isRecursiveSearchEnabled);
+	DEBUG_LOG_UTILITY("Listing all files in a directory \"", directoryPath, "\" (recursive search enabled = ", isRecursiveSearchEnabled, ")");
 	std::vector<std::string> filenames;
 #ifdef _WIN32
 	// Prepare directoryPath string for use with FindFile functions. First, copy the string to a buffer, then append '\*' to the directory name.
@@ -36,7 +36,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	HANDLE hFind = FindFirstFile(szDir, &ffd);
 	if (INVALID_HANDLE_VALUE == hFind)
 	{
-		ERROR_LOG_UTILITY("Cannot list files in a directory \"%s\". FindFirstFile() function failed.", directoryPath.c_str());
+		ERROR_LOG_UTILITY("Cannot list files in a directory \"", directoryPath, "\". FindFirstFile() function failed.");
 		exit(EXIT_FAILURE);
 	}
 
@@ -99,14 +99,14 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//	if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 	//	{
 	//		std::basic_string<TCHAR> s(ffd.cFileName);
-	//		INFO_LOG("%s\t<DIR>\n", s.c_str());
+	//		INFO_LOG_UTILITY("\"", s, "\"\t<DIR>\n");
 	//	}
 	//	else
 	//	{
 	//		filesize.LowPart = ffd.nFileSizeLow;
 	//		filesize.HighPart = ffd.nFileSizeHigh;
 	//		std::basic_string<TCHAR> s(ffd.cFileName);
-	//		INFO_LOG("%s\t%ld bytes\n", s.c_str(), filesize.QuadPart);
+	//		INFO_LOG_UTILITY("\"", s, "\"\t", filesize.QuadPart, " bytes\n");
 	//	}
 	//}
 	//while (FindNextFile(hFind, &ffd) != 0);
@@ -115,14 +115,14 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//if (dwError != ERROR_NO_MORE_FILES)
 	//{
 	//	//DisplayErrorBox(TEXT("FindFirstFile"));
-	//	ERROR_LOG_UTILITY("Listing all files in a directory %s failed.", directoryPath.c_str());
+	//	ERROR_LOG_UTILITY("Listing all files in a directory \"", directoryPath, "\" failed.");
 	//}
 	//
 	//FindClose(hFind);
 	////return dwError;
 
 
-	//INFO_LOG("Listing all files in a directory %s", directoryPath.c_str());
+	//INFO_LOG_UTILITY("Listing all files in a directory \"", directoryPath, "\".");
 	//if (directoryPath.length() > MAX_PATH - 3) // Check that the input path plus 3 is not longer than MAX_PATH. Three characters are for the "\*" plus NULL appended below.
 	//{
 	//	ERROR_LOG_UTILITY("Cannot list the files in a given directory. The directory path is too long");
@@ -148,7 +148,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//	{
 	//		if (ent->d_type == DT_REG) // is regular file
 	//		{
-	//			DEBUG_LOG("%s", ent->d_name);
+	//			DEBUG_LOG_UTILITY(ent->d_name);
 	//			filenames.push_back(ent->d_name);
 	//		}
 	//	}
@@ -156,7 +156,7 @@ std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string&
 	//}
 	//else
 	//{
-	//	ERROR_LOG_UTILITY("Could not open directory \"%s\"", directoryPath.c_str());
+	//	ERROR_LOG_UTILITY("Could not open directory \"", directoryPath, "\".");
 	//}
 	return filenames;
 }

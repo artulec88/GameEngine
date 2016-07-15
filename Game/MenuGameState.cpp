@@ -172,25 +172,25 @@ void MenuGameState::Handle(Engine::Actions::Action action)
 		}
 		break;
 	default:
-		DEBUG_LOG_GAME("The action %d is not supported by the MenuGameState", action);
+		DEBUG_LOG_GAME("The action ", action, " is not supported by the MenuGameState");
 		break;
 	}
 }
 
 void MenuGameState::Handle(Engine::States::State state)
 {
-	//DELOCUST_LOG_GAME("Handling the state %d", state);
+	//DELOCUST_LOG_GAME("Handling the state ", state);
 	switch (state)
 	{
 	case Engine::States::MOUSE_KEY_LEFT_PRESSED:
 		if (m_currentMenuEntry->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
 		{
-			CRITICAL_LOG_GAME("Handling the state %d", state);
+			CRITICAL_LOG_GAME("Handling the state ", state);
 			m_currentMenuEntry = m_currentMenuEntry->Execute();
 		}
 		break;
 	default:
-		DEBUG_LOG_GAME("The state %d is not supported by the MenuGameState", state);
+		DEBUG_LOG_GAME("The state ", state, " is not supported by the MenuGameState");
 		break;
 	}
 }
@@ -206,7 +206,7 @@ void MenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 		m_mousePosY = value;
 		break;
 	default:
-		DEBUG_LOG_GAME("The range %d is not supported by the MenuGameState", range);
+		DEBUG_LOG_GAME("The range ", range, " is not supported by the MenuGameState");
 		break;
 	}
 	SelectChild(m_currentMenuEntry->GetParent()->GetSelectedChildIndex(m_mousePosX, m_mousePosY));
@@ -233,7 +233,8 @@ void MenuGameState::DeselectAll()
 
 void MenuGameState::SelectChild(size_t childIndex)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DEBUG, "Trying to select the child which is already selected (%d).", childIndex);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DEBUG,
+		"Trying to select the child which is already selected (", childIndex, ").");
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
 	//m_currentMenuEntry->SelectChildMenuEntry(childIndex);
@@ -245,7 +246,7 @@ void MenuGameState::SelectChild(size_t childIndex)
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
-	DEBUG_LOG_GAME("Selected menu entry changed to %d", childIndex);
+	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
 void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
@@ -270,7 +271,7 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 //		}
 //		else
 //		{
-//			//CRITICAL_LOG_GAME("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+//			//CRITICAL_LOG_GAME("Does not hover (", m_mousePosX, ", ", m_mousePosY, ")");
 //		}
 //	}
 //}
@@ -284,14 +285,14 @@ void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 //	m_mousePosY = static_cast<Math::Real>(yPos);
 //
 //	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
-//	//EMERGENCY_LOG_GAME("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+//	//EMERGENCY_LOG_GAME("Menu mouse position event (", m_mousePosX, ", ", m_mousePosY, ")");
 //	for (int i = 0; i < menuEntryChildrenCount; ++i)
 //	{
 //		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 //		{
 //			if (m_currentMenuEntry->GetSelectedMenuEntryIndex() != i)
 //			{
-//				INFO_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildGuiText(i).GetText().c_str());
+//				INFO_LOG_GAME("Menu entry \"", m_currentMenuEntry->GetChildGuiText(i).GetText(), "\" selected");
 //			}
 //			SelectChild(i);
 //			break;

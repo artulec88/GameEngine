@@ -84,14 +84,11 @@ void Engine::DirectionalLightBuilder::SetupLightTransform()
 	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DEBUG_LOG_ENGINE("angleX=%.1f, angleY=%.1f, angleZ=%.1f, rotMatrix =\n%s", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees(), rotMatrix.ToString().c_str());
+	DEBUG_LOG_ENGINE("angleX=", angleX.GetAngleInDegrees(), ", angleY=", angleY.GetAngleInDegrees(), ", angleZ=", angleZ.GetAngleInDegrees(), ", rotMatrix =\n", rotMatrix.ToString());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
-	//DEBUG_LOG_ENGINE("rotMatrix =\n%s\n rot =\n%s\n rot.ToRotationMatrix() =\n%s\n rot2.ToRotationMatrix() = \n%s",
-	//	rotMatrix.ToString().c_str(),
-	//	rot.ToString().c_str(),
-	//	rot.ToRotationMatrix().ToString().c_str(),
-	//	rot2.ToRotationMatrix().ToString().c_str());
+	//DEBUG_LOG_ENGINE("rotMatrix =\n", rotMatrix.ToString(), "\n rot =\n", rot.ToString(), "\n rot.ToRotationMatrix() =\n", rot.ToRotationMatrix().ToString(),
+	//	"\n rot2.ToRotationMatrix() = \n", rot2.ToRotationMatrix().ToString());
 	m_gameNode->GetTransform().SetRot(rot);
 	//m_gameNode->GetTransform().SetRot(Quaternion(Vector3D(1, 0, 0), Angle(90.0f)));
 	//m_gameNode->GetTransform().Rotate(Vector3D(0, 1, 0), Angle(45.0f));
@@ -154,8 +151,9 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 		
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
-	//DELOCUST_LOG_ENGINE("light position = %s;\t light rotation = %s;\t light forward vector = %s;\t light end pos = %s", position.ToString().c_str(),
-	//	directionalLightNode->GetTransform().GetTransformedRot().ToString().c_str(), forwardVec.ToString().c_str(), (position + rayEndPosition).ToString().c_str());
+	//DELOCUST_LOG_ENGINE("light position = ", m_gameNode->GetTransform().GetTransformedPos().ToString(), ";\t light rotation = ",
+	//	m_gameNode->GetTransform().GetTransformedRot().ToString(), ";\t light forward vector = ", forwardVec.ToString(), ";\t light end pos = ",
+	//	(m_gameNode->GetTransform().GetTransformedPos() + rayEndPosition).ToString());
 
 	//Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
 	//int indices [] = { 0, 1 };
@@ -391,7 +389,7 @@ void Engine::CameraBuilder::SetupCameraTransform()
 	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.GetAngleInDegrees()));
 	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.GetAngleInDegrees()));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DELOCUST_LOG_ENGINE("angleX=%.1f, angleY=%.1f, angleZ=%.1f", angleX.GetAngleInDegrees(), angleY.GetAngleInDegrees(), angleZ.GetAngleInDegrees());
+	DELOCUST_LOG_ENGINE("angleX=", angleX.GetAngleInDegrees(), ", angleY=", angleY.GetAngleInDegrees(), ", angleZ=", angleZ.GetAngleInDegrees());
 	Math::Quaternion rot(rotMatrix);
 	m_gameNode->GetTransform().SetRot(rot);
 }

@@ -147,7 +147,7 @@ Math::Vector2D Math::Vector2D::Rotate(const Angle& angle)
 Math::Vector2D Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
-		"Vector2D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
@@ -344,7 +344,7 @@ bool Math::Vector3D::IsNormalized() const
 Math::Vector3D Math::Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
-		"Vector3D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
+		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
@@ -601,7 +601,7 @@ bool Math::Vector4D::IsNormalized() const
 Math::Vector4D Math::Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
-		"Vector2D linear interpolation performed with the incorrect factor %.3f", lerpFactor);
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 

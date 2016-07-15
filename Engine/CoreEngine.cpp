@@ -105,7 +105,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = NULL;
 
 /* static */ void Engine::CoreEngine::KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	DEBUG_LOG_ENGINE("Key event callback (key = %d; scancode = %d; action = %d; mods = %d", key, scancode, action, mods);
+	DEBUG_LOG_ENGINE("Key event callback (key = ", key, "; scancode = ", scancode, "; action = ", action, "; mods = ", mods);
 #ifdef ANT_TWEAK_BAR_ENABLED
 	if (!TwEventKeyGLFW(key, action))  // send event to AntTweakBar
 	{
@@ -264,14 +264,14 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 
 	/* ==================== Printing stats begin ==================== */
 #ifdef CALCULATE_RENDERING_STATS
-	INFO_LOG_ENGINE("The region #1 (Time calculating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats1, m_timeSum1, m_timeSum1 / m_countStats1, m_minMaxTime1.ToString().c_str());
-	INFO_LOG_ENGINE("The region #2 was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2, m_timeSum2, m_timeSum2 / m_countStats2, m_minMaxTime2.ToString().c_str());
-	INFO_LOG_ENGINE("\t The region #2_1 (Polling events) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_1, m_timeSum2_1, m_timeSum2_1 / m_countStats2_1, m_minMaxTime2_1.ToString().c_str());
-	INFO_LOG_ENGINE("\t The region #2_2 (Game input processing) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_2, m_timeSum2_2, m_timeSum2_2 / m_countStats2_2, m_minMaxTime2_2.ToString().c_str());
-	INFO_LOG_ENGINE("\t The region #2_3 (Game updating) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats2_3, m_timeSum2_3, m_timeSum2_3 / m_countStats2_3, m_minMaxTime2_3.ToString().c_str());
-	INFO_LOG_ENGINE("The region #3 (Rendering) was processed %d times, which took exactly %.2f [us]. The average time=%.2f [us]. %s", m_countStats3, m_timeSum3, m_timeSum3 / m_countStats3, m_minMaxTime3.ToString().c_str());
-	INFO_LOG_ENGINE("Rendering step performed %d times", m_renderingRequiredCount);
-	INFO_LOG_ENGINE("Rendering step omitted %d times", m_renderingNotRequiredCount);
+	INFO_LOG_ENGINE("The region #1 (Time calculating) was processed ", m_countStats1, " times, which took exactly", m_timeSum1, " [us]. The average time=", m_timeSum1 / m_countStats1, " [us]. ", m_minMaxTime1.ToString());
+	INFO_LOG_ENGINE("The region #2 was processed ", m_countStats2, " times, which took exactly ", m_timeSum2, " [us]. The average time=", m_timeSum2 / m_countStats2, "[us]. ", m_minMaxTime2.ToString());
+	INFO_LOG_ENGINE("\t The region #2_1 (Polling events) was processed ", m_countStats2_1, " times, which took exactly ", m_timeSum2_1, " [us]. The average time=", m_timeSum2_1 / m_countStats2_1, " [us]. ", m_minMaxTime2_1.ToString());
+	INFO_LOG_ENGINE("\t The region #2_2 (Game input processing) was processed ", m_countStats2_2, " times, which took exactly ", m_timeSum2_2, " [us]. The average time=", m_timeSum2_2 / m_countStats2_2, " [us]. ", m_minMaxTime2_2.ToString());
+	INFO_LOG_ENGINE("\t The region #2_3 (Game updating) was processed ", m_countStats2_3, " times, which took exactly ", m_timeSum2_3, " [us]. The average time=", m_timeSum2_3 / m_countStats2_3, " [us]. ", m_minMaxTime2_3.ToString());
+	INFO_LOG_ENGINE("The region #3 (Rendering) was processed ", m_countStats3, " times, which took exactly ", m_timeSum3, " [us]. The average time=", m_timeSum3 / m_countStats3, " [us]. ", m_minMaxTime3.ToString());
+	INFO_LOG_ENGINE("Rendering step performed ", m_renderingRequiredCount, " times.");
+	INFO_LOG_ENGINE("Rendering step omitted ", m_renderingNotRequiredCount, " times.");
 
 	m_timer.Stop();
 	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND));
@@ -279,13 +279,13 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
 	Math::Real medianSpf = m_stats.CalculateMedian(Math::Statistics::SPF);
-	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]\nMedian SPF =\t%.3f [ms]", m_stats.Size(), meanSpf, medianSpf);
-	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t%d\nAverage SPF =\t%.3f [ms]", m_stats.Size(), meanSpf);
+	INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]\nMedian SPF =\t", medianSpf, " [ms]");
+	//INFO_LOG_ENGINE("SPF (Seconds Per Frame) statistics during gameplay:\nSamples =\t", m_stats.Size(), "\nAverage SPF =\t", meanSpf, " [ms]");
 #endif
 	/* ==================== Printing stats end ==================== */
 
-	CRITICAL_LOG_ENGINE("Number of allocs: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-		numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+	CRITICAL_LOG_ENGINE("Number of allocs: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4,
+		"\t", numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
@@ -319,7 +319,7 @@ void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string
 	Rendering::InitGraphics(width, height);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
-	//DEBUG_LOG_ENGINE("Thread window address: %p", threadWindow);
+	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	m_renderer = new Rendering::Renderer(width, height);
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
@@ -360,10 +360,10 @@ void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& titl
 		break;
 	case Rendering::Aliasing::MSAA:
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
-		INFO_LOG_ENGINE("%dxMSAA anti-aliasing algorithm chosen", antiAliasingSamples);
+		INFO_LOG_ENGINE(antiAliasingSamples, "xMSAA anti-aliasing algorithm chosen");
 		break;
 	default:
-		WARNING_LOG_ENGINE("Unknown anti-aliasing algorithm chosen. Default %dxMSAA algorithm chosen", antiAliasingSamples);
+		WARNING_LOG_ENGINE("Unknown anti-aliasing algorithm chosen. Default ", antiAliasingSamples, "xMSAA algorithm chosen");
 		glfwWindowHint(GLFW_SAMPLES, antiAliasingSamples);
 	}
 	glfwWindowHint(GLFW_VERSION_MAJOR, 3); // TODO: Do not hard-code any values
@@ -416,7 +416,7 @@ void Engine::CoreEngine::InitGlew()
 
 	if (GLEW_OK != err)
 	{
-		ERROR_LOG_ENGINE("Error while initializing GLEW: %s", glewGetErrorString(err));
+		ERROR_LOG_ENGINE("Error while initializing GLEW: ", glewGetErrorString(err));
 		exit(EXIT_FAILURE);
 	}
 	if (GLEW_VERSION_2_0)
@@ -429,7 +429,7 @@ void Engine::CoreEngine::InitGlew()
 		exit(EXIT_FAILURE);
 	}
 
-	INFO_LOG_ENGINE("Using GLEW version %s", glewGetString(GLEW_VERSION));
+	INFO_LOG_ENGINE("Using GLEW version ", glewGetString(GLEW_VERSION));
 	//CheckErrorCode(__FUNCTION__, "Initializing GLEW");
 }
 
@@ -483,7 +483,7 @@ void Engine::CoreEngine::Stop()
 	//tthread::this_thread::sleep_for(tthread::chrono::seconds(1));
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
-	//INFO_LOG_ENGINE("Elapsed time = %f [us]", elapsedTime);
+	//INFO_LOG_ENGINE("Elapsed time = ", elapsedTime, " [us]");
 	STOP_PROFILING;
 }
 
@@ -583,7 +583,7 @@ void Engine::CoreEngine::Run()
 				m_stats.Push(Math::Statistics::SPF, spf);
 			}
 #endif
-			//DEBUG_LOG_ENGINE("FPS = %5d\t Average time per frame = %.3f [ms]", fps, spf);
+			//DEBUG_LOG_ENGINE("FPS = ", fps, "\t Average time per frame = ", spf, " [ms]");
 			framesCount = 0;
 			frameTimeCounter = REAL_ZERO;
 		}
@@ -662,16 +662,16 @@ void Engine::CoreEngine::Run()
 			++framesCount;
 
 #ifdef DRAW_FPS
-			//ERROR_LOG_ENGINE("1: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("1: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
+			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
-			//ERROR_LOG_ENGINE("2: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
+			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			fpsGuiText.SetText(ss.str());
 			m_renderer->RenderGuiControl(fpsGuiText);
-			//ERROR_LOG_ENGINE("3: %d %d %d %d\t%d %d %d %d", numberOfAllocs1, numberOfAllocs2, numberOfAllocs3, numberOfAllocs4,
-			//	numberOfDeallocs1, numberOfDeallocs2, numberOfDeallocs3, numberOfDeallocs4);
+			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
+			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif
 #ifdef DRAW_GAME_TIME
 			if (m_game->IsInGameTimeCalculationEnabled())
@@ -737,34 +737,34 @@ void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 	switch (errorCode)
 	{
 	case GLFW_NOT_INITIALIZED:
-		ERROR_LOG_ENGINE("GLFW has not been initialized. Error description: %s", description);
+		ERROR_LOG_ENGINE("GLFW has not been initialized. Error description: ", description);
 		break;
 	case GLFW_NO_CURRENT_CONTEXT:
-		ERROR_LOG_ENGINE("No context is current for this thread. Error description: %s", description);
+		ERROR_LOG_ENGINE("No context is current for this thread. Error description: ", description);
 		break;
 	case GLFW_INVALID_ENUM:
-		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid enum value. Error description: %s", description);
+		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid enum value. Error description: ", description);
 		break;
 	case GLFW_INVALID_VALUE:
-		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid value. Error description: %s", description);
+		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid value. Error description: ", description);
 		break;
 	case GLFW_OUT_OF_MEMORY:
-		ERROR_LOG_ENGINE("A memory allocation failed. Error description: %s", description);
+		ERROR_LOG_ENGINE("A memory allocation failed. Error description: ", description);
 		break;
 	case GLFW_API_UNAVAILABLE:
-		ERROR_LOG_ENGINE("GLFW could not find support for the requested client API on the system. Error description: %s", description);
+		ERROR_LOG_ENGINE("GLFW could not find support for the requested client API on the system. Error description: ", description);
 		break;
 	case GLFW_VERSION_UNAVAILABLE:
-		ERROR_LOG_ENGINE("The requested OpenGL or OpenGL ES version is not available. Error description: %s", description);
+		ERROR_LOG_ENGINE("The requested OpenGL or OpenGL ES version is not available. Error description: ", description);
 		break;
 	case GLFW_PLATFORM_ERROR:
-		ERROR_LOG_ENGINE("A platform-specific error occurred that does not match any of the more specific categories. Error description: %s", description);
+		ERROR_LOG_ENGINE("A platform-specific error occurred that does not match any of the more specific categories. Error description: ", description);
 		break;
 	case GLFW_FORMAT_UNAVAILABLE:
-		ERROR_LOG_ENGINE("The requested format is not supported or available. Error description: %s", description);
+		ERROR_LOG_ENGINE("The requested format is not supported or available. Error description: ", description);
 		break;
 	default:
-		ERROR_LOG_ENGINE("Unknown GLFW error event occurred with code %d and message: Error description: %s", errorCode, description);
+		ERROR_LOG_ENGINE("Unknown GLFW error event occurred with code ", errorCode, " and message: Error description: ", description);
 	}
 	exit(EXIT_FAILURE);
 }
@@ -777,7 +777,7 @@ void Engine::CoreEngine::CloseWindowEvent(GLFWwindow* window)
 void Engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(key);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key %d not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key ", key, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action != GLFW_RELEASE, action == GLFW_REPEAT);
 	//m_game->KeyEvent(key, scancode, action, mods);
 }
@@ -785,10 +785,10 @@ void Engine::CoreEngine::KeyEvent(GLFWwindow* window, int key, int scancode, int
 void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
 	// TODO: The action can either be GLFW_PRESS or GLFW_RELEASE, so inputMapping cannot perform e.g. drag & dropping using mouse. Improve it.
-	DELOCUST_LOG_ENGINE("Mouse button event: button=%d\t action=%d\t mods=%d", button, action, mods);
+	DELOCUST_LOG_ENGINE("Mouse button event: button=", button, "\t action=", action, "\t mods=", mods);
 
 	std::map<int, Input::RawInputKeys::RawInputKey>::const_iterator rawInputKeyItr = m_glfwKeysToRawInputKeysMap.find(button);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Key %d not found in the map.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(rawInputKeyItr != m_glfwKeysToRawInputKeysMap.end(), Utility::Logging::ERR, "Button ", button, " not found in the map.");
 	m_inputMapping.SetRawButtonState(rawInputKeyItr->second, action == GLFW_PRESS, true /* TODO: mouseButtonEvent will never have action equal to GLFW_REPEAT. */);
 	//m_game->MouseButtonEvent(button, action, mods);
 }
@@ -798,7 +798,7 @@ void Engine::CoreEngine::MouseButtonEvent(GLFWwindow* window, int button, int ac
 
 void Engine::CoreEngine::MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
-	DEBUG_LOG_ENGINE("Mouse position = %.3f, %.3f", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position = (", xPos, ", ", yPos, ")");
 	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_X, xPos);
 	m_inputMapping.SetRawAxisValue(Engine::Input::RawInputAxes::RAW_INPUT_AXIS_MOUSE_Y, yPos);
 	//lastXPos = xPos;
@@ -910,19 +910,19 @@ void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
 	const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
 	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
 	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
-	//DEBUG_LOG_ENGINE("Declination in degrees = %.5f", declinationAngle.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Declination in degrees = ", declinationAngle.GetAngleInDegrees());
 
 	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
 	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
-	//DEBUG_LOG_ENGINE("Time correction in seconds = %.5f", timeCorrectionInSeconds);
-	//DEBUG_LOG_ENGINE("Local time = %.5f\tLocal solar time = %.5f", m_timeOfDay, localSolarTime);
+	//DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
+	//DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
 	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
-	//DEBUG_LOG_ENGINE("Hour angle = %.5f", hourAngle.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
 	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
 	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
-	//DEBUG_LOG_ENGINE("Sun elevation = %.5f", m_sunElevation.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Sun elevation = ", m_sunElevation.GetAngleInDegrees());
 
 	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
@@ -951,9 +951,9 @@ void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
 	}
 	//if (prevDaytime != m_daytime)
 	//{
-	//	INFO_LOG_ENGINE("Daytime = %d at in-game time clock %.1f", m_daytime, m_timeOfDay);
+	//	INFO_LOG_ENGINE("Daytime = ", m_daytime, " at in-game time clock = ", m_timeOfDay);
 	//}
-	//DEBUG_LOG_ENGINE("Sun azimuth = %.5f", m_sunAzimuth.GetAngleInDegrees());
+	//DEBUG_LOG_ENGINE("Sun azimuth = ", m_sunAzimuth.GetAngleInDegrees());
 }
 
 Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
@@ -983,7 +983,7 @@ Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& dayti
 			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
 		break;
 	default:
-		ERROR_LOG_ENGINE("Incorrect daytime %d", m_daytime);
+		ERROR_LOG_ENGINE("Incorrect daytime: ", m_daytime);
 	}
 	return m_daytime;
 }

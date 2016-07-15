@@ -33,7 +33,7 @@ void Engine::PhysicsComponent::Update(Math::Real deltaTime)
 
 //void Engine::PhysicsComponent::KeyEvent(int key, int scancode, int action, int mods)
 //{
-//	DEBUG_LOG_ENGINE("key = %d, scancode = %d, action = %d, mods = %d", key, scancode, action, mods);
+//	DEBUG_LOG_ENGINE("key = ", key, ", scancode = ", scancode, ", action = ", action, ", mods = ", mods);
 //	switch (key)
 //	{
 //	case GLFW_KEY_LEFT_SHIFT:
@@ -68,7 +68,7 @@ void Engine::PhysicsComponent::Update(Math::Real deltaTime)
 //		{
 //			GetPhysicsObject()->ApplyLinearAcceleration(-GetTransform().GetTransformedRot().GetLeft() * m_moveSpeed);
 //		}
-//		//DEBUG_LOG_ENGINE("Left = %d", left);
+//		//DEBUG_LOG_ENGINE("Left = ", left);
 //		break;
 //	case GLFW_KEY_D:
 //		if (action == GLFW_PRESS)

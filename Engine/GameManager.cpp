@@ -79,7 +79,7 @@ Engine::GameManager::GameManager() :
 
 Engine::GameManager::~GameManager(void)
 {
-	INFO_LOG_ENGINE("Game manager destruction finished");
+	INFO_LOG_ENGINE("Game manager destruction started");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
 	SAFE_DELETE(m_terrainNode);
@@ -89,7 +89,7 @@ Engine::GameManager::~GameManager(void)
 
 void Engine::GameManager::WindowResizeEvent(int width, int height)
 {
-	NOTICE_LOG_ENGINE("Window resize event (width = %d, height = %d)", width, height);
+	NOTICE_LOG_ENGINE("Window resize event (width = ", width, ", height = ", height, ")");
 	// TODO: Check if core engine finds out about the resizing of the window.
 }
 
@@ -101,12 +101,12 @@ void Engine::GameManager::CloseWindowEvent()
 
 void Engine::GameManager::MousePosEvent(double xPos, double yPos)
 {
-	DEBUG_LOG_ENGINE("Mouse position event x=%.2f, y=%.2f", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event x=", xPos, ", y=", yPos);
 }
 
 void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 {
-	DEBUG_LOG_ENGINE("Scroll event: xOffset=%.3f\t yOffset=%.3f", xOffset, yOffset);
+	DEBUG_LOG_ENGINE("Scroll event: xOffset=", xOffset, "\t yOffset=", yOffset);
 }
 
 //GameNode& GameManager::GetRootGameNode() const
@@ -189,7 +189,7 @@ void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
 	for (Input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
 	{
 		const States::State state = *stateItr;
-		DEBUG_LOG_ENGINE("Handling the state %d", state);
+		DEBUG_LOG_ENGINE("Handling the state ", state);
 		StatesToGameCommandsMap::const_iterator gameCommandItr = m_statesToGameCommandsMap.find(state);
 		if (gameCommandItr != m_statesToGameCommandsMap.end())
 		{

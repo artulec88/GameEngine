@@ -3,63 +3,65 @@
 
 #include "Math.h"
 
-namespace Math { namespace Sorting
+namespace Math
 {
+	namespace Sorting
+	{
 
-/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
-enum MATH_API SortingKey
-{
-	VALUE = 0,
-	COMPONENT_X,
-	COMPONENT_Y,
-	COMPONENT_Z,
-	SUM_OF_COMPONENTS,
-	SUM_OF_ABSOLUTE_COMPONENTS,
-	SUM_OF_SQUARED_COMPONENTS
-};
+		/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
+		enum MATH_API SortingKey
+		{
+			VALUE = 0,
+			COMPONENT_X,
+			COMPONENT_Y,
+			COMPONENT_Z,
+			SUM_OF_COMPONENTS,
+			SUM_OF_ABSOLUTE_COMPONENTS,
+			SUM_OF_SQUARED_COMPONENTS
+		};
 
-/// <summary> The direction represents the order in which the sorting is performed. </summary>
-enum MATH_API SortingDirection
-{
-	ASCENDING = 0,
-	DESCENDING
-};
+		/// <summary> The direction represents the order in which the sorting is performed. </summary>
+		enum MATH_API SortingDirection
+		{
+			ASCENDING = 0,
+			DESCENDING
+		};
 
-class MATH_API SortingParametersChain
-{
-public:
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+		class MATH_API SortingParametersChain
+		{
+		public:
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
-	virtual ~SortingParametersChain(void);
-private:
-	SortingParametersChain(const SortingParametersChain& sortingParametersChain) {} // don't implement
-	void operator=(const SortingParametersChain& sortingParametersChain) {} // don't implement
-/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
+			virtual ~SortingParametersChain(void);
+		private:
+			SortingParametersChain(const SortingParametersChain& sortingParametersChain) {} // don't implement
+			void operator=(const SortingParametersChain& sortingParametersChain) {} // don't implement
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	void ResetChainLink();
-	void AddChainLink(SortingParametersChain* sortingChainParameters);
-	SortingKey GetSortingKey() const { return m_sortingKey; }
-	SortingDirection GetSortingDirection() const { return m_sortingDirection; }
-	void SetSortingKey(SortingKey sortingKey);
-	void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
-	const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
-/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions begin ==================== */
+		public:
+			void ResetChainLink();
+			void AddChainLink(SortingParametersChain* sortingChainParameters);
+			SortingKey GetSortingKey() const { return m_sortingKey; }
+			SortingDirection GetSortingDirection() const { return m_sortingDirection; }
+			void SetSortingKey(SortingKey sortingKey);
+			void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
+			const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
+			/* ==================== Non-static member functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	SortingParametersChain* m_sortingParametersChain;
-	SortingKey m_sortingKey;
-	SortingDirection m_sortingDirection;
-/* ==================== Non-static member variables end ==================== */
-}; /* end class SortingParametersChain */
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			SortingParametersChain* m_sortingParametersChain;
+			SortingKey m_sortingKey;
+			SortingDirection m_sortingDirection;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class SortingParametersChain */
 
-} /* end namespace Sorting */
+	} /* end namespace Sorting */
 
 } /* end namespace Math */
 

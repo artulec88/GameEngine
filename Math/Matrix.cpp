@@ -214,7 +214,7 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
 	//if (rot != matrixToCompare)
 	//{
-	//	ERROR_LOG_MATH("Incorrect euler rotation calculation. Rot =\n%s\nInstead it should be equal to\n%s", rot.ToString().c_str(), matrixToCompare.ToString().c_str());
+	//	ERROR_LOG_MATH("Incorrect euler rotation calculation. Rot=\n", rot.ToString(), "\nInstead it should be equal to:\n", matrixToCompare.ToString());
 	//}
 	STOP_PROFILING;
 	/* ==================== SOLUTION #2 end ==================== */

@@ -24,7 +24,7 @@ Rendering::Material::Material(Texture* diffuseTexture,
 		//const std::string defaultNormalMapStr = GET_CONFIG_VALUE_STR_RENDERING("defaultNormalMap", "defaultNormalMap.jpg");
 		const std::string defaultNormalMapStr = "defaultNormalMap.jpg";
 		normalMap = new Texture(defaultNormalMapStr);
-		//INFO_LOG_RENDERING("Adding default normal map (\"%s\") to the material", defaultNormalMapStr.c_str());
+		//INFO_LOG_RENDERING("Adding default normal map (\"", defaultNormalMapStr, "\") to the material");
 	}
 	m_mappedValues.SetTexture("normalMap", normalMap);
 

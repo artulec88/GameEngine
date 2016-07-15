@@ -56,7 +56,7 @@ void Engine::GameStateManager::PerformStateTransition()
 		Push(m_gameStateTransition->GetGameState(), m_gameStateTransition->GetModalityType());
 		break;
 	default:
-		ERROR_LOG_ENGINE("Unknown game state transition type (%d)", m_gameStateTransition->GetTransitionType());
+		ERROR_LOG_ENGINE("Unknown game state transition type (", m_gameStateTransition->GetTransitionType(), ")");
 	}
 	//SAFE_DELETE(m_gameStateTransition);
 	m_gameStateTransition = NULL;
@@ -149,8 +149,7 @@ void Engine::DefaultGameStateManager::ScrollEvent(double xOffset, double yOffset
 	{
 		return;
 	}
-	DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements(xOffset = %.4f; yOffset = %.4f)",
-		m_exposedInputablesMouse.size(), xOffset, yOffset);
+	DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements(xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->ScrollEvent(xOffset, yOffset);
@@ -161,10 +160,10 @@ void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, i
 {
 	if (m_exposedInputablesMouse.empty())
 	{
-		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (button=%d, action=%d, mods=%d)", button, action, mods);
+		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (button=", button, ", action=", action, ", mods=", mods, ")");
 		return;
 	}
-	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
+	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements (button=", button, ", action=", action, ", mods=", mods, ")");
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MouseButtonEvent(button, action, mods);
@@ -173,12 +172,8 @@ void Engine::DefaultGameStateManager::MouseButtonEvent(int button, int action, i
 
 void Engine::DefaultGameStateManager::MousePosEvent(double xPos, double yPos)
 {
-	if (m_exposedInputablesMouse.empty())
-	{
-		DEBUG_LOG_ENGINE("The MOUSE INPUT queue is empty (xPos=%.2f, yPos=%.2f)", xPos, yPos);
-		return;
-	}
-	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has %d elements (button=%d, action=%d, mods=%d)", m_exposedInputablesMouse.size(), button, action, mods);
+	CHECK_CONDITION_RETURN_VOID_ENGINE(!m_exposedInputablesMouse.empty(), Utility::Logging::DEBUG, "The MOUSE INPUT queue is empty (xPos=", xPos, ", yPos=", yPos, ")");
+	//DEBUG_LOG_ENGINE("The MOUSE INPUT queue has ", m_exposedInputablesMouse.size(), " elements (button=", button, ", action=", action, ", mods=", mods, ")");
 	for (std::vector<Input::IInputableMouse*>::iterator gameStateItr = m_exposedInputablesMouse.begin(); gameStateItr != m_exposedInputablesMouse.end(); ++gameStateItr)
 	{
 		(*gameStateItr)->MousePosEvent(xPos, yPos);
@@ -259,7 +254,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 	}
 
 	// Reverse scan the active states until we hit either the beginning or a Hiding state
-	DEBUG_LOG_ENGINE("Currently active game states: %d", m_activeStates.size());
+	DEBUG_LOG_ENGINE("Currently active game states: ", m_activeStates.size());
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(!m_activeStates.empty(), Utility::Logging::EMERGENCY, "No active game state is present in the game at the moment.");
 	std::size_t index = m_activeStates.size() - 1;
 	while (index > 0)
@@ -270,7 +265,7 @@ void Engine::DefaultGameStateManager::RebuildInterfaceQueues()
 		}
 		--index;
 	}
-	DEBUG_LOG_ENGINE("Calculated game state index equals %d", index);
+	DEBUG_LOG_ENGINE("Calculated game state index equals ", index);
 	while (index < m_activeStates.size())
 	{
 		AddToInterfaces(m_activeStates[index++].first);
@@ -296,7 +291,7 @@ void Engine::DefaultGameStateManager::NotifyObscuredStates()
 	}
 
 	// Now go forward (up until the second-to-last state) and notify the obscured states
-	DEBUG_LOG_ENGINE("Calculated game state index equals %d", index);
+	DEBUG_LOG_ENGINE("Calculated game state index equals ", index);
 	while (index < m_activeStates.size() - 1)
 	{
 		m_activeStates[index++].first->Obscuring();
@@ -323,7 +318,7 @@ void Engine::DefaultGameStateManager::NotifyRevealedStates()
 	}
 
 	// Now go forward and notify all revealed state
-	INFO_LOG_ENGINE("Calculated game state index equals %d", index);
+	INFO_LOG_ENGINE("Calculated game state index equals ", index);
 	while (index < m_activeStates.size())
 	{
 		m_activeStates[index++].first->Revealed();

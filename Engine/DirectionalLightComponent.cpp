@@ -26,7 +26,7 @@ Engine::DirectionalLightComponent::~DirectionalLightComponent()
 #ifdef SIMULATE_SUN_BEHAVIOR
 void Engine::DirectionalLightComponent::Update(Math::Real delta)
 {
-	DELOCUST_LOG_ENGINE("Directional light update with delta time = %.5f", delta);
+	DELOCUST_LOG_ENGINE("Directional light update with delta time = ", delta);
 
 	CoreEngine* coreEngine = CoreEngine::GetCoreEngine();
 	Math::Real timeOfDay = coreEngine->GetCurrentInGameTime();

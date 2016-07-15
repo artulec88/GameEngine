@@ -277,7 +277,7 @@ Math::Real Game::TestGameManager::GetLoadingProgress() const
 {
 	if (m_resourcesLoaded > RESOURCES_TO_LOAD)
 	{
-		WARNING_LOG_GAME("Resources loaded (%d) exceeds the total number of expected resources (%d)", m_resourcesLoaded, RESOURCES_TO_LOAD);
+		WARNING_LOG_GAME("Resources loaded (", m_resourcesLoaded, ") exceeds the total number of expected resources (", RESOURCES_TO_LOAD, ")");
 		return REAL_ONE;
 	}
 	return static_cast<Math::Real>(m_resourcesLoaded) / RESOURCES_TO_LOAD;
@@ -445,7 +445,6 @@ void Game::TestGameManager::Load()
 	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
 	monkeyNode1->GetTransform().SetScale(0.1f);
 	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	//INFO_LOG_GAME("MonkeyNode1 has ID=%d", monkeyNode1->GetID());
 	//monkeyNode1->AddComponent(new LookAtComponent());
 	//monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
 	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000),
@@ -567,9 +566,9 @@ void Game::TestGameManager::AddLights()
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
-		DEBUG_LOG_GAME("Creating %d point lights", pointLightCount);
+		DEBUG_LOG_GAME("Creating ", pointLightCount, " point lights");
 		AddPointLights();
-		NOTICE_LOG_GAME("%d point lights created", pointLightCount);
+		NOTICE_LOG_GAME(pointLightCount, " point lights created");
 	}
 	else
 	{
@@ -577,9 +576,9 @@ void Game::TestGameManager::AddLights()
 	}
 	if (spotLightCount > 0)
 	{
-		DEBUG_LOG_GAME("Creating %d spot lights", spotLightCount);
+		DEBUG_LOG_GAME("Creating ", spotLightCount, " spot lights");
 		AddSpotLights();
-		NOTICE_LOG_GAME("%d spot lights created", spotLightCount);
+		NOTICE_LOG_GAME(spotLightCount, " spot lights created");
 	}
 	else
 	{
@@ -654,7 +653,7 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 	START_PROFILING;
 	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
 
-	DEBUG_LOG_GAME("Creating %d camera(-s)", cameraCount);
+	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
 	Engine::CameraBuilder cameraBuilder;
 	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
@@ -666,7 +665,7 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 		Engine::GameNode* cameraNode = cameraBuilder.GetGameNode();
 		AddToSceneRoot(cameraNode);
 	}
-	NOTICE_LOG_GAME("%d camera(-s) created", cameraCount);
+	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
 	STOP_PROFILING;
 }
 

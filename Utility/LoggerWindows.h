@@ -22,20 +22,25 @@ namespace Utility
 			typedef std::list<FILE *> Outs;
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary>
+			/// Windows-specific logger constructor.
+			/// </summary>
 			LoggerWindows(FILE *first = stdout);
+			/// <summary>
+			/// Windows-specific logger destructor.
+			/// </summary>
 			~LoggerWindows();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			//void operator()(LogLevel level, const char *name, int line, const char *format, ...);
-			void Log(LogLevel level, const char *name, int line, const char *format, ...);
-			void Fill(const std::string& strLevel, LogLevel level);
-			void AddFile(const char *name);
+			virtual void Fill(const std::string& strLevel, LogLevel level);
+			virtual void AddFile(const char *name);
 			virtual void ResetConsoleColor() const;
 		protected:
 			virtual void SetConsoleColor(LogLevel level) const;
 			virtual void ReadConsoleColorsFromConfigFile();
+		private:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

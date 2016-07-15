@@ -35,10 +35,10 @@ void Math::Statistics::Stats<T>::Push(StatsID statsID, T sample)
 {
 	if (Size(statsID) == MAX_SAMPLES_COUNT)
 	{
-		//CRITICAL_LOG_MATH("Pushing %.2f to %d statsID.", sample, statsID);
+		//CRITICAL_LOG_MATH("Pushing ", sample, " to ", statsID, " statsID.");
 		if (m_level == MAX_STATS_LEVEL)
 		{
-			WARNING_LOG_MATH("Maximum number of samples reached for stats ID: %d", statsID);
+			WARNING_LOG_MATH("Maximum number of samples reached for stats ID: ", statsID);
 		}
 		else
 		{
@@ -53,7 +53,7 @@ void Math::Statistics::Stats<T>::Push(StatsID statsID, T sample)
 	}
 	else
 	{
-		//EMERGENCY_LOG_MATH("Pushing %.2f to %d statsID.", sample, statsID);
+		//EMERGENCY_LOG_MATH("Pushing ", sample, " to ", statsID, " statsID.");
 		m_samples[statsID].push_back(sample);
 	}
 }
@@ -86,7 +86,7 @@ T Math::Statistics::Stats<T>::CalculateSum(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		WARNING_LOG_MATH("Sum cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		WARNING_LOG_MATH("Sum cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 	
@@ -110,7 +110,7 @@ int Math::Statistics::Stats<T>::CalculateSamplesCount(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		DEBUG_LOG_MATH("Samples cannot be counted for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		DEBUG_LOG_MATH("Samples cannot be counted for statsID", statsID, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 	
@@ -129,15 +129,15 @@ T Math::Statistics::Stats<T>::CalculateMean(StatsID statsID) const
 	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
-		WARNING_LOG_MATH("Mean cannot be calculated for %d statsID. The specific entry in statistics map has not been created.", statsID);
+		WARNING_LOG_MATH("Mean cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
 		return 0;
 	}
 
 	T sum = CalculateSum(statsID);
 	int samplesCount = CalculateSamplesCount(statsID);
-	CHECK_CONDITION_MATH(samplesCount > 0, Utility::EMERGENCY, "Samples count (%d) must be positive.", samplesCount);
+	CHECK_CONDITION_MATH(samplesCount > 0, Utility::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
 
-	DEBUG_LOG_MATH("Sum = %.3f, samplesCount = %d", sum, samplesCount);
+	DEBUG_LOG_MATH("Sum = ", sum, ", samplesCount = ", samplesCount);
 
 	return sum / samplesCount;
 }
@@ -151,7 +151,7 @@ T Math::Statistics::Stats<T>::CalculateMedian(StatsID statsID)
 	}
 	if (m_samples[statsID].empty())
 	{
-		INFO_LOG_MATH("Median cannot be calculated for %d statsID. There are no samples stored.", statsID);
+		INFO_LOG_MATH("Median cannot be calculated for statsID = ", statsID, ". There are no samples stored.");
 		return static_cast<T>(0);
 	}
 
@@ -221,10 +221,10 @@ Math::Real Math::Statistics::MethodStats::CalculateMean() const
 	//const Math::Real ONE_THOUSAND = 1000.0f;
 	//const Math::Real ONE_MILION = 1000000.0f;
 #ifdef METHOD_STATS_VARIANT_1
-	CHECK_CONDITION_MATH(m_invocationsCount == m_timeSamples.size(), Utility::ERR, "There have been %d method invocations performed, but %d samples are stored", m_invocationsCount, m_timeSamples.size());
+	CHECK_CONDITION_MATH(m_invocationsCount == m_timeSamples.size(), Utility::ERR, "There have been ", m_invocationsCount, " method invocations performed, but ", m_timeSamples.size(), " samples are stored");
 	if (m_timeSamples.empty())
 	{
-		CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::WARNING, "Although no time samples are stored the total time is not zero (%.4f).", m_totalTime);
+		CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::WARNING, "Although no time samples are stored the total time is not zero (", m_totalTime, ").");
 		DEBUG_LOG_MATH("Mean cannot be calculated. No time samples are stored.");
 		return REAL_ZERO;
 	}
@@ -235,7 +235,7 @@ Math::Real Math::Statistics::MethodStats::CalculateMean() const
 	//{
 	//	totalTime += (*timeSamplesItr);
 	//}
-	//CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, totalTime), Utility::ERR, "The calculated total time (%.4f) is different than the directly stored value in the class (%.4f).", totalTime, m_totalTime);
+	//CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, totalTime), Utility::ERR, "The calculated total time (", totalTime, ") is different than the directly stored value in the class (", m_totalTime, ").");
 	//return totalTime / m_timeSamples.size();
 
 	return m_totalTime / m_invocationsCount;
@@ -289,7 +289,7 @@ void Math::Statistics::MethodStats::StopProfiling()
 	//}
 	m_timer.Stop();
 	Math::Real elapsedTime = m_timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
-	//DEBUG_LOG_MATH("Stopped profiling the method. %.3f [us] has passed.", elapsedTime);
+	//DEBUG_LOG_MATH("Stopped profiling the method. ", elapsedTime, " [us] has passed.");
 	Push(elapsedTime);
 	m_isProfiling = false;
 }
@@ -297,10 +297,10 @@ void Math::Statistics::MethodStats::StopProfiling()
 Math::Real Math::Statistics::MethodStats::GetTotalTimeWithoutNestedStats() const
 {
 #ifdef METHOD_STATS_VARIANT_1
-	CHECK_CONDITION_MATH(m_invocationsCount == m_timeSamples.size(), Utility::ERR, "There have been %d method invocations performed, but %d samples are stored", m_invocationsCount, m_timeSamples.size());
+	CHECK_CONDITION_MATH(m_invocationsCount == m_timeSamples.size(), Utility::ERR, "There have been ", m_invocationsCount, " method invocations performed, but ", m_timeSamples.size(), " samples are stored");
 	if (m_timeSamples.empty())
 	{
-		CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::WARNING, "Although no time samples are stored the total time is not zero (%.4f).", m_totalTime);
+		CHECK_CONDITION_MATH(Math::AlmostEqual(m_totalTime, REAL_ZERO), Utility::WARNING, "Although no time samples are stored the total time is not zero (", m_totalTime, ").");
 		DEBUG_LOG_MATH("Total time (with no \"nested\" stats) cannot be calculated. No time samples are stored.");
 		return REAL_ZERO;
 	}
@@ -315,7 +315,7 @@ Math::Real Math::Statistics::MethodStats::GetTotalTimeWithoutNestedStats() const
 	}
 	return totalTimeWithoutNestedStats;
 #else
-	//INFO_LOG_MATH("Total time = %f. Total time nested profiling = %f", m_totalTime, m_totalTimeNestedProfiling);
+	// INFO_LOG_MATH("Total time = ", m_totalTime, ". Total time nested profiling = ", m_totalTimeNestedProfiling);
 	return m_totalTime - m_totalTimeNestedProfiling;
 #endif
 }
@@ -326,7 +326,7 @@ Math::Statistics::ClassStats::ClassStats(const char* className) :
 	m_className(className),
 	m_profilingMethodsCount(0)
 {
-	DEBUG_LOG_MATH("ClassStats \"%s\" constructor", className);
+	DEBUG_LOG_MATH("ClassStats \"", className, "\" constructor");
 }
 
 Math::Statistics::ClassStats::~ClassStats()
@@ -338,10 +338,10 @@ void Math::Statistics::ClassStats::StartProfiling(const char* methodName)
 {
 	if (methodName == NULL)
 	{
-		ERROR_LOG_MATH("Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		ERROR_LOG_MATH("Cannot stop profiling the method in class \"", m_className, "\". The method's name is NULL.");
 		return;
 	}
-	//DEBUG_LOG_MATH("Started profiling the function \"%s::%s\". %d method(-s) within this class is/are currently being profiled.", m_className, methodName, m_profilingMethodsCount);
+	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
@@ -350,10 +350,10 @@ void Math::Statistics::ClassStats::StopProfiling(const char* methodName)
 {
 	if (methodName == NULL)
 	{
-		ERROR_LOG_MATH("Cannot stop profiling the method in class \"%s\". The method's name is NULL.", m_className);
+		ERROR_LOG_MATH("Cannot stop profiling the method in class \"", m_className, "\". The method's name is NULL.");
 		return;
 	}
-	//DEBUG_LOG_MATH("Stopped profiling the function \"%s\"", methodName);
+	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }
@@ -371,37 +371,37 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Invocation count excluding nested calls\"\t\"Total time\"\t\"Total time excluding nested calls\"\t\"Average time\"\n";
 	}
 
-	DEBUG_LOG_MATH("Class: \"%s\"", m_className);
+	DEBUG_LOG_MATH("Class: \"", m_className, "\"");
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
 	Math::Real classTotalTime = REAL_ZERO;
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
-		//INFO_LOG_MATH("classTotalTime = %f. Method's total time without nested stats %f", classTotalTime, methodStatsItr->second.GetTotalTimeWithoutNestedStats());
+		INFO_LOG_MATH("Class total time = ", classTotalTime, ". Method's total time without nested stats = ", methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		classTotalTime += methodStatsItr->second.GetTotalTime();
 	}
 	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
-	LogTime(classTotalTime, "\tTotal time: %.2f %s");
-	LogTime(classTotalTimeExcludingNestedCalls, "\tTotal time excluding nested calls: %.2f %s");
-	DEBUG_LOG_MATH("\tApplication usage: %.1f%%", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
+	LogTime("\tTotal time: ", classTotalTime);
+	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
+	DEBUG_LOG_MATH("\tApplication usage: ", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
-		DEBUG_LOG_MATH("\tMethod: \"%s\"", methodStatsItr->first);
-		DEBUG_LOG_MATH("\t\tInvocations count: %d", methodStatsItr->second.GetInvocationsCount());
+		DEBUG_LOG_MATH("\tMethod: \"", methodStatsItr->first, "\"");
+		DEBUG_LOG_MATH("\t\tInvocations count: ", methodStatsItr->second.GetInvocationsCount());
 		
 		Math::Real totalTimeExcludingNestedCalls = methodStatsItr->second.GetTotalTimeWithoutNestedStats();
-		LogTime(totalTimeExcludingNestedCalls, "\t\tTotal time: %.2f %s");
+		LogTime("\t\tTotal time: ", totalTimeExcludingNestedCalls);
 		Math::Real totalTimeIncludingNestedCalls = methodStatsItr->second.GetTotalTime();
-		LogTime(totalTimeIncludingNestedCalls, "\t\tTotal time including nested calls: %.2f %s");
+		LogTime("\t\tTotal time including nested calls: ", totalTimeIncludingNestedCalls);
 
 		Math::Real meanTime = methodStatsItr->second.CalculateMean();
-		LogTime(meanTime, "\t\tAverage time: %.2f %s");
+		LogTime("\t\tAverage time: ", meanTime);
 		
-		DEBUG_LOG_MATH("\t\tClass usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
-		DEBUG_LOG_MATH("\t\tApplication usage: %.1f%%", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
+		DEBUG_LOG_MATH("\t\tClass usage: ", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
+		DEBUG_LOG_MATH("\t\tApplication usage: ", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
 		
-		//INFO_LOG_MATH("\t\tMedian time: %.2f [us]", methodStatsItr->second.CalculateMedian());
+		//INFO_LOG_MATH("\t\tMedian time: ", methodStatsItr->second.CalculateMedian(), " [us]");
 		std::string methodNameStr(methodStatsItr->first);
 		methodNameStr = methodNameStr.substr(methodNameStr.rfind(":") + 1); // to remove "::" (e.g. display "Render" instead of "Rendering::Renderer::Render")
 		std::size_t spacePos = methodNameStr.find(' '); // removing whitespace in the method's name (e.g. "operator =" will be modified to "operator=")
@@ -430,24 +430,22 @@ int Math::Statistics::ClassStats::GetTotalNumberOfSamples() const
 	return totalNumberOfSamples;
 }
 
-void Math::Statistics::ClassStats::LogTime(Math::Real time, const char* logTimeTextFormat) const
+void Math::Statistics::ClassStats::LogTime(const char* text, Math::Real time) const
 {
-	static const Math::Real ONE_THOUSAND = 1000.0f;
-	static const Math::Real ONE_MILION = 1000000.0f;
-	if (time > ONE_THOUSAND)
+	if (time > Utility::Timing::Time::ONE_THOUSAND)
 	{
-		if (time > ONE_MILION)
+		if (time > Utility::Timing::Time::ONE_MILLION)
 		{
-			DEBUG_LOG_MATH(logTimeTextFormat, time / ONE_MILION, "[s]");
+			DEBUG_LOG_MATH(text, time / Utility::Timing::Time::ONE_MILLION, "[s]");
 		}
 		else
 		{
-			DEBUG_LOG_MATH(logTimeTextFormat, time / ONE_THOUSAND, "[ms]");
+			DEBUG_LOG_MATH(text, time / Utility::Timing::Time::ONE_THOUSAND, "[ms]");
 		}
 	}
 	else
 	{
-		DEBUG_LOG_MATH(logTimeTextFormat, time, "[us]");
+		DEBUG_LOG_MATH(text, time, "[us]");
 	}
 }
 /* ==================== ClassStats end ==================== */

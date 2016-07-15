@@ -34,15 +34,15 @@ Rendering::Text::Font::~Font()
 void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFileName)
 {
 	// TODO: Implement font meta data file parsing
-	std::ifstream file(fontMetaDataFileName.c_str());
-	CHECK_CONDITION_RETURN_VOID_RENDERING(file.is_open(), Utility::ERR, "Could not open font meta data file \"%s\"", fontMetaDataFileName.c_str());
+	std::ifstream file(fontMetaDataFileName);
+	CHECK_CONDITION_RETURN_VOID_RENDERING(file.is_open(), Utility::ERR, "Could not open font meta data file \"", fontMetaDataFileName, "\"");
 
 	int imageWidth;
 	std::string line;
 	while (!file.eof())
 	{
 		CHECK_CONDITION_EXIT_RENDERING(!file.fail(), Utility::EMERGENCY,
-			"Error occured in the stream while reading the font meta data file \"%s\"", fontMetaDataFileName.c_str());
+			"Error occured in the stream while reading the font meta data file \"", fontMetaDataFileName, "\"");
 		std::getline(file, line);
 		//Utility::StringUtility::RightTrim(line);
 		std::vector<std::string> tokens;
@@ -58,17 +58,17 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 			// Padding calculation begin
 			std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "padding");
 			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"padding\" attribute found in the font meta data file \"%s\"", fontMetaDataFileName);
+				"No \"padding\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 			const std::string padding = *(tokenItr + 1);
 			std::vector<std::string> subTokens;
 			Utility::StringUtility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
-			CHECK_CONDITION_RENDERING(subTokens.size() == 4, Utility::ERR, "The \"padding\" attribute must define 4 values instead of %d", subTokens.size());
+			CHECK_CONDITION_RENDERING(subTokens.size() == 4, Utility::ERR, "The \"padding\" attribute must define 4 values instead of ", subTokens.size());
 			for (size_t index = 0; index < subTokens.size(); ++index)
 			{
 				m_padding[index] = Utility::StringUtility::ToInt(subTokens[index]);
 			}
-			DEBUG_LOG_RENDERING("Padding left = %d; top = %d; right = %d; bottom = %d",
-				m_padding[PADDING_LEFT_INDEX], m_padding[PADDING_TOP_INDEX], m_padding[PADDING_RIGHT_INDEX], m_padding[PADDING_BOTTOM_INDEX]);
+			DEBUG_LOG_RENDERING("Padding left = ", m_padding[PADDING_LEFT_INDEX], "; top = ", m_padding[PADDING_TOP_INDEX],
+				"; right = ", m_padding[PADDING_RIGHT_INDEX], "; bottom = ", m_padding[PADDING_BOTTOM_INDEX]);
 			// Padding calculation end
 		}
 		else if (tokens[0].compare("common") == 0)
@@ -77,18 +77,18 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 			// Line sizes calculation begin
 			std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "lineHeight");
 			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"lineHeight\" attribute found in the font meta data file \"%s\"", fontMetaDataFileName);
+				"No \"lineHeight\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 			int lineHeightPixels = Utility::StringUtility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX];
 			m_verticalPerPixelSize = LINE_HEIGHT / lineHeightPixels;
 			m_horizontalPerPixelSize = m_verticalPerPixelSize / m_aspectRatio;
-			DEBUG_LOG_RENDERING("Per pixel sizes: horizontal = %.6f, vertical = %.6f", m_horizontalPerPixelSize, m_verticalPerPixelSize);
+			DEBUG_LOG_RENDERING("Per pixel sizes: horizontal = ", m_horizontalPerPixelSize, ", vertical = ", m_verticalPerPixelSize);
 			// Line sizes calculation end
 
 			tokenItr = std::find(tokens.begin(), tokens.end(), "scaleW");
 			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"scaleW\" attribute found in the font meta data file \"%s\"", fontMetaDataFileName);
+				"No \"scaleW\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 			imageWidth = Utility::StringUtility::ToInt(*(tokenItr + 1));
-			DEBUG_LOG_RENDERING("Image width = %d", imageWidth);
+			DEBUG_LOG_RENDERING("Image width = ", imageWidth);
 		}
 		else if (tokens[0].compare("char") == 0)
 		{
@@ -151,9 +151,9 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
 			"No \"yoffset\" attribute found in the font meta data file");
 		Math::Real yOffset = (Utility::StringUtility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
-		DEBUG_LOG_RENDERING("New character ID = %d ='%c')\n\ttexCoord = %s,\n\ttexSize = %s,\n\toffset = %s,\n\tquadSize = %s,\n\txAdvance = %.5f",
-			id, id, Math::Vector2D(xTextureCoord, yTextureCoord).ToString().c_str(), Math::Vector2D(xTextureSize, yTextureSize).ToString().c_str(),
-			Math::Vector2D(xOffset, yOffset).ToString().c_str(), Math::Vector2D(quadWidth, quadHeight).ToString().c_str(), xAdvance);
+		DEBUG_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord).ToString(), ",\n\ttexSize = ",
+			Math::Vector2D(xTextureSize, yTextureSize).ToString(), ",\n\toffset = ", Math::Vector2D(xOffset, yOffset).ToString(), ",\n\tquadSize = ",
+			Math::Vector2D(quadWidth, quadHeight).ToString(), ",\n\txAdvance = ", xAdvance);
 		m_metaData.insert(std::pair<int, Character>(id, Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance)));
 		//m_metaData[id] = Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance);
 	}
@@ -163,6 +163,6 @@ const Rendering::Text::Character& Rendering::Text::Font::GetCharacter(int asciiC
 {
 	std::map<int, Character>::const_iterator characterItr = m_metaData.find(asciiCode);
 	CHECK_CONDITION_RENDERING(characterItr != m_metaData.end(), Utility::ERR,
-		"The ascii code (%d) hasn't been found in the font meta data", asciiCode);
+		"The ascii code (", asciiCode, ") hasn't been found in the font meta data");
 	return characterItr->second;
 }

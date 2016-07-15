@@ -29,17 +29,17 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 {
 	START_PROFILING;
 	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
-	//DEBUG_LOG_MATH("Before sorting: depth = %d", depth);
+	//DEBUG_LOG_MATH("Before sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{
-	//	DEBUG_LOG_MATH("depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
+	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
 	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::ASCENDING);
 	Sorting::ISort::GetSortingObject(Sorting::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
-	//DEBUG_LOG_MATH("After sorting: depth = %d", depth);
+	//DEBUG_LOG_MATH("After sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{
-	//	DEBUG_LOG_MATH("depth = %d) positions[%d] = %s", depth, i, positions[i].ToString().c_str());
+	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
 
 	size_t medianIndex = positionsCount / 2;
@@ -77,7 +77,7 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 	
 	//numberOfPositionsChecked = 0;
 	SearchNearestValue(posX, posZ, 0, minDistanceValues, minDistances);
-	//DEBUG_LOG_MATH("Number of positions checked during the search for the nearest positions = %d", numberOfPositionsChecked);
+	//DEBUG_LOG_MATH("Number of positions checked during the search for the nearest positions = ", numberOfPositionsChecked);
 
 	//return minDistancePositions[0].GetY(); // return the nearest position's Y component
 
@@ -138,7 +138,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 {
 	START_PROFILING;
 	//++numberOfPositionsChecked;
-	//DELOCUST_LOG_MATH("Visiting the node with position (%s) and value %.2f", m_position.ToString().c_str(), m_value);
+	//DELOCUST_LOG_MATH("Visiting the node with position (", m_position.ToString(), ") and value ", m_value);
 	Real distance = (x - m_position.GetX()) * (x - m_position.GetX()) + (z - m_position.GetY()) * (z - m_position.GetY());
 	int j = m_numberOfSamples - 1;
 	while ( (j >= 0) && (minDistances[j] > distance) )
@@ -154,11 +154,11 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 	}
 	//for (int i = 0; i < numberOfSamples; ++i)
 	//{
-	//	INFO_LOG_MATH("minDistancePositions[%d] = (%s)\tminDistances[%d] = %.2f", i, minDistancePositions[i].ToString().c_str(), i, minDistances[i]);
+	//	INFO_LOG_MATH("minDistancePositions[", i, "] = (", minDistancePositions[i].ToString(), ")\tminDistances[", i, "] = ", minDistances[i]);
 	//}
 	if (IsLeaf())
 	{
-		//DELOCUST_LOG_MATH("The node with position (%s) and value %.2f is a leaf", m_position.ToString().c_str(), m_value);
+		//DELOCUST_LOG_MATH("The node with position (", m_position.ToString(), ") and value ", m_value, " is a leaf");
 		STOP_PROFILING;
 		return;
 	}
@@ -175,7 +175,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		}
 		else if (m_leftTree != NULL)
 		{
-			//DELOCUST_LOG_MATH("Left tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG_MATH("Left tree of node (", m_position.ToString(), ") pruned");
 		}
 		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
@@ -183,7 +183,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		}
 		else if (m_rightTree != NULL)
 		{
-			//DELOCUST_LOG_MATH("Right tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG_MATH("Right tree of node (", m_position.ToString(), ") pruned");
 		}
 	}
 	else
@@ -194,7 +194,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		}
 		else if (m_rightTree != NULL)
 		{
-			//DELOCUST_LOG_MATH("Right tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG_MATH("Right tree of node (", m_position.ToString(), ") pruned");
 		}
 		if ((m_leftTree != NULL) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
 		{
@@ -202,7 +202,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		}
 		else if (m_leftTree != NULL)
 		{
-			//DELOCUST_LOG_MATH("Left tree of node (%s) pruned", m_position.ToString().c_str());
+			//DELOCUST_LOG_MATH("Left tree of node (", m_position.ToString(), ") pruned");
 		}
 	}
 	STOP_PROFILING;

@@ -56,7 +56,7 @@ namespace Rendering
 			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const
 			{
 				//const Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
-				//CRITICAL_LOG_RENDERING("GUI text \"%s\" intersect info with point (%.2f; %.2f) = %.3f", m_text.c_str(), x, y, intersectInfo.GetDistance());
+				//CRITICAL_LOG_RENDERING("GUI text \"", m_text, "\" intersect info with point (", x, "; ", y, ") = ", intersectInfo.GetDistance());
 				//return intersectInfo;
 				return m_aabr.DoesContainPoint(x, y);
 			}

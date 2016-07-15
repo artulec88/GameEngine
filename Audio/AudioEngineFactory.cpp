@@ -23,7 +23,7 @@ std::unique_ptr<Audio::IAudioEngine> Audio::AudioEngineFactory::CreateAudioEngin
 	case AudioEngineTypes::IRR_KLANG:
 		return std::make_unique<AudioEngine_IRR_KLANG>(GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
 	default:
-		ERROR_LOG_AUDIO("The specified audio engine type %d is not supported. Default FMOD audio engine will be used.", audioEngineType);
+		ERROR_LOG_AUDIO("The specified audio engine type ", audioEngineType, " is not supported. Default FMOD audio engine will be used.");
 		return std::make_unique<AudioEngine_FMOD>(GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
 	}
 }

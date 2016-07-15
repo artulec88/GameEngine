@@ -22,108 +22,23 @@ Utility::Logging::LoggerWindows::~LoggerWindows()
 {
 }
 
-//void Utility::Logging::LoggerWindows::operator()(LogLevel level, const char *name, int line, const char *format, ...)
-//{
-//	if (m_level < level)
-//	{
-//		return;
-//	}
-//
-//	va_list args;
-//	if (name == NULL)
-//	{
-//		name = "nowhere";
-//	}
-//	const char *tmp = strrchr(name, '\\');
-//	if (tmp != NULL)
-//	{
-//		name = tmp + 1;
-//	}
-//	Utility::Timing::Time now = Utility::Timing::Time::Now();
-//	std::string date = now.ToDateString();
-//
-//	//mutex.Lock();
-//	//iterate through all the targets of logging
-//	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
-//	{
-//		va_start(args, format);
-//		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
-//		if (line)
-//		{
-//			fprintf(*o, "(%d)", line);
-//		}
-//		fprintf(*o, " : ");
-//			
-//		vfprintf(*o, format, args);
-//		va_end(args);
-//		
-//		fprintf(*o, "\n");
-//		fflush(*o);
-//	}
-//	//mutex.Unlock();
-//}
-
-void Utility::Logging::LoggerWindows::Log(LogLevel level, const char *name, int line, const char *format, ...)
-{
-	if (m_level < level)
-	{
-		return;
-	}
-
-	va_list args;
-	if (name == NULL)
-	{
-		name = "nowhere";
-	}
-	const char *tmp = strrchr(name, '\\');
-	if (tmp != NULL)
-	{
-		name = tmp + 1;
-	}
-	Utility::Timing::Time now = Utility::Timing::Time::Now();
-	std::string date = now.ToDateString("%H:%M:%S");
-
-	//mutex.Lock();
-	//iterate through all the targets of logging
-	for (Outs::iterator o = m_outs.begin(); o != m_outs.end(); ++o)
-	{
-		va_start(args, format);
-		SetConsoleColor(level);
-		fprintf(*o, "[%s] [%s] %s", LevelNames[level], date.c_str(), name);
-		if (line)
-		{
-			fprintf(*o, "(%d)", line);
-		}
-		fprintf(*o, " : ");
-			
-		vfprintf(*o, format, args);
-		va_end(args);
-		
-		fprintf(*o, "\n");
-		fflush(*o);
-	}
-	ResetConsoleColor();
-}
-
 void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = EmptyString */, LogLevel defaultLogLevel /* = NOTICE */)
 {
 	//std::string str = line.Get<string>("--log", "");
 	if (strLevel == "")
 	{
-		DELOCUST_LOG_UTILITY("Setting new logging level from %s to %s", LevelNames[static_cast<int>(GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
+		DELOCUST_LOG_UTILITY("Setting new logging level from \"", LOGGING_LEVEL_NAMES[static_cast<int>(GetLevel())], "\" to \"", LOGGING_LEVEL_NAMES[static_cast<int>(defaultLogLevel)], "\".");
 		SetLevel(defaultLogLevel);
 		return;
 	}
 	int i = 0;
-	while (LevelNames[i])
+	for (std::array<std::string, COUNT>::const_iterator levelNameItr = LOGGING_LEVEL_NAMES.begin(); levelNameItr != LOGGING_LEVEL_NAMES.end(); ++levelNameItr, ++i)
 	{
-		if (strcmp(strLevel.c_str(), LevelNames[i]) == 0)
+		if ((*levelNameItr) == strLevel)
 		{
-			//stdlog(DELOCUST, LOGPLACE, "Setting new logging level from %s to %s", LevelNames[static_cast<int>(stdlog.GetLevel())], LevelNames[static_cast<int>(defaultLogLevel)]);
 			SetLevel((LogLevel)i);
 			return;
 		}
-		++i;
 	}
 	SetLevel(defaultLogLevel);
 }
@@ -175,11 +90,10 @@ void Utility::Logging::LoggerWindows::SetConsoleColor(LogLevel level) const
 		break;
 	case DEBUG:
 	case DELOCUST:
-	case DEV_NULL:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		break;
 	default:
-		ERROR_LOG_UTILITY("Incorrect logging level set");
+		ERROR_LOG_UTILITY("Incorrect logging level set: ", level);
 		break;
 	}
 }

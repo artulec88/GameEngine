@@ -106,7 +106,7 @@ void PlayMenuGameState::Handle(Engine::Actions::Action action)
 		}
 		break;
 	default:
-		DEBUG_LOG_GAME("The action %d is not supported by the MenuGameState");
+		DEBUG_LOG_GAME("The action ", action, " is not supported by the MenuGameState");
 		break;
 	}
 }
@@ -140,7 +140,7 @@ void PlayMenuGameState::DeselectAll()
 
 void PlayMenuGameState::SelectChild(int childIndex)
 {
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::DEBUG, "Trying to select the child which is already selected (%d).", childIndex);
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::DEBUG, "Trying to select the child which is already selected (", childIndex, ").");
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
 	//m_currentMenuEntry->SelectChildMenuEntry(childIndex);
@@ -152,7 +152,7 @@ void PlayMenuGameState::SelectChild(int childIndex)
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
 	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
-	DEBUG_LOG_GAME("Selected menu entry changed to %d", childIndex);
+	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
 void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
@@ -176,7 +176,7 @@ void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Rende
 //		}
 //		else
 //		{
-//			//CRITICAL_LOG_GAME("Does not hover (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+//			//CRITICAL_LOG_GAME("Does not hover (", m_mousePosX, ", ", m_mousePosY, ")");
 //		}
 //	}
 //}
@@ -190,12 +190,12 @@ void PlayMenuGameState::Render(const Rendering::Shader* shader, Rendering::Rende
 //	m_mousePosY = static_cast<Math::Real>(yPos);
 //
 //	const int menuEntryChildrenCount = m_currentMenuEntry->GetChildrenCount();
-//	//CRITICAL_LOG_GAME("Menu mouse position event (%.2f, %.2f)", m_mousePosX, m_mousePosY);
+//	//CRITICAL_LOG_GAME("Menu mouse position event (", m_mousePosX, ", ", m_mousePosY, ")");
 //	for (int i = 0; i < menuEntryChildrenCount; ++i)
 //	{
 //		if (m_currentMenuEntry->DoesMouseHoverOverChild(i, m_mousePosX, m_mousePosY))
 //		{
-//			//CRITICAL_LOG_GAME("Menu entry \"%s\" selected", m_currentMenuEntry->GetChildText(i).c_str());
+//			//CRITICAL_LOG_GAME("Menu entry \"", m_currentMenuEntry->GetChildText(i), "\" selected");
 //			m_currentMenuEntry->SelectChildMenuEntry(i);
 //		}
 //	}

@@ -96,8 +96,8 @@ void Rendering::Controls::GuiTextControl::SetText(const std::string& text)
 				const Math::Real properMaxX = (2.0f * maxX) - 1.0f;
 				const Math::Real properMaxY = (-2.0f * maxY) + 1.0f;
 
-				//CRITICAL_LOG_RENDERING("%d)\n\t(x, y) = (%.3f, %.3f);\n\t(maxX,maxY) = (%.3f, %.3f);\n\t(properX, properY) = (%.3f, %.3f);\n\t(properMaxX, properMaxY) = (%.3f, %.3f);",
-				//	tempCount++, x, y, maxX, maxY, properX, properY, properMaxX, properMaxY);
+				//CRITICAL_LOG_RENDERING(tempCount++, ")\n\t(x, y) = (", x, ", ", y, ");\n\t(maxX, maxY) = (", maxX, ", ", maxY,
+				//	");\n\t(properX, properY) = (", properX, ", ", properY, ");\n\t(properMaxX, properMaxY) = (", properMaxX, ", ", properMaxY, ");");
 
 				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0
 				positions.emplace_back(properMaxX, properY); textureCoordinates.emplace_back(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY()); // 4

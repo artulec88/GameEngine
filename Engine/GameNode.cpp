@@ -14,23 +14,21 @@ Engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
 	m_physicsObject(nullptr)
 {
-	//INFO_LOG_ENGINE("Transform.GetPos() = \"%s\"", transform.GetPos().ToString().c_str());
-	//INFO_LOG_ENGINE("Transform.GetRot() = \"%s\"", transform.GetRot().ToString().c_str());
-	//INFO_LOG_ENGINE("Transform.GetScale() = \"%f\"", transform.GetScale());
+	//INFO_LOG_ENGINE("transform = \"", transform.ToString(), "\".");
 }
 
 
 Engine::GameNode::~GameNode(void)
 {
-	DEBUG_LOG_ENGINE("Game node (ID=%d) destruction started", m_ID);
-	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=%d", this->ID);
+	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction started");
+	//DEBUG_LOG_ENGINE("Destroying components started for game node with ID=", m_ID);
 	//for (std::vector<GameComponent*>::iterator itr = components.begin(); itr != components.end(); ++itr)
 	//{
 	//	SAFE_DELETE(*itr);
 	//}
-	//DEBUG_LOG_ENGINE("Destroying components finished for game node with ID=%d", this->ID);
+	//DEBUG_LOG_ENGINE("Destroying components finished for game node with ID=", m_ID);
 
-	//DEBUG_LOG_ENGINE("Started recursive destruction of game nodes for game node with ID=%d", this->ID);
+	//DEBUG_LOG_ENGINE("Started recursive destruction of game nodes for game node with ID=", m_ID);
 	//for (std::vector<GameNode*>::iterator itr = childrenGameNodes.begin(); itr != childrenGameNodes.end(); ++itr)
 	//{
 	//	if ((*itr) != NULL)
@@ -41,7 +39,7 @@ Engine::GameNode::~GameNode(void)
 	//		DELOCUST_LOG_ENGINE("Destroying child game node finished");
 	//	}
 	//}
-	//DEBUG_LOG_ENGINE("Recursive destruction of game nodes for game node with ID=%d finished", this->ID);
+	//DEBUG_LOG_ENGINE("Recursive destruction of game nodes for game node with ID=", m_ID, " finished");
 	//childrenGameNodes.clear();
 
 	for (unsigned int i = 0; i < m_components.size(); ++i)
@@ -54,7 +52,7 @@ Engine::GameNode::~GameNode(void)
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
 	m_childrenGameNodes.clear();
-	DEBUG_LOG_ENGINE("Game node (ID=%d) destruction finished", m_ID);
+	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
 }
 
 void Engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)

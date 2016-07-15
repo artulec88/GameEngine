@@ -28,21 +28,19 @@ Audio::AudioEngine_FMOD::AudioEngine_FMOD(int maxChannelsCount) :
 
 	// Based on tutorial: https://cuboidzone.wordpress.com/category/tutorials/
 	FMOD_RESULT fmodResult = FMOD::System_Create(&m_system); // Create the main system object
-	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::CRITICAL, "Failed to create an audio system with error code %d. %s",
-		fmodResult, FMOD_ErrorString(fmodResult));
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::CRITICAL, "Failed to create an audio system with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 
 	int driversCount = 0;
 	fmodResult = m_system->getNumDrivers(&driversCount);
-	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && driversCount != 0, Utility::Logging::CRITICAL, "Failed to create an audio system. Drivers count = %d", driversCount);
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && driversCount != 0, Utility::Logging::CRITICAL, "Failed to create an audio system. Drivers count = ", driversCount);
 
 	unsigned int version;
 	fmodResult = m_system->getVersion(&version);
 	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK && version >= FMOD_VERSION, Utility::Logging::ERR,
-		"Failed to create an audio system. FMOD lib version %08x doesn't match header version %08x", version, FMOD_VERSION);
+		"Failed to create an audio system. FMOD lib version ", version, " doesn't match header version ", FMOD_VERSION);
 
 	fmodResult = m_system->init(m_maxChannelsCount, FMOD_INIT_NORMAL, NULL); // initialize FMOD
-	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::CRITICAL, "Initializing audio system has ended with error code %d. %s",
-		fmodResult, FMOD_ErrorString(fmodResult));
+	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::CRITICAL, "Initializing audio system has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 
 	// Creating channels groups for each category
 	m_system->getMasterChannelGroup(&m_master);
@@ -71,19 +69,16 @@ Audio::AudioEngine_FMOD::~AudioEngine_FMOD()
 		for (soundItr = m_sounds[i].begin(); soundItr != m_sounds[i].end(); ++soundItr)
 		{
 			fmodResult = soundItr->second->release();
-			CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Releasing sound has ended with error code %d. %s",
-				fmodResult, FMOD_ErrorString(fmodResult));
+			CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Releasing sound has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 		}
 		m_sounds[i].clear();
 	}
 
 	// Releasing system
 	fmodResult = m_system->close();
-	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Closing audio system has ended with error code %d. %s",
-		fmodResult, FMOD_ErrorString(fmodResult));
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Closing audio system has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 	fmodResult = m_system->release();
-	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Releasing audio system has ended with error code %d. %s",
-		fmodResult, FMOD_ErrorString(fmodResult));
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Releasing audio system has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 	NOTICE_LOG_AUDIO("Audio engine destroyed.");
 }
 
@@ -99,7 +94,7 @@ void Audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
 			nextVolume = 1.0f;
 			m_fade = FadeStates::FADE_NONE;
 		}
-		DEBUG_LOG_AUDIO("Increasing volume by %.6f. Current volume = %.2f", nextVolume - volume, nextVolume);
+		DEBUG_LOG_AUDIO("Increasing volume by ", nextVolume - volume, ". Current volume = ", nextVolume);
 		m_currentSong->setVolume(nextVolume);
 	}
 	else if ((m_currentSong != NULL) && (m_fade == FadeStates::FADE_OUT))
@@ -126,8 +121,7 @@ void Audio::AudioEngine_FMOD::Update(Math::Real deltaTime)
 	}
 
 	FMOD_RESULT fmodResult = m_system->update();
-	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Updating audio system has ended with error code %d. %s",
-		fmodResult, FMOD_ErrorString(fmodResult));
+	CHECK_CONDITION_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::ERR, "Updating audio system has ended with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));
 }
 
 void Audio::AudioEngine_FMOD::LoadSoundEffect(const std::string& path)
@@ -149,7 +143,7 @@ void Audio::AudioEngine_FMOD::Load(Categories::Category type, const std::string&
 {
 	if (m_sounds[type].find(path) != m_sounds[type].end())
 	{
-		DEBUG_LOG("The sound \"%s\" has been loaded already", path.c_str());
+		DEBUG_LOG_AUDIO("The sound \"", path, "\" has been loaded already");
 		return;
 	}
 	FMOD::Sound* sound;
@@ -181,7 +175,7 @@ void Audio::AudioEngine_FMOD::PlaySoundEffect(const std::string& path, Math::Rea
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT].find(path);
 	if (soundItr == m_sounds[Categories::SOUND_EFFECT].end())
 	{
-		WARNING_LOG_AUDIO("The requested sound effect \"%s\" has not been found", path.c_str());
+		WARNING_LOG_AUDIO("The requested sound effect \"", path, "\" has not been found");
 		return;
 	}
 
@@ -206,7 +200,7 @@ void Audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, Math::R
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SOUND_EFFECT_3D].find(path);
 	if (soundItr == m_sounds[Categories::SOUND_EFFECT_3D].end())
 	{
-		WARNING_LOG_AUDIO("The requested 3D sound effect \"%s\" has not been found", path.c_str());
+		WARNING_LOG_AUDIO("The requested 3D sound effect \"", path, "\" has not been found");
 		return;
 	}
 
@@ -228,7 +222,7 @@ void Audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better p
 	// Ignoring if this song is already playing
 	if (m_currentSongPath == path)
 	{
-		DEBUG_LOG("The song \"%s\" is already playing", m_currentSongPath.c_str());
+		DEBUG_LOG_AUDIO("The song \"", m_currentSongPath, "\" is already playing");
 		return;
 	}
 
@@ -244,7 +238,7 @@ void Audio::AudioEngine_FMOD::PlaySong(const std::string& path /* TODO: Better p
 	Filenames2Sounds::iterator soundItr = m_sounds[Categories::SONG].find(path);
 	if (soundItr == m_sounds[Categories::SONG].end())
 	{
-		WARNING_LOG_AUDIO("Cannot play the requested song \"%s\". It has not been loaded yet", path);
+		WARNING_LOG_AUDIO("Cannot play the requested song \"", path, "\". It has not been loaded yet");
 		return;
 	}
 

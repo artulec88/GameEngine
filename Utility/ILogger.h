@@ -2,9 +2,13 @@
 #define __UTILITY_ILOGGER_H__
 
 #include "Utility.h"
+#include "Time.h"
 #include <map>
 #include <string>
 #include <memory>
+#include <iostream>
+#include <sstream>
+#include <array>
 
 #define LOGGING_ENABLED
 #define CRITICAL_LOGGING_ENABLED
@@ -77,51 +81,51 @@
 #endif
 
 #ifdef CRITICAL_LOGGING_ENABLED
-#define CRITICAL_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::CRITICAL, LOGPLACE, message, ##__VA_ARGS__)
+#define CRITICAL_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::CRITICAL, LOGPLACE, ##__VA_ARGS__)
 #else
-#define CRITICAL_LOG(moduleName, message, ...)
+#define CRITICAL_LOG(moduleName, ...)
 #endif
 
 #ifdef EMERGENCY_LOGGING_ENABLED
-#define EMERGENCY_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::EMERGENCY, LOGPLACE, message, ##__VA_ARGS__)
+#define EMERGENCY_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::EMERGENCY, LOGPLACE, ##__VA_ARGS__)
 #else
-#define EMERGENCY_LOG(moduleName, message, ...)
+#define EMERGENCY_LOG(moduleName, ...)
 #endif
 
 #ifdef ERROR_LOGGING_ENABLED
-#define ERROR_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::ERR, LOGPLACE, message, ##__VA_ARGS__)
+#define ERROR_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::ERR, LOGPLACE, ##__VA_ARGS__)
 #else
-#define ERROR_LOG(moduleName, message, ...)
+#define ERROR_LOG(moduleName, ...)
 #endif
 
 #ifdef WARNING_LOGGING_ENABLED
-#define WARNING_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::WARNING, LOGPLACE, message, ##__VA_ARGS__)
+#define WARNING_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::WARNING, LOGPLACE, ##__VA_ARGS__)
 #else
-#define WARNING_LOG(moduleName, message, ...)
+#define WARNING_LOG(moduleName, ...)
 #endif
 
 #ifdef NOTICE_LOGGING_ENABLED
-#define NOTICE_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::NOTICE, LOGPLACE, message, ##__VA_ARGS__)
+#define NOTICE_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::NOTICE, LOGPLACE, ##__VA_ARGS__)
 #else
-#define NOTICE_LOG(moduleName, message, ...)
+#define NOTICE_LOG(moduleName, ...)
 #endif
 
 #ifdef INFO_LOGGING_ENABLED
-#define INFO_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::INFO, LOGPLACE, message, ##__VA_ARGS__)
+#define INFO_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::INFO, LOGPLACE, ##__VA_ARGS__)
 #else
-#define INFO_LOG(moduleName, message, ...)
+#define INFO_LOG(moduleName, ...)
 #endif
 
 #ifdef DEBUG_LOGGING_ENABLED
-#define DEBUG_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::DEBUG, LOGPLACE, message, ##__VA_ARGS__)
+#define DEBUG_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::DEBUG, LOGPLACE, ##__VA_ARGS__)
 #else
-#define DEBUG_LOG(moduleName, message, ...)
+#define DEBUG_LOG(moduleName, ...)
 #endif
 
 #ifdef DELOCUST_LOGGING_ENABLED
-#define DELOCUST_LOG(moduleName, message, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::DELOCUST, LOGPLACE, message, ##__VA_ARGS__)
+#define DELOCUST_LOG(moduleName, ...) Utility::Logging::ILogger::GetLogger(moduleName).Log(Utility::Logging::DELOCUST, LOGPLACE, ##__VA_ARGS__)
 #else
-#define DELOCUST_LOG(moduleName, message, ...)
+#define DELOCUST_LOG(moduleName, ...)
 #endif
 
 namespace Utility
@@ -131,15 +135,14 @@ namespace Utility
 		enum LogLevel
 		{
 			CRITICAL = 0,
-			EMERGENCY = 1,
-			ERR = 2,
-			WARNING = 3,
-			NOTICE = 4,
-			INFO = 5,
-			DEBUG = 6,
-			DELOCUST = 7,
-
-			DEV_NULL = 100
+			EMERGENCY,
+			ERR,
+			WARNING,
+			NOTICE,
+			INFO,
+			DEBUG,
+			DELOCUST,
+			COUNT
 		}; /* end enum LogLevel */
 
 		class ILogger
@@ -147,7 +150,7 @@ namespace Utility
 			/* ==================== Static variables and functions begin ==================== */
 		protected:
 			static std::map<std::string, std::unique_ptr<ILogger>> loggers;
-			static const char* LevelNames[];
+			UTILITY_API static const std::array<std::string, LogLevel::COUNT> LOGGING_LEVEL_NAMES;
 		public:
 			UTILITY_API static ILogger& GetLogger(const std::string& moduleName);
 			/* ==================== Static variables and functions end ==================== */
@@ -168,8 +171,18 @@ namespace Utility
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			UTILITY_API LogLevel GetLevel() const { return m_level; }
-			//virtual void operator()(LogLevel level, const char *name, int line, const char *format, ...) = 0;
-			UTILITY_API virtual void Log(LogLevel level, const char *name, int line, const char *format, ...) = 0;
+			template <typename... Args>
+			void Log(LogLevel level, const char* file, int line, const Args&... args)
+			{
+				if (m_level < level)
+				{
+					return;
+				}
+				SetConsoleColor(level);
+				std::ostringstream msg;
+				LogRecursive(level, file, line, msg, args...);
+				ResetConsoleColor();
+			}
 			UTILITY_API virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 			UTILITY_API virtual void ResetConsoleColor() const = 0;
 			UTILITY_API virtual void AddFile(const char *name) = 0;
@@ -177,6 +190,18 @@ namespace Utility
 			void SetLevel(LogLevel level);
 			virtual void SetConsoleColor(LogLevel level) const = 0;
 			virtual void ReadConsoleColorsFromConfigFile() = 0;
+		private:
+			template <typename T, typename... Args>
+			void LogRecursive(LogLevel level, const char* file, int line, std::ostringstream& msg, T value, const Args&... args)
+			{
+				msg << value;
+				LogRecursive(level, file, line, msg, args...);
+			}
+			void LogRecursive(LogLevel level, const char* file, int line, std::ostringstream& msg)
+			{
+				std::cout << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
+					file << "(" << line << "): " << msg.str() << std::endl;
+			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

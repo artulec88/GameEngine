@@ -158,7 +158,7 @@ namespace Math {
 
 			MATH_API int GetTotalNumberOfSamples() const;
 		private:
-			void LogTime(Math::Real time, const char* logTimeTextFormat) const;
+			void LogTime(const char* text, Math::Real time) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

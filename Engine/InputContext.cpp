@@ -9,7 +9,7 @@
 Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 	m_converter(nullptr)
 {
-	CRITICAL_LOG_ENGINE("InputContextName = %s", inputContextName.c_str());
+	CRITICAL_LOG_ENGINE("InputContextName = ", inputContextName);
 	unsigned rangesCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "RangesCount", 0);
 	for (unsigned i = 0; i < rangesCount; ++i)
 	{
@@ -28,7 +28,7 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(GET_CONFIG_VALUE_ENGINE(inputContextName + "RawInputKey_" + ss.str(), 0));
 		States::State state = static_cast<States::State>(GET_CONFIG_VALUE_ENGINE(inputContextName + "State_" + ss.str(), 0));
 		m_statesMap[button] = state;
-		ERROR_LOG_ENGINE("Button = %d mapped to state = %d", button, state);
+		ERROR_LOG_ENGINE("Button = ", button, " mapped to state = ", state);
 	}
 
 	unsigned actionsCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "ActionsCount", 0);
@@ -39,13 +39,13 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(GET_CONFIG_VALUE_ENGINE(inputContextName + "RawInputKey_" + ss.str(), 0));
 		Engine::Actions::Action action = static_cast<Engine::Actions::Action>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Action_" + ss.str(), 0));
 		m_actionsMap[button] = action;
-		ERROR_LOG_ENGINE("Button = %d mapped to action = %d", button, action);
+		ERROR_LOG_ENGINE("Button = ", button, " mapped to action = ", action);
 	}
 
 	m_converter = std::make_unique<InputRangeConverter>(inputContextName);
 
 	unsigned sensitivitiesCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "SensitivitiesCount", 0);
-	ERROR_LOG_ENGINE("Sensitivities count = %d", sensitivitiesCount);
+	ERROR_LOG_ENGINE("Sensitivities count = ", sensitivitiesCount);
 	for (unsigned i = 0; i < sensitivitiesCount; ++i)
 	{
 		std::stringstream ss("");
@@ -53,7 +53,7 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 		Ranges::Range range = static_cast<Ranges::Range>(GET_CONFIG_VALUE_ENGINE(inputContextName + "SensitivityRange_" + ss.str(), 0));
 		Math::Real sensitivity = GET_CONFIG_VALUE_ENGINE(inputContextName + "Sensitivity_" + ss.str(), REAL_ZERO);
 		m_sensitivitiesMap[range] = sensitivity;
-		ERROR_LOG_ENGINE("Range = %d mapped to sensitivity = %.3f", range, sensitivity);
+		ERROR_LOG_ENGINE("Range = ", range, " mapped to sensitivity = ", sensitivity);
 	}
 }
 
@@ -74,7 +74,7 @@ Engine::Input::InputContext::InputContext(std::ifstream& inputContextFile) :
 		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		States::State state = static_cast<States::State>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_statesMap[button] = state;
-		ERROR_LOG_ENGINE("Button = %d mapped to state = %d", button, state);
+		ERROR_LOG_ENGINE("Button = ", button, " mapped to state = ", state);
 	}
 
 	unsigned actionsCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
@@ -83,19 +83,19 @@ Engine::Input::InputContext::InputContext(std::ifstream& inputContextFile) :
 		RawInputKeys::RawInputKey button = static_cast<RawInputKeys::RawInputKey>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		Actions::Action action = static_cast<Actions::Action>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_actionsMap[button] = action;
-		ERROR_LOG_ENGINE("Button = %d mapped to action = %d", button, action);
+		ERROR_LOG_ENGINE("Button = ", button, " mapped to action = ", action);
 	}
 
 	m_converter = std::make_unique<InputRangeConverter>(inputContextFile);
 
 	unsigned sensitivitiesCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);
-	ERROR_LOG_ENGINE("Sensitivities count = %d", sensitivitiesCount);
+	ERROR_LOG_ENGINE("Sensitivities count = ", sensitivitiesCount);
 	for (unsigned i = 0; i < sensitivitiesCount; ++i)
 	{
 		Ranges::Range range = static_cast<Ranges::Range>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		Math::Real sensitivity = Utility::FileManager::AttemptRead<Math::Real>(inputContextFile);
 		m_sensitivitiesMap[range] = sensitivity;
-		ERROR_LOG_ENGINE("Range = %d mapped to sensitivity = %.3f", range, sensitivity);
+		ERROR_LOG_ENGINE("Range = ", range, " mapped to sensitivity = ", sensitivity);
 	}
 }
 

@@ -3,7 +3,6 @@
 
 #include "Utility.h"
 //#include "ISerializable.h"
-#include "ILogger.h"
 #include <string>
 #include <Windows.h> // TODO: This is a platform-dependent header. It shouldn't be directly included here.
 //#include <winnt.h>
@@ -152,7 +151,7 @@ namespace Utility {
 			float CalculateElapsedTimeInMilliseconds() const
 			{
 				//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
-				//INFO_LOG("diff = %d, frequency = %d", diff, GetFrequency().QuadPart);
+				//INFO_LOG_UTILITY("diff = ", diff, ", frequency = ", GetFrequency().QuadPart);
 				return static_cast<float>(Time::ONE_THOUSAND * (m_stopTime.QuadPart - m_startTime.QuadPart)) / GetFrequency().QuadPart; // in [s]
 			}
 			/* ==================== Non-static member functions end ==================== */

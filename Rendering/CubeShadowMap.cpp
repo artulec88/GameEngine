@@ -45,7 +45,7 @@ void CubeShadowMap::Init(unsigned int windowWidth, unsigned int windowHeight)
 	unsigned int windowHeightPowerOfTwo = Math::RoundUpPow2(windowHeight);
 	unsigned int cubeMapSize = (windowWidthPowerOfTwo > windowHeightPowerOfTwo) ? windowWidthPowerOfTwo : windowHeightPowerOfTwo;
 
-	INFO_LOG_RENDERING("Initializing cube shadow map with width=%d and height=%d (cubeMapSize=%d)", windowWidth, windowHeight, cubeMapSize);
+	INFO_LOG_RENDERING("Initializing cube shadow map with width=", windowWidth, " and height=", windowHeight, " (cubeMapSize=", cubeMapSize, ")");
 	const int NUMBER_OF_CUBE_MAP_FACES = 6;
 
     // Create the FBO

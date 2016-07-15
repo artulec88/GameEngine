@@ -184,7 +184,7 @@ inline bool AlmostEqual(Real value1, Real value2)
 	//	((twoTempCounter % 10000 == 0) && (twoTempCounter > 0)) ||
 	//	((threeTempCounter % 10000 == 0) && (threeTempCounter > 0)))
 	//{
-	//	CRITICAL_LOG_MATH("oneTempCounter = %d, twoTempCounter = %d, threeTempCounter = %d", oneTempCounter, twoTempCounter, threeTempCounter);
+	//	CRITICAL_LOG_MATH("oneTempCounter = ", oneTempCounter, ", twoTempCounter = ", twoTempCounter, ", threeTempCounter = ", threeTempCounter);
 	//}
 	if (abs(value1 - value2) > EPSILON)
 	{

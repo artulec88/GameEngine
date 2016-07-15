@@ -76,7 +76,7 @@ void PlayGameState::Handle(Engine::Actions::Action action)
 		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
 		break;
 	default:
-		INFO_LOG_GAME("Not supported action %d", action);
+		INFO_LOG_GAME("Action ", action, " is not supported by the PLAY game state.");
 	}
 	STOP_PROFILING;
 }
@@ -101,13 +101,13 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 	//	{
 	//		Rendering::CoreEngine::GetCoreEngine()->CentralizeCursor();
 	//	}
-	//	INFO_LOG_GAME("Mouse button pressed: button=%d\t mods=%d", button, mods);
+	//	INFO_LOG_GAME("Mouse button pressed: button=", button, "\t mods=", mods);
 	//	break;
 	//case GLFW_RELEASE:
-	//	INFO_LOG_GAME("Mouse button released: button=%d\t mods=%d", button, mods);
+	//	INFO_LOG_GAME("Mouse button released: button=", button, "\t mods=", mods);
 	//	break;
 	//default:
-	//	WARNING_LOG_GAME("Unknown action performed with the mouse. Button=%d\t action=%d\t mods=%d", button, action, mods);
+	//	WARNING_LOG_GAME("Unknown action performed with the mouse. Button=", button, "\t action=", action, "\t mods=", mods);
 	//}
 	STOP_PROFILING;
 }
@@ -115,7 +115,7 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 void PlayGameState::MousePosEvent(double xPos, double yPos)
 {
 	START_PROFILING;
-	DEBUG_LOG_GAME("Cursor position = (%.2f, %.2f)", xPos, yPos);
+	DEBUG_LOG_GAME("Cursor position = (", xPos, ", ", yPos, ")");
 
 	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
 	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
@@ -228,7 +228,7 @@ void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) co
 		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(i);
 		if (currentPointLight->IsEnabled())
 		{
-			DEBUG_LOG_GAME("Point light at index %d is disabled", i);
+			DEBUG_LOG_GAME("Point light at index ", i, " is disabled");
 			continue;
 		}
 		m_gameManager->GetRootGameNode().Render(currentPointLight->GetShader(), renderer);
@@ -245,12 +245,12 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 		const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(i);
 		if (!currentLight->IsEnabled())
 		{
-			DEBUG_LOG_GAME("Light at index %d is disabled", i);
+			DEBUG_LOG_GAME("Light at index ", i, " is disabled");
 			continue;
 		}
 		if (renderer->InitShadowMap())
 		{
-			DEBUG_LOG_GAME("Shadow mapping enabled for light %d", i);
+			DEBUG_LOG_GAME("Shadow mapping enabled for light ", i);
 			// Render scene using shadow mapping shader
 			m_gameManager->GetRootGameNode().Render(renderer->GetShadowMapShader(), renderer);
 			m_gameManager->GetTerrainNode()->Render(renderer->GetShadowMapShader(), renderer); // TODO: Probably unnecessary

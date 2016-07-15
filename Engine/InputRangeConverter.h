@@ -47,7 +47,7 @@ namespace Engine
 				RangeType Convert(RangeType inputValue) const
 				{
 					Math::Real v = static_cast<Math::Real>(inputValue);
-					DELOCUST_LOG_ENGINE("v = %.2f; minInput = %.2f; maxInput = %.2f; minOutput = %.2f; maxOutput = %.2f", v, m_minInput, m_maxInput, m_minOutput, m_maxOutput);
+					DELOCUST_LOG_ENGINE("v = ", v, "; minInput = ", m_minInput, "; maxInput = ", m_maxInput, "; minOutput = ", m_minOutput, "; maxOutput = ", m_maxOutput);
 					if (v < m_minInput)
 					{
 						v = m_minInput;
@@ -83,7 +83,7 @@ namespace Engine
 				std::map<Ranges::Range, Converter>::const_iterator itr = m_convertersMap.find(rangeId);
 				if (itr == m_convertersMap.end())
 				{
-					WARNING_LOG_ENGINE("There exists no input converter for the range %d.", rangeId);
+					WARNING_LOG_ENGINE("There exists no input converter for the range ", rangeId, ".");
 					return inputValue;
 				}
 				return itr->second.Convert<RangeType>(inputValue);

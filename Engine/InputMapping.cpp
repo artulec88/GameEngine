@@ -20,7 +20,7 @@ Engine::Input::InputMapping::InputMapping(const std::string& contextListFileName
 	std::ifstream inFile(contextListFileName);
 	if (!(inFile >> count))
 	{
-		EMERGENCY_LOG_ENGINE("Failed to read context list file \"%s\".", contextListFileName.c_str());
+		EMERGENCY_LOG_ENGINE("Failed to read context list file \"", contextListFileName, "\".");
 	}
 	else
 	{
@@ -50,21 +50,21 @@ void Engine::Input::InputMapping::ClearRanges()
 
 void Engine::Input::InputMapping::SetRawButtonState(RawInputKeys::RawInputKey button, bool pressed, bool previouslyPressed)
 {
-	DEBUG_LOG_ENGINE("Key %d, pressed = %d, previously pressed = %d", button, pressed, previouslyPressed);
+	DEBUG_LOG_ENGINE("Key = ", button, ", pressed = ", pressed, ", previously pressed = ", previouslyPressed);
 	if (pressed)
 	{
 		if (!previouslyPressed) // action
 		{
 			Actions::Action action = MapButtonToAction(button);
 			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(action != Actions::INVALID, Utility::Logging::WARNING,
-				"Invalid action for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
+				"Invalid action for button ", button, "(pressed = ", pressed, ", previouslyPressed = ", previouslyPressed, ")");
 			m_currentMappedInput.m_actions.insert(action);
 		}
 		else // state
 		{
 			States::State state = MapButtonToState(button);
 			CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(state != States::INVALID, Utility::Logging::WARNING,
-				"Invalid state for button %d (pressed = %d, previouslyPressed = %d)", button, pressed, previouslyPressed);
+				"Invalid state for button ", button, "(pressed = ", pressed, ", previouslyPressed = ", previouslyPressed, ")");
 			m_currentMappedInput.m_states.insert(state);
 		}
 	}

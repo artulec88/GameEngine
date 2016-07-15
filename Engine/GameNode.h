@@ -61,7 +61,7 @@ namespace Engine
 		}
 		ENGINE_API void Handle(Actions::Action action)
 		{
-			CRITICAL_LOG_ENGINE("Executing action %d for entity %d", action, m_ID);
+			CRITICAL_LOG_ENGINE("Executing action ", action, " for entity ", m_ID);
 			ActionsToGameNodeCommands::iterator actionToCommandItr = m_actionsToCommands.find(action);
 			if (actionToCommandItr != m_actionsToCommands.end())
 			{
@@ -70,7 +70,7 @@ namespace Engine
 		}
 		ENGINE_API void Handle(States::State state)
 		{
-			CRITICAL_LOG_ENGINE("Handling the state %d for entity", state, m_ID);
+			CRITICAL_LOG_ENGINE("Handling the state ", state, " for entity ", m_ID);
 			std::map<States::State, GameNodeCommand*>::iterator stateToCommandItr = m_statesToCommands.find(state);
 			if (stateToCommandItr != m_statesToCommands.end())
 			{

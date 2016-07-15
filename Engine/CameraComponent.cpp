@@ -84,7 +84,7 @@ void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int m
 	{
 		return;
 	}
-	DEBUG_LOG_ENGINE("Mouse button event for the moving camera (button = %d, action = %d, mods = %d)", button, action, mods);
+	DEBUG_LOG_ENGINE("Mouse button event for the moving camera (button = ", button, ", action = ", action, ", mods = ", mods, ")");
 	switch (button)
 	{
 	case GLFW_MOUSE_BUTTON_LEFT:
@@ -104,7 +104,7 @@ void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 	{
 		return;
 	}
-	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = ", xPos, "; yPos = ", yPos, ")");
 
 	int width = CoreEngine::GetCoreEngine()->GetWindowWidth();
 	int height = CoreEngine::GetCoreEngine()->GetWindowHeight();
@@ -196,7 +196,7 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 	m_velocity.Threshold(m_maxSpeed);
 	//velocity += acceleration * delta;
 	//velocity -= slowDownVec;
-	//DEBUG_LOG_ENGINE("Acceleration = %s\tVelocity = %s", acceleration.ToString().c_str(), velocity.ToString().c_str());
+	//DEBUG_LOG_ENGINE("Acceleration = ", acceleration.ToString(), "\tVelocity = ", velocity.ToString());
 	GetTransform().SetPos(GetTransform().GetPos() + m_velocity);
 }
 
@@ -263,7 +263,7 @@ void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int
 	{
 		return;
 	}
-	DEBUG_LOG_ENGINE("Mouse button event for the camera following an entity (button = %d, action = %d, mods = %d)", button, action, mods);
+	DEBUG_LOG_ENGINE("Mouse button event for the camera following an entity (button = ", button, ", action = ", action, ", mods = ", mods, ")");
 	switch (button)
 	{
 	case GLFW_MOUSE_BUTTON_LEFT:
@@ -285,7 +285,7 @@ void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
 		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
 		return;
 	}
-	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = %.3f; yPos = %.3f)", xPos, yPos);
+	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = ", xPos, "; yPos = ", yPos, ")");
 
 	if (m_changingPitch)
 	{
@@ -313,7 +313,7 @@ void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 	{
 		return;
 	}
-	DEBUG_LOG_ENGINE("Scroll event for the camera following an entity (xOffset = %.3f; yOffset = %.3f)", xOffset, yOffset);
+	DEBUG_LOG_ENGINE("Scroll event for the camera following an entity (xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
 
 	m_distanceFromEntity -= static_cast<Math::Real>(yOffset) * 0.03f;
 	if (m_distanceFromEntity < MINIMUM_DISTANCE_TO_ENTITY)
@@ -324,7 +324,7 @@ void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 	{
 		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
 	}
-	DELOCUST_LOG_ENGINE("Distance from entity = %.5f", m_distanceFromEntity);
+	DELOCUST_LOG_ENGINE("Distance from entity = ", m_distanceFromEntity);
 }
 
 void Engine::CameraFollowComponent::Update(Math::Real deltaTime)

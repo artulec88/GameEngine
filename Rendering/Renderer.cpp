@@ -449,7 +449,7 @@ void Rendering::Renderer::InitRenderScene()
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
 	CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
-		Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = %d)", m_currentCameraIndex);
+		Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = ", m_currentCameraIndex, ")");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
@@ -495,7 +495,7 @@ void Rendering::Renderer::InitWaterNodesRendering()
 	if (m_waterMoveFactor > REAL_ONE)
 	{
 		m_waterMoveFactor -= REAL_ONE;
-		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::Logging::ERR, "Water move factor is still greater than 1.0. It is equal to %.3f", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
+		CHECK_CONDITION_ALWAYS_RENDERING(m_waterMoveFactor < REAL_ONE, Utility::Logging::ERR, "Water move factor is still greater than 1.0. It is equal to ", m_waterMoveFactor); // TODO: Remove "ALWAYS" in the future
 	}
 	m_mappedValues.SetReal("waterMoveFactor", m_waterMoveFactor);
 	m_mappedValues.SetReal("nearPlane", 0.1f /* TODO: This value should be always equal to the near plane of the current camera, but it is not easy for us to get this value */);
@@ -585,7 +585,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 //		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 //		{
 //			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-//			//DEBUG_LOG_RENDERING("Binding the cube face #%d", i);
+//			//DEBUG_LOG_RENDERING("Binding the cube face #", i);
 //			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
 //			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 //
@@ -672,10 +672,10 @@ void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std
 		break;
 	case Text::CENTER:
 		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
-		DEBUG_LOG_RENDERING("Drawing string \"%s\": x = %d, window width = %.2f", str.c_str(), x, m_windowWidth);
+		DEBUG_LOG_RENDERING("Drawing string \"", str, "\": x = ", x, ", window width = ", m_windowWidth);
 		break;
 	default:
-		WARNING_LOG_RENDERING("Incorrect alignment type used (%d). The text will start at default x=%.1f value", alignment, x);
+		WARNING_LOG_RENDERING("Incorrect alignment type used (", alignment, "). The text will start at default position x = ", x);
 	}
 	RenderText(x, y, str, fontSize, fontColor);
 }
@@ -698,7 +698,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, const
 void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-	DELOCUST_LOG_RENDERING("Started drawing string \"%s\"", str.c_str());
+	DELOCUST_LOG_RENDERING("Started drawing string \"", str, "\"");
 
 	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
 
@@ -720,7 +720,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 		const Math::Vector2D upRightVec(rightX, topY);
 		const Math::Vector2D downRightVec(rightX, bottomY);
 		const Math::Vector2D downLeftVec(leftX, bottomY);
-		//CRITICAL_LOG_RENDERING("str = \"%s\" upRightVec = %s", str.c_str(), upRightVec.ToString().c_str());
+		//CRITICAL_LOG_RENDERING("str = \"", str, "\" upRightVec = ", upRightVec.ToString());
 
 		vertices.push_back(upLeftVec);
 		vertices.push_back(downLeftVec);
@@ -733,7 +733,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 		int ch = static_cast<int>(str[i]);
 		Math::Real xUV = static_cast<Math::Real>(ch % 16) * oneOverSixteen;
 		Math::Real yUV = REAL_ONE - ((static_cast<Math::Real>(ch / 16) * oneOverSixteen) + oneOverSixteen);
-		//INFO_LOG_RENDERING("character=\"%c\"\t ascii value=%d, xUV = %.2f, yUV = %.2f", str[i], ch, xUV, yUV);
+		//INFO_LOG_RENDERING("character=\"", str[i], "\"\t ascii value=", ch, ", xUV = ", xUV, ", yUV = ", yUV);
 
 		Math::Vector2D upLeftUV(xUV, REAL_ONE - (yUV + oneOverSixteen));
 		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
@@ -816,7 +816,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 //void Rendering::Renderer::RenderText(const Text::GuiTextControl& guiText) const
 //{
 //	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-//	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = %d) at screen position \"%s\"", guiText.GetLinesCount(), guiText.GetScreenPosition().ToString().c_str());
+//	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = ", guiText.GetLinesCount(), ") at screen position \"", guiText.GetScreenPosition().ToString(), "\"");
 //	//glDisable(GL_CULL_FACE);
 //	if (Rendering::glDepthTestEnabled)
 //	{
@@ -862,7 +862,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
-	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"%s\"", guiControl.GetScreenPosition().ToString().c_str());
+	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"", guiControl.GetScreenPosition().ToString(), "\"");
 	//glDisable(GL_CULL_FACE);
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -898,12 +898,12 @@ void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture
 	START_PROFILING;
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
 	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::ERR,
-	//	"The number of alive particles (%d) exceeds the size of the specified vector of particles (%d)", particlesCount, particles.size());
+	//	"The number of alive particles (", particlesCount, ") exceeds the size of the specified vector of particles (", particles.size(), ")");
 	if (particlesCount <= 0)
 	{
 		return;
 	}
-	//DEBUG_LOG_RENDERING("Rendering particles started. There are %d particles currently in the game.", particlesCount);
+	//DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesCount, " particles currently in the game.");
 	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
 	m_particleShader->SetUniformi("particleTexture", 0);
@@ -1010,7 +1010,7 @@ bool Rendering::Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; %d), but equals %d.", SHADOW_MAPS_COUNT, shadowMapIndex);
+	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
 	m_mappedValues.SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
@@ -1022,7 +1022,7 @@ bool Rendering::Renderer::InitShadowMap()
 		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
 		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
-		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"%s\"", m_altCamera.GetViewProjection().ToString().c_str());
+		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection().ToString(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
 		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 		m_mappedValues.SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
@@ -1077,7 +1077,7 @@ const Rendering::Shader* Rendering::Renderer::GetAmbientShader() const
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
 		CHECK_CONDITION_EXIT_RENDERING(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::EMERGENCY, "Cannot render the scene with ambient light. The fog shader is NULL.");
 		STOP_PROFILING;
@@ -1097,7 +1097,7 @@ const Rendering::Shader* Rendering::Renderer::GetAmbientTerrainShader() const
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: %d. Fog distance calculation type: %d", m_fogFallOffType, m_fogCalculationType);
+		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
 		std::map<FogEffect::FogKey, Shader*>::const_iterator fogTerrainShaderItr = m_ambientShadersFogEnabledTerrainMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
 		CHECK_CONDITION_EXIT_RENDERING(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::EMERGENCY, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
 		STOP_PROFILING;
@@ -1187,13 +1187,13 @@ void Rendering::Renderer::BlurShadowMap(int shadowMapIndex, Math::Real blurAmoun
 	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
 	if (shadowMap == NULL)
 	{
-		ERROR_LOG_RENDERING("Shadow map %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG_RENDERING("Shadow map ", shadowMapIndex, " is NULL. Cannot perform the blurring process.");
 		STOP_PROFILING;
 		return;
 	}
 	if (shadowMapTempTarget == NULL)
 	{
-		ERROR_LOG_RENDERING("Temporary shadow map target %d is NULL. Cannot perform the blurring process.", shadowMapIndex);
+		ERROR_LOG_RENDERING("Temporary shadow map target ", shadowMapIndex, " is NULL. Cannot perform the blurring process.");
 		STOP_PROFILING;
 		return;
 	}
@@ -1275,13 +1275,13 @@ void Rendering::Renderer::SetCurrentCamera()
 
 size_t Rendering::Renderer::SetCurrentCamera(size_t cameraIndex)
 {
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed %d when the correct range is (%d, %d).", cameraIndex, 0, m_cameras.size());
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed ", cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
 	m_cameras[m_currentCameraIndex]->Deactivate();
 	m_currentCameraIndex = cameraIndex;
 	m_cameras[m_currentCameraIndex]->Activate();
 #ifndef ANT_TWEAK_BAR_ENABLED
-	NOTICE_LOG_RENDERING("Switched to camera #%d", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
+	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
 #endif
 	return m_currentCameraIndex;
 }
@@ -1291,7 +1291,7 @@ void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
 	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
 	if (directionalLight != NULL)
 	{
-		INFO_LOG_RENDERING("Directional light with intensity = %.2f is being added to directional / spot lights vector", directionalLight->GetIntensity());
+		INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight->GetIntensity(), " is being added to directional / spot lights vector");
 		m_waterLightReflectionEnabled = true;
 		++m_directionalLightsCount;
 		m_directionalAndSpotLights.push_back(directionalLight);
@@ -1301,7 +1301,7 @@ void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
 		Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(light);
 		if (spotLight != NULL)
 		{
-			INFO_LOG_RENDERING("Spot light with intensity = %.2f is being added to directional / spot lights vector", spotLight->GetIntensity());
+			INFO_LOG_RENDERING("Spot light with intensity = ", spotLight->GetIntensity(), " is being added to directional / spot lights vector");
 			m_directionalAndSpotLights.push_back(spotLight);
 		}
 		else
@@ -1309,7 +1309,7 @@ void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
 			Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(light);
 			if (pointLight != NULL)
 			{
-				INFO_LOG_RENDERING("Point light with intensity = %.2f is being added to point lights vector", pointLight->GetIntensity());
+				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
 				m_pointLights.push_back(pointLight);
 			}
 			else
@@ -1515,7 +1515,7 @@ void Rendering::Renderer::InitializeTweakBars()
 	m_cameraBar = TwNewBar("CamerasBar");
 	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL)
 	{
-		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras setup by the game manager.");
+		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras are setup by the game manager.");
 		
 		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
 		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
@@ -1564,8 +1564,8 @@ void Rendering::Renderer::CheckCameraIndexChange()
 	{
 		return;
 	}
-	NOTICE_LOG_RENDERING("Switched to camera #%d", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("%s", m_cameras[m_currentCameraIndex]->ToString().c_str());
+	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
+	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
 
 	TwRemoveAllVars(m_cameraBar);
 	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");

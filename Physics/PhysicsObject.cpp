@@ -28,13 +28,13 @@ PhysicsObject::~PhysicsObject()
 
 void PhysicsObject::Simulate(Math::Real passedTime)
 {
-	DELOCUST_LOG_PHYSICS("Simulating physics object. Passed time = %.3f", passedTime);
+	DELOCUST_LOG_PHYSICS("Simulating physics object. Passed time = ", passedTime);
 	m_linearVelocity += (m_totalForce / m_mass) * passedTime;
 	if (m_totalForce.LengthSquared() > REAL_ZERO)
 	{
-		//CRITICAL_LOG("Total force = %s", m_totalForce.ToString().c_str());
+		//CRITICAL_LOG_PHYSICS("Total force = \"", m_totalForce.ToString(), "\".");
 	}
-	//CRITICAL_LOG("Total force = %s; Linear velocity = %s", m_totalForce.ToString().c_str(), m_linearVelocity.ToString().c_str());
+	//CRITICAL_LOG_PHYSICS("Total force = \"", m_totalForce.ToString(), "\"; Linear velocity = \"", m_linearVelocity.ToString(), "\".");
 	m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 
 	//m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -48,7 +48,7 @@ void PhysicsObject::ApplyLinearAcceleration(const Math::Vector3D& acceleration)
 {
 	//ApplyLinearForce(acceleration * m_mass);
 	m_totalForce += acceleration * m_mass;
-	//CRITICAL_LOG("Total force = %s", m_totalForce.ToString().c_str());
+	//CRITICAL_LOG_PHYSICS("Total force = \"", m_totalForce.ToString(), "\".");
 }
 
 void PhysicsObject::ApplyLinearForce(const Math::Vector3D& force)

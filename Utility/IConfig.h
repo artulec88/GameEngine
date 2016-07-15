@@ -52,12 +52,12 @@ namespace Utility
 			ss << defValue;
 			const std::string resultStr = GetArg(name, ss.str());
 
-			//DELOCUST_LOG("Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultStr.c_str());
+			//DELOCUST_LOG_UTILITY("Config parameter \"", name, "\" collected with value \"", resultStr, "\"");
 
 			Type result;
 			std::stringstream resultSS;
 			resultSS << resultStr;
-			DELOCUST_LOG("Config parameter \"%s\" collected with value \"%s\"", name.c_str(), resultSS.str().c_str());
+			DELOCUST_LOG_UTILITY("Config parameter \"", name, "\" collected with value \"", resultSS.str(), "\"");
 			resultSS >> result;
 			return result;
 		}

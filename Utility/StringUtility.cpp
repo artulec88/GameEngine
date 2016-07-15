@@ -78,7 +78,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 	std::string inString = Trim(str);
 	if (!FromString<int>(result, inString, std::dec))
 	{
-		ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. Default 0 will be returned.", inString.c_str());
+		ERROR_LOG_UTILITY("Failed to convert \"", inString, "\" to integer. Default 0 will be returned.");
 		return 0;
 	}
 
@@ -87,7 +87,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 	{
 		if ((j != 0 || isPositive) && !IsNumeric(inString[j]))
 		{
-			ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
+			ERROR_LOG_UTILITY("Failed to convert \"", inString, "\" to integer. The character \"", inString[j], "\" is not numeric. Default 0 will be returned.");
 			return 0;
 		}
 	}
@@ -102,8 +102,8 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 	std::string inString = Trim(str);
 	if (!FromString<float>(result, inString, std::dec))
 	{
-		ERROR_LOG_UTILITY("Failed to convert \"%s\" to floating-point number. Default 0.0 will be returned.", inString.c_str());
-		return 0;
+		ERROR_LOG_UTILITY("Failed to convert \"", inString, "\" to floating-point number. Default 0.0f will be returned.");
+		return 0.0f;
 	}
 
 	const char decimalMark = '.';
@@ -119,13 +119,13 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 			}
 			else if (inString[j] == decimalMark && decimalMarkFound)
 			{
-				ERROR_LOG_UTILITY(" More than one decimal mark %c found in string \"%s\". The surplus decimal marks will be ignored.", decimalMark, inString.c_str());
+				ERROR_LOG_UTILITY("More than one decimal mark \"", decimalMark, "\" found in the string \"", inString, "\". The surplus decimal marks will be ignored.");
 				continue;
 			}
 			else
 			{
-				ERROR_LOG_UTILITY("Failed to convert \"%s\" to integer. The character %c is not numeric. Default 0 will be returned.", inString.c_str());
-				return 0;
+				ERROR_LOG_UTILITY("Failed to convert \"", inString, "\" to integer. The character \"", inString[j], "\" %c is not numeric. Default 0.0f will be returned.");
+				return 0.0f;
 			}
 		}
 	}

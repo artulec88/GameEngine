@@ -3,9 +3,9 @@
 
 #include "Utility\ILogger.h"
 
-using namespace Math;
+#include <sstream>
 
-Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
+Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
 	m_pos(pos),
 	m_rotation(rot),
 	m_scale(scale),
@@ -14,12 +14,12 @@ Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REA
 {
 }
 
-Transform::~Transform()
+Math::Transform::~Transform()
 {
 	//DEBUG_LOG_MATH("Transform is being destroyed");
 }
 
-//bool Transform::IsHierarchyChanged() const
+//bool Math::Transform::IsHierarchyChanged() const
 //{
 //	// TODO: Check this function
 //	if ((parentTransform == NULL) || isChanged)
@@ -35,7 +35,7 @@ Transform::~Transform()
 int isChangedCount = 0;
 int isNotChangedCount = 0;
 
-Matrix4D Transform::GetTransformation() const
+Math::Matrix4D Math::Transform::GetTransformation() const
 {
 	// TODO: Fix this function
 	if (m_isChanged)
@@ -43,7 +43,7 @@ Matrix4D Transform::GetTransformation() const
 		isChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isChangedCount % 10000 == 0))
 		//{
-		//	DEBUG_LOG_MATH("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG_MATH("IsChangedCount = ", isChangedCount, ";\t IsNotChangedCount = ", isNotChangedCount);
 		//}
 
 		Matrix4D translationMatrix(m_pos);
@@ -57,7 +57,7 @@ Matrix4D Transform::GetTransformation() const
 		isNotChangedCount++; // TODO: just temporary. Remove in the future
 		//if ((isChangedCount < 4) || (isNotChangedCount < 10) || (isNotChangedCount % 10000 == 0))
 		//{
-		//	DEBUG_LOG_MATH("IsChangedCount = %d;\t IsNotChangedCount = %d", isChangedCount, isNotChangedCount);
+		//	DEBUG_LOG_MATH("IsChangedCount = ", isChangedCount, ";\t IsNotChangedCount = ", isNotChangedCount);
 		//}
 	}
 
@@ -73,7 +73,7 @@ Matrix4D Transform::GetTransformation() const
 	}
 }
 
-//Matrix4D Transform::GetProjectedTransformation(const Camera& camera) const
+//Math::Matrix4D Math::Transform::GetProjectedTransformation(const Camera& camera) const
 //{
 //	Matrix4D transformationMatrix = GetTransformation();
 //
@@ -82,26 +82,26 @@ Matrix4D Transform::GetTransformation() const
 //	return result;
 //}
 
-void Transform::Rotate(const Vector3D& axis, const Angle& angle)
+void Math::Transform::Rotate(const Vector3D& axis, const Angle& angle)
 {
 	Rotate(Quaternion(axis, angle));
 	m_isChanged = true;
 }
 
-void Transform::Rotate(const Quaternion& rot)
+void Math::Transform::Rotate(const Quaternion& rot)
 {
-	//DEBUG_LOG_MATH("Rotating the transformation by the quaternion %s", rot.ToString().c_str());
+	//DEBUG_LOG_MATH("Rotating the transformation by the quaternion ", rot.ToString());
 	m_rotation = (rot * m_rotation).Normalized(); // FIXME: Check quaternion multiplication
 	m_isChanged = true;
 }
 
-void Transform::LookAt(const Vector3D& point, const Vector3D& up)
+void Math::Transform::LookAt(const Vector3D& point, const Vector3D& up)
 {
 	m_rotation = GetLookAtRotation(point, up);
 	m_isChanged = true;
 }
 
-Quaternion Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& up) const
+Math::Quaternion Math::Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& up) const
 {
 	return Quaternion(Matrix4D((point - m_pos).Normalized(), up));
 	//Vector3D forward = point - pos;
@@ -119,7 +119,14 @@ Quaternion Transform::GetLookAtRotation(const Vector3D& point, const Vector3D& u
 	//return Quaternion(rotMatrix);
 }
 
-void Transform::SetParent(Transform* t)
+void Math::Transform::SetParent(Transform* t)
 {
 	m_parentTransform = t;
+}
+
+std::string Math::Transform::ToString() const
+{
+	std::stringstream ss("");
+	ss << "Pos = " << m_pos.ToString() << "; Rot = " << m_rotation.ToString() << "; Scale = " << m_scale;
+	return ss.str();
 }

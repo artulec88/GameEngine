@@ -5,7 +5,7 @@
 
 /* static */ std::map<std::string, std::unique_ptr<Utility::Logging::ILogger>> Utility::Logging::ILogger::loggers;
 
-/* static */ const char* Utility::Logging::ILogger::LevelNames[] =
+/* static */ const std::array<std::string, Utility::Logging::COUNT> Utility::Logging::ILogger::LOGGING_LEVEL_NAMES =
 {
 	"Critical",
 	"Emergency",
@@ -14,8 +14,7 @@
 	"Notice",
 	"Info",
 	"Debug",
-	"Delocust",
-	NULL
+	"Delocust"
 };
 
 /* static */ Utility::Logging::ILogger& Utility::Logging::ILogger::GetLogger(const std::string& moduleName)
@@ -47,6 +46,6 @@ void Utility::Logging::ILogger::SetLevel(LogLevel level)
 	//}
 	//m_modified = true;
 	//mutex.Unlock();
-	std::cout << "Logging level set to " << LevelNames[level] << std::endl;
+	std::cout << "Logging level set to " << LOGGING_LEVEL_NAMES[level] << std::endl;
 	m_level = level;
 }

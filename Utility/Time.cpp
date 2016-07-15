@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "Time.h"
+#include "ILogger.h"
 #include <stdio.h>
 #include <sstream>
 #include <limits>
@@ -68,7 +69,7 @@ void Utility::Timing::TimeSpan::operator=(const TimeSpan& timeSpan)
 
 bool Utility::Timing::TimeSpan::operator<(const TimeSpan &timeSpan) const
 {
-	//WARNING_LOG("The function has not been tested yet.");
+	//WARNING_LOG_UTILITY("The function has not been tested yet.");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value < timeSpan.GetValue();
@@ -79,7 +80,7 @@ bool Utility::Timing::TimeSpan::operator<(const TimeSpan &timeSpan) const
 
 bool Utility::Timing::TimeSpan::operator>(const TimeSpan &timeSpan) const
 {
-	//WARNING_LOG("The function has not been tested yet");
+	//WARNING_LOG_UTILITY("The function has not been tested yet");
 	if (m_unit == timeSpan.GetUnit())
 	{
 		return m_value > timeSpan.GetValue();
@@ -125,7 +126,7 @@ std::string Utility::Timing::TimeSpan::ToString() const
 	case NANOSECOND:
 		return "[ns]";
 	default:
-		ERROR_LOG_UTILITY("Unknown time unit (%d)", timeUnit);
+		ERROR_LOG_UTILITY("Unknown time unit: ", timeUnit);
 		return "Unknown time unit";
 	}
 }
@@ -150,7 +151,7 @@ std::string Utility::Timing::TimeSpan::ToString() const
 	case 3:
 		return ONE_BILLION;
 	default:
-		ERROR_LOG_UTILITY("Failed determining the time unit conversion factor (fromTimeUnit = %d; toTimeUnit = %d)", fromTimeUnit, toTimeUnit);
+		ERROR_LOG_UTILITY("Failed determining the time unit conversion factor (fromTimeUnit = ", fromTimeUnit, "; toTimeUnit = ", toTimeUnit, ")");
 		return ONE;
 	}
 }
@@ -228,7 +229,7 @@ Utility::Timing::TimeSpan Utility::Timing::Timer::GetTimeSpan() const
 Utility::Timing::TimeSpan Utility::Timing::Timer::GetTimeSpan(TimeUnit timeUnit) const
 {
 	float elapsedTimeInMilliseconds = CalculateElapsedTimeInMilliseconds();
-	//INFO_LOG("Elapsed time in seconds = %.2f", elapsedTimeInMilliseconds);
+	//INFO_LOG_UTILITY("Elapsed time in seconds = ", elapsedTimeInMilliseconds);
 	return TimeSpan(elapsedTimeInMilliseconds * Time::TimeUnitConvertingFactor(MILLISECOND, timeUnit), timeUnit);
 }
 
@@ -236,7 +237,7 @@ void Utility::Timing::Timer::Start()
 {
 	//if (m_isRunning)
 	//{
-	//	WARNING_LOG("Starting the timer which is already running");
+	//	WARNING_LOG_UTILITY("Starting the timer which is already running");
 	//	return;
 	//}
 	QueryPerformanceCounter(&m_startTime);
@@ -252,7 +253,7 @@ void Utility::Timing::Timer::Stop()
 {
 	//if (!m_isRunning)
 	//{
-	//	WARNING_LOG("Stopping the timer which is already stopped.");
+	//	WARNING_LOG_UTILITY("Stopping the timer which is already stopped.");
 	//	return;
 	//}
 	QueryPerformanceCounter(&m_stopTime);
