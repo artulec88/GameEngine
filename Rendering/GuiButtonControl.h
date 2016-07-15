@@ -1,11 +1,12 @@
-#ifndef __RENDERING_GUI_TEXT_H__
-#define __RENDERING_GUI_TEXT_H__
+#ifndef __RENDERING_GUI_BUTTON_CONTROL_H__
+#define __RENDERING_GUI_BUTTON_CONTROL_H__
 
 #include "Rendering.h"
 #include "GuiControl.h"
 #include "Font.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #include "Math\Vector.h"
 #include "Math\AABR.h"
@@ -17,7 +18,7 @@ namespace Rendering
 {
 	namespace Controls
 	{
-		class GuiTextControl : public GuiControl
+		class GuiButtonControl : public GuiControl
 		{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -25,11 +26,12 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
-			/// Creates a new GUI text control, loads the text's quads into a VBO and adds the text to the screen.
+			/// Creates a new GUI button control, loads the text's quads into a VBO and adds the text to the screen.
 			/// </summary>
 			/// <param name="text"> The text. </param>
-			/// <param name="font"> The font that this text should use. </param>
+			/// <param name="font"> The font that this text should use. If <code>NULL</code> then no text will be rendered. </param>
 			/// <param name="fontSize"> The font size of the text. </param>
+			/// <param name="iconTexture"> The texture for the GUI button icon. If <code>NULL</code> then no icon will be rendered. </param>
 			/// <param name="screenPosition">
 			/// The position on the screen where the top left corner of the text should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).
@@ -56,13 +58,13 @@ namespace Rendering
 			/// </param>
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
-			RENDERING_API GuiTextControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-				const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
+				Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
-			RENDERING_API virtual ~GuiTextControl(void);
+			RENDERING_API virtual ~GuiButtonControl(void);
 			//private:
-			//GuiTextControl(GuiTextControl& guiText);
-			//void operator=(GuiTextControl& guiText);
+			//GuiButtonControl(GuiButtonControl& guiButtonControl);
+			//void operator=(GuiButtonControl& guiButtonControl);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -123,6 +125,8 @@ namespace Rendering
 			std::string m_text;
 			const Text::Font* m_font;
 			Math::Real m_fontSize;
+			const Texture* m_iconTexture;
+			const Math::Matrix4D m_iconTransformationMatrix;
 			Math::Vector3D m_color;
 			Math::Vector3D m_outlineColor;
 			Math::Vector2D m_offset;
@@ -135,8 +139,8 @@ namespace Rendering
 			Math::Real m_borderWidth;
 			Math::Real m_borderEdgeTransitionWidth;
 			/* ==================== Non-static member variables end ==================== */
-		}; /* end class GuiTextControl */
+		}; /* end class GuiButtonControl */
 	} /* end namespace Controls */
 } /* end namespace Rendering */
 
-#endif // __RENDERING_GUI_TEXT_H__
+#endif // __RENDERING_GUI_BUTTON_CONTROL_H__

@@ -122,7 +122,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_billboardShader(NULL),
 	m_particleQuad(NULL),
 	m_particleShader(NULL),
-	m_mappedValues()
+	m_mappedValues(),
+	m_guiShader(NULL)
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -134,8 +135,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
 	,m_guiTextures(NULL),
-	m_debugQuad(NULL),
-	m_debugShader(NULL)
+	m_debugQuad(NULL)
 #endif
 #ifdef CALCULATE_RENDERING_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
@@ -280,13 +280,13 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
+	m_guiShader = new Shader("gui-shader");
 #ifdef DEBUG_RENDERING_ENABLED
-	//m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(new GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
 	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
-	m_debugShader = new Shader("debug-shader");
 #endif
 
 	/* ==================== Initializing physics logger begin ==================== */
@@ -371,6 +371,7 @@ Rendering::Renderer::~Renderer(void)
 		SAFE_DELETE(m_shadowMapTempTargets[i]);
 	}
 
+	SAFE_DELETE(m_guiShader);
 #ifdef DEBUG_RENDERING_ENABLED
 	for (std::vector<GuiTexture*>::iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
 	{
@@ -378,7 +379,6 @@ Rendering::Renderer::~Renderer(void)
 	}
 	m_guiTextures.clear();
 	SAFE_DELETE(m_debugQuad);
-	SAFE_DELETE(m_debugShader);
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -1374,27 +1374,27 @@ void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 #ifdef DEBUG_RENDERING_ENABLED
 void Rendering::Renderer::RenderDebugNodes()
 {
-	m_debugShader->Bind();
+	m_guiShader->Bind();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	for (std::vector<GuiTexture*>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
 	{
 		(*guiTextureItr)->Bind(0);
-		m_debugShader->SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
-		m_debugShader->SetUniformi("guiTexture", 0);
+		m_guiShader->SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
+		m_guiShader->SetUniformi("guiTexture", 0);
 		m_debugQuad->Draw();
 	}
 	//Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	//m_shadowMaps[9]->Bind();
 	//m_waterReflectionTexture->Bind();
-	//m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
-	//m_debugShader->SetUniformi("guiTexture", 0);
+	//m_guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
+	//m_guiShader->SetUniformi("guiTexture", 0);
 	//m_debugQuad->Draw();
 
 	//Math::Matrix4D transformationMatrix2(Math::Vector2D(0.74f, -0.24f), Math::Vector2D(0.25f, 0.25f));
 	//m_waterRefractionTexture->Bind();
-	//m_debugShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
+	//m_guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
 	//m_debugQuad->Draw();
 
 	glDisable(GL_BLEND);

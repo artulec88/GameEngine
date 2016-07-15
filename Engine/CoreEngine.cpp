@@ -498,14 +498,15 @@ void Engine::CoreEngine::Run()
 	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
 	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
-	Rendering::Controls::GuiTextControl fpsGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f),
+	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
+	Rendering::Controls::GuiButtonControl fpsGuiButton("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
-	Rendering::Controls::GuiTextControl inGameTimeGuiText("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f),
+	Rendering::Controls::GuiButtonControl inGameTimeGuiButton("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
@@ -621,8 +622,8 @@ void Engine::CoreEngine::Run()
 			RESET_TIMER(innerTimer);
 			m_game->Update(m_frameTime);
 #ifdef DRAW_FPS
-			fpsGuiText.Update(m_frameTime);
-			inGameTimeGuiText.Update(m_frameTime);
+			fpsGuiButton.Update(m_frameTime);
+			inGameTimeGuiButton.Update(m_frameTime);
 #endif
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
@@ -668,8 +669,8 @@ void Engine::CoreEngine::Run()
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
 			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
-			fpsGuiText.SetText(ss.str());
-			m_renderer->RenderGuiControl(fpsGuiText);
+			fpsGuiButton.SetText(ss.str());
+			m_renderer->RenderGuiControl(fpsGuiButton);
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif
@@ -696,8 +697,8 @@ void Engine::CoreEngine::Run()
 						ss << ":" << inGameSeconds;
 					}
 				}
-				inGameTimeGuiText.SetText(ss.str());
-				m_renderer->RenderGuiControl(inGameTimeGuiText);
+				inGameTimeGuiButton.SetText(ss.str());
+				m_renderer->RenderGuiControl(inGameTimeGuiButton);
 		}
 #endif
 #endif

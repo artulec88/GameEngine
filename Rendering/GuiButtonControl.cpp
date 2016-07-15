@@ -1,17 +1,19 @@
 #include "stdafx.h"
-#include "GuiText.h"
+#include "GuiButtonControl.h"
 #include "Line.h"
 #include "Renderer.h"
 
 #include <sstream>
 
-Rendering::Controls::GuiTextControl::GuiTextControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition, Math::Real maxLineLength,
-	const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
+Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
+	Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
 	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	GuiControl(screenPosition),
 	m_text(text),
 	m_font(font),
 	m_fontSize(fontSize),
+	m_iconTexture(iconTexture),
+	m_iconTransformationMatrix(screenPosition, Math::Vector2D(0.05f, 0.05f)),
 	m_color(textColor),
 	m_outlineColor(outlineColor),
 	m_maxLineLength(maxLineLength),
@@ -23,20 +25,28 @@ Rendering::Controls::GuiTextControl::GuiTextControl(const std::string& text, con
 	m_borderWidth(borderWidth),
 	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth)
 {
-	if (!text.empty())
+	if (!text.empty() && m_font != NULL)
 	{
 		SetText(text);
+	}
+	else
+	{
+		Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
+		m_mesh = std::make_unique<GuiMesh>(quadVertexPositions, 4);
 	}
 }
 
 
-Rendering::Controls::GuiTextControl::~GuiTextControl()
+Rendering::Controls::GuiButtonControl::~GuiButtonControl()
 {
 	//SAFE_DELETE(m_colorEffect);
+	SAFE_DELETE(m_iconTexture);
 }
 
-void Rendering::Controls::GuiTextControl::SetText(const std::string& text)
+void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 {
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_font != NULL, Utility::Logging::DEBUG,
+	//	"Cannot set text (\"", text, "\") for the GUI control. No font is set. GUI control uses only icons for rendering.");
 	std::vector<Text::Line> lines;
 	Text::Line currentLine(m_font->GetSpaceWidth(), m_fontSize, m_maxLineLength);
 	Text::Word currentWord(m_fontSize);
@@ -127,20 +137,33 @@ void Rendering::Controls::GuiTextControl::SetText(const std::string& text)
 	}
 }
 
-void Rendering::Controls::GuiTextControl::Draw(const Rendering::Renderer& renderer) const
+void Rendering::Controls::GuiButtonControl::Draw(const Rendering::Renderer& renderer) const
 {
-	const Shader* shader = renderer.GetGuiTextShader();
-	shader->Bind();
-	shader->SetUniformVector2D("translation", GetScreenPosition());
-	shader->SetUniformVector2D("offset", m_offset);
-	shader->SetUniformVector3D("textColor", m_color);
-	shader->SetUniformVector3D("outlineColor", m_outlineColor);
-	shader->SetUniformf("characterWidth", m_characterWidth);
-	shader->SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
-	shader->SetUniformf("borderWidth", m_borderWidth);
-	shader->SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
-	shader->SetUniformi("fontAtlas", 0);
+	if (m_font != NULL)
+	{
+		const Shader* shader = renderer.GetGuiTextShader();
+		shader->Bind();
+		shader->SetUniformVector2D("translation", GetScreenPosition());
+		shader->SetUniformVector2D("offset", m_offset);
+		shader->SetUniformVector3D("textColor", m_color);
+		shader->SetUniformVector3D("outlineColor", m_outlineColor);
+		shader->SetUniformf("characterWidth", m_characterWidth);
+		shader->SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
+		shader->SetUniformf("borderWidth", m_borderWidth);
+		shader->SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
+		shader->SetUniformi("fontAtlas", 0);
 
-	m_font->Bind();
-	m_mesh->Draw();
+		m_font->Bind();
+		m_mesh->Draw();
+	}
+	else if (m_iconTexture != NULL)
+	{
+		DELOCUST_LOG_RENDERING("Rendering button with icon");
+		const Shader* shader = renderer.GetGuiShader();
+		shader->Bind();
+		m_iconTexture->Bind(0);
+		shader->SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
+		shader->SetUniformi("guiTexture", 0);
+		m_mesh->Draw();
+	}
 }

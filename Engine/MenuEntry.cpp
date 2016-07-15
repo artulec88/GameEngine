@@ -2,7 +2,7 @@
 #include "MenuEntry.h"
 #include "GameManager.h"
 
-#include "Rendering\GuiText.h"
+#include "Rendering\GuiButtonControl.h"
 
 #include "Math\IntersectInfo.h"
 
@@ -12,11 +12,12 @@
 #include <sstream>
 
 /* ==================== MenuEntry class begin ==================== */
-Engine::MenuEntry::MenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Math::Vector2D& screenPosition,
+Engine::MenuEntry::MenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture, const Math::Vector2D& screenPosition,
 	Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */,
 	Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	m_parentMenuEntry(NULL),
-	m_guiControl(std::make_unique<Rendering::Controls::GuiTextControl>(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth))
+	// TODO: Create a GuiControlFactory which will create GUI controls based on the special enum value (e.g.GuiControlType).
+	m_guiControl(std::make_unique<Rendering::Controls::GuiButtonControl>(text, font, fontSize, iconTexture, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth))
 {
 }
 
@@ -46,11 +47,11 @@ void Engine::MenuEntry::SetParent(CompositeMenuEntry* parentMenuEntry)
 /* ==================== MenuEntry class end ==================== */
 
 /* ==================== CompositeMenuEntry class begin ==================== */
-Engine::CompositeMenuEntry::CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize,
+Engine::CompositeMenuEntry::CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
-	MenuEntry(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	MenuEntry(text, font, fontSize, iconTexture, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	m_childrenMenuEntries(),
 	m_selectedMenuEntryIndex(0)
 {
@@ -138,11 +139,11 @@ Engine::MenuEntry* Engine::CompositeMenuEntry::SelectChild(size_t index)
 /* ==================== CompositeMenuEntry class end ==================== */
 
 /* ==================== ActionMenuEntry class begin ==================== */
-Engine::ActionMenuEntry::ActionMenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize,
+Engine::ActionMenuEntry::ActionMenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
-	MenuEntry(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
+	MenuEntry(text, font, fontSize, iconTexture, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
 	m_gameCommand(gameCommand)
 {
 }
@@ -164,11 +165,11 @@ Engine::MenuEntry* Engine::ActionMenuEntry::Execute()
 /* ==================== ActionMenuEntry class end ==================== */
 
 /* ==================== ValueMenuEntry class begin ==================== */
-Engine::ValueMenuEntry::ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize,
+Engine::ValueMenuEntry::ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
-	MenuEntry(text, font, fontSize, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth)
+	MenuEntry(text, font, fontSize, iconTexture, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth)
 {
 }
 

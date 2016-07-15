@@ -260,6 +260,7 @@ public:
 	RENDERING_API const Shader* GetBillboardShader() const { return m_billboardShader; }
 	RENDERING_API const Shader* GetParticleShader() const { return m_particleShader; }
 	RENDERING_API const Shader* GetGuiTextShader() const { return m_textShader2; }
+	RENDERING_API const Shader* GetGuiShader() const { return m_guiShader; }
 	RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
 
 	void BindCubeShadowMap(unsigned int textureUnit) const;
@@ -493,6 +494,8 @@ private:
 
 	MappedValues m_mappedValues;
 
+	Shader* m_guiShader;
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 	unsigned int m_cameraCountMinusOne;
 //#ifdef CARTOON_SHADING_ENABLED // cartoon shading is included in the Lighting.glh file (probably commented out)
@@ -507,10 +510,10 @@ private:
 	TwType m_cameraType;
 #endif
 
+
 #ifdef DEBUG_RENDERING_ENABLED
 	std::vector<GuiTexture*> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
 	Mesh* m_debugQuad;
-	Shader* m_debugShader;
 #endif
 
 #ifdef CALCULATE_RENDERING_STATS

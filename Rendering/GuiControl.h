@@ -53,6 +53,12 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Returns information about whether the specified position is inside the GUI control or not.
+			/// </summary>
+			/// <returns>
+			/// The special <code>IntersectInfo</code> object storing information about whether the specified position is inside the GUI control or not.
+			/// </returns>
 			RENDERING_API Math::IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const
 			{
 				//const Math::IntersectInfo intersectInfo = m_aabr.DoesContainPoint(x, y);
@@ -70,6 +76,10 @@ namespace Rendering
 			/// </returns>
 			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
 
+			/// <summary>
+			/// Draws the GUI control on the screen using the specified rendering engine.
+			/// </summary>
+			/// <param name="renderer">The rendering engine to be used when drawing the GUI control.</param>
 			RENDERING_API virtual void Draw(const Rendering::Renderer& renderer) const = 0;
 		protected:
 			void MoveAABR(Math::Real bottomLeftOffsetX, Math::Real bottomLeftOffsetY, Math::Real topRightOffsetX, Math::Real topRightOffsetY);

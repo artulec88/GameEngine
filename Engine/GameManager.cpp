@@ -138,7 +138,7 @@ void Engine::GameManager::AddBillboardsRenderer(GameNode* billboardsRenderer)
 	m_billboardsRenderers.push_back(billboardsRenderer);
 }
 
-void Engine::GameManager::AddText(const Rendering::Controls::GuiTextControl& guiText)
+void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& guiControl)
 {
 	//FontMap::const_iterator textItr = m_texts.find(guiText.GetFont());
 	//if (textItr == m_texts.end())

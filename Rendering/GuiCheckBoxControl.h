@@ -1,5 +1,5 @@
-#ifndef __RENDERING_GUI_CHECK_BOX_H__
-#define __RENDERING_GUI_CHECK_BOX_H__
+#ifndef __RENDERING_GUI_CHECK_BOX_CONTROL_H__
+#define __RENDERING_GUI_CHECK_BOX_CONTROL_H__
 
 #include "Rendering.h"
 #include "GuiControl.h"
@@ -54,4 +54,4 @@ namespace Rendering
 	} /* end namespace Controls */
 } /* end namespace Rendering */
 
-#endif // __RENDERING_GUI_CHECK_BOX_H__
+#endif // __RENDERING_GUI_CHECK_BOX_CONTROL_H__

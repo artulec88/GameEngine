@@ -184,7 +184,7 @@
     <ClInclude Include="Font.h" />
     <ClInclude Include="GuiCheckBoxControl.h" />
     <ClInclude Include="GuiControl.h" />
-    <ClInclude Include="GuiText.h" />
+    <ClInclude Include="GuiButtonControl.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
@@ -226,7 +226,7 @@
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="GuiCheckBoxControl.cpp" />
     <ClCompile Include="GuiControl.cpp" />
-    <ClCompile Include="GuiText.cpp" />
+    <ClCompile Include="GuiButtonControl.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
