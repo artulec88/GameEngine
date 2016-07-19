@@ -25,8 +25,9 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	m_borderWidth(borderWidth),
 	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth)
 {
-	if (!text.empty() && m_font != NULL)
+	if (m_font != NULL)
 	{
+		// TODO: Investigate more thoroughly what happens exactly when text == "".
 		SetText(text);
 	}
 	else

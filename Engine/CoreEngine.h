@@ -11,7 +11,6 @@
 #include "Physics\PhysicsEngine.h"
 
 #include "Rendering\GuiButtonControl.h"
-#include "Rendering\Font.h"
 #include "Rendering\Renderer.h"
 
 #include "Math\Math.h"

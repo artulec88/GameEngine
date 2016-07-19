@@ -493,20 +493,19 @@ void Engine::CoreEngine::Run()
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
-	const Rendering::Text::Font font(GET_CONFIG_VALUE_STR_ENGINE("fontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR_ENGINE("fontMetaData", "segoe.fnt"));
 	Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
 	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
-	Rendering::Controls::GuiButtonControl fpsGuiButton("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
+	Rendering::Controls::GuiButtonControl fpsGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
-	Rendering::Controls::GuiButtonControl inGameTimeGuiButton("", &font, GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f), NULL,
+	Rendering::Controls::GuiButtonControl inGameTimeGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
 		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),

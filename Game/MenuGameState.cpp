@@ -13,11 +13,9 @@
 using namespace Game;
 using namespace Rendering;
 
-MenuGameState::MenuGameState(const std::string& inputMappingContextName) :
+MenuGameState::MenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize) :
 	Engine::GameState(inputMappingContextName),
-	m_mainMenuFont(GET_CONFIG_VALUE_STR_GAME("mainMenuFontTextureAtlas", "cambria.png"), GET_CONFIG_VALUE_STR_GAME("mainMenuFontMetaData", "cambria.fnt")),
-	m_mainMenuFontSize(GET_CONFIG_VALUE_GAME("mainMenuFontSize", 16.0f)),
-	m_mainMenuRootEntry("Main menu", &m_mainMenuFont, m_mainMenuFontSize, NULL,
+	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL,
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(NULL),
 	m_selectedMenuEntryColorEffect(NULL),
@@ -46,21 +44,21 @@ MenuGameState::MenuGameState(const std::string& inputMappingContextName) :
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", &m_mainMenuFont, m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.4f), 0.5f,
+	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.4f), 0.5f,
 		Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true);
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", &m_mainMenuFont, m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", mainMenuFont,mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), 0.5f,
 		Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", &m_mainMenuFont, m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), 0.5f,
 		Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", &m_mainMenuFont, m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), 0.5f,
 		Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::START_GAME), "Start", NULL,
-		m_mainMenuFontSize, new Texture("check-297273_960_720.png"), Math::Vector2D(0.25f, 0.2f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::START_GAME), "Start", mainMenuFont,
+		mainMenuFontSize, NULL /*new Texture("check-297273_960_720.png")*/, Math::Vector2D(0.25f, 0.2f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SHOW_INTRO), "Intro", &m_mainMenuFont,
-		m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", &m_mainMenuFont,
-		m_mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SHOW_INTRO), "Intro", mainMenuFont,
+		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.6f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", mainMenuFont,
+		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	Math::Vector3D vectors3D[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	Math::Real colorTimes[] = { 0.0f, 1.0f, 2.0f };

@@ -174,6 +174,12 @@ void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std
 	//	temp = "";
 	//	ss >> temp;
 	//}
+
+	if (str.empty())
+	{
+		return;
+	}
+
 	const char QUOTE_SIGN = '"';
 	const char* cstr = str.c_str();
 	unsigned int strLength = static_cast<unsigned int>(str.length());

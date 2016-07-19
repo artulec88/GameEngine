@@ -21,14 +21,28 @@ Rendering::Text::Font::Font(const std::string& fontTextureAtlasFileName, const s
 	m_metaDataFileName(fontMetaDataFileName)
 {
 	//m_textureAtlas = new Texture(fontTextureAtlasFileName);
+	DELOCUST_LOG_RENDERING("Creating font: (textureAtlas = ", fontTextureAtlasFileName, "; metaData = ", fontMetaDataFileName, ").");
 	m_aspectRatio = static_cast<Math::Real>(1600) / 900; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
 	//m_aspectRatio = static_cast<Math::Real>(900) / 1600; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
-	ReadMetaDataFile("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\" + fontMetaDataFileName);
+	ReadMetaDataFile(fontMetaDataFileName);
+	DEBUG_LOG_RENDERING("Font: (textureAtlas = ", fontTextureAtlasFileName, "; metaData = ", fontMetaDataFileName, ") is now created.");
 }
 
 Rendering::Text::Font::~Font()
 {
 	//SAFE_DELETE(m_textureAtlas);
+}
+
+Rendering::Text::Font::Font(Font&& font) :
+	m_textureAtlas(std::move(font.m_textureAtlas)),
+	m_metaDataFileName(std::move(font.m_metaDataFileName)),
+	m_aspectRatio(std::move(font.m_aspectRatio)),
+	m_padding(std::move(font.m_padding)),
+	m_verticalPerPixelSize(std::move(font.m_verticalPerPixelSize)),
+	m_horizontalPerPixelSize(std::move(font.m_horizontalPerPixelSize)),
+	m_spaceWidth(std::move(font.m_spaceWidth)),
+	m_metaData(std::move(font.m_metaData))
+{
 }
 
 void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFileName)
@@ -41,59 +55,58 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 	std::string line;
 	while (!file.eof())
 	{
-		CHECK_CONDITION_EXIT_RENDERING(!file.fail(), Utility::EMERGENCY,
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(!file.bad() && !file.eof() && !file.fail(), Utility::Logging::EMERGENCY,
 			"Error occured in the stream while reading the font meta data file \"", fontMetaDataFileName, "\"");
 		std::getline(file, line);
-		//Utility::StringUtility::RightTrim(line);
-		std::vector<std::string> tokens;
-		Utility::StringUtility::CutToTokens(line, tokens, META_DATA_SPLITTER, 2);
-
-		if (tokens.empty())
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(!file.bad(), Utility::Logging::EMERGENCY,
+			"Error occured in the stream while reading the font meta data file \"", fontMetaDataFileName, "\"");
+		if (!line.empty())
 		{
-			continue;
-		}
-		if (tokens[0].compare("info") == 0)
-		{
-			tokens.erase(tokens.begin()); // Removing the first token
-			// Padding calculation begin
-			std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "padding");
-			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"padding\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
-			const std::string padding = *(tokenItr + 1);
-			std::vector<std::string> subTokens;
-			Utility::StringUtility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
-			CHECK_CONDITION_RENDERING(subTokens.size() == 4, Utility::ERR, "The \"padding\" attribute must define 4 values instead of ", subTokens.size());
-			for (size_t index = 0; index < subTokens.size(); ++index)
+			std::vector<std::string> tokens;
+			Utility::StringUtility::CutToTokens(line, tokens, META_DATA_SPLITTER, 2);
+			if (tokens[0].compare("info") == 0)
 			{
-				m_padding[index] = Utility::StringUtility::ToInt(subTokens[index]);
+				tokens.erase(tokens.begin()); // Removing the first token
+				// Padding calculation begin
+				std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "padding");
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
+					"No \"padding\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
+				const std::string padding = *(tokenItr + 1);
+				std::vector<std::string> subTokens;
+				Utility::StringUtility::CutToTokens(padding, subTokens, NUMBER_SEPARATOR);
+				CHECK_CONDITION_RENDERING(subTokens.size() == 4, Utility::ERR, "The \"padding\" attribute must define 4 values instead of ", subTokens.size());
+				for (size_t index = 0; index < subTokens.size(); ++index)
+				{
+					m_padding[index] = Utility::StringUtility::ToInt(subTokens[index]);
+				}
+				DEBUG_LOG_RENDERING("Padding left = ", m_padding[PADDING_LEFT_INDEX], "; top = ", m_padding[PADDING_TOP_INDEX],
+					"; right = ", m_padding[PADDING_RIGHT_INDEX], "; bottom = ", m_padding[PADDING_BOTTOM_INDEX]);
+				// Padding calculation end
 			}
-			DEBUG_LOG_RENDERING("Padding left = ", m_padding[PADDING_LEFT_INDEX], "; top = ", m_padding[PADDING_TOP_INDEX],
-				"; right = ", m_padding[PADDING_RIGHT_INDEX], "; bottom = ", m_padding[PADDING_BOTTOM_INDEX]);
-			// Padding calculation end
-		}
-		else if (tokens[0].compare("common") == 0)
-		{
-			tokens.erase(tokens.begin()); // Removing the first token
-			// Line sizes calculation begin
-			std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "lineHeight");
-			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"lineHeight\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
-			int lineHeightPixels = Utility::StringUtility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX];
-			m_verticalPerPixelSize = LINE_HEIGHT / lineHeightPixels;
-			m_horizontalPerPixelSize = m_verticalPerPixelSize / m_aspectRatio;
-			DEBUG_LOG_RENDERING("Per pixel sizes: horizontal = ", m_horizontalPerPixelSize, ", vertical = ", m_verticalPerPixelSize);
-			// Line sizes calculation end
+			else if (tokens[0].compare("common") == 0)
+			{
+				tokens.erase(tokens.begin()); // Removing the first token
+				// Line sizes calculation begin
+				std::vector<std::string>::iterator tokenItr = std::find(tokens.begin(), tokens.end(), "lineHeight");
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
+					"No \"lineHeight\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
+				int lineHeightPixels = Utility::StringUtility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX];
+				m_verticalPerPixelSize = LINE_HEIGHT / lineHeightPixels;
+				m_horizontalPerPixelSize = m_verticalPerPixelSize / m_aspectRatio;
+				DEBUG_LOG_RENDERING("Per pixel sizes: horizontal = ", m_horizontalPerPixelSize, ", vertical = ", m_verticalPerPixelSize);
+				// Line sizes calculation end
 
-			tokenItr = std::find(tokens.begin(), tokens.end(), "scaleW");
-			CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
-				"No \"scaleW\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
-			imageWidth = Utility::StringUtility::ToInt(*(tokenItr + 1));
-			DEBUG_LOG_RENDERING("Image width = ", imageWidth);
-		}
-		else if (tokens[0].compare("char") == 0)
-		{
-			tokens.erase(tokens.begin()); // Removing the first token
-			AddCharacter(tokens, imageWidth); // Creating a character
+				tokenItr = std::find(tokens.begin(), tokens.end(), "scaleW");
+				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::ERR,
+					"No \"scaleW\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
+				imageWidth = Utility::StringUtility::ToInt(*(tokenItr + 1));
+				DEBUG_LOG_RENDERING("Image width = ", imageWidth);
+			}
+			else if (tokens[0].compare("char") == 0)
+			{
+				tokens.erase(tokens.begin()); // Removing the first token
+				AddCharacter(tokens, imageWidth); // Creating a character
+			}
 		}
 	}
 	file.close();

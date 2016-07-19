@@ -30,32 +30,32 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
-			RENDERING_API virtual ~Font(void);
-		//private:
-		//	Font(const Font& font);
-		//	void operator=(const Font& font);
+			Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
+			~Font(void);
+			Font(Font&& font);
+			Font(const Font& font) = default;
+			//void operator=(const Font& font);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			RENDERING_API const Character& GetCharacter(int asciiCode) const;
-			RENDERING_API Math::Real GetSpaceWidth() const { return m_spaceWidth; }
-			RENDERING_API const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
-			RENDERING_API void Bind() const { m_textureAtlas.Bind(0); }
+			const Character& GetCharacter(int asciiCode) const;
+			Math::Real GetSpaceWidth() const { return m_spaceWidth; }
+			const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
+			void Bind() const { m_textureAtlas.Bind(0); }
 		private:
 			void ReadMetaDataFile(const std::string& fontMetaDataFileName);
 			void AddCharacter(std::vector<std::string>& tokens, int imageWidth);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-		protected:
+		private:
 			Texture m_textureAtlas;
 			const std::string m_metaDataFileName;
 
 			Math::Real m_aspectRatio;
 
-			int m_padding[4];
+			std::array<int, 4> m_padding;
 			Math::Real m_verticalPerPixelSize;
 			Math::Real m_horizontalPerPixelSize;
 

@@ -19,7 +19,7 @@
 #include "Rendering\PointLight.h"
 #include "Rendering\SpotLight.h"
 #include "Rendering\Camera.h"
-#include "Rendering\Font.h"
+#include "Rendering\FontFactory.h"
 #include "Rendering\GuiButtonControl.h"
 #include "Rendering\Texture.h"
 
@@ -96,6 +96,8 @@ namespace Engine
 		ENGINE_API virtual GameState* GetPlayGameState() = 0;
 		ENGINE_API virtual GameState* GetPlayMainMenuGameState() = 0;
 
+		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType);
+
 		// TODO: Think about removing the window parameter from the event handling functions below.
 		ENGINE_API virtual void WindowResizeEvent(int width, int height);
 		ENGINE_API virtual void CloseWindowEvent();
@@ -149,7 +151,7 @@ namespace Engine
 		GameNode* m_waterNode;
 		std::vector<GameNode*> m_billboardsRenderers;
 		std::vector<ParticleGenerator*> m_particleGenerators;
-		//FontMap m_texts;
+		Rendering::Text::FontFactory m_fontFactory;
 		GameStateManager* m_gameStateManager;
 		bool m_isGameLoaded;
 

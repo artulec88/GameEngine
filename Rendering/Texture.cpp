@@ -18,7 +18,7 @@ Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, Utility::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
-	m_textureID = new GLuint[m_texturesCount];
+	m_textureIDs.reserve(texturesCount);
 
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
 	InitTextures(data, filters, internalFormat, format, clampEnabled);
@@ -33,7 +33,7 @@ Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int widt
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	m_textureID = new GLuint[m_texturesCount];
+	m_textureIDs.reserve(m_texturesCount);
 
 	// Init textures begin
 	const int NUMBER_OF_CUBE_MAP_FACES = 6;
@@ -47,7 +47,7 @@ Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int widt
 	}
 	
 	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(m_texturesCount, m_textureID);
+	glGenTextures(m_texturesCount, &m_textureIDs[0]);
 	CheckErrorCode(__FUNCTION__, "Generating cube map texture");
 	Bind(0);
 
@@ -76,11 +76,10 @@ Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int widt
 
 Rendering::TextureData::~TextureData(void)
 {
-	if (*m_textureID)
+	if (!m_textureIDs.empty())
 	{
-		glDeleteTextures(m_texturesCount, m_textureID);
+		glDeleteTextures(m_texturesCount, &m_textureIDs[0]);
 	}
-	SAFE_DELETE_JUST_TABLE(m_textureID);
 	if (m_framebuffer)
 	{
 		glDeleteFramebuffers(1, &m_framebuffer);
@@ -89,6 +88,20 @@ Rendering::TextureData::~TextureData(void)
 	{
 		glDeleteRenderbuffers(1, &m_renderbuffer);
 	}
+}
+
+Rendering::TextureData::TextureData(TextureData&& textureData) :
+	m_textureTarget(std::move(textureData.m_textureTarget)),
+	m_texturesCount(std::move(textureData.m_texturesCount)),
+	m_textureIDs(std::move(textureData.m_textureIDs)),
+	m_width(std::move(textureData.m_width)),
+	m_height(std::move(textureData.m_height)),
+	m_framebuffer(std::move(textureData.m_framebuffer)),
+	m_renderbuffer(std::move(textureData.m_renderbuffer))
+{
+	textureData.m_textureIDs.clear(); // TODO: Is it correct?
+	textureData.m_framebuffer = 0;
+	textureData.m_renderbuffer = 0;
 }
 
 void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled)
@@ -103,7 +116,7 @@ void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 		WARNING_LOG_RENDERING("The filter array is NULL.");
 	}
 
-	glGenTextures(m_texturesCount, m_textureID);
+	glGenTextures(m_texturesCount, &m_textureIDs[0]);
 	CheckErrorCode(__FUNCTION__, "Generating textures");
 	for (int i = 0; i < m_texturesCount; ++i)
 	{
@@ -111,7 +124,7 @@ void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 		{
 			DEBUG_LOG_RENDERING("Texture data[", i, "] is NULL.");
 		}
-		glBindTexture(m_textureTarget, m_textureID[i]);
+		glBindTexture(m_textureTarget, m_textureIDs[i]);
 		glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
 		CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_MIN_FILTER");
 		if (filters[i] == GL_NEAREST)
@@ -168,7 +181,7 @@ void Rendering::TextureData::Bind(int textureIndex) const
 {
 	CHECK_CONDITION_RETURN_VOID_RENDERING(textureIndex >= 0 && textureIndex < m_texturesCount, Utility::CRITICAL,
 		"Cannot bind the texture with textureID=", textureIndex, ". This value is out of range [0; ", m_texturesCount, ")");
-	glBindTexture(m_textureTarget, m_textureID[textureIndex]);
+	glBindTexture(m_textureTarget, m_textureIDs[textureIndex]);
 }
 
 void Rendering::TextureData::InitRenderTargets(GLenum* attachments)
@@ -214,7 +227,7 @@ void Rendering::TextureData::InitRenderTargets(GLenum* attachments)
 		}
 		// Associate the texture with the framebuffer
 		//glFramebufferTexture(GL_FRAMEBUFFER, attachments[i], m_textureID[i], 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureID[i], 0 /* which mipmap level of the texture we want to use */);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_textureIDs[i], 0 /* which mipmap level of the texture we want to use */);
 	}
 
 	if (m_framebuffer == 0)
@@ -254,7 +267,7 @@ bool Rendering::TextureData::Compare(const TextureData& textureData) const
 
 	for (int i = 0; i < m_texturesCount; ++i)
 	{
-		if (m_textureID[i] != textureData.m_textureID[i])
+		if (m_textureIDs[i] != textureData.m_textureIDs[i])
 		{
 			return false;
 		}
@@ -262,7 +275,7 @@ bool Rendering::TextureData::Compare(const TextureData& textureData) const
 	return true;
 }
 
-/* static */ std::map<std::string, Rendering::TextureData*> Rendering::Texture::s_textureResourceMap;
+/* static */ std::map<std::string, std::shared_ptr<Rendering::TextureData>> Rendering::Texture::s_textureResourceMap;
 
 Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
 	m_textureData(NULL),
@@ -276,7 +289,7 @@ Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /*
 		name.assign(tmp + 1);
 	}
 
-	std::map<std::string, TextureData*>::const_iterator itr = s_textureResourceMap.find(fileName);
+	std::map<std::string, std::shared_ptr<Rendering::TextureData>>::const_iterator itr = s_textureResourceMap.find(fileName);
 	if (itr == s_textureResourceMap.end()) // texture has not been loaded yet
 	{
 		INFO_LOG_RENDERING("Loading texture from file \"", name, "\".");
@@ -286,17 +299,15 @@ Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /*
 		int x, y, bytesPerPixel;
 		//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
 		unsigned char* data = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
-
 		CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::ERR, "Unable to load texture from the file \"", name, "\"");
-		m_textureData = new TextureData(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
+		m_textureData = std::make_shared<TextureData>(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 		stbi_image_free(data);
-		s_textureResourceMap.insert(std::pair<std::string, TextureData*>(fileName, m_textureData));
+		s_textureResourceMap.insert(std::pair<std::string, std::shared_ptr<Rendering::TextureData>>(fileName, m_textureData));
 		DEBUG_LOG_RENDERING("Loading texture from file \"", name, "\" finished successfully");
 	}
 	else // (itr != textureResourceMap.end()) // texture has already been loaded
 	{
 		m_textureData = itr->second;
-		m_textureData->AddReference();
 	}
 
 	//LoadFromFile(fileName);
@@ -342,7 +353,7 @@ Rendering::Texture::Texture(const std::string& posXFileName, const std::string& 
 	int width = x[0];
 	int height = x[0];
 	int depth = x[0];
-	m_textureData = new TextureData(cubeMapData, width, height, depth);
+	m_textureData = std::make_shared<TextureData>(cubeMapData, width, height, depth);
 }
 
 Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, bool clampEnabled /* = false */, GLenum attachment /* = GL_NONE */) :
@@ -354,7 +365,7 @@ Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned 
 	{
 		DEBUG_LOG_RENDERING("Cannot initialize texture. Passed texture data is NULL");
 	}
-	m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
+	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
@@ -364,23 +375,18 @@ Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned c
 {
 	//m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::ERR, "Texture data creation failed. Texture data is NULL.");
-	m_textureData = new TextureData(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, clampEnabled, attachments);
+	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, clampEnabled, attachments);
 
 }
 
 Rendering::Texture::~Texture(void)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_RENDERING(m_textureData != NULL, Utility::Logging::ERR, "Error encountered while destructing the texture. Texture data is already NULL.");
-	
-	m_textureData->RemoveReference();
-	if (! m_textureData->IsReferenced())
-	{
-		if (m_fileName.length() > 0)
-		{
-			s_textureResourceMap.erase(m_fileName);
-		}
-		SAFE_DELETE(m_textureData);
-	}
+}
+
+Rendering::Texture::Texture(Texture&& texture) :
+	m_textureData(std::move(texture.m_textureData)), // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
+	m_fileName(std::move(texture.m_fileName))
+{
 }
 
 void Rendering::Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureIndex /* = 0 */) const

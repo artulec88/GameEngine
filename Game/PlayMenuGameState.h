@@ -29,7 +29,7 @@ class PlayMenuGameState : public Engine::GameState, public virtual Engine::IRend
 
 /* ==================== Constructors and destructors begin ==================== */
 public:
-	PlayMenuGameState(const std::string& inputMappingContextName);
+	PlayMenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
 	virtual ~PlayMenuGameState(void);
 /* ==================== Constructors and destructors end ==================== */
 
@@ -56,8 +56,6 @@ private:
 
 /* ==================== Non-static member variables begin ==================== */
 private:
-	Rendering::Text::Font m_playMainMenuFont;
-	Math::Real m_playMainMenuFontSize;
 	Engine::CompositeMenuEntry m_playMainMenuRootEntry;
 	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
 	//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;

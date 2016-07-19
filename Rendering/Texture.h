@@ -12,7 +12,7 @@ namespace Rendering
 	/// <summary>
 	/// The low level representation of the texture.
 	/// </summary>
-	class TextureData : public Utility::ReferenceCounter
+	class TextureData
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	public:
@@ -24,10 +24,12 @@ namespace Rendering
 	public:
 		TextureData(GLenum textureTargets, int widths, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clampEnabled, GLenum* attachments);
 		TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth); // cube map texture data
-		virtual ~TextureData(void);
+		~TextureData(void);
+		//TextureData(const TextureData& textureData) = default;
+		TextureData(TextureData&& textureData);
 	private:
-		TextureData(const TextureData& textureData) {} // don't implement
-		void operator=(const TextureData& textureData) {} // don't implement
+		//TextureData(const TextureData& textureData) {} // don't implement
+		//void operator=(const TextureData& textureData) {} // don't implement
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -54,7 +56,7 @@ namespace Rendering
 		/// See https://www.youtube.com/watch?v=5bIpaXPiPIA&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=6 (starting around 7:00).
 		/// </remarks>
 		int m_texturesCount;
-		GLuint* m_textureID;
+		std::vector<GLuint> m_textureIDs;
 		int m_width;
 		int m_height;
 
@@ -76,7 +78,7 @@ namespace Rendering
 	{
 		/* ==================== Static variables begin ==================== */
 	protected:
-		static std::map<std::string, TextureData*> s_textureResourceMap;
+		static std::map<std::string, std::shared_ptr<Rendering::TextureData>> s_textureResourceMap;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -86,11 +88,9 @@ namespace Rendering
 		RENDERING_API Texture(int width = 0, int height = 0, unsigned char* data = NULL, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
 		RENDERING_API Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, bool clampEnabled, GLenum* attachments);
 		RENDERING_API virtual ~Texture(void);
-		//protected:
-		//	Texture(); // TODO: Uncomment when any class starts inheriting from the Texture class.
-	private:
-		Texture(const Texture& texture) {}
-		void operator=(const Texture& texture) {}
+		//Texture(const Texture& texture) = default;
+		Texture(Texture&& texture);
+		//void operator=(const Texture& texture) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -104,7 +104,7 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		TextureData* m_textureData;
+		std::shared_ptr<TextureData> m_textureData;
 		std::string m_fileName;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Texture */

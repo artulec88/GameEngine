@@ -49,6 +49,7 @@ Engine::GameManager::GameManager() :
 	m_terrainNode(NULL),
 	m_skyboxNode(NULL),
 	m_waterNode(NULL),
+	m_fontFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
@@ -243,6 +244,11 @@ void Engine::GameManager::RequestGameQuit() const
 	//glfwSetWindowShouldClose(window, GL_TRUE); // Doesn't work, because we don't have a window
 
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
+}
+
+const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontTypes::FontType fontType)
+{
+	return m_fontFactory.GetFont(fontType);
 }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
