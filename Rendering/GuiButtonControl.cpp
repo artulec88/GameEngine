@@ -27,7 +27,7 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 {
 	if (m_font != NULL)
 	{
-		// TODO: Investigate more thoroughly what happens exactly when text == "".
+		// TODO: Investigate more thoroughly what happens exactly when text == "". Some errors seem to appear when we don't call SetText for an empty string.
 		SetText(text);
 	}
 	else

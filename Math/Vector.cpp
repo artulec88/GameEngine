@@ -30,6 +30,12 @@ Math::Vector2D::Vector2D(const Vector2D& v) :
 {
 }
 
+Math::Vector2D::Vector2D(Vector2D&& v) :
+	m_x(std::move(v.GetX())),
+	m_y(std::move(v.GetY()))
+{
+}
+
 Math::Vector2D::~Vector2D()
 {
 }
@@ -188,9 +194,9 @@ Math::Vector3D::Vector3D(const Vector3D& v) :
 }
 
 Math::Vector3D::Vector3D(Vector3D&& v) :
-	m_x(v.m_x),
-	m_y(v.m_y),
-	m_z(v.m_z)
+	m_x(std::move(v.m_x)),
+	m_y(std::move(v.m_y)),
+	m_z(std::move(v.m_z))
 {
 }
 
@@ -459,6 +465,14 @@ Math::Vector4D::Vector4D(const Vector4D& v) :
 	m_y(v.GetY()),
 	m_z(v.GetZ()),
 	m_w(v.GetW())
+{
+}
+
+Math::Vector4D::Vector4D(Vector4D&& v) :
+	m_x(std::move(v.GetX())),
+	m_y(std::move(v.GetY())),
+	m_z(std::move(v.GetZ())),
+	m_w(std::move(v.GetW()))
 {
 }
 

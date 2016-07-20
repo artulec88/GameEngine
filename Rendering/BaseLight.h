@@ -21,10 +21,10 @@ namespace Rendering
 
 		class BaseLight
 		{
-		/* ==================== Static variables and functions begin ==================== */
-		/* ==================== Static variables and functions end ==================== */
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>The constructor.</summary>
 			/// <param name="transform">The transform of the light.</param>
@@ -44,7 +44,7 @@ namespace Rendering
 		public:
 			//virtual void Update(Math::Real delta);
 			//virtual void Render(Shader* shader, Renderer* renderer);
-			Color GetColor() const { return m_color; }
+			const Color& GetColor() const { return m_color; }
 			Math::Real GetIntensity() const { return m_intensity; }
 			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
 			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
@@ -59,7 +59,7 @@ namespace Rendering
 			Math::Transform& GetTransform() { return m_transform; }
 			const Math::Transform& GetTransform() const { return m_transform; }
 
-			RENDERING_API void SetColor(Color color) { m_color = color; }
+			RENDERING_API void SetColor(const Color& color) { m_color = color; }
 			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 			RENDERING_API void SetShader(Shader* shader);
@@ -71,9 +71,9 @@ namespace Rendering
 #ifdef ANT_TWEAK_BAR_ENABLED
 			virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
-		/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			/// <summary> The base light transform. </summary>
 			Math::Transform& m_transform;
@@ -104,7 +104,7 @@ namespace Rendering
 
 			/// <summary>The information about whether the light casts shadows or not.</summary>
 			bool m_isShadowingEnabled;
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BaseLight */
 
 	} /* end namespace Lighting */

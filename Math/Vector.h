@@ -18,6 +18,7 @@ public:
 	MATH_API explicit Vector2D(Real xy);
 	MATH_API Vector2D(Real x, Real y);
 	MATH_API Vector2D(const Vector2D& v);
+	MATH_API Vector2D(Vector2D&& v);
 	MATH_API ~Vector2D();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -284,6 +285,7 @@ public:
 	MATH_API explicit Vector4D(Real xyzw);
 	MATH_API Vector4D(Real x, Real y, Real z, Real w);
 	MATH_API Vector4D(const Vector4D& v);
+	MATH_API Vector4D(Vector4D&& v);
 	MATH_API ~Vector4D();
 /* ==================== Constructors and destructors end ==================== */
 
@@ -412,7 +414,7 @@ public:
 	void Threshold(Real maxLength);
 
 	// interpolation LERP
-	Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
+	MATH_API Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 	MATH_API std::string ToString() const;
 /* ==================== Non-static member functions end ==================== */
