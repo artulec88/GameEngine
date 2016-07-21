@@ -622,44 +622,7 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
 {
 	START_PROFILING;
-	// TODO: Check which of the three solution is faster
-
-	/* ==================== SOLUTION #1 begin ==================== */
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
-	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
-	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
-	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
-#else
-	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
-	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
-	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];	m_values[11] = mat[11];
-	m_values[12] = mat[12];	m_values[13] = mat[13];	m_values[14] = mat[14];	m_values[15] = mat[15];
-#endif
-	/* ==================== SOLUTION #1 end ==================== */
-
-	/* ==================== SOLUTION #2 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-	//		m_values[i][j] = mat[i][j];
-	//	}
-	//}
-	/* ==================== SOLUTION #2 end ==================== */
-
-	/* ==================== SOLUTION #3 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-	//		this->SetElement(i, j, mat.GetElement(i, j));
-	//	}
-	//}
-	/* ==================== SOLUTION #3 end ==================== */
-
-	SLOW_ASSERT((*this) == mat);
-
+	m_values = std::move(mat.m_values);
 	STOP_PROFILING;
 	return *this;
 }

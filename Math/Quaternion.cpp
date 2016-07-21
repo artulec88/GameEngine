@@ -268,11 +268,19 @@ Vector3D Quaternion::GetLeft() const
 
 Quaternion& Quaternion::operator=(const Quaternion& q)
 {
-	this->m_x = q.GetX();
-	this->m_y = q.GetY();
-	this->m_z = q.GetZ();
-	this->m_w = q.GetW();
+	m_x = q.GetX();
+	m_y = q.GetY();
+	m_z = q.GetZ();
+	m_w = q.GetW();
+	return *this;
+}
 
+Quaternion& Quaternion::operator=(Quaternion&& q)
+{
+	m_x = std::move(q.m_x);
+	m_y = std::move(q.m_y);
+	m_z = std::move(q.m_z);
+	m_w = std::move(q.m_w);
 	return *this;
 }
 

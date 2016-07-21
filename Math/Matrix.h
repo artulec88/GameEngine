@@ -23,6 +23,7 @@ namespace Math
 	/// <remarks>
 	///	The matrix is defined in a column-major ordering.
 	/// See http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf for details.
+	/// http://stackoverflow.com/questions/10718061/should-arrays-be-used-in-c.
 	/// </remarks>
 	class Matrix4D
 	{

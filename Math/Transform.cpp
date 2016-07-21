@@ -10,9 +10,62 @@ Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZER
 	m_rotation(rot),
 	m_scale(scale),
 	m_parentTransform(NULL),
+	m_transformation(),
+	m_parentTransformation(),
 	m_isChanged(true)
 {
 }
+
+Math::Transform::Transform(const Transform& transform) :
+	m_pos(transform.m_pos),
+	m_rotation(transform.m_rotation),
+	m_scale(transform.m_scale),
+	m_parentTransform(transform.m_parentTransform),
+	m_transformation(transform.m_transformation),
+	m_parentTransformation(transform.m_parentTransformation),
+	m_isChanged(true)
+{
+}
+
+Math::Transform::Transform(Transform&& transform) :
+	m_pos(std::move(transform.m_pos)),
+	m_rotation(std::move(transform.m_rotation)),
+	m_scale(std::move(transform.m_scale)),
+	m_parentTransform(std::move(transform.m_parentTransform)),
+	m_transformation(std::move(transform.m_transformation)),
+	m_parentTransformation(std::move(transform.m_parentTransformation)),
+	m_isChanged(true)
+{
+	transform.m_parentTransform = NULL;
+}
+
+//Math::Transform& Math::Transform::operator=(const Transform& transform)
+//{
+//	m_pos = transform.m_pos;
+//	m_rotation = transform.m_rotation;
+//	m_scale = transform.m_scale;
+//	m_parentTransform = transform.m_parentTransform;
+//	m_transformation = transform.m_transformation;
+//	m_parentTransformation = transform.m_parentTransformation;
+//	m_isChanged = true;
+//
+//	return *this;
+//}
+
+//Math::Transform& Math::Transform::operator=(Transform&& transform)
+//{
+//	m_pos = std::move(transform.m_pos);
+//	m_rotation = std::move(transform.m_rotation);
+//	m_scale = std::move(transform.m_scale);
+//	m_parentTransform = std::move(transform.m_parentTransform);
+//	m_transformation = std::move(transform.m_transformation);
+//	m_parentTransformation = std::move(transform.m_parentTransformation);
+//	m_isChanged = true;
+//
+//	transform.m_parentTransform = NULL;
+//
+//	return *this;
+//}
 
 Math::Transform::~Transform()
 {
