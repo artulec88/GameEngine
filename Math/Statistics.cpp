@@ -20,14 +20,13 @@ template <typename T>
 template <typename T>
 Math::Statistics::Stats<T>::Stats(int level /* = 0 */) :
 	m_level(level),
-	m_child(NULL)
+	m_child(nullptr)
 {
 }
 
 template <typename T>
 Math::Statistics::Stats<T>::~Stats(void)
 {
-	SAFE_DELETE(m_child);
 }
 
 template <typename T>
@@ -43,9 +42,9 @@ void Math::Statistics::Stats<T>::Push(StatsID statsID, T sample)
 		else
 		{
 			T mean = CalculateMean(statsID);
-			if (m_child == NULL)
+			if (m_child == nullptr)
 			{
-				m_child = new Stats<T>(m_level + 1);
+				m_child = std::make_unique<Stats<T>>(m_level + 1);
 			}
 			m_child->Push(statsID, mean);
 		}
@@ -250,7 +249,7 @@ Math::Real Math::Statistics::MethodStats::CalculateMedian() const
 		return REAL_ZERO;
 	}
 
-	Math::Real* timeSamples = new Math::Real[m_timeSamples.size()];
+	Math::Real* timeSamples = new Math::Real[m_timeSamples.size()]; // Get rid of all "new" operator calls. Replace it with some better C++11 solution.
 	unsigned int i = 0;
 	for (std::vector<std::pair<bool, Math::Real>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr, ++i)
 	{

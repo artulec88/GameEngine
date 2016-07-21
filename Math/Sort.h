@@ -218,9 +218,8 @@ private:
 			EMERGENCY_LOG_MATH("Cannot sort the table using the merge sort algorithm. The specified table is NULL");
 			return;
 		}
-		T* auxiliaryTable = new T [vectorSize];
-		Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable);
-		SAFE_DELETE_JUST_TABLE(auxiliaryTable);
+		std::vector<T> auxiliaryTable(vectorSize);
+		Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable.data());
 	}
 
 	template <typename T>
@@ -760,12 +759,12 @@ private:
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
 		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
 		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
-		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
+		std::vector<Bucket<T>> buckets;
+		buckets.reserve(NUMBER_OF_BUCKETS);
 		Math::Real bucketLowBound = minValue;
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
-			buckets[i].SetLowBound(bucketLowBound);
-			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
+			buckets.emplace_back(Bucket<T>(bucketLowBound, bucketLowBound + bucketWidth));
 			//DEBUG_LOG_MATH("Bucket[", i, "] takes range [", bucketLowBound, "; ", bucketLowBound + bucketWidth, ")");
 			bucketLowBound += bucketWidth;
 		}
@@ -843,12 +842,12 @@ private:
 		//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
 		const int NUMBER_OF_BUCKETS = static_cast<int>(sqrt(static_cast<Math::Real>(vectorSize)));
 		const Math::Real bucketWidth = static_cast<Math::Real>((maxValue - minValue) / NUMBER_OF_BUCKETS);
-		Bucket<T>* buckets = new Bucket<T> [NUMBER_OF_BUCKETS];
+		std::vector<Bucket<T>> buckets;
+		buckets.reserve(NUMBER_OF_BUCKETS);
 		Math::Real bucketLowBound = minValue;
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
-			buckets[i].SetLowBound(bucketLowBound);
-			buckets[i].SetHighBound(bucketLowBound + bucketWidth);
+			buckets.emplace_back(Bucket<T>(bucketLowBound, bucketLowBound + bucketWidth));
 			//DEBUG_LOG_MATH("Bucket[", i, "] takes range [", bucketLowBound, "; ", bucketLowBound + bucketWidth, ")");
 			bucketLowBound += bucketWidth;
 		}

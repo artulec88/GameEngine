@@ -171,7 +171,7 @@ namespace Math
 		MATH_API Angle& operator*=(Real s);
 		MATH_API Angle& operator/=(Real s);
 
-		MATH_API Angle& operator=(Angle angle);
+		MATH_API Angle& operator=(const Angle& angle);
 		MATH_API bool operator==(const Angle& angle) const;
 		MATH_API bool operator!=(const Angle& angle) const;
 		MATH_API bool operator>(const Angle& angle) const;

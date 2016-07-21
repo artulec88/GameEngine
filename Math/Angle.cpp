@@ -141,7 +141,7 @@ Angle& Angle::operator/=(Real s)
 	return *this;
 }
 
-Angle& Angle::operator=(Angle angle)
+Angle& Angle::operator=(const Angle& angle)
 {
 	//std::swap(*this, angle);
 	//std::swap(m_angle, angle.m_angle);

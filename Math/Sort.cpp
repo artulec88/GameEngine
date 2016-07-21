@@ -352,8 +352,8 @@ void CountingSort::Sort(int* values, size_t valuesCount, SortingDirection sortin
 	int range = max - min;
 	/* ==================== Calculating range of data end ==================== */
 
-	int* helpTab1 = new int[valuesCount];
-	int* helpTab2 = new int[range + 1];
+	std::vector<int> helpTab1(valuesCount);
+	std::vector<int> helpTab2(range + 1);
 	for (int i = 0; i <= range; ++i)
 		helpTab2[i] = 0;
 	for (int i = 0; i < valuesCount; ++i)
@@ -367,8 +367,6 @@ void CountingSort::Sort(int* values, size_t valuesCount, SortingDirection sortin
 	}
 	for (int i = 0; i < valuesCount; ++i)
 		values[i] = helpTab1[i];
-	SAFE_DELETE_JUST_TABLE(helpTab1);
-	SAFE_DELETE_JUST_TABLE(helpTab2);
 }
 
 void CountingSort::Sort(Math::Real* values, size_t valuesCount, SortingDirection sortingDirection /* = ASCENDING */)

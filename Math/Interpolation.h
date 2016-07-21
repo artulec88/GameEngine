@@ -108,7 +108,7 @@ namespace Interpolation
 
 	/* ==================== Non-static member variables begin ==================== */
 	private:
-		T* m_derivatives;
+		std::vector<T> m_derivatives;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class HermiteInterpolator */
 

@@ -5,6 +5,7 @@
 #include "RandomGenerator.h"
 #include <time.h>
 #include <map>
+#include <memory>
 
 namespace Math
 {
@@ -40,7 +41,7 @@ namespace Math
 		/// </summary>
 		class RandomGeneratorFactory
 		{
-			typedef std::map<Generators::Generator, RandomGenerator*> RandomGeneratorsMap;
+			typedef std::map<Generators::Generator, std::unique_ptr<RandomGenerator>> RandomGeneratorsMap;
 		/* ==================== Static variables begin ==================== */
 		public:
 			MATH_API static RandomGeneratorFactory& GetRandomGeneratorFactory();

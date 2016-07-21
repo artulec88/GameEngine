@@ -42,7 +42,7 @@ namespace Math
 		/// For a given pair of floats the function will always return the same result during runtime, although this value will be random.
 		/// Once the heights generator is created the noise function mustn't change.
 		/// </summary>
-		/// <returns> The random number between <code>-1</code> and <code>1</code>.
+		/// <returns> The random number between <code>-1</code> and <code>1</code>.</returns>
 		Real GetInterpolatedNoise(Real x, Real z) const;
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace Math
 		/// For a given pair of floats the function will always return the same result during runtime, although this value will be random.
 		/// Once the heights generator is created the noise function mustn't change.
 		/// </summary>
-		/// <returns> The random number between <code>-1</code> and <code>1</code>.
+		/// <returns> The random number between <code>-1</code> and <code>1</code>.</returns>
 		Real GetSmoothNoise(int x, int z) const;
 
 		/// <summary>
@@ -58,7 +58,7 @@ namespace Math
 		/// For a given pair of floats the function will always return the same result during runtime, although this value will be random.
 		/// Once the heights generator is created the noise function mustn't change.
 		/// </summary>
-		/// <returns> The random number between <code>-1</code> and <code>1</code>.
+		/// <returns> The random number between <code>-1</code> and <code>1</code>.</returns>
 		Real GetNoise(int x, int z) const;
 	/* ==================== Non-static member functions end ==================== */
 
@@ -74,10 +74,13 @@ namespace Math
 		int m_octaves;
 		Math::Real m_roughness;
 
-		Real m_smoothCornersFactor;
-		Real m_smoothSidesFactor;
-		Real m_smoothCenterFactor;
+		const Real M_SMOOTH_CORNERS_FACTOR;
+		const Real M_SMOOTH_SIDES_FACTOR;
+		const Real M_SMOOTH_CENTER_FACTOR;
 
+		/// <summary>
+		/// The interpolator we use in heights generation process.
+		/// </summary>
 		std::unique_ptr<Interpolation::Interpolator<Math::Real>> m_interpolator;
 
 		const Random::RandomGenerator& m_randomGenerator;

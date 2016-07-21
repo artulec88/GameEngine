@@ -68,7 +68,7 @@ namespace Math {
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			const int m_level;
-			Stats<T>* m_child;
+			std::unique_ptr<Stats<T>> m_child;
 			std::map<StatsID, std::vector<T>> m_samples;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Stats */

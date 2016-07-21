@@ -185,7 +185,7 @@ Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interp
 template <class T>
 Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount, const T& derivative0, const T& derivativeN) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
-	m_derivatives(NULL)
+	m_derivatives(interpolationObjectsCount)
 {
 	CalculateDerivatives(interpolationObjects, interpolationObjectsCount, derivative0, derivativeN);
 }
@@ -193,14 +193,13 @@ Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interp
 template <class T>
 Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, const T* derivatives, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
-	m_derivatives(derivatives)
+	m_derivatives(derivatives, derivatives + interpolationObjectsCount)
 {
 }
 
 template <class T>
 Math::Interpolation::HermiteInterpolator<T>::~HermiteInterpolator()
 {
-	SAFE_DELETE_JUST_TABLE(m_derivatives);
 }
 
 template <class T>
@@ -208,26 +207,23 @@ void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 {
 	// TODO: Calculate derivatives according to the "Essential Mathematics for Games and Interactive Applications 2nd Edition"- section 10.2.3 ("Hermite curves").
 	WARNING_LOG_MATH("This function has not been tested yet");
-	Real* c = new Real[interpolationObjectsCount - 1];
-	T* d = new T[interpolationObjectsCount];
-	c[0] = REAL_ZERO;
-	d[0] = derivative0;
-	for (int i = 1; i < interpolationObjectsCount - 1; ++i)
+	std::vector<Real> c, d; // auxiliary vectors
+	c.reserve(interpolationObjectsCount - 1);
+	d.reserve(interpolationObjectsCount);
+	c.push_back(REAL_ZERO);
+	d.push_back(derivative0);
+	for (int i = 1; i < interpolationObjectsCount - 1; ++i) // TODO: Try to change into the std::vector<Real>::const_iterator loop
 	{
-		c[i] = REAL_ONE / (4.0f - c[i - 1]);
-		d[i] = (3.0f * (interpolationObjects[i + 1] - interpolationObjects[i - 1]) - d[i - 1]) / (4.0f - c[i - 1]);
+		c.push_back(REAL_ONE / (4.0f - c[i - 1]));
+		d.push_back((3.0f * (interpolationObjects[i + 1] - interpolationObjects[i - 1]) - d[i - 1]) / (4.0f - c[i - 1]));
 	}
-	d[interpolationObjectsCount - 1] = derivativeN - d[interpolationObjectsCount - 2];
+	d.push_back(derivativeN - d[interpolationObjectsCount - 2]);
 
-	m_derivatives = new T[interpolationObjectsCount];
 	m_derivatives[interpolationObjectsCount - 1] = d[interpolationObjectsCount - 1];
 	for (int i = interpolationObjectsCount - 1; i >= 0; --i)
 	{
 		m_derivatives[i] = d[i] - c[i] * m_derivatives[i + 1];
 	}
-
-	SAFE_DELETE_JUST_TABLE(c);
-	SAFE_DELETE_JUST_TABLE(d);
 }
 
 template <class T>
