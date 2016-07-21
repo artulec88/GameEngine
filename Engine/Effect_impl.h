@@ -74,7 +74,7 @@ void Engine::Effects::SmoothTransitionEffect<T>::Update(Math::Real deltaTime)
 			m_isTimerIncreasing = true;
 		}
 	}
-	*m_attribute = m_valuesInterpolator.Interpolate(m_timer);
+	*m_attribute = m_valuesInterpolator.Interpolate(m_timer); // move copy assignment
 }
 /* ==================== SmoothTransitionEffect<T> class end ==================== */
 

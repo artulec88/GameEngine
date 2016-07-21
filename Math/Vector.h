@@ -20,6 +20,9 @@ public:
 	MATH_API Vector2D(const Vector2D& v);
 	MATH_API Vector2D(Vector2D&& v);
 	MATH_API ~Vector2D();
+
+	MATH_API Vector2D& operator=(const Vector2D& v);
+	MATH_API Vector2D& operator=(Vector2D&& v);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -67,7 +70,6 @@ public:
 	MATH_API Vector2D& operator*=(const Vector2D& v);
 	MATH_API Vector2D& operator/=(Real s);
 	MATH_API Vector2D& operator/=(const Vector2D& v);
-	MATH_API Vector2D& operator=(const Vector2D& v);
 	MATH_API bool operator!=(const Vector2D& v) const;
 	MATH_API bool operator==(const Vector2D& v) const;
 
@@ -144,6 +146,9 @@ public:
 	MATH_API Vector3D(const Vector3D& v);
 	MATH_API Vector3D(Vector3D&& v);
 	MATH_API ~Vector3D();
+
+	MATH_API Vector3D& operator=(const Vector3D& v);
+	MATH_API Vector3D& operator=(Vector3D&& v);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -194,7 +199,6 @@ public:
 	MATH_API Vector3D& operator*=(const Vector3D& v);
 	MATH_API Vector3D& operator/=(Real s);
 	MATH_API Vector3D& operator/=(const Vector3D& v);
-	MATH_API Vector3D& operator=(Vector3D v);
 	MATH_API bool operator!=(const Vector3D& v) const;
 	MATH_API bool operator==(const Vector3D& v) const;
 	
@@ -287,6 +291,9 @@ public:
 	MATH_API Vector4D(const Vector4D& v);
 	MATH_API Vector4D(Vector4D&& v);
 	MATH_API ~Vector4D();
+
+	MATH_API Vector4D& operator=(const Vector4D& v);
+	MATH_API Vector4D& operator=(Vector4D&& v);
 /* ==================== Constructors and destructors end ==================== */
 
 /* ==================== Non-static member functions begin ==================== */
@@ -340,7 +347,6 @@ public:
 	MATH_API Vector4D& operator*=(const Vector4D& v);
 	MATH_API Vector4D& operator/=(Real s);
 	MATH_API Vector4D& operator/=(const Vector4D& v);
-	MATH_API Vector4D& operator=(const Vector4D& v);
 	MATH_API bool operator!=(const Vector4D& v) const;
 	MATH_API bool operator==(const Vector4D& v) const;
 

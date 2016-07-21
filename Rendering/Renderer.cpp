@@ -1127,11 +1127,11 @@ void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timi
 		break;
 	case Utility::Timing::BEFORE_DAWN:
 		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor);
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
 		break;
 	case Utility::Timing::SUNRISE:
 		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor);
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
 		break;
 	case Utility::Timing::DAY:
 		dayNightMixFactor = REAL_ONE;
@@ -1139,11 +1139,11 @@ void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timi
 		break;
 	case Utility::Timing::SUNSET:
 		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor);
+		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
 		break;
 	case Utility::Timing::AFTER_DUSK:
 		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor);
+		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
 		break;
 	}
 

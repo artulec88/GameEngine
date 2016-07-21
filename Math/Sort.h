@@ -674,7 +674,7 @@ class BucketSort : public ISort
 		void SetHighBound(Math::Real highBound) { this->highBound = highBound; }
 		void PushVector(const T& vector) { m_vectors.push_back(vector); }
 		T* GetVectors() { return &m_vectors[0]; }
-		T GetVector(int i) const { return m_vectors[i]; }
+		const T& GetVector(int i) const { return m_vectors[i]; }
 		size_t GetVectorsSize() const { return m_vectors.size(); }
 	private:
 		std::vector<T> m_vectors;

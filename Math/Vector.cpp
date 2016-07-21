@@ -108,6 +108,18 @@ Math::Vector2D& Math::Vector2D::operator=(const Vector2D& v)
 	return *this;
 }
 
+Math::Vector2D& Math::Vector2D::operator=(Vector2D&& v)
+{
+	if (this != &v)
+	{
+		m_x = v.GetX();
+		m_y = v.GetY();
+		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
+	}
+	return *this;
+}
+
 bool Math::Vector2D::operator==(const Vector2D& v) const
 {
 	return ( AlmostEqual(this->GetX(), v.GetX()) && AlmostEqual(this->GetY(), v.GetY()) );
@@ -155,6 +167,13 @@ Math::Vector2D Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
 	return ((vec - (*this)) * lerpFactor) + (*this);
+}
+
+void Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor, Vector2D& result) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
+	result = ((vec - (*this)) * lerpFactor) + (*this);
 }
 
 std::string Math::Vector2D::ToString() const
@@ -318,11 +337,25 @@ Math::Vector3D& Math::Vector3D::operator/=(const Vector3D& v)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator=(Vector3D v)
+Math::Vector3D& Math::Vector3D::operator=(const Vector3D& v)
 {
 	m_x = v.m_x;
 	m_y = v.m_y;
 	m_z = v.m_z;
+	return *this;
+}
+
+Math::Vector3D& Math::Vector3D::operator=(Vector3D&& v)
+{
+	if (this != &v)
+	{
+		m_x = v.GetX();
+		m_y = v.GetY();
+		m_z = v.GetZ();
+		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_z = REAL_ZERO; // TODO: This seems unnecessary
+	}
 	return *this;
 }
 
@@ -586,6 +619,22 @@ Math::Vector4D& Math::Vector4D::operator=(const Vector4D& v)
 	m_z = v.GetZ();
 	m_w = v.GetW();
 
+	return *this;
+}
+
+Math::Vector4D& Math::Vector4D::operator=(Vector4D&& v)
+{
+	if (this != &v)
+	{
+		m_x = v.GetX();
+		m_y = v.GetY();
+		m_z = v.GetZ();
+		m_w = v.GetW();
+		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_z = REAL_ZERO; // TODO: This seems unnecessary
+		//v.m_w = REAL_ZERO; // TODO: This seems unnecessary
+	}
 	return *this;
 }
 

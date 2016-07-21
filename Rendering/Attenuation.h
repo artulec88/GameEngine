@@ -25,6 +25,20 @@ namespace Rendering
 			m_exponent(exponent)
 		{
 		}
+
+		RENDERING_API Attenuation(const Attenuation& attenuation) : // copy constructor
+			m_constant(attenuation.m_constant),
+			m_linear(attenuation.m_linear),
+			m_exponent(attenuation.m_exponent)
+		{
+		}
+		RENDERING_API Attenuation(Attenuation&& attenuation) : // move constructor
+			m_constant(std::move(attenuation.m_constant)),
+			m_linear(std::move(attenuation.m_linear)),
+			m_exponent(std::move(attenuation.m_exponent))
+		{
+		}
+
 		/// <summary> The destructor </summary>
 		RENDERING_API ~Attenuation(void)
 		{

@@ -42,8 +42,8 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
 
-	size_t medianIndex = positionsCount / 2;
-	m_position = Vector2D(positions[medianIndex].GetXZ());
+	const size_t medianIndex = positionsCount / 2;
+	m_position.Set(positions[medianIndex].GetX(), positions[medianIndex].GetZ());
 	m_value = positions[medianIndex].GetY();
 
 	if (medianIndex > 0)

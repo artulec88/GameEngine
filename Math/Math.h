@@ -107,10 +107,10 @@ namespace Math
 		else return a;
 	}
 
-	template<typename Type> Type Lerp(const Type& a, const Type& b, const Type& mixFactor)
-	{
-		return ((1 - mixFactor) * a) + (mixFactor * b);
-	}
+	//template<typename Type> Type Lerp(const Type& a, const Type& b, const Type& mixFactor)
+	//{
+	//	return ((1 - mixFactor) * a) + (mixFactor * b);
+	//}
 
 	template<typename Type> Type RoundUpPow2(Type number)
 	{
