@@ -5,6 +5,8 @@
 #include "Utility\Utility.h"
 
 #include <sstream>
+#include <iostream>
+#include <utility>
 
 #ifdef CALCULATE_MATH_STATS
 /* static */ Math::Statistics::ClassStats& Math::Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
@@ -24,15 +26,15 @@ Math::Matrix4D::Matrix4D()
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	m_values[0][0] = REAL_ONE;	m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;	m_values[1][1] = REAL_ONE;	m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = REAL_ONE;	m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;	m_values[3][3] = REAL_ONE;
 #else
-	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
-	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = REAL_ZERO;	m[15] = REAL_ONE;
+	m_values[0] = REAL_ONE;		m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;	m_values[5] = REAL_ONE;		m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = REAL_ONE;	m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
 #endif
 
 	STOP_PROFILING;
@@ -48,15 +50,15 @@ Math::Matrix4D::Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::R
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = m00;	m[0][1] = m01;	m[0][2] = m02;	m[0][3] = m03;
-	m[1][0] = m10;	m[1][1] = m11;	m[1][2] = m12;	m[1][3] = m13;
-	m[2][0] = m20;	m[2][1] = m21;	m[2][2] = m22;	m[2][3] = m23;
-	m[3][0] = m30;	m[3][1] = m31;	m[3][2] = m32;	m[3][3] = m33;
+	m_values[0][0] = m00;	m_values[0][1] = m01;	m_values[0][2] = m02;	m_values[0][3] = m03;
+	m_values[1][0] = m10;	m_values[1][1] = m11;	m_values[1][2] = m12;	m_values[1][3] = m13;
+	m_values[2][0] = m20;	m_values[2][1] = m21;	m_values[2][2] = m22;	m_values[2][3] = m23;
+	m_values[3][0] = m30;	m_values[3][1] = m31;	m_values[3][2] = m32;	m_values[3][3] = m33;
 #else
-	m[0] = m00;		m[1] = m01;		m[2] = m02;		m[3] = m03;
-	m[4] = m10;		m[5] = m11;		m[6] = m12;		m[7] = m13;
-	m[8] = m20;		m[9] = m21;		m[10] = m22;	m[11] = m23;
-	m[12] = m30;	m[13] = m31;	m[14] = m32;	m[15] = m33;
+	m_values[0] = m00;		m_values[1] = m01;		m_values[2] = m02;		m_values[3] = m03;
+	m_values[4] = m10;		m_values[5] = m11;		m_values[6] = m12;		m_values[7] = m13;
+	m_values[8] = m20;		m_values[9] = m21;		m_values[10] = m22;		m_values[11] = m23;
+	m_values[12] = m30;		m_values[13] = m31;		m_values[14] = m32;		m_values[15] = m33;
 #endif
 	STOP_PROFILING;
 }
@@ -77,13 +79,13 @@ Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
 	{
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
-			m[i][j] = result[i][j];
+			m_values[i][j] = result[i][j];
 		}
 	}
 #else
 	for (int i = 0; i < MATRIX_SIZE * MATRIX_SIZE; ++i)
 	{
-		m[i] = result[i];
+		m_values[i] = result[i];
 	}
 #endif
 
@@ -107,15 +109,15 @@ Math::Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
-	m[3][0] = posX;			m[3][1] = posY;			m[3][2] = posZ;			m[3][3] = REAL_ONE;
+	m_values[0][0] = REAL_ONE;		m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;	m_values[1][1] = REAL_ONE;		m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = REAL_ONE;		m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = posX;			m_values[3][1] = posY;			m_values[3][2] = posZ;			m_values[3][3] = REAL_ONE;
 #else
-	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
-	m[12] = posX;		m[13] = posY;		m[14] = posZ;		m[15] = REAL_ONE;
+	m_values[0] = REAL_ONE;	m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;	m_values[5] = REAL_ONE;	m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = REAL_ONE;	m_values[11] = REAL_ZERO;
+	m_values[12] = posX;		m_values[13] = posY;		m_values[14] = posZ;		m_values[15] = REAL_ONE;
 #endif
 
 	STOP_PROFILING;
@@ -128,15 +130,15 @@ Math::Matrix4D::Matrix4D(const Vector3D& pos)
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = REAL_ONE;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;	m[1][1] = REAL_ONE;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = REAL_ONE;		m[2][3] = REAL_ZERO;
-	m[3][0] = pos.GetX();	m[3][1] = pos.GetY();	m[3][2] = pos.GetZ();	m[3][3] = REAL_ONE;
+	m_values[0][0] = REAL_ONE;		m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;	m_values[1][1] = REAL_ONE;		m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = REAL_ONE;		m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = pos.GetX();	m_values[3][1] = pos.GetY();	m_values[3][2] = pos.GetZ();	m_values[3][3] = REAL_ONE;
 #else
-	m[0] = REAL_ONE;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;	m[5] = REAL_ONE;	m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = REAL_ONE;	m[11] = REAL_ZERO;
-	m[12] = pos.GetX();	m[13] = pos.GetY();	m[14] = pos.GetZ();	m[15] = REAL_ONE;
+	m_values[0] = REAL_ONE;	m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;	m_values[5] = REAL_ONE;	m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = REAL_ONE;	m_values[11] = REAL_ZERO;
+	m_values[12] = pos.GetX();	m_values[13] = pos.GetY();	m_values[14] = pos.GetZ();	m_values[15] = REAL_ONE;
 #endif
 	STOP_PROFILING;
 }
@@ -152,15 +154,15 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	const Real ySin = angleY.Sin();
 	const Real yCos = angleY.Cos();
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = yCos;			m[0][1] = REAL_ZERO;	m[0][2] = ySin;			m[0][3] = REAL_ZERO;
-	m[1][0] = -xSin * ySin;	m[1][1] = xCos;			m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
-	m[2][0] = -xCos * ySin;	m[2][1] = -xSin;		m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	m_values[0][0] = yCos;			m_values[0][1] = REAL_ZERO;	m_values[0][2] = ySin;			m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = -xSin * ySin;	m_values[1][1] = xCos;		m_values[1][2] = xSin * yCos;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = -xCos * ySin;	m_values[2][1] = -xSin;		m_values[2][2] = xCos * yCos;	m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = REAL_ZERO;		m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;		m_values[3][3] = REAL_ONE;
 #else
-	m[0] = yCos;			m[1] = REAL_ZERO;	m[2] = ySin;			m[3] = REAL_ZERO;
-	m[4] = -xSin * ySin;	m[5] = xCos;		m[6] = xSin * yCos;		m[7] = REAL_ZERO;
-	m[8] = -xCos * ySin;	m[9] = -xSin;		m[10] = xCos * yCos;	m[11] = REAL_ZERO;
-	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+	m_values[0] = yCos;			m_values[1] = REAL_ZERO;	m_values[2] = ySin;			m_values[3] = REAL_ZERO;
+	m_values[4] = -xSin * ySin;	m_values[5] = xCos;			m_values[6] = xSin * yCos;	m_values[7] = REAL_ZERO;
+	m_values[8] = -xCos * ySin;	m_values[9] = -xSin;		m_values[10] = xCos * yCos;	m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
 #endif
 	CHECK_CONDITION_MATH((*this) == Matrix4D(angleX, angleY, Angle(REAL_ZERO)), Utility::ERR, "Two RotationEuler functions give different results.");
 	STOP_PROFILING;
@@ -181,35 +183,35 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 	/* ==================== SOLUTION #1 begin ==================== */
 	//Matrix4D rotX, rotY, rotZ; // rotation around X, Y and Z axis respectively
 
-	//rotX.m[0][0] = REAL_ONE;	rotX.m[0][1] = REAL_ZERO;	rotX.m[0][2] = REAL_ZERO;	rotX.m[0][3] = REAL_ZERO;
-	//rotX.m[1][0] = REAL_ZERO;	rotX.m[1][1] = xCos;		rotX.m[1][2] = xSin;		rotX.m[1][3] = REAL_ZERO;
-	//rotX.m[2][0] = REAL_ZERO;	rotX.m[2][1] = -xSin;		rotX.m[2][2] = xCos;		rotX.m[2][3] = REAL_ZERO;
-	//rotX.m[3][0] = REAL_ZERO;	rotX.m[3][1] = REAL_ZERO;	rotX.m[3][2] = REAL_ZERO;	rotX.m[3][3] = REAL_ONE;
+	//rotX.m_values[0][0] = REAL_ONE;	rotX.m_values[0][1] = REAL_ZERO;	rotX.m_values[0][2] = REAL_ZERO;	rotX.m_values[0][3] = REAL_ZERO;
+	//rotX.m_values[1][0] = REAL_ZERO;	rotX.m_values[1][1] = xCos;		rotX.m_values[1][2] = xSin;		rotX.m_values[1][3] = REAL_ZERO;
+	//rotX.m_values[2][0] = REAL_ZERO;	rotX.m_values[2][1] = -xSin;		rotX.m_values[2][2] = xCos;		rotX.m_values[2][3] = REAL_ZERO;
+	//rotX.m_values[3][0] = REAL_ZERO;	rotX.m_values[3][1] = REAL_ZERO;	rotX.m_values[3][2] = REAL_ZERO;	rotX.m_values[3][3] = REAL_ONE;
 
-	//rotY.m[0][0] = yCos;		rotY.m[0][1] = REAL_ZERO;	rotY.m[0][2] = ySin;		rotY.m[0][3] = REAL_ZERO;
-	//rotY.m[1][0] = REAL_ZERO;	rotY.m[1][1] = REAL_ONE;	rotY.m[1][2] = REAL_ZERO;	rotY.m[1][3] = REAL_ZERO;
-	//rotY.m[2][0] = -ySin;		rotY.m[2][1] = REAL_ZERO;	rotY.m[2][2] = yCos;		rotY.m[2][3] = REAL_ZERO;
-	//rotY.m[3][0] = REAL_ZERO;	rotY.m[3][1] = REAL_ZERO;	rotY.m[3][2] = REAL_ZERO;	rotY.m[3][3] = REAL_ONE;
+	//rotY.m_values[0][0] = yCos;		rotY.m_values[0][1] = REAL_ZERO;	rotY.m_values[0][2] = ySin;		rotY.m_values[0][3] = REAL_ZERO;
+	//rotY.m_values[1][0] = REAL_ZERO;	rotY.m_values[1][1] = REAL_ONE;	rotY.m_values[1][2] = REAL_ZERO;	rotY.m_values[1][3] = REAL_ZERO;
+	//rotY.m_values[2][0] = -ySin;		rotY.m_values[2][1] = REAL_ZERO;	rotY.m_values[2][2] = yCos;		rotY.m_values[2][3] = REAL_ZERO;
+	//rotY.m_values[3][0] = REAL_ZERO;	rotY.m_values[3][1] = REAL_ZERO;	rotY.m_values[3][2] = REAL_ZERO;	rotY.m_values[3][3] = REAL_ONE;
 
-	//rotZ.m[0][0] = zCos;		rotZ.m[0][1] = zSin;		rotZ.m[0][2] = REAL_ZERO;	rotZ.m[0][3] = REAL_ZERO;
-	//rotZ.m[1][0] = -zSin;		rotZ.m[1][1] = zCos;		rotZ.m[1][2] = REAL_ZERO;	rotZ.m[1][3] = REAL_ZERO;
-	//rotZ.m[2][0] = REAL_ZERO;	rotZ.m[2][1] = REAL_ZERO;	rotZ.m[2][2] = REAL_ONE;	rotZ.m[2][3] = REAL_ZERO;
-	//rotZ.m[3][0] = REAL_ZERO;	rotZ.m[3][1] = REAL_ZERO;	rotZ.m[3][2] = REAL_ZERO;	rotZ.m[3][3] = REAL_ONE;
+	//rotZ.m_values[0][0] = zCos;		rotZ.m_values[0][1] = zSin;		rotZ.m_values[0][2] = REAL_ZERO;	rotZ.m_values[0][3] = REAL_ZERO;
+	//rotZ.m_values[1][0] = -zSin;		rotZ.m_values[1][1] = zCos;		rotZ.m_values[1][2] = REAL_ZERO;	rotZ.m_values[1][3] = REAL_ZERO;
+	//rotZ.m_values[2][0] = REAL_ZERO;	rotZ.m_values[2][1] = REAL_ZERO;	rotZ.m_values[2][2] = REAL_ONE;	rotZ.m_values[2][3] = REAL_ZERO;
+	//rotZ.m_values[3][0] = REAL_ZERO;	rotZ.m_values[3][1] = REAL_ZERO;	rotZ.m_values[3][2] = REAL_ZERO;	rotZ.m_values[3][3] = REAL_ONE;
 
 	//return rotZ * rotY * rotX;
 	/* ==================== SOLUTION #1 end ==================== */
 
 	/* ==================== SOLUTION #2 begin ==================== */
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = yCos * zCos;							m[0][1] = yCos * zSin;							m[0][2] = ySin;			m[0][3] = REAL_ZERO;
-	m[1][0] = -xSin * ySin * zCos - xCos * zSin;	m[1][1] = -xSin * ySin * zSin + xCos * zCos;	m[1][2] = xSin * yCos;	m[1][3] = REAL_ZERO;
-	m[2][0] = -xCos * ySin * zCos + xSin * zSin;	m[2][1] = -xCos * ySin * zSin - xSin * zCos;	m[2][2] = xCos * yCos;	m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;							m[3][1] = REAL_ZERO;							m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	m_values[0][0] = yCos * zCos;						m_values[0][1] = yCos * zSin;						m_values[0][2] = ySin;			m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = -xSin * ySin * zCos - xCos * zSin;	m_values[1][1] = -xSin * ySin * zSin + xCos * zCos;	m_values[1][2] = xSin * yCos;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = -xCos * ySin * zCos + xSin * zSin;	m_values[2][1] = -xCos * ySin * zSin - xSin * zCos;	m_values[2][2] = xCos * yCos;	m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = REAL_ZERO;							m_values[3][1] = REAL_ZERO;							m_values[3][2] = REAL_ZERO;		m_values[3][3] = REAL_ONE;
 #else
-	m[0] = yCos * zCos;							m[1] = yCos * zSin;							m[2] = ySin;			m[3] = REAL_ZERO;
-	m[4] = -xSin * ySin * zCos - xCos * zSin;	m[5] = -xSin * ySin * zSin + xCos * zCos;	m[6] = xSin * yCos;		m[7] = REAL_ZERO;
-	m[8] = -xCos * ySin * zCos + xSin * zSin;	m[9] = -xCos * ySin * zSin - xSin * zCos;	m[10] = xCos * yCos;	m[11] = REAL_ZERO;
-	m[12] = REAL_ZERO;							m[13] = REAL_ZERO;							m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+	m_values[0] = yCos * zCos;							m_values[1] = yCos * zSin;							m_values[2] = ySin;				m_values[3] = REAL_ZERO;
+	m_values[4] = -xSin * ySin * zCos - xCos * zSin;	m_values[5] = -xSin * ySin * zSin + xCos * zCos;	m_values[6] = xSin * yCos;		m_values[7] = REAL_ZERO;
+	m_values[8] = -xCos * ySin * zCos + xSin * zSin;	m_values[9] = -xCos * ySin * zSin - xSin * zCos;	m_values[10] = xCos * yCos;		m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;							m_values[13] = REAL_ZERO;							m_values[14] = REAL_ZERO;		m_values[15] = REAL_ONE;
 #endif
 	//Matrix4D matrixToCompare = rotZ * rotY * rotX;
 	//if (rot != matrixToCompare)
@@ -266,15 +268,15 @@ Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real near
 	const Real temp = static_cast<Real>(2.0f);
 	
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = temp / width;				m[0][1] = REAL_ZERO;				m[0][2] = REAL_ZERO;						m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;				m[1][1] = temp / height;			m[1][2] = REAL_ZERO;						m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;				m[2][1] = REAL_ZERO;				m[2][2] = -temp / depth;					m[2][3] = REAL_ZERO;
-	m[3][0] = -(right + left) / width;	m[3][1] = -(top + bottom) / height;	m[3][2] = -(farPlane + nearPlane) / depth;	m[3][3] = REAL_ONE;
+	m_values[0][0] = temp / width;				m_values[0][1] = REAL_ZERO;					m_values[0][2] = REAL_ZERO;							m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;					m_values[1][1] = temp / height;				m_values[1][2] = REAL_ZERO;							m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;					m_values[2][1] = REAL_ZERO;					m_values[2][2] = -temp / depth;						m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = -(right + left) / width;	m_values[3][1] = -(top + bottom) / height;	m_values[3][2] = -(farPlane + nearPlane) / depth;	m_values[3][3] = REAL_ONE;
 #else
-	m[0] = temp / width;				m[1] = REAL_ZERO;					m[2] = REAL_ZERO;							m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;					m[5] = temp / height;				m[6] = REAL_ZERO;							m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;					m[9] = REAL_ZERO;					m[10] = -temp / depth;						m[11] = REAL_ZERO;
-	m[12] = -(right + left) / width;	m[13] = -(top + bottom) / height;	m[14] = -(farPlane + nearPlane) / depth;	m[15] = REAL_ONE;
+	m_values[0] = temp / width;				m_values[1] = REAL_ZERO;					m_values[2] = REAL_ZERO;							m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;				m_values[5] = temp / height;				m_values[6] = REAL_ZERO;							m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;				m_values[9] = REAL_ZERO;					m_values[10] = -temp / depth;						m_values[11] = REAL_ZERO;
+	m_values[12] = -(right + left) / width;	m_values[13] = -(top + bottom) / height;	m_values[14] = -(farPlane + nearPlane) / depth;		m_values[15] = REAL_ONE;
 #endif
 	STOP_PROFILING;
 }
@@ -289,15 +291,15 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat)
 	
 	/* ==================== SOLUTION #1 begin ==================== */
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
-	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
-	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
-	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
+	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
+	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
+	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
 #else
-	m[0] = mat[0];		m[1] = mat[1];		m[2] = mat[2];		m[3] = mat[3];
-	m[4] = mat[4];		m[5] = mat[5];		m[6] = mat[6];		m[7] = mat[7];
-	m[8] = mat[8];		m[9] = mat[9];		m[10] = mat[10];	m[11] = mat[11];
-	m[12] = mat[12];	m[13] = mat[13];	m[14] = mat[14];	m[15] = mat[15];
+	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
+	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
+	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];		m_values[11] = mat[11];
+	m_values[12] = mat[12];		m_values[13] = mat[13];		m_values[14] = mat[14];		m_values[15] = mat[15];
 #endif
 	/* ==================== SOLUTION #1 end ==================== */
 	
@@ -307,9 +309,9 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat)
 	//	for (int j = 0; j < MATRIX_SIZE; ++j)
 	//	{
 // #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	//		m[i][j] = mat[i][j];
+	//		m_values[i][j] = mat[i][j];
 //#else
-	//		m[i * MATRIX_SIZE + j] = mat[i * MATRIX_SIZE + j];
+	//		m_values[i * MATRIX_SIZE + j] = mat[i * MATRIX_SIZE + j];
 //#endif
 	//	}
 	//}
@@ -329,6 +331,16 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat)
 	STOP_PROFILING;
 }
 
+Math::Matrix4D::Matrix4D(Matrix4D&& mat) :
+	m_values(std::move(mat.m_values)),
+#ifdef CALCULATE_MATH_STATS
+	m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#endif
+{
+	START_PROFILING;
+	STOP_PROFILING;
+}
+
 Math::Matrix4D::~Matrix4D()
 {
 }
@@ -338,54 +350,54 @@ std::string Math::Matrix4D::ToString() const
 	const std::string INDENTATION_STRING = "\t";
 	std::stringstream s("");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m[0][0] << INDENTATION_STRING;
-	s << m[0][1] << INDENTATION_STRING;
-	s << m[0][2] << INDENTATION_STRING;
-	s << m[0][3] << INDENTATION_STRING;
+	s << m_values[0][0] << INDENTATION_STRING;
+	s << m_values[0][1] << INDENTATION_STRING;
+	s << m_values[0][2] << INDENTATION_STRING;
+	s << m_values[0][3] << INDENTATION_STRING;
 #else
-	s << m[0] << INDENTATION_STRING;
-	s << m[1] << INDENTATION_STRING;
-	s << m[2] << INDENTATION_STRING;
-	s << m[3] << INDENTATION_STRING;
+	s << m_values[0] << INDENTATION_STRING;
+	s << m_values[1] << INDENTATION_STRING;
+	s << m_values[2] << INDENTATION_STRING;
+	s << m_values[3] << INDENTATION_STRING;
 #endif
 	s << std::endl;
 
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m[1][0] << INDENTATION_STRING;
-	s << m[1][1] << INDENTATION_STRING;
-	s << m[1][2] << INDENTATION_STRING;
-	s << m[1][3] << INDENTATION_STRING;
+	s << m_values[1][0] << INDENTATION_STRING;
+	s << m_values[1][1] << INDENTATION_STRING;
+	s << m_values[1][2] << INDENTATION_STRING;
+	s << m_values[1][3] << INDENTATION_STRING;
 #else
-	s << m[4] << INDENTATION_STRING;
-	s << m[5] << INDENTATION_STRING;
-	s << m[6] << INDENTATION_STRING;
-	s << m[7] << INDENTATION_STRING;
+	s << m_values[4] << INDENTATION_STRING;
+	s << m_values[5] << INDENTATION_STRING;
+	s << m_values[6] << INDENTATION_STRING;
+	s << m_values[7] << INDENTATION_STRING;
 #endif
 	s << std::endl;
 
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m[2][0] << INDENTATION_STRING;
-	s << m[2][1] << INDENTATION_STRING;
-	s << m[2][2] << INDENTATION_STRING;
-	s << m[2][3] << INDENTATION_STRING;
+	s << m_values[2][0] << INDENTATION_STRING;
+	s << m_values[2][1] << INDENTATION_STRING;
+	s << m_values[2][2] << INDENTATION_STRING;
+	s << m_values[2][3] << INDENTATION_STRING;
 #else
-	s << m[8] << INDENTATION_STRING;
-	s << m[9] << INDENTATION_STRING;
-	s << m[10] << INDENTATION_STRING;
-	s << m[11] << INDENTATION_STRING;
+	s << m_values[8] << INDENTATION_STRING;
+	s << m_values[9] << INDENTATION_STRING;
+	s << m_values[10] << INDENTATION_STRING;
+	s << m_values[11] << INDENTATION_STRING;
 #endif
 	s << std::endl;
 
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m[3][0] << INDENTATION_STRING;
-	s << m[3][1] << INDENTATION_STRING;
-	s << m[3][2] << INDENTATION_STRING;
-	s << m[3][3] << INDENTATION_STRING;
+	s << m_values[3][0] << INDENTATION_STRING;
+	s << m_values[3][1] << INDENTATION_STRING;
+	s << m_values[3][2] << INDENTATION_STRING;
+	s << m_values[3][3] << INDENTATION_STRING;
 #else
-	s << m[12] << INDENTATION_STRING;
-	s << m[13] << INDENTATION_STRING;
-	s << m[14] << INDENTATION_STRING;
-	s << m[15] << INDENTATION_STRING;
+	s << m_values[12] << INDENTATION_STRING;
+	s << m_values[13] << INDENTATION_STRING;
+	s << m_values[14] << INDENTATION_STRING;
+	s << m_values[15] << INDENTATION_STRING;
 #endif
 	s << std::endl;
 	return s.str();
@@ -397,25 +409,25 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #1 (doesn't work!!!) begin ==================== */
 	//Matrix4D matrix;
 
-	//matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2];
-	//matrix.m[0][1] = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2];
-	//matrix.m[0][2] = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2];
-	//matrix.m[0][3] = REAL_ZERO;
+	//matrix.m_values[0][0] = m_values[0][0] * mat.m_values[0][0] + m_values[1][0] * mat.m_values[0][1] + m_values[2][0] * mat.m_values[0][2];
+	//matrix.m_values[0][1] = m_values[0][1] * mat.m_values[0][0] + m_values[1][1] * mat.m_values[0][1] + m_values[2][1] * mat.m_values[0][2];
+	//matrix.m_values[0][2] = m_values[0][2] * mat.m_values[0][0] + m_values[1][2] * mat.m_values[0][1] + m_values[2][2] * mat.m_values[0][2];
+	//matrix.m_values[0][3] = REAL_ZERO;
 
-	//matrix.m[1][0] = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2];
-	//matrix.m[1][1] = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2];
-	//matrix.m[1][2] = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2];
-	//matrix.m[1][3] = REAL_ZERO;
+	//matrix.m_values[1][0] = m_values[0][0] * mat.m_values[1][0] + m_values[1][0] * mat.m_values[1][1] + m_values[2][0] * mat.m_values[1][2];
+	//matrix.m_values[1][1] = m_values[0][1] * mat.m_values[1][0] + m_values[1][1] * mat.m_values[1][1] + m_values[2][1] * mat.m_values[1][2];
+	//matrix.m_values[1][2] = m_values[0][2] * mat.m_values[1][0] + m_values[1][2] * mat.m_values[1][1] + m_values[2][2] * mat.m_values[1][2];
+	//matrix.m_values[1][3] = REAL_ZERO;
 
-	//matrix.m[2][0] = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2];
-	//matrix.m[2][1] = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2];
-	//matrix.m[2][2] = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2];
-	//matrix.m[2][3] = REAL_ZERO;
+	//matrix.m_values[2][0] = m_values[0][0] * mat.m_values[2][0] + m_values[1][0] * mat.m_values[2][1] + m_values[2][0] * mat.m_values[2][2];
+	//matrix.m_values[2][1] = m_values[0][1] * mat.m_values[2][0] + m_values[1][1] * mat.m_values[2][1] + m_values[2][1] * mat.m_values[2][2];
+	//matrix.m_values[2][2] = m_values[0][2] * mat.m_values[2][0] + m_values[1][2] * mat.m_values[2][1] + m_values[2][2] * mat.m_values[2][2];
+	//matrix.m_values[2][3] = REAL_ZERO;
 
-	//matrix.m[3][0] = m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0];
-	//matrix.m[3][1] = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1];
-	//matrix.m[3][2] = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2];
-	//matrix.m[3][3] = REAL_ONE;
+	//matrix.m_values[3][0] = m_values[0][0] * mat.m_values[3][0] + m_values[1][0] * mat.m_values[3][1] + m_values[2][0] * mat.m_values[3][2] + m_values[3][0];
+	//matrix.m_values[3][1] = m_values[0][1] * mat.m_values[3][0] + m_values[1][1] * mat.m_values[3][1] + m_values[2][1] * mat.m_values[3][2] + m_values[3][1];
+	//matrix.m_values[3][2] = m_values[0][2] * mat.m_values[3][0] + m_values[1][2] * mat.m_values[3][1] + m_values[2][2] * mat.m_values[3][2] + m_values[3][2];
+	//matrix.m_values[3][3] = REAL_ONE;
 	//
 	//return matrix;
 	/* ==================== SOLUTION #1 (doesn't work!!!) end ==================== */
@@ -423,45 +435,45 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #2 begin ==================== */
 	Matrix4D matrix;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	matrix.m[0][0] = m[0][0] * mat.m[0][0] + m[1][0] * mat.m[0][1] + m[2][0] * mat.m[0][2] + m[3][0] * mat.m[0][3];
-	matrix.m[0][1] = m[0][1] * mat.m[0][0] + m[1][1] * mat.m[0][1] + m[2][1] * mat.m[0][2] + m[3][1] * mat.m[0][3];
-	matrix.m[0][2] = m[0][2] * mat.m[0][0] + m[1][2] * mat.m[0][1] + m[2][2] * mat.m[0][2] + m[3][2] * mat.m[0][3];
-	matrix.m[0][3] = m[0][3] * mat.m[0][0] + m[1][3] * mat.m[0][1] + m[2][3] * mat.m[0][2] + m[3][3] * mat.m[0][3];
+	matrix.m_values[0][0] = m_values[0][0] * mat.m_values[0][0] + m_values[1][0] * mat.m_values[0][1] + m_values[2][0] * mat.m_values[0][2] + m_values[3][0] * mat.m_values[0][3];
+	matrix.m_values[0][1] = m_values[0][1] * mat.m_values[0][0] + m_values[1][1] * mat.m_values[0][1] + m_values[2][1] * mat.m_values[0][2] + m_values[3][1] * mat.m_values[0][3];
+	matrix.m_values[0][2] = m_values[0][2] * mat.m_values[0][0] + m_values[1][2] * mat.m_values[0][1] + m_values[2][2] * mat.m_values[0][2] + m_values[3][2] * mat.m_values[0][3];
+	matrix.m_values[0][3] = m_values[0][3] * mat.m_values[0][0] + m_values[1][3] * mat.m_values[0][1] + m_values[2][3] * mat.m_values[0][2] + m_values[3][3] * mat.m_values[0][3];
 
-	matrix.m[1][0] = m[0][0] * mat.m[1][0] + m[1][0] * mat.m[1][1] + m[2][0] * mat.m[1][2] + m[3][0] * mat.m[1][3];
-	matrix.m[1][1] = m[0][1] * mat.m[1][0] + m[1][1] * mat.m[1][1] + m[2][1] * mat.m[1][2] + m[3][1] * mat.m[1][3];
-	matrix.m[1][2] = m[0][2] * mat.m[1][0] + m[1][2] * mat.m[1][1] + m[2][2] * mat.m[1][2] + m[3][2] * mat.m[1][3];
-	matrix.m[1][3] = m[0][3] * mat.m[1][0] + m[1][3] * mat.m[1][1] + m[2][3] * mat.m[1][2] + m[3][3] * mat.m[1][3];
+	matrix.m_values[1][0] = m_values[0][0] * mat.m_values[1][0] + m_values[1][0] * mat.m_values[1][1] + m_values[2][0] * mat.m_values[1][2] + m_values[3][0] * mat.m_values[1][3];
+	matrix.m_values[1][1] = m_values[0][1] * mat.m_values[1][0] + m_values[1][1] * mat.m_values[1][1] + m_values[2][1] * mat.m_values[1][2] + m_values[3][1] * mat.m_values[1][3];
+	matrix.m_values[1][2] = m_values[0][2] * mat.m_values[1][0] + m_values[1][2] * mat.m_values[1][1] + m_values[2][2] * mat.m_values[1][2] + m_values[3][2] * mat.m_values[1][3];
+	matrix.m_values[1][3] = m_values[0][3] * mat.m_values[1][0] + m_values[1][3] * mat.m_values[1][1] + m_values[2][3] * mat.m_values[1][2] + m_values[3][3] * mat.m_values[1][3];
 
-	matrix.m[2][0] = m[0][0] * mat.m[2][0] + m[1][0] * mat.m[2][1] + m[2][0] * mat.m[2][2] + m[3][0] * mat.m[2][3];
-	matrix.m[2][1] = m[0][1] * mat.m[2][0] + m[1][1] * mat.m[2][1] + m[2][1] * mat.m[2][2] + m[3][1] * mat.m[2][3];
-	matrix.m[2][2] = m[0][2] * mat.m[2][0] + m[1][2] * mat.m[2][1] + m[2][2] * mat.m[2][2] + m[3][2] * mat.m[2][3];
-	matrix.m[2][3] = m[0][3] * mat.m[2][0] + m[1][3] * mat.m[2][1] + m[2][3] * mat.m[2][2] + m[3][3] * mat.m[2][3];
+	matrix.m_values[2][0] = m_values[0][0] * mat.m_values[2][0] + m_values[1][0] * mat.m_values[2][1] + m_values[2][0] * mat.m_values[2][2] + m_values[3][0] * mat.m_values[2][3];
+	matrix.m_values[2][1] = m_values[0][1] * mat.m_values[2][0] + m_values[1][1] * mat.m_values[2][1] + m_values[2][1] * mat.m_values[2][2] + m_values[3][1] * mat.m_values[2][3];
+	matrix.m_values[2][2] = m_values[0][2] * mat.m_values[2][0] + m_values[1][2] * mat.m_values[2][1] + m_values[2][2] * mat.m_values[2][2] + m_values[3][2] * mat.m_values[2][3];
+	matrix.m_values[2][3] = m_values[0][3] * mat.m_values[2][0] + m_values[1][3] * mat.m_values[2][1] + m_values[2][3] * mat.m_values[2][2] + m_values[3][3] * mat.m_values[2][3];
 
-	matrix.m[3][0] = m[0][0] * mat.m[3][0] + m[1][0] * mat.m[3][1] + m[2][0] * mat.m[3][2] + m[3][0] * mat.m[3][3];
-	matrix.m[3][1] = m[0][1] * mat.m[3][0] + m[1][1] * mat.m[3][1] + m[2][1] * mat.m[3][2] + m[3][1] * mat.m[3][3];
-	matrix.m[3][2] = m[0][2] * mat.m[3][0] + m[1][2] * mat.m[3][1] + m[2][2] * mat.m[3][2] + m[3][2] * mat.m[3][3];
-	matrix.m[3][3] = m[0][3] * mat.m[3][0] + m[1][3] * mat.m[3][1] + m[2][3] * mat.m[3][2] + m[3][3] * mat.m[3][3];
+	matrix.m_values[3][0] = m_values[0][0] * mat.m_values[3][0] + m_values[1][0] * mat.m_values[3][1] + m_values[2][0] * mat.m_values[3][2] + m_values[3][0] * mat.m_values[3][3];
+	matrix.m_values[3][1] = m_values[0][1] * mat.m_values[3][0] + m_values[1][1] * mat.m_values[3][1] + m_values[2][1] * mat.m_values[3][2] + m_values[3][1] * mat.m_values[3][3];
+	matrix.m_values[3][2] = m_values[0][2] * mat.m_values[3][0] + m_values[1][2] * mat.m_values[3][1] + m_values[2][2] * mat.m_values[3][2] + m_values[3][2] * mat.m_values[3][3];
+	matrix.m_values[3][3] = m_values[0][3] * mat.m_values[3][0] + m_values[1][3] * mat.m_values[3][1] + m_values[2][3] * mat.m_values[3][2] + m_values[3][3] * mat.m_values[3][3];
 #else
-	matrix.m[0] = m[0] * mat.m[0] + m[4] * mat.m[1] + m[8] * mat.m[2] + m[12] * mat.m[3];
-	matrix.m[1] = m[1] * mat.m[0] + m[5] * mat.m[1] + m[9] * mat.m[2] + m[13] * mat.m[3];
-	matrix.m[2] = m[2] * mat.m[0] + m[6] * mat.m[1] + m[10] * mat.m[2] + m[14] * mat.m[3];
-	matrix.m[3] = m[3] * mat.m[0] + m[7] * mat.m[1] + m[11] * mat.m[2] + m[15] * mat.m[3];
+	matrix.m_values[0] = m_values[0] * mat.m_values[0] + m_values[4] * mat.m_values[1] + m_values[8] * mat.m_values[2] + m_values[12] * mat.m_values[3];
+	matrix.m_values[1] = m_values[1] * mat.m_values[0] + m_values[5] * mat.m_values[1] + m_values[9] * mat.m_values[2] + m_values[13] * mat.m_values[3];
+	matrix.m_values[2] = m_values[2] * mat.m_values[0] + m_values[6] * mat.m_values[1] + m_values[10] * mat.m_values[2] + m_values[14] * mat.m_values[3];
+	matrix.m_values[3] = m_values[3] * mat.m_values[0] + m_values[7] * mat.m_values[1] + m_values[11] * mat.m_values[2] + m_values[15] * mat.m_values[3];
 
-	matrix.m[4] = m[0] * mat.m[4] + m[4] * mat.m[5] + m[8] * mat.m[6] + m[12] * mat.m[7];
-	matrix.m[5] = m[1] * mat.m[4] + m[5] * mat.m[5] + m[9] * mat.m[6] + m[13] * mat.m[7];
-	matrix.m[6] = m[2] * mat.m[4] + m[6] * mat.m[5] + m[10] * mat.m[6] + m[14] * mat.m[7];
-	matrix.m[7] = m[3] * mat.m[4] + m[7] * mat.m[5] + m[11] * mat.m[6] + m[15] * mat.m[7];
+	matrix.m_values[4] = m_values[0] * mat.m_values[4] + m_values[4] * mat.m_values[5] + m_values[8] * mat.m_values[6] + m_values[12] * mat.m_values[7];
+	matrix.m_values[5] = m_values[1] * mat.m_values[4] + m_values[5] * mat.m_values[5] + m_values[9] * mat.m_values[6] + m_values[13] * mat.m_values[7];
+	matrix.m_values[6] = m_values[2] * mat.m_values[4] + m_values[6] * mat.m_values[5] + m_values[10] * mat.m_values[6] + m_values[14] * mat.m_values[7];
+	matrix.m_values[7] = m_values[3] * mat.m_values[4] + m_values[7] * mat.m_values[5] + m_values[11] * mat.m_values[6] + m_values[15] * mat.m_values[7];
 
-	matrix.m[8] = m[0] * mat.m[8] + m[4] * mat.m[9] + m[8] * mat.m[10] + m[12] * mat.m[11];
-	matrix.m[9] = m[1] * mat.m[8] + m[5] * mat.m[9] + m[9] * mat.m[10] + m[13] * mat.m[11];
-	matrix.m[10] = m[2] * mat.m[8] + m[6] * mat.m[9] + m[10] * mat.m[10] + m[14] * mat.m[11];
-	matrix.m[11] = m[3] * mat.m[8] + m[7] * mat.m[9] + m[11] * mat.m[10] + m[15] * mat.m[11];
+	matrix.m_values[8] = m_values[0] * mat.m_values[8] + m_values[4] * mat.m_values[9] + m_values[8] * mat.m_values[10] + m_values[12] * mat.m_values[11];
+	matrix.m_values[9] = m_values[1] * mat.m_values[8] + m_values[5] * mat.m_values[9] + m_values[9] * mat.m_values[10] + m_values[13] * mat.m_values[11];
+	matrix.m_values[10] = m_values[2] * mat.m_values[8] + m_values[6] * mat.m_values[9] + m_values[10] * mat.m_values[10] + m_values[14] * mat.m_values[11];
+	matrix.m_values[11] = m_values[3] * mat.m_values[8] + m_values[7] * mat.m_values[9] + m_values[11] * mat.m_values[10] + m_values[15] * mat.m_values[11];
 
-	matrix.m[12] = m[0] * mat.m[12] + m[4] * mat.m[13] + m[8] * mat.m[14] + m[12] * mat.m[15];
-	matrix.m[13] = m[1] * mat.m[12] + m[5] * mat.m[13] + m[9] * mat.m[14] + m[13] * mat.m[15];
-	matrix.m[14] = m[2] * mat.m[12] + m[6] * mat.m[13] + m[10] * mat.m[14] + m[14] * mat.m[15];
-	matrix.m[15] = m[3] * mat.m[12] + m[7] * mat.m[13] + m[11] * mat.m[14] + m[15] * mat.m[15];
+	matrix.m_values[12] = m_values[0] * mat.m_values[12] + m_values[4] * mat.m_values[13] + m_values[8] * mat.m_values[14] + m_values[12] * mat.m_values[15];
+	matrix.m_values[13] = m_values[1] * mat.m_values[12] + m_values[5] * mat.m_values[13] + m_values[9] * mat.m_values[14] + m_values[13] * mat.m_values[15];
+	matrix.m_values[14] = m_values[2] * mat.m_values[12] + m_values[6] * mat.m_values[13] + m_values[10] * mat.m_values[14] + m_values[14] * mat.m_values[15];
+	matrix.m_values[15] = m_values[3] * mat.m_values[12] + m_values[7] * mat.m_values[13] + m_values[11] * mat.m_values[14] + m_values[15] * mat.m_values[15];
 #endif
 	
 	STOP_PROFILING;
@@ -473,13 +485,13 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	//{
 	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
 	//	{
-	//		//matrix.m[i][j] = REAL_ZERO;
+	//		//matrix.m_values[i][j] = REAL_ZERO;
 	//		Real sum = REAL_ZERO;
 	//		for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
 	//		{
-	//			sum += m[k][j] * mat.m[i][k];
+	//			sum += m_values[k][j] * mat.m_values[i][k];
 	//		}
-	//		matrix.m[i][j] = sum;
+	//		matrix.m_values[i][j] = sum;
 	//	}
 	//}
 	//return matrix;
@@ -490,38 +502,38 @@ Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
-	Real x = (m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw;
-	Real y = (m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw;
-	Real z = (m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw;
+	const Real oneperw = REAL_ONE / (m_values[0][3] * vec.GetX() + m_values[1][3] * vec.GetY() + m_values[2][3] * vec.GetZ() + m_values[3][3]);
+	Real x = (m_values[0][0] * vec.GetX() + m_values[1][0] * vec.GetY() + m_values[2][0] * vec.GetZ() + m_values[3][0]) * oneperw;
+	Real y = (m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1]) * oneperw;
+	Real z = (m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]) * oneperw;
 #else
-	const Real oneperw = REAL_ONE / (m[3] * vec.GetX() + m[7] * vec.GetY() + m[11] * vec.GetZ() + m[15]);
-	Real x = (m[0] * vec.GetX() + m[4] * vec.GetY() + m[8] * vec.GetZ() + m[12]) * oneperw;
-	Real y = (m[1] * vec.GetX() + m[5] * vec.GetY() + m[9] * vec.GetZ() + m[13]) * oneperw;
-	Real z = (m[2] * vec.GetX() + m[6] * vec.GetY() + m[10] * vec.GetZ() + m[14]) * oneperw;
+	const Real oneperw = REAL_ONE / (m_values[3] * vec.GetX() + m_values[7] * vec.GetY() + m_values[11] * vec.GetZ() + m_values[15]);
+	Real x = (m_values[0] * vec.GetX() + m_values[4] * vec.GetY() + m_values[8] * vec.GetZ() + m_values[12]) * oneperw;
+	Real y = (m_values[1] * vec.GetX() + m_values[5] * vec.GetY() + m_values[9] * vec.GetZ() + m_values[13]) * oneperw;
+	Real z = (m_values[2] * vec.GetX() + m_values[6] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[14]) * oneperw;
 #endif
 	STOP_PROFILING;
 	return Vector3D(x, y, z);
 
-	//const Real oneperw = REAL_ONE / (m[0][3] * vec.GetX() + m[1][3] * vec.GetY() + m[2][3] * vec.GetZ() + m[3][3]);
-	//return Vector3D((m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0]) * oneperw,
-	//	(m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1]) * oneperw,
-	//	(m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]) * oneperw);
+	//const Real oneperw = REAL_ONE / (m_values[0][3] * vec.GetX() + m_values[1][3] * vec.GetY() + m_values[2][3] * vec.GetZ() + m_values[3][3]);
+	//return Vector3D((m_values[0][0] * vec.GetX() + m_values[1][0] * vec.GetY() + m_values[2][0] * vec.GetZ() + m_values[3][0]) * oneperw,
+	//	(m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1]) * oneperw,
+	//	(m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]) * oneperw);
 }
 
 Math::Vector4D Math::Matrix4D::operator*(const Vector4D& vec) const
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	Real x = m[0][0] * vec.GetX() + m[0][1] * vec.GetY() + m[0][2] * vec.GetZ() + m[0][3];
-	Real y = m[1][0] * vec.GetX() + m[1][1] * vec.GetY() + m[1][2] * vec.GetZ() + m[1][3];
-	Real z = m[2][0] * vec.GetX() + m[2][1] * vec.GetY() + m[2][2] * vec.GetZ() + m[2][3];
-	Real w = m[3][0] * vec.GetX() + m[3][1] * vec.GetY() + m[3][2] * vec.GetZ() + m[3][3];
+	Real x = m_values[0][0] * vec.GetX() + m_values[0][1] * vec.GetY() + m_values[0][2] * vec.GetZ() + m_values[0][3];
+	Real y = m_values[1][0] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[1][2] * vec.GetZ() + m_values[1][3];
+	Real z = m_values[2][0] * vec.GetX() + m_values[2][1] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[2][3];
+	Real w = m_values[3][0] * vec.GetX() + m_values[3][1] * vec.GetY() + m_values[3][2] * vec.GetZ() + m_values[3][3];
 #else
-	Real x = m[0] * vec.GetX() + m[1] * vec.GetY() + m[2] * vec.GetZ() + m[3];
-	Real y = m[4] * vec.GetX() + m[5] * vec.GetY() + m[6] * vec.GetZ() + m[7];
-	Real z = m[8] * vec.GetX() + m[9] * vec.GetY() + m[10] * vec.GetZ() + m[11];
-	Real w = m[12] * vec.GetX() + m[13] * vec.GetY() + m[14] * vec.GetZ() + m[15];
+	Real x = m_values[0] * vec.GetX() + m_values[1] * vec.GetY() + m_values[2] * vec.GetZ() + m_values[3];
+	Real y = m_values[4] * vec.GetX() + m_values[5] * vec.GetY() + m_values[6] * vec.GetZ() + m_values[7];
+	Real z = m_values[8] * vec.GetX() + m_values[9] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[11];
+	Real w = m_values[12] * vec.GetX() + m_values[13] * vec.GetY() + m_values[14] * vec.GetZ() + m_values[15];
 #endif
 	STOP_PROFILING;
 	return Vector4D(x, y, z, w);
@@ -543,9 +555,9 @@ bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-			if (! AlmostEqual(matrix.GetElement(i, j), m[i][j]))
+			if (! AlmostEqual(matrix.GetElement(i, j), m_values[i][j]))
 #else
-			if (! AlmostEqual(matrix.GetElement(i, j), m[i * MATRIX_SIZE + j]))
+			if (! AlmostEqual(matrix.GetElement(i, j), m_values[i * MATRIX_SIZE + j]))
 #endif
 			{
 				STOP_PROFILING;
@@ -569,15 +581,15 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 	
 	/* ==================== SOLUTION #1 begin ==================== */
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = mat[0][0];	m[0][1] = mat[0][1];	m[0][2] = mat[0][2];	m[0][3] = mat[0][3];
-	m[1][0] = mat[1][0];	m[1][1] = mat[1][1];	m[1][2] = mat[1][2];	m[1][3] = mat[1][3];
-	m[2][0] = mat[2][0];	m[2][1] = mat[2][1];	m[2][2] = mat[2][2];	m[2][3] = mat[2][3];
-	m[3][0] = mat[3][0];	m[3][1] = mat[3][1];	m[3][2] = mat[3][2];	m[3][3] = mat[3][3];
+	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
+	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
+	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
+	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
 #else
-	m[0] = mat[0];		m[1] = mat[1];		m[2] = mat[2];		m[3] = mat[3];
-	m[4] = mat[4];		m[5] = mat[5];		m[6] = mat[6];		m[7] = mat[7];
-	m[8] = mat[8];		m[9] = mat[9];		m[10] = mat[10];	m[11] = mat[11];
-	m[12] = mat[12];	m[13] = mat[13];	m[14] = mat[14];	m[15] = mat[15];
+	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
+	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
+	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];	m_values[11] = mat[11];
+	m_values[12] = mat[12];	m_values[13] = mat[13];	m_values[14] = mat[14];	m_values[15] = mat[15];
 #endif
 	/* ==================== SOLUTION #1 end ==================== */
 	
@@ -586,7 +598,7 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 	//{
 	//	for (int j = 0; j < MATRIX_SIZE; ++j)
 	//	{
-	//		m[i][j] = mat[i][j];
+	//		m_values[i][j] = mat[i][j];
 	//	}
 	//}
 	/* ==================== SOLUTION #2 end ==================== */
@@ -607,6 +619,51 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 	return *this;
 }
 
+Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
+{
+	START_PROFILING;
+	// TODO: Check which of the three solution is faster
+
+	/* ==================== SOLUTION #1 begin ==================== */
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
+	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
+	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
+	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
+#else
+	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
+	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
+	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];	m_values[11] = mat[11];
+	m_values[12] = mat[12];	m_values[13] = mat[13];	m_values[14] = mat[14];	m_values[15] = mat[15];
+#endif
+	/* ==================== SOLUTION #1 end ==================== */
+
+	/* ==================== SOLUTION #2 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		m_values[i][j] = mat[i][j];
+	//	}
+	//}
+	/* ==================== SOLUTION #2 end ==================== */
+
+	/* ==================== SOLUTION #3 begin ==================== */
+	//for (int i = 0; i < MATRIX_SIZE; ++i)
+	//{
+	//	for (int j = 0; j < MATRIX_SIZE; ++j)
+	//	{
+	//		this->SetElement(i, j, mat.GetElement(i, j));
+	//	}
+	//}
+	/* ==================== SOLUTION #3 end ==================== */
+
+	SLOW_ASSERT((*this) == mat);
+
+	STOP_PROFILING;
+	return *this;
+}
+
 Math::Matrix4D Math::Matrix4D::Transposition() const
 {
 	START_PROFILING;
@@ -617,9 +674,9 @@ Math::Matrix4D Math::Matrix4D::Transposition() const
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-			matrix.m[i][j] = m[j][i];
+			matrix.m_values[i][j] = m_values[j][i];
 #else
-			matrix.m[i * MATRIX_SIZE + j] = m[j * MATRIX_SIZE + i];
+			matrix.m_values[i * MATRIX_SIZE + j] = m_values[j * MATRIX_SIZE + i];
 #endif
 		}
 	}
@@ -659,11 +716,11 @@ Math::Real Math::Matrix4D::Det(int p, int q) const
 	for (int k = 0; k < 3; ++k)
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		result += m[i[k]][j[0]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[2]];
-		result -= m[i[k]][j[2]] * m[i[(k + 1) % 3]][j[1]] * m[i[(k + 2) % 3]][j[0]];
+		result += m_values[i[k]][j[0]] * m_values[i[(k + 1) % 3]][j[1]] * m_values[i[(k + 2) % 3]][j[2]];
+		result -= m_values[i[k]][j[2]] * m_values[i[(k + 1) % 3]][j[1]] * m_values[i[(k + 2) % 3]][j[0]];
 #else
-		result += m[i[k] * MATRIX_SIZE + j[0]] * m[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m[i[(k + 2) % 3] * MATRIX_SIZE + j[2]];
-		result -= m[i[k] * MATRIX_SIZE + j[2]] * m[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m[i[(k + 2) % 3] * MATRIX_SIZE + j[0]];
+		result += m_values[i[k] * MATRIX_SIZE + j[0]] * m_values[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m_values[i[(k + 2) % 3] * MATRIX_SIZE + j[2]];
+		result -= m_values[i[k] * MATRIX_SIZE + j[2]] * m_values[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m_values[i[(k + 2) % 3] * MATRIX_SIZE + j[0]];
 #endif
 	}
 	
@@ -679,9 +736,9 @@ Math::Matrix4D Math::Matrix4D::Inversion() const
 	for (int j = 0; j < MATRIX_SIZE; ++j)
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		det += Signum(3, j) * m[3][j] * Det(3, j);
+		det += Signum(3, j) * m_values[3][j] * Det(3, j);
 #else
-		det += Signum(3, j) * m[3 * MATRIX_SIZE + j] * Det(3, j);
+		det += Signum(3, j) * m_values[3 * MATRIX_SIZE + j] * Det(3, j);
 #endif
 	}
 
@@ -698,9 +755,9 @@ Math::Matrix4D Math::Matrix4D::Inversion() const
 		for (int j = 0; j < MATRIX_SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-			result.m[j][i] = Signum(i,j) * Det(i,j) / det;
+			result.m_values[j][i] = Signum(i,j) * Det(i,j) / det;
 #else
-			result.m[j * MATRIX_SIZE + i] = Signum(i,j) * Det(i,j) / det;
+			result.m_values[j * MATRIX_SIZE + i] = Signum(i,j) * Det(i,j) / det;
 #endif
 		}
 	}
@@ -731,9 +788,9 @@ bool Math::Matrix4D::IsIdentity() const
 			if (i == j)
 			{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-				if (! AlmostEqual(REAL_ONE, m[i][j]))
+				if (! AlmostEqual(REAL_ONE, m_values[i][j]))
 #else
-				if (! AlmostEqual(REAL_ONE, m[i * MATRIX_SIZE + j]))
+				if (! AlmostEqual(REAL_ONE, m_values[i * MATRIX_SIZE + j]))
 #endif
 				{
 					STOP_PROFILING;
@@ -743,9 +800,9 @@ bool Math::Matrix4D::IsIdentity() const
 			else /* i != j */
 			{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-				if (! AlmostEqual(REAL_ZERO, m[i][j]))
+				if (! AlmostEqual(REAL_ZERO, m_values[i][j]))
 #else
-				if (! AlmostEqual(REAL_ZERO, m[i * MATRIX_SIZE + j]))
+				if (! AlmostEqual(REAL_ZERO, m_values[i * MATRIX_SIZE + j]))
 #endif
 				{
 					STOP_PROFILING;
@@ -762,15 +819,15 @@ void Math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 {
 	START_PROFILING;
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = scaleX;		m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;	m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;	m[1][1] = scaleY;		m[1][2] = REAL_ZERO;	m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = scaleZ;		m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	m_values[0][0] = scaleX;		m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;	m_values[1][1] = scaleY;		m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = scaleZ;		m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;	m_values[3][3] = REAL_ONE;
 #else
-	m[0] = scaleX;		m[1] = REAL_ZERO;	m[2] = REAL_ZERO;	m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;	m[5] = scaleY;		m[6] = REAL_ZERO;	m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = scaleZ;		m[11] = REAL_ZERO;
-	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = REAL_ZERO;	m[15] = REAL_ONE;
+	m_values[0] = scaleX;		m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;	m_values[5] = scaleY;		m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = scaleZ;		m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
 #endif
 	STOP_PROFILING;
 }
@@ -782,10 +839,10 @@ void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Rea
 	const Real f = static_cast<Real>(REAL_ONE / halfAngle.Tan());
 	const Real div = static_cast<Real>(REAL_ONE / (nearPlane - farPlane));
 
-	//m[0][0] = f / aspect;	m[0][1] = 0.0;	m[0][2] = 0.0;							m[0][3] = 0.0;
-	//m[1][0] = 0.0;		m[1][1] = f;	m[1][2] = 0.0;							m[1][3] = 0.0;
-	//m[2][0] = 0.0;		m[2][1] = 0.0;	m[2][2] = (farPlane + nearPlane) * div;	m[2][3] = 2.0 * farPlane * nearPlane * div;
-	//m[3][0] = 0.0;		m[3][1] = 0.0;	m[3][2] = -1.0;							m[3][3] = 0.0;
+	//m_values[0][0] = f / aspect;	m_values[0][1] = 0.0;	m_values[0][2] = 0.0;							m_values[0][3] = 0.0;
+	//m_values[1][0] = 0.0;		m_values[1][1] = f;	m_values[1][2] = 0.0;							m_values[1][3] = 0.0;
+	//m_values[2][0] = 0.0;		m_values[2][1] = 0.0;	m_values[2][2] = (farPlane + nearPlane) * div;	m_values[2][3] = 2.0 * farPlane * nearPlane * div;
+	//m_values[3][0] = 0.0;		m_values[3][1] = 0.0;	m_values[3][2] = -1.0;							m_values[3][3] = 0.0;
 
 	/*
 	* IMPLEMENTATION FROM
@@ -793,15 +850,15 @@ void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Rea
 	* http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf
 	*/
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = f / aspect;	m[0][1] = REAL_ZERO;	m[0][2] = REAL_ZERO;											m[0][3] = REAL_ZERO;
-	m[1][0] = REAL_ZERO;	m[1][1] = f;			m[1][2] = REAL_ZERO;											m[1][3] = REAL_ZERO;
-	m[2][0] = REAL_ZERO;	m[2][1] = REAL_ZERO;	m[2][2] = (-nearPlane - farPlane) * div;						m[2][3] = REAL_ONE;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[3][3] = REAL_ZERO;
+	m_values[0][0] = f / aspect;	m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;											m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = REAL_ZERO;	m_values[1][1] = f;			m_values[1][2] = REAL_ZERO;											m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = (-nearPlane - farPlane) * div;						m_values[2][3] = REAL_ONE;
+	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m_values[3][3] = REAL_ZERO;
 #else
-	m[0] = f / aspect;	m[1] = REAL_ZERO;	m[2] = REAL_ZERO;												m[3] = REAL_ZERO;
-	m[4] = REAL_ZERO;	m[5] = f;			m[6] = REAL_ZERO;												m[7] = REAL_ZERO;
-	m[8] = REAL_ZERO;	m[9] = REAL_ZERO;	m[10] = (-nearPlane - farPlane) * div;							m[11] = REAL_ONE;
-	m[12] = REAL_ZERO;	m[13] = REAL_ZERO;	m[14] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m[15] = REAL_ZERO;
+	m_values[0] = f / aspect;	m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;												m_values[3] = REAL_ZERO;
+	m_values[4] = REAL_ZERO;	m_values[5] = f;			m_values[6] = REAL_ZERO;												m_values[7] = REAL_ZERO;
+	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = (-nearPlane - farPlane) * div;							m_values[11] = REAL_ONE;
+	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = static_cast<Real>(2.0) * farPlane * nearPlane * div;	m_values[15] = REAL_ZERO;
 #endif
 	/* IMPLEMENTATION FROM https://www.youtube.com/watch?v=cgaixZEaDCg&list=PLEETnX-uPtBXP_B2yupUKlflXBznWIlL5 end */
 
@@ -811,13 +868,13 @@ void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Rea
 Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
 {
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	return Vector3D(m[0][0] * vec.GetX() + m[1][0] * vec.GetY() + m[2][0] * vec.GetZ() + m[3][0],
-					m[0][1] * vec.GetX() + m[1][1] * vec.GetY() + m[2][1] * vec.GetZ() + m[3][1],
-					m[0][2] * vec.GetX() + m[1][2] * vec.GetY() + m[2][2] * vec.GetZ() + m[3][2]);
+	return Vector3D(m_values[0][0] * vec.GetX() + m_values[1][0] * vec.GetY() + m_values[2][0] * vec.GetZ() + m_values[3][0],
+					m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1],
+					m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]);
 #else
-	return Vector3D(m[0] * vec.GetX() + m[4] * vec.GetY() + m[8] * vec.GetZ() + m[12],
-					m[1] * vec.GetX() + m[5] * vec.GetY() + m[9] * vec.GetZ() + m[13],
-					m[2] * vec.GetX() + m[6] * vec.GetY() + m[10] * vec.GetZ() + m[14]);
+	return Vector3D(m_values[0] * vec.GetX() + m_values[4] * vec.GetY() + m_values[8] * vec.GetZ() + m_values[12],
+					m_values[1] * vec.GetX() + m_values[5] * vec.GetY() + m_values[9] * vec.GetZ() + m_values[13],
+					m_values[2] * vec.GetX() + m_values[6] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[14]);
 #endif
 
 	//Vector3D ret(REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -846,14 +903,14 @@ void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	CHECK_CONDITION_MATH(u.IsNormalized(), Utility::ERR, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
 	CHECK_CONDITION_MATH(r.IsNormalized(), Utility::ERR, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m[0][0] = r.GetX();		m[0][1] = u.GetX();		m[0][2] = f.GetX();		m[0][3] = REAL_ZERO;
-	m[1][0] = r.GetY();		m[1][1] = u.GetY();		m[1][2] = f.GetY();		m[1][3] = REAL_ZERO;
-	m[2][0] = r.GetZ();		m[2][1] = u.GetZ();		m[2][2] = f.GetZ();		m[2][3] = REAL_ZERO;
-	m[3][0] = REAL_ZERO;	m[3][1] = REAL_ZERO;	m[3][2] = REAL_ZERO;	m[3][3] = REAL_ONE;
+	m_values[0][0] = r.GetX();		m_values[0][1] = u.GetX();		m_values[0][2] = f.GetX();		m_values[0][3] = REAL_ZERO;
+	m_values[1][0] = r.GetY();		m_values[1][1] = u.GetY();		m_values[1][2] = f.GetY();		m_values[1][3] = REAL_ZERO;
+	m_values[2][0] = r.GetZ();		m_values[2][1] = u.GetZ();		m_values[2][2] = f.GetZ();		m_values[2][3] = REAL_ZERO;
+	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;	m_values[3][3] = REAL_ONE;
 #else
-	m[0] = right.GetX();	m[1] = up.GetX();	m[2] = forward.GetX();	m[3] = REAL_ZERO;
-	m[4] = right.GetY();	m[5] = up.GetY();	m[6] = forward.GetY();	m[7] = REAL_ZERO;
-	m[8] = right.GetZ();	m[9] = up.GetZ();	m[10] = forward.GetZ();	m[11] = REAL_ZERO;
-	m[12] = REAL_ZERO;		m[13] = REAL_ZERO;	m[14] = REAL_ZERO;		m[15] = REAL_ONE;
+	m_values[0] = right.GetX();	m_values[1] = up.GetX();	m_values[2] = forward.GetX();	m_values[3] = REAL_ZERO;
+	m_values[4] = right.GetY();	m_values[5] = up.GetY();	m_values[6] = forward.GetY();	m_values[7] = REAL_ZERO;
+	m_values[8] = right.GetZ();	m_values[9] = up.GetZ();	m_values[10] = forward.GetZ();	m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;		m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;		m_values[15] = REAL_ONE;
 #endif
 }

@@ -169,13 +169,6 @@ Math::Vector2D Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
 	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
-void Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor, Vector2D& result) const
-{
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::ERR,
-		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	result = ((vec - (*this)) * lerpFactor) + (*this);
-}
-
 std::string Math::Vector2D::ToString() const
 {
 	std::stringstream ss("");

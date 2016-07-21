@@ -541,22 +541,22 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 		//angle += 15.0f;
 		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
 
-		billboardsModelMatrices.push_back(billboardModelMatrix[0][0]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[0][1]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[0][2]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[0][3]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[1][0]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[1][1]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[1][2]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[1][3]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[2][0]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[2][1]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[2][2]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[2][3]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[3][0]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[3][1]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[3][2]);
-		billboardsModelMatrices.push_back(billboardModelMatrix[3][3]);
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
 	Engine::GameNode* billboardsRenderer = new Engine::GameNode();
 	billboardsRenderer->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
