@@ -19,13 +19,12 @@ namespace Utility
 	{
 		class LoggerWindows : public ILogger
 		{
-			typedef std::list<FILE *> Outs;
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
 			/// Windows-specific logger constructor.
 			/// </summary>
-			LoggerWindows(FILE *first = stdout);
+			LoggerWindows(const char* fileName = NULL);
 			/// <summary>
 			/// Windows-specific logger destructor.
 			/// </summary>
@@ -35,7 +34,6 @@ namespace Utility
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			virtual void Fill(const std::string& strLevel, LogLevel level);
-			virtual void AddFile(const char *name);
 			virtual void ResetConsoleColor() const;
 		protected:
 			virtual void SetConsoleColor(LogLevel level) const;
@@ -45,7 +43,6 @@ namespace Utility
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			Outs m_outs;
 			bool m_modified;
 			int m_indentDepth;
 			const char* m_dateTimeFormat;

@@ -20,42 +20,42 @@ namespace Game
 
 	class Rendering::Shader;
 
-/* TODO: Consider inheriting from Rendering::IUpdateable class */
-class LoadGameState : public Engine::GameState, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
-{
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+	/* TODO: Consider inheriting from Rendering::IUpdateable class */
+	class LoadGameState : public Engine::GameState, public virtual Engine::IUpdateable
+	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	LoadGameState(const std::string& inputMappingContextName);
-	virtual ~LoadGameState(void);
-/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		LoadGameState(const std::string& inputMappingContextName);
+		virtual ~LoadGameState(void);
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	virtual void Entered();
-	virtual void Leaving();
-	virtual void Obscuring();
-	virtual void Revealed();
-	virtual void Handle(Engine::Actions::Action action);
-	virtual void Handle(Engine::States::State state);
-	virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void Entered();
+		virtual void Leaving();
+		virtual void Obscuring();
+		virtual void Revealed();
+		virtual void Handle(Engine::Actions::Action action);
+		virtual void Handle(Engine::States::State state);
+		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 
-	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
-	
-	virtual void Update(Math::Real elapsedTime);
-/* ==================== Non-static member functions end ==================== */
+		virtual void Render(Rendering::Renderer* renderer) const;
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Math::Real m_loadingProgress;
-	tthread::thread* m_loadingThread;
+		virtual void Update(Math::Real elapsedTime);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+	private:
+		Math::Real m_loadingProgress;
+		tthread::thread* m_loadingThread;
 #ifdef CALCULATE_GAME_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
-/* ==================== Non-static member variables end ==================== */
-}; /* end class LoadGameState */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class LoadGameState */
 
 } /* end namespace Game */
 

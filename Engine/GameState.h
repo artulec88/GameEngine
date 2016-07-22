@@ -11,6 +11,8 @@
 
 #include "Math\Math.h"
 
+#include "Rendering\Renderer.h"
+
 #include "Utility\Utility.h"
 
 #include <string>
@@ -56,6 +58,11 @@ namespace Engine
 		/// The function invoked right after the game state has become the topmost game state on the stack again.
 		/// </summary>
 		ENGINE_API virtual void Revealed() = 0;
+
+		/// <summary>
+		/// Renders the game state.
+		/// </summary>
+		ENGINE_API virtual void Render(Rendering::Renderer* renderer) const = 0;
 
 		/// <summary>
 		/// The function indicating whether the current game state wants in-game time calculation to be performed or not.

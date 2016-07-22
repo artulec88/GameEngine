@@ -28,7 +28,7 @@ namespace Game
 
 	class Rendering::Shader;
 
-	class MenuGameState : public Engine::GameState, public virtual Engine::IRenderable, public virtual Engine::IUpdateable
+	class MenuGameState : public Engine::GameState, public Engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -49,7 +49,7 @@ namespace Game
 		virtual void Handle(Engine::States::State state);
 		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 
-		virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		virtual void Render(Rendering::Renderer* renderer) const;
 
 		virtual void Update(Math::Real deltaTime);
 	private:

@@ -50,7 +50,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API LightBuilder();
+		ENGINE_API LightBuilder(Rendering::Renderer* renderer);
 		ENGINE_API virtual ~LightBuilder(void);
 	private:
 		LightBuilder(LightBuilder& lightBuilder) {}
@@ -75,6 +75,7 @@ namespace Engine
 	protected:
 		int m_lightIndex;
 		std::string m_lightIndexStr;
+		Rendering::Renderer* m_renderer;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder */
 
@@ -85,11 +86,13 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API DirectionalLightBuilder() : LightBuilder() { };
+		ENGINE_API DirectionalLightBuilder(Rendering::Renderer* renderer) : LightBuilder(renderer) { };
 		ENGINE_API virtual ~DirectionalLightBuilder(void) { };
 	private:
-		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) {}
-		void operator=(DirectionalLightBuilder& directionalLightBuilder) {}
+		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
+		DirectionalLightBuilder(DirectionalLightBuilder&& directionalLightBuilder) = delete;
+		DirectionalLightBuilder& operator=(const DirectionalLightBuilder& directionalLightBuilder) = delete;
+		DirectionalLightBuilder& operator=(DirectionalLightBuilder&& directionalLightBuilder) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -112,7 +115,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API PointLightBuilder();
+		ENGINE_API PointLightBuilder(Rendering::Renderer* renderer);
 		ENGINE_API virtual ~PointLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -144,7 +147,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API SpotLightBuilder();
+		ENGINE_API SpotLightBuilder(Rendering::Renderer* renderer);
 		ENGINE_API virtual ~SpotLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 

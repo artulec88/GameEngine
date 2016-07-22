@@ -37,7 +37,7 @@ bool angleTestEnabled = false;
 bool vectorTestEnabled = false;
 bool matrixTestEnabled = false;
 bool quaternionTestEnabled = false;
-bool sortingTestEnabled = false;
+bool sortingTestEnabled = true;
 bool kdTreeTestEnabled = false;
 bool statsTestEnabled = false;
 bool otherTestsEnabled = true;
@@ -437,16 +437,16 @@ void SortTest()
 		return;
 	}
 
-	Logging::ILogger::GetLogger(MODULE_NAME).AddFile("sortingOutput.txt");
+	Logging::ILogger::GetLogger(MODULE_NAME).AddStream("sortingOutput.txt");
 	//ofstream sortingOutputFile;
 	//sortingOutputFile.open("sortingOutput.txt");
 
 	NOTICE_LOG_MATH_TEST("Sorting test started");
-	const int NUMBER_OF_VECTORS = 200000;
+	const int NUMBER_OF_VECTORS = 10000;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
 	const Real LOWER_BOUND_Y = -20.0f;
-	const Real HIGHER_BOUND_Y = 20.0f;	
+	const Real HIGHER_BOUND_Y = 20.0f;
 	Vector2D* initialVectors = new Vector2D[NUMBER_OF_VECTORS];
 	Vector2D* vectors = new Vector2D[NUMBER_OF_VECTORS];
 	//initialVectors[0].SetX(REAL_ONE); initialVectors[5].SetY(REAL_ONE); // sumOfComponents = 2	sumOfAbsComponents = 2	sumOfSquaredComponents = 2
@@ -468,15 +468,15 @@ void SortTest()
 		DEBUG_LOG_MATH_TEST("initialVectors[", i, "] = ", initialVectors[i].ToString());
 	}
 
-	const int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 3 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const int NUMBER_OF_SORTING_METHODS = 3; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
+	const int chosenSortingMethodIndices[] = { 0, 1, 2 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	Sorting::SortingAlgorithm sortingMethods[] = { Sorting::BUBBLE_SORT, Sorting::INSERTION_SORT, Sorting::SELECTION_SORT,
 		Sorting::MERGE_SORT, Sorting::HEAP_SORT, Sorting::QUICK_SORT, Sorting::SHELL_SORT, Sorting::COMB_SORT,
 		Sorting::COUNTING_SORT, Sorting::RADIX_SORT, Sorting::BUCKET_SORT };
 	std::string sortingMethodsStr[] = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
 		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 
-	const int NUMBER_OF_TIME_TESTS_ITERATIONS = 1;
+	const int NUMBER_OF_TIME_TESTS_ITERATIONS = 20;
 	/**
 	 * TODO: Instead of measuring the time needed to perform NUMBER_OF_TIME_TESTS_ITERATION sorts it should be more efficient to count the number of successful sorts within given period of time.
 	 * If this time limit is passed then sorting is stopped no matter if it's finished or not.
@@ -499,7 +499,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -536,7 +536,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -572,7 +572,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -606,7 +606,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -640,7 +640,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -678,7 +678,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -716,7 +716,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -754,7 +754,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -792,7 +792,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -830,7 +830,7 @@ void SortTest()
 			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
-		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::SECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
+		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
@@ -945,7 +945,7 @@ void StatsTest()
 	{
 		float floatValue3 = statsTest1.Method3();
 	}
-	
+
 	MathTest::StatsTest2 statsTest2;
 	for (int i = 0; i < STATS_TEST_2_METHOD_1_INVOCATIONS_COUNT; ++i)
 	{
@@ -1003,7 +1003,7 @@ void OtherTests()
 	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::MILLISECOND));
 }
 
-int main (int argc, char* argv[])
+int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
 	std::unique_ptr<ICommandLineMapper> commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
@@ -1015,18 +1015,18 @@ int main (int argc, char* argv[])
 	//}
 	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
 
-	AngleTest();
-	VectorTest();
-	QuaternionTest();
-	MatrixTest();
+	//AngleTest();
+	//VectorTest();
+	//QuaternionTest();
+	//MatrixTest();
 	SortTest();
 	//SortTestTime();
 
-	KDTreeTest();
+	//KDTreeTest();
 
-	StatsTest();
+	//StatsTest();
 
-	OtherTests();
+	//OtherTests();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

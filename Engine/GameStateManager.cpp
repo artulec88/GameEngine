@@ -95,7 +95,6 @@ Engine::DefaultGameStateManager::~DefaultGameStateManager()
 void Engine::DefaultGameStateManager::ClearAllIntefaceLists()
 {
 	m_exposedInputablesMouse.clear();
-	m_exposedRenderables.clear();
 	m_exposedUpdateables.clear();
 }
 
@@ -188,11 +187,11 @@ void Engine::DefaultGameStateManager::Update(Math::Real deltaTime)
 	}
 }
 
-void Engine::DefaultGameStateManager::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void Engine::DefaultGameStateManager::Render(Rendering::Renderer* renderer) const
 {
-	for (std::vector<IRenderable*>::const_iterator gameStateItr = m_exposedRenderables.begin(); gameStateItr != m_exposedRenderables.end(); ++gameStateItr)
+	for (std::vector<GameStateModalityTypePair>::const_iterator gameStateItr = m_activeStates.begin(); gameStateItr != m_activeStates.end(); ++gameStateItr)
 	{
-		(*gameStateItr)->Render(shader, renderer);
+		gameStateItr->first->Render(renderer);
 	}
 }
 
@@ -204,13 +203,6 @@ void Engine::DefaultGameStateManager::AddToInterfaces(GameState* gameState)
 	{
 		DEBUG_LOG_ENGINE("Adding to MOUSE INPUT interface");
 		m_exposedInputablesMouse.push_back(inputableMouse);
-	}
-
-	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
-	if(renderable != NULL)
-	{
-		DEBUG_LOG_ENGINE("Adding to RENDER interface");
-		m_exposedRenderables.push_back(renderable);
 	}
 	
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);
@@ -228,12 +220,6 @@ void Engine::DefaultGameStateManager::RemoveFromInterfaces(GameState* gameState)
 	if (inputableMouse != NULL)
 	{
 		m_exposedInputablesMouse.push_back(inputableMouse);
-	}
-
-	IRenderable* renderable = dynamic_cast<IRenderable*>(gameState);
-	if (renderable != NULL)
-	{
-		m_exposedRenderables.pop_back();
 	}
 
 	IUpdateable* updateable = dynamic_cast<IUpdateable*>(gameState);

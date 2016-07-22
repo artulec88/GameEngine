@@ -4,7 +4,7 @@
 #if defined(VS_BUILD)
 #include "forward-lighting-no-shadows.vsh"
 #elif defined(FS_BUILD)
-
+#include "tiling-terrain.glh"
 #include "lighting.glh"
 
 uniform vec3 C_eyePos;

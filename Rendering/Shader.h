@@ -63,9 +63,9 @@ namespace Rendering
 		std::string ConvertUniformTypeToString(UniformType uniformType);
 	} /* end namespace Uniforms */
 
-	class ShaderData : public Utility::ReferenceCounter
+	class ShaderData
 	{
-	/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions begin ==================== */
 	private:
 		static const std::string ATTRIBUTE_KEYWORD;
 		static const std::string LOCATION_KEYWORD;
@@ -74,18 +74,19 @@ namespace Rendering
 		static const std::string MULTI_LINE_COMMENT_BEGIN;
 		static const std::string MULTI_LINE_COMMENT_END;
 		static const char* UniformTypeNames[];
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ShaderData(const std::string& fileName);
 		~ShaderData(void);
-	private:
-		ShaderData(const ShaderData& shaderData) {} // don't implement
-		void operator=(const ShaderData& shaderData) {} // don't implement
-	/* ==================== Constructors and destructors end ==================== */
+		ShaderData(const ShaderData& shaderData) = delete;
+		ShaderData(ShaderData&& shaderData) = delete;
+		ShaderData& operator=(const ShaderData& shaderData) = delete;
+		ShaderData& operator=(ShaderData&& shaderData) = delete;
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetProgram() const { return m_programID; }
 		std::vector<Uniforms::Uniform>& GetUniforms() { return m_uniforms; }
@@ -108,31 +109,36 @@ namespace Rendering
 
 		bool Compile();
 		bool CheckForErrors(int shader, int flag, bool isProgram, int& infoLogLength);
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		GLuint m_programID;
 		std::vector<GLuint> m_shaders;
 		std::vector<Uniforms::Uniform> m_uniforms;
 		std::map<std::string, GLint> m_uniformMap;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShaderData */
 
 	class Shader
 	{
-	/* ==================== Static variables begin ==================== */
+		/* ==================== Static variables begin ==================== */
 	private:
-		static std::map<std::string, ShaderData*> shaderResourceMap;
-	/* ==================== Static variables end ==================== */
+		static std::map<std::string, std::shared_ptr<ShaderData>> shaderResourceMap;
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Shader(const std::string& fileName);
-		RENDERING_API ~Shader(void);
-	/* ==================== Constructors and destructors end ==================== */
+		Shader(const std::string& fileName);
+		~Shader(void);
+		
+		Shader(const Shader& shader) = delete;
+		Shader(Shader&& shader);
+		Shader& operator=(const Shader& shader) = delete;
+		Shader& operator=(Shader&& shader) = delete;
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetProgramID() const { return m_shaderData->GetProgram(); }
 		void Bind() const;
@@ -167,13 +173,13 @@ namespace Rendering
 		/// Sets the spot light uniform.
 		/// </summary>
 		void SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const;
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		ShaderData* m_shaderData;
+		std::shared_ptr<ShaderData> m_shaderData;
 		std::string m_fileName;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Shader */
 
 } /* end namespace Rendering */

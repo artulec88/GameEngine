@@ -102,19 +102,19 @@ namespace Rendering
 
 		// TODO: Consider removing this struct. Use simple 'int' as the key for the fog shaders in the Renderer class.
 		// Use bitwise AND (between FogFallOffType and FogCalculationType) to construct this 'int' value.
-		struct FogKey
-		{
-			FogKey() : fallOffType(LINEAR), calculationType(PLANE_BASED)
-			{
-			}
-			FogKey(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
-				fallOffType(fogFallOffType), calculationType(fogCalculationType)
-			{
-			}
-			bool operator<(const FogKey& fog) const;
-			FogFallOffType fallOffType;
-			FogCalculationType calculationType;
-		};
+		//struct FogKey
+		//{
+		//	FogKey() : fallOffType(LINEAR), calculationType(PLANE_BASED)
+		//	{
+		//	}
+		//	FogKey(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
+		//		fallOffType(fogFallOffType), calculationType(fogCalculationType)
+		//	{
+		//	}
+		//	bool operator<(const FogKey& fog) const;
+		//	FogFallOffType fallOffType;
+		//	FogCalculationType calculationType;
+		//};
 	} /* end namespace FogEffect */
 
 	namespace WaterEffect

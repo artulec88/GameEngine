@@ -5,8 +5,9 @@
 
 /* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
 
-Rendering::Lighting::PointLight::PointLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Rendering::Attenuation& attenuation) :
-	BaseLight(transform, color, intensity),
+Rendering::Lighting::PointLight::PointLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Rendering::Attenuation& attenuation,
+	const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
+	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
 	m_attenuation(attenuation)
 {
 	CalculateRange();

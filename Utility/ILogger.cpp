@@ -2,6 +2,7 @@
 #include "ILogger.h"
 #include "LoggerWindows.h"
 #include <iostream>
+#include <fstream>
 
 /* static */ std::map<std::string, std::unique_ptr<Utility::Logging::ILogger>> Utility::Logging::ILogger::loggers;
 
@@ -26,14 +27,22 @@
 	return *ILogger::loggers[moduleName];
 }
 
-Utility::Logging::ILogger::ILogger(void) :
+Utility::Logging::ILogger::ILogger(const char* fileName /* = NULL */) :
 	m_level(NOTICE)
 {
+	if (fileName != NULL)
+	{
+		AddStream(fileName);
+	}
 }
 
 
 Utility::Logging::ILogger::~ILogger(void)
 {
+	for (Outs::iterator outItr = m_outs.begin(); outItr != m_outs.end(); ++outItr)
+	{
+		(*outItr).close();
+	}
 }
 
 void Utility::Logging::ILogger::SetLevel(LogLevel level)
@@ -48,4 +57,11 @@ void Utility::Logging::ILogger::SetLevel(LogLevel level)
 	//mutex.Unlock();
 	std::cout << "Logging level set to " << LOGGING_LEVEL_NAMES[level] << std::endl;
 	m_level = level;
+}
+
+void Utility::Logging::ILogger::AddStream(const char* fileName)
+{
+	WARNING_LOG_UTILITY("Logging to files doesn't work. This function call will be ignored.");
+	return;
+	//m_outs.push_back(std::move(std::ofstream(fileName, std::ios::out)));
 }

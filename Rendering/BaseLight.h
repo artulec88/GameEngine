@@ -31,13 +31,14 @@ namespace Rendering
 			/// <param name="color">The color of the light.</param>
 			/// <param name="intensity">The intensity of the light.</param>
 			/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLight</code>.</remarks>
-			RENDERING_API BaseLight(Math::Transform& transform, const Color& color, Math::Real intensity);
+			RENDERING_API BaseLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Shader& shader,
+				const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 
 			/// <summary>The destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
-		private:
-			BaseLight(const BaseLight& baseLight); // Copy constructor disabled
-			void operator=(BaseLight& baseLight); // Assignment operator disabled
+			
+			BaseLight(const BaseLight& baseLight) = delete; // Copy constructor
+			void operator=(BaseLight& baseLight) = delete; // Copy assignment operator
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -46,11 +47,11 @@ namespace Rendering
 			//virtual void Render(Shader* shader, Renderer* renderer);
 			const Color& GetColor() const { return m_color; }
 			Math::Real GetIntensity() const { return m_intensity; }
-			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
-			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
-			RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
-			RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
-			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo; }
+			RENDERING_API inline const Shader& GetShader() const { return m_shader; }
+			RENDERING_API inline const Shader& GetTerrainShader() const { return m_terrainShader; }
+			RENDERING_API inline const Shader& GetNoShadowShader() const { return m_noShadowShader; }
+			RENDERING_API inline const Shader& GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
+			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
 			virtual bool IsEnabled() const { return m_isEnabled; }
 
 			bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
@@ -62,11 +63,9 @@ namespace Rendering
 			RENDERING_API void SetColor(const Color& color) { m_color = color; }
 			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
-			RENDERING_API void SetShader(Shader* shader);
-			RENDERING_API void SetTerrainShader(Shader* terrainShader);
-			RENDERING_API void SetNoShadowShader(Shader* noShadowShader);
-			RENDERING_API void SetNoShadowTerrainShader(Shader* noShadowTerrainShader);
-			void SetShadowInfo(ShadowInfo* shadowInfo);
+			void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+				Math::Real shadowSoftness = REAL_ONE, Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
+				Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 			virtual void InitializeTweakBar(TwBar* lightsBar);
@@ -85,19 +84,19 @@ namespace Rendering
 			Math::Real m_intensity;
 
 			/// <summary>The default shader for the light.</summary>
-			Shader* m_shader;
+			const Shader& m_shader; // TODO: Assuming we have 10 point lights then we have also 10 instances of the same Shader object. It would be better to store just a reference or a pointer to a globally accessible shader (e.g. ShaderFactory?).
 
 			/// <summary>The terrain shader for the light.</summary>
-			Shader* m_terrainShader;
+			const Shader& m_terrainShader;
 
 			/// <summary> The default shader with no shadow calculation for the light. </summary>
-			Shader* m_noShadowShader;
+			const Shader& m_noShadowShader;
 
 			/// <summary> The terrain shader with no shadow calculation for the light. </summary>
-			Shader* m_noShadowTerrainShader;
+			const Shader& m_noShadowTerrainShader;
 
 			/// <summary>The information about the shadow that the light casts.</summary>
-			ShadowInfo* m_shadowInfo;
+			std::unique_ptr<ShadowInfo> m_shadowInfo;
 
 			/// <summary>The information whether the light is enabled or not.</summary>
 			bool m_isEnabled;

@@ -74,7 +74,7 @@ std::string Rendering::Uniforms::ConvertUniformTypeToString(UniformType uniformT
 /* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
 /* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_END = "*/";
 
-/* static */ std::map<std::string, Rendering::ShaderData*> Rendering::Shader::shaderResourceMap;
+/* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
 Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	m_programID(glCreateProgram())
@@ -107,6 +107,10 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	{
 		CRITICAL_LOG_RENDERING("Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
 		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		NOTICE_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
 	}
 	AddShaderUniforms(shaderText);
 	//ERROR_LOG_RENDERING("Vertex shader text = ", vertexShaderText);
@@ -506,37 +510,41 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 
 /* ==================== Shader class begin ==================== */
 Rendering::Shader::Shader(const std::string& fileName) :
-	m_shaderData(NULL),
+	m_shaderData(nullptr),
 	m_fileName(fileName)
 {
 	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
-	std::map<std::string, ShaderData*>::const_iterator itr = shaderResourceMap.find(fileName);
+	std::map<std::string, std::shared_ptr<ShaderData>>::const_iterator itr = shaderResourceMap.find(fileName);
 	if (itr == shaderResourceMap.end())
 	{
-		m_shaderData = new ShaderData(fileName);
-		shaderResourceMap.insert(std::pair<std::string, ShaderData*>(fileName, m_shaderData));
+		m_shaderData = std::make_shared<ShaderData>(fileName);
+		shaderResourceMap.insert(std::make_pair(fileName, m_shaderData));
 	}
 	else
 	{
 		INFO_LOG_RENDERING("Shader data \"", fileName, "\" already present in the resource manager");
 		m_shaderData = itr->second;
-		m_shaderData->AddReference();
 	}
 }
 
 
 Rendering::Shader::~Shader(void)
 {
-	CHECK_CONDITION_RENDERING(m_shaderData != NULL, Utility::WARNING, "\"", m_fileName, "\" shader's data is already NULL.");
-	m_shaderData->RemoveReference();
-	if (!m_shaderData->IsReferenced())
-	{
-		if (m_fileName.length() > 0)
-		{
-			shaderResourceMap.erase(m_fileName);
-		}
-		SAFE_DELETE(m_shaderData);
-	}
+}
+
+//Rendering::Shader::Shader(const Shader& shader) :
+//	m_shaderData(shader.m_shaderData),
+//	m_fileName(shader.m_fileName)
+//{
+//
+//}
+
+Rendering::Shader::Shader(Shader&& shader) :
+	m_shaderData(std::move(shader.m_shaderData)),
+	m_fileName(std::move(shader.m_fileName))
+{
+	//shader.m_shaderData = nullptr;
+	//shader.m_fileName.clear();
 }
 
 void Rendering::Shader::Bind() const

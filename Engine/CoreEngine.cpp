@@ -988,11 +988,6 @@ Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& dayti
 	return m_daytime;
 }
 
-void Engine::CoreEngine::AddLight(Rendering::Lighting::BaseLight* light)
-{
-	m_renderer->AddLight(light);
-}
-
 void Engine::CoreEngine::AddCamera(Rendering::CameraBase* camera)
 {
 	m_renderer->AddCamera(camera);

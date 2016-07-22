@@ -4,10 +4,12 @@
 #include "Utility.h"
 #include "Time.h"
 #include <map>
+#include <vector>
 #include <string>
 #include <memory>
 #include <iostream>
 #include <sstream>
+#include <list>
 #include <array>
 
 #define LOGGING_ENABLED
@@ -147,6 +149,7 @@ namespace Utility
 
 		class ILogger
 		{
+			typedef std::vector<std::ofstream> Outs;
 			/* ==================== Static variables and functions begin ==================== */
 		protected:
 			static std::map<std::string, std::unique_ptr<ILogger>> loggers;
@@ -160,7 +163,7 @@ namespace Utility
 			/// <summary>
 			/// Base logger constructor.
 			/// </summary>
-			ILogger();
+			ILogger(const char* fileName = NULL);
 
 			/// <summary>
 			/// Base logger destructor.
@@ -185,7 +188,8 @@ namespace Utility
 			}
 			UTILITY_API virtual void Fill(const std::string& strLevel, LogLevel level) = 0;
 			UTILITY_API virtual void ResetConsoleColor() const = 0;
-			UTILITY_API virtual void AddFile(const char *name) = 0;
+			//UTILITY_API void AddStream(std::ostream* stream);
+			UTILITY_API void AddStream(const char* fileName);
 		protected:
 			void SetLevel(LogLevel level);
 			virtual void SetConsoleColor(LogLevel level) const = 0;
@@ -199,6 +203,11 @@ namespace Utility
 			}
 			void LogRecursive(LogLevel level, const char* file, int line, std::ostringstream& msg)
 			{
+				//for (Outs::iterator outItr = m_outs.begin(); outItr != m_outs.end(); ++outItr)
+				//{
+				//	(*outItr) << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
+				//		file << "(" << line << "): " << msg.str() << std::endl;
+				//}
 				std::cout << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
 					file << "(" << line << "): " << msg.str() << std::endl;
 			}
@@ -207,6 +216,7 @@ namespace Utility
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			LogLevel m_level;
+			Outs m_outs;
 			// TODO: Store console colors from configuration file
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class ILogger */

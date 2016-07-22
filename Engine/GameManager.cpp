@@ -39,7 +39,7 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 	}
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
 	Engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
-	gameManager->Load();
+	gameManager->Load(Engine::CoreEngine::GetCoreEngine()->GetRenderer());
 }
 
 Engine::GameManager::GameManager() :
@@ -220,7 +220,7 @@ void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
 
 void Engine::GameManager::Render(Rendering::Renderer* renderer) const
 {
-	m_gameStateManager->Render(NULL, renderer);
+	m_gameStateManager->Render(renderer);
 }
 
 void Engine::GameManager::SetTransition(Engine::GameStateTransitioning::GameStateTransition* gameStateTransition)

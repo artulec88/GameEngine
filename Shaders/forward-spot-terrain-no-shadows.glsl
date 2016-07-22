@@ -39,5 +39,5 @@ vec4 CalcLightingEffect(vec3 normal, vec3 worldPos)
     return color;
 }
 
-#include "lightingMainTerrain.fsh"
+#include "lightingMainTerrainNoShadows.fsh"
 #endif

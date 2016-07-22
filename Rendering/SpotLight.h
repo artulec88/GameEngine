@@ -27,7 +27,8 @@ namespace Rendering {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API SpotLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Attenuation& attenuation,
-				const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
+				const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
+				const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 			RENDERING_API virtual ~SpotLight(void);
 			/* ==================== Constructors and destructors end ==================== */
 

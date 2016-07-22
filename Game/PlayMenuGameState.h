@@ -20,56 +20,56 @@
 namespace Game
 {
 
-class Rendering::Shader;
+	class Rendering::Shader;
 
-class PlayMenuGameState : public Engine::GameState, public virtual Engine::IRenderable
-{
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+	class PlayMenuGameState : public Engine::GameState
+	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	PlayMenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
-	virtual ~PlayMenuGameState(void);
-/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		PlayMenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
+		virtual ~PlayMenuGameState(void);
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	virtual void Entered();
-	virtual void Leaving();
-	virtual void Obscuring();
-	virtual void Revealed();
-	virtual void Handle(Engine::Actions::Action action);
-	virtual void Handle(Engine::States::State state);
-	virtual void Handle(Engine::Ranges::Range range, Math::Real value);
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void Entered();
+		virtual void Leaving();
+		virtual void Obscuring();
+		virtual void Revealed();
+		virtual void Handle(Engine::Actions::Action action);
+		virtual void Handle(Engine::States::State state);
+		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
 
-	virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		virtual void Render(Rendering::Renderer* renderer) const;
 
-	//virtual void MouseButtonEvent(int button, int action, int mods);
-	//virtual void MousePosEvent(double xPos, double yPos);
-	//virtual void ScrollEvent(double xOffset, double yOffset);
+		//virtual void MouseButtonEvent(int button, int action, int mods);
+		//virtual void MousePosEvent(double xPos, double yPos);
+		//virtual void ScrollEvent(double xOffset, double yOffset);
 
-private:
-	void DeselectAll();
-	void SelectChild(int childIndex);
-/* ==================== Non-static member functions end ==================== */
+	private:
+		void DeselectAll();
+		void SelectChild(int childIndex);
+		/* ==================== Non-static member functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-private:
-	Engine::CompositeMenuEntry m_playMainMenuRootEntry;
-	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
-	//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
-	//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
-	//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
-	//Rendering::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-	//Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
-	Math::Real m_mousePosX, m_mousePosY;
-	Engine::MenuEntry* m_currentMenuEntry;
+		/* ==================== Non-static member variables begin ==================== */
+	private:
+		Engine::CompositeMenuEntry m_playMainMenuRootEntry;
+		//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
+		//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
+		//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
+		//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
+		//Rendering::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
+		//Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+		Math::Real m_mousePosX, m_mousePosY;
+		Engine::MenuEntry* m_currentMenuEntry;
 #ifdef CALCULATE_GAME_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
-/* ==================== Non-static member variables end ==================== */
-}; /* end class PlayMenuGameState */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class PlayMenuGameState */
 
 } /* end namespace Game */
 

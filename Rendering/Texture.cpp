@@ -278,7 +278,7 @@ bool Rendering::TextureData::Compare(const TextureData& textureData) const
 /* static */ std::map<std::string, std::shared_ptr<Rendering::TextureData>> Rendering::Texture::s_textureResourceMap;
 
 Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /*=GL_RGBA*/, GLenum format /*=GL_RGBA*/, bool clampEnabled /*=false*/, GLenum attachment /*= GL_NONE*/) :
-	m_textureData(NULL),
+	m_textureData(nullptr),
 	m_fileName(fileName)
 {
 	// TODO: Check whether the fileName is a full path or just a fileName. Act accordingly.
@@ -302,7 +302,7 @@ Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /*
 		CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::ERR, "Unable to load texture from the file \"", name, "\"");
 		m_textureData = std::make_shared<TextureData>(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
 		stbi_image_free(data);
-		s_textureResourceMap.insert(std::pair<std::string, std::shared_ptr<Rendering::TextureData>>(fileName, m_textureData));
+		s_textureResourceMap.insert(std::make_pair(fileName, m_textureData));
 		DEBUG_LOG_RENDERING("Loading texture from file \"", name, "\" finished successfully");
 	}
 	else // (itr != textureResourceMap.end()) // texture has already been loaded

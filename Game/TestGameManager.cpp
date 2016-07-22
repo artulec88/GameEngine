@@ -331,7 +331,7 @@ Engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 	return m_playMainMenuGameState.get();
 }
 
-void Game::TestGameManager::Load()
+void Game::TestGameManager::Load(Rendering::Renderer* renderer)
 {
 	NOTICE_LOG_GAME("Initalizing test game");
 	START_PROFILING;
@@ -513,7 +513,7 @@ void Game::TestGameManager::Load()
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
-	AddLights(); // Adding all kinds of light (directional, point, spot)
+	AddLights(renderer); // Adding all kinds of light (directional, point, spot)
 
 	AddCameras(playerNode); // Adding cameras
 
@@ -563,14 +563,14 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 	AddBillboardsRenderer(billboardsRenderer);
 }
 
-void Game::TestGameManager::AddLights()
+void Game::TestGameManager::AddLights(Rendering::Renderer* renderer)
 {
 	START_PROFILING;
-	AddDirectionalLight(); // Adding directional light (if enabled)
+	AddDirectionalLight(renderer); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightCount, " point lights");
-		AddPointLights();
+		AddPointLights(renderer);
 		NOTICE_LOG_GAME(pointLightCount, " point lights created");
 	}
 	else
@@ -580,7 +580,7 @@ void Game::TestGameManager::AddLights()
 	if (spotLightCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightCount, " spot lights");
-		AddSpotLights();
+		AddSpotLights(renderer);
 		NOTICE_LOG_GAME(spotLightCount, " spot lights created");
 	}
 	else
@@ -590,7 +590,7 @@ void Game::TestGameManager::AddLights()
 	STOP_PROFILING;
 }
 
-void Game::TestGameManager::AddDirectionalLight()
+void Game::TestGameManager::AddDirectionalLight(Rendering::Renderer* renderer)
 {
 	// TODO: For now we only check if directionalLightsCount is zero or not.
 	// In the future there might be many directional lights enabled (?)
@@ -602,21 +602,21 @@ void Game::TestGameManager::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	Engine::DirectionalLightBuilder directionalLightBuilder;
+	Engine::DirectionalLightBuilder directionalLightBuilder(renderer);
 	Engine::BuilderDirector lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
 	Engine::GameNode* directionalLightNode = directionalLightBuilder.GetGameNode();
 	AddToSceneRoot(directionalLightNode);
 }
 
-void Game::TestGameManager::AddPointLights()
+void Game::TestGameManager::AddPointLights(Rendering::Renderer* renderer)
 {
 	if (pointLightCount < 1)
 	{
 		return;
 	}
 
-	Engine::PointLightBuilder pointLightBuilder;
+	Engine::PointLightBuilder pointLightBuilder(renderer);
 	Engine::BuilderDirector lightBuilderDirector(pointLightBuilder);
 	for (int i = 0; i < pointLightCount; ++i)
 	{
@@ -633,14 +633,14 @@ void Game::TestGameManager::AddPointLights()
 	}
 }
 
-void Game::TestGameManager::AddSpotLights()
+void Game::TestGameManager::AddSpotLights(Rendering::Renderer* renderer)
 {
 	if (spotLightCount < 1)
 	{
 		return;
 	}
 
-	Engine::SpotLightBuilder spotLightBuilder;
+	Engine::SpotLightBuilder spotLightBuilder(renderer);
 	Engine::BuilderDirector lightBuilderDirector(spotLightBuilder);
 	for (int i = 0; i < spotLightCount; ++i)
 	{

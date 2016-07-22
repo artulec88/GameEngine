@@ -4,16 +4,12 @@
 #include <string>
 #include "Time.h"
 	
-Utility::Logging::LoggerWindows::LoggerWindows(FILE *first) :
-	ILogger(),
+Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = NULL */) :
+	ILogger(fileName),
 	m_modified(false),
 	m_indentDepth(0),
 	m_dateTimeFormat("%H:%M:%S")
 {
-	if (first)
-	{
-		m_outs.push_back(first);
-	}
 	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
 	ReadConsoleColorsFromConfigFile();
 }
@@ -41,17 +37,6 @@ void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = Empt
 		}
 	}
 	SetLevel(defaultLogLevel);
-}
-
-
-void Utility::Logging::LoggerWindows::AddFile(const char *name)
-{
-	//mutex.Lock();
-	FILE *file;
-	fopen_s(&file, name, "a");
-	m_outs.push_back(file);
-
-	//mutex.Unlock();
 }
 
 void Utility::Logging::LoggerWindows::ResetConsoleColor() const

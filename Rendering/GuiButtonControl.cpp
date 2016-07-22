@@ -142,17 +142,17 @@ void Rendering::Controls::GuiButtonControl::Draw(const Rendering::Renderer& rend
 {
 	if (m_font != NULL)
 	{
-		const Shader* shader = renderer.GetGuiTextShader();
-		shader->Bind();
-		shader->SetUniformVector2D("translation", GetScreenPosition());
-		shader->SetUniformVector2D("offset", m_offset);
-		shader->SetUniformVector3D("textColor", m_color);
-		shader->SetUniformVector3D("outlineColor", m_outlineColor);
-		shader->SetUniformf("characterWidth", m_characterWidth);
-		shader->SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
-		shader->SetUniformf("borderWidth", m_borderWidth);
-		shader->SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
-		shader->SetUniformi("fontAtlas", 0);
+		const Shader& shader = renderer.GetGuiTextShader();
+		shader.Bind();
+		shader.SetUniformVector2D("translation", GetScreenPosition());
+		shader.SetUniformVector2D("offset", m_offset);
+		shader.SetUniformVector3D("textColor", m_color);
+		shader.SetUniformVector3D("outlineColor", m_outlineColor);
+		shader.SetUniformf("characterWidth", m_characterWidth);
+		shader.SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
+		shader.SetUniformf("borderWidth", m_borderWidth);
+		shader.SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
+		shader.SetUniformi("fontAtlas", 0);
 
 		m_font->Bind();
 		m_mesh->Draw();
@@ -160,11 +160,11 @@ void Rendering::Controls::GuiButtonControl::Draw(const Rendering::Renderer& rend
 	else if (m_iconTexture != NULL)
 	{
 		DELOCUST_LOG_RENDERING("Rendering button with icon");
-		const Shader* shader = renderer.GetGuiShader();
-		shader->Bind();
+		const Shader& shader = renderer.GetGuiShader();
+		shader.Bind();
 		m_iconTexture->Bind(0);
-		shader->SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
-		shader->SetUniformi("guiTexture", 0);
+		shader.SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
+		shader.SetUniformi("guiTexture", 0);
 		m_mesh->Draw();
 	}
 }

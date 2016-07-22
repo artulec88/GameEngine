@@ -68,7 +68,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Load() = 0; // Loads the game
+		ENGINE_API virtual void Load(Rendering::Renderer* renderer) = 0; // Loads the game
 		ENGINE_API virtual void Input(const Engine::Input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;

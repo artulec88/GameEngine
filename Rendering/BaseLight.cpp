@@ -5,15 +5,16 @@
 #include "Shader.h"
 #include "Utility\ILogger.h"
 
-Rendering::Lighting::BaseLight::BaseLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity) :
+Rendering::Lighting::BaseLight::BaseLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Shader& shader,
+	const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
 	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
-	m_shader(NULL),
-	m_terrainShader(NULL),
-	m_noShadowShader(NULL),
-	m_noShadowTerrainShader(NULL),
-	m_shadowInfo(NULL),
+	m_shader(shader),
+	m_terrainShader(terrainShader),
+	m_noShadowShader(noShadowShader),
+	m_noShadowTerrainShader(noShadowTerrainShader),
+	m_shadowInfo(nullptr),
 	m_isEnabled(true),
 	m_isShadowingEnabled(true)
 {
@@ -21,72 +22,17 @@ Rendering::Lighting::BaseLight::BaseLight(Math::Transform& transform, const Rend
 
 Rendering::Lighting::BaseLight::~BaseLight(void)
 {
-	// TODO: delete shader if it's not referenced by any other object
-	// TODO: Think how to deallocate resources.
-	SAFE_DELETE(m_shader);
-	SAFE_DELETE(m_terrainShader);
-	SAFE_DELETE(m_shadowInfo);
-	SAFE_DELETE(m_noShadowShader);
-	SAFE_DELETE(m_noShadowTerrainShader);
 }
 
-void Rendering::Lighting::BaseLight::SetShader(Rendering::Shader* shader)
+void Rendering::Lighting::BaseLight::SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+	Math::Real shadowSoftness /* = REAL_ONE */, Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
+	Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */)
 {
-	// TODO: delete shader if it's not referenced by any other object
-	//SAFE_DELETE(this->shader);
-	if (m_shader != NULL)
-	{
-		WARNING_LOG_RENDERING("Setting new shader for the light seems dubious.");
-		SAFE_DELETE(m_shader);
-	}
-	m_shader = shader;
-}
-
-void Rendering::Lighting::BaseLight::SetTerrainShader(Rendering::Shader* terrainShader)
-{
-	// TODO: delete shader if it's not referenced by any other object
-	//SAFE_DELETE(m_terrainShader);
-	if (m_terrainShader != NULL)
-	{
-		WARNING_LOG_RENDERING("Setting new terrain shader for the light seems dubious.");
-		SAFE_DELETE(m_terrainShader);
-	}
-	m_terrainShader = terrainShader;
-}
-
-void Rendering::Lighting::BaseLight::SetNoShadowShader(Rendering::Shader* noShadowShader)
-{
-	// TODO: delete shader if it's not referenced by any other object
-	//SAFE_DELETE(this->shader);
-	if (m_noShadowShader != NULL)
-	{
-		WARNING_LOG_RENDERING("Setting new \"no-shadow\" shader for the light seems dubious.");
-		SAFE_DELETE(m_noShadowShader);
-	}
-	m_noShadowShader = noShadowShader;
-}
-
-void Rendering::Lighting::BaseLight::SetNoShadowTerrainShader(Rendering::Shader* noShadowTerrainShader)
-{
-	// TODO: delete shader if it's not referenced by any other object
-	//SAFE_DELETE(m_terrainShader);
-	if (m_noShadowTerrainShader != NULL)
-	{
-		WARNING_LOG_RENDERING("Setting new \"no-shadow\" terrain shader for the light seems dubious.");
-		SAFE_DELETE(m_noShadowTerrainShader);
-	}
-	m_noShadowTerrainShader = noShadowTerrainShader;
-}
-
-void Rendering::Lighting::BaseLight::SetShadowInfo(Rendering::ShadowInfo* shadowInfo)
-{
-	//SAFE_DELETE(this->shadowInfo);
 	if (m_shadowInfo != NULL)
 	{
 		WARNING_LOG_RENDERING("Setting new shadow info for the light seems dubious.");
-		SAFE_DELETE(m_shadowInfo);
 	}
-	m_shadowInfo = shadowInfo;
+	m_shadowInfo = std::make_unique<ShadowInfo>(projection, flipFacesEnabled, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 }
 
 Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)

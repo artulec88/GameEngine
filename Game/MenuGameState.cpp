@@ -247,7 +247,7 @@ void MenuGameState::SelectChild(size_t childIndex)
 	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void MenuGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void MenuGameState::Render(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG_GAME("MAIN MENU game state rendering");

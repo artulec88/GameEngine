@@ -15,7 +15,7 @@ Engine::BillboardsRendererComponent::~BillboardsRendererComponent()
 	SAFE_DELETE(m_billboardMaterial);
 }
 
-void Engine::BillboardsRendererComponent::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void Engine::BillboardsRendererComponent::Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const
 {
 	//shader->Bind();
 	//shader->UpdateUniforms(GetTransform(), m_billboardMaterial, renderer);

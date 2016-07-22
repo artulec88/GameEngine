@@ -131,6 +131,7 @@ namespace Engine
 		void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
 		Audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
+		Rendering::Renderer* GetRenderer() { return m_renderer; }
 
 		const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 		const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
@@ -138,7 +139,6 @@ namespace Engine
 		const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
-		void AddLight(Rendering::Lighting::BaseLight* light);
 		void AddCamera(Rendering::CameraBase* camera);
 		void AddSkyboxNode(GameNode* skyboxNode);
 		void AddWaterNode(GameNode* waterNode);

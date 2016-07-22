@@ -69,7 +69,7 @@ void LoadGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 {
 }
 
-void LoadGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void LoadGameState::Render(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG_GAME("LOAD game state rendering");

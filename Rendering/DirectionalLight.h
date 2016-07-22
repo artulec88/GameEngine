@@ -24,7 +24,8 @@ public:
 /* ==================== Constructors and destructors begin ==================== */
 public:
 	RENDERING_API DirectionalLight(Math::Transform& transform, const Color& color, Math::Real intensity, Math::Real halfShadowArea,
-		int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
+		int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
+		const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 	RENDERING_API virtual ~DirectionalLight(void);
 /* ==================== Constructors and destructors end ==================== */
 

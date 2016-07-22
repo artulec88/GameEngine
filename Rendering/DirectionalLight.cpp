@@ -8,14 +8,15 @@
 /* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
 
 Rendering::Lighting::DirectionalLight::DirectionalLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, Math::Real halfShadowArea,
-	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance) :
-	BaseLight(transform, color, intensity),
+	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
+	const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
+	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
 	m_halfShadowArea(halfShadowArea)
 {
 	if ((shadowMapSizeAsPowerOf2 != 0) /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */)
 	{
-		Math::Matrix4D ortographicProjectionMatrix(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea);
-		SetShadowInfo(new ShadowInfo(ortographicProjectionMatrix, true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance));
+		SetShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea),
+			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
 	}
 }

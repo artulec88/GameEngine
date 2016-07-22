@@ -4,7 +4,7 @@
 #if defined(VS_BUILD)
 #include "forward-lighting.vsh"
 #elif defined(FS_BUILD)
-#include "tiling-terrain.glh"
+
 #include "lighting.glh"
 
 uniform vec3 C_eyePos;
@@ -39,5 +39,5 @@ vec4 CalcLightingEffect(vec3 normal, vec3 worldPos)
     return color;
 }
 
-#include "lightingMainTerrain.fsh"
+#include "lightingMainNoShadows.fsh"
 #endif

@@ -162,7 +162,7 @@ void PlayGameState::ScrollEvent(double xOffset, double yOffset)
 	STOP_PROFILING;
 }
 
-void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void PlayGameState::Render(Rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
@@ -202,17 +202,11 @@ void PlayGameState::Render(const Rendering::Shader* shader, Rendering::Renderer*
 
 void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
-	const Rendering::Shader* ambientShader = renderer->GetAmbientShader();
-	const Rendering::Shader* ambientTerrainShader = renderer->GetAmbientTerrainShader();
-	if (ambientShader != NULL)
-	{
-		m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
-	}
-	if (ambientTerrainShader != NULL)
-	{
-		CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::ERR, "Cannot render terrain. There are no terrain nodes registered.");
-		m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
-	}
+	const Rendering::Shader& ambientShader = renderer->GetAmbientShader();
+	const Rendering::Shader& ambientTerrainShader = renderer->GetAmbientTerrainShader();
+	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
+	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::ERR, "Cannot render terrain. There are no terrain nodes registered.");
+	m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 }
 
 void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
@@ -348,11 +342,11 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
-	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, NULL);
 	//}
 	//else
 	//{
-	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, NULL);
 	//}
 
 	//BindAsRenderTarget();
@@ -393,11 +387,11 @@ void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) 
 	
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
-	//	ApplyFilter(m_fxaaFilterShader, m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, NULL);
 	//}
 	//else
 	//{
-	//	ApplyFilter(m_nullFilterShader, m_waterReflectionTexture, NULL);
+	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, NULL);
 	//}
 	
 	//BindAsRenderTarget();
@@ -416,11 +410,11 @@ void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//{
 	//	if (m_waterLightReflectionEnabled)
 	//	{
-	//		(*waterNodeItr)->Render(m_waterShader, this);
+	//		(*waterNodeItr)->Render(waterShader, this);
 	//	}
 	//	else
 	//	{
-	//		(*waterNodeItr)->Render(m_waterNoDirectionalLightShader, this);
+	//		(*waterNodeItr)->Render(waterNoDirectionalLightShader, this);
 	//	}
 	//}
 	m_gameManager->GetWaterNode()->Render(renderer->GetWaterShader(), renderer);

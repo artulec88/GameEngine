@@ -52,18 +52,18 @@ GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 
 using namespace Math;
 
-bool Rendering::FogEffect::FogKey::operator<(const Rendering::FogEffect::FogKey& fog) const
-{
-	if (fallOffType != fog.fallOffType)
-	{
-		return fallOffType < fog.fallOffType;
-	}
-	else
-	{
-		return calculationType < fog.calculationType;
-	}
-	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
-}
+//bool Rendering::FogEffect::FogKey::operator<(const Rendering::FogEffect::FogKey& fog) const
+//{
+//	if (fallOffType != fog.fallOffType)
+//	{
+//		return fallOffType < fog.fallOffType;
+//	}
+//	else
+//	{
+//		return calculationType < fog.calculationType;
+//	}
+//	//return (fallOffType & calculationType) < (fog.fallOffType & fog.calculationType);
+//}
 
 void Rendering::DetermineGlVersion()
 {

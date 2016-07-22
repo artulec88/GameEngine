@@ -64,19 +64,11 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_filterMaterial(NULL),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
-	m_ambientShaderTerrain(NULL),
-	m_ambientShader(NULL),
-	m_shadowMapShader(NULL),
-	m_nullFilterShader(NULL),
-	m_gaussBlurFilterShader(NULL),
-	m_fxaaFilterShader(NULL),
+	m_shaderFactory(),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
-	m_skyboxShader(NULL),
-	m_skyboxProceduralShader(NULL),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE_RENDERING("defaultShadowMinVariance", 0.00002f)),
-	m_cubeMapShader(NULL),
 	m_cubeShadowMap(NULL),
 	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	//m_shadowMapTempTargets(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
@@ -94,8 +86,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 		GET_CONFIG_VALUE_RENDERING("defaultTextColorGreen", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("defaultTextColorBlue", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("defaultTextColorAlpha", REAL_ZERO)),
-	m_textShader(NULL),
-	m_textShader2(NULL),
 	m_textVertexBuffer(0),
 	m_textTextureCoordBuffer(0),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
@@ -117,13 +107,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
-	m_waterShader(NULL),
-	m_waterNoDirectionalLightShader(NULL),
-	m_billboardShader(NULL),
 	m_particleQuad(NULL),
-	m_particleShader(NULL),
-	m_mappedValues(),
-	m_guiShader(NULL)
+	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	,m_cameraCountMinusOne(0),
 	m_previousFrameCameraIndex(0),
@@ -177,29 +162,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
 	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
 	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-	m_ambientShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightShader", "ForwardAmbient"));
-	m_ambientShaderTerrain = new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightTerrainShader", "forward-ambient-terrain"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based"));
-	m_ambientShadersFogEnabledMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::PLANE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::LINEAR, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain"));
-	m_ambientShadersFogEnabledTerrainMap[FogEffect::FogKey(FogEffect::EXPONENTIAL, FogEffect::RANGE_BASED)] =
-		new Shader(GET_CONFIG_VALUE_STR_RENDERING("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain"));
 
-	m_shadowMapShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("shadowMapShader", "ShadowMapGenerator"));
-	m_nullFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("nullFilterShader", "Filter-null"));
-	m_gaussBlurFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("gaussBlurFilterShader", "filter-gaussBlur7x1"));
-	m_fxaaFilterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("fxaaFilterShader", "filter-fxaa"));
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
 	m_filterTexture = new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
@@ -208,10 +171,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_filterMesh = new Mesh("plane4.obj");
 	m_filterMesh->Initialize();
 
-	m_skyboxShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("skyboxShader", "skybox-shader"));
-	m_skyboxProceduralShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("skyboxProceduralShader", "skybox-procedural"));
-
-	m_cubeMapShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("cubeShadowMapShader", "CubeShadowMapGenerator"));
 	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
 	m_cubeShadowMap = new CubeShadowMap();
 	m_cubeShadowMap->Init(windowWidth, windowHeight);
@@ -231,8 +190,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR_RENDERING("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
 	glGenBuffers(1, &m_textVertexBuffer);
 	glGenBuffers(1, &m_textTextureCoordBuffer);
-	m_textShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("textShader", "text-shader"));
-	m_textShader2 = new Shader(GET_CONFIG_VALUE_STR_RENDERING("textShader2", "text-shader-2"));
 
 	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png"));
 	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png"));
@@ -244,10 +201,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
 	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
 	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	m_waterShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("waterShader", "water-shader"));
-	m_waterNoDirectionalLightShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("waterNoDirectionalLightShader", "water-no-directional-light-shader"));
-
-	m_billboardShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("billboardShader", "billboard-shader"));
 
 	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
 	const int maxParticlesCount = GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000);
@@ -256,7 +209,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 #else
 	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 17);
 #endif
-	m_particleShader = new Shader(GET_CONFIG_VALUE_STR_RENDERING("particleShader", "particle-shader"));
 	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
 
 	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
@@ -280,7 +232,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
-	m_guiShader = new Shader("gui-shader");
 #ifdef DEBUG_RENDERING_ENABLED
 	m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
@@ -311,14 +262,7 @@ Rendering::Renderer::~Renderer(void)
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
 
-	SAFE_DELETE(m_ambientShader);
-	SAFE_DELETE(m_shadowMapShader);
-	SAFE_DELETE(m_nullFilterShader);
-	SAFE_DELETE(m_gaussBlurFilterShader);
-	SAFE_DELETE(m_fxaaFilterShader);
 	//SAFE_DELETE(altCameraNode);
-	SAFE_DELETE(m_skyboxShader);
-	SAFE_DELETE(m_skyboxProceduralShader);
 	SAFE_DELETE(m_cubeShadowMap);
 	SAFE_DELETE(m_filterMaterial);
 	SAFE_DELETE(m_filterMesh);
@@ -327,8 +271,6 @@ Rendering::Renderer::~Renderer(void)
 	// Of course, we should deal with it later on more appropriately.
 	//SetTexture("fontTexture", NULL);
 	SAFE_DELETE(m_fontMaterial);
-	SAFE_DELETE(m_textShader);
-	SAFE_DELETE(m_textShader2);
 
 	m_mappedValues.SetTexture("waterReflectionTexture", NULL);
 	m_mappedValues.SetMultitexture("waterRefractionTexture", NULL, 0);
@@ -339,30 +281,13 @@ Rendering::Renderer::~Renderer(void)
 	SAFE_DELETE(m_waterNormalMap);
 	SAFE_DELETE(m_waterRefractionTexture);
 	SAFE_DELETE(m_waterReflectionTexture);
-	SAFE_DELETE(m_waterShader);
-	SAFE_DELETE(m_waterNoDirectionalLightShader);
 	
-	SAFE_DELETE(m_billboardShader);
 	SAFE_DELETE(m_particleQuad);
-	SAFE_DELETE(m_particleShader);
 	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
 	//{
 	//	SAFE_DELETE(*billboardNodeItr);
 	//}
 	//m_billboardNodes.clear();
-
-	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledMap.begin();
-	ambientLightFogShadersItr != m_ambientShadersFogEnabledMap.end(); ambientLightFogShadersItr++)
-	{
-		SAFE_DELETE(ambientLightFogShadersItr->second);
-	}
-	m_ambientShadersFogEnabledMap.clear();
-	for (std::map<FogEffect::FogKey, Shader*>::iterator ambientLightFogShadersItr = m_ambientShadersFogEnabledTerrainMap.begin();
-	ambientLightFogShadersItr != m_ambientShadersFogEnabledTerrainMap.end(); ambientLightFogShadersItr++)
-	{
-		SAFE_DELETE(ambientLightFogShadersItr->second);
-	}
-	m_ambientShadersFogEnabledTerrainMap.clear();
 
 	m_mappedValues.SetTexture("shadowMap", NULL);
 	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
@@ -371,7 +296,6 @@ Rendering::Renderer::~Renderer(void)
 		SAFE_DELETE(m_shadowMapTempTargets[i]);
 	}
 
-	SAFE_DELETE(m_guiShader);
 #ifdef DEBUG_RENDERING_ENABLED
 	for (std::vector<GuiTexture*>::iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
 	{
@@ -517,16 +441,16 @@ void Rendering::Renderer::FinalizeRenderScene()
 	RenderDebugNodes();
 #endif
 
-	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_fxaaFilterShader : m_nullFilterShader, m_mappedValues.GetTexture("displayTexture"), NULL);
+	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA) : m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING;
 }
 
-void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
+void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const
 {
 	//START_PROFILING;
-	shader->Bind();
-	shader->UpdateUniforms(transform, material, this);
+	shader.Bind();
+	shader.UpdateUniforms(transform, material, this);
 	mesh.Draw();
 	//STOP_PROFILING;
 }
@@ -596,9 +520,9 @@ void Rendering::Renderer::DisableClippingPlanes()
 //
 //			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
 //			{
-//				(*terrainNodeItr)->Render(m_cubeMapShader, this);
+//				(*terrainNodeItr)->Render(m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP_CUBE), this);
 //			}
-//			gameNode.Render(m_cubeMapShader, this);
+//			gameNode.Render(m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP_CUBE), this);
 //
 //			m_currentCamera = temp;
 //		}
@@ -751,13 +675,13 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
 	glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(Math::Vector2D), &textureCoords[0], GL_STATIC_DRAW);
 
-	m_textShader->Bind();
+	m_shaderFactory.GetShader(ShaderTypes::TEXT_SIMPLE).Bind();
 
 	//Updating uniforms
 	m_fontMaterial->SetVector4D("textColor", fontColor);
 	m_fontMaterial->SetReal("screenWidth", static_cast<Math::Real>(m_windowWidth));
 	m_fontMaterial->SetReal("screenHeight", static_cast<Math::Real>(m_windowHeight));
-	m_textShader->UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
+	m_shaderFactory.GetShader(ShaderTypes::TEXT_SIMPLE).UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
@@ -833,17 +757,18 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 //	*/
 //	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //
-//	m_textShader2->Bind();
-//	m_textShader2->SetUniformVector2D("translation", guiText.GetScreenPosition());
-//	m_textShader2->SetUniformVector2D("offset", guiText.GetOffset());
-//	m_textShader2->SetUniformVector3D("textColor", guiText.GetColor());
-//	m_textShader2->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
-//	m_textShader2->SetUniformf("characterWidth", guiText.GetCharacterWidth());
-//	m_textShader2->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
-//	m_textShader2->SetUniformf("borderWidth", guiText.GetBorderWidth());
-//	m_textShader2->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
+//	const Shader* textShader = m_shaderFactory.GetShader(ShaderTypes::TEXT);
+//	textShader->Bind();
+//	textShader->SetUniformVector2D("translation", guiText.GetScreenPosition());
+//	textShader->SetUniformVector2D("offset", guiText.GetOffset());
+//	textShader->SetUniformVector3D("textColor", guiText.GetColor());
+//	textShader->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
+//	textShader->SetUniformf("characterWidth", guiText.GetCharacterWidth());
+//	textShader->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
+//	textShader->SetUniformf("borderWidth", guiText.GetBorderWidth());
+//	textShader->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
 //	guiText.GetFont()->Bind();
-//	m_textShader2->SetUniformi("fontAtlas", 0);
+//	textShader->SetUniformi("fontAtlas", 0);
 //	
 //	guiText.Draw();
 //
@@ -904,10 +829,11 @@ void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture
 		return;
 	}
 	//DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesCount, " particles currently in the game.");
-	m_particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
+	const Shader& particleShader = m_shaderFactory.GetShader(ShaderTypes::PARTICLES);
+	particleShader.Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
-	m_particleShader->SetUniformi("particleTexture", 0);
-	m_particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
+	particleShader.SetUniformi("particleTexture", 0);
+	particleShader.SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
 	if (Rendering::glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -1062,8 +988,8 @@ void Rendering::Renderer::FinalizeShadowMapRendering()
 
 		if (m_applyFilterEnabled)
 		{
-			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
-			//ApplyFilter(m_nullFilterShader, GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
+			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMap"), GetTexture("shadowMapTempTarget"));
+			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 			if (!Math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
 			{
 				BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
@@ -1072,44 +998,93 @@ void Rendering::Renderer::FinalizeShadowMapRendering()
 	}
 }
 
-const Rendering::Shader* Rendering::Renderer::GetAmbientShader() const
+const Rendering::Shader& Rendering::Renderer::GetAmbientShader() const
 {
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		std::map<FogEffect::FogKey, Shader*>::const_iterator fogShaderItr = m_ambientShadersFogEnabledMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT_RENDERING(fogShaderItr != m_ambientShadersFogEnabledMap.end(), Utility::EMERGENCY, "Cannot render the scene with ambient light. The fog shader is NULL.");
-		STOP_PROFILING;
-		return (fogShaderItr == m_ambientShadersFogEnabledMap.end()) ? NULL : fogShaderItr->second; // TODO: add logging. refactor
+		
+		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
+		if (m_fogFallOffType == FogEffect::LINEAR)
+		{
+			if (m_fogCalculationType == FogEffect::PLANE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
+			}
+			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
+			}
+		}
+		else if (m_fogFallOffType == FogEffect::EXPONENTIAL)
+		{
+			if (m_fogCalculationType == FogEffect::PLANE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
+			}
+			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
+			}
+		}
 	}
 	else if (m_ambientLightEnabled)
 	{
 		STOP_PROFILING;
-		return m_ambientShader;
+		return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
 	}
+	WARNING_LOG_RENDERING("Correct ambient shader cannot be determined. Returning the standard ambient shader.");
 	STOP_PROFILING;
-	return NULL;
+	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
 }
 
-const Rendering::Shader* Rendering::Renderer::GetAmbientTerrainShader() const
+const Rendering::Shader& Rendering::Renderer::GetAmbientTerrainShader() const
 {
 	START_PROFILING;
 	if (m_fogEnabled)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		std::map<FogEffect::FogKey, Shader*>::const_iterator fogTerrainShaderItr = m_ambientShadersFogEnabledTerrainMap.find(FogEffect::FogKey(m_fogFallOffType, m_fogCalculationType));
-		CHECK_CONDITION_EXIT_RENDERING(fogTerrainShaderItr != m_ambientShadersFogEnabledTerrainMap.end(), Utility::EMERGENCY, "Cannot render terrain with ambient light. The terrain fog shader is NULL.");
-		STOP_PROFILING;
-		return (fogTerrainShaderItr == m_ambientShadersFogEnabledTerrainMap.end()) ? NULL : fogTerrainShaderItr->second;
+		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
+		if (m_fogFallOffType == FogEffect::LINEAR)
+		{
+			if (m_fogCalculationType == FogEffect::PLANE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
+			}
+			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
+			}
+		}
+		else if (m_fogFallOffType == FogEffect::EXPONENTIAL)
+		{
+			if (m_fogCalculationType == FogEffect::PLANE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
+			}
+			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
+			{
+				STOP_PROFILING;
+				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
+			}
+		}
 	}
 	else if (m_ambientLightEnabled)
 	{
 		STOP_PROFILING;
-		return m_ambientShaderTerrain;
+		return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
 	}
+	WARNING_LOG_RENDERING("Correct ambient terrain shader cannot be determined. Returning the standard ambient terrain shader.");
 	STOP_PROFILING;
-	return NULL;
+	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
 }
 
 void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
@@ -1172,7 +1147,7 @@ void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timi
 //	 * To make it part of the scene we change the depth function to "less than or equal".
 //	 */
 //	glDepthFunc(GL_LEQUAL);
-//	m_skyboxNode->Render(m_skyboxShader, this);
+//	m_skyboxNode->Render(m_shaderFactory.GetShader(ShaderTypes::SKYBOX), this);
 //	glDepthFunc(Rendering::glDepthTestFunc);
 //	glCullFace(Rendering::glCullFaceMode);
 //	//glEnable(GL_DEPTH_TEST);
@@ -1199,15 +1174,15 @@ void Rendering::Renderer::BlurShadowMap(int shadowMapIndex, Math::Real blurAmoun
 	}
 
 	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
-	ApplyFilter(m_gaussBlurFilterShader, shadowMap, shadowMapTempTarget);
+	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_GAUSSIAN_BLUR), shadowMap, shadowMapTempTarget);
 	
 	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
-	ApplyFilter(m_gaussBlurFilterShader, shadowMapTempTarget, shadowMap);
+	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_GAUSSIAN_BLUR), shadowMapTempTarget, shadowMap);
 	STOP_PROFILING;
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
-void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest)
+void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING;
 	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::CRITICAL, "Cannot apply a filter. Filtering shader is NULL.");
@@ -1236,8 +1211,8 @@ void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 	m_currentCamera = &m_altCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
-	filterShader->Bind();
-	filterShader->UpdateUniforms(m_filterTransform, m_filterMaterial, this);
+	filterShader.Bind();
+	filterShader.UpdateUniforms(m_filterTransform, m_filterMaterial, this);
 	m_filterMesh->Draw();
 
 	m_currentCamera = temp;
@@ -1374,27 +1349,28 @@ void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 #ifdef DEBUG_RENDERING_ENABLED
 void Rendering::Renderer::RenderDebugNodes()
 {
-	m_guiShader->Bind();
+	const Shader& guiShader = m_shaderFactory.GetShader(ShaderTypes::GUI);
+	guiShader.Bind();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
 	for (std::vector<GuiTexture*>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
 	{
 		(*guiTextureItr)->Bind(0);
-		m_guiShader->SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
-		m_guiShader->SetUniformi("guiTexture", 0);
+		guiShader.SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
+		guiShader.SetUniformi("guiTexture", 0);
 		m_debugQuad->Draw();
 	}
 	//Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	//m_shadowMaps[9]->Bind();
 	//m_waterReflectionTexture->Bind();
-	//m_guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
-	//m_guiShader->SetUniformi("guiTexture", 0);
+	//guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
+	//guiShader->SetUniformi("guiTexture", 0);
 	//m_debugQuad->Draw();
 
 	//Math::Matrix4D transformationMatrix2(Math::Vector2D(0.74f, -0.24f), Math::Vector2D(0.25f, 0.25f));
 	//m_waterRefractionTexture->Bind();
-	//m_guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
+	//guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
 	//m_debugQuad->Draw();
 
 	glDisable(GL_BLEND);
