@@ -16,10 +16,10 @@ namespace Rendering
 	/// </summary>
 	class CameraBase
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
 		/// The constructor of the camera base object.
@@ -42,9 +42,14 @@ namespace Rendering
 		/// The destructor of the camera object.
 		/// </summary>
 		RENDERING_API virtual ~CameraBase(void);
-	/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		CameraBase(const CameraBase& cameraBase) = delete; // Copy constructor
+		CameraBase(CameraBase&& cameraBase) = delete; // Move constructor
+		CameraBase& operator=(const CameraBase& cameraBase) = delete; // Copy assignment operator
+		CameraBase& operator=(CameraBase&& cameraBase) = delete; // Move assignment operator
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		void Activate() { m_isActive = true; }
 		void Deactivate() { m_isActive = false; }
@@ -55,9 +60,9 @@ namespace Rendering
 		Math::Matrix4D GetViewProjection() const;
 		virtual Math::Transform& GetTransform() = 0;
 		virtual const Math::Transform& GetTransform() const = 0;
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Math::Matrix4D m_projection;
 		/// <summary>
@@ -68,36 +73,36 @@ namespace Rendering
 		/// The <code>bool</code> value indicating whether the camera is a currently active camera (<code>true</code>) or not (<code>false</code>).
 		/// </summary>
 		bool m_isActive;
-	#ifdef ANT_TWEAK_BAR_ENABLED
+#ifdef ANT_TWEAK_BAR_ENABLED
 		Math::Angle m_prevFov, m_fov;
 		Math::Real m_prevAspectRatio, m_aspectRatio;
 		Math::Real m_prevNearPlane, m_nearPlane, m_prevFarPlane, m_farPlane;
-	#endif
-	/* ==================== Non-static member variables end ==================== */
+#endif
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBase */
 
 	class Camera : public CameraBase
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		Camera(const Math::Matrix4D& projectionMatrix, const Math::Transform& transform, Math::Real sensitivity);
 		Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Math::Transform& transform, Math::Real sensitivity);
 		virtual ~Camera(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual Math::Transform& GetTransform() { return m_transform; }
 		virtual const Math::Transform& GetTransform() const { return m_transform; }
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Math::Transform m_transform;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Camera */
 
 } /* end namespace Rendering */

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_RENDERING_H__
+#define __RENDERING_RENDERING_H__
 
 #ifdef RENDERING_EXPORTS
 #define RENDERING_API __declspec(dllexport)
@@ -175,7 +176,7 @@ namespace Rendering
 	extern int supportedOpenGLLevel;
 	extern std::string glslVersion;
 	extern Aliasing::AntiAliasingMethod antiAliasingMethod;
-	
+
 	/**
 	 * TODO: In the future all OpenGL paramaters declared below (e.g. glBlendEnabled, glBlendSFactor, glScissorTestEnabled etc.)
 	 * should be declared inside the #ifdef ANT_TWEAK_BAR_ENABLED ... #endif, because they are only useful when tweak bars are rendered.
@@ -184,7 +185,7 @@ namespace Rendering
 	 *
 	 * This way we should be able to store global variables in memory only when necessary (tweak bars enabled).
 	 */
-	/* ==================== Blending parameters begin ==================== */
+	 /* ==================== Blending parameters begin ==================== */
 	extern bool glBlendEnabled, glBlendEnabledOld;
 	extern GLenum glBlendSfactor, glBlendDfactor, glBlendSfactorOld, glBlendDfactorOld;
 	/* ==================== Blending parameters end ==================== */
@@ -242,3 +243,5 @@ namespace Rendering
 	void UpdateScissorTestParameters();
 #endif
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_RENDERING_H__ */

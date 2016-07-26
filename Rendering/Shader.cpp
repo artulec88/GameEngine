@@ -103,15 +103,8 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 
 	AddAllAttributes(vertexShaderText);
 
-	if (!Compile())
-	{
-		CRITICAL_LOG_RENDERING("Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		NOTICE_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
-	}
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), Utility::Logging::CRITICAL, "Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
+	INFO_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
 	AddShaderUniforms(shaderText);
 	//ERROR_LOG_RENDERING("Vertex shader text = ", vertexShaderText);
 	//AddShaderUniforms(vertexShaderText);

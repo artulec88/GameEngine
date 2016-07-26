@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_RENDERER_H__
+#define __RENDERING_RENDERER_H__
 
 #include "Rendering.h"
 #include "ShaderFactory.h"
@@ -259,7 +260,7 @@ namespace Rendering
 		}
 		RENDERING_API const Shader& GetWaterShader() const
 		{
-			return (m_waterLightReflectionEnabled && m_directionalLightsCount > 0 /* && directional light is enabled */) ? 
+			return (m_waterLightReflectionEnabled && m_directionalLightsCount > 0 /* && directional light is enabled */) ?
 				m_shaderFactory.GetShader(ShaderTypes::WATER) :
 				m_shaderFactory.GetShader(ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
 		}
@@ -506,3 +507,5 @@ namespace Rendering
 	}; /* end class Renderer */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_RENDERER_H__ */

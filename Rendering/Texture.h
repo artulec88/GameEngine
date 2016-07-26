@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_TEXTURE_H__
+#define __RENDERING_TEXTURE_H__
 
 #include "Rendering.h"
 #include "Utility\ReferenceCounter.h"
@@ -197,3 +198,5 @@ namespace Rendering
 	//}; /* end class CubeShadowMapTexture */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_TEXTURE_H__ */

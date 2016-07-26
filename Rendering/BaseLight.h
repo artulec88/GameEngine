@@ -38,7 +38,9 @@ namespace Rendering
 			RENDERING_API virtual ~BaseLight(void);
 			
 			BaseLight(const BaseLight& baseLight) = delete; // Copy constructor
-			void operator=(BaseLight& baseLight) = delete; // Copy assignment operator
+			BaseLight(BaseLight&& baseLight) = delete; // Move constructor
+			BaseLight& operator=(const BaseLight& baseLight) = delete; // Copy assignment operator
+			BaseLight& operator=(BaseLight&& baseLight) = delete; // Move assignment operator
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_POINT_LIGHT_H__
+#define __RENDERING_POINT_LIGHT_H__
 
 #include "Rendering.h"
 #include "Attenuation.h"
@@ -44,3 +45,5 @@ namespace Rendering {
 	} /* end namespace Lighting */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_POINT_LIGHT_H__ */

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __RENDERING_SHADOW_INFO_H__
+#define __RENDERING_SHADOW_INFO_H__
 
 #include "Rendering.h"
 #include "Math\Vector.h"
@@ -50,7 +51,7 @@ namespace Rendering
 			Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 			Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 		virtual ~ShadowInfo();
-		
+
 		ShadowInfo(const ShadowInfo& shadowInfo) = delete;
 		void operator=(const ShadowInfo& shadowInfo) = delete;
 		/* ==================== Constructors and destructors end ==================== */
@@ -81,3 +82,5 @@ namespace Rendering
 	}; /* end class ShadowInfo */
 
 } /* end namespace Rendering */
+
+#endif /* __RENDERING_SHADOW_INFO_H__ */

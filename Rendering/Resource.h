@@ -7,36 +7,43 @@
 namespace Rendering
 {
 
-class Resource
-{
-/* ==================== Static variables and functions begin ==================== */
-/* ==================== Static variables and functions end ==================== */
+	class Resource
+	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	Resource(const std::string& filename);
-	virtual ~Resource(void);
-/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		Resource(const std::string& filename);
+		virtual ~Resource(void);
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	virtual void Load() = 0; // Loads the resource
-	virtual void Release() = 0; // Releases the resource
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		/// <summary>
+		/// Loads the resource.
+		/// </summary>
+		virtual void Load() = 0;
+		
+		/// <summary>
+		/// Releases the resource.
+		/// </summary>
+		virtual void Release() = 0;
 
-	bool IsLoaded() const { return m_isLoaded; }
+		bool IsLoaded() const { return m_isLoaded; }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	virtual void InitializeTweakBars() = 0;
+		virtual void InitializeTweakBars() = 0;
 #endif
-/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	bool m_isLoaded;
-	int m_guid; // globally unique ID (hash value for a given filename)
-	std::string m_filename;
-/* ==================== Non-static member variables end ==================== */
-}; /* end class Resource */
+		/* ==================== Non-static member variables begin ==================== */
+	protected:
+		bool m_isLoaded;
+		int m_guid; // globally unique ID (hash value for a given filename)
+		std::string m_filename;
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class Resource */
 
 } /* end namespace Rendering */
 
