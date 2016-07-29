@@ -718,7 +718,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 		{
 			if (uniformName == "C_eyePos")
 			{
-				SetUniformVector3D(uniformName, renderer->GetCurrentCamera().GetTransform().GetTransformedPos());
+				SetUniformVector3D(uniformName, renderer->GetCurrentCamera().GetPos());
 			}
 			else
 			{

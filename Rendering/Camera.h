@@ -2,6 +2,7 @@
 #define __RENDERING_CAMERA_H__
 
 #include "Rendering.h"
+#include "BaseCamera.h"
 #include "Math\Transform.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
@@ -10,11 +11,10 @@
 
 namespace Rendering
 {
-
 	/// <summary>
-	/// The base class representing the camera.
+	/// The class representing the camera.
 	/// </summary>
-	class CameraBase
+	class Camera /* : public BaseCamera */
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -22,35 +22,47 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
-		/// The constructor of the camera base object.
+		/// The constructor of the camera object.
 		/// </summary>
+		/// <param name="position">The position of the camera in the world.</param>
+		/// <param name="rotation">The rotation of the camera in the world.</param>
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
-
+		RENDERING_API Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
 		/// <summary>
-		/// The constructor of the camera base object.
+		/// The constructor of the camera object.
 		/// </summary>
+		/// <param name="position">The position of the camera in the world.</param>
+		/// <param name="rotation">The rotation of the camera in the world.</param>
 		/// <param name="fov">The field of view of the camera.</param>
 		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API CameraBase(const Math::Angle& fov, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
+		RENDERING_API Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio,
+			Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
 
 		/// <summary>
 		/// The destructor of the camera object.
 		/// </summary>
-		RENDERING_API virtual ~CameraBase(void);
+		RENDERING_API ~Camera(void);
 
-		CameraBase(const CameraBase& cameraBase) = delete; // Copy constructor
-		CameraBase(CameraBase&& cameraBase) = delete; // Move constructor
-		CameraBase& operator=(const CameraBase& cameraBase) = delete; // Copy assignment operator
-		CameraBase& operator=(CameraBase&& cameraBase) = delete; // Move assignment operator
+		Camera(const Camera& camera) = delete; // Copy constructor
+		Camera(Camera&& camera) = delete; // Move constructor
+		Camera& operator=(const Camera& camera) = delete; // Copy assignment operator
+		Camera& operator=(Camera&& camera) = delete; // Move assignment operator
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		const Math::Vector3D& GetPos() const { return m_pos; }
+		const Math::Quaternion& GetRot() const { return m_rot; }
+		Math::Vector3D& GetPos() { return m_pos; }
+		Math::Quaternion& GetRot() { return m_rot; }
+		void SetPos(const Math::Vector3D& position) { m_pos = position; }
+		void SetRot(const Math::Quaternion& rotation) { m_rot = rotation; }
+
+		Math::Real GetSensitivity() const { return m_sensitivity; }
 		void Activate() { m_isActive = true; }
 		void Deactivate() { m_isActive = false; }
 		inline bool IsActive() const { return m_isActive; }
@@ -58,13 +70,21 @@ namespace Rendering
 		inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
 		RENDERING_API Math::Matrix4D GetViewMatrix() const;
 		Math::Matrix4D GetViewProjection() const;
-		virtual Math::Transform& GetTransform() = 0;
-		virtual const Math::Transform& GetTransform() const = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
+		/// <summary> The camera position. </summary>
+		Math::Vector3D m_pos;
+
+		/// <summary> The camera rotation. </summary>
+		Math::Quaternion m_rot;
+
 		Math::Matrix4D m_projection;
+
+		// TODO: Create a mutable matrix "m_viewMatrix" which would store the GetViewMatrix() result and save it for the next GetViewMatrix() function call.
+		///* mutable */ Math::Matrix4D m_viewMatrix;
+
 		/// <summary>
 		/// The camera sensitivity. The amount representing how fast the camera reacts to player's input.
 		/// </summary>
@@ -78,30 +98,6 @@ namespace Rendering
 		Math::Real m_prevAspectRatio, m_aspectRatio;
 		Math::Real m_prevNearPlane, m_nearPlane, m_prevFarPlane, m_farPlane;
 #endif
-		/* ==================== Non-static member variables end ==================== */
-	}; /* end class CameraBase */
-
-	class Camera : public CameraBase
-	{
-		/* ==================== Static variables and functions begin ==================== */
-		/* ==================== Static variables and functions end ==================== */
-
-		/* ==================== Constructors and destructors begin ==================== */
-	public:
-		Camera(const Math::Matrix4D& projectionMatrix, const Math::Transform& transform, Math::Real sensitivity);
-		Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Math::Transform& transform, Math::Real sensitivity);
-		virtual ~Camera(void);
-		/* ==================== Constructors and destructors end ==================== */
-
-		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual Math::Transform& GetTransform() { return m_transform; }
-		virtual const Math::Transform& GetTransform() const { return m_transform; }
-		/* ==================== Non-static member functions end ==================== */
-
-		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		Math::Transform m_transform;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Camera */
 

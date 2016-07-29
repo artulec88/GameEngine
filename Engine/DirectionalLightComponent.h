@@ -19,19 +19,19 @@ namespace Engine
 		, public IUpdateable
 #endif
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity,
 			const Rendering::Color& sunDaytimeColor,
 			const Rendering::Color& sunNearHorizonColor,
 			const Rendering::Color& sunNighttimeColor);
 		virtual ~DirectionalLightComponent();
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		//virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
 		//virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
@@ -39,9 +39,9 @@ namespace Engine
 #ifdef SIMULATE_SUN_BEHAVIOR
 		virtual void Update(Math::Real delta);
 #endif
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		Rendering::Lighting::DirectionalLight* m_directionalLight;
 
@@ -56,10 +56,9 @@ namespace Engine
 
 		///<summary>The nighttime color of the directional light.</summary>
 		Rendering::Color m_sunNighttimeColor;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; // end class DirectionalLightComponent
 } // end namespace Engine
 
 #endif // __ENGINE_DIRECTIONAL_LIGHT_COMPONENT_H__
 
-	

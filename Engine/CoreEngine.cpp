@@ -988,7 +988,7 @@ Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& dayti
 	return m_daytime;
 }
 
-void Engine::CoreEngine::AddCamera(Rendering::CameraBase* camera)
+void Engine::CoreEngine::AddCamera(Rendering::Camera* camera)
 {
 	m_renderer->AddCamera(camera);
 	//m_game.AddCamera(camera);

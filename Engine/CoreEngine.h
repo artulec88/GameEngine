@@ -139,7 +139,7 @@ namespace Engine
 		const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
-		void AddCamera(Rendering::CameraBase* camera);
+		void AddCamera(Rendering::Camera* camera);
 		void AddSkyboxNode(GameNode* skyboxNode);
 		void AddWaterNode(GameNode* waterNode);
 		void AddTerrainNode(GameNode* terrainNode);

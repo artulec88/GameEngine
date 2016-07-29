@@ -6,15 +6,10 @@
 
 #include "Math\FloatingPoint.h"
 
-Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
-	CameraBase(projectionMatrix, sensitivity),
-	GameComponent()
-{
-}
-
-Engine::CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
-	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	GameComponent()
+Engine::CameraComponent::CameraComponent(Rendering::Camera* camera) :
+	GameComponent(),
+	IUpdateable(),
+	m_camera(camera)
 {
 }
 
@@ -25,27 +20,27 @@ Engine::CameraComponent::~CameraComponent(void)
 
 void Engine::CameraComponent::Update(Math::Real deltaTime)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
 #ifdef ANT_TWEAK_BAR_ENABLED
-	if ((!Math::AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!Math::AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!Math::AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov))
-	{
-		INFO_LOG_ENGINE("Recalculating the projection matrix for the selected camera");
+	//if ((!Math::AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!Math::AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!Math::AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov))
+	//{
+	//	INFO_LOG_ENGINE("Recalculating the projection matrix for the selected camera");
 
-		m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+	//	m_projection.SetPerspectiveProjection(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 
-		m_prevFov = m_fov;
-		m_prevAspectRatio = m_aspectRatio;
-		m_prevNearPlane = m_nearPlane;
-		m_prevFarPlane = m_farPlane;
-	}
+	//	m_prevFov = m_fov;
+	//	m_prevAspectRatio = m_aspectRatio;
+	//	m_prevNearPlane = m_nearPlane;
+	//	m_prevFarPlane = m_farPlane;
+	//}
 #endif
 }
 
-Engine::CameraMoveComponent::CameraMoveComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
-	CameraComponent(projectionMatrix, sensitivity),
+Engine::CameraMoveComponent::CameraMoveComponent(Rendering::Camera* camera) :
+	CameraComponent(camera),
 	m_forward(false),
 	m_backward(false),
 	m_left(false),
@@ -56,21 +51,6 @@ Engine::CameraMoveComponent::CameraMoveComponent(const Math::Matrix4D& projectio
 	m_maxSpeed(REAL_ONE),
 	m_isLocked(false)
 {
-}
-
-Engine::CameraMoveComponent::CameraMoveComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
-	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	m_forward(false),
-	m_backward(false),
-	m_left(false),
-	m_right(false),
-	m_up(false),
-	m_down(false),
-	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-	m_maxSpeed(REAL_ONE),
-	m_isLocked(false)
-{
-	//m_actionsToGameNodeCommandsMap.insert(std::make_pair(Input::Actions::ACTION_MOVE, std::make_unique<GameNodeMoveCommand>()))
 }
 
 
@@ -80,7 +60,7 @@ Engine::CameraMoveComponent::~CameraMoveComponent(void)
 
 void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int mods)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
@@ -100,7 +80,7 @@ void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int m
 
 void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 {
-	if (!m_isActive || !m_isLocked)
+	if (!m_camera->IsActive() || !m_isLocked)
 	{
 		return;
 	}
@@ -119,11 +99,11 @@ void Engine::CameraMoveComponent::MousePosEvent(double xPos, double yPos)
 	{
 		if (rotX)
 		{
-			GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * m_sensitivity));
+			GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * m_camera->GetSensitivity()));
 		}
 		if (rotY)
 		{
-			GetTransform().Rotate(GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * m_sensitivity));
+			GetTransform().Rotate(GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * m_camera->GetSensitivity()));
 		}
 		CoreEngine::GetCoreEngine()->CentralizeCursor();
 	}
@@ -135,7 +115,7 @@ void Engine::CameraMoveComponent::ScrollEvent(double xOffset, double yOffset)
 
 void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
@@ -178,7 +158,7 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 	{
 		acceleration -= GetTransform().GetRot().GetUp().Normalized();
 	}
-	m_velocity += acceleration * deltaTime * m_sensitivity;
+	m_velocity += acceleration * deltaTime * m_camera->GetSensitivity();
 	const Math::Real step = 0.1f;
 	const Math::Real approachedValue = 0.0f; // must be ZERO!
 	if (Math::AlmostEqual(acceleration.GetX(), approachedValue))
@@ -220,25 +200,9 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 /* static */ const Math::Angle Engine::CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
 /* static */ const Math::Angle Engine::CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
 
-Engine::CameraFollowComponent::CameraFollowComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
-	CameraComponent(projectionMatrix, sensitivity),
-	m_gameEntityToFollow(entityToFollow),
-	m_distanceFromEntity(initialDistanceFromEntity),
-	m_changingAngleAroundEntity(false),
-	m_angleAroundEntitySpeed(angleAroundEntitySpeed),
-	m_currentAngleAroundEntity(REAL_ZERO),
-	m_changingPitch(false),
-	m_pitchRotationSpeed(pitchRotationSpeed),
-	m_currentPitchAngle(initialPitchAngle),
-	m_lastCursorPositionX(REAL_ZERO),
-	m_lastCursorPositionY(REAL_ZERO)
-{
-}
-
-Engine::CameraFollowComponent::CameraFollowComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity,
-	GameNode* entityToFollow, Math::Real initialDistanceFromEntity, Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
-	CameraComponent(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
+	CameraComponent(camera),
 	m_gameEntityToFollow(entityToFollow),
 	m_distanceFromEntity(initialDistanceFromEntity),
 	m_changingAngleAroundEntity(false),
@@ -259,7 +223,7 @@ Engine::CameraFollowComponent::~CameraFollowComponent(void)
 
 void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int mods)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
@@ -279,7 +243,7 @@ void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int
 
 void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		m_lastCursorPositionX = static_cast<Math::Real>(xPos);
 		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
@@ -309,7 +273,7 @@ void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
 
 void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
@@ -329,7 +293,7 @@ void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
 
 void Engine::CameraFollowComponent::Update(Math::Real deltaTime)
 {
-	if (!m_isActive)
+	if (!m_camera->IsActive())
 	{
 		return;
 	}
@@ -340,8 +304,9 @@ void Engine::CameraFollowComponent::Update(Math::Real deltaTime)
 	Math::Real xOffset = horizontalDistance * m_currentAngleAroundEntity.Sin();
 	Math::Real zOffset = horizontalDistance * m_currentAngleAroundEntity.Cos();
 	GetTransform().SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(-xOffset, verticalDistance + 0.03f /* to focus on upperbody instead of feet */, -zOffset));
-
+	m_camera->SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(-xOffset, verticalDistance + 0.03f /* to focus on upperbody instead of feet */, -zOffset)); // TODO: Double code
 	GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentAngleAroundEntity) * Math::Quaternion(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), m_currentPitchAngle));
+	m_camera->SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentAngleAroundEntity) * Math::Quaternion(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), m_currentPitchAngle)); // TODO: Double code
 }
 
 //std::string Engine::CameraComponent::ToString() const

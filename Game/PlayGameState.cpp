@@ -117,7 +117,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	START_PROFILING;
 	DEBUG_LOG_GAME("Cursor position = (", xPos, ", ", yPos, ")");
 
-	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
+	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
 	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 
 	//m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
@@ -141,7 +141,7 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	//if (rotX || rotY)
 	//{
 	//	Rendering::Transform& transform = Rendering::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera().GetTransform();
-	//	const Math::Real sensitivity = static_cast<Math::Real>(Rendering::CameraBase::GetSensitivity());
+	//	const Math::Real sensitivity = static_cast<Math::Real>(Rendering::Camera::GetSensitivity());
 	//	if (rotX)
 	//	{
 	//		transform.Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * sensitivity));
@@ -266,7 +266,7 @@ void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	DEBUG_LOG_GAME("Skybox rendering started");
 
 	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
-	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCameraTransform().GetTransformedPos());
+	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCamera().GetPos());
 	// TODO: Rotating the skybox
 	//skyboxNode->GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), skyboxNode->GetTransfom));
 	//m_skyboxAngle += m_skyboxAngleStep;
@@ -312,11 +312,11 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
-	Math::Transform& cameraTransform = renderer->GetCurrentCameraTransform();
-	const Math::Real cameraHeight = cameraTransform.GetTransformedPos().GetY();
+	Rendering::Camera& currentCamera = renderer->GetCurrentCamera();
+	const Math::Real cameraHeight = currentCamera.GetPos().GetY();
 	Math::Real distance = 2.0f * (cameraHeight - m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
-	cameraTransform.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
+	currentCamera.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	currentCamera.GetRot().InvertPitch();
 
 	renderer->EnableWaterReflectionClippingPlane(-m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	renderer->BindWaterReflectionTexture();
@@ -351,8 +351,8 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 
 	//BindAsRenderTarget();
 	
-	cameraTransform.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
-	cameraTransform.GetRot().InvertPitch();
+	currentCamera.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	currentCamera.GetRot().InvertPitch();
 
 	STOP_PROFILING;
 }
@@ -449,7 +449,7 @@ void PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 	{
 		//if (!(*particleGeneratorItr)->GetTexture()->IsAdditive())
 		//{
-			(*particleGeneratorItr)->SortParticles(renderer->GetCurrentCameraTransform().GetTransformedPos());
+			(*particleGeneratorItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
 		renderer->RenderParticles((*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles(), (*particleGeneratorItr)->GetAliveParticlesCount());
 	}

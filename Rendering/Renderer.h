@@ -106,7 +106,7 @@ namespace Rendering
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
 		RENDERING_API inline void AddLight(Lighting::BaseLight* light);
-		RENDERING_API inline void AddCamera(CameraBase* camera);
+		RENDERING_API inline void AddCamera(Camera* camera);
 		//RENDERING_API void AddTerrainNode(GameNode* terrainNode);
 		//RENDERING_API void AddWaterNode(GameNode* waterNode);
 		//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
@@ -202,20 +202,15 @@ namespace Rendering
 			return m_ambientNighttimeColor;
 		}
 
-		inline const CameraBase& GetCurrentCamera() const
+		inline const Camera& GetCurrentCamera() const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::EMERGENCY, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
-		RENDERING_API inline const Math::Transform& GetCurrentCameraTransform() const
+		inline Camera& GetCurrentCamera()
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::EMERGENCY, "Current camera is NULL.");
-			return m_currentCamera->GetTransform();
-		}
-		RENDERING_API inline Math::Transform& GetCurrentCameraTransform()
-		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::EMERGENCY, "Current camera is NULL.");
-			return m_currentCamera->GetTransform();
+			return *m_currentCamera;
 		}
 
 		size_t GetCurrentCameraIndex() const
@@ -401,12 +396,12 @@ namespace Rendering
 		Lighting::SpotLight* m_spotLight; // current spot light
 
 		size_t m_currentCameraIndex;
-		CameraBase* m_currentCamera;
-		CameraBase* m_tempCamera;
+		Camera* m_currentCamera;
+		Camera* m_tempCamera;
 
 		/// <summary> The main menu camera. This camera will be used
 		/// in the main menu rendering when there are no game cameras set up. </summary>
-		CameraBase* m_mainMenuCamera;
+		Camera* m_mainMenuCamera;
 
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
@@ -433,7 +428,7 @@ namespace Rendering
 		std::vector<Lighting::PointLight*> m_pointLights;
 		//std::vector<Lighting::SpotLight*> m_spotLights;
 
-		std::vector<CameraBase*> m_cameras;
+		std::vector<Camera*> m_cameras;
 		std::map<std::string, unsigned int> m_samplerMap;
 		Math::Matrix4D m_lightMatrix;
 

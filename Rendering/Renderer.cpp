@@ -59,7 +59,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
 	m_mainMenuCamera(NULL),
-	m_altCamera(Math::Matrix4D(), Math::Transform(), 0.005f),
+	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
 	m_filterTexture(NULL),
 	m_filterMaterial(NULL),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
@@ -228,7 +228,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	Math::Real aspectRatio = GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", defaultAspectRatio);
 	Math::Real zNearPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", defaultNearPlane);
 	Math::Real zFarPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", defaultFarPlane);
-	m_mainMenuCamera = new Camera(fov, aspectRatio, zNearPlane, zFarPlane, Math::Transform(), 0.005f);
+	m_mainMenuCamera = new Camera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+		fov, aspectRatio, zNearPlane, zFarPlane, 0.005f);
 	m_currentCamera = m_mainMenuCamera;
 	/* ==================== Creating a "Main menu camera" end ==================== */
 
@@ -515,7 +516,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 //
 //			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
 //
-//			CameraBase* temp = m_currentCamera;
+//			Camera* temp = m_currentCamera;
 //			m_currentCamera = &m_altCamera;
 //
 //			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
@@ -944,9 +945,9 @@ bool Rendering::Renderer::InitShadowMap()
 	if ( /* (m_shadowEnabled) && */ (shadowInfo != NULL))
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
-		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetTransformedPos(), m_currentCamera->GetTransform().GetTransformedRot());
-		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
-		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
+		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetPos(), m_currentCamera->GetRot());
+		m_altCamera.SetPos(shadowCameraTransform.m_pos);
+		m_altCamera.SetRot(shadowCameraTransform.m_rot);
 
 		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection().ToString(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
@@ -1204,10 +1205,10 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 	m_mappedValues.SetTexture("filterTexture", source);
 
 	m_altCamera.SetProjection(Math::Matrix4D::IDENTITY_MATRIX);
-	m_altCamera.GetTransform().SetPos(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	m_altCamera.GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)));
+	m_altCamera.SetPos(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
+	m_altCamera.SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)));
 
-	CameraBase* temp = m_currentCamera;
+	Camera* temp = m_currentCamera;
 	m_currentCamera = &m_altCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -1296,7 +1297,7 @@ void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
 	m_lights.push_back(light);
 }
 
-void Rendering::Renderer::AddCamera(CameraBase* camera)
+void Rendering::Renderer::AddCamera(Camera* camera)
 {
 	if (m_cameras.empty())
 	{
@@ -1504,10 +1505,10 @@ void Rendering::Renderer::InitializeTweakBars()
 		char cameraDefStr[256];
 		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
 		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
-		TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+		TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetPos(), cameraDefStr);
 		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Rot", m_currentCameraIndex);
 		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Rot' group=Camera ", m_currentCameraIndex);
-		TwAddVarRW(m_cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &m_cameras[m_currentCameraIndex]->GetTransform().GetRot(), cameraDefStr);
+		TwAddVarRW(m_cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &m_cameras[m_currentCameraIndex]->GetRot(), cameraDefStr);
 	}
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
@@ -1549,7 +1550,7 @@ void Rendering::Renderer::CheckCameraIndexChange()
 	char cameraDefStr[256];
 	_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
 	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
-	TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetTransform().GetPos(), cameraDefStr);
+	TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetPos(), cameraDefStr);
 	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", m_currentCameraIndex);
 	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", m_currentCameraIndex);
 	//TwAddVarRW(m_cameraBar, cameraIndexStr, angleType, &tempAngle, cameraDefStr);

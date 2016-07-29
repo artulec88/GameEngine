@@ -15,8 +15,11 @@
 using namespace Rendering;
 using namespace Utility;
 
-CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
+Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
+	m_pos(position),
+	m_rot(rotation),
 	m_projection(projectionMatrix),
+	//m_viewMatrix(m_transform.GetTransformedRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(m_transform.GetTransformedPos().Negate())),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -32,8 +35,11 @@ CameraBase::CameraBase(const Math::Matrix4D& projectionMatrix, Math::Real sensit
 {
 }
 
-CameraBase::CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
+Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
+	m_pos(position),
+	m_rot(rotation),
 	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
+	//m_viewMatrix(m_transform.GetTransformedRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(m_transform.GetTransformedPos().Negate())),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -49,31 +55,28 @@ CameraBase::CameraBase(const Math::Angle& FoV, Math::Real aspectRatio, Math::Rea
 {
 }
 
-
-CameraBase::~CameraBase(void)
+Camera::~Camera()
 {
 }
 
-Math::Matrix4D CameraBase::GetViewMatrix() const
+Math::Matrix4D Rendering::Camera::GetViewMatrix() const
 {
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc
 	/* ==================== SOLUTION #1 begin ==================== */
 	// return GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negate());
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
-	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
 	/* ==================== SOLUTION #2 end ==================== */
 	/* ==================== SOLUTION #3 begin ==================== */
 	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
-	return cameraRotation * cameraTranslation; // FIXME: Check matrix multiplication
+	return m_rot.Conjugate().ToRotationMatrix() * Math::Matrix4D(m_pos.Negated()); // FIXME: Check matrix multiplication
 }
 
-Math::Matrix4D CameraBase::GetViewProjection() const
+Math::Matrix4D Rendering::Camera::GetViewProjection() const
 {
 	// This function is performed quiet often. Maybe we could, instead of multiplying three matrices (projection, rotation, translation),
 	// just remember the result in some member variable and reuse it. Of course, we would have to perform the multiplication again if any of these matrices were changed.
@@ -84,33 +87,14 @@ Math::Matrix4D CameraBase::GetViewProjection() const
 	// return m_projection * GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix() * GetTransform().GetTransformedPos().Negated();
 	/* ==================== SOLUTION #1 end ==================== */
 
-	Math::Matrix4D cameraTranslation(GetTransform().GetTransformedPos().Negate());
+	/*Math::Matrix4D cameraTranslation(m_transform.GetTransformedPos().Negate());*/
 	//Matrix4D cameraRotation = GetTransform().GetRot().ToRotationMatrix();
 	/* ==================== SOLUTION #2 begin ==================== */
-	Math::Matrix4D cameraRotation(GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix());
 	/* ==================== SOLUTION #2 end ==================== */
 	/* ==================== SOLUTION #3 begin ==================== */
 	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
-	return m_projection * cameraRotation * cameraTranslation; // FIXME: Check matrix multiplication
+	return m_projection * m_rot.Conjugate().ToRotationMatrix() * Math::Matrix4D(m_pos.Negated()); // FIXME: Check matrix multiplication
+	//return m_projection * m_viewMatrix;
 }
-
-
-Camera::Camera(const Math::Matrix4D& projectionMatrix, const Math::Transform& transform, Math::Real sensitivity) :
-	CameraBase(projectionMatrix, sensitivity),
-	m_transform(transform)
-{
-}
-
-Camera::Camera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, const Math::Transform& transform, Math::Real sensitivity) :
-	CameraBase(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	m_transform(transform)
-{
-}
-
-
-Camera::~Camera(void)
-{
-}
-

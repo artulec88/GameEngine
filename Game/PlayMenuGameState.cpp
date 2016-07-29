@@ -181,7 +181,7 @@ void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 
 //void PlayMenuGameState::MousePosEvent(double xPos, double yPos)
 //{
-//	//const Rendering::CameraBase& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
+//	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
 //	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 //
 //	m_mousePosX = static_cast<Math::Real>(xPos);
