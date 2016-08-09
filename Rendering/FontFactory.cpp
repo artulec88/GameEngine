@@ -2,7 +2,8 @@
 #include "FontFactory.h"
 #include "Utility\ILogger.h"
 
-Rendering::Text::FontFactory::FontFactory(const std::string& texturesDirectory, const std::string& fontsDirectory) :
+Rendering::Text::FontFactory::FontFactory(const Shader& textShader, const std::string& texturesDirectory, const std::string& fontsDirectory) :
+	m_textShader(textShader),
 	m_fontMap(),
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory)
@@ -24,13 +25,13 @@ const Rendering::Text::Font* Rendering::Text::FontFactory::GetFont(FontTypes::Fo
 		switch (fontType)
 		{
 		case FontTypes::CAMBRIA:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(/*m_texturesDirectory + */"cambria.png", m_fontsDirectory + "cambria.fnt")));
+			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"cambria.png", m_fontsDirectory + "cambria.fnt")));
 			break;
 		case FontTypes::CANDARA:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(/*m_texturesDirectory + */"candara.png", m_fontsDirectory + "candara.fnt")));
+			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"candara.png", m_fontsDirectory + "candara.fnt")));
 			break;
 		case FontTypes::SEGOE:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(/*m_texturesDirectory + */"segoe.png", m_fontsDirectory + "segoe.fnt")));
+			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"segoe.png", m_fontsDirectory + "segoe.fnt")));
 			break;
 		default:
 			EMERGENCY_LOG_RENDERING("The specified font type (", fontType, ") is not supported by the game engine.");

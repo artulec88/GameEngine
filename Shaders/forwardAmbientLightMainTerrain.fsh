@@ -1,6 +1,6 @@
 #include "tiling-terrain.glh"
 
-uniform vec3 R_ambientIntensity;
+uniform vec4 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
 uniform sampler2D diffuse2;
@@ -34,8 +34,8 @@ void main()
 	vec4 totalColor = diffuseTextureColor + diffuse2TextureColor + diffuse3TextureColor + diffuse4TextureColor;
 	
 #if defined(FOG_ENABLED)
-	SetFragOutput(0, mix(totalColor * vec4(R_ambientIntensity, 1), vec4(R_ambientFogColor, 1.0), fogFactor));
+	SetFragOutput(0, mix(totalColor * R_ambientIntensity, R_ambientFogColor, fogFactor));
 #else
-	SetFragOutput(0, totalColor * vec4(R_ambientIntensity, 1));
+	SetFragOutput(0, totalColor * R_ambientIntensity);
 #endif
 }

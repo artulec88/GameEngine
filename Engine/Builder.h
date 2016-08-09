@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "GameNode.h"
+#include "GameManager.h"
 #include "Rendering\SpotLight.h"
 #include "Rendering\Texture.h"
 #include <string>
@@ -50,11 +51,13 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API LightBuilder(Rendering::Renderer* renderer);
+		ENGINE_API LightBuilder(GameManager* gameManager);
 		ENGINE_API virtual ~LightBuilder(void);
-	private:
-		LightBuilder(LightBuilder& lightBuilder) {}
-		void operator=(LightBuilder& lightBuilder) {}
+
+		LightBuilder(const LightBuilder& lightBuilder) = delete;
+		LightBuilder(LightBuilder&& lightBuilder) = delete;
+		LightBuilder& operator=(const LightBuilder& lightBuilder) = delete;
+		LightBuilder& operator=(LightBuilder&& lightBuilder) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -75,7 +78,7 @@ namespace Engine
 	protected:
 		int m_lightIndex;
 		std::string m_lightIndexStr;
-		Rendering::Renderer* m_renderer;
+		GameManager* m_gameManager;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder */
 
@@ -86,7 +89,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API DirectionalLightBuilder(Rendering::Renderer* renderer) : LightBuilder(renderer) { };
+		ENGINE_API DirectionalLightBuilder(GameManager* gameManager) : LightBuilder(gameManager) { };
 		ENGINE_API virtual ~DirectionalLightBuilder(void) { };
 	private:
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
@@ -115,7 +118,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API PointLightBuilder(Rendering::Renderer* renderer);
+		ENGINE_API PointLightBuilder(GameManager* gameManager);
 		ENGINE_API virtual ~PointLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -147,7 +150,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API SpotLightBuilder(Rendering::Renderer* renderer);
+		ENGINE_API SpotLightBuilder(GameManager* gameManager);
 		ENGINE_API virtual ~SpotLightBuilder(void) { };
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -184,7 +187,7 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API CameraBuilder();
+		ENGINE_API CameraBuilder(GameManager* gameManager);
 		ENGINE_API virtual ~CameraBuilder(void);
 	private:
 		CameraBuilder(CameraBuilder& cameraBuilder);
@@ -207,6 +210,7 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
+		GameManager* m_gameManager;
 		const Math::Vector3D M_DEFAULT_CAMERA_POS;
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X;
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y;

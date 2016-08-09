@@ -5,9 +5,10 @@
 
 #include <sstream>
 
-Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
-	Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */,
-	Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */, Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
+Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture,
+	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset,
+	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
+	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	GuiControl(screenPosition),
 	m_text(text),
 	m_font(font),
@@ -138,33 +139,20 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 	}
 }
 
-void Rendering::Controls::GuiButtonControl::Draw(const Rendering::Renderer& renderer) const
+void Rendering::Controls::GuiButtonControl::Draw(const Shader& guiControlShader, const Renderer& renderer) const
 {
 	if (m_font != NULL)
 	{
-		const Shader& shader = renderer.GetGuiTextShader();
-		shader.Bind();
-		shader.SetUniformVector2D("translation", GetScreenPosition());
-		shader.SetUniformVector2D("offset", m_offset);
-		shader.SetUniformVector3D("textColor", m_color);
-		shader.SetUniformVector3D("outlineColor", m_outlineColor);
-		shader.SetUniformf("characterWidth", m_characterWidth);
-		shader.SetUniformf("characterEdgeTransitionDistance", m_characterEdgeTransitionWidth);
-		shader.SetUniformf("borderWidth", m_borderWidth);
-		shader.SetUniformf("borderEdgeTransitionDistance", m_borderEdgeTransitionWidth);
-		shader.SetUniformi("fontAtlas", 0);
-
-		m_font->Bind();
+		m_font->Bind(GetScreenPosition(), m_offset, m_color, m_outlineColor, m_characterWidth, m_characterEdgeTransitionWidth, m_borderWidth, m_borderEdgeTransitionWidth);
 		m_mesh->Draw();
 	}
 	else if (m_iconTexture != NULL)
 	{
 		DELOCUST_LOG_RENDERING("Rendering button with icon");
-		const Shader& shader = renderer.GetGuiShader();
-		shader.Bind();
+		guiControlShader.Bind();
 		m_iconTexture->Bind(0);
-		shader.SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
-		shader.SetUniformi("guiTexture", 0);
+		guiControlShader.SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
+		guiControlShader.SetUniformi("guiTexture", 0);
 		m_mesh->Draw();
 	}
 }

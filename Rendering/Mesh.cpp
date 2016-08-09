@@ -298,7 +298,7 @@ void Rendering::Mesh::Initialize()
 		indices.push_back(face.mIndices[2]);
 	}
 	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, positions.size(), (int*)&indices[0], indices.size(), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), (int*)&indices[0], static_cast<int>(indices.size()), false);
 
 	meshResourceMap.insert(std::pair<std::string, MeshData*>(m_fileName, m_meshData));
 
@@ -709,8 +709,8 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 
 Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
-	m_x(REAL_ZERO),
-	m_z(REAL_ZERO),
+	m_x(0),
+	m_z(0),
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
@@ -829,10 +829,10 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 //#endif
 
 	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, positions.size(), &indices[0], indices.size(), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
 }
 
-Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
@@ -913,7 +913,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	//#endif
 
 	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, positions.size(), &indices[0], indices.size(), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
 }
 
 Rendering::TerrainMesh::~TerrainMesh(void)
@@ -958,7 +958,7 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::H
 	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::ERR,
 		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
 	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = heightsGenerator.GenerateHeight(x, z);
+	Math::Real height = heightsGenerator.GenerateHeight(static_cast<Math::Real>(x), static_cast<Math::Real>(z));
 #ifdef HEIGHTS_HEIGHTMAP
 	m_heights[heightMapIndex] = height;
 #endif

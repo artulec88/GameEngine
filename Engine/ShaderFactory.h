@@ -1,14 +1,14 @@
-#ifndef __RENDERING_SHADER_FACTORY_H__
-#define __RENDERING_SHADER_FACTORY_H__
+#ifndef __ENGINE_SHADER_FACTORY_H__
+#define __ENGINE_SHADER_FACTORY_H__
 
-#include "Rendering.h"
-#include "Shader.h"
+#include "Engine.h"
+#include "Rendering\Shader.h"
 
 #include "Utility\ILogger.h"
 
 #include <map>
 
-namespace Rendering
+namespace Engine
 {
 	namespace ShaderTypes
 	{
@@ -55,6 +55,7 @@ namespace Rendering
 		}; /* end enum ShaderType */
 	} /* end namespace ShaderTypes */
 
+	// TODO: This class should be moved to Engine module and GameManager should store an instance of this class instead of Renderer.
 	class ShaderFactory
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -63,7 +64,7 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>The shader factory constructor.</summary>
-		ShaderFactory();
+		ShaderFactory(const std::string& shadersDirectory);
 
 		/// <summary>The destructor.</summary>
 		~ShaderFactory(void);
@@ -77,9 +78,9 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		//void CreateShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName);
-		RENDERING_API inline const Shader& GetShader(ShaderTypes::ShaderType shaderType) const
+		ENGINE_API inline const Rendering::Shader& GetShader(ShaderTypes::ShaderType shaderType) const
 		{
-			std::map<ShaderTypes::ShaderType, Shader>::const_iterator shaderItr = m_shaderType2ShaderMap.find(shaderType);
+			std::map<ShaderTypes::ShaderType, Rendering::Shader>::const_iterator shaderItr = m_shaderType2ShaderMap.find(shaderType);
 			if (shaderItr == m_shaderType2ShaderMap.end())
 			{
 				ERROR_LOG_RENDERING("No shader has been created for the specified type of shader (", shaderType, ").");
@@ -89,14 +90,16 @@ namespace Rendering
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
+	private:
+		const std::string& m_shadersDirectory;
+
 		/// <summary>
 		/// The vector storing all shader by their types.
 		/// </summary>
-		std::map<ShaderTypes::ShaderType, Shader> m_shaderType2ShaderMap;
+		std::map<ShaderTypes::ShaderType, Rendering::Shader> m_shaderType2ShaderMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShaderFactory */
 
-} /* end namespace Rendering */
+} /* end namespace Engine */
 
-#endif /* __RENDERING_SHADER_FACTORY_H__ */
+#endif /* __ENGINE_SHADER_FACTORY_H__ */

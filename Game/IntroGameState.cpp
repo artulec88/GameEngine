@@ -5,8 +5,9 @@
 #include "Utility\ILogger.h"
 #include "MenuGameState.h"
 
-Game::IntroGameState::IntroGameState(const std::string& inputMappingContextName) :
-	Engine::GameState(inputMappingContextName)
+Game::IntroGameState::IntroGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+	Engine::GameState(inputMappingContextName),
+	m_gameManager(gameManager)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
 #endif
@@ -68,6 +69,6 @@ void Game::IntroGameState::Render(Rendering::Renderer* renderer) const
 	DEBUG_LOG_GAME("INTRO game state rendering");
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	renderer->RenderText(450, 450, "Intro (click ESC)");
+	renderer->RenderText(m_gameManager->GetGuiTextShader(), 450, 450, "Intro (click ESC)");
 	STOP_PROFILING;
 }

@@ -28,7 +28,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LoadGameState(const std::string& inputMappingContextName);
+		LoadGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
 		virtual ~LoadGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -49,6 +49,7 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		Engine::GameManager* m_gameManager;
 		Math::Real m_loadingProgress;
 		tthread::thread* m_loadingThread;
 #ifdef CALCULATE_GAME_STATS

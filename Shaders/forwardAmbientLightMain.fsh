@@ -1,4 +1,4 @@
-uniform vec3 R_ambientIntensity;
+uniform vec4 R_ambientIntensity;
 uniform vec3 C_eyePos;
 uniform sampler2D diffuse;
 uniform sampler2D displacementMap;
@@ -19,9 +19,9 @@ void main()
 	//vec2 texCoords = texCoord0;
 	
 #if defined(FOG_ENABLED)
-	SetFragOutput(0, mix(texture2D(diffuse, texCoords) * vec4(R_ambientIntensity, 1), vec4(R_ambientFogColor, 1.0), fogFactor));
+	SetFragOutput(0, mix(texture2D(diffuse, texCoords) * R_ambientIntensity, R_ambientFogColor, fogFactor));
 #else
-	SetFragOutput(0, texture2D(diffuse, texCoords) * vec4(R_ambientIntensity, 1));
+	SetFragOutput(0, texture2D(diffuse, texCoords) * R_ambientIntensity);
 	//SetFragOutput(0, vec4(texCoords, 0.0, 1.0));
 #endif
 }

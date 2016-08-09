@@ -5,7 +5,6 @@
 
 int Rendering::supportedOpenGLLevel;
 std::string Rendering::glslVersion;
-Rendering::Aliasing::AntiAliasingMethod Rendering::antiAliasingMethod = Rendering::Aliasing::NONE;
 
 /* ==================== Blending parameters begin ==================== */
 bool Rendering::glBlendEnabled, Rendering::glBlendEnabledOld;
@@ -116,7 +115,7 @@ void Rendering::PrintGlReport()
 	//INFO_LOG_RENDERING("OpenGL extensions: ", glGetString(GL_EXTENSIONS));
 }
 
-void Rendering::InitGraphics(int width, int height)
+void Rendering::InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	NOTICE_LOG_RENDERING("Initializing graphics started");
 
@@ -142,7 +141,7 @@ void Rendering::InitGraphics(int width, int height)
 	//glCullFace(GL_BACK);
 	//glEnable(GL_DEPTH_CLAMP);
 
-	switch (Rendering::antiAliasingMethod)
+	switch (antiAliasingMethod)
 	{
 	case Aliasing::NONE:
 		glDisable(GL_MULTISAMPLE); // disable multisampling

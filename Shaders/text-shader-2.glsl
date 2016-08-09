@@ -15,12 +15,12 @@ void main()
 }
 
 #elif defined(FS_BUILD)
-uniform vec3 textColor;
+uniform vec4 textColor;
 uniform sampler2D fontAtlas;
 
 // Watch https://www.youtube.com/watch?v=d8cfgcJR9Tk&index=33&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP
 uniform vec2 offset;
-uniform vec3 outlineColor;
+uniform vec4 outlineColor;
 uniform float characterWidth;
 uniform float characterEdgeTransitionDistance;
 uniform float borderWidth;
@@ -36,8 +36,8 @@ void main()
 	float outlineAlpha = 1.0 - smoothstep(borderWidth, borderWidth + borderEdgeTransitionDistance, distance2);
 	
 	float overallAlpha = alpha + (1.0 - alpha) * outlineAlpha;
-	vec3 overallColor = mix(outlineColor, textColor, alpha / (overallAlpha + 0.000001));
+	vec4 overallColor = mix(outlineColor, textColor, alpha / (overallAlpha + 0.000001));
 	
-	SetFragOutput(0, vec4(overallColor, overallAlpha));
+	SetFragOutput(0, vec4(overallColor.xyz, overallAlpha));
 }
 #endif
