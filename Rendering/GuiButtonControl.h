@@ -5,7 +5,6 @@
 #include "GuiControl.h"
 #include "Font.h"
 #include "Mesh.h"
-#include "Color.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -60,7 +59,7 @@ namespace Rendering
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
 			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
-				Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+				Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API virtual ~GuiButtonControl(void);
 			//private:
@@ -89,11 +88,11 @@ namespace Rendering
 
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
-			RENDERING_API const Color& GetColor() const { return m_color; }
-			RENDERING_API Color* GetColorPointer() { return &m_color; }
+			RENDERING_API const Math::Vector3D& GetColor() const { return m_color; }
+			RENDERING_API Math::Vector3D* GetColorPointer() { return &m_color; }
 
-			RENDERING_API const Color& GetOutlineColor() const { return m_outlineColor; }
-			RENDERING_API Color* GetOutlineColorPointer() { return &m_outlineColor; }
+			RENDERING_API const Math::Vector3D& GetOutlineColor() const { return m_outlineColor; }
+			RENDERING_API Math::Vector3D* GetOutlineColorPointer() { return &m_outlineColor; }
 
 			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
 			RENDERING_API Math::Vector2D* GetOffsetPointer() { return &m_offset; }
@@ -106,12 +105,7 @@ namespace Rendering
 			RENDERING_API Math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
 			RENDERING_API Math::Real* GetBorderEdgeTransitionWidthPointer() { return &m_borderEdgeTransitionWidth; }
 
-			/// <summary>
-			/// Draws the GUI button on the screen using the specified rendering engine and shader.
-			/// </summary>
-			/// <param name="guiControlShader">The shader to be used when drawing the GUI button.</param>
-			/// <param name="renderer">The rendering engine to be used when drawing the GUI button.</param>
-			RENDERING_API virtual void Draw(const Shader& guiControlShader, const Renderer& renderer) const;
+			RENDERING_API virtual void Draw(const Rendering::Renderer& renderer) const;
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
@@ -133,8 +127,8 @@ namespace Rendering
 			Math::Real m_fontSize;
 			const Texture* m_iconTexture;
 			const Math::Matrix4D m_iconTransformationMatrix;
-			Color m_color;
-			Color m_outlineColor;
+			Math::Vector3D m_color;
+			Math::Vector3D m_outlineColor;
 			Math::Vector2D m_offset;
 			Math::Real m_maxLineLength;
 			int m_linesCount;

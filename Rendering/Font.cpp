@@ -16,8 +16,7 @@
 /* static */ const char Rendering::Text::Font::META_DATA_SPLITTER[2] = { ' ', '=' };
 /* static */ const char Rendering::Text::Font::NUMBER_SEPARATOR = ',';
 
-Rendering::Text::Font::Font(const Shader& fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName) :
-	m_shader(fontShader),
+Rendering::Text::Font::Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName) :
 	m_textureAtlas(fontTextureAtlasFileName),
 	m_metaDataFileName(fontMetaDataFileName)
 {
@@ -35,7 +34,6 @@ Rendering::Text::Font::~Font()
 }
 
 Rendering::Text::Font::Font(Font&& font) :
-	m_shader(std::move(font.m_shader)),
 	m_textureAtlas(std::move(font.m_textureAtlas)),
 	m_metaDataFileName(std::move(font.m_metaDataFileName)),
 	m_aspectRatio(std::move(font.m_aspectRatio)),
@@ -180,20 +178,4 @@ const Rendering::Text::Character& Rendering::Text::Font::GetCharacter(int asciiC
 	CHECK_CONDITION_RENDERING(characterItr != m_metaData.end(), Utility::ERR,
 		"The ascii code (", asciiCode, ") hasn't been found in the font meta data");
 	return characterItr->second;
-}
-
-void Rendering::Text::Font::Bind(const Math::Vector2D& translation, const Math::Vector2D& offset, const Color& color, const Color& outlineColor,
-	Math::Real characterWidth, Math::Real characterEdgeTransitionWidth, Math::Real borderWidth, Math::Real borderEdgeTransitionWidth) const
-{
-	m_shader.Bind();
-	m_shader.SetUniformVector2D("translation", translation);
-	m_shader.SetUniformVector2D("offset", offset);
-	m_shader.SetUniformColor("textColor", color);
-	m_shader.SetUniformColor("outlineColor", outlineColor);
-	m_shader.SetUniformf("characterWidth", characterWidth);
-	m_shader.SetUniformf("characterEdgeTransitionDistance", characterEdgeTransitionWidth);
-	m_shader.SetUniformf("borderWidth", borderWidth);
-	m_shader.SetUniformf("borderEdgeTransitionDistance", borderEdgeTransitionWidth);
-	m_shader.SetUniformi("fontAtlas", 0);
-	m_textureAtlas.Bind(0);
 }

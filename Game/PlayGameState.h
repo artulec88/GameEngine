@@ -7,6 +7,7 @@
 #include "Engine\GameState.h"
 #include "Engine\IInputableKeyboard.h"
 #include "Engine\IInputableMouse.h"
+#include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
 #include "Engine\MousePicker.h"
 

@@ -100,6 +100,22 @@ namespace Rendering
 			PLANE_BASED = 0,
 			RANGE_BASED = 4
 		};
+
+		// TODO: Consider removing this struct. Use simple 'int' as the key for the fog shaders in the Renderer class.
+		// Use bitwise AND (between FogFallOffType and FogCalculationType) to construct this 'int' value.
+		//struct FogKey
+		//{
+		//	FogKey() : fallOffType(LINEAR), calculationType(PLANE_BASED)
+		//	{
+		//	}
+		//	FogKey(FogFallOffType fogFallOffType, FogCalculationType fogCalculationType) :
+		//		fallOffType(fogFallOffType), calculationType(fogCalculationType)
+		//	{
+		//	}
+		//	bool operator<(const FogKey& fog) const;
+		//	FogFallOffType fallOffType;
+		//	FogCalculationType calculationType;
+		//};
 	} /* end namespace FogEffect */
 
 	namespace WaterEffect
@@ -137,7 +153,7 @@ namespace Rendering
 	void DetermineGlVersion();
 	void PrintGlReport();
 
-	RENDERING_API void InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod);
+	RENDERING_API void InitGraphics(int width, int height);
 	void CheckErrorCode(const char* functionName, const char* comment);
 	void CheckFramebufferStatus();
 
@@ -159,6 +175,7 @@ namespace Rendering
 
 	extern int supportedOpenGLLevel;
 	extern std::string glslVersion;
+	extern Aliasing::AntiAliasingMethod antiAliasingMethod;
 
 	/**
 	 * TODO: In the future all OpenGL paramaters declared below (e.g. glBlendEnabled, glBlendSFactor, glScissorTestEnabled etc.)

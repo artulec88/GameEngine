@@ -39,7 +39,7 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 	}
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
 	Engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
-	gameManager->Load();
+	gameManager->Load(Engine::CoreEngine::GetCoreEngine()->GetRenderer());
 }
 
 Engine::GameManager::GameManager() :
@@ -49,39 +49,15 @@ Engine::GameManager::GameManager() :
 	m_terrainNode(NULL),
 	m_skyboxNode(NULL),
 	m_waterNode(NULL),
-	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
-	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
+	m_fontFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_ambientDaytimeColor(GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorRed", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorGreen", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorBlue", 0.2f)),
-	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorRed", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorGreen", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorBlue", 0.1f)),
-	m_ambientNighttimeColor(GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorRed", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorGreen", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorBlue", 0.02f)),
-	m_ambientLightColor(m_ambientDaytimeColor),
-	m_directionalLightsCount(0),
-	m_lights(),
-	m_directionalAndSpotLights(),
-	m_pointLights(),
-	m_cameras(),
-	m_currentCameraIndex(0),
 	m_emptyGameCommand(),
 	m_actionsToGameCommandsMap(),
 	//m_actionsToGameCommandsMap({ { Input::Actions::EMPTY, std::make_unique<EmptyGameCommand>() } }), // cannot do it this way since it requires copying the unique_ptr object
 	m_actionsToGameNodesMap()
-#ifdef ANT_TWEAK_BAR_ENABLED
-	, m_gameBar(NULL),
-	m_cameraCountMinusOne(-1)
-#endif
-#ifdef CALCULATE_MATH_STATS
-	, m_classStats(STATS_STORAGE.GetClassStats("GameManager"))
-#endif
 {
 	INFO_LOG_ENGINE("Game manager construction started");
 	//rootGameNode = new GameNode();
@@ -173,40 +149,6 @@ void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& g
 	//m_texts[guiText.GetFont()].push_back(guiText); // TODO: What about duplicates?
 	//m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiTextControl>>(guiText.GetFont(), std::vector<Rendering::Text::GuiTextControl>()));
 	//m_texts[guiText.GetFont()].push_back(guiText);
-}
-
-void Engine::GameManager::AddLight(Rendering::Lighting::BaseLight* light)
-{
-	Rendering::Lighting::DirectionalLight* directionalLight = dynamic_cast<Rendering::Lighting::DirectionalLight*>(light);
-	if (directionalLight != NULL)
-	{
-		INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight->GetIntensity(), " is being added to directional / spot lights vector");
-		++m_directionalLightsCount;
-		m_directionalAndSpotLights.push_back(directionalLight);
-	}
-	else
-	{
-		Rendering::Lighting::SpotLight* spotLight = dynamic_cast<Rendering::Lighting::SpotLight*>(light);
-		if (spotLight != NULL)
-		{
-			INFO_LOG_RENDERING("Spot light with intensity = ", spotLight->GetIntensity(), " is being added to directional / spot lights vector");
-			m_directionalAndSpotLights.push_back(spotLight);
-		}
-		else
-		{
-			Rendering::Lighting::PointLight* pointLight = dynamic_cast<Rendering::Lighting::PointLight*>(light);
-			if (pointLight != NULL)
-			{
-				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
-				m_pointLights.push_back(pointLight);
-			}
-			else
-			{
-				EMERGENCY_LOG_RENDERING("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
-			}
-		}
-	}
-	m_lights.push_back(light);
 }
 
 void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)
@@ -309,175 +251,8 @@ const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontT
 	return m_fontFactory.GetFont(fontType);
 }
 
-const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
-{
-	START_PROFILING;
-	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	STOP_PROFILING;
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
-}
-
-const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
-{
-	START_PROFILING;
-	if (fogInfo.IsEnabled())
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	STOP_PROFILING;
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
-}
-
-Math::Real Engine::GameManager::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
-{
-	START_PROFILING;
-	/* ==================== Adjusting the time variables begin ==================== */
-	Math::Real dayNightMixFactor = REAL_ZERO;
-	switch (dayTime)
-	{
-	case Utility::Timing::NIGHT:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor;
-		break;
-	case Utility::Timing::BEFORE_DAWN:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::SUNRISE:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::DAY:
-		dayNightMixFactor = REAL_ONE;
-		m_ambientLightColor = m_ambientDaytimeColor;
-		break;
-	case Utility::Timing::SUNSET:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::AFTER_DUSK:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	}
-	/* ==================== Adjusting the time variables end ==================== */
-	STOP_PROFILING;
-	return dayNightMixFactor;
-}
-
-void Engine::GameManager::AddCamera(Rendering::Camera* camera)
-{
-	if (m_cameras.empty())
-	{
-		camera->Activate();
-	}
-	m_cameras.push_back(camera);
-#ifdef ANT_TWEAK_BAR_ENABLED
-	++m_cameraCountMinusOne;
-#endif
-}
-
-unsigned int Engine::GameManager::SetCurrentCamera(unsigned int cameraIndex)
-{
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed ",
-		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
-	m_cameras[m_currentCameraIndex]->Deactivate();
-	m_currentCameraIndex = cameraIndex;
-	m_cameras[m_currentCameraIndex]->Activate();
-#ifndef ANT_TWEAK_BAR_ENABLED
-	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
-#endif
-	return m_currentCameraIndex;
-}
-
-unsigned int Engine::GameManager::NextCamera()
-{
-	if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
-	{
-		m_currentCameraIndex = -1;
-	}
-	return SetCurrentCamera(m_currentCameraIndex + 1);
-}
-
-unsigned int Engine::GameManager::PrevCamera()
-{
-	if (m_currentCameraIndex == 0)
-	{
-		m_currentCameraIndex = m_cameras.size();
-	}
-	return SetCurrentCamera(m_currentCameraIndex - 1);
-}
-
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Engine::GameManager::InitializeTweakBars()
 {
-	m_gameBar = TwNewBar("GameBar");
-	TwAddVarRW(m_gameBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
-	TwSetParam(m_gameBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
-	TwSetParam(m_gameBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
-
-	TwAddVarRO(m_gameBar, "ambientLight", TW_TYPE_COLOR4F, &m_ambientLightColor, " label='Color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightDaytime", TW_TYPE_COLOR4F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR4F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightNighttime", TW_TYPE_COLOR4F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
 }
 #endif

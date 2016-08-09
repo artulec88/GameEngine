@@ -38,7 +38,7 @@ private:
 
 /* ==================== Non-static member functions begin ==================== */
 public:
-	virtual void Load();
+	virtual void Load(Rendering::Renderer* renderer);
 	virtual void Update(Math::Real delta);
 
 	virtual Math::Real GetLoadingProgress() const;
@@ -57,10 +57,10 @@ public:
 #endif
 private:
 	void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
-	void AddLights();
-	void AddDirectionalLight();
-	void AddPointLights();
-	void AddSpotLights();
+	void AddLights(Rendering::Renderer* renderer);
+	void AddDirectionalLight(Rendering::Renderer* renderer);
+	void AddPointLights(Rendering::Renderer* renderer);
+	void AddSpotLights(Rendering::Renderer* renderer);
 	void AddCameras(Engine::GameNode* entityToFollow);
 	void AddSkybox() const;
 	//void AddStaticEffects();

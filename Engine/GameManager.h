@@ -9,7 +9,6 @@
 #include "GameNode.h"
 #include "GameCommand.h"
 #include "InputMapping.h"
-#include "ShaderFactory.h"
 //#include "Observer.h"
 
 #include "EffectFactory.h"
@@ -17,19 +16,15 @@
 #include "Rendering\Particle.h"
 #include "Rendering\Shader.h"
 #include "Rendering\Material.h"
-#include "Rendering\BaseLight.h"
+#include "Rendering\PointLight.h"
+#include "Rendering\SpotLight.h"
 #include "Rendering\Camera.h"
 #include "Rendering\FontFactory.h"
-#include "Rendering\FogInfo.h"
 #include "Rendering\GuiButtonControl.h"
 #include "Rendering\Texture.h"
 
 #include "Math\Transform.h"
 #include "Math\Math.h"
-#ifdef CALCULATE_ENGINE_STATS
-#include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
-#endif
 
 #include <amp.h>
 #include <vector>
@@ -73,7 +68,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Load() = 0; // Loads the game
+		ENGINE_API virtual void Load(Rendering::Renderer* renderer) = 0; // Loads the game
 		ENGINE_API virtual void Input(const Engine::Input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
@@ -137,66 +132,7 @@ namespace Engine
 		//{
 		//	return m_effectFactory.GetVec3DEffect(effectType, variant);
 		//}
-
-		ENGINE_API inline const Rendering::Shader& GetShader(ShaderTypes::ShaderType shaderType) const
-		{
-			return m_shaderFactory.GetShader(shaderType);
-		}
-		ENGINE_API inline const Rendering::Shader& GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		ENGINE_API inline const Rendering::Shader& GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		ENGINE_API inline const Rendering::Shader& GetShadowMapShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP);
-		}
-		ENGINE_API inline const Rendering::Shader& GetSkyboxShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SKYBOX); // TODO: In some cases we should return ShaderTypes::SKYBOX_PROCEDURAL
-		}
-		ENGINE_API inline const Rendering::Shader& GetWaterShader(Rendering::Renderer* renderer) const
-		{
-			return ((GetDirectionalLightsCount() > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
-				m_shaderFactory.GetShader(ShaderTypes::WATER) :
-				m_shaderFactory.GetShader(ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
-		}
-		ENGINE_API inline const Rendering::Shader& GetBillboardShader() const { return m_shaderFactory.GetShader(ShaderTypes::BILLBOARD); }
-		ENGINE_API inline const Rendering::Shader& GetParticleShader() const { return m_shaderFactory.GetShader(ShaderTypes::PARTICLES); }
-		ENGINE_API inline const Rendering::Shader& GetGuiTextShader() const { return m_shaderFactory.GetShader(ShaderTypes::TEXT); }
-		ENGINE_API inline const Rendering::Shader& GetGuiShader() const { return m_shaderFactory.GetShader(ShaderTypes::GUI); }
-
-		ENGINE_API Math::Real AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
-		ENGINE_API const Rendering::Color& GetAmbientLightColor() const { return m_ambientLightColor; }
-
-		ENGINE_API Rendering::Lighting::BaseLight* GetLight(unsigned int index) const
-		{
-			// TODO: Range check?
-			return m_directionalAndSpotLights[index];
-		}
-		ENGINE_API Rendering::Lighting::PointLight* GetPointLight(unsigned int index) const
-		{
-			// TODO: Range check?
-			return m_pointLights[index];
-		}
-		ENGINE_API inline size_t GetDirectionalLightsCount() const
-		{
-			return m_directionalLightsCount;
-		}
-		ENGINE_API inline size_t GetSpotLightsCount() const
-		{
-			return m_directionalAndSpotLights.size() - m_directionalLightsCount;
-		}
-		ENGINE_API inline size_t GetPointLightsCount() const
-		{
-			return m_pointLights.size();
-		}
-
-		Rendering::Camera* GetCurrentCamera() { return m_cameras[m_currentCameraIndex]; }
-		unsigned int GetCurrentCameraIndex() const { return m_currentCameraIndex; }
-		void AddCamera(Rendering::Camera* camera);
-		unsigned int SetCurrentCamera(unsigned int cameraIndex);
-		unsigned int NextCamera();
-		unsigned int PrevCamera();
 	public:
-		ENGINE_API void AddLight(Rendering::Lighting::BaseLight* light);
 		ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 		ENGINE_API void AddWaterNode(GameNode* waterNode);
 		ENGINE_API void AddBillboardsRenderer(GameNode* billboardsRenderer);
@@ -215,7 +151,6 @@ namespace Engine
 		GameNode* m_waterNode;
 		std::vector<GameNode*> m_billboardsRenderers;
 		std::vector<ParticleGenerator*> m_particleGenerators;
-		ShaderFactory m_shaderFactory;
 		Rendering::Text::FontFactory m_fontFactory;
 		GameStateManager* m_gameStateManager;
 		bool m_isGameLoaded;
@@ -226,24 +161,6 @@ namespace Engine
 		const EmptyGameCommand m_emptyGameCommand;
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//Rendering::Effects::EffectFactory m_effectFactory;
-
-		Rendering::Color m_ambientDaytimeColor;
-		Rendering::Color m_ambientSunNearHorizonColor;
-		Rendering::Color m_ambientNighttimeColor;
-		Rendering::Color m_ambientLightColor;
-
-		/// <summary> The number of directional lights currently being used in the game. </summary>
-		size_t m_directionalLightsCount;
-		/// <summary> The vector of all lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_lights;
-		/// <summary> The vector of directional and spot lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_directionalAndSpotLights;
-		/// <summary> The vector of point lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::PointLight*> m_pointLights;
-		//std::vector<Lighting::SpotLight*> m_spotLights;
-
-		std::vector<Rendering::Camera*> m_cameras;
-		unsigned int m_currentCameraIndex;
 
 		/// <summary>
 		/// The list of game nodes that are interested in handling the particular action event that occurred in the game.
@@ -259,15 +176,6 @@ namespace Engine
 		/// The list of game nodes that are interested in handling the particular state that occurred in the game.
 		/// </summary>
 		StatesToGameNodesMap m_statesToGameNodesMap;
-
-#ifdef ANT_TWEAK_BAR_ENABLED
-		TwBar* m_gameBar;
-		unsigned int m_cameraCountMinusOne;
-#endif
-
-#ifdef CALCULATE_MATH_STATS
-		Math::Statistics::ClassStats& m_classStats;
-#endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameManager */
 

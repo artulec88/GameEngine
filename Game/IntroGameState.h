@@ -21,7 +21,7 @@ namespace Game
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		IntroGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
+		IntroGameState(const std::string& inputMappingContextName);
 		virtual ~IntroGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -40,7 +40,6 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
 #ifdef CALCULATE_GAME_STATS
 		Math::Statistics::ClassStats& m_classStats;
 #endif

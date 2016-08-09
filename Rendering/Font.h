@@ -2,9 +2,7 @@
 #define __RENDERING_TEXT_FONT_H__
 
 #include "Rendering.h"
-#include "Color.h"
 #include "Texture.h"
-#include "Shader.h"
 #include "Character.h"
 #include "Math\Math.h"
 #include <map>
@@ -32,7 +30,7 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 		public:
-			Font(const Shader& fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
+			Font(const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
 			~Font(void);
 			Font(Font&& font);
 			Font(const Font& font) = default;
@@ -44,8 +42,7 @@ namespace Rendering
 			const Character& GetCharacter(int asciiCode) const;
 			Math::Real GetSpaceWidth() const { return m_spaceWidth; }
 			const std::string& GetMetaDataFileName() const { return m_metaDataFileName; }
-			void Bind(const Math::Vector2D& translation, const Math::Vector2D& offset, const Color& color, const Color& outlineColor,
-				Math::Real characterWidth, Math::Real characterEdgeTransitionWidth, Math::Real borderWidth, Math::Real borderEdgeTransitionWidth) const;
+			void Bind() const { m_textureAtlas.Bind(0); }
 		private:
 			void ReadMetaDataFile(const std::string& fontMetaDataFileName);
 			void AddCharacter(std::vector<std::string>& tokens, int imageWidth);
@@ -53,7 +50,6 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 		private:
-			const Shader& m_shader;
 			Texture m_textureAtlas;
 			const std::string m_metaDataFileName;
 

@@ -81,8 +81,7 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 {
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, Utility::Logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
-	std::string shaderText = LoadShaderData(fileName);
-	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
+	std::string shaderText = LoadShaderData(fileName + ".glsl");
 	bool geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
 
 	/**
@@ -139,7 +138,6 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 	}
 	DEBUG_LOG_RENDERING("Loading shader data from file \"", name, "\"");
 
-	//std::ifstream file(fileName);
 	std::ifstream file(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\" + fileName));
 	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), Utility::Logging::ERR, "Unable to open shader file \"", name, "\". Check the path.");
 

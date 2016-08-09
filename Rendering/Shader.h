@@ -129,11 +129,11 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Shader(const std::string& fileName);
-		RENDERING_API ~Shader(void);
-
+		Shader(const std::string& fileName);
+		~Shader(void);
+		
 		Shader(const Shader& shader) = delete;
-		RENDERING_API Shader(Shader&& shader);
+		Shader(Shader&& shader);
 		Shader& operator=(const Shader& shader) = delete;
 		Shader& operator=(Shader&& shader) = delete;
 		/* ==================== Constructors and destructors end ==================== */

@@ -131,6 +131,7 @@ namespace Engine
 		void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
 		Audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
+		Rendering::Renderer* GetRenderer() { return m_renderer; }
 
 		const std::string& GetShadersDirectory() const { return m_shadersDirectory; }
 		const std::string& GetModelsDirectory() const { return m_modelsDirectory; }
@@ -138,6 +139,7 @@ namespace Engine
 		const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
+		void AddCamera(Rendering::Camera* camera);
 		void AddSkyboxNode(GameNode* skyboxNode);
 		void AddWaterNode(GameNode* waterNode);
 		void AddTerrainNode(GameNode* terrainNode);
@@ -150,7 +152,7 @@ namespace Engine
 	private:
 		void CreateAudioEngine();
 		void CreatePhysicsEngine();
-		void CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void CreateRenderer(int width, int height, const std::string& title);
 		void Run();
 		void PollEvents();
 		Math::Real GetCurrentLocalTime() const;
@@ -164,8 +166,8 @@ namespace Engine
 		void StartSamplingSpf() const { m_isSamplingSpf = true; }
 		void StopSamplingSpf() const { m_isSamplingSpf = false; }
 	private:
-		void InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
-		void InitGlfw(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void InitGraphics(int width, int height, const std::string& title);
+		void InitGlfw(int width, int height, const std::string& title);
 		void SetCallbacks();
 		void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostTimeSamples& minMaxTime, double& timeSum) const
 		{
@@ -199,7 +201,7 @@ namespace Engine
 		GameManager* m_game;
 		std::unique_ptr<Audio::IAudioEngine> m_audioEngine;
 		Physics::PhysicsEngine* m_physicsEngine;
-		std::unique_ptr<Rendering::Renderer> m_renderer; // TODO: Replace unique_ptr with a simple instance of Rendering::Renderer.
+		Rendering::Renderer* m_renderer;
 
 		const Math::Angle LATITUDE;
 		const Math::Angle LONGITUDE;

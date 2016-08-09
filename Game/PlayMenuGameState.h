@@ -29,7 +29,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PlayMenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
+		PlayMenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize);
 		virtual ~PlayMenuGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -56,7 +56,6 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Engine::GameManager* m_gameManager;
 		Engine::CompositeMenuEntry m_playMainMenuRootEntry;
 		//Rendering::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
 		//Rendering::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;

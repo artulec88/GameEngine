@@ -182,7 +182,6 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="CubeShadowMap.h" />
     <ClInclude Include="DirectionalLight.h" />
-    <ClInclude Include="FogInfo.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontFactory.h" />
     <ClInclude Include="GuiCheckBoxControl.h" />
@@ -198,6 +197,7 @@
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShadowInfo.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="stb_image.h" />
@@ -228,7 +228,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="FogInfo.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontFactory.cpp" />
     <ClCompile Include="GuiCheckBoxControl.cpp" />
@@ -244,6 +243,7 @@
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShadowInfo.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="stb_image.cpp" />

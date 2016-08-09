@@ -317,7 +317,7 @@ private:
 public:
 	RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
 	RENDERING_API TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
-	RENDERING_API TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
+	RENDERING_API TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, size_t vertexCount, GLenum mode = GL_TRIANGLES);
 	RENDERING_API virtual ~TerrainMesh(void);
 private: // disable copy constructor and assignment operator
 	TerrainMesh(TerrainMesh& terrainMesh);
@@ -348,7 +348,7 @@ private:
 	int m_z;
 
 	const Math::Real m_headPositionHeightAdjustment;
-	int m_vertexCount;
+	size_t m_vertexCount;
 #ifdef HEIGHTS_KD_TREE
 	Math::Vector3D* m_positions;
 	const int m_kdTreeSamples;

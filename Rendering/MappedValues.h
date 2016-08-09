@@ -26,7 +26,7 @@ namespace Rendering
 	public:
 		RENDERING_API MappedValues(void) :
 			m_defaultValue(REAL_ZERO),
-			//m_defaultColor(Color(ColorNames::WHITE)),
+			//m_defaultColor(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE),
 			// TODO: There is no need to create new default texture for each instance of MappedValues. Instead, use Flyweight pattern to minimize dynamic memory allocation.
 			m_defaultTexture(new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE)),
 			m_defaultVector2D(REAL_ZERO, REAL_ZERO),
@@ -51,6 +51,20 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		//RENDERING_API inline void SetColor(const std::string& colorName, const Color& color)
+		//{
+		//	if (colorMap.find(colorName) == colorMap.end())
+		//	{
+		//		DEBUG_LOG_RENDERING("Color with name \"",, colorName, "\" cannot be found in the map. Creating a new color with this name.");
+		//		colorMap.insert(std::pair<std::string, Color>(colorName, color));
+		//	}
+		//	else
+		//	{
+		//		DELOCUST_LOG_RENDERING("Replacing the color \"", colorName, "\" with values \"", colorMap[colorName].ToString(), "\" to color \"", color.ToString(), "\"");
+		//		colorMap[colorName] = color;
+		//	}
+		//}
+
 		RENDERING_API inline void SetVector2D(const std::string& name, const Math::Vector2D& vec)
 		{
 			if (vec2DMap.find(name) == vec2DMap.end())
@@ -92,20 +106,6 @@ namespace Rendering
 				m_vec4DMap[name] = vec;
 			}
 		}
-
-		//RENDERING_API inline void SetColor(const std::string& name, const Color& color)
-		//{
-		//	if (m_vec4DMap.find(name) == m_vec4DMap.end())
-		//	{
-		//		DEBUG_LOG_RENDERING("Color with name \"", name, "\" cannot be found in the map. Creating a new color with this name.");
-		//		m_vec4DMap.insert(std::pair<std::string, Math::Vector4D>(name, color.GetValues()));
-		//	}
-		//	else
-		//	{
-		//		DELOCUST_LOG_RENDERING("Modifying the color \"", name, "\" with values \"", m_vec4DMap[name].ToString(), "\" to color \"", color.ToString(), "\"");
-		//		m_vec4DMap[name] = color.GetValues();
-		//	}
-		//}
 
 		RENDERING_API inline void SetReal(const std::string& name, const Math::Real value)
 		{
@@ -158,13 +158,25 @@ namespace Rendering
 			}
 		}
 
+		//RENDERING_API inline const Color& GetColor(const std::string& colorName) const
+		//{
+		//	// TODO: Return a reference instead of value.
+		//	std::map<std::string, Color>::const_iterator itr = colorMap.find(colorName);
+		//	if (itr == colorMap.end()) // color not found
+		//	{
+		//		WARNING_LOG_RENDERING("Color with name \"", colorName, "\" has not been found. Returning default color instead.");
+		//		return m_defaultColor;
+		//	}
+		//	return itr->second;
+		//}
+
 		RENDERING_API inline const Math::Vector2D& GetVec2D(const std::string& name) const
 		{
 			// TODO: Return a reference instead of value.
 			std::map<std::string, Math::Vector2D>::const_iterator itr = vec2DMap.find(name);
 			if (itr == vec2DMap.end()) // vector not found
 			{
-				WARNING_LOG_RENDERING("Vector2D with name \"", name, "\" has not been found. Returning default vector instead.");
+				WARNING_LOG_RENDERING("Vector with name \"", name, "\" has not been found. Returning default vector instead.");
 				return m_defaultVector2D;
 			}
 			return itr->second;
@@ -176,7 +188,7 @@ namespace Rendering
 			std::map<std::string, Math::Vector3D>::const_iterator itr = vec3DMap.find(name);
 			if (itr == vec3DMap.end()) // vector not found
 			{
-				WARNING_LOG_RENDERING("Vector3D with name \"", name, "\" has not been found. Returning default vector instead.");
+				WARNING_LOG_RENDERING("Vector with name \"", name, "\" has not been found. Returning default vector instead.");
 				return m_defaultVector3D;
 			}
 			return itr->second;
@@ -188,7 +200,7 @@ namespace Rendering
 			std::map<std::string, Math::Vector4D>::const_iterator itr = m_vec4DMap.find(name);
 			if (itr == m_vec4DMap.end()) // vector not found
 			{
-				WARNING_LOG_RENDERING("Vector4D with name \"", name, "\" has not been found. Returning default vector instead.");
+				WARNING_LOG_RENDERING("Vector with name \"", name, "\" has not been found. Returning default vector instead.");
 				return m_defaultVector4D;
 			}
 			return itr->second;
@@ -297,16 +309,16 @@ namespace Rendering
 		StrToRealMap realMap;
 		StrToTextureMap textureMap;
 
-		const Math::Real m_defaultValue;
-		//const Color m_defaultColor;
+		Math::Real m_defaultValue;
+		//Color m_defaultColor;
 
 		// TODO: Default texture, vector3D and vector4D are all the same for all MappedValues instances so
 		// there is no need to store as many instances of these as many MappedValues instances there are.
 		// We should store them only once in memory. Flyweight design pattern would be a perfect solution here.
-		const Texture* m_defaultTexture;
-		const Math::Vector2D m_defaultVector2D;
-		const Math::Vector3D m_defaultVector3D;
-		const Math::Vector4D m_defaultVector4D;
+		Texture* m_defaultTexture;
+		Math::Vector2D m_defaultVector2D;
+		Math::Vector3D m_defaultVector3D;
+		Math::Vector4D m_defaultVector4D;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MappedValues */
 
