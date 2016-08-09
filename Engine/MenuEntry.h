@@ -35,14 +35,14 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API MenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture, const Math::Vector2D& screenPosition,
-			Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+			Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 			Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~MenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(Rendering::Renderer* renderer) const;
+		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual MenuEntry* Execute() = 0;
 		ENGINE_API bool DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const;
@@ -71,18 +71,18 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~CompositeMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//ENGINE_API virtual void Render(Rendering::Renderer* renderer) const;
+		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual MenuEntry* Execute();
 
-		ENGINE_API void RenderAll(Rendering::Renderer* renderer) const;
+		ENGINE_API void RenderAll(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API size_t GetSelectedChildIndex() const { return m_selectedMenuEntryIndex; }
 		ENGINE_API size_t GetSelectedChildIndex(Math::Real xPos, Math::Real yPos) const;
 		ENGINE_API MenuEntry* SelectPrevChild();
@@ -105,14 +105,14 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ActionMenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//ENGINE_API virtual void Render(Rendering::Renderer* renderer) const;
+		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual MenuEntry* Execute();
 	private:
 		/* ==================== Non-static member functions end ==================== */
@@ -135,14 +135,14 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Math::Vector3D& textColor, const Math::Vector3D& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ValueMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(Rendering::Renderer* renderer) const;
+		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual MenuEntry* Execute();
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)

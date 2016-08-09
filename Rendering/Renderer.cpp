@@ -21,9 +21,10 @@
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
-Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
+Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
+	m_antiAliasingMethod(antiAliasingMethod),
 	m_applyFilterEnabled(GET_CONFIG_VALUE_RENDERING("applyFilterEnabled", true)),
 	m_backgroundColor(GET_CONFIG_VALUE_RENDERING("ClearColorRed", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("ClearColorGreen", REAL_ZERO),
@@ -31,31 +32,15 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 		GET_CONFIG_VALUE_RENDERING("ClearColorAlpha", REAL_ONE)),
 	//m_shadowsEnabled(GET_CONFIG_VALUE_RENDERING("shadowsEnabled", true)),
 	//m_pointLightShadowsEnabled(GET_CONFIG_VALUE_RENDERING("pointLightShadowsEnabled", false)),
-	m_fogEnabled(GET_CONFIG_VALUE_RENDERING("fogEnabled", true)),
-	m_fogColor(GET_CONFIG_VALUE_RENDERING("fogColor_x", 0.7f),
+	m_fogInfo(Color(GET_CONFIG_VALUE_RENDERING("fogColor_x", 0.7f),
 		GET_CONFIG_VALUE_RENDERING("fogColor_y", 0.7f),
-		GET_CONFIG_VALUE_RENDERING("fogColor_z", 0.7f)),
-	m_fogStart(GET_CONFIG_VALUE_RENDERING("fogStart", 8.0f)),
-	m_fogEnd(GET_CONFIG_VALUE_RENDERING("fogEnd", 50.0f)),
-	m_fogDensityFactor(GET_CONFIG_VALUE_RENDERING("fogDensityFactor", 0.2f)),
-	m_fogGradient(GET_CONFIG_VALUE_RENDERING("fogGradient", 0.005f)),
-	m_fogFallOffType(static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE_RENDERING("fogFallOffType", 0))),
-	m_fogCalculationType(static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE_RENDERING("fogCalculationType", 0))),
+		GET_CONFIG_VALUE_RENDERING("fogColor_z", 0.7f)), GET_CONFIG_VALUE_RENDERING("fogStart", 8.0f), GET_CONFIG_VALUE_RENDERING("fogEnd", 50.0f), GET_CONFIG_VALUE_RENDERING("fogDensityFactor", 0.2f),
+		GET_CONFIG_VALUE_RENDERING("fogGradient", 0.005f), static_cast<FogEffect::FogFallOffType>(GET_CONFIG_VALUE_RENDERING("fogFallOffType", 0)),
+		static_cast<FogEffect::FogCalculationType>(GET_CONFIG_VALUE_RENDERING("fogCalculationType", 0)), GET_CONFIG_VALUE_RENDERING("fogEnabled", true)),
 	m_ambientLightEnabled(GET_CONFIG_VALUE_RENDERING("ambientLightEnabled", true)),
-	m_ambientDaytimeColor(GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorRed", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorGreen", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorBlue", 0.2f)),
-	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorRed", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorGreen", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorBlue", 0.1f)),
-	m_ambientNighttimeColor(GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorRed", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorGreen", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorBlue", 0.02f)),
-	m_ambientLight(m_ambientDaytimeColor),
 	m_currentLight(NULL),
 	m_currentPointLight(NULL),
-	m_spotLight(NULL),
-	m_currentCameraIndex(0),
+	//m_currentSpotLight(NULL),
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
 	m_mainMenuCamera(NULL),
@@ -64,7 +49,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_filterMaterial(NULL),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
-	m_shaderFactory(),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
@@ -72,11 +56,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_cubeShadowMap(NULL),
 	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
 	//m_shadowMapTempTargets(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
-	m_directionalLightsCount(0),
-	m_lights(),
-	m_directionalAndSpotLights(),
-	m_pointLights(),
-	m_cameras(),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
 	//m_defaultFont(GET_CONFIG_VALUE_STR_RENDERING("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR_RENDERING("defaultFontMetaData", "segoe.fnt")),
@@ -108,11 +87,10 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight) :
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
 	m_particleQuad(NULL),
+	//m_particleInstanceVboData(),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
-	,m_cameraCountMinusOne(0),
-	m_previousFrameCameraIndex(0),
-	m_propertiesBar(NULL),
+	, m_propertiesBar(NULL),
 	m_cameraBar(NULL),
 	m_lightsBar(NULL),
 	//m_cameraMembers(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
@@ -367,43 +345,44 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 	{ GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, Math::Quaternion(Math::Matrix4D(Math::Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE), Math::Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO))) }
 };
 
-void Rendering::Renderer::InitRenderScene()
+void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, Math::Real dayNightMixFactor)
 {
 	START_PROFILING;
 
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
-	CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
-		Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = ", m_currentCameraIndex, ")");
+	//CHECK_CONDITION_EXIT_RENDERING(!m_cameras.empty() && m_currentCameraIndex >= 0 && m_currentCameraIndex < m_cameras.size() && m_cameras[m_currentCameraIndex] != NULL,
+	//	Utility::EMERGENCY, "Rendering failed. There is no proper camera set up (current camera index = ", m_currentCameraIndex, ")");
+	
+	m_mappedValues.SetReal("dayNightMixFactor", dayNightMixFactor);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-	m_mappedValues.SetVector3D("ambientFogColor", m_fogColor);
-	m_mappedValues.SetReal("ambientFogStart", m_fogStart);
-	m_mappedValues.SetReal("ambientFogEnd", m_fogEnd);
-	m_mappedValues.SetReal("ambientFogDensityFactor", m_fogDensityFactor);
-	m_mappedValues.SetReal("ambientFogGradient", m_fogGradient);
-	m_mappedValues.SetVector3D("ambientIntensity", m_ambientLight);
+	m_mappedValues.SetVector4D("ambientFogColor", m_fogInfo.GetColor().GetValues());
+	m_mappedValues.SetReal("ambientFogStart", m_fogInfo.GetStartDistance());
+	m_mappedValues.SetReal("ambientFogEnd", m_fogInfo.GetEndDistance());
+	m_mappedValues.SetReal("ambientFogDensityFactor", m_fogInfo.GetDensityFactor());
+	m_mappedValues.SetReal("ambientFogGradient", m_fogInfo.GetGradient());
+	m_mappedValues.SetVector4D("ambientIntensity", ambientLightColor.GetValues());
 	m_mappedValues.SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	m_mappedValues.SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	m_mappedValues.SetReal("fxaaReduceMul", m_fxaaReduceMul);
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
-	CheckCameraIndexChange();
 #endif
 
 	STOP_PROFILING;
 }
 
-void Rendering::Renderer::BindDisplayTexture()
+void Rendering::Renderer::BindDisplayTexture() const
 {
 	m_mappedValues.GetTexture("displayTexture")->BindAsRenderTarget();
 }
 
-void Rendering::Renderer::BindWaterReflectionTexture()
+void Rendering::Renderer::BindWaterReflectionTexture() const
 {
 	m_waterReflectionTexture->BindAsRenderTarget();
 }
 
-void Rendering::Renderer::BindWaterRefractionTexture()
+void Rendering::Renderer::BindWaterRefractionTexture() const
 {
 	m_waterRefractionTexture->BindAsRenderTarget();
 }
@@ -432,17 +411,13 @@ void Rendering::Renderer::InitWaterNodesRendering()
 	m_mappedValues.SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
 }
 
-void Rendering::Renderer::FinalizeRenderScene()
+void Rendering::Renderer::FinalizeRenderScene(const Shader& filterShader)
 {
 	START_PROFILING;
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
 		Math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
-#ifdef DEBUG_RENDERING_ENABLED
-	RenderDebugNodes();
-#endif
-
-	ApplyFilter((Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA) ? m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA) : m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_mappedValues.GetTexture("displayTexture"), NULL);
+	ApplyFilter(filterShader, m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING;
 }
@@ -569,22 +544,22 @@ void Rendering::Renderer::DisableClippingPlanes()
 //	STOP_PROFILING;
 //}
 
-void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str) const
+void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str) const
 {
-	RenderText(alignment, y, str, m_defaultFontSize, m_defaultFontColor);
+	RenderText(textShader, alignment, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
+void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
 {
-	RenderText(alignment, y, str, fontSize, m_defaultFontColor);
+	RenderText(textShader, alignment, y, str, fontSize, m_defaultFontColor);
 }
 
-void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, const Color& fontColor) const
 {
-	RenderText(alignment, y, str, m_defaultFontSize, fontColor);
+	RenderText(textShader, alignment, y, str, m_defaultFontSize, fontColor);
 }
 
-void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const
 {
 	int x = 0;
 	switch (alignment)
@@ -602,25 +577,25 @@ void Rendering::Renderer::RenderText(Text::Alignment alignment, int y, const std
 	default:
 		WARNING_LOG_RENDERING("Incorrect alignment type used (", alignment, "). The text will start at default position x = ", x);
 	}
-	RenderText(x, y, str, fontSize, fontColor);
+	RenderText(textShader, x, y, str, fontSize, fontColor);
 }
 
-void Rendering::Renderer::RenderText(int x, int y, const std::string& str) const
+void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str) const
 {
-	RenderText(x, y, str, m_defaultFontSize, m_defaultFontColor);
+	RenderText(textShader, x, y, str, m_defaultFontSize, m_defaultFontColor);
 }
 
-void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize) const
+void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize) const
 {
-	RenderText(x, y, str, fontSize, m_defaultFontColor);
+	RenderText(textShader, x, y, str, fontSize, m_defaultFontColor);
 }
 
-void Rendering::Renderer::RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, const Color& fontColor) const
 {
-	RenderText(x, y, str, m_defaultFontSize, fontColor);
+	RenderText(textShader, x, y, str, m_defaultFontSize, fontColor);
 }
 
-void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const
+void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
 	DELOCUST_LOG_RENDERING("Started drawing string \"", str, "\"");
@@ -676,13 +651,13 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
 	glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(Math::Vector2D), &textureCoords[0], GL_STATIC_DRAW);
 
-	m_shaderFactory.GetShader(ShaderTypes::TEXT_SIMPLE).Bind();
+	textShader.Bind();
 
 	//Updating uniforms
-	m_fontMaterial->SetVector4D("textColor", fontColor);
+	m_fontMaterial->SetVector4D("textColor", fontColor.GetValues());
 	m_fontMaterial->SetReal("screenWidth", static_cast<Math::Real>(m_windowWidth));
 	m_fontMaterial->SetReal("screenHeight", static_cast<Math::Real>(m_windowHeight));
-	m_shaderFactory.GetShader(ShaderTypes::TEXT_SIMPLE).UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
+	textShader.UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
 	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
 	//fontTexture->Bind(25);
 	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
@@ -785,7 +760,7 @@ void Rendering::Renderer::RenderText(int x, int y, const std::string& str, Math:
 //	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 //}
 
-void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl) const
+void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
 	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"", guiControl.GetScreenPosition().ToString(), "\"");
@@ -805,7 +780,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 	*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	guiControl.Draw(*this);
+	guiControl.Draw(guiControlShader, *this);
 
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -819,7 +794,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const
+void Rendering::Renderer::RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const
 {
 	START_PROFILING;
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
@@ -830,7 +805,6 @@ void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture
 		return;
 	}
 	//DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesCount, " particles currently in the game.");
-	const Shader& particleShader = m_shaderFactory.GetShader(ShaderTypes::PARTICLES);
 	particleShader.Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particleTexture->Bind();
 	particleShader.SetUniformi("particleTexture", 0);
@@ -897,7 +871,7 @@ void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture
 		m_particleInstanceVboData.push_back(particles[i].CalculateLifeStageFactor());
 #endif
 	}
-	m_particleQuad->Draw(&m_particleInstanceVboData[0], m_particleInstanceVboData.size(), particlesCount);
+	m_particleQuad->Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesCount);
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -910,7 +884,7 @@ void Rendering::Renderer::RenderParticles(const ParticleTexture* particleTexture
 	STOP_PROFILING;
 }
 
-void Rendering::Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
+void Rendering::Renderer::RenderLoadingScreen(const Shader& textShader, Math::Real loadingProgress) const
 {
 	START_PROFILING;
 	BindAsRenderTarget();
@@ -928,8 +902,8 @@ void Rendering::Renderer::RenderLoadingScreen(Math::Real loadingProgress) const
 	std::stringstream ss;
 	int progress = static_cast<int>(loadingProgress * 100.0f);
 	ss << progress << "%";
-	RenderText(Text::CENTER, 350, "Loading...");
-	RenderText(Text::CENTER, 250, ss.str());
+	RenderText(textShader, Text::CENTER, 350, "Loading...");
+	RenderText(textShader, Text::CENTER, 250, ss.str());
 	STOP_PROFILING;
 }
 
@@ -974,7 +948,7 @@ bool Rendering::Renderer::InitShadowMap()
 	}
 }
 
-void Rendering::Renderer::FinalizeShadowMapRendering()
+void Rendering::Renderer::FinalizeShadowMapRendering(const Shader& filterShader)
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	if (shadowInfo != NULL)
@@ -993,139 +967,10 @@ void Rendering::Renderer::FinalizeShadowMapRendering()
 			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 			if (!Math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
 			{
-				BlurShadowMap(shadowMapIndex, shadowInfo->GetShadowSoftness());
+				BlurShadowMap(filterShader, shadowMapIndex, shadowInfo->GetShadowSoftness());
 			}
 		}
 	}
-}
-
-const Rendering::Shader& Rendering::Renderer::GetAmbientShader() const
-{
-	START_PROFILING;
-	if (m_fogEnabled)
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (m_fogFallOffType == FogEffect::LINEAR)
-		{
-			if (m_fogCalculationType == FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (m_fogFallOffType == FogEffect::EXPONENTIAL)
-		{
-			if (m_fogCalculationType == FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	else if (m_ambientLightEnabled)
-	{
-		STOP_PROFILING;
-		return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
-	}
-	WARNING_LOG_RENDERING("Correct ambient shader cannot be determined. Returning the standard ambient shader.");
-	STOP_PROFILING;
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
-}
-
-const Rendering::Shader& Rendering::Renderer::GetAmbientTerrainShader() const
-{
-	START_PROFILING;
-	if (m_fogEnabled)
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (m_fogFallOffType == FogEffect::LINEAR)
-		{
-			if (m_fogCalculationType == FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (m_fogFallOffType == FogEffect::EXPONENTIAL)
-		{
-			if (m_fogCalculationType == FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (m_fogCalculationType == FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING;
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	else if (m_ambientLightEnabled)
-	{
-		STOP_PROFILING;
-		return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
-	}
-	WARNING_LOG_RENDERING("Correct ambient terrain shader cannot be determined. Returning the standard ambient terrain shader.");
-	STOP_PROFILING;
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
-}
-
-void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
-{
-	START_PROFILING;
-	/* ==================== Adjusting the time variables begin ==================== */
-
-	Math::Real dayNightMixFactor;
-
-	switch (dayTime)
-	{
-	case Utility::Timing::NIGHT:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor;
-		break;
-	case Utility::Timing::BEFORE_DAWN:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::SUNRISE:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::DAY:
-		dayNightMixFactor = REAL_ONE;
-		m_ambientLight = m_ambientDaytimeColor;
-		break;
-	case Utility::Timing::SUNSET:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLight = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::AFTER_DUSK:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLight = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	}
-
-	m_mappedValues.SetReal("dayNightMixFactor", dayNightMixFactor);
-	/* ==================== Adjusting the time variables end ==================== */
-	STOP_PROFILING;
 }
 
 //void Rendering::Renderer::RenderSkybox()
@@ -1156,7 +1001,7 @@ void Rendering::Renderer::AdjustAmbientLightAccordingToCurrentTime(Utility::Timi
 //	STOP_PROFILING;
 //}
 
-void Rendering::Renderer::BlurShadowMap(int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
+void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING;
 	Texture* shadowMap = m_shadowMaps[shadowMapIndex];
@@ -1175,10 +1020,10 @@ void Rendering::Renderer::BlurShadowMap(int shadowMapIndex, Math::Real blurAmoun
 	}
 
 	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
-	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_GAUSSIAN_BLUR), shadowMap, shadowMapTempTarget);
+	ApplyFilter(filterShader, shadowMap, shadowMapTempTarget);
 	
 	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
-	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_GAUSSIAN_BLUR), shadowMapTempTarget, shadowMap);
+	ApplyFilter(filterShader, shadowMapTempTarget, shadowMap);
 	STOP_PROFILING;
 }
 
@@ -1221,92 +1066,9 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 	STOP_PROFILING;
 }
 
-size_t Rendering::Renderer::NextCamera()
+void Rendering::Renderer::SetCurrentCamera(Camera* camera)
 {
-	if (m_currentCameraIndex == m_cameras.size() - 1)
-	{
-		m_currentCameraIndex = -1;
-	}
-	return SetCurrentCamera(m_currentCameraIndex + 1);
-}
-
-size_t Rendering::Renderer::PrevCamera()
-{
-	if (m_currentCameraIndex == 0)
-	{
-		m_currentCameraIndex = m_cameras.size();
-	}
-	return SetCurrentCamera(m_currentCameraIndex - 1);
-}
-
-//void Rendering::Renderer::SetMenuCameraAsCurrent()
-//{
-//	m_currentCamera = m_mainMenuCamera;
-//}
-
-void Rendering::Renderer::SetCurrentCamera()
-{
-	m_currentCamera = m_cameras[m_currentCameraIndex];
-}
-
-size_t Rendering::Renderer::SetCurrentCamera(size_t cameraIndex)
-{
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed ", cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
-	m_cameras[m_currentCameraIndex]->Deactivate();
-	m_currentCameraIndex = cameraIndex;
-	m_cameras[m_currentCameraIndex]->Activate();
-#ifndef ANT_TWEAK_BAR_ENABLED
-	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
-#endif
-	return m_currentCameraIndex;
-}
-
-void Rendering::Renderer::AddLight(Lighting::BaseLight* light)
-{
-	Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(light);
-	if (directionalLight != NULL)
-	{
-		INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight->GetIntensity(), " is being added to directional / spot lights vector");
-		m_waterLightReflectionEnabled = true;
-		++m_directionalLightsCount;
-		m_directionalAndSpotLights.push_back(directionalLight);
-	}
-	else
-	{
-		Lighting::SpotLight* spotLight = dynamic_cast<Lighting::SpotLight*>(light);
-		if (spotLight != NULL)
-		{
-			INFO_LOG_RENDERING("Spot light with intensity = ", spotLight->GetIntensity(), " is being added to directional / spot lights vector");
-			m_directionalAndSpotLights.push_back(spotLight);
-		}
-		else
-		{
-			Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(light);
-			if (pointLight != NULL)
-			{
-				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
-				m_pointLights.push_back(pointLight);
-			}
-			else
-			{
-				EMERGENCY_LOG_RENDERING("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
-			}
-		}
-	}
-	m_lights.push_back(light);
-}
-
-void Rendering::Renderer::AddCamera(Camera* camera)
-{
-	if (m_cameras.empty())
-	{
-		camera->Activate();
-	}
-	m_cameras.push_back(camera);
-#ifdef ANT_TWEAK_BAR_ENABLED
-	++m_cameraCountMinusOne;
-#endif
+	m_currentCamera = camera;
 }
 
 void Rendering::Renderer::BindAsRenderTarget() const
@@ -1348,9 +1110,8 @@ void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 }
 
 #ifdef DEBUG_RENDERING_ENABLED
-void Rendering::Renderer::RenderDebugNodes()
+void Rendering::Renderer::RenderDebugNodes(const Shader& guiShader)
 {
-	const Shader& guiShader = m_shaderFactory.GetShader(ShaderTypes::GUI);
 	guiShader.Bind();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1446,21 +1207,16 @@ void Rendering::Renderer::InitializeTweakBars()
 
 	m_propertiesBar = TwNewBar("PropertiesBar");
 	TwAddVarRW(m_propertiesBar, "bgColor", TW_TYPE_COLOR3F, &m_backgroundColor, " label='Background color' ");
-	TwAddVarRW(m_propertiesBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
 	TwAddVarRW(m_propertiesBar, "applyFilterEnabled", TW_TYPE_BOOLCPP, &m_applyFilterEnabled, " label='Apply filter' ");
 	TwAddVarRW(m_propertiesBar, "ambientLightEnabled", TW_TYPE_BOOLCPP, &m_ambientLightEnabled, " label='Enabled' group='Ambient light' ");
-	TwAddVarRO(m_propertiesBar, "ambientLight", TW_TYPE_COLOR3F, &m_ambientLight, " label='Color' group='Ambient light'");
-	TwAddVarRO(m_propertiesBar, "ambientLightDaytime", TW_TYPE_COLOR3F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
-	TwAddVarRO(m_propertiesBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR3F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
-	TwAddVarRO(m_propertiesBar, "ambientLightNighttime", TW_TYPE_COLOR3F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
-	TwAddVarRW(m_propertiesBar, "fogEnabled", TW_TYPE_BOOLCPP, &m_fogEnabled, " label='Enabled' group='Fog' ");
-	TwAddVarRW(m_propertiesBar, "fogColor", TW_TYPE_COLOR3F, &m_fogColor, " label='Color' group='Fog' ");
-	TwAddVarRW(m_propertiesBar, "fogStart", TW_TYPE_REAL, &m_fogStart, " label='Start' group='Fog' step=0.5 min=0.5");
-	TwAddVarRW(m_propertiesBar, "fogEnd", TW_TYPE_REAL, &m_fogEnd, " label='End' group='Fog' step=0.5 min=1.0");
-	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, &m_fogDensityFactor, " label='Density factor' group='Fog' step=0.0002 min=0.0002 max=2.0 ");
-	TwAddVarRW(m_propertiesBar, "fogGradient", TW_TYPE_REAL, &m_fogGradient, " label='Gradient' group='Fog' step=0.1 min=0.1 max=20.0 ");
-	TwAddVarRW(m_propertiesBar, "fogFallOffType", fogFallOffType, &m_fogFallOffType, " label='Fall-off type' group='Fog' ");
-	TwAddVarRW(m_propertiesBar, "fogCalculationType", fogCalculationType, &m_fogCalculationType, " label='Calculation type' group='Fog' ");
+	TwAddVarRW(m_propertiesBar, "fogEnabled", TW_TYPE_BOOLCPP, m_fogInfo.IsEnabledPtr(), " label='Enabled' group='Fog' ");
+	TwAddVarRW(m_propertiesBar, "fogColor", TW_TYPE_COLOR4F, m_fogInfo.GetColorPtr(), " label='Color' group='Fog' ");
+	TwAddVarRW(m_propertiesBar, "fogStart", TW_TYPE_REAL, m_fogInfo.GetStartDistancePtr(), " label='Start' group='Fog' step=0.5 min=0.5");
+	TwAddVarRW(m_propertiesBar, "fogEnd", TW_TYPE_REAL, m_fogInfo.GetEndDistancePtr(), " label='End' group='Fog' step=0.5 min=1.0");
+	TwAddVarRW(m_propertiesBar, "fogDensityFactor", TW_TYPE_REAL, m_fogInfo.GetDensityFactorPtr(), " label='Density factor' group='Fog' step=0.0002 min=0.0002 max=2.0 ");
+	TwAddVarRW(m_propertiesBar, "fogGradient", TW_TYPE_REAL, m_fogInfo.GetGradientPtr(), " label='Gradient' group='Fog' step=0.1 min=0.1 max=20.0 ");
+	TwAddVarRW(m_propertiesBar, "fogFallOffType", fogFallOffType, m_fogInfo.GetFallOffTypePtr(), " label='Fall-off type' group='Fog' ");
+	TwAddVarRW(m_propertiesBar, "fogCalculationType", fogCalculationType, m_fogInfo.GetCalculationTypePtr(), " label='Calculation type' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
 	TwAddVarRW(m_propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
 	TwAddVarRW(m_propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
@@ -1482,7 +1238,6 @@ void Rendering::Renderer::InitializeTweakBars()
 	//TwAddVarRO(m_propertiesBar, "reflectionClippingPlaneNormal", TW_TYPE_DIR3F, &m_waterReflectionClippingPlane.GetNormal(), " label='Normal' group='Reflection' ");
 	//TwAddVarRW(m_propertiesBar, "reflectionClippingPlaneOriginDistance", TW_TYPE_REAL, &m_waterReflectionClippingPlane.GetDistance(), " label='Origin distance' group='Reflection' ");
 
-	TwSetParam(m_propertiesBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_propertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 	DEBUG_LOG_RENDERING("Initializing rendering engine's properties tweak bar finished");
 #endif
@@ -1490,7 +1245,7 @@ void Rendering::Renderer::InitializeTweakBars()
 #ifdef CAMERA_TWEAK_BAR
 	DEBUG_LOG_RENDERING("Initializing rendering engine's cameras tweak bar");
 	m_cameraBar = TwNewBar("CamerasBar");
-	if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL)
+	if (m_currentCamera == NULL)
 	{
 		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras are setup by the game manager.");
 		
@@ -1500,15 +1255,9 @@ void Rendering::Renderer::InitializeTweakBars()
 	}
 	else
 	{
-		TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType, m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
-		char cameraIndexStr[256];
-		char cameraDefStr[256];
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
-		TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetPos(), cameraDefStr);
-		_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Rot", m_currentCameraIndex);
-		_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Rot' group=Camera ", m_currentCameraIndex);
-		TwAddVarRW(m_cameraBar, cameraIndexStr, TW_TYPE_QUAT4F, &m_cameras[m_currentCameraIndex]->GetRot(), cameraDefStr);
+		TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType, m_currentCamera, " label='Camera' group=Camera ");
+		TwAddVarRW(m_cameraBar, "position", vector3DType, &m_currentCamera->GetPos(), " label='Pos' group='Camera' ");
+		TwAddVarRW(m_cameraBar, "rotation", TW_TYPE_QUAT4F, &m_currentCamera->GetRot(), " label='Rot' group='Camera' ");
 	}
 	
 	TwDefine(" CamerasBar/Camera opened=true ");
@@ -1532,31 +1281,5 @@ void Rendering::Renderer::InitializeTweakBars()
 	//TwAddVarRW(altCameraBar, "altCameraRot", TW_TYPE_QUAT4F, &m_altCamera.GetTransform().GetRot(), " label='AltCamera.Rot' group=Camera ");
 	//TwDefine(" AltCameraBar/Camera opened=true ");
 	DEBUG_LOG_RENDERING("Initializing rendering engine's tweak bars finished");
-}
-
-void Rendering::Renderer::CheckCameraIndexChange()
-{
-#ifdef CAMERA_TWEAK_BAR
-	if (m_cameras.empty() || m_previousFrameCameraIndex == m_currentCameraIndex)
-	{
-		return;
-	}
-	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
-
-	TwRemoveAllVars(m_cameraBar);
-	TwAddVarRW(m_cameraBar, "cameraVar", m_cameraType,  m_cameras[m_currentCameraIndex], " label='Camera' group=Camera ");
-	char cameraIndexStr[256];
-	char cameraDefStr[256];
-	_snprintf_s(cameraIndexStr, 256, 255, "camera[%zd].Pos", m_currentCameraIndex);
-	_snprintf_s(cameraDefStr, 256, 255, " label='Camera[%zd].Pos' group=Camera ", m_currentCameraIndex);
-	TwAddVarRW(m_cameraBar, cameraIndexStr, vector3DType, &m_cameras[m_currentCameraIndex]->GetPos(), cameraDefStr);
-	//_snprintf(cameraIndexStr, 255, "camera[%d].Angle", m_currentCameraIndex);
-	//_snprintf(cameraDefStr, 255, " label='Camera[%d].Angle' ", m_currentCameraIndex);
-	//TwAddVarRW(m_cameraBar, cameraIndexStr, angleType, &tempAngle, cameraDefStr);
-	TwDefine(" CamerasBar/Camera opened=true ");
-
-	m_previousFrameCameraIndex = m_currentCameraIndex;
-#endif
 }
 #endif

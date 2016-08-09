@@ -35,7 +35,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MenuGameState(const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize);
+		MenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize);
 		virtual ~MenuGameState(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -59,6 +59,7 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		Engine::GameManager* m_gameManager;
 		Engine::CompositeMenuEntry m_mainMenuRootEntry;
 
 		// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.

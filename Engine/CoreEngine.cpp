@@ -170,7 +170,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_game(NULL),
 	m_audioEngine(nullptr),
 	m_physicsEngine(NULL),
-	m_renderer(NULL),
+	m_renderer(nullptr),
 	LATITUDE(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE_ENGINE("longitude", -16.0f)),
 	TROPIC_OF_CANCER_SINUS(0.39794863131f),
@@ -242,7 +242,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 
 	CreateAudioEngine();
 	CreatePhysicsEngine();
-	CreateRenderer(width, height, title);
+	CreateRenderer(width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from configuration file. */);
 
 	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
 	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
@@ -290,7 +290,6 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	// TODO: Expand this with additional resources deallocation
 	// SAFE_DELETE(m_game);
 	SAFE_DELETE(m_physicsEngine);
-	SAFE_DELETE(m_renderer);
 	glfwTerminate(); // Terminate GLFW
 	NOTICE_LOG_ENGINE("Core engine destruction finished");
 
@@ -312,34 +311,33 @@ void Engine::CoreEngine::CreatePhysicsEngine()
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::CRITICAL, "Failed to create a physics engine.");
 }
 
-void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title)
+void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	START_PROFILING;
-	InitGraphics(width, height, title);
-	Rendering::InitGraphics(width, height);
+	InitGraphics(width, height, title, antiAliasingMethod);
+	Rendering::InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
-	m_renderer = new Rendering::Renderer(width, height);
+	m_renderer = std::make_unique<Rendering::Renderer>(width, height, antiAliasingMethod);
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
 	STOP_PROFILING;
 }
 
-void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title)
+void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
-	InitGlfw(width, height, title);
+	InitGlfw(width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 }
 
-void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& title)
+void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
 
 	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
-	Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod = Rendering::Aliasing::NONE;
 	switch (antiAliasingMethod)
 	{
 	case Rendering::Aliasing::NONE:
@@ -500,15 +498,15 @@ void Engine::CoreEngine::Run()
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
 	Rendering::Controls::GuiButtonControl fpsGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
-		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
-		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
+		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),
+		Rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorFPSRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorFPSBlue", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
 	Rendering::Controls::GuiButtonControl inGameTimeGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
-		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
-		Math::Vector3D(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
+		Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
+		Rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredInGameTime", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthInGameTime", 0.1f));
@@ -657,7 +655,7 @@ void Engine::CoreEngine::Run()
 		if (isRenderRequired)
 		{
 			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
-			m_game->Render(m_renderer);
+			m_game->Render(m_renderer.get());
 #ifdef COUNT_FPS
 			++framesCount;
 
@@ -669,7 +667,7 @@ void Engine::CoreEngine::Run()
 			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			fpsGuiButton.SetText(ss.str());
-			m_renderer->RenderGuiControl(fpsGuiButton);
+			m_renderer->RenderGuiControl(fpsGuiButton, m_game->GetGuiShader());
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif
@@ -826,20 +824,20 @@ void Engine::CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours
 
 size_t Engine::CoreEngine::GetCurrentCameraIndex() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot get the current camera index. The renderer does not exist.");
-	return m_renderer->GetCurrentCameraIndex();
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot get the current camera index. The game does not exist.");
+	return m_game->GetCurrentCameraIndex();
 }
 
 size_t Engine::CoreEngine::NextCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot move to the next camera. The renderer does not exist.");
-	return m_renderer->NextCamera();
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot move to the next camera. The game does not exist.");
+	return m_game->NextCamera();
 }
 
 size_t Engine::CoreEngine::PrevCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, CRITICAL, "Cannot move to the previous camera. The renderer does not exist.");
-	return m_renderer->PrevCamera();
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot move to the previous camera. The game does not exist.");
+	return m_game->PrevCamera();
 }
 
 void Engine::CoreEngine::PollEvents()
@@ -986,12 +984,6 @@ Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& dayti
 		ERROR_LOG_ENGINE("Incorrect daytime: ", m_daytime);
 	}
 	return m_daytime;
-}
-
-void Engine::CoreEngine::AddCamera(Rendering::Camera* camera)
-{
-	m_renderer->AddCamera(camera);
-	//m_game.AddCamera(camera);
 }
 
 void Engine::CoreEngine::AddSkyboxNode(GameNode* skyboxNode)

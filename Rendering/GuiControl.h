@@ -79,8 +79,9 @@ namespace Rendering
 			/// <summary>
 			/// Draws the GUI control on the screen using the specified rendering engine.
 			/// </summary>
+			/// <param name="guiControlShader">The shader to be used when drawing the GUI control.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI control.</param>
-			RENDERING_API virtual void Draw(const Rendering::Renderer& renderer) const = 0;
+			RENDERING_API virtual void Draw(const Shader& guiControlShader, const Renderer& renderer) const = 0;
 		protected:
 			void MoveAABR(Math::Real bottomLeftOffsetX, Math::Real bottomLeftOffsetY, Math::Real topRightOffsetX, Math::Real topRightOffsetY);
 			/* ==================== Non-static member functions end ==================== */

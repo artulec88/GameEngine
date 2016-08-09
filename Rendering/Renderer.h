@@ -2,7 +2,6 @@
 #define __RENDERING_RENDERER_H__
 
 #include "Rendering.h"
-#include "ShaderFactory.h"
 #include "Camera.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -15,6 +14,7 @@
 #include "GuiControl.h"
 #include "CubeShadowMap.h"
 #include "Particle.h"
+#include "FogInfo.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
@@ -54,7 +54,7 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Renderer(int windowWidth, int windowHeight);
+		RENDERING_API Renderer(int windowWidth, int windowHeight, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		RENDERING_API virtual ~Renderer(void);
 	private:
 		Renderer(const Renderer& renderer);
@@ -63,32 +63,32 @@ namespace Rendering
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
-		RENDERING_API void InitRenderScene();
-		RENDERING_API void BindDisplayTexture();
-		RENDERING_API void BindWaterReflectionTexture();
-		RENDERING_API void BindWaterRefractionTexture();
+		RENDERING_API void InitRenderScene(const Color& ambientLightColor, Math::Real dayNightMixFactor);
+		RENDERING_API void BindDisplayTexture() const;
+		RENDERING_API void BindWaterReflectionTexture() const;
+		RENDERING_API void BindWaterRefractionTexture() const;
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 		RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const;
-		RENDERING_API void FinalizeRenderScene();
+		RENDERING_API void FinalizeRenderScene(const Shader& filterShader);
 		//RENDERING_API void Render(const GameNode& node);
-		RENDERING_API void RenderLoadingScreen(Math::Real loadingProgress) const;
+		RENDERING_API void RenderLoadingScreen(const Shader& textShader, Math::Real loadingProgress) const;
 
 		RENDERING_API bool InitShadowMap();
-		RENDERING_API void FinalizeShadowMapRendering();
+		RENDERING_API void FinalizeShadowMapRendering(const Shader& filterShader);
 
-		RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str) const;
-		RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
-		RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, const Math::Vector4D& fontColor) const;
-		RENDERING_API void RenderText(Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
-		RENDERING_API void RenderText(int x, int y, const std::string& str) const;
-		RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize) const;
-		RENDERING_API void RenderText(int x, int y, const std::string& str, const Math::Vector4D& fontColor) const;
-		RENDERING_API void RenderText(int x, int y, const std::string& str, Math::Real fontSize, const Math::Vector4D& fontColor) const;
+		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str) const;
+		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
+		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, const Color& fontColor) const;
+		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const;
+		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str) const;
+		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize) const;
+		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, const Color& fontColor) const;
+		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const;
 		//RENDERING_API void RenderText(const Controls::GuiTextControl& guiText) const;
-		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl) const;
+		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const;
 
-		RENDERING_API void RenderParticles(const ParticleTexture* particleTexture, const Particle* particles, size_t particlesCount) const;
+		RENDERING_API void RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -98,15 +98,13 @@ namespace Rendering
 		/// This function must be called after AntTweakBar library is initialized. See Rendering::InitializeTweakBars().
 		/// </remarks>
 		RENDERING_API void InitializeTweakBars();
-		void CheckCameraIndexChange();
 #endif
 		int GetWindowWidth() const { return m_windowWidth; }
 		int GetWindowHeight() const { return m_windowHeight; }
+		Rendering::Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
-		RENDERING_API inline void AddLight(Lighting::BaseLight* light);
-		RENDERING_API inline void AddCamera(Camera* camera);
 		//RENDERING_API void AddTerrainNode(GameNode* terrainNode);
 		//RENDERING_API void AddWaterNode(GameNode* waterNode);
 		//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
@@ -114,10 +112,10 @@ namespace Rendering
 
 		RENDERING_API inline void ClearScreen() const
 		{
-			if (m_fogEnabled)
+			if (m_fogInfo.IsEnabled())
 			{
 				//Math::Vector3D fogColor = m_fogColor * m_ambientLight /* TODO: Should ambient light be included here? */;
-				glClearColor(m_fogColor.GetX(), m_fogColor.GetY(), m_fogColor.GetZ(), REAL_ONE);
+				glClearColor(m_fogInfo.GetColor().GetRed(), m_fogInfo.GetColor().GetGreen(), m_fogInfo.GetColor().GetBlue(), m_fogInfo.GetColor().GetAlpha());
 			}
 			else
 			{
@@ -130,7 +128,7 @@ namespace Rendering
 			glClearColor(clearColor.GetRed(), clearColor.GetGreen(), clearColor.GetBlue(), clearColor.GetAlpha());
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
-		RENDERING_API inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+		RENDERING_API inline void ClearScreen(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha) const
 		{
 			glClearColor(red, green, blue, alpha);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -143,64 +141,46 @@ namespace Rendering
 		{
 			enabled ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
 		}
-		RENDERING_API inline void SetBlendingEnabled(bool enabled) { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
-		RENDERING_API inline void SetBlendFunc(GLenum sFactor, GLenum dFactor) { glBlendFunc(sFactor, dFactor); }
-		RENDERING_API inline void SetCullFaceFront() { glCullFace(GL_FRONT); }
-		RENDERING_API inline void SetCullFaceBack() { glCullFace(GL_BACK); }
-		RENDERING_API inline void SetCullFaceFrontAndBack() { glCullFace(GL_FRONT_AND_BACK); }
-		RENDERING_API inline void SetCullFaceDefault() { glCullFace(Rendering::glCullFaceMode); }
-		RENDERING_API inline void SetDepthFuncNever() { glDepthFunc(GL_NEVER); }
-		RENDERING_API inline void SetDepthFuncLess() { glDepthFunc(GL_LESS); }
-		RENDERING_API inline void SetDepthFuncEqual() { glDepthFunc(GL_EQUAL); }
-		RENDERING_API inline void SetDepthFuncLessOrEqual() { glDepthFunc(GL_LEQUAL); }
-		RENDERING_API inline void SetDepthFuncGreater() { glDepthFunc(GL_GREATER); }
-		RENDERING_API inline void SetDepthFuncNotEqual() { glDepthFunc(GL_NOTEQUAL); }
-		RENDERING_API inline void SetDepthFuncGreaterOrEqual() { glDepthFunc(GL_GEQUAL); }
-		RENDERING_API inline void SetDepthFuncAlways() { glDepthFunc(GL_ALWAYS); }
-		RENDERING_API inline void SetDepthFuncDefault() { glDepthFunc(Rendering::glDepthTestFunc); }
+		RENDERING_API inline void SetBlendingEnabled(bool enabled) const { (enabled) ? glEnable(GL_BLEND) : glDisable(GL_BLEND); }
+		RENDERING_API inline void SetBlendFunc(GLenum sFactor, GLenum dFactor) const { glBlendFunc(sFactor, dFactor); }
+		RENDERING_API inline void SetCullFaceFront() const { glCullFace(GL_FRONT); }
+		RENDERING_API inline void SetCullFaceBack() const { glCullFace(GL_BACK); }
+		RENDERING_API inline void SetCullFaceFrontAndBack() const { glCullFace(GL_FRONT_AND_BACK); }
+		RENDERING_API inline void SetCullFaceDefault() const { glCullFace(Rendering::glCullFaceMode); }
+		RENDERING_API inline void SetDepthFuncNever() const { glDepthFunc(GL_NEVER); }
+		RENDERING_API inline void SetDepthFuncLess() const { glDepthFunc(GL_LESS); }
+		RENDERING_API inline void SetDepthFuncEqual() const { glDepthFunc(GL_EQUAL); }
+		RENDERING_API inline void SetDepthFuncLessOrEqual() const { glDepthFunc(GL_LEQUAL); }
+		RENDERING_API inline void SetDepthFuncGreater() const { glDepthFunc(GL_GREATER); }
+		RENDERING_API inline void SetDepthFuncNotEqual() const { glDepthFunc(GL_NOTEQUAL); }
+		RENDERING_API inline void SetDepthFuncGreaterOrEqual() const { glDepthFunc(GL_GEQUAL); }
+		RENDERING_API inline void SetDepthFuncAlways() const { glDepthFunc(GL_ALWAYS); }
+		RENDERING_API inline void SetDepthFuncDefault() const { glDepthFunc(Rendering::glDepthTestFunc); }
 
-		inline size_t GetDirectionalLightsCount() const
-		{
-			return m_directionalLightsCount;
-		}
-		inline size_t GetSpotLightsCount() const
-		{
-			return m_directionalAndSpotLights.size() - m_directionalLightsCount;
-		}
 		inline const Lighting::BaseLight* GetCurrentLight() const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != NULL, Utility::ERR, "Current light is NULL.");
 			return m_currentLight;
 		}
-		inline const Lighting::BaseLight* SetCurrentLight(size_t index)
+		inline const Lighting::BaseLight* SetCurrentLight(Lighting::BaseLight* light)
 		{
-			// TODO: Index range checking
-			m_currentLight = m_directionalAndSpotLights[index];
+			// TODO: Null check?
+			m_currentLight = light;
 			return m_currentLight;
-		}
-		inline size_t GetPointLightsCount() const
-		{
-			return m_pointLights.size();
 		}
 		inline const Lighting::PointLight* GetCurrentPointLight() const
 		{
 			return m_currentPointLight;
 		}
-		inline const Lighting::PointLight* SetCurrentPointLight(size_t index)
+		inline const Lighting::PointLight* SetCurrentPointLight(Lighting::PointLight* pointLight)
 		{
 			// TODO: Index range checking
-			m_currentPointLight = m_pointLights[index];
+			m_currentPointLight = pointLight;
 			return m_currentPointLight;
 		}
-		//inline const Lighting::SpotLight* GetSpotLight() const { return m_spotLight; }
-		inline const Math::Vector3D& GetAmbientDayLight() const
-		{
-			return m_ambientDaytimeColor;
-		}
-		inline const Math::Vector3D& GetAmbientNightLight() const
-		{
-			return m_ambientNighttimeColor;
-		}
+		//inline const Lighting::SpotLight* GetCurrentSpotLight() const { return m_currentSpotLight; }
+
+		inline const FogEffect::FogInfo& GetFogInfo() const { return m_fogInfo; }
 
 		inline const Camera& GetCurrentCamera() const
 		{
@@ -213,15 +193,8 @@ namespace Rendering
 			return *m_currentCamera;
 		}
 
-		size_t GetCurrentCameraIndex() const
-		{
-			return m_currentCameraIndex;
-		}
-		RENDERING_API size_t NextCamera();
-		RENDERING_API size_t PrevCamera();
 		//RENDERING_API void SetMenuCameraAsCurrent();
-		RENDERING_API void SetCurrentCamera();
-		size_t SetCurrentCamera(size_t cameraIndex);
+		RENDERING_API void SetCurrentCamera(Camera* camera);
 
 		RENDERING_API void BindAsRenderTarget() const;
 		RENDERING_API void InitLightRendering() const;
@@ -239,31 +212,8 @@ namespace Rendering
 			return m_lightMatrix;
 		}
 
-		RENDERING_API const Shader& GetShader(ShaderTypes::ShaderType shaderType) const
-		{
-			return m_shaderFactory.GetShader(shaderType);
-		}
-		RENDERING_API const Shader& GetAmbientShader() const;
-		RENDERING_API const Shader& GetAmbientTerrainShader() const;
-		RENDERING_API const Shader& GetShadowMapShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP);
-		}
-		RENDERING_API const Shader& GetSkyboxShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SKYBOX); // TODO: In some cases we should return ShaderTypes::SKYBOX_PROCEDURAL
-		}
-		RENDERING_API const Shader& GetWaterShader() const
-		{
-			return (m_waterLightReflectionEnabled && m_directionalLightsCount > 0 /* && directional light is enabled */) ?
-				m_shaderFactory.GetShader(ShaderTypes::WATER) :
-				m_shaderFactory.GetShader(ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
-		}
-		RENDERING_API const Shader& GetBillboardShader() const { return m_shaderFactory.GetShader(ShaderTypes::BILLBOARD); }
-		RENDERING_API const Shader& GetParticleShader() const { return m_shaderFactory.GetShader(ShaderTypes::PARTICLES); }
-		RENDERING_API const Shader& GetGuiTextShader() const { return m_shaderFactory.GetShader(ShaderTypes::TEXT); }
-		RENDERING_API const Shader& GetGuiShader() const { return m_shaderFactory.GetShader(ShaderTypes::GUI); }
-		RENDERING_API void AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
+		RENDERING_API bool IsAmbientLightEnabled() const { return m_ambientLightEnabled; }
+		RENDERING_API bool IsWaterLightReflectionEnabled() const { return m_waterLightReflectionEnabled; }
 
 		void BindCubeShadowMap(unsigned int textureUnit) const;
 
@@ -283,7 +233,7 @@ namespace Rendering
 		/// <summary>
 		/// Rendering debug nodes, i.e. the nodes that do not belong to the scene, but can be used to see the intermediate results of some other processing (e.g. how shadow map looks).
 		/// </summary>
-		RENDERING_API void RenderDebugNodes();
+		RENDERING_API void RenderDebugNodes(const Shader& guiShader);
 
 		/// <summary>
 		/// Adds a line segment to the debug drawing queue.
@@ -355,47 +305,30 @@ namespace Rendering
 		}
 	private:
 		Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
-		void BlurShadowMap(int shadowMapIndex, Math::Real blurAmount);
+		void BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount);
 		void ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest);
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		int m_windowWidth, m_windowHeight;
+		const Rendering::Aliasing::AntiAliasingMethod m_antiAliasingMethod;
 		// TODO: In the future, before shipping the game engine, remove variables (or declare them as const) that are only used when ANT_TWEAK_BAR_ENABLED is defined.
 		CONST_IF_TWEAK_BAR_DISABLED bool m_applyFilterEnabled;
 		CONST_IF_TWEAK_BAR_DISABLED Color m_backgroundColor;
 		//bool m_shadowsEnabled;
 		//bool m_pointLightShadowsEnabled;
-		//GLuint framebuffer;
 
-		CONST_IF_TWEAK_BAR_DISABLED bool m_fogEnabled;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_fogColor;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogStart;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogEnd;
-		/// <summary> Represent the thickness of the fog. Increasing this value will generally decrease the visibility of the scene. </summary>
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogDensityFactor;
-		/// <summary>
-		/// Represents how fast the transition between no-fog and complete fog is performed.
-		/// In other words it determines how quickly the visibility of the scene decreases with distance.
-		/// </summary>
-		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fogGradient;
-		CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogFallOffType m_fogFallOffType;
-		CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogCalculationType m_fogCalculationType;
+		CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogInfo m_fogInfo;
 
 		CONST_IF_TWEAK_BAR_DISABLED bool m_ambientLightEnabled;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientDaytimeColor;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientSunNearHorizonColor;
-		CONST_IF_TWEAK_BAR_DISABLED Math::Vector3D m_ambientNighttimeColor;
-		Math::Vector3D m_ambientLight;
 		Lighting::BaseLight* m_currentLight;
 		/// <summary>
 		/// Current point light.
 		/// </summary>
 		Lighting::PointLight* m_currentPointLight;
-		Lighting::SpotLight* m_spotLight; // current spot light
+		//Lighting::SpotLight* m_currentSpotLight; // current spot light
 
-		size_t m_currentCameraIndex;
 		Camera* m_currentCamera;
 		Camera* m_tempCamera;
 
@@ -410,7 +343,7 @@ namespace Rendering
 		Math::Transform m_filterTransform;
 		Mesh* m_filterMesh;
 
-		ShaderFactory m_shaderFactory;
+		//ShaderFactory m_shaderFactory;
 
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaSpanMax;
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMin;
@@ -422,23 +355,15 @@ namespace Rendering
 		Texture* m_shadowMaps[SHADOW_MAPS_COUNT];
 		Texture* m_shadowMapTempTargets[SHADOW_MAPS_COUNT];
 
-		size_t m_directionalLightsCount;
-		std::vector<Lighting::BaseLight*> m_lights;
-		std::vector<Lighting::BaseLight*> m_directionalAndSpotLights;
-		std::vector<Lighting::PointLight*> m_pointLights;
-		//std::vector<Lighting::SpotLight*> m_spotLights;
-
-		std::vector<Camera*> m_cameras;
 		std::map<std::string, unsigned int> m_samplerMap;
 		Math::Matrix4D m_lightMatrix;
 
 		//Text::Font m_defaultFont;
-		//std::vector<Controls::GuiTextControl> m_guiTexts;
 		Material* m_fontMaterial;
 		Math::Real m_defaultFontSize;
-		Math::Vector4D m_defaultFontColor;
-		GLuint m_textVertexBuffer;
-		GLuint m_textTextureCoordBuffer;
+		Color m_defaultFontColor;
+		GLuint m_textVertexBuffer; // TODO: This should be removed. It is only used in crude text rendering functionality which has been replaced by new text rendering mechanism.
+		GLuint m_textTextureCoordBuffer; // TODO: This should be removed. It is only used in crude text rendering functionality which has been replaced by new text rendering mechanism.
 
 		/// <summary>
 		/// The default clip plane which is used for the normal scene rendering pass.
@@ -450,7 +375,6 @@ namespace Rendering
 		Math::Real m_waterReflectivity;
 		Math::Real m_waterWaveSpeed;
 		Math::Real m_waterMoveFactor;
-		//std::vector<GameNode*> m_waterNodes;
 		Math::Vector4D m_waterRefractionClippingPlane; // TODO: Consider using Math::Plane instead
 		Math::Vector4D m_waterReflectionClippingPlane; // TODO: Consider using Math::Plane instead
 		/// <summary>
@@ -476,12 +400,10 @@ namespace Rendering
 		MappedValues m_mappedValues;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-		unsigned int m_cameraCountMinusOne;
 		//#ifdef CARTOON_SHADING_ENABLED // cartoon shading is included in the Lighting.glh file (probably commented out)
 		//	bool cartoonShadingEnabled;
 		//	Shader* cartoonShader;
 		//#endif
-		size_t m_previousFrameCameraIndex;
 		TwBar* m_propertiesBar;
 		TwBar* m_cameraBar;
 		TwBar* m_lightsBar;

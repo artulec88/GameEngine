@@ -11,8 +11,9 @@
 using namespace Game;
 using namespace Rendering;
 
-LoadGameState::LoadGameState(const std::string& inputMappingContextName) :
+LoadGameState::LoadGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	Engine::GameState(inputMappingContextName),
+	m_gameManager(gameManager),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
 #ifdef CALCULATE_GAME_STATS
@@ -73,7 +74,7 @@ void LoadGameState::Render(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG_GAME("LOAD game state rendering");
-	renderer->RenderLoadingScreen(m_loadingProgress);
+	renderer->RenderLoadingScreen(m_gameManager->GetGuiTextShader(), m_loadingProgress);
 	STOP_PROFILING;
 }
 

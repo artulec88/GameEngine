@@ -7,7 +7,6 @@
 #include "SpotLightComponent.h"
 #include "MeshRendererComponent.h"
 #include "ParticleGeneratorComponent.h"
-#include "Rendering\ShaderFactory.h"
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
 
@@ -24,11 +23,11 @@ Engine::Builder::~Builder(void)
 /* ==================== Builder implementation end ==================== */
 
 /* ==================== LightBuilder implementation begin ==================== */
-Engine::LightBuilder::LightBuilder(Rendering::Renderer* renderer) :
+Engine::LightBuilder::LightBuilder(GameManager* gameManager) :
 	Engine::Builder(),
 	m_lightIndex(0),
 	m_lightIndexStr("0"),
-	m_renderer(renderer)
+	m_gameManager(gameManager)
 {
 }
 
@@ -121,8 +120,8 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 	Math::Real minVariance = GET_CONFIG_VALUE_ENGINE("directionalLightMinVariance", defaultDirectionalLightMinVariance);
 
 	Rendering::Lighting::DirectionalLight* directionalLight = new Rendering::Lighting::DirectionalLight(m_gameNode->GetTransform(), color, intensity, halfShadowArea, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance,
-		m_renderer->GetShader(Rendering::ShaderTypes::DIRECTIONAL_LIGHT), m_renderer->GetShader(Rendering::ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN), m_renderer->GetShader(Rendering::ShaderTypes::DIRECTIONAL_LIGHT_NO_SHADOWS),
-		m_renderer->GetShader(Rendering::ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
+		m_gameManager->GetShader(ShaderTypes::DIRECTIONAL_LIGHT), m_gameManager->GetShader(ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN), m_gameManager->GetShader(ShaderTypes::DIRECTIONAL_LIGHT_NO_SHADOWS),
+		m_gameManager->GetShader(ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
 
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
@@ -134,7 +133,7 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 
 	m_gameNode->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor));
 
-	m_renderer->AddLight(directionalLight);
+	m_gameManager->AddLight(directionalLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -163,8 +162,8 @@ void Engine::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Engine::PointLightBuilder::PointLightBuilder(Rendering::Renderer* renderer) :
-	LightBuilder(renderer),
+Engine::PointLightBuilder::PointLightBuilder(GameManager* gameManager) :
+	LightBuilder(gameManager),
 	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE_ENGINE("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultPointLightPosZ", REAL_ZERO)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultPointLightAngleX", -45.0f)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultPointLightAngleY", REAL_ZERO)),
@@ -212,15 +211,15 @@ void Engine::PointLightBuilder::SetupLightParams()
 	Rendering::Attenuation attenuation(constant, linear, exponent);
 
 	Rendering::Lighting::PointLight* pointLight = new Rendering::Lighting::PointLight(m_gameNode->GetTransform(), color, intensity, attenuation,
-		m_renderer->GetShader(Rendering::ShaderTypes::POINT_LIGHT), m_renderer->GetShader(Rendering::ShaderTypes::POINT_LIGHT_TERRAIN),
-		m_renderer->GetShader(Rendering::ShaderTypes::POINT_LIGHT_NO_SHADOWS), m_renderer->GetShader(Rendering::ShaderTypes::POINT_LIGHT_TERRAIN_NO_SHADOWS));
+		m_gameManager->GetShader(ShaderTypes::POINT_LIGHT), m_gameManager->GetShader(ShaderTypes::POINT_LIGHT_TERRAIN),
+		m_gameManager->GetShader(ShaderTypes::POINT_LIGHT_NO_SHADOWS), m_gameManager->GetShader(ShaderTypes::POINT_LIGHT_TERRAIN_NO_SHADOWS));
 
 	// Setting shadow info
 	// Setting additional point light information
 
 	m_gameNode->AddComponent(new PointLightComponent(pointLight));
 
-	m_renderer->AddLight(pointLight);
+	m_gameManager->AddLight(pointLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -234,8 +233,8 @@ void Engine::PointLightBuilder::BuildMeshRenderer()
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Engine::SpotLightBuilder::SpotLightBuilder(Rendering::Renderer* renderer) :
-	LightBuilder(renderer),
+Engine::SpotLightBuilder::SpotLightBuilder(GameManager* gameManager) :
+	LightBuilder(gameManager),
 	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("defaultSpotLightPosZ", REAL_ZERO)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAngleX", -45.0f)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultSpotLightAngleY", REAL_ZERO)),
@@ -297,13 +296,13 @@ void Engine::SpotLightBuilder::SetupLightParams()
 	Math::Real minVariance = GET_CONFIG_VALUE_ENGINE("spotLightMinVariance_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
 
 	Rendering::Lighting::SpotLight* spotLight = new Rendering::Lighting::SpotLight(m_gameNode->GetTransform(), color, intensity, attenuation, viewAngle,
-		shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance, m_renderer->GetShader(Rendering::ShaderTypes::SPOT_LIGHT),
-		m_renderer->GetShader(Rendering::ShaderTypes::SPOT_LIGHT_TERRAIN), m_renderer->GetShader(Rendering::ShaderTypes::SPOT_LIGHT_NO_SHADOWS),
-		m_renderer->GetShader(Rendering::ShaderTypes::POINT_LIGHT_TERRAIN_NO_SHADOWS));
+		shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance, m_gameManager->GetShader(ShaderTypes::SPOT_LIGHT),
+		m_gameManager->GetShader(ShaderTypes::SPOT_LIGHT_TERRAIN), m_gameManager->GetShader(ShaderTypes::SPOT_LIGHT_NO_SHADOWS),
+		m_gameManager->GetShader(ShaderTypes::POINT_LIGHT_TERRAIN_NO_SHADOWS));
 
 	m_gameNode->AddComponent(new SpotLightComponent(spotLight));
 
-	m_renderer->AddLight(spotLight);
+	m_gameManager->AddLight(spotLight);
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -317,8 +316,9 @@ void Engine::SpotLightBuilder::BuildMeshRenderer()
 /* ==================== SpotLightBuilder implementation end ==================== */
 
 /* ==================== CameraBuilder implementation begin ==================== */
-Engine::CameraBuilder::CameraBuilder() :
+Engine::CameraBuilder::CameraBuilder(GameManager* gameManager) :
 	Builder(),
+	m_gameManager(gameManager),
 	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_ENGINE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosZ", 0.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleX", -45.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleY", 0.0f)),
@@ -402,7 +402,7 @@ void Engine::CameraBuilder::SetupCameraParams()
 	Engine::CameraComponent* cameraComponent = new Engine::CameraFollowComponent(camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
 	//Engine::CameraComponent* camera = new Engine::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	m_gameNode->AddComponent(cameraComponent);
-	CoreEngine::GetCoreEngine()->AddCamera(camera);
+	m_gameManager->AddCamera(camera);
 }
 
 #ifdef BUILD_MESH_RENDERER
