@@ -89,9 +89,14 @@ namespace Rendering
 		RENDERING_API Texture(int width = 0, int height = 0, unsigned char* data = NULL, GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clampEnabled = false, GLenum attachment = GL_NONE);
 		RENDERING_API Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, bool clampEnabled, GLenum* attachments);
 		RENDERING_API virtual ~Texture(void);
-		//Texture(const Texture& texture) = default;
-		Texture(Texture&& texture);
-		//void operator=(const Texture& texture) = delete;
+		/// <summary> Texture copy constructor. </summary>
+		Texture(const Texture& texture) = delete;
+		/// <summary> Texture move constructor. </summary>
+		RENDERING_API Texture(Texture&& texture);
+		/// <summary> Texture copy assignment operator. </summary>
+		Texture& operator=(const Texture& texture) = delete;
+		/// <summary> Texture move assignment operator. </summary>
+		Texture& operator=(Texture&& texture) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

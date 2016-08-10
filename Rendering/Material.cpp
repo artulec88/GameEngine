@@ -21,9 +21,7 @@ Rendering::Material::Material(Texture* diffuseTexture,
 	if (normalMap == NULL)
 	{
 		DEBUG_LOG_RENDERING("The material is not using any normal maps");
-		//const std::string defaultNormalMapStr = GET_CONFIG_VALUE_STR_RENDERING("defaultNormalMap", "defaultNormalMap.jpg");
-		const std::string defaultNormalMapStr = "defaultNormalMap.jpg";
-		normalMap = new Texture(defaultNormalMapStr);
+		normalMap = new Texture("defaultNormalMap.jpg" /* TODO: Replace with texture from the TextureFactory */);
 		//INFO_LOG_RENDERING("Adding default normal map (\"", defaultNormalMapStr, "\") to the material");
 	}
 	m_mappedValues.SetTexture("normalMap", normalMap);
@@ -31,7 +29,7 @@ Rendering::Material::Material(Texture* diffuseTexture,
 	if (displacementMap == NULL)
 	{
 		DEBUG_LOG_RENDERING("The material is not using any displacement maps");
-		displacementMap = new Texture("defaultDisplacementMap.jpg");
+		displacementMap = new Texture("defaultDisplacementMap.jpg" /* TODO: Replace with texture from the TextureFactory */);
 		//INFO_LOG_RENDERING("Adding displacement map to the material");
 	}
 	m_mappedValues.SetTexture("displacementMap", displacementMap);
@@ -39,6 +37,10 @@ Rendering::Material::Material(Texture* diffuseTexture,
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_mappedValues.SetReal("displacementScale", displacementScale);
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
+}
+
+Rendering::Material::~Material()
+{
 }
 
 Rendering::Material::Material(Texture* texture, const std::string& textureName)

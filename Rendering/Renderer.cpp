@@ -44,8 +44,9 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
 	m_mainMenuCamera(NULL),
+	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
-	m_filterTexture(NULL),
+	m_filterTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
 	m_filterMaterial(NULL),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh(NULL),
@@ -54,19 +55,30 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE_RENDERING("defaultShadowMinVariance", 0.00002f)),
 	m_cubeShadowMap(NULL),
-	//m_shadowMaps(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
-	//m_shadowMapTempTargets(), // Gives a compiler warning C4351: new behavior: elements of array will be default initialized
+	m_shadowMaps({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0) }),
+	m_shadowMapTempTargets({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0) }),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
-	//m_defaultFont(GET_CONFIG_VALUE_STR_RENDERING("defaultFontTextureAtlas", "segoe.png"), GET_CONFIG_VALUE_STR_RENDERING("defaultFontMetaData", "segoe.fnt")),
-	m_fontMaterial(NULL),
-	m_defaultFontSize(GET_CONFIG_VALUE_RENDERING("defaultFontSize", 32.0f)),
-	m_defaultFontColor(GET_CONFIG_VALUE_RENDERING("defaultTextColorRed", REAL_ONE),
-		GET_CONFIG_VALUE_RENDERING("defaultTextColorGreen", REAL_ZERO),
-		GET_CONFIG_VALUE_RENDERING("defaultTextColorBlue", REAL_ZERO),
-		GET_CONFIG_VALUE_RENDERING("defaultTextColorAlpha", REAL_ZERO)),
-	m_textVertexBuffer(0),
-	m_textTextureCoordBuffer(0),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
 	m_waterWaveStrength(GET_CONFIG_VALUE_RENDERING("waterWaveStrength", 0.04f)),
 	m_waterShineDamper(GET_CONFIG_VALUE_RENDERING("waterShineDamper", 20.0f)),
@@ -79,10 +91,10 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_waterReflectionClippingPlane(GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
-	m_waterDUDVTexture(NULL),
-	m_waterNormalMap(NULL),
-	m_waterRefractionTexture(NULL),
-	m_waterReflectionTexture(NULL),
+	m_waterDUDVTexture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")),
+	m_waterNormalMap(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")),
+	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ NULL, NULL }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), false, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
+	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
 	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
@@ -135,50 +147,15 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
 
-	//SetTexture("shadowMap",
-	//	new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR,
-	//		GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true,
-	//		GL_COLOR_ATTACHMENT0 /* we're going to render color information */)); // variance shadow mapping
-	//SetTexture("shadowMapTempTarget", new Texture(shadowMapWidth, shadowMapHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0));
-
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
-	m_filterTexture = new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-
-	m_filterMaterial = new Material(m_filterTexture);
+	m_filterMaterial = new Material(&m_filterTexture);
 	m_filterMesh = new Mesh("plane4.obj");
 	m_filterMesh->Initialize();
 
 	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
 	m_cubeShadowMap = new CubeShadowMap();
 	m_cubeShadowMap->Init(windowWidth, windowHeight);
-
-	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
-	{
-		int shadowMapSize = 1 << (i + 1); // generates a sequence of numbers: 2, 4, 8, 16, ..., 2^(SHADOW_MAPS_COUNT).
-		m_shadowMaps[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_NEAREST,
-			GL_RG32F /* 2 components- R and G- for mean and variance */,
-			GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */,
-			GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-		m_shadowMapTempTargets[i] = new Texture(shadowMapSize, shadowMapSize, NULL, GL_TEXTURE_2D, GL_NEAREST,
-			GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true, GL_COLOR_ATTACHMENT0 /* we're going to render color information */);
-	}
-
-	m_fontMaterial = new Material(new Texture("Holstein.tga", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
-	//m_fontMaterial = new Material(new Texture("Holstein.tga" /* GET_CONFIG_VALUE_STR_RENDERING("fontTextureAtlas", "Holstein.tga") */, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false));
-	glGenBuffers(1, &m_textVertexBuffer);
-	glGenBuffers(1, &m_textTextureCoordBuffer);
-
-	m_waterDUDVTexture = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png"));
-	m_waterNormalMap = new Texture(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png"));
-	m_waterReflectionTexture = new Texture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
-	unsigned char* data[] = { NULL, NULL };
-	GLfloat filters[] = { GL_LINEAR, GL_LINEAR };
-	GLenum internalFormats[] = { GL_RGB, GL_DEPTH_COMPONENT32 };
-	GLenum formats[] = { GL_RGBA, GL_DEPTH_COMPONENT };
-	GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
-	m_waterRefractionTexture = new Texture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), data, GL_TEXTURE_2D, filters, internalFormats, formats, false, attachments);
-	//m_waterRefractionTexture = new Texture(GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
 	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
 	const int maxParticlesCount = GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000);
@@ -189,7 +166,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 #endif
 	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
 
-	m_mappedValues.SetTexture("displayTexture", new Texture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0));
+	m_mappedValues.SetTexture("displayTexture", &m_displayTexture);
 #ifndef ANT_TWEAK_BAR_ENABLED
 	SetReal("fxaaSpanMax", m_fxaaSpanMax);
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
@@ -234,9 +211,6 @@ Rendering::Renderer::~Renderer(void)
 	INFO_LOG_RENDERING("Destroying rendering engine...");
 	START_PROFILING;
 
-	glDeleteBuffers(1, &m_textVertexBuffer);
-	glDeleteBuffers(1, &m_textTextureCoordBuffer);
-
 	//SAFE_DELETE(m_currentLight);
 	// TODO: Deallocating the lights member variable
 	// TODO: Deallocating the cameras member variable
@@ -249,17 +223,12 @@ Rendering::Renderer::~Renderer(void)
 	// TODO: m_fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
 	//SetTexture("fontTexture", NULL);
-	SAFE_DELETE(m_fontMaterial);
 
 	m_mappedValues.SetTexture("waterReflectionTexture", NULL);
 	m_mappedValues.SetMultitexture("waterRefractionTexture", NULL, 0);
 	m_mappedValues.SetMultitexture("waterDepthMap", NULL, 1);
 	m_mappedValues.SetTexture("waterDUDVMap", NULL);
 	m_mappedValues.SetTexture("waterNormalMap", NULL);
-	SAFE_DELETE(m_waterDUDVTexture);
-	SAFE_DELETE(m_waterNormalMap);
-	SAFE_DELETE(m_waterRefractionTexture);
-	SAFE_DELETE(m_waterReflectionTexture);
 	
 	SAFE_DELETE(m_particleQuad);
 	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
@@ -269,11 +238,6 @@ Rendering::Renderer::~Renderer(void)
 	//m_billboardNodes.clear();
 
 	m_mappedValues.SetTexture("shadowMap", NULL);
-	for (int i = 0; i < SHADOW_MAPS_COUNT; ++i)
-	{
-		SAFE_DELETE(m_shadowMaps[i]);
-		SAFE_DELETE(m_shadowMapTempTargets[i]);
-	}
 
 #ifdef DEBUG_RENDERING_ENABLED
 	for (std::vector<GuiTexture*>::iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
@@ -379,21 +343,21 @@ void Rendering::Renderer::BindDisplayTexture() const
 
 void Rendering::Renderer::BindWaterReflectionTexture() const
 {
-	m_waterReflectionTexture->BindAsRenderTarget();
+	m_waterReflectionTexture.BindAsRenderTarget();
 }
 
 void Rendering::Renderer::BindWaterRefractionTexture() const
 {
-	m_waterRefractionTexture->BindAsRenderTarget();
+	m_waterRefractionTexture.BindAsRenderTarget();
 }
 
 void Rendering::Renderer::InitWaterNodesRendering()
 {
-	m_mappedValues.SetTexture("waterReflectionTexture", m_waterReflectionTexture);
-	m_mappedValues.SetMultitexture("waterRefractionTexture", m_waterRefractionTexture, 0);
-	m_mappedValues.SetMultitexture("waterDepthMap", m_waterRefractionTexture, 1);
-	m_mappedValues.SetTexture("waterDUDVMap", m_waterDUDVTexture);
-	m_mappedValues.SetTexture("waterNormalMap", m_waterNormalMap);
+	m_mappedValues.SetTexture("waterReflectionTexture", &m_waterReflectionTexture);
+	m_mappedValues.SetMultitexture("waterRefractionTexture", &m_waterRefractionTexture, 0);
+	m_mappedValues.SetMultitexture("waterDepthMap", &m_waterRefractionTexture, 1);
+	m_mappedValues.SetTexture("waterDUDVMap", &m_waterDUDVTexture);
+	m_mappedValues.SetTexture("waterNormalMap", &m_waterNormalMap);
 	//m_waterMoveFactor = fmod(m_waterMoveFactor + m_waterWaveSpeed * CoreEngine::GetCoreEngine()->GetClockSpeed(), REAL_ONE);
 	m_waterMoveFactor += m_waterWaveSpeed * 1.0f; // Instead, use Core::CoreEngine::GetCoreEngine()->GetClockSpeed();
 	if (m_waterMoveFactor > REAL_ONE)
@@ -544,222 +508,6 @@ void Rendering::Renderer::DisableClippingPlanes()
 //	STOP_PROFILING;
 //}
 
-void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str) const
-{
-	RenderText(textShader, alignment, y, str, m_defaultFontSize, m_defaultFontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const
-{
-	RenderText(textShader, alignment, y, str, fontSize, m_defaultFontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, const Color& fontColor) const
-{
-	RenderText(textShader, alignment, y, str, m_defaultFontSize, fontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const
-{
-	int x = 0;
-	switch (alignment)
-	{
-	case Text::LEFT:
-		x = 0;
-		break;
-	case Text::RIGHT:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize);
-		break;
-	case Text::CENTER:
-		x = static_cast<int>(m_windowWidth - str.size() * fontSize) / 2;
-		DEBUG_LOG_RENDERING("Drawing string \"", str, "\": x = ", x, ", window width = ", m_windowWidth);
-		break;
-	default:
-		WARNING_LOG_RENDERING("Incorrect alignment type used (", alignment, "). The text will start at default position x = ", x);
-	}
-	RenderText(textShader, x, y, str, fontSize, fontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str) const
-{
-	RenderText(textShader, x, y, str, m_defaultFontSize, m_defaultFontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize) const
-{
-	RenderText(textShader, x, y, str, fontSize, m_defaultFontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, const Color& fontColor) const
-{
-	RenderText(textShader, x, y, str, m_defaultFontSize, fontColor);
-}
-
-void Rendering::Renderer::RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const
-{
-	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-	DELOCUST_LOG_RENDERING("Started drawing string \"", str, "\"");
-
-	Rendering::CheckErrorCode("TextRenderer::RenderString", "Started drawing a string");
-
-	std::vector<Math::Vector2D> vertices;
-	vertices.reserve(str.size() * 6);
-	std::vector<Math::Vector2D> textureCoords;
-	textureCoords.reserve(str.size() * 6);
-	Math::Real yReal = static_cast<Math::Real>(y);
-	for (std::string::size_type i = 0; i < str.size(); ++i)
-	{
-		// Our vertices need to be represented in the clipping space, that is why we convert the X and Y components of the vertices
-		// below from the screen space coordinates ([0..screenWidth][0..screenHeight]) to clip space coordinates ([-1..1][-1..1]).
-		// The conversion is done by first subtracting the half of width / height (for X and Y components respectively) and then dividing the result by the same value.
-		const Math::Real leftX = ((2.0f * (x + (i * fontSize) - m_windowWidth)) / m_windowWidth) + 1.0f;
-		const Math::Real rightX = ((2.0f * (x + (i * fontSize) + fontSize - m_windowWidth)) / m_windowWidth) + 1.0f;
-		const Math::Real bottomY = (2.0f * (m_windowHeight - (yReal + fontSize)) / m_windowHeight) - 1.0f;
-		const Math::Real topY = (2.0f * (m_windowHeight - yReal) / m_windowHeight) - 1.0f;
-		const Math::Vector2D upLeftVec(leftX, topY);
-		const Math::Vector2D upRightVec(rightX, topY);
-		const Math::Vector2D downRightVec(rightX, bottomY);
-		const Math::Vector2D downLeftVec(leftX, bottomY);
-		//CRITICAL_LOG_RENDERING("str = \"", str, "\" upRightVec = ", upRightVec.ToString());
-
-		vertices.push_back(upLeftVec);
-		vertices.push_back(downLeftVec);
-		vertices.push_back(upRightVec);
-		vertices.push_back(downRightVec);
-		vertices.push_back(upRightVec);
-		vertices.push_back(downLeftVec);
-
-		const Math::Real oneOverSixteen = REAL_ONE / 16.0f;
-		int ch = static_cast<int>(str[i]);
-		Math::Real xUV = static_cast<Math::Real>(ch % 16) * oneOverSixteen;
-		Math::Real yUV = REAL_ONE - ((static_cast<Math::Real>(ch / 16) * oneOverSixteen) + oneOverSixteen);
-		//INFO_LOG_RENDERING("character=\"", str[i], "\"\t ascii value=", ch, ", xUV = ", xUV, ", yUV = ", yUV);
-
-		Math::Vector2D upLeftUV(xUV, REAL_ONE - (yUV + oneOverSixteen));
-		Math::Vector2D upRightUV(xUV + oneOverSixteen, REAL_ONE - (yUV + oneOverSixteen));
-		Math::Vector2D downRightUV(xUV + oneOverSixteen, REAL_ONE - yUV);
-		Math::Vector2D downLeftUV(xUV, REAL_ONE - yUV);
-		textureCoords.push_back(upLeftUV);
-		textureCoords.push_back(downLeftUV);
-		textureCoords.push_back(upRightUV);
-		textureCoords.push_back(downRightUV);
-		textureCoords.push_back(upRightUV);
-		textureCoords.push_back(downLeftUV);
-	}
-	glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Math::Vector2D), &vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
-	glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(Math::Vector2D), &textureCoords[0], GL_STATIC_DRAW);
-
-	textShader.Bind();
-
-	//Updating uniforms
-	m_fontMaterial->SetVector4D("textColor", fontColor.GetValues());
-	m_fontMaterial->SetReal("screenWidth", static_cast<Math::Real>(m_windowWidth));
-	m_fontMaterial->SetReal("screenHeight", static_cast<Math::Real>(m_windowHeight));
-	textShader.UpdateUniforms(Math::Transform() /* In the future the text transform should be given as one of the parameters */, m_fontMaterial, this);
-	//textShader->SetUniformMatrix("MVP", Math::Matrix4D(x, y, REAL_ZERO) * projection);
-	//fontTexture->Bind(25);
-	//textShader->SetUniformi("R_fontTexture", 25);	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, m_textVertexBuffer);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	// 2nd attribute buffer : UVs
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, m_textTextureCoordBuffer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-	if (Rendering::glDepthTestEnabled)
-	{
-		glDisable(GL_DEPTH_TEST);
-	}
-	glCullFace(GL_FRONT);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both wages equal to 1
-	//glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore
-	//glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-	/**
-	* TODO: We should first save the blend-specific parameters and restore them once glDrawArrays function is finished.
-	* See how it is done for GL_DEPTH_TEST here, in this function.
-	*/
-	// Save the current blending state
-	if (!Rendering::glBlendEnabled)
-	{
-		glEnable(GL_BLEND);
-	}
-	/**
-	* This effectively means:
-	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
-	* (1 - currentAlphaInFramebuffer) * shader's output color
-	*/
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vertices.size()));
-	// Now restore the blending state
-	glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
-	if (!Rendering::glBlendEnabled)
-	{
-		glDisable(GL_BLEND);
-	}
-	glCullFace(Rendering::glCullFaceMode);
-
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	//glCullFace(GL_BACK);
-	if (Rendering::glDepthTestEnabled)
-	{
-		glEnable(GL_DEPTH_TEST);
-	}
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
-}
-
-//void Rendering::Renderer::RenderText(const Text::GuiTextControl& guiText) const
-//{
-//	Rendering::CheckErrorCode(__FUNCTION__, "Started main text rendering function");
-//	//CRITICAL_LOG_RENDERING("Started drawing string (number of lines = ", guiText.GetLinesCount(), ") at screen position \"", guiText.GetScreenPosition().ToString(), "\"");
-//	//glDisable(GL_CULL_FACE);
-//	if (Rendering::glDepthTestEnabled)
-//	{
-//		glDisable(GL_DEPTH_TEST);
-//	}
-//	if (!Rendering::glBlendEnabled)
-//	{
-//		glEnable(GL_BLEND);
-//	}
-//	/**
-//	* This effectively means:
-//	* newColorInFramebuffer = currentAlphaInFramebuffer * current color in framebuffer +
-//	* (1 - currentAlphaInFramebuffer) * shader's output color
-//	*/
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//
-//	const Shader* textShader = m_shaderFactory.GetShader(ShaderTypes::TEXT);
-//	textShader->Bind();
-//	textShader->SetUniformVector2D("translation", guiText.GetScreenPosition());
-//	textShader->SetUniformVector2D("offset", guiText.GetOffset());
-//	textShader->SetUniformVector3D("textColor", guiText.GetColor());
-//	textShader->SetUniformVector3D("outlineColor", guiText.GetOutlineColor());
-//	textShader->SetUniformf("characterWidth", guiText.GetCharacterWidth());
-//	textShader->SetUniformf("characterEdgeTransitionDistance", guiText.GetCharacterEdgeTransitionWidth());
-//	textShader->SetUniformf("borderWidth", guiText.GetBorderWidth());
-//	textShader->SetUniformf("borderEdgeTransitionDistance", guiText.GetBorderEdgeTransitionWidth());
-//	guiText.GetFont()->Bind();
-//	textShader->SetUniformi("fontAtlas", 0);
-//	
-//	guiText.Draw();
-//
-//	if (Rendering::glDepthTestEnabled)
-//	{
-//		glEnable(GL_DEPTH_TEST);
-//	}
-//	if (!Rendering::glBlendEnabled)
-//	{
-//		glDisable(GL_BLEND);
-//	}
-//	//glEnable(GL_CULL_FACE);
-//	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
-//}
-
 void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
@@ -884,36 +632,13 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 	STOP_PROFILING;
 }
 
-void Rendering::Renderer::RenderLoadingScreen(const Shader& textShader, Math::Real loadingProgress) const
-{
-	START_PROFILING;
-	BindAsRenderTarget();
-	ClearScreen();
-	//if (m_cameras.empty() || m_cameras[m_currentCameraIndex] == NULL /* TODO: Check if m_currentCameraIndex is within correct range */)
-	//{
-	//	//DELOCUST_LOG_RENDERING("Rendering main menu with a \"main menu camera\".");
-	//	m_currentCamera = m_mainMenuCamera;
-	//}
-	//else
-	//{
-	//	m_currentCamera = m_cameras[m_currentCameraIndex];
-	//}
-
-	std::stringstream ss;
-	int progress = static_cast<int>(loadingProgress * 100.0f);
-	ss << progress << "%";
-	RenderText(textShader, Text::CENTER, 350, "Loading...");
-	RenderText(textShader, Text::CENTER, 250, ss.str());
-	STOP_PROFILING;
-}
-
 bool Rendering::Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
 	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
-	m_mappedValues.SetTexture("shadowMap", m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
-	m_shadowMaps[shadowMapIndex]->BindAsRenderTarget();
+	m_mappedValues.SetTexture("shadowMap", &m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
+	m_shadowMaps[shadowMapIndex].BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
 
 	if ( /* (m_shadowEnabled) && */ (shadowInfo != NULL))
@@ -1004,26 +729,14 @@ void Rendering::Renderer::FinalizeShadowMapRendering(const Shader& filterShader)
 void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING;
-	Texture* shadowMap = m_shadowMaps[shadowMapIndex];
-	Texture* shadowMapTempTarget = m_shadowMapTempTargets[shadowMapIndex];
-	if (shadowMap == NULL)
-	{
-		ERROR_LOG_RENDERING("Shadow map ", shadowMapIndex, " is NULL. Cannot perform the blurring process.");
-		STOP_PROFILING;
-		return;
-	}
-	if (shadowMapTempTarget == NULL)
-	{
-		ERROR_LOG_RENDERING("Temporary shadow map target ", shadowMapIndex, " is NULL. Cannot perform the blurring process.");
-		STOP_PROFILING;
-		return;
-	}
+	CHECK_CONDITION_RENDERING(shadowMapIndex >= 0 && shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::EMERGENCY,
+		"Cannot perform the blurring process. Specified shadow map index (", shadowMapIndex, ") lies outside of range [0; ", SHADOW_MAPS_COUNT, ").");
 
-	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / shadowMap->GetWidth(), REAL_ZERO, REAL_ZERO));
-	ApplyFilter(filterShader, shadowMap, shadowMapTempTarget);
+	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(blurAmount / m_shadowMaps[shadowMapIndex].GetWidth(), REAL_ZERO, REAL_ZERO));
+	ApplyFilter(filterShader, &m_shadowMaps[shadowMapIndex], &m_shadowMapTempTargets[shadowMapIndex]);
 	
-	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / shadowMap->GetHeight(), REAL_ZERO));
-	ApplyFilter(filterShader, shadowMapTempTarget, shadowMap);
+	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / m_shadowMaps[shadowMapIndex].GetHeight(), REAL_ZERO));
+	ApplyFilter(filterShader, &m_shadowMapTempTargets[shadowMapIndex], &m_shadowMaps[shadowMapIndex]);
 	STOP_PROFILING;
 }
 

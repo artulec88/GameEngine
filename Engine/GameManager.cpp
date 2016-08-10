@@ -50,6 +50,7 @@ Engine::GameManager::GameManager() :
 	m_skyboxNode(NULL),
 	m_waterNode(NULL),
 	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
+	m_textureFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory()),
 	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),

@@ -2,7 +2,7 @@
 #define __RENDERING_PARTICLE_H__
 
 #include "Rendering.h"
-#include "Texture.h"
+
 #include "Math\Vector.h"
 #include "Math\Angle.h"
 
@@ -13,11 +13,11 @@ namespace Rendering
 	/// </summary>
 	class Particle
 	{
-	/* ==================== Static variables begin ==================== */
-	static const Math::Real GRAVITY_ACCELERATION; // TODO: The same is defined in the GravityComponent class.
-	/* ==================== Static variables end ==================== */
+		/* ==================== Static variables begin ==================== */
+		static const Math::Real GRAVITY_ACCELERATION; // TODO: The same is defined in the GravityComponent class.
+		/* ==================== Static variables end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
 		/// Constructs a dead particle (but ready to be revived- see function "Revive").
@@ -36,41 +36,41 @@ namespace Rendering
 		RENDERING_API Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
 			Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale);
 		RENDERING_API virtual ~Particle(void);
-	//public:
-	//	Particle(const Particle& particle) :
-	//		m_position(particle.m_position),
-	//		m_velocity(particle.m_velocity),
-	//		m_gravityEffectFactor(particle.m_gravityEffectFactor),
-	//		m_lifeSpanLimit(particle.m_lifeSpanLimit),
-	//		m_lifeSpan(particle.m_lifeSpan),
-	//		m_rotation(particle.m_rotation),
-	//		m_scale(particle.m_scale)
-	//	{
-	//	}
-	//	Particle(Particle&& particle)
-	//	{
-	//		std::swap(m_position, particle.m_position);
-	//		std::swap(m_velocity, particle.m_velocity);
-	//		std::swap(m_gravityEffectFactor, particle.m_gravityEffectFactor);
-	//		std::swap(m_lifeSpanLimit, particle.m_lifeSpanLimit);
-	//		std::swap(m_lifeSpan, particle.m_lifeSpan);
-	//		std::swap(m_rotation, particle.m_rotation);
-	//		std::swap(m_scale, particle.m_scale);
-	//	}
-	//	Particle& operator=(Particle particle)
-	//	{
-	//		std::swap(m_position, particle.m_position);
-	//		std::swap(m_velocity, particle.m_velocity);
-	//		std::swap(m_gravityEffectFactor, particle.m_gravityEffectFactor);
-	//		std::swap(m_lifeSpanLimit, particle.m_lifeSpanLimit);
-	//		std::swap(m_lifeSpan, particle.m_lifeSpan);
-	//		std::swap(m_rotation, particle.m_rotation);
-	//		std::swap(m_scale, particle.m_scale);
-	//		return *this;
-	//	}
-	/* ==================== Constructors and destructors end ==================== */
+		//public:
+		//	Particle(const Particle& particle) :
+		//		m_position(particle.m_position),
+		//		m_velocity(particle.m_velocity),
+		//		m_gravityEffectFactor(particle.m_gravityEffectFactor),
+		//		m_lifeSpanLimit(particle.m_lifeSpanLimit),
+		//		m_lifeSpan(particle.m_lifeSpan),
+		//		m_rotation(particle.m_rotation),
+		//		m_scale(particle.m_scale)
+		//	{
+		//	}
+		//	Particle(Particle&& particle)
+		//	{
+		//		std::swap(m_position, particle.m_position);
+		//		std::swap(m_velocity, particle.m_velocity);
+		//		std::swap(m_gravityEffectFactor, particle.m_gravityEffectFactor);
+		//		std::swap(m_lifeSpanLimit, particle.m_lifeSpanLimit);
+		//		std::swap(m_lifeSpan, particle.m_lifeSpan);
+		//		std::swap(m_rotation, particle.m_rotation);
+		//		std::swap(m_scale, particle.m_scale);
+		//	}
+		//	Particle& operator=(Particle particle)
+		//	{
+		//		std::swap(m_position, particle.m_position);
+		//		std::swap(m_velocity, particle.m_velocity);
+		//		std::swap(m_gravityEffectFactor, particle.m_gravityEffectFactor);
+		//		std::swap(m_lifeSpanLimit, particle.m_lifeSpanLimit);
+		//		std::swap(m_lifeSpan, particle.m_lifeSpan);
+		//		std::swap(m_rotation, particle.m_rotation);
+		//		std::swap(m_scale, particle.m_scale);
+		//		return *this;
+		//	}
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		const Math::Vector3D& GetPosition() const { return m_position; }
 		const Math::Angle& GetRotation() const { return m_rotation; }
@@ -107,9 +107,9 @@ namespace Rendering
 			textureOffset.SetX(static_cast<Math::Real>(column) / textureAtlasRowsCount);
 			textureOffset.SetY(static_cast<Math::Real>(row) / textureAtlasRowsCount);
 		}
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	private:
 		/// </summary> The vector representing the position of the particle. </summary>
 		Math::Vector3D m_position;

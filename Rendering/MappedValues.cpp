@@ -2,10 +2,35 @@
 #include "MappedValues.h"
 #include "Utility\ILogger.h"
 
-using namespace Rendering;
+/* static */ const Math::Real Rendering::MappedValues::DEFAULT_VALUE = REAL_ZERO;
+/* static */ const Rendering::Texture* Rendering::MappedValues::DEFAULT_TEXTURE = NULL;
+/* static */ const Math::Vector2D Rendering::MappedValues::DEFAULT_VECTOR2D(REAL_ZERO, REAL_ZERO);
+/* static */ const Math::Vector3D Rendering::MappedValues::DEFAULT_VECTOR3D(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+/* static */ const Math::Vector4D Rendering::MappedValues::DEFAULT_VECTOR4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
+
+Rendering::MappedValues::MappedValues()
+{
+	if (DEFAULT_TEXTURE == NULL)
+	{
+		DEFAULT_TEXTURE = new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE);
+	}
+}
+
+Rendering::MappedValues::~MappedValues()
+{
+	std::map<std::string, const Texture*>::iterator itr = textureMap.begin();
+	while (itr != textureMap.end())
+	{
+		if (itr->second != NULL) // if texture is not NULL
+		{
+			SAFE_DELETE(itr->second);
+		}
+		++itr;
+	}
+}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-void MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
+void Rendering::MappedValues::InitializeTweakBar(TwBar* tweakBar, const char* groupName)
 {
 	if (realMap.empty() && vec3DMap.empty())
 	{

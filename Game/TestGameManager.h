@@ -24,106 +24,124 @@
 
 namespace Game
 {
+	namespace TextureTypes
+	{
+		enum TextureType
+		{
+			DEFAULT = 0,
+			DEFAULT_NORMAL_MAP,
+			DEFAULT_DISPLACEMENT_MAP,
+			TERRAIN_DIFFUSE_1,
+			TERRAIN_DIFFUSE_2,
+			TERRAIN_DIFFUSE_3,
+			TERRAIN_DIFFUSE_4,
+			TERRAIN_NORMAL_MAP,
+			TERRAIN_DISPLACEMENT_MAP,
+			TERRAIN_BLEND_MAP,
+			// TODO: Add more texture types
+			COUNT
+		}; /* end enum TextureType */
+	} /* end namespace TextureTypes */
 
-class TestGameManager : public Engine::GameManager
-{
-/* ==================== Constructors and destructors begin ==================== */
-public:
-	TestGameManager();
-	virtual ~TestGameManager(void);
-private:
-	TestGameManager(TestGameManager& gameManager);
-	void operator=(TestGameManager& gameManager);
-/* ==================== Constructors and destructors end ==================== */
+	class TestGameManager : public Engine::GameManager
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		TestGameManager();
+		virtual ~TestGameManager(void);
+	private:
+		TestGameManager(TestGameManager& gameManager);
+		void operator=(TestGameManager& gameManager);
+		/* ==================== Constructors and destructors end ==================== */
 
-/* ==================== Non-static member functions begin ==================== */
-public:
-	virtual void Load();
-	virtual void Update(Math::Real delta);
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void Load();
+		virtual void Update(Math::Real delta);
 
-	virtual Math::Real GetLoadingProgress() const;
+		virtual Math::Real GetLoadingProgress() const;
 
-	virtual Engine::GameState* GetIntroGameState();
-	virtual Engine::GameState* GetMainMenuGameState();
-	virtual Engine::GameState* GetLoadGameState();
-	virtual Engine::GameState* GetPlayGameState();
-	virtual Engine::GameState* GetPlayMainMenuGameState();
+		virtual Engine::GameState* GetIntroGameState();
+		virtual Engine::GameState* GetMainMenuGameState();
+		virtual Engine::GameState* GetLoadGameState();
+		virtual Engine::GameState* GetPlayGameState();
+		virtual Engine::GameState* GetPlayMainMenuGameState();
 
-	virtual void WindowResizeEvent(int width, int height);
-	virtual void ScrollEvent(double xOffset, double yOffset);
-	virtual void MousePosEvent(double xPos, double yPos);
+		virtual void WindowResizeEvent(int width, int height);
+		virtual void ScrollEvent(double xOffset, double yOffset);
+		virtual void MousePosEvent(double xPos, double yPos);
 #ifdef ANT_TWEAK_BAR_ENABLED
-	virtual void InitializeTweakBars();
+		virtual void InitializeTweakBars();
 #endif
-private:
-	void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
-	void AddLights();
-	void AddDirectionalLight();
-	void AddPointLights();
-	void AddSpotLights();
-	void AddCameras(Engine::GameNode* entityToFollow);
-	void AddSkybox() const;
-	//void AddStaticEffects();
-	//void AddSmoothEffects();
-	//void AddBlinkEffects();
-/* ==================== Non-static member functions end ==================== */
+	private:
+		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
+		void AddLights();
+		void AddDirectionalLight();
+		void AddPointLights();
+		void AddSpotLights();
+		void AddCameras(Engine::GameNode* entityToFollow);
+		void AddSkybox() const;
+		//void AddStaticEffects();
+		//void AddSmoothEffects();
+		//void AddBlinkEffects();
+	/* ==================== Non-static member functions end ==================== */
 
-/* ==================== Non-static member variables begin ==================== */
-protected:
-	const int RESOURCES_TO_LOAD;
-	const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
-	int m_resourcesLoaded;
-	
-	std::unique_ptr<Engine::GameState> m_introGameState;
-	std::unique_ptr<Engine::GameState> m_menuGameState;
-	std::unique_ptr<Engine::GameState> m_loadGameState;
-	std::unique_ptr<Engine::GameState> m_playGameState;
-	std::unique_ptr<Engine::GameState> m_playMainMenuGameState;
+	/* ==================== Non-static member variables begin ==================== */
+	protected:
+		const int RESOURCES_TO_LOAD;
+		const Math::Real CAMERA_HEIGHT_UPDATE_INTERVAL;
+		int m_resourcesLoaded;
 
-	StartGameCommand m_startGameCommand;
-	Engine::QuitGameCommand m_quitGameCommand;
-	ShowIntroCommand m_showIntroGameCommand;
-	ResumeGameCommand m_resumeGameCommand;
-	SaveGameCommand m_saveGameCommand;
-	LoadGameCommand m_loadGameCommand;
+		std::unique_ptr<Engine::GameState> m_introGameState;
+		std::unique_ptr<Engine::GameState> m_menuGameState;
+		std::unique_ptr<Engine::GameState> m_loadGameState;
+		std::unique_ptr<Engine::GameState> m_playGameState;
+		std::unique_ptr<Engine::GameState> m_playMainMenuGameState;
 
-	//std::vector<Rendering::Effects::Effect<Math::Real>> m_singleValueStaticEffects;
-	//std::vector<Rendering::Effects::Effect<Math::Vector2D>> m_vec2DStaticEffects;
-	//std::vector<Rendering::Effects::Effect<Math::Vector3D>> m_vec3DStaticEffects;
-	//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Real>> m_singleValueSmoothEffects;
-	//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>> m_vec2DSmoothEffects;
-	//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>> m_vec3DSmoothEffects;
-	//std::vector<Rendering::Effects::BlinkEffect<Math::Real>> m_singleValueBlinkEffects;
-	//std::vector<Rendering::Effects::BlinkEffect<Math::Vector2D>> m_vec2DBlinkEffects;
-	//std::vector<Rendering::Effects::BlinkEffect<Math::Vector3D>> m_vec3DBlinkEffects;
+		StartGameCommand m_startGameCommand;
+		Engine::QuitGameCommand m_quitGameCommand;
+		ShowIntroCommand m_showIntroGameCommand;
+		ResumeGameCommand m_resumeGameCommand;
+		SaveGameCommand m_saveGameCommand;
+		LoadGameCommand m_loadGameCommand;
 
-	Rendering::TerrainMesh* m_terrainMesh;
-	Math::Real m_timeToUpdateCameraHeight;
-	
-	Engine::GameNode* m_boxNode;
+		//std::vector<Rendering::Effects::Effect<Math::Real>> m_singleValueStaticEffects;
+		//std::vector<Rendering::Effects::Effect<Math::Vector2D>> m_vec2DStaticEffects;
+		//std::vector<Rendering::Effects::Effect<Math::Vector3D>> m_vec3DStaticEffects;
+		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Real>> m_singleValueSmoothEffects;
+		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector2D>> m_vec2DSmoothEffects;
+		//std::vector<Rendering::Effects::SmoothTransitionEffect<Math::Vector3D>> m_vec3DSmoothEffects;
+		//std::vector<Rendering::Effects::BlinkEffect<Math::Real>> m_singleValueBlinkEffects;
+		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector2D>> m_vec2DBlinkEffects;
+		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector3D>> m_vec3DBlinkEffects;
+
+		Rendering::TerrainMesh* m_terrainMesh;
+		Math::Real m_timeToUpdateCameraHeight;
+
+		Engine::GameNode* m_boxNode;
 #ifdef ANT_TWEAK_BAR_ENABLED
-	Rendering::Material* terrainMaterial;
-	Rendering::Material* boxMaterial;
+		Rendering::Material* terrainMaterial;
+		Rendering::Material* boxMaterial;
 
-	Math::Real terrainSpecularIntensity, terrainSpecularPower;
-	Math::Real terrainDisplacementScale, terrainDisplacementOffset;
+		Math::Real terrainSpecularIntensity, terrainSpecularPower;
+		Math::Real terrainDisplacementScale, terrainDisplacementOffset;
 #endif
 
-	const int HUMAN_NODES_COUNT;
-	Engine::GameNode** humanNodes;
-	const int pointLightCount;
-	const int spotLightCount;
-	const int cameraCount;
-	Engine::GameNode** cameraNodes;
-	bool m_heightMapCalculationEnabled;
-	//Engine::GameNode* castleNode;
+		const int HUMAN_NODES_COUNT;
+		Engine::GameNode** humanNodes;
+		const int pointLightCount;
+		const int spotLightCount;
+		const int cameraCount;
+		Engine::GameNode** cameraNodes;
+		bool m_heightMapCalculationEnabled;
+		//Engine::GameNode* castleNode;
 
 #ifdef CALCULATE_GAME_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
 
-/* ==================== Non-static member variables end ==================== */
-}; /* end class TestGameManager */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class TestGameManager */
 
 } /* end namespace Game */
 

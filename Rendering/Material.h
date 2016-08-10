@@ -35,10 +35,11 @@ namespace Rendering
 		RENDERING_API Material(Texture* diffuseTexture, Math::Real specularIntensity = REAL_ONE, Math::Real specularPower = 8.0f, Texture* normalMap = NULL,
 			Texture* displacementMap = NULL, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
 		RENDERING_API Material(Texture* texture, const std::string& textureName);
-		RENDERING_API virtual ~Material(void) { };
-	private:
-		Material(const Material& material) {}
-		void operator=(const Material& material) {}
+		RENDERING_API ~Material(void);
+		Material(const Material& material) = delete; // copy constructor
+		Material(Material&& material) = delete; // move constructor
+		Material& operator=(const Material& material) = delete; // copy assignment operator
+		Material& operator=(Material&& material) = delete; // move assignment operator
 		/* ==================== Constructors and destructors end ==================== */
 
 

@@ -10,6 +10,7 @@
 #include "GameCommand.h"
 #include "InputMapping.h"
 #include "ShaderFactory.h"
+#include "TextureFactory.h"
 //#include "Observer.h"
 
 #include "EffectFactory.h"
@@ -138,6 +139,11 @@ namespace Engine
 		//	return m_effectFactory.GetVec3DEffect(effectType, variant);
 		//}
 
+		ENGINE_API inline const Rendering::Texture& GetTexture(int textureID) const
+		{
+			return m_textureFactory.GetTexture(textureID);
+		}
+
 		ENGINE_API inline const Rendering::Shader& GetShader(ShaderTypes::ShaderType shaderType) const
 		{
 			return m_shaderFactory.GetShader(shaderType);
@@ -216,6 +222,7 @@ namespace Engine
 		std::vector<GameNode*> m_billboardsRenderers;
 		std::vector<ParticleGenerator*> m_particleGenerators;
 		ShaderFactory m_shaderFactory;
+		TextureFactory m_textureFactory;
 		Rendering::Text::FontFactory m_fontFactory;
 		GameStateManager* m_gameStateManager;
 		bool m_isGameLoaded;

@@ -56,9 +56,10 @@ namespace Rendering
 	public:
 		RENDERING_API Renderer(int windowWidth, int windowHeight, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		RENDERING_API virtual ~Renderer(void);
-	private:
-		Renderer(const Renderer& renderer);
-		void operator=(const Renderer& renderer);
+		Renderer(const Renderer& renderer) = delete; // copy constructor
+		Renderer(Renderer&& renderer) = delete; // move constructor
+		Renderer& operator=(const Renderer& renderer) = delete; // copy assignment operator
+		Renderer& operator=(Renderer&& renderer) = delete; // move assignment operator
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
@@ -72,20 +73,10 @@ namespace Rendering
 		RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const;
 		RENDERING_API void FinalizeRenderScene(const Shader& filterShader);
 		//RENDERING_API void Render(const GameNode& node);
-		RENDERING_API void RenderLoadingScreen(const Shader& textShader, Math::Real loadingProgress) const;
 
 		RENDERING_API bool InitShadowMap();
 		RENDERING_API void FinalizeShadowMapRendering(const Shader& filterShader);
 
-		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str) const;
-		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize) const;
-		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, const Color& fontColor) const;
-		RENDERING_API void RenderText(const Shader& textShader, Text::Alignment alignment, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const;
-		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str) const;
-		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize) const;
-		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, const Color& fontColor) const;
-		RENDERING_API void RenderText(const Shader& textShader, int x, int y, const std::string& str, Math::Real fontSize, const Color& fontColor) const;
-		//RENDERING_API void RenderText(const Controls::GuiTextControl& guiText) const;
 		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const;
 
 		RENDERING_API void RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const;
@@ -304,7 +295,7 @@ namespace Rendering
 			m_samplerMap[name] = value;
 		}
 	private:
-		Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
+		//Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
 		void BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount);
 		void ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest);
 		/* ==================== Non-static, non-virtual member functions end ==================== */
@@ -336,9 +327,11 @@ namespace Rendering
 		/// in the main menu rendering when there are no game cameras set up. </summary>
 		Camera* m_mainMenuCamera;
 
+		Texture m_displayTexture;
+
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
-		Texture* m_filterTexture;
+		Texture m_filterTexture;
 		Material* m_filterMaterial;
 		Math::Transform m_filterTransform;
 		Mesh* m_filterMesh;
@@ -351,19 +344,12 @@ namespace Rendering
 
 		const Math::Real m_defaultShadowMinVariance;
 		CubeShadowMap* m_cubeShadowMap; // for use by the point lights
-		//Texture* m_cubeShadowMap; // for use by the point lights
-		Texture* m_shadowMaps[SHADOW_MAPS_COUNT];
-		Texture* m_shadowMapTempTargets[SHADOW_MAPS_COUNT];
+		//Texture m_cubeShadowMap; // for use by the point lights
+		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMaps;
+		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMapTempTargets;
 
 		std::map<std::string, unsigned int> m_samplerMap;
 		Math::Matrix4D m_lightMatrix;
-
-		//Text::Font m_defaultFont;
-		Material* m_fontMaterial;
-		Math::Real m_defaultFontSize;
-		Color m_defaultFontColor;
-		GLuint m_textVertexBuffer; // TODO: This should be removed. It is only used in crude text rendering functionality which has been replaced by new text rendering mechanism.
-		GLuint m_textTextureCoordBuffer; // TODO: This should be removed. It is only used in crude text rendering functionality which has been replaced by new text rendering mechanism.
 
 		/// <summary>
 		/// The default clip plane which is used for the normal scene rendering pass.
@@ -380,10 +366,10 @@ namespace Rendering
 		/// <summary>
 		/// A map holding the distortion of the water creating a wrippling effect on its surface.
 		/// </summary>
-		Texture* m_waterDUDVTexture;
-		Texture* m_waterNormalMap;
-		Texture* m_waterRefractionTexture;
-		Texture* m_waterReflectionTexture;
+		Texture m_waterDUDVTexture;
+		Texture m_waterNormalMap;
+		Texture m_waterRefractionTexture;
+		Texture m_waterReflectionTexture;
 		bool m_waterLightReflectionEnabled;
 		/// <summary>
 		/// The greater the more reflective water will be.

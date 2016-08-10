@@ -107,7 +107,7 @@ void Engine::Input::InputMapping::RegisterCallback(InputCallback callback, int p
 void Engine::Input::InputMapping::PushContext(const std::string& name)
 {
 	std::map<std::string, std::unique_ptr<InputContext>>::iterator iter = m_inputContexts.find(name);
-	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(iter != m_inputContexts.end(), Utility::Logging::EMERGENCY, "Invalid input context pushed");
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(iter != m_inputContexts.end(), Utility::Logging::EMERGENCY, "Cannot push input context with name \"", name, "\". The input context cannot be found.");
 	m_activeContexts.push_front(iter->second.get());
 }
 

@@ -74,7 +74,8 @@ void LoadGameState::Render(Rendering::Renderer* renderer) const
 {
 	START_PROFILING;
 	DELOCUST_LOG_GAME("LOAD game state rendering");
-	renderer->RenderLoadingScreen(m_gameManager->GetGuiTextShader(), m_loadingProgress);
+	// TODO: Rendering loading screen.
+	//renderer->RenderLoadingScreen(m_gameManager->GetGuiTextShader(), m_loadingProgress);
 	STOP_PROFILING;
 }
 
