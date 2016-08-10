@@ -9,6 +9,19 @@
 
 #include <fstream>
 
+int shaderDataConstructor = 0;
+int shaderDataDestructor = 0;
+int shaderDataCopyConstructor = 0;
+int shaderDataMoveConstructor = 0;
+int shaderDataCopyAssignmentOperator = 0;
+int shaderDataMoveAssignmentOperator = 0;
+int shaderConstructor = 0;
+int shaderDestructor = 0;
+int shaderCopyConstructor = 0;
+int shaderMoveConstructor = 0;
+int shaderCopyAssignmentOperator = 0;
+int shaderMoveAssignmentOperator = 0;
+
 Rendering::Uniforms::UniformType Rendering::Uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
 {
 	if (uniformTypeStr == "int") { return Uniforms::INT; }
@@ -74,11 +87,13 @@ std::string Rendering::Uniforms::ConvertUniformTypeToString(UniformType uniformT
 /* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
 /* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_END = "*/";
 
-/* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
+///* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
 Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	m_programID(glCreateProgram())
 {
+	++shaderDataConstructor;
+	CRITICAL_LOG_RENDERING("shader data constructor: ", shaderDataConstructor);
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, Utility::Logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
 	std::string shaderText = LoadShaderData(fileName);
@@ -120,13 +135,32 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 
 Rendering::ShaderData::~ShaderData()
 {
+	++shaderDataDestructor;
+	CRITICAL_LOG_RENDERING("shader data destructor: ", shaderDataDestructor);
 	DEBUG_LOG_RENDERING("Destroying shader data for shader program: ", m_programID);
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
 		glDetachShader(m_programID, *shaderItr);
 		glDeleteShader(*shaderItr);
 	}
-	glDeleteProgram(m_programID);
+	if (m_programID != 0)
+	{
+		glDeleteProgram(m_programID);
+	}
+}
+
+Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
+	m_programID(std::move(shaderData.m_programID)),
+	m_shaders(std::move(shaderData.m_shaders)),
+	m_uniforms(std::move(shaderData.m_uniforms)),
+	m_uniformMap(std::move(shaderData.m_uniformMap))
+{
+	++shaderDataMoveConstructor;
+	CRITICAL_LOG_RENDERING("shader data move constructor: ", shaderDataMoveConstructor);
+	shaderData.m_programID = 0;
+	shaderData.m_shaders.clear();
+	shaderData.m_uniforms.clear();
+	shaderData.m_uniformMap.clear();
 }
 
 std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) const
@@ -505,26 +539,19 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 
 /* ==================== Shader class begin ==================== */
 Rendering::Shader::Shader(const std::string& fileName) :
-	m_shaderData(nullptr),
+	m_shaderData(fileName),
 	m_fileName(fileName)
 {
+	++shaderConstructor;
+	CRITICAL_LOG_RENDERING("shader constructor: ", shaderConstructor);
 	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
-	std::map<std::string, std::shared_ptr<ShaderData>>::const_iterator itr = shaderResourceMap.find(fileName);
-	if (itr == shaderResourceMap.end())
-	{
-		m_shaderData = std::make_shared<ShaderData>(fileName);
-		shaderResourceMap.insert(std::make_pair(fileName, m_shaderData));
-	}
-	else
-	{
-		INFO_LOG_RENDERING("Shader data \"", fileName, "\" already present in the resource manager");
-		m_shaderData = itr->second;
-	}
 }
 
 
 Rendering::Shader::~Shader(void)
 {
+	++shaderDestructor;
+	CRITICAL_LOG_RENDERING("shader destructor: ", shaderDestructor);
 }
 
 //Rendering::Shader::Shader(const Shader& shader) :
@@ -538,6 +565,8 @@ Rendering::Shader::Shader(Shader&& shader) :
 	m_shaderData(std::move(shader.m_shaderData)),
 	m_fileName(std::move(shader.m_fileName))
 {
+	++shaderMoveConstructor;
+	CRITICAL_LOG_RENDERING("shader move constructor: ", shaderMoveConstructor);
 	//shader.m_shaderData = nullptr;
 	//shader.m_fileName.clear();
 }
@@ -545,7 +574,9 @@ Rendering::Shader::Shader(Shader&& shader) :
 void Rendering::Shader::Bind() const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_shaderData != NULL, Utility::CRITICAL, "Cannot bind the shader. Shader data is NULL.");
-	glUseProgram(m_shaderData->GetProgram());
+	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
+	glUseProgram(m_shaderData.GetProgram());
+	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
 }
 
 bool Rendering::Shader::IsBound() const
@@ -598,7 +629,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 	//renderer->GetCurrentCamera().GetViewProjection(projectedMatrix); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
 	//projectedMatrix *= worldMatrix;
 	/* ==================== SOLUTION #4 end ==================== */
-	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_shaderData->GetUniforms().begin(); uniformItr != m_shaderData->GetUniforms().end(); ++uniformItr)
+	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
 	{
 		const std::string& uniformName = uniformItr->name;
 		const Uniforms::UniformType& uniformType = uniformItr->uniformType;
@@ -763,7 +794,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 {
 	std::map<std::string, GLint>::const_iterator itr;
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform1i(itr->second, value);
 	}
@@ -780,7 +811,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 	//	DEBUG_LOG_RENDERING("Uniform map <\"", it->first, "\", ", it->second, ">");
 	//}
 	std::map<std::string, GLint>::const_iterator itr;
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform1f(itr->second, value);
 	}
@@ -789,7 +820,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
 {
 	std::map<std::string, GLint>::const_iterator itr;
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform2f(itr->second, vector.GetX(), vector.GetY());
 		//glUniform3fv(itr->second, 1, vector.At());
@@ -804,7 +835,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 	//{
 	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
 	//}
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
 		//glUniform3fv(itr->second, 1, vector.At());
@@ -819,7 +850,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::
 	//{
 	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
 	//}
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform4f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
 		//glUniform4fv(itr->second, 4, vector.At());
@@ -834,7 +865,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 	//{
 	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
 	//}
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform4f(itr->second, x, y, z, w);
 	}
@@ -843,7 +874,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
 	std::map<std::string, GLint>::const_iterator itr;
-	if (m_shaderData->IsUniformPresent(uniformName, itr))
+	if (m_shaderData.IsUniformPresent(uniformName, itr))
 	{
 		glUniform4f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha());
 		//glUniform3f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue());
@@ -854,7 +885,7 @@ void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Ma
 {
 	//DEBUG_LOG_RENDERING("Setting uniform matrix \"", name, "\":\n", matrix.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
-	if (m_shaderData->IsUniformPresent(name, itr))
+	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		glUniformMatrix4fv(itr->second, 1, GL_FALSE, &(matrix[0][0]));

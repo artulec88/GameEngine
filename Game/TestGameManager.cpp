@@ -360,6 +360,11 @@ void Game::TestGameManager::Load()
 	terrainMaterial = new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
 		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	//terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureTypes::TERRAIN_DIFFUSE_1, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")),
+	//	terrainSpecularIntensity, terrainSpecularPower,
+	//	m_textureFactory.CreateTexture(TextureTypes::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+	//	m_textureFactory.CreateTexture(TextureTypes::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
+	//	terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true), "blendMap");

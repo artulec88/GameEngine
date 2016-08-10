@@ -32,7 +32,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		void CreateTexture(int textureID, const std::string& textureFileName);
+		Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName);
 		ENGINE_API inline const Rendering::Texture& GetTexture(int textureID) const
 		{
 			std::map<int, Rendering::Texture>::const_iterator textureItr = m_textureType2TextureMap.find(textureID);

@@ -81,7 +81,7 @@ namespace Rendering
 		ShaderData(const std::string& fileName);
 		~ShaderData(void);
 		ShaderData(const ShaderData& shaderData) = delete;
-		ShaderData(ShaderData&& shaderData) = delete;
+		ShaderData(ShaderData&& shaderData);
 		ShaderData& operator=(const ShaderData& shaderData) = delete;
 		ShaderData& operator=(ShaderData&& shaderData) = delete;
 		/* ==================== Constructors and destructors end ==================== */
@@ -89,8 +89,8 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetProgram() const { return m_programID; }
-		std::vector<Uniforms::Uniform>& GetUniforms() { return m_uniforms; }
-		std::map<std::string, GLint>& GetUniformMap() { return m_uniformMap; }
+		const std::vector<Uniforms::Uniform>& GetUniforms() const { return m_uniforms; }
+		const std::map<std::string, GLint>& GetUniformMap() const { return m_uniformMap; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 	private:
 		std::string LoadShaderData(const std::string& fileName) const;
@@ -124,7 +124,7 @@ namespace Rendering
 	{
 		/* ==================== Static variables begin ==================== */
 	private:
-		static std::map<std::string, std::shared_ptr<ShaderData>> shaderResourceMap;
+		//static std::map<std::string, std::shared_ptr<ShaderData>> shaderResourceMap;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -140,7 +140,6 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		GLuint GetProgramID() const { return m_shaderData->GetProgram(); }
 		void Bind() const;
 		bool IsBound() const;
 		void Unbind() const;
@@ -159,6 +158,7 @@ namespace Rendering
 		void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 	protected:
 	private:
+		GLuint GetProgramID() const { return m_shaderData.GetProgram(); }
 		/// <summary>
 		/// Sets the directional light uniform. Although the <paramref name="directionalLight"/> is specified as the BaseLight instance
 		/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the BaseLight object
@@ -177,7 +177,7 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		std::shared_ptr<ShaderData> m_shaderData;
+		ShaderData m_shaderData;
 		std::string m_fileName;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Shader */
