@@ -9,19 +9,6 @@
 
 #include <fstream>
 
-int shaderDataConstructor = 0;
-int shaderDataDestructor = 0;
-int shaderDataCopyConstructor = 0;
-int shaderDataMoveConstructor = 0;
-int shaderDataCopyAssignmentOperator = 0;
-int shaderDataMoveAssignmentOperator = 0;
-int shaderConstructor = 0;
-int shaderDestructor = 0;
-int shaderCopyConstructor = 0;
-int shaderMoveConstructor = 0;
-int shaderCopyAssignmentOperator = 0;
-int shaderMoveAssignmentOperator = 0;
-
 Rendering::Uniforms::UniformType Rendering::Uniforms::ConvertStringToUniformType(const std::string& uniformTypeStr)
 {
 	if (uniformTypeStr == "int") { return Uniforms::INT; }
@@ -92,8 +79,7 @@ std::string Rendering::Uniforms::ConvertUniformTypeToString(UniformType uniformT
 Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	m_programID(glCreateProgram())
 {
-	++shaderDataConstructor;
-	CRITICAL_LOG_RENDERING("shader data constructor: ", shaderDataConstructor);
+	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, Utility::Logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
 	std::string shaderText = LoadShaderData(fileName);
@@ -120,7 +106,7 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	AddAllAttributes(vertexShaderText);
 
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(Compile(), Utility::Logging::CRITICAL, "Error while compiling shader program ", m_programID, " for shader file \"", fileName, "\"");
-	INFO_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
+	DEBUG_LOG_RENDERING("Shader program ", m_programID, " for shader file \"", fileName, "\" has been successfully compiled.");
 	AddShaderUniforms(shaderText);
 	//ERROR_LOG_RENDERING("Vertex shader text = ", vertexShaderText);
 	//AddShaderUniforms(vertexShaderText);
@@ -135,8 +121,7 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 
 Rendering::ShaderData::~ShaderData()
 {
-	++shaderDataDestructor;
-	CRITICAL_LOG_RENDERING("shader data destructor: ", shaderDataDestructor);
+	DELOCUST_LOG_RENDERING("ShaderData destructor called for program: ", m_programID, ". ");
 	DEBUG_LOG_RENDERING("Destroying shader data for shader program: ", m_programID);
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
@@ -155,8 +140,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	m_uniforms(std::move(shaderData.m_uniforms)),
 	m_uniformMap(std::move(shaderData.m_uniformMap))
 {
-	++shaderDataMoveConstructor;
-	CRITICAL_LOG_RENDERING("shader data move constructor: ", shaderDataMoveConstructor);
+	DELOCUST_LOG_RENDERING("ShaderData move constructor called for program: ", m_programID, ". ");
 	shaderData.m_programID = 0;
 	shaderData.m_shaders.clear();
 	shaderData.m_uniforms.clear();
@@ -542,16 +526,14 @@ Rendering::Shader::Shader(const std::string& fileName) :
 	m_shaderData(fileName),
 	m_fileName(fileName)
 {
-	++shaderConstructor;
-	CRITICAL_LOG_RENDERING("shader constructor: ", shaderConstructor);
+	DELOCUST_LOG_RENDERING("Shader constructor called for file name: \"", m_fileName, "\". ");
 	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
 }
 
 
 Rendering::Shader::~Shader(void)
 {
-	++shaderDestructor;
-	CRITICAL_LOG_RENDERING("shader destructor: ", shaderDestructor);
+	DELOCUST_LOG_RENDERING("Shader destructor called for file name: \"", m_fileName, "\". ");
 }
 
 //Rendering::Shader::Shader(const Shader& shader) :
@@ -565,8 +547,7 @@ Rendering::Shader::Shader(Shader&& shader) :
 	m_shaderData(std::move(shader.m_shaderData)),
 	m_fileName(std::move(shader.m_fileName))
 {
-	++shaderMoveConstructor;
-	CRITICAL_LOG_RENDERING("shader move constructor: ", shaderMoveConstructor);
+	DELOCUST_LOG_RENDERING("Shader move constructor called for file name: \"", m_fileName, "\". ");
 	//shader.m_shaderData = nullptr;
 	//shader.m_fileName.clear();
 }

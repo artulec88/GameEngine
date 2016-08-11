@@ -43,40 +43,44 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	//m_currentSpotLight(NULL),
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
-	m_mainMenuCamera(NULL),
-	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
+	m_mainMenuCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+		Math::Angle(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)), Math::Unit::DEGREE),
+		GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
+		GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f)),
+		GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f)), 0.005f),
+	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
-	m_filterTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
-	m_filterMaterial(NULL),
+	m_filterTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
+	m_filterMaterial(&m_filterTexture),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
-	m_filterMesh(NULL),
+	m_filterMesh("plane4.obj"),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
 	m_defaultShadowMinVariance(GET_CONFIG_VALUE_RENDERING("defaultShadowMinVariance", 0.00002f)),
-	m_cubeShadowMap(NULL),
-	m_shadowMaps({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
-		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0) }),
-	m_shadowMapTempTargets({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, true /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
-		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0),
-		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, true, GL_COLOR_ATTACHMENT0) }),
+	m_cubeShadowMap(),
+	m_shadowMaps({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
+	m_shadowMapTempTargets({ Texture(2, 2, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F /* 2 components- R and G- for mean and variance */, GL_RGBA, GL_CLAMP_TO_EDGE /* we do want clamping so that for the pixels outside the shadow map range we don't return some value from a completely different point in the scene */, GL_COLOR_ATTACHMENT0 /* we're going to render color information */),
+		Texture(4, 4, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(8, 8, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(16, 16, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(32, 32, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(64, 64, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(128, 128, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(256, 256, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(512, 512, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(1024, 1024, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0),
+		Texture(2048, 2048, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RG32F, GL_RGBA, GL_CLAMP_TO_EDGE, GL_COLOR_ATTACHMENT0) }),
 	m_samplerMap(),
 	m_lightMatrix(REAL_ZERO /* scale matrix */),
 	m_defaultClipPlane(REAL_ZERO, -REAL_ONE, REAL_ZERO, 1000000 /* a high value so that nothing is culled by the clipping plane */),
@@ -93,12 +97,17 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
 	m_waterDUDVTexture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")),
 	m_waterNormalMap(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")),
-	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ NULL, NULL }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), false, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
-	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, false, GL_COLOR_ATTACHMENT0),
+	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ NULL, NULL }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), GL_REPEAT, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
+	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
-	m_particleQuad(NULL),
+	m_maxParticlesCount(GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000)),
+#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
+	m_particleQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(), 4, m_maxParticlesCount, 21),
+#else
+	m_particleQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(), 4, m_maxParticlesCount, 17),
+#endif
 	//m_particleInstanceVboData(),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -109,8 +118,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_cameraType()
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
-	,m_guiTextures(NULL),
-	m_debugQuad(NULL)
+	//,m_guiTextures(),
+	, m_debugQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) }.data(), 4)
 #endif
 #ifdef CALCULATE_RENDERING_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
@@ -149,22 +158,11 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
 
-	m_filterMaterial = new Material(&m_filterTexture);
-	m_filterMesh = new Mesh("plane4.obj");
-	m_filterMesh->Initialize();
+	m_filterMesh.Initialize();
 
-	//m_cubeShadowMap = new CubeShadowMapTexture(width, height);
-	m_cubeShadowMap = new CubeShadowMap();
-	m_cubeShadowMap->Init(windowWidth, windowHeight);
+	m_cubeShadowMap.Init(windowWidth, windowHeight);
 
-	Math::Vector2D particleVertexPositions[] = { Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) };
-	const int maxParticlesCount = GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000);
-#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 21);
-#else
-	m_particleQuad = new InstanceMesh(particleVertexPositions, 4, maxParticlesCount, 17);
-#endif
-	m_particleInstanceVboData.reserve(maxParticlesCount * m_particleQuad->GetInstanceDataLength());
+	m_particleInstanceVboData.reserve(m_maxParticlesCount * m_particleQuad.GetInstanceDataLength());
 
 	m_mappedValues.SetTexture("displayTexture", &m_displayTexture);
 #ifndef ANT_TWEAK_BAR_ENABLED
@@ -173,33 +171,13 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
 #endif
 
-	/* ==================== Creating a "Main menu camera" begin ==================== */
-	const Math::Real defaultFoV = GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f);
-	const Math::Real defaultAspectRatio = GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600);
-	const Math::Real defaultNearPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f);
-	const Math::Real defaultFarPlane = GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f);
-
-	Math::Angle fov(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", defaultFoV), Math::Unit::DEGREE);
-	Math::Real aspectRatio = GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", defaultAspectRatio);
-	Math::Real zNearPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", defaultNearPlane);
-	Math::Real zFarPlane = GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", defaultFarPlane);
-	m_mainMenuCamera = new Camera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
-		fov, aspectRatio, zNearPlane, zFarPlane, 0.005f);
-	m_currentCamera = m_mainMenuCamera;
-	/* ==================== Creating a "Main menu camera" end ==================== */
+	m_currentCamera = &m_mainMenuCamera;
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_guiTextures.push_back(new GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
-	//m_guiTextures.push_back(new GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
-	//m_guiTextures.push_back(new GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
-	Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
-	m_debugQuad = new GuiMesh(quadVertexPositions, 4);
+	m_guiTextures.push_back(GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
+	//m_guiTextures.push_back(GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
+	//m_guiTextures.push_back(GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 #endif
-
-	/* ==================== Initializing physics logger begin ==================== */
-	std::string loggingLevel = GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info");
-	Utility::Logging::ILogger::GetLogger("Rendering").Fill(loggingLevel, Utility::Logging::INFO);
-	/* ==================== Initializing physics logger end ==================== */
 
 	NOTICE_LOG_RENDERING("Creating Renderer instance finished");
 	STOP_PROFILING;
@@ -216,9 +194,6 @@ Rendering::Renderer::~Renderer(void)
 	// TODO: Deallocating the cameras member variable
 
 	//SAFE_DELETE(altCameraNode);
-	SAFE_DELETE(m_cubeShadowMap);
-	SAFE_DELETE(m_filterMaterial);
-	SAFE_DELETE(m_filterMesh);
 
 	// TODO: m_fontTexture uses the same texture as the fontTexture used in CoreEngine class. That's why we shouldn't SAFE_DELETE font texture here.
 	// Of course, we should deal with it later on more appropriately.
@@ -229,24 +204,8 @@ Rendering::Renderer::~Renderer(void)
 	m_mappedValues.SetMultitexture("waterDepthMap", NULL, 1);
 	m_mappedValues.SetTexture("waterDUDVMap", NULL);
 	m_mappedValues.SetTexture("waterNormalMap", NULL);
-	
-	SAFE_DELETE(m_particleQuad);
-	//for (std::vector<GameNode*>::iterator billboardNodeItr = m_billboardNodes.begin(); billboardNodeItr != m_billboardNodes.end(); ++billboardNodeItr)
-	//{
-	//	SAFE_DELETE(*billboardNodeItr);
-	//}
-	//m_billboardNodes.clear();
 
 	m_mappedValues.SetTexture("shadowMap", NULL);
-
-#ifdef DEBUG_RENDERING_ENABLED
-	for (std::vector<GuiTexture*>::iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
-	{
-		SAFE_DELETE(*guiTextureItr);
-	}
-	m_guiTextures.clear();
-	SAFE_DELETE(m_debugQuad);
-#endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	TwTerminate(); // Terminate AntTweakBar
@@ -450,7 +409,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 //		{
 //			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
 //			//DEBUG_LOG_RENDERING("Binding the cube face #", i);
-//			m_cubeShadowMap->BindForWriting(gCameraDirections[i].cubemapFace);
+//			m_cubeShadowMap.BindForWriting(gCameraDirections[i].cubemapFace);
 //			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 //
 //			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
@@ -619,7 +578,7 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 		m_particleInstanceVboData.push_back(particles[i].CalculateLifeStageFactor());
 #endif
 	}
-	m_particleQuad->Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesCount);
+	m_particleQuad.Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesCount);
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -771,8 +730,8 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader.Bind();
-	filterShader.UpdateUniforms(m_filterTransform, m_filterMaterial, this);
-	m_filterMesh->Draw();
+	filterShader.UpdateUniforms(m_filterTransform, &m_filterMaterial, this);
+	m_filterMesh.Draw();
 
 	m_currentCamera = temp;
 	m_mappedValues.SetTexture("filterTexture", NULL);
@@ -819,7 +778,7 @@ void Rendering::Renderer::FinalizeLightRendering() const
 
 void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 {
-	m_cubeShadowMap->BindForReading(textureUnit);
+	m_cubeShadowMap.BindForReading(textureUnit);
 }
 
 #ifdef DEBUG_RENDERING_ENABLED
@@ -829,12 +788,12 @@ void Rendering::Renderer::RenderDebugNodes(const Shader& guiShader)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
-	for (std::vector<GuiTexture*>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
+	for (std::vector<GuiTexture>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
 	{
-		(*guiTextureItr)->Bind(0);
-		guiShader.SetUniformMatrix("guiTransformationMatrix", (*guiTextureItr)->GetTransformationMatrix());
+		guiTextureItr->Bind(0);
+		guiShader.SetUniformMatrix("guiTransformationMatrix", guiTextureItr->GetTransformationMatrix());
 		guiShader.SetUniformi("guiTexture", 0);
-		m_debugQuad->Draw();
+		m_debugQuad.Draw();
 	}
 	//Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	//m_shadowMaps[9]->Bind();
@@ -962,9 +921,9 @@ void Rendering::Renderer::InitializeTweakBars()
 	{
 		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras are setup by the game manager.");
 		
-		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType,  m_mainMenuCamera, " label='Camera' group=Camera ");
-		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera->GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
-		//TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera->GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
+		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType, &m_mainMenuCamera, " label='Camera' group=Camera ");
+		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera.GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
+		//TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera.GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
 	}
 	else
 	{

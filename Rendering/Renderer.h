@@ -325,16 +325,16 @@ namespace Rendering
 
 		/// <summary> The main menu camera. This camera will be used
 		/// in the main menu rendering when there are no game cameras set up. </summary>
-		Camera* m_mainMenuCamera;
+		Camera m_mainMenuCamera;
 
 		Texture m_displayTexture;
 
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
 		Texture m_filterTexture;
-		Material* m_filterMaterial;
+		Material m_filterMaterial;
 		Math::Transform m_filterTransform;
-		Mesh* m_filterMesh;
+		Mesh m_filterMesh;
 
 		//ShaderFactory m_shaderFactory;
 
@@ -343,7 +343,7 @@ namespace Rendering
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMul;
 
 		const Math::Real m_defaultShadowMinVariance;
-		CubeShadowMap* m_cubeShadowMap; // for use by the point lights
+		CubeShadowMap m_cubeShadowMap; // for use by the point lights
 		//Texture m_cubeShadowMap; // for use by the point lights
 		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMaps;
 		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMapTempTargets;
@@ -380,7 +380,8 @@ namespace Rendering
 		/// </summary>
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_waterNormalVerticalFactor;
 
-		InstanceMesh* m_particleQuad;
+		int m_maxParticlesCount;
+		InstanceMesh m_particleQuad;
 		mutable std::vector<Math::Real> m_particleInstanceVboData;
 
 		MappedValues m_mappedValues;
@@ -399,8 +400,8 @@ namespace Rendering
 
 
 #ifdef DEBUG_RENDERING_ENABLED
-		std::vector<GuiTexture*> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
-		Mesh* m_debugQuad;
+		std::vector<GuiTexture> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
+		GuiMesh m_debugQuad;
 #endif
 
 #ifdef CALCULATE_RENDERING_STATS

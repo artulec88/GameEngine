@@ -367,7 +367,7 @@ void Game::TestGameManager::Load()
 	//	terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, true), "blendMap");
+	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE), "blendMap");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");

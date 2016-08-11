@@ -488,12 +488,6 @@ void Rendering::Mesh::Draw() const
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished drawing the Mesh");
 }
 
-bool Rendering::Mesh::Compare(const Mesh& mesh) const
-{
-	CHECK_CONDITION_RETURN_RENDERING(m_meshData != NULL && mesh.m_meshData != NULL, false, Utility::ERR, "Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
-	return m_meshData->GetVAO() < mesh.m_meshData->GetVAO();
-}
-
 void Rendering::Mesh::CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
 {
 	// TODO: The value 3 for iterationStep works ok only for mode equal to GL_TRIANGLES.
@@ -714,11 +708,11 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
-	,m_positions(NULL),
-	m_kdTree(NULL),
+	,m_positions(),
+	m_kdTree(nullptr),
 	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
-	, m_heights(NULL),
+	, m_heights(),
 	m_gridSquareSize(0)
 #endif
 {
@@ -731,13 +725,13 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
-	, m_positions(NULL),
-	m_kdTree(NULL),
+	, m_positions(),
+	m_kdTree(nullptr),
 	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
 	, m_heightMapWidth(0),
 	m_heightMapHeight(0),
-	m_heights(NULL),
+	m_heights(),
 	m_gridSquareSize(0)
 #endif
 {
@@ -768,7 +762,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 #ifdef HEIGHTS_KD_TREE
 	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 #else
-	m_heights = new Math::Real[m_heightMapWidth * m_heightMapHeight];
+	m_heights.reserve(m_heightMapWidth * m_heightMapHeight);
 	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
 #endif
 	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
@@ -839,13 +833,13 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(vertexCount)
 #ifdef HEIGHTS_KD_TREE
-	, m_positions(NULL),
-	m_kdTree(NULL),
+	, m_positions(m_vertexCount),
+	m_kdTree(nullptr),
 	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
 #elif defined HEIGHTS_HEIGHTMAP
 	, m_heightMapWidth(vertexCount),
 	m_heightMapHeight(vertexCount),
-	m_heights(NULL),
+	m_heights(m_heightMapWidth * m_heightMapHeight),
 	m_gridSquareSize(0)
 #endif
 {
@@ -853,7 +847,6 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 #ifdef HEIGHTS_KD_TREE
 	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
 #else
-	m_heights = new Math::Real[m_heightMapWidth * m_heightMapHeight];
 	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
 #endif
 	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
@@ -919,11 +912,8 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 Rendering::TerrainMesh::~TerrainMesh(void)
 {
 #ifdef HEIGHTS_KD_TREE
-	SAFE_DELETE_JUST_TABLE(m_positions);
-	SAFE_DELETE(m_kdTree);
 #elif defined HEIGHTS_HEIGHTMAP
 	//SAFE_DELETE_WHOLE_TABLE(m_heights, m_vertexCount);
-	SAFE_DELETE_JUST_TABLE(m_heights);
 #endif
 }
 
@@ -932,7 +922,7 @@ int Rendering::TerrainMesh::GetHeightMapIndex(int x, int z) const
 	return (m_heightMapWidth * m_heightMapHeight) - ((z + 1) * m_heightMapWidth) + x;
 }
 
-Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData) const
+Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData)
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
@@ -949,7 +939,7 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char
 	return height;
 }
 
-Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator) const
+Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator)
 {
 	// TODO: Range checking
 	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
@@ -965,7 +955,7 @@ Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::H
 	return height;
 }
 
-Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData) const
+Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData)
 {
 	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightMapData) : REAL_ZERO;
 	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightMapData) : REAL_ZERO;
@@ -976,7 +966,7 @@ Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned ch
 	return normal;
 }
 
-Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator) const
+Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator)
 {
 	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightsGenerator) : REAL_ZERO;
 	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightsGenerator) : REAL_ZERO;
@@ -1078,24 +1068,18 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 	{
 		verticesSet.insert(positions[i]);
 	}
-	std::vector<Math::Vector3D> uniquePositions;
-	uniquePositions.assign(verticesSet.begin(), verticesSet.end());
+	m_positions.assign(verticesSet.begin(), verticesSet.end()); // store only unique positions.
 #ifdef MEASURE_MESH_TIME_ENABLED
 	clock_t end = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
 	DEBUG_LOG_RENDERING("Removing duplicates from the vector of positions took ", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC), " [ms]", );
 #endif
 
-	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&uniquePositions[0], uniquePositions.size(), COMPONENT_Y);
-	//INFO_LOG_RENDERING("The minimum value is ", uniquePositions[0].ToString());
-	//INFO_LOG_RENDERING("The maximum value is ", uniquePositions[uniquePositions.size() - 1].ToString());
+	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&m_positions[0], uniquePositions.size(), COMPONENT_Y);
+	//INFO_LOG_RENDERING("The minimum value is ", m_positions[0].ToString());
+	//INFO_LOG_RENDERING("The maximum value is ", m_positions[uniquePositions.size() - 1].ToString());
 
-	m_vertexCount = uniquePositions.size();
+	m_vertexCount = m_positions.size();
 	INFO_LOG_RENDERING("Terrain consists of ", m_vertexCount, " unique positions");
-	m_positions = new Math::Vector3D[m_vertexCount];
-	for (int i = 0; i < m_vertexCount; ++i)
-	{
-		m_positions[i] = uniquePositions[i];
-	}
 #endif
 
 	/**
@@ -1109,7 +1093,7 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 {
 #ifdef HEIGHTS_KD_TREE
 	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix.ToString());
-	CHECK_CONDITION_EXIT_RENDERING(m_positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(!m_positions.empty(), Utility::EMERGENCY, "Cannot transform the positions. The positions array is empty.");
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
 		//std::string oldPos = positions[i].ToString();
@@ -1119,7 +1103,7 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i].ToString());
 		//}
 	}
-	m_kdTree = new Math::KDTree(m_positions, m_vertexCount, m_kdTreeSamples);
+	m_kdTree = std::make_unique<Math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);
 #endif
 }
 

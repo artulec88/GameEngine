@@ -10,9 +10,11 @@
 
 Rendering::MappedValues::MappedValues()
 {
+	//static Texture defaultTexture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE);
+	//DEFAULT_TEXTURE = &defaultTexture;
 	if (DEFAULT_TEXTURE == NULL)
 	{
-		DEFAULT_TEXTURE = new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, false, GL_NONE);
+		DEFAULT_TEXTURE = new Texture("defaultTexture.png", GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_NONE); // TODO: Get rid of dynamic memory allocation.
 	}
 }
 

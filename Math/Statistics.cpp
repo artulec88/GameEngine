@@ -249,7 +249,7 @@ Math::Real Math::Statistics::MethodStats::CalculateMedian() const
 		return REAL_ZERO;
 	}
 
-	Math::Real* timeSamples = new Math::Real[m_timeSamples.size()]; // Get rid of all "new" operator calls. Replace it with some better C++11 solution.
+	Math::Real* timeSamples = new Math::Real[m_timeSamples.size()]; // TODO: Get rid of all "new" operator calls. Replace it with some better C++11 solution.
 	unsigned int i = 0;
 	for (std::vector<std::pair<bool, Math::Real>>::const_iterator timeSampleItr = m_timeSamples.begin(); timeSampleItr != m_timeSamples.end(); ++timeSampleItr, ++i)
 	{

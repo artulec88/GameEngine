@@ -226,6 +226,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
 	Utility::Logging::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing math logger
 	Utility::Logging::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing utility logger
+	Utility::Logging::ILogger::GetLogger("Rendering").Fill(GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing rendering logger
 
 	NOTICE_LOG_ENGINE("Main application construction started");
 #ifdef CALCULATE_RENDERING_STATS

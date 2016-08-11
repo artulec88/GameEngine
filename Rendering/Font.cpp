@@ -21,7 +21,6 @@ Rendering::Text::Font::Font(const Shader& fontShader, const std::string& fontTex
 	m_textureAtlas(fontTextureAtlasFileName),
 	m_metaDataFileName(fontMetaDataFileName)
 {
-	//m_textureAtlas = new Texture(fontTextureAtlasFileName);
 	DELOCUST_LOG_RENDERING("Creating font: (textureAtlas = ", fontTextureAtlasFileName, "; metaData = ", fontMetaDataFileName, ").");
 	m_aspectRatio = static_cast<Math::Real>(1600) / 900; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
 	//m_aspectRatio = static_cast<Math::Real>(900) / 1600; // TODO: Calculate aspect ratio accordingly. Do not use hard-coded size here.
