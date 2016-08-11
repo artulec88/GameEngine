@@ -23,7 +23,8 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		TextureData(GLenum textureTargets, int widths, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, GLenum wrapping, GLenum* attachments);
+		//TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping, GLenum attachment);
+		TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments);
 		TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth); // cube map texture data
 		~TextureData(void);
 		//TextureData(const TextureData& textureData) = default;

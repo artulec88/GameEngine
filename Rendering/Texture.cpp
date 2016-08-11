@@ -8,7 +8,12 @@
 
 /* static */ const int Rendering::TextureData::MAX_BOUND_TEXTURES_COUNT = 32;
 
-Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, GLenum wrapping, GLenum* attachments) :
+//Rendering::TextureData::TextureData(const std::string& fileName) :
+//	m_textureTarget()
+//{
+//}
+
+Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
 	m_textureTarget(textureTarget),
 	m_texturesCount(texturesCount),
 	m_width(width),
@@ -21,7 +26,7 @@ Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 	m_textureIDs.reserve(texturesCount);
 
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
-	InitTextures(data, filters, internalFormat, format, wrapping);
+	InitTextures(data, filters, internalFormats, formats, wrapping);
 	if (attachments != NULL)
 	{
 		InitRenderTargets(attachments);
