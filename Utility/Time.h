@@ -87,6 +87,16 @@ namespace Utility {
 			UTILITY_API static const float ONE_THOUSAND;
 			UTILITY_API static const float ONE_MILLION;
 			UTILITY_API static const float ONE_BILLION;
+
+			/// <summary> The number of seconds during one minute. </summary>
+			UTILITY_API static const int SECONDS_PER_MINUTE;
+			/// <summary> The number of seconds during one hour. </summary>
+			UTILITY_API static const int SECONDS_PER_HOUR;
+			/// <summary> The number of seconds during one day. </summary>
+			UTILITY_API static const int SECONDS_PER_DAY;
+			/// <summary> The number of days during one year. </summary>
+			UTILITY_API static const int DAYS_PER_YEAR; // We don't account for "przestêpny" years.
+
 			UTILITY_API static Time Now();
 			UTILITY_API static std::string ConvertTimeUnitToString(TimeUnit timeUnit);
 			UTILITY_API static float TimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit);

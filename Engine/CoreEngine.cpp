@@ -174,10 +174,6 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	LATITUDE(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)),
 	LONGITUDE(GET_CONFIG_VALUE_ENGINE("longitude", -16.0f)),
 	TROPIC_OF_CANCER_SINUS(0.39794863131f),
-	SECONDS_PER_MINUTE(60),
-	SECONDS_PER_HOUR(3600),
-	SECONDS_PER_DAY(86400),
-	DAYS_PER_YEAR(365),
 	m_dayNumber(GET_CONFIG_VALUE_ENGINE("startingDayNumber", 172)),
 	m_timeOfDay(GET_CONFIG_VALUE_ENGINE("startingTimeOfDay", REAL_ZERO)),
 	m_daytime(Utility::Timing::NIGHT),
@@ -245,8 +241,8 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	CreatePhysicsEngine();
 	CreateRenderer(width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from configuration file. */);
 
-	m_dayNumber = m_dayNumber % DAYS_PER_YEAR;
-	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
+	m_dayNumber = m_dayNumber % Utility::Timing::Time::DAYS_PER_YEAR;
+	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
 	if (m_timeOfDay < REAL_ZERO)
 	{
 		m_timeOfDay = GetCurrentLocalTime();
@@ -555,9 +551,9 @@ void Engine::CoreEngine::Run()
 		if (m_game->IsInGameTimeCalculationEnabled())
 		{
 			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
-			if (m_timeOfDay > SECONDS_PER_DAY)
+			if (m_timeOfDay > Utility::Timing::Time::SECONDS_PER_DAY)
 			{
-				m_timeOfDay -= SECONDS_PER_DAY; // this will not work if m_clockSpeed > SECONDS_PER_DAY. The time of day will increase until going out of range [0; SECONDS_PER_DAY).
+				m_timeOfDay -= Utility::Timing::Time::SECONDS_PER_DAY; // this will not work if m_clockSpeed > SECONDS_PER_DAY. The time of day will increase until going out of range [0; SECONDS_PER_DAY).
 			}
 			CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
 			ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
@@ -817,10 +813,10 @@ void Engine::CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, 
 
 void Engine::CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
 {
-	inGameHours = static_cast<int>(timeOfDay) / SECONDS_PER_HOUR;
-	Math::Real temp = fmod(m_timeOfDay, static_cast<Math::Real>(SECONDS_PER_HOUR));
-	inGameMinutes = static_cast<int>(temp) / SECONDS_PER_MINUTE;
-	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(SECONDS_PER_MINUTE)));
+	inGameHours = static_cast<int>(timeOfDay) / Utility::Timing::Time::SECONDS_PER_HOUR;
+	Math::Real temp = fmod(m_timeOfDay, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_HOUR));
+	inGameMinutes = static_cast<int>(temp) / Utility::Timing::Time::SECONDS_PER_MINUTE;
+	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_MINUTE)));
 }
 
 size_t Engine::CoreEngine::GetCurrentCameraIndex() const
@@ -856,12 +852,12 @@ Math::Real Engine::CoreEngine::GetCurrentLocalTime() const
 	struct tm timeinfo;
 	time(&rawtime);
 	localtime_s(&timeinfo, &rawtime);
-	int result = SECONDS_PER_HOUR * timeinfo.tm_hour + SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
-	if (result > SECONDS_PER_DAY)
+	int result = Utility::Timing::Time::SECONDS_PER_HOUR * timeinfo.tm_hour + Utility::Timing::Time::SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
+	if (result > Utility::Timing::Time::SECONDS_PER_DAY)
 	{
 		ERROR_LOG_ENGINE("Incorrect local time");
 		// result = REAL_ZERO;
-		result -= SECONDS_PER_DAY;
+		result -= Utility::Timing::Time::SECONDS_PER_DAY;
 	}
 	return static_cast<Math::Real>(result);
 }
@@ -916,7 +912,7 @@ void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
 	//DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
 	//DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
 
-	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * SECONDS_PER_HOUR) / SECONDS_PER_HOUR);
+	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::Timing::Time::SECONDS_PER_HOUR) / Utility::Timing::Time::SECONDS_PER_HOUR);
 	//DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
 
 	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
@@ -925,7 +921,7 @@ void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
 
 	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
 	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
-	bool isAfternoon = (localSolarTime > 12.0f * SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
+	bool isAfternoon = (localSolarTime > 12.0f * Utility::Timing::Time::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
 	if (isAfternoon)
 	{
 		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());

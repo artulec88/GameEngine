@@ -204,10 +204,6 @@ namespace Engine
 		const Math::Angle LATITUDE;
 		const Math::Angle LONGITUDE;
 		const Math::Real TROPIC_OF_CANCER_SINUS;
-		const int SECONDS_PER_MINUTE; // the number of seconds during one minute
-		const int SECONDS_PER_HOUR; // the number of seconds during one hour
-		const int SECONDS_PER_DAY; // the number of seconds during one day
-		const int DAYS_PER_YEAR; // the number of days during one year
 		int m_dayNumber;
 		Math::Real m_timeOfDay;
 		Utility::Timing::Daytime m_daytime;

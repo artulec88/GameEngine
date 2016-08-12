@@ -105,6 +105,10 @@ std::string Utility::Timing::TimeSpan::ToString() const
 /* static */ const float Utility::Timing::Time::ONE_THOUSAND = 1000.0f;
 /* static */ const float Utility::Timing::Time::ONE_MILLION = 1000000.0f;
 /* static */ const float Utility::Timing::Time::ONE_BILLION = 1000000000.0f;
+/* static */ const int Utility::Timing::Time::SECONDS_PER_MINUTE = 60;
+/* static */ const int Utility::Timing::Time::SECONDS_PER_HOUR = 3600;
+/* static */ const int Utility::Timing::Time::SECONDS_PER_DAY = 86400;
+/* static */ const int Utility::Timing::Time::DAYS_PER_YEAR = 365;
 
 /* static */ Utility::Timing::Time Utility::Timing::Time::Now()
 {
