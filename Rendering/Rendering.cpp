@@ -49,8 +49,6 @@ GLsizei Rendering::glScissorBoxWidth, Rendering::glScissorBoxWidthOld;
 GLsizei Rendering::glScissorBoxHeight, Rendering::glScissorBoxHeightOld;
 /* ==================== Scissor test parameters end ==================== */
 
-using namespace Math;
-
 //bool Rendering::FogEffect::FogKey::operator<(const Rendering::FogEffect::FogKey& fog) const
 //{
 //	if (fallOffType != fog.fallOffType)

@@ -12,10 +12,7 @@
 
 #include <sstream>
 
-using namespace Rendering;
-using namespace Utility;
-
-Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
+Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	m_pos(position),
 	m_rot(rotation),
 	m_projection(projectionMatrix),
@@ -35,7 +32,7 @@ Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation,
 {
 }
 
-Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
+Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
 	m_pos(position),
 	m_rot(rotation),
 	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
@@ -55,7 +52,7 @@ Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation,
 {
 }
 
-Camera::~Camera()
+Rendering::Camera::~Camera()
 {
 }
 

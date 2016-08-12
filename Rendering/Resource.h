@@ -6,7 +6,7 @@
 
 namespace Rendering
 {
-
+	// TODO: This class belongs in the Utility library.
 	class Resource
 	{
 		/* ==================== Static variables and functions begin ==================== */
