@@ -15,8 +15,8 @@
 #include "Engine\GravityComponent.h"
 #include "Engine\ParticleGeneratorComponent.h"
 #include "Rendering\Color.h"
-#include "Engine\Builder.h"
-#include "Engine\BuilderDirector.h"
+#include "Engine\GameNodeBuilder.h"
+#include "Utility\BuilderDirector.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -608,9 +608,9 @@ void Game::TestGameManager::AddDirectionalLight()
 	NOTICE_LOG_GAME("Directional lights enabled");
 
 	Engine::DirectionalLightBuilder directionalLightBuilder(this);
-	Engine::BuilderDirector lightBuilderDirector(directionalLightBuilder);
+	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
-	Engine::GameNode* directionalLightNode = directionalLightBuilder.GetGameNode();
+	Engine::GameNode* directionalLightNode = directionalLightBuilder.Get();
 	AddToSceneRoot(directionalLightNode);
 }
 
@@ -622,12 +622,12 @@ void Game::TestGameManager::AddPointLights()
 	}
 
 	Engine::PointLightBuilder pointLightBuilder(this);
-	Engine::BuilderDirector lightBuilderDirector(pointLightBuilder);
+	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(pointLightBuilder);
 	for (int i = 0; i < pointLightCount; ++i)
 	{
 		pointLightBuilder.SetLightIndex(i);
 		lightBuilderDirector.Construct();
-		Engine::GameNode* pointLightNode = pointLightBuilder.GetGameNode();
+		Engine::GameNode* pointLightNode = pointLightBuilder.Get();
 		AddToSceneRoot(pointLightNode);
 
 		//GameNode* bulbNode = new GameNode();
@@ -646,12 +646,12 @@ void Game::TestGameManager::AddSpotLights()
 	}
 
 	Engine::SpotLightBuilder spotLightBuilder(this);
-	Engine::BuilderDirector lightBuilderDirector(spotLightBuilder);
+	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(spotLightBuilder);
 	for (int i = 0; i < spotLightCount; ++i)
 	{
 		spotLightBuilder.SetLightIndex(i);
 		lightBuilderDirector.Construct();
-		Engine::GameNode* spotLightNode = spotLightBuilder.GetGameNode();
+		Engine::GameNode* spotLightNode = spotLightBuilder.Get();
 		AddToSceneRoot(spotLightNode);
 	}
 }
@@ -664,13 +664,13 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
 	Engine::CameraBuilder cameraBuilder(this);
-	Engine::BuilderDirector cameraBuilderDirector(cameraBuilder);
+	Utility::BuilderDirector<Engine::GameNode> cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
 		cameraBuilder.SetCameraIndex(i);
 		cameraBuilder.SetEntityToFollow(entityToFollow);
 		cameraBuilderDirector.Construct();
-		Engine::GameNode* cameraNode = cameraBuilder.GetGameNode();
+		Engine::GameNode* cameraNode = cameraBuilder.Get();
 		AddToSceneRoot(cameraNode);
 	}
 	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
@@ -684,9 +684,9 @@ void Game::TestGameManager::AddSkybox() const
 	DEBUG_LOG_GAME("Creating a skybox");
 
 	Engine::SkyboxBuilder skyboxBuilder;
-	Engine::BuilderDirector skyboxBuilderDirector(skyboxBuilder);
+	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
-	//GameNode* skyboxNode = skyboxBuilder.GetGameNode();
+	//GameNode* skyboxNode = skyboxBuilder.Get();
 	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING;
 }

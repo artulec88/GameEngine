@@ -141,6 +141,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Array.h" />
+    <ClInclude Include="Builder.h" />
+    <ClInclude Include="BuilderDirector.h" />
     <ClInclude Include="CommandLineMapper.h" />
     <ClInclude Include="Config.h" />
     <ClInclude Include="FileManager.h" />
@@ -159,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Array_impl.h" />
+    <ClCompile Include="Builder_impl.h" />
     <ClCompile Include="CommandLineMapper.cpp" />
     <ClCompile Include="Config.cpp" />
     <ClCompile Include="dllmain.cpp">
