@@ -208,7 +208,7 @@ namespace Utility
 				//	(*outItr) << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
 				//		file << "(" << line << "): " << msg.str() << std::endl;
 				//}
-				std::cout << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::Time::Now().ToDateString("%H:%M:%S") << "] " <<
+				std::cout << "[" << LOGGING_LEVEL_NAMES[level] << "] [" << Utility::Timing::DateTime::Now().ToString("%H:%M:%S" /* TODO: Don't use hard-coded format */) << "] " <<
 					file << "(" << line << "): " << msg.str() << std::endl;
 			}
 			/* ==================== Non-static member functions end ==================== */
