@@ -60,14 +60,14 @@ void Engine::DirectionalLightBuilder::SetupLightTransform()
 
 
 	// Setting rotation
-	const Math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleX", -45.0f));
-	const Math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleY", REAL_ZERO));
-	const Math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleZ", REAL_ZERO));
-	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("directionalLightAngleX", defaultDirectionalLightRotationX.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("directionalLightAngleY", defaultDirectionalLightRotationY.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("directionalLightAngleZ", defaultDirectionalLightRotationZ.GetAngleInDegrees()));
+	const Math::Angle defaultDirectionalLightRotationX(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleX", -45.0f), Math::Unit::DEGREE);
+	const Math::Angle defaultDirectionalLightRotationY(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleY", REAL_ZERO), Math::Unit::DEGREE);
+	const Math::Angle defaultDirectionalLightRotationZ(GET_CONFIG_VALUE_ENGINE("defaultDirectionalLightAngleZ", REAL_ZERO), Math::Unit::DEGREE);
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("directionalLightAngleX", defaultDirectionalLightRotationX.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("directionalLightAngleY", defaultDirectionalLightRotationY.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DEBUG_LOG_ENGINE("angleX=", angleX.GetAngleInDegrees(), ", angleY=", angleY.GetAngleInDegrees(), ", angleZ=", angleZ.GetAngleInDegrees(), ", rotMatrix =\n", rotMatrix.ToString());
+	DEBUG_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString(), ", rotMatrix =\n", rotMatrix.ToString());
 	Math::Quaternion rot(rotMatrix);
 	Math::Quaternion rot2(Math::Vector3D(1, 0, 0), angleX);
 	//DEBUG_LOG_ENGINE("rotMatrix =\n", rotMatrix.ToString(), "\n rot =\n", rot.ToString(), "\n rot.ToRotationMatrix() =\n", rot.ToRotationMatrix().ToString(),
@@ -172,9 +172,9 @@ void Engine::PointLightBuilder::SetupLightTransform()
 	m_object->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_object->GetTransform().SetRot(rot);
@@ -249,9 +249,9 @@ void Engine::SpotLightBuilder::SetupLightTransform()
 	m_object->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	Math::Quaternion rot(rotMatrix);
 	m_object->GetTransform().SetRot(rot);
@@ -275,7 +275,7 @@ void Engine::SpotLightBuilder::SetupLightParams()
 	Rendering::Attenuation attenuation(constant, linear, exponent);
 
 	// Setting view angle
-	Math::Angle viewAngle(GET_CONFIG_VALUE_ENGINE("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.GetAngleInRadians()), Math::Unit::RADIAN);
+	Math::Angle viewAngle(GET_CONFIG_VALUE_ENGINE("spotLightViewAngle_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 
 	// Setting shadow info
 	int shadowMapSizeAsPowerOf2 = GET_CONFIG_VALUE_ENGINE("spotLightShadowMapSizeAsPowerOf2_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2); // 2 ^ 10 = 1024
@@ -364,11 +364,11 @@ void Engine::CameraBuilder::SetupCameraTransform()
 	m_object->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.GetAngleInDegrees()));
-	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.GetAngleInDegrees()));
-	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.GetAngleInDegrees()));
+	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
+	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
+	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
-	DELOCUST_LOG_ENGINE("angleX=", angleX.GetAngleInDegrees(), ", angleY=", angleY.GetAngleInDegrees(), ", angleZ=", angleZ.GetAngleInDegrees());
+	DELOCUST_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
 	Math::Quaternion rot(rotMatrix);
 	m_object->GetTransform().SetRot(rot);
 }
@@ -376,7 +376,7 @@ void Engine::CameraBuilder::SetupCameraTransform()
 void Engine::CameraBuilder::SetupCameraParams()
 {
 	// Setting camera parameters
-	Math::Angle fov(GET_CONFIG_VALUE_ENGINE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.GetAngleInDegrees()));
+	Math::Angle fov(GET_CONFIG_VALUE_ENGINE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)));
 	Math::Real aspectRatio = GET_CONFIG_VALUE_ENGINE("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
 	Math::Real zNearPlane = GET_CONFIG_VALUE_ENGINE("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
 	Math::Real zFarPlane = GET_CONFIG_VALUE_ENGINE("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
@@ -385,7 +385,7 @@ void Engine::CameraBuilder::SetupCameraParams()
 	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_ENGINE("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
 	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
 	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
-	Math::Angle initialPitchAngle(GET_CONFIG_VALUE_ENGINE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.GetAngleInDegrees()));
+	Math::Angle initialPitchAngle(GET_CONFIG_VALUE_ENGINE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.Get(Math::Unit::DEGREE)));
 
 	Rendering::Camera* camera = new Rendering::Camera(m_object->GetTransform().GetTransformedPos(), m_object->GetTransform().GetTransformedRot(), fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	Engine::CameraComponent* cameraComponent = new Engine::CameraFollowComponent(camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);

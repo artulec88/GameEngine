@@ -79,12 +79,14 @@ namespace Math
 		return (v < 0) ? -v : v;
 	}
 
-	template<typename Type> Type ToRad(Type angleInDegrees)
+	template<typename Type>
+	constexpr Type ToRad(Type angleInDegrees)
 	{
 		return static_cast<Type>(Math::DEG_TO_RAD_MULTIPLIER * angleInDegrees);
 	}
 
-	template<typename Type> Type ToDeg(Type angleInRadians)
+	template<typename Type>
+	constexpr Type ToDeg(Type angleInRadians)
 	{
 		return static_cast<Type>(Math::RAD_TO_DEG_MULTIPLIER * angleInRadians);
 	}

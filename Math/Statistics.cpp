@@ -341,7 +341,7 @@ void Math::Statistics::ClassStats::StartProfiling(const char* methodName)
 		return;
 	}
 	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
+	CHECK_CONDITION_RETURN_VOID_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
@@ -354,7 +354,7 @@ void Math::Statistics::ClassStats::StopProfiling(const char* methodName)
 		return;
 	}
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
-	//CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
+	CHECK_CONDITION_RETURN_VOID_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }

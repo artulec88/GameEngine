@@ -39,19 +39,29 @@ namespace Math
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		// Explicit constructor, so that Real cannot be easily cast to Angle
+		/// <summary> Angle constructor. Angle object is created based on the given value and the angle unit type. </summary>
+		/// <param name="angle"> The value of the angle. </param>
+		/// <param name="unit"> The unit in which the value of the angle is presented. </param>
+		/// <remarks>
+		/// Explicit constructor is used, so that <code>Real</code> cannot be easily cast to Angle without the developer knowing about that.
+		/// </remarks>
 		MATH_API explicit Angle(Real angle, Unit::UnitType unit = Unit::DEGREE) :
-			m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle)),
-			m_unit(Unit::RADIAN)
+			m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle))
 #ifdef CALCULATE_MATH_STATS
 			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))
 #endif
 		{
 		}
 
-		MATH_API Angle(const Angle& angle); // copy constructor
-		MATH_API Angle(Angle&& angle); // move constructor
+		/// <summary> The angle copy constructor. </summary>
+		/// <param name="angle"> The angle we copy construct from. </param>
+		MATH_API Angle(const Angle& angle);
 
+		/// <summary> The angle move constructor. </summary>
+		/// <param name="angle"> The angle we move construct from. </param>
+		MATH_API Angle(Angle&& angle);
+
+		/// <summary> The angle destructor. </summary>
 		MATH_API ~Angle()
 		{
 		}
@@ -59,13 +69,40 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		MATH_API inline Real GetAngleInDegrees() const;
-		MATH_API inline Real GetAngleInRadians() const;
-		MATH_API bool IsInDegrees() const { return (m_unit == Unit::DEGREE); }
-		MATH_API Unit::UnitType GetUnit() const { return m_unit; }
+		MATH_API inline Real Get(Unit::UnitType unitType) const
+		{
+			START_PROFILING("");
+			switch (unitType)
+			{
+			case Unit::DEGREE:
+				STOP_PROFILING("");
+				return ToDeg(m_angle);
+			case Unit::RADIAN:
+				STOP_PROFILING("");
+				return m_angle;
+			default:
+				ERROR_LOG_MATH("Unknown unit type specified: ", unitType);
+				STOP_PROFILING("");
+				return m_angle;
+			}
+		}
 
-		MATH_API void SetAngleInDegrees(Real angleInDegrees) { m_angle = angleInDegrees; m_unit = Unit::DEGREE; }
-		MATH_API void SetAngleInRadians(Real angleInRadians) { m_angle = angleInRadians; m_unit = Unit::RADIAN; }
+		MATH_API void Set(Real angle, Unit::UnitType unitType)
+		{
+			START_PROFILING("");
+			switch (unitType)
+			{
+			case Unit::DEGREE:
+				m_angle = ToRad(angle);
+				break;
+			case Unit::RADIAN:
+				m_angle = angle;
+				break;
+			default:
+				ERROR_LOG_MATH("Unknown unit type specified: ", unitType);
+			}
+			STOP_PROFILING("");
+		}
 
 		/// <summary>
 		/// Calculates and returns the sine of the current angle.
@@ -74,7 +111,12 @@ namespace Math
 		/// <remarks>
 		/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Sin() const;
+		MATH_API inline Real Sin() const
+		{
+			START_PROFILING("");
+			STOP_PROFILING(""); // TODO: This profiling makes no sense. All the calculation is performed after profiling is stopped.
+			return sin(m_angle);
+		}
 
 		/// <summary>
 		/// The fast trigonometric function calculating the sine of an angle. Given <code>x</code> is the angle in radians the result is the following:
@@ -105,7 +147,12 @@ namespace Math
 		/// <remarks>
 		/// This function is more precise than FastSin1() or FastSin2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Cos() const;
+		MATH_API inline Real Cos() const
+		{
+			START_PROFILING("");
+			STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+			return cos(m_angle);
+		}
 
 		/// <summary>
 		/// The fast trigonometric function calculating the cosine of an angle. Given <code>x</code> is the angle in radians the result is the following:
@@ -136,7 +183,12 @@ namespace Math
 		/// <remarks>
 		/// This function is more precise than FastTan1() or FastTan2() at the expense of its speed. It is way slower than the other ones.
 		/// </remarks>
-		MATH_API inline Real Tan() const;
+		MATH_API inline Real Tan() const
+		{
+			START_PROFILING("");
+			STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
+			return tan(m_angle);
+		}
 
 		/// <summary>
 		/// The fast trigonometric function calculating the tangent of an angle. Given <code>x</code> is the angle in radians the result is the following:
@@ -185,7 +237,6 @@ namespace Math
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		Real m_angle;
-		Unit::UnitType m_unit;
 
 #ifdef CALCULATE_MATH_STATS
 		Statistics::ClassStats& m_classStats;
@@ -194,104 +245,32 @@ namespace Math
 
 	}; /* end class Angle */
 
-	inline Real Angle::GetAngleInDegrees() const
-	{
-		START_PROFILING("");
-		switch (m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING("");
-			return m_angle;
-		case Unit::RADIAN:
-			STOP_PROFILING("");
-			return ToDeg(m_angle);
-		default:
-			STOP_PROFILING("");
-			ERROR_LOG_MATH("Incorrect unit type for angle with amount=", m_angle, " and unit=", m_unit);
-			return m_angle;
-		}
-	}
-
-	inline Real Angle::GetAngleInRadians() const
-	{
-		START_PROFILING("");
-		switch (m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING("");
-			return ToRad(m_angle);
-		case Unit::RADIAN:
-			STOP_PROFILING("");
-			return m_angle;
-		default:
-			ERROR_LOG_MATH("Incorrect unit type for angle with amount=", m_angle, " and unit=", m_unit);
-			STOP_PROFILING("");
-			return m_angle;
-		}
-	}
-
-	inline Real Angle::Sin() const
-	{
-		START_PROFILING("");
-		switch (m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING("");
-			return sin(ToRad(m_angle));
-			break;
-		case Unit::RADIAN:
-		default:
-			STOP_PROFILING("");
-			return sin(m_angle);
-			break;
-		}
-	}
-
 	inline Real Angle::FastSin1() const
 	{
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
 		// In case the angle is outside specified range use: https://pl.wikipedia.org/wiki/Trygonometryczne_wzory_redukcyjne.
-		static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.16605);
-		static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.00761);
+		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.16605);
+		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.00761);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return angleInRad - (ANGLE_SECOND_POWER_FACTOR * angleInRad * angleInRad * angleInRad) +
-			(ANGLE_FOURTH_POWER_FACTOR * angleInRad * angleInRad * angleInRad * angleInRad * angleInRad);
+		return m_angle - (ANGLE_SECOND_POWER_FACTOR * m_angle * m_angle * m_angle) +
+			(ANGLE_FOURTH_POWER_FACTOR * m_angle * m_angle * m_angle * m_angle * m_angle);
 	}
 
 	inline Real Angle::FastSin2() const
 	{
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
-		static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.1666666664);
-		static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0083333315);
-		static const Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0001984090);
-		static const Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000027526);
-		static const Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000000239);
+		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.1666666664);
+		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0083333315);
+		constexpr Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0001984090);
+		constexpr Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000027526);
+		constexpr Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000000239);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return angleInRad - (ANGLE_SECOND_POWER_FACTOR * pow(angleInRad, 3)) + (ANGLE_FOURTH_POWER_FACTOR * pow(angleInRad, 5)) - (ANGLE_SIXTH_POWER_FACTOR * pow(angleInRad, 7)) +
-			(ANGLE_EIGHTH_POWER_FACTOR * pow(angleInRad, 9)) - (ANGLE_TENTH_POWER_FACTOR * pow(angleInRad, 11));
-	}
-
-	inline Real Angle::Cos() const
-	{
-		START_PROFILING("");
-		switch (m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING("");
-			return cos(ToRad(m_angle));
-			break;
-		case Unit::RADIAN:
-		default:
-			STOP_PROFILING("");
-			return cos(m_angle);
-			break;
-		}
+		return m_angle - (ANGLE_SECOND_POWER_FACTOR * pow(m_angle, 3)) + (ANGLE_FOURTH_POWER_FACTOR * pow(m_angle, 5)) - (ANGLE_SIXTH_POWER_FACTOR * pow(m_angle, 7)) +
+			(ANGLE_EIGHTH_POWER_FACTOR * pow(m_angle, 9)) - (ANGLE_TENTH_POWER_FACTOR * pow(m_angle, 11));
 	}
 
 	inline Real Angle::FastCos1() const
@@ -299,73 +278,52 @@ namespace Math
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
 		// In case the angle is outside specified range use: https://pl.wikipedia.org/wiki/Trygonometryczne_wzory_redukcyjne.
-		static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4967);
-		static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.03705);
+		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4967);
+		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.03705);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return REAL_ONE - (ANGLE_SECOND_POWER_FACTOR * angleInRad * angleInRad) + (ANGLE_FOURTH_POWER_FACTOR * angleInRad * angleInRad * angleInRad * angleInRad);
+		return REAL_ONE - (ANGLE_SECOND_POWER_FACTOR * m_angle * m_angle) + (ANGLE_FOURTH_POWER_FACTOR * m_angle * m_angle * m_angle * m_angle);
 	}
 
 	inline Real Angle::FastCos2() const
 	{
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
-		static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4999999963);
-		static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0416666418);
-		static const Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0013888397);
-		static const Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000247609);
-		static const Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000002605);
+		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4999999963);
+		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0416666418);
+		constexpr Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0013888397);
+		constexpr Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000247609);
+		constexpr Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000002605);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return REAL_ONE - (ANGLE_SECOND_POWER_FACTOR * pow(angleInRad, 2)) + (ANGLE_FOURTH_POWER_FACTOR * pow(angleInRad, 4)) -
-			(ANGLE_SIXTH_POWER_FACTOR * pow(angleInRad, 6)) + (ANGLE_EIGHTH_POWER_FACTOR * pow(angleInRad, 8)) - (ANGLE_TENTH_POWER_FACTOR * pow(angleInRad, 10));
-	}
-
-	inline Real Angle::Tan() const
-	{
-		START_PROFILING("");
-		switch (m_unit)
-		{
-		case Unit::DEGREE:
-			STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-			return tan(ToRad(m_angle));
-			break;
-		case Unit::RADIAN:
-		default:
-			STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-			return tan(m_angle);
-			break;
-		}
+		return REAL_ONE - (ANGLE_SECOND_POWER_FACTOR * pow(m_angle, 2)) + (ANGLE_FOURTH_POWER_FACTOR * pow(m_angle, 4)) -
+			(ANGLE_SIXTH_POWER_FACTOR * pow(m_angle, 6)) + (ANGLE_EIGHTH_POWER_FACTOR * pow(m_angle, 8)) - (ANGLE_TENTH_POWER_FACTOR * pow(m_angle, 10));
 	}
 
 	inline Real Angle::FastTan1() const
 	{
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 4]!).
-		//static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.31755);
-		//static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.2033);
+		constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.31755);
+		constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.2033);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return static_cast<Real>(angleInRad + 0.31755 * pow(angleInRad, 3) + 0.2033 * pow(angleInRad, 5));
+		return static_cast<Real>(m_angle + ANGLE_SECOND_POWER_FACTOR * pow(m_angle, 3) + ANGLE_FOURTH_POWER_FACTOR * pow(m_angle, 5));
 	}
 
 	inline Real Angle::FastTan2() const
 	{
 		START_PROFILING("");
 		// TODO: Range checking (the angle, converted to radians, must be in range [0; pi / 2]!).
-		//static const Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4999999963);
-		//static const Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0416666418);
-		//static const Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0013888397);
-		//static const Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000247609);
-		//static const Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000002605);
+		//constexpr Real ANGLE_SECOND_POWER_FACTOR = static_cast<Real>(0.4999999963);
+		//constexpr Real ANGLE_FOURTH_POWER_FACTOR = static_cast<Real>(0.0416666418);
+		//constexpr Real ANGLE_SIXTH_POWER_FACTOR = static_cast<Real>(0.0013888397);
+		//constexpr Real ANGLE_EIGHTH_POWER_FACTOR = static_cast<Real>(0.0000247609);
+		//constexpr Real ANGLE_TENTH_POWER_FACTOR = static_cast<Real>(0.0000002605);
 
-		const Real angleInRad = GetAngleInRadians();
 		STOP_PROFILING(""); // TODO: This profiling makes no sense since most of the computation is done in the return statement itself.
-		return static_cast<Real>(angleInRad + 0.3333314036 * pow(angleInRad, 3) + 0.1333923995 * pow(angleInRad, 5) +
-			0.0533740603 * pow(angleInRad, 7) + 0.0245650893 * pow(angleInRad, 9) + 0.0029005250 * pow(angleInRad, 11) + 0.0095168091 * pow(angleInRad, 13));
+		return static_cast<Real>(m_angle + 0.3333314036 * pow(m_angle, 3) + 0.1333923995 * pow(m_angle, 5) +
+			0.0533740603 * pow(m_angle, 7) + 0.0245650893 * pow(m_angle, 9) + 0.0029005250 * pow(m_angle, 11) + 0.0095168091 * pow(m_angle, 13));
 	}
 
 } /* end namespace Math */
