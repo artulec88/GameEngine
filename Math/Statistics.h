@@ -11,19 +11,19 @@
 
 //#define CALCULATE_STATS
 //#ifdef CALCULATE_STATS
-#define START_PROFILING_STATIC do { s_classStats.StartProfiling(__FUNCTION__); } while (0)
-#define STOP_PROFILING_STATIC do { s_classStats.StopProfiling(__FUNCTION__); } while (0)
-#define START_PROFILING do { m_classStats.StartProfiling(__FUNCTION__); } while (0)
-#define STOP_PROFILING do { m_classStats.StopProfiling(__FUNCTION__); } while (0)
-//#define START_PROFILING_STATIC // just temporary to disable stats storing.
-//#define STOP_PROFILING_STATIC // just temporary to disable stats storing.
-//#define START_PROFILING // just temporary to disable stats storing.
-//#define STOP_PROFILING // just temporary to disable stats storing.
+#define START_PROFILING_STATIC(param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING_STATIC(param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
+#define START_PROFILING(param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING(param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
+//#define START_PROFILING_STATIC(param) // just temporary to disable stats storing.
+//#define STOP_PROFILING_STATIC(param) // just temporary to disable stats storing.
+//#define START_PROFILING(param) // just temporary to disable stats storing.
+//#define STOP_PROFILING(param) // just temporary to disable stats storing.
 //#else
-//#define START_PROFILING_STATIC
-//#define STOP_PROFILING_STATIC
-//#define START_PROFILING
-//#define STOP_PROFILING
+//#define START_PROFILING_STATIC(param)
+//#define STOP_PROFILING_STATIC(param)
+//#define START_PROFILING(param)
+//#define STOP_PROFILING(param)
 //#endif
 
 namespace Math {
@@ -136,7 +136,7 @@ namespace Math {
 			//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 			//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-			MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan, std::fstream& appStatsFile) const;
+			MATH_API void PrintReport(long long elapsedSeconds, std::fstream& appStatsFile) const;
 
 			MATH_API void StartProfiling(const char* methodName);
 			MATH_API void StopProfiling(const char* methodName);

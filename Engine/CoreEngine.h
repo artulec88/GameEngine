@@ -24,7 +24,8 @@
 #ifdef CALCULATE_RENDERING_STATS
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
-#include "Math\UtmostTimeSamples.h"
+#include "Math\UtmostSamples.h"
+#include "Math\UtmostSamples_impl.h"
 #include <vector>
 #endif
 
@@ -39,8 +40,6 @@
 #ifdef COUNT_FPS
 #define DRAW_FPS
 #endif
-
-//#define DRAW_GAME_TIME // TODO: Investigate this macro
 
 //#endif
 
@@ -122,13 +121,8 @@ namespace Engine
 
 		Math::Real GetTime() const;
 		void ClearScreen() const;
-		Math::Real GetCurrentInGameTime() const { return m_timeOfDay; }
-		Math::Angle GetSunElevation() const { return m_sunElevation; }
-		Math::Angle GetSunAzimuth() const { return m_sunAzimuth; }
-		Math::Real GetClockSpeed() const { return m_clockSpeed; }
-		ENGINE_API Utility::Timing::Daytime GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const;
-		void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
-		void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
+		//void ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
+		//void ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const;
 
 		Audio::IAudioEngine& GetAudioEngine() { return *m_audioEngine; }
 
@@ -153,11 +147,6 @@ namespace Engine
 		void CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void Run();
 		void PollEvents();
-		Math::Real GetCurrentLocalTime() const;
-		/**
-		 * See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator
-		 */
-		void CalculateSunElevationAndAzimuth();
 
 #ifdef CALCULATE_RENDERING_STATS
 	public:
@@ -167,16 +156,16 @@ namespace Engine
 		void InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void InitGlfw(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void SetCallbacks();
-		void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostTimeSamples& minMaxTime, double& timeSum) const
+		void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
 		{
 			if (timer.IsRunning())
 			{
 				timer.Stop();
 			}
 			++countStats;
-			Utility::Timing::TimeSpan timeSpan = timer.GetTimeSpan(Utility::Timing::MICROSECOND);
-			minMaxTime.ProcessTime(timeSpan);
-			timeSum += timeSpan.GetValue();
+			long long elapsedTime = timer.GetDuration(Utility::Timing::MICROSECOND);
+			minMaxTime.ProcessSample(elapsedTime);
+			timeSum += elapsedTime;
 		}
 #endif
 
@@ -201,15 +190,6 @@ namespace Engine
 		Physics::PhysicsEngine* m_physicsEngine;
 		std::unique_ptr<Rendering::Renderer> m_renderer; // TODO: Replace unique_ptr with a simple instance of Rendering::Renderer.
 
-		const Math::Angle LATITUDE;
-		const Math::Angle LONGITUDE;
-		const Math::Real TROPIC_OF_CANCER_SINUS;
-		int m_dayNumber;
-		Math::Real m_timeOfDay;
-		Utility::Timing::Daytime m_daytime;
-		Math::Angle m_sunElevation;
-		Math::Angle m_sunAzimuth;
-
 		/// <summary> Specifies where to look for the shader files. </summary>
 		const std::string m_shadersDirectory;
 		/// <summary> Specifies where to look for the model files. </summary>
@@ -226,27 +206,27 @@ namespace Engine
 
 #ifdef CALCULATE_RENDERING_STATS
 		long m_countStats1;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime1;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime1;
 		double m_timeSum1;
 
 		long m_countStats2;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime2;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime2;
 		double m_timeSum2;
 
 		long m_countStats2_1;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime2_1;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_1;
 		double m_timeSum2_1;
 
 		long m_countStats2_2;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime2_2;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_2;
 		double m_timeSum2_2;
 
 		long m_countStats2_3;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime2_3;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime2_3;
 		double m_timeSum2_3;
 
 		long m_countStats3;
-		Math::Statistics::UtmostTimeSamples m_minMaxTime3;
+		Math::Statistics::UtmostSamples<long long> m_minMaxTime3;
 		double m_timeSum3;
 
 		Utility::Timing::Timer m_timer;
@@ -256,18 +236,6 @@ namespace Engine
 		mutable bool m_isSamplingSpf;
 		Math::Statistics::ClassStats& m_classStats;
 		mutable Math::Statistics::Stats<Math::Real> m_stats;
-#endif
-
-#ifdef ANT_TWEAK_BAR_ENABLED
-		Math::Angle M_FIRST_ELEVATION_LEVEL;
-		Math::Angle M_SECOND_ELEVATION_LEVEL;
-		Math::Angle M_THIRD_ELEVATION_LEVEL;
-		Math::Real m_clockSpeed;
-#else
-		const Math::Angle M_FIRST_ELEVATION_LEVEL;
-		const Math::Angle M_SECOND_ELEVATION_LEVEL;
-		const Math::Angle M_THIRD_ELEVATION_LEVEL;
-		const Math::Real m_clockSpeed;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CoreEngine */

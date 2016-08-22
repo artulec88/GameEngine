@@ -3,10 +3,10 @@
 
 #define CALCULATE_GAME_STATS
 #ifndef CALCULATE_GAME_STATS
-#define START_PROFILING_STATIC
-#define STOP_PROFILING_STATIC
-#define START_PROFILING
-#define STOP_PROFILING
+#define START_PROFILING_STATIC(param)
+#define STOP_PROFILING_STATIC(param)
+#define START_PROFILING(param)
+#define STOP_PROFILING(param)
 #endif
 
 //namespace Game

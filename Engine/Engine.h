@@ -12,10 +12,10 @@
 #define CALCULATE_ENGINE_STATS
 
 #ifndef CALCULATE_ENGINE_STATS
-#define START_PROFILING_STATIC
-#define STOP_PROFILING_STATIC
-#define START_PROFILING
-#define STOP_PROFILING
+#define START_PROFILING_STATIC(param)
+#define STOP_PROFILING_STATIC(param)
+#define START_PROFILING(param)
+#define STOP_PROFILING(param)
 #endif
 
 #define GET_CONFIG_VALUE_ENGINE(cfgName, defValue) GET_CONFIG_VALUE("Engine", cfgName, defValue)

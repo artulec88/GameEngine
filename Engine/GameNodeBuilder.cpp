@@ -114,7 +114,10 @@ void Engine::DirectionalLightBuilder::SetupLightParams()
 	const Rendering::Color sunNearHorizonColor(Rendering::Color(GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorRed", REAL_ONE), GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorGreen", 0.2f), GET_CONFIG_VALUE_ENGINE("directionalLightNearHorizonColorBlue", REAL_ZERO)));
 	const Rendering::Color sunlightNighttimeColor(Rendering::Color(GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorRed", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorGreen", REAL_ZERO), GET_CONFIG_VALUE_ENGINE("directionalLightNighttimeColorBlue", REAL_ZERO)));
 
-	m_object->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor));
+	m_object->AddComponent(new DirectionalLightComponent(directionalLight, maxIntensity, sunlightDaytimeColor, sunNearHorizonColor, sunlightNighttimeColor,
+		Math::Angle(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)), Math::Angle(GET_CONFIG_VALUE_ENGINE("longitude", -16.0f)),
+		Math::Angle(GET_CONFIG_VALUE_ENGINE("sunlightFirstElevationLevel", -REAL_ONE)), Math::Angle(GET_CONFIG_VALUE_ENGINE("sunlightSecondElevationLevel", REAL_ZERO)),
+		Math::Angle(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE))));
 
 	m_gameManager->AddLight(directionalLight);
 }
@@ -448,7 +451,7 @@ void Engine::SkyboxBuilder::BuildMeshRenderer()
 
 Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
 {
-	//START_PROFILING;
+	//START_PROFILING("");
 	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
 	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
 	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
@@ -510,7 +513,7 @@ Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::s
 		ERROR_LOG_ENGINE("Cube map texture is NULL");
 		exit(EXIT_FAILURE);
 	}
-	//STOP_PROFILING;
+	//STOP_PROFILING("");
 	return cubeMapTexture;
 }
 /* ==================== CameraBuilder implementation end ==================== */

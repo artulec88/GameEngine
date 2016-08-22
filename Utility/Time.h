@@ -3,13 +3,22 @@
 
 #include "Utility.h"
 //#include "ISerializable.h"
-#include <string>
-#include <Windows.h> // TODO: This is a platform-dependent header. It shouldn't be directly included here.
-//#include <winnt.h>
+#include "TimeSpan.h"
 
-#define START_TIMER(timerID) Utility::Timing::Timer timerID; timerID.Start();
+#include <string>
+#include <chrono>
+
+#define TIME_MEASUREMENT_ENABLED
+
+#ifdef TIME_MEASUREMENT_ENABLED
+#define START_TIMER(timerID) Utility::Timing::Timer timerID; do { timerID.Start(); } while(0)
 #define RESET_TIMER(timerID) do { if (true) { timerID.Reset(); } } while(0)
 #define STOP_TIMER(timerID, countStats, minMaxTime, timeSum) do { if (true) timerID.Stop(); } while (0)
+#else
+#define START_TIMER(timerID)
+#define RESET_TIMER(timerID)
+#define STOP_TIMER(timerID, countStats, minMaxTime, timeSum)
+#endif
 
 namespace Utility {
 	namespace Timing
@@ -22,18 +31,6 @@ namespace Utility {
 			DAY,
 			SUNSET,
 			AFTER_DUSK
-		};
-
-		/// <summary> Possible time units. </summary>
-		enum TimeUnit
-		{
-			HOUR = 0,
-			MINUTE,
-			SECOND,
-			MILLISECOND,
-			MICROSECOND,
-			NANOSECOND,
-			TIME_UNITS_COUNT, // the number of all possible date-time units
 		};
 
 		///// <summary> Possible months. </summary>
@@ -54,102 +51,32 @@ namespace Utility {
 		//	MONTHS_COUNT, // the number of months
 		//};
 
-		/// <summary>
-		/// The time span objects are used particularly for time measurement.
-		/// </summary>
-		class TimeSpan
-		{
-			/* ==================== Static variables and functions begin ==================== */
-			/* ==================== Static variables and functions end ==================== */
-
-			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			/// <summary>
-			/// The time span default constructor.
-			/// </summary>
-			UTILITY_API TimeSpan();
-			/// <summary>
-			/// The time span constructor.
-			/// </summary>
-			/// <param name="timeValue"> The time span value. </param>
-			/// <param name="timeUnit"> The time unit in which the value is represented. </param>
-			UTILITY_API TimeSpan(float timeValue, TimeUnit timeUnit);
-			/// <summary>
-			/// The time span destructor.
-			/// </summary>
-			UTILITY_API ~TimeSpan();
-			/// <summary>
-			/// The time span copy constructor.
-			/// </summary>
-			UTILITY_API TimeSpan(const TimeSpan& timeSpan);
-			/// <summary>
-			/// The time span move constructor.
-			/// </summary>
-			UTILITY_API TimeSpan(TimeSpan&& timeSpan);
-			/* ==================== Constructors and destructors end ==================== */
-
-			/* ==================== Non-static member functions begin ==================== */
-		public:
-			/// <summary> Gets the time span value. </summary>
-			/// <returns> The value of the time span. </returns>
-			UTILITY_API inline float GetValue() const { return m_value; }
-			/// <summary> Gets the time span unit. </summary>
-			/// <returns> The time unit of the time span. </returns>
-			UTILITY_API inline TimeUnit GetTimeUnit() const { return m_timeUnit; }
-			/// <summary>
-			/// Adjusts time unit to the value, e.g. if value is equal to 0.003 and the unit is [s] the function will replace it so that value equals 3 and the unit is [ms].
-			/// </summary>
-			UTILITY_API void AdjustUnitToValue();
-			UTILITY_API TimeSpan CalculateTimeSpanWithAdjustedUnitToValue() const;
-			UTILITY_API TimeSpan& operator/=(int s);
-			/// <summary>
-			/// The time span copy assignment operator.
-			/// </summary>
-			UTILITY_API void operator=(const TimeSpan& timeSpan);
-			/// <summary>
-			/// The time span move assignment operator.
-			/// </summary>
-			UTILITY_API void operator=(TimeSpan&& timeSpan);
-			UTILITY_API bool operator==(const TimeSpan& timeSpan) const;
-			UTILITY_API bool operator!=(const TimeSpan& timeSpan) const;
-			UTILITY_API bool operator<(const TimeSpan &timeSpan) const;
-			UTILITY_API bool operator>(const TimeSpan &timeSpan) const;
-			UTILITY_API std::string ToString() const;
-			/* ==================== Non-static member functions end ==================== */
-
-			/* ==================== Non-static member variables begin ==================== */
-		private:
-			float m_value;
-			TimeUnit m_timeUnit;
-			/* ==================== Non-static member variables end ==================== */
-		}; /* end class TimeSpan */
-
 		class DateTime
 		{
 			/* ==================== Static variables and functions begin ==================== */
 		public:
-			static constexpr int MONTHS_COUNT = 12;
-			static const std::array<int, MONTHS_COUNT> DAYS_COUNT_IN_MONTH;
-			static const std::array<int, MONTHS_COUNT> DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR;
-			static const std::array<std::array<float, TIME_UNITS_COUNT>, TIME_UNITS_COUNT> TIME_UNITS_CONVERSION_FACTORS;
 			/// <summary> The number of nanoseconds in one microsecond. </summary>
-			static const int NANOSECONDS_PER_MICROSECOND;
+			static constexpr int NANOSECONDS_PER_MICROSECOND = 1000;
 			/// <summary> The number of microseconds in one millisecond. </summary>
-			static const int MICROSECONDS_PER_MILLISECOND;
+			static constexpr int MICROSECONDS_PER_MILLISECOND = 1000;
 			/// <summary> The number of milliseconds during one second. </summary>
-			static const int MILLISECONDS_PER_SECOND;
+			static constexpr int MILLISECONDS_PER_SECOND = 1000;
 			/// <summary> The number of seconds during one minute. </summary>
-			static const int SECONDS_PER_MINUTE;
+			static constexpr int SECONDS_PER_MINUTE = 60;
 			/// <summary> The number of seconds during one hour. </summary>
-			static const int SECONDS_PER_HOUR;
+			static constexpr int SECONDS_PER_HOUR = 3600;
 			/// <summary> The number of seconds during one day. </summary>
-			static const int SECONDS_PER_DAY;
+			static constexpr int SECONDS_PER_DAY = 86400;
 			/// <summary> The number of minutes during one hour. </summary>
-			static const int MINUTES_PER_HOUR;
+			static constexpr int MINUTES_PER_HOUR = 60;
 			/// <summary> The number of hours during one day. </summary>
-			static const int HOURS_PER_DAY;
+			static constexpr int HOURS_PER_DAY = 24;
 			/// <summary> The number of days during one year. </summary>
-			static const int DAYS_PER_YEAR; // We don't account for "przestêpny" years.
+			static constexpr int DAYS_PER_YEAR = 365; // We don't account for "przestêpny" years.
+			static constexpr int MONTHS_COUNT = 12;
+			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<int, MONTHS_COUNT> DAYS_COUNT_IN_MONTH;
+			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<int, MONTHS_COUNT> DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR;
+			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<std::array<float, TIME_UNITS_COUNT>, TIME_UNITS_COUNT> TIME_UNITS_CONVERSION_FACTORS;
 
 			/// <summary>
 			/// Calculates and return current local time.
@@ -166,13 +93,14 @@ namespace Utility {
 		public:
 			/// <summary> Date time constructor. </summary>
 			/// <param name="year"> The year. </param>
-			/// <param name="month"> The month. The value must lie in range from <code>0</code>, which represents January, to <code>11</code>, which represents December. </param>
-			/// <param name="day"> The day. The value must lie in range from <code>0</code> to the number of days in the specified <paramref name="month"/> exclusive. </param>
+			/// <param name="month"> The month. The value must lie in range from <code>1</code>, which represents January, to <code>12</code>, which represents December. </param>
+			/// <param name="day"> The day. The value must lie in range from <code>1</code> to the number of days in the specified <paramref name="month"/> exclusive. </param>
 			/// <param name="hour"> The hour. The value must lie in range from <code>0</code> to <code>23</code>. </param>
 			/// <param name="minute"> The minute. The value must lie in range from <code>0</code> to <code>59</code>. </param>
 			/// <param name="second"> The second. The value must lie in range from <code>0</code> to <code>59</code>. </param>
 			/// <param name="millisecond"> The millisecond. The value must lie in range from <code>0</code> to <code>999</code>. </param>
-			UTILITY_API DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond = 0);
+			UTILITY_API DateTime(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int minute, unsigned int second);
+			UTILITY_API DateTime(const std::chrono::system_clock::time_point& timePoint);
 			UTILITY_API ~DateTime();
 			UTILITY_API DateTime(const DateTime& dateTime);
 			UTILITY_API DateTime(DateTime&& dateTime);
@@ -186,10 +114,25 @@ namespace Utility {
 			//DateTime operator-(const DateTime& dateTime);
 			//DateTime& operator+=(const DateTime& dateTime);
 
-			UTILITY_API DateTime operator+(const TimeSpan& timeSpan);
-			UTILITY_API DateTime operator-(const TimeSpan& timeSpan);
-			UTILITY_API DateTime& operator+=(const TimeSpan& timeSpan);
-			UTILITY_API DateTime& operator-=(const TimeSpan& timeSpan);
+			DateTime operator+(const TimeSpan& timeSpan)
+			{
+				return DateTime(*this) += timeSpan;
+			}
+			DateTime operator-(const TimeSpan& timeSpan)
+			{
+				return DateTime(*this) -= timeSpan;
+			}
+			DateTime& operator+=(const TimeSpan& timeSpan)
+			{
+				m_timePoint += std::chrono::duration_cast<std::chrono::seconds, long long, std::nano>(std::chrono::nanoseconds(timeSpan.GetValue()));
+				//m_timePoint += timeSpan.GetDuration();
+				return *this;
+			}
+			DateTime& operator-=(const TimeSpan& timeSpan)
+			{
+				m_timePoint -= std::chrono::duration_cast<std::chrono::seconds, long long, std::nano>(std::chrono::nanoseconds(timeSpan.GetValue()));
+				return *this;
+			}
 
 			UTILITY_API bool operator==(const DateTime& dateTime) const;
 			UTILITY_API bool operator!=(const DateTime& dateTime) const;
@@ -200,12 +143,12 @@ namespace Utility {
 			/// Returns the number of days that has passed since the beginning of the year. We assume the year has 365 days (we don't take into account the "przestêpny" years).
 			/// </summary>
 			/// <returns> Number of days counting from the beginning of the year. </returns>
-			UTILITY_API int GetDayInYear() const;
+			//UTILITY_API int GetDayInYear() const;
 			/// <summary>
 			/// Returns the number of milliseconds that has passed since the beginning of the day.
 			/// </summary>
 			/// <returns> Number of milliseconds counting from the beginning of the day. </returns>
-			UTILITY_API int GetDayTime() const;
+			//UTILITY_API int GetDayTime() const;
 
 			/// <summary>
 			/// Converts the <code>Time</code> object into the string in a given date/time format.
@@ -215,62 +158,69 @@ namespace Utility {
 			/// </remarks>
 			UTILITY_API std::string ToString(const char *format = "%Y-%m-%d %H:%M:%S") const;
 		private:
-			DateTime& AddTimeSpan(float timeSpanValue, TimeUnit timeUnit);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			int m_year;
-			int m_month;
-			int m_day;
-			int m_hour;
-			int m_minute;
-			int m_second;
-			int m_millisecond;
-			//int m_microsecond;
-			//int m_nanosecond;
+			std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds /* std::chrono::system_clock::duration */> m_timePoint;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class DateTime */
 
+		/// <summary>
+		/// The timer which can be used to measure the passing time.
+		/// </summary>
 		class Timer
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		private:
-			static bool isFrequencyInitialized;
-			static LARGE_INTEGER frequency;
-		public:
-			UTILITY_API static LARGE_INTEGER GetFrequency();
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Timer constructor. </summary>
 			UTILITY_API Timer();
+			/// <summary> Timer destructor. </summary>
 			UTILITY_API ~Timer();
+			Timer(const Timer& timer) = delete;
+			Timer(Timer&& timer) = delete;
+			Timer& operator=(const Timer& timer) = delete;
+			Timer& operator=(Timer&& timer) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			UTILITY_API TimeSpan GetTimeSpan() const;
-			UTILITY_API TimeSpan GetTimeSpan(TimeUnit timeUnit) const;
+			UTILITY_API inline long long GetDuration(TimeUnit timeUnit = NANOSECOND) const
+			{
+				const long long ns = CalculateElapsedTimeInNanoseconds();
+				switch (timeUnit)
+				{
+				case HOUR: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(HOUR, NANOSECOND));
+				case MINUTE: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MINUTE, NANOSECOND));
+				case SECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(SECOND, NANOSECOND));
+				case MILLISECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MILLISECOND, NANOSECOND));
+				case MICROSECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MICROSECOND, NANOSECOND));
+				case NANOSECOND: return ns;
+				default:
+					//ERROR_LOG_UTILITY("Incorrect time unit specified: ", timeUnit);
+					return ns;
+				}
+			}
 
 			UTILITY_API void Start();
 			UTILITY_API void Reset();
 			UTILITY_API void Stop();
 			UTILITY_API bool IsRunning() const { return m_isRunning; }
 		private:
-			float CalculateElapsedTimeInMilliseconds() const
+			inline long long CalculateElapsedTimeInNanoseconds() const
 			{
-				//LONGLONG diff = m_stopTime.QuadPart - m_startTime.QuadPart;
-				//INFO_LOG_UTILITY("diff = ", diff, ", frequency = ", GetFrequency().QuadPart);
-				return static_cast<float>(1000.0f * (m_stopTime.QuadPart - m_startTime.QuadPart)) / GetFrequency().QuadPart; // in [s]
+				return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
 			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
+			std::chrono::time_point<std::chrono::system_clock> m_startTime;
+			std::chrono::time_point<std::chrono::system_clock> m_stopTime;
 			bool m_isRunning;
-			LARGE_INTEGER m_startTime;
-			LARGE_INTEGER m_stopTime;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Timer */
 

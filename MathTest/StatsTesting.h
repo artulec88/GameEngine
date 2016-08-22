@@ -9,15 +9,15 @@
 #undef START_PROFILING
 #undef STOP_PROFILING
 
-#define START_PROFILING_STATIC do { s_classStats.StartProfiling(__FUNCTION__); } while (0)
-#define STOP_PROFILING_STATIC do { s_classStats.StopProfiling(__FUNCTION__); } while (0)
-#define START_PROFILING do { m_classStats.StartProfiling(__FUNCTION__); } while (0)
-#define STOP_PROFILING do { m_classStats.StopProfiling(__FUNCTION__); } while (0)
+#define START_PROFILING_STATIC(param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING_STATIC(param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
+#define START_PROFILING(param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING(param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
 #else
-#define START_PROFILING_STATIC
-#define STOP_PROFILING_STATIC
-#define START_PROFILING
-#define STOP_PROFILING
+#define START_PROFILING_STATIC(param)
+#define STOP_PROFILING_STATIC(param)
+#define START_PROFILING(param)
+#define STOP_PROFILING(param)
 #endif
 
 #endif

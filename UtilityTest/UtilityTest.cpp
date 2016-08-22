@@ -1,6 +1,7 @@
 #include "Utility\ICommandLineMapper.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
+#include "Utility\TimeSpan.h"
 #include "Utility\Array.h"
 //#include "Utility\Array_impl.h"
 #include "Utility\StringUtility.h"
@@ -118,12 +119,12 @@ void TimeTest()
 
 	NOTICE_LOG(MODULE_NAME, "Time span test started");
 	/* ==================== TIME TEST #1- TimeSpan operations- begin ==================== */
-	Timing::TimeSpan timeSpan1(0.003f, Timing::SECOND);
-	Timing::TimeSpan timeSpan2(4.0f, Timing::MILLISECOND);
-	Timing::TimeSpan timeSpan3(4.0f, Timing::MILLISECOND);
-	Timing::TimeSpan timeSpan4(3000.0f, Timing::MICROSECOND);
+	Timing::TimeSpan timeSpan1(3);
+	Timing::TimeSpan timeSpan2(4, Timing::MILLISECOND);
+	Timing::TimeSpan timeSpan3(4000, Timing::MICROSECOND);
+	Timing::TimeSpan timeSpan4(3, Timing::NANOSECOND);
 	Timing::TimeSpan timeSpan5(timeSpan1);
-	Timing::TimeSpan timeSpan6(2.0f, Timing::MILLISECOND);
+	Timing::TimeSpan timeSpan6(2, Timing::MILLISECOND);
 
 	TestReport(!(timeSpan1 == timeSpan2), "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
 	TestReport(timeSpan1 != timeSpan2, "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
@@ -145,38 +146,20 @@ void TimeTest()
 	TestReport(!(timeSpan3 > timeSpan2), "The operator > returned incorrect result. TimeSpan: " + timeSpan3.ToString() + " should not be bigger than timespan: " + timeSpan2.ToString());
 	TestReport(!(timeSpan2 < timeSpan3), "The operator < returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should not be smaller than timespan: " + timeSpan3.ToString());
 
-	timeSpan1.AdjustUnitToValue();
-	TestReport(timeSpan1 == timeSpan5, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan1 != timeSpan5), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan5 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan5.ToString() + " should not be bigger than timespan: " + timeSpan1.ToString());
-	TestReport(!(timeSpan1 < timeSpan5), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " should not be smaller than timespan: " + timeSpan5.ToString());
+	//timeSpan2 /= 2.0;
 
-	timeSpan5 = timeSpan1.CalculateTimeSpanWithAdjustedUnitToValue();
-
-	TestReport(timeSpan1 == timeSpan5, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan1 != timeSpan5), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan5 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan5.ToString() + " should not be bigger than timespan: " + timeSpan1.ToString());
-	TestReport(!(timeSpan1 < timeSpan5), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " should not be smaller than timespan: " + timeSpan5.ToString());
-	
-	TestReport(!(timeSpan6 == timeSpan2), "The operator == returned incorrect result. TimeSpan: " + timeSpan6.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
-	TestReport(timeSpan6 != timeSpan2, "The operator != returned incorrect result. TimeSpan: " + timeSpan6.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
-	TestReport(timeSpan2 > timeSpan6, "The operator > returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should be bigger than timespan: " + timeSpan6.ToString());
-	TestReport(timeSpan6 < timeSpan2, "The operator < returned incorrect result. TimeSpan: " + timeSpan6.ToString() + " should be smaller than timespan: " + timeSpan2.ToString());
-
-	timeSpan2 /= 2.0f;
-
-	TestReport(timeSpan2 == timeSpan6, "The operator == returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan6.ToString());
-	TestReport(!(timeSpan2 != timeSpan6), "The operator != returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan6.ToString());
-	TestReport(!(timeSpan6 > timeSpan2), "The operator > returned incorrect result. TimeSpan: " + timeSpan6.ToString() + " should not be bigger than timespan: " + timeSpan2.ToString());
-	TestReport(!(timeSpan2 < timeSpan6), "The operator < returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should not be smaller than timespan: " + timeSpan6.ToString());
+	//TestReport(timeSpan2 == timeSpan6, "The operator == returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan6.ToString());
+	//TestReport(!(timeSpan2 != timeSpan6), "The operator != returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan6.ToString());
+	//TestReport(!(timeSpan6 > timeSpan2), "The operator > returned incorrect result. TimeSpan: " + timeSpan6.ToString() + " should not be bigger than timespan: " + timeSpan2.ToString());
+	//TestReport(!(timeSpan2 < timeSpan6), "The operator < returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should not be smaller than timespan: " + timeSpan6.ToString());
 	/* ==================== TIME TEST #1- TimeSpan operations- end ==================== */
 
 	/* ==================== TIME TEST #2- DateTime operations- begin ==================== */
-	Utility::Timing::DateTime dateTime1(2016, 2, 22, 10, 0, 0, 0);
+	Utility::Timing::DateTime dateTime1(2016, 2, 22, 10, 0, 0);
 	Utility::Timing::DateTime dateTime2(dateTime1);
-	Utility::Timing::DateTime dateTime3(2016, 2, 22, 9, 0, 0, 0);
-	Utility::Timing::DateTime dateTime4(2016, 0, 0, 9, 0, 0, 0);
-	Utility::Timing::DateTime dateTime5(2016, 11, 30, 23, 59, 59, 0);
+	Utility::Timing::DateTime dateTime3(2016, 2, 22, 9, 0, 0);
+	Utility::Timing::DateTime dateTime4(2016, 1, 0, 9, 0, 0);
+	Utility::Timing::DateTime dateTime5(2016, 11, 30, 23, 59, 59);
 
 	TestReport(dateTime1 == dateTime2, "The operator == returned incorrect result. DateTime: " + dateTime1.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
 	TestReport(!(dateTime1 != dateTime2), "The operator != returned incorrect result. DateTime: " + dateTime1.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
@@ -184,14 +167,14 @@ void TimeTest()
 	TestReport(dateTime1 > dateTime4, "The operator > returned incorrect result. DateTime: " + dateTime1.ToString() + " should be later than dateTime: " + dateTime4.ToString());
 	TestReport(dateTime1 < dateTime5, "The operator < returned incorrect result. DateTime: " + dateTime1.ToString() + " should be earlier than dateTime: " + dateTime5.ToString());
 
-	TestReport(dateTime1.GetDayTime() > dateTime3.GetDayTime(), "Incorrect day time calculationg. Day time for dateTime: " +
-		dateTime1.ToString("%H:%M:%S") + " should be greater than day time for dateTime: " + dateTime3.ToString("%H:%M:%S"));
-	TestReport(dateTime2.GetDayTime() < dateTime5.GetDayTime(), "Incorrect day time calculationg. Day time for dateTime: " +
-		dateTime2.ToString("%H:%M:%S") + " should be less than day time for dateTime: " + dateTime5.ToString("%H:%M:%S"));
-	TestReport(dateTime4.GetDayInYear() == 0, "The dateTime: " + dateTime4.ToString("%Y:%m:%d") + " should be the first day in year.");
-	TestReport(dateTime5.GetDayInYear() == 364, "The dateTime: " + dateTime4.ToString("%Y:%m:%d") + " should be the last day in year.");
+	//TestReport(dateTime1.GetDayTime() > dateTime3.GetDayTime(), "Incorrect day time calculationg. Day time for dateTime: " +
+	//	dateTime1.ToString("%H:%M:%S") + " should be greater than day time for dateTime: " + dateTime3.ToString("%H:%M:%S"));
+	//TestReport(dateTime2.GetDayTime() < dateTime5.GetDayTime(), "Incorrect day time calculationg. Day time for dateTime: " +
+	//	dateTime2.ToString("%H:%M:%S") + " should be less than day time for dateTime: " + dateTime5.ToString("%H:%M:%S"));
+	//TestReport(dateTime4.GetDayInYear() == 0, "The dateTime: " + dateTime4.ToString("%Y:%m:%d") + " should be the first day in year.");
+	//TestReport(dateTime5.GetDayInYear() == 364, "The dateTime: " + dateTime4.ToString("%Y:%m:%d") + " should be the last day in year.");
 
-	dateTime1 += Timing::TimeSpan(64.5f, Timing::MINUTE);
+	dateTime1 += Timing::TimeSpan(64, Timing::MINUTE);
 	TestReport(dateTime1 > dateTime2, "The operator > returned incorrect result. DateTime: " + dateTime1.ToString() + " should be later than dateTime: " + dateTime2.ToString());
 	TestReport(!(dateTime1 == dateTime2), "The operator == returned incorrect result. DateTime: " + dateTime1.ToString() + " should not be equal to dateTime: " + dateTime2.ToString());
 	TestReport(dateTime1 != dateTime2, "The operator != returned incorrect result. DateTime: " + dateTime1.ToString() + " should not be equal to dateTime: " + dateTime2.ToString());
@@ -199,11 +182,11 @@ void TimeTest()
 	TestReport(dateTime1 > dateTime4, "The operator > returned incorrect result. DateTime: " + dateTime1.ToString() + " should be later than dateTime: " + dateTime4.ToString());
 	TestReport(dateTime1 < dateTime5, "The operator < returned incorrect result. DateTime: " + dateTime1.ToString() + " should be earlier than dateTime: " + dateTime5.ToString());
 
-	dateTime3 += Timing::TimeSpan(3600.0f, Timing::SECOND);
+	dateTime3 += Timing::TimeSpan(3600, Timing::SECOND);
 	TestReport(dateTime3 == dateTime2, "The operator == returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
 	TestReport(!(dateTime3 != dateTime2), "The operator != returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
-	dateTime3 += Timing::TimeSpan(42141.5f, Timing::HOUR);
-	const Timing::DateTime dateTime6(2021, 0, 12, 7, 30, 0, 0);
+	dateTime3 += Timing::TimeSpan(42141, Timing::HOUR);
+	const Timing::DateTime dateTime6(2020, 12, 13, 7, 0, 0);
 	TestReport(dateTime3 == dateTime6, "The operator == returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime6.ToString());
 	TestReport(!(dateTime3 != dateTime6), "The operator != returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime6.ToString());
 	TestReport(dateTime3 > dateTime4, "The operator > returned incorrect result. DateTime: " + dateTime3.ToString() + " should be later than dateTime: " + dateTime4.ToString());
@@ -211,10 +194,10 @@ void TimeTest()
 	TestReport(dateTime3 > dateTime5, "The operator > returned incorrect result. DateTime: " + dateTime3.ToString() + " should be later than dateTime: " + dateTime5.ToString());
 	TestReport(dateTime5 < dateTime3, "The operator < returned incorrect result. DateTime: " + dateTime5.ToString() + " should be earlier than dateTime: " + dateTime3.ToString());
 
-	dateTime3 -= Timing::TimeSpan(42141.5f, Timing::HOUR);
+	dateTime3 -= Timing::TimeSpan(42141, Timing::HOUR);
 	TestReport(dateTime3 == dateTime2, "The operator == returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
 	TestReport(!(dateTime3 != dateTime2), "The operator != returned incorrect result. DateTime: " + dateTime3.ToString() + " should be equal to dateTime: " + dateTime2.ToString());
-	const Timing::DateTime dateTime7 = dateTime3 - Timing::TimeSpan(3600.0f, Timing::SECOND);
+	const Timing::DateTime dateTime7 = dateTime3 - Timing::TimeSpan(3600, Timing::SECOND);
 	TestReport(dateTime3 > dateTime7, "The operator > returned incorrect result. DateTime: " + dateTime3.ToString() + " should be later than dateTime: " + dateTime7.ToString());
 	TestReport(dateTime7 < dateTime3, "The opearator < returned incorrect result. DateTime: " + dateTime7.ToString() + " should be earlier than dateTime: " + dateTime3.ToString());
 	/* ==================== TIME TEST #2- DateTime operations- end ==================== */

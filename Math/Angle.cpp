@@ -33,19 +33,19 @@ Angle Angle::operator-() const
 
 Angle Angle::operator+(const Angle& angle) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	switch (m_unit)
 	{
 	case Unit::DEGREE:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		return Angle(m_angle + angle.GetAngleInDegrees(), m_unit);
 		break;
 	case Unit::RADIAN:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		return Angle(m_angle + angle.GetAngleInRadians(), m_unit);
 		break;
 	default:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		ERROR_LOG_MATH("Cannot add two angles. The angle is specified in unknown unit type (", m_unit, ")");
 		return Angle(*this);
 	}
@@ -53,19 +53,19 @@ Angle Angle::operator+(const Angle& angle) const
 
 Angle Angle::operator-(const Angle& angle) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	switch (m_unit)
 	{
 	case Unit::DEGREE:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		return Angle(m_angle - angle.GetAngleInDegrees(), m_unit);
 		break;
 	case Unit::RADIAN:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		return Angle(m_angle - angle.GetAngleInRadians(), m_unit);
 		break;
 	default:
-		STOP_PROFILING;
+		STOP_PROFILING("");
 		ERROR_LOG_MATH("Cannot subtract two angles. The angle is specified in unknown unit type (", m_unit, ")");
 		return Angle(*this);
 	}
@@ -83,7 +83,7 @@ Angle Angle::operator/(Real s) const
 
 Angle& Angle::operator+=(const Angle& angle)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	switch (m_unit)
 	{
 	case Unit::DEGREE:
@@ -95,13 +95,13 @@ Angle& Angle::operator+=(const Angle& angle)
 	default:
 		ERROR_LOG_MATH("Cannot add two angles. The angle is specified in unknown unit type (", m_unit, ")");
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return *this;
 }
 
 Angle& Angle::operator-=(const Angle& angle)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	switch (m_unit)
 	{
 	case Unit::DEGREE:
@@ -113,21 +113,21 @@ Angle& Angle::operator-=(const Angle& angle)
 	default:
 		ERROR_LOG_MATH("Cannot subtract two angles. The angle is specified in unknown unit type (", m_unit, ")");
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return *this;
 }
 
 Angle& Angle::operator*=(Real s)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	m_angle *= s;
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return *this;
 }
 
 Angle& Angle::operator/=(Real s)
 {
-	START_PROFILING;
+	START_PROFILING("");
 #ifdef _DEBUG
 	if (AlmostEqual(s, REAL_ZERO))
 	{
@@ -137,7 +137,7 @@ Angle& Angle::operator/=(Real s)
 	}
 #endif
 	m_angle /= s;
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return *this;
 }
 
@@ -154,11 +154,11 @@ Angle& Angle::operator=(const Angle& angle)
 
 bool Angle::operator==(const Angle& angle) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	const Real angleRad = angle.GetAngleInRadians();
 	const Real rad = this->GetAngleInRadians();
 	bool areAnglesEqual = AlmostEqual(angleRad, rad);
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return areAnglesEqual;
 }
 

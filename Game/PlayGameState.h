@@ -20,6 +20,8 @@
 
 #include <string>
 
+#define DRAW_GAME_TIME
+
 namespace Game
 {
 
@@ -40,8 +42,6 @@ namespace Game
 		virtual void Handle(Engine::Actions::Action action);
 		virtual void Handle(Engine::States::State state);
 		virtual void Handle(Engine::Ranges::Range range, Math::Real value);
-
-		bool IsInGameTimeCalculationEnabled() const { return true; }
 
 		virtual void MouseButtonEvent(int button, int action, int mods);
 		virtual void MousePosEvent(double xPos, double yPos);
@@ -66,6 +66,8 @@ namespace Game
 		void RenderWaterRefractionTexture(Rendering::Renderer* renderer) const;
 		void RenderBillboardNodes(Rendering::Renderer* renderer) const;
 		void RenderParticles(Rendering::Renderer* renderer) const;
+
+		//void AdjustAmbientLightAccordingToCurrentTime();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -74,6 +76,16 @@ namespace Game
 		bool m_isMouseLocked;
 		Engine::GameManager* m_gameManager;
 		Engine::MousePicker m_mousePicker;
+		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_clockSpeed;
+		Utility::Timing::DateTime m_inGameDateTime;
+		Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
+
+		Math::Real m_dayNightMixFactor;
+
+		Rendering::Color m_ambientDaytimeColor;
+		Rendering::Color m_ambientSunNearHorizonColor;
+		Rendering::Color m_ambientNighttimeColor;
+		Rendering::Color m_ambientLightColor;
 #ifdef CALCULATE_GAME_STATS
 		Math::Statistics::ClassStats& m_classStats;
 #endif

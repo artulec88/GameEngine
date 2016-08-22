@@ -171,14 +171,6 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_audioEngine(nullptr),
 	m_physicsEngine(NULL),
 	m_renderer(nullptr),
-	LATITUDE(GET_CONFIG_VALUE_ENGINE("latitude", 52.0f)),
-	LONGITUDE(GET_CONFIG_VALUE_ENGINE("longitude", -16.0f)),
-	TROPIC_OF_CANCER_SINUS(0.39794863131f),
-	m_dayNumber(GET_CONFIG_VALUE_ENGINE("startingDayNumber", 172)),
-	m_timeOfDay(GET_CONFIG_VALUE_ENGINE("startingTimeOfDay", REAL_ZERO)),
-	m_daytime(Utility::Timing::NIGHT),
-	m_sunElevation(0.0f),
-	m_sunAzimuth(0.0f),
 	m_shadersDirectory(shadersDirectory),
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory),
@@ -212,12 +204,8 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_renderingNotRequiredCount(0),
 	m_isSamplingSpf(true),
 	m_classStats(STATS_STORAGE.GetClassStats("CoreEngine")),
-	m_stats(),
+	m_stats()
 #endif
-	M_FIRST_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightFirstElevationLevel", -REAL_ONE)),
-	M_SECOND_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightSecondElevationLevel", REAL_ZERO)),
-	M_THIRD_ELEVATION_LEVEL(GET_CONFIG_VALUE_ENGINE("sunlightThirdElevationLevel", REAL_ONE)),
-	m_clockSpeed(GET_CONFIG_VALUE_ENGINE("clockSpeed", REAL_ONE))
 {
 	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
 	Utility::Logging::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing math logger
@@ -228,7 +216,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 #ifdef CALCULATE_RENDERING_STATS
 	m_timer.Start();
 #endif
-	START_PROFILING;
+	START_PROFILING("");
 
 	if (s_coreEngine != NULL)
 	{
@@ -241,15 +229,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	CreatePhysicsEngine();
 	CreateRenderer(width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from configuration file. */);
 
-	m_dayNumber = m_dayNumber % Utility::Timing::Time::DAYS_PER_YEAR;
-	m_timeOfDay = fmod(m_timeOfDay, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_DAY)); // return value within range [0.0; SECONDS_PER_DAY) (see http://www.cplusplus.com/reference/cmath/fmod/)
-	if (m_timeOfDay < REAL_ZERO)
-	{
-		m_timeOfDay = GetCurrentLocalTime();
-	}
-	CalculateSunElevationAndAzimuth();
-
-	STOP_PROFILING;
+	STOP_PROFILING("");
 
 	NOTICE_LOG_ENGINE("Main application construction finished");
 }
@@ -271,7 +251,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	INFO_LOG_ENGINE("Rendering step omitted ", m_renderingNotRequiredCount, " times.");
 
 	m_timer.Stop();
-	STATS_STORAGE.PrintReport(m_timer.GetTimeSpan(Utility::Timing::SECOND));
+	STATS_STORAGE.PrintReport(m_timer.GetDuration(Utility::Timing::SECOND));
 
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
@@ -310,16 +290,18 @@ void Engine::CoreEngine::CreatePhysicsEngine()
 
 void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	InitGraphics(width, height, title, antiAliasingMethod);
 	Rendering::InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
+	NOTICE_LOG_ENGINE("Creating Renderer instance started");
 	m_renderer = std::make_unique<Rendering::Renderer>(width, height, antiAliasingMethod);
+	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
@@ -443,7 +425,7 @@ void Engine::CoreEngine::SetCallbacks()
 
 void Engine::CoreEngine::Start(GameManager* gameManager)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	m_game = gameManager;
 	if (m_isRunning)
 	{
@@ -453,12 +435,12 @@ void Engine::CoreEngine::Start(GameManager* gameManager)
 	NOTICE_LOG_ENGINE("The core engine started");
 
 	Run();
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void Engine::CoreEngine::Stop()
 {
-	START_PROFILING;
+	START_PROFILING("");
 	if (!m_isRunning)
 	{
 		WARNING_LOG_ENGINE("The core engine instance is not running");
@@ -479,19 +461,19 @@ void Engine::CoreEngine::Stop()
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 	//INFO_LOG_ENGINE("Elapsed time = ", elapsedTime, " [us]");
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void Engine::CoreEngine::Run()
 {
-	START_PROFILING;
+	START_PROFILING("");
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
-	Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
-	Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
-	Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
+	//Math::Vector3D fpsColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
+	//Math::Real fpsTimes[] = { 0.0f, 2.0f, 5.0f };
+	//Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
+	//Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
 	Rendering::Controls::GuiButtonControl fpsGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)),
@@ -500,13 +482,6 @@ void Engine::CoreEngine::Run()
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetFPSX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetFPSY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredFPS", false),
 		GET_CONFIG_VALUE_ENGINE("characterWidthFPS", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthFPS", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthFPS", 0.4f),
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
-	Rendering::Controls::GuiButtonControl inGameTimeGuiButton("", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeInGameTime", 2.5f), NULL,
-		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_ENGINE("maxLineLengthInGameTime", 0.5f),
-		Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorInGameTimeBlue", 0.0f)),
-		Rendering::Color(GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_ENGINE("outlineColorInGameTimeBlue", 0.0f)),
-		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_ENGINE("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_ENGINE("isCenteredInGameTime", false),
-		GET_CONFIG_VALUE_ENGINE("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_ENGINE("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_ENGINE("borderWidthInGameTime", 0.4f),
-		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthInGameTime", 0.1f));
 #endif
 
 	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::WARNING, "According to the core engine the game is already running.");
@@ -532,7 +507,6 @@ void Engine::CoreEngine::Run()
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
-	int inGameHours, inGameMinutes, inGameSeconds;
 
 #ifdef CALCULATE_RENDERING_STATS
 	//LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
@@ -547,17 +521,7 @@ void Engine::CoreEngine::Run()
 		// flCurrentTime will be lying around from last frame. It's now the previous time.
 		Math::Real currentTime = GetTime();
 		Math::Real passedTime = currentTime - previousTime;
-
-		if (m_game->IsInGameTimeCalculationEnabled())
-		{
-			m_timeOfDay += (passedTime * m_clockSpeed); // adjusting in-game time
-			if (m_timeOfDay > Utility::Timing::Time::SECONDS_PER_DAY)
-			{
-				m_timeOfDay -= Utility::Timing::Time::SECONDS_PER_DAY; // this will not work if m_clockSpeed > SECONDS_PER_DAY. The time of day will increase until going out of range [0; SECONDS_PER_DAY).
-			}
-			CalculateSunElevationAndAzimuth(); // adjusting sun elevation and azimuth based on current in-game time
-			ConvertTimeOfDay(inGameHours, inGameMinutes, inGameSeconds);
-		}
+		DELOCUST_LOG_ENGINE("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;
 
@@ -598,7 +562,7 @@ void Engine::CoreEngine::Run()
 			 */
 			if (glfwWindowShouldClose(m_window) != 0)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return;
 			}
 			/* ==================== REGION #2_1 begin ====================*/
@@ -617,6 +581,8 @@ void Engine::CoreEngine::Run()
 			m_game->Update(m_frameTime);
 #ifdef DRAW_FPS
 			fpsGuiButton.Update(m_frameTime);
+#endif
+#ifdef DRAW_GAME_TIME
 			inGameTimeGuiButton.Update(m_frameTime);
 #endif
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
@@ -667,33 +633,6 @@ void Engine::CoreEngine::Run()
 			m_renderer->RenderGuiControl(fpsGuiButton, m_game->GetGuiShader());
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
-#endif
-#ifdef DRAW_GAME_TIME
-			if (m_game->IsInGameTimeCalculationEnabled())
-			{
-#ifndef DRAW_FPS
-				std::stringstream ss;
-#endif
-				ss.str("");
-				// TODO: Leading zeros (setfill('0') << setw(5))
-				if (inGameHours < 10) { ss << "Time: 0"; }
-				else { ss << "Time: "; }
-				if (inGameMinutes < 10) { ss << inGameHours << ":0" << inGameMinutes; }
-				else { ss << inGameHours << ":" << inGameMinutes; }
-				if (m_clockSpeed < 12.0f)
-				{
-					if (inGameSeconds < 10)
-					{
-						ss << ":0" << inGameSeconds;
-					}
-					else
-					{
-						ss << ":" << inGameSeconds;
-					}
-				}
-				inGameTimeGuiButton.SetText(ss.str());
-				m_renderer->RenderGuiControl(inGameTimeGuiButton);
-		}
 #endif
 #endif
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -806,19 +745,6 @@ void Engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double 
 	m_game->ScrollEvent(xOffset, yOffset);
 }
 
-void Engine::CoreEngine::ConvertTimeOfDay(int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
-{
-	ConvertTimeOfDay(m_timeOfDay, inGameHours, inGameMinutes, inGameSeconds);
-}
-
-void Engine::CoreEngine::ConvertTimeOfDay(Math::Real timeOfDay, int& inGameHours, int& inGameMinutes, int& inGameSeconds) const
-{
-	inGameHours = static_cast<int>(timeOfDay) / Utility::Timing::Time::SECONDS_PER_HOUR;
-	Math::Real temp = fmod(m_timeOfDay, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_HOUR));
-	inGameMinutes = static_cast<int>(temp) / Utility::Timing::Time::SECONDS_PER_MINUTE;
-	inGameSeconds = static_cast<int>(fmod(temp, static_cast<Math::Real>(Utility::Timing::Time::SECONDS_PER_MINUTE)));
-}
-
 size_t Engine::CoreEngine::GetCurrentCameraIndex() const
 {
 	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot get the current camera index. The game does not exist.");
@@ -840,26 +766,6 @@ size_t Engine::CoreEngine::PrevCamera() const
 void Engine::CoreEngine::PollEvents()
 {
 	glfwPollEvents();
-}
-
-/**
- * See http://www.cplusplus.com/reference/ctime/localtime/
- * http://www.cplusplus.com/reference/ctime/strftime/
- */
-Math::Real Engine::CoreEngine::GetCurrentLocalTime() const
-{
-	time_t rawtime;
-	struct tm timeinfo;
-	time(&rawtime);
-	localtime_s(&timeinfo, &rawtime);
-	int result = Utility::Timing::Time::SECONDS_PER_HOUR * timeinfo.tm_hour + Utility::Timing::Time::SECONDS_PER_MINUTE * timeinfo.tm_min + timeinfo.tm_sec;
-	if (result > Utility::Timing::Time::SECONDS_PER_DAY)
-	{
-		ERROR_LOG_ENGINE("Incorrect local time");
-		// result = REAL_ZERO;
-		result -= Utility::Timing::Time::SECONDS_PER_DAY;
-	}
-	return static_cast<Math::Real>(result);
 }
 
 Math::Real Engine::CoreEngine::GetTime() const
@@ -892,95 +798,6 @@ void Engine::CoreEngine::CentralizeCursor()
 		return;
 	}
 	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
-}
-
-void Engine::CoreEngine::CalculateSunElevationAndAzimuth()
-{
-	const int timeGMTdifference = 1;
-
-	const Math::Angle b(0.9863014f * (m_dayNumber - 81)); // 0,98630136986301369863013698630137 = 360 / 365
-	const Math::Real bSin = b.Sin();
-	const Math::Real bCos = b.Cos();
-
-	const Math::Real equationOfTime = 19.74f * bSin * bCos - 7.53f * bCos - 1.5f * bSin; // EoT
-	const Math::Real declinationSin = TROPIC_OF_CANCER_SINUS * bSin;
-	const Math::Angle declinationAngle(asin(declinationSin), Math::Unit::RADIAN);
-	//DEBUG_LOG_ENGINE("Declination in degrees = ", declinationAngle.GetAngleInDegrees());
-
-	const Math::Real timeCorrectionInSeconds = 60.0f * (4.0f * (LONGITUDE.GetAngleInDegrees() - 15.0f * timeGMTdifference) + equationOfTime);
-	const Math::Real localSolarTime = m_timeOfDay + timeCorrectionInSeconds;
-	//DEBUG_LOG_ENGINE("Time correction in seconds = ", timeCorrectionInSeconds);
-	//DEBUG_LOG_ENGINE("Local time = ", m_timeOfDay, "\tLocal solar time = ", localSolarTime);
-
-	const Math::Angle hourAngle(15.0f * (localSolarTime - 12 * Utility::Timing::Time::SECONDS_PER_HOUR) / Utility::Timing::Time::SECONDS_PER_HOUR);
-	//DEBUG_LOG_ENGINE("Hour angle = ", hourAngle.GetAngleInDegrees());
-
-	const Math::Real sunElevationSin = declinationSin * LATITUDE.Sin() + declinationAngle.Cos() * LATITUDE.Cos() * hourAngle.Cos();
-	m_sunElevation.SetAngleInRadians(asin(sunElevationSin));
-	//DEBUG_LOG_ENGINE("Sun elevation = ", m_sunElevation.GetAngleInDegrees());
-
-	const Math::Real sunAzimuthCos = ((declinationSin * LATITUDE.Cos()) - (declinationAngle.Cos() * LATITUDE.Sin() * hourAngle.Cos())) / m_sunElevation.Cos();
-	m_sunAzimuth.SetAngleInRadians(acos(sunAzimuthCos));
-	bool isAfternoon = (localSolarTime > 12.0f * Utility::Timing::Time::SECONDS_PER_HOUR) || (hourAngle.GetAngleInDegrees() > REAL_ZERO);
-	if (isAfternoon)
-	{
-		m_sunAzimuth.SetAngleInDegrees(360.0f - m_sunAzimuth.GetAngleInDegrees());
-	}
-
-	Utility::Timing::Daytime prevDaytime = m_daytime;
-	if (m_sunElevation < M_FIRST_ELEVATION_LEVEL)
-	{
-		m_daytime = Utility::Timing::NIGHT;
-	}
-	else if (m_sunElevation < M_SECOND_ELEVATION_LEVEL)
-	{
-		m_daytime = (isAfternoon) ? Utility::Timing::AFTER_DUSK : Utility::Timing::BEFORE_DAWN;
-	}
-	else if (m_sunElevation < M_THIRD_ELEVATION_LEVEL)
-	{
-		m_daytime = (isAfternoon) ? Utility::Timing::SUNSET : Utility::Timing::SUNRISE;
-	}
-	else
-	{
-		m_daytime = Utility::Timing::DAY;
-	}
-	//if (prevDaytime != m_daytime)
-	//{
-	//	INFO_LOG_ENGINE("Daytime = ", m_daytime, " at in-game time clock = ", m_timeOfDay);
-	//}
-	//DEBUG_LOG_ENGINE("Sun azimuth = ", m_sunAzimuth.GetAngleInDegrees());
-}
-
-Utility::Timing::Daytime Engine::CoreEngine::GetCurrentDaytime(Math::Real& daytimeTransitionFactor) const
-{
-	switch (m_daytime)
-	{
-	case Utility::Timing::NIGHT:
-		daytimeTransitionFactor = REAL_ZERO;
-		break;
-	case Utility::Timing::DAY:
-		daytimeTransitionFactor = REAL_ZERO; // TODO: Check if this is correct
-		break;
-	case Utility::Timing::BEFORE_DAWN:
-		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
-			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
-		break;
-	case Utility::Timing::SUNRISE:
-		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
-			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
-		break;
-	case Utility::Timing::SUNSET:
-		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees()) /
-			(M_THIRD_ELEVATION_LEVEL.GetAngleInDegrees() - M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees());
-		break;
-	case Utility::Timing::AFTER_DUSK:
-		daytimeTransitionFactor = (m_sunElevation.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees()) /
-			(M_SECOND_ELEVATION_LEVEL.GetAngleInDegrees() - M_FIRST_ELEVATION_LEVEL.GetAngleInDegrees());
-		break;
-	default:
-		ERROR_LOG_ENGINE("Incorrect daytime: ", m_daytime);
-	}
-	return m_daytime;
 }
 
 void Engine::CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
@@ -1032,19 +849,19 @@ void Engine::CoreEngine::InitializeTweakBars()
 	TwAddVarRW(coreEnginePropertiesBar, "windowWidth", TW_TYPE_INT32, &m_windowWidth, " label='Window width' ");
 	TwAddVarRW(coreEnginePropertiesBar, "windowHeight", TW_TYPE_INT32, &m_windowHeight, " label='Window height' ");
 	TwAddVarRO(coreEnginePropertiesBar, "frameTime", TW_TYPE_REAL, &m_frameTime, " label='Frame time' ");
-	TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
-	TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
 
-	TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
-		{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
-	TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
-	TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
+	//TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
+	//	{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
+	//TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
+	//TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
 
-	TwAddVarRW(coreEnginePropertiesBar, "sunElevation", Rendering::angleType, &m_sunElevation, " label='Sun elevation' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", Rendering::angleType, &m_sunAzimuth, " label='Sun azimuth' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", Rendering::angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", Rendering::angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
-	TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", Rendering::angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunElevation", Rendering::angleType, &m_sunElevation, " label='Sun elevation' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", Rendering::angleType, &m_sunAzimuth, " label='Sun azimuth' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", Rendering::angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", Rendering::angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", Rendering::angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
 
 	TwDefine(" CoreEnginePropertiesBar refresh=0.5 ");
 	//double refreshRate = 0.2;

@@ -157,6 +157,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="StringUtility.h" />
     <ClInclude Include="Time.h" />
+    <ClInclude Include="TimeSpan.h" />
     <ClInclude Include="Utility.h" />
   </ItemGroup>
   <ItemGroup>

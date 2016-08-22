@@ -42,11 +42,11 @@ void Math::Statistics::IStatisticsStorage::PrintSimpleReport() const
 	INFO_LOG_MATH("Simple report = \"", ss.str(), "\"");
 }
 
-void Math::Statistics::IStatisticsStorage::PrintReport(const Utility::Timing::TimeSpan& timeSpan) const
+void Math::Statistics::IStatisticsStorage::PrintReport(long long elapsedSeconds) const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
 	Utility::Logging::ILogger::GetLogger("Math").AddStream("ApplicationStats.txt");
-	INFO_LOG_MATH("Total elapsed time: ", timeSpan.ToString());
+	INFO_LOG_MATH("Total elapsed time: ", elapsedSeconds);
 	std::fstream appStatsFile;
 	appStatsFile.open("..\\Docs\\AppStats.dat", std::ios::out);
 	appStatsFile << "\"Class name\"\t\"Total time\"\t\"Total time excluding nested calls\"\n";
@@ -54,7 +54,7 @@ void Math::Statistics::IStatisticsStorage::PrintReport(const Utility::Timing::Ti
 	{
 		if (!classStatsItr->second->IsEmpty())
 		{
-			classStatsItr->second->PrintReport(timeSpan, appStatsFile);
+			classStatsItr->second->PrintReport(elapsedSeconds, appStatsFile);
 		}
 	}
 	appStatsFile.close();

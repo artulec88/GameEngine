@@ -166,7 +166,7 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="Statistics.h" />
     <ClInclude Include="Transform.h" />
-    <ClInclude Include="UtmostTimeSamples.h" />
+    <ClInclude Include="UtmostSamples.h" />
     <ClInclude Include="Vector.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -210,7 +210,7 @@
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="Transform.cpp" />
-    <ClCompile Include="UtmostTimeSamples.cpp" />
+    <ClCompile Include="UtmostSamples_impl.h" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -102,6 +102,9 @@
     <ClInclude Include="BuilderDirector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TimeSpan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

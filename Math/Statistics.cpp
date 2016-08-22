@@ -273,21 +273,21 @@ void Math::Statistics::MethodStats::StartProfiling(bool isNestedWithinAnotherPro
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	//if (m_timer.IsRunning())
-	//{
-	//	ERROR_LOG_MATH("Timer already running");
-	//}
+	if (m_timer.IsRunning())
+	{
+		ERROR_LOG_MATH("Timer already running");
+	}
 	m_timer.Start();
 }
 
 void Math::Statistics::MethodStats::StopProfiling()
 {
-	//if (!m_timer.IsRunning())
-	//{
-	//	ERROR_LOG_MATH("Timer already stopped");
-	//}
+	if (!m_timer.IsRunning())
+	{
+		ERROR_LOG_MATH("Timer already stopped");
+	}
 	m_timer.Stop();
-	Math::Real elapsedTime = m_timer.GetTimeSpan(Utility::Timing::MICROSECOND).GetValue();
+	Math::Real elapsedTime = m_timer.GetDuration(Utility::Timing::NANOSECOND);
 	//DEBUG_LOG_MATH("Stopped profiling the method. ", elapsedTime, " [us] has passed.");
 	Push(elapsedTime);
 	m_isProfiling = false;
@@ -341,6 +341,7 @@ void Math::Statistics::ClassStats::StartProfiling(const char* methodName)
 		return;
 	}
 	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
@@ -353,11 +354,12 @@ void Math::Statistics::ClassStats::StopProfiling(const char* methodName)
 		return;
 	}
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }
 
-void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& timeSpan, std::fstream& appStatsFile) const
+void Math::Statistics::ClassStats::PrintReport(long long elapsedSeconds, std::fstream& appStatsFile) const
 {
 	static const Math::Real ONE_MILION = 1000000.0f;
 	
@@ -382,7 +384,7 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
 	LogTime("\tTotal time: ", classTotalTime);
 	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
-	DEBUG_LOG_MATH("\tApplication usage: ", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
+	DEBUG_LOG_MATH("\tApplication usage: ", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * elapsedSeconds));
 
 	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
@@ -398,7 +400,7 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		LogTime("\t\tAverage time: ", meanTime);
 		
 		DEBUG_LOG_MATH("\t\tClass usage: ", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
-		DEBUG_LOG_MATH("\t\tApplication usage: ", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * timeSpan.GetValue() /* TODO: What if value is not in seconds? Will it work? */));
+		DEBUG_LOG_MATH("\t\tApplication usage: ", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * elapsedSeconds));
 		
 		//INFO_LOG_MATH("\t\tMedian time: ", methodStatsItr->second.CalculateMedian(), " [us]");
 		std::string methodNameStr(methodStatsItr->first);
@@ -431,15 +433,15 @@ int Math::Statistics::ClassStats::GetTotalNumberOfSamples() const
 
 void Math::Statistics::ClassStats::LogTime(const char* text, Math::Real time) const
 {
-	if (time > Utility::Timing::Time::ONE_THOUSAND)
+	if (time > 1e3f)
 	{
-		if (time > Utility::Timing::Time::ONE_MILLION)
+		if (time > 1e6f)
 		{
-			DEBUG_LOG_MATH(text, time / Utility::Timing::Time::ONE_MILLION, "[s]");
+			DEBUG_LOG_MATH(text, time / 1e6f, "[s]");
 		}
 		else
 		{
-			DEBUG_LOG_MATH(text, time / Utility::Timing::Time::ONE_THOUSAND, "[ms]");
+			DEBUG_LOG_MATH(text, time / 1e3f, "[ms]");
 		}
 	}
 	else

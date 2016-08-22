@@ -411,7 +411,7 @@ void Rendering::Texture::BindAsRenderTarget() const
 }
 
 
-Rendering::GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D scale, GLenum textureTarget /* = GL_TEXTURE_2D */,
+Rendering::GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D& scale, GLenum textureTarget /* = GL_TEXTURE_2D */,
 	GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
 	Texture(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
 	m_transformationMatrix(position, scale),

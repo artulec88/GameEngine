@@ -165,7 +165,7 @@ namespace Rendering
 		/// <code>GL_REPEAT</code>, or <code>GL_MIRROR_CLAMP_TO_EDGE</code>. See https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glTexParameter.xml for details.
 		/// </param>
 		/// <param name="attachment"> The attachments for the rendering targets of the texture. Particularly, useful for rendering to texture mechanism. </param>
-		RENDERING_API GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D scale, GLenum textureTarget = GL_TEXTURE_2D,
+		RENDERING_API GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D& scale, GLenum textureTarget = GL_TEXTURE_2D,
 			GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
 		/// <summary> GUI texture destructor. </summary>
 		RENDERING_API virtual ~GuiTexture(void);

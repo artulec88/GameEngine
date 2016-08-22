@@ -8,14 +8,14 @@ Physics::PhysicsEngine::PhysicsEngine() :
 	m_classStats(STATS_STORAGE.GetClassStats("PhysicsEngine"))
 #endif
 {
-	START_PROFILING;
+	START_PROFILING("");
 	/* ==================== Initializing physics logger begin ==================== */
 	std::string loggingLevel = GET_CONFIG_VALUE_STR_PHYSICS("LoggingLevel", "Info");
 	Utility::Logging::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::Logging::INFO);
 	/* ==================== Initializing physics logger end ==================== */
 
 	NOTICE_LOG_PHYSICS("Physics engine created");
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 Physics::PhysicsEngine::~PhysicsEngine()

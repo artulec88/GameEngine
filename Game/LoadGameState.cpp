@@ -29,7 +29,7 @@ LoadGameState::~LoadGameState(void)
 
 void LoadGameState::Entered()
 {
-	START_PROFILING;
+	START_PROFILING("");
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG_GAME("Starting the loading thread");
@@ -37,7 +37,7 @@ void LoadGameState::Entered()
 	// VAOs cannot be shared across multiple window contexts, that is why we don't use additional threads anymore.
 	// See http://stackoverflow.com/questions/23765371/opengl-multitreading-shared-context-and-glgenbuffers.
 	m_loadingThread = new tthread::thread(Engine::GameManager::Load, Engine::GameManager::GetGameManager());
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void LoadGameState::Leaving()
@@ -72,16 +72,16 @@ void LoadGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void LoadGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DELOCUST_LOG_GAME("LOAD game state rendering");
 	// TODO: Rendering loading screen.
 	//renderer->RenderLoadingScreen(m_gameManager->GetGuiTextShader(), m_loadingProgress);
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void LoadGameState::Update(Math::Real elapsedTime)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DELOCUST_LOG_GAME("LOAD game state updating");
 	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
 	m_loadingProgress = gameManager->GetLoadingProgress();
@@ -97,5 +97,5 @@ void LoadGameState::Update(Math::Real elapsedTime)
 		m_loadingThread->join();
 		gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(gameManager->GetPlayGameState(), Engine::GameStateTransitioning::SWITCH, Engine::GameStateModality::EXCLUSIVE));
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }

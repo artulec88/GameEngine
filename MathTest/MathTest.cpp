@@ -63,10 +63,10 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
-	Timing::TimeSpan timeSpan = timer.GetTimeSpan(timeUnit);
-	timeSpan /= NUMBER_OF_ITERATIONS;
+	Math::Real elapsedTime = static_cast<Math::Real>(timer.GetDuration(timeUnit));
+	elapsedTime /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
-	NOTICE_LOG_MATH_TEST(reportStr, ":\t", timeSpan.ToString());
+	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime);
 }
 
 void AngleTest()
@@ -965,7 +965,7 @@ void StatsTest()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::SECOND));
+	STATS_STORAGE.PrintReport(timer.GetDuration(Timing::SECOND));
 }
 
 void OtherTests()
@@ -1000,7 +1000,7 @@ void OtherTests()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetTimeSpan(Timing::MILLISECOND));
+	STATS_STORAGE.PrintReport(timer.GetDuration(Timing::MILLISECOND));
 }
 
 int main(int argc, char* argv[])

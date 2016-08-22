@@ -14,17 +14,6 @@ Engine::GameStateManager::~GameStateManager(void)
 	SAFE_DELETE(m_gameStateTransition);
 }
 
-bool Engine::GameStateManager::IsInGameTimeCalculationEnabled() const
-{
-	GameState* currentState = Peek();
-	if (currentState == NULL)
-	{
-		WARNING_LOG_ENGINE("Cannot determine whether in-game time calculation should be performed. No state currently active.");
-		return false;
-	}
-	return currentState->IsInGameTimeCalculationEnabled();
-}
-
 void Engine::GameStateManager::SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition)
 {
 	if (gameStateTransition == NULL)

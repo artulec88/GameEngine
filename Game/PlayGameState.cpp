@@ -1,37 +1,61 @@
 #include "PlayGameState.h"
 #include "Def.h"
-#include "Engine\GameManager.h"
-#include "Utility\ILogger.h"
+#include "tinythread.h"
 #include "PlayMenuGameState.h"
+
+#include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
-#include "Rendering\Shader.h"
 #include "Engine\GameNode.h"
 #include "Engine\ParticleGenerator.h"
 
+#include "Rendering\Shader.h"
+
 #include "Math\FloatingPoint.h"
 
-#include "tinythread.h"
+#include "Utility\ILogger.h"
+#include "Utility\IConfig.h"
 
-using namespace Game;
+//#define DRAW_GAME_TIME // TODO: Investigate this macro
 
-PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
+Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
-	m_mousePicker()
+	m_mousePicker(),
+	m_clockSpeed(GET_CONFIG_VALUE_GAME("clockSpeed", REAL_ONE)),
+	m_inGameDateTime(GET_CONFIG_VALUE_GAME("inGameYear", 2016), GET_CONFIG_VALUE_GAME("inGameMonth", 5),
+		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
+	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), NULL,
+		Math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
+		Rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
+		Rendering::Color(GET_CONFIG_VALUE_GAME("outlineColorInGameTimeRed", 0.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeGreen", 1.0f), GET_CONFIG_VALUE_GAME("outlineColorInGameTimeBlue", 0.0f)),
+		Math::Vector2D(GET_CONFIG_VALUE_GAME("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_GAME("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_GAME("isCenteredInGameTime", false),
+		GET_CONFIG_VALUE_GAME("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_GAME("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_GAME("borderWidthInGameTime", 0.4f),
+		GET_CONFIG_VALUE_GAME("borderEdgeTransitionWidthInGameTime", 0.1f)),
+	m_dayNightMixFactor(REAL_ZERO),
+	m_ambientDaytimeColor(GET_CONFIG_VALUE_GAME("ambientDaytimeColorRed", 0.2f),
+		GET_CONFIG_VALUE_GAME("ambientDaytimeColorGreen", 0.2f),
+		GET_CONFIG_VALUE_GAME("ambientDaytimeColorBlue", 0.2f)),
+	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE_GAME("ambientSunNearHorizonColorRed", 0.1f),
+		GET_CONFIG_VALUE_GAME("ambientSunNearHorizonColorGreen", 0.1f),
+		GET_CONFIG_VALUE_GAME("ambientSunNearHorizonColorBlue", 0.1f)),
+	m_ambientNighttimeColor(GET_CONFIG_VALUE_GAME("ambientNighttimeColorRed", 0.02f),
+		GET_CONFIG_VALUE_GAME("ambientNighttimeColorGreen", 0.02f),
+		GET_CONFIG_VALUE_GAME("ambientNighttimeColorBlue", 0.02f)),
+	m_ambientLightColor(m_ambientDaytimeColor)
 #ifdef CALCULATE_GAME_STATS
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
 {
 }
 
-PlayGameState::~PlayGameState(void)
+Game::PlayGameState::~PlayGameState(void)
 {
 }
 
-void PlayGameState::Entered()
+void Game::PlayGameState::Entered()
 {
-	START_PROFILING;
+	START_PROFILING("");
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
@@ -43,10 +67,10 @@ void PlayGameState::Entered()
 #ifdef CALCULATE_STATS
 	CoreEngine::GetCoreEngine()->StartSamplingSpf();
 #endif
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::Leaving()
+void Game::PlayGameState::Leaving()
 {
 	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PLAY game state is about to be removed from the game state manager");
@@ -55,21 +79,21 @@ void PlayGameState::Leaving()
 #endif
 }
 
-void PlayGameState::Obscuring()
+void Game::PlayGameState::Obscuring()
 {
 	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PLAY game state");
 }
 
-void PlayGameState::Revealed()
+void Game::PlayGameState::Revealed()
 {
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has become the topmost game state in the game state manager's stack");
 }
 
-void PlayGameState::Handle(Engine::Actions::Action action)
+void Game::PlayGameState::Handle(Engine::Actions::Action action)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	switch (action)
 	{
 	case Engine::Actions::SHOW_PLAY_MENU:
@@ -78,20 +102,20 @@ void PlayGameState::Handle(Engine::Actions::Action action)
 	default:
 		INFO_LOG_GAME("Action ", action, " is not supported by the PLAY game state.");
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::Handle(Engine::States::State state)
+void Game::PlayGameState::Handle(Engine::States::State state)
 {
 }
 
-void PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 {
 }
 
-void PlayGameState::MouseButtonEvent(int button, int action, int mods)
+void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	m_gameManager->GetRootGameNode().MouseButtonEvent(button, action, mods);
 	//switch (action)
 	//{
@@ -109,12 +133,12 @@ void PlayGameState::MouseButtonEvent(int button, int action, int mods)
 	//default:
 	//	WARNING_LOG_GAME("Unknown action performed with the mouse. Button=", button, "\t action=", action, "\t mods=", mods);
 	//}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::MousePosEvent(double xPos, double yPos)
+void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DEBUG_LOG_GAME("Cursor position = (", xPos, ", ", yPos, ")");
 
 	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
@@ -152,28 +176,25 @@ void PlayGameState::MousePosEvent(double xPos, double yPos)
 	//	}
 	//	Rendering::CoreEngine::GetCoreEngine()->CentralizeCursor();
 	//}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::ScrollEvent(double xOffset, double yOffset)
+void Game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	m_gameManager->GetRootGameNode().ScrollEvent(xOffset, yOffset);
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::Render(Rendering::Renderer* renderer) const
+void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
-	START_PROFILING;
+	START_PROFILING("");
 	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
-	Math::Real daytimeTransitionFactor;
-	Utility::Timing::Daytime daytime = Engine::CoreEngine::GetCoreEngine()->GetCurrentDaytime(daytimeTransitionFactor);
-	Math::Real dayNightMixFactor = m_gameManager->AdjustAmbientLightAccordingToCurrentTime(daytime, daytimeTransitionFactor);
-	renderer->InitRenderScene(m_gameManager->GetAmbientLightColor(), dayNightMixFactor);
+	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
 	
 	RenderWaterTextures(renderer);
 
@@ -202,10 +223,14 @@ void PlayGameState::Render(Rendering::Renderer* renderer) const
 		m_gameManager->GetShader(Engine::ShaderTypes::FILTER_FXAA) :
 		m_gameManager->GetShader(Engine::ShaderTypes::FILTER_NULL));
 
-	STOP_PROFILING;
+#ifdef DRAW_GAME_TIME
+	renderer->RenderGuiControl(m_inGameTimeGuiButton, m_gameManager->GetGuiTextShader());
+#endif
+
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(renderer->IsAmbientLightEnabled(), Utility::Logging::DEBUG, "Ambient light is disabled by the rendering engine.");
 	const Rendering::Shader& ambientShader = m_gameManager->GetAmbientShader(renderer->GetFogInfo());
@@ -215,7 +240,7 @@ void PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) c
 	m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 }
 
-void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
 {
 	if (!Rendering::Lighting::PointLight::ArePointLightsEnabled())
 	{
@@ -236,9 +261,9 @@ void PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) co
 	}
 }
 
-void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	size_t lightsCount = m_gameManager->GetDirectionalLightsCount() + m_gameManager->GetSpotLightsCount();
 	for (size_t i = 0; i < lightsCount; ++i)
 	{
@@ -263,12 +288,12 @@ void PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer*
 		m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
 		renderer->FinalizeLightRendering();
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DEBUG_LOG_GAME("Skybox rendering started");
 
 	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
@@ -296,12 +321,12 @@ void PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	//glEnable(GL_DEPTH_TEST);
 	//Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
 
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
@@ -309,12 +334,12 @@ void PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 	RenderWaterRefractionTexture(renderer);
 	
 	renderer->DisableClippingPlanes();
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
@@ -360,12 +385,12 @@ void PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) 
 	currentCamera.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
 	currentCamera.GetRot().InvertPitch();
 
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
@@ -402,12 +427,12 @@ void PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) 
 	
 	//BindAsRenderTarget();
 	
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
@@ -424,12 +449,12 @@ void PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//	}
 	//}
 	m_gameManager->GetWaterNode()->Render(m_gameManager->GetWaterShader(renderer), renderer);
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DEBUG_LOG_GAME("Rendering billboards started");
 	//renderer->SetDepthTest(false);
 	renderer->SetBlendingEnabled(true);
@@ -444,12 +469,12 @@ void PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);
 	//renderer->SetBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
+void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DEBUG_LOG_GAME("Rendering particles started");
 	for (std::vector<Engine::ParticleGenerator*>::const_iterator particleGeneratorItr = m_gameManager->GetParticleGenerators().begin(); particleGeneratorItr != m_gameManager->GetParticleGenerators().end(); ++particleGeneratorItr)
 	{
@@ -459,13 +484,54 @@ void PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 		//}
 		renderer->RenderParticles(m_gameManager->GetParticleShader(), (*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles(), (*particleGeneratorItr)->GetAliveParticlesCount());
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
-void PlayGameState::Update(Math::Real elapsedTime)
+void Game::PlayGameState::Update(Math::Real elapsedTime)
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DEBUG_LOG_GAME("PLAY game state updating");
 	Engine::GameManager::GetGameManager()->GetRootGameNode().Update(elapsedTime);
-	STOP_PROFILING;
+
+	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
+	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000.0f, Utility::Timing::MILLISECOND);
+	//CRITICAL_LOG_GAME("In-game time: ", m_inGameDateTime.ToDateString());
+	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
+
+	//AdjustAmbientLightAccordingToCurrentTime();
+
+	STOP_PROFILING("");
 }
+
+//void Game::PlayGameState::AdjustAmbientLightAccordingToCurrentTime()
+//{
+//	START_PROFILING("");
+//	switch (dayTime)
+//	{
+//	case Utility::Timing::NIGHT:
+//		dayNightMixFactor = REAL_ZERO;
+//		m_ambientLightColor = m_ambientNighttimeColor;
+//		break;
+//	case Utility::Timing::BEFORE_DAWN:
+//		dayNightMixFactor = REAL_ZERO;
+//		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
+//		break;
+//	case Utility::Timing::SUNRISE:
+//		dayNightMixFactor = dayTimeTransitionFactor;
+//		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
+//		break;
+//	case Utility::Timing::DAY:
+//		dayNightMixFactor = REAL_ONE;
+//		m_ambientLightColor = m_ambientDaytimeColor;
+//		break;
+//	case Utility::Timing::SUNSET:
+//		dayNightMixFactor = dayTimeTransitionFactor;
+//		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
+//		break;
+//	case Utility::Timing::AFTER_DUSK:
+//		dayNightMixFactor = REAL_ZERO;
+//		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
+//		break;
+//	}
+//	STOP_PROFILING("");
+//}

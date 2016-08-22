@@ -120,7 +120,7 @@ void PlayMenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void PlayMenuGameState::DeselectAll()
 {
-	START_PROFILING;
+	START_PROFILING("");
 	//// This function is supposed to apply the "non-selected" effects to all non-selected menu entries. However Effect class can only handle one attribute at a time.
 	//// It is not possible to modify many attributes using one Effect class instance. As a result only the last non-selected menu entry will have "non-selected" effects applied to it.
 	//for (int i = 0; i < m_currentMenuEntry->GetChildrenCount(); ++i)
@@ -134,7 +134,7 @@ void PlayMenuGameState::DeselectAll()
 	//	//m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	//	//m_currentMenuEntry->GetSelectedChild()->ApplyOutlineColorEffect(m_notSelectedMenuEntryOutlineColorEffect);
 	//}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 void PlayMenuGameState::SelectChild(int childIndex)
@@ -156,13 +156,13 @@ void PlayMenuGameState::SelectChild(int childIndex)
 
 void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	DELOCUST_LOG_GAME("PLAY MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
 	m_currentMenuEntry->Render(renderer, m_gameManager->GetGuiShader());
-	STOP_PROFILING;
+	STOP_PROFILING("");
 }
 
 //void PlayMenuGameState::MouseButtonEvent(int button, int action, int mods)

@@ -99,8 +99,6 @@ namespace Engine
 		/// <param name="value"> The value associated with the specified range. </param>
 		virtual void Handle(Engine::Ranges::Range range, Math::Real value) = 0;
 
-		bool IsInGameTimeCalculationEnabled() const;
-
 		void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
 		void PerformStateTransition();
 		/* ==================== Non-static member functions end ==================== */

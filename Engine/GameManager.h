@@ -90,8 +90,6 @@ namespace Engine
 		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
-		ENGINE_API bool IsInGameTimeCalculationEnabled() const { return m_gameStateManager->IsInGameTimeCalculationEnabled(); }
-
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
 #endif
@@ -169,9 +167,6 @@ namespace Engine
 		ENGINE_API inline const Rendering::Shader& GetGuiTextShader() const { return m_shaderFactory.GetShader(ShaderTypes::TEXT); }
 		ENGINE_API inline const Rendering::Shader& GetGuiShader() const { return m_shaderFactory.GetShader(ShaderTypes::GUI); }
 
-		ENGINE_API Math::Real AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor);
-		ENGINE_API const Rendering::Color& GetAmbientLightColor() const { return m_ambientLightColor; }
-
 		ENGINE_API Rendering::Lighting::BaseLight* GetLight(unsigned int index) const
 		{
 			// TODO: Range check?
@@ -233,11 +228,6 @@ namespace Engine
 		const EmptyGameCommand m_emptyGameCommand;
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//Rendering::Effects::EffectFactory m_effectFactory;
-
-		Rendering::Color m_ambientDaytimeColor;
-		Rendering::Color m_ambientSunNearHorizonColor;
-		Rendering::Color m_ambientNighttimeColor;
-		Rendering::Color m_ambientLightColor;
 
 		/// <summary> The number of directional lights currently being used in the game. </summary>
 		size_t m_directionalLightsCount;

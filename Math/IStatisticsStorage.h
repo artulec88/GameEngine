@@ -32,7 +32,7 @@ namespace Math {
 			MATH_API ClassStats& GetClassStats(const char* className);
 
 			MATH_API void PrintSimpleReport() const;
-			MATH_API void PrintReport(const Utility::Timing::TimeSpan& timeSpan) const;
+			MATH_API void PrintReport(long long elapsedSeconds) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

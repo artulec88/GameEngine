@@ -65,14 +65,6 @@ namespace Engine
 		ENGINE_API virtual void Render(Rendering::Renderer* renderer) const = 0;
 
 		/// <summary>
-		/// The function indicating whether the current game state wants in-game time calculation to be performed or not.
-		/// </summary>
-		/// TODO: This function should probably be removed. Instead, when appropriate game state wants in-game time calculation, it should call the game manager to enable it explicitly
-		/// (in the Entered() or Revealed() functions) and disable it explicitly (in the Leaving() or Obscuring() functions).
-		/// The game manager will store the m_isInGameTimeCalculationEnabled member variable and modify it inside the EnableInGameTimeCalculation() and DisableInGameTimeCalculation().
-		ENGINE_API virtual bool IsInGameTimeCalculationEnabled() const { return false; }
-
-		/// <summary>
 		/// Handles the incoming action appropriately.
 		/// </summary>
 		/// <param name="action"> The action that must be handled by the game state. </param>

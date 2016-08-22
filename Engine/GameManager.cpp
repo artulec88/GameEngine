@@ -56,16 +56,6 @@ Engine::GameManager::GameManager() :
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_ambientDaytimeColor(GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorRed", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorGreen", 0.2f),
-		GET_CONFIG_VALUE_RENDERING("ambientDaytimeColorBlue", 0.2f)),
-	m_ambientSunNearHorizonColor(GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorRed", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorGreen", 0.1f),
-		GET_CONFIG_VALUE_RENDERING("ambientSunNearHorizonColorBlue", 0.1f)),
-	m_ambientNighttimeColor(GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorRed", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorGreen", 0.02f),
-		GET_CONFIG_VALUE_RENDERING("ambientNighttimeColorBlue", 0.02f)),
-	m_ambientLightColor(m_ambientDaytimeColor),
 	m_directionalLightsCount(0),
 	m_lights(),
 	m_directionalAndSpotLights(),
@@ -312,7 +302,7 @@ const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontT
 
 const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
@@ -322,12 +312,12 @@ const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
 			}
 		}
@@ -335,23 +325,23 @@ const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
 			}
 		}
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
 }
 
 const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING;
+	START_PROFILING("");
 	if (fogInfo.IsEnabled())
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
@@ -360,12 +350,12 @@ const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rend
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
 			}
 		}
@@ -373,55 +363,18 @@ const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rend
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING;
+				STOP_PROFILING("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
 			}
 		}
 	}
-	STOP_PROFILING;
+	STOP_PROFILING("");
 	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
-}
-
-Math::Real Engine::GameManager::AdjustAmbientLightAccordingToCurrentTime(Utility::Timing::Daytime dayTime, Math::Real dayTimeTransitionFactor)
-{
-	START_PROFILING;
-	/* ==================== Adjusting the time variables begin ==================== */
-	Math::Real dayNightMixFactor = REAL_ZERO;
-	switch (dayTime)
-	{
-	case Utility::Timing::NIGHT:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor;
-		break;
-	case Utility::Timing::BEFORE_DAWN:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::SUNRISE:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::DAY:
-		dayNightMixFactor = REAL_ONE;
-		m_ambientLightColor = m_ambientDaytimeColor;
-		break;
-	case Utility::Timing::SUNSET:
-		dayNightMixFactor = dayTimeTransitionFactor;
-		m_ambientLightColor = m_ambientSunNearHorizonColor.Lerp(m_ambientDaytimeColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	case Utility::Timing::AFTER_DUSK:
-		dayNightMixFactor = REAL_ZERO;
-		m_ambientLightColor = m_ambientNighttimeColor.Lerp(m_ambientSunNearHorizonColor, dayTimeTransitionFactor); // move copy assignment
-		break;
-	}
-	/* ==================== Adjusting the time variables end ==================== */
-	STOP_PROFILING;
-	return dayNightMixFactor;
 }
 
 void Engine::GameManager::AddCamera(Rendering::Camera* camera)
@@ -476,9 +429,10 @@ void Engine::GameManager::InitializeTweakBars()
 	TwSetParam(m_gameBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_gameBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 
-	TwAddVarRO(m_gameBar, "ambientLight", TW_TYPE_COLOR4F, &m_ambientLightColor, " label='Color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightDaytime", TW_TYPE_COLOR4F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR4F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
-	TwAddVarRW(m_gameBar, "ambientLightNighttime", TW_TYPE_COLOR4F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
+	// TODO: Move these to PlayGameState InitializeTweakBars() method.
+	//TwAddVarRO(m_gameBar, "ambientLight", TW_TYPE_COLOR4F, &m_ambientLightColor, " label='Color' group='Ambient light'");
+	//TwAddVarRW(m_gameBar, "ambientLightDaytime", TW_TYPE_COLOR4F, &m_ambientDaytimeColor, " label='Daytime color' group='Ambient light'");
+	//TwAddVarRW(m_gameBar, "ambientLightSunNearHorizon", TW_TYPE_COLOR4F, &m_ambientSunNearHorizonColor, " label='Sun near horizon color' group='Ambient light'");
+	//TwAddVarRW(m_gameBar, "ambientLightNighttime", TW_TYPE_COLOR4F, &m_ambientNighttimeColor, " label='Nighttime color' group='Ambient light'");
 }
 #endif
