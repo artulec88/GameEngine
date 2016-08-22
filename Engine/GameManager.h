@@ -50,7 +50,7 @@ namespace Engine
 		static GameManager* s_gameManager;
 	public:
 		ENGINE_API static GameManager* GetGameManager();
-		ENGINE_API static void Load(void* arg);
+		ENGINE_API static void LoadGame(GameManager* game);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

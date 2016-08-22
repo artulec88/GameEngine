@@ -24,9 +24,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="tinythread.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GameCommand.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -171,9 +168,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="tinythread.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameCommand.cpp">

@@ -1,6 +1,5 @@
 #include "PlayGameState.h"
 #include "Def.h"
-#include "tinythread.h"
 #include "PlayMenuGameState.h"
 
 #include "Engine\GameManager.h"

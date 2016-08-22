@@ -29,9 +29,8 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 	return s_gameManager;
 }
 
-/* static */ void Engine::GameManager::Load(void* arg)
+/* static */ void Engine::GameManager::LoadGame(GameManager* gameManager)
 {
-	Engine::GameManager* gameManager = static_cast<Engine::GameManager*>(arg);
 	if (gameManager == NULL)
 	{
 		EMERGENCY_LOG_ENGINE("Cannot load the game. Passed parameter is not a game manager object.");

@@ -155,7 +155,6 @@
     <ClCompile Include="ShowIntroCommand.cpp" />
     <ClCompile Include="StartGameCommand.cpp" />
     <ClCompile Include="TestGameManager.cpp" />
-    <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Def.h" />
@@ -171,7 +170,6 @@
     <ClInclude Include="ShowIntroCommand.h" />
     <ClInclude Include="StartGameCommand.h" />
     <ClInclude Include="TestGameManager.h" />
-    <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -203,7 +203,6 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="tinythread.h" />
     <ClInclude Include="Word.h" />
   </ItemGroup>
   <ItemGroup>
@@ -254,7 +253,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="tinythread.cpp" />
     <ClCompile Include="Word.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

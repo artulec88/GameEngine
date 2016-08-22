@@ -22,9 +22,6 @@
     <ClCompile Include="TestGameManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="tinythread.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ResumeGameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -61,9 +58,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TestGameManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="tinythread.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ResumeGameCommand.h">

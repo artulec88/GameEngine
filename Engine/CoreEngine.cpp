@@ -1,6 +1,5 @@
 #include "StdAfx.h"
 #include "CoreEngine.h"
-#include "tinythread.h"
 
 #include "Audio\AudioEngineFactory.h"
 
@@ -14,6 +13,7 @@
 #include <iomanip>
 #include <sstream>
 #include <iostream>
+#include <thread>
 #include <GLFW\glfw3.h>
 
 /**
@@ -647,8 +647,7 @@ void Engine::CoreEngine::Run()
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
-			//this_thread::sleep_for(chrono::milliseconds(100));
-			tthread::this_thread::sleep_for(tthread::chrono::milliseconds(THREAD_SLEEP_TIME));
+			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME));
 #ifdef CALCULATE_RENDERING_STATS
 			++m_renderingNotRequiredCount;
 #endif

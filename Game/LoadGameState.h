@@ -7,12 +7,12 @@
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Math\Math.h"
-#include "tinythread.h"
 #include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
 #endif
 
+#include <thread>
 #include <string>
 
 namespace Game
@@ -51,7 +51,7 @@ namespace Game
 	private:
 		Engine::GameManager* m_gameManager;
 		Math::Real m_loadingProgress;
-		tthread::thread* m_loadingThread;
+		std::thread* m_loadingThread;
 #ifdef CALCULATE_GAME_STATS
 		Math::Statistics::ClassStats& m_classStats;
 #endif

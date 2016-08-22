@@ -6,8 +6,6 @@
 #include "Utility\ILogger.h"
 #include "PlayGameState.h"
 
-#include "tinythread.h"
-
 using namespace Game;
 using namespace Rendering;
 
@@ -36,7 +34,7 @@ void LoadGameState::Entered()
 
 	// VAOs cannot be shared across multiple window contexts, that is why we don't use additional threads anymore.
 	// See http://stackoverflow.com/questions/23765371/opengl-multitreading-shared-context-and-glgenbuffers.
-	m_loadingThread = new tthread::thread(Engine::GameManager::Load, Engine::GameManager::GetGameManager());
+	m_loadingThread = new std::thread(Engine::GameManager::LoadGame, Engine::GameManager::GetGameManager());
 	STOP_PROFILING("");
 }
 

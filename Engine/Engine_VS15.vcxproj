@@ -199,7 +199,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="GravityComponent.h" />
     <ClInclude Include="TextureFactory.h" />
-    <ClInclude Include="tinythread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBColliderComponent.cpp" />
@@ -259,7 +258,6 @@
     </ClCompile>
     <ClCompile Include="GravityComponent.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
-    <ClCompile Include="tinythread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
