@@ -76,7 +76,6 @@ namespace Utility {
 			static constexpr int MONTHS_COUNT = 12;
 			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<int, MONTHS_COUNT> DAYS_COUNT_IN_MONTH;
 			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<int, MONTHS_COUNT> DAYS_COUNT_FROM_FIRST_DAY_IN_YEAR;
-			static /* constexpr: problem- see https://connect.microsoft.com/VisualStudio/Feedback/Details/2092790 */ std::array<std::array<float, TIME_UNITS_COUNT>, TIME_UNITS_COUNT> TIME_UNITS_CONVERSION_FACTORS;
 
 			/// <summary>
 			/// Calculates and return current local time.
@@ -86,7 +85,6 @@ namespace Utility {
 			/// </remarks>
 			UTILITY_API static DateTime Now();
 			UTILITY_API static std::string ConvertTimeUnitToString(TimeUnit timeUnit);
-			UTILITY_API static float GetTimeUnitConvertingFactor(TimeUnit fromtimeUnit, TimeUnit toTimeUnit);
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
@@ -190,18 +188,17 @@ namespace Utility {
 		public:
 			UTILITY_API inline long long GetDuration(TimeUnit timeUnit = NANOSECOND) const
 			{
-				const long long ns = CalculateElapsedTimeInNanoseconds();
 				switch (timeUnit)
 				{
-				case HOUR: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(HOUR, NANOSECOND));
-				case MINUTE: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MINUTE, NANOSECOND));
-				case SECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(SECOND, NANOSECOND));
-				case MILLISECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MILLISECOND, NANOSECOND));
-				case MICROSECOND: return ns * static_cast<long long>(DateTime::GetTimeUnitConvertingFactor(MICROSECOND, NANOSECOND));
-				case NANOSECOND: return ns;
+				case HOUR: return std::chrono::duration_cast<std::chrono::hours>(m_stopTime - m_startTime).count();
+				case MINUTE: return std::chrono::duration_cast<std::chrono::minutes>(m_stopTime - m_startTime).count();
+				case SECOND: return std::chrono::duration_cast<std::chrono::seconds>(m_stopTime - m_startTime).count();
+				case MILLISECOND: return std::chrono::duration_cast<std::chrono::milliseconds>(m_stopTime - m_startTime).count();
+				case MICROSECOND: return std::chrono::duration_cast<std::chrono::microseconds>(m_stopTime - m_startTime).count();
+				case NANOSECOND: return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
 				default:
 					//ERROR_LOG_UTILITY("Incorrect time unit specified: ", timeUnit);
-					return ns;
+					return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
 				}
 			}
 
@@ -209,11 +206,13 @@ namespace Utility {
 			UTILITY_API void Reset();
 			UTILITY_API void Stop();
 			UTILITY_API bool IsRunning() const { return m_isRunning; }
-		private:
-			inline long long CalculateElapsedTimeInNanoseconds() const
+			UTILITY_API std::string ToString(TimeUnit timeUnit = NANOSECOND) const
 			{
-				return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
+				std::stringstream ss("");
+				ss << GetDuration(timeUnit) << " " << DateTime::ConvertTimeUnitToString(timeUnit);
+				return ss.str();
 			}
+		private:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

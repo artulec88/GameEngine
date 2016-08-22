@@ -8,6 +8,7 @@
 
 #include <ctime>
 #include <string>
+#include <thread>
 
 using namespace std;
 using namespace Utility;
@@ -202,8 +203,24 @@ void TimeTest()
 	TestReport(dateTime7 < dateTime3, "The opearator < returned incorrect result. DateTime: " + dateTime7.ToString() + " should be earlier than dateTime: " + dateTime3.ToString());
 	/* ==================== TIME TEST #2- DateTime operations- end ==================== */
 
-	/* ==================== STRING UTILITY TEST #3- trimming operation- begin ==================== */
-	/* ==================== STRING UTILITY TEST #3- trimming operation- end ==================== */
+	/* ==================== TIME TEST #3- Timer operations- begin ==================== */
+	Timing::Timer timer;
+	timer.Start();
+	std::this_thread::sleep_for(std::chrono::seconds(2));
+	timer.Stop();
+	TestReport(abs(timer.GetDuration() - 2000000000) < 250000, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString() + " when it should be roughly equal to 2000000000 [ns]");
+	TestReport(abs(timer.GetDuration(Timing::MICROSECOND) - 2000000) < 250, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString(Timing::MICROSECOND) + " when it should be roughly equal to 2000000 [us]");
+	TestReport(abs(timer.GetDuration(Timing::MILLISECOND) - 2000) < 1, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString(Timing::MILLISECOND) + " when it should be roughly equal to 2000 [ms]");
+	TestReport(timer.GetDuration(Timing::SECOND) == 2, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString(Timing::SECOND) + " when it should be equal to 2 [s]");
+	TestReport(timer.GetDuration(Timing::MINUTE) == 0, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString(Timing::MINUTE) + " when it should be equal to 0 [M]");
+	TestReport(timer.GetDuration(Timing::HOUR) == 0, "The timer doesn't calculate its duration properly. Duration equals " +
+		timer.ToString(Timing::HOUR) + " when it should be equal to 0 [h]");
+	/* ==================== TIME TEST #3- Timer operations- end ==================== */
 	NOTICE_LOG(MODULE_NAME, "Time test finished");
 }
 

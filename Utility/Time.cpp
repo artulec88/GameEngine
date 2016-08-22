@@ -27,24 +27,6 @@
 	DAYS_COUNT_IN_MONTH[0] + DAYS_COUNT_IN_MONTH[1] + DAYS_COUNT_IN_MONTH[2] + DAYS_COUNT_IN_MONTH[3] + DAYS_COUNT_IN_MONTH[4] + DAYS_COUNT_IN_MONTH[5] + DAYS_COUNT_IN_MONTH[6] + DAYS_COUNT_IN_MONTH[7] + DAYS_COUNT_IN_MONTH[8] + DAYS_COUNT_IN_MONTH[9],
 	DAYS_COUNT_IN_MONTH[0] + DAYS_COUNT_IN_MONTH[1] + DAYS_COUNT_IN_MONTH[2] + DAYS_COUNT_IN_MONTH[3] + DAYS_COUNT_IN_MONTH[4] + DAYS_COUNT_IN_MONTH[5] + DAYS_COUNT_IN_MONTH[6] + DAYS_COUNT_IN_MONTH[7] + DAYS_COUNT_IN_MONTH[8] + DAYS_COUNT_IN_MONTH[9] + DAYS_COUNT_IN_MONTH[10],
 };
-/* static */ std::array<std::array<float, Utility::Timing::TIME_UNITS_COUNT>, Utility::Timing::TIME_UNITS_COUNT> Utility::Timing::DateTime::TIME_UNITS_CONVERSION_FACTORS = { {
-	{ 1.0f, // hour to hour conversion
-	static_cast<float>(MINUTES_PER_HOUR), // hour to minutes conversion
-	static_cast<float>(SECONDS_PER_HOUR), // hour to seconds conversion
-	static_cast<float>(SECONDS_PER_HOUR * MILLISECONDS_PER_SECOND), // hour to milliseconds
-	static_cast<float>(static_cast<long long>(SECONDS_PER_HOUR) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), // hour to microseconds
-	static_cast<float>(static_cast<long long>(SECONDS_PER_HOUR) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND) }, // hour to nanoseconds
-	{ 1.0f / MINUTES_PER_HOUR, // minute to hours conversion
-	1.0f, // minute to minute conversion
-	static_cast<float>(SECONDS_PER_MINUTE), // minute to seconds
-	static_cast<float>(SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND), // minute to milliseconds
-	static_cast<float>(SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), // minute to microseconds
-	static_cast<float>(static_cast<long long>(SECONDS_PER_MINUTE) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND) }, // Minute to nanoseconds
-	{ 1.0f / SECONDS_PER_HOUR, 1.0f / SECONDS_PER_MINUTE, 1.0f, static_cast<float>(MILLISECONDS_PER_SECOND), static_cast<float>(MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), static_cast<float>(MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND) }, // Second
-	{ 1.0f / (SECONDS_PER_HOUR * MILLISECONDS_PER_SECOND), 1.0f / (SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND), 1.0f / MILLISECONDS_PER_SECOND, 1.0f, static_cast<float>(MICROSECONDS_PER_MILLISECOND), static_cast<float>(MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND) }, // Millisecond
-	{ 1.0f / (static_cast<long long>(SECONDS_PER_HOUR) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), 1.0f / (SECONDS_PER_MINUTE * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), 1.0f / (MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND), 1.0f / MICROSECONDS_PER_MILLISECOND, 1.0f, static_cast<float>(NANOSECONDS_PER_MICROSECOND) }, // Microsecond
-	{ 1.0f / (static_cast<long long>(SECONDS_PER_HOUR) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND), 1.0f / (static_cast<long long>(SECONDS_PER_MINUTE) * MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND), 1.0f / (MILLISECONDS_PER_SECOND * MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND), 1.0f / MICROSECONDS_PER_MILLISECOND * NANOSECONDS_PER_MICROSECOND, 1.0f / NANOSECONDS_PER_MICROSECOND, 1.0f } // Nanosecond
-	} };
 
 /* static */ Utility::Timing::DateTime Utility::Timing::DateTime::Now()
 {
@@ -78,11 +60,6 @@
 		ERROR_LOG_UTILITY("Unknown time unit: ", timeUnit);
 		return "[unknown time unit]";
 	}
-}
-
-/* static */ float Utility::Timing::DateTime::GetTimeUnitConvertingFactor(TimeUnit fromTimeUnit, TimeUnit toTimeUnit)
-{
-	return TIME_UNITS_CONVERSION_FACTORS[fromTimeUnit][toTimeUnit];
 }
 
 Utility::Timing::DateTime::DateTime(unsigned int year, unsigned int month, unsigned int day, unsigned int hour, unsigned int minute, unsigned int second) :
