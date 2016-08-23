@@ -16,7 +16,7 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 #endif
 {
 	START_PROFILING_MATH("");
-	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
+	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::Logging::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	BuildTree(positions, positionsCount, depth);
 	STOP_PROFILING_MATH("");
 }

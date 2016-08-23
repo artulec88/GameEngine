@@ -178,8 +178,8 @@ namespace Math
 
 	inline Real Matrix4D::GetElement(int i, int j) const
 	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::ERR, "Incorrect column index given (", j, ")");
+		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
+		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		return m_values[i][j];
 #else
@@ -189,8 +189,8 @@ namespace Math
 
 	inline void Matrix4D::SetElement(int i, int j, Real value)
 	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::ERR, "Incorrect column index given (", j, ")");
+		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
+		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		m_values[i][j] = value;
 #else
@@ -201,23 +201,23 @@ namespace Math
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	inline const Math::Real* Matrix4D::operator[](int index) const
 	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::ERR, "Incorrect row index given (", index, ")");
+		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 		return &m_values[index][0];
 	}
 	inline Math::Real* Matrix4D::operator[](int index)
 	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::ERR, "Incorrect row index given (", index, ")");
+		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 		return &m_values[index][0];
 	}
 #else
 	inline const Math::Real* Matrix4D::At(int index) const
 	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::ERR, "Incorrect index given (", index, ")");
+		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect index given (", index, ")");
 		return &m_values[index];
 	}
 	inline Math::Real Matrix4D::operator[](int index) const
 	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE * MATRIX_SIZE), Utility::ERR, "Incorrect index given (", index, ")");
+		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE * MATRIX_SIZE), Utility::Logging::ERR, "Incorrect index given (", index, ")");
 		return m_values[index];
 	}
 #endif

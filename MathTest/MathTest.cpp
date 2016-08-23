@@ -64,10 +64,61 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
 {
 	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
-	Math::Real elapsedTime = static_cast<Math::Real>(timer.GetDuration(timeUnit));
+	double elapsedTime = static_cast<double>(timer.GetDuration(timeUnit));
 	elapsedTime /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();
-	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime);
+	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime, " ", Timing::DateTime::ConvertTimeUnitToString(timeUnit));
+}
+
+void TestAngleConstructionTime(const unsigned int NUMBER_OF_ITERATIONS)
+{
+	Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+	}
+	timer.Stop();
+	TimeReport("Average time for angle creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+}
+
+void TestAngleSinCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
+{
+	Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.Sin();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle sinus calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+}
+
+void TestAngleCosCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
+{
+	Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.Cos();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle cosinus calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+}
+
+void TestAngleTanCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
+{
+	Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.Tan();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle tangent calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
 }
 
 void AngleTest()
@@ -102,6 +153,11 @@ void AngleTest()
 	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle6, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
 
 	angleTests.StartTests();
+
+	TestAngleConstructionTime(100000);
+	TestAngleSinCalculationTime(10000);
+	TestAngleCosCalculationTime(10000);
+	TestAngleTanCalculationTime(10000);
 }
 
 void VectorTest()
@@ -405,7 +461,7 @@ void MatrixTest()
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
 		Matrix4D result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
-		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::ERR, "Identity matrix multiplication result is incorrect.");
+		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
@@ -1039,7 +1095,7 @@ int main(int argc, char* argv[])
 	//OtherTests();
 
 	STATS_STORAGE.StopTimer();
-	STATS_STORAGE.PrintReport();
+	//STATS_STORAGE.PrintReport();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

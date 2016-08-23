@@ -172,7 +172,7 @@ namespace Rendering
 		public:
 			bool operator() (const Mesh& lhs, const Mesh& rhs) const
 			{
-				CHECK_CONDITION_RETURN_RENDERING(lhs.m_meshData != NULL && rhs.m_meshData != NULL, false, Utility::ERR,
+				CHECK_CONDITION_RETURN_RENDERING(lhs.m_meshData != NULL && rhs.m_meshData != NULL, false, Utility::Logging::ERR,
 					"Cannot compare two meshes' VAOs, because mesh(-es) data is/are NULL.");
 				return lhs.m_meshData->GetVAO() < rhs.m_meshData->GetVAO();
 			}

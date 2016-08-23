@@ -10,8 +10,8 @@
 Utility::CommandLineMapper::CommandLineMapper(int argc, char* argv[]) : ICommandLineMapper()
 {
 	DELOCUST_LOG_UTILITY("CommandLineMapper constructor");
-	CHECK_CONDITION_UTILITY(argc >= 1, Utility::ERR, "Incorrect number of program parameters specified (", argc, ")");
-	CHECK_CONDITION_UTILITY(argv != NULL, Utility::ERR, "Incorrect program parameters specified.");
+	CHECK_CONDITION_UTILITY(argc >= 1, Utility::Logging::ERR, "Incorrect number of program parameters specified (", argc, ")");
+	CHECK_CONDITION_UTILITY(argv != NULL, Utility::Logging::ERR, "Incorrect program parameters specified.");
 	// We specifically ignore the argv[0] argument, because it's just the name of the program.
 	for (int i = 1; i < argc - 1; i += 2)
 	{

@@ -54,7 +54,7 @@ Rendering::Material::Material(Texture* texture, const std::string& textureName)
 
 void Rendering::Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
 {
-	CHECK_CONDITION_RETURN_VOID_RENDERING(texture != NULL, Utility::WARNING, "Cannot set the additional texture for material. The texture is NULL.");
+	CHECK_CONDITION_RETURN_VOID_RENDERING(texture != NULL, Utility::Logging::WARNING, "Cannot set the additional texture for material. The texture is NULL.");
 	m_hasMultipleTextures = true;
 	m_mappedValues.SetTexture(textureName, texture);
 }

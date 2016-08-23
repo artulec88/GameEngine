@@ -134,7 +134,7 @@ T Math::Statistics::Stats<T>::CalculateMean(StatsID statsID) const
 
 	T sum = CalculateSum(statsID);
 	int samplesCount = CalculateSamplesCount(statsID);
-	CHECK_CONDITION_MATH(samplesCount > 0, Utility::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
+	CHECK_CONDITION_MATH(samplesCount > 0, Utility::Logging::EMERGENCY, "Samples count (", samplesCount, ") must be positive.");
 
 	DEBUG_LOG_MATH("Sum = ", sum, ", samplesCount = ", samplesCount);
 

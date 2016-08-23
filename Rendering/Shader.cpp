@@ -423,7 +423,7 @@ void Rendering::ShaderData::AddUniform(const std::string& uniformName, Uniforms:
 	}
 
 	GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
-	CHECK_CONDITION_EXIT_RENDERING(location != INVALID_VALUE, EMERGENCY, "Invalid value of the location (", location, ") for the uniform \"", uniformName, "\"");
+	CHECK_CONDITION_EXIT_RENDERING(location != INVALID_VALUE, Utility::Logging::EMERGENCY, "Invalid value of the location (", location, ") for the uniform \"", uniformName, "\"");
 	DELOCUST_LOG_RENDERING("Uniform \"", uniformName, "\" has a location value: ", location);
 	m_uniformMap.insert(std::pair<std::string, GLint>(uniformName, location));
 }
@@ -517,7 +517,7 @@ std::vector<Rendering::Uniforms::Uniform> Rendering::ShaderData::FindUniformStru
 bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const
 {
 	itr = m_uniformMap.find(uniformName);
-	CHECK_CONDITION_RENDERING(itr != uniformMap.end(), ERR, "Uniform \"", uniformName, "\" has not been found.");
+	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), Utility::Logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
 	return (itr != m_uniformMap.end());
 }
 
@@ -554,7 +554,6 @@ Rendering::Shader::Shader(Shader&& shader) :
 
 void Rendering::Shader::Bind() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_shaderData != NULL, Utility::CRITICAL, "Cannot bind the shader. Shader data is NULL.");
 	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
 	glUseProgram(m_shaderData.GetProgram());
 	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
@@ -587,10 +586,7 @@ void Rendering::Shader::UpdateTransformUniforms(const Math::Transform& transform
 
 void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(m_shaderData != NULL, CRITICAL, "Cannot update uniforms. Shader data is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(m_shaderData->GetUniformNames().size() == m_shaderData->GetUniformTypes().size(), ERR,
-		"Shader data is incorrect. There are ", m_shaderData->GetUniformNames().size(), " uniform names and ", m_shaderData->GetUniformTypes().size(), " uniform types");
+	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 
 	Math::Matrix4D worldMatrix = transform.GetTransformation();
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc.
@@ -639,7 +635,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 				{
 					unsigned int multitextureIndex = 0; // used only by the multitextures
 					const Texture* texture = renderer->GetTexture(unprefixedName, &multitextureIndex);
-					CHECK_CONDITION_EXIT_RENDERING(texture != NULL, CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
+					CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
 					texture->Bind(samplerSlot, multitextureIndex);
 				}
 				SetUniformi(uniformName, samplerSlot);
@@ -671,7 +667,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
 				const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
-				CHECK_CONDITION_EXIT_RENDERING(directionalLight != NULL, ERR, "Cannot update directional light uniform. Directional light instance is NULL.");
+				CHECK_CONDITION_EXIT_RENDERING(directionalLight != NULL, Utility::Logging::ERR, "Cannot update directional light uniform. Directional light instance is NULL.");
 				SetUniformDirectionalLight(uniformName, *directionalLight);
 			}
 			else if (uniformType == Uniforms::POINT_LIGHT)
@@ -679,7 +675,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
 				const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
-				CHECK_CONDITION_EXIT_RENDERING(pointLight != NULL, ERR, "Cannot update point light uniform. Point light instance is NULL.");
+				CHECK_CONDITION_EXIT_RENDERING(pointLight != NULL, Utility::Logging::ERR, "Cannot update point light uniform. Point light instance is NULL.");
 				SetUniformPointLight(uniformName, *pointLight);
 			}
 			else if (uniformType == Uniforms::SPOT_LIGHT)
@@ -687,7 +683,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
 				const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
 				//const Lighting::SpotLight* spotLight = renderer->GetSpotLight();
-				CHECK_CONDITION_EXIT_RENDERING(spotLight != NULL, ERR, "Cannot update spot light uniform. Spot light instance is NULL.");
+				CHECK_CONDITION_EXIT_RENDERING(spotLight != NULL, Utility::Logging::ERR, "Cannot update spot light uniform. Spot light instance is NULL.");
 				SetUniformSpotLight(uniformName, *spotLight);
 			}
 			else
@@ -700,7 +696,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 		{
 			unsigned int samplerSlot = renderer->GetSamplerSlot(uniformName);
 			const Texture* texture = material->GetTexture(uniformName);
-			CHECK_CONDITION_EXIT_RENDERING(texture != NULL, CRITICAL, "Updating uniforms operation failed. Material texture \"", uniformName, "\" is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Material texture \"", uniformName, "\" is NULL.");
 			texture->Bind(samplerSlot);
 			SetUniformi(uniformName, samplerSlot);
 		}

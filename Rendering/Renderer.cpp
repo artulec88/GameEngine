@@ -593,7 +593,7 @@ bool Rendering::Renderer::InitShadowMap()
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	int shadowMapIndex = (shadowInfo == NULL) ? 0 : shadowInfo->GetShadowMapSizeAsPowerOf2() - 1;
-	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
+	CHECK_CONDITION_EXIT_RENDERING(shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::ERR, "Incorrect shadow map size. Shadow map index must be an integer from range [0; ", SHADOW_MAPS_COUNT, "), but equals ", shadowMapIndex, ".");
 	m_mappedValues.SetTexture("shadowMap", &m_shadowMaps[shadowMapIndex]); // TODO: Check what would happen if we didn't set texture here?
 	m_shadowMaps[shadowMapIndex].BindAsRenderTarget();
 	ClearScreen(Color(REAL_ONE /* completely in light */ /* TODO: When at night it should be REAL_ZERO */, REAL_ONE /* we want variance to be also cleared */, REAL_ZERO, REAL_ZERO)); // everything is in light (we can clear the COLOR_BUFFER_BIT)
@@ -701,9 +701,8 @@ void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMa
 void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest)
 {
 	START_PROFILING_RENDERING("");
-	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::CRITICAL, "Cannot apply a filter. Filtering shader is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
-	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
+	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::Logging::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::Logging::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
 	if (dest == NULL)
 	{
 		DELOCUST_LOG_RENDERING("Binding window as a render target for filtering");

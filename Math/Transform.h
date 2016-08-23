@@ -71,7 +71,7 @@ namespace Math
 
 		void CalculateParentTransformation() const
 		{
-			CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != NULL, Utility::ERR, "Parent transform is NULL.");
+			CHECK_CONDITION_RETURN_VOID_MATH(m_parentTransform != NULL, Utility::Logging::ERR, "Parent transform is NULL.");
 			m_parentTransformation = m_parentTransform->GetTransformation();
 		}
 

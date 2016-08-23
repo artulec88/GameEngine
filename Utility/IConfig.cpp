@@ -14,7 +14,7 @@
 /* static */ const Utility::IConfig& Utility::IConfig::GetConfig(const std::string& moduleName)
 {
 	std::map<std::string, std::unique_ptr<IConfig>>::iterator confItr = configurations.find(moduleName);
-	CHECK_CONDITION_UTILITY(confItr != configurations.end(), Utility::ERR, "There is no configuration registered for module \"", moduleName, "\"");
+	CHECK_CONDITION_UTILITY(confItr != configurations.end(), Utility::Logging::ERR, "There is no configuration registered for module \"", moduleName, "\"");
 	return *confItr->second;
 }
 

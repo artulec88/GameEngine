@@ -507,8 +507,8 @@ private:
 				nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
 			}
 		}
-		CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::ERR, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = ", vectorSize, " and the gap = ", indices.back());
-		CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::ERR, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to ", FIRST_CONST_INDEX, ", but is equal to ", indices.front());
+		CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Logging::ERR, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = ", vectorSize, " and the gap = ", indices.back());
+		CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::Logging::ERR, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to ", FIRST_CONST_INDEX, ", but is equal to ", indices.front());
 
 		while (!indices.empty())
 		{
@@ -721,7 +721,7 @@ private:
 				maxValue = value;
 			}
 		}
-		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
+		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 	}
 
 	void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
@@ -746,7 +746,7 @@ private:
 				maxValue = value;
 			}
 		}
-		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
+		CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 	}
 
 	template <typename T>
@@ -781,7 +781,7 @@ private:
 				--bucketIndex;
 			}
 
-			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
+			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
@@ -864,7 +864,7 @@ private:
 				--bucketIndex;
 			}
 
-			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
+			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
 		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
