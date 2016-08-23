@@ -345,7 +345,7 @@ void Math::Statistics::ClassStats::StopProfiling(const std::string& methodName)
 {
 	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot stop profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
-	CHECK_CONDITION_RETURN_VOID_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }

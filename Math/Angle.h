@@ -228,7 +228,7 @@ namespace Math
 		/// </summary>
 		/// <returns>The approximated value of the tangent of the current angle.</returns>
 		/// <remarks>
-		/// For correct results the angle must be in range [0; pi / 2 (although the book "3D Game Engine Architecture" by David H. Eberly says 2 it may be an error, it is likely to be 4 as in FastTan1())].
+		/// For correct results the angle must be in range [0; pi / 2 (although the book "3D Game Engine Architecture" by David H. Eberly says "2" may be an error, it is likely to be 4 as in FastTan1())].
 		/// The error term eps(x) is bounded by |eps(x)| <= 1.9 * 10^(-8).
 		/// </remarks>
 		MATH_API inline Real FastTan2() const;

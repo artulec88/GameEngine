@@ -21,6 +21,7 @@
 
 #include <ctime>
 #include <string>
+#include <thread>
 //#include <iostream>
 //#include <fstream>
 
@@ -93,7 +94,12 @@ void AngleTest()
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle3, angle4, false, false, true));
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle3, false, true, false));
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle5, angle6, true, false, false));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle1, 1.0f, 0.0f, 0.0f));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle1, REAL_ONE, REAL_ZERO, REAL_ZERO));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle2, REAL_ONE, REAL_ZERO, REAL_ZERO));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle3, REAL_ONE, REAL_ZERO, REAL_ZERO));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle4, 0.027412f, 0.999624f, 0.027422f));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle5, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle6, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
 
 	angleTests.StartTests();
 }
@@ -968,8 +974,6 @@ void StatsTest()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.StopTimer();
-	STATS_STORAGE.PrintReport();
 }
 
 void OtherTests()

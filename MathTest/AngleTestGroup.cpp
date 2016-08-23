@@ -104,15 +104,37 @@ AngleTestTrigonometry::~AngleTestTrigonometry()
 
 void AngleTestTrigonometry::StartTest()
 {
+	const Math::Real DIFF_THRESHOLD = 0.002f;
+
 	Math::Real sinValue = m_angle.Sin();
 	bool sinEqual = Math::AlmostEqual(sinValue, m_expectedSinValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
 		"The sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
 
+	sinValue = m_angle.FastSin1();
+	sinEqual = abs(sinValue - m_expectedSinValue) < DIFF_THRESHOLD;
+	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
+		"The first approximate sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+
+	sinValue = m_angle.FastSin2();
+	sinEqual = abs(sinValue - m_expectedSinValue) < DIFF_THRESHOLD;
+	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
+		"The second approximate sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+
 	Math::Real cosValue = m_angle.Cos();
 	bool cosEqual = Math::AlmostEqual(cosValue, m_expectedCosValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
 		"The cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+
+	cosValue = m_angle.FastCos1();
+	cosEqual = abs(cosValue - m_expectedCosValue) < DIFF_THRESHOLD;
+	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
+		"The first approximate cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+
+	cosValue = m_angle.FastCos2();
+	cosEqual = abs(cosValue - m_expectedCosValue) < DIFF_THRESHOLD;
+	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
+		"The second approximate cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
 
 	if (!Math::AlmostEqual(cosValue, REAL_ZERO))
 	{
@@ -120,6 +142,16 @@ void AngleTestTrigonometry::StartTest()
 		bool tanEqual = Math::AlmostEqual(tanValue, m_expectedTanValue);
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
 			"The tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+
+		tanValue = m_angle.FastTan1();
+		tanEqual = abs(tanValue - m_expectedTanValue) < DIFF_THRESHOLD;
+		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
+			"The first approximate tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+
+		tanValue = m_angle.FastTan2();
+		tanEqual = abs(tanValue - m_expectedTanValue) < DIFF_THRESHOLD;
+		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
+			"The second approximate tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
 	}
 }
 /* ==================== class AngleTestCompare end ==================== */
