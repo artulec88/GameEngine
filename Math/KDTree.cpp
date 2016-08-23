@@ -15,10 +15,10 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 	,m_classStats(STATS_STORAGE.GetClassStats("KDTree"))
 #endif
 {
-	START_PROFILING("");
+	START_PROFILING_MATH("");
 	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	BuildTree(positions, positionsCount, depth);
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH("");
 }
 
 Math::KDTree::~KDTree(void)
@@ -27,7 +27,7 @@ Math::KDTree::~KDTree(void)
 
 void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
 {
-	START_PROFILING("");
+	START_PROFILING_MATH("");
 	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
 	//DEBUG_LOG_MATH("Before sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
@@ -54,7 +54,7 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 	{
 		m_rightTree = std::make_unique<KDTree>(&positions[medianIndex + 1], positionsCount - medianIndex - 1, m_numberOfSamples, depth + 1);
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH("");
 }
 
 //int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
@@ -66,7 +66,7 @@ Math::Real Math::KDTree::SearchNearestValue(const Vector2D& position) const
 
 Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
 {
-	START_PROFILING("");
+	START_PROFILING_MATH("");
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
 	// If we wanted to check that condition we would have to store the number of nodes in the separate member variable.
 	std::vector<Real> minDistanceValues;
@@ -88,7 +88,7 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 	/* ==================== METHOD #1 begin ==================== */
 	if (AlmostEqual(minDistances[0], REAL_ZERO))
 	{
-		STOP_PROFILING("");
+		STOP_PROFILING_MATH("");
 		return minDistanceValues[0];
 	}
 	Real sumOfDistances = REAL_ZERO;
@@ -105,7 +105,7 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 		result += minDistanceValues[i] * weight;
 	}
 	result /= sumOfWeights;
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH("");
 	return result;
 	/* ==================== METHOD #1 end ==================== */
 	
@@ -136,7 +136,7 @@ void Math::KDTree::SearchNearestValue(const Vector2D& position, int depth, std::
 
 void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
-	START_PROFILING("");
+	START_PROFILING_MATH("");
 	//++numberOfPositionsChecked;
 	//DELOCUST_LOG_MATH("Visiting the node with position (", m_position.ToString(), ") and value ", m_value);
 	Real distance = (x - m_position.GetX()) * (x - m_position.GetX()) + (z - m_position.GetY()) * (z - m_position.GetY());
@@ -159,7 +159,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 	if (IsLeaf())
 	{
 		//DELOCUST_LOG_MATH("The node with position (", m_position.ToString(), ") and value ", m_value, " is a leaf");
-		STOP_PROFILING("");
+		STOP_PROFILING_MATH("");
 		return;
 	}
 
@@ -205,7 +205,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 			//DELOCUST_LOG_MATH("Left tree of node (", m_position.ToString(), ") pruned");
 		}
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH("");
 }
 
 std::string Math::KDTree::ToString() const

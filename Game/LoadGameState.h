@@ -1,15 +1,16 @@
 #ifndef __LOAD_GAME_STATE_H__
 #define __LOAD_GAME_STATE_H__
 
+#include "Def.h"
 #include "Rendering\Renderer.h"
 #include "Engine\GameState.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Math\Math.h"
-#include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
+#include "Math\Statistics.h"
 #endif
 
 #include <thread>

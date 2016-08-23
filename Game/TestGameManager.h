@@ -1,12 +1,12 @@
 #ifndef __GAME_TEST_GAME_MANAGER_H__
 #define __GAME_TEST_GAME_MANAGER_H__
 
+#include "Def.h"
 #include "StartGameCommand.h"
 #include "ShowIntroCommand.h"
 #include "ResumeGameCommand.h"
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
-#include "GameStats.h"
 
 #include "Engine\QuitGameCommand.h"
 #include "Engine\GameManager.h"
@@ -17,6 +17,7 @@
 
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
+#include "Math\Statistics.h"
 #endif
 
 #include <vector>

@@ -7,8 +7,6 @@
 #define PHYSICS_API __declspec(dllimport)
 #endif
 
-#define CALCULATE_PHYSICS_STATS
-
 #define GET_CONFIG_VALUE_PHYSICS(cfgName, defValue) GET_CONFIG_VALUE("Physics", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_PHYSICS(cfgName, defValue) GET_CONFIG_VALUE_STR("Physics", cfgName, defValue)
 
@@ -20,6 +18,15 @@
 #define INFO_LOG_PHYSICS(...) INFO_LOG("Physics", ##__VA_ARGS__)
 #define DEBUG_LOG_PHYSICS(...) DEBUG_LOG("Physics", ##__VA_ARGS__)
 #define DELOCUST_LOG_PHYSICS(...) DELOCUST_LOG("Physics", ##__VA_ARGS__)
+
+#define CALCULATE_PHYSICS_STATS
+#ifdef CALCULATE_PHYSICS_STATS
+#define START_PROFILING_PHYSICS(param) START_PROFILING("Physics", param)
+#define STOP_PROFILING_PHYSICS(param) STOP_PROFILING("Physics", param)
+#else
+#define START_PROFILING_PHYSICS(param)
+#define STOP_PROFILING_PHYSICS(param)
+#endif
 
 #define CHECK_CONDITION_PHYSICS(expr, logLevel, ...) CHECK_CONDITION(expr, "Physics", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_ALWAYS_PHYSICS(expr, logLevel, ...) CHECK_CONDITION_ALWAYS(expr, "Physics", logLevel, ##__VA_ARGS__)

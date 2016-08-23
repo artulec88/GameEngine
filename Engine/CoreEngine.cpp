@@ -199,7 +199,6 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_timeSum2_3(REAL_ZERO),
 	m_countStats3(0),
 	m_timeSum3(REAL_ZERO),
-	m_timer(),
 	m_renderingRequiredCount(0),
 	m_renderingNotRequiredCount(0),
 	m_isSamplingSpf(true),
@@ -207,16 +206,13 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_stats()
 #endif
 {
+	START_PROFILING_ENGINE("");
+	NOTICE_LOG_ENGINE("Main application construction started");
+	STATS_STORAGE.StartTimer();
 	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
 	Utility::Logging::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing math logger
 	Utility::Logging::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing utility logger
 	Utility::Logging::ILogger::GetLogger("Rendering").Fill(GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing rendering logger
-
-	NOTICE_LOG_ENGINE("Main application construction started");
-#ifdef CALCULATE_RENDERING_STATS
-	m_timer.Start();
-#endif
-	START_PROFILING("");
 
 	if (s_coreEngine != NULL)
 	{
@@ -229,9 +225,8 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	CreatePhysicsEngine();
 	CreateRenderer(width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from configuration file. */);
 
-	STOP_PROFILING("");
-
 	NOTICE_LOG_ENGINE("Main application construction finished");
+	STOP_PROFILING_ENGINE("");
 }
 
 
@@ -250,8 +245,8 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	INFO_LOG_ENGINE("Rendering step performed ", m_renderingRequiredCount, " times.");
 	INFO_LOG_ENGINE("Rendering step omitted ", m_renderingNotRequiredCount, " times.");
 
-	m_timer.Stop();
-	STATS_STORAGE.PrintReport(m_timer.GetDuration(Utility::Timing::SECOND));
+	STATS_STORAGE.StopTimer();
+	STATS_STORAGE.PrintReport();
 
 	//Math::Real minSpf, maxSpf, stdDevSpf;
 	Math::Real meanSpf = m_stats.CalculateMean(Math::Statistics::SPF);
@@ -290,7 +285,7 @@ void Engine::CoreEngine::CreatePhysicsEngine()
 
 void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	InitGraphics(width, height, title, antiAliasingMethod);
 	Rendering::InitGraphics(width, height, antiAliasingMethod);
 
@@ -301,7 +296,7 @@ void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
-	STOP_PROFILING("");
+	STOP_PROFILING_ENGINE("");
 }
 
 void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
@@ -425,7 +420,7 @@ void Engine::CoreEngine::SetCallbacks()
 
 void Engine::CoreEngine::Start(GameManager* gameManager)
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	m_game = gameManager;
 	if (m_isRunning)
 	{
@@ -435,12 +430,12 @@ void Engine::CoreEngine::Start(GameManager* gameManager)
 	NOTICE_LOG_ENGINE("The core engine started");
 
 	Run();
-	STOP_PROFILING("");
+	STOP_PROFILING_ENGINE("");
 }
 
 void Engine::CoreEngine::Stop()
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	if (!m_isRunning)
 	{
 		WARNING_LOG_ENGINE("The core engine instance is not running");
@@ -461,12 +456,12 @@ void Engine::CoreEngine::Stop()
 	//QueryPerformanceCounter(&t2);
 	//double elapsedTime = static_cast<double>(static_cast<Math::Real>(1000000.0f) * (t2.QuadPart - t1.QuadPart)) / frequency.QuadPart; // in [us]
 	//INFO_LOG_ENGINE("Elapsed time = ", elapsedTime, " [us]");
-	STOP_PROFILING("");
+	STOP_PROFILING_ENGINE("");
 }
 
 void Engine::CoreEngine::Run()
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
@@ -562,7 +557,7 @@ void Engine::CoreEngine::Run()
 			 */
 			if (glfwWindowShouldClose(m_window) != 0)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return;
 			}
 			/* ==================== REGION #2_1 begin ====================*/

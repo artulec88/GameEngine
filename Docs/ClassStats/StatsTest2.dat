@@ -1,5 +1,5 @@
 "Method name"	"Invocations count"	"Invocation count excluding nested calls"	"Total time"	"Total time excluding nested calls"	"Average time"
-Method1	2	2	5.49985e+006	5.49985e+006	2.74993e+006
-Method2	5000	1000	72577.2	14429.6	14.5154
-Method3	208	8	5.64179e+006	212209	27124
-NestedMethod4	41640	0	5.58369e+006	0	134.094
+Method1	2	2	1.224e+09	1.224e+09	6.12e+08
+Method2	5000	1000	1.8e+07	3e+06	3600
+Method3	208	8	1.263e+09	5.50001e+07	6.07212e+06
+NestedMethod4	41640	0	1.25799e+09	0	30211.1

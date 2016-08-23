@@ -95,16 +95,16 @@ namespace Math
 		 */
 		bool AlmostEqual(const FloatingPoint& rhs) const
 		{
-			START_PROFILING("");
+			START_PROFILING_MATH("");
 			// The IEEE standard says that any comparison operation involving a NAN must return false
 			if (IsNAN() || rhs.IsNAN())
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_MATH("");
 				return false;
 			}
 
 			Bits distance = DistanceBetweenSignAndMagnitudeNumbers(u_.bits_, rhs.u_.bits_);
-			STOP_PROFILING("");
+			STOP_PROFILING_MATH("");
 			return distance <= s_kMaxUlps;
 		}
 

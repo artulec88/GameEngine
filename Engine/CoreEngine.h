@@ -229,8 +229,6 @@ namespace Engine
 		Math::Statistics::UtmostSamples<long long> m_minMaxTime3;
 		double m_timeSum3;
 
-		Utility::Timing::Timer m_timer;
-
 		mutable int m_renderingRequiredCount;
 		mutable int m_renderingNotRequiredCount;
 		mutable bool m_isSamplingSpf;

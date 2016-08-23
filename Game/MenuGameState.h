@@ -1,6 +1,7 @@
 #ifndef __MENU_GAME_STATE_H__
 #define __MENU_GAME_STATE_H__
 
+#include "Def.h"
 #include "Engine\EffectFactory.h"
 #include "Engine\GameState.h"
 #include "Engine\IRenderable.h"
@@ -15,9 +16,9 @@
 
 #include "Rendering\Renderer.h"
 
-#include "GameStats.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
+#include "Math\Statistics.h"
 #endif
 
 #include <vector>

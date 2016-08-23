@@ -11,13 +11,6 @@
 
 #define CALCULATE_ENGINE_STATS
 
-#ifndef CALCULATE_ENGINE_STATS
-#define START_PROFILING_STATIC(param)
-#define STOP_PROFILING_STATIC(param)
-#define START_PROFILING(param)
-#define STOP_PROFILING(param)
-#endif
-
 #define GET_CONFIG_VALUE_ENGINE(cfgName, defValue) GET_CONFIG_VALUE("Engine", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_ENGINE(cfgName, defValue) GET_CONFIG_VALUE_STR("Engine", cfgName, defValue)
 
@@ -29,6 +22,18 @@
 #define INFO_LOG_ENGINE(...) INFO_LOG("Engine", ##__VA_ARGS__)
 #define DEBUG_LOG_ENGINE(...) DEBUG_LOG("Engine", ##__VA_ARGS__)
 #define DELOCUST_LOG_ENGINE(...) DELOCUST_LOG("Engine", ##__VA_ARGS__)
+
+#ifdef CALCULATE_ENGINE_STATS
+#define START_PROFILING_STATIC_ENGINE(param) START_PROFILING_STATIC("Engine", param)
+#define STOP_PROFILING_STATIC_ENGINE(param) STOP_PROFILING_STATIC("Engine", param)
+#define START_PROFILING_ENGINE(param) START_PROFILING("Engine", param)
+#define STOP_PROFILING_ENGINE(param) STOP_PROFILING("Engine", param)
+#else
+#define START_PROFILING_STATIC_ENGINE(param)
+#define STOP_PROFILING_STATIC_ENGINE(param)
+#define START_PROFILING_ENGINE(param)
+#define STOP_PROFILING_ENGINE(param)
+#endif
 
 #define CHECK_CONDITION_ENGINE(expr, logLevel, ...) CHECK_CONDITION(expr, "Engine", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_ALWAYS_ENGINE(expr, logLevel, ...) CHECK_CONDITION_ALWAYS(expr, "Engine", logLevel, ##__VA_ARGS__)

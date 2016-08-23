@@ -125,7 +125,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
 #endif
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 
 	SetSamplerSlot("diffuse", 0);
 	SetSamplerSlot("normalMap", 1);
@@ -178,14 +178,14 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	//m_guiTextures.push_back(GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 #endif
 
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 
 Rendering::Renderer::~Renderer(void)
 {
 	INFO_LOG_RENDERING("Destroying rendering engine...");
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 
 	//SAFE_DELETE(m_currentLight);
 	// TODO: Deallocating the lights member variable
@@ -209,7 +209,7 @@ Rendering::Renderer::~Renderer(void)
 	TwTerminate(); // Terminate AntTweakBar
 #endif
 
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 	NOTICE_LOG_RENDERING("Rendering engine destroyed");
 }
 
@@ -268,7 +268,7 @@ CameraDirection gCameraDirections[6 /* number of cube map faces */] =
 
 void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, Math::Real dayNightMixFactor)
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 
 	Rendering::CheckErrorCode(__FUNCTION__, "Started scene rendering");
 
@@ -290,7 +290,7 @@ void Rendering::Renderer::InitRenderScene(const Color& ambientLightColor, Math::
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 #endif
 
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Renderer::BindDisplayTexture() const
@@ -334,22 +334,22 @@ void Rendering::Renderer::InitWaterNodesRendering()
 
 void Rendering::Renderer::FinalizeRenderScene(const Shader& filterShader)
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
 		Math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
 	ApplyFilter(filterShader, m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const
 {
-	//START_PROFILING("");
+	//START_PROFILING_RENDERING("");
 	shader.Bind();
 	shader.UpdateUniforms(transform, material, this);
 	mesh.Draw();
-	//STOP_PROFILING;
+	//STOP_PROFILING_RENDERING;
 }
 
 //void Renderer::SetClippingPlane(const Math::Vector4D& clippingPlane)
@@ -382,10 +382,10 @@ void Rendering::Renderer::DisableClippingPlanes()
 
 //void Rendering::Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
 //{
-//	START_PROFILING("");
+//	START_PROFILING_RENDERING("");
 //	if (!Lighting::PointLight::ArePointLightsEnabled())
 //	{
-//		STOP_PROFILING;
+//		STOP_PROFILING_RENDERING("");
 //		return;
 //	}
 //
@@ -428,12 +428,12 @@ void Rendering::Renderer::DisableClippingPlanes()
 //		RenderSceneWithLight(m_pointLight, gameNode);
 //	}
 //	m_pointLight = NULL;
-//	STOP_PROFILING;
+//	STOP_PROFILING_RENDERING("");
 //}
 
 //void Rendering::Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
 //{
-//	START_PROFILING("");
+//	START_PROFILING_RENDERING("");
 //	CHECK_CONDITION_EXIT_RENDERING(light != NULL, Utility::EMERGENCY, "Cannot render the scene. The light is NULL.");
 //	DEBUG_LOG_RENDERING("Rendering scene with light.");
 //	glCullFace(Rendering::glCullFaceMode);
@@ -462,7 +462,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 //	{
 //		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
 //	}
-//	STOP_PROFILING;
+//	STOP_PROFILING_RENDERING("");
 //}
 
 void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const
@@ -501,7 +501,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 
 void Rendering::Renderer::RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
 	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::ERR,
 	//	"The number of alive particles (", particlesCount, ") exceeds the size of the specified vector of particles (", particles.size(), ")");
@@ -586,7 +586,7 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 		glDisable(GL_BLEND);
 	}
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished particles rendering");
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 bool Rendering::Renderer::InitShadowMap()
@@ -657,13 +657,13 @@ void Rendering::Renderer::FinalizeShadowMapRendering(const Shader& filterShader)
 
 //void Rendering::Renderer::RenderSkybox()
 //{
-//	START_PROFILING("");
+//	START_PROFILING_RENDERING("");
 //	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
 //	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_skyboxAngle));
 //	m_skyboxAngle += m_skyboxAngleStep;
 //	if (m_fogEnabled)
 //	{
-//		STOP_PROFILING;
+//		STOP_PROFILING_RENDERING("");
 //		return;
 //	}
 //
@@ -680,12 +680,12 @@ void Rendering::Renderer::FinalizeShadowMapRendering(const Shader& filterShader)
 //	glCullFace(Rendering::glCullFaceMode);
 //	//glEnable(GL_DEPTH_TEST);
 //	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
-//	STOP_PROFILING;
+//	STOP_PROFILING_RENDERING("");
 //}
 
 void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 	CHECK_CONDITION_RENDERING(shadowMapIndex >= 0 && shadowMapIndex < SHADOW_MAPS_COUNT, Utility::Logging::EMERGENCY,
 		"Cannot perform the blurring process. Specified shadow map index (", shadowMapIndex, ") lies outside of range [0; ", SHADOW_MAPS_COUNT, ").");
 
@@ -694,13 +694,13 @@ void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMa
 	
 	m_mappedValues.SetVector3D("blurScale", Math::Vector3D(REAL_ZERO, blurAmount / m_shadowMaps[shadowMapIndex].GetHeight(), REAL_ZERO));
 	ApplyFilter(filterShader, &m_shadowMapTempTargets[shadowMapIndex], &m_shadowMaps[shadowMapIndex]);
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 // You cannot read and write from the same texture at the same time. That's why we use dest texture as a temporary texture to store the result
 void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest)
 {
-	START_PROFILING("");
+	START_PROFILING_RENDERING("");
 	CHECK_CONDITION_EXIT_RENDERING(filterShader != NULL, Utility::CRITICAL, "Cannot apply a filter. Filtering shader is NULL.");
 	CHECK_CONDITION_EXIT_RENDERING(source != NULL, Utility::CRITICAL, "Cannot apply a filter. Source texture is NULL.");
 	CHECK_CONDITION_EXIT_RENDERING(source != dest, Utility::CRITICAL, "Cannot apply a filter. Both source and destination textures point to the same location in memory.");
@@ -733,7 +733,7 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 
 	m_currentCamera = temp;
 	m_mappedValues.SetTexture("filterTexture", NULL);
-	STOP_PROFILING("");
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Renderer::SetCurrentCamera(Camera* camera)

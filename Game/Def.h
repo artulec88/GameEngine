@@ -13,6 +13,19 @@
 #define DEBUG_LOG_GAME(...) DEBUG_LOG("Game", ##__VA_ARGS__)
 #define DELOCUST_LOG_GAME(...) DELOCUST_LOG("Game", ##__VA_ARGS__)
 
+#define CALCULATE_GAME_STATS
+#ifdef CALCULATE_GAME_STATS
+#define START_PROFILING_STATIC_GAME(param) START_PROFILING_STATIC("Game", param)
+#define STOP_PROFILING_STATIC_GAME(param) STOP_PROFILING_STATIC("Game", param)
+#define START_PROFILING_GAME(param) START_PROFILING("Game", param)
+#define STOP_PROFILING_GAME(param) STOP_PROFILING("Game", param)
+#else
+#define START_PROFILING_STATIC_GAME(param)
+#define STOP_PROFILING_STATIC_GAME(param)
+#define START_PROFILING_GAME(param)
+#define STOP_PROFILING_GAME(param)
+#endif
+
 #define CHECK_CONDITION_GAME(expr, logLevel, ...) CHECK_CONDITION(expr, "Game", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_ALWAYS_GAME(expr, logLevel, ...) CHECK_CONDITION_ALWAYS(expr, "Game", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_EXIT_GAME(expr, logLevel, ...) CHECK_CONDITION_EXIT(expr, "Game", logLevel, ##__VA_ARGS__)

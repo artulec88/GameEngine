@@ -1,7 +1,7 @@
 #ifndef __PLAY_GAME_STATE_H__
 #define __PLAY_GAME_STATE_H__
 
-#include "GameStats.h"
+#include "Def.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\GameState.h"
@@ -16,6 +16,7 @@
 #include "Math\Math.h"
 #ifdef CALCULATE_GAME_STATS
 #include "Math\IStatisticsStorage.h"
+#include "Math\Statistics.h"
 #endif
 
 #include <string>

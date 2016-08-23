@@ -1,6 +1,8 @@
 #include "StatsTest.h"
 #include "Math\Math.h"
 
+#include <thread>
+
 /* ==================== class StatsTest1 begin ==================== */
 MathTest::StatsTest1::StatsTest1(void)
 #ifdef CALCULATE_TEST_STATS
@@ -14,72 +16,41 @@ MathTest::StatsTest1::~StatsTest1(void)
 {
 }
 
-float MathTest::StatsTest1::Method1()
+void MathTest::StatsTest1::Method1()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 5000000;
-	float floatValue = 0.1f;
-	for (int i = 0; i < ITERATIONS; ++i)
-	{
-		floatValue -= static_cast<float>(i / 5);
-		floatValue += static_cast<float>(i / 3);
-		floatValue -= 1000.0f;
-	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(200));
 	STOP_PROFILING("");
-	return floatValue;
 }
 
-float MathTest::StatsTest1::Method2()
+void MathTest::StatsTest1::Method2()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 1000000;
-	float floatValue = -300.1f;
-	for (int i = 0; i < ITERATIONS; ++i)
-	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
-	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(30));
 	STOP_PROFILING("");
-	return floatValue;
 }
 
-float MathTest::StatsTest1::Method3()
+void MathTest::StatsTest1::Method3()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 100000;
-	float floatValue = -300.1f;
+	std::this_thread::sleep_for(std::chrono::milliseconds(2));
+	const int ITERATIONS = 10;
 	for (int i = 0; i < ITERATIONS; ++i)
 	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
-		if (i % 6 == 0)
-		{
-			floatValue += NestedMethod4();
-		}
+		NestedMethod4();
 	}
 	STOP_PROFILING("");
-	return floatValue;
 }
 
-float MathTest::StatsTest1::NestedMethod4()
+void MathTest::StatsTest1::NestedMethod4()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 10000;
-	float floatValue = 500.0f;
-	for (int i = 0; i < ITERATIONS; ++i)
-	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
-	}
+	std::this_thread::sleep_for(std::chrono::microseconds(3000));
 	STOP_PROFILING("");
-	return floatValue;
 }
 /* ==================== class StatsTest1 end ==================== */
 
@@ -96,83 +67,56 @@ MathTest::StatsTest2::~StatsTest2(void)
 {
 }
 
-float MathTest::StatsTest2::Method1()
+void MathTest::StatsTest2::Method1()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 20000;
-	float floatValue = 0.1f;
+	const int ITERATIONS = 200;
+	std::this_thread::sleep_for(std::chrono::microseconds(200));
 	for (int i = 0; i < ITERATIONS; ++i)
 	{
 		if (i % 10 == 0)
 		{
-			floatValue += Method2();
+			Method2();
 		}
 		if (i % 200 == 0)
 		{
-			floatValue -= Method3();
+			Method3();
 		}
 		if (i % 1000 == 0)
 		{
-			floatValue -= NestedMethod4();
-		}
-		floatValue -= static_cast<float>(i / 5);
-		floatValue += static_cast<float>(i / 3);
-		floatValue -= 1000.0f;
-	}
-	STOP_PROFILING("");
-	return floatValue;
-}
-
-float MathTest::StatsTest2::Method2()
-{
-	START_PROFILING("");
-	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 1000;
-	float floatValue = -300.1f;
-	for (int i = 0; i < ITERATIONS; ++i)
-	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
-	}
-	STOP_PROFILING("");
-	return floatValue;
-}
-
-float MathTest::StatsTest2::Method3()
-{
-	START_PROFILING("");
-	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 1000;
-	float floatValue = -300.1f;
-	for (int i = 0; i < ITERATIONS; ++i)
-	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
-		if (i % 5 == 0)
-		{
-			floatValue += NestedMethod4();
+			NestedMethod4();
 		}
 	}
 	STOP_PROFILING("");
-	return floatValue;
 }
 
-float MathTest::StatsTest2::NestedMethod4()
+void MathTest::StatsTest2::Method2()
 {
 	START_PROFILING("");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
-	const int ITERATIONS = 10000;
-	float floatValue = 500.0f;
+	std::this_thread::sleep_for(std::chrono::microseconds(200));
+	STOP_PROFILING("");
+}
+
+void MathTest::StatsTest2::Method3()
+{
+	START_PROFILING("");
+	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
+	std::this_thread::sleep_for(std::chrono::microseconds(10));
+	const int ITERATIONS = 10;
 	for (int i = 0; i < ITERATIONS; ++i)
 	{
-		floatValue -= static_cast<float>(i / 4);
-		floatValue += static_cast<float>(i / 2);
-		floatValue -= 1000.0f;
+		NestedMethod4();
 	}
 	STOP_PROFILING("");
-	return floatValue;
+}
+
+void MathTest::StatsTest2::NestedMethod4()
+{
+	START_PROFILING("");
+	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
+	std::this_thread::sleep_for(std::chrono::microseconds(200));
+	STOP_PROFILING("");
 }
 /* ==================== class StatsTest2 end ==================== */

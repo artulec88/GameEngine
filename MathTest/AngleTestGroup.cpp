@@ -88,3 +88,38 @@ void AngleTestCompare::StartTest()
 		"The angle ", m_angle.ToString(), " cannot be both smaller and greater than some other angle at the same time.");
 }
 /* ==================== class AngleTestCompare end ==================== */
+
+/* ==================== class AngleTestCompare begin ==================== */
+AngleTestTrigonometry::AngleTestTrigonometry(const Math::Angle& angle1, Math::Real expectedSinValue, Math::Real expectedCosValue, Math::Real expectedTanValue) :
+	AngleTestBase(angle1),
+	m_expectedSinValue(expectedSinValue),
+	m_expectedCosValue(expectedCosValue),
+	m_expectedTanValue(expectedTanValue)
+{
+}
+
+AngleTestTrigonometry::~AngleTestTrigonometry()
+{
+}
+
+void AngleTestTrigonometry::StartTest()
+{
+	Math::Real sinValue = m_angle.Sin();
+	bool sinEqual = Math::AlmostEqual(sinValue, m_expectedSinValue);
+	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
+		"The sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+
+	Math::Real cosValue = m_angle.Cos();
+	bool cosEqual = Math::AlmostEqual(cosValue, m_expectedCosValue);
+	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
+		"The cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+
+	if (!Math::AlmostEqual(cosValue, REAL_ZERO))
+	{
+		Math::Real tanValue = m_angle.Tan();
+		bool tanEqual = Math::AlmostEqual(tanValue, m_expectedTanValue);
+		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
+			"The tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+	}
+}
+/* ==================== class AngleTestCompare end ==================== */

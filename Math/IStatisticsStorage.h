@@ -15,7 +15,7 @@ namespace Math {
 
 		class IStatisticsStorage
 		{
-			typedef std::map<const char*, std::unique_ptr<ClassStats>> ClassNames2ClassStatsMap;
+			typedef std::map<std::string, std::unique_ptr<ClassStats>> ClassNames2ClassStatsMap;
 			/* ==================== Static variables and functions begin ==================== */
 		public:
 			MATH_API static IStatisticsStorage& GetStatisticsStorage();
@@ -29,15 +29,19 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			MATH_API ClassStats& GetClassStats(const char* className);
+			MATH_API ClassStats& GetClassStats(const std::string& className);
+
+			MATH_API void StartTimer() { m_timer.Start(); }
+			MATH_API void StopTimer() { m_timer.Stop(); }
 
 			MATH_API void PrintSimpleReport() const;
-			MATH_API void PrintReport(long long elapsedSeconds) const;
+			MATH_API void PrintReport() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			ClassNames2ClassStatsMap m_classStatistics;
+			Utility::Timing::Timer m_timer;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class IStatisticsStorage */
 

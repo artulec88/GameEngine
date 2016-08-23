@@ -451,7 +451,7 @@ void Engine::SkyboxBuilder::BuildMeshRenderer()
 
 Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
 {
-	//START_PROFILING("");
+	//START_PROFILING_ENGINE("");
 	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
 	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
 	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";

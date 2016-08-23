@@ -192,7 +192,7 @@ Math::Statistics::MethodStats::MethodStats(void) :
 	m_isNestedWithinAnotherProfiledMethod(false),
 	m_timer()
 {
-	DEBUG_LOG_MATH("MethodStats constructor");
+	DELOCUST_LOG_MATH("MethodStats constructor");
 }
 
 Math::Statistics::MethodStats::~MethodStats(void)
@@ -321,47 +321,38 @@ Math::Real Math::Statistics::MethodStats::GetTotalTimeWithoutNestedStats() const
 /* ==================== MethodStats end ==================== */
 
 /* ==================== ClassStats begin ==================== */
-Math::Statistics::ClassStats::ClassStats(const char* className) :
+Math::Statistics::ClassStats::ClassStats(const std::string& className) :
 	m_className(className),
 	m_profilingMethodsCount(0)
 {
-	DEBUG_LOG_MATH("ClassStats \"", className, "\" constructor");
+	DELOCUST_LOG_MATH("ClassStats \"", className, "\" constructor");
 }
 
 Math::Statistics::ClassStats::~ClassStats()
 {
-	SAFE_DELETE_JUST_TABLE(m_className);
 }
 
-void Math::Statistics::ClassStats::StartProfiling(const char* methodName)
+void Math::Statistics::ClassStats::StartProfiling(const std::string& methodName)
 {
-	if (methodName == NULL)
-	{
-		ERROR_LOG_MATH("Cannot stop profiling the method in class \"", m_className, "\". The method's name is NULL.");
-		return;
-	}
+	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot start profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
 	CHECK_CONDITION_RETURN_VOID_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
 	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
 
-void Math::Statistics::ClassStats::StopProfiling(const char* methodName)
+void Math::Statistics::ClassStats::StopProfiling(const std::string& methodName)
 {
-	if (methodName == NULL)
-	{
-		ERROR_LOG_MATH("Cannot stop profiling the method in class \"", m_className, "\". The method's name is NULL.");
-		return;
-	}
+	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot stop profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Stopped profiling the function \"", methodName, "\"");
 	CHECK_CONDITION_RETURN_VOID_MATH(m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is not being profiled.");
 	m_methodsStats[methodName].StopProfiling();
 	--m_profilingMethodsCount;
 }
 
-void Math::Statistics::ClassStats::PrintReport(long long elapsedSeconds, std::fstream& appStatsFile) const
+void Math::Statistics::ClassStats::PrintReport(long long elapsedMilliseconds, std::fstream& appStatsFile) const
 {
-	static const Math::Real ONE_MILION = 1000000.0f;
+	constexpr Math::Real ONE_MILLION = 1000000.0f;
 	
 	std::fstream classStatsFile;
 	if (!m_methodsStats.empty())
@@ -372,21 +363,21 @@ void Math::Statistics::ClassStats::PrintReport(long long elapsedSeconds, std::fs
 		classStatsFile << "\"Method name\"\t\"Invocations count\"\t\"Invocation count excluding nested calls\"\t\"Total time\"\t\"Total time excluding nested calls\"\t\"Average time\"\n";
 	}
 
-	DEBUG_LOG_MATH("Class: \"", m_className, "\"");
+	INFO_LOG_MATH("Class: \"", m_className, "\"");
 	Math::Real classTotalTimeExcludingNestedCalls = REAL_ZERO;
 	Math::Real classTotalTime = REAL_ZERO;
-	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
-		INFO_LOG_MATH("Class total time = ", classTotalTime, ". Method's total time without nested stats = ", methodStatsItr->second.GetTotalTimeWithoutNestedStats());
+		//INFO_LOG_MATH("Method \"", methodStatsItr->first, "\": total time without nested stats = ", methodStatsItr->second.GetTotalTimeWithoutNestedStats());
 		classTotalTimeExcludingNestedCalls += methodStatsItr->second.GetTotalTimeWithoutNestedStats();
 		classTotalTime += methodStatsItr->second.GetTotalTime();
 	}
 	appStatsFile << m_className << "\t" << std::setprecision(1) << std::fixed << classTotalTime << "\t" << classTotalTimeExcludingNestedCalls << "\n";
 	LogTime("\tTotal time: ", classTotalTime);
 	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
-	DEBUG_LOG_MATH("\tApplication usage: ", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILION * elapsedSeconds));
+	DEBUG_LOG_MATH("\tApplication usage: ", 100.0f * classTotalTimeExcludingNestedCalls / (ONE_MILLION * elapsedMilliseconds), "\%");
 
-	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		DEBUG_LOG_MATH("\tMethod: \"", methodStatsItr->first, "\"");
 		DEBUG_LOG_MATH("\t\tInvocations count: ", methodStatsItr->second.GetInvocationsCount());
@@ -399,8 +390,8 @@ void Math::Statistics::ClassStats::PrintReport(long long elapsedSeconds, std::fs
 		Math::Real meanTime = methodStatsItr->second.CalculateMean();
 		LogTime("\t\tAverage time: ", meanTime);
 		
-		DEBUG_LOG_MATH("\t\tClass usage: ", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls);
-		DEBUG_LOG_MATH("\t\tApplication usage: ", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILION * elapsedSeconds));
+		DEBUG_LOG_MATH("\t\tClass usage: ", 100.0f * totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls, "\%");
+		DEBUG_LOG_MATH("\t\tApplication usage: ", 100.0f * totalTimeIncludingNestedCalls / (ONE_MILLION * elapsedMilliseconds), "\%");
 		
 		//INFO_LOG_MATH("\t\tMedian time: ", methodStatsItr->second.CalculateMedian(), " [us]");
 		std::string methodNameStr(methodStatsItr->first);
@@ -424,29 +415,29 @@ void Math::Statistics::ClassStats::PrintReport(long long elapsedSeconds, std::fs
 int Math::Statistics::ClassStats::GetTotalNumberOfSamples() const
 {
 	int totalNumberOfSamples = 0;
-	for (std::map<const char*, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
+	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
 		totalNumberOfSamples += methodStatsItr->second.GetInvocationsCount();
 	}
 	return totalNumberOfSamples;
 }
 
-void Math::Statistics::ClassStats::LogTime(const char* text, Math::Real time) const
+void Math::Statistics::ClassStats::LogTime(const std::string& text, Math::Real time) const
 {
 	if (time > 1e3f)
 	{
 		if (time > 1e6f)
 		{
-			DEBUG_LOG_MATH(text, time / 1e6f, "[s]");
+			DEBUG_LOG_MATH(text, time / 1e6f, "[ms]");
 		}
 		else
 		{
-			DEBUG_LOG_MATH(text, time / 1e3f, "[ms]");
+			DEBUG_LOG_MATH(text, time / 1e3f, "[us]");
 		}
 	}
 	else
 	{
-		DEBUG_LOG_MATH(text, time, "[us]");
+		DEBUG_LOG_MATH(text, time, "[ns]");
 	}
 }
 /* ==================== ClassStats end ==================== */

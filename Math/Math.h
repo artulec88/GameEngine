@@ -7,14 +7,6 @@
 #define MATH_API __declspec(dllimport)
 #endif
 
-#define CALCULATE_MATH_STATS
-#ifndef CALCULATE_MATH_STATS
-#define START_PROFILING_STATIC(param)
-#define STOP_PROFILING_STATIC(param)
-#define START_PROFILING(param)
-#define STOP_PROFILING(param)
-#endif
-
 #define EPSILON		static_cast<Math::Real>(1e-6)
 #define REAL_ZERO	static_cast<Math::Real>(0)
 #define REAL_ONE	static_cast<Math::Real>(1)
@@ -39,6 +31,15 @@
 #define INFO_LOG_MATH(...) INFO_LOG("Math", ##__VA_ARGS__)
 #define DEBUG_LOG_MATH(...) DEBUG_LOG("Math", ##__VA_ARGS__)
 #define DELOCUST_LOG_MATH(...) DELOCUST_LOG("Math", ##__VA_ARGS__)
+
+#define CALCULATE_MATH_STATS
+#ifdef CALCULATE_MATH_STATS
+#define START_PROFILING_MATH(param) START_PROFILING("Math", param)
+#define STOP_PROFILING_MATH(param) STOP_PROFILING("Math", param)
+#else
+#define START_PROFILING_MATH(param)
+#define STOP_PROFILING_MATH(param)
+#endif
 
 #define CHECK_CONDITION_MATH(expr, logLevel, ...) CHECK_CONDITION(expr, "Math", logLevel, ##__VA_ARGS__)
 #define CHECK_CONDITION_ALWAYS_MATH(expr, logLevel, ...) CHECK_CONDITION_ALWAYS(expr, "Math", logLevel, ##__VA_ARGS__)

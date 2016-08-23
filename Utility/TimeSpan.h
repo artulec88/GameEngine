@@ -108,6 +108,11 @@ namespace Utility
 			/// The time span move assignment operator.
 			/// </summary>
 			TimeSpan& operator=(TimeSpan&& timeSpan) = delete;
+		private:
+			TimeSpan(const std::chrono::nanoseconds& duration) :
+				m_duration(duration)
+			{
+			}
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -121,6 +126,25 @@ namespace Utility
 			//	m_duration /= s;
 			//	return *this;
 			//}
+
+			TimeSpan operator+(const TimeSpan& timeSpan) const
+			{
+				return TimeSpan(m_duration + timeSpan.m_duration);
+			}
+			TimeSpan operator-(const TimeSpan& timeSpan) const
+			{
+				return TimeSpan(m_duration - timeSpan.m_duration);
+			}
+			TimeSpan& operator+=(const TimeSpan& timeSpan)
+			{
+				m_duration += timeSpan.m_duration;
+				return *this;
+			}
+			TimeSpan& operator-=(const TimeSpan& timeSpan)
+			{
+				m_duration -= timeSpan.m_duration;
+				return *this;
+			}
 
 			bool operator==(const TimeSpan& timeSpan) const
 			{

@@ -301,7 +301,7 @@ const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontT
 
 const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
@@ -311,12 +311,12 @@ const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
 			}
 		}
@@ -324,23 +324,23 @@ const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
 			}
 		}
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_ENGINE("");
 	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
 }
 
 const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING("");
+	START_PROFILING_ENGINE("");
 	if (fogInfo.IsEnabled())
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
@@ -349,12 +349,12 @@ const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rend
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
 			}
 		}
@@ -362,17 +362,17 @@ const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rend
 		{
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
-				STOP_PROFILING("");
+				STOP_PROFILING_ENGINE("");
 				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
 			}
 		}
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_ENGINE("");
 	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
 }
 

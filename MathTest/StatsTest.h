@@ -8,43 +8,43 @@
 namespace MathTest
 {
 
-/* ==================== class StatsTest1 begin ==================== */
-class StatsTest1
-{
-public:
-	StatsTest1(void);
-	~StatsTest1(void);
-public:
-	float Method1();
-	float Method2();
-	float Method3();
+	/* ==================== class StatsTest1 begin ==================== */
+	class StatsTest1
+	{
+	public:
+		StatsTest1(void);
+		~StatsTest1(void);
+	public:
+		void Method1();
+		void Method2();
+		void Method3();
 
-private:
-	float NestedMethod4();
+	private:
+		void NestedMethod4();
 #ifdef CALCULATE_TEST_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
-};
-/* ==================== class StatsTest1 end ==================== */
+	};
+	/* ==================== class StatsTest1 end ==================== */
 
-/* ==================== class StatsTest2 begin ==================== */
-class StatsTest2
-{
-public:
-	StatsTest2(void);
-	~StatsTest2(void);
-public:
-	float Method1();
-	float Method2();
-	float Method3();
+	/* ==================== class StatsTest2 begin ==================== */
+	class StatsTest2
+	{
+	public:
+		StatsTest2(void);
+		~StatsTest2(void);
+	public:
+		void Method1();
+		void Method2();
+		void Method3();
 
-private:
-	float NestedMethod4();
+	private:
+		void NestedMethod4();
 #ifdef CALCULATE_TEST_STATS
-	Math::Statistics::ClassStats& m_classStats;
+		Math::Statistics::ClassStats& m_classStats;
 #endif
-};
-/* ==================== class StatsTest2 end ==================== */
+	};
+	/* ==================== class StatsTest2 end ==================== */
 
 } /* end namespace MathTest */
 

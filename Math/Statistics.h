@@ -9,22 +9,10 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
-//#define CALCULATE_STATS
-//#ifdef CALCULATE_STATS
-#define START_PROFILING_STATIC(param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
-#define STOP_PROFILING_STATIC(param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
-#define START_PROFILING(param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
-#define STOP_PROFILING(param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
-//#define START_PROFILING_STATIC(param) // just temporary to disable stats storing.
-//#define STOP_PROFILING_STATIC(param) // just temporary to disable stats storing.
-//#define START_PROFILING(param) // just temporary to disable stats storing.
-//#define STOP_PROFILING(param) // just temporary to disable stats storing.
-//#else
-//#define START_PROFILING_STATIC(param)
-//#define STOP_PROFILING_STATIC(param)
-//#define START_PROFILING(param)
-//#define STOP_PROFILING(param)
-//#endif
+#define START_PROFILING_STATIC(moduleName, param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING_STATIC(moduleName, param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
+#define START_PROFILING(moduleName, param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define STOP_PROFILING(moduleName, param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
 
 namespace Math {
 	namespace Statistics
@@ -123,7 +111,7 @@ namespace Math {
 		{
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			MATH_API ClassStats(const char* className);
+			MATH_API ClassStats(const std::string& className);
 			MATH_API ~ClassStats(void);
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -136,14 +124,14 @@ namespace Math {
 			//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 			//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-			MATH_API void PrintReport(long long elapsedSeconds, std::fstream& appStatsFile) const;
+			MATH_API void PrintReport(long long elapsedMilliseconds, std::fstream& appStatsFile) const;
 
-			MATH_API void StartProfiling(const char* methodName);
-			MATH_API void StopProfiling(const char* methodName);
+			MATH_API void StartProfiling(const std::string& methodName);
+			MATH_API void StopProfiling(const std::string& methodName);
 
-			MATH_API bool IsProfiling(const char* methodName) const
+			MATH_API bool IsProfiling(const std::string& methodName) const
 			{
-				std::map<const char*, MethodStats>::const_iterator methodStatsIterator = m_methodsStats.find(methodName);
+				std::map<std::string, MethodStats>::const_iterator methodStatsIterator = m_methodsStats.find(methodName);
 				if (methodStatsIterator == m_methodsStats.end())
 				{
 					return false;
@@ -158,12 +146,12 @@ namespace Math {
 
 			MATH_API int GetTotalNumberOfSamples() const;
 		private:
-			void LogTime(const char* text, Math::Real time) const;
+			void LogTime(const std::string& text, Math::Real time) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			const char* m_className;
+			const std::string m_className;
 
 			/// <summary> The number of methods which are currently being profiled within the class </summary>
 			/// When equal to zero we know that no class method is currently running.
@@ -171,7 +159,7 @@ namespace Math {
 			/// and A::A1 started the A::A2 method. If both A1 and A2 are enabled for profiling then we should only store the A::A1
 			/// running time in the class A total time calculation.
 			unsigned int m_profilingMethodsCount;
-			std::map<const char*, MethodStats> m_methodsStats;
+			std::map<std::string, MethodStats> m_methodsStats;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ClassStats */
 

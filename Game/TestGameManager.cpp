@@ -334,7 +334,7 @@ Engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 void Game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
-	START_PROFILING("");
+	START_PROFILING_GAME("");
 	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
@@ -526,7 +526,7 @@ void Game::TestGameManager::Load()
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
-	STOP_PROFILING("");
+	STOP_PROFILING_GAME("");
 	NOTICE_LOG_GAME("Initalizing test game finished");
 }
 
@@ -570,7 +570,7 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 
 void Game::TestGameManager::AddLights()
 {
-	START_PROFILING("");
+	START_PROFILING_GAME("");
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
@@ -592,7 +592,7 @@ void Game::TestGameManager::AddLights()
 	{
 		NOTICE_LOG_GAME("Spot lights disabled");
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_GAME("");
 }
 
 void Game::TestGameManager::AddDirectionalLight()
@@ -658,7 +658,7 @@ void Game::TestGameManager::AddSpotLights()
 
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
-	START_PROFILING("");
+	START_PROFILING_GAME("");
 	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
@@ -674,12 +674,12 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 		AddToSceneRoot(cameraNode);
 	}
 	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
-	STOP_PROFILING("");
+	STOP_PROFILING_GAME("");
 }
 
 void Game::TestGameManager::AddSkybox() const
 {
-	START_PROFILING("");
+	START_PROFILING_GAME("");
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
@@ -688,7 +688,7 @@ void Game::TestGameManager::AddSkybox() const
 	skyboxBuilderDirector.Construct();
 	//GameNode* skyboxNode = skyboxBuilder.Get();
 	NOTICE_LOG_GAME("The skybox has been created");
-	STOP_PROFILING("");
+	STOP_PROFILING_GAME("");
 }
 
 //
@@ -699,13 +699,13 @@ void Game::TestGameManager::AddSkybox() const
 
 void Game::TestGameManager::Update(Math::Real delta)
 {
-	START_PROFILING("");
+	START_PROFILING_GAME("");
 	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
 	//{
 	//	particleGeneratorItr->Update(delta);
 	//}
 	m_gameStateManager->Update(delta);
-	STOP_PROFILING("");
+	STOP_PROFILING_GAME("");
 }
 
 void Game::TestGameManager::WindowResizeEvent(int width, int height)

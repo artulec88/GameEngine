@@ -33,13 +33,13 @@ unsigned int outerLoops = 10000;
 double elapsedTime;
 
 unsigned int testNumber = 0;
-bool angleTestEnabled = false;
-bool vectorTestEnabled = false;
-bool matrixTestEnabled = false;
-bool quaternionTestEnabled = false;
+bool angleTestEnabled = true;
+bool vectorTestEnabled = true;
+bool matrixTestEnabled = true;
+bool quaternionTestEnabled = true;
 bool sortingTestEnabled = true;
-bool kdTreeTestEnabled = false;
-bool statsTestEnabled = false;
+bool kdTreeTestEnabled = true;
+bool statsTestEnabled = true;
 bool otherTestsEnabled = true;
 
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
@@ -93,6 +93,7 @@ void AngleTest()
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle3, angle4, false, false, true));
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle3, false, true, false));
 	angleTests.AddTest(new MathTest::AngleTestCompare(angle5, angle6, true, false, false));
+	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle1, 1.0f, 0.0f, 0.0f));
 
 	angleTests.StartTests();
 }
@@ -922,11 +923,9 @@ void StatsTest()
 	{
 		return;
 	}
-	Timing::Timer timer;
-	timer.Start();
 
 	const int STATS_TEST_1_METHOD_1_INVOCATIONS_COUNT = 5;
-	const int STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT = 150;
+	const int STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT = 15;
 	const int STATS_TEST_1_METHOD_3_INVOCATIONS_COUNT = 4;
 	const int STATS_TEST_2_METHOD_1_INVOCATIONS_COUNT = 2;
 	const int STATS_TEST_2_METHOD_2_INVOCATIONS_COUNT = 1000;
@@ -935,37 +934,42 @@ void StatsTest()
 	MathTest::StatsTest1 statsTest1;
 	for (int i = 0; i < STATS_TEST_1_METHOD_1_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue1 = statsTest1.Method1();
+		statsTest1.Method1();
 	}
+	//DEBUG_LOG_MATH_TEST("StatsTest1Method1 tested");
 	for (int i = 0; i < STATS_TEST_1_METHOD_2_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue2 = statsTest1.Method2();
+		statsTest1.Method2();
 	}
+	//CRITICAL_LOG_MATH_TEST("StatsTest1Method2 tested");
 	for (int i = 0; i < STATS_TEST_1_METHOD_3_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue3 = statsTest1.Method3();
+		statsTest1.Method3();
 	}
+	//CRITICAL_LOG_MATH_TEST("StatsTest1Method3 tested");
 
 	MathTest::StatsTest2 statsTest2;
 	for (int i = 0; i < STATS_TEST_2_METHOD_1_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue1 = statsTest2.Method1();
+		statsTest2.Method1();
 	}
+	//CRITICAL_LOG_MATH_TEST("StatsTest2Method1 tested");
 	for (int i = 0; i < STATS_TEST_2_METHOD_2_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue2 = statsTest2.Method2();
+		statsTest2.Method2();
 	}
+	//CRITICAL_LOG_MATH_TEST("StatsTest2Method2 tested");
 	for (int i = 0; i < STATS_TEST_2_METHOD_3_INVOCATIONS_COUNT; ++i)
 	{
-		float floatValue3 = statsTest2.Method3();
+		statsTest2.Method3();
 	}
-
-	timer.Stop();
+	//CRITICAL_LOG_MATH_TEST("StatsTest2Method2 tested");
 
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetDuration(Timing::SECOND));
+	STATS_STORAGE.StopTimer();
+	STATS_STORAGE.PrintReport();
 }
 
 void OtherTests()
@@ -1000,7 +1004,6 @@ void OtherTests()
 	//double anotherTotalElapsedTime = CalculateElapsedTime(outerBegin, outerEnd, SECONDS);
 	//std::cout << "Outer end = " << outerEnd << "[ms]. OuterBegin = " << outerBegin << "[ms]." << std::endl;
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
-	STATS_STORAGE.PrintReport(timer.GetDuration(Timing::MILLISECOND));
 }
 
 int main(int argc, char* argv[])
@@ -1014,12 +1017,15 @@ int main(int argc, char* argv[])
 	//	return 0;
 	//}
 	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
+	Logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), Logging::INFO);
 
-	//AngleTest();
+	STATS_STORAGE.StartTimer();
+
+	AngleTest();
 	//VectorTest();
 	//QuaternionTest();
 	//MatrixTest();
-	SortTest();
+	//SortTest();
 	//SortTestTime();
 
 	//KDTreeTest();
@@ -1027,6 +1033,9 @@ int main(int argc, char* argv[])
 	//StatsTest();
 
 	//OtherTests();
+
+	STATS_STORAGE.StopTimer();
+	STATS_STORAGE.PrintReport();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
