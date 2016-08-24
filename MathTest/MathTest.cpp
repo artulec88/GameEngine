@@ -92,7 +92,25 @@ void TestAngleSinCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
 		angle.Sin();
 	}
 	timer.Stop();
-	TimeReport("Average time for angle sinus calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+	TimeReport("Average time for angle sinus calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastSin1();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle sinus calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastSin2();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle sinus calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
 }
 
 void TestAngleCosCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
@@ -105,7 +123,25 @@ void TestAngleCosCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
 		angle.Cos();
 	}
 	timer.Stop();
-	TimeReport("Average time for angle cosinus calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+	TimeReport("Average time for angle cosinus calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastCos1();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle cosinus calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastCos2();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle cosinus calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
 }
 
 void TestAngleTanCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
@@ -118,7 +154,25 @@ void TestAngleTanCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
 		angle.Tan();
 	}
 	timer.Stop();
-	TimeReport("Average time for angle tangent calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+	TimeReport("Average time for angle tangent calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastTan1();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle tangent calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
+
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
+	{
+		Angle angle(34.0f);
+		angle.FastTan2();
+	}
+	timer.Stop();
+	TimeReport("Average time for angle tangent calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
 }
 
 void AngleTest()
