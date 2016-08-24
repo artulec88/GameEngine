@@ -186,7 +186,12 @@ namespace Utility {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			UTILITY_API inline long long GetDuration(TimeUnit timeUnit = NANOSECOND) const
+			UTILITY_API inline TimeSpan GetTimeSpan() const
+			{
+				return TimeSpan(std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime));
+			}
+
+			UTILITY_API inline long long GetDuration(TimeUnit timeUnit) const
 			{
 				switch (timeUnit)
 				{

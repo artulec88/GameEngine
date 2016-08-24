@@ -9,10 +9,19 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
+#define PROFILING_ENABLED
+
+#ifdef PROFILING_ENABLED
 #define START_PROFILING_STATIC(moduleName, param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
 #define STOP_PROFILING_STATIC(moduleName, param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
 #define START_PROFILING(moduleName, param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
 #define STOP_PROFILING(moduleName, param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
+#else
+#define START_PROFILING_STATIC(moduleName, param)
+#define STOP_PROFILING_STATIC(moduleName, param)
+#define START_PROFILING(moduleName, param)
+#define STOP_PROFILING(moduleName, param)
+#endif
 
 namespace Math {
 	namespace Statistics
@@ -66,23 +75,23 @@ namespace Math {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			MATH_API MethodStats();
-			MATH_API ~MethodStats(void);
+			MATH_API virtual ~MethodStats(void);
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			void Push(Math::Real sample);
+			void Push(const Utility::Timing::TimeSpan& elapsedTimeSpan);
 
-			Math::Real CalculateMean() const;
+			Utility::Timing::TimeSpan CalculateMean() const;
 #ifdef METHOD_STATS_VARIANT_1
-			Math::Real CalculateMedian() const;
+			Utility::Timing::TimeSpan CalculateMedian() const;
 #endif
 
 			void StartProfiling(bool isNestedWithinAnotherProfiledMethod);
 			void StopProfiling();
 
-			Math::Real GetTotalTime() const { return m_totalTime; }
-			Math::Real GetTotalTimeWithoutNestedStats() const;
+			const Utility::Timing::TimeSpan& GetTotalTime() const { return m_totalTime; }
+			Utility::Timing::TimeSpan GetTotalTimeWithoutNestedStats() const;
 			int GetInvocationsCount() const { return m_invocationsCount; }
 			int GetInvocationsCountWithoutNestedCalls() const { return m_invocationsCount - m_invocationsCountNestedProfiling; }
 			bool IsProfiling() const { return m_isProfiling; }
@@ -94,12 +103,12 @@ namespace Math {
 			/// <summary>
 			/// Time samples stored along with the information whether the method has been nested within another method in the same class.
 			/// </summary>
-			std::vector<std::pair<bool, Math::Real>> m_timeSamples;
+			std::vector<std::pair<bool, Utility::Timing::TimeSpan>> m_timeSamples;
 #else
-			Math::Real m_totalTimeNestedProfiling;
+			Utility::Timing::TimeSpan m_totalTimeNestedProfiling;
 			int m_invocationsCountNestedProfiling;
 #endif
-			Math::Real m_totalTime;
+			Utility::Timing::TimeSpan m_totalTime;
 			int m_invocationsCount;
 			bool m_isProfiling;
 			bool m_isNestedWithinAnotherProfiledMethod;
@@ -124,7 +133,7 @@ namespace Math {
 			//MATH_API Math::Real CalculateMean(const std::string& statsID) const;
 			//MATH_API Math::Real CalculateMedian(const std::string& statsID);
 
-			MATH_API void PrintReport(long long elapsedMilliseconds, std::fstream& appStatsFile) const;
+			MATH_API void PrintReport(const Utility::Timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const;
 
 			MATH_API void StartProfiling(const std::string& methodName);
 			MATH_API void StopProfiling(const std::string& methodName);
@@ -146,7 +155,7 @@ namespace Math {
 
 			MATH_API int GetTotalNumberOfSamples() const;
 		private:
-			void LogTime(const std::string& text, Math::Real time) const;
+			void LogTime(const std::string& text, const Utility::Timing::TimeSpan& timeSpan) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

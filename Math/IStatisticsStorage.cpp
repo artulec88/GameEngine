@@ -59,7 +59,7 @@ void Math::Statistics::IStatisticsStorage::PrintReport() const
 	{
 		if (!classStatsItr->second->IsEmpty())
 		{
-			classStatsItr->second->PrintReport(m_timer.GetDuration(Utility::Timing::MILLISECOND), appStatsFile);
+			classStatsItr->second->PrintReport(m_timer.GetTimeSpan(), appStatsFile);
 		}
 	}
 	appStatsFile.close();

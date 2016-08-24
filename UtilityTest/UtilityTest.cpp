@@ -127,25 +127,25 @@ void TimeTest()
 	Timing::TimeSpan timeSpan5(timeSpan1);
 	Timing::TimeSpan timeSpan6(2, Timing::MILLISECOND);
 
-	TestReport(!(timeSpan1 == timeSpan2), "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
-	TestReport(timeSpan1 != timeSpan2, "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is not equal to timespan: " + timeSpan2.ToString());
-	TestReport(timeSpan2 > timeSpan1, "The operator > returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should be bigger than timespan: " + timeSpan1.ToString());
-	TestReport(timeSpan1 < timeSpan2, "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " should be smaller than timespan: " + timeSpan2.ToString());
+	TestReport(!(timeSpan1 == timeSpan2), "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is not equal to timespan: " + timeSpan2.ToString(Timing::NANOSECOND));
+	TestReport(timeSpan1 != timeSpan2, "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is not equal to timespan: " + timeSpan2.ToString(Timing::NANOSECOND));
+	TestReport(timeSpan2 > timeSpan1, "The operator > returned incorrect result. TimeSpan: " + timeSpan2.ToString(Timing::NANOSECOND) + " should be bigger than timespan: " + timeSpan1.ToString(Timing::NANOSECOND));
+	TestReport(timeSpan1 < timeSpan2, "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " should be smaller than timespan: " + timeSpan2.ToString(Timing::NANOSECOND));
 
-	TestReport(timeSpan1 == timeSpan4, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan4.ToString());
-	TestReport(!(timeSpan1 != timeSpan4), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan4.ToString());
-	TestReport(!(timeSpan4 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan4.ToString() + " should not be bigger than timespan: " + timeSpan1.ToString());
-	TestReport(!(timeSpan1 < timeSpan4), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " should not be smaller than timespan: " + timeSpan4.ToString());
+	TestReport(timeSpan1 == timeSpan4, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan4.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan1 != timeSpan4), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan4.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan4 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan4.ToString(Timing::NANOSECOND) + " should not be bigger than timespan: " + timeSpan1.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan1 < timeSpan4), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " should not be smaller than timespan: " + timeSpan4.ToString(Timing::NANOSECOND));
 
-	TestReport(timeSpan1 == timeSpan5, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan1 != timeSpan5), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " is equal to timespan: " + timeSpan5.ToString());
-	TestReport(!(timeSpan5 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan5.ToString() + " should not be bigger than timespan: " + timeSpan1.ToString());
-	TestReport(!(timeSpan1 < timeSpan5), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString() + " should not be smaller than timespan: " + timeSpan5.ToString());
+	TestReport(timeSpan1 == timeSpan5, "The operator == returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan5.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan1 != timeSpan5), "The operator != returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan5.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan5 > timeSpan1), "The operator > returned incorrect result. TimeSpan: " + timeSpan5.ToString(Timing::NANOSECOND) + " should not be bigger than timespan: " + timeSpan1.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan1 < timeSpan5), "The operator < returned incorrect result. TimeSpan: " + timeSpan1.ToString(Timing::NANOSECOND) + " should not be smaller than timespan: " + timeSpan5.ToString(Timing::NANOSECOND));
 
-	TestReport(timeSpan2 == timeSpan3, "The operator == returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan3.ToString());
-	TestReport(!(timeSpan2 != timeSpan3), "The operator != returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " is equal to timespan: " + timeSpan3.ToString());
-	TestReport(!(timeSpan3 > timeSpan2), "The operator > returned incorrect result. TimeSpan: " + timeSpan3.ToString() + " should not be bigger than timespan: " + timeSpan2.ToString());
-	TestReport(!(timeSpan2 < timeSpan3), "The operator < returned incorrect result. TimeSpan: " + timeSpan2.ToString() + " should not be smaller than timespan: " + timeSpan3.ToString());
+	TestReport(timeSpan2 == timeSpan3, "The operator == returned incorrect result. TimeSpan: " + timeSpan2.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan3.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan2 != timeSpan3), "The operator != returned incorrect result. TimeSpan: " + timeSpan2.ToString(Timing::NANOSECOND) + " is equal to timespan: " + timeSpan3.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan3 > timeSpan2), "The operator > returned incorrect result. TimeSpan: " + timeSpan3.ToString(Timing::NANOSECOND) + " should not be bigger than timespan: " + timeSpan2.ToString(Timing::NANOSECOND));
+	TestReport(!(timeSpan2 < timeSpan3), "The operator < returned incorrect result. TimeSpan: " + timeSpan2.ToString(Timing::NANOSECOND) + " should not be smaller than timespan: " + timeSpan3.ToString(Timing::NANOSECOND));
 
 	//timeSpan2 /= 2.0;
 
@@ -208,7 +208,7 @@ void TimeTest()
 	timer.Start();
 	std::this_thread::sleep_for(std::chrono::seconds(2));
 	timer.Stop();
-	TestReport(abs(timer.GetDuration() - 2000000000) < 250000, "The timer doesn't calculate its duration properly. Duration equals " +
+	TestReport(abs(timer.GetDuration(Timing::NANOSECOND) - 2000000000) < 250000, "The timer doesn't calculate its duration properly. Duration equals " +
 		timer.ToString() + " when it should be roughly equal to 2000000000 [ns]");
 	TestReport(abs(timer.GetDuration(Timing::MICROSECOND) - 2000000) < 250, "The timer doesn't calculate its duration properly. Duration equals " +
 		timer.ToString(Timing::MICROSECOND) + " when it should be roughly equal to 2000000 [us]");

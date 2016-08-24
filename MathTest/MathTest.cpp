@@ -41,6 +41,7 @@ bool quaternionTestEnabled = true;
 bool sortingTestEnabled = true;
 bool kdTreeTestEnabled = true;
 bool statsTestEnabled = true;
+bool heightsGeneratorTestsEnabled = true;
 bool otherTestsEnabled = true;
 
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
@@ -1086,9 +1087,9 @@ void StatsTest()
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
 }
 
-void OtherTests()
+void HeightsGeneratorTests()
 {
-	if (!otherTestsEnabled)
+	if (!heightsGeneratorTestsEnabled)
 	{
 		return;
 	}
@@ -1120,6 +1121,52 @@ void OtherTests()
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
 }
 
+void OtherTests()
+{
+	if (!otherTestsEnabled)
+	{
+		return;
+	}
+
+	constexpr unsigned int VALUES_COUNT = 5;
+	std::array<Math::Real, VALUES_COUNT> values = { -2.15f, -1.05f, 0.0f, 1.1f, 2.2f };
+	std::array<Math::Real, VALUES_COUNT> floorValues = { -3.0f, -2.0f, 0.0f, 1.0f, 2.0f };
+	std::array<Math::Real, VALUES_COUNT> zeroToOneClampValues = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f };
+	std::array<Math::Real, VALUES_COUNT> minusOneAndHalfToOneClampValues = { -1.5f, -1.05f, 0.0f, 1.0f, 1.0f };
+	std::array<int, VALUES_COUNT> intValues = { -4, 0, 1, 3, 13 };
+	std::array<int, VALUES_COUNT> roundUpPow2Values = { 0, 0, 1, 4, 16 };
+	for (unsigned int i = 0; i < VALUES_COUNT; ++i)
+	{
+		std::stringstream ss("");
+		ss << "Absolute value of " << values[i] << " must be greater or equal to 0.0, but is equal to " << Absolute(values[i]);
+		TestReport(Absolute(values[i]) > REAL_ZERO || AlmostEqual(Absolute(values[i]), REAL_ZERO), ss.str());
+		ss.clear();
+		ss << "Floor value of " << values[i] << " should be equal to " << floorValues[i];
+		TestReport(AlmostEqual(Floor(values[i]), floorValues[i]), ss.str());
+		ss.clear();
+		ss << "Value " << values[i] << " clamped to range [0.0; 1.0] equals " << zeroToOneClampValues[i];
+		TestReport(AlmostEqual(Clamp(values[i], 0.0f, 1.0f), zeroToOneClampValues[i]), ss.str());
+		ss.clear();
+		ss << "Value " << values[i] << " clamped to range [-1.5; 1.0] equals " << minusOneAndHalfToOneClampValues[i];
+		TestReport(AlmostEqual(Clamp(values[i], -1.5f, 1.0f), minusOneAndHalfToOneClampValues[i]), ss.str());
+		
+		ss.clear();
+		ss << "RoundUpPow2 for the value " << intValues[i] << " should be equal to " << roundUpPow2Values[i];
+		TestReport(AlmostEqual(RoundUpPow2(intValues[i]), roundUpPow2Values[i]), ss.str());
+	}
+
+	constexpr unsigned int ANGLES_COUNT = 5;
+	std::array<Math::Real, ANGLES_COUNT> anglesInDegrees = { -30.0f, 0.0f, 30.0f, 60.0f, 90.0f };
+	std::array<Math::Real, ANGLES_COUNT> anglesInRadians = { -Math::PI / 6.0f, 0.0f, Math::PI / 6.0f, Math::PI / 3.0f, Math::PI / 2.0f };
+	for (unsigned int i = 0; i < ANGLES_COUNT; ++i)
+	{
+		std::stringstream ss("");
+		ss << "Angle " << anglesInDegrees[i] << " [deg] should be equal to angle " << anglesInRadians[i] << " [rad].";
+		TestReport(Math::AlmostEqual(anglesInDegrees[i], Math::ToDeg(anglesInRadians[i])), ss.str());
+		TestReport(Math::AlmostEqual(Math::ToRad(anglesInDegrees[i]), anglesInRadians[i]), ss.str());
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -1135,7 +1182,7 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	AngleTest();
+	//AngleTest();
 	//VectorTest();
 	//QuaternionTest();
 	//MatrixTest();
@@ -1144,12 +1191,13 @@ int main(int argc, char* argv[])
 
 	//KDTreeTest();
 
-	//StatsTest();
+	StatsTest();
 
+	//HeightsGeneratorTests();
 	//OtherTests();
 
 	STATS_STORAGE.StopTimer();
-	//STATS_STORAGE.PrintReport();
+	STATS_STORAGE.PrintReport();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

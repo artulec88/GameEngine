@@ -36,7 +36,8 @@ namespace Utility
 			/// <summary>
 			/// The time span default constructor.
 			/// </summary>
-			explicit TimeSpan(long long timeValue) :
+			/// <param name="timeValue"> The amount of time specified in nanoseconds. Default value is <code>0</code>.</param>
+			explicit TimeSpan(long long timeValue = 0L) :
 				m_duration(timeValue)
 			{
 			}
@@ -73,6 +74,10 @@ namespace Utility
 					break;
 				}
 			}
+			TimeSpan(const std::chrono::nanoseconds& duration) :
+				m_duration(duration)
+			{
+			}
 			/// <summary>
 			/// The time span destructor.
 			/// </summary>
@@ -108,11 +113,6 @@ namespace Utility
 			/// The time span move assignment operator.
 			/// </summary>
 			TimeSpan& operator=(TimeSpan&& timeSpan) = delete;
-		private:
-			TimeSpan(const std::chrono::nanoseconds& duration) :
-				m_duration(duration)
-			{
-			}
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -145,6 +145,31 @@ namespace Utility
 				m_duration -= timeSpan.m_duration;
 				return *this;
 			}
+			TimeSpan operator*(long long s) const
+			{
+				return TimeSpan(m_duration.count() * s);
+			}
+			TimeSpan& operator*=(long long s)
+			{
+				m_duration *= s;
+				return *this;
+			}
+			float operator/(const TimeSpan& timeSpan) const
+			{
+				return static_cast<float>(m_duration.count()) / timeSpan.m_duration.count();
+			}
+			/// <summary> Time span division operator. The returned time span may have rounding errors. </summary>
+			/// <param name="s"> The floating-point value representing the divisor. </param>
+			/// <returns> The time span which is a result of dividing the source time span by the floating-point value. </returns>
+			TimeSpan operator/(long long s) const
+			{
+				return TimeSpan(m_duration.count() / s);
+			}
+			TimeSpan& operator/=(long long s)
+			{
+				m_duration /= s;
+				return *this;
+			}
 
 			bool operator==(const TimeSpan& timeSpan) const
 			{
@@ -158,14 +183,72 @@ namespace Utility
 			{
 				return m_duration < timeSpan.m_duration;
 			}
+			bool operator<(TimeUnit timeUnit) const
+			{
+				switch (timeUnit)
+				{
+				case HOUR:
+					return m_duration < std::chrono::hours(1);
+				case MINUTE:
+					return m_duration < std::chrono::minutes(1);
+				case SECOND:
+					return m_duration < std::chrono::seconds(1);
+				case MILLISECOND:
+					return m_duration < std::chrono::milliseconds(1);
+				case MICROSECOND:
+					return m_duration < std::chrono::microseconds(1);
+				case NANOSECOND:
+					return m_duration < std::chrono::nanoseconds(1);
+				}
+			}
 			bool operator>(const TimeSpan &timeSpan) const
 			{
 				return m_duration > timeSpan.m_duration;
 			}
-			std::string ToString() const
+			bool operator>(TimeUnit timeUnit) const
+			{
+				switch (timeUnit)
+				{
+				case HOUR:
+					return m_duration > std::chrono::hours(1);
+				case MINUTE:
+					return m_duration > std::chrono::minutes(1);
+				case SECOND:
+					return m_duration > std::chrono::seconds(1);
+				case MILLISECOND:
+					return m_duration > std::chrono::milliseconds(1);
+				case MICROSECOND:
+					return m_duration > std::chrono::microseconds(1);
+				case NANOSECOND:
+					return m_duration > std::chrono::nanoseconds(1);
+				}
+			}
+			std::string ToString(TimeUnit timeUnit) const
 			{
 				std::stringstream ss("");
-				ss << m_duration.count() << " [ns]";
+				switch (timeUnit)
+				{
+				case HOUR:
+					ss << std::chrono::duration_cast<std::chrono::hours>(m_duration).count() << " [h]";
+					break;
+				case MINUTE:
+					ss << std::chrono::duration_cast<std::chrono::minutes>(m_duration).count() << " [m]";
+					break;
+				case SECOND:
+					ss << std::chrono::duration_cast<std::chrono::seconds>(m_duration).count() << " [s]";
+					break;
+				case MILLISECOND:
+					ss << std::chrono::duration_cast<std::chrono::milliseconds>(m_duration).count() << " [ms]";
+					break;
+				case MICROSECOND:
+					ss << std::chrono::duration_cast<std::chrono::microseconds>(m_duration).count() << " [us]";
+					break;
+				case NANOSECOND:
+					ss << m_duration.count() << " [ns]";
+				default:
+					// TODO: Error message
+					break;
+				}
 				return ss.str();
 			}
 			/* ==================== Non-static member functions end ==================== */

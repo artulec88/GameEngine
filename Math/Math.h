@@ -66,16 +66,16 @@ namespace Math
 	/// and another file containing:
 	/// <code>#define PI 3.141593</code>
 	/// </remarks>
-	const Real PI = static_cast<Real>(3.14159265358979323846); //static_cast<Real>(4.0 * atan(1.0));
+	constexpr Real PI = static_cast<Real>(3.14159265358979323846); //static_cast<Real>(4.0 * atan(1.0));
 	
 	/// <summary> The constant multiplier that converts degrees to radians </summary>
-	const Real DEG_TO_RAD_MULTIPLIER = PI / 180;
+	constexpr Real DEG_TO_RAD_MULTIPLIER = PI / 180;
 
 	/// <summary> The constant multiplier that converts radians to degrees </summary>
-	const Real RAD_TO_DEG_MULTIPLIER = 180 / PI;
+	constexpr Real RAD_TO_DEG_MULTIPLIER = 180 / PI;
 
 	template<typename Type>
-	Type Absolute(Type v)
+	constexpr Type Absolute(Type v)
 	{
 		return (v < 0) ? -v : v;
 	}
@@ -92,7 +92,8 @@ namespace Math
 		return static_cast<Type>(Math::RAD_TO_DEG_MULTIPLIER * angleInRadians);
 	}
 
-	template<typename Type> int Floor(Type value)
+	template<typename Type>
+	constexpr int Floor(Type value)
 	{
 		return static_cast<int>(floor(value));
 	}
@@ -103,11 +104,10 @@ namespace Math
 //		return static_cast<Math::Real>(std::numeric_limits<float>::max());
 //	}
 
-	template<typename Type> Type Clamp(const Type& a, const Type& min, const Type& max)
+	template<typename Type>
+	constexpr Type Clamp(const Type& a, const Type& min, const Type& max)
 	{
-		if (a < min) return min;
-		else if (a > max) return max;
-		else return a;
+		return (a < min) ? min : ((a > max) ? max : a);
 	}
 
 	//template<typename Type> Type Lerp(const Type& a, const Type& b, const Type& mixFactor)
@@ -115,7 +115,13 @@ namespace Math
 	//	return ((1 - mixFactor) * a) + (mixFactor * b);
 	//}
 
-	template<typename Type> Type RoundUpPow2(Type number)
+	/// <summary>
+	/// For unsigned integer-like values it returns the minimum integer-like value that is both a power of <code>2</code>
+	/// and greater or equal to the given <paramref name="number"/>. For example, for a given set of values [ -3, 0, 1, 2, 5, 10 ]
+	/// the function will return [ 0, 0, 1, 2, 8, 16 ].
+	/// </summary>
+	template<typename Type>
+	Type RoundUpPow2(Type number)
 	{
 		if (number < 0)
 		{
