@@ -57,7 +57,7 @@ void Game::PlayGameState::Entered()
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
-	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
+	CHECK_CONDITION_GAME(m_gameManager->IsGameLoaded(), Utility::Logging::ERR, "PLAY game state has been placed in the game state manager before loading the game.");
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Engine::CoreEngine::GetCoreEngine()->InitializeGameTweakBars();
 #endif
@@ -189,7 +189,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
 	START_PROFILING_GAME("");
-	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
+	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::Logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
@@ -234,7 +234,7 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* rende
 	const Rendering::Shader& ambientShader = m_gameManager->GetAmbientShader(renderer->GetFogInfo());
 	const Rendering::Shader& ambientTerrainShader = m_gameManager->GetAmbientTerrainShader(renderer->GetFogInfo());
 	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
-	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::ERR, "Cannot render terrain. There are no terrain nodes registered.");
+	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
 	m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 }
 
@@ -325,7 +325,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME("");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
 	RenderWaterReflectionTexture(renderer);
@@ -338,7 +338,7 @@ void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) con
 void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME("");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
 	Rendering::Camera& currentCamera = renderer->GetCurrentCamera();
@@ -389,7 +389,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME("");
-	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::DEBUG, "There are no water nodes registered in the rendering engine");
+	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
 	renderer->BindWaterRefractionTexture();

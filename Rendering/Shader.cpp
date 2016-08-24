@@ -526,7 +526,7 @@ Rendering::Shader::Shader(const std::string& fileName) :
 	m_shaderData(fileName),
 	m_fileName(fileName)
 {
-	DELOCUST_LOG_RENDERING("Shader constructor called for file name: \"", m_fileName, "\". ");
+	//DELOCUST_LOG_RENDERING("Shader constructor called for file name: \"", m_fileName, "\". ");
 	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
 }
 

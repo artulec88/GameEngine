@@ -273,14 +273,14 @@ void Engine::CoreEngine::CreateAudioEngine()
 {
 	Audio::AudioEngineFactory audioEngineFactory;
 	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<Audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(Audio::AudioEngineTypes::FMOD))));
-	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::CRITICAL, "Failed to create an audio engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Logging::CRITICAL, "Failed to create an audio engine.");
 }
 
 void Engine::CoreEngine::CreatePhysicsEngine()
 {
 	m_physicsEngine = new Physics::PhysicsEngine();
 
-	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::CRITICAL, "Failed to create a physics engine.");
+	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
 
 void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
@@ -295,7 +295,7 @@ void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string
 	m_renderer = std::make_unique<Rendering::Renderer>(width, height, antiAliasingMethod);
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
-	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::CRITICAL, "Failed to create a renderer.");
+	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
 	STOP_PROFILING_ENGINE("");
 }
 
@@ -444,7 +444,7 @@ void Engine::CoreEngine::Stop()
 
 	m_isRunning = false;
 	RequestWindowClose();
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::WARNING, "Stopping the core engine is not possible as it is simply not running at the moment.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Logging::WARNING, "Stopping the core engine is not possible as it is simply not running at the moment.");
 	NOTICE_LOG_ENGINE("The core engine has stopped");
 
 	// Just for checking whether time calculation is performed correctly
@@ -479,7 +479,7 @@ void Engine::CoreEngine::Run()
 		GET_CONFIG_VALUE_ENGINE("borderEdgeTransitionWidthFPS", 0.1f));
 #endif
 
-	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::WARNING, "According to the core engine the game is already running.");
+	CHECK_CONDITION_ENGINE(!m_isRunning, Utility::Logging::WARNING, "According to the core engine the game is already running.");
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
@@ -741,19 +741,19 @@ void Engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double 
 
 size_t Engine::CoreEngine::GetCurrentCameraIndex() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot get the current camera index. The game does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot get the current camera index. The game does not exist.");
 	return m_game->GetCurrentCameraIndex();
 }
 
 size_t Engine::CoreEngine::NextCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot move to the next camera. The game does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot move to the next camera. The game does not exist.");
 	return m_game->NextCamera();
 }
 
 size_t Engine::CoreEngine::PrevCamera() const
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, CRITICAL, "Cannot move to the previous camera. The game does not exist.");
+	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot move to the previous camera. The game does not exist.");
 	return m_game->PrevCamera();
 }
 

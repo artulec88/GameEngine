@@ -16,6 +16,7 @@
 Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
 	m_textureTarget(textureTarget),
 	m_texturesCount(texturesCount),
+	m_textureIDs(texturesCount),
 	m_width(width),
 	m_height(height),
 	m_framebuffer(0),
@@ -23,7 +24,6 @@ Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, Utility::Logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
-	m_textureIDs.reserve(texturesCount);
 
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
 	InitTextures(data, filters, internalFormats, formats, wrapping);
@@ -36,13 +36,12 @@ Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth) :
 	m_textureTarget(GL_TEXTURE_CUBE_MAP),
 	m_texturesCount(1),
+	m_textureIDs(1),
 	m_width(width),
 	m_height(height),
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	m_textureIDs.reserve(m_texturesCount);
-
 	// Init textures begin
 	const int NUMBER_OF_CUBE_MAP_FACES = 6;
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
@@ -119,11 +118,6 @@ Rendering::TextureData::TextureData(TextureData&& textureData) :
 
 void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, GLenum wrapping)
 {
-	if (data == NULL)
-	{
-		DEBUG_LOG_RENDERING("No data passed to the Texture object.");
-		//return;
-	}
 	if (filters == NULL)
 	{
 		WARNING_LOG_RENDERING("The filter array is NULL.");
@@ -133,10 +127,6 @@ void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 	CheckErrorCode(__FUNCTION__, "Generating textures");
 	for (int i = 0; i < m_texturesCount; ++i)
 	{
-		if (data[i] == NULL)
-		{
-			DEBUG_LOG_RENDERING("Texture data[", i, "] is NULL.");
-		}
 		glBindTexture(m_textureTarget, m_textureIDs[i]);
 		glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
 		CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_MIN_FILTER");
@@ -158,7 +148,7 @@ void Rendering::TextureData::InitTextures(unsigned char** data, GLfloat* filters
 		CheckErrorCode(__FUNCTION__, "Setting the GL_TEXTURE_WRAP_* wrapping parameters.");
 
 		// If we want to use mipmapping we must submit the data to the texture before.
-		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data[i]);
+		glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, (data == NULL) ? NULL : data[i]);
 
 		if(filters[i] == GL_NEAREST_MIPMAP_NEAREST ||
 			filters[i] == GL_NEAREST_MIPMAP_LINEAR ||
@@ -318,26 +308,21 @@ Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /*
 
 Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */,
 	GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	m_textureData(NULL),
+	m_textureData(nullptr),
 	m_fileName()
 {
 	CHECK_CONDITION_RENDERING((width > 0) && (height > 0), Utility::Logging::ERR, "Cannot initialize texture. Passed texture size is incorrect (width=", width, "; height=", height, ")");
-	if (data == NULL)
-	{
-		DEBUG_LOG_RENDERING("Cannot initialize texture. Passed texture data is NULL");
-	}
 	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment);
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
-	m_textureData(NULL),
+	m_textureData(nullptr),
 	m_fileName()
 {
 	//m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
-	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, wrapping, attachments);
-
+	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 Rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName)

@@ -390,7 +390,7 @@ void Engine::GameManager::AddCamera(Rendering::Camera* camera)
 
 unsigned int Engine::GameManager::SetCurrentCamera(unsigned int cameraIndex)
 {
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), ERR, "Incorrect current camera index. Passed ",
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
 		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
 	m_cameras[m_currentCameraIndex]->Deactivate();
 	m_currentCameraIndex = cameraIndex;

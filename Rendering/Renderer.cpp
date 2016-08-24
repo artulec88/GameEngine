@@ -108,7 +108,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 #else
 	m_particleQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(), 4, m_maxParticlesCount, 17),
 #endif
-	//m_particleInstanceVboData(),
+	m_particleInstanceVboData(m_maxParticlesCount * m_particleQuad.GetInstanceDataLength()),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	, m_propertiesBar(NULL),
@@ -160,8 +160,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_filterMesh.Initialize();
 
 	m_cubeShadowMap.Init(windowWidth, windowHeight);
-
-	m_particleInstanceVboData.reserve(m_maxParticlesCount * m_particleQuad.GetInstanceDataLength());
 
 	m_mappedValues.SetTexture("displayTexture", &m_displayTexture);
 #ifndef ANT_TWEAK_BAR_ENABLED

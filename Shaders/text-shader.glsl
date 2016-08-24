@@ -6,8 +6,6 @@ varying vec2 texCoord0;
 attribute vec2 vVertex; // in clipping space
 attribute vec2 vTexCoord;
 
-uniform float screenWidth;
-uniform float screenHeight;
 //uniform mat4 MVP;
 
 void main()

@@ -60,8 +60,6 @@ uniform sampler2D displacementMap;
 uniform float displacementScale;
 uniform float displacementBias;
 
-layout(binding=5) uniform samplerCube R_cubeShadowMap;
-
 bool InRange(float val)
 {
 	return val >= 0.0 && val <= 1.0;

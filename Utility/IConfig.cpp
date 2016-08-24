@@ -6,7 +6,8 @@
 
 /* static */ void Utility::IConfig::CreateConfig(const std::string& moduleName, const std::string& configFileName)
 {
-	CHECK_CONDITION_RETURN_VOID_UTILITY(configurations.find(moduleName) != configurations.end(), Logging::ERR,
+	DEBUG_LOG_UTILITY("Reading configuration for module \"", moduleName, "\" from file \"", configFileName, "\".");
+	CHECK_CONDITION_RETURN_VOID_UTILITY(configurations.find(moduleName) == configurations.end(), Logging::ERR,
 		"Configuration for \"", configFileName, "\" module \"", moduleName, "\" has already been created");
 	configurations[moduleName] = std::make_unique<Config>(configFileName);
 }

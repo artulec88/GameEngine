@@ -60,7 +60,6 @@ uniform sampler2D displacementMap;
 
 uniform float displacementScale;
 uniform float displacementBias;
-layout(binding=5) uniform samplerCube R_cubeShadowMap;
 //uniform bool hasMultipleTextures;
 
 bool InRange(float val)

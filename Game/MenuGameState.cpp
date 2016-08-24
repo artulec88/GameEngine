@@ -1,14 +1,17 @@
 #include "MenuGameState.h"
 #include "Def.h"
+#include "PlayGameState.h"
+#include "LoadGameState.h"
 #include "StartGameCommand.h"
+
 #include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
+
 #include "Rendering\Shader.h"
+
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
-#include "PlayGameState.h"
-#include "LoadGameState.h"
 
 using namespace Game;
 using namespace Rendering;
@@ -232,7 +235,7 @@ void MenuGameState::DeselectAll()
 
 void MenuGameState::SelectChild(size_t childIndex)
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DEBUG,
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DELOCUST,
 		"Trying to select the child which is already selected (", childIndex, ").");
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
