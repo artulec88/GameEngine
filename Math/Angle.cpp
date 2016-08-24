@@ -102,14 +102,7 @@ Math::Angle& Math::Angle::operator*=(Real s)
 Math::Angle& Math::Angle::operator/=(Real s)
 {
 	START_PROFILING_MATH("");
-#ifdef _DEBUG
-	if (AlmostEqual(s, REAL_ZERO))
-	{
-		ERROR_LOG_MATH("Cannot divide the angle by 0. Returning the unmodified angle.");
-		STOP_PROFILING_MATH("");
-		return *this;
-	}
-#endif
+	CHECK_CONDITION_MATH(!AlmostEqual(s, REAL_ZERO), Utility::Logging::ERR, "Cannot divide the angle by 0. Returning the unmodified angle.");
 	m_angle /= s;
 	STOP_PROFILING_MATH("");
 	return *this;
