@@ -199,6 +199,9 @@ namespace Utility
 					return m_duration < std::chrono::microseconds(1);
 				case NANOSECOND:
 					return m_duration < std::chrono::nanoseconds(1);
+				default:
+					// TODO: Print message about incorrect time unit
+					return true;
 				}
 			}
 			bool operator>(const TimeSpan &timeSpan) const

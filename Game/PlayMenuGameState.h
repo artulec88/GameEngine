@@ -10,7 +10,7 @@
 #include "Engine\MenuEntry.h"
 #include "Engine\GameCommand.h"
 
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -67,7 +67,7 @@ namespace Game
 		//Rendering::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
 		Math::Real m_mousePosX, m_mousePosY;
 		Engine::MenuEntry* m_currentMenuEntry;
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

@@ -19,12 +19,16 @@
 #define DEBUG_LOG_PHYSICS(...) DEBUG_LOG("Physics", ##__VA_ARGS__)
 #define DELOCUST_LOG_PHYSICS(...) DELOCUST_LOG("Physics", ##__VA_ARGS__)
 
-#define CALCULATE_PHYSICS_STATS
-#ifdef CALCULATE_PHYSICS_STATS
-#define START_PROFILING_PHYSICS(param) START_PROFILING("Physics", param)
+#define PROFILING_PHYSICS_MODULE_ENABLED
+#ifdef PROFILING_PHYSICS_MODULE_ENABLED
+#define START_PROFILING_STATIC_PHYSICS(measureTime, param) START_PROFILING_STATIC("Physics", measureTime, param)
+#define STOP_PROFILING_STATIC_PHYSICS(param) STOP_PROFILING_STATIC("Physics", param)
+#define START_PROFILING_PHYSICS(measureTime, param) START_PROFILING("Physics", measureTime, param)
 #define STOP_PROFILING_PHYSICS(param) STOP_PROFILING("Physics", param)
 #else
-#define START_PROFILING_PHYSICS(param)
+#define START_PROFILING_STATIC_PHYSICS(measureTime, param)
+#define STOP_PROFILING_STATIC_PHYSICS(param)
+#define START_PROFILING_PHYSICS(measureTime, param)
 #define STOP_PROFILING_PHYSICS(param)
 #endif
 

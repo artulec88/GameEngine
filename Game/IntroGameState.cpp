@@ -8,7 +8,7 @@
 Game::IntroGameState::IntroGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager)
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("IntroGameState"))
 #endif
 {
@@ -65,7 +65,7 @@ void Game::IntroGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void Game::IntroGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("INTRO game state rendering");
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);

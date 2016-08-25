@@ -15,7 +15,7 @@
 #include "Rendering\PointLight.h"
 #include "Rendering\SpotLight.h"
 
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -137,7 +137,7 @@ namespace Game
 		bool m_heightMapCalculationEnabled;
 		//Engine::GameNode* castleNode;
 
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 

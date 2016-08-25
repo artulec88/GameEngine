@@ -13,7 +13,7 @@
 // Include GLEW. Always include it before gl.h and glfw.h, since it's a bit magic.
 #include <GL\glew.h>
 
-#define CALCULATE_RENDERING_STATS
+#define PROFILING_RENDERING_MODULE_ENABLED
 #define ANT_TWEAK_BAR_ENABLED
 #ifdef ANT_TWEAK_BAR_ENABLED
 #define CONST_IF_TWEAK_BAR_DISABLED
@@ -48,15 +48,15 @@
 /// </summary>
 #define DEBUG_RENDERING_ENABLED
 
-#ifdef CALCULATE_RENDERING_STATS
-#define START_PROFILING_STATIC_RENDERING(param) START_PROFILING_STATIC("Rendering", param)
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#define START_PROFILING_STATIC_RENDERING(measureTime, param) START_PROFILING_STATIC("Rendering", measureTime, param)
 #define STOP_PROFILING_STATIC_RENDERING(param) STOP_PROFILING_STATIC("Rendering", param)
-#define START_PROFILING_RENDERING(param) START_PROFILING("Rendering", param)
+#define START_PROFILING_RENDERING(measureTime, param) START_PROFILING("Rendering", measureTime, param)
 #define STOP_PROFILING_RENDERING(param) STOP_PROFILING("Rendering", param)
 #else
-#define START_PROFILING_STATIC_RENDERING(param)
+#define START_PROFILING_STATIC_RENDERING(measureTime, param)
 #define STOP_PROFILING_STATIC_RENDERING(param)
-#define START_PROFILING_RENDERING(param)
+#define START_PROFILING_RENDERING(measureTime, param)
 #define STOP_PROFILING_RENDERING(param)
 #endif
 

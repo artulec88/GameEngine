@@ -8,7 +8,7 @@
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Math\Math.h"
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -53,7 +53,7 @@ namespace Game
 		Engine::GameManager* m_gameManager;
 		Math::Real m_loadingProgress;
 		std::thread* m_loadingThread;
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

@@ -5,7 +5,7 @@
 
 /* ==================== class StatsTest1 begin ==================== */
 MathTest::StatsTest1::StatsTest1(void)
-#ifdef CALCULATE_TEST_STATS
+#ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 	: m_classStats(STATS_STORAGE.GetClassStats("StatsTest1"))
 #endif
 {
@@ -18,23 +18,23 @@ MathTest::StatsTest1::~StatsTest1(void)
 
 void MathTest::StatsTest1::Method1()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest1::Method2()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::milliseconds(30));
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest1::Method3()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::milliseconds(2));
 	const int ITERATIONS = 10;
@@ -42,21 +42,21 @@ void MathTest::StatsTest1::Method3()
 	{
 		NestedMethod4();
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest1::NestedMethod4()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::microseconds(3000));
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 /* ==================== class StatsTest1 end ==================== */
 
 /* ==================== class StatsTest2 begin ==================== */
 MathTest::StatsTest2::StatsTest2(void)
-#ifdef CALCULATE_TEST_STATS
+#ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 	: m_classStats(STATS_STORAGE.GetClassStats("StatsTest2"))
 #endif
 {
@@ -69,7 +69,7 @@ MathTest::StatsTest2::~StatsTest2(void)
 
 void MathTest::StatsTest2::Method1()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	const int ITERATIONS = 200;
 	std::this_thread::sleep_for(std::chrono::microseconds(200));
@@ -88,20 +88,20 @@ void MathTest::StatsTest2::Method1()
 			NestedMethod4();
 		}
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest2::Method2()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::microseconds(200));
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest2::Method3()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::microseconds(10));
 	const int ITERATIONS = 10;
@@ -109,14 +109,14 @@ void MathTest::StatsTest2::Method3()
 	{
 		NestedMethod4();
 	}
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 
 void MathTest::StatsTest2::NestedMethod4()
 {
-	START_PROFILING("");
+	START_PROFILING_MATH_TEST(true, "");
 	// This method is just to test collecting statistics (see classes IStatisticsStorage, Statistics, etc.)
 	std::this_thread::sleep_for(std::chrono::microseconds(200));
-	STOP_PROFILING("");
+	STOP_PROFILING_MATH_TEST("");
 }
 /* ==================== class StatsTest2 end ==================== */

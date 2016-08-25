@@ -19,7 +19,7 @@
 /**
  * See http://stackoverflow.com/questions/546997/use-ifdefs-and-define-to-optionally-turn-a-function-call-into-a-comment
  */
-#ifndef CALCULATE_RENDERING_STATS
+#ifndef PROFILING_RENDERING_MODULE_ENABLED
 #undef START_TIMER
 #undef RESET_TIMER
 #undef STOP_TIMER
@@ -186,7 +186,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
 		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT } }),
 	m_inputMapping(GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 	, m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
 	m_countStats2(0),
@@ -206,7 +206,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_stats()
 #endif
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	NOTICE_LOG_ENGINE("Main application construction started");
 	STATS_STORAGE.StartTimer();
 	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
@@ -235,7 +235,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	DEBUG_LOG_ENGINE("Core engine destruction started");
 
 	/* ==================== Printing stats begin ==================== */
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 	INFO_LOG_ENGINE("The region #1 (Time calculating) was processed ", m_countStats1, " times, which took exactly", m_timeSum1, " [us]. The average time=", m_timeSum1 / m_countStats1, " [us]. ", m_minMaxTime1.ToString());
 	INFO_LOG_ENGINE("The region #2 was processed ", m_countStats2, " times, which took exactly ", m_timeSum2, " [us]. The average time=", m_timeSum2 / m_countStats2, "[us]. ", m_minMaxTime2.ToString());
 	INFO_LOG_ENGINE("\t The region #2_1 (Polling events) was processed ", m_countStats2_1, " times, which took exactly ", m_timeSum2_1, " [us]. The average time=", m_timeSum2_1 / m_countStats2_1, " [us]. ", m_minMaxTime2_1.ToString());
@@ -285,7 +285,7 @@ void Engine::CoreEngine::CreatePhysicsEngine()
 
 void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	InitGraphics(width, height, title, antiAliasingMethod);
 	Rendering::InitGraphics(width, height, antiAliasingMethod);
 
@@ -420,7 +420,7 @@ void Engine::CoreEngine::SetCallbacks()
 
 void Engine::CoreEngine::Start(GameManager* gameManager)
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	m_game = gameManager;
 	if (m_isRunning)
 	{
@@ -435,7 +435,7 @@ void Engine::CoreEngine::Start(GameManager* gameManager)
 
 void Engine::CoreEngine::Stop()
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	if (!m_isRunning)
 	{
 		WARNING_LOG_ENGINE("The core engine instance is not running");
@@ -461,7 +461,7 @@ void Engine::CoreEngine::Stop()
 
 void Engine::CoreEngine::Run()
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	const int THREAD_SLEEP_TIME = GET_CONFIG_VALUE_ENGINE("threadSleepTime", 10);
 
 #ifdef DRAW_FPS
@@ -503,7 +503,7 @@ void Engine::CoreEngine::Run()
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
 
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 	//LARGE_INTEGER t1, t2, innerT1, innerT2; // ticks
 #endif
 	while (m_isRunning)
@@ -531,7 +531,7 @@ void Engine::CoreEngine::Run()
 		{
 			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
 			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 			if (m_isSamplingSpf)
 			{
 				m_stats.Push(Math::Statistics::SPF, spf);
@@ -634,7 +634,7 @@ void Engine::CoreEngine::Run()
 			TwDraw();
 #endif
 			glfwSwapBuffers(m_window);
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 			++m_renderingRequiredCount;
 #endif
 	}
@@ -643,7 +643,7 @@ void Engine::CoreEngine::Run()
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
 			// TODO: Sleep for 1ms to prevent the thread from constant looping
 			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME));
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 			++m_renderingNotRequiredCount;
 #endif
 		}
@@ -871,7 +871,7 @@ void Engine::CoreEngine::InitializeGameTweakBars()
 }
 #endif
 
-//#ifdef CALCULATE_RENDERING_STATS
+//#ifdef PROFILING_RENDERING_MODULE_ENABLED
 //Math::Real Engine::CoreEngine::CalculateAverageSpf(Math::Real& minSpf, Math::Real& maxSpf, Math::Real& stdDev) const
 //{
 //	if (m_secondsPerFrameStats.empty())

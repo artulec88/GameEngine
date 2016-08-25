@@ -262,7 +262,7 @@ namespace Engine
 		unsigned int m_cameraCountMinusOne;
 #endif
 
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

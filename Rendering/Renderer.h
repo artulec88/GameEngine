@@ -25,7 +25,7 @@
 #include "Math\AABB.h"
 #include "Math\OBB.h"
 #endif
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
 #endif
@@ -404,7 +404,7 @@ namespace Rendering
 		GuiMesh m_debugQuad;
 #endif
 
-#ifdef CALCULATE_RENDERING_STATS
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

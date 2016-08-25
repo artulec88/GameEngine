@@ -10,7 +10,7 @@ Game::LoadGameState::LoadGameState(Engine::GameManager* gameManager, const std::
 	m_gameManager(gameManager),
 	m_loadingProgress(REAL_ZERO),
 	m_loadingThread(NULL)
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("LoadGameState"))
 #endif
 {
@@ -23,7 +23,7 @@ Game::LoadGameState::~LoadGameState(void)
 
 void Game::LoadGameState::Entered()
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("LOAD game state has been placed in the game state manager");
 	NOTICE_LOG_GAME("Starting the loading thread");
@@ -66,7 +66,7 @@ void Game::LoadGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void Game::LoadGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state rendering");
 	// TODO: Rendering loading screen.
 	//renderer->RenderLoadingScreen(m_gameManager->GetGuiTextShader(), m_loadingProgress);
@@ -75,7 +75,7 @@ void Game::LoadGameState::Render(Rendering::Renderer* renderer) const
 
 void Game::LoadGameState::Update(Math::Real elapsedTime)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("LOAD game state updating");
 	Engine::GameManager* gameManager = Engine::GameManager::GetGameManager();
 	m_loadingProgress = gameManager->GetLoadingProgress();

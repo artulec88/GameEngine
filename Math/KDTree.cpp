@@ -11,11 +11,11 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 	m_numberOfSamples(numberOfSamples),
 	m_position(REAL_ZERO, REAL_ZERO),
 	m_value(REAL_ZERO)
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("KDTree"))
 #endif
 {
-	START_PROFILING_MATH("");
+	START_PROFILING_MATH(true, "");
 	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::Logging::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	BuildTree(positions, positionsCount, depth);
 	STOP_PROFILING_MATH("");
@@ -27,7 +27,7 @@ Math::KDTree::~KDTree(void)
 
 void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
 {
-	START_PROFILING_MATH("");
+	START_PROFILING_MATH(true, "");
 	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
 	//DEBUG_LOG_MATH("Before sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
@@ -66,7 +66,7 @@ Math::Real Math::KDTree::SearchNearestValue(const Vector2D& position) const
 
 Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
 {
-	START_PROFILING_MATH("");
+	START_PROFILING_MATH(true, "");
 	// The numberOfSamples must be less than the number of nodes. We assume that it is.
 	// If we wanted to check that condition we would have to store the number of nodes in the separate member variable.
 	std::vector<Real> minDistanceValues;
@@ -136,7 +136,7 @@ void Math::KDTree::SearchNearestValue(const Vector2D& position, int depth, std::
 
 void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 {
-	START_PROFILING_MATH("");
+	START_PROFILING_MATH(true, "");
 	//++numberOfPositionsChecked;
 	//DELOCUST_LOG_MATH("Visiting the node with position (", m_position.ToString(), ") and value ", m_value);
 	Real distance = (x - m_position.GetX()) * (x - m_position.GetX()) + (z - m_position.GetY()) * (z - m_position.GetY());

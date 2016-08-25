@@ -4,7 +4,7 @@
 #include "Physics.h"
 #include "PhysicsObject.h"
 
-#ifdef CALCULATE_PHYSICS_STATS
+#ifdef PROFILING_PHYSICS_MODULE_ENABLED
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
 #endif
@@ -59,7 +59,7 @@ namespace Physics
 	private:
 		typedef std::vector<PhysicsObject*> PhysicObjectsContainer;
 		PhysicObjectsContainer m_physicsObjects;
-#ifdef CALCULATE_PHYSICS_STATS
+#ifdef PROFILING_PHYSICS_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 	/* ==================== Non-static member variables end ==================== */

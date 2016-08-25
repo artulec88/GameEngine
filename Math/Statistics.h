@@ -12,14 +12,14 @@
 #define PROFILING_ENABLED
 
 #ifdef PROFILING_ENABLED
-#define START_PROFILING_STATIC(moduleName, param) do { s_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define START_PROFILING_STATIC(moduleName, measureTime, param) do { s_classStats.StartProfiling(measureTime, __FUNCTION__##param); } while (0)
 #define STOP_PROFILING_STATIC(moduleName, param) do { s_classStats.StopProfiling(__FUNCTION__##param); } while (0)
-#define START_PROFILING(moduleName, param) do { m_classStats.StartProfiling(__FUNCTION__##param); } while (0)
+#define START_PROFILING(moduleName, measureTime, param) do { m_classStats.StartProfiling(measureTime, __FUNCTION__##param); } while (0)
 #define STOP_PROFILING(moduleName, param) do { m_classStats.StopProfiling(__FUNCTION__##param); } while (0)
 #else
-#define START_PROFILING_STATIC(moduleName, param)
+#define START_PROFILING_STATIC(moduleName, measureTime, param)
 #define STOP_PROFILING_STATIC(moduleName, param)
-#define START_PROFILING(moduleName, param)
+#define START_PROFILING(moduleName, measureTime, param)
 #define STOP_PROFILING(moduleName, param)
 #endif
 
@@ -87,7 +87,7 @@ namespace Math {
 			Utility::Timing::TimeSpan CalculateMedian() const;
 #endif
 
-			void StartProfiling(bool isNestedWithinAnotherProfiledMethod);
+			void StartProfiling(bool isMeasureTimeEnabled, bool isNestedWithinAnotherProfiledMethod);
 			void StopProfiling();
 
 			const Utility::Timing::TimeSpan& GetTotalTime() const { return m_totalTime; }
@@ -135,7 +135,7 @@ namespace Math {
 
 			MATH_API void PrintReport(const Utility::Timing::TimeSpan& applicationTimeSpan, std::fstream& appStatsFile) const;
 
-			MATH_API void StartProfiling(const std::string& methodName);
+			MATH_API void StartProfiling(bool isMeasureTimeEnabled, const std::string& methodName);
 			MATH_API void StopProfiling(const std::string& methodName);
 
 			MATH_API bool IsProfiling(const std::string& methodName) const

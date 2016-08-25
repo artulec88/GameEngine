@@ -41,7 +41,7 @@ MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::string
 	m_mousePicker(),
 	m_currentMenuEntry(NULL)
 	//m_quitGameCommand()
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
 {
@@ -216,7 +216,7 @@ void MenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void MenuGameState::DeselectAll()
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	// This function is supposed to apply the "non-selected" effects to all non-selected menu entries. However Effect class can only handle one attribute at a time.
 	// It is not possible to modify many attributes using one Effect class instance. As a result only the last non-selected menu entry will have "non-selected" effects applied to it.
 	//for (int i = 0; i < m_currentMenuEntry->GetChildrenCount(); ++i)
@@ -253,7 +253,7 @@ void MenuGameState::SelectChild(size_t childIndex)
 
 void MenuGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();

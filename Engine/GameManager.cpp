@@ -69,7 +69,7 @@ Engine::GameManager::GameManager() :
 	, m_gameBar(NULL),
 	m_cameraCountMinusOne(-1)
 #endif
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("GameManager"))
 #endif
 {
@@ -301,7 +301,7 @@ const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontT
 
 const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
@@ -340,7 +340,7 @@ const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::
 
 const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
-	START_PROFILING_ENGINE("");
+	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled())
 	{
 		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);

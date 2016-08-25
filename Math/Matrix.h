@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Angle.h"
 #include "Vector.h"
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
 #endif
@@ -28,7 +28,7 @@ namespace Math
 	class Matrix4D
 	{
 		/* ==================== Static variables and functions begin ==================== */
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 	private:
 		static Statistics::ClassStats& s_classStats;
 #endif
@@ -170,7 +170,7 @@ namespace Math
 		std::array<Real, MATRIX_SIZE * MATRIX_SIZE> m_values;
 #endif
 
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 		Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

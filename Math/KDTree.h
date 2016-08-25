@@ -3,7 +3,7 @@
 
 #include "Math.h"
 #include "Vector.h"
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
 #endif
@@ -89,7 +89,7 @@ private:
 	int m_numberOfSamples;
 	Vector2D m_position;
 	Real m_value;
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 	Statistics::ClassStats& m_classStats;
 #endif
 /* ==================== Non-static member variables end ==================== */

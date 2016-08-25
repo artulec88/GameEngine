@@ -5,7 +5,7 @@
 #include "Math.h"
 //#include "Utility\IConfig.h"
 //#include "Utility\ILogger.h" // only used if AlmostEqual logs anything
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "IStatisticsStorage.h"
 #endif
@@ -74,7 +74,7 @@ namespace Math
 		 * although the new value is guaranteed to be also a NAN. Therefore, don't expect this constructor to preserve the bits in x when x is a NAN.
 		 */
 		explicit FloatingPoint(const RawType& x)
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 			: m_classStats(STATS_STORAGE.GetClassStats("FloatingPoint"))
 #endif
 		{
@@ -95,7 +95,7 @@ namespace Math
 		 */
 		bool AlmostEqual(const FloatingPoint& rhs) const
 		{
-			START_PROFILING_MATH("");
+			START_PROFILING_MATH(false, "");
 			// The IEEE standard says that any comparison operation involving a NAN must return false
 			if (IsNAN() || rhs.IsNAN())
 			{
@@ -135,7 +135,7 @@ namespace Math
 			Bits bits_; // the bits that represent the number
 		};
 
-#ifdef CALCULATE_MATH_STATS
+#ifdef PROFILING_MATH_MODULE_ENABLED
 		Statistics::ClassStats& m_classStats;
 #endif
 

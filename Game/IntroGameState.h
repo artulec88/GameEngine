@@ -8,7 +8,7 @@
 //#include "Rendering\GameCommand.h"
 #include "Math\Math.h"
 #include "Engine\GameNode.h"
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -42,7 +42,7 @@ namespace Game
 		/* ==================== Non-static member variables begin ==================== */
 	private:
 		Engine::GameManager* m_gameManager;
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

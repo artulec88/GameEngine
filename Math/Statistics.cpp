@@ -269,24 +269,23 @@ Utility::Timing::TimeSpan Math::Statistics::MethodStats::CalculateMedian() const
 }
 #endif
 
-void Math::Statistics::MethodStats::StartProfiling(bool isNestedWithinAnotherProfiledMethod)
+void Math::Statistics::MethodStats::StartProfiling(bool isMeasureTimeEnabled, bool isNestedWithinAnotherProfiledMethod)
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	if (m_timer.IsRunning())
+	CHECK_CONDITION_MATH(!m_timer.IsRunning(), Utility::Logging:ERR, "Cannot start profiling the method. The method's timer is still running.");
+	if (isMeasureTimeEnabled)
 	{
-		ERROR_LOG_MATH("Timer already running");
+		m_timer.Start();
 	}
-	m_timer.Start();
 }
 
 void Math::Statistics::MethodStats::StopProfiling()
 {
-	if (!m_timer.IsRunning())
+	if (m_timer.IsRunning())
 	{
-		ERROR_LOG_MATH("Timer already stopped");
+		m_timer.Stop();
 	}
-	m_timer.Stop();
 	Utility::Timing::TimeSpan elapsedTimeSpan = m_timer.GetTimeSpan();
 	//DEBUG_LOG_MATH("Stopped profiling the method. ", elapsedTime, " [us] has passed.");
 	Push(elapsedTimeSpan);
@@ -332,12 +331,12 @@ Math::Statistics::ClassStats::~ClassStats()
 {
 }
 
-void Math::Statistics::ClassStats::StartProfiling(const std::string& methodName)
+void Math::Statistics::ClassStats::StartProfiling(bool isMeasureTimeEnabled, const std::string& methodName)
 {
 	CHECK_CONDITION_MATH(!methodName.empty(), Utility::Logging::ERR, "Cannot start profiling the method in class \"", m_className, "\". The method's name is empty.");
 	//DEBUG_LOG_MATH("Started profiling the function \"", m_className, "::", methodName, "\". ", m_profilingMethodsCount, " method(-s) within this class is/are currently being profiled.");
 	CHECK_CONDITION_RETURN_VOID_MATH(!m_methodsStats[methodName].IsProfiling(), Utility::Logging::ERR, "The method \"", methodName, "\" is already being profiled.");
-	m_methodsStats[methodName].StartProfiling(m_profilingMethodsCount > 0);
+	m_methodsStats[methodName].StartProfiling(isMeasureTimeEnabled, m_profilingMethodsCount > 0);
 	++m_profilingMethodsCount;
 }
 
@@ -374,7 +373,7 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		"\t" << classTotalTimeExcludingNestedCalls.ToString(Utility::Timing::NANOSECOND) << "\n";
 	LogTime("\tTotal time: ", classTotalTime);
 	LogTime("\tTotal time excluding nested calls: ", classTotalTimeExcludingNestedCalls);
-	DEBUG_LOG_MATH("\tApplication usage: ", classTotalTimeExcludingNestedCalls / applicationTimeSpan * 100, "\%");
+	DEBUG_LOG_MATH("\tApplication usage: ", classTotalTimeExcludingNestedCalls / applicationTimeSpan * 100, "%");
 
 	for (std::map<std::string, MethodStats>::const_iterator methodStatsItr = m_methodsStats.begin(); methodStatsItr != m_methodsStats.end(); ++methodStatsItr)
 	{
@@ -389,8 +388,8 @@ void Math::Statistics::ClassStats::PrintReport(const Utility::Timing::TimeSpan& 
 		Utility::Timing::TimeSpan meanTime = methodStatsItr->second.CalculateMean();
 		LogTime("\t\tAverage time: ", meanTime);
 		
-		DEBUG_LOG_MATH("\t\tClass usage: ", totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls * 100, "\%");
-		DEBUG_LOG_MATH("\t\tApplication usage: ", totalTimeIncludingNestedCalls / applicationTimeSpan * 100, "\%");
+		DEBUG_LOG_MATH("\t\tClass usage: ", totalTimeIncludingNestedCalls / classTotalTimeExcludingNestedCalls * 100, "%");
+		DEBUG_LOG_MATH("\t\tApplication usage: ", totalTimeIncludingNestedCalls / applicationTimeSpan * 100, "%");
 		
 		//INFO_LOG_MATH("\t\tMedian time: ", methodStatsItr->second.CalculateMedian(), " [us]");
 		std::string methodNameStr(methodStatsItr->first);

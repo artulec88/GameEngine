@@ -16,7 +16,7 @@
 
 #include "Rendering\Renderer.h"
 
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -87,7 +87,7 @@ namespace Game
 		Engine::MousePicker m_mousePicker;
 		Engine::MenuEntry* m_currentMenuEntry;
 		//Engine::QuitGameCommand m_quitGameCommand;
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

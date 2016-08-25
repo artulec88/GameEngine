@@ -14,7 +14,7 @@
 #include "Rendering\Renderer.h"
 
 #include "Math\Math.h"
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
@@ -87,7 +87,7 @@ namespace Game
 		Rendering::Color m_ambientSunNearHorizonColor;
 		Rendering::Color m_ambientNighttimeColor;
 		Rendering::Color m_ambientLightColor;
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 		/* ==================== Non-static member variables end ==================== */

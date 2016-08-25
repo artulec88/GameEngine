@@ -21,7 +21,7 @@ namespace MathTest
 
 	private:
 		void NestedMethod4();
-#ifdef CALCULATE_TEST_STATS
+#ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 	};
@@ -40,7 +40,7 @@ namespace MathTest
 
 	private:
 		void NestedMethod4();
-#ifdef CALCULATE_TEST_STATS
+#ifdef PROFILING_MATH_TEST_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif
 	};

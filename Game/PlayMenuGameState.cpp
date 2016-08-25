@@ -9,9 +9,7 @@
 #include "PlayGameState.h"
 #include "ResumeGameCommand.h"
 
-using namespace Game;
-
-PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize) :
+Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize) :
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.0f, 0.0f), 1.0f,
@@ -25,7 +23,7 @@ PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_currentMenuEntry(NULL)
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayMenuGameState"))
 #endif
 {
@@ -53,35 +51,35 @@ PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
 }
 
-PlayMenuGameState::~PlayMenuGameState(void)
+Game::PlayMenuGameState::~PlayMenuGameState(void)
 {
 }
 
-void PlayMenuGameState::Entered()
+void Game::PlayMenuGameState::Entered()
 {
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has been placed in the game state manager");
 }
 
-void PlayMenuGameState::Leaving()
+void Game::PlayMenuGameState::Leaving()
 {
 	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("PlayMenu game state is about to be removed from the game state manager");
 }
 
-void PlayMenuGameState::Obscuring()
+void Game::PlayMenuGameState::Obscuring()
 {
 	Engine::CoreEngine::GetCoreEngine()->PopInputContext();
 	INFO_LOG_GAME("Another game state is about to stack on top of PlayMenu game state");
 }
 
-void PlayMenuGameState::Revealed()
+void Game::PlayMenuGameState::Revealed()
 {
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PlayMenu game state has become the topmost game state in the game state manager's stack");
 }
 
-void PlayMenuGameState::Handle(Engine::Actions::Action action)
+void Game::PlayMenuGameState::Handle(Engine::Actions::Action action)
 {
 	switch (action)
 	{
@@ -110,17 +108,17 @@ void PlayMenuGameState::Handle(Engine::Actions::Action action)
 	}
 }
 
-void PlayMenuGameState::Handle(Engine::States::State state)
+void Game::PlayMenuGameState::Handle(Engine::States::State state)
 {
 }
 
-void PlayMenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
+void Game::PlayMenuGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 {
 }
 
-void PlayMenuGameState::DeselectAll()
+void Game::PlayMenuGameState::DeselectAll()
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	//// This function is supposed to apply the "non-selected" effects to all non-selected menu entries. However Effect class can only handle one attribute at a time.
 	//// It is not possible to modify many attributes using one Effect class instance. As a result only the last non-selected menu entry will have "non-selected" effects applied to it.
 	//for (int i = 0; i < m_currentMenuEntry->GetChildrenCount(); ++i)
@@ -137,7 +135,7 @@ void PlayMenuGameState::DeselectAll()
 	STOP_PROFILING_GAME("");
 }
 
-void PlayMenuGameState::SelectChild(int childIndex)
+void Game::PlayMenuGameState::SelectChild(int childIndex)
 {
 	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetSelectedMenuEntryIndex() != childIndex, Utility::DEBUG, "Trying to select the child which is already selected (", childIndex, ").");
 	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
@@ -154,9 +152,9 @@ void PlayMenuGameState::SelectChild(int childIndex)
 	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
-void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
+void Game::PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DELOCUST_LOG_GAME("PLAY MAIN MENU game state rendering");
 
 	renderer->BindAsRenderTarget();
@@ -165,7 +163,7 @@ void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 	STOP_PROFILING_GAME("");
 }
 
-//void PlayMenuGameState::MouseButtonEvent(int button, int action, int mods)
+//void Game::PlayMenuGameState::MouseButtonEvent(int button, int action, int mods)
 //{
 //	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
 //	{
@@ -180,7 +178,7 @@ void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 //	}
 //}
 
-//void PlayMenuGameState::MousePosEvent(double xPos, double yPos)
+//void Game::PlayMenuGameState::MousePosEvent(double xPos, double yPos)
 //{
 //	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetRenderer()->GetCurrentCamera();
 //	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
@@ -200,6 +198,6 @@ void PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 //	}
 //}
 
-//void PlayMenuGameState::ScrollEvent(double xOffset, double yOffset)
+//void Game::PlayMenuGameState::ScrollEvent(double xOffset, double yOffset)
 //{
 //}

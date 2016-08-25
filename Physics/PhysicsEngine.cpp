@@ -4,11 +4,11 @@
 #include "Utility\IConfig.h"
 
 Physics::PhysicsEngine::PhysicsEngine() :
-#ifdef CALCULATE_PHYSICS_STATS
+#ifdef PROFILING_PHYSICS_MODULE_ENABLED
 	m_classStats(STATS_STORAGE.GetClassStats("PhysicsEngine"))
 #endif
 {
-	START_PROFILING_PHYSICS("");
+	START_PROFILING_PHYSICS(true, "");
 	/* ==================== Initializing physics logger begin ==================== */
 	std::string loggingLevel = GET_CONFIG_VALUE_STR_PHYSICS("LoggingLevel", "Info");
 	Utility::Logging::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::Logging::INFO);

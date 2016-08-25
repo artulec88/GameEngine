@@ -65,7 +65,7 @@ Game::TestGameManager::TestGameManager() :
 	cameraCount(GET_CONFIG_VALUE_GAME("cameraCount", 3)),
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
 #endif
 {
@@ -334,7 +334,7 @@ Engine::GameState* Game::TestGameManager::GetPlayMainMenuGameState()
 void Game::TestGameManager::Load()
 {
 	NOTICE_LOG_GAME("Initalizing test game");
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
 	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
@@ -570,7 +570,7 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 
 void Game::TestGameManager::AddLights()
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	AddDirectionalLight(); // Adding directional light (if enabled)
 	if (pointLightCount > 0)
 	{
@@ -658,7 +658,7 @@ void Game::TestGameManager::AddSpotLights()
 
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
@@ -679,7 +679,7 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 
 void Game::TestGameManager::AddSkybox() const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
@@ -699,7 +699,7 @@ void Game::TestGameManager::AddSkybox() const
 
 void Game::TestGameManager::Update(Math::Real delta)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	//for (std::vector<Engine::ParticleGenerator>::iterator particleGeneratorItr = m_particleGenerators.begin(); particleGeneratorItr != m_particleGenerators.end(); ++particleGeneratorItr)
 	//{
 	//	particleGeneratorItr->Update(delta);

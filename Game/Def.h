@@ -13,16 +13,16 @@
 #define DEBUG_LOG_GAME(...) DEBUG_LOG("Game", ##__VA_ARGS__)
 #define DELOCUST_LOG_GAME(...) DELOCUST_LOG("Game", ##__VA_ARGS__)
 
-#define CALCULATE_GAME_STATS
-#ifdef CALCULATE_GAME_STATS
-#define START_PROFILING_STATIC_GAME(param) START_PROFILING_STATIC("Game", param)
+#define PROFILING_GAME_MODULE_ENABLED
+#ifdef PROFILING_GAME_MODULE_ENABLED
+#define START_PROFILING_STATIC_GAME(measureTime, param) START_PROFILING_STATIC("Game", measureTime, param)
 #define STOP_PROFILING_STATIC_GAME(param) STOP_PROFILING_STATIC("Game", param)
-#define START_PROFILING_GAME(param) START_PROFILING("Game", param)
+#define START_PROFILING_GAME(measureTime, param) START_PROFILING("Game", measureTime, param)
 #define STOP_PROFILING_GAME(param) STOP_PROFILING("Game", param)
 #else
-#define START_PROFILING_STATIC_GAME(param)
+#define START_PROFILING_STATIC_GAME(measureTime, param)
 #define STOP_PROFILING_STATIC_GAME(param)
-#define START_PROFILING_GAME(param)
+#define START_PROFILING_GAME(measureTime, param)
 #define STOP_PROFILING_GAME(param)
 #endif
 

@@ -41,7 +41,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 		GET_CONFIG_VALUE_GAME("ambientNighttimeColorGreen", 0.02f),
 		GET_CONFIG_VALUE_GAME("ambientNighttimeColorBlue", 0.02f)),
 	m_ambientLightColor(m_ambientDaytimeColor)
-#ifdef CALCULATE_GAME_STATS
+#ifdef PROFILING_GAME_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
 {
@@ -53,7 +53,7 @@ Game::PlayGameState::~PlayGameState(void)
 
 void Game::PlayGameState::Entered()
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
 	//tthread::thread t(GameManager::Load, GameManager::GetGameManager());
@@ -91,7 +91,7 @@ void Game::PlayGameState::Revealed()
 
 void Game::PlayGameState::Handle(Engine::Actions::Action action)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	switch (action)
 	{
 	case Engine::Actions::SHOW_PLAY_MENU:
@@ -113,7 +113,7 @@ void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 
 void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	m_gameManager->GetRootGameNode().MouseButtonEvent(button, action, mods);
 	//switch (action)
 	//{
@@ -136,7 +136,7 @@ void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 
 void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Cursor position = (", xPos, ", ", yPos, ")");
 
 	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
@@ -179,7 +179,7 @@ void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 
 void Game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	m_gameManager->GetRootGameNode().ScrollEvent(xOffset, yOffset);
 	STOP_PROFILING_GAME("");
 }
@@ -188,7 +188,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 {
 	// TODO: Updating the state of the rendering engine (e.g. the values of some of its member variables)
 	// in this function is not good. This should be done in the Update function (or maybe not?).
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_EXIT_GAME(renderer != NULL, Utility::Logging::CRITICAL, "Cannot render the game. The rendering engine is NULL.");
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
@@ -261,7 +261,7 @@ void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* render
 
 void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	size_t lightsCount = m_gameManager->GetDirectionalLightsCount() + m_gameManager->GetSpotLightsCount();
 	for (size_t i = 0; i < lightsCount; ++i)
 	{
@@ -291,7 +291,7 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 
 void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Skybox rendering started");
 
 	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
@@ -324,7 +324,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	// TODO: For now we only support one water node (you can see that in the "distance" calculation). In the future there might be more.
 
@@ -337,7 +337,7 @@ void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) con
 
 void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
@@ -388,7 +388,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 
 void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	
 	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
@@ -430,7 +430,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 
 void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
@@ -452,7 +452,7 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering billboards started");
 	//renderer->SetDepthTest(false);
 	renderer->SetBlendingEnabled(true);
@@ -472,7 +472,7 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 
 void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
 	for (std::vector<Engine::ParticleGenerator*>::const_iterator particleGeneratorItr = m_gameManager->GetParticleGenerators().begin(); particleGeneratorItr != m_gameManager->GetParticleGenerators().end(); ++particleGeneratorItr)
 	{
@@ -487,7 +487,7 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::Update(Math::Real elapsedTime)
 {
-	START_PROFILING_GAME("");
+	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
 	Engine::GameManager::GetGameManager()->GetRootGameNode().Update(elapsedTime);
 
@@ -503,7 +503,7 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 
 //void Game::PlayGameState::AdjustAmbientLightAccordingToCurrentTime()
 //{
-//	START_PROFILING_GAME("");
+//	START_PROFILING_GAME(true, "");
 //	switch (dayTime)
 //	{
 //	case Utility::Timing::NIGHT:
