@@ -6,9 +6,9 @@
 #include "Math\RandomGeneratorFactory.h"
 #include "Rendering\Texture.h"
 #include "Rendering\Particle.h"
-#include <list>
 
-#define MAX_PARTICLES_COUNT 10000
+#include <list>
+#include <array>
 
 namespace Engine
 {
@@ -17,18 +17,20 @@ namespace Engine
 		//typedef std::vector<Rendering::Particle> ParticleContainer;
 		//typedef Rendering::Particle ParticleContainer;
 	/* ==================== Static variables and functions begin ==================== */
+	protected:
+		static constexpr int MAX_PARTICLES_COUNT = 10000;
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
 		ENGINE_API virtual ~ParticleGenerator(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API const Rendering::ParticleTexture* GetTexture() const { return m_particleTexture; }
-		ENGINE_API const Rendering::Particle* GetParticles() const { return &m_particles[0]; }
+		ENGINE_API const Rendering::Particle* GetParticles() const { return m_particles.data(); }
 		ENGINE_API int GetAliveParticlesCount() const { return m_aliveParticlesCount; }
 		/// <summary>
 		/// Sorts particles according to the distance to the origin point.
@@ -38,7 +40,7 @@ namespace Engine
 		/// </returns>
 		ENGINE_API void SortParticles(const Math::Vector3D& originPosition /* cameraPosition */);
 
-		ENGINE_API virtual void Update(Math::Real deltaTime) = 0;
+		ENGINE_API void Update(Math::Real deltaTime);
 		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime) = 0;
 		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition) = 0;
 	protected:
@@ -63,14 +65,15 @@ namespace Engine
 				}
 			}
 			//WARNING_LOG_ENGINE("Dead particle index = ", m_lastRevivedParticleIndex);
+			m_lastRevivedParticleIndex = 0;
 			return 0; // all particles are alive, override the first one
 		}
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Rendering::ParticleTexture* m_particleTexture;
-		Rendering::Particle m_particles[MAX_PARTICLES_COUNT];
+		std::array<Rendering::Particle, MAX_PARTICLES_COUNT> m_particles;
 		Math::Real m_particleLifeSpanLimit;
 
 		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
@@ -79,24 +82,23 @@ namespace Engine
 		mutable int m_lastRevivedParticleIndex;
 
 		const Math::Random::RandomGenerator& m_randomGenerator;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticleGenerator */
 
 	class FireParticleGenerator : public ParticleGenerator
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
 		ENGINE_API virtual ~FireParticleGenerator(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
 		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime);
 		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
 		{
@@ -109,32 +111,31 @@ namespace Engine
 			velocity *= m_particleSpeed;
 			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
 		}
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Math::Real m_particleSpeed;
 		Math::Real m_particleGravityComplient;
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FireParticleGenerator */
 
 	class FreeFallParticleGenerator : public ParticleGenerator
 	{
-	/* ==================== Static variables and functions begin ==================== */
-	/* ==================== Static variables and functions end ==================== */
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
 
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
 		ENGINE_API virtual ~FreeFallParticleGenerator(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Update(Math::Real deltaTime);
 		ENGINE_API virtual void GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime);
 		ENGINE_API virtual inline void EmitParticle(const Math::Vector3D& initialPosition)
 		{
@@ -147,15 +148,15 @@ namespace Engine
 			velocity *= m_particleSpeed;
 			m_particles[FindDeadParticleIndex()].Revive(initialPosition, velocity, m_particleGravityComplient, m_particleLifeSpanLimit, m_particleRotation, m_particleScale);
 		}
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Math::Real m_particleSpeed;
 		Math::Real m_particleGravityComplient;
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class FreeFallParticleGenerator */
 
 } /* end namespace Engine */

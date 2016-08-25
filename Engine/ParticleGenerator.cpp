@@ -3,8 +3,6 @@
 #include <algorithm>
 
 /* ==================== ParticleGenerator class begin ==================== */
-///* static */ const int Engine::ParticleGenerator::MAX_PARTICLES_COUNT = 10000;
-
 Engine::ParticleGenerator::ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
@@ -24,36 +22,36 @@ Engine::ParticleGenerator::~ParticleGenerator()
 
 void Engine::ParticleGenerator::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
 {
-	std::vector<Math::Real> originDistances;
-	originDistances.reserve(MAX_PARTICLES_COUNT);
+	/* ==================== Small test whether sorting particles work fine begin ==================== */
+	//std::array<Rendering::Particle, 5> testParticles;
+	//testParticles[1].Revive(Math::Vector3D(1.0f, 1.0f, 1.0f), Math::Vector3D(), 0.0f, 5.0f, Math::Angle(3.0f), 1.0f);
+	//testParticles[3].Revive(Math::Vector3D(2.0f, 2.0f, -2.0f), Math::Vector3D(), 0.0f, 5.0f, Math::Angle(3.0f), 1.0f);
+	//CRITICAL_LOG_ENGINE("Origin point = ", originPosition.ToString());
+	//for (size_t i = 0; i < testParticles.size(); ++i)
+	//{
+	//	CRITICAL_LOG_ENGINE("Test particle[",  i, "] = ", testParticles[i].GetPosition().ToString());
+	//}
+	//std::sort(testParticles.begin(), testParticles.end(), Rendering::ParticleComparator(originPosition));
+	//for (size_t i = 0; i < testParticles.size(); ++i)
+	//{
+	//	CRITICAL_LOG_ENGINE("Test particle[", i, "] = ", testParticles[i].GetPosition().ToString());
+	//}
+	/* ==================== Small test whether sorting particles work fine end ==================== */
+
+	std::sort(m_particles.begin(), m_particles.end(), Rendering::ParticleComparator(originPosition));
+}
+
+void Engine::ParticleGenerator::Update(Math::Real deltaTime)
+{
+	m_currentTimer += deltaTime;
+	m_aliveParticlesCount = 0;
 	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
 	{
-		if (m_particles[i].IsAlive())
+		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
 		{
-			originDistances.push_back((originPosition - m_particles[i].GetPosition()).LengthSquared());
-		}
-		else
-		{
-			originDistances.push_back(-999999999999.9f); // for particles that are dead we want to store them at the end of the particles array.
+			++m_aliveParticlesCount;
 		}
 	}
-
-	for (size_t i = 1; i < MAX_PARTICLES_COUNT; ++i)
-	{
-		Math::Real key = originDistances[i];
-		int j = i - 1;
-		while ((j >= 0) && (key > originDistances[j]))
-		{
-			std::swap(originDistances[j + 1], originDistances[j]);
-			std::swap(m_particles[j + 1], m_particles[j]);
-			--j;
-		}
-	}
-
-	//for (int i = 0; i < m_aliveParticlesCount; ++i)
-	//{
-	//	ERROR_LOG_ENGINE("particle[", i, "] = ", originDistances[i]);
-	//}
 }
 /* ==================== ParticleGenerator class end ==================== */
 
@@ -71,19 +69,6 @@ Engine::FireParticleGenerator::FireParticleGenerator(Rendering::ParticleTexture*
 
 Engine::FireParticleGenerator::~FireParticleGenerator()
 {
-}
-
-void Engine::FireParticleGenerator::Update(Math::Real deltaTime)
-{
-	m_currentTimer += deltaTime;
-	m_aliveParticlesCount = 0;
-	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
-	{
-		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
-		{
-			++m_aliveParticlesCount;
-		}
-	}
 }
 
 void Engine::FireParticleGenerator::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
@@ -110,19 +95,6 @@ Engine::FreeFallParticleGenerator::FreeFallParticleGenerator(Rendering::Particle
 
 Engine::FreeFallParticleGenerator::~FreeFallParticleGenerator()
 {
-}
-
-void Engine::FreeFallParticleGenerator::Update(Math::Real deltaTime)
-{
-	m_currentTimer += deltaTime;
-	m_aliveParticlesCount = 0;
-	for (int i = 0; i < MAX_PARTICLES_COUNT; ++i)
-	{
-		if (m_particles[i].IsAlive() && m_particles[i].Update(deltaTime))
-		{
-			++m_aliveParticlesCount;
-		}
-	}
 }
 
 void Engine::FreeFallParticleGenerator::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)

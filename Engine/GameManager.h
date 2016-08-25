@@ -15,7 +15,6 @@
 
 #include "EffectFactory.h"
 #include "Rendering\Mesh.h"
-#include "Rendering\Particle.h"
 #include "Rendering\Shader.h"
 #include "Rendering\Material.h"
 #include "Rendering\BaseLight.h"
