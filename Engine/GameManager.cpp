@@ -31,11 +31,7 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 
 /* static */ void Engine::GameManager::LoadGame(GameManager* gameManager)
 {
-	if (gameManager == NULL)
-	{
-		EMERGENCY_LOG_ENGINE("Cannot load the game. Passed parameter is not a game manager object.");
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT_ENGINE(gameManager != NULL, Utility::Logging::CRITICAL, "Cannot load the game. Specified game manager is NULL.");
 	glfwMakeContextCurrent(CoreEngine::GetCoreEngine()->GetThreadWindow());
 	Engine::CoreEngine::GetCoreEngine()->InitGlew(); // glew init
 	gameManager->Load();
@@ -55,10 +51,6 @@ Engine::GameManager::GameManager() :
 	m_isGameLoaded(false),
 	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
 	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
-	m_directionalLightsCount(0),
-	m_lights(),
-	m_directionalAndSpotLights(),
-	m_pointLights(),
 	m_cameras(),
 	m_currentCameraIndex(0),
 	m_emptyGameCommand(),
@@ -165,40 +157,6 @@ void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& g
 	//m_texts[guiText.GetFont()].push_back(guiText);
 }
 
-void Engine::GameManager::AddLight(Rendering::Lighting::BaseLight* light)
-{
-	Rendering::Lighting::DirectionalLight* directionalLight = dynamic_cast<Rendering::Lighting::DirectionalLight*>(light);
-	if (directionalLight != NULL)
-	{
-		INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight->GetIntensity(), " is being added to directional / spot lights vector");
-		++m_directionalLightsCount;
-		m_directionalAndSpotLights.push_back(directionalLight);
-	}
-	else
-	{
-		Rendering::Lighting::SpotLight* spotLight = dynamic_cast<Rendering::Lighting::SpotLight*>(light);
-		if (spotLight != NULL)
-		{
-			INFO_LOG_RENDERING("Spot light with intensity = ", spotLight->GetIntensity(), " is being added to directional / spot lights vector");
-			m_directionalAndSpotLights.push_back(spotLight);
-		}
-		else
-		{
-			Rendering::Lighting::PointLight* pointLight = dynamic_cast<Rendering::Lighting::PointLight*>(light);
-			if (pointLight != NULL)
-			{
-				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
-				m_pointLights.push_back(pointLight);
-			}
-			else
-			{
-				EMERGENCY_LOG_RENDERING("Adding the light of unknown type. It is neither a directional nor spot nor point light.");
-			}
-		}
-	}
-	m_lights.push_back(light);
-}
-
 void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)
 {
 	//CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);
@@ -297,83 +255,6 @@ void Engine::GameManager::RequestGameQuit() const
 const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontTypes::FontType fontType)
 {
 	return m_fontFactory.GetFont(fontType);
-}
-
-const Rendering::Shader& Engine::GameManager::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
-{
-	START_PROFILING_ENGINE(true, "");
-	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	STOP_PROFILING_ENGINE("");
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT);
-}
-
-const Rendering::Shader& Engine::GameManager::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
-{
-	START_PROFILING_ENGINE(true, "");
-	if (fogInfo.IsEnabled())
-	{
-		//DEBUG_LOG_RENDERING("Fog fall-off type: ", m_fogFallOffType, ". Fog distance calculation type: ", m_fogCalculationType);
-		// TODO: A very ugly way. If we decide to add more fog fall off or calculation types then we will surely have a big problem in here.
-		if (fogInfo.GetFallOffType() == Rendering::FogEffect::LINEAR)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
-			}
-		}
-		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
-		{
-			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
-			}
-			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
-			{
-				STOP_PROFILING_ENGINE("");
-				return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
-			}
-		}
-	}
-	STOP_PROFILING_ENGINE("");
-	return m_shaderFactory.GetShader(ShaderTypes::AMBIENT_TERRAIN);
 }
 
 void Engine::GameManager::AddCamera(Rendering::Camera* camera)

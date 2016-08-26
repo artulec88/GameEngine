@@ -26,13 +26,15 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			/// <summary>The constructor.</summary>
-			/// <param name="transform">The transform of the light.</param>
-			/// <param name="color">The color of the light.</param>
-			/// <param name="intensity">The intensity of the light.</param>
-			/// <remarks><code>explicit</code> keyword is used to prevent implicit conversions between <code>Color</code> objects and <code>BaseLight</code>.</remarks>
-			RENDERING_API BaseLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Shader& shader,
-				const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			/// <summary>
+			/// Base light constructor.
+			/// </summary>
+			/// <param name="shader">The shader used for standard meshes.</param>
+			/// <param name="terrainShader">The shader used specifically for the terrain meshes.</param>
+			/// <param name="noShadowShader">The shader used for standard meshes when shadow-casting is disabled.</param>
+			/// <param name="noShadowTerrainShader">The shader used for terrain meshes when shadow-casting is disabled.</param>
+			RENDERING_API BaseLight(const Shader& shader, const Shader& terrainShader,
+				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 
 			/// <summary>The destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
@@ -62,12 +64,14 @@ namespace Rendering
 			Math::Transform& GetTransform() { return m_transform; }
 			const Math::Transform& GetTransform() const { return m_transform; }
 
+			RENDERING_API void SetTransform(const Math::Transform& transform) { m_transform = transform; }
 			RENDERING_API void SetColor(const Color& color) { m_color = color; }
 			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
-			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
-			void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+			RENDERING_API void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
 				Math::Real shadowSoftness = REAL_ONE, Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 				Math::Real minVariance = static_cast<Math::Real>(0.00002f));
+			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
+			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 			virtual void InitializeTweakBar(TwBar* lightsBar);
@@ -77,7 +81,7 @@ namespace Rendering
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			/// <summary> The base light transform. </summary>
-			Math::Transform& m_transform;
+			Math::Transform m_transform;
 
 			/// <summary>The light color.</summary>
 			Color m_color;
@@ -86,7 +90,7 @@ namespace Rendering
 			Math::Real m_intensity;
 
 			/// <summary>The default shader for the light.</summary>
-			const Shader& m_shader; // TODO: Assuming we have 10 point lights then we have also 10 instances of the same Shader object. It would be better to store just a reference or a pointer to a globally accessible shader (e.g. ShaderFactory?).
+			const Shader& m_shader;
 
 			/// <summary>The terrain shader for the light.</summary>
 			const Shader& m_terrainShader;

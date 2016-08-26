@@ -9,7 +9,7 @@
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
-#define PROFILING_ENABLED
+//#define PROFILING_ENABLED
 
 #ifdef PROFILING_ENABLED
 #define START_PROFILING_STATIC(moduleName, measureTime, param) do { s_classStats.StartProfiling(measureTime, __FUNCTION__##param); } while (0)

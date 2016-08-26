@@ -6,17 +6,17 @@
 #include "PlayMenuGameState.h"
 #include "LoadGameState.h"
 
+#include "Engine\GameNodeBuilder.h"
 #include "Engine\CoreEngine.h"
-#include "Rendering\Camera.h"
 #include "Engine\BillboardRendererComponent.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
 #include "Engine\ParticleGeneratorComponent.h"
+
 #include "Rendering\Color.h"
-#include "Engine\GameNodeBuilder.h"
-#include "Utility\BuilderDirector.h"
+#include "Rendering\Camera.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -27,6 +27,7 @@
 #include "Physics\PhysicsObject.h"
 
 //#include "Utility\FileNotFoundException.h" // TODO: Remove in the future when not needed
+#include "Utility\BuilderDirector.h"
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
@@ -60,8 +61,6 @@ Game::TestGameManager::TestGameManager() :
 #endif
 	HUMAN_NODES_COUNT(2),
 	humanNodes(NULL),
-	pointLightCount(GET_CONFIG_VALUE_GAME("pointLightsCount", 1)),
-	spotLightCount(GET_CONFIG_VALUE_GAME("spotLightsCount", 1)),
 	cameraCount(GET_CONFIG_VALUE_GAME("cameraCount", 3)),
 	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
@@ -518,8 +517,6 @@ void Game::TestGameManager::Load()
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
-	AddLights(); // Adding all kinds of light (directional, point, spot)
-
 	AddCameras(playerNode); // Adding cameras
 
 	AddSkybox(); // Adding skybox
@@ -566,94 +563,6 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 	Engine::GameNode* billboardsRenderer = new Engine::GameNode();
 	billboardsRenderer->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
 	AddBillboardsRenderer(billboardsRenderer);
-}
-
-void Game::TestGameManager::AddLights()
-{
-	START_PROFILING_GAME(true, "");
-	AddDirectionalLight(); // Adding directional light (if enabled)
-	if (pointLightCount > 0)
-	{
-		DEBUG_LOG_GAME("Creating ", pointLightCount, " point lights");
-		AddPointLights();
-		NOTICE_LOG_GAME(pointLightCount, " point lights created");
-	}
-	else
-	{
-		NOTICE_LOG_GAME("Point lights disabled");
-	}
-	if (spotLightCount > 0)
-	{
-		DEBUG_LOG_GAME("Creating ", spotLightCount, " spot lights");
-		AddSpotLights();
-		NOTICE_LOG_GAME(spotLightCount, " spot lights created");
-	}
-	else
-	{
-		NOTICE_LOG_GAME("Spot lights disabled");
-	}
-	STOP_PROFILING_GAME("");
-}
-
-void Game::TestGameManager::AddDirectionalLight()
-{
-	// TODO: For now we only check if directionalLightsCount is zero or not.
-	// In the future there might be many directional lights enabled (?)
-	int directionalLightsCount = GET_CONFIG_VALUE_GAME("directionalLightsCount", 1);
-	if (directionalLightsCount == 0)
-	{
-		NOTICE_LOG_GAME("Directional lights disabled");
-		return;
-	}
-	NOTICE_LOG_GAME("Directional lights enabled");
-
-	Engine::DirectionalLightBuilder directionalLightBuilder(this);
-	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(directionalLightBuilder);
-	lightBuilderDirector.Construct();
-	Engine::GameNode* directionalLightNode = directionalLightBuilder.Get();
-	AddToSceneRoot(directionalLightNode);
-}
-
-void Game::TestGameManager::AddPointLights()
-{
-	if (pointLightCount < 1)
-	{
-		return;
-	}
-
-	Engine::PointLightBuilder pointLightBuilder(this);
-	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(pointLightBuilder);
-	for (int i = 0; i < pointLightCount; ++i)
-	{
-		pointLightBuilder.SetLightIndex(i);
-		lightBuilderDirector.Construct();
-		Engine::GameNode* pointLightNode = pointLightBuilder.Get();
-		AddToSceneRoot(pointLightNode);
-
-		//GameNode* bulbNode = new GameNode();
-		//bulbNode->AddComponent(new MeshRenderer(new Mesh("Bulb\\Bulb.obj") /* new Mesh("PointLight.obj") */, new Material(new Texture("PointLight.png"), 1.0f, 8.0f)));
-		//bulbNode->GetTransform().SetPos(REAL_ZERO, REAL_ONE, REAL_ZERO);
-		//bulbNode->GetTransform().SetScale(5.0f);
-		//pointLightNode->AddChild(bulbNode);
-	}
-}
-
-void Game::TestGameManager::AddSpotLights()
-{
-	if (spotLightCount < 1)
-	{
-		return;
-	}
-
-	Engine::SpotLightBuilder spotLightBuilder(this);
-	Utility::BuilderDirector<Engine::GameNode> lightBuilderDirector(spotLightBuilder);
-	for (int i = 0; i < spotLightCount; ++i)
-	{
-		spotLightBuilder.SetLightIndex(i);
-		lightBuilderDirector.Construct();
-		Engine::GameNode* spotLightNode = spotLightBuilder.Get();
-		AddToSceneRoot(spotLightNode);
-	}
 }
 
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)

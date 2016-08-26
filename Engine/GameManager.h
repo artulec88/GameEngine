@@ -141,53 +141,7 @@ namespace Engine
 			return m_textureFactory.GetTexture(textureID);
 		}
 
-		ENGINE_API inline const Rendering::Shader& GetShader(ShaderTypes::ShaderType shaderType) const
-		{
-			return m_shaderFactory.GetShader(shaderType);
-		}
-		ENGINE_API inline const Rendering::Shader& GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		ENGINE_API inline const Rendering::Shader& GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		ENGINE_API inline const Rendering::Shader& GetShadowMapShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP);
-		}
-		ENGINE_API inline const Rendering::Shader& GetSkyboxShader() const
-		{
-			return m_shaderFactory.GetShader(ShaderTypes::SKYBOX); // TODO: In some cases we should return ShaderTypes::SKYBOX_PROCEDURAL
-		}
-		ENGINE_API inline const Rendering::Shader& GetWaterShader(Rendering::Renderer* renderer) const
-		{
-			return ((GetDirectionalLightsCount() > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
-				m_shaderFactory.GetShader(ShaderTypes::WATER) :
-				m_shaderFactory.GetShader(ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
-		}
-		ENGINE_API inline const Rendering::Shader& GetBillboardShader() const { return m_shaderFactory.GetShader(ShaderTypes::BILLBOARD); }
-		ENGINE_API inline const Rendering::Shader& GetParticleShader() const { return m_shaderFactory.GetShader(ShaderTypes::PARTICLES); }
-		ENGINE_API inline const Rendering::Shader& GetGuiTextShader() const { return m_shaderFactory.GetShader(ShaderTypes::TEXT); }
-		ENGINE_API inline const Rendering::Shader& GetGuiShader() const { return m_shaderFactory.GetShader(ShaderTypes::GUI); }
-
-		ENGINE_API Rendering::Lighting::BaseLight* GetLight(unsigned int index) const
-		{
-			// TODO: Range check?
-			return m_directionalAndSpotLights[index];
-		}
-		ENGINE_API Rendering::Lighting::PointLight* GetPointLight(unsigned int index) const
-		{
-			// TODO: Range check?
-			return m_pointLights[index];
-		}
-		ENGINE_API inline size_t GetDirectionalLightsCount() const
-		{
-			return m_directionalLightsCount;
-		}
-		ENGINE_API inline size_t GetSpotLightsCount() const
-		{
-			return m_directionalAndSpotLights.size() - m_directionalLightsCount;
-		}
-		ENGINE_API inline size_t GetPointLightsCount() const
-		{
-			return m_pointLights.size();
-		}
+		ENGINE_API inline const ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
 
 		Rendering::Camera* GetCurrentCamera() { return m_cameras[m_currentCameraIndex]; }
 		unsigned int GetCurrentCameraIndex() const { return m_currentCameraIndex; }
@@ -196,7 +150,6 @@ namespace Engine
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 	public:
-		ENGINE_API void AddLight(Rendering::Lighting::BaseLight* light);
 		ENGINE_API void AddTerrainNode(GameNode* terrainNode);
 		ENGINE_API void AddWaterNode(GameNode* waterNode);
 		ENGINE_API void AddBillboardsRenderer(GameNode* billboardsRenderer);
@@ -227,16 +180,6 @@ namespace Engine
 		const EmptyGameCommand m_emptyGameCommand;
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//Rendering::Effects::EffectFactory m_effectFactory;
-
-		/// <summary> The number of directional lights currently being used in the game. </summary>
-		size_t m_directionalLightsCount;
-		/// <summary> The vector of all lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_lights;
-		/// <summary> The vector of directional and spot lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_directionalAndSpotLights;
-		/// <summary> The vector of point lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::PointLight*> m_pointLights;
-		//std::vector<Lighting::SpotLight*> m_spotLights;
 
 		std::vector<Rendering::Camera*> m_cameras;
 		unsigned int m_currentCameraIndex;

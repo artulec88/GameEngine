@@ -16,13 +16,18 @@ namespace Math
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Transform constructor. </summary>
 		MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), const Quaternion& rot = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Real scale = REAL_ONE);
 
+		/// <summary> Transform copy constructor. </summary>
 		MATH_API Transform(const Transform& transform);
+		/// <summary> Transform move constructor. </summary>
 		MATH_API Transform(Transform&& transform);
 
-		MATH_API Transform& operator=(const Transform& transform) = delete;
-		MATH_API Transform& operator=(Transform&& transform) = delete;
+		/// <summary> Transform copy assignment operator. </summary>
+		MATH_API Transform& operator=(const Transform& transform);
+		/// <summary> Transform move assignment operator. </summary>
+		MATH_API Transform& operator=(Transform&& transform);
 
 		MATH_API ~Transform();
 		/* ==================== Constructors and destructors end ==================== */

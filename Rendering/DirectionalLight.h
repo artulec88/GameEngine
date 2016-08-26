@@ -25,9 +25,8 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API DirectionalLight(Math::Transform& transform, const Color& color, Math::Real intensity, Math::Real halfShadowArea,
-				int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
-				const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API DirectionalLight(const Shader& shader, const Shader& terrainShader,
+				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 			RENDERING_API virtual ~DirectionalLight(void);
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -38,6 +37,9 @@ namespace Rendering {
 			virtual bool IsEnabled() const;
 
 			virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+
+			RENDERING_API void SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
+				Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 
 			std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */

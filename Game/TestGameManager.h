@@ -76,10 +76,6 @@ namespace Game
 #endif
 	private:
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
-		void AddLights();
-		void AddDirectionalLight();
-		void AddPointLights();
-		void AddSpotLights();
 		void AddCameras(Engine::GameNode* entityToFollow);
 		void AddSkybox() const;
 		//void AddStaticEffects();
@@ -130,8 +126,6 @@ namespace Game
 
 		const int HUMAN_NODES_COUNT;
 		Engine::GameNode** humanNodes;
-		const int pointLightCount;
-		const int spotLightCount;
 		const int cameraCount;
 		Engine::GameNode** cameraNodes;
 		bool m_heightMapCalculationEnabled;

@@ -5,13 +5,12 @@
 
 /* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
 
-Rendering::Lighting::PointLight::PointLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, const Rendering::Attenuation& attenuation,
-	const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
-	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
-	m_attenuation(attenuation)
+Rendering::Lighting::PointLight::PointLight(const Shader& shader, const Shader& terrainShader,
+	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
+	BaseLight(shader, terrainShader, noShadowShader, noShadowTerrainShader),
+	m_attenuation(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+	m_range(REAL_ZERO)
 {
-	CalculateRange();
-	
 	// Beware of using new operator in the constructor (See e.g. http://herbsutter.com/2008/07/25/constructor-exceptions-in-c-c-and-java/)
 }
 
@@ -21,6 +20,7 @@ Rendering::Lighting::PointLight::~PointLight(void)
 
 void Rendering::Lighting::PointLight::CalculateRange()
 {
+	// TODO: If exponent equals 0.0 then we will divide by zero at the end of this function.
 	Math::Real a = m_attenuation.GetExponent();
 	Math::Real b = m_attenuation.GetLinear();
 

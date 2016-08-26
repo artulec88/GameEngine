@@ -19,20 +19,23 @@ namespace Rendering
 		/// <param name="constant"> Constant attribute of attenuation </param>
 		/// <param name="linear"> Linear attribute of attenuation </param>
 		/// <param name="exponent"> Exponent attribute of attenuation </param>
-		RENDERING_API Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) :
+		RENDERING_API explicit Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) :
 			m_constant(constant),
 			m_linear(linear),
 			m_exponent(exponent)
 		{
 		}
 
-		RENDERING_API Attenuation(const Attenuation& attenuation) : // copy constructor
+		/// <summary> Attenuation copy constructor. </summary>
+		RENDERING_API Attenuation(const Attenuation& attenuation) :
 			m_constant(attenuation.m_constant),
 			m_linear(attenuation.m_linear),
 			m_exponent(attenuation.m_exponent)
 		{
 		}
-		RENDERING_API Attenuation(Attenuation&& attenuation) : // move constructor
+		
+		/// <summary> Attenuation move constructor. </summary>
+		RENDERING_API Attenuation(Attenuation&& attenuation) :
 			m_constant(std::move(attenuation.m_constant)),
 			m_linear(std::move(attenuation.m_linear)),
 			m_exponent(std::move(attenuation.m_exponent))
@@ -42,6 +45,22 @@ namespace Rendering
 		/// <summary> The destructor </summary>
 		RENDERING_API ~Attenuation(void)
 		{
+		}
+
+		RENDERING_API Attenuation& operator=(const Attenuation& attenuation)
+		{
+			m_constant = attenuation.m_constant;
+			m_linear = attenuation.m_linear;
+			m_exponent = attenuation.m_exponent;
+			return *this;
+		}
+
+		RENDERING_API Attenuation& operator=(Attenuation&& attenuation)
+		{
+			m_constant = std::move(attenuation.m_constant);
+			m_linear = std::move(attenuation.m_linear);
+			m_exponent = std::move(attenuation.m_exponent);
+			return *this;
 		}
 		/* ==================== Constructors and destructors end ==================== */
 

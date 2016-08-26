@@ -22,12 +22,18 @@
 #include <string>
 
 #define DRAW_GAME_TIME
+#define SIMULATE_SUN_BEHAVIOR // TODO: Move all #define's to one place
 
 namespace Game
 {
 
 	class PlayGameState : public Engine::GameState, public Engine::Input::IInputableMouse, public Engine::IUpdateable
 	{
+		/* ==================== Static variables and functions begin ==================== */
+	private:
+		static constexpr Math::Real TROPIC_OF_CANCER_SINUS = static_cast<Math::Real>(0.39794863131);
+		/* ==================== Static variables and functions end ==================== */
+
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName);
@@ -50,6 +56,20 @@ namespace Game
 		virtual void Render(Rendering::Renderer* renderer) const;
 		virtual void Update(Math::Real elapsedTime);
 	private:
+		void AddLights();
+		void AddDirectionalLight();
+		void AddPointLights();
+		void AddSpotLights();
+
+		const Rendering::Shader& GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		const Rendering::Shader& GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		const Rendering::Shader& GetWaterShader(Rendering::Renderer* renderer) const
+		{
+			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
+				m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::WATER) :
+				m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
+		}
+
 		void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;
 		void RenderSceneWithPointLights(Rendering::Renderer* renderer) const;
 		void RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const;
@@ -69,6 +89,19 @@ namespace Game
 		void RenderParticles(Rendering::Renderer* renderer) const;
 
 		//void AdjustAmbientLightAccordingToCurrentTime();
+
+		inline int GetSpotLightsCount() const
+		{
+			return static_cast<int>(m_directionalAndSpotLights.size()) - m_directionalLightsCount;
+		}
+
+		/// <summary>
+		/// Calculates the elevation and azimuth angles for the directional light (sun).
+		/// </summary>
+		/// <remarks>
+		/// See http://pveducation.org/pvcdrom/properties-of-sunlight/sun-position-calculator for details.
+		/// </remarks>
+		void CalculateSunElevationAndAzimuth();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -87,6 +120,17 @@ namespace Game
 		Rendering::Color m_ambientSunNearHorizonColor;
 		Rendering::Color m_ambientNighttimeColor;
 		Rendering::Color m_ambientLightColor;
+
+		/// <summary> The number of directional lights currently being used in the game. </summary>
+		int m_directionalLightsCount;
+		/// <summary> The vector of all lights that are used by the game engine. </summary>
+		std::vector<Rendering::Lighting::BaseLight*> m_lights;
+		/// <summary> The vector of directional and spot lights that are used by the game engine. </summary>
+		std::vector<Rendering::Lighting::BaseLight*> m_directionalAndSpotLights;
+		/// <summary> The vector of point lights that are used by the game engine. </summary>
+		std::vector<Rendering::Lighting::PointLight*> m_pointLights;
+		//std::vector<Lighting::SpotLight*> m_spotLights;
+
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif

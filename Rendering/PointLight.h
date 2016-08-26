@@ -21,8 +21,8 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API PointLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Attenuation& attenuation,
-				const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API PointLight(const Shader& shader, const Shader& terrainShader,
+				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 			RENDERING_API virtual ~PointLight(void);
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -31,7 +31,14 @@ namespace Rendering {
 			Attenuation GetAttenuation() const { return m_attenuation; };
 			Math::Real GetRange() const { return m_range; };
 			virtual bool IsEnabled() const;
-		protected:
+
+			RENDERING_API void SetAttenuation(const Attenuation& attenuation)
+			{
+				m_attenuation = attenuation;
+				CalculateRange();
+			}
+			//RENDERING_API void SetRange(Math::Real range) { m_range = range; }
+		private:
 			void CalculateRange();
 			/* ==================== Non-static member functions end ==================== */
 

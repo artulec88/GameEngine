@@ -7,20 +7,12 @@
 
 /* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(Math::Transform& transform, const Rendering::Color& color, Math::Real intensity, Math::Real halfShadowArea,
-	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
-	const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
-	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
-	m_halfShadowArea(halfShadowArea)
+Rendering::Lighting::DirectionalLight::DirectionalLight(const Shader& shader, const Shader& terrainShader,
+	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
+	BaseLight(shader, terrainShader, noShadowShader, noShadowTerrainShader),
+	m_halfShadowArea(REAL_ZERO)
 {
-	if ((shadowMapSizeAsPowerOf2 != 0) /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */)
-	{
-		SetShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea),
-			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
-	}
 }
-
 
 Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
 {
@@ -63,6 +55,19 @@ Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShad
 	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);
 	/* ==================== Fixing the shimmering effect end ==================== */
 	return shadowCameraTransform;
+}
+
+void Rendering::Lighting::DirectionalLight::SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
+	Math::Real lightBleedingReductionAmount, Math::Real minVariance)
+{
+	m_isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */
+	m_halfShadowArea = halfShadowArea;
+	if (m_isShadowingEnabled)
+	{
+		BaseLight::SetShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea),
+			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
+	}
 }
 
 std::string Rendering::Lighting::DirectionalLight::ToString() const

@@ -27,9 +27,8 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API SpotLight(Math::Transform& transform, const Color& color, Math::Real intensity, const Attenuation& attenuation,
-				const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance,
-				const Shader& shader, const Shader& terrainShader, const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API SpotLight(const Shader& shader, const Shader& terrainShader,
+				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
 			RENDERING_API virtual ~SpotLight(void);
 			/* ==================== Constructors and destructors end ==================== */
 
@@ -39,6 +38,9 @@ namespace Rendering {
 			Math::Real GetCutoff() const { return m_cutoff; };
 			//virtual void InitializeShaders();
 			virtual bool IsEnabled() const;
+
+			RENDERING_API void SetShadowInfo(const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real projectionNearPlane,
+				Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

@@ -72,6 +72,30 @@ Math::Transform::~Transform()
 	//DEBUG_LOG_MATH("Transform is being destroyed");
 }
 
+Math::Transform& Math::Transform::operator=(const Transform& transform)
+{
+	m_pos = transform.m_pos;
+	m_rotation = transform.m_rotation;
+	m_scale = transform.m_scale;
+	m_parentTransform = transform.m_parentTransform;
+	m_transformation = transform.m_transformation;
+	m_parentTransformation = transform.m_parentTransformation;
+	m_isChanged = transform.m_isChanged;
+	return *this;
+}
+
+Math::Transform& Math::Transform::operator=(Transform&& transform)
+{
+	m_pos = std::move(transform.m_pos);
+	m_rotation = std::move(transform.m_rotation);
+	m_scale = std::move(transform.m_scale);
+	m_parentTransform = std::move(transform.m_parentTransform);
+	m_transformation = std::move(transform.m_transformation);
+	m_parentTransformation = std::move(transform.m_parentTransformation);
+	m_isChanged = std::move(transform.m_isChanged);
+	return *this;
+}
+
 //bool Math::Transform::IsHierarchyChanged() const
 //{
 //	// TODO: Check this function
