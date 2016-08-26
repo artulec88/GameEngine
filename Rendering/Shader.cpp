@@ -588,7 +588,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 {
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 
-	Math::Matrix4D worldMatrix = transform.GetTransformation();
+	Math::Matrix4D worldMatrix(transform.GetTransformation());
 	// TODO: Check which one is the fastest: SOLUTION #1, SOLUTION #2, etc.
 	/* ==================== SOLUTION #1 begin ==================== */
 	//Matrix4D projectedMatrix(renderer->GetCurrentCamera().GetViewProjection()); // TODO: Pass camera object as parameter instead of using GetCurrentCamera() function.
