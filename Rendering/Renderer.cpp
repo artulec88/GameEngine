@@ -43,12 +43,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	//m_currentSpotLight(NULL),
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
-	m_mainMenuCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
-		Math::Angle(GET_CONFIG_VALUE_RENDERING("mainMenuCameraFoV", GET_CONFIG_VALUE_RENDERING("defaultCameraFoV", 70.0f)), Math::Unit::DEGREE),
-		GET_CONFIG_VALUE_RENDERING("mainMenuCameraAspectRatio", GET_CONFIG_VALUE_RENDERING("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
-		GET_CONFIG_VALUE_RENDERING("mainMenuCameraNearPlane", GET_CONFIG_VALUE_RENDERING("defaultCameraNearPlane", 0.1f)),
-		GET_CONFIG_VALUE_RENDERING("mainMenuCameraFarPlane", GET_CONFIG_VALUE_RENDERING("defaultCameraFarPlane", 1000.0f)), 0.005f),
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
+	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
 	m_filterTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_filterMaterial(&m_filterTexture),
@@ -167,8 +163,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	SetReal("fxaaReduceMin", m_fxaaReduceMin);
 	SetReal("fxaaReduceMul", m_fxaaReduceMul);
 #endif
-
-	m_currentCamera = &m_mainMenuCamera;
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_guiTextures.push_back(GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
@@ -378,91 +372,6 @@ void Rendering::Renderer::DisableClippingPlanes()
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 }
 
-//void Rendering::Renderer::RenderSceneWithPointLights(const GameNode& gameNode)
-//{
-//	START_PROFILING_RENDERING(true, "");
-//	if (!Lighting::PointLight::ArePointLightsEnabled())
-//	{
-//		STOP_PROFILING_RENDERING("");
-//		return;
-//	}
-//
-//	for (std::vector<Lighting::PointLight*>::iterator pointLightItr = m_pointLights.begin(); pointLightItr != m_pointLights.end(); ++pointLightItr)
-//	{
-//		m_pointLight = (*pointLightItr);
-//		if (!m_pointLight->IsEnabled())
-//		{
-//			continue;
-//		}
-//		//if (m_shadowsEnabled && m_pointLightShadowsEnabled)
-//		//{
-//		glCullFace(GL_FRONT);
-//		const int NUMBER_OF_CUBE_MAP_FACES = 6;
-//
-//		glClearColor(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX); // TODO: Replace FLT_MAX with REAL_MAX
-//		m_altCamera.GetTransform().SetPos(m_pointLight->GetTransform().GetTransformedPos());
-//		for (unsigned int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
-//		{
-//			Rendering::CheckErrorCode(__FUNCTION__, "Point light shadow mapping");
-//			//DEBUG_LOG_RENDERING("Binding the cube face #", i);
-//			m_cubeShadowMap.BindForWriting(gCameraDirections[i].cubemapFace);
-//			glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-//
-//			m_altCamera.GetTransform().SetRot(gCameraDirections[i].rotation); // TODO: Set the rotation correctly
-//
-//			Camera* temp = m_currentCamera;
-//			m_currentCamera = &m_altCamera;
-//
-//			for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-//			{
-//				(*terrainNodeItr)->Render(m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP_CUBE), this);
-//			}
-//			gameNode.Render(m_shaderFactory.GetShader(ShaderTypes::SHADOW_MAP_CUBE), this);
-//
-//			m_currentCamera = temp;
-//		}
-//		//}
-//
-//		RenderSceneWithLight(m_pointLight, gameNode);
-//	}
-//	m_pointLight = NULL;
-//	STOP_PROFILING_RENDERING("");
-//}
-
-//void Rendering::Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */)
-//{
-//	START_PROFILING_RENDERING(true, "");
-//	CHECK_CONDITION_EXIT_RENDERING(light != NULL, Utility::EMERGENCY, "Cannot render the scene. The light is NULL.");
-//	DEBUG_LOG_RENDERING("Rendering scene with light.");
-//	glCullFace(Rendering::glCullFaceMode);
-//	GetTexture("displayTexture")->BindAsRenderTarget();
-//	if (!Rendering::glBlendEnabled)
-//	{
-//		glEnable(GL_BLEND);
-//	}
-//	glBlendFunc(GL_ONE, GL_ONE); // the existing color will be blended with the new color with both weights equal to 1
-//	glDepthMask(GL_FALSE); // Disable writing to the depth buffer (Z-buffer). We are after the ambient rendering pass, so we do not need to write to Z-buffer anymore. TODO: What if ambient lighting is disabled?
-//	glDepthFunc(GL_EQUAL); // CRITICAL FOR PERFORMANCE SAKE! This will allow calculating the light only for the pixel which will be seen in the final rendered image
-//
-//	gameNode.Render(isCastingShadowsEnabled ? light->GetShader() : light->GetNoShadowShader(), this);
-//	for (std::vector<GameNode*>::const_iterator terrainNodeItr = m_terrainNodes.begin(); terrainNodeItr != m_terrainNodes.end(); ++terrainNodeItr)
-//	{
-//		(*terrainNodeItr)->Render(isCastingShadowsEnabled ? light->GetTerrainShader() : light->GetNoShadowTerrainShader(), this);
-//	}
-//
-//	glDepthFunc(Rendering::glDepthTestFunc);
-//	glDepthMask(GL_TRUE);
-//	if (!Rendering::glBlendEnabled)
-//	{
-//		glDisable(GL_BLEND);
-//	}
-//	else
-//	{
-//		glBlendFunc(Rendering::glBlendSfactor, Rendering::glBlendDfactor);
-//	}
-//	STOP_PROFILING_RENDERING("");
-//}
-
 void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
@@ -653,34 +562,6 @@ void Rendering::Renderer::FinalizeShadowMapRendering(const Shader& filterShader)
 	}
 }
 
-//void Rendering::Renderer::RenderSkybox()
-//{
-//	START_PROFILING_RENDERING(true, "");
-//	m_skyboxNode->GetTransform().SetPos(m_currentCamera->GetTransform().GetTransformedPos());
-//	m_skyboxNode->GetTransform().SetRot(Quaternion(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_skyboxAngle));
-//	m_skyboxAngle += m_skyboxAngleStep;
-//	if (m_fogEnabled)
-//	{
-//		STOP_PROFILING_RENDERING("");
-//		return;
-//	}
-//
-//	//glDisable(GL_DEPTH_TEST);
-//	glCullFace(GL_FRONT);
-//	/**
-//	 * By default (GL_LESS) we tell OpenGL that an incoming fragment wins the depth test if its Z value is less than the stored one.
-//	 * However, in the case of a skybox the Z value is always the far Z. The far Z is clipped when the depth test function is set to "less than".
-//	 * To make it part of the scene we change the depth function to "less than or equal".
-//	 */
-//	glDepthFunc(GL_LEQUAL);
-//	m_skyboxNode->Render(m_shaderFactory.GetShader(ShaderTypes::SKYBOX), this);
-//	glDepthFunc(Rendering::glDepthTestFunc);
-//	glCullFace(Rendering::glCullFaceMode);
-//	//glEnable(GL_DEPTH_TEST);
-//	Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
-//	STOP_PROFILING_RENDERING("");
-//}
-
 void Rendering::Renderer::BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount /* how many texels we move per sample */)
 {
 	START_PROFILING_RENDERING(true, "");
@@ -716,19 +597,15 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 	
 	m_mappedValues.SetTexture("filterTexture", source);
 
-	m_altCamera.SetProjection(Math::Matrix4D::IDENTITY_MATRIX);
-	m_altCamera.SetPos(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO));
-	m_altCamera.SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)));
-
-	Camera* temp = m_currentCamera;
-	m_currentCamera = &m_altCamera;
+	m_tempCamera = m_currentCamera;
+	m_currentCamera = &m_filterCamera;
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader.Bind();
 	filterShader.UpdateUniforms(m_filterTransform, &m_filterMaterial, this);
 	m_filterMesh.Draw();
 
-	m_currentCamera = temp;
+	m_currentCamera = m_tempCamera;
 	m_mappedValues.SetTexture("filterTexture", NULL);
 	STOP_PROFILING_RENDERING("");
 }
@@ -915,10 +792,6 @@ void Rendering::Renderer::InitializeTweakBars()
 	if (m_currentCamera == NULL)
 	{
 		ERROR_LOG_RENDERING("Cannot properly initialize rendering engine's cameras bar. No cameras are setup by the game manager.");
-		
-		//TwAddVarRW(cameraBar, "cameraVar", m_cameraType, &m_mainMenuCamera, " label='Camera' group=Camera ");
-		//TwAddVarRW(cameraBar, "MainMenuCamera.Pos", vector3DType, &m_mainMenuCamera.GetTransform().GetPos(), " label='MainMenuCamera.Pos' group=Camera ");
-		//TwAddVarRW(cameraBar, "MainMenuCamera.Rot", TW_TYPE_QUAT4F, &m_mainMenuCamera.GetTransform().GetRot(), " label='MainMenuCamera.Rot' group=Camera ");
 	}
 	else
 	{

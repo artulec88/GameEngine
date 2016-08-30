@@ -323,12 +323,10 @@ namespace Rendering
 		Camera* m_currentCamera;
 		Camera* m_tempCamera;
 
-		/// <summary> The main menu camera. This camera will be used
-		/// in the main menu rendering when there are no game cameras set up. </summary>
-		Camera m_mainMenuCamera;
-
 		Texture m_displayTexture;
 
+		/// <summary> The filter camera always facing the screen. </summary>
+		Camera m_filterCamera; // TODO: This camera should be marked as const
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
 		Texture m_filterTexture;

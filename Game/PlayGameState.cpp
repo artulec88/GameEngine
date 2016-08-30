@@ -301,7 +301,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
 	
-	RenderWaterTextures(renderer);
+	//RenderWaterTextures(renderer);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
@@ -310,18 +310,18 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	RenderSceneWithAmbientLight(renderer);
 	//m_gameManager->GetRootGameNode().Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
-	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
+	//RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
-	RenderWaterNodes(renderer);
+	//RenderWaterNodes(renderer);
 
-	RenderBillboardNodes(renderer);
+	//RenderBillboardNodes(renderer);
 
-	RenderSkybox(renderer);
+	//RenderSkybox(renderer);
 
-	RenderParticles(renderer);
+	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	//renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
 	
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
@@ -561,9 +561,9 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	for (std::vector<Engine::GameNode*>::const_iterator billboardsRendererItr = m_gameManager->GetBillboardRenderers().begin(); billboardsRendererItr != m_gameManager->GetBillboardRenderers().end(); ++billboardsRendererItr)
+	for (std::vector<Engine::GameNode*>::const_iterator billboardsNodeItr = m_gameManager->GetBillboardNodes().begin(); billboardsNodeItr != m_gameManager->GetBillboardNodes().end(); ++billboardsNodeItr)
 	{
-		(*billboardsRendererItr)->Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD), renderer);
+		(*billboardsNodeItr)->Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD), renderer);
 	}
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);
