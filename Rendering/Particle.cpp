@@ -108,6 +108,7 @@ void Rendering::Particle::Revive(const Math::Vector3D& position, const Math::Vec
 	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale)
 {
 	START_PROFILING_RENDERING(false, "");
+	//CHECK_CONDITION_ALWAYS_RENDERING(!IsAlive(), Utility::Logging::WARNING, "The particle is not dead.");
 	m_position = position;
 	m_velocity = velocity;
 	m_gravityEffectFactor = gravityEffectFactor;

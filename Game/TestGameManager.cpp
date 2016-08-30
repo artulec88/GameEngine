@@ -560,9 +560,9 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
-	Engine::GameNode* billboardsRenderer = new Engine::GameNode();
-	billboardsRenderer->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
-	AddBillboardsRenderer(billboardsRenderer);
+	Engine::GameNode* billboardsNode = new Engine::GameNode();
+	billboardsNode->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
+	AddBillboardsNode(billboardsNode);
 }
 
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
