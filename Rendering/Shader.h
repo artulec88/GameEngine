@@ -8,10 +8,15 @@
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Color.h"
+#include "Camera.h"
 
 #include "Math\Transform.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#include "Math\IStatisticsStorage.h"
+#include "Math\Statistics.h"
+#endif
 
 #include "Utility\ReferenceCounter.h"
 #include <map>
@@ -231,6 +236,9 @@ namespace Rendering
 	private:
 		ShaderData m_shaderData;
 		std::string m_fileName;
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
+		Math::Statistics::ClassStats& m_classStats;
+#endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Shader */
 

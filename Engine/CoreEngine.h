@@ -21,7 +21,7 @@
 #include <string>
 #include "GLFW\glfw3.h"
 
-#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 #include "Math\Statistics.h"
 #include "Math\IStatisticsStorage.h"
 #include "Math\UtmostSamples.h"
@@ -148,7 +148,7 @@ namespace Engine
 		void Run();
 		void PollEvents();
 
-#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 	public:
 		void StartSamplingSpf() const { m_isSamplingSpf = true; }
 		void StopSamplingSpf() const { m_isSamplingSpf = false; }
@@ -204,7 +204,7 @@ namespace Engine
 		const std::map<int, Input::RawInputKeys::RawInputKey> m_glfwKeysToRawInputKeysMap;
 		Input::InputMapping m_inputMapping;
 
-#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 		long m_countStats1;
 		Math::Statistics::UtmostSamples<long long> m_minMaxTime1;
 		double m_timeSum1;

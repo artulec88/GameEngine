@@ -186,7 +186,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
 		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT } }),
 	m_inputMapping(GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
-#ifdef PROFILING_RENDERING_MODULE_ENABLED
+#ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
 	m_countStats2(0),
@@ -641,8 +641,7 @@ void Engine::CoreEngine::Run()
 		else
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
-			// TODO: Sleep for 1ms to prevent the thread from constant looping
-			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME));
+			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME)); // Sleep for some time to prevent the thread from constant looping
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 			++m_renderingNotRequiredCount;
 #endif

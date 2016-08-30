@@ -525,6 +525,9 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 Rendering::Shader::Shader(const std::string& fileName) :
 	m_shaderData(fileName),
 	m_fileName(fileName)
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
+	, m_classStats(STATS_STORAGE.GetClassStats("Shader"))
+#endif
 {
 	//DELOCUST_LOG_RENDERING("Shader constructor called for file name: \"", m_fileName, "\". ");
 	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
@@ -546,6 +549,9 @@ Rendering::Shader::~Shader(void)
 Rendering::Shader::Shader(Shader&& shader) :
 	m_shaderData(std::move(shader.m_shaderData)),
 	m_fileName(std::move(shader.m_fileName))
+#ifdef PROFILING_RENDERING_MODULE_ENABLED
+	, m_classStats(STATS_STORAGE.GetClassStats("Shader"))
+#endif
 {
 	DELOCUST_LOG_RENDERING("Shader move constructor called for file name: \"", m_fileName, "\". ");
 	//shader.m_shaderData = nullptr;
@@ -586,6 +592,7 @@ void Rendering::Shader::UpdateTransformUniforms(const Math::Transform& transform
 
 void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const Material* material, const Renderer* renderer) const
 {
+	START_PROFILING_RENDERING(false, "");
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 
 	Math::Matrix4D worldMatrix(transform.GetTransformation());
@@ -757,6 +764,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 			}
 		}
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 //void Shader::AddUniform(const std::string& uniform)
@@ -770,6 +778,8 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 
 void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform integer \"", name, "\":", value);
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -779,10 +789,13 @@ void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 	{
 		EMERGENCY_LOG_RENDERING("Uniform \"", name, "\" is not defined in the shader \"", m_fileName, "\"");
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform float \"", name, "\":", value);
 	//for (std::map<std::string, unsigned int>::const_iterator it = m_shaderData->GetUniformMap().begin(); it != m_shaderData->GetUniformMap().end(); ++it)
 	//{
 	//	DEBUG_LOG_RENDERING("Uniform map <\"", it->first, "\", ", it->second, ">");
@@ -792,10 +805,13 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 	{
 		glUniform1f(itr->second, value);
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -803,10 +819,13 @@ void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::
 		//glUniform3fv(itr->second, 1, vector.At());
 		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -818,10 +837,13 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 		//glUniform3fv(itr->second, 1, vector.At());
 		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::Vector4D& vector) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -833,10 +855,13 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::
 		//glUniform4fv(itr->second, 4, vector.At());
 		// TODO: Check whether glUniform4fv(itr->second, 4, vector) is faster.
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -846,21 +871,26 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 	{
 		glUniform4f(itr->second, x, y, z, w);
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(uniformName, itr))
 	{
 		glUniform4f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue(), color.GetAlpha());
 		//glUniform3f(itr->second, color.GetRed(), color.GetGreen(), color.GetBlue());
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
-	//DEBUG_LOG_RENDERING("Setting uniform matrix \"", name, "\":\n", matrix.ToString());
+	START_PROFILING_RENDERING(false, "");
+	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -870,6 +900,7 @@ void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Ma
 		glUniformMatrix4fv(itr->second, 1, GL_FALSE, matrix.At(0));
 #endif
 	}
+	STOP_PROFILING_RENDERING("");
 }
 
 /**
@@ -878,15 +909,18 @@ void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Ma
 */
 void Rendering::Shader::SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const
 {
+	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Directional light:\n\tIntensity = ", directionalLight.GetIntensity(), "\n\tColor = ", directionalLight.GetColor().ToString(),
 		"\n\tDirection = ", directionalLight.GetTransform().GetTransformedRot().GetForward().ToString());
 	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());
 	SetUniformColor(uniformName + ".base.color", directionalLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", directionalLight.GetIntensity());
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const
 {
+	START_PROFILING_RENDERING(false, "");
 	SetUniformColor(uniformName + ".base.color", pointLight.GetColor());
 	SetUniformf(uniformName + ".base.intensity", pointLight.GetIntensity());
 	SetUniformf(uniformName + ".attenuation.constant", pointLight.GetAttenuation().GetConstant());
@@ -894,10 +928,12 @@ void Rendering::Shader::SetUniformPointLight(const std::string& uniformName, con
 	SetUniformf(uniformName + ".attenuation.exponent", pointLight.GetAttenuation().GetExponent());
 	SetUniformVector3D(uniformName + ".position", pointLight.GetTransform().GetTransformedPos());
 	SetUniformf(uniformName + ".range", pointLight.GetRange());
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const
 {
+	START_PROFILING_RENDERING(false, "");
 	SetUniformColor(uniformName + ".pointLight.base.color", spotLight.GetColor());
 	SetUniformf(uniformName + ".pointLight.base.intensity", spotLight.GetIntensity());
 	SetUniformf(uniformName + ".pointLight.attenuation.constant", spotLight.GetAttenuation().GetConstant());
@@ -907,4 +943,5 @@ void Rendering::Shader::SetUniformSpotLight(const std::string& uniformName, cons
 	SetUniformf(uniformName + ".pointLight.range", spotLight.GetRange());
 	SetUniformVector3D(uniformName + ".direction", spotLight.GetTransform().GetTransformedRot().GetForward());
 	SetUniformf(uniformName + ".cutoff", spotLight.GetCutoff());
+	STOP_PROFILING_RENDERING("");
 }

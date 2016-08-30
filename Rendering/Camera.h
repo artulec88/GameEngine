@@ -47,10 +47,17 @@ namespace Rendering
 		/// </summary>
 		RENDERING_API ~Camera(void);
 
-		Camera(const Camera& camera) = delete; // Copy constructor
-		Camera(Camera&& camera) = delete; // Move constructor
-		Camera& operator=(const Camera& camera) = delete; // Copy assignment operator
-		Camera& operator=(Camera&& camera) = delete; // Move assignment operator
+		/// <summary> The camera copy constructor. </summary>
+		RENDERING_API Camera(const Camera& camera);
+
+		/// <summary> The camera move constructor. </summary>
+		RENDERING_API Camera(Camera&& camera);
+		
+		/// <summary> The camera copy assignment operator. </summary>
+		Camera& operator=(const Camera& camera) = delete;
+
+		/// <summary> The camera move assignment operator. </summary>
+		Camera& operator=(Camera&& camera) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -69,7 +76,7 @@ namespace Rendering
 		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projection; }
 		inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
 		RENDERING_API Math::Matrix4D GetViewMatrix() const;
-		Math::Matrix4D GetViewProjection() const;
+		RENDERING_API Math::Matrix4D GetViewProjection() const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
