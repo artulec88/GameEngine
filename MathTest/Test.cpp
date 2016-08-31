@@ -1,4 +1,6 @@
 #include "Test.h"
+#include "Def.h"
+#include "Utility\ILogger.h"
 
 using namespace MathTest;
 
@@ -14,12 +16,20 @@ Test::~Test(void)
 
 void Test::BeforeTest()
 {
-	m_timer.Start(); // TODO: m_timer.Reset()?
 }
 
 void Test::AfterTest()
 {
-	m_timer.Stop();
+}
+
+void Test::BeforeTimeTest()
+{
+	//m_timer.Start(); // TODO: m_timer.Reset()?
+}
+
+void Test::AfterTimeTest()
+{
+	//m_timer.Stop();
 }
 
 bool Test::IsTestEnabled() const
@@ -59,6 +69,16 @@ void TestGroup::StartTests()
 		(*testItr)->BeforeTest();
 		(*testItr)->StartTest();
 		(*testItr)->AfterTest();
+	}
+}
+
+void TestGroup::StartTimeTests()
+{
+	for (std::vector<Test*>::iterator testItr = m_tests.begin(); testItr != m_tests.end(); ++testItr)
+	{
+		(*testItr)->BeforeTimeTest();
+		(*testItr)->StartTimeTest();
+		(*testItr)->AfterTimeTest();
 	}
 }
 

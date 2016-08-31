@@ -16,15 +16,6 @@ QuaternionTestGroup::~QuaternionTestGroup(void)
 {
 	NOTICE_LOG_MATH_TEST("Quaternion test finished");
 }
-
-void QuaternionTestGroup::StartTests()
-{
-	if (!IsTestGroupEnabled())
-	{
-		return;
-	}
-	TestGroup::StartTests();
-}
 /* ==================== class QuaternionTestGroup end ==================== */
 
 
@@ -59,6 +50,10 @@ void QuaternionTestCompare::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
 		"The quaternion ", m_quaternion.ToString(), " and quaternion ", m_compareQuaternion.ToString(), " comparison result is not as expected.");
 }
+
+void QuaternionTestCompare::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestCompare end ==================== */
 
 
@@ -83,6 +78,10 @@ void QuaternionTestLength::StartTest()
 		"The quaternion ", m_quaternion.ToString(), " has squared length ", lengthSquared, ", but expected to have squared length ",
 		m_expectedLength * m_expectedLength);
 }
+
+void QuaternionTestLength::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestLength end ==================== */
 
 
@@ -106,6 +105,10 @@ void QuaternionTestConjugate::StartTest()
 		"The conjugate of a quaternion is supposed to be an involution, but the conjugate of conjugate of a quaternion (", conjugate.Conjugate().ToString(),
 		") is not an original quaternion (", m_quaternion.ToString(), ").");
 }
+
+void QuaternionTestConjugate::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestConjugate end ==================== */
 
 
@@ -127,6 +130,10 @@ void QuaternionTestAddOperator::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sumQuaternion == m_expectedSumQuaternion, Utility::Logging::ERR,
 		"The sum of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " is a quaternion ",
 		sumQuaternion.ToString(), ". It is different than expected ", m_expectedSumQuaternion.ToString());
+}
+
+void QuaternionTestAddOperator::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestAddOperator end ==================== */
 
@@ -150,6 +157,10 @@ void QuaternionTestSubtractOperator::StartTest()
 		"The subtraction of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " is a quaternion ",
 		subtractQuaternion.ToString(), ". It is different than expected ", m_expectedSubtractQuaternion.ToString());
 }
+
+void QuaternionTestSubtractOperator::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestSubtractOperator end ==================== */
 
 
@@ -171,6 +182,10 @@ void QuaternionTestDivideOperator::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(divideQuaternion == m_expectedDivideQuaternion, Utility::Logging::ERR,
 		"The division of quaternion ", m_quaternion.ToString(), " by value ", m_divideValue, " is a quaternion ",
 		divideQuaternion.ToString(), ". It is different than expected ", m_expectedDivideQuaternion.ToString());
+}
+
+void QuaternionTestDivideOperator::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestDivideOperator end ==================== */
 
@@ -209,6 +224,10 @@ void QuaternionTestNormalize::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_quaternion.IsNormalized(), Utility::Logging::ERR,
 		"Calculated normalized quaternion ", m_quaternion.ToString(), " is in fact not normalized.");
 }
+
+void QuaternionTestNormalize::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestNormalize end ==================== */
 
 
@@ -229,6 +248,10 @@ void QuaternionTestDot::StartTest()
 	Math::Real dotResult = m_quaternion.Dot(m_quaternion2);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::Logging::ERR,
 		"The dot product of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " equals ", dotResult, ". It is different than expected ", m_expectedDotResult);
+}
+
+void QuaternionTestDot::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestDot end ==================== */
 
@@ -254,6 +277,10 @@ void QuaternionTestNlerp::StartTest()
 		"The linear interpolation of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " with the factor equal to ",
 		m_nlerpFactor, " is a quaternion ", nlerpQuaternion.ToString(), ". It is different than expected ", m_expectedNlerpQuaternion.ToString());
 }
+
+void QuaternionTestNlerp::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestNlerp end ==================== */
 
 /* ==================== class QuaternionTestSlerp begin ==================== */
@@ -277,6 +304,10 @@ void QuaternionTestSlerp::StartTest()
 		"The spherical linear interpolation of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " with the factor equal to ",
 		m_slerpFactor, " is a quaternion ", slerpQuaternion.ToString(), ". It is different than expected ", m_expectedSlerpQuaternion.ToString());
 }
+
+void QuaternionTestSlerp::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestSlerp end ==================== */
 
 /* ==================== class QuaternionTestForward begin ==================== */
@@ -295,6 +326,10 @@ void QuaternionTestForward::StartTest()
 	Math::Vector3D forwardVector = m_quaternion.GetForward();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(forwardVector == m_expectedForwardVector, Utility::Logging::ERR,
 		"The forward vector for quaternion ", m_quaternion.ToString(), " is ", forwardVector.ToString(), ". It is different than expected ", m_expectedForwardVector.ToString());
+}
+
+void QuaternionTestForward::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestForward end ==================== */
 
@@ -315,6 +350,10 @@ void QuaternionTestUp::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(upVector == m_expectedUpVector, Utility::Logging::ERR,
 		"The up vector for quaternion ", m_quaternion.ToString(), " is ", upVector.ToString(), ". It is different than expected ", m_expectedUpVector.ToString());
 }
+
+void QuaternionTestUp::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestUp end ==================== */
 
 /* ==================== class QuaternionTestRight begin ==================== */
@@ -333,6 +372,10 @@ void QuaternionTestRight::StartTest()
 	Math::Vector3D rightVector = m_quaternion.GetRight();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(rightVector == m_expectedRightVector, Utility::Logging::ERR,
 		"The right vector for quaternion ", m_quaternion.ToString(), " is ", rightVector.ToString(), ". It is different than expected ", m_expectedRightVector.ToString());
+}
+
+void QuaternionTestRight::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestRight end ==================== */
 
@@ -353,6 +396,10 @@ void QuaternionTestBack::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(backVector == m_expectedBackVector, Utility::Logging::ERR,
 		"The back vector for quaternion ", m_quaternion.ToString(), " is ", backVector.ToString(), ". It is different than expected ", m_expectedBackVector.ToString());
 }
+
+void QuaternionTestBack::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestBack end ==================== */
 
 /* ==================== class QuaternionTestDown begin ==================== */
@@ -371,6 +418,10 @@ void QuaternionTestDown::StartTest()
 	Math::Vector3D downVector = m_quaternion.GetDown();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(downVector == m_expectedDownVector, Utility::Logging::ERR,
 		"The down vector for quaternion ", m_quaternion.ToString(), " is ", downVector.ToString(), ". It is different than expected ", m_expectedDownVector.ToString());
+}
+
+void QuaternionTestDown::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestDown end ==================== */
 
@@ -391,6 +442,10 @@ void QuaternionTestLeft::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(leftVector == m_expectedLeftVector, Utility::Logging::ERR,
 		"The left vector for quaternion ", m_quaternion.ToString(), " is ", leftVector.ToString(), ". It is different than expected ", m_expectedLeftVector.ToString());
 }
+
+void QuaternionTestLeft::StartTimeTest()
+{
+}
 /* ==================== class QuaternionTestLeft end ==================== */
 
 /* ==================== class QuaternionTestRotationMatrix begin ==================== */
@@ -409,5 +464,9 @@ void QuaternionTestRotationMatrix::StartTest()
 	Math::Matrix4D rotationMatrix = m_quaternion.ToRotationMatrix();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(rotationMatrix == m_expectedRotationMatrix, Utility::Logging::ERR,
 		"The rotation matrix for quaternion ", m_quaternion.ToString(), " is ", rotationMatrix.ToString(), ". It is different than expected ", m_expectedRotationMatrix.ToString());
+}
+
+void QuaternionTestRotationMatrix::StartTimeTest()
+{
 }
 /* ==================== class QuaternionTestRotationMatrix end ==================== */

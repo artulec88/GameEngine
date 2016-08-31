@@ -71,6 +71,7 @@ namespace Engine
 				return m_spotLights[lightId];
 			default:
 				ERROR_LOG_ENGINE("Cannot return the light. Incorrect light type (", lightType, ") has been specified.");
+				return m_spotLights[lightId];
 			}
 		}
 	private:

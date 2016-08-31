@@ -47,12 +47,16 @@ const Rendering::Lighting::DirectionalLight* Engine::LightFactory::AddDirectiona
 	//	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLightBuilder.Get()->GetIntensity(), " is being added to directional / spot lights vector");
 	//	m_directionalLights[lightID] = *directionalLightBuilder.Get();
 	//}
+
+	return NULL;
 }
 
 const Rendering::Lighting::PointLight* Engine::LightFactory::AddPointLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
+	return NULL;
 }
 
 const Rendering::Lighting::SpotLight* Engine::LightFactory::AddSpotLight(int lightID /* TODO: Add parameter that declares the file name (XML?) that contains information about the light */)
 {
+	return NULL;
 }

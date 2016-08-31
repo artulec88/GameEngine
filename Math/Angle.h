@@ -227,6 +227,8 @@ namespace Math
 		MATH_API Angle& operator/=(Real s);
 
 		/// <summary> Angle copy assignment operator. </summary>
+		//MATH_API Angle& operator=(Angle angle);
+		/// <summary> Angle copy assignment operator. </summary>
 		MATH_API Angle& operator=(const Angle& angle);
 		/// <summary> Angle move assignment operator. </summary>
 		MATH_API Angle& operator=(Angle&& angle);
@@ -236,6 +238,12 @@ namespace Math
 		MATH_API bool operator>=(const Angle& angle) const;
 		MATH_API bool operator<(const Angle& angle) const;
 		MATH_API bool operator<=(const Angle& angle) const;
+
+		//friend void swap(Angle& angle1, Angle& angle2)
+		//{
+		//	using std::swap; // enable ADL (not necessary in our case, but good practice)
+		//	swap(angle1.m_angle, angle2.m_angle); // by swapping the member of two classes, the two instances are effectively swapped
+		//}
 
 		MATH_API std::string ToString() const;
 		/* ==================== Non-static member functions end ==================== */

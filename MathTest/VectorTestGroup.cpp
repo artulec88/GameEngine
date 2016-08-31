@@ -14,15 +14,6 @@ VectorTestGroup::~VectorTestGroup(void)
 {
 	NOTICE_LOG_MATH_TEST("Vector tests finished");
 }
-
-void VectorTestGroup::StartTests()
-{
-	if (!IsTestGroupEnabled())
-	{
-		return;
-	}
-	TestGroup::StartTests();
-}
 /* ==================== class VectorTestGroup end ==================== */
 
 /* ==================== class Vector2DTestCross begin ==================== */
@@ -39,10 +30,19 @@ Vector2DTestCross::~Vector2DTestCross(void)
 
 void Vector2DTestCross::StartTest()
 {
-	DEBUG_LOG_MATH_TEST("Vector2D cross product testing begins...");
+	DELOCUST_LOG_MATH_TEST("Vector2D cross product testing begins...");
 	Math::Real crossResult = m_vector.Cross(m_vector2);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(crossResult, m_expectedCrossResult), Utility::Logging::ERR,
 		"The cross product of vectors ", m_vector.ToString(), " and ", m_vector2.ToString(), " equals ", crossResult, ". It is different than expected ", m_expectedCrossResult);
+}
+
+void Vector2DTestCross::StartTimeTest()
+{
+	const unsigned int ITERATIONS = 1000000;
+	for (unsigned int i = 0; i < ITERATIONS; ++i)
+	{
+		Math::Real crossResult = m_vector.Cross(m_vector2);
+	}
 }
 /* ==================== class Vector2DTestCross end ==================== */
 
@@ -60,11 +60,20 @@ Vector3DTestCross::~Vector3DTestCross(void)
 
 void Vector3DTestCross::StartTest()
 {
-	DEBUG_LOG_MATH_TEST("Vector3D cross product testing begins...");
+	DELOCUST_LOG_MATH_TEST("Vector3D cross product testing begins...");
 	Math::Vector3D crossResult = m_vector.Cross(m_vector2);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(crossResult == m_expectedCrossResult, Utility::Logging::ERR,
 		"The cross product of vectors ", m_vector.ToString(), " and ", m_vector2.ToString(), " equals ", crossResult.ToString(),
 		". It is different than expected ", m_expectedCrossResult.ToString());
+}
+
+void Vector3DTestCross::StartTimeTest()
+{
+	const unsigned int ITERATIONS = 1000000;
+	for (unsigned int i = 0; i < ITERATIONS; ++i)
+	{
+		Math::Vector3D crossResult = m_vector.Cross(m_vector2);
+	}
 }
 /* ==================== class Vector3DTestCross end ==================== */
 

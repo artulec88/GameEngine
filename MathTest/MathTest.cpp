@@ -206,8 +206,16 @@ void AngleTest()
 	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle4, 0.027412f, 0.999624f, 0.027422f));
 	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle5, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
 	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle6, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
+	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle2, 0.3f, Angle(180.0f), Angle(0.0f), Angle(27.0f), Angle(300.0f), Angle(27.0f), Angle(300.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle3, 2.0f, Angle(180.0f), Angle(0.0f), Angle(180.0f), Angle(45.0f), Angle(180.0f), Angle(45.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle4, 5.0f, Angle(91.5708f), Angle(88.4292037f), Angle(450.0f), Angle(18.0f), Angle(PI * 5.0f / 2.0f), Angle(PI / 10.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle5, 0.5f, Angle(135.0f), Angle(45.0f), Angle(45.0f), Angle(180.0f), Angle(22.5f), Angle(90.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle6, 0.3f, Angle(135.0f), Angle(45.0f), Angle(27.0f), Angle(300.0f), Angle(13.5f), Angle(150.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(Angle(30.0f), Angle(60.0f), 3.0f, Angle(90.0f), Angle(-30.0f), Angle(90.0f), Angle(10.0f), Angle(180.0f), Angle(20.0f)));
+	angleTests.AddTest(new MathTest::AngleTestOperators(Angle(40.0f), Angle(20.0f), 0.1f, Angle(60.0f), Angle(20.0f), Angle(4.0f), Angle(400.0f), Angle(2.0f), Angle(200.0f)));
 
 	angleTests.StartTests();
+	angleTests.StartTimeTests();
 
 	TestAngleConstructionTime(100000);
 	TestAngleSinCalculationTime(10000);
@@ -322,6 +330,7 @@ void VectorTest()
 	//vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 0.75f, Math::Vector2D(1.125f, 2.5f)));
 	//vectorTests.AddTest(new MathTest::Vector2DTestLerp(Math::Vector2D(3.0f, 4.0f), Math::Vector2D(0.5f, 2.0f), 0.0f, Math::Vector2D(3.0f, 4.0f)));
 	vectorTests.StartTests();
+	vectorTests.StartTimeTests();
 }
 
 Quaternion RandomQuaternion()
@@ -354,6 +363,9 @@ void QuaternionTest()
 	quaternionTests.AddTest(new MathTest::QuaternionTestAddOperator(Quaternion(3.0f, 0.0f, 1.0f, -2.0f), Quaternion(-7.0, 15.0f, -2.0f, -4.0f), Quaternion(-4.0f, 15.0f, -1.0f, -6.0f)));
 	quaternionTests.AddTest(new MathTest::QuaternionTestAddOperator(Quaternion(2.0f, -8.0f, 13.0f, -9.0f), Quaternion(-2.0, -5.0f, -6.0f, -2.0f), Quaternion(0.0f, -13.0f, 7.0f, -11.0f)));
 	quaternionTests.AddTest(new MathTest::QuaternionTestAddOperator(Quaternion(1.0f, 8.0f, 5.0f, -7.0f), Quaternion(-1.0, 5.0f, 5.0f, -1.0f), Quaternion(0.0f, 13.0f, 10.0f, -8.0f)));
+
+	quaternionTests.StartTests();
+	quaternionTests.StartTimeTests();
 
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- begin ==================== */
 	INFO_LOG_MATH_TEST("Profiling quaternion to rotation matrix conversion functions begin");
@@ -491,6 +503,7 @@ void MatrixTest()
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix18, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 
 	matrixTests.StartTests();
+	matrixTests.StartTimeTests();
 
 	Matrix4D identityMatrix1(Matrix4D::IDENTITY_MATRIX);
 	Matrix4D identityMatrix2(Matrix4D::IDENTITY_MATRIX);
@@ -1182,8 +1195,8 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	//AngleTest();
-	//VectorTest();
+	AngleTest();
+	VectorTest();
 	//QuaternionTest();
 	//MatrixTest();
 	//SortTest();
@@ -1191,7 +1204,7 @@ int main(int argc, char* argv[])
 
 	//KDTreeTest();
 
-	StatsTest();
+	//StatsTest();
 
 	//HeightsGeneratorTests();
 	//OtherTests();

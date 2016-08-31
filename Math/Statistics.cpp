@@ -273,7 +273,7 @@ void Math::Statistics::MethodStats::StartProfiling(bool isMeasureTimeEnabled, bo
 {
 	m_isNestedWithinAnotherProfiledMethod = isNestedWithinAnotherProfiledMethod;
 	m_isProfiling = true;
-	CHECK_CONDITION_MATH(!m_timer.IsRunning(), Utility::Logging:ERR, "Cannot start profiling the method. The method's timer is still running.");
+	CHECK_CONDITION_MATH(!m_timer.IsRunning(), Utility::Logging::ERR, "Cannot start profiling the method. The method's timer is still running.");
 	if (isMeasureTimeEnabled)
 	{
 		m_timer.Start();

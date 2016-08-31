@@ -17,7 +17,6 @@ namespace MathTest
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void StartTests();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -44,6 +43,15 @@ namespace MathTest
 
 	class AngleTestCompare : public AngleTestBase
 	{
+		/* ==================== Static variables and functions begin ==================== */
+	private:
+		// TODO: Replace with Math::Statistics::Stats<TimeSpan> objects
+		static std::vector<Utility::Timing::TimeSpan> s_equalOperatorTimeSpans;
+		static std::vector<Utility::Timing::TimeSpan> s_diffOperatorTimeSpans;
+		static std::vector<Utility::Timing::TimeSpan> s_lessOperatorTimeSpans;
+		static std::vector<Utility::Timing::TimeSpan> s_greaterOperatorTimeSpans;
+		/* ==================== Static variables and functions end ==================== */
+
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		AngleTestCompare(const Math::Angle& angle1, const Math::Angle& angle2, bool expectedCompareResult, bool expectedLessResult, bool expectedGreaterResult);
@@ -53,6 +61,7 @@ namespace MathTest
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void StartTest();
+		virtual void StartTimeTest();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -75,6 +84,7 @@ namespace MathTest
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void StartTest();
+		virtual void StartTimeTest();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -84,6 +94,34 @@ namespace MathTest
 		Math::Real m_expectedTanValue;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestTrigonometry */
+
+	class AngleTestOperators : public AngleTestBase
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestOperators(const Math::Angle& angle1, const Math::Angle& angle2, Math::Real value, Math::Angle& expectedAnglesSum, const Math::Angle& expectedAnglesDiff,
+			const Math::Angle& expectedAngle1TimesValue, const Math::Angle& expectedAngle1OverValue, const Math::Angle& expectedAngle2TimesValue, const Math::Angle& expectedAngle2OverValue);
+		virtual ~AngleTestOperators();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest();
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+	protected:
+		Math::Angle m_angle2;
+		Math::Real m_value;
+		const Math::Angle m_expectedAnglesSum;
+		const Math::Angle m_expectedAnglesDiff;
+		const Math::Angle m_expectedAngle1TimesValue;
+		const Math::Angle m_expectedAngle1OverValue;
+		const Math::Angle m_expectedAngle2TimesValue;
+		const Math::Angle m_expectedAngle2OverValue;
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestOperators */
 
 } /* end namespace MathTest */
 

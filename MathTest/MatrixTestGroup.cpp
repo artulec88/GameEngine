@@ -16,14 +16,6 @@ MatrixTestGroup::~MatrixTestGroup(void)
 	NOTICE_LOG_MATH_TEST("Matrix tests finished");
 }
 
-void MatrixTestGroup::StartTests()
-{
-	if (!IsTestGroupEnabled())
-	{
-		return;
-	}
-	TestGroup::StartTests();
-}
 /* ==================== class MatrixTestGroup end ==================== */
 
 /* ==================== class MatrixTestBase begin ==================== */
@@ -58,6 +50,10 @@ void MatrixTestCompare::StartTest()
 
 	// TODO: Test != operator
 }
+
+void MatrixTestCompare::StartTimeTest()
+{
+}
 /* ==================== class MatrixTestCompare end ==================== */
 
 
@@ -79,6 +75,10 @@ void MatrixTestMultiplyByMatrixOperator::StartTest()
 		"The multiplication of matrices ", m_matrix.ToString(), " and ", m_matrix2.ToString(), " equals ", multiplyResultMatrix.ToString(),
 		". It is different than expected ", m_expectedMultiplyResultMatrix.ToString());
 }
+
+void MatrixTestMultiplyByMatrixOperator::StartTimeTest()
+{
+}
 /* ==================== class MatrixTestMultiplyByMatrixOperator end ==================== */
 
 
@@ -99,5 +99,9 @@ void MatrixTestMultiplyByVectorOperator::StartTest()
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Logging::ERR,
 		"The multiplication of matrix:\n", m_matrix.ToString(), " and vector ", m_vector.ToString(), " equals ", multiplyResultVector.ToString(),
 		". It is different than expected ", m_expectedMultiplyResultVector.ToString(), ".");
+}
+
+void MatrixTestMultiplyByVectorOperator::StartTimeTest()
+{
 }
 /* ==================== class MatrixTestMultiplyByVectorOperator end ==================== */

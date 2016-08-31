@@ -94,6 +94,12 @@ Math::Angle& Math::Angle::operator/=(Real s)
 	return *this;
 }
 
+//Math::Angle& Math::Angle::operator=(Angle angle)
+//{
+//	swap(*this, angle);
+//	return *this;
+//}
+
 Math::Angle& Math::Angle::operator=(const Angle& angle)
 {
 	START_PROFILING_MATH(false, "");
