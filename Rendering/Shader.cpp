@@ -31,48 +31,6 @@ Rendering::Uniforms::UniformType Rendering::Uniforms::ConvertStringToUniformType
 	}
 }
 
-std::string Rendering::Uniforms::ConvertUniformTypeToString(UniformType uniformType)
-{
-	switch (uniformType)
-	{
-	case Rendering::Uniforms::VEC_2D:
-		return "vec2";
-	case Rendering::Uniforms::VEC_3D:
-		return "vec3";
-	case Rendering::Uniforms::VEC_4D:
-		return "vec4";
-	case Rendering::Uniforms::MATRIX_4x4:
-		return "mat4";
-	case Rendering::Uniforms::INT:
-		return "int";
-	case Rendering::Uniforms::REAL:
-		return "float";
-	case Rendering::Uniforms::SAMPLER_2D:
-		return "sampler2D";
-	case Rendering::Uniforms::SAMPLER_CUBE:
-		return "samplerCube";
-	case Rendering::Uniforms::BASE_LIGHT:
-		return "BaseLight";
-	case Rendering::Uniforms::DIRECTIONAL_LIGHT:
-		return "DirectionalLight";
-	case Rendering::Uniforms::POINT_LIGHT:
-		return "PointLight";
-	case Rendering::Uniforms::SPOT_LIGHT:
-		return "SpotLight";
-	case Rendering::Uniforms::ATTENUATION:
-		return "Attenuation";
-	default:
-		EMERGENCY_LOG_RENDERING("Uniform type ", uniformType, " not supported by the rendering engine.");
-		exit(EXIT_FAILURE);
-	}
-}
-
-/* static */ const std::string Rendering::ShaderData::UNIFORM_KEYWORD = "uniform";
-/* static */ const std::string Rendering::ShaderData::ATTRIBUTE_KEYWORD = "attribute";
-/* static */ const std::string Rendering::ShaderData::LOCATION_KEYWORD = "location";
-/* static */ const std::string Rendering::ShaderData::SINGLE_LINE_COMMENT = "//";
-/* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_BEGIN = "/*";
-/* static */ const std::string Rendering::ShaderData::MULTI_LINE_COMMENT_END = "*/";
 
 ///* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
@@ -117,6 +75,21 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	//}
 	//ERROR_LOG_RENDERING("Fragment shader text = ", fragmentShaderText);
 	//AddShaderUniforms(fragmentShaderText);
+
+#ifdef DEBUG_LOGGING_ENABLED
+	for (std::vector<Uniforms::UniformStruct>::const_iterator structUniformItr = m_structUniforms.begin(); structUniformItr != m_structUniforms.end(); ++structUniformItr)
+	{
+		DEBUG_LOG_RENDERING("Struct uniform \"", structUniformItr->name, "\".");
+		for (std::vector<Uniforms::Uniform>::const_iterator structUniformUniformsItr = structUniformItr->uniforms.begin(); structUniformUniformsItr != structUniformItr->uniforms.end(); ++structUniformUniformsItr)
+		{
+			DELOCUST_LOG_RENDERING("Uniform \"", structUniformUniformsItr->name, "\" with type: ", structUniformUniformsItr->type, " has location: ", structUniformUniformsItr->location);
+		}
+	}
+	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
+	{
+		DEBUG_LOG_RENDERING("Uniform: \"", uniformItr->name, "\" with type: ", uniformItr->type, " has location: ", uniformItr->location);
+	}
+#endif
 }
 
 Rendering::ShaderData::~ShaderData()
@@ -138,13 +111,15 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	m_programID(std::move(shaderData.m_programID)),
 	m_shaders(std::move(shaderData.m_shaders)),
 	m_uniforms(std::move(shaderData.m_uniforms)),
-	m_uniformMap(std::move(shaderData.m_uniformMap))
+	m_uniformNameToLocationMap(std::move(shaderData.m_uniformNameToLocationMap)),
+	m_structUniforms(std::move(shaderData.m_structUniforms))
 {
 	DELOCUST_LOG_RENDERING("ShaderData move constructor called for program: ", m_programID, ". ");
 	shaderData.m_programID = 0;
 	shaderData.m_shaders.clear();
 	shaderData.m_uniforms.clear();
-	shaderData.m_uniformMap.clear();
+	shaderData.m_uniformNameToLocationMap.clear();
+	shaderData.m_structUniforms.clear();
 }
 
 std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) const
@@ -201,7 +176,7 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 	while (commentBegin != std::string::npos)
 	{
 		size_t commentEnd = output.find(MULTI_LINE_COMMENT_END, commentBegin);
-		output.erase(commentBegin, commentEnd - commentBegin + MULTI_LINE_COMMENT_END.length());
+		output.erase(commentBegin, commentEnd - commentBegin + std::string(MULTI_LINE_COMMENT_END).length());
 		commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
 	}
 	commentBegin = output.find(SINGLE_LINE_COMMENT);
@@ -351,7 +326,7 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 				std::string locationNumber = attributeLine.substr(0, end);
 				currentAttribLocation = Utility::StringUtility::ToInt(locationNumber);
 			}
-			size_t begin = attributeLocation + ATTRIBUTE_KEYWORD.length() + 1;
+			size_t begin = attributeLocation + std::string(ATTRIBUTE_KEYWORD).length() + 1;
 			size_t end = vertexShaderText.find(";", begin);
 
 			std::string attributeLine = vertexShaderText.substr(begin, end - begin);
@@ -362,21 +337,21 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 			glBindAttribLocation(m_programID, currentAttribLocation, attributeName.c_str());
 			++currentAttribLocation;
 		}
-		attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD, attributeLocation + ATTRIBUTE_KEYWORD.length());
+		attributeLocation = vertexShaderText.find(ATTRIBUTE_KEYWORD, attributeLocation + std::string(ATTRIBUTE_KEYWORD).length());
 	}
 }
 
 void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
-	std::vector<Uniforms::UniformStruct> structs = FindUniformStructs(shaderText);
+	std::vector<Uniforms::UniformStructInfo> structInfos = FindUniformStructInfos(shaderText);
 #ifdef DEBUG_LOGGING_ENABLED
-	for (std::vector<Uniforms::UniformStruct>::const_iterator itr = structs.begin(); itr != structs.end(); ++itr)
+	for (std::vector<Uniforms::UniformStructInfo>::const_iterator itr = structInfos.begin(); itr != structInfos.end(); ++itr)
 	{
 		DEBUG_LOG_RENDERING("struct.name = \"", itr->name, "\"");
 #ifdef DELOCUST_LOGGING_ENABLED
-		for (std::vector<Uniforms::Uniform>::const_iterator innerItr = itr->memberNames.begin(); innerItr != itr->memberNames.end(); ++innerItr)
+		for (std::vector<Uniforms::UniformInfo>::const_iterator innerItr = itr->uniformInfos.begin(); innerItr != itr->uniformInfos.end(); ++innerItr)
 		{
-			DELOCUST_LOG_RENDERING("\t .memberName.name = \"", innerItr->name, "\"\t .memberName.uniformType = ", innerItr->uniformType);
+			DELOCUST_LOG_RENDERING("\t .memberName.name = \"", innerItr->name, "\"\t .memberName.uniformType = ", innerItr->type);
 		}
 #endif
 	}
@@ -385,66 +360,76 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 	size_t uniformLocation = shaderText.find(UNIFORM_KEYWORD);
 	while (uniformLocation != std::string::npos)
 	{
-		size_t begin = uniformLocation + UNIFORM_KEYWORD.length();
+		size_t begin = uniformLocation + std::string(UNIFORM_KEYWORD).length();
 		size_t end = shaderText.find(";", begin);
 		std::string uniformLine = shaderText.substr(begin + 1, end - begin - 1);
 
 		begin = uniformLine.find(" ");
 
 		const std::string uniformName = uniformLine.substr(begin + 1);
-		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin));
-		m_uniforms.push_back(Uniforms::Uniform(uniformName, uniformType));
-		AddUniform(uniformName, uniformType, structs);
-		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + UNIFORM_KEYWORD.length());
+		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
+		if (Uniforms::IsPrimitiveUniformType(uniformType))
+		{
+			GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
+			CHECK_CONDITION_EXIT_RENDERING(location != INVALID_VALUE, Utility::Logging::EMERGENCY, "Invalid value of the location (",
+				location, ") for the uniform \"", uniformName, "\"");
+			m_uniforms.push_back(Uniforms::Uniform(uniformName, uniformType, location));
+			m_uniformNameToLocationMap.insert(std::make_pair(uniformName, location));
+		}
+		else
+		{
+			//CRITICAL_LOG_RENDERING("Structural uniform \"", uniformName, "\" of type ", uniformType);
+			AddStructuralUniform(uniformName, uniformType, structInfos);
+		}
+		uniformLocation = shaderText.find(UNIFORM_KEYWORD, uniformLocation + std::string(UNIFORM_KEYWORD).length());
 	}
-#ifdef DEBUG_LOGGING_ENABLED
-	for (std::map<std::string, GLint>::const_iterator it = m_uniformMap.begin(); it != m_uniformMap.end(); ++it)
-	{
-		DEBUG_LOG_RENDERING("Uniform map <\"", it->first, "\", ", it->second, ">");
-	}
-#endif
+	//for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
+	//{
+	//	ERROR_LOG_RENDERING("Uniform \"", uniformItr->name, "\" of type ", uniformItr->type, " has location ", uniformItr->location);
+	//}
 }
 
-void Rendering::ShaderData::AddUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStruct>& structs)
+void Rendering::ShaderData::AddStructuralUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStructInfo>& structInfos)
 {
-	DEBUG_LOG_RENDERING("Adding uniform \"", uniformName, "\" of type: ", uniformType);
-
 	const std::string uniformTypeStr = Uniforms::ConvertUniformTypeToString(uniformType);
-	for (std::vector<Uniforms::UniformStruct>::const_iterator structItr = structs.begin(); structItr != structs.end(); ++structItr)
+	DEBUG_LOG_RENDERING("Adding uniform \"", uniformName, "\" of type: ", uniformTypeStr);
+	for (std::vector<Uniforms::UniformStructInfo>::const_iterator structInfoItr = structInfos.begin(); structInfoItr != structInfos.end(); ++structInfoItr)
 	{
-		if (structItr->name == uniformTypeStr)
+		//EMERGENCY_LOG_RENDERING("structInfoItr->name = \"", structInfoItr->name, "\". UniformTypeStr = \"", uniformTypeStr, "\".");
+		if (structInfoItr->name == uniformTypeStr)
 		{
-			for (std::vector<Uniforms::Uniform>::const_iterator structMemberNameItr = structItr->memberNames.begin(); structMemberNameItr != structItr->memberNames.end(); ++structMemberNameItr)
+			for (std::vector<Uniforms::UniformInfo>::const_iterator structMemberNameItr = structInfoItr->uniformInfos.begin(); structMemberNameItr != structInfoItr->uniformInfos.end(); ++structMemberNameItr)
 			{
-				AddUniform(uniformName + "." + structMemberNameItr->name, structMemberNameItr->uniformType, structs);
+				const std::string name = uniformName + "." + structMemberNameItr->name;
+				CHECK_CONDITION_EXIT_RENDERING(Uniforms::IsPrimitiveUniformType(structMemberNameItr->type), Utility::Logging::EMERGENCY,
+					"The structural uniform cannot be added. Non-primitive uniform type found in the uniform info for the type \"", uniformTypeStr, "\".");
+				GLint location = glGetUniformLocation(m_programID, name.c_str());
+				CHECK_CONDITION_EXIT_RENDERING(location != INVALID_VALUE, Utility::Logging::EMERGENCY, "Invalid value of the location (",
+					location, ") for the uniform \"", name, "\"");
+				m_uniforms.push_back(Uniforms::Uniform(name, structMemberNameItr->type, location));
+				m_uniformNameToLocationMap.insert(std::make_pair(name, location));
 			}
-			return;
+			break;
 		}
 	}
-
-	GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
-	CHECK_CONDITION_EXIT_RENDERING(location != INVALID_VALUE, Utility::Logging::EMERGENCY, "Invalid value of the location (", location, ") for the uniform \"", uniformName, "\"");
-	DELOCUST_LOG_RENDERING("Uniform \"", uniformName, "\" has a location value: ", location);
-	m_uniformMap.insert(std::pair<std::string, GLint>(uniformName, location));
 }
 
-std::vector<Rendering::Uniforms::UniformStruct> Rendering::ShaderData::FindUniformStructs(const std::string& shaderText) const
+std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindUniformStructInfos(const std::string& shaderText) const
 {
-	const std::string STRUCT_KEY = "struct";
-	std::vector<Uniforms::UniformStruct> result;
+	std::vector<Uniforms::UniformStructInfo> result;
 
 	size_t structLocation = shaderText.find(STRUCT_KEY);
-	DELOCUST_LOG_RENDERING("structLocation = ", structLocation, "; std::string::npos = ", std::string::npos);
+	DELOCUST_LOG_RENDERING("structLocation = ", structLocation);
 	while (structLocation != std::string::npos)
 	{
-		structLocation += STRUCT_KEY.length() + 1; //Ignore the struct keyword and space
+		structLocation += std::string(STRUCT_KEY).length() + 1; //Ignore the struct keyword and space
 
 		size_t braceOpening = shaderText.find("{", structLocation);
 		size_t braceClosing = shaderText.find("}", braceOpening);
 
-		Uniforms::UniformStruct newStruct;
+		Uniforms::UniformStructInfo newStruct;
 		newStruct.name = FindUniformStructName(shaderText.substr(structLocation, braceOpening - structLocation));
-		newStruct.memberNames = FindUniformStructComponents(shaderText.substr(braceOpening, braceClosing - braceOpening));
+		newStruct.uniformInfos = FindUniformStructComponents(shaderText.substr(braceOpening, braceClosing - braceOpening), result);
 
 		result.push_back(newStruct);
 		structLocation = shaderText.find(STRUCT_KEY, structLocation);
@@ -456,7 +441,6 @@ std::string Rendering::ShaderData::FindUniformStructName(const std::string& stru
 {
 	std::vector<std::string> tokens;
 	Utility::StringUtility::CutToTokens(structStartToOpeningBrace, tokens, ' ');
-	std::string result;
 	Utility::StringUtility::RightTrim(tokens[0]);
 	//DELOCUST_LOG_RENDERING("tokens[0] = \"", tokens[0], "\"");
 	return tokens[0];
@@ -464,21 +448,21 @@ std::string Rendering::ShaderData::FindUniformStructName(const std::string& stru
 	//return Util::Split(Util::Split(structStartToOpeningBrace, ' ')[0], '\n')[0];
 }
 
-std::vector<Rendering::Uniforms::Uniform> Rendering::ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace) const
+std::vector<Rendering::Uniforms::UniformInfo> Rendering::ShaderData::FindUniformStructComponents(const std::string& openingBraceToClosingBrace, const std::vector<Uniforms::UniformStructInfo>& structUniformInfos) const
 {
-	const int CHARS_TO_IGNORE_COUNT = 4;
-	const char charsToIgnore[CHARS_TO_IGNORE_COUNT] = { ' ', '\n', '\t', '{' };
-	const size_t UNSIGNED_NEG_ONE = (size_t)-1;
+	constexpr int CHARS_TO_IGNORE_COUNT = 4;
+	constexpr std::array<char, CHARS_TO_IGNORE_COUNT> charsToIgnore = { ' ', '\n', '\t', '{' };
+	constexpr char delimChars[] = { '\n', ';' };
+	constexpr size_t UNSIGNED_NEG_ONE = (size_t)-1;
 
-	std::vector<Uniforms::Uniform> result;
+	std::vector<Uniforms::UniformInfo> result;
 	std::vector<std::string> structLines;
-	const char delimChars[] = { '\n', ';' };
 	Utility::StringUtility::CutToTokens(openingBraceToClosingBrace, structLines, delimChars, 2);
 
 	for (std::vector<std::string>::const_iterator structLinesItr = structLines.begin(); structLinesItr != structLines.end(); ++structLinesItr)
 	{
 		//DEBUG_LOG_RENDERING("structLines[", i, "] = \"", structLines[i], "\"");
-		if (structLinesItr->substr(0, 2) == "//")
+		if (structLinesItr->substr(0, 2) == SINGLE_LINE_COMMENT)
 		{
 			continue;
 		}
@@ -488,7 +472,7 @@ std::vector<Rendering::Uniforms::Uniform> Rendering::ShaderData::FindUniformStru
 		for (unsigned int j = 0; j < structLinesItr->length(); ++j)
 		{
 			bool isIgnoreableCharacter = false;
-			for (unsigned int k = 0; k < CHARS_TO_IGNORE_COUNT; ++k)
+			for (size_t k = 0; k < charsToIgnore.size(); ++k)
 			{
 				if ((*structLinesItr)[j] == charsToIgnore[k])
 				{
@@ -509,16 +493,39 @@ std::vector<Rendering::Uniforms::Uniform> Rendering::ShaderData::FindUniformStru
 		if (nameBegin == UNSIGNED_NEG_ONE || nameEnd == UNSIGNED_NEG_ONE)
 			continue;
 
-		result.emplace_back(structLinesItr->substr(nameEnd + 1), Uniforms::ConvertStringToUniformType(structLinesItr->substr(nameBegin, nameEnd - nameBegin)));
+		AddUniformInfos(structUniformInfos, result, structLinesItr->substr(nameEnd + 1), structLinesItr->substr(nameBegin, nameEnd - nameBegin));
 	}
 	return result;
 }
 
+void Rendering::ShaderData::AddUniformInfos(const std::vector<Uniforms::UniformStructInfo>& structUniformInfos, std::vector<Uniforms::UniformInfo>& uniformInfos,
+	const std::string& uniformName, const std::string& uniformTypeStr) const
+{
+	const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformTypeStr.c_str());
+	DELOCUST_LOG_RENDERING("Uniform type = \"", uniformTypeStr, "\". Uniform type = ", uniformType);
+	bool structFound = false;
+	for (std::vector<Uniforms::UniformStructInfo>::const_iterator structUniformInfoItr = structUniformInfos.begin(); structUniformInfoItr != structUniformInfos.end(); ++structUniformInfoItr)
+	{
+		if (structUniformInfoItr->name == uniformTypeStr)
+		{
+			for (std::vector<Uniforms::UniformInfo>::const_iterator uniformInfoItr = structUniformInfoItr->uniformInfos.begin(); uniformInfoItr != structUniformInfoItr->uniformInfos.end(); ++uniformInfoItr)
+			{
+				AddUniformInfos(structUniformInfos, uniformInfos, uniformName + "." + uniformInfoItr->name, Uniforms::ConvertUniformTypeToString(uniformInfoItr->type));
+			}
+			structFound = true;
+		}
+	}
+	if (!structFound)
+	{
+		uniformInfos.emplace_back(uniformName, uniformType);
+	}
+}
+
 bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const
 {
-	itr = m_uniformMap.find(uniformName);
+	itr = m_uniformNameToLocationMap.find(uniformName);
 	CHECK_CONDITION_RENDERING(itr != m_uniformMap.end(), Utility::Logging::ERR, "Uniform \"", uniformName, "\" has not been found.");
-	return (itr != m_uniformMap.end());
+	return (itr != m_uniformNameToLocationMap.end());
 }
 
 /* ==================== Shader class begin ==================== */
@@ -561,6 +568,7 @@ Rendering::Shader::Shader(Shader&& shader) :
 void Rendering::Shader::Bind() const
 {
 	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
+	//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
 	glUseProgram(m_shaderData.GetProgram());
 	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
 }
@@ -616,8 +624,8 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 	for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
 	{
 		const std::string& uniformName = uniformItr->name;
-		const Uniforms::UniformType& uniformType = uniformItr->uniformType;
-		DEBUG_LOG_RENDERING("Updating uniform with name = \"", uniformName, "\" and type = ", uniformType, ".");
+		const Uniforms::UniformType& uniformType = uniformItr->type;
+		DELOCUST_LOG_RENDERING("Updating uniform with name = \"", uniformName, "\" and type = ", Uniforms::ConvertUniformTypeToString(uniformType), ".");
 
 		const std::string uniformNamePrefix = uniformName.substr(0, 2);
 
@@ -628,7 +636,11 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 			{
 				//CRITICAL_LOG_RENDERING("Renderer->GetLightMatrix() = \"", renderer->GetLightMatrix().ToString(), "\"");
 				//CRITICAL_LOG_RENDERING("WorldMatrix = \"", worldMatrix.ToString(), "\"");
-				SetUniformMatrix(uniformName, renderer->GetLightMatrix() * worldMatrix); // FIXME: Check matrix multiplication
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, &((renderer->GetLightMatrix() * worldMatrix)[0][0]));
+#else
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, (renderer->GetLightMatrix() * worldMatrix).At(0));
+#endif
 			}
 			else if ((uniformType == Uniforms::SAMPLER_2D) || (uniformType == Uniforms::SAMPLER_CUBE))
 			{
@@ -645,54 +657,57 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 					CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
 					texture->Bind(samplerSlot, multitextureIndex);
 				}
-				SetUniformi(uniformName, samplerSlot);
+				glUniform1i(uniformItr->location, samplerSlot);
 			}
 			//else if (uniformType == "samplerCubeShadow")
 			//{
 			//	unsigned int samplerSlot = renderer->GetSamplerSlot(unprefixedName);
 			//	renderer->BindCubeShadowMap(samplerSlot);
-			//	SetUniformi(uniformName, samplerSlot);
+			//	glUniform1i(uniformItr->location, samplerSlot);
 			//}
+			else if (uniformType == Uniforms::VEC_2D)
+			{
+				const Math::Vector2D& vector = renderer->GetVec2D(unprefixedName);
+				glUniform2f(uniformItr->location, vector.GetX(), vector.GetY());
+			}
 			else if (uniformType == Uniforms::VEC_3D)
 			{
-				SetUniformVector3D(uniformName, renderer->GetVec3D(unprefixedName));
+				const Math::Vector3D& vector = renderer->GetVec3D(unprefixedName);
+				glUniform3f(uniformItr->location, vector.GetX(), vector.GetY(), vector.GetZ());
 			}
 			else if (uniformType == Uniforms::VEC_4D)
 			{
-				SetUniformVector4D(uniformName, renderer->GetVec4D(unprefixedName));
-			}
-			else if (uniformType == Uniforms::VEC_2D)
-			{
-				SetUniformVector2D(uniformName, renderer->GetVec2D(unprefixedName));
+				const Math::Vector4D& vector = renderer->GetVec4D(unprefixedName);
+				glUniform4f(uniformItr->location, vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
 			}
 			else if (uniformType == Uniforms::REAL)
 			{
-				SetUniformf(uniformName, renderer->GetReal(unprefixedName));
+				glUniform1f(uniformItr->location, renderer->GetReal(unprefixedName));
 			}
-			else if (uniformType == Uniforms::DIRECTIONAL_LIGHT)
-			{
-				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
-				//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
-				const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
-				CHECK_CONDITION_EXIT_RENDERING(directionalLight != NULL, Utility::Logging::ERR, "Cannot update directional light uniform. Directional light instance is NULL.");
-				SetUniformDirectionalLight(uniformName, *directionalLight);
-			}
-			else if (uniformType == Uniforms::POINT_LIGHT)
-			{
-				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
-				//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
-				const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
-				CHECK_CONDITION_EXIT_RENDERING(pointLight != NULL, Utility::Logging::ERR, "Cannot update point light uniform. Point light instance is NULL.");
-				SetUniformPointLight(uniformName, *pointLight);
-			}
-			else if (uniformType == Uniforms::SPOT_LIGHT)
-			{
-				// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
-				const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
-				//const Lighting::SpotLight* spotLight = renderer->GetSpotLight();
-				CHECK_CONDITION_EXIT_RENDERING(spotLight != NULL, Utility::Logging::ERR, "Cannot update spot light uniform. Spot light instance is NULL.");
-				SetUniformSpotLight(uniformName, *spotLight);
-			}
+			//else if (uniformType == Uniforms::DIRECTIONAL_LIGHT)
+			//{
+			//	// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+			//	//Lighting::DirectionalLight* directionalLight = dynamic_cast<Lighting::DirectionalLight*>(renderer->GetCurrentLight());
+			//	const Lighting::BaseLight* directionalLight = renderer->GetCurrentLight();
+			//	CHECK_CONDITION_EXIT_RENDERING(directionalLight != NULL, Utility::Logging::ERR, "Cannot update directional light uniform. Directional light instance is NULL.");
+			//	SetUniformDirectionalLight(uniformName, *directionalLight);
+			//}
+			//else if (uniformType == Uniforms::POINT_LIGHT)
+			//{
+			//	// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+			//	//Lighting::PointLight* pointLight = dynamic_cast<Lighting::PointLight*>(renderer->GetCurrentLight());
+			//	const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
+			//	CHECK_CONDITION_EXIT_RENDERING(pointLight != NULL, Utility::Logging::ERR, "Cannot update point light uniform. Point light instance is NULL.");
+			//	SetUniformPointLight(uniformName, *pointLight);
+			//}
+			//else if (uniformType == Uniforms::SPOT_LIGHT)
+			//{
+			//	// TODO: Avoid using dynamic_casts in the frequently used code. See e.g. http://www.nerdblog.com/2006/12/how-slow-is-dynamiccast.html
+			//	const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
+			//	//const Lighting::SpotLight* spotLight = renderer->GetSpotLight();
+			//	CHECK_CONDITION_EXIT_RENDERING(spotLight != NULL, Utility::Logging::ERR, "Cannot update spot light uniform. Spot light instance is NULL.");
+			//	SetUniformSpotLight(uniformName, *spotLight);
+			//}
 			else
 			{
 				//renderer->UpdateUniformStruct(transform, *material, *this, uniformName, uniformType);
@@ -705,25 +720,37 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 			const Texture* texture = material->GetTexture(uniformName);
 			CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Material texture \"", uniformName, "\" is NULL.");
 			texture->Bind(samplerSlot);
-			SetUniformi(uniformName, samplerSlot);
+			glUniform1i(uniformItr->location, samplerSlot);
 		}
 		else if (uniformNamePrefix == "T_") // tranform uniform
 		{
 			if (uniformName == "T_MVP")
 			{
-				SetUniformMatrix(uniformName, projectedMatrix);
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, &(projectedMatrix[0][0]));
+#else
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, projectedMatrix.At(0));
+#endif
 			}
 			else if (uniformName == "T_VP")
 			{
-				SetUniformMatrix(uniformName, renderer->GetCurrentCamera().GetViewProjection());
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, &(renderer->GetCurrentCamera().GetViewProjection()[0][0]));
+#else
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, renderer->GetCurrentCamera().GetViewProjection().At(0));
+#endif
 			}
 			else if (uniformName == "T_model")
 			{
-				SetUniformMatrix(uniformName, worldMatrix);
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, &(worldMatrix[0][0]));
+#else
+				glUniformMatrix4fv(uniformItr->location, 1, GL_FALSE, worldMatrix.At(0));
+#endif
 			}
 			else if (uniformName == "T_scale")
 			{
-				SetUniformf(uniformName, transform.GetScale());
+				glUniform1f(uniformItr->location, transform.GetScale());
 			}
 			else
 			{
@@ -735,7 +762,8 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 		{
 			if (uniformName == "C_eyePos")
 			{
-				SetUniformVector3D(uniformName, renderer->GetCurrentCamera().GetPos());
+				const Math::Vector3D& vector = renderer->GetCurrentCamera().GetPos();
+				glUniform3f(uniformItr->location, vector.GetX(), vector.GetY(), vector.GetZ());
 			}
 			else
 			{
@@ -747,15 +775,17 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 		{
 			if (uniformType == Uniforms::VEC_3D)
 			{
-				SetUniformVector3D(uniformName, material->GetVec3D(uniformName));
+				const Math::Vector3D& vector = material->GetVec3D(uniformName);
+				glUniform3f(uniformItr->location, vector.GetX(), vector.GetY(), vector.GetZ());
 			}
 			else if (uniformType == Uniforms::VEC_4D)
 			{
-				SetUniformVector4D(uniformName, material->GetVec4D(uniformName));
+				const Math::Vector4D& vector = material->GetVec4D(uniformName);
+				glUniform4f(uniformItr->location, vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
 			}
 			else if (uniformType == Uniforms::REAL)
 			{
-				SetUniformf(uniformName, material->GetReal(uniformName));
+				glUniform1f(uniformItr->location, material->GetReal(uniformName));
 			}
 			else
 			{

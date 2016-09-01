@@ -300,28 +300,28 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
-	
-	//RenderWaterTextures(renderer);
+	renderer->SetCurrentCamera(m_gameManager->GetCurrentCamera());
+
+	RenderWaterTextures(renderer);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
-	renderer->SetCurrentCamera(m_gameManager->GetCurrentCamera());
 
 	RenderSceneWithAmbientLight(renderer);
 	//m_gameManager->GetRootGameNode().Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
-	//RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
+	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
-	//RenderWaterNodes(renderer);
+	RenderWaterNodes(renderer);
 
-	//RenderBillboardNodes(renderer);
+	RenderBillboardNodes(renderer);
 
-	//RenderSkybox(renderer);
+	RenderSkybox(renderer);
 
-	//RenderParticles(renderer);
+	RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	//renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
 	
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?

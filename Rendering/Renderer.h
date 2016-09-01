@@ -157,6 +157,11 @@ namespace Rendering
 		{
 			// TODO: Null check?
 			m_currentLight = light;
+
+			m_mappedValues.SetVector3D("directionalLight.direction", m_currentLight->GetTransform().GetTransformedRot().GetForward());
+			m_mappedValues.SetVector4D("directionalLight.base.color", m_currentLight->GetColor().GetValues());
+			m_mappedValues.SetReal("directionalLight.base.intensity", m_currentLight->GetIntensity());
+
 			return m_currentLight;
 		}
 		inline const Lighting::PointLight* GetCurrentPointLight() const

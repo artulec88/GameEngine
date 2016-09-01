@@ -612,6 +612,11 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 
 void Rendering::Renderer::SetCurrentCamera(Camera* camera)
 {
+	CHECK_CONDITION_RENDERING(camera != NULL, Utility::Logging::ERROR, "Cannot set current camera. Given camera is NULL.");
+	//if (camera == NULL)
+	//{
+	//	ERROR_LOG_RENDERING("Cannot set current camera. Given camera is NULL.");
+	//}
 	m_currentCamera = camera;
 }
 
