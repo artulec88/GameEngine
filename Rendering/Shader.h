@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "Material.h"
-//#include "Renderer.h"
+#include "Uniform.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -26,131 +26,6 @@
 namespace Rendering
 {
 	class Renderer;
-
-	namespace Uniforms
-	{
-		/// <summary>
-		/// Uniform types. It defines both:
-		/// * the primitive uniform types, directly supported by GLSL,
-		/// * the structural uniform types defined by the developer.
-		/// </summary> 
-		enum UniformType
-		{
-			VEC_2D = 0,
-			VEC_3D,
-			VEC_4D,
-			MATRIX_4x4,
-			INT,
-			REAL,
-			SAMPLER_2D,
-			SAMPLER_CUBE,
-			BASE_LIGHT, // structural uniform
-			DIRECTIONAL_LIGHT, // structural uniform
-			POINT_LIGHT, // structural uniform
-			SPOT_LIGHT, // structural uniform
-			ATTENUATION, // structural uniform
-			UNKNOWN
-		};
-
-		struct UniformInfo
-		{
-			UniformInfo(const std::string& _name, Uniforms::UniformType _type) :
-				name(_name),
-				type(_type)
-			{
-			}
-
-			const std::string name;
-			const UniformType type;
-		};
-
-		struct UniformStructInfo
-		{
-			std::string name;
-			std::vector<UniformInfo> uniformInfos;
-		};
-
-		class Uniform
-		{
-			/* ==================== Static variables and functions begin ==================== */
-		private:
-			static constexpr GLint INVALID_LOCATION = -1;
-			/* ==================== Static variables and functions end ==================== */
-
-			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			Uniform(const std::string& name, Uniforms::UniformType type, GLint location) :
-				m_name(name),
-				m_type(type),
-				m_location(location),
-				m_uniforms()
-			{
-			}
-
-			Uniform(const std::string& name, Uniforms::UniformType type, const std::vector<Uniform>& uniforms) :
-				m_name(name),
-				m_type(type),
-				m_location(INVALID_LOCATION),
-				m_uniforms(uniforms.begin(), uniforms.end())
-			{
-			}
-			/* ==================== Constructors and destructors end ==================== */
-
-			/* ==================== Non-static member functions begin ==================== */
-		public:
-			//template <typename T>
-			//void Update(const T& value)
-			//{
-			//	glUniform1i(location, );
-			//}
-
-			inline const std::string& GetName() const { return m_name; }
-			inline UniformType GetType() const { return m_type; }
-			inline GLint GetLocation() const { return m_location; }
-			inline const std::vector<Uniform>& GetUniforms() const { return m_uniforms; }
-			/* ==================== Non-static member functions end ==================== */
-
-			/* ==================== Non-static member variables begin ==================== */
-		private:
-			const std::string m_name;
-			const UniformType m_type;
-			// TODO: Consider using union, because it's either location or uniforms member variable that is useful.
-			const GLint m_location;
-			const std::vector<Uniform> m_uniforms;
-			/* ==================== Non-static member variables end ==================== */
-		};
-
-		//struct UniformStruct
-		//{
-		//	std::string name;
-		//	std::vector<Uniform> uniforms;
-		//};
-
-		constexpr bool IsPrimitiveUniformType(UniformType uniformType)
-		{
-			return ((uniformType == VEC_2D) || (uniformType == VEC_3D) || (uniformType == VEC_4D) || (uniformType == MATRIX_4x4) ||
-				(uniformType == INT) || (uniformType == REAL) || (uniformType == SAMPLER_2D) || (uniformType == SAMPLER_CUBE)) ? true : false;
-		}
-
-		UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
-		constexpr char* ConvertUniformTypeToString(UniformType uniformType)
-		{
-			return (uniformType == VEC_2D) ? "vec2" :
-				((uniformType == VEC_3D) ? "vec3" :
-					((uniformType == VEC_4D) ? "vec4" :
-						((uniformType == MATRIX_4x4) ? "mat4" :
-							((uniformType == INT) ? "int" :
-								((uniformType == REAL) ? "float" :
-									((uniformType == SAMPLER_2D) ? "sampler2D" :
-										((uniformType == SAMPLER_CUBE) ? "samplerCube" :
-											((uniformType == BASE_LIGHT) ? "BaseLight" :
-												((uniformType == DIRECTIONAL_LIGHT) ? "DirectionalLight" :
-													((uniformType == POINT_LIGHT) ? "PointLight" :
-														((uniformType == SPOT_LIGHT) ? "SpotLight" :
-															((uniformType == ATTENUATION) ? "Attenuation" :
-																"Unknown"))))))))))));
-		}
-	} /* end namespace Uniforms */
 
 	class ShaderData
 	{
@@ -178,7 +53,7 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetProgram() const { return m_programID; }
-		const std::vector<Uniforms::Uniform>& GetUniforms() const { return m_uniforms; }
+		const std::vector<Uniforms::UniformBase*>& GetUniforms() const { return m_uniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
 	private:
@@ -190,7 +65,7 @@ namespace Rendering
 
 		void AddAllAttributes(const std::string& vertexShaderText);
 		void AddShaderUniforms(const std::string& shaderText);
-		void AddStructuralUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStructInfo>& structs);
+		//void AddStructuralUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStructInfo>& structs);
 
 		std::vector<Uniforms::UniformStructInfo> ShaderData::FindUniformStructInfos(const std::string& shaderText) const;
 		std::string FindUniformStructName(const std::string& structStartToOpeningBrace) const;
@@ -206,7 +81,7 @@ namespace Rendering
 	private:
 		GLuint m_programID;
 		std::vector<GLuint> m_shaders;
-		std::vector<Uniforms::Uniform> m_uniforms;
+		std::vector<Uniforms::UniformBase*> m_uniforms;
 		std::map<std::string, GLint> m_uniformNameToLocationMap;
 		//std::vector<Uniforms::UniformStruct> m_structUniforms;
 		/* ==================== Non-static member variables end ==================== */

@@ -1,0 +1,370 @@
+#ifndef __RENDERING_UNIFORM_H__
+#define __RENDERING_UNIFORM_H__
+
+#include "Rendering.h"
+
+#include "Math\Transform.h"
+
+#include <string>
+#include <vector>
+
+namespace Rendering
+{
+	class Material;
+	class Renderer;
+
+	namespace Uniforms
+	{
+		/// <summary>
+		/// Uniform types. It defines both:
+		/// * the primitive uniform types, directly supported by GLSL,
+		/// * the structural uniform types defined by the developer.
+		/// </summary> 
+		enum UniformType
+		{
+			VEC_2D = 0,
+			VEC_3D,
+			VEC_4D,
+			MATRIX_4x4,
+			INT,
+			REAL,
+			SAMPLER_2D,
+			SAMPLER_CUBE,
+			BASE_LIGHT, // structural uniform
+			DIRECTIONAL_LIGHT, // structural uniform
+			POINT_LIGHT, // structural uniform
+			SPOT_LIGHT, // structural uniform
+			ATTENUATION, // structural uniform
+			UNKNOWN
+		};
+
+		struct UniformInfo
+		{
+			UniformInfo(const std::string& _name, Uniforms::UniformType _type) :
+				name(_name),
+				type(_type)
+			{
+			}
+
+			const std::string name;
+			const UniformType type;
+		};
+
+		struct UniformStructInfo
+		{
+			std::string name;
+			std::vector<UniformInfo> uniformInfos;
+		};
+
+		class UniformBase
+		{
+			/* ==================== Static variables and functions begin ==================== */
+		protected:
+			static constexpr GLint INVALID_LOCATION = -1;
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			UniformBase(const std::string& name, Uniforms::UniformType type);
+			virtual ~UniformBase();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer) = 0;
+
+			inline const std::string& GetName() const { return m_name; }
+			inline const std::string& GetPrefix() const { return m_prefix; }
+			inline const std::string& GetUnprefixedName() const { return m_unprefixedName; }
+			inline UniformType GetType() const { return m_type; }
+		protected:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			const std::string m_name;
+			const std::string m_prefix;
+			const std::string m_unprefixedName;
+			const UniformType m_type;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class UniformBase */
+
+		class SimpleUniform : public UniformBase
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			SimpleUniform(const std::string& name, Uniforms::UniformType type, GLint location);
+			virtual ~SimpleUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			inline GLint GetLocation() const { return m_location; }
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			const GLint m_location;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class SimpleUniform */
+
+		class IntUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			IntUniform(const std::string& name, Uniforms::UniformType type, GLint location);
+			virtual ~IntUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+		protected:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class IntUniform */
+
+		class RealUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RealUniform(const std::string& name, GLint location);
+			virtual ~RealUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+		protected:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class RealUniform */
+
+		class Vector2DUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			Vector2DUniform(const std::string& name, GLint location);
+			virtual ~Vector2DUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class Vector2DUniform */
+
+		class Vector3DUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			Vector3DUniform(const std::string& name, GLint location);
+			virtual ~Vector3DUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class Vector3DUniform */
+
+		class Vector4DUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			Vector4DUniform(const std::string& name, GLint location);
+			virtual ~Vector4DUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class Vector4DUniform */
+
+		class MatrixUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			MatrixUniform(const std::string& name, GLint location);
+			virtual ~MatrixUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class MatrixUniform */
+
+		class BaseLightUniform : public UniformBase
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			BaseLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation);
+			virtual ~BaseLightUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			GLint GetColorLocation() const { return m_colorLocation; }
+			GLint GetIntensityLocation() const { return m_intensityLocation; }
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			GLint m_colorLocation;
+			GLint m_intensityLocation;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class BaseLightUniform */
+
+		class DirectionalLightUniform : public BaseLightUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			DirectionalLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint directionLocation);
+			virtual ~DirectionalLightUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			GLint m_directionLocation;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class DirectionalLightUniform */
+
+		class PointLightUniform : public BaseLightUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			PointLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
+				GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation);
+			virtual ~PointLightUniform();
+		protected:
+			PointLightUniform(const std::string& name, UniformType type, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation,
+				GLint linearFactorLocation, GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation);
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		protected:
+			GLint m_constantFactorLocation;
+			GLint m_linearFactorLocation;
+			GLint m_exponentFactorLocation;
+			GLint m_positionLocation;
+			GLint m_rangeLocation;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class PointLightUniform */
+
+		class SpotLightUniform : public PointLightUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			SpotLightUniform(const std::string& name, GLint colorLocation, GLint intensityLocation, GLint constantFactorLocation, GLint linearFactorLocation,
+				GLint exponentFactorLocation, GLint positionLocation, GLint rangeLocation, GLint directionLocation, GLint cutoffLocation);
+			virtual ~SpotLightUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			GLint m_directionLocation;
+			GLint m_cutoffLocation;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class SpotLightUniform */
+
+		   //struct UniformStruct
+		   //{
+		   //	std::string name;
+		   //	std::vector<Uniform> uniforms;
+		   //};
+
+		constexpr bool IsPrimitiveUniformType(UniformType uniformType)
+		{
+			return ((uniformType == VEC_2D) || (uniformType == VEC_3D) || (uniformType == VEC_4D) || (uniformType == MATRIX_4x4) ||
+				(uniformType == INT) || (uniformType == REAL) || (uniformType == SAMPLER_2D) || (uniformType == SAMPLER_CUBE)) ? true : false;
+		}
+
+		UniformType ConvertStringToUniformType(const std::string& uniformTypeStr);
+		constexpr char* ConvertUniformTypeToString(UniformType uniformType)
+		{
+			return (uniformType == VEC_2D) ? "vec2" :
+				((uniformType == VEC_3D) ? "vec3" :
+					((uniformType == VEC_4D) ? "vec4" :
+						((uniformType == MATRIX_4x4) ? "mat4" :
+							((uniformType == INT) ? "int" :
+								((uniformType == REAL) ? "float" :
+									((uniformType == SAMPLER_2D) ? "sampler2D" :
+										((uniformType == SAMPLER_CUBE) ? "samplerCube" :
+											((uniformType == BASE_LIGHT) ? "BaseLight" :
+												((uniformType == DIRECTIONAL_LIGHT) ? "DirectionalLight" :
+													((uniformType == POINT_LIGHT) ? "PointLight" :
+														((uniformType == SPOT_LIGHT) ? "SpotLight" :
+															((uniformType == ATTENUATION) ? "Attenuation" :
+																"Unknown"))))))))))));
+		}
+	} /* end namespace Uniforms */
+
+} /* end namespace Rendering */
+
+#endif /* __RENDERING_UNIFORM_H__ */
