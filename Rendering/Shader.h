@@ -70,25 +70,61 @@ namespace Rendering
 			std::vector<UniformInfo> uniformInfos;
 		};
 
-		struct Uniform
+		class Uniform
 		{
-			Uniform(const std::string& _name, Uniforms::UniformType _type, GLint _location) :
-				name(_name),
-				type(_type),
-				location(_location)
+			/* ==================== Static variables and functions begin ==================== */
+		private:
+			static constexpr GLint INVALID_LOCATION = -1;
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			Uniform(const std::string& name, Uniforms::UniformType type, GLint location) :
+				m_name(name),
+				m_type(type),
+				m_location(location),
+				m_uniforms()
 			{
 			}
 
-			const std::string name;
-			const UniformType type;
-			const GLint location;
+			Uniform(const std::string& name, Uniforms::UniformType type, const std::vector<Uniform>& uniforms) :
+				m_name(name),
+				m_type(type),
+				m_location(INVALID_LOCATION),
+				m_uniforms(uniforms.begin(), uniforms.end())
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			//template <typename T>
+			//void Update(const T& value)
+			//{
+			//	glUniform1i(location, );
+			//}
+
+			inline const std::string& GetName() const { return m_name; }
+			inline UniformType GetType() const { return m_type; }
+			inline GLint GetLocation() const { return m_location; }
+			inline const std::vector<Uniform>& GetUniforms() const { return m_uniforms; }
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			const std::string m_name;
+			const UniformType m_type;
+			// TODO: Consider using union, because it's either location or uniforms member variable that is useful.
+			const GLint m_location;
+			const std::vector<Uniform> m_uniforms;
+			/* ==================== Non-static member variables end ==================== */
 		};
 
-		struct UniformStruct
-		{
-			std::string name;
-			std::vector<Uniform> uniforms;
-		};
+		//struct UniformStruct
+		//{
+		//	std::string name;
+		//	std::vector<Uniform> uniforms;
+		//};
 
 		constexpr bool IsPrimitiveUniformType(UniformType uniformType)
 		{
@@ -144,7 +180,7 @@ namespace Rendering
 		GLuint GetProgram() const { return m_programID; }
 		const std::vector<Uniforms::Uniform>& GetUniforms() const { return m_uniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
-		const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
+		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
 	private:
 		std::string LoadShaderData(const std::string& fileName) const;
 		void AddVertexShader(const std::string& vertexShaderText);
@@ -172,7 +208,7 @@ namespace Rendering
 		std::vector<GLuint> m_shaders;
 		std::vector<Uniforms::Uniform> m_uniforms;
 		std::map<std::string, GLint> m_uniformNameToLocationMap;
-		std::vector<Uniforms::UniformStruct> m_structUniforms;
+		//std::vector<Uniforms::UniformStruct> m_structUniforms;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShaderData */
 

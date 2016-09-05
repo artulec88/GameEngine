@@ -69,8 +69,6 @@
 #define SLOW_ASSERT(expr)
 #endif /* _DEBUG */
 
-#define INVALID_VALUE 0xFFFFFFFF
-
 #define GET_CONFIG_VALUE_UTILITY(cfgName, defValue) GET_CONFIG_VALUE("Utility", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_UTILITY(cfgName, defValue) GET_CONFIG_VALUE_STR("Utility", cfgName, defValue)
 
