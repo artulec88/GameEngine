@@ -52,8 +52,19 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		void Bind() const;
-		bool IsBound() const;
+		inline void Bind() const
+		{
+			//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
+			//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
+			glUseProgram(m_programID);
+			//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
+		}
+		inline bool IsBound() const
+		{
+			GLint currentProgramID;
+			glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
+			return currentProgramID == m_programID;
+		}
 		const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetUniforms() const { return m_uniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }

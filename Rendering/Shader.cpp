@@ -405,31 +405,6 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 	//}
 }
 
-//void Rendering::ShaderData::AddStructuralUniform(const std::string& uniformName, Uniforms::UniformType uniformType, const std::vector<Uniforms::UniformStructInfo>& structInfos)
-//{
-//	const std::string uniformTypeStr = Uniforms::ConvertUniformTypeToString(uniformType);
-//	DEBUG_LOG_RENDERING("Adding uniform \"", uniformName, "\" of type: ", uniformTypeStr);
-//	for (std::vector<Uniforms::UniformStructInfo>::const_iterator structInfoItr = structInfos.begin(); structInfoItr != structInfos.end(); ++structInfoItr)
-//	{
-//		//EMERGENCY_LOG_RENDERING("structInfoItr->name = \"", structInfoItr->name, "\". UniformTypeStr = \"", uniformTypeStr, "\".");
-//		if (structInfoItr->name == uniformTypeStr)
-//		{
-//			for (std::vector<Uniforms::UniformInfo>::const_iterator structMemberNameItr = structInfoItr->uniformInfos.begin(); structMemberNameItr != structInfoItr->uniformInfos.end(); ++structMemberNameItr)
-//			{
-//				const std::string name = uniformName + "." + structMemberNameItr->name;
-//				CHECK_CONDITION_EXIT_RENDERING(Uniforms::IsPrimitiveUniformType(structMemberNameItr->type), Utility::Logging::EMERGENCY,
-//					"The structural uniform cannot be added. Non-primitive uniform type found in the uniform info for the type \"", uniformTypeStr, "\".");
-//				GLint location = glGetUniformLocation(m_programID, name.c_str());
-//				CHECK_CONDITION_EXIT_RENDERING(location != Uniforms::Uniform::INVALID_LOCATION, Utility::Logging::EMERGENCY, "Invalid value of the location (",
-//					location, ") for the uniform \"", name, "\"");
-//				m_uniforms.push_back(new Uniforms::DirectionalLightUniform(name, structMemberNameItr->type, location));
-//				m_uniformNameToLocationMap.insert(std::make_pair(name, location));
-//			}
-//			break;
-//		}
-//	}
-//}
-
 std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindUniformStructInfos(const std::string& shaderText) const
 {
 	std::vector<Uniforms::UniformStructInfo> result;
@@ -544,20 +519,6 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 	return (itr != m_uniformNameToLocationMap.end());
 }
 
-void Rendering::ShaderData::Bind() const
-{
-	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
-	//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
-	glUseProgram(m_programID);
-	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
-}
-
-bool Rendering::ShaderData::IsBound() const
-{
-	GLint currentProgramID;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
-	return currentProgramID == m_programID;
-}
 /* ==================== Shader class begin ==================== */
 Rendering::Shader::Shader(const std::string& fileName) :
 	m_shaderData(fileName),
