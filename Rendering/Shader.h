@@ -53,7 +53,7 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetProgram() const { return m_programID; }
-		const std::vector<Uniforms::UniformBase*>& GetUniforms() const { return m_uniforms; }
+		const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetUniforms() const { return m_uniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
 	private:
@@ -81,7 +81,7 @@ namespace Rendering
 	private:
 		GLuint m_programID;
 		std::vector<GLuint> m_shaders;
-		std::vector<Uniforms::UniformBase*> m_uniforms;
+		std::vector<std::unique_ptr<Uniforms::UniformBase>> m_uniforms;
 		std::map<std::string, GLint> m_uniformNameToLocationMap;
 		//std::vector<Uniforms::UniformStruct> m_structUniforms;
 		/* ==================== Non-static member variables end ==================== */

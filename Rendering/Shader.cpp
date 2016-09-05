@@ -62,7 +62,7 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 	//		DELOCUST_LOG_RENDERING("Uniform \"", structUniformUniformsItr->name, "\" with type: ", structUniformUniformsItr->type, " has location: ", structUniformUniformsItr->location);
 	//	}
 	//}
-	for (std::vector<Uniforms::UniformBase*>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
+	for (std::vector<std::unique_ptr<Uniforms::UniformBase>>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
 	{
 		DEBUG_LOG_RENDERING("Uniform: \"", (*uniformItr)->GetName(), "\" with type: ", (*uniformItr)->GetType());
 	}
@@ -73,10 +73,6 @@ Rendering::ShaderData::~ShaderData()
 {
 	DELOCUST_LOG_RENDERING("ShaderData destructor called for program: ", m_programID, ". ");
 	DEBUG_LOG_RENDERING("Destroying shader data for shader program: ", m_programID);
-	for (auto uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
-	{
-		SAFE_DELETE(*uniformItr);
-	}
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
 		glDetachShader(m_programID, *shaderItr);
@@ -355,42 +351,42 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 		switch (uniformType)
 		{
 		case Uniforms::VEC_2D:
-			m_uniforms.push_back(new Uniforms::Vector2DUniform(uniformName, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::Vector2DUniform>(uniformName, location));
 			break;
 		case Uniforms::VEC_3D:
-			m_uniforms.push_back(new Uniforms::Vector3DUniform(uniformName, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::Vector3DUniform>(uniformName, location));
 			break;
 		case Uniforms::VEC_4D:
-			m_uniforms.push_back(new Uniforms::Vector4DUniform(uniformName, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::Vector4DUniform>(uniformName, location));
 			break;
 		case Uniforms::MATRIX_4x4:
-			m_uniforms.push_back(new Uniforms::MatrixUniform(uniformName, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::MatrixUniform>(uniformName, location));
 			break;
 		case Uniforms::INT:
-			m_uniforms.push_back(new Uniforms::IntUniform(uniformName, uniformType, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
 			break;
 		case Uniforms::REAL:
-			m_uniforms.push_back(new Uniforms::RealUniform(uniformName, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::RealUniform>(uniformName, location));
 			break;
 		case Uniforms::SAMPLER_2D:
-			m_uniforms.push_back(new Uniforms::IntUniform(uniformName, uniformType, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
 			break;
 		case Uniforms::SAMPLER_CUBE:
-			m_uniforms.push_back(new Uniforms::IntUniform(uniformName, uniformType, location));
+			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
 			break;
 			//case BASE_LIGHT:
 		case Uniforms::DIRECTIONAL_LIGHT:
-			m_uniforms.push_back(new Uniforms::DirectionalLightUniform(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
+			m_uniforms.push_back(std::make_unique<Uniforms::DirectionalLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".direction").c_str())));
 			break;
 		case Uniforms::POINT_LIGHT:
-			m_uniforms.push_back(new Uniforms::PointLightUniform(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
+			m_uniforms.push_back(std::make_unique<Uniforms::PointLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".attenuation.constant").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".attenuation.linear").c_str()), glGetUniformLocation(m_programID, (uniformName + ".attenuation.exponent").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".position").c_str()), glGetUniformLocation(m_programID, (uniformName + ".range").c_str())));
 			break;
 		case Uniforms::SPOT_LIGHT:
-			m_uniforms.push_back(new Uniforms::SpotLightUniform(uniformName, glGetUniformLocation(m_programID, (uniformName + ".pointLight.base.color").c_str()),
+			m_uniforms.push_back(std::make_unique<Uniforms::SpotLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".pointLight.base.color").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".pointLight.base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.constant").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.linear").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.exponent").c_str()),
 				glGetUniformLocation(m_programID, (uniformName + ".pointLight.position").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.range").c_str()),
@@ -622,7 +618,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 {
 	START_PROFILING_RENDERING(false, "");
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
-	for (std::vector<Uniforms::UniformBase*>::const_iterator uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
+	for (auto uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
 	{
 		(*uniformItr)->Update(transform, material, renderer);
 	}
