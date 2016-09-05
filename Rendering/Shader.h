@@ -52,7 +52,8 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		GLuint GetProgram() const { return m_programID; }
+		void Bind() const;
+		bool IsBound() const;
 		const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetUniforms() const { return m_uniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
@@ -120,12 +121,12 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		/// <summary> Binds the shader's program. </summary>
-		void Bind() const;
+		inline void Bind() const { m_shaderData.Bind(); }
 		/// <summary> Checks whether the shader's program is currently bound. </summary>
 		/// <returns> <code>true</code> if shader's program is bound and <code>false</code> otherwise. </returns>
-		bool IsBound() const;
+		inline bool IsBound() const { return m_shaderData.IsBound(); }
 		/// <summary> Unbinds the shader's program. </summary>
-		void Unbind() const;
+		inline void Unbind() const { glUseProgram(0); }
 		/// <summary> Updates the uniforms which come from the rendering engine itself. </summary>
 		/// <param name="renderer"> The rendering engine that defines the values for the uniforms. </param>
 		void UpdateRendererUniforms(const Renderer* renderer) const;
@@ -177,21 +178,6 @@ namespace Rendering
 		/// <param name="matrix"> The new <code>Matrix4D</code> value for the uniform. </param>
 		void SetUniformMatrix(const std::string& uniformName, const Math::Matrix4D& matrix) const;
 	private:
-		GLuint GetProgramID() const { return m_shaderData.GetProgram(); }
-		/// <summary>
-		/// Sets the directional light uniform. Although the <paramref name="directionalLight"/> is specified as the BaseLight instance
-		/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the BaseLight object
-		/// and the direction can be easily retrieved from the transformation.
-		/// </summary>
-		void SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const;
-		/// <summary>
-		/// Sets the point light uniform.
-		/// </summary>
-		void SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const;
-		/// <summary>
-		/// Sets the spot light uniform.
-		/// </summary>
-		void SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

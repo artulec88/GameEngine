@@ -270,6 +270,11 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Updates the directional light uniform. Although the <paramref name="directionalLight"/> is specified as the <code>BaseLight</code> instance
+			/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the <code>BaseLight</code> object
+			/// and the direction can be easily retrieved from the transformation.
+			/// </summary>
 			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
 			/* ==================== Non-static member functions end ==================== */
 
@@ -296,6 +301,9 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Sets the point light uniform.
+			/// </summary>
 			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
 			/* ==================== Non-static member functions end ==================== */
 
@@ -323,6 +331,9 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Sets the spot light uniform.
+			/// </summary>
 			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
 			/* ==================== Non-static member functions end ==================== */
 

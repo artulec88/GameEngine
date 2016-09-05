@@ -544,6 +544,20 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 	return (itr != m_uniformNameToLocationMap.end());
 }
 
+void Rendering::ShaderData::Bind() const
+{
+	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
+	//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
+	glUseProgram(m_programID);
+	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
+}
+
+bool Rendering::ShaderData::IsBound() const
+{
+	GLint currentProgramID;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
+	return currentProgramID == m_programID;
+}
 /* ==================== Shader class begin ==================== */
 Rendering::Shader::Shader(const std::string& fileName) :
 	m_shaderData(fileName),
@@ -579,27 +593,6 @@ Rendering::Shader::Shader(Shader&& shader) :
 	DELOCUST_LOG_RENDERING("Shader move constructor called for file name: \"", m_fileName, "\". ");
 	//shader.m_shaderData = nullptr;
 	//shader.m_fileName.clear();
-}
-
-void Rendering::Shader::Bind() const
-{
-	//Rendering::CheckErrorCode(__FUNCTION__, "Started shader binding");
-	//DELOCUST_LOG_RENDERING("Binding shader \"", m_fileName, "\".");
-	glUseProgram(m_shaderData.GetProgram());
-	//Rendering::CheckErrorCode(__FUNCTION__, "Finished shader binding");
-}
-
-bool Rendering::Shader::IsBound() const
-{
-	GLint currentProgramID;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgramID);
-	return currentProgramID == GetProgramID();
-}
-
-void Rendering::Shader::Unbind() const
-{
-	DELOCUST_LOG_RENDERING("The shader is being unbound");
-	glUseProgram(0);
 }
 
 void Rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
@@ -761,45 +754,3 @@ void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Ma
 	STOP_PROFILING_RENDERING("");
 }
 
-/**
-* BaseLight object is absolutely enough to get all the information necessary for the directional light.
-* Color and intensity are directly stored in the BaseLight object and the direction can be easily retrieved from the transformation.
-*/
-void Rendering::Shader::SetUniformDirectionalLight(const std::string& uniformName, const Lighting::BaseLight& directionalLight) const
-{
-	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Directional light:\n\tIntensity = ", directionalLight.GetIntensity(), "\n\tColor = ", directionalLight.GetColor().ToString(),
-		"\n\tDirection = ", directionalLight.GetTransform().GetTransformedRot().GetForward().ToString());
-	SetUniformVector3D(uniformName + ".direction", directionalLight.GetTransform().GetTransformedRot().GetForward());
-	SetUniformColor(uniformName + ".base.color", directionalLight.GetColor());
-	SetUniformf(uniformName + ".base.intensity", directionalLight.GetIntensity());
-	STOP_PROFILING_RENDERING("");
-}
-
-void Rendering::Shader::SetUniformPointLight(const std::string& uniformName, const Lighting::PointLight& pointLight) const
-{
-	START_PROFILING_RENDERING(false, "");
-	SetUniformColor(uniformName + ".base.color", pointLight.GetColor());
-	SetUniformf(uniformName + ".base.intensity", pointLight.GetIntensity());
-	SetUniformf(uniformName + ".attenuation.constant", pointLight.GetAttenuation().GetConstant());
-	SetUniformf(uniformName + ".attenuation.linear", pointLight.GetAttenuation().GetLinear());
-	SetUniformf(uniformName + ".attenuation.exponent", pointLight.GetAttenuation().GetExponent());
-	SetUniformVector3D(uniformName + ".position", pointLight.GetTransform().GetTransformedPos());
-	SetUniformf(uniformName + ".range", pointLight.GetRange());
-	STOP_PROFILING_RENDERING("");
-}
-
-void Rendering::Shader::SetUniformSpotLight(const std::string& uniformName, const Lighting::SpotLight& spotLight) const
-{
-	START_PROFILING_RENDERING(false, "");
-	SetUniformColor(uniformName + ".pointLight.base.color", spotLight.GetColor());
-	SetUniformf(uniformName + ".pointLight.base.intensity", spotLight.GetIntensity());
-	SetUniformf(uniformName + ".pointLight.attenuation.constant", spotLight.GetAttenuation().GetConstant());
-	SetUniformf(uniformName + ".pointLight.attenuation.linear", spotLight.GetAttenuation().GetLinear());
-	SetUniformf(uniformName + ".pointLight.attenuation.exponent", spotLight.GetAttenuation().GetExponent());
-	SetUniformVector3D(uniformName + ".pointLight.position", spotLight.GetTransform().GetTransformedPos());
-	SetUniformf(uniformName + ".pointLight.range", spotLight.GetRange());
-	SetUniformVector3D(uniformName + ".direction", spotLight.GetTransform().GetTransformedRot().GetForward());
-	SetUniformf(uniformName + ".cutoff", spotLight.GetCutoff());
-	STOP_PROFILING_RENDERING("");
-}

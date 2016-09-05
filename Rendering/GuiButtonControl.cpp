@@ -150,6 +150,7 @@ void Rendering::Controls::GuiButtonControl::Draw(const Shader& guiControlShader,
 	else if (m_iconTexture != NULL)
 	{
 		DELOCUST_LOG_RENDERING("Rendering button with icon");
+		//renderer.Render(*m_mesh, NULL, Math::Transform(), guiControlShader);
 		guiControlShader.Bind();
 		m_iconTexture->Bind(0);
 		guiControlShader.SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
