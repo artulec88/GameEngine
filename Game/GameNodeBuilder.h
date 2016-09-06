@@ -1,9 +1,9 @@
-#ifndef __ENGINE_GAME_NODE_BUILDER_H__
-#define __ENGINE_GAME_NODE_BUILDER_H__
+#ifndef __GAME_GAME_NODE_BUILDER_H__
+#define __GAME_GAME_NODE_BUILDER_H__
 
-#include "Engine.h"
-#include "GameNode.h"
-#include "GameManager.h"
+#include "Def.h"
+#include "Engine\GameNode.h"
+#include "Engine\GameManager.h"
 
 #include "Rendering\Texture.h"
 
@@ -12,18 +12,18 @@
 
 #include <string>
 
-namespace Engine
+namespace Game
 {
 
-	class CameraBuilder : public Utility::Builder<GameNode>
+	class CameraBuilder : public Utility::Builder<Engine::GameNode>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API CameraBuilder(GameManager* gameManager);
-		ENGINE_API virtual ~CameraBuilder(void);
+		CameraBuilder(Engine::GameManager* gameManager);
+		virtual ~CameraBuilder(void);
 		CameraBuilder(CameraBuilder& cameraBuilder) = delete;
 		CameraBuilder(CameraBuilder&& cameraBuilder) = delete;
 		CameraBuilder& operator=(const CameraBuilder& cameraBuilder) = delete;
@@ -34,8 +34,8 @@ namespace Engine
 	public:
 		virtual void BuildPart1();
 		virtual void BuildPart2();
-		ENGINE_API void SetCameraIndex(int cameraIndex);
-		ENGINE_API void SetEntityToFollow(GameNode* gameNodeToFollow);
+		void SetCameraIndex(int cameraIndex);
+		void SetEntityToFollow(Engine::GameNode* gameNodeToFollow);
 	protected:
 		void SetupCameraTransform();
 		void SetupCameraParams();
@@ -43,7 +43,7 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		GameManager* m_gameManager;
+		Engine::GameManager* m_gameManager;
 		const Math::Vector3D M_DEFAULT_CAMERA_POS;
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X;
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y;
@@ -59,19 +59,19 @@ namespace Engine
 		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 		int m_cameraIndex;
 		std::string m_cameraIndexStr;
-		GameNode* m_gameNodeToFollow;
+		Engine::GameNode* m_gameNodeToFollow;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 
-	class SkyboxBuilder : public Utility::Builder<GameNode>
+	class SkyboxBuilder : public Utility::Builder<Engine::GameNode>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API SkyboxBuilder();
-		ENGINE_API virtual ~SkyboxBuilder(void);
+		SkyboxBuilder();
+		virtual ~SkyboxBuilder(void);
 		SkyboxBuilder(SkyboxBuilder& skyboxBuilder) = delete;
 		SkyboxBuilder(SkyboxBuilder&& skyboxBuilder) = delete;
 		SkyboxBuilder& operator=(const SkyboxBuilder& skyboxBuilder) = delete;
@@ -90,6 +90,6 @@ namespace Engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SkyboxBuilder */
 
-} /* end namespace Engine */
+} /* end namespace Game */
 
-#endif // __ENGINE_GAME_NODE_BUILDER_H__
+#endif // __GAME_GAME_NODE_BUILDER_H__

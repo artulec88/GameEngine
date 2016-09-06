@@ -158,7 +158,6 @@
     <ClInclude Include="IActionHandler.h" />
     <ClInclude Include="AiComponent.h" />
     <ClInclude Include="BillboardRendererComponent.h" />
-    <ClInclude Include="GameNodeBuilder.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
@@ -207,7 +206,6 @@
     <ClCompile Include="AABBColliderComponent.cpp" />
     <ClCompile Include="AiComponent.cpp" />
     <ClCompile Include="BillboardRendererComponent.cpp" />
-    <ClCompile Include="GameNodeBuilder.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="DirectionalLightComponent.cpp" />

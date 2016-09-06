@@ -30,13 +30,13 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraComponent(Rendering::Camera* camera);
-		virtual ~CameraComponent(void);
+		ENGINE_API CameraComponent(Rendering::Camera* camera);
+		ENGINE_API virtual ~CameraComponent(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void Update(Math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -58,10 +58,10 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void MouseButtonEvent(int button, int action, int mods);
-		virtual void MousePosEvent(double xPos, double yPos);
-		virtual void ScrollEvent(double xOffset, double yOffset);
-		virtual void Update(Math::Real deltaTime);
+		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
+		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
+		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
+		ENGINE_API virtual void Update(Math::Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -85,17 +85,17 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+		ENGINE_API CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 			Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
-		virtual ~CameraFollowComponent(void);
+		ENGINE_API virtual ~CameraFollowComponent(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Update(Math::Real delta);
-		virtual void MouseButtonEvent(int button, int action, int mods);
-		virtual void MousePosEvent(double xPos, double yPos);
-		virtual void ScrollEvent(double xOffset, double yOffset);
+		ENGINE_API virtual void Update(Math::Real delta);
+		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
+		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
+		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

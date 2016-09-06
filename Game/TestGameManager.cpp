@@ -5,8 +5,8 @@
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
 #include "LoadGameState.h"
+#include "GameNodeBuilder.h"
 
-#include "Engine\GameNodeBuilder.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\BillboardRendererComponent.h"
 #include "Engine\MeshRendererComponent.h"
@@ -502,7 +502,7 @@ void Game::TestGameManager::Load()
 	Engine::GameNode* playerNode = new Engine::GameNode();
 	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
 	const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
-	const Math::Real playerPositionY = 0.02f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.0005f);
 	playerNode->CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
@@ -572,7 +572,7 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
-	Engine::CameraBuilder cameraBuilder(this);
+	CameraBuilder cameraBuilder(this);
 	Utility::BuilderDirector<Engine::GameNode> cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
@@ -592,7 +592,7 @@ void Game::TestGameManager::AddSkybox() const
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
-	Engine::SkyboxBuilder skyboxBuilder;
+	SkyboxBuilder skyboxBuilder;
 	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
 	//GameNode* skyboxNode = skyboxBuilder.Get();

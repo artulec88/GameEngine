@@ -1,15 +1,16 @@
-#include "StdAfx.h"
 #include "GameNodeBuilder.h"
-#include "CoreEngine.h"
-#include "CameraComponent.h"
-#include "MeshRendererComponent.h"
-#include "ParticleGeneratorComponent.h"
+
+#include "Engine\CoreEngine.h"
+#include "Engine\CameraComponent.h"
+#include "Engine\MeshRendererComponent.h"
+#include "Engine\ParticleGeneratorComponent.h"
+
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
 
 /* ==================== CameraBuilder implementation begin ==================== */
-Engine::CameraBuilder::CameraBuilder(GameManager* gameManager) :
-	Utility::Builder<GameNode>(),
+Game::CameraBuilder::CameraBuilder(Engine::GameManager* gameManager) :
+	Utility::Builder<Engine::GameNode>(),
 	m_gameManager(gameManager),
 	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_ENGINE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosZ", 0.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleX", -45.0f)),
@@ -29,11 +30,11 @@ Engine::CameraBuilder::CameraBuilder(GameManager* gameManager) :
 {
 }
 
-Engine::CameraBuilder::~CameraBuilder()
+Game::CameraBuilder::~CameraBuilder()
 {
 }
 
-void Engine::CameraBuilder::SetCameraIndex(int cameraIndex)
+void Game::CameraBuilder::SetCameraIndex(int cameraIndex)
 {
 	m_cameraIndex = cameraIndex;
 	std::stringstream ss("");
@@ -41,25 +42,25 @@ void Engine::CameraBuilder::SetCameraIndex(int cameraIndex)
 	m_cameraIndexStr = ss.str();
 }
 
-void Engine::CameraBuilder::SetEntityToFollow(GameNode* gameNodeToFollow)
+void Game::CameraBuilder::SetEntityToFollow(Engine::GameNode* gameNodeToFollow)
 {
 	m_gameNodeToFollow = gameNodeToFollow;
 }
 
-void Engine::CameraBuilder::BuildPart1()
+void Game::CameraBuilder::BuildPart1()
 {
 	SetupCameraTransform();
 }
 
-void Engine::CameraBuilder::BuildPart2()
+void Game::CameraBuilder::BuildPart2()
 {
 	SetupCameraParams();
 }
 
-void Engine::CameraBuilder::SetupCameraTransform()
+void Game::CameraBuilder::SetupCameraTransform()
 {
 	//m_object = std::make_unique<GameNode>();
-	m_object = new GameNode();
+	m_object = new Engine::GameNode();
 
 	// Setting position
 	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
@@ -77,7 +78,7 @@ void Engine::CameraBuilder::SetupCameraTransform()
 	m_object->GetTransform().SetRot(rot);
 }
 
-void Engine::CameraBuilder::SetupCameraParams()
+void Game::CameraBuilder::SetupCameraParams()
 {
 	// Setting camera parameters
 	Math::Angle fov(GET_CONFIG_VALUE_ENGINE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)));
@@ -93,13 +94,13 @@ void Engine::CameraBuilder::SetupCameraParams()
 
 	Rendering::Camera* camera = new Rendering::Camera(m_object->GetTransform().GetTransformedPos(), m_object->GetTransform().GetTransformedRot(), fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	Engine::CameraComponent* cameraComponent = new Engine::CameraFollowComponent(camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
-	//Engine::CameraComponent* camera = new Engine::CameraMoveComponent(fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
+	//Engine::CameraComponent* cameraComponent = new Engine::CameraMoveComponent(camera);
 	m_object->AddComponent(cameraComponent);
 	m_gameManager->AddCamera(camera);
 }
 
 #ifdef BUILD_MESH_RENDERER
-void Engine::CameraBuilder::BuildMeshRenderer()
+void Game::CameraBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around camera node position to let the user see the camera
 	//m_gameNode->AddComponent(new MeshRenderer(
@@ -112,16 +113,16 @@ void Engine::CameraBuilder::BuildMeshRenderer()
 
 
 /* ==================== SkyboxBuilder implementation begin ==================== */
-Engine::SkyboxBuilder::SkyboxBuilder() :
+Game::SkyboxBuilder::SkyboxBuilder() :
 	Builder()
 {
 }
 
-Engine::SkyboxBuilder::~SkyboxBuilder()
+Game::SkyboxBuilder::~SkyboxBuilder()
 {
 }
 
-void Engine::SkyboxBuilder::BuildPart1()
+void Game::SkyboxBuilder::BuildPart1()
 {
 	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxNightDirectory", "SkyboxDebug");
@@ -135,25 +136,25 @@ void Engine::SkyboxBuilder::BuildPart1()
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
 	//m_object = std::make_unique<GameNode>();
-	m_object = new GameNode();
+	m_object = new Engine::GameNode();
 	m_object->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_object->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
-	m_object->AddComponent(new MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_ENGINE("skyboxModel", "cube.obj")), skyboxMaterial));
+	m_object->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_ENGINE("skyboxModel", "cube.obj")), skyboxMaterial));
 
-	CoreEngine::GetCoreEngine()->AddSkyboxNode(m_object);
+	Engine::CoreEngine::GetCoreEngine()->AddSkyboxNode(m_object);
 }
 
-void Engine::SkyboxBuilder::BuildPart2()
+void Game::SkyboxBuilder::BuildPart2()
 {
 }
 
 #ifdef BUILD_MESH_RENDERER
-void Engine::SkyboxBuilder::BuildMeshRenderer()
+void Game::SkyboxBuilder::BuildMeshRenderer()
 {
 }
 #endif
 
-Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
+Rendering::Texture* Game::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
 {
 	//START_PROFILING_ENGINE(true, "");
 	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
@@ -165,7 +166,7 @@ Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::s
 	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
 
 	Utility::FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
+	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(Engine::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
 	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
 	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
@@ -220,4 +221,4 @@ Rendering::Texture* Engine::SkyboxBuilder::InitializeCubeMapTexture(const std::s
 	//STOP_PROFILING("");
 	return cubeMapTexture;
 }
-/* ==================== CameraBuilder implementation end ==================== */
+/* ==================== SkyboxBuilder implementation end ==================== */

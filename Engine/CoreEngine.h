@@ -132,10 +132,10 @@ namespace Engine
 		const std::string& GetFontsDirectory() const { return m_fontsDirectory; }
 		const std::string& GetAudioDirectory() const { return m_audioDirectory; }
 
-		void AddSkyboxNode(GameNode* skyboxNode);
-		void AddWaterNode(GameNode* waterNode);
-		void AddTerrainNode(GameNode* terrainNode);
-		void AddBillboardNode(GameNode* billboardNode);
+		ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
+		ENGINE_API void AddWaterNode(GameNode* waterNode);
+		ENGINE_API void AddTerrainNode(GameNode* terrainNode);
+		ENGINE_API void AddBillboardNode(GameNode* billboardNode);
 		ENGINE_API void AddPhysicsObject(Physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);

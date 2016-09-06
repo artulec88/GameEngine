@@ -145,7 +145,7 @@ namespace Engine
 
 		Rendering::Camera* GetCurrentCamera() { return m_cameras[m_currentCameraIndex]; }
 		unsigned int GetCurrentCameraIndex() const { return m_currentCameraIndex; }
-		void AddCamera(Rendering::Camera* camera);
+		ENGINE_API void AddCamera(Rendering::Camera* camera);
 		unsigned int SetCurrentCamera(unsigned int cameraIndex);
 		unsigned int NextCamera();
 		unsigned int PrevCamera();

@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameNodeBuilder.cpp" />
     <ClCompile Include="IntroGameState.cpp" />
     <ClCompile Include="LoadGameCommand.cpp" />
     <ClCompile Include="LoadGameState.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Def.h" />
+    <ClInclude Include="GameNodeBuilder.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="IntroGameState.h" />
     <ClInclude Include="LoadGameCommand.h" />
