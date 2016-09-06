@@ -88,6 +88,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	m_programID(std::move(shaderData.m_programID)),
 	m_shaders(std::move(shaderData.m_shaders)),
 	m_uniforms(std::move(shaderData.m_uniforms)),
+	//m_rendererUniforms(std::move(shaderData.m_rendererUniforms)),
 	m_uniformNameToLocationMap(std::move(shaderData.m_uniformNameToLocationMap))
 	//m_structUniforms(std::move(shaderData.m_structUniforms))
 {
@@ -95,6 +96,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	shaderData.m_programID = 0;
 	shaderData.m_shaders.clear();
 	shaderData.m_uniforms.clear();
+	//shaderData.m_rendererUniforms.clear();
 	shaderData.m_uniformNameToLocationMap.clear();
 	//shaderData.m_structUniforms.clear();
 }
@@ -345,64 +347,82 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 
 		const std::string uniformName = uniformLine.substr(begin + 1);
 		const Uniforms::UniformType uniformType = Uniforms::ConvertStringToUniformType(uniformLine.substr(0, begin).c_str());
-		GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
-		CHECK_CONDITION_EXIT_RENDERING(location != Uniforms::Uniform::INVALID_LOCATION, Utility::Logging::EMERGENCY, "Invalid value of the location (",
-			location, ") for the uniform \"", uniformName, "\"");
 		switch (uniformType)
 		{
 		case Uniforms::VEC_2D:
-			m_uniforms.push_back(std::make_unique<Uniforms::Vector2DUniform>(uniformName, location));
+			AddUniform<Uniforms::Vector2DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::VEC_3D:
-			m_uniforms.push_back(std::make_unique<Uniforms::Vector3DUniform>(uniformName, location));
+			AddUniform<Uniforms::Vector3DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::VEC_4D:
-			m_uniforms.push_back(std::make_unique<Uniforms::Vector4DUniform>(uniformName, location));
+			AddUniform<Uniforms::Vector4DUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::MATRIX_4x4:
-			m_uniforms.push_back(std::make_unique<Uniforms::MatrixUniform>(uniformName, location));
+			AddUniform<Uniforms::MatrixUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::INT:
-			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
+			AddUniform<Uniforms::IntUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::REAL:
-			m_uniforms.push_back(std::make_unique<Uniforms::RealUniform>(uniformName, location));
+			AddUniform<Uniforms::RealUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::SAMPLER_2D:
-			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
+			AddUniform<Uniforms::TextureUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 		case Uniforms::SAMPLER_CUBE:
-			m_uniforms.push_back(std::make_unique<Uniforms::IntUniform>(uniformName, uniformType, location));
+			AddUniform<Uniforms::CubeTextureUniform>(uniformName, FindUniformLocation(uniformName));
 			break;
 			//case BASE_LIGHT:
 		case Uniforms::DIRECTIONAL_LIGHT:
-			m_uniforms.push_back(std::make_unique<Uniforms::DirectionalLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".direction").c_str())));
+			AddUniform<Uniforms::DirectionalLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
+				FindUniformLocation(uniformName + ".base.intensity"), FindUniformLocation(uniformName + ".direction"));
 			break;
 		case Uniforms::POINT_LIGHT:
-			m_uniforms.push_back(std::make_unique<Uniforms::PointLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".base.color").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".attenuation.constant").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".attenuation.linear").c_str()), glGetUniformLocation(m_programID, (uniformName + ".attenuation.exponent").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".position").c_str()), glGetUniformLocation(m_programID, (uniformName + ".range").c_str())));
+			AddUniform<Uniforms::PointLightUniform>(uniformName, FindUniformLocation(uniformName + ".base.color"),
+				FindUniformLocation(uniformName + ".base.intensity"), FindUniformLocation(uniformName + ".attenuation.constant"),
+				FindUniformLocation(uniformName + ".attenuation.linear"), FindUniformLocation(uniformName + ".attenuation.exponent"),
+				FindUniformLocation(uniformName + ".position"), FindUniformLocation(uniformName + ".range"));
 			break;
 		case Uniforms::SPOT_LIGHT:
-			m_uniforms.push_back(std::make_unique<Uniforms::SpotLightUniform>(uniformName, glGetUniformLocation(m_programID, (uniformName + ".pointLight.base.color").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".pointLight.base.intensity").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.constant").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.linear").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.attenuation.exponent").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".pointLight.position").c_str()), glGetUniformLocation(m_programID, (uniformName + ".pointLight.range").c_str()),
-				glGetUniformLocation(m_programID, (uniformName + ".direction").c_str()), glGetUniformLocation(m_programID, (uniformName + ".cutoff").c_str())));
+			AddUniform<Uniforms::SpotLightUniform>(uniformName, FindUniformLocation(uniformName + ".pointLight.base.color"),
+				FindUniformLocation(uniformName + ".pointLight.base.intensity"), FindUniformLocation(uniformName + ".pointLight.attenuation.constant"),
+				FindUniformLocation(uniformName + ".pointLight.attenuation.linear"), FindUniformLocation(uniformName + ".pointLight.attenuation.exponent"),
+				FindUniformLocation(uniformName + ".pointLight.position"), FindUniformLocation(uniformName + ".pointLight.range"),
+				FindUniformLocation(uniformName + ".direction"), FindUniformLocation(uniformName + ".cutoff"));
 			break;
 			//case ATTENUATION:
 		default:
 			ERROR_LOG_RENDERING("Cannot add uniform with name \"", uniformName, "\". Incorrect uniform type: ", uniformType, " specified.");
 		}
-		m_uniformNameToLocationMap.insert(std::make_pair(uniformName, location));
 		uniformKeywordLocation = shaderText.find(UNIFORM_KEYWORD, uniformKeywordLocation + std::string(UNIFORM_KEYWORD).length());
 	}
 	//for (std::vector<Uniforms::Uniform>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
 	//{
 	//	ERROR_LOG_RENDERING("Uniform \"", uniformItr->name, "\" of type ", uniformItr->type, " has location ", uniformItr->location);
 	//}
+}
+
+template <class T, typename... Args>
+void Rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&... args)
+{
+	//if (uniformName.substr(0, 2) == "R_")
+	//{
+	//	m_rendererUniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+	//}
+	//else
+	//{
+	//	m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+	//}
+	m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+}
+
+GLint Rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
+{
+	GLint location = glGetUniformLocation(m_programID, uniformName.c_str());
+	CHECK_CONDITION_RENDERING(location != Uniforms::UniformBase::INVALID_LOCATION, Utility::Logging::ERR, "Invalid location for the uniform \"", uniformName, "\".");
+	m_uniformNameToLocationMap[uniformName] = location;
+	return location;
 }
 
 std::vector<Rendering::Uniforms::UniformStructInfo> Rendering::ShaderData::FindUniformStructInfos(const std::string& shaderText) const
@@ -558,6 +578,13 @@ Rendering::Shader::Shader(Shader&& shader) :
 
 void Rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
 {
+	//START_PROFILING_RENDERING(false, "");
+	//CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
+	//for (auto uniformItr = m_shaderData.GetRendererUniforms().begin(); uniformItr != m_shaderData.GetRendererUniforms().end(); ++uniformItr)
+	//{
+	//	(*uniformItr)->Update(renderer, NULL, NULL);
+	//}
+	//STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::UpdateMaterialUniforms(const Material* material) const
@@ -574,7 +601,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
 	for (auto uniformItr = m_shaderData.GetUniforms().begin(); uniformItr != m_shaderData.GetUniforms().end(); ++uniformItr)
 	{
-		(*uniformItr)->Update(transform, material, renderer);
+		(*uniformItr)->Update(renderer, &transform, material);
 	}
 	STOP_PROFILING_RENDERING("");
 }

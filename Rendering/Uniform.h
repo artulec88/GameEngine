@@ -59,7 +59,7 @@ namespace Rendering
 		class UniformBase
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		protected:
+		public:
 			static constexpr GLint INVALID_LOCATION = -1;
 			/* ==================== Static variables and functions end ==================== */
 
@@ -71,7 +71,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer) = 0;
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material) = 0;
 
 			inline const std::string& GetName() const { return m_name; }
 			inline const std::string& GetPrefix() const { return m_prefix; }
@@ -118,19 +118,61 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			IntUniform(const std::string& name, Uniforms::UniformType type, GLint location);
+			IntUniform(const std::string& name, GLint location);
 			virtual ~IntUniform();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 		protected:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class IntUniform */
+
+		class TextureUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			TextureUniform(const std::string& name, GLint location);
+			virtual ~TextureUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
+		protected:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class TextureUniform */
+
+		class CubeTextureUniform : public SimpleUniform
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			CubeTextureUniform(const std::string& name, GLint location);
+			virtual ~CubeTextureUniform();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
+		protected:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class CubeTextureUniform */
 
 		class RealUniform : public SimpleUniform
 		{
@@ -145,7 +187,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 		protected:
 			/* ==================== Non-static member functions end ==================== */
 
@@ -166,7 +208,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -186,7 +228,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -206,7 +248,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -226,7 +268,7 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -275,7 +317,10 @@ namespace Rendering
 			/// it holds all the information necessary for the directional light. Color and intensity are directly stored in the <code>BaseLight</code> object
 			/// and the direction can be easily retrieved from the transformation.
 			/// </summary>
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/// <param name="renderer"> Pointer to rendering engine. </param>
+			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
+			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -304,7 +349,10 @@ namespace Rendering
 			/// <summary>
 			/// Sets the point light uniform.
 			/// </summary>
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/// <param name="renderer"> Pointer to rendering engine. </param>
+			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
+			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -334,7 +382,10 @@ namespace Rendering
 			/// <summary>
 			/// Sets the spot light uniform.
 			/// </summary>
-			virtual void Update(const Math::Transform& transform, const Material* material, const Renderer* renderer);
+			/// <param name="renderer"> Pointer to rendering engine. </param>
+			/// <param name="transform"> Pointer to transform of the object we want to update uniforms for. </param>
+			/// <param name="material"> Pointer to material of the object we want to update uniforms for. </param>
+			virtual void Update(const Renderer* renderer, const Math::Transform* transform, const Material* material);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

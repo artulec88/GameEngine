@@ -338,7 +338,7 @@ void Rendering::Renderer::FinalizeRenderScene(const Shader& filterShader)
 void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const
 {
 	//START_PROFILING_RENDERING(true, "");
-	shader.Bind();
+	//shader.Bind();
 	shader.UpdateUniforms(transform, material, this);
 	mesh.Draw();
 	//STOP_PROFILING_RENDERING;
@@ -602,6 +602,7 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader.Bind();
+	//filterShader.UpdateRendererUniforms(this);
 	filterShader.UpdateUniforms(m_filterTransform, &m_filterMaterial, this);
 	m_filterMesh.Draw();
 

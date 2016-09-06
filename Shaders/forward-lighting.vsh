@@ -7,7 +7,7 @@ out float gl_ClipDistance[1];
 
 uniform mat4 T_model;
 uniform mat4 T_MVP;
-uniform mat4 R_lightMatrix;
+uniform mat4 T_lightMatrix;
 
 uniform vec4 R_clipPlane;
 
@@ -20,7 +20,7 @@ void main()
 {
     gl_Position = T_MVP * vec4(position, 1.0);
 	texCoord0 = texCoord;
-    shadowMapCoords0 = R_lightMatrix * vec4(position, 1.0);
+    shadowMapCoords0 = T_lightMatrix * vec4(position, 1.0);
 	vec4 worldPosition = T_model * vec4(position, 1.0);
     worldPos0 = worldPosition.xyz;
 	

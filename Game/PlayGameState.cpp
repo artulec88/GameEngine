@@ -338,9 +338,15 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(renderer->IsAmbientLightEnabled(), Utility::Logging::DEBUG, "Ambient light is disabled by the rendering engine.");
-	m_gameManager->GetRootGameNode().Render(GetAmbientShader(renderer->GetFogInfo()), renderer);
+	const Rendering::Shader& ambientShader = GetAmbientShader(renderer->GetFogInfo());
+	renderer->BindShader(ambientShader);
+	//renderer->UpdateRendererUniforms(ambientShader);
+	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
 	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
-	m_gameManager->GetTerrainNode()->Render(GetAmbientTerrainShader(renderer->GetFogInfo()), renderer);
+	const Rendering::Shader& ambientTerrainShader = GetAmbientTerrainShader(renderer->GetFogInfo());
+	renderer->BindShader(ambientTerrainShader);
+	//renderer->UpdateRendererUniforms(ambientTerrainShader);
+	m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
 }
 
 void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
@@ -375,14 +381,21 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				m_gameManager->GetRootGameNode().Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP), renderer);
-				m_gameManager->GetTerrainNode()->Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP), renderer); // TODO: Probably unnecessary
+				const Rendering::Shader& shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP);
+				renderer->BindShader(shadowMapShader);
+				//renderer->UpdateRendererUniforms(shadowMapShader);
+				m_gameManager->GetRootGameNode().Render(shadowMapShader, renderer);
+				m_gameManager->GetTerrainNode()->Render(shadowMapShader, renderer); // TODO: Probably unnecessary
 				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_GAUSSIAN_BLUR));
 			}
 
 			renderer->InitLightRendering();
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
+			renderer->BindShader(currentLight->GetShader());
+			//renderer->UpdateRendererUniforms(currentLight->GetShader());
 			m_gameManager->GetRootGameNode().Render(currentLight->GetShader(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShader());
+			//renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
 			m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
 			renderer->FinalizeLightRendering();
 		}
@@ -414,7 +427,10 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	renderer->SetDepthFuncLessOrEqual();
-	skyboxNode->Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SKYBOX), renderer);
+	const Rendering::Shader& skyboxShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SKYBOX);
+	renderer->BindShader(skyboxShader);
+	//renderer->UpdateRendererUniforms(skyboxShader);
+	skyboxNode->Render(skyboxShader, renderer);
 	renderer->SetDepthFuncDefault();
 	renderer->SetCullFaceDefault();
 	//glEnable(GL_DEPTH_TEST);
@@ -547,7 +563,10 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//		(*waterNodeItr)->Render(waterNoDirectionalLightShader, this);
 	//	}
 	//}
-	m_gameManager->GetWaterNode()->Render(GetWaterShader(renderer), renderer);
+	const Rendering::Shader& waterShader = GetWaterShader(renderer);
+	renderer->BindShader(waterShader);
+	//renderer->UpdateRendererUniforms(waterShader);
+	m_gameManager->GetWaterNode()->Render(waterShader, renderer);
 	STOP_PROFILING_GAME("");
 }
 
@@ -561,9 +580,12 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	const Rendering::Shader& billboardShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD);
+	renderer->BindShader(billboardShader);
+	//renderer->UpdateRendererUniforms(billboardShader);
 	for (std::vector<Engine::GameNode*>::const_iterator billboardsNodeItr = m_gameManager->GetBillboardNodes().begin(); billboardsNodeItr != m_gameManager->GetBillboardNodes().end(); ++billboardsNodeItr)
 	{
-		(*billboardsNodeItr)->Render(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD), renderer);
+		(*billboardsNodeItr)->Render(billboardShader, renderer);
 	}
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);
@@ -575,13 +597,16 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
+	const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
+	renderer->BindShader(particlesShader);
+	//renderer->UpdateRendererUniforms(particlesShader);
 	for (std::vector<Engine::ParticleGenerator*>::const_iterator particleGeneratorItr = m_gameManager->GetParticleGenerators().begin(); particleGeneratorItr != m_gameManager->GetParticleGenerators().end(); ++particleGeneratorItr)
 	{
 		//if (!(*particleGeneratorItr)->GetTexture()->IsAdditive())
 		//{
 			(*particleGeneratorItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES), (*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles(), (*particleGeneratorItr)->GetAliveParticlesCount());
+		renderer->RenderParticles(particlesShader, (*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles(), (*particleGeneratorItr)->GetAliveParticlesCount());
 	}
 	STOP_PROFILING_GAME("");
 }

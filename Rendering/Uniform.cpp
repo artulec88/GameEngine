@@ -54,8 +54,8 @@ Rendering::Uniforms::SimpleUniform::~SimpleUniform()
 
 
 /* ==================== IntUniform class implementation begin ==================== */
-Rendering::Uniforms::IntUniform::IntUniform(const std::string& name, Uniforms::UniformType type, GLint location) :
-	SimpleUniform(name, type, location)
+Rendering::Uniforms::IntUniform::IntUniform(const std::string& name, GLint location) :
+	SimpleUniform(name, INT, location)
 {
 }
 
@@ -63,28 +63,68 @@ Rendering::Uniforms::IntUniform::~IntUniform()
 {
 }
 
-void Rendering::Uniforms::IntUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::IntUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
-	if (GetType() == SAMPLER_2D || GetType() == SAMPLER_CUBE)
-	{
-		unsigned int samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
-		//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
-		if (GetUnprefixedName() == "cubeShadowMap")
-		{
-			renderer->BindCubeShadowMap(samplerSlot);
-		}
-		else
-		{
-			unsigned int multitextureIndex = 0; // used only by the multitextures
-			const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-			CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
-			texture->Bind(samplerSlot, multitextureIndex);
-		}
-		glUniform1i(GetLocation(), samplerSlot);
-	}
+	//glUniform1i(GetLocation(), renderer->GetInt());
 }
 
 /* ==================== IntUniform class implementation end ==================== */
+
+
+/* ==================== TextureUniform class implementation begin ==================== */
+Rendering::Uniforms::TextureUniform::TextureUniform(const std::string& name, GLint location) :
+	SimpleUniform(name, SAMPLER_2D, location)
+{
+}
+
+Rendering::Uniforms::TextureUniform::~TextureUniform()
+{
+}
+
+void Rendering::Uniforms::TextureUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
+{
+	auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
+	unsigned int multitextureIndex = 0; // used only by the multitextures
+	const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
+	CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
+	texture->Bind(samplerSlot, multitextureIndex);
+	glUniform1i(GetLocation(), samplerSlot);
+}
+
+/* ==================== TextureUniform class implementation end ==================== */
+
+
+/* ==================== CubeTextureUniform class implementation begin ==================== */
+Rendering::Uniforms::CubeTextureUniform::CubeTextureUniform(const std::string& name, GLint location) :
+	SimpleUniform(name, SAMPLER_CUBE, location)
+{
+}
+
+Rendering::Uniforms::CubeTextureUniform::~CubeTextureUniform()
+{
+}
+
+void Rendering::Uniforms::CubeTextureUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
+{
+	auto samplerSlot = renderer->GetSamplerSlot((GetPrefix() == "R_") ? GetUnprefixedName() : GetName());
+	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
+	if (GetUnprefixedName() == "cubeShadowMap")
+	{
+		renderer->BindCubeShadowMap(samplerSlot);
+	}
+	else
+	{
+		unsigned int multitextureIndex = 0; // used only by the multitextures
+		const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
+		CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
+		texture->Bind(samplerSlot, multitextureIndex);
+	}
+	glUniform1i(GetLocation(), samplerSlot);
+}
+
+/* ==================== CubeTextureUniform class implementation end ==================== */
+
 
 /* ==================== RealUniform class implementation begin ==================== */
 Rendering::Uniforms::RealUniform::RealUniform(const std::string& name, GLint location) :
@@ -96,7 +136,7 @@ Rendering::Uniforms::RealUniform::~RealUniform()
 {
 }
 
-void Rendering::Uniforms::RealUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::RealUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -104,7 +144,7 @@ void Rendering::Uniforms::RealUniform::Update(const Math::Transform& transform, 
 	}
 	else if (GetName() == "T_scale")
 	{
-		glUniform1f(GetLocation(), transform.GetScale());
+		glUniform1f(GetLocation(), transform->GetScale());
 	}
 	else
 	{
@@ -125,7 +165,7 @@ Rendering::Uniforms::Vector2DUniform::~Vector2DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector2DUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::Vector2DUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	const Math::Vector2D& vector = renderer->GetVec2D(GetUnprefixedName());
 	glUniform2f(GetLocation(), vector.GetX(), vector.GetY());
@@ -143,7 +183,7 @@ Rendering::Uniforms::Vector3DUniform::~Vector3DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector3DUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::Vector3DUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -174,7 +214,7 @@ Rendering::Uniforms::Vector4DUniform::~Vector4DUniform()
 {
 }
 
-void Rendering::Uniforms::Vector4DUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::Vector4DUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	if (GetPrefix() == "R_")
 	{
@@ -200,22 +240,22 @@ Rendering::Uniforms::MatrixUniform::~MatrixUniform()
 {
 }
 
-void Rendering::Uniforms::MatrixUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::MatrixUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
-	if (GetName() == "R_lightMatrix")
+	if (GetName() == "T_lightMatrix")
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &((renderer->GetLightMatrix() * transform.GetTransformation())[0][0]));
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &((renderer->GetLightMatrix() * transform->GetTransformation())[0][0]));
 #else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetLightMatrix() * transform.GetTransformation()).At(0));
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetLightMatrix() * transform->GetTransformation()).At(0));
 #endif
 	}
 	else if (GetName() == "T_MVP")
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(renderer->GetCurrentCamera().GetViewProjection() * transform.GetTransformation())[0][0]);
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(renderer->GetCurrentCamera().GetViewProjection() * transform->GetTransformation())[0][0]);
 #else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetCurrentCamera().GetViewProjection() * transform.GetTransformation()).At(0));
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetCurrentCamera().GetViewProjection() * transform->GetTransformation()).At(0));
 #endif
 	}
 	else if (GetName() == "T_VP")
@@ -229,9 +269,9 @@ void Rendering::Uniforms::MatrixUniform::Update(const Math::Transform& transform
 	else if (GetName() == "T_model")
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(transform.GetTransformation()[0][0]));
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(transform->GetTransformation()[0][0]));
 #else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, transform.GetTransformation().At(0));
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, transform->GetTransformation().At(0));
 #endif
 	}
 }
@@ -268,7 +308,7 @@ Rendering::Uniforms::DirectionalLightUniform::~DirectionalLightUniform()
 {
 }
 
-void Rendering::Uniforms::DirectionalLightUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::DirectionalLightUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	const Lighting::BaseLight* currentLight = renderer->GetCurrentLight();
 	const Math::Vector3D& forwardVector = currentLight->GetTransform().GetTransformedRot().GetForward();
@@ -311,7 +351,7 @@ Rendering::Uniforms::PointLightUniform::~PointLightUniform()
 {
 }
 
-void Rendering::Uniforms::PointLightUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::PointLightUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	const Lighting::PointLight* pointLight = renderer->GetCurrentPointLight();
 	glUniform4f(GetColorLocation(), pointLight->GetColor().GetRed(), pointLight->GetColor().GetGreen(), pointLight->GetColor().GetBlue(), pointLight->GetColor().GetAlpha());
@@ -343,7 +383,7 @@ Rendering::Uniforms::SpotLightUniform::~SpotLightUniform()
 {
 }
 
-void Rendering::Uniforms::SpotLightUniform::Update(const Math::Transform& transform, const Material* material, const Renderer* renderer)
+void Rendering::Uniforms::SpotLightUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	const Lighting::SpotLight* spotLight = dynamic_cast<const Lighting::SpotLight*>(renderer->GetCurrentLight());
 	glUniform4f(GetColorLocation(), spotLight->GetColor().GetRed(), spotLight->GetColor().GetGreen(), spotLight->GetColor().GetBlue(), spotLight->GetColor().GetAlpha());

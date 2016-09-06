@@ -101,6 +101,9 @@ namespace Rendering
 		//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
 		//RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
 
+		RENDERING_API inline void BindShader(const Shader& shader) { shader.Bind(); }
+		RENDERING_API inline void UpdateRendererUniforms(const Shader& shader) { shader.UpdateRendererUniforms(this); }
+
 		RENDERING_API inline void ClearScreen() const
 		{
 			if (m_fogInfo.IsEnabled())
