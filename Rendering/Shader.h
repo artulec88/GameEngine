@@ -66,7 +66,7 @@ namespace Rendering
 			return currentProgramID == m_programID;
 		}
 		const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetUniforms() const { return m_uniforms; }
-		//const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetRendererUniforms() const { return m_rendererUniforms; }
+		const std::vector<std::unique_ptr<Uniforms::UniformBase>>& GetRendererUniforms() const { return m_rendererUniforms; }
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
 	private:
@@ -100,7 +100,7 @@ namespace Rendering
 		GLuint m_programID;
 		std::vector<GLuint> m_shaders;
 		std::vector<std::unique_ptr<Uniforms::UniformBase>> m_uniforms;
-		//std::vector<std::unique_ptr<Uniforms::UniformBase>> m_rendererUniforms;
+		std::vector<std::unique_ptr<Uniforms::UniformBase>> m_rendererUniforms;
 		std::map<std::string, GLint> m_uniformNameToLocationMap;
 		//std::vector<Uniforms::UniformStruct> m_structUniforms;
 		/* ==================== Non-static member variables end ==================== */

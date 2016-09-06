@@ -88,7 +88,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	m_programID(std::move(shaderData.m_programID)),
 	m_shaders(std::move(shaderData.m_shaders)),
 	m_uniforms(std::move(shaderData.m_uniforms)),
-	//m_rendererUniforms(std::move(shaderData.m_rendererUniforms)),
+	m_rendererUniforms(std::move(shaderData.m_rendererUniforms)),
 	m_uniformNameToLocationMap(std::move(shaderData.m_uniformNameToLocationMap))
 	//m_structUniforms(std::move(shaderData.m_structUniforms))
 {
@@ -96,7 +96,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	shaderData.m_programID = 0;
 	shaderData.m_shaders.clear();
 	shaderData.m_uniforms.clear();
-	//shaderData.m_rendererUniforms.clear();
+	shaderData.m_rendererUniforms.clear();
 	shaderData.m_uniformNameToLocationMap.clear();
 	//shaderData.m_structUniforms.clear();
 }
@@ -406,15 +406,15 @@ void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 template <class T, typename... Args>
 void Rendering::ShaderData::AddUniform(const std::string& uniformName, Args&&... args)
 {
-	//if (uniformName.substr(0, 2) == "R_")
-	//{
-	//	m_rendererUniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
-	//}
-	//else
-	//{
-	//	m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
-	//}
-	m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+	if (uniformName.substr(0, 2) == "R_")
+	{
+		m_rendererUniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+	}
+	else
+	{
+		m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
+	}
+	//m_uniforms.emplace_back(std::make_unique<T>(uniformName, std::forward<Args>(args)...));
 }
 
 GLint Rendering::ShaderData::FindUniformLocation(const std::string& uniformName)
@@ -578,13 +578,13 @@ Rendering::Shader::Shader(Shader&& shader) :
 
 void Rendering::Shader::UpdateRendererUniforms(const Renderer* renderer) const
 {
-	//START_PROFILING_RENDERING(false, "");
-	//CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
-	//for (auto uniformItr = m_shaderData.GetRendererUniforms().begin(); uniformItr != m_shaderData.GetRendererUniforms().end(); ++uniformItr)
-	//{
-	//	(*uniformItr)->Update(renderer, NULL, NULL);
-	//}
-	//STOP_PROFILING_RENDERING("");
+	START_PROFILING_RENDERING(false, "");
+	CHECK_CONDITION_EXIT_RENDERING(renderer != NULL, Utility::Logging::CRITICAL, "Cannot update uniforms. Rendering engine is NULL.");
+	for (auto uniformItr = m_shaderData.GetRendererUniforms().begin(); uniformItr != m_shaderData.GetRendererUniforms().end(); ++uniformItr)
+	{
+		(*uniformItr)->Update(renderer, NULL, NULL);
+	}
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Shader::UpdateMaterialUniforms(const Material* material) const

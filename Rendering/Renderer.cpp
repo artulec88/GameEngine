@@ -602,7 +602,7 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader.Bind();
-	//filterShader.UpdateRendererUniforms(this);
+	filterShader.UpdateRendererUniforms(this);
 	filterShader.UpdateUniforms(m_filterTransform, &m_filterMaterial, this);
 	m_filterMesh.Draw();
 
