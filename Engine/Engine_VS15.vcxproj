@@ -161,9 +161,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CoreEngine.h" />
     <ClInclude Include="DirectionalLightComponent.h" />
-    <ClInclude Include="Effect.h" />
     <ClInclude Include="EffectFactory.h" />
-    <ClInclude Include="Effect_impl.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="GameCommand.h" />
     <ClInclude Include="GameCommandFactory.h" />
@@ -223,7 +221,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="EffectFactory.cpp" />
     <ClCompile Include="GameCommand.cpp" />
     <ClCompile Include="GameCommandFactory.cpp" />

@@ -12,9 +12,10 @@
 #include "Engine\MousePicker.h"
 #include "Engine\QuitGameCommand.h"
 
-#include "Math\Math.h"
-
 #include "Rendering\Renderer.h"
+
+#include "Math\Effect.h"
+//#include "Math\Effect_impl.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 #include "Math\IStatisticsStorage.h"
@@ -26,9 +27,6 @@
 
 namespace Game
 {
-
-	class Rendering::Shader;
-
 	class MenuGameState : public Engine::GameState, public Engine::IUpdateable
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -66,20 +64,20 @@ namespace Game
 		// TODO: Create a Factory of TextEffects which creates text effects (but not dynamically, on the heap) and stores them under some special enum key.
 		// Then pass these variables' address to initialize these following pointers. E.g. textEffectFactory.GetTextEffect(MAIN_MENU_NOT_SELECTED_ENTRY_COLOR_EFFECT).
 		// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
-		Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryColorEffect;
-		Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryColorEffect;
-		Engine::Effects::Effect<Math::Vector3D>* m_notSelectedMenuEntryOutlineColorEffect;
-		Engine::Effects::Effect<Math::Vector3D>* m_selectedMenuEntryOutlineColorEffect;
-		Engine::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-		Engine::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
-		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
-		Engine::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_notSelectedMenuEntryColorEffect;
+		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_selectedMenuEntryColorEffect;
+		Math::Effects::Effect<Rendering::Color>* m_notSelectedMenuEntryOutlineColorEffect;
+		Math::Effects::Effect<Rendering::Color>* m_selectedMenuEntryOutlineColorEffect;
+		Math::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
+		Math::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
+		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
 
 		Math::Real m_mousePosX, m_mousePosY;
 		bool m_mousePosChanged;

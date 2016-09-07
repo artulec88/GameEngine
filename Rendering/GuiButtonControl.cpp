@@ -158,3 +158,8 @@ void Rendering::Controls::GuiButtonControl::Draw(const Shader& guiControlShader,
 		m_mesh->Draw();
 	}
 }
+
+void Rendering::Controls::GuiButtonControl::ApplyColorEffect(const Math::Effects::Effect<Color>& effect)
+{
+	effect.Apply(&m_color);
+}

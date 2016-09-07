@@ -17,3 +17,8 @@ void Rendering::Controls::GuiCheckBoxControl::Draw(Rendering::Renderer* renderer
 {
 	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support rendering yet.");
 }
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyColorEffect(const Math::Effects::Effect<Color>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}

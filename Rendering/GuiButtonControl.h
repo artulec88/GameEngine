@@ -11,6 +11,7 @@
 
 #include "Math\Vector.h"
 #include "Math\AABR.h"
+#include "Math\Effect.h"
 
 #include <string>
 #include <vector>
@@ -80,6 +81,10 @@ namespace Rendering
 				//m_offsetEffect->Update(deltaTime);
 			}
 
+			//RENDERING_API void acceptColorEffect(const Math::Effects::Effect<Color>& effect) { effect.Apply(&m_color); }
+			//RENDERING_API void acceptOutlineColorEffect(const Math::Effects::Effect<Color>& effect) { effect.Apply(&m_outlineColor); }
+			RENDERING_API void acceptOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) { effect.Apply(&m_offset); }
+
 			/// <summary> Returns the font used by this GUI text. </summary>
 			/// <returns> The font used by this GUI text. </returns>
 			RENDERING_API const Text::Font* GetFont() const { return m_font; }
@@ -90,21 +95,14 @@ namespace Rendering
 			/// <summary> Returns the color of this GUI text. </summary>
 			/// <returns> The color of this GUI text. </returns>
 			RENDERING_API const Color& GetColor() const { return m_color; }
-			RENDERING_API Color* GetColorPointer() { return &m_color; }
 
 			RENDERING_API const Color& GetOutlineColor() const { return m_outlineColor; }
-			RENDERING_API Color* GetOutlineColorPointer() { return &m_outlineColor; }
 
 			RENDERING_API const Math::Vector2D& GetOffset() const { return m_offset; }
-			RENDERING_API Math::Vector2D* GetOffsetPointer() { return &m_offset; }
 			RENDERING_API Math::Real GetCharacterWidth() const { return m_characterWidth; }
-			RENDERING_API Math::Real* GetCharacterWidthPointer() { return &m_characterWidth; }
 			RENDERING_API Math::Real GetCharacterEdgeTransitionWidth() const { return m_characterEdgeTransitionWidth; }
-			RENDERING_API Math::Real* GetCharacterEdgeTransitionWidthPointer() { return &m_characterEdgeTransitionWidth; }
 			RENDERING_API Math::Real GetBorderWidth() const { return m_borderWidth; }
-			RENDERING_API Math::Real* GetBorderWidthPointer() { return &m_borderWidth; }
 			RENDERING_API Math::Real GetBorderEdgeTransitionWidth() const { return m_borderEdgeTransitionWidth; }
-			RENDERING_API Math::Real* GetBorderEdgeTransitionWidthPointer() { return &m_borderEdgeTransitionWidth; }
 
 			/// <summary>
 			/// Draws the GUI button on the screen using the specified rendering engine and shader.
@@ -112,6 +110,8 @@ namespace Rendering
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI button.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI button.</param>
 			RENDERING_API virtual void Draw(const Shader& guiControlShader, const Renderer& renderer) const;
+
+			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect);
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded

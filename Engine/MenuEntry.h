@@ -3,13 +3,13 @@
 
 #include "Engine.h"
 #include "GameCommand.h"
-#include "Effect.h"
 
 #include "Rendering\Renderer.h"
 #include "Rendering\Font.h"
 #include "Rendering\GuiControl.h"
 
 #include "Math\Vector.h"
+#include "Math\Effect.h"
 
 #include <string>
 #include <vector>
@@ -45,6 +45,7 @@ namespace Engine
 		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual MenuEntry* Execute() = 0;
+		ENGINE_API virtual void ApplyColorEffect(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API bool DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const;
 		ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 		ENGINE_API CompositeMenuEntry* GetParent() { return m_parentMenuEntry; }

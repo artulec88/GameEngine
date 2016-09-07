@@ -35,6 +35,11 @@ void Engine::MenuEntry::AddChild(MenuEntry* childMenuEntry)
 	ERROR_LOG_ENGINE("Only composite menu entry can have children menu entries.");
 }
 
+void Engine::MenuEntry::ApplyColorEffect(const Math::Effects::Effect<Rendering::Color>& effect)
+{
+	m_guiControl->ApplyColorEffect(effect);
+}
+
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
 	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
@@ -121,18 +126,7 @@ Engine::MenuEntry* Engine::CompositeMenuEntry::SelectChild(size_t index)
 	// TODO: Range check
 	if (index != m_selectedMenuEntryIndex)
 	{
-		if (index < 0)
-		{
-			m_selectedMenuEntryIndex = m_childrenMenuEntries.size() - 1;
-		}
-		else if (index >= m_childrenMenuEntries.size())
-		{
-			m_selectedMenuEntryIndex = 0;
-		}
-		else
-		{
-			m_selectedMenuEntryIndex = index;
-		}
+		m_selectedMenuEntryIndex = Math::Clamp(index, (size_t)0, m_childrenMenuEntries.size());
 	}
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
 }

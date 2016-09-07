@@ -162,7 +162,7 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		RENDERING_API explicit Color(ColorNames::ColorName colorName);
-		RENDERING_API Color(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = REAL_ONE);
+		RENDERING_API explicit Color(Math::Real red = REAL_ONE, Math::Real green = REAL_ONE, Math::Real blue = REAL_ONE, Math::Real alpha = REAL_ONE);
 		RENDERING_API explicit Color(const Math::Vector3D& rgbVector);
 		RENDERING_API explicit Color(const Math::Vector4D& rgbaVector);
 		RENDERING_API Color(const Color& color);
@@ -189,12 +189,19 @@ namespace Rendering
 		/// <returns> The alpha component of the color. </returns>
 		RENDERING_API Math::Real GetAlpha() const { return m_values.GetW(); }
 
-		const Math::Vector4D& GetValues() const { return m_values; }
+		RENDERING_API const Math::Vector4D& GetValues() const { return m_values; }
 
 		RENDERING_API void SetRed(Math::Real red) { m_values.SetX(red); }
 		RENDERING_API void SetGreen(Math::Real green) { m_values.SetY(green); }
 		RENDERING_API void SetBlue(Math::Real blue) { m_values.SetZ(blue); }
 		RENDERING_API void SetAlpha(Math::Real alpha) { m_values.SetW(alpha); }
+
+		RENDERING_API Color operator+(const Color& color) const;
+		RENDERING_API Color& operator+=(const Color& color);
+		RENDERING_API Color operator*(Math::Real value) const;
+		RENDERING_API Color& operator*=(Math::Real value);
+		RENDERING_API Color operator*(const Color& color) const;
+		RENDERING_API Color& operator*=(const Color& color);
 
 		RENDERING_API Color Lerp(const Color& color, Math::Real lerpFactor) const
 		{

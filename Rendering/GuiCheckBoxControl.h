@@ -43,6 +43,7 @@ namespace Rendering
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			RENDERING_API virtual void Draw(Rendering::Renderer* renderer) const;
+			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect);
 		private:
 			/* ==================== Non-static member functions end ==================== */
 

@@ -2,7 +2,9 @@
 #define __ENGINE_EFFECTS_EFFECT_FACTORY_H__
 
 #include "Engine.h"
-#include "Effect.h"
+
+#include "Math\Effect.h"
+
 #include <map>
 
 namespace Engine
@@ -20,9 +22,9 @@ namespace Engine
 		{
 		/* ==================== Static variables begin ==================== */
 		private:
-			typedef std::map<EffectType, std::vector<Effect<Math::Real>*>> RealEffectsMap;
-			typedef std::map<EffectType, std::vector<Effect<Math::Vector2D>*>> Vec2DEffectsMap;
-			typedef std::map<EffectType, std::vector<Effect<Math::Vector3D>*>> Vec3DEffectsMap;
+			typedef std::map<EffectType, std::vector<Math::Effects::Effect<Math::Real>*>> RealEffectsMap;
+			typedef std::map<EffectType, std::vector<Math::Effects::Effect<Math::Vector2D>*>> Vec2DEffectsMap;
+			typedef std::map<EffectType, std::vector<Math::Effects::Effect<Math::Vector3D>*>> Vec3DEffectsMap;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -36,24 +38,24 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Real>* singleValueEffect);
-			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Vector2D>* vec2DEffect);
-			ENGINE_API void CreateEffect(EffectType effectType, Effect<Math::Vector3D>* vec3DEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Math::Effects::Effect<Math::Real>* singleValueEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Math::Effects::Effect<Math::Vector2D>* vec2DEffect);
+			ENGINE_API void CreateEffect(EffectType effectType, Math::Effects::Effect<Math::Vector3D>* vec3DEffect);
 
 			/// <summary> Returns the specific single value effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The single value effect. </returns>
-			ENGINE_API Effect<Math::Real>* GetSingleValueEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Math::Effects::Effect<Math::Real>* GetSingleValueEffect(EffectType effectType, unsigned int variant);
 
 			/// <summary> Returns the specific vector 2D effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The vector 2D effect. </returns>
-			ENGINE_API Effect<Math::Vector2D>* GetVec2DEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Math::Effects::Effect<Math::Vector2D>* GetVec2DEffect(EffectType effectType, unsigned int variant);
 
 			/// <summary> Returns the specific vector 3D effect. </summary>
 			/// <param name="effectType"> Type of the effect. </param>
 			/// <returns> The vector 3D effect. </returns>
-			ENGINE_API Effect<Math::Vector3D>* GetVec3DEffect(EffectType effectType, unsigned int variant);
+			ENGINE_API Math::Effects::Effect<Math::Vector3D>* GetVec3DEffect(EffectType effectType, unsigned int variant);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

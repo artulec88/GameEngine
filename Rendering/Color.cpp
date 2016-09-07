@@ -185,3 +185,35 @@ Rendering::Color::~Color()
 {
 }
 
+Rendering::Color Rendering::Color::operator+(const Color& color) const
+{
+	return Color(GetRed() + color.GetRed(), GetGreen() + color.GetGreen(), GetBlue() + color.GetBlue(), GetAlpha() + color.GetAlpha());
+}
+
+Rendering::Color& Rendering::Color::operator+=(const Color& color)
+{
+	m_values.Set(GetRed() + color.GetRed(), GetGreen() + color.GetGreen(), GetBlue() + color.GetBlue(), GetAlpha() + color.GetAlpha());
+	return *this;
+}
+
+Rendering::Color Rendering::Color::operator*(Math::Real value) const
+{
+	return Color(GetRed() * value, GetGreen() * value, GetBlue() * value, GetAlpha() * value);
+}
+
+Rendering::Color& Rendering::Color::operator*=(Math::Real value)
+{
+	m_values.Set(GetRed() * value, GetGreen() * value, GetBlue() * value, GetAlpha() * value);
+	return *this;
+}
+
+Rendering::Color Rendering::Color::operator*(const Color& color) const
+{
+	return Color(GetRed() * color.GetRed(), GetGreen() * color.GetGreen(), GetBlue() * color.GetBlue(), GetAlpha() * color.GetAlpha());
+}
+
+Rendering::Color& Rendering::Color::operator*=(const Color& color)
+{
+	m_values.Set(GetRed() * color.GetRed(), GetGreen() * color.GetGreen(), GetBlue() * color.GetBlue(), GetAlpha() * color.GetAlpha());
+	return *this;
+}

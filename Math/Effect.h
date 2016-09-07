@@ -1,12 +1,12 @@
-#ifndef __ENGINE_EFFECTS_EFFECT_H__
-#define __ENGINE_EFFECTS_EFFECT_H__
+#ifndef __MATH_EFFECTS_EFFECT_H__
+#define __MATH_EFFECTS_EFFECT_H__
 
-#include "Engine.h"
+#include "Math.h"
 
-#include "Math\Interpolation.h"
-#include "Math\Interpolation_impl.h"
+#include "Interpolation.h"
+#include "Interpolation_impl.h"
 
-namespace Engine
+namespace Math
 {
 	namespace Effects
 	{
@@ -24,34 +24,29 @@ namespace Engine
 			/// <summary>
 			/// Creates a new effect.
 			/// </summary>
-			/// <param name="value"> The pointer to the attribute we want to apply effect on. </param>
-			Effect(T* attribute);
+			Effect();
 			virtual ~Effect();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			void SetAttribute(T* attribute)
+			/// <summary> Applies the current value of the effect to the specified <paramref name="attribute"/>. </summary>
+			/// <param name="attribute"> The attribute for which the effect will be applied. </param>
+			void Apply(T* attribute) const
 			{
-				if (m_attribute != NULL)
-				{
-					*m_attribute = m_initialValue;
-				}
-				m_initialValue = *attribute;
-				m_attribute = attribute;
+				*attribute = m_value;
 			}
 
 			/// <summary>
 			/// Updates the current value of the attribute accordingly to some specific algorithm.
 			/// </summary>
-			virtual void Update(Math::Real deltaTime);
+			virtual void Update(Real deltaTime);
 			//const T& Get() const { return m_currentValue; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
-			T* m_attribute;
-			T m_initialValue;
+			T m_value;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class Effect */
 
@@ -72,7 +67,7 @@ namespace Engine
 			/// <param name="values"> The values that effect will use. </param>
 			/// <param name="times"> The times that specify when each effect value is to be applied. </param>
 			/// <param name="valuesCount"> The number of values (and times too). </param>
-			SmoothTransitionEffect(T* attribute, const T* values, const Math::Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled);
+			SmoothTransitionEffect(const T* values, const Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled);
 			virtual ~SmoothTransitionEffect();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -81,13 +76,13 @@ namespace Engine
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
-			virtual void Update(Math::Real deltaTime);
+			virtual void Update(Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		private:
-			Math::Interpolation::LinearInterpolator<T> m_valuesInterpolator;
-			Math::Real m_timer;
+			Interpolation::LinearInterpolator<T> m_valuesInterpolator;
+			Real m_timer;
 			bool m_isGoingBackAndForthEnabled;
 			bool m_isTimerIncreasing;
 		/* ==================== Non-static member variables end ==================== */
@@ -102,7 +97,7 @@ namespace Engine
 		{
 		/* ==================== Static variables begin ==================== */
 		private:
-			static const Math::Real DEFAULT_DURATION;
+			static const Real DEFAULT_DURATION;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -113,7 +108,7 @@ namespace Engine
 			/// <param name="values"> The values that effect will use. </param>
 			/// <param name="durations"> The time durations each value is applied for. </param>
 			/// <param name="valuesCount"> The number of values (and durations too). </param>
-			BlinkEffect(T* attribute, const T* values, const Math::Real* durations, unsigned int valuesCount);
+			BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount);
 			virtual ~BlinkEffect();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -122,19 +117,19 @@ namespace Engine
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
-			virtual void Update(Math::Real deltaTime);
+			virtual void Update(Real deltaTime);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 		private:
 			std::vector<T> m_values;
-			std::vector<Math::Real> m_durations;
+			std::vector<Real> m_durations;
 			size_t m_currentIndex;
-			Math::Real m_timer;
+			Real m_timer;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class BlinkEffect */
 
 	} /* end namespace Effects */
-} /* end namespace Engine */
+} /* end namespace Math */
 
-#endif /* __ENGINE_EFFECTS_EFFECT_H__ */
+#endif /* __MATH_EFFECTS_EFFECT_H__ */
