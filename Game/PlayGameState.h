@@ -57,6 +57,7 @@ namespace Game
 		virtual void Update(Math::Real elapsedTime);
 	private:
 		void AddLights();
+		void AddShaders();
 		void AddDirectionalLight();
 		void AddPointLights();
 		void AddSpotLights();

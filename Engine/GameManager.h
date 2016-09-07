@@ -89,6 +89,8 @@ namespace Engine
 		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
+		ENGINE_API void AddShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderType, shaderFileName); }
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
 #endif

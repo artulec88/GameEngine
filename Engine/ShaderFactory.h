@@ -77,7 +77,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//void CreateShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName);
+		ENGINE_API void CreateShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName);
 		ENGINE_API inline const Rendering::Shader& GetShader(ShaderTypes::ShaderType shaderType) const
 		{
 			std::map<ShaderTypes::ShaderType, Rendering::Shader>::const_iterator shaderItr = m_shaderType2ShaderMap.find(shaderType);
