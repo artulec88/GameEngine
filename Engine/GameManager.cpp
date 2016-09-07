@@ -49,8 +49,6 @@ Engine::GameManager::GameManager() :
 	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(NULL),
 	m_isGameLoaded(false),
-	m_skyboxAngle(REAL_ZERO, Math::Unit::RADIAN),
-	m_skyboxAngleStep(GET_CONFIG_VALUE_ENGINE("skyboxAngleStep", 0.02f), Math::Unit::RADIAN),
 	m_cameras(),
 	m_currentCameraIndex(0),
 	m_emptyGameCommand(),

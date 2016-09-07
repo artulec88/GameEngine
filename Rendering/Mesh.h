@@ -337,8 +337,8 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled = false) const;
-		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y, bool headPositionHeightAdjustmentEnabled = false) const;
+		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.GetX(), xz.GetY()); }
+		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
 		RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 	protected:
 		virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
@@ -358,11 +358,10 @@ namespace Rendering
 		/// <summary> The position of the single terrain tile along the Z axis. </summary>
 		int m_z;
 
-		const Math::Real m_headPositionHeightAdjustment;
 		int m_vertexCount;
 #ifdef HEIGHTS_KD_TREE
 		std::vector<Math::Vector3D> m_positions;
-		const int m_kdTreeSamples;
+		const unsigned int m_kdTreeSamples;
 		std::unique_ptr<Math::KDTree> m_kdTree;
 #elif defined HEIGHTS_HEIGHTMAP
 		int m_heightMapWidth, m_heightMapHeight;

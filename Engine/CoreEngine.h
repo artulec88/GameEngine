@@ -67,7 +67,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API CoreEngine(int width, int height, const char* title, int maxFrameRate,
+		ENGINE_API CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
 			const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
 			const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\",
 			const std::string& audioDirectory = "..\\Sounds\\");
@@ -144,7 +144,7 @@ namespace Engine
 	private:
 		void CreateAudioEngine();
 		void CreatePhysicsEngine();
-		void CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void Run();
 		void PollEvents();
 
@@ -153,8 +153,8 @@ namespace Engine
 		void StartSamplingSpf() const { m_isSamplingSpf = true; }
 		void StopSamplingSpf() const { m_isSamplingSpf = false; }
 	private:
-		void InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
-		void InitGlfw(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		void InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		void SetCallbacks();
 		void StopTimer(Utility::Timing::Timer& timer, long& countStats, Math::Statistics::UtmostSamples<long long>& minMaxTime, double& timeSum) const
 		{

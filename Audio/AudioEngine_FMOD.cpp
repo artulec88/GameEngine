@@ -21,11 +21,6 @@ Audio::AudioEngine_FMOD::AudioEngine_FMOD(int maxChannelsCount) :
 	m_nextSongPath(""),
 	m_fade(FadeStates::FADE_NONE)
 {
-	/* ==================== Initializing audio logger begin ==================== */
-	std::string loggingLevel = GET_CONFIG_VALUE_STR_AUDIO("LoggingLevel", "Info");
-	Utility::Logging::ILogger::GetLogger("Audio").Fill(loggingLevel, Utility::Logging::INFO);
-	/* ==================== Initializing audio logger end ==================== */
-
 	// Based on tutorial: https://cuboidzone.wordpress.com/category/tutorials/
 	FMOD_RESULT fmodResult = FMOD::System_Create(&m_system); // Create the main system object
 	CHECK_CONDITION_EXIT_ALWAYS_AUDIO(fmodResult == FMOD_OK, Utility::Logging::CRITICAL, "Failed to create an audio system with error code ", fmodResult, ". ", FMOD_ErrorString(fmodResult));

@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "LightFactory.h"
 
-#include "Engine\LightBuilder.h"
-#include "Engine\LightBuilder_impl.h"
-
 #include "Utility\BuilderDirector.h"
 
 Engine::LightFactory::LightFactory() :

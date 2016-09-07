@@ -157,7 +157,7 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = NULL;
 #endif
 }
 
-Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int maxFrameRate, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
+Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
 	m_window(NULL),
@@ -166,7 +166,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	m_windowWidth(width),
 	m_windowHeight(height),
 	m_windowTitle(title),
-	m_frameTime(1.0f / maxFrameRate),
+	m_frameTime(1.0f / GET_CONFIG_VALUE_ENGINE("maxFPS", 500.0f)),
 	m_game(NULL),
 	m_audioEngine(nullptr),
 	m_physicsEngine(NULL),
@@ -209,10 +209,6 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 	START_PROFILING_ENGINE(true, "");
 	NOTICE_LOG_ENGINE("Main application construction started");
 	STATS_STORAGE.StartTimer();
-	Utility::Logging::ILogger::GetLogger("Engine").Fill(GET_CONFIG_VALUE_STR_ENGINE("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing engine logger
-	Utility::Logging::ILogger::GetLogger("Math").Fill(GET_CONFIG_VALUE_STR_MATH("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing math logger
-	Utility::Logging::ILogger::GetLogger("Utility").Fill(GET_CONFIG_VALUE_STR_UTILITY("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing utility logger
-	Utility::Logging::ILogger::GetLogger("Rendering").Fill(GET_CONFIG_VALUE_STR_RENDERING("LoggingLevel", "Info"), Utility::Logging::INFO); // Initializing rendering logger
 
 	if (s_coreEngine != NULL)
 	{
@@ -223,7 +219,7 @@ Engine::CoreEngine::CoreEngine(int width, int height, const char* title, int max
 
 	CreateAudioEngine();
 	CreatePhysicsEngine();
-	CreateRenderer(width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from configuration file. */);
+	CreateRenderer(fullscreenEnabled, width, height, title, Rendering::Aliasing::NONE /* TODO: Get anti-aliasing method from Rendering configuration file. */);
 
 	NOTICE_LOG_ENGINE("Main application construction finished");
 	STOP_PROFILING_ENGINE("");
@@ -283,10 +279,10 @@ void Engine::CoreEngine::CreatePhysicsEngine()
 	CHECK_CONDITION_EXIT_ENGINE(m_physicsEngine != NULL, Utility::Logging::CRITICAL, "Failed to create a physics engine.");
 }
 
-void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void Engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	START_PROFILING_ENGINE(true, "");
-	InitGraphics(width, height, title, antiAliasingMethod);
+	InitGraphics(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	Rendering::InitGraphics(width, height, antiAliasingMethod);
 
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
@@ -299,19 +295,19 @@ void Engine::CoreEngine::CreateRenderer(int width, int height, const std::string
 	STOP_PROFILING_ENGINE("");
 }
 
-void Engine::CoreEngine::InitGraphics(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void Engine::CoreEngine::InitGraphics(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
-	InitGlfw(width, height, title, antiAliasingMethod);
+	InitGlfw(fullscreenEnabled, width, height, title, antiAliasingMethod);
 	InitGlew();
 	SetCallbacks();
 }
 
-void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
+void Engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height, const std::string& title, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod)
 {
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
 
-	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); /* 4x anti-aliasing by default */
+	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
 	case Rendering::Aliasing::NONE:
@@ -351,7 +347,6 @@ void Engine::CoreEngine::InitGlfw(int width, int height, const std::string& titl
 	//glfwWindowHint(GLFW_DECORATED, GL_TRUE);
 
 	GLFWmonitor* monitor = NULL;
-	bool fullscreenEnabled = GET_CONFIG_VALUE_ENGINE("fullscreenEnabled", false);
 	if (fullscreenEnabled)
 	{
 		monitor = glfwGetPrimaryMonitor();

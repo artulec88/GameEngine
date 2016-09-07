@@ -35,6 +35,7 @@ namespace Engine
 	protected:
 		const Rendering::TerrainMesh* m_terrainMesh;
 		Math::Real m_lastX, m_lastZ, m_lastHeight;
+		const Math::Real m_heightAdjustment;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class GravityComponent */
 

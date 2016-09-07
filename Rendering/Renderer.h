@@ -348,7 +348,7 @@ namespace Rendering
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMin;
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMul;
 
-		const Math::Real m_defaultShadowMinVariance;
+		const Math::Real m_defaultShadowMinVariance; // TODO: Should be removed, probably.
 		CubeShadowMap m_cubeShadowMap; // for use by the point lights
 		//Texture m_cubeShadowMap; // for use by the point lights
 		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMaps;

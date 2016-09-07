@@ -1,12 +1,12 @@
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
+#include "LightBuilder.h"
+#include "LightBuilder_impl.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\GameNode.h"
 #include "Engine\ParticleGenerator.h"
-#include "Engine\LightBuilder.h"
-#include "Engine\LightBuilder_impl.h"
 
 #include "Rendering\Shader.h"
 
@@ -120,7 +120,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	Engine::DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory());
+	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory());
 	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
 	Rendering::Lighting::DirectionalLight* directionalLight = directionalLightBuilder.Get();
@@ -139,7 +139,7 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		Engine::PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory());
+		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory());
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
@@ -174,7 +174,7 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		Engine::SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory());
+		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory());
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
@@ -337,7 +337,6 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(renderer->IsAmbientLightEnabled(), Utility::Logging::DEBUG, "Ambient light is disabled by the rendering engine.");
 	const Rendering::Shader& ambientShader = GetAmbientShader(renderer->GetFogInfo());
 	renderer->BindShader(ambientShader);
 	renderer->UpdateRendererUniforms(ambientShader);
@@ -410,9 +409,6 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 
 	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
 	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCamera().GetPos());
-	// TODO: Rotating the skybox
-	//skyboxNode->GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), skyboxNode->GetTransfom));
-	//m_skyboxAngle += m_skyboxAngleStep;
 	//if (m_fogEnabled)
 	//{
 	//	STOP_PROFILING_GAME("");
@@ -615,7 +611,8 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
-	Engine::GameManager::GetGameManager()->GetRootGameNode().Update(elapsedTime);
+	m_gameManager->GetRootGameNode().Update(elapsedTime);
+	m_gameManager->GetSkyboxNode()->Update(elapsedTime);
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
 	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000.0f, Utility::Timing::MILLISECOND);

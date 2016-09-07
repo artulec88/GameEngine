@@ -174,9 +174,6 @@ namespace Engine
 		GameStateManager* m_gameStateManager;
 		bool m_isGameLoaded;
 
-		Math::Angle m_skyboxAngle;
-		const Math::Angle m_skyboxAngleStep;
-
 		const EmptyGameCommand m_emptyGameCommand;
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//Rendering::Effects::EffectFactory m_effectFactory;

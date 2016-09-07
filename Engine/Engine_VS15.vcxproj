@@ -153,8 +153,8 @@
   <ItemGroup>
     <ClInclude Include="AABBColliderComponent.h" />
     <ClInclude Include="ActionConstants.h" />
+    <ClInclude Include="ConstantRotationComponent.h" />
     <ClInclude Include="GameNodeMoveCommand.h" />
-    <ClInclude Include="LightBuilder.h" />
     <ClInclude Include="IActionHandler.h" />
     <ClInclude Include="AiComponent.h" />
     <ClInclude Include="BillboardRendererComponent.h" />
@@ -181,7 +181,6 @@
     <ClInclude Include="InputRangeConverter.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="IUpdateable.h" />
-    <ClInclude Include="LightBuilder_impl.h" />
     <ClInclude Include="LightFactory.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MenuEntry.h" />
@@ -207,6 +206,7 @@
     <ClCompile Include="AiComponent.cpp" />
     <ClCompile Include="BillboardRendererComponent.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="ConstantRotationComponent.cpp" />
     <ClCompile Include="CoreEngine.cpp" />
     <ClCompile Include="DirectionalLightComponent.cpp" />
     <ClCompile Include="dllmain.cpp">
@@ -236,7 +236,6 @@
     <ClCompile Include="InputContext.cpp" />
     <ClCompile Include="InputMapping.cpp" />
     <ClCompile Include="InputRangeConverter.cpp" />
-    <ClCompile Include="LightBuilder.cpp" />
     <ClCompile Include="LightFactory.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />

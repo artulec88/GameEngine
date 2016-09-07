@@ -9,11 +9,6 @@ Physics::PhysicsEngine::PhysicsEngine() :
 #endif
 {
 	START_PROFILING_PHYSICS(true, "");
-	/* ==================== Initializing physics logger begin ==================== */
-	std::string loggingLevel = GET_CONFIG_VALUE_STR_PHYSICS("LoggingLevel", "Info");
-	Utility::Logging::ILogger::GetLogger("Physics").Fill(loggingLevel, Utility::Logging::INFO);
-	/* ==================== Initializing physics logger end ==================== */
-
 	NOTICE_LOG_PHYSICS("Physics engine created");
 	STOP_PROFILING_PHYSICS("");
 }

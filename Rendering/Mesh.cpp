@@ -706,7 +706,6 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	Mesh(fileName, mode),
 	m_x(0),
 	m_z(0),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
 	,m_positions(),
@@ -723,7 +722,6 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(0)
 #ifdef HEIGHTS_KD_TREE
 	, m_positions(),
@@ -831,7 +829,6 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	Mesh(mode),
 	m_x(gridX),
 	m_z(gridZ),
-	m_headPositionHeightAdjustment(GET_CONFIG_VALUE_RENDERING("headPositionHeightAdjustment", 2.5f)),
 	m_vertexCount(vertexCount)
 #ifdef HEIGHTS_KD_TREE
 	, m_positions(m_vertexCount),
@@ -978,16 +975,11 @@ Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math:
 	return normal;
 }
 
-Math::Real Rendering::TerrainMesh::GetHeightAt(const Math::Vector2D& xz, bool headPositionHeightAdjustmentEnabled /* = false */) const
-{
-	return GetHeightAt(xz.GetX(), xz.GetY(), headPositionHeightAdjustmentEnabled);
-}
-
 /**
  * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
  * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
  */
-Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool headPositionHeightAdjustmentEnabled /* = false */) const
+Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
 {
 #ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
@@ -995,10 +987,6 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z, bool 
 #endif
 #if defined HEIGHTS_KD_TREE
 	Math::Real y = m_kdTree->SearchNearestValue(x, z);
-	if (headPositionHeightAdjustmentEnabled)
-	{
-		y += m_headPositionHeightAdjustment; // head position adjustment
-	}
 	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz.ToString(), "\"");
 #elif defined HEIGHTS_HEIGHTMAP
 	Math::Real terrainX = x - m_x;

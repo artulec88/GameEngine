@@ -1,9 +1,9 @@
-#ifndef __ENGINE_LIGHT_BUILDER_H__
-#define __ENGINE_LIGHT_BUILDER_H__
+#ifndef __GAME_LIGHT_BUILDER_H__
+#define __GAME_LIGHT_BUILDER_H__
 
-#include "Engine.h"
+#include "Def.h"
 
-#include "ShaderFactory.h"
+#include "Engine\ShaderFactory.h"
 
 #include "Rendering\DirectionalLight.h"
 #include "Rendering\PointLight.h"
@@ -14,7 +14,7 @@
 
 #include <string>
 
-namespace Engine
+namespace Game
 {
 	template <class T>
 	class LightBuilder : public Utility::Builder<T>
@@ -24,7 +24,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit LightBuilder(const ShaderFactory& shaderFactory);
+		explicit LightBuilder(const Engine::ShaderFactory& shaderFactory);
 		virtual ~LightBuilder(void);
 
 		LightBuilder(const LightBuilder& lightBuilder) = delete;
@@ -47,7 +47,7 @@ namespace Engine
 	protected:
 		int m_lightIndex;
 		std::string m_lightIndexStr;
-		const ShaderFactory& m_shaderFactory;
+		const Engine::ShaderFactory& m_shaderFactory;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
@@ -58,11 +58,11 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API explicit DirectionalLightBuilder(const ShaderFactory& shaderFactory) : 
+		explicit DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory) : 
 			LightBuilder(shaderFactory)
 		{
 		}
-		ENGINE_API virtual ~DirectionalLightBuilder(void)
+		virtual ~DirectionalLightBuilder(void)
 		{
 		}
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
@@ -73,8 +73,8 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void SetupLightShaders();
-		ENGINE_API virtual void SetupLightParams();
+		virtual void SetupLightShaders();
+		virtual void SetupLightParams();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -88,8 +88,8 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API explicit PointLightBuilder(const ShaderFactory& shaderFactory);
-		ENGINE_API virtual ~PointLightBuilder(void) { };
+		explicit PointLightBuilder(const Engine::ShaderFactory& shaderFactory);
+		virtual ~PointLightBuilder(void) { };
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
 		PointLightBuilder(PointLightBuilder&& pointLightBuilder) = delete;
 		PointLightBuilder& operator=(const PointLightBuilder& pointLightBuilder) = delete;
@@ -98,8 +98,8 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void SetupLightShaders();
-		ENGINE_API virtual void SetupLightParams();
+		virtual void SetupLightShaders();
+		virtual void SetupLightParams();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -121,8 +121,8 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API explicit SpotLightBuilder(const ShaderFactory& shaderFactory);
-		ENGINE_API virtual ~SpotLightBuilder(void) { };
+		explicit SpotLightBuilder(const Engine::ShaderFactory& shaderFactory);
+		virtual ~SpotLightBuilder(void) { };
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;
 		SpotLightBuilder(SpotLightBuilder&& spotLightBuilder) = delete;
 		SpotLightBuilder& operator=(const SpotLightBuilder& spotLightBuilder) = delete;
@@ -131,8 +131,8 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void SetupLightShaders();
-		ENGINE_API virtual void SetupLightParams();
+		virtual void SetupLightShaders();
+		virtual void SetupLightParams();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -151,6 +151,6 @@ namespace Engine
 		const Math::Real M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SpotLightBuilder */
-} /* end namespace Engine */
+} /* end namespace Game */
 
-#endif /* __ENGINE_LIGHT_BUILDER_H__ */
+#endif /* __GAME_LIGHT_BUILDER_H__ */

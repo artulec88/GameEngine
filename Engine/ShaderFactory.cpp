@@ -47,7 +47,7 @@ Engine::ShaderFactory::ShaderFactory(const std::string& shadersDirectory) :
 	//m_shaderType2ShaderMap.insert(std::make_pair(ShaderTypes::SPOT_LIGHT_NO_SHADOWS, Rendering::Shader(m_shadersDirectory + GET_CONFIG_VALUE_STR_ENGINE("spotLightNoShadowShader", "forward-spot-no-shadows"))));
 	//m_shaderType2ShaderMap.insert(std::make_pair(ShaderTypes::SPOT_LIGHT_TERRAIN_NO_SHADOWS, Rendering::Shader(m_shadersDirectory + GET_CONFIG_VALUE_STR_ENGINE("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows"))));
 
-	m_shaderType2ShaderMap.emplace(ShaderTypes::AMBIENT, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("ambientLightShader", "ForwardAmbient.glsl")));
+	m_shaderType2ShaderMap.emplace(ShaderTypes::AMBIENT, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("ambientLightShader", "forward-ambient.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::AMBIENT_TERRAIN, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("ambientLightTerrainShader", "forward-ambient-terrain.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::AMBIENT_FOG_LINEAR_PLANE_BASED, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based.glsl")));
@@ -63,7 +63,7 @@ Engine::ShaderFactory::ShaderFactory(const std::string& shadersDirectory) :
 	m_shaderType2ShaderMap.emplace(ShaderTypes::FILTER_GAUSSIAN_BLUR, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("gaussBlurFilterShader", "filter-gaussBlur7x1.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::FILTER_FXAA, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("fxaaFilterShader", "filter-fxaa.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::SKYBOX, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("skyboxShader", "skybox-shader.glsl")));
-	m_shaderType2ShaderMap.emplace(ShaderTypes::SKYBOX_PROCEDURAL, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("skyboxProceduralShader", "skybox-procedural.glsl")));
+	m_shaderType2ShaderMap.emplace(ShaderTypes::SKYBOX_PROCEDURAL, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("skyboxProceduralShader", "skybox-procedural-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::TEXT_SIMPLE, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("textShader", "text-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::TEXT, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("textShader2", "text-shader-2.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderTypes::WATER, Rendering::Shader(GET_CONFIG_VALUE_STR_ENGINE("waterShader", "water-shader.glsl")));

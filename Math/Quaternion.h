@@ -30,7 +30,7 @@ namespace Math
 		/// Creates a new quaternion based on the axis given as parameter <paramref name="axis"/> around we want to rotate by the angle <paramref name="angle"/>.
 		/// </summary>
 		/// <param name="axis">An axis around which we want to rotate.</param>
-		/// <param name="axis">An angle by which we want to rotate.</param>
+		/// <param name="angle">An angle by which we want to rotate.</param>
 		MATH_API Quaternion(const Vector3D& axis, const Angle& angle);
 		MATH_API Quaternion(const Matrix4D& rotMatrix);
 		MATH_API Quaternion(const Quaternion& q) : m_x(q.GetX()), m_y(q.GetY()), m_z(q.GetZ()), m_w(q.GetW())

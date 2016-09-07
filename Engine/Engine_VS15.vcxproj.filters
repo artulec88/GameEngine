@@ -159,13 +159,10 @@
     <ClInclude Include="TextureFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LightBuilder.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LightBuilder_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LightFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantRotationComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -284,10 +281,10 @@
     <ClCompile Include="TextureFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LightBuilder.cpp">
+    <ClCompile Include="LightFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LightFactory.cpp">
+    <ClCompile Include="ConstantRotationComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

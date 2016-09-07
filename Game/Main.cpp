@@ -51,8 +51,20 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 	Utility::IConfig::CreateConfig("Math", commandLineMapper->Get("-configMath", "..\\Config\\ConfigMath.cfg"));
 	Utility::IConfig::CreateConfig("Utility", commandLineMapper->Get("-configUtility", "..\\Config\\ConfigUtility.cfg"));
 
-	// Initializing logger
-	Utility::Logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-log")) ? commandLineMapper->Get("-log", "Info") : GET_CONFIG_VALUE_STR_GAME("LoggingLevel", "Info"), Utility::Logging::INFO);
+	Utility::Logging::ILogger::GetLogger("Audio").Fill((commandLineMapper->IsPresent("-logAudio")) ? commandLineMapper->Get("-logAudio", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelAudio", "Info"), Utility::Logging::INFO); // Initializing audio logger
+	Utility::Logging::ILogger::GetLogger("Physics").Fill((commandLineMapper->IsPresent("-logPhysics")) ? commandLineMapper->Get("-logPhysics", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelPhysics", "Info"), Utility::Logging::INFO); // Initializing physics logger
+	Utility::Logging::ILogger::GetLogger("Rendering").Fill((commandLineMapper->IsPresent("-logRendering")) ? commandLineMapper->Get("-logRendering", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelRendering", "Info"), Utility::Logging::INFO); // Initializing rendering logger
+	Utility::Logging::ILogger::GetLogger("Engine").Fill((commandLineMapper->IsPresent("-logEngine")) ? commandLineMapper->Get("-logEngine", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelEngine", "Info"), Utility::Logging::INFO); // Initializing engine logger
+	Utility::Logging::ILogger::GetLogger("Game").Fill((commandLineMapper->IsPresent("-logGame")) ? commandLineMapper->Get("-logGame", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelGame", "Info"), Utility::Logging::INFO); // Initializing game logger
+	Utility::Logging::ILogger::GetLogger("Math").Fill((commandLineMapper->IsPresent("-logMath")) ? commandLineMapper->Get("-logMath", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelMath", "Info"), Utility::Logging::INFO); // Initializing math logger
+	Utility::Logging::ILogger::GetLogger("Utility").Fill((commandLineMapper->IsPresent("-logUtility")) ? commandLineMapper->Get("-logUtility", "Info") :
+		GET_CONFIG_VALUE_STR_GAME("LoggingLevelUtility", "Info"), Utility::Logging::INFO); // Initializing utility logger
 
 	// Initializing shader directory
 	*shaderDirectory = (commandLineMapper->IsPresent("-shaders")) ? commandLineMapper->Get("-shaders", "..\\Shaders\\") : GET_CONFIG_VALUE_STR_GAME("shadersDirectory", "..\\Shaders\\");
@@ -78,10 +90,10 @@ int main(int argc, char* argv[])
 {
 	std::string shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
 	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
+
 	/* ==================== Create game instance and run ==================== */
-	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
-		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), GET_CONFIG_VALUE_GAME("FPScap", 200),
-		shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
+	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("fullscreenEnabled", false), GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
+		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
 	Game::TestGameManager game;
 	engine.Start(&game);
 	return EXIT_SUCCESS;

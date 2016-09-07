@@ -29,7 +29,7 @@ void Rendering::Lighting::PointLight::CalculateRange()
 	{
 		maxColorElement = m_color.GetBlue();
 	}
-	const int colorDepth = GET_CONFIG_VALUE_RENDERING("ColorDepth", 256);
+	const int colorDepth = GET_CONFIG_VALUE_RENDERING("colorDepth", 256);
 	Math::Real c = m_attenuation.GetConstant() - colorDepth * m_intensity * maxColorElement;
 
 	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);

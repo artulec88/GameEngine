@@ -4,6 +4,7 @@
 #include "Engine\CameraComponent.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\ParticleGeneratorComponent.h"
+#include "Engine\ConstantRotationComponent.h"
 
 #include "Utility\IConfig.h"
 #include "Utility\FileManager.h"
@@ -12,19 +13,19 @@
 Game::CameraBuilder::CameraBuilder(Engine::GameManager* gameManager) :
 	Utility::Builder<Engine::GameNode>(),
 	m_gameManager(gameManager),
-	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_ENGINE("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_ENGINE("defaultCameraPosZ", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleX", -45.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleY", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_ENGINE("defaultCameraAngleZ", 0.0f)),
-	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_ENGINE("defaultCameraFoV", 70.0f)),
-	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_ENGINE("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
-	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE_ENGINE("defaultCameraNearPlane", 0.1f)),
-	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_ENGINE("defaultCameraFarPlane", 1000.0f)),
-	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_ENGINE("defaultCameraSensitivity", 0.005f)),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowEntityInitialDistance", 0.25f)),
-	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
-	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowPitchRotationSpeed", 0.1f)),
-	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_ENGINE("defaultCameraFollowInitialPitchAngle", 30.0f)),
+	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_GAME("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosZ", 0.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultCameraAngleX", -45.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultCameraAngleY", 0.0f)),
+	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_GAME("defaultCameraAngleZ", 0.0f)),
+	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_GAME("defaultCameraFoV", 70.0f)),
+	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_GAME("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
+	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE_GAME("defaultCameraNearPlane", 0.1f)),
+	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_GAME("defaultCameraFarPlane", 1000.0f)),
+	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_GAME("defaultCameraSensitivity", 0.005f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f)),
+	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
+	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f)),
+	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)),
 	m_cameraIndex(0),
 	m_cameraIndexStr("0")
 {
@@ -63,15 +64,15 @@ void Game::CameraBuilder::SetupCameraTransform()
 	m_object = new Engine::GameNode();
 
 	// Setting position
-	Math::Real xPos = GET_CONFIG_VALUE_ENGINE("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
-	Math::Real yPos = GET_CONFIG_VALUE_ENGINE("cameraPosY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetY());
-	Math::Real zPos = GET_CONFIG_VALUE_ENGINE("cameraPosZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetZ());
+	Math::Real xPos = GET_CONFIG_VALUE_GAME("cameraPosX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetX());
+	Math::Real yPos = GET_CONFIG_VALUE_GAME("cameraPosY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetY());
+	Math::Real zPos = GET_CONFIG_VALUE_GAME("cameraPosZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_POS.GetZ());
 	m_object->GetTransform().SetPos(xPos, yPos, zPos);
 
 	// Setting rotation
-	Math::Angle angleX(GET_CONFIG_VALUE_ENGINE("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-	Math::Angle angleY(GET_CONFIG_VALUE_ENGINE("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-	Math::Angle angleZ(GET_CONFIG_VALUE_ENGINE("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+	Math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
+	Math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
+	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	Math::Matrix4D rotMatrix(angleX, angleY, angleZ);
 	DELOCUST_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
 	Math::Quaternion rot(rotMatrix);
@@ -81,16 +82,16 @@ void Game::CameraBuilder::SetupCameraTransform()
 void Game::CameraBuilder::SetupCameraParams()
 {
 	// Setting camera parameters
-	Math::Angle fov(GET_CONFIG_VALUE_ENGINE("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)));
-	Math::Real aspectRatio = GET_CONFIG_VALUE_ENGINE("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
-	Math::Real zNearPlane = GET_CONFIG_VALUE_ENGINE("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
-	Math::Real zFarPlane = GET_CONFIG_VALUE_ENGINE("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
-	Math::Real sensitivity = GET_CONFIG_VALUE_ENGINE("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
+	Math::Angle fov(GET_CONFIG_VALUE_GAME("cameraFoV_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)));
+	Math::Real aspectRatio = GET_CONFIG_VALUE_GAME("cameraAspectRatio_" + m_cameraIndexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
+	Math::Real zNearPlane = GET_CONFIG_VALUE_GAME("cameraNearPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
+	Math::Real zFarPlane = GET_CONFIG_VALUE_GAME("cameraFarPlane_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FAR_PLANE);
+	Math::Real sensitivity = GET_CONFIG_VALUE_GAME("cameraSensitivity_" + m_cameraIndexStr, M_DEFAULT_CAMERA_SENSITIVITY);
 
-	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_ENGINE("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
-	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
-	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_ENGINE("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
-	Math::Angle initialPitchAngle(GET_CONFIG_VALUE_ENGINE("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.Get(Math::Unit::DEGREE)));
+	Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_GAME("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY);
+	Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_GAME("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED);
+	Math::Real pitchRotationSpeed = GET_CONFIG_VALUE_GAME("cameraFollowPitchRotationSpeed_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED);
+	Math::Angle initialPitchAngle(GET_CONFIG_VALUE_GAME("cameraFollowInitialPitchAngle_" + m_cameraIndexStr, M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE.Get(Math::Unit::DEGREE)));
 
 	Rendering::Camera* camera = new Rendering::Camera(m_object->GetTransform().GetTransformedPos(), m_object->GetTransform().GetTransformedRot(), fov, aspectRatio, zNearPlane, zFarPlane, sensitivity);
 	Engine::CameraComponent* cameraComponent = new Engine::CameraFollowComponent(camera, m_gameNodeToFollow, initialDistanceFromEntity, angleAroundEntitySpeed, pitchRotationSpeed, initialPitchAngle);
@@ -124,8 +125,8 @@ Game::SkyboxBuilder::~SkyboxBuilder()
 
 void Game::SkyboxBuilder::BuildPart1()
 {
-	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxDayDirectory", "SkyboxDebug");
-	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_ENGINE("skyboxNightDirectory", "SkyboxDebug");
+	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
+	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
 	Rendering::Texture* skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
 	Rendering::Texture* skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
 
@@ -139,13 +140,14 @@ void Game::SkyboxBuilder::BuildPart1()
 	m_object = new Engine::GameNode();
 	m_object->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 	m_object->GetTransform().SetScale(5.0f); /* TODO: Don't use hardcoded values! Ever! */
-	m_object->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_ENGINE("skyboxModel", "cube.obj")), skyboxMaterial));
-
-	Engine::CoreEngine::GetCoreEngine()->AddSkyboxNode(m_object);
+	m_object->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj")), skyboxMaterial));
 }
 
 void Game::SkyboxBuilder::BuildPart2()
 {
+	m_object->AddComponent(new Engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxAngleStep", 0.00005f))));
+
+	Engine::CoreEngine::GetCoreEngine()->AddSkyboxNode(m_object);
 }
 
 #ifdef BUILD_MESH_RENDERER
