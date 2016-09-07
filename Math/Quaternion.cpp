@@ -3,9 +3,7 @@
 #include "FloatingPoint.h"
 #include <sstream>
 
-using namespace Math;
-
-Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
+Math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 {
 	Angle halfAngle(angle / 2);
 	Real sinHalfAngle = halfAngle.Sin();
@@ -17,7 +15,7 @@ Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 }
 
 // From Ken Shoemake's "Quaternion Calculus and Fast Animation" article
-Quaternion::Quaternion(const Matrix4D& rotMatrix)
+Math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
 {
 	// FIXME: TRANSFORMATIONS ORDER
 	/*Real m00 = rotMatrix.GetElement(0, 0);
@@ -115,7 +113,7 @@ Quaternion::Quaternion(const Matrix4D& rotMatrix)
 	m_w /= length;
 }
 
-Matrix4D Quaternion::ToRotationMatrix() const
+Math::Matrix4D Math::Quaternion::ToRotationMatrix() const
 {
 	// FIXME: TRANSFORMATIONS ORDER
 	// This function was tested and proved to be the fastest of 6 variants of the same function.
@@ -125,30 +123,30 @@ Matrix4D Quaternion::ToRotationMatrix() const
 		Vector3D(1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ()), 2.0f * (GetX()*GetY() - GetW()*GetZ()), 2.0f * (GetX()*GetZ() + GetW()*GetY())));
 }
 
-Real Quaternion::Length() const
+Math::Real Math::Quaternion::Length() const
 {
 	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
 }
 
-Real Quaternion::LengthSquared() const
+Math::Real Math::Quaternion::LengthSquared() const
 {
 	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
 }
 
-void Quaternion::InvertPitch()
+void Math::Quaternion::InvertPitch()
 {
 	// TODO: Warning. This function has not yet been tested. Use with caution.
 	m_x = -m_x;
 	m_z = -m_z;
 }
 
-Quaternion Quaternion::Normalized() const
+Math::Quaternion Math::Quaternion::Normalized() const
 {
 	Real length = Length();
 	return Quaternion(m_x / length, m_y / length, m_z / length, m_w / length);
 }
 
-void Quaternion::Normalize()
+void Math::Quaternion::Normalize()
 {
 	Real length = Length();
 	if (AlmostEqual(length , REAL_ONE))
@@ -162,13 +160,13 @@ void Quaternion::Normalize()
 	m_w /= length;
 }
 
-bool Quaternion::IsNormalized() const
+bool Math::Quaternion::IsNormalized() const
 {
 	Real lengthSquared = LengthSquared();
 	return AlmostEqual(lengthSquared, REAL_ONE);
 }
 
-Quaternion Quaternion::operator*(const Quaternion& q) const
+Math::Quaternion Math::Quaternion::operator*(const Quaternion& q) const
 {
 	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
 	Real x = m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY();
@@ -179,7 +177,7 @@ Quaternion Quaternion::operator*(const Quaternion& q) const
 	return Quaternion(x, y, z, w);
 }
 
-Quaternion Quaternion::operator*(const Vector3D& vec) const
+Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
 {
 	// CHECKED
 	Real w = -m_x * vec.GetX() - m_y * vec.GetY() - m_z * vec.GetZ();
@@ -190,18 +188,18 @@ Quaternion Quaternion::operator*(const Vector3D& vec) const
 	return Quaternion(x, y, z, w);
 }
 
-Real Quaternion::Dot(const Quaternion& q) const
+Math::Real Math::Quaternion::Dot(const Quaternion& q) const
 {
 	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
 }
 
-Quaternion Quaternion::Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const
+Math::Quaternion Math::Quaternion::Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
 	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
 	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();  // FIXME: Check quaternion multiplication
 }
 
-Quaternion Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const
+Math::Quaternion Math::Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const
 {
 	// FIXME: Check quaternion multiplication
 	if (shortest && Dot(q) < REAL_ZERO)
@@ -214,7 +212,7 @@ Quaternion Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shorte
 	}
 }
 
-Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
+Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
 {
 	// CHECKED
 	Real cos = this->Dot(q);
@@ -241,32 +239,32 @@ Quaternion Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortes
 	return Quaternion((*this) * srcFactor + fixedQ * destFactor); // FIXME: Check quaternion multiplication
 }
 
-Vector3D Quaternion::GetBack() const
+Math::Vector3D Math::Quaternion::GetBack() const
 {
 	return Vector3D(REAL_ZERO, REAL_ZERO, -REAL_ONE).Rotate(*this);
 }
 
-Vector3D Quaternion::GetUp() const
+Math::Vector3D Math::Quaternion::GetUp() const
 {
 	return Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO).Rotate(*this);
 }
 
-Vector3D Quaternion::GetDown() const
+Math::Vector3D Math::Quaternion::GetDown() const
 {
 	return Vector3D(REAL_ZERO, -REAL_ONE, REAL_ZERO).Rotate(*this);
 }
 
-Vector3D Quaternion::GetRight() const
+Math::Vector3D Math::Quaternion::GetRight() const
 {
 	return Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
-Vector3D Quaternion::GetLeft() const
+Math::Vector3D Math::Quaternion::GetLeft() const
 {
 	return Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
 }
 
-Quaternion& Quaternion::operator=(const Quaternion& q)
+Math::Quaternion& Math::Quaternion::operator=(const Quaternion& q)
 {
 	m_x = q.GetX();
 	m_y = q.GetY();
@@ -275,7 +273,7 @@ Quaternion& Quaternion::operator=(const Quaternion& q)
 	return *this;
 }
 
-Quaternion& Quaternion::operator=(Quaternion&& q)
+Math::Quaternion& Math::Quaternion::operator=(Quaternion&& q)
 {
 	m_x = std::move(q.m_x);
 	m_y = std::move(q.m_y);
@@ -284,17 +282,17 @@ Quaternion& Quaternion::operator=(Quaternion&& q)
 	return *this;
 }
 
-bool Quaternion::operator==(const Quaternion& q) const
+bool Math::Quaternion::operator==(const Quaternion& q) const
 {
 	return ( AlmostEqual(m_x, q.GetX()) && AlmostEqual(m_y, q.GetY()) && AlmostEqual(m_z, q.GetZ()) && AlmostEqual(m_w, q.GetW()) );
 }
 
-bool Quaternion::operator!=(const Quaternion& q) const
+bool Math::Quaternion::operator!=(const Quaternion& q) const
 {
 	return ( !AlmostEqual(m_x, q.GetX()) || !AlmostEqual(m_y, q.GetY()) || !AlmostEqual(m_z, q.GetZ()) || !AlmostEqual(m_w, q.GetW()) );
 }
 
-std::string Quaternion::ToString() const
+std::string Math::Quaternion::ToString() const
 {
 	// TODO: Set precision (std::precision)
 	std::stringstream ss("");

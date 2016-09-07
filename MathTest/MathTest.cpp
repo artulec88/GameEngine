@@ -601,9 +601,9 @@ void SortTest()
 
 	const int NUMBER_OF_SORTING_METHODS = 3; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
 	const int chosenSortingMethodIndices[] = { 0, 1, 2 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
-	Sorting::SortingAlgorithm sortingMethods[] = { Sorting::BUBBLE_SORT, Sorting::INSERTION_SORT, Sorting::SELECTION_SORT,
-		Sorting::MERGE_SORT, Sorting::HEAP_SORT, Sorting::QUICK_SORT, Sorting::SHELL_SORT, Sorting::COMB_SORT,
-		Sorting::COUNTING_SORT, Sorting::RADIX_SORT, Sorting::BUCKET_SORT };
+	Sorting::SortingAlgorithms::SortingAlgorithm sortingMethods[] = { Sorting::SortingAlgorithms::BUBBLE_SORT, Sorting::SortingAlgorithms::INSERTION_SORT, Sorting::SortingAlgorithms::SELECTION_SORT,
+		Sorting::SortingAlgorithms::MERGE_SORT, Sorting::SortingAlgorithms::HEAP_SORT, Sorting::SortingAlgorithms::QUICK_SORT, Sorting::SortingAlgorithms::SHELL_SORT,
+		Sorting::SortingAlgorithms::COMB_SORT, Sorting::SortingAlgorithms::COUNTING_SORT, Sorting::SortingAlgorithms::RADIX_SORT, Sorting::SortingAlgorithms::BUCKET_SORT };
 	std::string sortingMethodsStr[] = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
 		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 

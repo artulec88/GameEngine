@@ -784,7 +784,7 @@ private:
 			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::CRITICAL, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
-		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
+		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::SortingAlgorithms::INSERTION_SORT);
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)
@@ -867,7 +867,7 @@ private:
 			CHECK_CONDITION_MATH((bucketIndex >= 0) && (bucketIndex < NUMBER_OF_BUCKETS), Utility::Logging::ERR, "Miscalculated bucket index. Bucket index must be within range [0; ", NUMBER_OF_BUCKETS, "), but is equal to ", bucketIndex);
 			buckets[bucketIndex].PushVector(vectors[i]);
 		}
-		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::INSERTION_SORT);
+		std::unique_ptr<ISort> insertionSorter = ISort::GetSortingObject(Sorting::SortingAlgorithms::INSERTION_SORT);
 		for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 		{
 			//for (int j = 0; j < buckets[i].GetVectorsSize(); ++j)

@@ -10,18 +10,16 @@
 #endif
 //#include <dirent.h>
 
-using namespace Utility;
-
-FileManager::FileManager(void)
+Utility::FileManager::FileManager(void)
 {
 }
 
 
-FileManager::~FileManager(void)
+Utility::FileManager::~FileManager(void)
 {
 }
 
-std::vector<std::string> FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
+std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std::string& directoryPath, bool isRecursiveSearchEnabled /* = false */) const
 {
 	DEBUG_LOG_UTILITY("Listing all files in a directory \"", directoryPath, "\" (recursive search enabled = ", isRecursiveSearchEnabled, ")");
 	std::vector<std::string> filenames;

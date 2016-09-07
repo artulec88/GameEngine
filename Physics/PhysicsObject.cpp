@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "PhysicsObject.h"
 
-using namespace Physics;
-
-PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& linearVelocity) :
+Physics::PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const Math::Vector3D& linearVelocity) :
 	m_massCenter(/* TODO: must be calculated from given points and point masses */),
 	m_mass(mass),
 	m_intertia(/* TODO: Specify intertia */),
@@ -21,12 +19,12 @@ PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mass, const 
 {
 }
 
-PhysicsObject::~PhysicsObject()
+Physics::PhysicsObject::~PhysicsObject()
 {
 	SAFE_DELETE(m_aabbCollider);
 }
 
-void PhysicsObject::Simulate(Math::Real passedTime)
+void Physics::PhysicsObject::Simulate(Math::Real passedTime)
 {
 	DELOCUST_LOG_PHYSICS("Simulating physics object. Passed time = ", passedTime);
 	m_linearVelocity += (m_totalForce / m_mass) * passedTime;
@@ -44,38 +42,38 @@ void PhysicsObject::Simulate(Math::Real passedTime)
 	//m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 }
 
-void PhysicsObject::ApplyLinearAcceleration(const Math::Vector3D& acceleration)
+void Physics::PhysicsObject::ApplyLinearAcceleration(const Math::Vector3D& acceleration)
 {
 	//ApplyLinearForce(acceleration * m_mass);
 	m_totalForce += acceleration * m_mass;
 	//CRITICAL_LOG_PHYSICS("Total force = \"", m_totalForce.ToString(), "\".");
 }
 
-void PhysicsObject::ApplyLinearForce(const Math::Vector3D& force)
+void Physics::PhysicsObject::ApplyLinearForce(const Math::Vector3D& force)
 {
 	////ApplyForce(force, m_massCenter);
 	m_totalForce += force;
 }
 
-void PhysicsObject::ApplyTorque(Math::Real torque)
+void Physics::PhysicsObject::ApplyTorque(Math::Real torque)
 {
 }
 
-void PhysicsObject::ApplyForce(const Math::Vector3D& force, const Math::Vector3D& contactPoint)
+void Physics::PhysicsObject::ApplyForce(const Math::Vector3D& force, const Math::Vector3D& contactPoint)
 {
 }
 
-void PhysicsObject::ApplyFriction(Math::Real gravity)
+void Physics::PhysicsObject::ApplyFriction(Math::Real gravity)
 {
 }
 
-void PhysicsObject::AddCollider(Collider* collider)
+void Physics::PhysicsObject::AddCollider(Collider* collider)
 {
 	// TODO: For now there is only one collider supported.
 	m_aabbCollider = collider;
 }
 
-Math::IntersectInfo PhysicsObject::Intersect(const PhysicsObject& otherPhysicsObject) const
+Math::IntersectInfo Physics::PhysicsObject::Intersect(const PhysicsObject& otherPhysicsObject) const
 {
 	if ((m_aabbCollider == NULL) || (otherPhysicsObject.GetAABBCollider() == NULL))
 	{
@@ -84,6 +82,6 @@ Math::IntersectInfo PhysicsObject::Intersect(const PhysicsObject& otherPhysicsOb
 	return m_aabbCollider->Intersect(*otherPhysicsObject.GetAABBCollider());
 }
 
-void PhysicsObject::HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal)
+void Physics::PhysicsObject::HandleCollision(const PhysicsObject& otherPhysicsObject, const Math::Vector3D& collisionNormal)
 {
 }

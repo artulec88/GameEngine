@@ -3,18 +3,16 @@
 #include "Math\Sphere.h"
 #include "Utility\ILogger.h"
 
-using namespace Physics;
-
-Collider::Collider(ColliderType type) :
+Physics::Collider::Collider(ColliderType type) :
 	m_type(type)
 {
 }
 
-Collider::~Collider()
+Physics::Collider::~Collider()
 {
 }
 
-Math::IntersectInfo Collider::Intersect(const Collider& collider) const
+Math::IntersectInfo Physics::Collider::Intersect(const Collider& collider) const
 {
 	if ( (m_type == TYPE_SPHERE) && (collider.GetType() == TYPE_SPHERE) )
 	{

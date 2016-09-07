@@ -35,7 +35,7 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
 	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::ASCENDING);
-	Sorting::ISort::GetSortingObject(Sorting::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
+	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
 	//DEBUG_LOG_MATH("After sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{

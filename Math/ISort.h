@@ -10,56 +10,59 @@
 namespace Math {
 	namespace Sorting
 	{
-		/// <summary>
-		/// Possible algorithms for sorting.
-		/// </summary>
-		enum SortingAlgorithm
+		namespace SortingAlgorithms
 		{
 			/// <summary>
-			/// Bubble sort algorithm (see https://en.wikipedia.org/wiki/Bubble_sort).
+			/// Possible algorithms for sorting.
 			/// </summary>
-			BUBBLE_SORT = 0,
-			/// <summary>
-			/// Insertion sort algorithm (see https://en.wikipedia.org/wiki/Insertion_sort).
-			/// </summary>
-			INSERTION_SORT,
-			/// <summary>
-			/// Selection sort algorithm (see https://en.wikipedia.org/wiki/Selection_sort).
-			/// </summary>
-			SELECTION_SORT,
-			/// <summary>
-			/// Merge sort algorithm (see https://en.wikipedia.org/wiki/Merge_sort).
-			/// </summary>
-			MERGE_SORT,
-			/// <summary>
-			/// Heap sort algorithm (see https://en.wikipedia.org/wiki/Heapsort).
-			/// </summary>
-			HEAP_SORT,
-			/// <summary>
-			/// Quick sort algorithm (see https://en.wikipedia.org/wiki/Quicksort).
-			/// </summary>
-			QUICK_SORT,
-			/// <summary>
-			/// Shell sort algorithm (see https://en.wikipedia.org/wiki/Shellsort).
-			/// </summary>
-			SHELL_SORT,
-			/// <summary>
-			/// Comb sort algorithm (see https://en.wikipedia.org/wiki/Comb_sort).
-			/// </summary>
-			COMB_SORT,
-			/// <summary>
-			/// Counting sort algorithm (see https://en.wikipedia.org/wiki/Counting_sort).
-			/// </summary>
-			COUNTING_SORT,
-			/// <summary>
-			/// Radix sort algorithm (see https://en.wikipedia.org/wiki/Radix_sort).
-			/// </summary>
-			RADIX_SORT,
-			/// <summary>
-			/// Bucket sort algorithm (see https://en.wikipedia.org/wiki/Bucket_sort).
-			/// </summary>
-			BUCKET_SORT
-		};
+			enum SortingAlgorithm
+			{
+				/// <summary>
+				/// Bubble sort algorithm (see https://en.wikipedia.org/wiki/Bubble_sort).
+				/// </summary>
+				BUBBLE_SORT = 0,
+				/// <summary>
+				/// Insertion sort algorithm (see https://en.wikipedia.org/wiki/Insertion_sort).
+				/// </summary>
+				INSERTION_SORT,
+				/// <summary>
+				/// Selection sort algorithm (see https://en.wikipedia.org/wiki/Selection_sort).
+				/// </summary>
+				SELECTION_SORT,
+				/// <summary>
+				/// Merge sort algorithm (see https://en.wikipedia.org/wiki/Merge_sort).
+				/// </summary>
+				MERGE_SORT,
+				/// <summary>
+				/// Heap sort algorithm (see https://en.wikipedia.org/wiki/Heapsort).
+				/// </summary>
+				HEAP_SORT,
+				/// <summary>
+				/// Quick sort algorithm (see https://en.wikipedia.org/wiki/Quicksort).
+				/// </summary>
+				QUICK_SORT,
+				/// <summary>
+				/// Shell sort algorithm (see https://en.wikipedia.org/wiki/Shellsort).
+				/// </summary>
+				SHELL_SORT,
+				/// <summary>
+				/// Comb sort algorithm (see https://en.wikipedia.org/wiki/Comb_sort).
+				/// </summary>
+				COMB_SORT,
+				/// <summary>
+				/// Counting sort algorithm (see https://en.wikipedia.org/wiki/Counting_sort).
+				/// </summary>
+				COUNTING_SORT,
+				/// <summary>
+				/// Radix sort algorithm (see https://en.wikipedia.org/wiki/Radix_sort).
+				/// </summary>
+				RADIX_SORT,
+				/// <summary>
+				/// Bucket sort algorithm (see https://en.wikipedia.org/wiki/Bucket_sort).
+				/// </summary>
+				BUCKET_SORT
+			}; /* end enum SortingAlgorithm */
+		} /* end enum SortingAlgorithms */
 
 		/// <summary>The base class for all sorting classes. It also serves as a "factory", that is creating specific instances of ISort classes.</summary>
 		class ISort
@@ -69,12 +72,12 @@ namespace Math {
 			/// <summary>
 			/// A factory-like method for creating specific sorting objects.
 			/// </summary>
-			MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithm sortingMethod);
+			MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithms::SortingAlgorithm sortingMethod);
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			MATH_API ISort(SortingAlgorithm sortingMethod);
+			MATH_API ISort(SortingAlgorithms::SortingAlgorithm sortingMethod);
 			MATH_API virtual ~ISort(void);
 		private:
 			ISort(const ISort& sortObject) {} // don't implement
@@ -89,7 +92,7 @@ namespace Math {
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
-			MATH_API SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
+			MATH_API SortingAlgorithms::SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
 		protected:
 			template <typename T>
 			bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
@@ -238,7 +241,7 @@ namespace Math {
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			SortingAlgorithm m_sortingAlgorithm;
+			SortingAlgorithms::SortingAlgorithm m_sortingAlgorithm;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ISort */
 

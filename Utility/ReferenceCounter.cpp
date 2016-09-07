@@ -1,28 +1,26 @@
 #include "stdafx.h"
 #include "ReferenceCounter.h"
 
-using namespace Utility;
-
-ReferenceCounter::ReferenceCounter() :
+Utility::ReferenceCounter::ReferenceCounter() :
 	m_refCount(1)
 {
 }
 
-ReferenceCounter::~ReferenceCounter()
+Utility::ReferenceCounter::~ReferenceCounter()
 {
 }
 
-void ReferenceCounter::AddReference()
+void Utility::ReferenceCounter::AddReference()
 {
 	++m_refCount;
 }
 
-void ReferenceCounter::RemoveReference()
+void Utility::ReferenceCounter::RemoveReference()
 {
 	--m_refCount;
 }
 
-bool ReferenceCounter::IsReferenced() const
+bool Utility::ReferenceCounter::IsReferenced() const
 {
 	return m_refCount > 0;
 }
