@@ -6,50 +6,6 @@
 #include <sstream>
 #include <iomanip>
 
-Math::Vector2D::Vector2D() :
-	m_x(REAL_ZERO),
-	m_y(REAL_ZERO)
-{
-}
-
-Math::Vector2D::Vector2D(Real xy) :
-	m_x(xy),
-	m_y(xy)
-{
-}
-
-Math::Vector2D::Vector2D(Real x, Real y) :
-	m_x(x),
-	m_y(y)
-{
-}
-
-Math::Vector2D::Vector2D(const Vector2D& v) :
-	m_x(v.GetX()),
-	m_y(v.GetY())
-{
-}
-
-Math::Vector2D::Vector2D(Vector2D&& v) :
-	m_x(std::move(v.GetX())),
-	m_y(std::move(v.GetY()))
-{
-}
-
-Math::Vector2D::~Vector2D()
-{
-}
-
-Math::Real Math::Vector2D::Length() const
-{
-	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
-}
-
-Math::Real Math::Vector2D::LengthSquared() const
-{
-	return static_cast<Real>(m_x * m_x + m_y * m_y);
-}
-
 Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v)
 {
 	m_x += v.GetX();
@@ -97,26 +53,6 @@ Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v)
 	m_x /= v.GetX();
 	m_y /= v.GetY();
 
-	return *this;
-}
-
-Math::Vector2D& Math::Vector2D::operator=(const Vector2D& v)
-{
-	m_x = v.GetX();
-	m_y = v.GetY();
-
-	return *this;
-}
-
-Math::Vector2D& Math::Vector2D::operator=(Vector2D&& v)
-{
-	if (this != &v)
-	{
-		m_x = v.GetX();
-		m_y = v.GetY();
-		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
-	}
 	return *this;
 }
 
@@ -177,60 +113,11 @@ std::string Math::Vector2D::ToString() const
 }
 
 /* ==================== Vector3D ==================== */
-Math::Vector3D::Vector3D() :
-	m_x(REAL_ZERO),
-	m_y(REAL_ZERO),
-	m_z(REAL_ZERO)
-{
-}
-
-Math::Vector3D::Vector3D(Real xyz) :
-	m_x(xyz),
-	m_y(xyz),
-	m_z(xyz)
-{
-}
-
-Math::Vector3D::Vector3D(Real x, Real y, Real z) :
-	m_x(x),
-	m_y(y),
-	m_z(z)
-{
-}
-
-Math::Vector3D::Vector3D(const Vector3D& v) :
-	m_x(v.GetX()),
-	m_y(v.GetY()),
-	m_z(v.GetZ())
-{
-}
-
-Math::Vector3D::Vector3D(Vector3D&& v) :
-	m_x(std::move(v.m_x)),
-	m_y(std::move(v.m_y)),
-	m_z(std::move(v.m_z))
-{
-}
-
-Math::Vector3D::~Vector3D()
-{
-}
-
 std::string Math::Vector3D::ToString() const
 {
 	std::stringstream ss("");
 	ss << std::setprecision(4) << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << ")";
 	return ss.str();
-}
-
-Math::Real Math::Vector3D::Length() const
-{
-	return static_cast<Real>(sqrt(LengthSquared()));
-}
-
-Math::Real Math::Vector3D::LengthSquared() const
-{
-	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z);
 }
 
 Math::Real Math::Vector3D::Max() const
@@ -327,28 +214,6 @@ Math::Vector3D& Math::Vector3D::operator/=(const Vector3D& v)
 	m_y /= v.GetY();
 	m_z /= v.GetZ();
 
-	return *this;
-}
-
-Math::Vector3D& Math::Vector3D::operator=(const Vector3D& v)
-{
-	m_x = v.m_x;
-	m_y = v.m_y;
-	m_z = v.m_z;
-	return *this;
-}
-
-Math::Vector3D& Math::Vector3D::operator=(Vector3D&& v)
-{
-	if (this != &v)
-	{
-		m_x = v.GetX();
-		m_y = v.GetY();
-		m_z = v.GetZ();
-		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_z = REAL_ZERO; // TODO: This seems unnecessary
-	}
 	return *this;
 }
 
@@ -462,65 +327,11 @@ void Math::Vector3D::Threshold(Real maxLength)
 }
 
 /* ==================== Vector4D ==================== */
-Math::Vector4D::Vector4D() :
-	m_x(REAL_ZERO),
-	m_y(REAL_ZERO),
-	m_z(REAL_ZERO),
-	m_w(REAL_ZERO)
-{
-}
-
-Math::Vector4D::Vector4D(Real xyzw) :
-	m_x(xyzw),
-	m_y(xyzw),
-	m_z(xyzw),
-	m_w(xyzw)
-{
-}
-
-Math::Vector4D::Vector4D(Real x, Real y, Real z, Real w) :
-	m_x(x),
-	m_y(y),
-	m_z(z),
-	m_w(w)
-{
-}
-
-Math::Vector4D::Vector4D(const Vector4D& v) :
-	m_x(v.GetX()),
-	m_y(v.GetY()),
-	m_z(v.GetZ()),
-	m_w(v.GetW())
-{
-}
-
-Math::Vector4D::Vector4D(Vector4D&& v) :
-	m_x(std::move(v.GetX())),
-	m_y(std::move(v.GetY())),
-	m_z(std::move(v.GetZ())),
-	m_w(std::move(v.GetW()))
-{
-}
-
-Math::Vector4D::~Vector4D()
-{
-}
-
 std::string Math::Vector4D::ToString() const
 {
 	std::stringstream ss("");
 	ss << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << "; w=" << m_w << ")";
 	return ss.str();
-}
-
-Math::Real Math::Vector4D::Length() const
-{
-	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
-}
-
-Math::Real Math::Vector4D::LengthSquared() const
-{
-	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
 }
 
 Math::Real Math::Vector4D::Max() const
@@ -602,32 +413,6 @@ Math::Vector4D& Math::Vector4D::operator/=(const Vector4D& v)
 	m_z /= v.GetZ();
 	m_w /= v.GetW();
 
-	return *this;
-}
-
-Math::Vector4D& Math::Vector4D::operator=(const Vector4D& v)
-{
-	m_x = v.GetX();
-	m_y = v.GetY();
-	m_z = v.GetZ();
-	m_w = v.GetW();
-
-	return *this;
-}
-
-Math::Vector4D& Math::Vector4D::operator=(Vector4D&& v)
-{
-	if (this != &v)
-	{
-		m_x = v.GetX();
-		m_y = v.GetY();
-		m_z = v.GetZ();
-		m_w = v.GetW();
-		//v.m_x = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_y = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_z = REAL_ZERO; // TODO: This seems unnecessary
-		//v.m_w = REAL_ZERO; // TODO: This seems unnecessary
-	}
 	return *this;
 }
 
