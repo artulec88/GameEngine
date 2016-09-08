@@ -66,10 +66,10 @@ namespace Game
 		// Then remove the SAFE_DELETE(textEffect) from the MenuGameState destructor.
 		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_notSelectedMenuEntryColorEffect;
 		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_selectedMenuEntryColorEffect;
-		Math::Effects::Effect<Rendering::Color>* m_notSelectedMenuEntryOutlineColorEffect;
-		Math::Effects::Effect<Rendering::Color>* m_selectedMenuEntryOutlineColorEffect;
-		Math::Effects::Effect<Math::Vector2D>* m_notSelectedMenuEntryOffsetEffect;
-		Math::Effects::Effect<Math::Vector2D>* m_selectedMenuEntryOffsetEffect;
+		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_notSelectedMenuEntryOutlineColorEffect;
+		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_selectedMenuEntryOutlineColorEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Vector2D>> m_notSelectedMenuEntryOffsetEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Vector2D>> m_selectedMenuEntryOffsetEffect;
 		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
 		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
 		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;

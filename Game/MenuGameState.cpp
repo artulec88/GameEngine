@@ -20,12 +20,12 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_gameManager(gameManager),
 	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL,
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Rendering::Color(Rendering::ColorNames::BLACK), Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
-	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 0.0f, 1.0f, 2.0f }.data(), 3, false)),
+	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(1.0f, 0.0f, 0.0f))),
 	m_selectedMenuEntryColorEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 0.0f, 1.0f, 2.0f }.data(), 3, false)),
-	m_notSelectedMenuEntryOutlineColorEffect(NULL),
-	m_selectedMenuEntryOutlineColorEffect(NULL),
-	m_notSelectedMenuEntryOffsetEffect(NULL),
-	m_selectedMenuEntryOffsetEffect(NULL),
+	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(0.0f, 1.0f, 0.0f))),
+	m_selectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::BlinkEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 1.0f, 1.0f, 2.0f }.data(), 3)),
+	m_notSelectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::NoEffect<Math::Vector2D>>(Math::Vector2D(0.015f, 0.015f))),
+	m_selectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Vector2D>>(std::vector<Math::Vector2D>{ Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) }.data(), std::vector<Math::Real>{ 0.0f, 0.75f, 1.5f, 2.25f, 3.0f }.data(), 5, true)),
 	m_notSelectedMenuEntryCharacterWidthEffect(NULL),
 	m_selectedMenuEntryCharacterWidthEffect(NULL),
 	m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(NULL),
@@ -63,16 +63,6 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 
-	Rendering::Color colors[] = { Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f)  };
-
-	Math::Real outlineDurations[] = { 1.0f, 1.0f, 2.0f };
-	m_selectedMenuEntryOutlineColorEffect = new Math::Effects::BlinkEffect<Rendering::Color>(colors, outlineDurations, 3);
-
-	Math::Vector2D vectors2D[] = { Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) };
-	Math::Real offsetTimes[] = { 0.0f, 0.75f, 1.5f, 2.25f, 3.0f };
-	m_notSelectedMenuEntryOffsetEffect = new Math::Effects::SmoothTransitionEffect<Math::Vector2D>(vectors2D, offsetTimes, 5, true);
-	m_selectedMenuEntryOffsetEffect = new Math::Effects::SmoothTransitionEffect<Math::Vector2D>(vectors2D, offsetTimes, 5, true);
-
 	Math::Real characterWidths[] = { 0.4f, 0.45f, 0.5f, 0.55f, 0.6f };
 	Math::Real characterTimes[] = { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f };
 	//m_notSelectedMenuEntryCharacterWidthEffect(NULL);
@@ -96,7 +86,7 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
 
 	DeselectAll();
-	m_currentMenuEntry = m_mainMenuRootEntry.SelectChild(0); // TODO: Two assignments to the same variable. Fix that!
+	m_currentMenuEntry = m_mainMenuRootEntry.SelectChild(1); // TODO: Two assignments to the same variable. Fix that!
 	//m_currentMenuEntry = &m_mainMenuRootEntry;
 
 	//m_inputMapping.PushContext("MenuGameStateContext");
@@ -106,10 +96,6 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 
 Game::MenuGameState::~MenuGameState(void)
 {
-	SAFE_DELETE(m_notSelectedMenuEntryOutlineColorEffect);
-	SAFE_DELETE(m_selectedMenuEntryOutlineColorEffect);
-	SAFE_DELETE(m_notSelectedMenuEntryOffsetEffect);
-	SAFE_DELETE(m_selectedMenuEntryOffsetEffect);
 	SAFE_DELETE(m_notSelectedMenuEntryCharacterWidthEffect);
 	SAFE_DELETE(m_selectedMenuEntryCharacterWidthEffect);
 	SAFE_DELETE(m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect);
@@ -231,18 +217,9 @@ void Game::MenuGameState::SelectChild(size_t childIndex)
 {
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DELOCUST,
 		"Trying to select the child which is already selected (", childIndex, ").");
-	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_notSelectedMenuEntryOffsetEffect);
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
-	//m_currentMenuEntry->SelectChildMenuEntry(childIndex);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyColorEffect(m_selectedMenuEntryColorEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyOutlineColorEffect(m_selectedMenuEntryOutlineColorEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyOffsetEffect(m_selectedMenuEntryOffsetEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyCharacterWidthEffect(m_selectedMenuEntryCharacterWidthEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyCharacterEdgeTransitionWidthEffect(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderWidthEffect(m_selectedMenuEntryBorderWidthEffect);
-	////m_currentMenuEntry->GetSelectedChild()->ApplyBorderEdgeTransitionWidthEffect(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
-	DEBUG_LOG_GAME("Selected menu entry changed to ", childIndex);
+	ERROR_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 
 void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
@@ -304,16 +281,36 @@ void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
 void Game::MenuGameState::Update(Math::Real deltaTime)
 {
 	//m_selectedMenuEntryColorEffect->Update(m_currentMenuEntry->GetSelectedChild()->GetGuiText(), deltaTime);
-	if (m_notSelectedMenuEntryColorEffect != NULL) { m_notSelectedMenuEntryColorEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryColorEffect != NULL)
+	{
+		m_notSelectedMenuEntryColorEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyColorEffectToAll(*m_notSelectedMenuEntryColorEffect);
+	}
 	if (m_selectedMenuEntryColorEffect != NULL)
 	{
 		m_selectedMenuEntryColorEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyColorEffect(*m_selectedMenuEntryColorEffect);
 	}
-	if (m_notSelectedMenuEntryOutlineColorEffect != NULL) { m_notSelectedMenuEntryOutlineColorEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryOutlineColorEffect != NULL) { m_selectedMenuEntryOutlineColorEffect->Update(deltaTime); }
-	if (m_notSelectedMenuEntryOffsetEffect != NULL) { m_notSelectedMenuEntryOffsetEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryOffsetEffect != NULL) { m_selectedMenuEntryOffsetEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryOutlineColorEffect != NULL)
+	{
+		m_notSelectedMenuEntryOutlineColorEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyOutlineColorEffectToAll(*m_notSelectedMenuEntryOutlineColorEffect);
+	}
+	if (m_selectedMenuEntryOutlineColorEffect != NULL)
+	{
+		m_selectedMenuEntryOutlineColorEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyOutlineColorEffect(*m_selectedMenuEntryOutlineColorEffect);
+	}
+	if (m_notSelectedMenuEntryOffsetEffect != NULL)
+	{
+		m_notSelectedMenuEntryOffsetEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyOffsetEffectToAll(*m_notSelectedMenuEntryOffsetEffect);
+	}
+	if (m_selectedMenuEntryOffsetEffect != NULL)
+	{
+		m_selectedMenuEntryOffsetEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyOffsetEffect(*m_selectedMenuEntryOffsetEffect);
+	}
 	if (m_notSelectedMenuEntryCharacterWidthEffect != NULL) { m_notSelectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
 	if (m_selectedMenuEntryCharacterWidthEffect != NULL) { m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
 	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime); }

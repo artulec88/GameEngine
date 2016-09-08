@@ -85,6 +85,8 @@ namespace Rendering
 			RENDERING_API virtual void Draw(const Shader& guiControlShader, const Renderer& renderer) const = 0;
 
 			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) = 0;
+			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) = 0;
+			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) = 0;
 		protected:
 			void MoveAABR(Math::Real bottomLeftOffsetX, Math::Real bottomLeftOffsetY, Math::Real topRightOffsetX, Math::Real topRightOffsetY);
 			/* ==================== Non-static member functions end ==================== */

@@ -22,3 +22,13 @@ void Rendering::Controls::GuiCheckBoxControl::ApplyColorEffect(const Math::Effec
 {
 	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
 }
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}

@@ -163,3 +163,13 @@ void Rendering::Controls::GuiButtonControl::ApplyColorEffect(const Math::Effects
 {
 	effect.Apply(&m_color);
 }
+
+void Rendering::Controls::GuiButtonControl::ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect)
+{
+	effect.Apply(&m_outlineColor);
+}
+
+void Rendering::Controls::GuiButtonControl::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+{
+	effect.Apply(&m_offset);
+}

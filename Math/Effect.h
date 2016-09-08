@@ -24,7 +24,7 @@ namespace Math
 			/// <summary>
 			/// Creates a new effect.
 			/// </summary>
-			Effect();
+			Effect(const T& initialValue);
 			virtual ~Effect();
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -49,6 +49,34 @@ namespace Math
 			T m_value;
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class Effect */
+
+		/// <summary>
+		/// Effect that simply simulates no effect at all.
+		/// </summary>
+		template <class T>
+		class NoEffect : public Effect<T>
+		{
+			/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			/// <summary>
+			/// Creates a new no-effect.
+			/// </summary>
+			/// <param name="initialValue"> The values that effect will use. </param>
+			NoEffect(const T& initialValue);
+			virtual ~NoEffect();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class NoEffect */
 
 		/// <summary>
 		/// Effect that smoothly, linearly transitions from one value to the other.

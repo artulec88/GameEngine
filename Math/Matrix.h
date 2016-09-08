@@ -33,7 +33,7 @@ namespace Math
 		static Statistics::ClassStats& s_classStats;
 #endif
 	public:
-		MATH_API static const Matrix4D IDENTITY_MATRIX;
+		MATH_API static const Matrix4D IDENTITY_MATRIX; // TODO: Try to make IDENTITY_MATRIX constexpr (see http://www.cplusplus.com/forum/general/121300/).
 		static int Signum(int i, int j);
 		/* ==================== Static variables and functions end ==================== */
 

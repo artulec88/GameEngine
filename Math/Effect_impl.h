@@ -3,7 +3,8 @@
 
 /* ==================== Effect<T> class begin ==================== */
 template <class T>
-Math::Effects::Effect<T>::Effect()
+Math::Effects::Effect<T>::Effect(const T& initialValue) :
+	m_value(initialValue)
 {
 }
 
@@ -20,10 +21,23 @@ void Math::Effects::Effect<T>::Update(Real deltaTime)
 }
 /* ==================== Effect<T> class end ==================== */
 
+/* ==================== NoEffect<T> class begin ==================== */
+template <class T>
+Math::Effects::NoEffect<T>::NoEffect(const T& initialValue) :
+	Effect(initialValue)
+{
+}
+
+template <class T>
+Math::Effects::NoEffect<T>::~NoEffect()
+{
+}
+/* ==================== NoEffect<T> class end ==================== */
+
 /* ==================== SmoothTransitionEffect<T> class begin ==================== */
 template <class T>
 Math::Effects::SmoothTransitionEffect<T>::SmoothTransitionEffect(const T* values, const Real* times, unsigned int valuesCount, bool isGoingBackAndForthEnabled) :
-	Effect(),
+	Effect(values[0]),
 	m_valuesInterpolator(values, times, valuesCount),
 	m_timer(times[0]),
 	m_isGoingBackAndForthEnabled(isGoingBackAndForthEnabled),
@@ -74,7 +88,7 @@ template <class T>
 
 template <class T>
 Math::Effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount) :
-	Effect(),
+	Effect(values[0]),
 	m_currentIndex(0),
 	m_timer(0.0f)
 {

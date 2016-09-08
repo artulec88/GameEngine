@@ -40,6 +40,16 @@ void Engine::MenuEntry::ApplyColorEffect(const Math::Effects::Effect<Rendering::
 	m_guiControl->ApplyColorEffect(effect);
 }
 
+void Engine::MenuEntry::ApplyOutlineColorEffect(const Math::Effects::Effect<Rendering::Color>& effect)
+{
+	m_guiControl->ApplyOutlineColorEffect(effect);
+}
+
+void Engine::MenuEntry::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect)
+{
+	m_guiControl->ApplyOffsetEffect(effect);
+}
+
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
 	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
@@ -109,6 +119,30 @@ void Engine::CompositeMenuEntry::AddChild(MenuEntry* menuEntry)
 Engine::MenuEntry* Engine::CompositeMenuEntry::Execute()
 {
 	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
+}
+
+void Engine::CompositeMenuEntry::ApplyColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyColorEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyOutlineColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyOutlineColorEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyOffsetEffectToAll(const Math::Effects::Effect<Math::Vector2D>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyOffsetEffect(effect);
+	}
 }
 
 Engine::MenuEntry* Engine::CompositeMenuEntry::SelectPrevChild()
