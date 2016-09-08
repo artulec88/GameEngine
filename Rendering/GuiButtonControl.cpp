@@ -173,3 +173,23 @@ void Rendering::Controls::GuiButtonControl::ApplyOffsetEffect(const Math::Effect
 {
 	effect.Apply(&m_offset);
 }
+
+void Rendering::Controls::GuiButtonControl::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	effect.Apply(&m_characterWidth);
+}
+
+void Rendering::Controls::GuiButtonControl::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	effect.Apply(&m_characterEdgeTransitionWidth);
+}
+
+void Rendering::Controls::GuiButtonControl::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	effect.Apply(&m_borderWidth);
+}
+
+void Rendering::Controls::GuiButtonControl::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	effect.Apply(&m_borderEdgeTransitionWidth);
+}

@@ -26,14 +26,14 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_selectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::BlinkEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 1.0f, 1.0f, 2.0f }.data(), 3)),
 	m_notSelectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::NoEffect<Math::Vector2D>>(Math::Vector2D(0.015f, 0.015f))),
 	m_selectedMenuEntryOffsetEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Vector2D>>(std::vector<Math::Vector2D>{ Math::Vector2D(-0.015f, 0.015f), Math::Vector2D(0.015f, 0.015f), Math::Vector2D(0.015f, -0.015f), Math::Vector2D(-0.015f, -0.015f), Math::Vector2D(-0.015f, 0.015f) }.data(), std::vector<Math::Real>{ 0.0f, 0.75f, 1.5f, 2.25f, 3.0f }.data(), 5, true)),
-	m_notSelectedMenuEntryCharacterWidthEffect(NULL),
-	m_selectedMenuEntryCharacterWidthEffect(NULL),
-	m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(NULL),
-	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect(NULL),
-	m_notSelectedMenuEntryBorderWidthEffect(NULL),
-	m_selectedMenuEntryBorderWidthEffect(NULL),
-	m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect(NULL),
-	m_selectedMenuEntryBorderEdgeTransitionWidthEffect(NULL),
+	m_notSelectedMenuEntryCharacterWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(0.5f)),
+	m_selectedMenuEntryCharacterWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(std::vector<Math::Real>{ 0.4f, 0.45f, 0.5f, 0.55f, 0.6f }.data(), std::vector<Math::Real>{ 0.0f, 0.2f, 0.4f, 0.6f, 0.8f }.data(), 5, false)),
+	m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(0.1f)),
+	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(std::vector<Math::Real>{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f }.data(), std::vector<Math::Real>{ 0.0f, 1.5f, 3.0f, 4.5f, 6.0f }.data(), 5, true)),
+	m_notSelectedMenuEntryBorderWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(0.4f)),
+	m_selectedMenuEntryBorderWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(std::vector<Math::Real>{ 0.0f, 0.12f, 0.24f, 0.36f, 0.48f }.data(), std::vector<Math::Real>{ 0.0f, 1.0f, 2.0f, 3.0f, 4.0f }.data(), 5, false)),
+	m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<Math::Effects::NoEffect<Math::Real>>(0.1f)),
+	m_selectedMenuEntryBorderEdgeTransitionWidthEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Math::Real>>(std::vector<Math::Real>{ 0.0f, 0.1f, 0.2f, 0.3f, 0.5f }.data(), std::vector<Math::Real>{ 0.0f, 0.1f, 0.2f, 0.3f, 0.4f }.data(), 5, false)),
 	m_mousePosX(REAL_ZERO),
 	m_mousePosY(REAL_ZERO),
 	m_mousePosChanged(false),
@@ -63,30 +63,10 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 
-	Math::Real characterWidths[] = { 0.4f, 0.45f, 0.5f, 0.55f, 0.6f };
-	Math::Real characterTimes[] = { 0.0f, 0.2f, 0.4f, 0.6f, 0.8f };
-	//m_notSelectedMenuEntryCharacterWidthEffect(NULL);
-	m_selectedMenuEntryCharacterWidthEffect = new Math::Effects::SmoothTransitionEffect<Math::Real>(characterWidths, characterTimes, 5, false);
-
-	Math::Real characterEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
-	Math::Real characterEdgeTransitionTimes[] = { 0.0f, 1.5f, 3.0f, 4.5f, 6.0f };
-	//m_notSelectedMenuEntryCharacterEdgeTransitionEffect(NULL);
-	m_selectedMenuEntryCharacterEdgeTransitionWidthEffect = new Math::Effects::SmoothTransitionEffect<Math::Real>(characterEdgeTransitionWidths, characterEdgeTransitionTimes, 5, true);
-
-	Math::Real borderWidths[] = { 0.0f, 0.12f, 0.24f, 0.36f, 0.48f };
-	Math::Real borderTimes[] = { 0.0f, 1.0f, 2.0f, 3.0f, 4.0f };
-	//m_notSelectedMenuEntryBorderWidthEffect(NULL);
-	m_selectedMenuEntryBorderWidthEffect = new Math::Effects::SmoothTransitionEffect<Math::Real>(borderWidths, borderTimes, 5, false);
-
-	Math::Real borderEdgeTransitionWidths[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.5f };
-	Math::Real borderEdgeTransitionTimes[] = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f };
-	//m_notSelectedMenuEntryBorderEdgeTransitionEffect(NULL);
-	m_selectedMenuEntryBorderEdgeTransitionWidthEffect = new Math::Effects::SmoothTransitionEffect<Math::Real>(borderEdgeTransitionWidths, borderEdgeTransitionTimes, 5, false);
-
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
 
 	DeselectAll();
-	m_currentMenuEntry = m_mainMenuRootEntry.SelectChild(1); // TODO: Two assignments to the same variable. Fix that!
+	m_currentMenuEntry = m_mainMenuRootEntry.SelectChild(0); // TODO: Two assignments to the same variable. Fix that!
 	//m_currentMenuEntry = &m_mainMenuRootEntry;
 
 	//m_inputMapping.PushContext("MenuGameStateContext");
@@ -96,14 +76,6 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 
 Game::MenuGameState::~MenuGameState(void)
 {
-	SAFE_DELETE(m_notSelectedMenuEntryCharacterWidthEffect);
-	SAFE_DELETE(m_selectedMenuEntryCharacterWidthEffect);
-	SAFE_DELETE(m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect);
-	SAFE_DELETE(m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
-	SAFE_DELETE(m_notSelectedMenuEntryBorderWidthEffect);
-	SAFE_DELETE(m_selectedMenuEntryBorderWidthEffect);
-	SAFE_DELETE(m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect);
-	SAFE_DELETE(m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
 }
 
 void Game::MenuGameState::Entered()
@@ -311,12 +283,44 @@ void Game::MenuGameState::Update(Math::Real deltaTime)
 		m_selectedMenuEntryOffsetEffect->Update(deltaTime);
 		m_currentMenuEntry->ApplyOffsetEffect(*m_selectedMenuEntryOffsetEffect);
 	}
-	if (m_notSelectedMenuEntryCharacterWidthEffect != NULL) { m_notSelectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryCharacterWidthEffect != NULL) { m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime); }
-	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL) { m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime); }
-	if (m_notSelectedMenuEntryBorderWidthEffect != NULL) { m_notSelectedMenuEntryBorderWidthEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryBorderWidthEffect != NULL) { m_selectedMenuEntryBorderWidthEffect->Update(deltaTime); }
-	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
-	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != NULL) { m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime); }
+	if (m_notSelectedMenuEntryCharacterWidthEffect != NULL)
+	{
+		m_notSelectedMenuEntryCharacterWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyCharacterWidthEffectToAll(*m_notSelectedMenuEntryCharacterWidthEffect);
+	}
+	if (m_selectedMenuEntryCharacterWidthEffect != NULL)
+	{
+		m_selectedMenuEntryCharacterWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyCharacterWidthEffect(*m_selectedMenuEntryCharacterWidthEffect);
+	}
+	if (m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL)
+	{
+		m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyCharacterEdgeTransitionWidthEffectToAll(*m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect);
+	}
+	if (m_selectedMenuEntryCharacterEdgeTransitionWidthEffect != NULL)
+	{
+		m_selectedMenuEntryCharacterEdgeTransitionWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyCharacterEdgeTransitionWidthEffect(*m_selectedMenuEntryCharacterEdgeTransitionWidthEffect);
+	}
+	if (m_notSelectedMenuEntryBorderWidthEffect != NULL)
+	{
+		m_notSelectedMenuEntryBorderWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyBorderWidthEffectToAll(*m_notSelectedMenuEntryBorderWidthEffect);
+	}
+	if (m_selectedMenuEntryBorderWidthEffect != NULL)
+	{
+		m_selectedMenuEntryBorderWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyBorderWidthEffect(*m_selectedMenuEntryBorderWidthEffect);
+	}
+	if (m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect != NULL)
+	{
+		m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->GetParent()->ApplyBorderEdgeTransitionWidthEffectToAll(*m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect);
+	}
+	if (m_selectedMenuEntryBorderEdgeTransitionWidthEffect != NULL)
+	{
+		m_selectedMenuEntryBorderEdgeTransitionWidthEffect->Update(deltaTime);
+		m_currentMenuEntry->ApplyBorderEdgeTransitionWidthEffect(*m_selectedMenuEntryBorderEdgeTransitionWidthEffect);
+	}
 }

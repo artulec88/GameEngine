@@ -70,14 +70,14 @@ namespace Game
 		std::unique_ptr<Math::Effects::Effect<Rendering::Color>> m_selectedMenuEntryOutlineColorEffect;
 		std::unique_ptr<Math::Effects::Effect<Math::Vector2D>> m_notSelectedMenuEntryOffsetEffect;
 		std::unique_ptr<Math::Effects::Effect<Math::Vector2D>> m_selectedMenuEntryOffsetEffect;
-		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
-		Math::Effects::Effect<Math::Real>* m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_notSelectedMenuEntryCharacterWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_selectedMenuEntryCharacterWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_notSelectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_selectedMenuEntryCharacterEdgeTransitionWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_notSelectedMenuEntryBorderWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_selectedMenuEntryBorderWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_notSelectedMenuEntryBorderEdgeTransitionWidthEffect;
+		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
 
 		Math::Real m_mousePosX, m_mousePosY;
 		bool m_mousePosChanged;

@@ -32,3 +32,23 @@ void Rendering::Controls::GuiCheckBoxControl::ApplyOffsetEffect(const Math::Effe
 {
 	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
 }
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}
+
+void Rendering::Controls::GuiCheckBoxControl::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support applying effects yet.");
+}

@@ -50,6 +50,26 @@ void Engine::MenuEntry::ApplyOffsetEffect(const Math::Effects::Effect<Math::Vect
 	m_guiControl->ApplyOffsetEffect(effect);
 }
 
+void Engine::MenuEntry::ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	m_guiControl->ApplyCharacterWidthEffect(effect);
+}
+
+void Engine::MenuEntry::ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	m_guiControl->ApplyCharacterEdgeTransitionWidthEffect(effect);
+}
+
+void Engine::MenuEntry::ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	m_guiControl->ApplyBorderWidthEffect(effect);
+}
+
+void Engine::MenuEntry::ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect)
+{
+	m_guiControl->ApplyBorderEdgeTransitionWidthEffect(effect);
+}
+
 bool Engine::MenuEntry::DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const
 {
 	return GetGuiControl().DoesContainPoint(xPos, yPos).IsIntersecting();
@@ -142,6 +162,38 @@ void Engine::CompositeMenuEntry::ApplyOffsetEffectToAll(const Math::Effects::Eff
 	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
 	{
 		(*childMenuEntryItr)->ApplyOffsetEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyCharacterWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyCharacterWidthEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyCharacterEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyCharacterEdgeTransitionWidthEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyBorderWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyBorderWidthEffect(effect);
+	}
+}
+
+void Engine::CompositeMenuEntry::ApplyBorderEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect)
+{
+	for (auto childMenuEntryItr = m_childrenMenuEntries.begin(); childMenuEntryItr != m_childrenMenuEntries.end(); ++childMenuEntryItr)
+	{
+		(*childMenuEntryItr)->ApplyBorderEdgeTransitionWidthEffect(effect);
 	}
 }
 

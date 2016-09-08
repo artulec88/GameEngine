@@ -48,6 +48,11 @@ namespace Engine
 		ENGINE_API virtual void ApplyColorEffect(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect);
+		ENGINE_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+
 		ENGINE_API bool DoesMouseHoverOver(Math::Real xPos, Math::Real yPos) const;
 		ENGINE_API bool HasParent() const { return m_parentMenuEntry != NULL; }
 		ENGINE_API CompositeMenuEntry* GetParent() { return m_parentMenuEntry; }
@@ -88,6 +93,11 @@ namespace Engine
 		ENGINE_API void ApplyColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOutlineColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOffsetEffectToAll(const Math::Effects::Effect<Math::Vector2D>& effect);
+		ENGINE_API void ApplyCharacterWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API void ApplyCharacterEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API void ApplyBorderWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
+		ENGINE_API void ApplyBorderEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
+
 		ENGINE_API void RenderAll(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API size_t GetSelectedChildIndex() const { return m_selectedMenuEntryIndex; }
 		ENGINE_API size_t GetSelectedChildIndex(Math::Real xPos, Math::Real yPos) const;

@@ -46,6 +46,10 @@ namespace Rendering
 			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect);
 			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect);
 			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect);
+			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
 		private:
 			/* ==================== Non-static member functions end ==================== */
 
