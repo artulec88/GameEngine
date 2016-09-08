@@ -8,9 +8,7 @@
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"
-#include "Engine\GameCommand.h"
 #include "Engine\MousePicker.h"
-#include "Engine\QuitGameCommand.h"
 
 #include "Rendering\Renderer.h"
 
@@ -84,7 +82,6 @@ namespace Game
 
 		Engine::MousePicker m_mousePicker;
 		Engine::MenuEntry* m_currentMenuEntry;
-		//Engine::QuitGameCommand m_quitGameCommand;
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif

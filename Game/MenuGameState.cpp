@@ -20,7 +20,7 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_gameManager(gameManager),
 	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL,
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Rendering::Color(Rendering::ColorNames::BLACK), Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
-	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(1.0f, 0.0f, 0.0f))),
+	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorBlue", 1.0f)))),
 	m_selectedMenuEntryColorEffect(std::make_unique<Math::Effects::SmoothTransitionEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 0.0f, 1.0f, 2.0f }.data(), 3, false)),
 	m_notSelectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(0.0f, 1.0f, 0.0f))),
 	m_selectedMenuEntryOutlineColorEffect(std::make_unique<Math::Effects::BlinkEffect<Rendering::Color>>(std::vector<Rendering::Color>{ Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Rendering::Color(0.0f, 0.0f, 1.0f) }.data(), std::vector<Math::Real>{ 1.0f, 1.0f, 2.0f }.data(), 3)),
@@ -39,7 +39,6 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_mousePosChanged(false),
 	m_mousePicker(),
 	m_currentMenuEntry(NULL)
-	//m_quitGameCommand()
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("MenuGameState"))
 #endif
