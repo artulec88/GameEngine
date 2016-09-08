@@ -49,18 +49,20 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	*/
 	Engine::MenuEntry* mainMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.4f), 0.5f,
 		Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true);
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", mainMenuFont,mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", mainMenuFont,mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.2f), 0.5f,
 		Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.4f), 0.5f,
 		Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), 0.5f,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.6f), 0.5f,
 		Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::START_GAME), "Start", mainMenuFont,
+	mainMenuOptionsMenuEntry->AddChild(new Engine::ActionMenuEntry(Engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
+		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::START_GAME, "Start", mainMenuFont,
 		mainMenuFontSize, NULL /*new Texture("check-297273_960_720.png")*/, Math::Vector2D(0.25f, 0.2f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SHOW_INTRO), "Intro", mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.6f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
-	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", mainMenuFont,
+	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 
 	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
@@ -113,7 +115,10 @@ void Game::MenuGameState::Handle(Engine::Actions::Action action)
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == NULL?
 		break;
 	case Engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
-		m_currentMenuEntry = m_currentMenuEntry->Execute();
+		m_currentMenuEntry->Dispatch();
+		break;
+	case Engine::Actions::GO_TO_CHILD_MENU_ENTRY:
+		m_currentMenuEntry = m_currentMenuEntry->GoTo();
 		break;
 	case Engine::Actions::RETURN_TO_PARENT_MENU_ENTRY:
 		if (m_currentMenuEntry->GetParent()->HasParent())
@@ -139,8 +144,7 @@ void Game::MenuGameState::Handle(Engine::States::State state)
 	case Engine::States::MOUSE_KEY_LEFT_PRESSED:
 		if (m_currentMenuEntry->DoesMouseHoverOver(m_mousePosX, m_mousePosY))
 		{
-			CRITICAL_LOG_GAME("Handling the state ", state);
-			m_currentMenuEntry = m_currentMenuEntry->Execute();
+			m_currentMenuEntry->Dispatch();
 		}
 		break;
 	default:

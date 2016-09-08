@@ -22,6 +22,7 @@ namespace Engine
 			SELECT_PREVIOUS_MENU_ENTRY, // game state action
 			CHOOSE_CURRENT_MENU_ENTRY, // game state action
 			RETURN_TO_PARENT_MENU_ENTRY, // game state action
+			GO_TO_CHILD_MENU_ENTRY, // game state action
 			MOVE,
 			ONE,
 			TWO,

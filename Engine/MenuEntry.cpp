@@ -136,9 +136,9 @@ void Engine::CompositeMenuEntry::AddChild(MenuEntry* menuEntry)
 	menuEntry->SetParent(this);
 }
 
-Engine::MenuEntry* Engine::CompositeMenuEntry::Execute()
+void Engine::CompositeMenuEntry::Dispatch()
 {
-	return m_childrenMenuEntries[m_selectedMenuEntryIndex];
+	GameManager::GetGameManager()->Input(Engine::Actions::GO_TO_CHILD_MENU_ENTRY);
 }
 
 void Engine::CompositeMenuEntry::ApplyColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect)
@@ -219,12 +219,12 @@ Engine::MenuEntry* Engine::CompositeMenuEntry::SelectChild(size_t index)
 /* ==================== CompositeMenuEntry class end ==================== */
 
 /* ==================== ActionMenuEntry class begin ==================== */
-Engine::ActionMenuEntry::ActionMenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
+Engine::ActionMenuEntry::ActionMenuEntry(Engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
 	MenuEntry(text, font, fontSize, iconTexture, screenPosition, maxLineLength, textColor, outlineColor, offset, isCentered, characterWidth, characterEdgeTransitionWidth, borderWidth, borderEdgeTransitionWidth),
-	m_gameCommand(gameCommand)
+	m_actionID(actionID)
 {
 }
 
@@ -237,10 +237,9 @@ Engine::ActionMenuEntry::~ActionMenuEntry(void)
 //{
 //}
 
-Engine::MenuEntry* Engine::ActionMenuEntry::Execute()
+void Engine::ActionMenuEntry::Dispatch()
 {
-	m_gameCommand.Execute(GameManager::GetGameManager());
-	return this;
+	GameManager::GetGameManager()->Input(m_actionID);
 }
 /* ==================== ActionMenuEntry class end ==================== */
 
@@ -264,10 +263,9 @@ void Engine::ValueMenuEntry::Render(Rendering::Renderer* renderer, const Renderi
 	// TODO: Rendering other GUI controls.
 }
 
-Engine::MenuEntry* Engine::ValueMenuEntry::Execute()
+void Engine::ValueMenuEntry::Dispatch()
 {
 	WARNING_LOG_ENGINE("Still to be implemented.");
-	return this;
 }
 /* ==================== ValueMenuEntry class end ==================== */
 

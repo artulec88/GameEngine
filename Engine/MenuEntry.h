@@ -2,7 +2,7 @@
 #define __ENGINE_MENU_ENTRY_H__
 
 #include "Engine.h"
-#include "GameCommand.h"
+#include "ActionConstants.h"
 
 #include "Rendering\Renderer.h"
 #include "Rendering\Font.h"
@@ -44,7 +44,8 @@ namespace Engine
 	public:
 		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
-		ENGINE_API virtual MenuEntry* Execute() = 0;
+		ENGINE_API virtual void Dispatch() = 0;
+		ENGINE_API virtual MenuEntry* GoTo() { return this; }
 		ENGINE_API virtual void ApplyColorEffect(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect);
@@ -88,8 +89,8 @@ namespace Engine
 	public:
 		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
-		ENGINE_API virtual MenuEntry* Execute();
-
+		ENGINE_API virtual void Dispatch();
+		ENGINE_API virtual MenuEntry* GoTo() { return m_childrenMenuEntries[m_selectedMenuEntryIndex]; }
 		ENGINE_API void ApplyColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOutlineColorEffectToAll(const Math::Effects::Effect<Rendering::Color>& effect);
 		ENGINE_API void ApplyOffsetEffectToAll(const Math::Effects::Effect<Math::Vector2D>& effect);
@@ -120,7 +121,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ActionMenuEntry(const GameCommand& gameCommand, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
+		ENGINE_API ActionMenuEntry(Engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
 			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry(void);
@@ -129,13 +130,13 @@ namespace Engine
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
-		ENGINE_API virtual MenuEntry* Execute();
+		ENGINE_API virtual void Dispatch();
 	private:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const GameCommand& m_gameCommand;
+		Engine::Actions::Action m_actionID;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ActionMenuEntry */
 
@@ -159,7 +160,7 @@ namespace Engine
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const;
-		ENGINE_API virtual MenuEntry* Execute();
+		ENGINE_API virtual void Dispatch();
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)
 		//{	// make a unique_ptr

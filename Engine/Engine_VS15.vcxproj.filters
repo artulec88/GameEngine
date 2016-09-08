@@ -24,9 +24,6 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GameCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MenuEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -159,15 +156,15 @@
     <ClInclude Include="ConstantRotationComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="dllmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuEntry.cpp">
@@ -278,8 +275,12 @@
     <ClCompile Include="ConstantRotationComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GameCommand.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>

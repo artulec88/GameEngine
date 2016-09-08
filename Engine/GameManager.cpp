@@ -172,24 +172,28 @@ void Engine::GameManager::AddParticleGenerator(ParticleGenerator* particleGenera
 	m_particleGenerators.push_back(particleGenerator);
 }
 
+void Engine::GameManager::Input(Actions::Action actionID)
+{
+	ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(actionID);
+	if (gameCommandItr != m_actionsToGameCommandsMap.end())
+	{
+		gameCommandItr->second->Execute(this);
+	}
+	else
+	{
+		m_gameStateManager->Handle(actionID);
+		for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[actionID].begin(); gameNodeItr != m_actionsToGameNodesMap[actionID].end(); ++gameNodeItr)
+		{
+			(*gameNodeItr)->Handle(actionID);
+		}
+	}
+}
+
 void Engine::GameManager::Input(const Engine::Input::MappedInput& input)
 {
 	for (Input::ActionsContainer::const_iterator actionItr = input.m_actions.begin(); actionItr != input.m_actions.end(); ++actionItr)
 	{
-		const Actions::Action action = *actionItr;
-		ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(action);
-		if (gameCommandItr != m_actionsToGameCommandsMap.end())
-		{
-			gameCommandItr->second->Execute(this);
-		}
-		else
-		{
-			m_gameStateManager->Handle(action);
-			for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[action].begin(); gameNodeItr != m_actionsToGameNodesMap[action].end(); ++gameNodeItr)
-			{
-				(*gameNodeItr)->Handle(action);
-			}
-		}
+		Input(*actionItr);
 	}
 	for (Input::StatesContainer::const_iterator stateItr = input.m_states.begin(); stateItr != input.m_states.end(); ++stateItr)
 	{

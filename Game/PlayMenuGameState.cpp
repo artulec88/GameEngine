@@ -39,13 +39,13 @@ Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, con
 	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), 0.5f,
 		Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(playMenuOptionsMenuEntry);
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::RESUME_GAME), "Resume", playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::RESUME_GAME, "Resume", playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.1f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::SAVE_GAME), "Save",playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::SAVE_GAME, "Save",playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.3f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::LOAD_GAME), "Load",playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::LOAD_GAME, "Load",playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::GameManager::GetGameManager()->GetCommand(Engine::Actions::QUIT_GAME), "Quit", playMainMenuFont,
+	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::QUIT_GAME, "Quit", playMainMenuFont,
 		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.9f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
@@ -90,7 +90,7 @@ void Game::PlayMenuGameState::Handle(Engine::Actions::Action action)
 		m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectNextChild(); // TODO: Is it possible that GetParent() == NULL?
 		break;
 	case Engine::Actions::CHOOSE_CURRENT_MENU_ENTRY:
-		m_currentMenuEntry = m_currentMenuEntry->Execute();
+		m_currentMenuEntry->Dispatch();
 		break;
 	case Engine::Actions::RETURN_TO_PARENT_MENU_ENTRY:
 		if (m_currentMenuEntry->HasParent())

@@ -74,6 +74,7 @@ namespace Engine
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Load() = 0; // Loads the game
+		ENGINE_API void Input(Actions::Action actionID);
 		ENGINE_API virtual void Input(const Engine::Input::MappedInput& input);
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
@@ -121,6 +122,7 @@ namespace Engine
 			ActionsToGameCommandsMap::const_iterator actionToGameCommandItr = m_actionsToGameCommandsMap.find(action);
 			if (actionToGameCommandItr == m_actionsToGameCommandsMap.end())
 			{
+				WARNING_LOG_ENGINE("No game command registered for the action ID: ", action);
 				return m_emptyGameCommand;
 			}
 			return *actionToGameCommandItr->second;
