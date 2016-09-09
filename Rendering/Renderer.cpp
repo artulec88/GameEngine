@@ -45,8 +45,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
-	m_filterTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
-	m_filterMaterial(&m_filterTexture),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
 	m_filterMesh("plane4.obj"),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
@@ -602,7 +600,7 @@ void Rendering::Renderer::ApplyFilter(const Shader& filterShader, const Texture*
 	glClear(GL_DEPTH_BUFFER_BIT);
 	filterShader.Bind();
 	filterShader.UpdateRendererUniforms(this);
-	filterShader.UpdateUniforms(m_filterTransform, &m_filterMaterial, this);
+	filterShader.UpdateUniforms(m_filterTransform, NULL, this);
 	m_filterMesh.Draw();
 
 	m_currentCamera = m_tempCamera;

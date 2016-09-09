@@ -1,4 +1,5 @@
 #include "GameNodeBuilder.h"
+#include "TextureIDs.h"
 
 #include "Engine\CoreEngine.h"
 #include "Engine\CameraComponent.h"
@@ -7,7 +8,6 @@
 #include "Engine\ConstantRotationComponent.h"
 
 #include "Utility\IConfig.h"
-#include "Utility\FileManager.h"
 
 /* ==================== CameraBuilder implementation begin ==================== */
 Game::CameraBuilder::CameraBuilder(Engine::GameManager* gameManager) :
@@ -114,8 +114,9 @@ void Game::CameraBuilder::BuildMeshRenderer()
 
 
 /* ==================== SkyboxBuilder implementation begin ==================== */
-Game::SkyboxBuilder::SkyboxBuilder() :
-	Builder()
+Game::SkyboxBuilder::SkyboxBuilder(Engine::GameManager* gameManager) :
+	Utility::Builder<Engine::GameNode>(),
+	m_gameManager(gameManager)
 {
 }
 
@@ -127,8 +128,10 @@ void Game::SkyboxBuilder::BuildPart1()
 {
 	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
-	Rendering::Texture* skyboxTextureDay = InitializeCubeMapTexture(cubeMapDayDirectory);
-	Rendering::Texture* skyboxTextureNight = InitializeCubeMapTexture(cubeMapNightDirectory);
+	Rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_DAY, cubeMapDayDirectory);
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureDay != NULL, Utility::Logging::ERR, "Skybox day texture \"", cubeMapTextureDirectory, "\" is NULL");
+	Rendering::Texture* skyboxTextureNight = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_NIGHT, cubeMapNightDirectory);
+	CHECK_CONDITION_EXIT_GAME(skyboxTextureNight != NULL, Utility::Logging::ERR, "Skybox night texture \"", cubeMapNightDirectory, "\" is NULL");
 
 	//SetTexture("cubeMapDay", m_skyboxTextureDay);
 	//SetTexture("cubeMapNight", m_skyboxTextureNight);
@@ -155,72 +158,4 @@ void Game::SkyboxBuilder::BuildMeshRenderer()
 {
 }
 #endif
-
-Rendering::Texture* Game::SkyboxBuilder::InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory)
-{
-	//START_PROFILING_ENGINE(true, "");
-	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
-	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
-	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
-	const std::string EXPECTED_POS_Y_FACE_FILENAME = "up";
-	const std::string EXPECTED_NEG_Y_FACE_FILENAME = "down";
-	const std::string EXPECTED_POS_Z_FACE_FILENAME = "front";
-	const std::string EXPECTED_NEG_Z_FACE_FILENAME = "back";
-
-	Utility::FileManager fileManager;
-	std::vector<std::string> filenames = fileManager.ListAllFilesInDirectory(Engine::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + cubeMapTextureDirectory);
-	bool cubeMapPosXFaceFileFound = false; std::string cubeMapPosXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegXFaceFileFound = false; std::string cubeMapNegXFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapPosYFaceFileFound = false; std::string cubeMapPosYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegYFaceFileFound = false; std::string cubeMapNegYFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapPosZFaceFileFound = false; std::string cubeMapPosZFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	bool cubeMapNegZFaceFileFound = false; std::string cubeMapNegZFaceFileName = cubeMapTextureDirectory + DIRECTORY_PATH_SEPARATOR;
-	for (std::vector<std::string>::const_iterator filenameItr = filenames.begin(); filenameItr != filenames.end(); ++filenameItr)
-	{
-		if ((!cubeMapPosXFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_X_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapPosXFaceFileFound = true;
-			cubeMapPosXFaceFileName += (*filenameItr);
-		}
-		if ((!cubeMapNegXFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_X_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapNegXFaceFileFound = true;
-			cubeMapNegXFaceFileName += (*filenameItr);
-		}
-		if ((!cubeMapPosYFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Y_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapPosYFaceFileFound = true;
-			cubeMapPosYFaceFileName += (*filenameItr);
-		}
-		if ((!cubeMapNegYFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Y_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapNegYFaceFileFound = true;
-			cubeMapNegYFaceFileName += (*filenameItr);
-		}
-		if ((!cubeMapPosZFaceFileFound) && ((*filenameItr).find(EXPECTED_POS_Z_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapPosZFaceFileFound = true;
-			cubeMapPosZFaceFileName += (*filenameItr);
-		}
-		if ((!cubeMapNegZFaceFileFound) && ((*filenameItr).find(EXPECTED_NEG_Z_FACE_FILENAME) != std::string::npos))
-		{
-			cubeMapNegZFaceFileFound = true;
-			cubeMapNegZFaceFileName += (*filenameItr);
-		}
-	}
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosXFaceFileFound, Utility::Logging::ERR, "Cannot locate the right face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegXFaceFileFound, Utility::Logging::ERR, "Cannot locate the left face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosYFaceFileFound, Utility::Logging::ERR, "Cannot locate the up face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegYFaceFileFound, Utility::Logging::ERR, "Cannot locate the down face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapPosZFaceFileFound, Utility::Logging::ERR, "Cannot locate the front face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	CHECK_CONDITION_EXIT_ENGINE(cubeMapNegZFaceFileFound, Utility::Logging::ERR, "Cannot locate the back face of the cube map"); // TODO: Set default texture for the missing face instead of just exiting
-	Rendering::Texture* cubeMapTexture = new Rendering::Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName);
-	if (cubeMapTexture == NULL)
-	{
-		ERROR_LOG_ENGINE("Cube map texture is NULL");
-		exit(EXIT_FAILURE);
-	}
-	//STOP_PROFILING("");
-	return cubeMapTexture;
-}
 /* ==================== SkyboxBuilder implementation end ==================== */

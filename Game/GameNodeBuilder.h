@@ -70,7 +70,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		SkyboxBuilder();
+		SkyboxBuilder(Engine::GameManager* gameManager);
 		virtual ~SkyboxBuilder(void);
 		SkyboxBuilder(SkyboxBuilder& skyboxBuilder) = delete;
 		SkyboxBuilder(SkyboxBuilder&& skyboxBuilder) = delete;
@@ -82,11 +82,11 @@ namespace Game
 	public:
 		virtual void BuildPart1();
 		virtual void BuildPart2();
-	private:
-		Rendering::Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
+	private:
+		Engine::GameManager* m_gameManager;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SkyboxBuilder */
 

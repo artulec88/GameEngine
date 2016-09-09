@@ -1,11 +1,11 @@
 #include "StdAfx.h"
 #include "Material.h"
 
-Rendering::Material::Material(Texture* diffuseTexture,
-	Math::Real specularIntensity /* = REAL_ONE */,
-	Math::Real specularPower /* = 8.0f */,
-	Texture* normalMap /* = NULL */,
-	Texture* displacementMap /* = NULL */,
+Rendering::Material::Material(const Texture* diffuseTexture,
+	Math::Real specularIntensity,
+	Math::Real specularPower,
+	const Texture* normalMap,
+	const Texture* displacementMap,
 	Math::Real displacementScale /* = REAL_ZERO */,
 	Math::Real displacementOffset /* = REAL_ZERO */) :
 		m_mappedValues(),
@@ -18,20 +18,9 @@ Rendering::Material::Material(Texture* diffuseTexture,
 	m_mappedValues.SetTexture("diffuse", diffuseTexture);
 	m_mappedValues.SetReal("specularIntensity", specularIntensity);
 	m_mappedValues.SetReal("specularPower", specularPower);
-	if (normalMap == NULL)
-	{
-		DEBUG_LOG_RENDERING("The material is not using any normal maps");
-		normalMap = new Texture("defaultNormalMap.jpg" /* TODO: Replace with texture from the TextureFactory */);
-		//INFO_LOG_RENDERING("Adding default normal map (\"", defaultNormalMapStr, "\") to the material");
-	}
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(normalMap != NULL, Utility::Logging::EMERGENCY, "Cannot create a material. No normal map used.");
 	m_mappedValues.SetTexture("normalMap", normalMap);
-
-	if (displacementMap == NULL)
-	{
-		DEBUG_LOG_RENDERING("The material is not using any displacement maps");
-		displacementMap = new Texture("defaultDisplacementMap.jpg" /* TODO: Replace with texture from the TextureFactory */);
-		//INFO_LOG_RENDERING("Adding displacement map to the material");
-	}
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(displacementMap != NULL, Utility::Logging::EMERGENCY, "Cannot create a material. No displacement map used.");
 	m_mappedValues.SetTexture("displacementMap", displacementMap);
 
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
@@ -39,11 +28,7 @@ Rendering::Material::Material(Texture* diffuseTexture,
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
 }
 
-Rendering::Material::~Material()
-{
-}
-
-Rendering::Material::Material(Texture* texture, const std::string& textureName)
+Rendering::Material::Material(const Texture* texture, const std::string& textureName)
 {
 	if (texture == NULL)
 	{
@@ -52,7 +37,11 @@ Rendering::Material::Material(Texture* texture, const std::string& textureName)
 	m_mappedValues.SetTexture(textureName, texture);
 }
 
-void Rendering::Material::SetAdditionalTexture(Texture* texture, const std::string& textureName)
+Rendering::Material::~Material()
+{
+}
+
+void Rendering::Material::SetAdditionalTexture(const Texture* texture, const std::string& textureName)
 {
 	CHECK_CONDITION_RETURN_VOID_RENDERING(texture != NULL, Utility::Logging::WARNING, "Cannot set the additional texture for material. The texture is NULL.");
 	m_hasMultipleTextures = true;

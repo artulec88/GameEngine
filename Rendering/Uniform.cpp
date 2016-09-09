@@ -87,7 +87,7 @@ void Rendering::Uniforms::TextureUniform::Update(const Renderer* renderer, const
 	//CRITICAL_LOG_RENDERING("Binding texture \"", unprefixedName, "\" in sampler slot ", samplerSlot);
 	unsigned int multitextureIndex = 0; // used only by the multitextures
 	const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-	CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
+	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 	texture->Bind(samplerSlot, multitextureIndex);
 	glUniform1i(GetLocation(), samplerSlot);
 }
@@ -117,7 +117,7 @@ void Rendering::Uniforms::CubeTextureUniform::Update(const Renderer* renderer, c
 	{
 		unsigned int multitextureIndex = 0; // used only by the multitextures
 		const Texture* texture = (GetPrefix() == "R_") ? renderer->GetTexture(GetUnprefixedName(), &multitextureIndex) : material->GetTexture(GetName());
-		CHECK_CONDITION_EXIT_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", unprefixedName, "\" is NULL.");
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(texture != NULL, Utility::Logging::CRITICAL, "Updating uniforms operation failed. Rendering engine texture \"", GetUnprefixedName(), "\" is NULL.");
 		texture->Bind(samplerSlot, multitextureIndex);
 	}
 	glUniform1i(GetLocation(), samplerSlot);

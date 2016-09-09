@@ -198,6 +198,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="GravityComponent.h" />
     <ClInclude Include="TextureFactory.h" />
+    <ClInclude Include="TextureIDs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBColliderComponent.cpp" />

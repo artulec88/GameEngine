@@ -1,6 +1,13 @@
 #include "StdAfx.h"
 #include "Color.h"
+
 #include "Utility\ILogger.h"
+#include "Utility\StringUtility.h"
+
+Rendering::Color::Color(const std::string& colorName) :
+	Color(Value(Utility::StringUtility::MakeLowercase(colorName).c_str(), COLOR_NAMES))
+{
+}
 
 Rendering::Color::Color(ColorNames::ColorName colorName)
 {

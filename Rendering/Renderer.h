@@ -337,8 +337,6 @@ namespace Rendering
 		Camera m_filterCamera; // TODO: This camera should be marked as const
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
-		Texture m_filterTexture;
-		Material m_filterMaterial;
 		Math::Transform m_filterTransform;
 		Mesh m_filterMesh;
 

@@ -91,6 +91,8 @@ namespace Engine
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
 		ENGINE_API void AddShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderType, shaderFileName); }
+		ENGINE_API Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) { return m_textureFactory.CreateTexture(textureID, textureFileName); }
+		ENGINE_API Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) { return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory); }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
@@ -140,12 +142,13 @@ namespace Engine
 		//	return m_effectFactory.GetVec3DEffect(effectType, variant);
 		//}
 
-		ENGINE_API inline const Rendering::Texture& GetTexture(int textureID) const
+		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
 		{
 			return m_textureFactory.GetTexture(textureID);
 		}
 
 		ENGINE_API inline const ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
+		ENGINE_API inline const TextureFactory& GetTextureFactory() const { return m_textureFactory; }
 
 		Rendering::Camera* GetCurrentCamera() { return m_cameras[m_currentCameraIndex]; }
 		unsigned int GetCurrentCameraIndex() const { return m_currentCameraIndex; }

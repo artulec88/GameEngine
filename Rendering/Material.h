@@ -32,9 +32,9 @@ namespace Rendering
 		/// <param name="displacementMap">The dispacement map of the material.</param>
 		/// <param name="displacementScale">The displacement scale.</param>
 		/// <param name="displacementOffset">The displacement offset.</param>
-		RENDERING_API Material(Texture* diffuseTexture, Math::Real specularIntensity = REAL_ONE, Math::Real specularPower = 8.0f, Texture* normalMap = NULL,
-			Texture* displacementMap = NULL, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
-		RENDERING_API Material(Texture* texture, const std::string& textureName);
+		RENDERING_API Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap,
+			const Texture* displacementMap, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+		RENDERING_API Material(const Texture* texture, const std::string& textureName);
 		RENDERING_API ~Material(void);
 		Material(const Material& material) = delete; // copy constructor
 		Material(Material&& material) = delete; // move constructor
@@ -54,7 +54,7 @@ namespace Rendering
 		void SetVector3D(const std::string& vectorName, const Math::Vector3D& vec3D) { m_mappedValues.SetVector3D(vectorName, vec3D); }
 		void SetVector4D(const std::string& vectorName, const Math::Vector4D& vec4D) { return m_mappedValues.SetVector4D(vectorName, vec4D); }
 
-		RENDERING_API void SetAdditionalTexture(Texture* texture, const std::string& textureName);
+		RENDERING_API void SetAdditionalTexture(const Texture* texture, const std::string& textureName);
 #ifdef ANT_TWEAK_BAR_ENABLED
 		RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif

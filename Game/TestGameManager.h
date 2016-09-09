@@ -25,25 +25,6 @@
 
 namespace Game
 {
-	namespace TextureTypes
-	{
-		enum TextureType
-		{
-			DEFAULT = 0,
-			DEFAULT_NORMAL_MAP,
-			DEFAULT_DISPLACEMENT_MAP,
-			TERRAIN_DIFFUSE_1,
-			TERRAIN_DIFFUSE_2,
-			TERRAIN_DIFFUSE_3,
-			TERRAIN_DIFFUSE_4,
-			TERRAIN_NORMAL_MAP,
-			TERRAIN_DISPLACEMENT_MAP,
-			TERRAIN_BLEND_MAP,
-			// TODO: Add more texture types
-			COUNT
-		}; /* end enum TextureType */
-	} /* end namespace TextureTypes */
-
 	class TestGameManager : public Engine::GameManager
 	{
 		/* ==================== Constructors and destructors begin ==================== */
@@ -77,7 +58,7 @@ namespace Game
 	private:
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddCameras(Engine::GameNode* entityToFollow);
-		void AddSkybox() const;
+		void AddSkybox();
 		//void AddStaticEffects();
 		//void AddSmoothEffects();
 		//void AddBlinkEffects();

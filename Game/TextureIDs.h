@@ -1,0 +1,34 @@
+#ifndef __GAME_TEXTURE_IDS_H__
+#define __GAME_TEXTURE_IDS_H__
+
+#include "Engine\TextureIDs.h"
+
+namespace Game
+{
+	namespace TextureIDs
+	{
+		enum TextureID
+		{
+			TERRAIN_DIFFUSE = Engine::TextureIDs::COUNT,
+			TERRAIN_NORMAL_MAP,
+			TERRAIN_DISPLACEMENT_MAP,
+			BRICKS,
+			BRICKS_NORMAL_MAP,
+			BRICKS_DISPLACEMENT_MAP,
+			TREE,
+			BILLBOARD_TREE_1,
+			BILLBOARD_TREE_2,
+			BILLBOARD_TREE_3,
+			BOULDER,
+			BOULDER_NORMAL_MAP,
+			CHESSBOARD,
+			PLAYER,
+			PLAYER_NORMAL_MAP,
+			DEFAULT_NORMAL_MAP,
+			SKYBOX_DAY,
+			SKYBOX_NIGHT
+		}; /* end enum TextureID */
+	} /* end namespace TextureIDs */
+} /* end namespace Game */
+
+#endif /* __GAME_TEXTURE_IDS_H__ */

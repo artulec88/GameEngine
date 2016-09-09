@@ -40,14 +40,15 @@ namespace Engine
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName);
-		ENGINE_API inline const Rendering::Texture& GetTexture(int textureID) const
+		ENGINE_API Rendering::Texture* CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory);
+		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
 		{
 			std::map<int, Rendering::Texture>::const_iterator textureItr = m_textureType2TextureMap.find(textureID);
 			if (textureItr == m_textureType2TextureMap.end())
 			{
 				ERROR_LOG_RENDERING("No texture has been created for the specified ID (", textureID, ").");
 			}
-			return textureItr->second;
+			return &textureItr->second;
 		}
 		/* ==================== Non-static member functions end ==================== */
 

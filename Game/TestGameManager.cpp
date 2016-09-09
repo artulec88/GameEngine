@@ -1,5 +1,6 @@
 #include "TestGameManager.h"
 #include "Def.h"
+#include "TextureIDs.h"
 #include "MenuGameState.h"
 #include "IntroGameState.h"
 #include "PlayGameState.h"
@@ -356,9 +357,9 @@ void Game::TestGameManager::Load()
 		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
 		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #else
-	terrainMaterial = new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-		new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 	//terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureTypes::TERRAIN_DIFFUSE_1, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")),
 	//	terrainSpecularIntensity, terrainSpecularPower,
 	//	m_textureFactory.CreateTexture(TextureTypes::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
@@ -395,9 +396,9 @@ void Game::TestGameManager::Load()
 	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
 	//testMesh2->GetTransform().SetScale(1.5f);
 	testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
-	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));
+	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0, m_textureFactory.CreateTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"), m_textureFactory.CreateTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0)));
+	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
@@ -405,7 +406,7 @@ void Game::TestGameManager::Load()
 	testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
 	testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
 	testMesh3->GetTransform().SetScale(0.25f);
-	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(new Rendering::Texture("bricks2.jpg"), 0.0f, 0, new Rendering::Texture("bricks2_normal.jpg"), new Rendering::Texture("bricks2_disp.jpg"), 0.04f, -1.0f)));;
+	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
 	AddToSceneRoot(testMesh3);
 
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
@@ -421,7 +422,7 @@ void Game::TestGameManager::Load()
 		treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
 		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
-		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(new Rendering::Texture("lowPolyTree.png"))));
+		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
@@ -438,7 +439,7 @@ void Game::TestGameManager::Load()
 		boulderNode->GetTransform().SetScale(0.01f);
 		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
-			new Rendering::Material(new Rendering::Texture("boulder.png", GL_TEXTURE_2D, GL_LINEAR), 0.01f, 22.0f, new Rendering::Texture("boulderNormal.png"))));
+			new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 		//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(boulderNode);
 	}
@@ -446,7 +447,7 @@ void Game::TestGameManager::Load()
 	Engine::GameNode* monkeyNode1 = new Engine::GameNode();
 	monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
 		new Rendering::Mesh("monkey3.obj"),
-		new Rendering::Material(new Rendering::Texture("chessboard3.jpg"))));
+		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::CHESSBOARD, "chessboard3.jpg"), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	//monkeyNode1->AddComponent(new Engine::LookAtComponent());
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
@@ -480,9 +481,15 @@ void Game::TestGameManager::Load()
 	waterNode->GetTransform().SetScale(0.2f);
 	AddWaterNode(waterNode);
 
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png"))));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png"))));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png"))));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_1,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_2,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_3,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 
 	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
@@ -506,7 +513,7 @@ void Game::TestGameManager::Load()
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.0005f);
 	playerNode->CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(new Rendering::Texture("mike_d.tga"), 1.0f, 8.0f, new Rendering::Texture("mike_n.tga"))));
+	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
@@ -586,13 +593,13 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 	STOP_PROFILING_GAME("");
 }
 
-void Game::TestGameManager::AddSkybox() const
+void Game::TestGameManager::AddSkybox()
 {
 	START_PROFILING_GAME(true, "");
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
-	SkyboxBuilder skyboxBuilder;
+	SkyboxBuilder skyboxBuilder(this);
 	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
 	//GameNode* skyboxNode = skyboxBuilder.Get();

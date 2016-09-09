@@ -175,6 +175,7 @@
     <ClInclude Include="ShowIntroCommand.h" />
     <ClInclude Include="StartGameCommand.h" />
     <ClInclude Include="TestGameManager.h" />
+    <ClInclude Include="TextureIDs.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

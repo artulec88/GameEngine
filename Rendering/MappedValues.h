@@ -38,7 +38,6 @@ namespace Rendering
 		/* ==================== Static variables and functions begin ==================== */
 	private:
 		static const Math::Real DEFAULT_VALUE;
-		static const Texture* DEFAULT_TEXTURE;
 		static const Math::Vector2D DEFAULT_VECTOR2D;
 		static const Math::Vector3D DEFAULT_VECTOR3D;
 		static const Math::Vector4D DEFAULT_VECTOR4D;
@@ -213,7 +212,7 @@ namespace Rendering
 			if (itr == textureMap.end()) // texture not found
 			{
 				WARNING_LOG_RENDERING("Texture with name \"", textureName, "\" has not been found. Returning default texture instead.");
-				return DEFAULT_TEXTURE;
+				return textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
 			}
 			return itr->second;
 		}
@@ -240,7 +239,7 @@ namespace Rendering
 				}
 
 				WARNING_LOG_RENDERING("Texture with name \"", textureName, "\" has not been found. Returning default texture instead.");
-				return DEFAULT_TEXTURE;
+				return textureMap.begin()->second; // TODO: Temporary. Instead we should return some default texture.
 			}
 			return itr->second;
 		}

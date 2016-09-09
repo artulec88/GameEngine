@@ -48,7 +48,7 @@ namespace Utility { namespace StringUtility
 	/// <summary>
 	/// The following function returns a given <paramref name="str"/> string in lowercase.
 	/// </summary>	
-	std::string MakeLowercase(const std::string& str);
+	UTILITY_API std::string MakeLowercase(const std::string& str);
 
 	/// <summary>
 	/// Returns <code>true</code> if specified <paramref name="source"/> contains a given <paramref name="find"/> text. Otherwise, <code>false</code> is returned.

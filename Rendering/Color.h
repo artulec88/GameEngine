@@ -2,9 +2,12 @@
 #define __RENDERING_COLOR_H__
 
 #include "Rendering.h"
+
 #include "Math\Vector.h"
+
 #include <string>
 #include <sstream>
+#include <map>
 
 namespace Rendering
 {
@@ -151,7 +154,8 @@ namespace Rendering
 			DIM_GREY, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=105,105,105 </summary>
 			LIGHT_SLATE_GREY, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=119,136,153 </summary>
 			SLATE_GREY, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=112,128,144 </summary>
-			BLACK /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=0,0,0 </summary>
+			BLACK, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=0,0,0 </summary>
+			COUNT
 		}; /* end enum ColorName */
 	} /* end namespace ColorNames */
 
@@ -159,8 +163,62 @@ namespace Rendering
 	/// <remarks>The color is a simple adapter for the Math library's <code>Vector4D</code> class.</remarks>
 	class Color
 	{
+	private:
+		struct ColorNameEntry
+		{
+			char const* name;
+			ColorNames::ColorName colorId;
+		}; /* end struct ColorNameEntry */
+
+		/* ==================== Static variables and functions begin ==================== */
+	private:
+		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", ColorNames::INDIAN_RED},
+		{ "light_coral", ColorNames::INDIAN_RED },{ "salmon", ColorNames::INDIAN_RED },{ "dark_salmon", ColorNames::INDIAN_RED },{ "light_salmon", ColorNames::INDIAN_RED },
+		{ "crimson", ColorNames::INDIAN_RED },{ "red", ColorNames::INDIAN_RED },{ "fire_brick", ColorNames::INDIAN_RED },{ "dark_red", ColorNames::INDIAN_RED },
+		{ "pink", ColorNames::INDIAN_RED },{ "light_pink", ColorNames::INDIAN_RED },{ "hot_pink", ColorNames::INDIAN_RED },{ "deep_pink", ColorNames::INDIAN_RED },
+		{ "medium_violet_red", ColorNames::INDIAN_RED },{ "pale_violet_red", ColorNames::INDIAN_RED },{ "coral", ColorNames::INDIAN_RED },{ "tomato", ColorNames::INDIAN_RED },
+		{ "orange_red", ColorNames::INDIAN_RED },{ "dark_orange", ColorNames::INDIAN_RED },{ "orange", ColorNames::INDIAN_RED },{ "gold", ColorNames::INDIAN_RED },
+		{ "yellow", ColorNames::INDIAN_RED },{ "light_yellow", ColorNames::INDIAN_RED },{ "lemon_chiffon", ColorNames::INDIAN_RED },{ "light_goldenrod_yellow", ColorNames::INDIAN_RED },
+		{ "papaya_whip", ColorNames::INDIAN_RED },{ "moccasin", ColorNames::INDIAN_RED },{ "peach_puff", ColorNames::INDIAN_RED },{ "pale_goldenrod", ColorNames::INDIAN_RED },
+		{ "khaki", ColorNames::INDIAN_RED },{ "dark_khaki", ColorNames::INDIAN_RED },{ "lavender", ColorNames::INDIAN_RED },{ "thistle", ColorNames::INDIAN_RED },
+		{ "plum", ColorNames::INDIAN_RED },{ "violet", ColorNames::INDIAN_RED },{ "orchid", ColorNames::INDIAN_RED },{ "fuchsia", ColorNames::INDIAN_RED },
+		{ "magenta", ColorNames::INDIAN_RED },{ "medium_orchid", ColorNames::INDIAN_RED },{ "blue_violet", ColorNames::INDIAN_RED },{ "dark_violet", ColorNames::INDIAN_RED },
+		{ "dark_orchid", ColorNames::INDIAN_RED },{ "dark_magenta", ColorNames::INDIAN_RED },{ "purple", ColorNames::INDIAN_RED },{ "indigo", ColorNames::INDIAN_RED },
+		{ "state_blue", ColorNames::INDIAN_RED },{ "dark_state_blue", ColorNames::INDIAN_RED },{ "medium_state_blue", ColorNames::INDIAN_RED },{ "green_yellow", ColorNames::INDIAN_RED },
+		{ "chartreuse", ColorNames::INDIAN_RED },{ "lawn_green", ColorNames::INDIAN_RED },{ "lime", ColorNames::INDIAN_RED },{ "lime_green", ColorNames::INDIAN_RED },
+		{ "pale_green", ColorNames::INDIAN_RED },{ "light_green", ColorNames::INDIAN_RED },{ "medium_spring_green", ColorNames::INDIAN_RED },{ "spring_green", ColorNames::INDIAN_RED },
+		{ "medium_sea_green", ColorNames::INDIAN_RED },{ "sea_green", ColorNames::INDIAN_RED },{ "forest_green", ColorNames::INDIAN_RED },{ "green", ColorNames::INDIAN_RED },
+		{ "dark_green", ColorNames::INDIAN_RED },{ "yellow_green", ColorNames::INDIAN_RED },{ "olive_drab", ColorNames::INDIAN_RED },{ "olive", ColorNames::INDIAN_RED },
+		{ "dark_olive_green", ColorNames::INDIAN_RED },{ "medium_aquamarine", ColorNames::INDIAN_RED },{ "dark_sea_green", ColorNames::INDIAN_RED },{ "light_sea_green", ColorNames::INDIAN_RED },
+		{ "dark_cyan", ColorNames::INDIAN_RED },{ "teal", ColorNames::INDIAN_RED },{ "aqua", ColorNames::INDIAN_RED },{ "cyan", ColorNames::INDIAN_RED },
+		{ "light_cyan", ColorNames::INDIAN_RED },{ "pale_turquoise", ColorNames::INDIAN_RED },{ "aquamarine", ColorNames::INDIAN_RED },{ "turquoise", ColorNames::INDIAN_RED },
+		{ "medium_turquoise", ColorNames::INDIAN_RED },{ "dark_turquoise", ColorNames::INDIAN_RED },{ "cadet_blue", ColorNames::INDIAN_RED },{ "steel_blue", ColorNames::INDIAN_RED },
+		{ "light_steel_blue", ColorNames::INDIAN_RED },{ "powder_blue", ColorNames::INDIAN_RED },{ "light_blue", ColorNames::INDIAN_RED },{ "sky_blue", ColorNames::INDIAN_RED },
+		{ "light_sky_blue", ColorNames::INDIAN_RED },{ "deep_sky_blue", ColorNames::INDIAN_RED },{ "dodger_blue", ColorNames::INDIAN_RED },{ "cornflower_blue", ColorNames::INDIAN_RED },
+		{ "royal_blue", ColorNames::INDIAN_RED },{ "medium_blue", ColorNames::INDIAN_RED },{ "dark_blue", ColorNames::INDIAN_RED },{ "navy", ColorNames::INDIAN_RED },
+		{ "midnight_blue", ColorNames::INDIAN_RED },{ "cornsilk", ColorNames::INDIAN_RED },{ "blanched_almond", ColorNames::INDIAN_RED },{ "bisque", ColorNames::INDIAN_RED },
+		{ "navajo_white", ColorNames::INDIAN_RED },{ "wheat", ColorNames::INDIAN_RED },{ "burly_wood", ColorNames::INDIAN_RED },{ "tan", ColorNames::INDIAN_RED },
+		{ "rosy_brown", ColorNames::INDIAN_RED },{ "sandy_brown", ColorNames::INDIAN_RED },{ "goldenrod", ColorNames::INDIAN_RED },{ "dark_goldenrod", ColorNames::INDIAN_RED },
+		{ "peru", ColorNames::INDIAN_RED },{ "chocolate", ColorNames::INDIAN_RED },{ "saddle_brown", ColorNames::INDIAN_RED },{ "sienna", ColorNames::INDIAN_RED },
+		{ "brown", ColorNames::INDIAN_RED },{ "maroon", ColorNames::INDIAN_RED },{ "white", ColorNames::INDIAN_RED },{ "snow", ColorNames::INDIAN_RED },
+		{ "honeydew", ColorNames::INDIAN_RED },{ "mint_cream", ColorNames::INDIAN_RED },{ "azure", ColorNames::INDIAN_RED },{ "alice_blue", ColorNames::INDIAN_RED },
+		{ "ghost_white", ColorNames::INDIAN_RED },{ "white_smoke", ColorNames::INDIAN_RED },{ "seashell", ColorNames::INDIAN_RED },{ "beige", ColorNames::INDIAN_RED },
+		{ "old_lace", ColorNames::INDIAN_RED },{ "floral_white", ColorNames::INDIAN_RED },{ "ivory", ColorNames::INDIAN_RED },{ "antique_white", ColorNames::INDIAN_RED },
+		{ "linen", ColorNames::INDIAN_RED },{ "lavender_blush", ColorNames::INDIAN_RED },{ "misty_rose", ColorNames::INDIAN_RED },{ "gainsboro", ColorNames::INDIAN_RED },
+		{ "light_grey", ColorNames::INDIAN_RED },{ "silver", ColorNames::INDIAN_RED },{ "dark_grey", ColorNames::INDIAN_RED },{ "grey", ColorNames::INDIAN_RED },
+		{ "dim_grey", ColorNames::INDIAN_RED },{ "light_slate_grey", ColorNames::INDIAN_RED },{ "slate_grey", ColorNames::INDIAN_RED },{ "black", ColorNames::INDIAN_RED } };
+		static constexpr bool Same(const char* x, const char* y)
+		{
+			return (!*x && !*y) ? true : (*x == *y && Same(x + 1, y + 1));
+		}
+		static constexpr ColorNames::ColorName Value(char const *name, ColorNameEntry const *entries) {
+			return Same(entries->name, name) ? entries->colorId : Value(name, entries + 1);
+		}
+		/* ==================== Static variables and functions end ==================== */
+
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		RENDERING_API explicit Color(const std::string& colorName);
 		RENDERING_API explicit Color(ColorNames::ColorName colorName);
 		RENDERING_API explicit Color(Math::Real red = REAL_ONE, Math::Real green = REAL_ONE, Math::Real blue = REAL_ONE, Math::Real alpha = REAL_ONE);
 		RENDERING_API explicit Color(const Math::Vector3D& rgbVector);
