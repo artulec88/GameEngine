@@ -110,7 +110,6 @@ namespace Game
 		const int cameraCount;
 		Engine::GameNode** cameraNodes;
 		bool m_heightMapCalculationEnabled;
-		//Engine::GameNode* castleNode;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;

@@ -337,10 +337,6 @@ void Game::TestGameManager::Load()
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
-	//Material bricks(new Texture("bricks.jpg"), specularIntensity, specularPower, Texture("bricks_normal.jpg"), Texture("bricks_disp.png"), 0.03f, -0.5f);
-	//Material bricks2("bricks2_material", Texture("bricks2.jpg"), 0.0f, 0, Texture("bricks2_normal.jpg"), Texture("bricks2_disp.jpg"), 0.04f, -1.0f);
-	//Material humanMaterial("human_material", Texture("HumanSkin.jpg"), 2, 32);
-
 	m_terrainNode = new Engine::GameNode();
 	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR_GAME("terrainModel", "terrain02.obj"));
 	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR_GAME("terrainHeightMap", "terrainHeightMap.png"));
@@ -353,9 +349,9 @@ void Game::TestGameManager::Load()
 	Math::Real terrainSpecularPower = GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f);
 	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f);
 	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f);
-	Rendering::Material* terrainMaterial = new Material(new Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass2.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-		new Texture(GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
+	Rendering::Material* terrainMaterial = new Material(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
+		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
 #else
 	terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
 		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
@@ -367,11 +363,10 @@ void Game::TestGameManager::Load()
 	//	terrainDisplacementScale, terrainDisplacementOffset);
 #endif
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png"), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_CLAMP_TO_EDGE), "blendMap");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
-	terrainMaterial->SetAdditionalTexture(new Rendering::Texture(GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
-	//terrainMaterial->SetAdditionalTexture(new Texture(GET_CONFIG_VALUE_STR_GAME("terrainMap", "terrainMap.jpg")), "terrainMap");
+	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_BLEND_MAP, GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
+	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_2, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
 	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
 	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
@@ -380,13 +375,6 @@ void Game::TestGameManager::Load()
 	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	AddTerrainNode(m_terrainNode);
-
-	////Vector3D rayEndPosition = boxNode->GetTransform().GetTransformedPos() + boxNode->GetTransform().GetTransformedRot().GetForward() * 100.0f;
-	////Vertex vertices [] = { Vertex(boxNode->GetTransform().GetTransformedPos()), Vertex(rayEndPosition) };
-	////int indices [] = { 0, 1 };
-	////boxNode->AddComponent(new MeshRenderer(
-	////	new Mesh(vertices, 2, indices, 2, true, GL_LINES),
-	////	new Material(new Texture("DirectionalLight.png"))));
 
 	Engine::GameNode* testMesh1 = new Engine::GameNode();
 	testMesh1->GetTransform().SetPos(-2.0f, m_terrainMesh->GetHeightAt(Math::Vector2D(-2.0f, 2.0f)), 2.0f);
@@ -466,7 +454,7 @@ void Game::TestGameManager::Load()
 	//GameNode* monkeyNode2 = new GameNode();
 	//monkeyNode2->AddComponent(new MeshRenderer(
 	//	new Mesh("monkey3.obj"),
-	//	new Material(new Texture("bricks.jpg"), 2.0f, 32.0f)));
+	//	new Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 2.0f, 32.0f)));
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	//monkeyNode2->GetTransform().SetPos(5.0, 3.0, 15.0);
 	////monkeyNode2->AddComponent(new LookAtComponent());
@@ -495,16 +483,11 @@ void Game::TestGameManager::Load()
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
 	//{
 	//	humanNodes[i] = new GameNode();
-	//	humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(new Texture("HumanSkin.jpg"), 2.0f, 32.0f)));
+	//	humanNodes[i]->AddComponent(new MeshRenderer(new Mesh("BodyMesh.obj"), new Material(m_textureFactory.GetTexture(TextureIDs::HUMAN), 2.0f, 32.0f)));
 	//	humanNodes[i]->GetTransform().SetPos(randomGenerator.NextFloat(0.0f, 20.0f), 1.7f, randomGenerator.NextFloat(0.0f, 20.0f));
 	//	AddToSceneRoot(humanNodes[i]);
 	//}
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-
-	//castleNode = new GameNode();
-	//castleNode->AddComponent(new MeshRenderer(new Mesh("castle.obj"), new Material(new Texture("HumanSkin.jpg"), 0.5f, 8.0f)));
-	//castleNode->GetTransform().SetPos(randomGenerator.NextFloat(0.0f, 30.0f), 1.0f, randomGenerator.NextFloat(0.0f, 30.0f));
-	//AddToSceneRoot(castleNode);
 
 	Engine::GameNode* playerNode = new Engine::GameNode();
 	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);

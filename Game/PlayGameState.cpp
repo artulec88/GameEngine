@@ -155,7 +155,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory());
+	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
 	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
 	Rendering::Lighting::DirectionalLight* directionalLight = directionalLightBuilder.Get();
@@ -174,7 +174,7 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory());
+		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
@@ -188,12 +188,6 @@ void Game::PlayGameState::AddPointLights()
 				m_pointLights.push_back(pointLight);
 				m_lights.push_back(pointLight);
 			}
-
-			//GameNode* bulbNode = new GameNode();
-			//bulbNode->AddComponent(new MeshRenderer(new Mesh("Bulb\\Bulb.obj") /* new Mesh("PointLight.obj") */, new Material(new Texture("PointLight.png"), 1.0f, 8.0f)));
-			//bulbNode->GetTransform().SetPos(REAL_ZERO, REAL_ONE, REAL_ZERO);
-			//bulbNode->GetTransform().SetScale(5.0f);
-			//pointLightNode->AddChild(bulbNode);
 		}
 		NOTICE_LOG_GAME(pointLightsCount, " point lights created");
 	}
@@ -209,7 +203,7 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory());
+		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{

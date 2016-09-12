@@ -106,7 +106,7 @@ void Game::CameraBuilder::BuildMeshRenderer()
 	// Rendering a small box around camera node position to let the user see the camera
 	//m_gameNode->AddComponent(new MeshRenderer(
 	//	new Mesh("Camera.obj"),
-	//	new Material(new Texture("Camera.png"), 1.0f, 8.0f)));
+	//	new Material(m_gameManager->GetTextureFactory().GetTexture(TextureIDs::CAMERA), 1.0f, 8.0f)));
 	//m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif

@@ -1,11 +1,12 @@
 #include "LightBuilder.h"
 
 template <class T>
-Game::LightBuilder<T>::LightBuilder(const Engine::ShaderFactory& shaderFactory) :
+Game::LightBuilder<T>::LightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory) :
 	Utility::Builder<T>(),
 	m_lightIndex(0),
 	m_lightIndexStr("0"),
-	m_shaderFactory(shaderFactory)
+	m_shaderFactory(shaderFactory),
+	m_textureFactory(textureFactory)
 {
 }
 

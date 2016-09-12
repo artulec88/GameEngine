@@ -69,7 +69,7 @@ void Game::DirectionalLightBuilder::BuildMeshRenderer()
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("DirectionalLight.png"), 1, 8);
 
 	m_gameNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
-	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(new Rendering::Texture("DirectionalLight.png"), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::DIRECTIONAL_LIGHT), 1.0f, 8.0f)));
 
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -81,14 +81,14 @@ void Game::DirectionalLightBuilder::BuildMeshRenderer()
 	//int indices [] = { 0, 1 };
 	//m_gameNode->AddComponent(new MeshRenderer(
 	//	new Mesh(vertices, 2, indices, 2, false, GL_LINES),
-	//	new Material(new Texture("DirectionalLight.png"), 1.0f, 8.0f)));
+	//	new Material(m_gameManager->GetTextureFactory().GetTexture(TextureIDs::DIRECTIONAL_LIGHT), 1.0f, 8.0f)));
 }
 #endif
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Game::PointLightBuilder::PointLightBuilder(const Engine::ShaderFactory& shaderFactory) :
-	LightBuilder(shaderFactory),
+Game::PointLightBuilder::PointLightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory) :
+	LightBuilder(shaderFactory, textureFactory),
 	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosZ", REAL_ZERO)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultPointLightAngleX", -45.0f)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultPointLightAngleY", REAL_ZERO)),
@@ -146,15 +146,15 @@ void Game::PointLightBuilder::SetupLightParams()
 void Game::PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
-	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(new Rendering::Texture("PointLight.png"), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::POINT_LIGHT), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Game::SpotLightBuilder::SpotLightBuilder(const Engine::ShaderFactory& shaderFactory) :
-	LightBuilder(shaderFactory),
+Game::SpotLightBuilder::SpotLightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory) :
+	LightBuilder(shaderFactory, textureFactory),
 	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosZ", REAL_ZERO)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultSpotLightAngleX", -45.0f)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultSpotLightAngleY", REAL_ZERO)),
@@ -223,7 +223,7 @@ void Game::SpotLightBuilder::SetupLightParams()
 void Game::SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
-	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(new Rendering::Texture("SpotLight.png"), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::SPOT_LIGHT), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif

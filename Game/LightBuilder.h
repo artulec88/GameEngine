@@ -4,6 +4,7 @@
 #include "Def.h"
 
 #include "Engine\ShaderFactory.h"
+#include "Engine\TextureFactory.h"
 
 #include "Rendering\DirectionalLight.h"
 #include "Rendering\PointLight.h"
@@ -24,7 +25,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit LightBuilder(const Engine::ShaderFactory& shaderFactory);
+		explicit LightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory);
 		virtual ~LightBuilder(void);
 
 		LightBuilder(const LightBuilder& lightBuilder) = delete;
@@ -48,6 +49,7 @@ namespace Game
 		int m_lightIndex;
 		std::string m_lightIndexStr;
 		const Engine::ShaderFactory& m_shaderFactory;
+		const Engine::TextureFactory& m_textureFactory;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
@@ -58,8 +60,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory) : 
-			LightBuilder(shaderFactory)
+		explicit DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory) :
+			LightBuilder(shaderFactory, textureFactory)
 		{
 		}
 		virtual ~DirectionalLightBuilder(void)
@@ -88,7 +90,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit PointLightBuilder(const Engine::ShaderFactory& shaderFactory);
+		explicit PointLightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory);
 		virtual ~PointLightBuilder(void) { };
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
 		PointLightBuilder(PointLightBuilder&& pointLightBuilder) = delete;
@@ -121,7 +123,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit SpotLightBuilder(const Engine::ShaderFactory& shaderFactory);
+		explicit SpotLightBuilder(const Engine::ShaderFactory& shaderFactory, const Engine::TextureFactory& textureFactory);
 		virtual ~SpotLightBuilder(void) { };
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;
 		SpotLightBuilder(SpotLightBuilder&& spotLightBuilder) = delete;

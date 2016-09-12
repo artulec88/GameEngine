@@ -130,7 +130,7 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	mainMenuOptionsMenuEntry->AddChild(new Engine::ActionMenuEntry(Engine::Actions::RETURN_TO_PARENT_MENU_ENTRY, "Back", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.8f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::START_GAME, "New game", mainMenuFont,
-		mainMenuFontSize, NULL /*new Texture("check-297273_960_720.png")*/, Math::Vector2D(0.25f, 0.17f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
+		mainMenuFontSize, NULL /*m_gameManager->GetTextureFactory().GetTexture("check-297273_960_720.png")*/, Math::Vector2D(0.25f, 0.17f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 	m_mainMenuRootEntry.AddChild(mainMenuLoadMenuEntry);
 	m_mainMenuRootEntry.AddChild(mainMenuOptionsMenuEntry);
 	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::SHOW_INTRO, "Intro", mainMenuFont,
