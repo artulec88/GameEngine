@@ -572,9 +572,6 @@ void Engine::CoreEngine::Run()
 #ifdef DRAW_FPS
 			fpsGuiButton.Update(m_frameTime);
 #endif
-#ifdef DRAW_GAME_TIME
-			inGameTimeGuiButton.Update(m_frameTime);
-#endif
 			STOP_TIMER(innerTimer, m_countStats2_2, m_minMaxTime2_2, m_timeSum2_2);
 			/* ==================== REGION #2_2 end ====================*/
 

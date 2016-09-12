@@ -122,13 +122,13 @@ namespace Utility {
 			}
 			DateTime& operator+=(const TimeSpan& timeSpan)
 			{
-				m_timePoint += std::chrono::duration_cast<std::chrono::seconds, long long, std::nano>(std::chrono::nanoseconds(timeSpan.GetValue()));
+				m_timePoint += std::chrono::nanoseconds(timeSpan.GetValue());
 				//m_timePoint += timeSpan.GetDuration();
 				return *this;
 			}
 			DateTime& operator-=(const TimeSpan& timeSpan)
 			{
-				m_timePoint -= std::chrono::duration_cast<std::chrono::seconds, long long, std::nano>(std::chrono::nanoseconds(timeSpan.GetValue()));
+				m_timePoint -= std::chrono::nanoseconds(timeSpan.GetValue());
 				return *this;
 			}
 
@@ -160,7 +160,7 @@ namespace Utility {
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			std::chrono::time_point<std::chrono::system_clock, std::chrono::seconds /* std::chrono::system_clock::duration */> m_timePoint;
+			std::chrono::time_point<std::chrono::system_clock, std::chrono::nanoseconds /* std::chrono::system_clock::duration */> m_timePoint;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class DateTime */
 

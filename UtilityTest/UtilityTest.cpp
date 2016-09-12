@@ -201,6 +201,14 @@ void TimeTest()
 	const Timing::DateTime dateTime7 = dateTime3 - Timing::TimeSpan(3600, Timing::SECOND);
 	TestReport(dateTime3 > dateTime7, "The operator > returned incorrect result. DateTime: " + dateTime3.ToString() + " should be later than dateTime: " + dateTime7.ToString());
 	TestReport(dateTime7 < dateTime3, "The opearator < returned incorrect result. DateTime: " + dateTime7.ToString() + " should be earlier than dateTime: " + dateTime3.ToString());
+
+	dateTime4 += Timing::TimeSpan(5200, Timing::MILLISECOND);
+	dateTime4 += Timing::TimeSpan(5200, Timing::MILLISECOND);
+	dateTime4 += Timing::TimeSpan(5200, Timing::MILLISECOND);
+	dateTime4 += Timing::TimeSpan(5200, Timing::MILLISECOND);
+	dateTime4 += Timing::TimeSpan(5200, Timing::MILLISECOND);
+	const Timing::DateTime dateTime8(2016, 1, 0, 9, 0, 21);
+	TestReport(dateTime4 == dateTime8, "The opearator == returned incorrect result. DateTime: " + dateTime4.ToString() + " should be equal to dateTime: " + dateTime8.ToString());
 	/* ==================== TIME TEST #2- DateTime operations- end ==================== */
 
 	/* ==================== TIME TEST #3- Timer operations- begin ==================== */

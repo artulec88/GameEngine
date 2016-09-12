@@ -16,8 +16,6 @@
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
 
-//#define DRAW_GAME_TIME // TODO: Investigate this macro
-
 Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
 	m_isMouseLocked(false),
@@ -26,6 +24,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	m_clockSpeed(GET_CONFIG_VALUE_GAME("clockSpeed", REAL_ONE)),
 	m_inGameDateTime(GET_CONFIG_VALUE_GAME("inGameYear", 2016), GET_CONFIG_VALUE_GAME("inGameMonth", 5),
 		GET_CONFIG_VALUE_GAME("inGameDay", 22), GET_CONFIG_VALUE_GAME("inGameHour", 9), GET_CONFIG_VALUE_GAME("inGameMinute", 30), GET_CONFIG_VALUE_GAME("inGameSecond", 30)),
+#ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton("9:00:00", gameManager->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_GAME("fontSizeInGameTime", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_GAME("screenPositionInGameTimeX", 0.0f), GET_CONFIG_VALUE_GAME("screenPositionInGameTimeY", 0.0f)), GET_CONFIG_VALUE_GAME("maxLineLengthInGameTime", 0.5f),
 		Rendering::Color(GET_CONFIG_VALUE_GAME("colorInGameTimeRed", 1.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeGreen", 0.0f), GET_CONFIG_VALUE_GAME("colorInGameTimeBlue", 0.0f)),
@@ -33,6 +32,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 		Math::Vector2D(GET_CONFIG_VALUE_GAME("offsetInGameTimeX", 0.005f), GET_CONFIG_VALUE_GAME("offsetInGameTimeY", 0.005f)), GET_CONFIG_VALUE_GAME("isCenteredInGameTime", false),
 		GET_CONFIG_VALUE_GAME("characterWidthInGameTime", 0.5f), GET_CONFIG_VALUE_GAME("characterEdgeTransitionWidthInGameTime", 0.1f), GET_CONFIG_VALUE_GAME("borderWidthInGameTime", 0.4f),
 		GET_CONFIG_VALUE_GAME("borderEdgeTransitionWidthInGameTime", 0.1f)),
+#endif
 	m_dayNightMixFactor(REAL_ZERO),
 	m_ambientDaytimeColor(GET_CONFIG_VALUE_GAME("ambientDaytimeColorRed", 0.2f),
 		GET_CONFIG_VALUE_GAME("ambientDaytimeColorGreen", 0.2f),
@@ -331,26 +331,26 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
 	renderer->SetCurrentCamera(m_gameManager->GetCurrentCamera());
 
-	RenderWaterTextures(renderer);
+	//RenderWaterTextures(renderer);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
 
-	RenderSceneWithAmbientLight(renderer);
+	//RenderSceneWithAmbientLight(renderer);
 	//m_gameManager->GetRootGameNode().Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
-	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
+	//RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
-	RenderWaterNodes(renderer);
+	//RenderWaterNodes(renderer);
 
-	RenderBillboardNodes(renderer);
+	//RenderBillboardNodes(renderer);
 
-	RenderSkybox(renderer);
+	//RenderSkybox(renderer);
 
 	RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	//renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
 	
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
@@ -358,6 +358,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 		m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_NULL));
 
 #ifdef DRAW_GAME_TIME
+	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
 	renderer->RenderGuiControl(m_inGameTimeGuiButton, m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::TEXT));
 #endif
 
@@ -644,9 +645,8 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 	m_gameManager->GetSkyboxNode()->Update(elapsedTime);
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
-	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000.0f, Utility::Timing::MILLISECOND);
-	//CRITICAL_LOG_GAME("In-game time: ", m_inGameDateTime.ToDateString());
-	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
+	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, Utility::Timing::MICROSECOND);
+	//CRITICAL_LOG_GAME("Clock speed = ", m_clockSpeed, ". ElapsedTime = ", elapsedTime, ". In-game time: ", m_inGameDateTime.ToString());
 
 	//AdjustAmbientLightAccordingToCurrentTime();
 

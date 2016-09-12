@@ -113,7 +113,9 @@ namespace Game
 		Engine::MousePicker m_mousePicker;
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_clockSpeed;
 		Utility::Timing::DateTime m_inGameDateTime;
-		Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
+#ifdef DRAW_GAME_TIME
+		mutable Rendering::Controls::GuiButtonControl m_inGameTimeGuiButton;
+#endif
 
 		Math::Real m_dayNightMixFactor;
 

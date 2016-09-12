@@ -142,7 +142,7 @@ bool Utility::Timing::DateTime::operator>(const DateTime& dateTime) const
 
 std::string Utility::Timing::DateTime::ToString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
-	std::time_t time = std::chrono::system_clock::to_time_t(m_timePoint);
+	std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::seconds>(m_timePoint));
 	std::stringstream ss("");
 	ss << std::put_time(std::localtime(&time), "%F %T");
 	return ss.str();
