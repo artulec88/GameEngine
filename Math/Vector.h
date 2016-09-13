@@ -365,7 +365,7 @@ namespace Math
 		constexpr Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
 		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }
 
-		MATH_API Real Length() const { return sqrt(Length()); }
+		MATH_API Real Length() const { return sqrt(LengthSquared()); }
 		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w); }
 
 		/// <summary>

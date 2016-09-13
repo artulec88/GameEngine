@@ -39,6 +39,16 @@ namespace Math
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		MATH_API Angle() :
+			m_angle(REAL_ZERO)
+#ifdef PROFILING_MATH_MODULE_ENABLED
+			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))
+#endif
+		{
+			START_PROFILING_MATH(false, "Default");
+			STOP_PROFILING_MATH("Default");
+		}
+
 		/// <summary> Angle constructor. Angle object is created based on the given value and the angle unit type. </summary>
 		/// <param name="angle"> The value of the angle. </param>
 		/// <param name="unit"> The unit in which the value of the angle is presented. </param>

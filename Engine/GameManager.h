@@ -3,7 +3,7 @@
 
 #include "Engine.h"
 #include "GameStateManager.h"
-#include "ParticleGenerator.h"
+#include "ParticleSystem.h"
 #include "IUpdateable.h"
 #include "IRenderable.h"
 #include "GameNode.h"
@@ -84,7 +84,7 @@ namespace Engine
 		ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 		ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 		ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardsNodes; }
-		ENGINE_API inline const std::vector<ParticleGenerator*>& GetParticleGenerators() const { return m_particleGenerators; }
+		ENGINE_API inline const std::vector<ParticleSystem*>& GetParticleSystems() const { return m_particleSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
 		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
@@ -162,7 +162,7 @@ namespace Engine
 		ENGINE_API void AddBillboardsNode(GameNode* billboardsNode);
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
-		ENGINE_API void AddParticleGenerator(ParticleGenerator* particleGenerator);
+		ENGINE_API void AddParticleSystem(ParticleSystem* particleSystem);
 	protected:
 		ENGINE_API void AddToSceneRoot(GameNode* child);
 		/* ==================== Non-static member functions end ==================== */
@@ -174,7 +174,7 @@ namespace Engine
 		GameNode* m_skyboxNode;
 		GameNode* m_waterNode;
 		std::vector<GameNode*> m_billboardsNodes;
-		std::vector<ParticleGenerator*> m_particleGenerators;
+		std::vector<ParticleSystem*> m_particleSystems;
 		ShaderFactory m_shaderFactory;
 		TextureFactory m_textureFactory;
 		Rendering::Text::FontFactory m_fontFactory;

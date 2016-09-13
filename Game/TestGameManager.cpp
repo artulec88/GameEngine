@@ -14,7 +14,7 @@
 #include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
-#include "Engine\ParticleGeneratorComponent.h"
+#include "Engine\ParticleSystemComponent.h"
 
 #include "Rendering\Color.h"
 #include "Rendering\Camera.h"
@@ -501,7 +501,7 @@ void Game::TestGameManager::Load()
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
-	playerNode->AddComponent(new Engine::ParticleGeneratorComponent(GameManager::GetGameManager(), new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
+	playerNode->AddComponent(new Engine::ParticleSystemComponent(GameManager::GetGameManager(), new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
 		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
 		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f), Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
 	m_resourcesLoaded += 2;

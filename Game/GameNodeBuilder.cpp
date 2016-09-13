@@ -4,7 +4,7 @@
 #include "Engine\CoreEngine.h"
 #include "Engine\CameraComponent.h"
 #include "Engine\MeshRendererComponent.h"
-#include "Engine\ParticleGeneratorComponent.h"
+#include "Engine\ParticleSystemComponent.h"
 #include "Engine\ConstantRotationComponent.h"
 
 #include "Utility\IConfig.h"

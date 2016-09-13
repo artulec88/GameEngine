@@ -187,8 +187,8 @@
     <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
     <ClInclude Include="Observer.h" />
-    <ClInclude Include="ParticleGenerator.h" />
-    <ClInclude Include="ParticleGeneratorComponent.h" />
+    <ClInclude Include="ParticleSystem.h" />
+    <ClInclude Include="ParticleSystemComponent.h" />
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="PointLightComponent.h" />
     <ClInclude Include="QuitGameCommand.h" />
@@ -242,8 +242,8 @@
     <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
     <ClCompile Include="Observer.cpp" />
-    <ClCompile Include="ParticleGenerator.cpp" />
-    <ClCompile Include="ParticleGeneratorComponent.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
+    <ClCompile Include="ParticleSystemComponent.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
     <ClCompile Include="QuitGameCommand.cpp" />

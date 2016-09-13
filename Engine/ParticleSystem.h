@@ -1,21 +1,22 @@
-#ifndef __ENGINE_PARTICLE_GENERATOR_H__
-#define __ENGINE_PARTICLE_GENERATOR_H__
+#ifndef __ENGINE_PARTICLE_SYSTEM_H__
+#define __ENGINE_PARTICLE_SYSTEM_H__
 
 #include "Engine.h"
-#include "Math\Vector.h"
-#include "Math\RandomGeneratorFactory.h"
+
 #include "Rendering\Texture.h"
 #include "Rendering\Particle.h"
+//#include "Rendering\ParticleContainer.h"
+
+#include "Math\Vector.h"
+#include "Math\RandomGeneratorFactory.h"
 
 #include <list>
 #include <array>
 
 namespace Engine
 {
-	class ParticleGenerator
+	class ParticleSystem
 	{
-		//typedef std::vector<Rendering::Particle> ParticleContainer;
-		//typedef Rendering::Particle ParticleContainer;
 	/* ==================== Static variables and functions begin ==================== */
 	protected:
 		static constexpr int MAX_PARTICLES_COUNT = 10000;
@@ -23,8 +24,8 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
-		ENGINE_API virtual ~ParticleGenerator(void);
+		ENGINE_API ParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
+		ENGINE_API virtual ~ParticleSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -74,6 +75,7 @@ namespace Engine
 	protected:
 		Rendering::ParticleTexture* m_particleTexture;
 		std::array<Rendering::Particle, MAX_PARTICLES_COUNT> m_particles;
+		//Rendering::ParticleContainer m_particles;
 		Math::Real m_particleLifeSpanLimit;
 
 		mutable Math::Real m_currentTimer; // TODO: Replace with timespan object
@@ -83,18 +85,18 @@ namespace Engine
 
 		const Math::Random::RandomGenerator& m_randomGenerator;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class ParticleGenerator */
+	}; /* end class ParticleSystem */
 
-	class FireParticleGenerator : public ParticleGenerator
+	class FireParticleSystem : public ParticleSystem
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FireParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+		ENGINE_API FireParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
-		ENGINE_API virtual ~FireParticleGenerator(void);
+		ENGINE_API virtual ~FireParticleSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -120,18 +122,18 @@ namespace Engine
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class FireParticleGenerator */
+	}; /* end class FireParticleSystem */
 
-	class FreeFallParticleGenerator : public ParticleGenerator
+	class FreeFallParticleSystem : public ParticleSystem
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FreeFallParticleGenerator(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+		ENGINE_API FreeFallParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
-		ENGINE_API virtual ~FreeFallParticleGenerator(void);
+		ENGINE_API virtual ~FreeFallParticleSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -157,8 +159,8 @@ namespace Engine
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class FreeFallParticleGenerator */
+	}; /* end class FreeFallParticleSystem */
 
 } /* end namespace Engine */
 
-#endif // __ENGINE_PARTICLE_GENERATOR_H__
+#endif // __ENGINE_PARTICLE_SYSTEM_H__

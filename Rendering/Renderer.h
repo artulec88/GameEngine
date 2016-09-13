@@ -15,6 +15,7 @@
 #include "CubeShadowMap.h"
 #include "Particle.h"
 #include "FogInfo.h"
+#include "ParticleContainer.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"

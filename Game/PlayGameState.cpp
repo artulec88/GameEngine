@@ -6,7 +6,7 @@
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\GameNode.h"
-#include "Engine\ParticleGenerator.h"
+#include "Engine\ParticleSystem.h"
 
 #include "Rendering\Shader.h"
 
@@ -626,13 +626,13 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 	const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
 	renderer->BindShader(particlesShader);
 	renderer->UpdateRendererUniforms(particlesShader);
-	for (std::vector<Engine::ParticleGenerator*>::const_iterator particleGeneratorItr = m_gameManager->GetParticleGenerators().begin(); particleGeneratorItr != m_gameManager->GetParticleGenerators().end(); ++particleGeneratorItr)
+	for (std::vector<Engine::ParticleSystem*>::const_iterator particleSystemItr = m_gameManager->GetParticleSystems().begin(); particleSystemItr != m_gameManager->GetParticleSystems().end(); ++particleSystemItr)
 	{
-		//if (!(*particleGeneratorItr)->GetTexture()->IsAdditive())
+		//if (!(*particleSystemItr)->GetTexture()->IsAdditive())
 		//{
-			(*particleGeneratorItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
+			(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(particlesShader, (*particleGeneratorItr)->GetTexture(), (*particleGeneratorItr)->GetParticles(), (*particleGeneratorItr)->GetAliveParticlesCount());
+		renderer->RenderParticles(particlesShader, (*particleSystemItr)->GetTexture(), (*particleSystemItr)->GetParticles(), (*particleSystemItr)->GetAliveParticlesCount());
 	}
 	STOP_PROFILING_GAME("");
 }
