@@ -1,21 +1,22 @@
 #include "stdafx.h"
-#include "ParticleSystem.h"
+#include "ParticlesSystem.h"
 
 
-Rendering::ParticleSystem::ParticleSystem(size_t maxCount) :
+Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount/*, const ParticleTexture& particleTexture*/) :
 	m_count(maxCount),
 	m_particles(maxCount),
 	m_emitters(),
-	m_updaters()
+	m_updaters()//,
+	//m_texture(particleTexture)
 {
 }
 
 
-Rendering::ParticleSystem::~ParticleSystem()
+Rendering::Particles::ParticlesSystem::~ParticlesSystem()
 {
 }
 
-void Rendering::ParticleSystem::Update(Math::Real deltaTime)
+void Rendering::Particles::ParticlesSystem::Update(Math::Real deltaTime)
 {
 	for (auto& emitter : m_emitters)
 	{
@@ -34,7 +35,7 @@ void Rendering::ParticleSystem::Update(Math::Real deltaTime)
 	}
 }
 
-void Rendering::ParticleSystem::Reset()
+void Rendering::Particles::ParticlesSystem::Reset()
 {
 	m_particles.Reset();
 }

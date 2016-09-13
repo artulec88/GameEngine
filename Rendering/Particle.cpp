@@ -2,9 +2,9 @@
 #include "Particle.h"
 #include "Texture.h"
 
-/* static */ const Math::Real Rendering::Particle::GRAVITY_ACCELERATION = -9.8f; // TODO: The same is defined in the GravityComponent class.
+/* static */ const Math::Real Rendering::Particles::Particle::GRAVITY_ACCELERATION = -9.8f; // TODO: The same is defined in the GravityComponent class.
 
-Rendering::Particle::Particle() :
+Rendering::Particles::Particle::Particle() :
 	m_position(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_velocity(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_gravityEffectFactor(REAL_ZERO),
@@ -20,7 +20,7 @@ Rendering::Particle::Particle() :
 	STOP_PROFILING_RENDERING("1");
 }
 
-Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
+Rendering::Particles::Particle::Particle(const Math::Vector3D& position, const Math::Vector3D& velocity,
 	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale) :
 	m_position(position),
 	m_velocity(velocity),
@@ -38,13 +38,13 @@ Rendering::Particle::Particle(const Math::Vector3D& position, const Math::Vector
 }
 
 
-Rendering::Particle::~Particle()
+Rendering::Particles::Particle::~Particle()
 {
 	START_PROFILING_RENDERING(false, "");
 	STOP_PROFILING_RENDERING("");
 }
 
-Rendering::Particle::Particle(const Particle& particle) :
+Rendering::Particles::Particle::Particle(const Particle& particle) :
 	m_position(particle.m_position),
 	m_velocity(particle.m_velocity),
 	m_gravityEffectFactor(particle.m_gravityEffectFactor),
@@ -60,7 +60,7 @@ Rendering::Particle::Particle(const Particle& particle) :
 	STOP_PROFILING_RENDERING("3");
 }
 
-Rendering::Particle::Particle(Particle&& particle) :
+Rendering::Particles::Particle::Particle(Particle&& particle) :
 	m_position(std::move(particle.m_position)),
 	m_velocity(std::move(particle.m_velocity)),
 	m_gravityEffectFactor(std::move(particle.m_gravityEffectFactor)),
@@ -76,7 +76,7 @@ Rendering::Particle::Particle(Particle&& particle) :
 	STOP_PROFILING_RENDERING("4");
 }
 
-Rendering::Particle& Rendering::Particle::operator=(const Particle& particle)
+Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(const Particle& particle)
 {
 	START_PROFILING_RENDERING(false, "1");
 	m_position = particle.m_position;
@@ -90,7 +90,7 @@ Rendering::Particle& Rendering::Particle::operator=(const Particle& particle)
 	return *this;
 }
 
-Rendering::Particle& Rendering::Particle::operator=(Particle&& particle)
+Rendering::Particles::Particle& Rendering::Particles::Particle::operator=(Particle&& particle)
 {
 	START_PROFILING_RENDERING(false, "2");
 	m_position = std::move(particle.m_position);
@@ -104,7 +104,7 @@ Rendering::Particle& Rendering::Particle::operator=(Particle&& particle)
 	return *this;
 }
 
-void Rendering::Particle::Revive(const Math::Vector3D& position, const Math::Vector3D& velocity,
+void Rendering::Particles::Particle::Revive(const Math::Vector3D& position, const Math::Vector3D& velocity,
 	Math::Real gravityEffectFactor, Math::Real lifespanLimit, const Math::Angle& rotation, Math::Real scale)
 {
 	START_PROFILING_RENDERING(false, "");
@@ -119,7 +119,7 @@ void Rendering::Particle::Revive(const Math::Vector3D& position, const Math::Vec
 	STOP_PROFILING_RENDERING("");
 }
 
-bool Rendering::Particle::Update(Math::Real deltaTime)
+bool Rendering::Particles::Particle::Update(Math::Real deltaTime)
 {
 	START_PROFILING_RENDERING(false, "");
 	m_velocity.SetY(m_velocity.GetY() + GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime);
@@ -133,7 +133,7 @@ bool Rendering::Particle::Update(Math::Real deltaTime)
 	//return IsAlive();
 }
 
-void Rendering::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const
+void Rendering::Particles::Particle::CalculateTextureAtlasInfo(int textureAtlasRowsCount, Math::Vector2D& textureOffset0, Math::Vector2D& textureOffset1, Math::Real& textureAtlasBlendFactor) const
 {
 	START_PROFILING_RENDERING(false, "");
 	/* Updating the texture offsets and the blend factor begin */

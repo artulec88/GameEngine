@@ -1,18 +1,18 @@
 #include "stdafx.h"
-#include "ParticleEmitter.h"
+#include "ParticlesEmitter.h"
 
 
-Rendering::ParticleEmitter::ParticleEmitter(Math::Real emitRate) :
+Rendering::Particles::ParticlesEmitter::ParticlesEmitter(Math::Real emitRate) :
 	m_emitRate(emitRate)
 {
 }
 
 
-Rendering::ParticleEmitter::~ParticleEmitter()
+Rendering::Particles::ParticlesEmitter::~ParticlesEmitter()
 {
 }
 
-void Rendering::ParticleEmitter::Emit(Math::Real deltaTime, ParticleContainer* particleContainer)
+void Rendering::Particles::ParticlesEmitter::Emit(Math::Real deltaTime, ParticlesContainer* particleContainer)
 {
 	const size_t maxNewParticles = static_cast<size_t>(deltaTime * m_emitRate);
 	const size_t startId = particleContainer->GetAliveCount();

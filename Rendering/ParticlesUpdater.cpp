@@ -2,28 +2,28 @@
 #include "ParticlesUpdater.h"
 
 /* ==================== class ParticlesUpdater begin ==================== */
-Rendering::ParticlesUpdater::ParticlesUpdater()
+Rendering::Particles::ParticlesUpdater::ParticlesUpdater()
 {
 }
 
 
-Rendering::ParticlesUpdater::~ParticlesUpdater()
+Rendering::Particles::ParticlesUpdater::~ParticlesUpdater()
 {
 }
 /* ==================== class ParticlesUpdater end ==================== */
 
 /* ==================== class EulerParticlesUpdater begin ==================== */
-Rendering::EulerParticlesUpdater::EulerParticlesUpdater(const Math::Vector3D& acceleration) :
+Rendering::Particles::EulerParticlesUpdater::EulerParticlesUpdater(const Math::Vector3D& acceleration) :
 	ParticlesUpdater(),
 	m_acceleration(acceleration)
 {
 }
 
-Rendering::EulerParticlesUpdater::~EulerParticlesUpdater()
+Rendering::Particles::EulerParticlesUpdater::~EulerParticlesUpdater()
 {
 }
 
-void Rendering::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticleContainer* particlesContainer)
+void Rendering::Particles::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
@@ -43,16 +43,16 @@ void Rendering::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticleCont
 /* ==================== class EulerParticlesUpdater end ==================== */
 
 /* ==================== class LifeSpanParticlesUpdater begin ==================== */
-Rendering::LifeSpanParticlesUpdater::LifeSpanParticlesUpdater() :
+Rendering::Particles::LifeSpanParticlesUpdater::LifeSpanParticlesUpdater() :
 	ParticlesUpdater()
 {
 }
 
-Rendering::LifeSpanParticlesUpdater::~LifeSpanParticlesUpdater()
+Rendering::Particles::LifeSpanParticlesUpdater::~LifeSpanParticlesUpdater()
 {
 }
 
-void Rendering::LifeSpanParticlesUpdater::Update(Math::Real deltaTime, ParticleContainer* particlesContainer)
+void Rendering::Particles::LifeSpanParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
 	if (particlesContainer->GetAliveCount() == 0)
 	{

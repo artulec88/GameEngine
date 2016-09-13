@@ -207,39 +207,42 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GuiTexture */
 
-	class ParticleTexture : public Texture
+	namespace Particles
 	{
-		/* ==================== Static variables begin ==================== */
-		/* ==================== Static variables end ==================== */
+		class ParticleTexture : public Texture
+		{
+			/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
-	public:
-		RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
-		RENDERING_API virtual ~ParticleTexture(void);
-	private:
-		ParticleTexture(const ParticleTexture& particleTexture);
-		void operator=(const ParticleTexture& particleTexture);
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
+			RENDERING_API virtual ~ParticleTexture(void);
+		private:
+			ParticleTexture(const ParticleTexture& particleTexture);
+			void operator=(const ParticleTexture& particleTexture);
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
-	public:
-		RENDERING_API int GetRowsCount() const { return m_rowsCount; }
-		RENDERING_API bool IsAdditive() const { return m_isAdditive; }
-		/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API int GetRowsCount() const { return m_rowsCount; }
+			RENDERING_API bool IsAdditive() const { return m_isAdditive; }
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		/// <summary>
-		/// The number of rows (and columns too) in the texture atlas.
-		/// </summary>
-		int m_rowsCount;
+			/* ==================== Non-static member variables begin ==================== */
+		protected:
+			/// <summary>
+			/// The number of rows (and columns too) in the texture atlas.
+			/// </summary>
+			int m_rowsCount;
 
-		/// <summary>
-		/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
-		/// </summary>
-		bool m_isAdditive;
-		/* ==================== Non-static member variables end ==================== */
-	}; /* end class ParticleTexture */
+			/// <summary>
+			/// For some particles we want additive blending (e.g. magic effects) and for others we want GL_ONE_MINUS_SRC_ALPHA (e.g. smoke).
+			/// </summary>
+			bool m_isAdditive;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ParticleTexture */
+	} /* end namespace Particles */
 
 	//class CubeShadowMapTexture : public Texture
 	//{

@@ -14,10 +14,13 @@
 #include "Engine\PhysicsComponent.h"
 #include "Engine\LookAtComponent.h"
 #include "Engine\GravityComponent.h"
-#include "Engine\ParticleSystemComponent.h"
+#include "Engine\ParticlesSystemComponent.h"
 
 #include "Rendering\Color.h"
 #include "Rendering\Camera.h"
+#include "Rendering\ParticlePropertyGenerator.h"
+#include "Rendering\ParticlesEmitter.h"
+#include "Rendering\ParticlesUpdater.h"
 
 #include "Math\FloatingPoint.h"
 #include "Math\Quaternion.h"
@@ -499,11 +502,10 @@ void Game::TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::ParticleTexture* particleTexture = new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
+	Rendering::Particles::ParticleTexture* particleTexture = new Rendering::Particles::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
-	playerNode->AddComponent(new Engine::ParticleSystemComponent(GameManager::GetGameManager(), new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
-		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
-		GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f), Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)), GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
+	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem();
+	playerNode->AddComponent(new Engine::ParticlesSystemComponent(GameManager::GetGameManager(), particlesSystem));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -515,6 +517,25 @@ void Game::TestGameManager::Load()
 	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING_GAME("");
 	NOTICE_LOG_GAME("Initalizing test game finished");
+}
+
+Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem()  // TODO: temporary code. Remove in the future.
+{
+	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10);
+	Rendering::Particles::ParticlesEmitter emitter(3);
+	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(-2.0f, 2.0f, -3.0f, 3.0f, -1.0f, 1.0f));
+	system->AddEmitter(emitter);
+
+	Rendering::Particles::ParticlesUpdater* updater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.01f, 0.05f, 0.1f));
+	system->AddUpdater(updater);
+
+	Utility::Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < 200; ++i)
+	{
+		system->Update(static_cast<Math::Real>(timer.GetDuration(Utility::Timing::NANOSECOND)));
+	}
+	return system;
 }
 
 void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)

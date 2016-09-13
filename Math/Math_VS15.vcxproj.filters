@@ -91,6 +91,9 @@
     <ClCompile Include="Effect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Ellipsoid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.h">
@@ -181,6 +184,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Effect_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ellipsoid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

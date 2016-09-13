@@ -167,9 +167,9 @@ void Engine::GameManager::AddSkyboxNode(GameNode* skyboxNode)
 	m_skyboxNode = skyboxNode;
 }
 
-void Engine::GameManager::AddParticleSystem(ParticleSystem* particleSystem)
+void Engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem)
 {
-	m_particleSystems.push_back(particleSystem);
+	m_particlesSystems.push_back(particlesSystem);
 }
 
 void Engine::GameManager::Input(Actions::Action actionID)

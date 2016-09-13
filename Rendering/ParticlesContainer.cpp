@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "ParticleContainer.h"
+#include "ParticlesContainer.h"
 
-Rendering::ParticleContainer::ParticleContainer(size_t maxCount) :
+Rendering::Particles::ParticlesContainer::ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask /* = Attributes::POSITION | Attributes::VELOCITY */) :
 	m_count(maxCount),
 	m_countAlive(0)
 {
@@ -16,11 +16,11 @@ Rendering::ParticleContainer::ParticleContainer(size_t maxCount) :
 	m_textureOffsets.reset(new Math::Vector2D[m_count]);
 }
 
-Rendering::ParticleContainer::~ParticleContainer()
+Rendering::Particles::ParticlesContainer::~ParticlesContainer()
 {
 }
 
-void Rendering::ParticleContainer::Kill(size_t id)
+void Rendering::Particles::ParticlesContainer::Kill(size_t id)
 {
 	if (m_countAlive > 0)
 	{
@@ -30,7 +30,7 @@ void Rendering::ParticleContainer::Kill(size_t id)
 	}
 }
 
-void Rendering::ParticleContainer::Revive(size_t id)
+void Rendering::Particles::ParticlesContainer::Revive(size_t id)
 {
 	if (m_countAlive < m_count)
 	{
@@ -40,7 +40,7 @@ void Rendering::ParticleContainer::Revive(size_t id)
 	}
 }
 
-void Rendering::ParticleContainer::SwapData(size_t a, size_t b)
+void Rendering::Particles::ParticlesContainer::SwapData(size_t a, size_t b)
 {
 	std::swap(m_positions[a], m_positions[b]);
 	std::swap(m_velocities[a], m_velocities[b]);

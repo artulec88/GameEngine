@@ -156,10 +156,10 @@
     <ClInclude Include="TextureIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSystem.h">
+    <ClInclude Include="ParticlesSystemComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleSystemComponent.h">
+    <ClInclude Include="ParticlesSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -275,10 +275,10 @@
     <ClCompile Include="GameCommand.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleSystemComponent.cpp">
+    <ClCompile Include="ParticlesSystemComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleSystem.cpp">
+    <ClCompile Include="ParticlesSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

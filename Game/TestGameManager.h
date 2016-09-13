@@ -56,6 +56,7 @@ namespace Game
 		virtual void InitializeTweakBars();
 #endif
 	private:
+		Rendering::Particles::ParticlesSystem* CreateParticlesSystem(); // TODO: temporary code. Remove in the future.
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddCameras(Engine::GameNode* entityToFollow);
 		void AddSkybox();

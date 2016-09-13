@@ -1,11 +1,11 @@
-#ifndef __ENGINE_PARTICLE_SYSTEM_COMPONENT_H__
-#define __ENGINE_PARTICLE_SYSTEM_COMPONENT_H__
+#ifndef __ENGINE_PARTICLES_SYSTEM_COMPONENT_H__
+#define __ENGINE_PARTICLES_SYSTEM_COMPONENT_H__
 
 #include "Engine.h"
 #include "GameComponent.h"
 #include "GameManager.h"
 #include "IUpdateable.h"
-#include "ParticleSystem.h"
+#include "Rendering\ParticlesSystem.h"
 
 //#include "Math\Math.h"
 //#include "Math\Angle.h"
@@ -14,16 +14,15 @@
 namespace Engine
 {
 
-	class ParticleSystemComponent : public GameComponent, public IUpdateable
+	class ParticlesSystemComponent : public GameComponent, public IUpdateable
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	/* ==================== Static variables and functions end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticleSystemComponent(GameManager* gameManager, Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
-			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
-		ENGINE_API virtual ~ParticleSystemComponent(void);
+		ENGINE_API ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem);
+		ENGINE_API virtual ~ParticlesSystemComponent(void);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
@@ -33,10 +32,10 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		ParticleSystem* m_particleSystem;
+		Rendering::Particles::ParticlesSystem* m_particlesSystem;
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class ParticleSystemComponent */
+	}; /* end class ParticlesSystemComponent */
 
 } /* end namespace Engine */
 
-#endif /* __ENGINE_PARTICLE_SYSTEM_COMPONENT_H__ */
+#endif /* __ENGINE_PARTICLES_SYSTEM_COMPONENT_H__ */

@@ -403,7 +403,11 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
 }
 
-void Rendering::Renderer::RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const
+void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Particles::ParticlesSystem& particlesSystem) const
+{
+}
+
+void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const
 {
 	START_PROFILING_RENDERING(true, "");
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");

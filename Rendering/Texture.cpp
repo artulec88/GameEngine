@@ -420,14 +420,14 @@ Rendering::GuiTexture::GuiTexture(GuiTexture&& guiTexture) :
 	DELOCUST_LOG_RENDERING("GUI texture moved.");
 }
 
-Rendering::ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
+Rendering::Particles::ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
 	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_NONE),
 	m_rowsCount(rowsCount),
 	m_isAdditive(isAdditive)
 {
 }
 
-Rendering::ParticleTexture::~ParticleTexture(void)
+Rendering::Particles::ParticleTexture::~ParticleTexture(void)
 {
 }
 

@@ -1,9 +1,9 @@
 #include "stdafx.h"
-#include "ParticleSystem.h"
+#include "ParticlesSystem.h"
 #include <algorithm>
 
 /* ==================== ParticleSystem class begin ==================== */
-Engine::ParticleSystem::ParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
+Engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit) :
 	m_particleTexture(particleTexture),
 	//m_particles(),
 	m_particleLifeSpanLimit(particleLifeSpanLimit),
@@ -16,12 +16,12 @@ Engine::ParticleSystem::ParticleSystem(Rendering::ParticleTexture* particleTextu
 }
 
 
-Engine::ParticleSystem::~ParticleSystem()
+Engine::ParticlesSystem::~ParticlesSystem()
 {
 	SAFE_DELETE(m_particleTexture);
 }
 
-void Engine::ParticleSystem::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
+void Engine::ParticlesSystem::SortParticles(const Math::Vector3D& originPosition /* cameraPosition */)
 {
 	/* ==================== Small test whether sorting particles work fine begin ==================== */
 	//std::array<Rendering::Particle, 5> testParticles;
@@ -39,10 +39,10 @@ void Engine::ParticleSystem::SortParticles(const Math::Vector3D& originPosition 
 	//}
 	/* ==================== Small test whether sorting particles work fine end ==================== */
 
-	std::sort(m_particles.begin(), m_particles.end(), Rendering::ParticleComparator(originPosition));
+	std::sort(m_particles.begin(), m_particles.end(), Rendering::Particles::ParticleComparator(originPosition));
 }
 
-void Engine::ParticleSystem::Update(Math::Real deltaTime)
+void Engine::ParticlesSystem::Update(Math::Real deltaTime)
 {
 	m_currentTimer += deltaTime;
 	m_aliveParticlesCount = 0;
@@ -57,9 +57,9 @@ void Engine::ParticleSystem::Update(Math::Real deltaTime)
 /* ==================== ParticleSystem class end ==================== */
 
 /* ==================== FireParticleSystem class begin ==================== */
-Engine::FireParticleSystem::FireParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+Engine::FireParticlesSystem::FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
-	ParticleSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
+	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
 	m_particleGravityComplient(particleGravityComplient),
 	m_particleRotation(particleRotation),
@@ -68,11 +68,11 @@ Engine::FireParticleSystem::FireParticleSystem(Rendering::ParticleTexture* parti
 }
 
 
-Engine::FireParticleSystem::~FireParticleSystem()
+Engine::FireParticlesSystem::~FireParticlesSystem()
 {
 }
 
-void Engine::FireParticleSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+void Engine::FireParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{
@@ -83,9 +83,9 @@ void Engine::FireParticleSystem::GenerateParticles(const Math::Vector3D& initial
 /* ==================== FreeFallParticleSystem class end ==================== */
 
 /* ==================== FreeFallParticleSystem class begin ==================== */
-Engine::FreeFallParticleSystem::FreeFallParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+Engine::FreeFallParticlesSystem::FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 	Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale) :
-	ParticleSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
+	ParticlesSystem(particleTexture, particlesPerSecondCount, particleLifeSpanLimit),
 	m_particleSpeed(particleSpeed),
 	m_particleGravityComplient(particleGravityComplient),
 	m_particleRotation(particleRotation),
@@ -94,11 +94,11 @@ Engine::FreeFallParticleSystem::FreeFallParticleSystem(Rendering::ParticleTextur
 }
 
 
-Engine::FreeFallParticleSystem::~FreeFallParticleSystem()
+Engine::FreeFallParticlesSystem::~FreeFallParticlesSystem()
 {
 }
 
-void Engine::FreeFallParticleSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
+void Engine::FreeFallParticlesSystem::GenerateParticles(const Math::Vector3D& initialPosition, Math::Real deltaTime)
 {
 	while (m_currentTimer > m_timeForGeneratingOneParticle)
 	{

@@ -1,5 +1,5 @@
-#ifndef __ENGINE_PARTICLE_SYSTEM_H__
-#define __ENGINE_PARTICLE_SYSTEM_H__
+#ifndef __ENGINE_PARTICLES_SYSTEM_H__
+#define __ENGINE_PARTICLES_SYSTEM_H__
 
 #include "Engine.h"
 
@@ -15,7 +15,7 @@
 
 namespace Engine
 {
-	class ParticleSystem
+	class ParticlesSystem
 	{
 	/* ==================== Static variables and functions begin ==================== */
 	protected:
@@ -24,14 +24,14 @@ namespace Engine
 
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API ParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
-		ENGINE_API virtual ~ParticleSystem(void);
+		ENGINE_API ParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit);
+		ENGINE_API virtual ~ParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API const Rendering::ParticleTexture* GetTexture() const { return m_particleTexture; }
-		ENGINE_API const Rendering::Particle* GetParticles() const { return m_particles.data(); }
+		ENGINE_API const Rendering::Particles::ParticleTexture* GetTexture() const { return m_particleTexture; }
+		ENGINE_API const Rendering::Particles::Particle* GetParticles() const { return m_particles.data(); }
 		ENGINE_API int GetAliveParticlesCount() const { return m_aliveParticlesCount; }
 		/// <summary>
 		/// Sorts particles according to the distance to the origin point.
@@ -73,8 +73,8 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::ParticleTexture* m_particleTexture;
-		std::array<Rendering::Particle, MAX_PARTICLES_COUNT> m_particles;
+		Rendering::Particles::ParticleTexture* m_particleTexture;
+		std::array<Rendering::Particles::Particle, MAX_PARTICLES_COUNT> m_particles;
 		//Rendering::ParticleContainer m_particles;
 		Math::Real m_particleLifeSpanLimit;
 
@@ -85,18 +85,18 @@ namespace Engine
 
 		const Math::Random::RandomGenerator& m_randomGenerator;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class ParticleSystem */
+	}; /* end class ParticlesSystem */
 
-	class FireParticleSystem : public ParticleSystem
+	class FireParticlesSystem : public ParticlesSystem
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FireParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+		ENGINE_API FireParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
-		ENGINE_API virtual ~FireParticleSystem(void);
+		ENGINE_API virtual ~FireParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -122,18 +122,18 @@ namespace Engine
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class FireParticleSystem */
+	}; /* end class FireParticlesSystem */
 
-	class FreeFallParticleSystem : public ParticleSystem
+	class FreeFallParticlesSystem : public ParticlesSystem
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API FreeFallParticleSystem(Rendering::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
+		ENGINE_API FreeFallParticlesSystem(Rendering::Particles::ParticleTexture* particleTexture, Math::Real particlesPerSecondCount, Math::Real particleLifeSpanLimit,
 			Math::Real particleSpeed, Math::Real particleGravityComplient, const Math::Angle& particleRotation, Math::Real particleScale);
-		ENGINE_API virtual ~FreeFallParticleSystem(void);
+		ENGINE_API virtual ~FreeFallParticlesSystem(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -159,8 +159,8 @@ namespace Engine
 		Math::Angle m_particleRotation;
 		Math::Real m_particleScale;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class FreeFallParticleSystem */
+	}; /* end class FreeFallParticlesSystem */
 
 } /* end namespace Engine */
 
-#endif // __ENGINE_PARTICLE_SYSTEM_H__
+#endif // __ENGINE_PARTICLES_SYSTEM_H__

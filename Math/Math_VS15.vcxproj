@@ -147,6 +147,7 @@
     <ClInclude Include="BSPTree.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="Effect_impl.h" />
+    <ClInclude Include="Ellipsoid.h" />
     <ClInclude Include="FloatingPoint.h" />
     <ClInclude Include="HeightsGenerator.h" />
     <ClInclude Include="Interpolation.h" />
@@ -192,6 +193,7 @@
       </PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Ellipsoid.cpp" />
     <ClCompile Include="HeightsGenerator.cpp" />
     <ClCompile Include="Interpolation.cpp" />
     <ClCompile Include="Interpolation_impl.h" />

@@ -15,7 +15,8 @@
 #include "CubeShadowMap.h"
 #include "Particle.h"
 #include "FogInfo.h"
-#include "ParticleContainer.h"
+#include "ParticlesContainer.h"
+#include "ParticlesSystem.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
@@ -80,7 +81,8 @@ namespace Rendering
 
 		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const;
 
-		RENDERING_API void RenderParticles(const Shader& particleShader, const ParticleTexture* particleTexture, const Particle* particles, int particlesCount) const;
+		RENDERING_API void RenderParticles(const Shader& particleShader, const Particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(const Shader& particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -91,9 +93,9 @@ namespace Rendering
 		/// </remarks>
 		RENDERING_API void InitializeTweakBars();
 #endif
-		int GetWindowWidth() const { return m_windowWidth; }
-		int GetWindowHeight() const { return m_windowHeight; }
-		Rendering::Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
+		RENDERING_API int GetWindowWidth() const { return m_windowWidth; }
+		RENDERING_API int GetWindowHeight() const { return m_windowHeight; }
+		RENDERING_API Rendering::Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
