@@ -336,7 +336,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
 
-	//RenderSceneWithAmbientLight(renderer);
+	RenderSceneWithAmbientLight(renderer);
 	//m_gameManager->GetRootGameNode().Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
 	//RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
@@ -345,7 +345,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 	//RenderBillboardNodes(renderer);
 
-	//RenderSkybox(renderer);
+	RenderSkybox(renderer);
 
 	RenderParticles(renderer);
 
@@ -632,7 +632,7 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 		//{
 			//(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		//renderer->RenderParticles(particlesShader, *(*particleSystemItr));
+		renderer->RenderParticles(particlesShader, *(*particleSystemItr));
 	}
 	STOP_PROFILING_GAME("");
 }

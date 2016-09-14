@@ -28,11 +28,11 @@ void Rendering::Particles::ParticlesSystem::Update(Math::Real deltaTime)
 		emitter.Emit(deltaTime, &m_particles);
 	}
 
-	constexpr Math::Vector3D zeroVector{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
-	for (size_t i = 0; i < m_count; ++i)
-	{
-		m_particles.SetAcceleration(i, zeroVector);
-	}
+	//constexpr Math::Vector3D zeroVector{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
+	//for (size_t i = 0; i < m_count; ++i)
+	//{
+	//	m_particles.SetAcceleration(i, zeroVector);
+	//}
 
 	DEBUG_LOG_RENDERING("Updating particles started");
 	//CRITICAL_LOG_RENDERING("Particles after emission, before update = ");

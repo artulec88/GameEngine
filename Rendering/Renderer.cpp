@@ -413,7 +413,7 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 	{
 		return;
 	}
-	CRITICAL_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
+	DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
 	particleShader.Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	particlesSystem.GetTexture().Bind();
 	particleShader.SetUniformi("particleTexture", 0);

@@ -521,14 +521,15 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 {
 	Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
-	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10, *particleTexture);
+	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(1000, *particleTexture);
 	Rendering::Particles::ParticlesEmitter emitter(500);
 	emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
-	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(-2.0f, 2.0f, -3.0f, 3.0f, -1.0f, 1.0f));
-	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(0.01f, 0.04f));
+	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(80.0f, 100.0f, -12.0f, -4.0f, 72.0f, 98.0f));
+	emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(0.0f, 0.0001f, 0.0f, 0.0001f, 0.0f, 0.0001f));
+	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(1.1f, 1.4f));
 	system->AddEmitter(emitter);
 
-	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(3423.01f, 4424.05f, 54215.1f));
+	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.1f));
 	Rendering::Particles::ParticlesUpdater* updater2 = new Rendering::Particles::LifeSpanParticlesUpdater();
 	system->AddUpdater(updater1);
 	system->AddUpdater(updater2);
