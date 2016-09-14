@@ -28,15 +28,7 @@ void Rendering::Particles::EulerParticlesUpdater::Update(Math::Real deltaTime, P
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
 		particlesContainer->IncreaseAcceleration(i, m_acceleration);
-	}
-
-	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
-	{
 		particlesContainer->IncreaseVelocity(i, particlesContainer->GetAcceleration(i) * deltaTime);
-	}
-
-	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
-	{
 		particlesContainer->IncreasePosition(i, particlesContainer->GetVelocity(i) * deltaTime);
 	}
 }
@@ -54,14 +46,9 @@ Rendering::Particles::LifeSpanParticlesUpdater::~LifeSpanParticlesUpdater()
 
 void Rendering::Particles::LifeSpanParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
-	if (particlesContainer->GetAliveCount() == 0)
-	{
-		return;
-	}
-
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
-		particlesContainer->IncreaseLifeSpan(i, -deltaTime);
+		particlesContainer->IncreaseLifeSpan(i, deltaTime);
 		if (!particlesContainer->IsAlive(i))
 		{
 			particlesContainer->Kill(i);

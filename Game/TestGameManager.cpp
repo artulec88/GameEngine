@@ -502,8 +502,6 @@ void Game::TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::Particles::ParticleTexture* particleTexture = new Rendering::Particles::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
-		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
 	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem();
 	playerNode->AddComponent(new Engine::ParticlesSystemComponent(GameManager::GetGameManager(), particlesSystem));
 	m_resourcesLoaded += 2;
@@ -521,19 +519,26 @@ void Game::TestGameManager::Load()
 
 Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem()  // TODO: temporary code. Remove in the future.
 {
-	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10);
-	Rendering::Particles::ParticlesEmitter emitter(3);
+	Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
+		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
+	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10, *particleTexture);
+	Rendering::Particles::ParticlesEmitter emitter(500);
+	emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
 	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(-2.0f, 2.0f, -3.0f, 3.0f, -1.0f, 1.0f));
+	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(0.01f, 0.04f));
 	system->AddEmitter(emitter);
 
-	Rendering::Particles::ParticlesUpdater* updater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.01f, 0.05f, 0.1f));
-	system->AddUpdater(updater);
+	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(3423.01f, 4424.05f, 54215.1f));
+	Rendering::Particles::ParticlesUpdater* updater2 = new Rendering::Particles::LifeSpanParticlesUpdater();
+	system->AddUpdater(updater1);
+	system->AddUpdater(updater2);
 
 	Utility::Timing::Timer timer;
-	timer.Start();
-	for (unsigned int i = 0; i < 200; ++i)
+	for (unsigned int i = 0; i < 10; ++i)
 	{
-		system->Update(static_cast<Math::Real>(timer.GetDuration(Utility::Timing::NANOSECOND)));
+		timer.Start();
+		system->Update(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE).NextFloat(0.001f, 0.004f));
+		timer.Stop();
 	}
 	return system;
 }

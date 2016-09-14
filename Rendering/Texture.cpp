@@ -431,6 +431,14 @@ Rendering::Particles::ParticleTexture::~ParticleTexture(void)
 {
 }
 
+Rendering::Particles::ParticleTexture::ParticleTexture(ParticleTexture&& particleTexture) :
+	Texture(std::move(particleTexture)),
+	m_rowsCount(std::move(particleTexture.m_rowsCount)),
+	m_isAdditive(std::move(particleTexture.m_isAdditive))
+{
+	DELOCUST_LOG_RENDERING("Particle texture moved.");
+}
+
 //Rendering::CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
 //{
 //	GLenum attachments [2] = { GL_DEPTH_ATTACHMENT, GL_COLOR_ATTACHMENT0 };

@@ -41,12 +41,18 @@ namespace Engine
 	public:
 		ENGINE_API Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName);
 		ENGINE_API Rendering::Texture* CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory);
+		ENGINE_API Rendering::Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive);
 		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
 		{
-			std::map<int, Rendering::Texture>::const_iterator textureItr = m_textureType2TextureMap.find(textureID);
+			auto textureItr = m_textureType2TextureMap.find(textureID);
 			if (textureItr == m_textureType2TextureMap.end())
 			{
-				ERROR_LOG_RENDERING("No texture has been created for the specified ID (", textureID, ").");
+				auto particleTextureItr = m_textureType2ParticleTextureMap.find(textureID);
+				if (particleTextureItr == m_textureType2ParticleTextureMap.end())
+				{
+					ERROR_LOG_RENDERING("No texture has been created for the specified ID (", textureID, ").");
+				}
+				return &particleTextureItr->second;
 			}
 			return &textureItr->second;
 		}
@@ -63,6 +69,11 @@ namespace Engine
 		/// The map storing all textures by their unique ID.
 		/// </summary>
 		std::map<int, Rendering::Texture> m_textureType2TextureMap;
+
+		/// <summary>
+		/// The map storing all particle textures by their unique ID.
+		/// </summary>
+		std::map<int, Rendering::Particles::ParticleTexture> m_textureType2ParticleTextureMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TextureFactory */
 

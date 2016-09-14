@@ -632,7 +632,7 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 		//{
 			//(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(particlesShader, *(*particleSystemItr));
+		//renderer->RenderParticles(particlesShader, *(*particleSystemItr));
 	}
 	STOP_PROFILING_GAME("");
 }

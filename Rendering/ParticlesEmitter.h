@@ -27,7 +27,14 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API explicit ParticlesEmitter(Math::Real emitRate);
+			/// <summary>
+			/// Particles emitter constructor.
+			/// </summary>
+			/// <param name="numberOfParticlesToGeneratePerSecond">
+			/// The number of particles to generate per second.
+			/// The value does not necessarily have to be an integer.
+			/// </param>
+			RENDERING_API explicit ParticlesEmitter(Math::Real numberOfParticlesToGeneratePerSecond);
 			RENDERING_API ~ParticlesEmitter();
 
 			/// <summary> Particles emitter copy constructor. </summary>
@@ -48,7 +55,14 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			Math::Real m_emitRate;
+			/// <summary>
+			/// Elapsed time since last particles emission in seconds.
+			/// </summary>
+			Math::Real m_currentTimer; // TODO: Replace with timespan object
+			/// <summary>
+			/// The time in seconds that needs to pass for the one particle to be generated.
+			/// </summary>
+			Math::Real m_timeToEmitOneParticle;
 			std::vector<ParticlePropertyGenerator*> m_generators;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesEmitter */

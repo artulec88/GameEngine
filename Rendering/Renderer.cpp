@@ -405,6 +405,92 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 
 void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Particles::ParticlesSystem& particlesSystem) const
 {
+	START_PROFILING_RENDERING(true, "");
+	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
+	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::ERR,
+	//	"The number of alive particles (", particlesCount, ") exceeds the size of the specified vector of particles (", particles.size(), ")");
+	if (particlesSystem.GetAliveParticlesCount() <= 0)
+	{
+		return;
+	}
+	CRITICAL_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
+	particleShader.Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
+	particlesSystem.GetTexture().Bind();
+	particleShader.SetUniformi("particleTexture", 0);
+	particleShader.SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particlesSystem.GetTexture().GetRowsCount()));
+	if (Rendering::glDepthTestEnabled)
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+	}
+	glBlendFunc(GL_SRC_ALPHA, particlesSystem.GetTexture().IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
+
+	m_particleInstanceVboData.clear();
+	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();
+	for (size_t i = 0; i < particlesSystem.GetAliveParticlesCount(); ++i)
+	{
+		Math::Matrix4D modelMatrix(particlesSystem.GetPosition(i));
+		// To make the particle always face the camera we can either use the geometry shader (as in the Bilboard shader) or
+		// set the 3x3 top-left submatrix of the model matrix to be a transposed version of the 3x3 top-left submatrix of the camera's view matrix.
+		modelMatrix.SetElement(0, 0, cameraViewMatrix.GetElement(0, 0));
+		modelMatrix.SetElement(0, 1, cameraViewMatrix.GetElement(1, 0));
+		modelMatrix.SetElement(0, 2, cameraViewMatrix.GetElement(2, 0));
+		modelMatrix.SetElement(1, 0, cameraViewMatrix.GetElement(0, 1));
+		modelMatrix.SetElement(1, 1, cameraViewMatrix.GetElement(1, 1));
+		modelMatrix.SetElement(1, 2, cameraViewMatrix.GetElement(2, 1));
+		modelMatrix.SetElement(2, 0, cameraViewMatrix.GetElement(0, 2));
+		modelMatrix.SetElement(2, 1, cameraViewMatrix.GetElement(1, 2));
+		modelMatrix.SetElement(2, 2, cameraViewMatrix.GetElement(2, 2));
+
+		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i));
+		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particlesSystem.GetScale(i));
+
+		Math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(1, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(2, 3));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 0));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 1));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 2));
+		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(3, 3));
+
+#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION		
+		Math::Vector2D textureOffset0;
+		Math::Vector2D textureOffset1;
+		Math::Real textureAtlasBlendFactor;
+		particles[i].CalculateTextureAtlasInfo(particleTexture->GetRowsCount(), textureOffset0, textureOffset1, textureAtlasBlendFactor);
+		m_particleInstanceVboData.push_back(textureOffset0.GetX());
+		m_particleInstanceVboData.push_back(textureOffset0.GetY());
+		m_particleInstanceVboData.push_back(textureOffset1.GetX());
+		m_particleInstanceVboData.push_back(textureOffset1.GetY());
+		m_particleInstanceVboData.push_back(textureAtlasBlendFactor);
+#else
+		m_particleInstanceVboData.push_back(particlesSystem.CalculateLifeStageFactor(i));
+#endif
+	}
+	m_particleQuad.Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesSystem.GetAliveParticlesCount());
+	if (Rendering::glDepthTestEnabled)
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+	if (!Rendering::glBlendEnabled)
+	{
+		glDisable(GL_BLEND);
+	}
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished particles rendering");
+	STOP_PROFILING_RENDERING("");
 }
 
 void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const

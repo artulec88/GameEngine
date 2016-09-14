@@ -21,13 +21,13 @@ namespace Rendering
 				ACCELERATION = 1 >> 2,
 				GRAVITY_EFFECT_FACTOR = 1 >> 3,
 				LIFE_SPAN = 1 >> 4,
-				LIFE_SPAN_LIMIT = 1 >> 5,
-				ROTATION = 1 >> 6,
-				SCALE = 1 >> 7,
-				TEXTURE_OFFSET = 1 >> 8,
-				COLOR = 1 >> 9,
-				MASS = 1 >> 10,
-				ALIVE = 1 >> 11
+				ROTATION = 1 >> 5,
+				SCALE = 1 >> 6,
+				TEXTURE_OFFSET = 1 >> 7,
+				COLOR = 1 >> 8,
+				MASS = 1 >> 9,
+				ALIVE = 1 >> 10,
+				ID = 1 >> 11,
 			}; /* end enum Attribute */
 
 			class AttributesMask

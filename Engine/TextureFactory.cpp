@@ -92,3 +92,11 @@ Rendering::Texture* Engine::TextureFactory::CreateCubeTexture(int textureID, con
 	CHECK_CONDITION_ENGINE(texturePair.second, Utility::Logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
 	return &texturePair.first->second;
 }
+
+Rendering::Particles::ParticleTexture* Engine::TextureFactory::CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive)
+{
+	std::pair<std::map<int, Rendering::Particles::ParticleTexture>::iterator, bool> particleTexturePair =
+		m_textureType2ParticleTextureMap.insert(std::make_pair(textureID, Rendering::Particles::ParticleTexture(textureFileName, rowsCount, isAdditive)));
+	CHECK_CONDITION_ENGINE(particleTexturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
+	return &particleTexturePair.first->second;
+}

@@ -107,4 +107,46 @@ void Rendering::Particles::BasicVelocityGenerator::Generate(Math::Real deltaTime
 		Set(particleContainer, i, Math::Vector3D{ m_randomGenerator.NextFloat(m_minSpeedX, m_maxSpeedX), m_randomGenerator.NextFloat(m_minSpeedY, m_maxSpeedY), m_randomGenerator.NextFloat(m_minSpeedZ, m_maxSpeedZ) });
 	}
 }
-/* ==================== class EllipsoidPositionGenerator end ==================== */
+/* ==================== class BasicVelocityGenerator end ==================== */
+
+/* ==================== class BasicLifeSpanLimitGenerator begin ==================== */
+Rendering::Particles::BasicLifeSpanLimitGenerator::BasicLifeSpanLimitGenerator(Math::Real minLifeSpanLimit, Math::Real maxLifeSpanLimit) :
+	LifeSpanLimitGenerator(),
+	m_minLifeSpanLimit(minLifeSpanLimit),
+	m_maxLifeSpanLimit(maxLifeSpanLimit),
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+{
+}
+
+Rendering::Particles::BasicLifeSpanLimitGenerator::~BasicLifeSpanLimitGenerator()
+{
+}
+
+void Rendering::Particles::BasicLifeSpanLimitGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+	for (size_t i = startId; i < endId; ++i)
+	{
+		Set(particleContainer, i, m_randomGenerator.NextFloat(m_minLifeSpanLimit, m_maxLifeSpanLimit));
+	}
+}
+/* ==================== class BasicLifeSpanLimitGenerator end ==================== */
+
+/* ==================== class BasicIdGenerator begin ==================== */
+Rendering::Particles::BasicIdGenerator::BasicIdGenerator() :
+	IdGenerator(),
+	m_id(0)
+{
+}
+
+Rendering::Particles::BasicIdGenerator::~BasicIdGenerator()
+{
+}
+
+void Rendering::Particles::BasicIdGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+	for (size_t i = startId; i < endId; ++i)
+	{
+		Set(particleContainer, i, ++m_id);
+	}
+}
+/* ==================== class BasicIdGenerator end ==================== */

@@ -218,9 +218,14 @@ namespace Rendering
 		public:
 			RENDERING_API ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive);
 			RENDERING_API virtual ~ParticleTexture(void);
-		private:
-			ParticleTexture(const ParticleTexture& particleTexture);
-			void operator=(const ParticleTexture& particleTexture);
+			/// <summary> Particle texture copy constructor. </summary>
+			ParticleTexture(const ParticleTexture& particleTexture) = delete;
+			/// <summary> Particle texture move constructor. </summary>
+			RENDERING_API ParticleTexture(ParticleTexture&& particleTexture);
+			/// <summary> Particle texture copy assignment operator. </summary>
+			ParticleTexture& operator=(const ParticleTexture& particleTexture) = delete;
+			/// <summary> Particle texture move assignment operator. </summary>
+			ParticleTexture& operator=(ParticleTexture&& particleTexture) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

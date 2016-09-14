@@ -180,13 +180,13 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			BasicVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ);
-			virtual ~BasicVelocityGenerator();
+			RENDERING_API BasicVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ);
+			RENDERING_API virtual ~BasicVelocityGenerator();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -200,6 +200,121 @@ namespace Rendering
 			const Math::Random::RandomGenerator& m_randomGenerator;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BasicVelocityGenerator */
+
+		/// <summary>
+		/// Generates life span limit for the particle.
+		/// </summary>
+		class LifeSpanLimitGenerator : public ParticlePropertyGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			LifeSpanLimitGenerator()
+			{
+			}
+			virtual ~LifeSpanLimitGenerator()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			inline void Set(ParticlesContainer* particleContainer, size_t i, Math::Real lifeSpanLimit)
+			{
+				particleContainer->SetLifeSpanLimit(i, lifeSpanLimit);
+				particleContainer->SetLifeSpan(i, REAL_ZERO);
+			}
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class LifeSpanLimitGenerator */
+
+		/// <summary>
+		/// Generates random life span limit from a given range and sets it in the particle.
+		/// </summary>
+		class BasicLifeSpanLimitGenerator : public LifeSpanLimitGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API BasicLifeSpanLimitGenerator(Math::Real minLifeSpanLimit, Math::Real maxLifeSpanLimit);
+			RENDERING_API virtual ~BasicLifeSpanLimitGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Real m_minLifeSpanLimit;
+			Math::Real m_maxLifeSpanLimit;
+			const Math::Random::RandomGenerator& m_randomGenerator;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class BasicLifeSpanLimitGenerator */
+
+		/// <summary>
+		/// Generates ID generator for the particle.
+		/// </summary>
+		class IdGenerator : public ParticlePropertyGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			IdGenerator()
+			{
+			}
+			virtual ~IdGenerator()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			inline void Set(ParticlesContainer* particleContainer, size_t i, int ID)
+			{
+				particleContainer->SetID(i, ID);
+			}
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class IdGenerator */
+
+		/// <summary>
+		/// Generates ID and sets it in the particle.
+		/// </summary>
+		class BasicIdGenerator : public IdGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API BasicIdGenerator();
+			RENDERING_API virtual ~BasicIdGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			int m_id;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class BasicIdGenerator */
 	} /* end namespace Particles */
 } /* end namespace Rendering */
 

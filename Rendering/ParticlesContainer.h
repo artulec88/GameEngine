@@ -31,7 +31,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			explicit ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask = Attributes::POSITION | Attributes::VELOCITY);
+			explicit ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask = Attributes::POSITION | Attributes::VELOCITY | Attributes::LIFE_SPAN);
 			~ParticlesContainer();
 
 			/// <summary> Particles container copy constructor. </summary>
@@ -66,6 +66,7 @@ namespace Rendering
 			inline void SetLifeSpan(size_t i, Math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }
 			inline void SetRotation(size_t i, const Math::Angle& newRotation) { m_rotations[i] = newRotation; }
 			inline void SetScale(size_t i, Math::Real newScale) { m_scales[i] = newScale; }
+			inline void SetID(size_t i, int ID) { m_IDs[i] = ID; }
 			inline void IncreasePosition(size_t i, const Math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
 			inline void IncreaseVelocity(size_t i, const Math::Vector3D& velocityIncrease) { m_velocities[i] += velocityIncrease; }
 			inline void IncreaseAcceleration(size_t i, const Math::Vector3D& accelerationIncrease) { m_accelerations[i] += accelerationIncrease; }
@@ -78,6 +79,7 @@ namespace Rendering
 			void Revive(size_t id);
 			void SwapData(size_t a, size_t b);
 			Math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
+			std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -91,6 +93,7 @@ namespace Rendering
 			std::unique_ptr<Math::Angle[]> m_rotations;
 			std::unique_ptr<Math::Real[]>  m_scales;
 			std::unique_ptr<Math::Vector2D[]> m_textureOffsets;
+			std::unique_ptr<int[]> m_IDs;
 
 			size_t m_count;
 			size_t m_countAlive;

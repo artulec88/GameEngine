@@ -25,7 +25,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API explicit ParticlesSystem(size_t maxCount/*, const ParticleTexture& particleTexture*/);
+			RENDERING_API explicit ParticlesSystem(size_t maxCount, const ParticleTexture& particleTexture);
 			RENDERING_API ~ParticlesSystem();
 
 			/// <summary> Particles system copy constructor. </summary>
@@ -42,11 +42,15 @@ namespace Rendering
 		public:
 			RENDERING_API void Update(Math::Real deltaTime);
 			RENDERING_API void Reset();
-			//RENDERING_API const ParticleTexture& GetTexture() const { return m_texture; }
+			RENDERING_API const ParticleTexture& GetTexture() const { return m_texture; }
 			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetCount(); }
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
 			RENDERING_API void AddUpdater(ParticlesUpdater* updater) { m_updaters.push_back(updater); }
+			const Math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
+			const Math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
+			Math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
+			Math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -55,7 +59,7 @@ namespace Rendering
 			ParticlesContainer m_particles;
 			std::vector<ParticlesEmitter> m_emitters;
 			std::vector<ParticlesUpdater*> m_updaters;
-			//const ParticleTexture& m_texture;
+			const ParticleTexture& m_texture;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystem */
 	} /* end namespace Particles */
