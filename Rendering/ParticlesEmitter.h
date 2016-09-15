@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 #include "ParticlesContainer.h"
-#include "ParticlePropertyGenerator.h"
+#include "ParticleAttributeGenerator.h"
 
 #include "Math\Math.h"
 
@@ -50,7 +50,7 @@ namespace Rendering
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			RENDERING_API void Emit(Math::Real deltaTime, ParticlesContainer* particleContainer);
-			RENDERING_API void AddGenerator(ParticlePropertyGenerator* particlePropertyGenerator) { m_generators.push_back(particlePropertyGenerator); }
+			RENDERING_API void AddGenerator(ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -63,7 +63,7 @@ namespace Rendering
 			/// The time in seconds that needs to pass for the one particle to be generated.
 			/// </summary>
 			Math::Real m_timeToEmitOneParticle;
-			std::vector<ParticlePropertyGenerator*> m_generators;
+			std::vector<ParticleAttributeGenerator*> m_generators;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesEmitter */
 	} /* end namespace Particles */

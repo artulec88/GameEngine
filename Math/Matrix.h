@@ -131,6 +131,7 @@ namespace Math
 		MATH_API Matrix4D operator*(const Matrix4D& m) const;
 		MATH_API Vector3D operator*(const Vector3D& vec) const;
 		MATH_API Vector4D operator*(const Vector4D& vec) const;
+		//MATH_API Matrix4D& operator*=(const Matrix4D& m) const; // TODO: Implement
 		MATH_API bool operator==(const Matrix4D& m) const;
 		MATH_API bool operator!=(const Matrix4D& m) const;
 

@@ -16,28 +16,33 @@ namespace Rendering
 		{
 			enum Attribute
 			{
-				POSITION = 1 >> 0,
-				VELOCITY = 1 >> 1,
-				ACCELERATION = 1 >> 2,
-				GRAVITY_EFFECT_FACTOR = 1 >> 3,
-				LIFE_SPAN = 1 >> 4,
-				ROTATION = 1 >> 5,
-				SCALE = 1 >> 6,
-				TEXTURE_OFFSET = 1 >> 7,
-				COLOR = 1 >> 8,
-				MASS = 1 >> 9,
-				ALIVE = 1 >> 10,
-				ID = 1 >> 11,
+				POSITION = 1,
+				VELOCITY = 1 << 1,
+				ACCELERATION = 1 << 2,
+				GRAVITY_EFFECT_FACTOR = 1 << 3,
+				LIFE_SPAN = 1 << 4,
+				ROTATION = 1 << 5,
+				SCALE = 1 << 6,
+				TEXTURE_OFFSET = 1 << 7,
+				COLOR = 1 << 8,
+				MASS = 1 << 9,
+				ALIVE = 1 << 10,
+				ID = 1 << 11,
+				//VISIBLE = 1 << 12,
+				//ELASTICITY or BOUNCE_FACTOR
 			}; /* end enum Attribute */
 
 			class AttributesMask
 			{
 				/* ==================== Static variables and functions begin ==================== */
+			private:
+				/// <summary> The number of possible particle attributes. </summary>
+				static constexpr int COUNT = 12;
 				/* ==================== Static variables and functions end ==================== */
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				AttributesMask(int attributesMask) :
+				constexpr AttributesMask(int attributesMask) :
 					m_attributesMask(attributesMask)
 				{
 				}
@@ -45,6 +50,11 @@ namespace Rendering
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
+				inline constexpr bool IsAttributeEnabled(Attribute attribute) const
+				{
+					return ((m_attributesMask & attribute) == attribute);
+				}
+
 				/// <summary>
 				/// Performs bitwise AND operation on two possible particle attributes.
 				/// </summary>

@@ -3,6 +3,7 @@
 
 #include "Rendering.h"
 #include "ParticleAttributes.h"
+#include "Color.h"
 
 #include "Math\Vector.h"
 #include "Math\Angle.h"
@@ -31,7 +32,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			explicit ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask = Attributes::POSITION | Attributes::VELOCITY | Attributes::LIFE_SPAN);
+			explicit ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask);
 			~ParticlesContainer();
 
 			/// <summary> Particles container copy constructor. </summary>
@@ -59,12 +60,16 @@ namespace Rendering
 			inline const Math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
 			inline Math::Real GetScale(size_t i) const { return m_scales[i]; }
 			inline void SetPosition(size_t i, const Math::Vector3D& newPosition) { m_positions[i] = newPosition; }
+			inline void SetPosition(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_positions[i].Set(x, y, z); }
 			inline void SetVelocity(size_t i, const Math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
+			inline void SetVelocity(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_velocities[i].Set(x, y, z); }
 			inline void SetAcceleration(size_t i, const Math::Vector3D& newAcceleration) { m_accelerations[i] = newAcceleration; }
+			inline void SetAcceleration(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_accelerations[i].Set(x, y, z); }
 			inline void SetGravityEffectFactor(size_t i, Math::Real newGravityEffectFactor) { m_gravityEffectFactors[i] = newGravityEffectFactor; }
 			inline void SetLifeSpanLimit(size_t i, Math::Real newLifeSpanLimit) { m_lifeSpanLimits[i] = newLifeSpanLimit; }
 			inline void SetLifeSpan(size_t i, Math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }
 			inline void SetRotation(size_t i, const Math::Angle& newRotation) { m_rotations[i] = newRotation; }
+			inline void SetRotation(size_t i, Math::Real angle, Math::Unit::UnitType angleUnit = Math::Unit::RADIAN) { m_rotations[i].Set(angle, angleUnit); }
 			inline void SetScale(size_t i, Math::Real newScale) { m_scales[i] = newScale; }
 			inline void SetID(size_t i, int ID) { m_IDs[i] = ID; }
 			inline void IncreasePosition(size_t i, const Math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
@@ -79,11 +84,13 @@ namespace Rendering
 			void Revive(size_t id);
 			void SwapData(size_t a, size_t b);
 			Math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
+			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
 			std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
+			Attributes::AttributesMask m_attributesMask;
 			std::unique_ptr<Math::Vector3D[]> m_positions;
 			std::unique_ptr<Math::Vector3D[]> m_velocities;
 			std::unique_ptr<Math::Vector3D[]> m_accelerations;
@@ -93,6 +100,9 @@ namespace Rendering
 			std::unique_ptr<Math::Angle[]> m_rotations;
 			std::unique_ptr<Math::Real[]>  m_scales;
 			std::unique_ptr<Math::Vector2D[]> m_textureOffsets;
+			std::unique_ptr<Color[]> m_colors;
+			std::unique_ptr<Math::Real[]> m_masses;
+			std::unique_ptr<bool[]> m_aliveFlags;
 			std::unique_ptr<int[]> m_IDs;
 
 			size_t m_count;

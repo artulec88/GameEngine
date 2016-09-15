@@ -409,7 +409,7 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
 	//CHECK_CONDITION_ALWAYS_RENDERING(particlesCount <= particles.size(), Utility::ERR,
 	//	"The number of alive particles (", particlesCount, ") exceeds the size of the specified vector of particles (", particles.size(), ")");
-	if (particlesSystem.GetAliveParticlesCount() <= 0)
+	if (particlesSystem.GetAliveParticlesCount() <= 0 || !particlesSystem.IsAttributeEnabled(Particles::Attributes::POSITION))
 	{
 		return;
 	}
@@ -445,8 +445,22 @@ void Rendering::Renderer::RenderParticles(const Shader& particleShader, const Pa
 		modelMatrix.SetElement(2, 1, cameraViewMatrix.GetElement(1, 2));
 		modelMatrix.SetElement(2, 2, cameraViewMatrix.GetElement(2, 2));
 
-		Math::Quaternion particleRotation(Math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i));
-		modelMatrix = modelMatrix * particleRotation.ToRotationMatrix() * Math::Matrix4D(particlesSystem.GetScale(i));
+		if (particlesSystem.IsAttributeEnabled(Particles::Attributes::ROTATION))
+		{
+			Math::Matrix4D particleRotation(Math::Quaternion(Math::Vector3D(0.0f, 0.0f, 1.0f), particlesSystem.GetRotation(i)).ToRotationMatrix());
+			if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !Math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
+			{
+				modelMatrix = modelMatrix * particleRotation * Math::Matrix4D(particlesSystem.GetScale(i));
+			}
+			else
+			{
+				modelMatrix = modelMatrix * particleRotation;
+			}
+		}
+		else if (particlesSystem.IsAttributeEnabled(Particles::Attributes::SCALE) && !Math::AlmostEqual(particlesSystem.GetScale(i), REAL_ONE))
+		{
+			modelMatrix = modelMatrix * Math::Matrix4D(particlesSystem.GetScale(i));
+		}
 
 		Math::Matrix4D mvpMatrix = m_currentCamera->GetViewProjection() * modelMatrix;
 		m_particleInstanceVboData.push_back(mvpMatrix.GetElement(0, 0));

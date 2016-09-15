@@ -18,7 +18,7 @@
 
 #include "Rendering\Color.h"
 #include "Rendering\Camera.h"
-#include "Rendering\ParticlePropertyGenerator.h"
+#include "Rendering\ParticleAttributeGenerator.h"
 #include "Rendering\ParticlesEmitter.h"
 #include "Rendering\ParticlesUpdater.h"
 
@@ -521,26 +521,22 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 {
 	Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
-	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(1000, *particleTexture);
-	Rendering::Particles::ParticlesEmitter emitter(500);
-	emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
-	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(80.0f, 100.0f, -12.0f, -4.0f, 72.0f, 98.0f));
-	emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(0.0f, 0.0001f, 0.0f, 0.0001f, 0.0f, 0.0001f));
-	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(1.1f, 1.4f));
+	Rendering::Particles::Attributes::AttributesMask attributesMask = Rendering::Particles::Attributes::POSITION |
+		Rendering::Particles::Attributes::VELOCITY | Rendering::Particles::Attributes::LIFE_SPAN | Rendering::Particles::Attributes::ROTATION;
+	DEBUG_LOG_GAME("Attributes mask = ", attributesMask.m_attributesMask);
+	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10000, attributesMask, *particleTexture);
+	Rendering::Particles::ParticlesEmitter emitter(1);
+	//emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
+	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
+	emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(0.0f, 0.0001f, 0.0f, 0.0001f, 0.0f, 22.1f));
+	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(33.0f, 33.5f));
+	emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(90.0f)));
 	system->AddEmitter(emitter);
 
-	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.1f));
+	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
 	Rendering::Particles::ParticlesUpdater* updater2 = new Rendering::Particles::LifeSpanParticlesUpdater();
 	system->AddUpdater(updater1);
 	system->AddUpdater(updater2);
-
-	Utility::Timing::Timer timer;
-	for (unsigned int i = 0; i < 10; ++i)
-	{
-		timer.Start();
-		system->Update(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE).NextFloat(0.001f, 0.004f));
-		timer.Stop();
-	}
 	return system;
 }
 

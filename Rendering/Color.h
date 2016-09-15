@@ -249,6 +249,7 @@ namespace Rendering
 
 		RENDERING_API const Math::Vector4D& GetValues() const { return m_values; }
 
+		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha) { m_values.Set(red, green, blue, alpha); }
 		RENDERING_API void SetRed(Math::Real red) { m_values.SetX(red); }
 		RENDERING_API void SetGreen(Math::Real green) { m_values.SetY(green); }
 		RENDERING_API void SetBlue(Math::Real blue) { m_values.SetZ(blue); }

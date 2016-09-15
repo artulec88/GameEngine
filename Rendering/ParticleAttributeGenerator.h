@@ -3,37 +3,44 @@
 
 #include "Rendering.h"
 #include "ParticlesContainer.h"
+#include "ParticleAttributes.h"
 
 #include "Math\RandomGenerator.h"
 #include "Math\AABB.h"
 #include "Math\Ellipsoid.h"
+#include "Math\Plane.h"
 
 namespace Rendering
 {
 	namespace Particles
 	{
 		/// <summary>
-		/// Particle property generator. Particles property generator can generate one or more different attributes for a particle.
+		/// Particle attribute generator. Particles attributes generator can generate one or more different attributes for a particle.
 		/// A generator just takes a range of particles and sets new values for some specific attributes of the particles.
 		/// </summary>
-		class ParticlePropertyGenerator
+		class ParticleAttributeGenerator
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			ParticlePropertyGenerator();
-			virtual ~ParticlePropertyGenerator();
+			ParticleAttributeGenerator(Attributes::AttributesMask attributesMask) :
+				m_attributesMask(attributesMask)
+			{
+			}
+			virtual ~ParticleAttributeGenerator()
+			{
+			}
 
 			///// <summary> Particle generator copy constructor. </summary>
-			//ParticlePropertyGenerator(const ParticlePropertyGenerator& particlePropertyGenerator) = delete;
+			//ParticleAttributeGenerator(const ParticleAttributeGenerator& particleAttributeGenerator) = delete;
 			///// <summary> Particle generator move constructor. </summary>
-			//ParticlePropertyGenerator(ParticlePropertyGenerator&& particlePropertyGenerator) = delete;
+			//ParticleAttributeGenerator(ParticleAttributeGenerator&& particleAttributeGenerator) = delete;
 			///// <summary> Particle generator copy assignment operator. </summary>
-			//ParticlePropertyGenerator& operator=(const ParticlePropertyGenerator& particlePropertyGenerator) = delete;
+			//ParticleAttributeGenerator& operator=(const ParticleAttributeGenerator& particleAttributeGenerator) = delete;
 			///// <summary> Particle generator move assignment operator. </summary>
-			//ParticlePropertyGenerator& operator=(ParticlePropertyGenerator&& particlePropertyGenerator) = delete;
+			//ParticleAttributeGenerator& operator=(ParticleAttributeGenerator&& particleAttributeGenerator) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -43,20 +50,22 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
+			Attributes::AttributesMask m_attributesMask;
 			/* ==================== Non-static member variables end ==================== */
-		}; /* end class ParticlePropertyGenerator */
+		}; /* end class ParticleAttributeGenerator */
 
 		/// <summary>
 		/// Generates position for the particle.
 		/// </summary>
-		class PositionGenerator : public ParticlePropertyGenerator
+		class PositionGenerator : public ParticleAttributeGenerator
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			PositionGenerator()
+			PositionGenerator() :
+				ParticleAttributeGenerator(Attributes::POSITION)
 			{
 			}
 			virtual ~PositionGenerator()
@@ -66,9 +75,13 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		protected:
-			void Set(ParticlesContainer* particleContainer, size_t i, const Math::Vector3D& position)
+			inline void Set(ParticlesContainer* particlesContainer, size_t i, const Math::Vector3D& position)
 			{
-				particleContainer->SetPosition(i, position);
+				particlesContainer->SetPosition(i, position);
+			}
+			inline void Set(ParticlesContainer* particlesContainer, size_t i, Math::Real x, Math::Real y, Math::Real z)
+			{
+				particlesContainer->SetPosition(i, x, y, z);
 			}
 			/* ==================== Non-static member functions end ==================== */
 
@@ -76,6 +89,58 @@ namespace Rendering
 		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class PositionGenerator */
+
+		/// <summary>
+		/// Generates position for the particle. The generated position is specified as the member variable.
+		/// Thus, in general there is no randomness in how positions are generated.
+		/// </summary>
+		class ConstantPositionGenerator : public PositionGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API ConstantPositionGenerator(const Math::Vector3D& position);
+			RENDERING_API virtual ~ConstantPositionGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Vector3D m_position;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ConstantPositionGenerator */
+
+		/// <summary>
+		/// Generates position for the particle. The position is chosen randomly from the given plane.
+		/// </summary>
+		class PlanePositionGenerator : public PositionGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API PlanePositionGenerator(const Math::Plane& plane);
+			RENDERING_API virtual ~PlanePositionGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Plane m_plane;
+			const Math::Random::RandomGenerator& m_randomGenerator;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class PlanePositionGenerator */
 
 		/// <summary>
 		/// Generates position for the particle. The position is chosen randomly from the given AABB.
@@ -88,6 +153,7 @@ namespace Rendering
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API BoxPositionGenerator(const Math::AABB& aabb);
+			RENDERING_API BoxPositionGenerator(const Math::Vector3D& centerPoint, Math::Real xOffset, Math::Real yOffset, Math::Real zOffset);
 			RENDERING_API BoxPositionGenerator(Math::Real minX, Math::Real maxX, Math::Real minY, Math::Real maxY, Math::Real minZ, Math::Real maxZ);
 			RENDERING_API virtual ~BoxPositionGenerator();
 			/* ==================== Constructors and destructors end ==================== */
@@ -142,14 +208,15 @@ namespace Rendering
 		/// <summary>
 		/// Generates velocity for the particle.
 		/// </summary>
-		class VelocityGenerator : public ParticlePropertyGenerator
+		class VelocityGenerator : public ParticleAttributeGenerator
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			VelocityGenerator()
+			VelocityGenerator() :
+				ParticleAttributeGenerator(Attributes::VELOCITY)
 			{
 			}
 			virtual ~VelocityGenerator()
@@ -204,14 +271,15 @@ namespace Rendering
 		/// <summary>
 		/// Generates life span limit for the particle.
 		/// </summary>
-		class LifeSpanLimitGenerator : public ParticlePropertyGenerator
+		class LifeSpanLimitGenerator : public ParticleAttributeGenerator
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			LifeSpanLimitGenerator()
+			LifeSpanLimitGenerator() :
+				ParticleAttributeGenerator(Attributes::LIFE_SPAN)
 			{
 			}
 			virtual ~LifeSpanLimitGenerator()
@@ -261,16 +329,76 @@ namespace Rendering
 		}; /* end class BasicLifeSpanLimitGenerator */
 
 		/// <summary>
-		/// Generates ID generator for the particle.
+		/// Generates rotation for the particle.
 		/// </summary>
-		class IdGenerator : public ParticlePropertyGenerator
+		class RotationGenerator : public ParticleAttributeGenerator
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			IdGenerator()
+			RotationGenerator() :
+				ParticleAttributeGenerator(Attributes::ROTATION)
+			{
+			}
+			virtual ~RotationGenerator()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			inline void Set(ParticlesContainer* particleContainer, size_t i, const Math::Angle& rotationAngle)
+			{
+				particleContainer->SetRotation(i, rotationAngle);
+			}
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class RotationGenerator */
+
+		/// <summary>
+		/// Generates random rotation from a given range of angles and sets it in the particle.
+		/// </summary>
+		class RandomRotationGenerator : public RotationGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API RandomRotationGenerator(const Math::Angle& minAngle, const Math::Angle& maxAngle);
+			RENDERING_API virtual ~RandomRotationGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Real m_minAngleInRadians;
+			Math::Real m_maxAngleInRadians;
+			const Math::Random::RandomGenerator& m_randomGenerator;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class RandomRotationGenerator */
+
+		/// <summary>
+		/// Generates ID generator for the particle.
+		/// </summary>
+		class IdGenerator : public ParticleAttributeGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			IdGenerator() :
+				ParticleAttributeGenerator(Attributes::ID)
 			{
 			}
 			virtual ~IdGenerator()

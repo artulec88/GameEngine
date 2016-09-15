@@ -4,9 +4,9 @@
 
 #include "Utility\ILogger.h"
 
-Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, const ParticleTexture& particleTexture) :
+Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, const ParticleTexture& particleTexture) :
 	m_count(maxCount),
-	m_particles(maxCount),
+	m_particles(maxCount, attributesMask),
 	m_emitters(),
 	m_updaters(),
 	m_texture(particleTexture)

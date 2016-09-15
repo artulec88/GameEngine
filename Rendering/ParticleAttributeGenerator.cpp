@@ -1,24 +1,64 @@
 #include "stdafx.h"
-#include "ParticlePropertyGenerator.h"
+#include "ParticleAttributeGenerator.h"
 
 #include "Math\RandomGeneratorFactory.h"
 
-/* ==================== class ParticlePropertyGenerator begin ==================== */
-Rendering::Particles::ParticlePropertyGenerator::ParticlePropertyGenerator()
+#include "Utility"
+
+/* ==================== class ConstantPositionGenerator begin ==================== */
+Rendering::Particles::ConstantPositionGenerator::ConstantPositionGenerator(const Math::Vector3D& position) :
+	PositionGenerator(),
+	m_position(position)
 {
 }
 
-
-Rendering::Particles::ParticlePropertyGenerator::~ParticlePropertyGenerator()
+Rendering::Particles::ConstantPositionGenerator::~ConstantPositionGenerator()
 {
 }
-/* ==================== class ParticlePropertyGenerator end ==================== */
+
+void Rendering::Particles::ConstantPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+	for (size_t i = startId; i < endId; ++i)
+	{
+		Set(particleContainer, i, m_position);
+	}
+}
+/* ==================== class ConstantPositionGenerator end ==================== */
+
+/* ==================== class PlanePositionGenerator begin ==================== */
+Rendering::Particles::PlanePositionGenerator::PlanePositionGenerator(const Math::Plane& plane) :
+	PositionGenerator(),
+	m_plane(plane),
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+{
+}
+
+Rendering::Particles::PlanePositionGenerator::~PlanePositionGenerator()
+{
+}
+
+void Rendering::Particles::PlanePositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+
+	//for (size_t i = startId; i < endId; ++i)
+	//{
+	//	Set(particleContainer, i, GenerateRandomPosition());
+	//}
+}
+/* ==================== class PlanePositionGenerator end ==================== */
 
 /* ==================== class BoxPositionGenerator begin ==================== */
 Rendering::Particles::BoxPositionGenerator::BoxPositionGenerator(const Math::AABB& aabb) :
 	BoxPositionGenerator(aabb.GetBottomLeftPos().GetX(), aabb.GetTopRightPos().GetX(),
 		aabb.GetBottomLeftPos().GetY(), aabb.GetTopRightPos().GetY(),
 		aabb.GetBottomLeftPos().GetZ(), aabb.GetTopRightPos().GetZ())
+{
+}
+
+Rendering::Particles::BoxPositionGenerator::BoxPositionGenerator(const Math::Vector3D& centerPosition, Math::Real xOffset, Math::Real yOffset, Math::Real zOffset) :
+	BoxPositionGenerator(centerPosition.GetX() - xOffset, centerPosition.GetX() + xOffset,
+		centerPosition.GetY() - yOffset, centerPosition.GetY() + yOffset,
+		centerPosition.GetZ() - zOffset, centerPosition.GetZ() + zOffset)
 {
 }
 
@@ -130,6 +170,28 @@ void Rendering::Particles::BasicLifeSpanLimitGenerator::Generate(Math::Real delt
 	}
 }
 /* ==================== class BasicLifeSpanLimitGenerator end ==================== */
+
+/* ==================== class RandomRotationGenerator begin ==================== */
+Rendering::Particles::RandomRotationGenerator::RandomRotationGenerator(const Math::Angle& minAngle, const Math::Angle& maxAngle) :
+	RotationGenerator(),
+	m_minAngleInRadians(minAngle.Get()),
+	m_maxAngleInRadians(maxAngle.Get()),
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+{
+}
+
+Rendering::Particles::RandomRotationGenerator::~RandomRotationGenerator()
+{
+}
+
+void Rendering::Particles::RandomRotationGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+{
+	for (size_t i = startId; i < endId; ++i)
+	{
+		Set(particleContainer, i, Math::Angle(m_randomGenerator.NextFloat(m_minAngleInRadians, m_maxAngleInRadians), Math::Unit::RADIAN));
+	}
+}
+/* ==================== class RandomRotationGenerator end ==================== */
 
 /* ==================== class BasicIdGenerator begin ==================== */
 Rendering::Particles::BasicIdGenerator::BasicIdGenerator() :

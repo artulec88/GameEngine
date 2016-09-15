@@ -25,7 +25,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API explicit ParticlesSystem(size_t maxCount, const ParticleTexture& particleTexture);
+			RENDERING_API ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, const ParticleTexture& particleTexture);
 			RENDERING_API ~ParticlesSystem();
 
 			/// <summary> Particles system copy constructor. </summary>
@@ -51,6 +51,7 @@ namespace Rendering
 			const Math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
 			Math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
 			Math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
+			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_particles.IsAttributeEnabled(attribute); }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

@@ -25,10 +25,18 @@ Rendering::Particles::EulerParticlesUpdater::~EulerParticlesUpdater()
 
 void Rendering::Particles::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
+	//for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	//{
+	//	particlesContainer->IncreaseAcceleration(i, m_acceleration);
+	//}
+
+	//for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	//{
+	//	particlesContainer->IncreaseVelocity(i, particlesContainer->GetAcceleration(i) * deltaTime);
+	//}
+
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
-		particlesContainer->IncreaseAcceleration(i, m_acceleration);
-		particlesContainer->IncreaseVelocity(i, particlesContainer->GetAcceleration(i) * deltaTime);
 		particlesContainer->IncreasePosition(i, particlesContainer->GetVelocity(i) * deltaTime);
 	}
 }

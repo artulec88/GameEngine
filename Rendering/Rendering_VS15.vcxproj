@@ -196,7 +196,7 @@
     <ClInclude Include="ParticleAttributes.h" />
     <ClInclude Include="ParticlesContainer.h" />
     <ClInclude Include="ParticlesEmitter.h" />
-    <ClInclude Include="ParticlePropertyGenerator.h" />
+    <ClInclude Include="ParticleAttributeGenerator.h" />
     <ClInclude Include="ParticlesUpdater.h" />
     <ClInclude Include="ParticlesSystem.h" />
     <ClInclude Include="PointLight.h" />
@@ -247,7 +247,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticlesContainer.cpp" />
     <ClCompile Include="ParticlesEmitter.cpp" />
-    <ClCompile Include="ParticlePropertyGenerator.cpp" />
+    <ClCompile Include="ParticleAttributeGenerator.cpp" />
     <ClCompile Include="ParticlesUpdater.cpp" />
     <ClCompile Include="ParticlesSystem.cpp" />
     <ClCompile Include="PointLight.cpp" />
