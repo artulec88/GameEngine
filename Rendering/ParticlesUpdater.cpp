@@ -25,15 +25,15 @@ Rendering::Particles::EulerParticlesUpdater::~EulerParticlesUpdater()
 
 void Rendering::Particles::EulerParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
 {
-	//for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
-	//{
-	//	particlesContainer->IncreaseAcceleration(i, m_acceleration);
-	//}
+	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	{
+		particlesContainer->IncreaseAcceleration(i, m_acceleration);
+	}
 
-	//for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
-	//{
-	//	particlesContainer->IncreaseVelocity(i, particlesContainer->GetAcceleration(i) * deltaTime);
-	//}
+	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	{
+		particlesContainer->IncreaseVelocity(i, particlesContainer->GetAcceleration(i) * deltaTime);
+	}
 
 	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
 	{
@@ -84,3 +84,24 @@ void Rendering::Particles::RotationParticlesUpdater::Update(Math::Real deltaTime
 	}
 }
 /* ==================== class RotationParticlesUpdater end ==================== */
+
+/* ==================== class ScaleEffectParticlesUpdater begin ==================== */
+Rendering::Particles::ScaleEffectParticlesUpdater::ScaleEffectParticlesUpdater(Math::Effects::Effect<Math::Real>* effect) :
+	ParticlesUpdater(),
+	m_effect(effect)
+{
+}
+
+Rendering::Particles::ScaleEffectParticlesUpdater::~ScaleEffectParticlesUpdater()
+{
+}
+
+void Rendering::Particles::ScaleEffectParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+{
+	m_effect->Update(deltaTime);
+	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	{
+		m_effect->Apply(particlesContainer->GetScalePtr(i));
+	}
+}
+/* ==================== class ScaleEffectParticlesUpdater end ==================== */

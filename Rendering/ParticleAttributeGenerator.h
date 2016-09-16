@@ -101,6 +101,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			RENDERING_API ConstantPositionGenerator(Math::Real xPos, Math::Real yPos, Math::Real zPos);
 			RENDERING_API ConstantPositionGenerator(const Math::Vector3D& position);
 			RENDERING_API virtual ~ConstantPositionGenerator();
 			/* ==================== Constructors and destructors end ==================== */
@@ -269,6 +270,95 @@ namespace Rendering
 		}; /* end class BasicVelocityGenerator */
 
 		/// <summary>
+		/// Generates acceleration for the particle.
+		/// </summary>
+		class AccelerationGenerator : public ParticleAttributeGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			AccelerationGenerator() :
+				ParticleAttributeGenerator(Attributes::ACCELERATION)
+			{
+			}
+			virtual ~AccelerationGenerator()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			void Set(ParticlesContainer* particleContainer, size_t i, const Math::Vector3D& acceleration)
+			{
+				particleContainer->SetAcceleration(i, acceleration);
+			}
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class AccelerationGenerator */
+
+		/// <summary>
+		/// Generates constant acceleration and sets it in the particle.
+		/// </summary>
+		class ConstantAccelerationGenerator : public AccelerationGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API ConstantAccelerationGenerator(Math::Real accelerationX, Math::Real accelerationY, Math::Real accelerationZ);
+			RENDERING_API ConstantAccelerationGenerator(const Math::Vector3D& acceleration);
+			RENDERING_API virtual ~ConstantAccelerationGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Vector3D m_acceleration;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ConstantAccelerationGenerator */
+
+		/// <summary>
+		/// Generates random acceleration from a given range and sets it in the particle.
+		/// </summary>
+		class RandomAccelerationGenerator : public AccelerationGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API RandomAccelerationGenerator(Math::Real minAccelerationX, Math::Real maxAccelerationX, Math::Real minAccelerationY, Math::Real maxAccelerationY, Math::Real minAccelerationZ, Math::Real maxAccelerationZ);
+			RENDERING_API virtual ~RandomAccelerationGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Real m_minAccelerationX;
+			Math::Real m_maxAccelerationX;
+			Math::Real m_minAccelerationY;
+			Math::Real m_maxAccelerationY;
+			Math::Real m_minAccelerationZ;
+			Math::Real m_maxAccelerationZ;
+			const Math::Random::RandomGenerator& m_randomGenerator;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class RandomAccelerationGenerator */
+
+		/// <summary>
 		/// Generates life span limit for the particle.
 		/// </summary>
 		class LifeSpanLimitGenerator : public ParticleAttributeGenerator
@@ -388,7 +478,7 @@ namespace Rendering
 		}; /* end class RandomRotationGenerator */
 
 		/// <summary>
-		/// Generates ID generator for the particle.
+		/// Generates ID for the particle.
 		/// </summary>
 		class IdGenerator : public ParticleAttributeGenerator
 		{
@@ -443,6 +533,63 @@ namespace Rendering
 			int m_id;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BasicIdGenerator */
+
+		/// <summary>
+		/// Generates scale for the particle.
+		/// </summary>
+		class ScaleGenerator : public ParticleAttributeGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			ScaleGenerator() :
+				ParticleAttributeGenerator(Attributes::SCALE)
+			{
+			}
+			virtual ~ScaleGenerator()
+			{
+			}
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		protected:
+			inline void Set(ParticlesContainer* particleContainer, size_t i, Math::Real scale)
+			{
+				particleContainer->SetScale(i, scale);
+			}
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ScaleGenerator */
+
+		/// <summary>
+		/// Generates scale and sets it in the particle.
+		/// </summary>
+		class ConstantScaleGenerator : public ScaleGenerator
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API ConstantScaleGenerator(Math::Real scale);
+			RENDERING_API virtual ~ConstantScaleGenerator();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Real m_scale;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ConstantScaleGenerator */
 	} /* end namespace Particles */
 } /* end namespace Rendering */
 

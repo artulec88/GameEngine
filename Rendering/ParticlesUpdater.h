@@ -5,6 +5,7 @@
 #include "ParticlesContainer.h"
 
 #include "Math\Vector.h"
+#include "Math\Effect.h"
 
 namespace Rendering
 {
@@ -116,6 +117,28 @@ namespace Rendering
 			Math::Angle m_rotationSpeedAngle;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class RotationParticlesUpdater */
+
+		class ScaleEffectParticlesUpdater : public ParticlesUpdater
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API ScaleEffectParticlesUpdater(Math::Effects::Effect<Math::Real>* effect);
+			RENDERING_API virtual ~ScaleEffectParticlesUpdater();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Update(Math::Real deltaTime, ParticlesContainer* particlesContainer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Effects::Effect<Math::Real>* m_effect;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class ScaleEffectParticlesUpdater */
 	} /* end namespace Particles */
 } /* end namespace Rendering */
 

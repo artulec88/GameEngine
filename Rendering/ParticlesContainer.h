@@ -59,6 +59,7 @@ namespace Rendering
 			inline Math::Real GetLifeSpan(size_t i) const { return m_lifeSpans[i]; }
 			inline const Math::Angle& GetRotation(size_t i) const { return m_rotations[i]; }
 			inline Math::Real GetScale(size_t i) const { return m_scales[i]; }
+			inline Math::Real* GetScalePtr(size_t i) { return &m_scales[i]; }
 			inline void SetPosition(size_t i, const Math::Vector3D& newPosition) { m_positions[i] = newPosition; }
 			inline void SetPosition(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_positions[i].Set(x, y, z); }
 			inline void SetVelocity(size_t i, const Math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
