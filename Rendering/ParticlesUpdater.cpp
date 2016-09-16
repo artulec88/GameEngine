@@ -64,3 +64,23 @@ void Rendering::Particles::LifeSpanParticlesUpdater::Update(Math::Real deltaTime
 	}
 }
 /* ==================== class LifeSpanParticlesUpdater end ==================== */
+
+/* ==================== class RotationParticlesUpdater begin ==================== */
+Rendering::Particles::RotationParticlesUpdater::RotationParticlesUpdater(const Math::Angle& rotationSpeedAngle) :
+	ParticlesUpdater(),
+	m_rotationSpeedAngle(rotationSpeedAngle)
+{
+}
+
+Rendering::Particles::RotationParticlesUpdater::~RotationParticlesUpdater()
+{
+}
+
+void Rendering::Particles::RotationParticlesUpdater::Update(Math::Real deltaTime, ParticlesContainer* particlesContainer)
+{
+	for (size_t i = 0; i < particlesContainer->GetAliveCount(); ++i)
+	{
+		particlesContainer->IncreaseRotation(i, m_rotationSpeedAngle * deltaTime);
+	}
+}
+/* ==================== class RotationParticlesUpdater end ==================== */

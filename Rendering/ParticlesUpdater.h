@@ -94,6 +94,28 @@ namespace Rendering
 		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class LifeSpanParticlesUpdater */
+
+		class RotationParticlesUpdater : public ParticlesUpdater
+		{
+			/* ==================== Static variables and functions begin ==================== */
+			/* ==================== Static variables and functions end ==================== */
+
+			/* ==================== Constructors and destructors begin ==================== */
+		public:
+			RENDERING_API RotationParticlesUpdater(const Math::Angle& rotationSpeedAngle);
+			RENDERING_API virtual ~RotationParticlesUpdater();
+			/* ==================== Constructors and destructors end ==================== */
+
+			/* ==================== Non-static member functions begin ==================== */
+		public:
+			RENDERING_API virtual void Update(Math::Real deltaTime, ParticlesContainer* particlesContainer);
+			/* ==================== Non-static member functions end ==================== */
+
+			/* ==================== Non-static member variables begin ==================== */
+		private:
+			Math::Angle m_rotationSpeedAngle;
+			/* ==================== Non-static member variables end ==================== */
+		}; /* end class RotationParticlesUpdater */
 	} /* end namespace Particles */
 } /* end namespace Rendering */
 

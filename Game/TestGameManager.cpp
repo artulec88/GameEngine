@@ -530,13 +530,15 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 	emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
 	emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(0.0f, 0.0001f, 0.0f, 0.0001f, 0.0f, 22.1f));
 	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(33.0f, 33.5f));
-	emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(90.0f)));
+	emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(360.0f)));
 	system->AddEmitter(emitter);
 
-	Rendering::Particles::ParticlesUpdater* updater1 = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
-	Rendering::Particles::ParticlesUpdater* updater2 = new Rendering::Particles::LifeSpanParticlesUpdater();
-	system->AddUpdater(updater1);
-	system->AddUpdater(updater2);
+	Rendering::Particles::ParticlesUpdater* eulerUpdater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
+	Rendering::Particles::ParticlesUpdater* lifeSpanUpdater = new Rendering::Particles::LifeSpanParticlesUpdater();
+	Rendering::Particles::ParticlesUpdater* rotationUpdater = new Rendering::Particles::RotationParticlesUpdater(Math::Angle(90.0f, Math::Unit::DEGREE));
+	system->AddUpdater(eulerUpdater);
+	system->AddUpdater(lifeSpanUpdater);
+	system->AddUpdater(rotationUpdater);
 	return system;
 }
 
