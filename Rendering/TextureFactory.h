@@ -1,14 +1,14 @@
-#ifndef __ENGINE_TEXTURE_FACTORY_H__
-#define __ENGINE_TEXTURE_FACTORY_H__
+#ifndef __RENDERING_TEXTURE_FACTORY_H__
+#define __RENDERING_TEXTURE_FACTORY_H__
 
-#include "Engine.h"
-#include "Rendering\Texture.h"
+#include "Rendering.h"
+#include "Texture.h"
 
 #include "Utility\ILogger.h"
 
 #include <map>
 
-namespace Engine
+namespace Rendering
 {
 	/// <summary>
 	/// <code>Texture</code> factory.
@@ -22,10 +22,10 @@ namespace Engine
 	public:
 		/// <summary>The shader factory constructor.</summary>
 		/// <param name="texturesDirectory"> The textures directory. </param>
-		TextureFactory(const std::string& texturesDirectory);
+		RENDERING_API TextureFactory(const std::string& texturesDirectory);
 
 		/// <summary>The destructor.</summary>
-		~TextureFactory(void);
+		RENDERING_API ~TextureFactory(void);
 
 		/// <summary> Texture factory copy constructor. </summary>
 		TextureFactory(const TextureFactory& textureFactory) = delete;
@@ -39,10 +39,10 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName);
-		ENGINE_API Rendering::Texture* CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory);
-		ENGINE_API Rendering::Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive);
-		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
+		RENDERING_API const Texture* CreateTexture(int textureID, const std::string& textureFileName);
+		RENDERING_API const Texture* CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory);
+		RENDERING_API const Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive);
+		RENDERING_API inline const Texture* GetTexture(int textureID) const
 		{
 			auto textureItr = m_textureType2TextureMap.find(textureID);
 			if (textureItr == m_textureType2TextureMap.end())
@@ -68,15 +68,15 @@ namespace Engine
 		/// <summary>
 		/// The map storing all textures by their unique ID.
 		/// </summary>
-		std::map<int, Rendering::Texture> m_textureType2TextureMap;
+		std::map<int, Texture> m_textureType2TextureMap;
 
 		/// <summary>
 		/// The map storing all particle textures by their unique ID.
 		/// </summary>
-		std::map<int, Rendering::Particles::ParticleTexture> m_textureType2ParticleTextureMap;
+		std::map<int, Particles::ParticleTexture> m_textureType2ParticleTextureMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TextureFactory */
 
-} /* end namespace Engine */
+} /* end namespace Rendering */
 
-#endif /* __ENGINE_TEXTURE_FACTORY_H__ */
+#endif /* __RENDERING_TEXTURE_FACTORY_H__ */

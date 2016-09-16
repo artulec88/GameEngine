@@ -209,6 +209,8 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureFactory.h" />
+    <ClInclude Include="TextureIDs.h" />
     <ClInclude Include="Uniform.h" />
     <ClInclude Include="Word.h" />
   </ItemGroup>
@@ -265,6 +267,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="Word.cpp" />
   </ItemGroup>

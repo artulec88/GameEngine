@@ -1,7 +1,7 @@
 #ifndef __GAME_TEXTURE_IDS_H__
 #define __GAME_TEXTURE_IDS_H__
 
-#include "Engine\TextureIDs.h"
+#include "Rendering\TextureIDs.h"
 
 namespace Game
 {
@@ -9,7 +9,7 @@ namespace Game
 	{
 		enum TextureID
 		{
-			TERRAIN_DIFFUSE = Engine::TextureIDs::COUNT,
+			TERRAIN_DIFFUSE = Rendering::TextureIDs::COUNT,
 			TERRAIN_DIFFUSE_2,
 			TERRAIN_DIFFUSE_3,
 			TERRAIN_DIFFUSE_4,

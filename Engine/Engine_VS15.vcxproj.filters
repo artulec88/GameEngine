@@ -141,9 +141,6 @@
     <ClInclude Include="ShaderFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextureFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LightFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -151,9 +148,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameCommand.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParticlesSystemComponent.h">
@@ -261,9 +255,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ShaderFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LightFactory.cpp">

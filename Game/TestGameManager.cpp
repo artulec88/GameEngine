@@ -389,7 +389,7 @@ void Game::TestGameManager::Load()
 	testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
 	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0, m_textureFactory.CreateTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"), m_textureFactory.CreateTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	AddToSceneRoot(testMesh1);
 	//AddToSceneRoot(testMesh2);
 	testMesh1->AddChild(testMesh2);
@@ -413,7 +413,7 @@ void Game::TestGameManager::Load()
 		treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
 		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
-		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(treeNode);
 	}
@@ -430,7 +430,7 @@ void Game::TestGameManager::Load()
 		boulderNode->GetTransform().SetScale(0.01f);
 		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
 		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
-			new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+			new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 		//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 		AddToSceneRoot(boulderNode);
 	}
@@ -438,7 +438,7 @@ void Game::TestGameManager::Load()
 	Engine::GameNode* monkeyNode1 = new Engine::GameNode();
 	monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
 		new Rendering::Mesh("monkey3.obj"),
-		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::CHESSBOARD, "chessboard3.jpg"), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::CHESSBOARD, "chessboard3.jpg"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	//monkeyNode1->AddComponent(new Engine::LookAtComponent());
 	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
@@ -473,14 +473,14 @@ void Game::TestGameManager::Load()
 	AddWaterNode(waterNode);
 
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_1,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_2,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_3,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 
 	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
@@ -499,7 +499,7 @@ void Game::TestGameManager::Load()
 	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	playerNode->GetTransform().SetScale(0.0005f);
 	playerNode->CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Engine::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem();
@@ -519,7 +519,7 @@ void Game::TestGameManager::Load()
 
 Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem()  // TODO: temporary code. Remove in the future.
 {
-	Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
+	const Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
 		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
 	Rendering::Particles::Attributes::AttributesMask attributesMask = Rendering::Particles::Attributes::POSITION |
 		Rendering::Particles::Attributes::VELOCITY | Rendering::Particles::Attributes::LIFE_SPAN |

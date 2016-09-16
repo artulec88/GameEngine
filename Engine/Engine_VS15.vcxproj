@@ -197,8 +197,6 @@
     <ClInclude Include="SpotLightComponent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="GravityComponent.h" />
-    <ClInclude Include="TextureFactory.h" />
-    <ClInclude Include="TextureIDs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AABBColliderComponent.cpp" />
@@ -257,7 +255,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GravityComponent.cpp" />
-    <ClCompile Include="TextureFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
