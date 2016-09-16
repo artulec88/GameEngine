@@ -604,7 +604,7 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 		}
 		//emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
 		//emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
-		emitter.AddGenerator(new Rendering::Particles::ConstantPositionGenerator(50.0f, -1.0f, 60.0f));
+		emitter.AddGenerator(new Rendering::Particles::PositionGenerators::ConstantPositionGenerator(50.0f, -1.0f, 60.0f));
 		emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
 		emitter.AddGenerator(new Rendering::Particles::ConstantAccelerationGenerator(0.0f, -10.0f, 0.0f));
 		emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(3.0f, 4.5f));
