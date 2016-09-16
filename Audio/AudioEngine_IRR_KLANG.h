@@ -17,7 +17,7 @@ namespace Audio
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AUDIO_API explicit AudioEngine_IRR_KLANG(int maxChannelsCount);
+		AUDIO_API explicit AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount);
 		AUDIO_API ~AudioEngine_IRR_KLANG(void);
 	private:
 		AudioEngine_IRR_KLANG(const AudioEngine_IRR_KLANG& audioEngine);

@@ -2,7 +2,9 @@
 #define __AUDIO_AUDIO_ENGINE_FACTORY_H__
 
 #include "Audio.h"
+
 #include <memory>
+#include <string>
 
 namespace Audio
 {
@@ -25,7 +27,7 @@ namespace Audio
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AUDIO_API AudioEngineFactory();
+		AUDIO_API AudioEngineFactory(const std::string& audioDirectory);
 		AUDIO_API ~AudioEngineFactory(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -36,7 +38,7 @@ namespace Audio
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		//std::array<std::unique_ptr<IAudioEngine>, AudioEngineTypes::COUNT> audioEngines;
+		const std::string& m_audioDirectory;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioEngine */
 

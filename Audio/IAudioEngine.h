@@ -86,7 +86,8 @@ namespace Audio
 		/// <summary>
 		/// Audio engine constructor.
 		/// </summary>
-		AUDIO_API IAudioEngine();
+		/// <param name="audioDirectory"> The system directory where all sounds are located. </param>
+		AUDIO_API IAudioEngine(const std::string& audioDirectory);
 		/// <summary>
 		/// Audio engine destructor.
 		/// </summary>
@@ -162,7 +163,8 @@ namespace Audio
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
+	protected:
+		const std::string& m_audioDirectory;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class IAudioEngine */
 

@@ -138,7 +138,7 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	m_mainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::QUIT_GAME, "Quit", mainMenuFont,
 		mainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.85f), 0.5f, Rendering::Color(Rendering::ColorNames::RED), Rendering::Color(Rendering::ColorNames::GREEN), Math::Vector2D(0.005f, 0.005f), true));
 
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav");
+	m_gameManager->LoadSoundEffect("bounce.wav");
 
 	DeselectAll();
 	m_currentMenuEntry = m_mainMenuRootEntry.SelectChild(0); // TODO: Two assignments to the same variable. Fix that!
@@ -267,7 +267,7 @@ void Game::MenuGameState::SelectChild(size_t childIndex)
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_currentMenuEntry->GetParent()->GetSelectedChildIndex() != childIndex, Utility::Logging::DELOCUST,
 		"Trying to select the child which is already selected (", childIndex, ").");
 	m_currentMenuEntry = m_currentMenuEntry->GetParent()->SelectChild(childIndex);
-	Engine::CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(Engine::CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\bounce.wav", 1.0f, 1.0f);
+	m_gameManager->PlaySoundEffect("bounce.wav", 1.0f, 1.0f);
 	ERROR_LOG_GAME("Selected menu entry changed to ", childIndex);
 }
 

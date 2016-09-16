@@ -12,7 +12,7 @@ Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real 
 	m_jumpAcceleration(REAL_ZERO, jumpForce, REAL_ZERO),
 	m_isJumping(false)
 {
-	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(CoreEngine::GetCoreEngine()->GetAudioDirectory() + "\\Mario Jump.wav");
+	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect("Mario Jump.wav");
 }
 
 

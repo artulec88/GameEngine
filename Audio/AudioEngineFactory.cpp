@@ -5,7 +5,8 @@
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 
-Audio::AudioEngineFactory::AudioEngineFactory()
+Audio::AudioEngineFactory::AudioEngineFactory(const std::string& audioDirectory) :
+	m_audioDirectory(audioDirectory)
 {
 }
 
@@ -19,11 +20,11 @@ std::unique_ptr<Audio::IAudioEngine> Audio::AudioEngineFactory::CreateAudioEngin
 	switch (audioEngineType)
 	{
 	case AudioEngineTypes::FMOD:
-		return std::make_unique<AudioEngine_FMOD>(GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
+		return std::make_unique<AudioEngine_FMOD>(m_audioDirectory, GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
 	case AudioEngineTypes::IRR_KLANG:
-		return std::make_unique<AudioEngine_IRR_KLANG>(GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
+		return std::make_unique<AudioEngine_IRR_KLANG>(m_audioDirectory, GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
 	default:
 		ERROR_LOG_AUDIO("The specified audio engine type ", audioEngineType, " is not supported. Default FMOD audio engine will be used.");
-		return std::make_unique<AudioEngine_FMOD>(GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
+		return std::make_unique<AudioEngine_FMOD>(m_audioDirectory, GET_CONFIG_VALUE_AUDIO("audioMaxChannels", 32));
 	}
 }

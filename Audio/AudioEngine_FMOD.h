@@ -25,7 +25,7 @@ namespace Audio
 		/// <summary>
 		/// FMOD Audio engine constructor. It intializes the main FMOD system object.
 		/// </summary>
-		AUDIO_API explicit AudioEngine_FMOD(int maxChannelsCount);
+		AUDIO_API explicit AudioEngine_FMOD(const std::string& audioDirectory, int maxChannelsCount);
 		/// <summary>
 		/// FMOD Audio engine destructor. It takes care of releasing the main FMOD system object,
 		/// as well as all the sound objects that were created.

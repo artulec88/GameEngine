@@ -10,8 +10,8 @@
 /* static */ const Math::Real Audio::AudioEngine_FMOD::OCTAVE_RATIO = 2.0f;
 /* static */ const Math::Real Audio::AudioEngine_FMOD::SEMITONE_RATIO = pow(2.0f, 1.0f / 12.0f);
 
-Audio::AudioEngine_FMOD::AudioEngine_FMOD(int maxChannelsCount) :
-	IAudioEngine(),
+Audio::AudioEngine_FMOD::AudioEngine_FMOD(const std::string& audioDirectory, int maxChannelsCount) :
+	IAudioEngine(audioDirectory),
 	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
 	m_maxChannelsCount(maxChannelsCount),
 	m_system(NULL),

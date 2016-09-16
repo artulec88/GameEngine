@@ -259,6 +259,16 @@ const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontT
 	return m_fontFactory.GetFont(fontType);
 }
 
+void Engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const
+{
+	CoreEngine::GetCoreEngine()->GetAudioEngine().LoadSoundEffect(soundEffectFileName);
+}
+
+void Engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const
+{
+	CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(soundEffectFileName, volume, pitch);
+}
+
 void Engine::GameManager::AddCamera(Rendering::Camera* camera)
 {
 	if (m_cameras.empty())

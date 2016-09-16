@@ -2,7 +2,8 @@
 #include "IAudioEngine.h"
 
 
-Audio::IAudioEngine::IAudioEngine()
+Audio::IAudioEngine::IAudioEngine(const std::string& audioDirectory) :
+	m_audioDirectory(audioDirectory)
 {
 }
 

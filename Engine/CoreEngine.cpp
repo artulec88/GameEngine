@@ -267,7 +267,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 
 void Engine::CoreEngine::CreateAudioEngine()
 {
-	Audio::AudioEngineFactory audioEngineFactory;
+	Audio::AudioEngineFactory audioEngineFactory(m_audioDirectory);
 	m_audioEngine = audioEngineFactory.CreateAudioEngine(static_cast<Audio::AudioEngineTypes::AudioEngineType>(GET_CONFIG_VALUE_AUDIO("audioEngineType", static_cast<int>(Audio::AudioEngineTypes::FMOD))));
 	CHECK_CONDITION_EXIT_ENGINE(m_audioEngine != NULL, Utility::Logging::CRITICAL, "Failed to create an audio engine.");
 }
@@ -491,9 +491,9 @@ void Engine::CoreEngine::Run()
 	Math::Real spf = REAL_ZERO;
 #endif
 
-	m_audioEngine->LoadSong(m_audioDirectory + "520387_Horizon_short.mp3");
-	m_audioEngine->PlaySong(m_audioDirectory + "520387_Horizon_short.mp3");
-	//m_audioEngine->play2D((m_audioDirectory + "520387_Horizon_short.mp3").c_str(), true);
+	m_audioEngine->LoadSong("520387_Horizon_short.mp3");
+	m_audioEngine->PlaySong("520387_Horizon_short.mp3");
+	//m_audioEngine->play2D("520387_Horizon_short.mp3".c_str(), true);
 
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();

@@ -37,7 +37,6 @@
 
 namespace Engine
 {
-
 	class GameManager : public IUpdateable
 	{
 		typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Controls::GuiButtonControl>, Rendering::Text::FontComparator> FontMap;
@@ -147,6 +146,9 @@ namespace Engine
 		{
 			return m_textureFactory.GetTexture(textureID);
 		}
+
+		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
+		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const;
 
 		ENGINE_API inline const ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
 		ENGINE_API inline const Rendering::TextureFactory& GetTextureFactory() const { return m_textureFactory; }

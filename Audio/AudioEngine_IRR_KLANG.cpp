@@ -4,8 +4,8 @@
 #include "Utility\ILogger.h"
 
 
-Audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(int maxChannelsCount) :
-	IAudioEngine(),
+Audio::AudioEngine_IRR_KLANG::AudioEngine_IRR_KLANG(const std::string& audioDirectory, int maxChannelsCount) :
+	IAudioEngine(audioDirectory),
 	M_SONG_FADE_IN_TIME(GET_CONFIG_VALUE_AUDIO("songFadeInTime", 2.0f)), // in seconds
 	m_engine(NULL),
 	m_currentSong(NULL),
@@ -80,13 +80,14 @@ void Audio::AudioEngine_IRR_KLANG::LoadSong(const std::string& path)
 
 void Audio::AudioEngine_IRR_KLANG::Load(Categories::Category type, const std::string& path)
 {
+	DEBUG_LOG_AUDIO("Loading sound \"", path, "\" from directory \"", m_audioDirectory, "\".");
 	if (m_soundSources[type].find(path) != m_soundSources[type].end())
 	{
-		DEBUG_LOG_AUDIO("The sound \"", path, "\" has been loaded already");
+		DELOCUST_LOG_AUDIO("The sound \"", path, "\" has been loaded already");
 		return;
 	}
 	irrklang::ISoundSource* sound;
-	sound = m_engine->addSoundSourceFromFile(path.c_str(), irrklang::ESM_AUTO_DETECT, false);
+	sound = m_engine->addSoundSourceFromFile((m_audioDirectory + path).c_str(), irrklang::ESM_AUTO_DETECT, false);
 	CHECK_CONDITION_RETURN_VOID_ALWAYS_AUDIO(sound != NULL, Utility::Logging::ERR, "The audio \"", path, "\" cannot be loaded.");
 	m_soundSources[type].insert(std::make_pair(path, sound));
 }

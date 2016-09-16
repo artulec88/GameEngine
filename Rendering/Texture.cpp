@@ -72,7 +72,6 @@ Rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	std::array<const std::string, NUMBER_OF_CUBE_MAP_FACES> filenames = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		//cubeMapData[i] = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
 		cubeMapData[i] = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
 		if (cubeMapData[i] == NULL)
 		{
