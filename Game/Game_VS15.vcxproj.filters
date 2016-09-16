@@ -96,6 +96,9 @@
     <ClInclude Include="TextureIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ParticleEffects.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

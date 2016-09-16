@@ -168,6 +168,7 @@
     <ClInclude Include="LoadGameCommand.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />
+    <ClInclude Include="ParticleEffects.h" />
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />
     <ClInclude Include="ResumeGameCommand.h" />

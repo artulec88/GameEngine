@@ -18,7 +18,12 @@
 
 #include "Rendering\Color.h"
 #include "Rendering\Camera.h"
-#include "Rendering\ParticleAttributeGenerator.h"
+#include "Rendering\ParticlePositionGenerator.h"
+#include "Rendering\ParticleVelocityGenerator.h"
+#include "Rendering\ParticleAccelerationGenerator.h"
+#include "Rendering\ParticleRotationGenerator.h"
+#include "Rendering\ParticleScaleGenerator.h"
+#include "Rendering\ParticleLifeSpanGenerator.h"
 #include "Rendering\ParticlesEmitter.h"
 #include "Rendering\ParticlesUpdater.h"
 
@@ -502,8 +507,8 @@ void Game::TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem();
-	playerNode->AddComponent(new Engine::ParticlesSystemComponent(GameManager::GetGameManager(), particlesSystem));
+	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem(ParticleEffects::RAIN);
+	playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
@@ -517,25 +522,96 @@ void Game::TestGameManager::Load()
 	NOTICE_LOG_GAME("Initalizing test game finished");
 }
 
-Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem()  // TODO: temporary code. Remove in the future.
+// TODO: temporary code. Remove in the future.
+Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect)
 {
-	const Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE, GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"),
-		GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true));
-	Rendering::Particles::Attributes::AttributesMask attributesMask = Rendering::Particles::Attributes::POSITION |
-		Rendering::Particles::Attributes::VELOCITY | Rendering::Particles::Attributes::LIFE_SPAN |
-		Rendering::Particles::Attributes::SCALE | Rendering::Particles::Attributes::ACCELERATION;
+	std::string confSuffix;
+	switch (particleEffect)
+	{
+	case ParticleEffects::RAIN:
+		confSuffix = "_Rain";
+		break;
+	case ParticleEffects::FIRE:
+		confSuffix = "_Fire";
+		break;
+	case ParticleEffects::SMOKE:
+		confSuffix = "_Smoke";
+		break;
+	}
+	const Rendering::Particles::ParticleTexture* particleTexture = m_textureFactory.CreateParticleTexture(TextureIDs::PARTICLE_RAIN, GET_CONFIG_VALUE_STR_GAME("particleTexture" + confSuffix, "particleRain.png"),
+		GET_CONFIG_VALUE_GAME("particleTextureRowsCount" + confSuffix, 4), GET_CONFIG_VALUE_GAME("particleTextureIsAdditive" + confSuffix, true));
+	
+	Rendering::Particles::Attributes::AttributesMask attributesMask{ 0 };
+	if (GET_CONFIG_VALUE_GAME("particleAttributePositionEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::POSITION;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeVelocityEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::VELOCITY;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeAccelerationEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::ACCELERATION;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeGravityEffectFactorEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::GRAVITY_EFFECT_FACTOR;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeLifeSpanEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::LIFE_SPAN;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeRotationEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::ROTATION;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeScaleEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::SCALE;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeTextureOffsetEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::TEXTURE_OFFSET;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeColorEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::COLOR;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeMassEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::MASS;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeAliveEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::ALIVE;
+	}
+	if (GET_CONFIG_VALUE_GAME("particleAttributeIdEnabled" + confSuffix, true))
+	{
+		attributesMask |= Rendering::Particles::Attributes::ID;
+	}
 	DEBUG_LOG_GAME("Attributes mask = ", attributesMask.m_attributesMask);
-	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(10000, attributesMask, *particleTexture);
-	Rendering::Particles::ParticlesEmitter emitter(400);
-	//emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
-	//emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
-	emitter.AddGenerator(new Rendering::Particles::ConstantPositionGenerator(50.0f, -1.0f, 60.0f));
-	emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
-	emitter.AddGenerator(new Rendering::Particles::ConstantAccelerationGenerator(0.0f, -10.0f, 0.0f));
-	emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(3.0f, 4.5f));
-	//emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(360.0f)));
-	emitter.AddGenerator(new Rendering::Particles::ConstantScaleGenerator(0.1f));
-	system->AddEmitter(emitter);
+
+	Rendering::Particles::ParticlesSystem* system = new Rendering::Particles::ParticlesSystem(GET_CONFIG_VALUE_GAME("particleMaxParticlesCount" + confSuffix, 5000),
+		attributesMask, *particleTexture);
+
+	const unsigned int particleEmittersCount = GET_CONFIG_VALUE_GAME("particleEmittersCount" + confSuffix, 1);
+	for (unsigned int i = 0; i < particleEmittersCount; ++i)
+	{
+		Rendering::Particles::ParticlesEmitter emitter(GET_CONFIG_VALUE_GAME("particleEmitterGeneratedParticlesPerSecond" + confSuffix + "_" + std::to_string(i+1), 400));
+		if (attributesMask.IsAttributeEnabled(Rendering::Particles::Attributes::POSITION))
+		{
+		}
+		//emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
+		//emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
+		emitter.AddGenerator(new Rendering::Particles::ConstantPositionGenerator(50.0f, -1.0f, 60.0f));
+		emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
+		emitter.AddGenerator(new Rendering::Particles::ConstantAccelerationGenerator(0.0f, -10.0f, 0.0f));
+		emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(3.0f, 4.5f));
+		//emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(360.0f)));
+		emitter.AddGenerator(new Rendering::Particles::ConstantScaleGenerator(0.1f));
+		system->AddEmitter(emitter);
+	}
 
 	Rendering::Particles::ParticlesUpdater* eulerUpdater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
 	Rendering::Particles::ParticlesUpdater* lifeSpanUpdater = new Rendering::Particles::LifeSpanParticlesUpdater();

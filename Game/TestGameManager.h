@@ -7,6 +7,7 @@
 #include "ResumeGameCommand.h"
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
+#include "ParticleEffects.h"
 
 #include "Engine\QuitGameCommand.h"
 #include "Engine\GameManager.h"
@@ -56,7 +57,7 @@ namespace Game
 		virtual void InitializeTweakBars();
 #endif
 	private:
-		Rendering::Particles::ParticlesSystem* CreateParticlesSystem(); // TODO: temporary code. Remove in the future.
+		Rendering::Particles::ParticlesSystem* CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddCameras(Engine::GameNode* entityToFollow);
 		void AddSkybox();

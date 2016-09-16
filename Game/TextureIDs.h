@@ -31,7 +31,8 @@ namespace Game
 			DEFAULT_NORMAL_MAP,
 			SKYBOX_DAY,
 			SKYBOX_NIGHT,
-			PARTICLE,
+			PARTICLE_RAIN,
+			PARTICLE_FIRE,
 		}; /* end enum TextureID */
 	} /* end namespace TextureIDs */
 } /* end namespace Game */
