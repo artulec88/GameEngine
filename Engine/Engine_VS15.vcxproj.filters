@@ -96,9 +96,6 @@
     <ClInclude Include="GameCommandFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EffectFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BillboardRendererComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -219,9 +216,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameCommandFactory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EffectFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BillboardRendererComponent.cpp">

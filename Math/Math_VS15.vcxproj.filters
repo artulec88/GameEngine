@@ -94,6 +94,9 @@
     <ClCompile Include="Ellipsoid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EffectFactory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Angle.h">
@@ -187,6 +190,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Ellipsoid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

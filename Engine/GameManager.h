@@ -12,7 +12,6 @@
 #include "ShaderFactory.h"
 //#include "Observer.h"
 
-#include "EffectFactory.h"
 #include "Rendering\TextureFactory.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Shader.h"
@@ -25,6 +24,7 @@
 #include "Rendering\Texture.h"
 #include "Rendering\ParticlesSystem.h"
 
+#include "Math\EffectFactory.h"
 #include "Math\Transform.h"
 #include "Math\Math.h"
 #ifdef CALCULATE_ENGINE_STATS

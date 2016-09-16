@@ -2,7 +2,6 @@
 #define __MENU_GAME_STATE_H__
 
 #include "Def.h"
-#include "Engine\EffectFactory.h"
 #include "Engine\GameState.h"
 #include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
@@ -12,6 +11,7 @@
 
 #include "Rendering\Renderer.h"
 
+#include "Math\EffectFactory.h"
 #include "Math\Effect.h"
 //#include "Math\Effect_impl.h"
 
