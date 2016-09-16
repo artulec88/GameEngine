@@ -8,10 +8,32 @@
 
 /* static */ const int Rendering::TextureData::MAX_BOUND_TEXTURES_COUNT = 32;
 
-//Rendering::TextureData::TextureData(const std::string& fileName) :
-//	m_textureTarget()
-//{
-//}
+Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping,
+	GLenum attachment) :
+	m_textureTarget(textureTarget),
+	m_texturesCount(1),
+	m_textureIDs(m_texturesCount),
+	m_width(0),
+	m_height(0),
+	m_framebuffer(0),
+	m_renderbuffer(0)
+{
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount > 0, Utility::Logging::EMERGENCY, "Incorrect number of textures specified (", m_texturesCount, ").");
+	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
+	CheckErrorCode(__FUNCTION__, "Creating texture data");
+
+	INFO_LOG_RENDERING("Loading texture from file \"", fileName, "\".");
+	int bytesPerPixel;
+	unsigned char* data = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + fileName).c_str(), &m_width, &m_height, &bytesPerPixel, 4 /* req_comp */);
+	CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::Logging::ERR, "Unable to load texture from the file \"", fileName, "\"");
+	InitTextures(&data, &filter, &internalFormat, &format, wrapping);
+	if (attachment != GL_NONE)
+	{
+		InitRenderTargets(&attachment);
+	}
+	stbi_image_free(data);
+	DEBUG_LOG_RENDERING("Loading texture from file \"", fileName, "\" finished successfully");
+}
 
 Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
 	m_textureTarget(textureTarget),
@@ -33,25 +55,53 @@ Rendering::TextureData::TextureData(GLenum textureTarget, int width, int height,
 	}
 }
 
-Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth) :
+Rendering::TextureData::TextureData(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName) :
 	m_textureTarget(GL_TEXTURE_CUBE_MAP),
 	m_texturesCount(1),
 	m_textureIDs(1),
-	m_width(width),
-	m_height(height),
+	m_width(0),
+	m_height(0),
 	m_framebuffer(0),
 	m_renderbuffer(0)
 {
-	// Init textures begin
-	const int NUMBER_OF_CUBE_MAP_FACES = 6;
+	constexpr int NUMBER_OF_CUBE_MAP_FACES = 6;
+
+	std::array<unsigned char*, NUMBER_OF_CUBE_MAP_FACES> cubeMapData;
+	std::array<int, NUMBER_OF_CUBE_MAP_FACES> x, y, bytesPerPixel;
+
+	std::array<const std::string, NUMBER_OF_CUBE_MAP_FACES> filenames = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		if (cubeMapTextureData[i] == NULL)
+		//cubeMapData[i] = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		cubeMapData[i] = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		if (cubeMapData[i] == NULL)
 		{
-			DEBUG_LOG_RENDERING("Cannot initialize texture. Passed cube map texture data is NULL (face ", i, ")");
-			//return;
+			std::string name = filenames[i];
+			const char *tmp = strrchr(filenames[i].c_str(), '\\');
+			if (tmp != NULL)
+			{
+				name.assign(tmp + 1);
+			}
+			ERROR_LOG_RENDERING("Unable to load texture from the file \"", name, "\"");
+			exit(EXIT_FAILURE);
+		}
+		if (i > 0)
+		{
+			if (x[i] != x[i - 1])
+			{
+				ERROR_LOG_RENDERING("All cube map texture's faces must have the same width, but face ", i, " has width=", x[i], " and face ", i + 1, " has width=", x[i + 1]);
+			}
+			if (y[i] != y[i - 1])
+			{
+				ERROR_LOG_RENDERING("All cube map texture's faces must have the same height, but face ", i, " has height=", y[i], " and face ", i + 1, " has height=", y[i + 1]);
+			}
 		}
 	}
+
+	// TODO: Pass correct values for width, height and depth. The values below will only work for square textures with each face having the same size.
+	m_width = x[0];
+	m_height = x[0];
+	int depth = x[0];
 	
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(m_texturesCount, &m_textureIDs[0]);
@@ -68,8 +118,8 @@ Rendering::TextureData::TextureData(unsigned char** cubeMapTextureData, int widt
 	};
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		glTexImage2D(targets[i], 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapTextureData[i]);
-		stbi_image_free(cubeMapTextureData[i]);
+		glTexImage2D(targets[i], 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapData[i]);
+		stbi_image_free(cubeMapData[i]);
 	}
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -110,7 +160,6 @@ Rendering::TextureData::TextureData(TextureData&& textureData) :
 	m_framebuffer(std::move(textureData.m_framebuffer)),
 	m_renderbuffer(std::move(textureData.m_renderbuffer))
 {
-	CRITICAL_LOG_RENDERING("TextureData moved.");
 	textureData.m_textureIDs.clear(); // TODO: Is it correct?
 	textureData.m_framebuffer = 0;
 	textureData.m_renderbuffer = 0;
@@ -267,105 +316,32 @@ bool Rendering::TextureData::Compare(const TextureData& textureData) const
 	return true;
 }
 
-/* static */ std::map<std::string, std::shared_ptr<Rendering::TextureData>> Rendering::Texture::s_textureResourceMap;
-
 Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */,
 	GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	m_textureData(nullptr),
+	m_textureData(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
 	m_fileName(fileName)
 {
-	// TODO: Check whether the fileName is a full path or just a fileName. Act accordingly.
-	std::string name = fileName;
-	const char *tmp = strrchr(fileName.c_str(), '\\');
-	if (tmp != NULL)
-	{
-		name.assign(tmp + 1);
-	}
-
-	std::map<std::string, std::shared_ptr<Rendering::TextureData>>::const_iterator itr = s_textureResourceMap.find(fileName);
-	if (itr == s_textureResourceMap.end()) // texture has not been loaded yet
-	{
-		INFO_LOG_RENDERING("Loading texture from file \"", name, "\".");
-		//std::string extension = name.substr(name.find_last_of(".") + 1);
-		//DELOCUST_LOG_RENDERING("Extension is = \"", extension, "\"");
-
-		int x, y, bytesPerPixel;
-		//unsigned char* data = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
-		unsigned char* data = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + fileName).c_str(), &x, &y, &bytesPerPixel, 4 /* req_comp */);
-		CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::Logging::ERR, "Unable to load texture from the file \"", name, "\"");
-		m_textureData = std::make_shared<TextureData>(textureTarget, x, y, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment);
-		stbi_image_free(data);
-		s_textureResourceMap.insert(std::make_pair(fileName, m_textureData));
-		DEBUG_LOG_RENDERING("Loading texture from file \"", name, "\" finished successfully");
-	}
-	else // (itr != textureResourceMap.end()) // texture has already been loaded
-	{
-		m_textureData = itr->second;
-	}
-
-	//LoadFromFile(fileName);
 }
 
 Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */,
 	GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	m_textureData(nullptr),
+	m_textureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment),
 	m_fileName()
 {
 	CHECK_CONDITION_RENDERING((width > 0) && (height > 0), Utility::Logging::ERR, "Cannot initialize texture. Passed texture size is incorrect (width=", width, "; height=", height, ")");
-	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment);
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
-	m_textureData(nullptr),
+	m_textureData(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, wrapping, attachments),
 	m_fileName()
 {
-	//m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clampEnabled, &attachment);
-	m_textureData = std::make_shared<TextureData>(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, wrapping, attachments);
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
-Rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName)
+Rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName) :
+	m_textureData(posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName)
 {
-	const int NUMBER_OF_CUBE_MAP_FACES = 6;
-
-	unsigned char* cubeMapData[NUMBER_OF_CUBE_MAP_FACES];
-	int x[NUMBER_OF_CUBE_MAP_FACES], y[NUMBER_OF_CUBE_MAP_FACES], bytesPerPixel[NUMBER_OF_CUBE_MAP_FACES];
-
-	const std::string filenames[NUMBER_OF_CUBE_MAP_FACES] = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
-	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
-	{
-		//cubeMapData[i] = stbi_load((Core::CoreEngine::GetCoreEngine()->GetTexturesDirectory() + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
-		cubeMapData[i] = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + filenames[i]).c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
-		if (cubeMapData[i] == NULL)
-		{
-			std::string name = filenames[i];
-			const char *tmp = strrchr(filenames[i].c_str(), '\\');
-			if (tmp != NULL)
-			{
-				name.assign(tmp + 1);
-			}
-			ERROR_LOG_RENDERING("Unable to load texture from the file \"", name, "\"");
-			exit(EXIT_FAILURE);
-		}
-		if (i > 0)
-		{
-			if (x[i] != x[i - 1])
-			{
-				ERROR_LOG_RENDERING("All cube map texture's faces must have the same width, but face ", i, " has width=", x[i], " and face ", i + 1, " has width=", x[i + 1]);
-			}
-			if (y[i] != y[i - 1])
-			{
-				ERROR_LOG_RENDERING("All cube map texture's faces must have the same height, but face ", i, " has height=", y[i], " and face ", i + 1, " has height=", y[i + 1]);
-			}
-		}
-	}
-
-	// TODO: Pass correct values for width, height and depth. The values below will only work for square textures with each face having the same size.
-	int width = x[0];
-	int height = x[0];
-	int depth = x[0];
-	m_textureData = std::make_shared<TextureData>(cubeMapData, width, height, depth);
 }
 
 Rendering::Texture::~Texture(void)
@@ -386,13 +362,13 @@ void Rendering::Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureI
 	CHECK_CONDITION_RENDERING((unit >= 0) && (unit < TextureData::MAX_BOUND_TEXTURES_COUNT), Utility::Logging::ERR, "Specified unit ", unit, " is outside of range [0; ", TextureData::MAX_BOUND_TEXTURES_COUNT, ")");
 	
 	glActiveTexture(GL_TEXTURE0 + unit);
-	m_textureData->Bind(textureIndex);
+	m_textureData.Bind(textureIndex);
 }
 
 void Rendering::Texture::BindAsRenderTarget() const
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::Logging::EMERGENCY, "Cannot bind the texture as render target. Texture data is NULL.");
-	m_textureData->BindAsRenderTarget();
+	m_textureData.BindAsRenderTarget();
 }
 
 

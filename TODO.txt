@@ -39,3 +39,4 @@
 	}
 23. Weather effects.
 24. All game menu related settings should be in the separate config file (maybe an XML?). Maybe there should be several config files: one for the rendering module, one for Physics, one for Audio and so on.
+25. Get rid of all calls to Engine::CoreEngine::GetCoreEngine()...

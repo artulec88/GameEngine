@@ -17,6 +17,7 @@
 #include <sstream>
 #include <algorithm>
 
+// TODO: BIAS_MATRIX could and should be a constexpr!
 /* static */ const Math::Matrix4D Rendering::Renderer::BIAS_MATRIX(Math::Matrix4D(0.5f /* scale matrix */) * Math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;

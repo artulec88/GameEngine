@@ -192,11 +192,16 @@ namespace Rendering
 		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
 		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
 		RENDERING_API virtual ~Mesh(void);
+		/// <summary> Mesh copy constructor. </summary>
+		Mesh(const Mesh& Mesh) = delete;
+		/// <summary> Mesh move constructor. </summary>
+		RENDERING_API Mesh(Mesh&& mesh);
+		/// <summary> Mesh copy assignment operator. </summary>
+		Mesh& operator=(const Mesh& mesh) = delete;
+		/// <summary> Mesh move assignment operator. </summary>
+		Mesh& operator=(Mesh&& mesh) = delete;
 	protected:
 		Mesh(GLenum mode = GL_TRIANGLES);
-	private: // disable copy constructor and assignment operator
-		Mesh(Mesh& mesh) {}
-		void operator=(Mesh& mesh) {}
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

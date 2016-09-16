@@ -200,6 +200,14 @@ Rendering::Mesh::~Mesh(void)
 	}
 }
 
+Rendering::Mesh::Mesh(Mesh&& mesh) :
+	m_fileName(std::move(mesh.m_fileName)),
+	m_mode(std::move(mesh.m_mode)),
+	m_meshData(std::move(mesh.m_meshData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
+{
+	DELOCUST_LOG_RENDERING("Mesh \"", m_fileName, "\" moved.");
+}
+
 void Rendering::Mesh::Initialize()
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started Mesh initialization");

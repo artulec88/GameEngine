@@ -192,6 +192,8 @@
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshFactory.h" />
+    <ClInclude Include="MeshIDs.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleAttributes.h" />
     <ClInclude Include="ParticlesContainer.h" />
@@ -246,6 +248,7 @@
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticlesContainer.cpp" />
     <ClCompile Include="ParticlesEmitter.cpp" />

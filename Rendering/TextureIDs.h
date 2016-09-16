@@ -13,6 +13,6 @@ namespace Rendering
 			COUNT,
 		}; /* end enum TextureID */
 	} /* end namespace TextureIDs */
-} /* end namespace Engine */
+} /* end namespace Rendering */
 
 #endif /* __RENDERING_TEXTURE_IDS_H__ */

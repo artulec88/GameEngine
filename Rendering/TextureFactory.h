@@ -20,7 +20,7 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary>The shader factory constructor.</summary>
+		/// <summary>The texture factory constructor.</summary>
 		/// <param name="texturesDirectory"> The textures directory. </param>
 		RENDERING_API TextureFactory(const std::string& texturesDirectory);
 

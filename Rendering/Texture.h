@@ -23,9 +23,12 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		//TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping, GLenum attachment);
+		TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping, GLenum attachment);
 		TextureData(GLenum textureTarget, int width, int height, int texturesCount, unsigned char** data, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments);
-		TextureData(unsigned char** cubeMapTextureData, int width, int height, int depth); // cube map texture data
+		/// <summary>
+		/// Cube map texture data constructor.
+		/// </summary>
+		TextureData(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName);
 		~TextureData(void);
 		//TextureData(const TextureData& textureData) = default;
 		TextureData(TextureData&& textureData);
@@ -79,8 +82,6 @@ namespace Rendering
 	class Texture
 	{
 		/* ==================== Static variables begin ==================== */
-	protected:
-		static std::map<std::string, std::shared_ptr<Rendering::TextureData>> s_textureResourceMap;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -124,14 +125,13 @@ namespace Rendering
 	public:
 		RENDERING_API void Bind(unsigned int unit = 0, unsigned int textureIndex = 0) const;
 		RENDERING_API void BindAsRenderTarget() const;
-		RENDERING_API inline int GetWidth() const { return m_textureData->GetWidth(); }
-		RENDERING_API inline int GetHeight() const { return m_textureData->GetHeight(); }
-		bool Compare(const Texture& texture) const { return m_textureData->Compare(*texture.m_textureData); }
+		RENDERING_API inline int GetWidth() const { return m_textureData.GetWidth(); }
+		RENDERING_API inline int GetHeight() const { return m_textureData.GetHeight(); }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		std::shared_ptr<TextureData> m_textureData;
+		TextureData m_textureData;
 		std::string m_fileName;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Texture */
