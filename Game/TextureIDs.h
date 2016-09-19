@@ -33,6 +33,7 @@ namespace Game
 			SKYBOX_NIGHT,
 			PARTICLE_RAIN,
 			PARTICLE_FIRE,
+			PARTICLE_SMOKE
 		}; /* end enum TextureID */
 	} /* end namespace TextureIDs */
 } /* end namespace Game */

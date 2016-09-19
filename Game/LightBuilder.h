@@ -11,7 +11,6 @@
 #include "Rendering\SpotLight.h"
 
 #include "Utility\Builder.h"
-#include "Utility\Builder_impl.h"
 
 #include <string>
 

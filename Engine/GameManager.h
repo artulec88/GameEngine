@@ -93,6 +93,10 @@ namespace Engine
 		ENGINE_API void AddShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderType, shaderFileName); }
 		ENGINE_API const Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) { return m_textureFactory.CreateTexture(textureID, textureFileName); }
 		ENGINE_API const Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) { return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory); }
+		ENGINE_API const Rendering::Particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
+		{
+			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+		}
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();

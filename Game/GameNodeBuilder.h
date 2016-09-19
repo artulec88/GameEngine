@@ -8,7 +8,6 @@
 #include "Rendering\Texture.h"
 
 #include "Utility\Builder.h"
-#include "Utility\Builder_impl.h"
 
 #include <string>
 

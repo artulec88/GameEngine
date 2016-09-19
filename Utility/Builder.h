@@ -16,9 +16,13 @@ namespace Utility {
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Builder constructor. </summary>
-		Builder();
+		Builder()
+		{
+		}
 		/// <summary> Builder destructor. </summary>
-		virtual ~Builder(void);
+		virtual ~Builder(void)
+		{
+		}
 		/// <summary> Builder copy constructor. </summary>
 		Builder(Builder& builder) = delete;
 		/// <summary> Builder move constructor. </summary>
@@ -31,9 +35,15 @@ namespace Utility {
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildPart1();
-		virtual void BuildPart2();
-		virtual void BuildPart3();
+		virtual void BuildPart1()
+		{
+		}
+		virtual void BuildPart2()
+		{
+		}
+		virtual void BuildPart3()
+		{
+		}
 
 		T* Get() { return m_object; }
 		/* ==================== Non-static member functions end ==================== */

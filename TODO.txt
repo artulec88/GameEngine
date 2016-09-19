@@ -3,7 +3,7 @@
 3.	Config map of values should be refreshed once in a while, so that configuration values can be reconfigured during runtime (?).
 4.	Don't use hard-coded values. Ever!
 5.	Improve logging functionality. Maybe Log class should be a parent for all different kinds of logging classes. In a possible scenario some class X would register to one of this logging classes (with some logging level) and this way whenever some X member function is called (and/or finished) log would appear automatically. This way we could achieve a better isolation of concerns from the actual algorithm and logging.
-6.	Memory deallocation
+6.	Memory allocation / deallocation.
 7.	Filename class member variable in several resource-related classes should be moved to their base class (which for now is called ReferenceCounter, but should be renamed to e.g. Resource)
 8.	Create a possibility to display a light direction (current solution does not work correctly)
 9.	Create a script probing the application and creating a report on how much CPU and memory it uses.
@@ -40,3 +40,4 @@
 23. Weather effects.
 24. All game menu related settings should be in the separate config file (maybe an XML?). Maybe there should be several config files: one for the rendering module, one for Physics, one for Audio and so on.
 25. Get rid of all calls to Engine::CoreEngine::GetCoreEngine()...
+26. Implement ParticleSystemBuilder in the Game module.
