@@ -155,7 +155,7 @@ void Game::ParticlesSystemBuilder::BuildPart2()
 		}
 		/* ==================== Position generator end ==================== */
 
-		emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
+		emitter.AddGenerator(new Rendering::Particles::Generators::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
 		emitter.AddGenerator(new Rendering::Particles::ConstantAccelerationGenerator(0.0f, -10.0f, 0.0f));
 		emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(3.0f, 4.5f));
 		//emitter.AddGenerator(new Rendering::Particles::RandomRotationGenerator(Math::Angle(0.0f), Math::Angle(360.0f)));
