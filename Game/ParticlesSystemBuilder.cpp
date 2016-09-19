@@ -15,23 +15,27 @@ Game::ParticlesSystemBuilder::ParticlesSystemBuilder(Engine::GameManager* gameMa
 	m_gameManager(gameManager),
 	m_particleEffect(particleEffect),
 	m_configurationSuffix(""),
-	m_textureID(TextureIDs::PARTICLE_RAIN)
+	m_textureID(TextureIDs::PARTICLE_WATER)
 {
 	switch (m_particleEffect)
 	{
 	case ParticleEffects::RAIN:
 		m_configurationSuffix = "_Rain";
-		m_textureID = TextureIDs::PARTICLE_RAIN;
+		m_textureID = TextureIDs::PARTICLE_WATER;
 		break;
 	case ParticleEffects::FIRE:
 		m_configurationSuffix = "_Fire";
 		m_textureID = TextureIDs::PARTICLE_FIRE;
 		break;
+	case ParticleEffects::FOUNTAIN:
+		m_configurationSuffix = "_Fountain";
+		m_textureID = TextureIDs::PARTICLE_WATER;
+		break;
 	case ParticleEffects::SMOKE:
 		m_configurationSuffix = "_Smoke";
 		m_textureID = TextureIDs::PARTICLE_SMOKE;
 		break;
-	//default: // TODO: Implement
+		//default: // TODO: Implement
 	}
 }
 
@@ -42,7 +46,7 @@ Game::ParticlesSystemBuilder::~ParticlesSystemBuilder()
 
 void Game::ParticlesSystemBuilder::BuildPart1()
 {
-	const Rendering::Particles::ParticleTexture* particleTexture = m_gameManager->AddParticleTexture(TextureIDs::PARTICLE_RAIN,
+	const Rendering::Particles::ParticleTexture* particleTexture = m_gameManager->AddParticleTexture(m_textureID,
 		GET_CONFIG_VALUE_STR_GAME("particleTexture" + m_configurationSuffix, "particleRain.png"),
 		GET_CONFIG_VALUE_GAME("particleTextureRowsCount" + m_configurationSuffix, 4),
 		GET_CONFIG_VALUE_GAME("particleTextureIsAdditive" + m_configurationSuffix, true));
@@ -108,13 +112,49 @@ void Game::ParticlesSystemBuilder::BuildPart2()
 	const unsigned int particleEmittersCount = GET_CONFIG_VALUE_GAME("particleEmittersCount" + m_configurationSuffix, 1);
 	for (unsigned int i = 0; i < particleEmittersCount; ++i)
 	{
-		Rendering::Particles::ParticlesEmitter emitter(GET_CONFIG_VALUE_GAME("particleEmitterGeneratedParticlesPerSecond" + m_configurationSuffix + "_" + std::to_string(i + 1), 400));
+		const std::string iStr = std::to_string(i + 1);
+		Rendering::Particles::ParticlesEmitter emitter(GET_CONFIG_VALUE_GAME("particleEmitterGeneratedParticlesPerSecond" + m_configurationSuffix + "_" + iStr, 400.0f));
 		//if (attributesMask.IsAttributeEnabled(Rendering::Particles::Attributes::POSITION))
 		//{
 		//}
 		//emitter.AddGenerator(new Rendering::Particles::BasicIdGenerator());
-		//emitter.AddGenerator(new Rendering::Particles::BoxPositionGenerator(40.0f, 60.0f, 0.0f, 10.0f, 69.0f, 91.0f));
-		emitter.AddGenerator(new Rendering::Particles::PositionGenerators::ConstantPositionGenerator(50.0f, -1.0f, 60.0f));
+
+		/* ==================== Position generator begin ==================== */
+		Rendering::Particles::Generators::PositionGeneratorTypes::PositionGeneratorType positionGeneratorType = static_cast<Rendering::Particles::Generators::PositionGeneratorTypes::PositionGeneratorType>(
+			GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorType" + m_configurationSuffix + "_" + iStr, static_cast<int>(Rendering::Particles::Generators::PositionGeneratorTypes::CONSTANT)));
+		switch (positionGeneratorType)
+		{
+		case Rendering::Particles::Generators::PositionGeneratorTypes::CONSTANT:
+			emitter.AddGenerator(new Rendering::Particles::Generators::ConstantPositionGenerator(
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPosX" + m_configurationSuffix + "_" + iStr, 50.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPosY" + m_configurationSuffix + "_" + iStr, -1.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPosZ" + m_configurationSuffix + "_" + iStr, 60.0f)));
+			break;
+		case Rendering::Particles::Generators::PositionGeneratorTypes::BOX:
+			emitter.AddGenerator(new Rendering::Particles::Generators::BoxPositionGenerator(
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMinX" + m_configurationSuffix + "_" + iStr, 40.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMaxX" + m_configurationSuffix + "_" + iStr, 60.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMinY" + m_configurationSuffix + "_" + iStr, -2.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMaxY" + m_configurationSuffix + "_" + iStr, 2.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMinZ" + m_configurationSuffix + "_" + iStr, 50.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorMaxZ" + m_configurationSuffix + "_" + iStr, 40.0f)));
+			break;
+		case Rendering::Particles::Generators::PositionGeneratorTypes::PLANE:
+			emitter.AddGenerator(new Rendering::Particles::Generators::PlanePositionGenerator(
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPlaneNormalX" + m_configurationSuffix + "_" + iStr, 40.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPlaneNormalY" + m_configurationSuffix + "_" + iStr, 40.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPlaneNormalZ" + m_configurationSuffix + "_" + iStr, 40.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPlaneDistance" + m_configurationSuffix + "_" + iStr, 40.0f),
+				GET_CONFIG_VALUE_GAME("particleEmitterPositionGeneratorPlaneRadius" + m_configurationSuffix + "_" + iStr, 40.0f)));
+			break;
+		case Rendering::Particles::Generators::PositionGeneratorTypes::ELLIPSOID:
+			WARNING_LOG_GAME("Not yet supported");
+			break;
+		default:
+			ERROR_LOG_GAME("Unknown particle position generator type: %d", positionGeneratorType);
+		}
+		/* ==================== Position generator end ==================== */
+
 		emitter.AddGenerator(new Rendering::Particles::BasicVelocityGenerator(-3.3f, 3.3f, 8.0f, 17.0f, -3.3f, 3.3f));
 		emitter.AddGenerator(new Rendering::Particles::ConstantAccelerationGenerator(0.0f, -10.0f, 0.0f));
 		emitter.AddGenerator(new Rendering::Particles::BasicLifeSpanLimitGenerator(3.0f, 4.5f));
@@ -122,7 +162,10 @@ void Game::ParticlesSystemBuilder::BuildPart2()
 		emitter.AddGenerator(new Rendering::Particles::ConstantScaleGenerator(0.1f));
 		m_object->AddEmitter(emitter);
 	}
+}
 
+void Game::ParticlesSystemBuilder::BuildPart3()
+{
 	Rendering::Particles::ParticlesUpdater* eulerUpdater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
 	Rendering::Particles::ParticlesUpdater* lifeSpanUpdater = new Rendering::Particles::LifeSpanParticlesUpdater();
 	//Rendering::Particles::ParticlesUpdater* rotationUpdater = new Rendering::Particles::RotationParticlesUpdater(Math::Angle(90.0f, Math::Unit::DEGREE));

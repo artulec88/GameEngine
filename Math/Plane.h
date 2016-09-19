@@ -56,6 +56,16 @@ namespace Math
 		MATH_API bool IsPerpendicularToAxisZ() const { return Math::AlmostEqual(m_normal.GetZ(), REAL_ZERO); }
 		MATH_API inline const Vector3D& GetNormal() const { return m_normal; }
 		MATH_API inline Real GetDistance() const { return m_distance; }
+		/// <summary>
+		/// Calculates the point on the plane that is closest to origin.
+		/// See https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_plane.
+		/// </summary>
+		MATH_API Math::Vector3D CalculatePointClosestToOrigin() const;
+		/// <summary>
+		/// Generates random position on the plane with the assumption that it must lie within <paramref name="radius"/> to the point on the plane being closest to the origin.
+		/// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c.
+		/// </summary>
+		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius) const;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

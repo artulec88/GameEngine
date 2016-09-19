@@ -34,6 +34,7 @@ namespace Game
 	public:
 		virtual void BuildPart1();
 		virtual void BuildPart2();
+		virtual void BuildPart3();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

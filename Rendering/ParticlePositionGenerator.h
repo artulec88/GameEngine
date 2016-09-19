@@ -13,15 +13,18 @@ namespace Rendering
 {
 	namespace Particles
 	{
-		namespace PositionGenerators
+		namespace Generators
 		{
-			enum PositionGeneratorType
+			namespace PositionGeneratorTypes
 			{
-				CONSTANT = 0,
-				RANDOM,
-				PLANE,
-				ELLIPSOID,
-			}; /* end enum PositionGeneratorType */
+				enum PositionGeneratorType
+				{
+					CONSTANT = 0,
+					BOX,
+					PLANE,
+					ELLIPSOID,
+				}; /* end enum PositionGeneratorType */
+			} /* end namespace PositionGeneratorTypes */
 
 			/// <summary>
 			/// Generates position for the particle.
@@ -59,10 +62,10 @@ namespace Rendering
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class PositionGenerator */
 
-			   /// <summary>
-			   /// Generates position for the particle. The generated position is specified as the member variable.
-			   /// Thus, in general there is no randomness in how positions are generated.
-			   /// </summary>
+			/// <summary>
+			/// Generates position for the particle. The generated position is specified as the member variable.
+			/// Thus, in general there is no randomness in how positions are generated.
+			/// </summary>
 			class ConstantPositionGenerator : public PositionGenerator
 			{
 				/* ==================== Static variables and functions begin ==================== */
@@ -86,35 +89,9 @@ namespace Rendering
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class ConstantPositionGenerator */
 
-			   /// <summary>
-			   /// Generates position for the particle. The position is chosen randomly from the given plane.
-			   /// </summary>
-			class PlanePositionGenerator : public PositionGenerator
-			{
-				/* ==================== Static variables and functions begin ==================== */
-				/* ==================== Static variables and functions end ==================== */
-
-				/* ==================== Constructors and destructors begin ==================== */
-			public:
-				RENDERING_API PlanePositionGenerator(const Math::Plane& plane);
-				RENDERING_API virtual ~PlanePositionGenerator();
-				/* ==================== Constructors and destructors end ==================== */
-
-				/* ==================== Non-static member functions begin ==================== */
-			public:
-				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
-				/* ==================== Non-static member functions end ==================== */
-
-				/* ==================== Non-static member variables begin ==================== */
-			private:
-				Math::Plane m_plane;
-				const Math::Random::RandomGenerator& m_randomGenerator;
-				/* ==================== Non-static member variables end ==================== */
-			}; /* end class PlanePositionGenerator */
-
-			   /// <summary>
-			   /// Generates position for the particle. The position is chosen randomly from the given AABB.
-			   /// </summary>
+			/// <summary>
+			/// Generates position for the particle. The position is chosen randomly from the given AABB.
+			/// </summary>
 			class BoxPositionGenerator : public PositionGenerator
 			{
 				/* ==================== Static variables and functions begin ==================== */
@@ -145,9 +122,37 @@ namespace Rendering
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class BoxPositionGenerator */
 
-			   /// <summary>
-			   /// Generates position for the particle. The position is chosen randomly from the specified ellipsoid.
-			   /// </summary>
+			/// <summary>
+			/// Generates position for the particle. The position is chosen randomly from the given plane.
+			/// </summary>
+			class PlanePositionGenerator : public PositionGenerator
+			{
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
+
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				RENDERING_API PlanePositionGenerator(Math::Real normalX, Math::Real normalY, Math::Real normalZ, Math::Real distanceToOrigin, Math::Real radius);
+				RENDERING_API PlanePositionGenerator(const Math::Plane& plane, Math::Real radius);
+				RENDERING_API virtual ~PlanePositionGenerator();
+				/* ==================== Constructors and destructors end ==================== */
+
+				/* ==================== Non-static member functions begin ==================== */
+			public:
+				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				/* ==================== Non-static member functions end ==================== */
+
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				Math::Plane m_plane;
+				Math::Real m_radius;
+				const Math::Random::RandomGenerator& m_randomGenerator;
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class PlanePositionGenerator */
+
+			/// <summary>
+			/// Generates position for the particle. The position is chosen randomly from the specified ellipsoid.
+			/// </summary>
 			class EllipsoidPositionGenerator : public PositionGenerator
 			{
 				/* ==================== Static variables and functions begin ==================== */

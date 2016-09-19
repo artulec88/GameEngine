@@ -500,7 +500,7 @@ void Game::TestGameManager::Load()
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem(ParticleEffects::RAIN);
+	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
 	playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);

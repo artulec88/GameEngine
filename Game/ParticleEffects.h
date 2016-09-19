@@ -9,6 +9,7 @@ namespace Game
 		{
 			RAIN = 0,
 			FIRE,
+			FOUNTAIN,
 			SMOKE
 		}; /* end enum ParticleEffect */
 	} /* end namespace ParticleEffects */

@@ -4,23 +4,23 @@
 #include "Math\RandomGeneratorFactory.h"
 
 /* ==================== class ConstantPositionGenerator begin ==================== */
-Rendering::Particles::PositionGenerators::ConstantPositionGenerator::ConstantPositionGenerator(Math::Real xPos, Math::Real yPos, Math::Real zPos) :
+Rendering::Particles::Generators::ConstantPositionGenerator::ConstantPositionGenerator(Math::Real xPos, Math::Real yPos, Math::Real zPos) :
 	PositionGenerator(),
 	m_position(xPos, yPos, zPos)
 {
 }
 
-Rendering::Particles::PositionGenerators::ConstantPositionGenerator::ConstantPositionGenerator(const Math::Vector3D& position) :
+Rendering::Particles::Generators::ConstantPositionGenerator::ConstantPositionGenerator(const Math::Vector3D& position) :
 	PositionGenerator(),
 	m_position(position)
 {
 }
 
-Rendering::Particles::PositionGenerators::ConstantPositionGenerator::~ConstantPositionGenerator()
+Rendering::Particles::Generators::ConstantPositionGenerator::~ConstantPositionGenerator()
 {
 }
 
-void Rendering::Particles::PositionGenerators::ConstantPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::ConstantPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -30,43 +30,52 @@ void Rendering::Particles::PositionGenerators::ConstantPositionGenerator::Genera
 /* ==================== class ConstantPositionGenerator end ==================== */
 
 /* ==================== class PlanePositionGenerator begin ==================== */
-Rendering::Particles::PositionGenerators::PlanePositionGenerator::PlanePositionGenerator(const Math::Plane& plane) :
+Rendering::Particles::Generators::PlanePositionGenerator::PlanePositionGenerator(Math::Real normalX, Math::Real normalY, Math::Real normalZ, Math::Real distanceToOrigin, Math::Real radius) :
+	PlanePositionGenerator(Math::Plane(Math::Vector3D(normalX, normalY, normalZ), distanceToOrigin), radius)
+{
+}
+
+Rendering::Particles::Generators::PlanePositionGenerator::PlanePositionGenerator(const Math::Plane& plane, Math::Real radius) :
 	PositionGenerator(),
 	m_plane(plane),
+	m_radius(radius),
 	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
 {
 }
 
-Rendering::Particles::PositionGenerators::PlanePositionGenerator::~PlanePositionGenerator()
+Rendering::Particles::Generators::PlanePositionGenerator::~PlanePositionGenerator()
 {
 }
 
-void Rendering::Particles::PositionGenerators::PlanePositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::PlanePositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
-
-	//for (size_t i = startId; i < endId; ++i)
-	//{
-	//	Set(particleContainer, i, GenerateRandomPosition());
-	//}
+	// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c
+	for (size_t i = startId; i < endId; ++i)
+	{
+		//Math::Vector3D randomPos(m_plane.GenerateRandomPositionWithinRadius(m_radius));
+		//CRITICAL_LOG_MATH("Random position on plane: ", randomPos.ToString());
+		//Set(particleContainer, i, randomPos);
+		Set(particleContainer, i, m_plane.GenerateRandomPositionWithinRadius(m_radius));
+	}
 }
 /* ==================== class PlanePositionGenerator end ==================== */
 
 /* ==================== class BoxPositionGenerator begin ==================== */
-Rendering::Particles::PositionGenerators::BoxPositionGenerator::BoxPositionGenerator(const Math::AABB& aabb) :
+Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const Math::AABB& aabb) :
 	BoxPositionGenerator(aabb.GetBottomLeftPos().GetX(), aabb.GetTopRightPos().GetX(),
 		aabb.GetBottomLeftPos().GetY(), aabb.GetTopRightPos().GetY(),
 		aabb.GetBottomLeftPos().GetZ(), aabb.GetTopRightPos().GetZ())
 {
 }
 
-Rendering::Particles::PositionGenerators::BoxPositionGenerator::BoxPositionGenerator(const Math::Vector3D& centerPosition, Math::Real xOffset, Math::Real yOffset, Math::Real zOffset) :
+Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const Math::Vector3D& centerPosition, Math::Real xOffset, Math::Real yOffset, Math::Real zOffset) :
 	BoxPositionGenerator(centerPosition.GetX() - xOffset, centerPosition.GetX() + xOffset,
 		centerPosition.GetY() - yOffset, centerPosition.GetY() + yOffset,
 		centerPosition.GetZ() - zOffset, centerPosition.GetZ() + zOffset)
 {
 }
 
-Rendering::Particles::PositionGenerators::BoxPositionGenerator::BoxPositionGenerator(Math::Real minX, Math::Real maxX, Math::Real minY, Math::Real maxY, Math::Real minZ, Math::Real maxZ) :
+Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(Math::Real minX, Math::Real maxX, Math::Real minY, Math::Real maxY, Math::Real minZ, Math::Real maxZ) :
 	PositionGenerator(),
 	m_minX(minX),
 	m_maxX(maxX),
@@ -78,11 +87,11 @@ Rendering::Particles::PositionGenerators::BoxPositionGenerator::BoxPositionGener
 {
 }
 
-Rendering::Particles::PositionGenerators::BoxPositionGenerator::~BoxPositionGenerator()
+Rendering::Particles::Generators::BoxPositionGenerator::~BoxPositionGenerator()
 {
 }
 
-void Rendering::Particles::PositionGenerators::BoxPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::BoxPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -92,12 +101,12 @@ void Rendering::Particles::PositionGenerators::BoxPositionGenerator::Generate(Ma
 /* ==================== class BoxPositionGenerator end ==================== */
 
 /* ==================== class EllipsoidPositionGenerator begin ==================== */
-Rendering::Particles::PositionGenerators::EllipsoidPositionGenerator::EllipsoidPositionGenerator(const Math::Ellipsoid& ellipsoid) :
+Rendering::Particles::Generators::EllipsoidPositionGenerator::EllipsoidPositionGenerator(const Math::Ellipsoid& ellipsoid) :
 	EllipsoidPositionGenerator(ellipsoid.GetCenter(), ellipsoid.GetA(), ellipsoid.GetB(), ellipsoid.GetC())
 {
 }
 
-Rendering::Particles::PositionGenerators::EllipsoidPositionGenerator::EllipsoidPositionGenerator(const Math::Vector3D& center, Math::Real a, Math::Real b, Math::Real c) :
+Rendering::Particles::Generators::EllipsoidPositionGenerator::EllipsoidPositionGenerator(const Math::Vector3D& center, Math::Real a, Math::Real b, Math::Real c) :
 	PositionGenerator(),
 	m_center(center),
 	m_a(a),
@@ -107,11 +116,11 @@ Rendering::Particles::PositionGenerators::EllipsoidPositionGenerator::EllipsoidP
 {
 }
 
-Rendering::Particles::PositionGenerators::EllipsoidPositionGenerator::~EllipsoidPositionGenerator()
+Rendering::Particles::Generators::EllipsoidPositionGenerator::~EllipsoidPositionGenerator()
 {
 }
 
-void Rendering::Particles::PositionGenerators::EllipsoidPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::EllipsoidPositionGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	// TODO: Picking random point inside the ellipsoid with uniform probability.
 	// See http://stackoverflow.com/questions/5529148/algorithm-calculate-pseudo-random-point-inside-an-ellipse.
