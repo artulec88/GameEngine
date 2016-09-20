@@ -3,10 +3,13 @@
 #include "PlayGameState.h"
 #include "LoadGameState.h"
 #include "StartGameCommand.h"
+#include "ParticlesSystemBuilder.h"
+#include "ParticleEffects.h"
 
 #include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
+#include "Engine\ParticlesSystemComponent.h"
 
 #include "Rendering\Shader.h"
 
@@ -14,10 +17,12 @@
 
 #include "Utility\ILogger.h"
 #include "Utility\IConfig.h"
+#include "Utility\BuilderDirector.h"
 
 Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* mainMenuFont, Math::Real mainMenuFontSize) :
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
+	//m_particlesSystem(NULL),
 	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL,
 		Math::Vector2D(0.0f, 0.0f), 1.0f, Rendering::Color(Rendering::ColorNames::BLACK), Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
@@ -151,11 +156,20 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 
 Game::MenuGameState::~MenuGameState(void)
 {
+	//SAFE_DELETE(m_particlesSystem);
 }
 
 void Game::MenuGameState::Entered()
 {
+	AddShaders();
+
+	//ParticlesSystemBuilder particlesSystemBuilder(m_gameManager, ParticleEffects::FOUNTAIN);
+	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
+	//particlesSystemBuilderDirector.Construct();
+	//m_particlesSystem = particlesSystemBuilder.Get();
+	
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
+
 	INFO_LOG_GAME("Menu game state has been placed in the game state manager");
 }
 
@@ -175,6 +189,11 @@ void Game::MenuGameState::Revealed()
 {
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("Menu game state has become the topmost game state in the game state manager's stack");
+}
+
+void Game::MenuGameState::AddShaders()
+{
+	m_gameManager->AddShader(Engine::ShaderTypes::PARTICLES, GET_CONFIG_VALUE_STR_GAME("particleShader", "particle-shader.glsl"));
 }
 
 void Game::MenuGameState::Handle(Engine::Actions::Action action)
@@ -279,8 +298,20 @@ void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
 	m_currentMenuEntry->GetParent()->RenderAll(renderer, m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	RenderParticles(renderer);
 	//renderer->FinalizeRenderScene();
 
+	STOP_PROFILING_GAME("");
+}
+
+void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
+{
+	START_PROFILING_GAME(true, "");
+	//DEBUG_LOG_GAME("Rendering particles started");
+	//const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
+	//renderer->BindShader(particlesShader);
+	//renderer->UpdateRendererUniforms(particlesShader);
+	//renderer->RenderParticles(particlesShader, *m_particlesSystem);
 	STOP_PROFILING_GAME("");
 }
 

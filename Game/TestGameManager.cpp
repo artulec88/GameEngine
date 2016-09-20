@@ -536,7 +536,7 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 	Rendering::Particles::ParticlesSystem* particlesSystem = particlesSystemBuilder.Get();
 	if (particlesSystem != NULL)
 	{
-		INFO_LOG_RENDERING("Particles system for effect ", particleEffect, " has been created.");
+		INFO_LOG_GAME("Particles system for effect ", particleEffect, " has been created.");
 	}
 	STOP_PROFILING_GAME("");
 	return particlesSystem;

@@ -119,7 +119,6 @@ void Game::PlayGameState::AddShaders()
 	m_gameManager->AddShader(Engine::ShaderTypes::WATER, GET_CONFIG_VALUE_STR_GAME("waterShader", "water-shader.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("waterNoDirectionalLightShader", "water-no-directional-light-shader.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::BILLBOARD, GET_CONFIG_VALUE_STR_GAME("billboardShader", "billboard-shader.glsl"));
-	m_gameManager->AddShader(Engine::ShaderTypes::PARTICLES, GET_CONFIG_VALUE_STR_GAME("particleShader", "particle-shader.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("directionalLightShader", "forward-directional.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("directionalLightTerrainShader", "forward-directional-terrain.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowShader", "forward-directional-no-shadows.glsl"));

@@ -40,6 +40,22 @@ namespace Engine
 	public:
 		ENGINE_API GameNode();
 		ENGINE_API ~GameNode(void);
+		/// <summary>
+		/// Game node copy constructor.
+		/// </summary>
+		GameNode(const GameNode& gameNode) = delete;
+		/// <summary>
+		/// Game node move constructor.
+		/// </summary>
+		GameNode(GameNode&& gameNode) = delete;
+		/// <summary>
+		/// Game node copy assignment operator.
+		/// </summary>
+		GameNode& operator=(const GameNode& gameNode) = delete;
+		/// <summary>
+		/// Game node move assignment operator.
+		/// </summary>
+		GameNode& operator=(GameNode&& gameNode) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
