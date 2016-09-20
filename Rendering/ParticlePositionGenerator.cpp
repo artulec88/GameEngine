@@ -39,6 +39,7 @@ Rendering::Particles::Generators::PlanePositionGenerator::PlanePositionGenerator
 	PositionGenerator(),
 	m_plane(plane),
 	m_radius(radius),
+	m_translationPoint(50.0f, 0.0f, 50.0f),
 	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
 {
 }
@@ -55,7 +56,7 @@ void Rendering::Particles::Generators::PlanePositionGenerator::Generate(Math::Re
 		//Math::Vector3D randomPos(m_plane.GenerateRandomPositionWithinRadius(m_radius));
 		//CRITICAL_LOG_MATH("Random position on plane: ", randomPos.ToString());
 		//Set(particleContainer, i, randomPos);
-		Set(particleContainer, i, m_plane.GenerateRandomPositionWithinRadius(m_radius));
+		Set(particleContainer, i, m_plane.GenerateRandomPositionWithinRadius(m_radius, m_translationPoint));
 	}
 }
 /* ==================== class PlanePositionGenerator end ==================== */

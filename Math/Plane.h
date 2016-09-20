@@ -65,7 +65,15 @@ namespace Math
 		/// Generates random position on the plane with the assumption that it must lie within <paramref name="radius"/> to the point on the plane being closest to the origin.
 		/// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c.
 		/// </summary>
-		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius) const;
+		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius) const
+		{
+			return GenerateRandomPositionWithinRadius(radius, CalculatePointClosestToOrigin());
+		}
+		/// <summary>
+		/// Generates random position on the plane with the assumption that it must lie within <paramref name="radius"/> to the point on the plane being closest to the origin.
+		/// See http://stackoverflow.com/questions/29350965/generate-a-random-point-in-a-specific-plane-in-c.
+		/// </summary>
+		MATH_API Math::Vector3D GenerateRandomPositionWithinRadius(Math::Real radius, const Math::Vector3D& translationPoint) const;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

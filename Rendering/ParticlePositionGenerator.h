@@ -146,6 +146,7 @@ namespace Rendering
 			private:
 				Math::Plane m_plane;
 				Math::Real m_radius;
+				Math::Vector3D m_translationPoint;
 				const Math::Random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
 			}; /* end class PlanePositionGenerator */

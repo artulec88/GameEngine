@@ -40,7 +40,7 @@ Math::Vector3D Math::Plane::CalculatePointClosestToOrigin() const
 		m_normal.GetZ() * -m_distance / normalVectorLengthSquared);
 }
 
-Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius) const
+Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius, const Math::Vector3D& translationPoint) const
 {
 	Math::Vector3D w(Math::AlmostEqual(m_normal.GetX(), REAL_ZERO) ?
 		m_normal.Cross(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO)) :
@@ -59,8 +59,7 @@ Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius
 	}
 	if (!Math::AlmostEqual(m_distance, REAL_ZERO))
 	{
-		Math::Vector3D pointClosestToOrigin = CalculatePointClosestToOrigin();
-		w += pointClosestToOrigin;
+		w += translationPoint;
 	}
 	DEBUG_LOG_MATH("Random position on plane: ", w.ToString());
 	return w;
