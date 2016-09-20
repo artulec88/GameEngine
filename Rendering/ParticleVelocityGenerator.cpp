@@ -28,8 +28,8 @@ void Rendering::Particles::Generators::ConstantVelocityGenerator::Generate(Math:
 }
 /* ==================== class ConstantVelocityGenerator end ==================== */
 
-/* ==================== class BasicVelocityGenerator begin ==================== */
-Rendering::Particles::Generators::BasicVelocityGenerator::BasicVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ) :
+/* ==================== class RangeVelocityGenerator begin ==================== */
+Rendering::Particles::Generators::RangeVelocityGenerator::RangeVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ) :
 	VelocityGenerator(),
 	m_minSpeedX(minSpeedX),
 	m_maxSpeedX(maxSpeedX),
@@ -41,15 +41,15 @@ Rendering::Particles::Generators::BasicVelocityGenerator::BasicVelocityGenerator
 {
 }
 
-Rendering::Particles::Generators::BasicVelocityGenerator::~BasicVelocityGenerator()
+Rendering::Particles::Generators::RangeVelocityGenerator::~RangeVelocityGenerator()
 {
 }
 
-void Rendering::Particles::Generators::BasicVelocityGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::RangeVelocityGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
 		Set(particleContainer, i, Math::Vector3D{ m_randomGenerator.NextFloat(m_minSpeedX, m_maxSpeedX), m_randomGenerator.NextFloat(m_minSpeedY, m_maxSpeedY), m_randomGenerator.NextFloat(m_minSpeedZ, m_maxSpeedZ) });
 	}
 }
-/* ==================== class BasicVelocityGenerator end ==================== */
+/* ==================== class RangeVelocityGenerator end ==================== */

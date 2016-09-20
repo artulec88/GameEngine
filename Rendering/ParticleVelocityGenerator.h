@@ -82,15 +82,15 @@ namespace Rendering
 			/// <summary>
 			/// Generates random velocity from a given range and sets it in the particle.
 			/// </summary>
-			class BasicVelocityGenerator : public VelocityGenerator
+			class RangeVelocityGenerator : public VelocityGenerator
 			{
 				/* ==================== Static variables and functions begin ==================== */
 				/* ==================== Static variables and functions end ==================== */
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
-				RENDERING_API BasicVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ);
-				RENDERING_API virtual ~BasicVelocityGenerator();
+				RENDERING_API RangeVelocityGenerator(Math::Real minSpeedX, Math::Real maxSpeedX, Math::Real minSpeedY, Math::Real maxSpeedY, Math::Real minSpeedZ, Math::Real maxSpeedZ);
+				RENDERING_API virtual ~RangeVelocityGenerator();
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
@@ -108,7 +108,7 @@ namespace Rendering
 				Math::Real m_maxSpeedZ;
 				const Math::Random::RandomGenerator& m_randomGenerator;
 				/* ==================== Non-static member variables end ==================== */
-			}; /* end class BasicVelocityGenerator */
+			}; /* end class RangeVelocityGenerator */
 		} /* end namespace Generators */
 	} /* end namespace Particles */
 } /* end namespace Rendering */

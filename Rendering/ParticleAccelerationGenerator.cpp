@@ -4,23 +4,23 @@
 #include "Math\RandomGeneratorFactory.h"
 
 /* ==================== class ConstantAccelerationGenerator begin ==================== */
-Rendering::Particles::ConstantAccelerationGenerator::ConstantAccelerationGenerator(Math::Real accelerationX, Math::Real accelerationY, Math::Real accelerationZ) :
+Rendering::Particles::Generators::ConstantAccelerationGenerator::ConstantAccelerationGenerator(Math::Real accelerationX, Math::Real accelerationY, Math::Real accelerationZ) :
 	AccelerationGenerator(),
 	m_acceleration(accelerationX, accelerationY, accelerationZ)
 {
 }
 
-Rendering::Particles::ConstantAccelerationGenerator::ConstantAccelerationGenerator(const Math::Vector3D& acceleration) :
+Rendering::Particles::Generators::ConstantAccelerationGenerator::ConstantAccelerationGenerator(const Math::Vector3D& acceleration) :
 	AccelerationGenerator(),
 	m_acceleration(acceleration)
 {
 }
 
-Rendering::Particles::ConstantAccelerationGenerator::~ConstantAccelerationGenerator()
+Rendering::Particles::Generators::ConstantAccelerationGenerator::~ConstantAccelerationGenerator()
 {
 }
 
-void Rendering::Particles::ConstantAccelerationGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::ConstantAccelerationGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -29,8 +29,8 @@ void Rendering::Particles::ConstantAccelerationGenerator::Generate(Math::Real de
 }
 /* ==================== class ConstantAccelerationGenerator end ==================== */
 
-/* ==================== class RandomAccelerationGenerator begin ==================== */
-Rendering::Particles::RandomAccelerationGenerator::RandomAccelerationGenerator(Math::Real minAccelerationX, Math::Real maxAccelerationX, Math::Real minAccelerationY, Math::Real maxAccelerationY, Math::Real minAccelerationZ, Math::Real maxAccelerationZ) :
+/* ==================== class RangeAccelerationGenerator begin ==================== */
+Rendering::Particles::Generators::RangeAccelerationGenerator::RangeAccelerationGenerator(Math::Real minAccelerationX, Math::Real maxAccelerationX, Math::Real minAccelerationY, Math::Real maxAccelerationY, Math::Real minAccelerationZ, Math::Real maxAccelerationZ) :
 	AccelerationGenerator(),
 	m_minAccelerationX(minAccelerationX),
 	m_maxAccelerationX(maxAccelerationX),
@@ -42,11 +42,11 @@ Rendering::Particles::RandomAccelerationGenerator::RandomAccelerationGenerator(M
 {
 }
 
-Rendering::Particles::RandomAccelerationGenerator::~RandomAccelerationGenerator()
+Rendering::Particles::Generators::RangeAccelerationGenerator::~RangeAccelerationGenerator()
 {
 }
 
-void Rendering::Particles::RandomAccelerationGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
+void Rendering::Particles::Generators::RangeAccelerationGenerator::Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId)
 {
 	for (size_t i = startId; i < endId; ++i)
 	{
@@ -54,4 +54,4 @@ void Rendering::Particles::RandomAccelerationGenerator::Generate(Math::Real delt
 			m_randomGenerator.NextFloat(m_minAccelerationY, m_maxAccelerationY), m_randomGenerator.NextFloat(m_minAccelerationZ, m_maxAccelerationZ) });
 	}
 }
-/* ==================== class RandomAccelerationGenerator end ==================== */
+/* ==================== class RangeAccelerationGenerator end ==================== */

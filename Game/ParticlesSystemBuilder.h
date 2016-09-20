@@ -8,6 +8,7 @@
 #include "Engine\GameManager.h"
 
 #include "Rendering\ParticlesSystem.h"
+#include "Rendering\ParticlesEmitter.h"
 
 #include "Utility\Builder.h"
 
@@ -35,6 +36,19 @@ namespace Game
 		virtual void BuildPart1();
 		virtual void BuildPart2();
 		virtual void BuildPart3();
+	private:
+		void AddPositionGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddVelocityGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddAccelerationGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddGravityEffectFactorGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddLifeSpanGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddRotationGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddScaleGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddTextureOffsetGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddColorGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddMassGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddAliveGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
+		void AddIdGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -43,6 +57,7 @@ namespace Game
 		ParticleEffects::ParticleEffect m_particleEffect;
 		std::string m_configurationSuffix;
 		TextureIDs::TextureID m_textureID;
+		Rendering::Particles::Attributes::AttributesMask m_attributesMask;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticlesSystemBuilder */
 } /* end namespace Game */

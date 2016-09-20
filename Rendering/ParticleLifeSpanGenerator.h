@@ -13,66 +13,102 @@ namespace Rendering
 {
 	namespace Particles
 	{
-
-		/// <summary>
-		/// Generates life span limit for the particle.
-		/// </summary>
-		class LifeSpanLimitGenerator : public ParticleAttributeGenerator
+		namespace Generators
 		{
-			/* ==================== Static variables and functions begin ==================== */
-			/* ==================== Static variables and functions end ==================== */
-
-			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			LifeSpanLimitGenerator() :
-				ParticleAttributeGenerator(Attributes::LIFE_SPAN)
+			namespace LifeSpanGeneratorTypes
 			{
-			}
-			virtual ~LifeSpanLimitGenerator()
+				enum LifeSpanGeneratorType
+				{
+					CONSTANT = 0,
+					RANGE
+				}; /* end enum LifeSpanGeneratorType */
+			} /* end namespace LifeSpanGeneratorTypes */
+
+			/// <summary>
+			/// Generates life span limit for the particles.
+			/// </summary>
+			class LifeSpanLimitGenerator : public ParticleAttributeGenerator
 			{
-			}
-			/* ==================== Constructors and destructors end ==================== */
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Non-static member functions begin ==================== */
-		protected:
-			inline void Set(ParticlesContainer* particleContainer, size_t i, Math::Real lifeSpanLimit)
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				LifeSpanLimitGenerator() :
+					ParticleAttributeGenerator(Attributes::LIFE_SPAN)
+				{
+				}
+				virtual ~LifeSpanLimitGenerator()
+				{
+				}
+				/* ==================== Constructors and destructors end ==================== */
+
+				/* ==================== Non-static member functions begin ==================== */
+			protected:
+				inline void Set(ParticlesContainer* particleContainer, size_t i, Math::Real lifeSpanLimit)
+				{
+					particleContainer->SetLifeSpanLimit(i, lifeSpanLimit);
+					particleContainer->SetLifeSpan(i, REAL_ZERO);
+				}
+				/* ==================== Non-static member functions end ==================== */
+
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class LifeSpanLimitGenerator */
+
+			/// <summary>
+			/// Generates constant life span limit and sets it in the particles.
+			/// </summary>
+			class ConstantLifeSpanLimitGenerator : public LifeSpanLimitGenerator
 			{
-				particleContainer->SetLifeSpanLimit(i, lifeSpanLimit);
-				particleContainer->SetLifeSpan(i, REAL_ZERO);
-			}
-			/* ==================== Non-static member functions end ==================== */
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Non-static member variables begin ==================== */
-		private:
-			/* ==================== Non-static member variables end ==================== */
-		}; /* end class LifeSpanLimitGenerator */
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				RENDERING_API ConstantLifeSpanLimitGenerator(Math::Real lifeSpanLimit);
+				RENDERING_API virtual ~ConstantLifeSpanLimitGenerator();
+				/* ==================== Constructors and destructors end ==================== */
 
-		   /// <summary>
-		   /// Generates random life span limit from a given range and sets it in the particle.
-		   /// </summary>
-		class BasicLifeSpanLimitGenerator : public LifeSpanLimitGenerator
-		{
-			/* ==================== Static variables and functions begin ==================== */
-			/* ==================== Static variables and functions end ==================== */
+				/* ==================== Non-static member functions begin ==================== */
+			public:
+				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				/* ==================== Non-static member functions end ==================== */
 
-			/* ==================== Constructors and destructors begin ==================== */
-		public:
-			RENDERING_API BasicLifeSpanLimitGenerator(Math::Real minLifeSpanLimit, Math::Real maxLifeSpanLimit);
-			RENDERING_API virtual ~BasicLifeSpanLimitGenerator();
-			/* ==================== Constructors and destructors end ==================== */
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				Math::Real m_lifeSpanLimit;
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class ConstantLifeSpanLimitGenerator */
 
-			/* ==================== Non-static member functions begin ==================== */
-		public:
-			RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
-			/* ==================== Non-static member functions end ==================== */
+			/// <summary>
+			/// Generates random life span limit from a given range and sets it in the particles.
+			/// </summary>
+			class RangeLifeSpanLimitGenerator : public LifeSpanLimitGenerator
+			{
+				/* ==================== Static variables and functions begin ==================== */
+				/* ==================== Static variables and functions end ==================== */
 
-			/* ==================== Non-static member variables begin ==================== */
-		private:
-			Math::Real m_minLifeSpanLimit;
-			Math::Real m_maxLifeSpanLimit;
-			const Math::Random::RandomGenerator& m_randomGenerator;
-			/* ==================== Non-static member variables end ==================== */
-		}; /* end class BasicLifeSpanLimitGenerator */
+				/* ==================== Constructors and destructors begin ==================== */
+			public:
+				RENDERING_API RangeLifeSpanLimitGenerator(Math::Real minLifeSpanLimit, Math::Real maxLifeSpanLimit);
+				RENDERING_API virtual ~RangeLifeSpanLimitGenerator();
+				/* ==================== Constructors and destructors end ==================== */
+
+				/* ==================== Non-static member functions begin ==================== */
+			public:
+				RENDERING_API virtual void Generate(Math::Real deltaTime, ParticlesContainer* particleContainer, size_t startId, size_t endId);
+				/* ==================== Non-static member functions end ==================== */
+
+				/* ==================== Non-static member variables begin ==================== */
+			private:
+				Math::Real m_minLifeSpanLimit;
+				Math::Real m_maxLifeSpanLimit;
+				const Math::Random::RandomGenerator& m_randomGenerator;
+				/* ==================== Non-static member variables end ==================== */
+			}; /* end class RangeLifeSpanLimitGenerator */
+		} /* end namespace Generators */
 	} /* end namespace Particles */
 } /* end namespace Rendering */
 
