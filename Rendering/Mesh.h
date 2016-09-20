@@ -293,11 +293,30 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>
+		/// Instance mesh constructor.
+		/// </summary>
 		InstanceMesh(Math::Vector2D* positions, unsigned int positionsCount, unsigned int maxParticlesCount, unsigned int instanceDataLength);
+		/// <summary>
+		/// Instance mesh destructor.
+		/// </summary>
 		virtual ~InstanceMesh(void);
-	private: // disable copy constructor and assignment operator
-		InstanceMesh(InstanceMesh& mesh);
-		void operator=(InstanceMesh& mesh);
+		/// <summary>
+		/// Instance mesh copy constructor.
+		/// </summary>
+		InstanceMesh(const InstanceMesh& instanceMesh) = delete;
+		/// <summary>
+		/// Instance mesh move constructor.
+		/// </summary>
+		InstanceMesh(InstanceMesh&& instanceMesh) = delete;
+		/// <summary>
+		/// Instance mesh copy assignment operator.
+		/// </summary>
+		InstanceMesh& operator=(const InstanceMesh& instanceMesh) = delete;
+		/// <summary>
+		/// Instance mesh move assignment operator.
+		/// </summary>
+		InstanceMesh& operator=(InstanceMesh&& instanceMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
