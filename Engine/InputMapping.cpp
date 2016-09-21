@@ -5,6 +5,7 @@
 
 #include "Utility\ILogger.h"
 #include "Utility\FileManager.h"
+//#include "Utility\IConfig.h"
 
 #include <fstream>
 
@@ -26,9 +27,11 @@ Engine::Input::InputMapping::InputMapping(const std::string& contextListFileName
 	{
 		for (unsigned i = 0; i < count; ++i)
 		{
-			std::string name = Utility::FileManager::AttemptRead<std::string>(inFile);
-			std::ifstream file(Utility::FileManager::AttemptRead<std::string>(inFile));
-			m_inputContexts[name] = std::make_unique<InputContext>(file);
+			//Utility::IConfig::CreateConfig()
+			const std::string name = Utility::FileManager::AttemptRead<std::string>(inFile);
+			const std::string fileName = Utility::FileManager::AttemptRead<std::string>(inFile);
+			EMERGENCY_LOG_ENGINE("Input context \"", name, "\" initialized with file \"", fileName, "\".");
+			m_inputContexts[name] = std::make_unique<InputContext>(std::ifstream(fileName));
 		}
 	}
 }

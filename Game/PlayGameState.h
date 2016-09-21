@@ -134,6 +134,9 @@ namespace Game
 		std::vector<Rendering::Lighting::PointLight*> m_pointLights;
 		//std::vector<Lighting::SpotLight*> m_spotLights;
 
+		Math::Vector2D m_previousMousePos, m_mousePos;
+		bool m_mousePosChanged;
+
 #ifdef PROFILING_GAME_MODULE_ENABLED
 		Math::Statistics::ClassStats& m_classStats;
 #endif

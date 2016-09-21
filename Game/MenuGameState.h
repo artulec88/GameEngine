@@ -82,7 +82,6 @@ namespace Game
 		std::unique_ptr<Math::Effects::Effect<Math::Real>> m_selectedMenuEntryBorderEdgeTransitionWidthEffect;
 
 		Math::Real m_mousePosX, m_mousePosY;
-		bool m_mousePosChanged;
 
 		Engine::MousePicker m_mousePicker;
 		Engine::MenuEntry* m_currentMenuEntry;

@@ -47,9 +47,12 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	m_directionalLightsCount(0),
 	m_lights(),
 	m_directionalAndSpotLights(),
-	m_pointLights()
+	m_pointLights(),
+	m_previousMousePos(REAL_ZERO, REAL_ZERO),
+	m_mousePos(REAL_ZERO, REAL_ZERO),
+	m_mousePosChanged(false)
 #ifdef PROFILING_GAME_MODULE_ENABLED
-	,m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
+	, m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
 {
 }
@@ -180,7 +183,7 @@ void Game::PlayGameState::AddPointLights()
 			pointLightBuilder.SetLightIndex(i);
 			lightBuilderDirector.Construct();
 			Rendering::Lighting::PointLight* pointLight = pointLightBuilder.Get();
-			
+
 			if (pointLight != NULL)
 			{
 				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
@@ -240,10 +243,43 @@ void Game::PlayGameState::Handle(Engine::Actions::Action action)
 
 void Game::PlayGameState::Handle(Engine::States::State state)
 {
+	//DELOCUST_LOG_GAME("Handling the state ", state);
+	switch (state)
+	{
+	case Engine::States::MOUSE_KEY_LEFT_PRESSED:
+		DEBUG_LOG_GAME("Mouse left key pressed");
+		break;
+	case Engine::States::MOUSE_KEY_MIDDLE_PRESSED:
+		DEBUG_LOG_GAME("Mouse middle key pressed");
+		break;
+	case Engine::States::MOUSE_KEY_RIGHT_PRESSED:
+		DEBUG_LOG_GAME("Mouse right key pressed");
+		break;
+	default:
+		DEBUG_LOG_GAME("The state ", state, " is not supported by the MenuGameState");
+		break;
+	}
 }
 
 void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 {
+	switch (range)
+	{
+	case Engine::Ranges::AXIS_X:
+		m_previousMousePos.SetX(m_mousePos.GetX());
+		m_mousePos.SetX(value);
+		m_mousePosChanged = true;
+		DEBUG_LOG_GAME("Mouse pos = ", m_mousePos.ToString());
+		break;
+	case Engine::Ranges::AXIS_Y:
+		m_previousMousePos.SetY(m_mousePos.GetY());
+		m_mousePos.SetY(value);
+		DEBUG_LOG_GAME("Mouse pos = ", m_mousePos.ToString());
+		break;
+	default:
+		DEBUG_LOG_GAME("The range ", range, " is not supported by the PlayGameState");
+		break;
+	}
 }
 
 void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
@@ -351,7 +387,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 #ifdef DEBUG_RENDERING_ENABLED
 	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
-	
+
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
 		m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_FXAA) :
 		m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_NULL));
@@ -443,7 +479,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	//	STOP_PROFILING_GAME("");
 	//	return;
 	//}
-	
+
 	//glDisable(GL_DEPTH_TEST);
 	renderer->SetCullFaceFront();
 	/**
@@ -472,7 +508,7 @@ void Game::PlayGameState::RenderWaterTextures(Rendering::Renderer* renderer) con
 
 	RenderWaterReflectionTexture(renderer);
 	RenderWaterRefractionTexture(renderer);
-	
+
 	renderer->DisableClippingPlanes();
 	STOP_PROFILING_GAME("");
 }
@@ -481,7 +517,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
-	
+
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
 	Rendering::Camera& currentCamera = renderer->GetCurrentCamera();
 	const Math::Real cameraHeight = currentCamera.GetPos().GetY();
@@ -521,7 +557,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	//}
 
 	//BindAsRenderTarget();
-	
+
 	currentCamera.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
 	currentCamera.GetRot().InvertPitch();
 
@@ -532,15 +568,15 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 {
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
-	
+
 	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
 	renderer->BindWaterRefractionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
-	
+
 	//glDisable(GL_DEPTH_TEST);
 	RenderSkybox(renderer);
 	RenderSceneWithAmbientLight(renderer);
-	
+
 	//RenderSceneWithPointLights(renderer);
 	//for (std::vector<Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
 	//{
@@ -553,9 +589,9 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 	//	RenderSceneWithLight(m_currentLight, gameNode, false);
 	//}
 	//SetVector3D("inverseFilterTextureSize", Vector3D(REAL_ONE / m_waterReflectionTexture->GetWidth(), REAL_ONE / m_waterReflectionTexture->GetHeight(), REAL_ZERO));
-	
+
 	//glEnable(GL_DEPTH_TEST);
-	
+
 	//if (Rendering::antiAliasingMethod == Rendering::Aliasing::FXAA)
 	//{
 	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_FXAA), m_waterReflectionTexture, NULL);
@@ -564,9 +600,9 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 	//{
 	//	ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), m_waterReflectionTexture, NULL);
 	//}
-	
+
 	//BindAsRenderTarget();
-	
+
 	STOP_PROFILING_GAME("");
 }
 

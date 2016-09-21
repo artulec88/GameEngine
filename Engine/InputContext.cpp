@@ -15,9 +15,10 @@ Engine::Input::InputContext::InputContext(const std::string& inputContextName) :
 	{
 		std::stringstream ss("");
 		ss << (i + 1);
-		RawInputAxes::RawInputAxis axis = static_cast<RawInputAxes::RawInputAxis>(GET_CONFIG_VALUE_ENGINE(inputContextName + "RawInputAxis_" + ss.str(), 0));
-		Ranges::Range range = static_cast<Ranges::Range>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Range_" + ss.str(), 0));
+		RawInputAxes::RawInputAxis axis = static_cast<RawInputAxes::RawInputAxis>(GET_CONFIG_VALUE_ENGINE(inputContextName + "RawInputAxis_" + ss.str(), static_cast<int>(RawInputAxes::RAW_INPUT_AXIS_MOUSE_X)));
+		Ranges::Range range = static_cast<Ranges::Range>(GET_CONFIG_VALUE_ENGINE(inputContextName + "Range_" + ss.str(), static_cast<int>(Ranges::INVALID)));
 		m_rangesMap[axis] = range;
+		ERROR_LOG_ENGINE("Axis = ", axis, " mapped to range = ", range);
 	}
 
 	unsigned int statesCount = GET_CONFIG_VALUE_ENGINE(inputContextName + "StatesCount", 0);
@@ -66,6 +67,7 @@ Engine::Input::InputContext::InputContext(std::ifstream& inputContextFile) :
 		RawInputAxes::RawInputAxis axis = static_cast<RawInputAxes::RawInputAxis>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		Ranges::Range range = static_cast<Ranges::Range>(Utility::FileManager::AttemptRead<unsigned>(inputContextFile));
 		m_rangesMap[axis] = range;
+		ERROR_LOG_ENGINE("Axis = ", axis, " mapped to range = ", range);
 	}
 
 	unsigned int statesCount = Utility::FileManager::AttemptRead<unsigned>(inputContextFile);

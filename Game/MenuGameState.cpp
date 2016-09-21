@@ -111,7 +111,6 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 					GET_CONFIG_VALUE_GAME("mainMenuSelectedEntryBorderEdgeTransitionWidthTime_5", 0.4f) }.data(), 5, false)),
 			m_mousePosX(REAL_ZERO),
 			m_mousePosY(REAL_ZERO),
-			m_mousePosChanged(false),
 			m_mousePicker(),
 			m_currentMenuEntry(NULL)
 #ifdef PROFILING_GAME_MODULE_ENABLED
