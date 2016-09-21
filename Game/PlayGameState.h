@@ -56,8 +56,10 @@ namespace Game
 		virtual void Render(Rendering::Renderer* renderer) const;
 		virtual void Update(Math::Real elapsedTime);
 	private:
-		void AddLights();
 		void AddShaders();
+		void AddLights();
+		void AddTerrainNode();
+		void AddWaterNodes();
 		void AddDirectionalLight();
 		void AddPointLights();
 		void AddSpotLights();
@@ -107,7 +109,11 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		//Rendering::GameNode& m_rootGameNode;
+		Engine::GameNode m_terrainNode;
+		Rendering::TerrainMesh* m_terrainMesh;
+		Rendering::Material* m_terrainMaterial;
+
+		Engine::GameNode m_waterNode;
 		bool m_isMouseLocked;
 		Engine::GameManager* m_gameManager;
 		Engine::MousePicker m_mousePicker;

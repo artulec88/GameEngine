@@ -45,8 +45,30 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>
+		/// Mapped values container constructor.
+		/// </summary>
 		MappedValues();
+		/// <summary>
+		/// Mapped values container destructor.
+		/// </summary>
 		~MappedValues();
+		/// <summary>
+		/// Mapped values container copy constructor.
+		/// </summary>
+		MappedValues(const MappedValues& mappedValues) = delete;
+		/// <summary>
+		/// Mapped values container move constructor.
+		/// </summary>
+		MappedValues(MappedValues&& mappedValues) = delete;
+		/// <summary>
+		/// Mapped values container copy assignment operator.
+		/// </summary>
+		MappedValues& operator=(const MappedValues& mappedValues) = delete;
+		/// <summary>
+		/// Mapped values container move assignment operator.
+		/// </summary>
+		MappedValues& operator=(MappedValues&& mappedValues) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 

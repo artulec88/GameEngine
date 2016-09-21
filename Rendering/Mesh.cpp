@@ -724,6 +724,7 @@ Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* 
 	m_gridSquareSize(0)
 #endif
 {
+	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
 Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
@@ -742,6 +743,8 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	m_gridSquareSize(0)
 #endif
 {
+	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
+
 	/* Loading heightmap begin */
 	std::string name = heightMapFileName;
 	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
@@ -830,6 +833,8 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 
 	SavePositions(positions);
 	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+
+	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
 Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
@@ -848,6 +853,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	m_gridSquareSize(0)
 #endif
 {
+	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
 	const int vertexCountMinusOne = m_vertexCount - 1;
 #ifdef HEIGHTS_KD_TREE
 	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
@@ -912,6 +918,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 
 	SavePositions(positions);
 	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
 Rendering::TerrainMesh::~TerrainMesh(void)

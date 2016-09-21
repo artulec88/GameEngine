@@ -1,16 +1,11 @@
 #include "StdAfx.h"
 #include "Material.h"
 
-Rendering::Material::Material(const Texture* diffuseTexture,
-	Math::Real specularIntensity,
-	Math::Real specularPower,
-	const Texture* normalMap,
-	const Texture* displacementMap,
-	Math::Real displacementScale /* = REAL_ZERO */,
-	Math::Real displacementOffset /* = REAL_ZERO */) :
-		m_mappedValues(),
-		m_hasMultipleTextures(false)
+Rendering::Material::Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap, const Texture* displacementMap, Math::Real displacementScale /* = REAL_ZERO */, Math::Real displacementOffset /* = REAL_ZERO */) :
+	m_mappedValues(),
+	m_hasMultipleTextures(false)
 {
+	DEBUG_LOG_RENDERING("Material construction has started.");
 	if (diffuseTexture == NULL)
 	{
 		ERROR_LOG_RENDERING("The material is given the NULL diffuse texture");
@@ -26,15 +21,18 @@ Rendering::Material::Material(const Texture* diffuseTexture,
 	Math::Real baseBias = displacementScale / static_cast<Math::Real>(2.0f); /* TODO: Don't use hardcoded values! Ever! */
 	m_mappedValues.SetReal("displacementScale", displacementScale);
 	m_mappedValues.SetReal("displacementBias", -baseBias + baseBias * displacementOffset);
+	DEBUG_LOG_RENDERING("Material has been created.");
 }
 
 Rendering::Material::Material(const Texture* texture, const std::string& textureName)
 {
+	DEBUG_LOG_RENDERING("Material construction has started.");
 	if (texture == NULL)
 	{
 		ERROR_LOG_RENDERING("The material is given the NULL main texture");
 	}
 	m_mappedValues.SetTexture(textureName, texture);
+	DEBUG_LOG_RENDERING("Material has been created.");
 }
 
 Rendering::Material::~Material()

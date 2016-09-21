@@ -88,6 +88,11 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 
 int main(int argc, char* argv[])
 {
+	//LPWSTR pBuff;
+	//DWORD len;
+	//int bytes = GetModuleFileName(NULL, pBuff, len);
+	//printf("Current working directory = %s\n", argv[0]);
+
 	std::string shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
 	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
 

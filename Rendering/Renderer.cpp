@@ -203,35 +203,6 @@ Rendering::Renderer::~Renderer(void)
 	NOTICE_LOG_RENDERING("Rendering engine destroyed");
 }
 
-//void Renderer::AddTerrainNode(GameNode* terrainNode)
-//{
-//	CHECK_CONDITION_RENDERING(terrainNode != NULL, Utility::ERR, "Cannot register terrain node. Given terrain node is NULL.");
-//	m_terrainNodes.push_back(terrainNode);
-//}
-
-//void Renderer::AddWaterNode(GameNode* waterNode)
-//{
-//	CHECK_CONDITION_EXIT_RENDERING(waterNode != NULL, Utility::EMERGENCY, "Adding water node failed. The water node is NULL.");
-//	if (m_waterNodes.empty())
-//	{
-//		INFO_LOG_RENDERING("Adding first water node to the rendering engine. Enabling clipping planes, creating reflection, refraction textures and the water shader.");
-//	}
-//	m_waterNodes.push_back(waterNode);
-//}
-
-//void Renderer::AddBillboardNode(GameNode* billboardNode)
-//{
-//	CHECK_CONDITION_EXIT_RENDERING(billboardNode != NULL, Utility::EMERGENCY, "Adding billboard node failed. The given billboard node is NULL.");
-//	m_billboardNodes.push_back(billboardNode);
-//}
-
-//void Renderer::AddSkyboxNode(GameNode* skyboxNode)
-//{
-//	CHECK_CONDITION_EXIT_RENDERING(skyboxNode != NULL, Utility::EMERGENCY, "Adding skybox node failed. The given skybox node is NULL.");
-//	CHECK_CONDITION_RENDERING(m_skyboxNode == NULL, Utility::WARNING, "The currently assigned skybox node is being overwritten");
-//	m_skyboxNode = skyboxNode;
-//}
-
 /* TODO: Remove in the future */
 struct CameraDirection
 {

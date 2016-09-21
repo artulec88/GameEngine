@@ -14,7 +14,7 @@ Engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
 	m_physicsObject(nullptr)
 {
-	//INFO_LOG_ENGINE("transform = \"", transform.ToString(), "\".");
+	DEBUG_LOG_ENGINE("Game node with ID ", m_ID, " has been created.");
 }
 
 

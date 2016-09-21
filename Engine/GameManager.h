@@ -95,8 +95,6 @@ namespace Engine
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
 		ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
-		ENGINE_API inline GameNode* GetWaterNode() { return m_waterNode; }
-		ENGINE_API inline GameNode* GetTerrainNode() { return m_terrainNode; }
 		ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
 		ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardsNodes; }
 		ENGINE_API inline const std::vector<Rendering::Particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
@@ -179,8 +177,6 @@ namespace Engine
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 	public:
-		ENGINE_API void AddTerrainNode(GameNode* terrainNode);
-		ENGINE_API void AddWaterNode(GameNode* waterNode);
 		ENGINE_API void AddBillboardsNode(GameNode* billboardsNode);
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
@@ -192,9 +188,7 @@ namespace Engine
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		GameNode m_rootGameNode;
-		GameNode* m_terrainNode;
 		GameNode* m_skyboxNode;
-		GameNode* m_waterNode;
 		std::vector<GameNode*> m_billboardsNodes;
 		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
 		ShaderFactory m_shaderFactory;

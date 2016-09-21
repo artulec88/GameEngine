@@ -41,9 +41,7 @@ Engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
 	m_rootGameNode(),
-	m_terrainNode(NULL),
 	m_skyboxNode(NULL),
-	m_waterNode(NULL),
 	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
 	m_textureFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory()),
 	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
@@ -87,7 +85,6 @@ Engine::GameManager::~GameManager(void)
 	INFO_LOG_ENGINE("Game manager destruction started");
 	//SAFE_DELETE(m_rootGameNode);
 	SAFE_DELETE(m_gameStateManager);
-	SAFE_DELETE(m_terrainNode);
 	SAFE_DELETE(m_skyboxNode);
 	DEBUG_LOG_ENGINE("Game manager destruction finished");
 }
@@ -131,11 +128,6 @@ void Engine::GameManager::AddToSceneRoot(GameNode* child)
 	m_rootGameNode.AddChild(child);
 }
 
-void Engine::GameManager::AddWaterNode(GameNode* waterNode)
-{
-	m_waterNode = waterNode;
-}
-
 void Engine::GameManager::AddBillboardsNode(GameNode* billboardsNode)
 {
 	//CoreEngine::GetCoreEngine()->AddBillboardNode(billboardNode);
@@ -153,12 +145,6 @@ void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& g
 	//m_texts[guiText.GetFont()].push_back(guiText); // TODO: What about duplicates?
 	//m_texts.insert(std::pair<const Rendering::Text::Font*, std::vector<Rendering::Text::GuiTextControl>>(guiText.GetFont(), std::vector<Rendering::Text::GuiTextControl>()));
 	//m_texts[guiText.GetFont()].push_back(guiText);
-}
-
-void Engine::GameManager::AddTerrainNode(GameNode* terrainNode)
-{
-	//CoreEngine::GetCoreEngine()->AddTerrainNode(terrainNode);
-	m_terrainNode = terrainNode;
 }
 
 void Engine::GameManager::AddSkyboxNode(GameNode* skyboxNode)

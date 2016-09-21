@@ -185,7 +185,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 		{ GLFW_KEY_W, Input::RawInputKeys::KEY_W }, { GLFW_KEY_X, Input::RawInputKeys::KEY_X }, { GLFW_KEY_Y, Input::RawInputKeys::KEY_Y }, { GLFW_KEY_Z, Input::RawInputKeys::KEY_Z },
 		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
 		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT } }),
-	m_inputMapping(GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
+	m_inputMapping("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\" + GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
@@ -789,18 +789,6 @@ void Engine::CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
 {
 	m_game->AddSkyboxNode(skyboxNode);
 	//m_renderer->AddSkyboxNode(skyboxNode);
-}
-
-void Engine::CoreEngine::AddWaterNode(GameNode* waterNode)
-{
-	//m_game.AddWaterNode(waterNode);
-	//m_renderer->AddWaterNode(waterNode);
-}
-
-void Engine::CoreEngine::AddTerrainNode(GameNode* terrainNode)
-{
-	m_game->AddTerrainNode(terrainNode);
-	//m_renderer->AddTerrainNode(terrainNode);
 }
 
 void Engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)

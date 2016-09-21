@@ -50,17 +50,8 @@ Game::TestGameManager::TestGameManager() :
 	m_resumeGameCommand(),
 	m_saveGameCommand(),
 	m_loadGameCommand(),
-	m_terrainMesh(NULL),
 	m_timeToUpdateCameraHeight(REAL_ZERO),
 	m_boxNode(NULL),
-#ifdef ANT_TWEAK_BAR_ENABLED 
-	terrainMaterial(NULL),
-	boxMaterial(NULL),
-	terrainSpecularIntensity(GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f)),
-	terrainSpecularPower(GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f)),
-	terrainDisplacementScale(GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f)),
-	terrainDisplacementOffset(GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f)),
-#endif
 	HUMAN_NODES_COUNT(2),
 	humanNodes(NULL),
 	cameraCount(GET_CONFIG_VALUE_GAME("cameraCount", 3)),
@@ -317,7 +308,9 @@ Engine::GameState* Game::TestGameManager::GetPlayGameState()
 {
 	if (m_playGameState == nullptr)
 	{
+		DEBUG_LOG_GAME("Creating play game state");
 		m_playGameState = std::make_unique<PlayGameState>(this, "PlayInputContext");
+		DEBUG_LOG_GAME("Play game state created");
 	}
 	return m_playGameState.get();
 }
@@ -338,47 +331,8 @@ void Game::TestGameManager::Load()
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
-	m_terrainNode = new Engine::GameNode();
-	//m_terrainMesh = new Rendering::TerrainMesh(GET_CONFIG_VALUE_STR_GAME("terrainModel", "terrain02.obj"));
-	//m_terrainMesh = new Rendering::TerrainMesh(REAL_ZERO, REAL_ZERO, GET_CONFIG_VALUE_STR_GAME("terrainHeightMap", "terrainHeightMap.png"));
-	const int terrainVertexCount = GET_CONFIG_VALUE_GAME("terrainVertexCount", 128);
-	Math::HeightsGenerator heightsGenerator(0, 0, terrainVertexCount, GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
-		GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f));
-	m_terrainMesh = new Rendering::TerrainMesh(0, 0, heightsGenerator, terrainVertexCount);
-#ifndef ANT_TWEAK_BAR_ENABLED
-	Math::Real terrainSpecularIntensity = GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f);
-	Math::Real terrainSpecularPower = GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f);
-	Math::Real terrainDisplacementScale = GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f);
-	Math::Real terrainDisplacementOffset = GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f);
-	Rendering::Material* terrainMaterial = new Material(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
-#else
-	terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), terrainSpecularIntensity, terrainSpecularPower,
-		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-		m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")), terrainDisplacementScale, terrainDisplacementOffset);
-	//terrainMaterial = new Rendering::Material(m_textureFactory.CreateTexture(TextureTypes::TERRAIN_DIFFUSE_1, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")),
-	//	terrainSpecularIntensity, terrainSpecularPower,
-	//	m_textureFactory.CreateTexture(TextureTypes::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
-	//	m_textureFactory.CreateTexture(TextureTypes::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
-	//	terrainDisplacementScale, terrainDisplacementOffset);
-#endif
-	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_BLEND_MAP, GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
-	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_2, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
-	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
-	terrainMaterial->SetAdditionalTexture(m_textureFactory.CreateTexture(TextureIDs::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
-	m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	m_terrainNode->AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, terrainMaterial));
-	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
-	//m_terrainNode->GetTransform().SetScale(20.0f);
-	//m_terrainMesh->Initialize();
-	m_terrainMesh->TransformPositions(m_terrainNode->GetTransform().GetTransformation());
-	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
-	AddTerrainNode(m_terrainNode);
-
 	Engine::GameNode* testMesh1 = new Engine::GameNode();
-	testMesh1->GetTransform().SetPos(-2.0f, m_terrainMesh->GetHeightAt(Math::Vector2D(-2.0f, 2.0f)), 2.0f);
+	testMesh1->GetTransform().SetPos(-2.0f, 2.0f, 2.0f);
 	testMesh1->GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1->GetTransform().SetScale(0.1f);
 	Engine::GameNode* testMesh2 = new Engine::GameNode();
@@ -406,7 +360,7 @@ void Game::TestGameManager::Load()
 		Engine::GameNode* treeNode = new Engine::GameNode();
 		Math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
 		Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
-		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		Math::Real y = 0.0f;
 		treeNode->GetTransform().SetPos(x, y, z);
 		treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		treeNode->GetTransform().SetScale(0.01f);
@@ -422,7 +376,7 @@ void Game::TestGameManager::Load()
 		Engine::GameNode* boulderNode = new Engine::GameNode();
 		Math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
 		Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
-		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		Math::Real y = 0.0f;
 		boulderNode->GetTransform().SetPos(x, y, z);
 		boulderNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
 		boulderNode->GetTransform().SetScale(0.01f);
@@ -461,15 +415,6 @@ void Game::TestGameManager::Load()
 	////monkeyNode2->AddComponent(new LookAtComponent());
 	//AddToSceneRoot(monkeyNode2);
 
-	Engine::GameNode* waterNode = new Engine::GameNode();
-	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
-	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	waterNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
-	m_resourcesLoaded += 2;
-	waterNode->GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
-	waterNode->GetTransform().SetScale(0.2f);
-	AddWaterNode(waterNode);
-
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_1,
 		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
@@ -499,7 +444,7 @@ void Game::TestGameManager::Load()
 	playerNode->CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
 	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	//playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
 	playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	m_resourcesLoaded += 2;
@@ -552,7 +497,7 @@ void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Renderin
 	{
 		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
 		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
-		Math::Real y = m_terrainMesh->GetHeightAt(Math::Vector2D(x, z));
+		Math::Real y = 0.0f;
 
 		Math::Transform billboardTransform(Math::Vector3D(x, y, z), Math::Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
 		//angle += 15.0f;
@@ -666,17 +611,12 @@ void Game::TestGameManager::InitializeTweakBars()
 	//TwAddVarRW(testGamePropertiesBar, "terrainSpecularPower", TW_TYPE_FLOAT, &terrainSpecularPower, " label='Terrain specular power' group='Terrain' ");
 	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementScale", TW_TYPE_FLOAT, &terrainDisplacementScale, " label='Terrain displacement scale' group='Terrain' ");
 	//TwAddVarRW(testGamePropertiesBar, "terrainDisplacementOffset", TW_TYPE_FLOAT, &terrainDisplacementOffset, " label='Terrain displacement offset' group='Terrain' ");
-	if (terrainMaterial == NULL)
-	{
-		ERROR_LOG_GAME("Cannot add terrain material information to tweak bar. The terrain material is NULL.");
-		return;
-	}
 
 	//TwAddVarRO(testGamePropertiesBar, "temp1", TW_TYPE_INT32, &HUMAN_NODES_COUNT, " label='Human count' group='Terrain' ");
 	//TwAddVarRO(testGamePropertiesBar, "temp2", TW_TYPE_INT32, &pointLightCount, " label='Human count' group='Box' ");
 
-	terrainMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
-	terrainMaterial->InitializeTweakBar(testGamePropertiesBar, "Terrain");
+	//terrainMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO));
+	//terrainMaterial->InitializeTweakBar(testGamePropertiesBar, "Terrain");
 	//boxMaterial->SetVector3D("Vec1", Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ONE));
 	//boxMaterial->InitializeTweakBar(testGamePropertiesBar, "Box");
 

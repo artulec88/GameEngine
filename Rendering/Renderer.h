@@ -99,11 +99,6 @@ namespace Rendering
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
-		//RENDERING_API void AddTerrainNode(GameNode* terrainNode);
-		//RENDERING_API void AddWaterNode(GameNode* waterNode);
-		//RENDERING_API void AddBillboardNode(GameNode* billboardNode);
-		//RENDERING_API void AddSkyboxNode(GameNode* skyboxNode);
-
 		RENDERING_API inline void BindShader(const Shader& shader) { shader.Bind(); }
 		RENDERING_API inline void UpdateRendererUniforms(const Shader& shader) { shader.UpdateRendererUniforms(this); }
 

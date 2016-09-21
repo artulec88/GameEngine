@@ -24,14 +24,17 @@ Rendering::TextureFactory::~TextureFactory()
 
 const Rendering::Texture* Rendering::TextureFactory::CreateTexture(int textureID, const std::string& textureFileName)
 {
+	INFO_LOG_RENDERING("Creating texture \"", textureFileName, "\" for ID ", textureID);
 	std::pair<std::map<int, Texture>::iterator, bool> texturePair =
 		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(textureFileName)));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
+	DEBUG_LOG_RENDERING("Texture \"", textureFileName, "\" has been created for ID ", textureID);
 	return &texturePair.first->second;
 }
 
 const Rendering::Texture* Rendering::TextureFactory::CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory)
 {
+	INFO_LOG_RENDERING("Creating cube texture \"", cubeTextureDirectory, "\" for ID ", textureID);
 	const std::string DIRECTORY_PATH_SEPARATOR = "\\"; // for Windows it's "\", but for Unix it's "/"
 	const std::string EXPECTED_POS_X_FACE_FILENAME = "right";
 	const std::string EXPECTED_NEG_X_FACE_FILENAME = "left";
@@ -91,11 +94,13 @@ const Rendering::Texture* Rendering::TextureFactory::CreateCubeTexture(int textu
 	std::pair<std::map<int, Texture>::iterator, bool> texturePair =
 		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(cubeMapPosXFaceFileName, cubeMapNegXFaceFileName, cubeMapPosYFaceFileName, cubeMapNegYFaceFileName, cubeMapPosZFaceFileName, cubeMapNegZFaceFileName)));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Cube texture \"", cubeTextureDirectory, "\" has already been created.");
+	DEBUG_LOG_RENDERING("Cube texture \"", cubeTextureDirectory, "\" has been created for ID ", textureID);
 	return &texturePair.first->second;
 }
 
 const Rendering::Particles::ParticleTexture* Rendering::TextureFactory::CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive)
 {
+	INFO_LOG_RENDERING("Creating particles texture \"", textureFileName, "\" for ID ", textureID);
 	std::pair<std::map<int, Particles::ParticleTexture>::iterator, bool> particleTexturePair =
 		m_textureType2ParticleTextureMap.insert(std::make_pair(textureID, Particles::ParticleTexture(textureFileName, rowsCount, isAdditive)));
 	CHECK_CONDITION_RENDERING(particleTexturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");

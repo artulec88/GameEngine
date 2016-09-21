@@ -320,6 +320,7 @@ Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /*
 	m_textureData(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
 	m_fileName(fileName)
 {
+	INFO_LOG_RENDERING("Texture \"", fileName, "\" has been created.");
 }
 
 Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */,
@@ -339,7 +340,8 @@ Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned c
 }
 
 Rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName) :
-	m_textureData(posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName)
+	m_textureData(posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName),
+	m_fileName()
 {
 }
 

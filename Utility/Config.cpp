@@ -28,12 +28,9 @@ Utility::Config::~Config()
 
 void Utility::Config::LoadFromFile()
 {
+	INFO_LOG_UTILITY("Loading configuration from file \"", m_fileName, "\".");
 	std::ifstream file(m_fileName);
-	if (!file.is_open())
-	{
-		ERROR_LOG_UTILITY("Could not open configuration file ", m_fileName);
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(file.is_open(), Logging::ERR, "Could not open configuration file \"", m_fileName, "\".");
 	m_cfgValues.clear();
 	//cfgNotDefinedValues.clear();
 

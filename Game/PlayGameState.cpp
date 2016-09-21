@@ -2,9 +2,11 @@
 #include "PlayMenuGameState.h"
 #include "LightBuilder.h"
 #include "LightBuilder_impl.h"
+#include "TextureIDs.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
+#include "Engine\MeshRendererComponent.h"
 #include "Engine\GameNode.h"
 
 #include "Rendering\ParticlesSystem.h"
@@ -18,6 +20,10 @@
 
 Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
+	m_terrainNode(),
+	m_terrainMesh(NULL),
+	m_terrainMaterial(NULL),
+	m_waterNode(),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
 	m_mousePicker(),
@@ -55,6 +61,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	, m_classStats(STATS_STORAGE.GetClassStats("PlayGameState"))
 #endif
 {
+	DEBUG_LOG_GAME("Play game state created");
 }
 
 Game::PlayGameState::~PlayGameState(void)
@@ -66,6 +73,8 @@ void Game::PlayGameState::Entered()
 	START_PROFILING_GAME(true, "");
 
 	AddShaders();
+	AddTerrainNode();
+	AddWaterNodes();
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
@@ -134,6 +143,42 @@ void Game::PlayGameState::AddShaders()
 	m_gameManager->AddShader(Engine::ShaderTypes::SPOT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("spotLightTerrainShader", "forward-spot-terrain.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::SPOT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowShader", "forward-spot-no-shadows.glsl"));
 	m_gameManager->AddShader(Engine::ShaderTypes::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
+}
+
+void Game::PlayGameState::AddTerrainNode()
+{
+	START_PROFILING_GAME(true, "");
+	DEBUG_LOG_GAME("Adding terrain node");
+	m_terrainMesh = new Rendering::TerrainMesh(0, 0, Math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
+		GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f)), GET_CONFIG_VALUE_GAME("terrainVertexCount", 128));
+	m_terrainMaterial = new Rendering::Material(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f),
+		GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f), m_gameManager->AddTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
+		m_gameManager->AddTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
+		GET_CONFIG_VALUE_GAME("defaultDisplacementScale", 0.02f), GET_CONFIG_VALUE_GAME("defaultDisplacementOffset", -0.5f));
+
+	//m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_BLEND_MAP, GET_CONFIG_VALUE_STR_GAME("terrainBlendMap", "terrainBlendMap.png")), "blendMap");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_2, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture2", "rocks2.jpg")), "diffuse2");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
+	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
+	//m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
+	m_terrainNode.AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, m_terrainMaterial));
+	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
+	//m_terrainNode->GetTransform().SetScale(20.0f);
+	//m_terrainMesh->Initialize();
+	m_terrainMesh->TransformPositions(m_terrainNode.GetTransform().GetTransformation());
+	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
+	STOP_PROFILING_GAME("");
+}
+
+void Game::PlayGameState::AddWaterNodes()
+{
+	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
+	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
+	m_waterNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
+	//m_resourcesLoaded += 2;
+	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
+	m_waterNode.GetTransform().SetScale(0.2f);
 }
 
 void Game::PlayGameState::AddLights()
@@ -410,7 +455,7 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* rende
 	const Rendering::Shader& ambientTerrainShader = GetAmbientTerrainShader(renderer->GetFogInfo());
 	renderer->BindShader(ambientTerrainShader);
 	renderer->UpdateRendererUniforms(ambientTerrainShader);
-	m_gameManager->GetTerrainNode()->Render(ambientTerrainShader, renderer);
+	m_terrainNode.Render(ambientTerrainShader, renderer);
 }
 
 void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
@@ -430,7 +475,7 @@ void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* render
 			continue;
 		}
 		m_gameManager->GetRootGameNode().Render(currentPointLight->GetShader(), renderer);
-		m_gameManager->GetTerrainNode()->Render(currentPointLight->GetTerrainShader(), renderer);
+		m_terrainNode.Render(currentPointLight->GetTerrainShader(), renderer);
 	}
 }
 
@@ -449,7 +494,7 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 				renderer->BindShader(shadowMapShader);
 				renderer->UpdateRendererUniforms(shadowMapShader);
 				m_gameManager->GetRootGameNode().Render(shadowMapShader, renderer);
-				m_gameManager->GetTerrainNode()->Render(shadowMapShader, renderer); // TODO: Probably unnecessary
+				m_terrainNode.Render(shadowMapShader, renderer); // TODO: Probably unnecessary
 				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_GAUSSIAN_BLUR));
 			}
 
@@ -460,7 +505,7 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 			m_gameManager->GetRootGameNode().Render(currentLight->GetShader(), renderer);
 			renderer->BindShader(currentLight->GetTerrainShader());
 			renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
-			m_gameManager->GetTerrainNode()->Render(currentLight->GetTerrainShader(), renderer);
+			m_terrainNode.Render(currentLight->GetTerrainShader(), renderer);
 			renderer->FinalizeLightRendering();
 		}
 	}
@@ -521,11 +566,11 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
 	Rendering::Camera& currentCamera = renderer->GetCurrentCamera();
 	const Math::Real cameraHeight = currentCamera.GetPos().GetY();
-	Math::Real distance = 2.0f * (cameraHeight - m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
+	Math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
 	currentCamera.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
 	currentCamera.GetRot().InvertPitch();
 
-	renderer->EnableWaterReflectionClippingPlane(-m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
+	renderer->EnableWaterReflectionClippingPlane(-m_waterNode.GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	renderer->BindWaterReflectionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 
@@ -569,7 +614,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
-	renderer->EnableWaterRefractionClippingPlane(m_gameManager->GetWaterNode()->GetTransform().GetTransformedPos().GetY());
+	renderer->EnableWaterRefractionClippingPlane(m_waterNode.GetTransform().GetTransformedPos().GetY());
 	renderer->BindWaterRefractionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 
@@ -609,7 +654,8 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
+	// TODO: Add some condition here that will prevent any water nodes rendering if there are no water nodes available.
+	//CHECK_CONDITION_RETURN_VOID_ALWAYS_GAME(m_waterNode != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 	renderer->InitWaterNodesRendering();
 
 	// TODO: In the future there might be more than one water node.
@@ -627,7 +673,7 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	const Rendering::Shader& waterShader = GetWaterShader(renderer);
 	renderer->BindShader(waterShader);
 	renderer->UpdateRendererUniforms(waterShader);
-	m_gameManager->GetWaterNode()->Render(waterShader, renderer);
+	m_waterNode.Render(waterShader, renderer);
 	STOP_PROFILING_GAME("");
 }
 
@@ -686,7 +732,7 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 	//AdjustAmbientLightAccordingToCurrentTime();
 
 	CalculateSunElevationAndAzimuth();
-
+	DEBUG_LOG_GAME("PLAY game state updated");
 	STOP_PROFILING_GAME("");
 }
 

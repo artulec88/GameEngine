@@ -131,7 +131,7 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 			//DEBUG_LOG_RENDERING("#Include directive found in Line = \"", line, "\"");
 
 			std::vector<std::string> tokens;
-			DEBUG_LOG_RENDERING("Shader line \"", line, "\"");
+			DELOCUST_LOG_RENDERING("Shader line \"", line, "\"");
 			Utility::StringUtility::CutToTokens(line, tokens, ' ');
 			//for (int i = 0; i < tokens.size(); ++i)
 			//{
@@ -149,7 +149,7 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 	}
 	file.close();
 
-	DEBUG_LOG_RENDERING("Shader \"", fileName, "\" text loaded");
+	DELOCUST_LOG_RENDERING("Shader \"", fileName, "\" text loaded");
 	/* ==================== Removing comments from the shader code begin ==================== */
 	size_t commentBegin = output.find(MULTI_LINE_COMMENT_BEGIN);
 	while (commentBegin != std::string::npos)
@@ -618,7 +618,7 @@ void Rendering::Shader::UpdateUniforms(const Math::Transform& transform, const M
 void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform integer \"", name, "\":", value);
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform integer \"", name, "\":", value);
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -634,7 +634,7 @@ void Rendering::Shader::SetUniformi(const std::string& name, int value) const
 void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform float \"", name, "\":", value);
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform float \"", name, "\":", value);
 	//for (std::map<std::string, unsigned int>::const_iterator it = m_shaderData->GetUniformMap().begin(); it != m_shaderData->GetUniformMap().end(); ++it)
 	//{
 	//	DEBUG_LOG_RENDERING("Uniform map <\"", it->first, "\", ", it->second, ">");
@@ -650,7 +650,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -664,7 +664,7 @@ void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::
 void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -682,7 +682,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::Vector4D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -700,7 +700,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::
 void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x, Math::Real y, Math::Real z, Math::Real w) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -716,7 +716,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(uniformName, itr))
 	{
@@ -729,7 +729,7 @@ void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Co
 void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DEBUG_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix.ToString());
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{

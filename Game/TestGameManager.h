@@ -32,9 +32,10 @@ namespace Game
 	public:
 		TestGameManager();
 		virtual ~TestGameManager(void);
-	private:
-		TestGameManager(TestGameManager& gameManager);
-		void operator=(TestGameManager& gameManager);
+		TestGameManager(const TestGameManager& gameManager) = delete;
+		TestGameManager(TestGameManager&& testGameManager) = delete;
+		TestGameManager& operator=(const TestGameManager& testGameManager) = delete;
+		TestGameManager& operator=(TestGameManager&& testGameManager) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -95,17 +96,9 @@ namespace Game
 		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector2D>> m_vec2DBlinkEffects;
 		//std::vector<Rendering::Effects::BlinkEffect<Math::Vector3D>> m_vec3DBlinkEffects;
 
-		Rendering::TerrainMesh* m_terrainMesh;
 		Math::Real m_timeToUpdateCameraHeight;
 
 		Engine::GameNode* m_boxNode;
-#ifdef ANT_TWEAK_BAR_ENABLED
-		Rendering::Material* terrainMaterial;
-		Rendering::Material* boxMaterial;
-
-		Math::Real terrainSpecularIntensity, terrainSpecularPower;
-		Math::Real terrainDisplacementScale, terrainDisplacementOffset;
-#endif
 
 		const int HUMAN_NODES_COUNT;
 		Engine::GameNode** humanNodes;
