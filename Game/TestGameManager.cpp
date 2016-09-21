@@ -415,16 +415,6 @@ void Game::TestGameManager::Load()
 	////monkeyNode2->AddComponent(new LookAtComponent());
 	//AddToSceneRoot(monkeyNode2);
 
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_1,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_2,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BILLBOARD_TREE_3,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-
 	//humanNodes = new GameNode* [HUMAN_NODES_COUNT];
 	//for (int i = 0; i < HUMAN_NODES_COUNT; ++i)
 	//{
@@ -451,8 +441,6 @@ void Game::TestGameManager::Load()
 	AddToSceneRoot(playerNode);
 
 	AddCameras(playerNode); // Adding cameras
-
-	AddSkybox(); // Adding skybox
 
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
@@ -487,44 +475,6 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 	return particlesSystem;
 }
 
-void Game::TestGameManager::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
-{
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
-	Math::Real angle = 0.0f;
-	std::vector<Math::Real> billboardsModelMatrices;
-	billboardsModelMatrices.reserve(billboardsCount * MATRIX_SIZE * MATRIX_SIZE);
-	for (int i = 0; i < billboardsCount; ++i)
-	{
-		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
-		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
-		Math::Real y = 0.0f;
-
-		Math::Transform billboardTransform(Math::Vector3D(x, y, z), Math::Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
-		//angle += 15.0f;
-		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
-
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 0));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 1));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 2));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 3));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 0));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 1));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 2));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 3));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 0));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 1));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 2));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 3));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 0));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 1));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
-		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
-	}
-	Engine::GameNode* billboardsNode = new Engine::GameNode();
-	billboardsNode->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
-	AddBillboardsNode(billboardsNode);
-}
-
 void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 {
 	START_PROFILING_GAME(true, "");
@@ -543,20 +493,6 @@ void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
 		AddToSceneRoot(cameraNode);
 	}
 	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
-	STOP_PROFILING_GAME("");
-}
-
-void Game::TestGameManager::AddSkybox()
-{
-	START_PROFILING_GAME(true, "");
-
-	DEBUG_LOG_GAME("Creating a skybox");
-
-	SkyboxBuilder skyboxBuilder(this);
-	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
-	skyboxBuilderDirector.Construct();
-	//GameNode* skyboxNode = skyboxBuilder.Get();
-	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING_GAME("");
 }
 

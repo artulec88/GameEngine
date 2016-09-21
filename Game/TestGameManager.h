@@ -59,9 +59,7 @@ namespace Game
 #endif
 	private:
 		Rendering::Particles::ParticlesSystem* CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
-		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddCameras(Engine::GameNode* entityToFollow);
-		void AddSkybox();
 		//void AddStaticEffects();
 		//void AddSmoothEffects();
 		//void AddBlinkEffects();

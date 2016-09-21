@@ -95,8 +95,6 @@ namespace Engine
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
 		ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
-		ENGINE_API inline GameNode* GetSkyboxNode() { return m_skyboxNode; }
-		ENGINE_API inline const std::vector<GameNode*>& GetBillboardNodes() const { return m_billboardsNodes; }
 		ENGINE_API inline const std::vector<Rendering::Particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
@@ -177,9 +175,7 @@ namespace Engine
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 	public:
-		ENGINE_API void AddBillboardsNode(GameNode* billboardsNode);
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
-		ENGINE_API void AddSkyboxNode(GameNode* skyboxNode);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
 	protected:
 		ENGINE_API void AddToSceneRoot(GameNode* child);
@@ -188,13 +184,11 @@ namespace Engine
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		GameNode m_rootGameNode;
-		GameNode* m_skyboxNode;
-		std::vector<GameNode*> m_billboardsNodes;
 		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
 		ShaderFactory m_shaderFactory;
 		Rendering::TextureFactory m_textureFactory;
 		Rendering::Text::FontFactory m_fontFactory;
-		GameStateManager* m_gameStateManager;
+		std::unique_ptr<GameStateManager> m_gameStateManager;
 		bool m_isGameLoaded;
 
 		const EmptyGameCommand m_emptyGameCommand;

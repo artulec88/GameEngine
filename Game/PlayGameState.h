@@ -60,6 +60,8 @@ namespace Game
 		void AddLights();
 		void AddTerrainNode();
 		void AddWaterNodes();
+		void AddSkyboxNode();
+		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddDirectionalLight();
 		void AddPointLights();
 		void AddSpotLights();
@@ -114,6 +116,8 @@ namespace Game
 		Rendering::Material* m_terrainMaterial;
 
 		Engine::GameNode m_waterNode;
+		Engine::GameNode* m_skyboxNode;
+		std::vector<Engine::GameNode*> m_billboardsNodes;
 		bool m_isMouseLocked;
 		Engine::GameManager* m_gameManager;
 		Engine::MousePicker m_mousePicker;

@@ -149,8 +149,6 @@ void Game::SkyboxBuilder::BuildPart1()
 void Game::SkyboxBuilder::BuildPart2()
 {
 	m_object->AddComponent(new Engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
-
-	m_gameManager->AddSkyboxNode(m_object);
 }
 
 #ifdef BUILD_MESH_RENDERER

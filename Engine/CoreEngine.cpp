@@ -785,12 +785,6 @@ void Engine::CoreEngine::CentralizeCursor()
 	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
-void Engine::CoreEngine::AddSkyboxNode(GameNode* skyboxNode)
-{
-	m_game->AddSkyboxNode(skyboxNode);
-	//m_renderer->AddSkyboxNode(skyboxNode);
-}
-
 void Engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
 {
 	//m_renderer->AddBillboardNode(billboardNode);

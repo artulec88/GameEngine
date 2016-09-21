@@ -3,10 +3,12 @@
 #include "LightBuilder.h"
 #include "LightBuilder_impl.h"
 #include "TextureIDs.h"
+#include "GameNodeBuilder.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\MeshRendererComponent.h"
+#include "Engine\BillboardRendererComponent.h"
 #include "Engine\GameNode.h"
 
 #include "Rendering\ParticlesSystem.h"
@@ -24,6 +26,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	m_terrainMesh(NULL),
 	m_terrainMaterial(NULL),
 	m_waterNode(),
+	m_skyboxNode(NULL),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
 	m_mousePicker(),
@@ -66,6 +69,11 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 
 Game::PlayGameState::~PlayGameState(void)
 {
+	SAFE_DELETE(m_skyboxNode);
+	for (auto billboardNode = m_billboardsNodes.begin(); billboardNode != m_billboardsNodes.end(); ++billboardNode)
+	{
+		SAFE_DELETE(*billboardNode);
+	}
 }
 
 void Game::PlayGameState::Entered()
@@ -75,6 +83,16 @@ void Game::PlayGameState::Entered()
 	AddShaders();
 	AddTerrainNode();
 	AddWaterNodes();
+	AddSkyboxNode();
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_1,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_2,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_3,
+		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
@@ -179,6 +197,58 @@ void Game::PlayGameState::AddWaterNodes()
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
 	m_waterNode.GetTransform().SetScale(0.2f);
+}
+
+void Game::PlayGameState::AddSkyboxNode()
+{
+	START_PROFILING_GAME(true, "");
+
+	DEBUG_LOG_GAME("Creating a skybox");
+
+	SkyboxBuilder skyboxBuilder(m_gameManager);
+	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
+	skyboxBuilderDirector.Construct();
+	m_skyboxNode = skyboxBuilder.Get();
+	NOTICE_LOG_GAME("The skybox has been created");
+	STOP_PROFILING_GAME("");
+}
+
+void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
+{
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	Math::Real angle = 0.0f;
+	std::vector<Math::Real> billboardsModelMatrices;
+	billboardsModelMatrices.reserve(billboardsCount * MATRIX_SIZE * MATRIX_SIZE);
+	for (int i = 0; i < billboardsCount; ++i)
+	{
+		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
+		Math::Real z = randomGenerator.NextFloat(0.0f, 150.0f);
+		Math::Real y = 0.0f;
+
+		Math::Transform billboardTransform(Math::Vector3D(x, y, z), Math::Quaternion(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Angle(angle)), 0.5f);
+		//angle += 15.0f;
+		Math::Matrix4D billboardModelMatrix = billboardTransform.GetTransformation();
+
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(0, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(1, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(2, 3));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 0));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 1));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
+		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
+	}
+	Engine::GameNode* billboardsNode = new Engine::GameNode();
+	billboardsNode->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
+	m_billboardsNodes.push_back(billboardsNode);
 }
 
 void Game::PlayGameState::AddLights()
@@ -517,8 +587,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Skybox rendering started");
 
-	Engine::GameNode* skyboxNode = m_gameManager->GetSkyboxNode();
-	skyboxNode->GetTransform().SetPos(renderer->GetCurrentCamera().GetPos());
+	m_skyboxNode->GetTransform().SetPos(renderer->GetCurrentCamera().GetPos());
 	//if (m_fogEnabled)
 	//{
 	//	STOP_PROFILING_GAME("");
@@ -536,7 +605,7 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	const Rendering::Shader& skyboxShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SKYBOX);
 	renderer->BindShader(skyboxShader);
 	renderer->UpdateRendererUniforms(skyboxShader);
-	skyboxNode->Render(skyboxShader, renderer);
+	m_skyboxNode->Render(skyboxShader, renderer);
 	renderer->SetDepthFuncDefault();
 	renderer->SetCullFaceDefault();
 	//glEnable(GL_DEPTH_TEST);
@@ -690,7 +759,7 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	const Rendering::Shader& billboardShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD);
 	renderer->BindShader(billboardShader);
 	renderer->UpdateRendererUniforms(billboardShader);
-	for (std::vector<Engine::GameNode*>::const_iterator billboardsNodeItr = m_gameManager->GetBillboardNodes().begin(); billboardsNodeItr != m_gameManager->GetBillboardNodes().end(); ++billboardsNodeItr)
+	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
 	{
 		(*billboardsNodeItr)->Render(billboardShader, renderer);
 	}
@@ -723,7 +792,7 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
 	m_gameManager->GetRootGameNode().Update(elapsedTime);
-	m_gameManager->GetSkyboxNode()->Update(elapsedTime);
+	m_skyboxNode->Update(elapsedTime);
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
 	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, Utility::Timing::MICROSECOND);
