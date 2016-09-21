@@ -57,14 +57,19 @@ namespace Game
 		virtual void Update(Math::Real elapsedTime);
 	private:
 		void AddShaders();
-		void AddLights();
 		void AddTerrainNode();
 		void AddWaterNodes();
 		void AddSkyboxNode();
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
+		void AddCameras(Engine::GameNode* entityToFollow);
+		void AddLights();
 		void AddDirectionalLight();
 		void AddPointLights();
 		void AddSpotLights();
+
+		unsigned int SetCurrentCamera(unsigned int cameraIndex);
+		unsigned int NextCamera();
+		unsigned int PrevCamera();
 
 		const Rendering::Shader& GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
 		const Rendering::Shader& GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
@@ -118,6 +123,9 @@ namespace Game
 		Engine::GameNode m_waterNode;
 		Engine::GameNode* m_skyboxNode;
 		std::vector<Engine::GameNode*> m_billboardsNodes;
+		std::vector<Rendering::Camera*> m_cameras;
+		unsigned int m_currentCameraIndex;
+
 		bool m_isMouseLocked;
 		Engine::GameManager* m_gameManager;
 		Engine::MousePicker m_mousePicker;

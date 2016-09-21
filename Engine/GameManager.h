@@ -167,13 +167,6 @@ namespace Engine
 
 		ENGINE_API inline const ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
 		ENGINE_API inline const Rendering::TextureFactory& GetTextureFactory() const { return m_textureFactory; }
-
-		Rendering::Camera* GetCurrentCamera() { return m_cameras[m_currentCameraIndex]; }
-		unsigned int GetCurrentCameraIndex() const { return m_currentCameraIndex; }
-		ENGINE_API void AddCamera(Rendering::Camera* camera);
-		unsigned int SetCurrentCamera(unsigned int cameraIndex);
-		unsigned int NextCamera();
-		unsigned int PrevCamera();
 	public:
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
@@ -195,9 +188,6 @@ namespace Engine
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
 		//Rendering::Effects::EffectFactory m_effectFactory;
 
-		std::vector<Rendering::Camera*> m_cameras;
-		unsigned int m_currentCameraIndex;
-
 		/// <summary>
 		/// The list of game nodes that are interested in handling the particular action event that occurred in the game.
 		/// </summary>
@@ -215,7 +205,6 @@ namespace Engine
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		TwBar* m_gameBar;
-		unsigned int m_cameraCountMinusOne;
 #endif
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED

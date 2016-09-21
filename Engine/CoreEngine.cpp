@@ -730,24 +730,6 @@ void Engine::CoreEngine::ScrollEvent(GLFWwindow* window, double xOffset, double 
 	m_game->ScrollEvent(xOffset, yOffset);
 }
 
-size_t Engine::CoreEngine::GetCurrentCameraIndex() const
-{
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot get the current camera index. The game does not exist.");
-	return m_game->GetCurrentCameraIndex();
-}
-
-size_t Engine::CoreEngine::NextCamera() const
-{
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot move to the next camera. The game does not exist.");
-	return m_game->NextCamera();
-}
-
-size_t Engine::CoreEngine::PrevCamera() const
-{
-	CHECK_CONDITION_EXIT_ENGINE(m_game != NULL, Utility::Logging::CRITICAL, "Cannot move to the previous camera. The game does not exist.");
-	return m_game->PrevCamera();
-}
-
 void Engine::CoreEngine::PollEvents()
 {
 	glfwPollEvents();

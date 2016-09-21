@@ -46,15 +46,12 @@ Engine::GameManager::GameManager() :
 	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(std::make_unique<Engine::DefaultGameStateManager>()),
 	m_isGameLoaded(false),
-	m_cameras(),
-	m_currentCameraIndex(0),
 	m_emptyGameCommand(),
 	m_actionsToGameCommandsMap(),
 	//m_actionsToGameCommandsMap({ { Input::Actions::EMPTY, std::make_unique<EmptyGameCommand>() } }), // cannot do it this way since it requires copying the unique_ptr object
 	m_actionsToGameNodesMap()
 #ifdef ANT_TWEAK_BAR_ENABLED
-	, m_gameBar(NULL),
-	m_cameraCountMinusOne(-1)
+	, m_gameBar(NULL)
 #endif
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("GameManager"))
@@ -237,56 +234,12 @@ void Engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName
 	CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(soundEffectFileName, volume, pitch);
 }
 
-void Engine::GameManager::AddCamera(Rendering::Camera* camera)
-{
-	if (m_cameras.empty())
-	{
-		camera->Activate();
-	}
-	m_cameras.push_back(camera);
-#ifdef ANT_TWEAK_BAR_ENABLED
-	++m_cameraCountMinusOne;
-#endif
-}
-
-unsigned int Engine::GameManager::SetCurrentCamera(unsigned int cameraIndex)
-{
-	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
-		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
-	m_cameras[m_currentCameraIndex]->Deactivate();
-	m_currentCameraIndex = cameraIndex;
-	m_cameras[m_currentCameraIndex]->Activate();
-#ifndef ANT_TWEAK_BAR_ENABLED
-	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
-	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
-#endif
-	return m_currentCameraIndex;
-}
-
-unsigned int Engine::GameManager::NextCamera()
-{
-	if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
-	{
-		m_currentCameraIndex = -1;
-	}
-	return SetCurrentCamera(m_currentCameraIndex + 1);
-}
-
-unsigned int Engine::GameManager::PrevCamera()
-{
-	if (m_currentCameraIndex == 0)
-	{
-		m_currentCameraIndex = m_cameras.size();
-	}
-	return SetCurrentCamera(m_currentCameraIndex - 1);
-}
-
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Engine::GameManager::InitializeTweakBars()
 {
 	m_gameBar = TwNewBar("GameBar");
-	TwAddVarRW(m_gameBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
-	TwSetParam(m_gameBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
+	//TwAddVarRW(m_gameBar, "currentCamera", TW_TYPE_UINT32, &m_currentCameraIndex, " label='Current camera' ");
+	//TwSetParam(m_gameBar, "currentCamera", "max", TW_PARAM_INT32, 1, &m_cameraCountMinusOne);
 	TwSetParam(m_gameBar, NULL, "visible", TW_PARAM_CSTRING, 1, "true"); // Hide the bar at startup
 
 	// TODO: Move these to PlayGameState InitializeTweakBars() method.

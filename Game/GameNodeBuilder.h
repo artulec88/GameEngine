@@ -14,7 +14,7 @@
 namespace Game
 {
 
-	class CameraBuilder : public Utility::Builder<Engine::GameNode>
+	class CameraBuilder : public Utility::Builder<Rendering::Camera>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -34,7 +34,7 @@ namespace Game
 		virtual void BuildPart1();
 		virtual void BuildPart2();
 		void SetCameraIndex(int cameraIndex);
-		void SetEntityToFollow(Engine::GameNode* gameNodeToFollow);
+		//void SetEntityToFollow(Engine::GameNode* gameNodeToFollow);
 	protected:
 		void SetupCameraTransform();
 		void SetupCameraParams();
@@ -52,13 +52,13 @@ namespace Game
 		const Math::Real M_DEFAULT_CAMERA_NEAR_PLANE;
 		const Math::Real M_DEFAULT_CAMERA_FAR_PLANE;
 		const Math::Real M_DEFAULT_CAMERA_SENSITIVITY;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
-		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
-		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
+		//const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
+		//const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
+		//const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
+		//const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 		int m_cameraIndex;
 		std::string m_cameraIndexStr;
-		Engine::GameNode* m_gameNodeToFollow;
+		//Engine::GameNode* m_gameNodeToFollow;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 

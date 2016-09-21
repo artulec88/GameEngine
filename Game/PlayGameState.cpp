@@ -74,6 +74,10 @@ Game::PlayGameState::~PlayGameState(void)
 	{
 		SAFE_DELETE(*billboardNode);
 	}
+	for (auto camera = m_cameras.begin(); camera != m_cameras.end(); ++camera)
+	{
+		SAFE_DELETE(*camera);
+	}
 }
 
 void Game::PlayGameState::Entered()
@@ -93,6 +97,7 @@ void Game::PlayGameState::Entered()
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_3,
 		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	AddCameras(NULL);
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
@@ -249,6 +254,34 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 	Engine::GameNode* billboardsNode = new Engine::GameNode();
 	billboardsNode->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
 	m_billboardsNodes.push_back(billboardsNode);
+}
+
+void Game::PlayGameState::AddCameras(Engine::GameNode* entityToFollow)
+{
+	START_PROFILING_GAME(true, "");
+	const int cameraCount = GET_CONFIG_VALUE_GAME("cameraCount", 3);
+	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
+
+	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
+
+	CameraBuilder cameraBuilder(m_gameManager);
+	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
+	for (int i = 0; i < cameraCount; ++i)
+	{
+		cameraBuilder.SetCameraIndex(i);
+		//cameraBuilder.SetEntityToFollow(entityToFollow);
+		cameraBuilderDirector.Construct();
+		if (m_cameras.empty())
+		{
+			cameraBuilder.Get()->Activate();
+		}
+		m_cameras.push_back(cameraBuilder.Get());
+		CRITICAL_LOG_GAME("You forgot to add camera node to scene root node.!!!");
+		CRITICAL_LOG_GAME("There are no camera components in the application anymore!!!");
+		//AddToSceneRoot(cameraNode);
+	}
+	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
+	STOP_PROFILING_GAME("");
 }
 
 void Game::PlayGameState::AddLights()
@@ -479,7 +512,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
-	renderer->SetCurrentCamera(m_gameManager->GetCurrentCamera());
+	renderer->SetCurrentCamera(m_cameras[m_currentCameraIndex]);
 
 	RenderWaterTextures(renderer);
 
@@ -948,4 +981,36 @@ const Rendering::Shader& Game::PlayGameState::GetAmbientTerrainShader(const Rend
 	}
 	STOP_PROFILING_ENGINE("");
 	return m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::AMBIENT_TERRAIN);
+}
+
+unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
+{
+	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
+		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
+	m_cameras[m_currentCameraIndex]->Deactivate();
+	m_currentCameraIndex = cameraIndex;
+	m_cameras[m_currentCameraIndex]->Activate();
+#ifndef ANT_TWEAK_BAR_ENABLED
+	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
+	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
+#endif
+	return m_currentCameraIndex;
+}
+
+unsigned int Game::PlayGameState::NextCamera()
+{
+	if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
+	{
+		m_currentCameraIndex = -1;
+	}
+	return SetCurrentCamera(m_currentCameraIndex + 1);
+}
+
+unsigned int Game::PlayGameState::PrevCamera()
+{
+	if (m_currentCameraIndex == 0)
+	{
+		m_currentCameraIndex = m_cameras.size();
+	}
+	return SetCurrentCamera(m_currentCameraIndex - 1);
 }

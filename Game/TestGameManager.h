@@ -100,8 +100,6 @@ namespace Game
 
 		const int HUMAN_NODES_COUNT;
 		Engine::GameNode** humanNodes;
-		const int cameraCount;
-		Engine::GameNode** cameraNodes;
 		bool m_heightMapCalculationEnabled;
 
 #ifdef PROFILING_GAME_MODULE_ENABLED

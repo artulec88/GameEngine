@@ -54,8 +54,6 @@ Game::TestGameManager::TestGameManager() :
 	m_boxNode(NULL),
 	HUMAN_NODES_COUNT(2),
 	humanNodes(NULL),
-	cameraCount(GET_CONFIG_VALUE_GAME("cameraCount", 3)),
-	cameraNodes(NULL),
 	m_heightMapCalculationEnabled(GET_CONFIG_VALUE_GAME("heightmapCalculationEnabled", true))
 #ifdef PROFILING_GAME_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("TestGameManager"))
@@ -86,7 +84,6 @@ Game::TestGameManager::TestGameManager() :
 Game::TestGameManager::~TestGameManager(void)
 {
 	SAFE_DELETE_JUST_TABLE(humanNodes);
-	SAFE_DELETE_JUST_TABLE(cameraNodes);
 }
 
 //void Game::TestGameManager::AddStaticEffects()
@@ -440,8 +437,6 @@ void Game::TestGameManager::Load()
 	m_resourcesLoaded += 2;
 	AddToSceneRoot(playerNode);
 
-	AddCameras(playerNode); // Adding cameras
-
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING_GAME("");
@@ -473,27 +468,6 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 	}
 	STOP_PROFILING_GAME("");
 	return particlesSystem;
-}
-
-void Game::TestGameManager::AddCameras(Engine::GameNode* entityToFollow)
-{
-	START_PROFILING_GAME(true, "");
-	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
-
-	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
-
-	CameraBuilder cameraBuilder(this);
-	Utility::BuilderDirector<Engine::GameNode> cameraBuilderDirector(cameraBuilder);
-	for (int i = 0; i < cameraCount; ++i)
-	{
-		cameraBuilder.SetCameraIndex(i);
-		cameraBuilder.SetEntityToFollow(entityToFollow);
-		cameraBuilderDirector.Construct();
-		Engine::GameNode* cameraNode = cameraBuilder.Get();
-		AddToSceneRoot(cameraNode);
-	}
-	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
-	STOP_PROFILING_GAME("");
 }
 
 //

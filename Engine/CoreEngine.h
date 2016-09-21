@@ -88,9 +88,6 @@ namespace Engine
 		//ENGINE_API void MakeMainWindowCurrentContext() const { glfwMakeContextCurrent(m_window); }
 		GLFWwindow* GetThreadWindow() const { return m_threadWindow; }
 
-		size_t GetCurrentCameraIndex() const;
-		size_t NextCamera() const;
-		size_t PrevCamera() const;
 
 		void WindowResizeEvent(GLFWwindow* window, int width, int height);
 		/// <summary>
