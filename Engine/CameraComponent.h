@@ -4,7 +4,8 @@
 #include "Engine.h"
 #include "GameComponent.h"
 #include "IUpdateable.h"
-#include "IInputableMouse.h"
+#include "IStateHandler.h"
+#include "IRangeHandler.h"
 
 #include "Rendering\Camera.h"
 
@@ -73,7 +74,7 @@ namespace Engine
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraMoveComponent */
 
-	class CameraFollowComponent : public CameraComponent, public Input::IInputableMouse
+	class CameraFollowComponent : public CameraComponent, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
@@ -93,9 +94,8 @@ namespace Engine
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		ENGINE_API virtual void Update(Math::Real delta);
-		ENGINE_API virtual void MouseButtonEvent(int button, int action, int mods);
-		ENGINE_API virtual void MousePosEvent(double xPos, double yPos);
-		ENGINE_API virtual void ScrollEvent(double xOffset, double yOffset);
+		ENGINE_API virtual void Handle(States::State state);
+		ENGINE_API virtual void Handle(Ranges::Range range, Math::Real value);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -124,8 +124,9 @@ namespace Engine
 		const Math::Angle m_pitchRotationSpeed;
 		Math::Angle m_currentPitchAngle;
 
-		Math::Real m_lastCursorPositionX;
-		Math::Real m_lastCursorPositionY;
+		Math::Vector2D m_mousePos;
+		Math::Vector2D m_prevMousePos;
+		bool m_mousePosChanged;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraFollowComponent */
 

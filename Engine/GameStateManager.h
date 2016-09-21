@@ -23,7 +23,7 @@ namespace Engine
 	/// <summary>
 	/// Interface for a stack-based game state manager.
 	/// </summary>
-	class GameStateManager : public Input::IInputableMouse, public IUpdateable
+	class GameStateManager : public IUpdateable, public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
@@ -83,21 +83,21 @@ namespace Engine
 		/// <summary>
 		/// Handles the incoming action appropriately.
 		/// </summary>
-		/// <param name="action"> The action that must be handled by active game states. </param>
-		virtual void Handle(Engine::Actions::Action action) = 0;
+		/// <param name="action"> The action that must be handled. </param>
+		ENGINE_API virtual void Handle(Actions::Action action) = 0;
 
 		/// <summary>
 		/// Handles the incoming state appropriately.
 		/// </summary>
-		/// <param name="state"> The state that must be handled by active game states. </param>
-		virtual void Handle(Engine::States::State state) = 0;
+		/// <param name="state"> The state that must be handled. </param>
+		ENGINE_API virtual void Handle(States::State state) = 0;
 
 		/// <summary>
 		/// Handles the incoming range appropriately.
 		/// </summary>
-		/// <param name="range"> The range that must be handled by active game states. </param>
-		/// <param name="value"> The value associated with the specified range. </param>
-		virtual void Handle(Engine::Ranges::Range range, Math::Real value) = 0;
+		/// <param name="range"> The range that must be handled. </param>
+		/// <param name="value"> The value associated with the range. </param>
+		ENGINE_API virtual void Handle(Ranges::Range range, Math::Real value) = 0;
 
 		void SetTransition(GameStateTransitioning::GameStateTransition* gameStateTransition);
 		void PerformStateTransition();

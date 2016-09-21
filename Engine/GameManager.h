@@ -67,8 +67,23 @@ namespace Engine
 		/// Destroys the game manager.
 		/// </summary>
 		ENGINE_API virtual ~GameManager(void);
-		GameManager(GameManager& gameManager) = delete;
-		void operator=(GameManager& gameManager) = delete;
+
+		/// <summary>
+		/// Game manager copy constructor.
+		/// </summary>
+		GameManager(const GameManager& gameManager) = delete;
+		/// <summary>
+		/// Game manager move constructor.
+		/// </summary>
+		GameManager(GameManager&& gameManager) = delete;
+		/// <summary>
+		/// Game manager copy assignment operator.
+		/// </summary>
+		GameManager& operator=(const GameManager& gameManager) = delete;
+		/// <summary>
+		/// Game manager move assignment operator.
+		/// </summary>
+		GameManager& operator=(GameManager&& gameManager) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

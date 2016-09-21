@@ -211,8 +211,9 @@ Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, 
 	m_changingPitch(false),
 	m_pitchRotationSpeed(pitchRotationSpeed),
 	m_currentPitchAngle(initialPitchAngle),
-	m_lastCursorPositionX(REAL_ZERO),
-	m_lastCursorPositionY(REAL_ZERO)
+	m_mousePos(REAL_ZERO, REAL_ZERO),
+	m_prevMousePos(REAL_ZERO, REAL_ZERO),
+	m_mousePosChanged(false)
 {
 }
 
@@ -221,75 +222,75 @@ Engine::CameraFollowComponent::~CameraFollowComponent(void)
 {
 }
 
-void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int mods)
-{
-	if (!m_camera->IsActive())
-	{
-		return;
-	}
-	DEBUG_LOG_ENGINE("Mouse button event for the camera following an entity (button = ", button, ", action = ", action, ", mods = ", mods, ")");
-	switch (button)
-	{
-	case GLFW_MOUSE_BUTTON_LEFT:
-		m_changingAngleAroundEntity = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the angle around the entity
-		break;
-	case GLFW_MOUSE_BUTTON_RIGHT:
-		m_changingPitch = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the pitch
-		break;
-	case GLFW_MOUSE_BUTTON_MIDDLE:
-		break;
-	}
-}
+//void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int mods)
+//{
+//	if (!m_camera->IsActive())
+//	{
+//		return;
+//	}
+//	DEBUG_LOG_ENGINE("Mouse button event for the camera following an entity (button = ", button, ", action = ", action, ", mods = ", mods, ")");
+//	switch (button)
+//	{
+//	case GLFW_MOUSE_BUTTON_LEFT:
+//		m_changingAngleAroundEntity = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the angle around the entity
+//		break;
+//	case GLFW_MOUSE_BUTTON_RIGHT:
+//		m_changingPitch = (action == GLFW_PRESS); // on GLFW_RELEASE we stop modifying the pitch
+//		break;
+//	case GLFW_MOUSE_BUTTON_MIDDLE:
+//		break;
+//	}
+//}
 
-void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
-{
-	if (!m_camera->IsActive())
-	{
-		m_lastCursorPositionX = static_cast<Math::Real>(xPos);
-		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
-		return;
-	}
-	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = ", xPos, "; yPos = ", yPos, ")");
+//void Engine::CameraFollowComponent::MousePosEvent(double xPos, double yPos)
+//{
+//	if (!m_camera->IsActive())
+//	{
+//		m_lastCursorPositionX = static_cast<Math::Real>(xPos);
+//		m_lastCursorPositionY = static_cast<Math::Real>(yPos);
+//		return;
+//	}
+//	DEBUG_LOG_ENGINE("Mouse position event for the camera following an entity (xPos = ", xPos, "; yPos = ", yPos, ")");
+//
+//	if (m_changingPitch)
+//	{
+//		m_currentPitchAngle += m_pitchRotationSpeed * (static_cast<Math::Real>(yPos) - m_lastCursorPositionY);
+//		if (m_currentPitchAngle < MINIMUM_PITCH_ANGLE)
+//		{
+//			m_currentPitchAngle = MINIMUM_PITCH_ANGLE;
+//		}
+//		else if (m_currentPitchAngle > MAXIMUM_PITCH_ANGLE)
+//		{
+//			m_currentPitchAngle = MAXIMUM_PITCH_ANGLE;
+//		}
+//	}
+//	if (m_changingAngleAroundEntity)
+//	{
+//		m_currentAngleAroundEntity += m_angleAroundEntitySpeed * (static_cast<Math::Real>(xPos) - m_lastCursorPositionX);
+//	}
+//	m_lastCursorPositionX = static_cast<Math::Real>(xPos);
+//	m_lastCursorPositionY = static_cast<Math::Real>(yPos);
+//}
 
-	if (m_changingPitch)
-	{
-		m_currentPitchAngle += m_pitchRotationSpeed * (static_cast<Math::Real>(yPos) - m_lastCursorPositionY);
-		if (m_currentPitchAngle < MINIMUM_PITCH_ANGLE)
-		{
-			m_currentPitchAngle = MINIMUM_PITCH_ANGLE;
-		}
-		else if (m_currentPitchAngle > MAXIMUM_PITCH_ANGLE)
-		{
-			m_currentPitchAngle = MAXIMUM_PITCH_ANGLE;
-		}
-	}
-	if (m_changingAngleAroundEntity)
-	{
-		m_currentAngleAroundEntity += m_angleAroundEntitySpeed * (static_cast<Math::Real>(xPos) - m_lastCursorPositionX);
-	}
-	m_lastCursorPositionX = static_cast<Math::Real>(xPos);
-	m_lastCursorPositionY = static_cast<Math::Real>(yPos);
-}
-
-void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
-{
-	if (!m_camera->IsActive())
-	{
-		return;
-	}
-	DEBUG_LOG_ENGINE("Scroll event for the camera following an entity (xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
-
-	m_distanceFromEntity -= static_cast<Math::Real>(yOffset) * 0.03f;
-	if (m_distanceFromEntity < MINIMUM_DISTANCE_TO_ENTITY)
-	{
-		m_distanceFromEntity = MINIMUM_DISTANCE_TO_ENTITY;
-	}
-	else if (m_distanceFromEntity > MAXIMUM_DISTANCE_TO_ENTITY)
-	{
-		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
-	}
-	DELOCUST_LOG_ENGINE("Distance from entity = ", m_distanceFromEntity);
-}
+//void Engine::CameraFollowComponent::ScrollEvent(double xOffset, double yOffset)
+//{
+//	if (!m_camera->IsActive())
+//	{
+//		return;
+//	}
+//	DEBUG_LOG_ENGINE("Scroll event for the camera following an entity (xOffset = ", xOffset, "; yOffset = ", yOffset, ")");
+//
+//	m_distanceFromEntity -= static_cast<Math::Real>(yOffset) * 0.03f;
+//	if (m_distanceFromEntity < MINIMUM_DISTANCE_TO_ENTITY)
+//	{
+//		m_distanceFromEntity = MINIMUM_DISTANCE_TO_ENTITY;
+//	}
+//	else if (m_distanceFromEntity > MAXIMUM_DISTANCE_TO_ENTITY)
+//	{
+//		m_distanceFromEntity = MAXIMUM_DISTANCE_TO_ENTITY;
+//	}
+//	DELOCUST_LOG_ENGINE("Distance from entity = ", m_distanceFromEntity);
+//}
 
 void Engine::CameraFollowComponent::Update(Math::Real deltaTime)
 {
@@ -307,6 +308,45 @@ void Engine::CameraFollowComponent::Update(Math::Real deltaTime)
 	m_camera->SetPos(m_gameEntityToFollow->GetTransform().GetPos() + Math::Vector3D(-xOffset, verticalDistance + 0.03f /* to focus on upperbody instead of feet */, -zOffset)); // TODO: Double code
 	GetTransform().SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentAngleAroundEntity) * Math::Quaternion(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), m_currentPitchAngle));
 	m_camera->SetRot(Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), m_currentAngleAroundEntity) * Math::Quaternion(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO), m_currentPitchAngle)); // TODO: Double code
+}
+
+void Engine::CameraFollowComponent::Handle(States::State state)
+{
+	switch (state)
+	{
+	//case INVALID:
+	case States::MOUSE_KEY_LEFT_PRESSED:
+		if (m_mousePosChanged)
+		{
+			m_currentAngleAroundEntity += m_angleAroundEntitySpeed * (m_mousePos.GetX() - m_prevMousePos.GetX());
+		}
+		break;
+	case States::MOUSE_KEY_MIDDLE_PRESSED:
+		break;
+	case States::MOUSE_KEY_RIGHT_PRESSED:
+		break;
+	default:
+		break;
+	}
+}
+
+void Engine::CameraFollowComponent::Handle(Ranges::Range range, Math::Real value)
+{
+	switch (range)
+	{
+	case Ranges::AXIS_X:
+		m_prevMousePos.SetX(m_mousePos.GetX());
+		m_mousePos.SetX(value);
+		m_mousePosChanged = true;
+		break;
+	case Ranges::AXIS_Y:
+		m_prevMousePos.SetY(m_mousePos.GetY());
+		m_mousePos.SetY(value);
+		m_mousePosChanged = true;
+		break;
+	default:
+		break;
+	}
 }
 
 //std::string Engine::CameraComponent::ToString() const

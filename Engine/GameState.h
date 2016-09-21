@@ -5,9 +5,9 @@
 #include "GameCommand.h"
 #include "ActionConstants.h"
 #include "InputConstants.h"
-//#include "IInputable.h"
-//#include "IRenderable.h"
-//#include "IUpdateable.h"
+#include "IActionHandler.h"
+#include "IStateHandler.h"
+#include "IRangeHandler.h"
 
 #include "Math\Math.h"
 
@@ -23,7 +23,7 @@ namespace Engine
 	///<summary>
 	/// The base class for each game state. It provides functionality for game states lifecycles.
 	/// </summary>
-	class GameState
+	class GameState : public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
@@ -67,21 +67,21 @@ namespace Engine
 		/// <summary>
 		/// Handles the incoming action appropriately.
 		/// </summary>
-		/// <param name="action"> The action that must be handled by the game state. </param>
-		ENGINE_API virtual void Handle(Engine::Actions::Action action) = 0;
+		/// <param name="action"> The action that must be handled. </param>
+		ENGINE_API virtual void Handle(Actions::Action action) = 0;
 
 		/// <summary>
 		/// Handles the incoming state appropriately.
 		/// </summary>
-		/// <param name="state"> The state that must be handled by the game state. </param>
-		ENGINE_API virtual void Handle(Engine::States::State state) = 0;
+		/// <param name="state"> The state that must be handled. </param>
+		ENGINE_API virtual void Handle(States::State state) = 0;
 
 		/// <summary>
 		/// Handles the incoming range appropriately.
 		/// </summary>
-		/// <param name="range"> The range that must be handled by the game state. </param>
+		/// <param name="range"> The range that must be handled. </param>
 		/// <param name="value"> The value associated with the range. </param>
-		ENGINE_API virtual void Handle(Engine::Ranges::Range range, Math::Real value) = 0;
+		ENGINE_API virtual void Handle(Ranges::Range range, Math::Real value) = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

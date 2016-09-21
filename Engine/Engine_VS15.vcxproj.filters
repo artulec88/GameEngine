@@ -153,6 +153,12 @@
     <ClInclude Include="ParticlesSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IStateHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IRangeHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

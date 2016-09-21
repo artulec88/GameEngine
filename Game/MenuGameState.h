@@ -3,7 +3,6 @@
 
 #include "Def.h"
 #include "Engine\GameState.h"
-#include "Engine\IRenderable.h"
 #include "Engine\IUpdateable.h"
 #include "Engine\GameNode.h"
 #include "Engine\MenuEntry.h"

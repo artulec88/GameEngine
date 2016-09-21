@@ -176,7 +176,9 @@
     <ClInclude Include="InputContext.h" />
     <ClInclude Include="InputMapping.h" />
     <ClInclude Include="InputRangeConverter.h" />
+    <ClInclude Include="IRangeHandler.h" />
     <ClInclude Include="IRenderable.h" />
+    <ClInclude Include="IStateHandler.h" />
     <ClInclude Include="IUpdateable.h" />
     <ClInclude Include="LightFactory.h" />
     <ClInclude Include="LookAtComponent.h" />
