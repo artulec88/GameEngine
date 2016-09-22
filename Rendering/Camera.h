@@ -70,8 +70,8 @@ namespace Rendering
 		void SetRot(const Math::Quaternion& rotation) { m_rot = rotation; }
 
 		Math::Real GetSensitivity() const { return m_sensitivity; }
-		void Activate() { m_isActive = true; }
-		void Deactivate() { m_isActive = false; }
+		inline void Activate() { m_isActive = true; }
+		inline void Deactivate() { m_isActive = false; }
 		inline bool IsActive() const { return m_isActive; }
 		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projection; }
 		inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
@@ -87,6 +87,7 @@ namespace Rendering
 		/// <summary> The camera rotation. </summary>
 		Math::Quaternion m_rot;
 
+		/// <summary> The projection of the camera. </summary>
 		Math::Matrix4D m_projection;
 
 		// TODO: Create a mutable matrix "m_viewMatrix" which would store the GetViewMatrix() result and save it for the next GetViewMatrix() function call.
@@ -97,7 +98,7 @@ namespace Rendering
 		/// </summary>
 		Math::Real m_sensitivity;
 		/// <summary>
-		/// The <code>bool</code> value indicating whether the camera is a currently active camera (<code>true</code>) or not (<code>false</code>).
+		/// The <code>bool</code> value indicating whether the camera is currently active (<code>true</code>) or not (<code>false</code>).
 		/// </summary>
 		bool m_isActive;
 #ifdef ANT_TWEAK_BAR_ENABLED
