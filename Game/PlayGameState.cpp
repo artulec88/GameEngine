@@ -73,10 +73,6 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 
 Game::PlayGameState::~PlayGameState(void)
 {
-	for (auto billboardNode = m_billboardsNodes.begin(); billboardNode != m_billboardsNodes.end(); ++billboardNode)
-	{
-		SAFE_DELETE(*billboardNode);
-	}
 }
 
 void Game::PlayGameState::Entered()
@@ -97,7 +93,7 @@ void Game::PlayGameState::Entered()
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_3,
 		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-	AddCameras(NULL);
+	AddCameras();
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 	
 	//const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
@@ -253,19 +249,19 @@ void Game::PlayGameState::AddSkyboxNode()
 
 void Game::PlayGameState::AddPlayerNode()
 {
-	//const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
-	//const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
-	//const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
-	//m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
-	//m_playerNode.GetTransform().SetScale(0.0005f);
-	//m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	//m_playerNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	//m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	//m_playerNode.AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	////Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
-	////playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
-	////m_resourcesLoaded += 2;
-	//m_rootGameNode.AddChild(&m_playerNode);
+	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
+	const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
+	const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
+	m_playerNode.GetTransform().SetScale(0.0005f);
+	m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
+	m_playerNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	m_playerNode.AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
+	//playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
+	//m_resourcesLoaded += 2;
+	m_rootGameNode.AddChild(&m_playerNode);
 }
 
 void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
@@ -301,12 +297,12 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 2));
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
-	Engine::GameNode* billboardsNode = new Engine::GameNode();
-	billboardsNode->AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
-	m_billboardsNodes.push_back(billboardsNode);
+	Engine::GameNode billboardsNode;
+	billboardsNode.AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
+	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
 
-void Game::PlayGameState::AddCameras(Engine::GameNode* entityToFollow)
+void Game::PlayGameState::AddCameras()
 {
 	START_PROFILING_GAME(true, "");
 	const int cameraCount = GET_CONFIG_VALUE_GAME("cameraCount", 3);
@@ -314,14 +310,13 @@ void Game::PlayGameState::AddCameras(Engine::GameNode* entityToFollow)
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
+	Rendering::Camera camera;
+	CameraBuilder cameraBuilder(m_gameManager, &camera);
+	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
-		// TODO: This is not efficient! Creating instances each iteration.
-		Rendering::Camera camera;
-		CameraBuilder cameraBuilder(m_gameManager, &camera);
 		cameraBuilder.SetCameraIndex(i);
 		//cameraBuilder.SetEntityToFollow(entityToFollow);
-		Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
 		cameraBuilderDirector.Construct();
 		if (m_cameras.empty())
 		{
@@ -884,7 +879,7 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	renderer->UpdateRendererUniforms(billboardShader);
 	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
 	{
-		(*billboardsNodeItr)->Render(billboardShader, renderer);
+		billboardsNodeItr->Render(billboardShader, renderer);
 	}
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);

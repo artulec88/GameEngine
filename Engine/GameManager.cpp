@@ -57,8 +57,6 @@ Engine::GameManager::GameManager() :
 #endif
 {
 	INFO_LOG_ENGINE("Game manager construction started");
-	//rootGameNode = new GameNode();
-	//CHECK_CONDITION_EXIT_ENGINE(rootGameNode != NULL, CRITICAL, "Root game node construction failed.");
 
 	if (Engine::GameManager::s_gameManager != NULL)
 	{

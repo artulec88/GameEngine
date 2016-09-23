@@ -62,7 +62,7 @@ namespace Game
 		void AddSkyboxNode();
 		void AddPlayerNode();
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
-		void AddCameras(Engine::GameNode* entityToFollow);
+		void AddCameras();
 		void AddLights();
 		void AddDirectionalLight();
 		void AddPointLights();
@@ -125,7 +125,7 @@ namespace Game
 		Engine::GameNode m_waterNode;
 		Engine::GameNode m_skyboxNode;
 		Engine::GameNode m_playerNode;
-		std::vector<Engine::GameNode*> m_billboardsNodes;
+		std::vector<Engine::GameNode> m_billboardsNodes;
 		std::vector<Rendering::Camera> m_cameras;
 		unsigned int m_currentCameraIndex;
 

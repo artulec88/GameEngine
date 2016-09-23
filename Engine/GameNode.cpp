@@ -51,14 +51,6 @@ Engine::GameNode::~GameNode(void)
 	{
 		m_components.clear();
 	}
-	for (unsigned int i = 0; i < m_childrenGameNodes.size(); ++i)
-	{
-		SAFE_DELETE(m_childrenGameNodes[i]);
-	}
-	if (!m_childrenGameNodes.empty())
-	{
-		m_childrenGameNodes.clear();
-	}
 	DELOCUST_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
 }
 
@@ -75,7 +67,6 @@ Engine::GameNode::GameNode(GameNode&& gameNode) :
 	m_statesToCommands(std::move(gameNode.m_statesToCommands))
 {
 	//gameNode.m_components.clear();
-	//gameNode.m_childrenGameNodes.clear();
 }
 
 Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
@@ -92,7 +83,6 @@ Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
 	m_statesToCommands = std::move(gameNode.m_statesToCommands);
 
 	//gameNode.m_components.clear();
-	//gameNode.m_childrenGameNodes.clear();
 	return *this;
 }
 
