@@ -14,21 +14,25 @@ namespace Engine
 
 	class LookAtComponent : public GameComponent, public IUpdateable
 	{
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API LookAtComponent(GameNode* gameNode);
 		ENGINE_API virtual ~LookAtComponent(void);
-	/* ==================== Constructors and destructors end ==================== */
+		LookAtComponent(const LookAtComponent& lookAtComponent) = delete;
+		LookAtComponent(LookAtComponent&& lookAtComponent) = default;
+		LookAtComponent& operator=(const LookAtComponent& lookAtComponent) = delete;
+		LookAtComponent& operator=(LookAtComponent&& lookAtComponent) = default;
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void Update(Math::Real delta);
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		const Math::Transform& m_entityToLookAtTransform;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LookAtComponent */
 
 } /* end namespace Engine */

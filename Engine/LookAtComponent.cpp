@@ -5,6 +5,7 @@
 
 Engine::LookAtComponent::LookAtComponent(GameNode* gameNode) :
 	GameComponent(),
+	IUpdateable(),
 	m_entityToLookAtTransform(gameNode->GetTransform())
 {
 }

@@ -15,12 +15,17 @@ Engine::GameComponent::GameComponent(void) :
 
 Engine::GameComponent::~GameComponent(void)
 {
-	// what if parentGameNode is still in use by some other stuff?
-	//if (parentGameNode != NULL)
-	//{
-	//	delete parentGameNode;
-	//	parentGameNode = NULL;
-	//}
+}
+
+Engine::GameComponent::GameComponent(GameComponent&& gameComponent) :
+	m_parentGameNode(std::move(gameComponent.m_parentGameNode))
+{
+}
+
+Engine::GameComponent& Engine::GameComponent::operator=(GameComponent&& gameComponent)
+{
+	m_parentGameNode = std::move(gameComponent.m_parentGameNode);
+	return *this;
 }
 
 void Engine::GameComponent::SetParent(GameNode* parentGameNode)

@@ -7,9 +7,8 @@
 
 /* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(const Shader& shader, const Shader& terrainShader,
-	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
-	BaseLight(shader, terrainShader, noShadowShader, noShadowTerrainShader),
+Rendering::Lighting::DirectionalLight::DirectionalLight() :
+	BaseLight(),
 	m_halfShadowArea(REAL_ZERO)
 {
 }
@@ -27,7 +26,7 @@ bool Rendering::Lighting::DirectionalLight::IsEnabled() const
 	return BaseLight::IsEnabled();
 }
 
-Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const
 {
 	//return BaseLight::CalcShadowCameraTransform(cameraPos, cameraRot);
 

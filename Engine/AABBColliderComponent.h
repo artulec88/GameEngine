@@ -22,6 +22,10 @@ namespace Engine
 	public:
 		ENGINE_API AABBColliderComponent(const Math::Vector3D& bottomLeftPos, const Math::Vector3D& topRightPos);
 		ENGINE_API virtual ~AABBColliderComponent(void);
+		AABBColliderComponent(const AABBColliderComponent& aabbColliderComponent) = delete;
+		ENGINE_API AABBColliderComponent(AABBColliderComponent&& aabbColliderComponent) = default;
+		AABBColliderComponent& operator=(const AABBColliderComponent& aabbColliderComponent) = delete;
+		ENGINE_API AABBColliderComponent& operator=(AABBColliderComponent&& aabbColliderComponent) = default;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

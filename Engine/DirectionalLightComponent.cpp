@@ -11,6 +11,9 @@ Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting
 	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
 	const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel) :
 	GameComponent(),
+#ifdef SIMULATE_SUN_BEHAVIOR
+	IUpdateable(),
+#endif
 	m_directionalLight(directionalLight),
 	m_maxIntensity(maxIntensity),
 	m_sunDaytimeColor(sunDaytimeColor),
@@ -30,6 +33,47 @@ Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting
 Engine::DirectionalLightComponent::~DirectionalLightComponent()
 {
 	SAFE_DELETE(m_directionalLight);
+}
+
+Engine::DirectionalLightComponent::DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent) :
+	GameComponent(std::move(directionalLightComponent)),
+#ifdef SIMULATE_SUN_BEHAVIOR
+	IUpdateable(std::move(directionalLightComponent)),
+#endif
+	m_directionalLight(std::move(directionalLightComponent.m_directionalLight)),
+	m_maxIntensity(std::move(directionalLightComponent.m_maxIntensity)),
+	m_sunDaytimeColor(std::move(directionalLightComponent.m_sunDaytimeColor)),
+	m_sunNearHorizonColor(std::move(directionalLightComponent.m_sunNearHorizonColor)),
+	m_sunNighttimeColor(std::move(directionalLightComponent.m_sunNighttimeColor)),
+	m_latitude(std::move(directionalLightComponent.m_latitude)),
+	m_longitude(std::move(directionalLightComponent.m_longitude)),
+	m_sunElevation(std::move(directionalLightComponent.m_sunElevation)),
+	m_sunAzimuth(std::move(directionalLightComponent.m_sunAzimuth)),
+	m_firstElevationLevel(std::move(directionalLightComponent.m_firstElevationLevel)),
+	m_secondElevationLevel(std::move(directionalLightComponent.m_secondElevationLevel)),
+	m_thirdElevationLevel(std::move(directionalLightComponent.m_thirdElevationLevel))
+{
+}
+
+Engine::DirectionalLightComponent& Engine::DirectionalLightComponent::operator=(DirectionalLightComponent&& directionalLightComponent)
+{
+	GameComponent::operator=(std::move(directionalLightComponent));
+#ifdef SIMULATE_SUN_BEHAVIOR
+	IUpdateable::operator=(std::move(directionalLightComponent));
+#endif
+	m_directionalLight = std::move(directionalLightComponent.m_directionalLight);
+	m_maxIntensity = std::move(directionalLightComponent.m_maxIntensity);
+	m_sunDaytimeColor = std::move(directionalLightComponent.m_sunDaytimeColor);
+	m_sunNearHorizonColor = std::move(directionalLightComponent.m_sunNearHorizonColor);
+	m_sunNighttimeColor = std::move(directionalLightComponent.m_sunNighttimeColor);
+	m_latitude = std::move(directionalLightComponent.m_latitude);
+	m_longitude = std::move(directionalLightComponent.m_longitude);
+	m_sunElevation = std::move(directionalLightComponent.m_sunElevation);
+	m_sunAzimuth = std::move(directionalLightComponent.m_sunAzimuth);
+	m_firstElevationLevel = std::move(directionalLightComponent.m_firstElevationLevel);
+	m_secondElevationLevel = std::move(directionalLightComponent.m_secondElevationLevel);
+	m_thirdElevationLevel = std::move(directionalLightComponent.m_thirdElevationLevel);
+	return *this;
 }
 
 #ifdef SIMULATE_SUN_BEHAVIOR

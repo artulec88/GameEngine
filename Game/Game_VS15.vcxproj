@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraBuilder.cpp" />
     <ClCompile Include="GameNodeBuilder.cpp" />
     <ClCompile Include="IntroGameState.cpp" />
     <ClCompile Include="LightBuilder.cpp" />
@@ -160,12 +161,12 @@
     <ClCompile Include="TestGameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraBuilder.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="GameNodeBuilder.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="IntroGameState.h" />
     <ClInclude Include="LightBuilder.h" />
-    <ClInclude Include="LightBuilder_impl.h" />
     <ClInclude Include="LoadGameCommand.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />

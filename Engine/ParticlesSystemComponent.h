@@ -23,6 +23,10 @@ namespace Engine
 	public:
 		ENGINE_API ParticlesSystemComponent(GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem);
 		ENGINE_API virtual ~ParticlesSystemComponent(void);
+		ParticlesSystemComponent(const ParticlesSystemComponent& particlesSystemComponent) = delete;
+		ParticlesSystemComponent(ParticlesSystemComponent&& particlesSystemComponent);
+		ParticlesSystemComponent& operator=(const ParticlesSystemComponent& particlesSystemComponent) = delete;
+		ParticlesSystemComponent& operator=(ParticlesSystemComponent&& particlesSystemComponent);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

@@ -10,12 +10,16 @@
 
 #include "Utility\IConfig.h"
 
-Game::ParticlesSystemBuilder::ParticlesSystemBuilder(Engine::GameManager* gameManager, ParticleEffects::ParticleEffect particleEffect) :
+Game::ParticlesSystemBuilder::ParticlesSystemBuilder(Engine::GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem, ParticleEffects::ParticleEffect particleEffect) :
+	Utility::Builder<Rendering::Particles::ParticlesSystem>(particlesSystem),
 	m_gameManager(gameManager),
+	m_particleTexture(NULL),
 	m_particleEffect(particleEffect),
 	m_configurationSuffix(""),
 	m_textureID(TextureIDs::PARTICLE_WATER),
-	m_attributesMask(0)
+	m_attributesMask(0),
+	m_particleEmittersCount(1),
+	m_particleUpdatersCount(1)
 {
 	switch (m_particleEffect)
 	{
@@ -46,11 +50,11 @@ Game::ParticlesSystemBuilder::~ParticlesSystemBuilder()
 
 void Game::ParticlesSystemBuilder::BuildPart1()
 {
-	const Rendering::Particles::ParticleTexture* particleTexture = m_gameManager->AddParticleTexture(m_textureID,
+	m_particleTexture = m_gameManager->AddParticleTexture(m_textureID,
 		GET_CONFIG_VALUE_STR_GAME("particleTexture" + m_configurationSuffix, "particleRain.png"),
 		GET_CONFIG_VALUE_GAME("particleTextureRowsCount" + m_configurationSuffix, 4),
 		GET_CONFIG_VALUE_GAME("particleTextureIsAdditive" + m_configurationSuffix, true));
-	CHECK_CONDITION_GAME(particleTexture != NULL, Utility::Logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
+	CHECK_CONDITION_GAME(m_particleTexture != NULL, Utility::Logging::CRITICAL, "Cannot create particle system. The texture is NULL.");
 
 	if (GET_CONFIG_VALUE_GAME("particleAttributePositionEnabled" + m_configurationSuffix, true))
 	{
@@ -101,44 +105,55 @@ void Game::ParticlesSystemBuilder::BuildPart1()
 		m_attributesMask |= Rendering::Particles::Attributes::ID;
 	}
 	DEBUG_LOG_GAME("Attributes mask = ", m_attributesMask.m_attributesMask);
-
-	m_object = new Rendering::Particles::ParticlesSystem(GET_CONFIG_VALUE_GAME("particleMaxParticlesCount" + m_configurationSuffix, 5000),
-		m_attributesMask, *particleTexture);
 }
 
 void Game::ParticlesSystemBuilder::BuildPart2()
 {
-	const unsigned int particleEmittersCount = GET_CONFIG_VALUE_GAME("particleEmittersCount" + m_configurationSuffix, 1);
-	for (unsigned int i = 0; i < particleEmittersCount; ++i)
+	m_particleEmittersCount = GET_CONFIG_VALUE_GAME("particleEmittersCount" + m_configurationSuffix, 1);
+	for (unsigned int i = 0; i < m_particleEmittersCount; ++i)
 	{
 		const std::string iStr = std::to_string(i + 1);
-		Rendering::Particles::ParticlesEmitter emitter(GET_CONFIG_VALUE_GAME("particleEmitterGeneratedParticlesPerSecond" + m_configurationSuffix + "_" + iStr, 400.0f));
+		m_emitters.emplace_back(GET_CONFIG_VALUE_GAME("particleEmitterGeneratedParticlesPerSecond" + m_configurationSuffix + "_" + iStr, 400.0f));
 
-		AddPositionGenerator(&emitter, iStr);
-		AddVelocityGenerator(&emitter, iStr);
-		AddAccelerationGenerator(&emitter, iStr);
-		AddGravityEffectFactorGenerator(&emitter, iStr);
-		AddLifeSpanGenerator(&emitter, iStr);
-		AddRotationGenerator(&emitter, iStr);
-		AddScaleGenerator(&emitter, iStr);
-		AddTextureOffsetGenerator(&emitter, iStr);
-		AddColorGenerator(&emitter, iStr);
-		AddMassGenerator(&emitter, iStr);
-		AddAliveGenerator(&emitter, iStr);
-		AddIdGenerator(&emitter, iStr);
-
-		m_object->AddEmitter(emitter);
+		AddPositionGenerator(&m_emitters.back(), iStr);
+		AddVelocityGenerator(&m_emitters.back(), iStr);
+		AddAccelerationGenerator(&m_emitters.back(), iStr);
+		AddGravityEffectFactorGenerator(&m_emitters.back(), iStr);
+		AddLifeSpanGenerator(&m_emitters.back(), iStr);
+		AddRotationGenerator(&m_emitters.back(), iStr);
+		AddScaleGenerator(&m_emitters.back(), iStr);
+		AddTextureOffsetGenerator(&m_emitters.back(), iStr);
+		AddColorGenerator(&m_emitters.back(), iStr);
+		AddMassGenerator(&m_emitters.back(), iStr);
+		AddAliveGenerator(&m_emitters.back(), iStr);
+		AddIdGenerator(&m_emitters.back(), iStr);
 	}
 }
 
 void Game::ParticlesSystemBuilder::BuildPart3()
 {
-	Rendering::Particles::ParticlesUpdater* eulerUpdater = new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f));
-	Rendering::Particles::ParticlesUpdater* lifeSpanUpdater = new Rendering::Particles::LifeSpanParticlesUpdater();
-	//Rendering::Particles::ParticlesUpdater* rotationUpdater = new Rendering::Particles::RotationParticlesUpdater(Math::Angle(90.0f, Math::Unit::DEGREE));
-	m_object->AddUpdater(eulerUpdater);
-	m_object->AddUpdater(lifeSpanUpdater);
-	//m_object->AddUpdater(rotationUpdater);
+	//m_particleUpdatersCount = GET_CONFIG_VALUE_GAME("particleUpdatersCount" + m_configurationSuffix, 1);
+	//for (unsigned int i = 0; i < m_particleUpdatersCount; ++i)
+	//{
+	//	const std::string iStr = std::to_string(i + 1);
+	//	// TODO: Configurable updaters
+	//}
+	m_updaters.push_back(new Rendering::Particles::EulerParticlesUpdater(Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	m_updaters.push_back(new Rendering::Particles::LifeSpanParticlesUpdater());
+	//m_updaters.push_back(new Rendering::Particles::RotationParticlesUpdater(Math::Angle(90.0f, Math::Unit::DEGREE)));
+
+	m_object->SetMaxParticlesCount(GET_CONFIG_VALUE_GAME("particleMaxParticlesCount" + m_configurationSuffix, 5000));
+	m_object->SetAttributesMask(m_attributesMask);
+	m_object->SetParticleTexture(m_particleTexture);
+
+	for (auto emitter = m_emitters.begin(); emitter != m_emitters.end(); ++emitter)
+	{
+		m_object->AddEmitter(*emitter);
+	}
+	for (auto updater = m_updaters.begin(); updater != m_updaters.end(); ++updater)
+	{
+		m_object->AddUpdater(*updater);
+	}
 }
 
 void Game::ParticlesSystemBuilder::AddPositionGenerator(Rendering::Particles::ParticlesEmitter* emitter, const std::string& indexStr) const

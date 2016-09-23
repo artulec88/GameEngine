@@ -82,7 +82,7 @@ namespace Rendering
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI control.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI control.</param>
-			RENDERING_API virtual void Draw(const Shader& guiControlShader, const Renderer& renderer) const = 0;
+			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const = 0;
 
 			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) = 0;
 			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) = 0;

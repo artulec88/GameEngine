@@ -36,7 +36,7 @@ Math::Transform::Transform(Transform&& transform) :
 	m_parentTransformation(std::move(transform.m_parentTransformation)),
 	m_isChanged(true)
 {
-	transform.m_parentTransform = NULL;
+	//transform.m_parentTransform = NULL;
 }
 
 //Math::Transform& Math::Transform::operator=(const Transform& transform)

@@ -13,3 +13,17 @@ Engine::PointLightComponent::~PointLightComponent()
 {
 	SAFE_DELETE(m_pointLight);
 }
+
+Engine::PointLightComponent::PointLightComponent(PointLightComponent&& pointLightComponent) :
+	GameComponent(std::move(pointLightComponent)),
+	m_pointLight(std::move(pointLightComponent.m_pointLight))
+{
+	pointLightComponent.m_pointLight = NULL;
+}
+
+Engine::PointLightComponent& Engine::PointLightComponent::operator=(PointLightComponent&& pointLightComponent)
+{
+	GameComponent::operator=(std::move(pointLightComponent));
+	m_pointLight = std::move(pointLightComponent.m_pointLight);
+	pointLightComponent.m_pointLight = NULL;
+}

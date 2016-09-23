@@ -23,7 +23,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ParticlesSystemBuilder(Engine::GameManager* gameManager, ParticleEffects::ParticleEffect particleEffect);
+		ParticlesSystemBuilder(Engine::GameManager* gameManager, Rendering::Particles::ParticlesSystem* particlesSystem, ParticleEffects::ParticleEffect particleEffect);
 		virtual ~ParticlesSystemBuilder(void);
 		ParticlesSystemBuilder(ParticlesSystemBuilder& particlesSystemBuilder) = delete;
 		ParticlesSystemBuilder(ParticlesSystemBuilder&& particlesSystemBuilder) = delete;
@@ -54,10 +54,15 @@ namespace Game
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Engine::GameManager* m_gameManager;
+		const Rendering::Particles::ParticleTexture* m_particleTexture;
 		ParticleEffects::ParticleEffect m_particleEffect;
 		std::string m_configurationSuffix;
 		TextureIDs::TextureID m_textureID;
 		Rendering::Particles::Attributes::AttributesMask m_attributesMask;
+		unsigned int m_particleEmittersCount;
+		std::vector<Rendering::Particles::ParticlesEmitter> m_emitters;
+		unsigned int m_particleUpdatersCount;
+		std::vector<Rendering::Particles::ParticlesUpdater*> m_updaters;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ParticlesSystemBuilder */
 } /* end namespace Game */

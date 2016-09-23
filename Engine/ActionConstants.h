@@ -23,14 +23,12 @@ namespace Engine
 			CHOOSE_CURRENT_MENU_ENTRY, // game state action
 			RETURN_TO_PARENT_MENU_ENTRY, // game state action
 			GO_TO_CHILD_MENU_ENTRY, // game state action
-			MOVE,
-			ONE,
-			TWO,
-			THREE,
-			FOUR,
-			FIVE,
-			SIX,
-			SEVEN
+			MOVE_CAMERA_UP,
+			MOVE_CAMERA_DOWN,
+			MOVE_CAMERA_LEFT,
+			MOVE_CAMERA_RIGHT,
+			MOVE_CAMERA_FORWARD,
+			MOVE_CAMERA_BACKWARD
 		}; /* end enum Action */
 	} /* end namespace Actions */
 

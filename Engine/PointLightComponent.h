@@ -17,6 +17,10 @@ namespace Engine
 	public:
 		PointLightComponent(Rendering::Lighting::PointLight* pointLight);
 		virtual ~PointLightComponent();
+		PointLightComponent(const PointLightComponent& pointLightComponent) = delete;
+		PointLightComponent(PointLightComponent&& pointLightComponent);
+		PointLightComponent& operator=(const PointLightComponent& pointLightComponent) = delete;
+		PointLightComponent& operator=(PointLightComponent&& pointLightComponent);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

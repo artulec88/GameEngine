@@ -58,8 +58,8 @@ namespace Game
 		virtual void InitializeTweakBars();
 #endif
 	private:
-		Rendering::Particles::ParticlesSystem* CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
-		void AddCameras(Engine::GameNode* entityToFollow);
+		//Rendering::Particles::ParticlesSystem CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect); // TODO: temporary code. Remove in the future.
+		//void AddCameras(Engine::GameNode* entityToFollow);
 		//void AddStaticEffects();
 		//void AddSmoothEffects();
 		//void AddBlinkEffects();

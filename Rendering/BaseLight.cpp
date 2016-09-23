@@ -5,15 +5,14 @@
 #include "Shader.h"
 #include "Utility\ILogger.h"
 
-Rendering::Lighting::BaseLight::BaseLight(const Shader& shader, const Shader& terrainShader,
-	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
+Rendering::Lighting::BaseLight::BaseLight() :
 	m_transform(),
 	m_color(Color(ColorNames::WHITE)),
 	m_intensity(REAL_ZERO),
-	m_shader(shader),
-	m_terrainShader(terrainShader),
-	m_noShadowShader(noShadowShader),
-	m_noShadowTerrainShader(noShadowTerrainShader),
+	m_shader(NULL),
+	m_terrainShader(NULL),
+	m_noShadowShader(NULL),
+	m_noShadowTerrainShader(NULL),
 	m_shadowInfo(nullptr),
 	m_isEnabled(false),
 	m_isShadowingEnabled(false)
@@ -23,6 +22,34 @@ Rendering::Lighting::BaseLight::BaseLight(const Shader& shader, const Shader& te
 Rendering::Lighting::BaseLight::~BaseLight(void)
 {
 }
+
+//Rendering::Lighting::BaseLight::BaseLight(const BaseLight& baseLight) :
+//	m_transform(baseLight.m_transform),
+//	m_color(baseLight.m_color),
+//	m_intensity(baseLight.m_intensity),
+//	m_shader(baseLight.m_shader),
+//	m_terrainShader(baseLight.m_terrainShader),
+//	m_noShadowShader(baseLight.m_noShadowShader),
+//	m_noShadowTerrainShader(baseLight.m_noShadowTerrainShader),
+//	m_shadowInfo(baseLight.m_shadowInfo),
+//	m_isEnabled(baseLight.m_isEnabled),
+//	m_isShadowingEnabled(baseLight.m_isShadowingEnabled)
+//{
+//}
+
+//Rendering::Lighting::BaseLight::BaseLight(BaseLight&& baseLight) :
+//	m_transform(std::move(baseLight.m_transform)),
+//	m_color(std::move(baseLight.m_color)),
+//	m_intensity(std::move(baseLight.m_intensity)),
+//	m_shader(std::move(baseLight.m_shader)),
+//	m_terrainShader(std::move(baseLight.m_terrainShader)),
+//	m_noShadowShader(std::move(baseLight.m_noShadowShader)),
+//	m_noShadowTerrainShader(std::move(baseLight.m_noShadowTerrainShader)),
+//	m_shadowInfo(std::move(baseLight.m_shadowInfo)),
+//	m_isEnabled(std::move(baseLight.m_isEnabled)),
+//	m_isShadowingEnabled(std::move(baseLight.m_isShadowingEnabled))
+//{
+//}
 
 void Rendering::Lighting::BaseLight::SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
 	Math::Real shadowSoftness /* = REAL_ONE */, Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
@@ -35,7 +62,7 @@ void Rendering::Lighting::BaseLight::SetShadowInfo(const Math::Matrix4D& project
 	m_shadowInfo = std::make_unique<ShadowInfo>(projection, flipFacesEnabled, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 }
 
-Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot)
+Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const
 {
 	return Rendering::ShadowCameraTransform(GetTransform().GetTransformedPos(), GetTransform().GetTransformedRot());
 }

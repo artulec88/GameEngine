@@ -57,9 +57,6 @@
     <ClInclude Include="SpotLightComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MeshGroupRendererComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MeshRendererComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -195,9 +192,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpotLightComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MeshGroupRendererComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshRendererComponent.cpp">

@@ -33,6 +33,10 @@ namespace Engine
 	public:
 		ENGINE_API CameraComponent(Rendering::Camera* camera);
 		ENGINE_API virtual ~CameraComponent(void);
+		CameraComponent(const CameraComponent& cameraComponent) = delete;
+		ENGINE_API CameraComponent(CameraComponent&& cameraComponent);
+		CameraComponent& operator=(const CameraComponent& cameraComponent) = delete;
+		ENGINE_API CameraComponent& operator=(CameraComponent&& cameraComponent);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -55,6 +59,10 @@ namespace Engine
 	public:
 		ENGINE_API CameraMoveComponent(Rendering::Camera* camera);
 		ENGINE_API virtual ~CameraMoveComponent(void);
+		CameraMoveComponent(const CameraMoveComponent& cameraMoveComponent) = delete;
+		ENGINE_API CameraMoveComponent(CameraMoveComponent&& cameraMoveComponent);
+		CameraMoveComponent& operator=(const CameraMoveComponent& cameraMoveComponent) = delete;
+		ENGINE_API CameraMoveComponent& operator=(CameraMoveComponent&& cameraMoveComponent);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -89,6 +97,10 @@ namespace Engine
 		ENGINE_API CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 			Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
 		ENGINE_API virtual ~CameraFollowComponent(void);
+		CameraFollowComponent(const CameraFollowComponent& cameraFollowComponent) = delete;
+		ENGINE_API CameraFollowComponent(CameraFollowComponent&& cameraFollowComponent);
+		CameraFollowComponent& operator=(const CameraFollowComponent& cameraFollowComponent) = delete;
+		ENGINE_API CameraFollowComponent& operator=(CameraFollowComponent&& cameraFollowComponent);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -114,14 +126,14 @@ namespace Engine
 		/// <summary>
 		/// The angle around the player.
 		/// </summary>
-		const Math::Angle m_angleAroundEntitySpeed;
+		Math::Angle m_angleAroundEntitySpeed;
 		Math::Angle m_currentAngleAroundEntity;
 
 		/// <summary>
 		/// <code>true</code> if the camera is in the "changing pitch" phase (right mouse button pressed).
 		/// </summary>
 		bool m_changingPitch;
-		const Math::Angle m_pitchRotationSpeed;
+		Math::Angle m_pitchRotationSpeed;
 		Math::Angle m_currentPitchAngle;
 
 		Math::Vector2D m_mousePos;

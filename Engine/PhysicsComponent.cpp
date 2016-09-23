@@ -8,6 +8,7 @@
 
 Engine::PhysicsComponent::PhysicsComponent(Math::Real movementSpeed, Math::Real jumpForce) :
 	GameComponent(),
+	IUpdateable(),
 	m_moveSpeed(movementSpeed),
 	m_jumpAcceleration(REAL_ZERO, jumpForce, REAL_ZERO),
 	m_isJumping(false)

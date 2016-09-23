@@ -19,6 +19,10 @@ namespace Engine
 	public:
 		GameComponent();
 		virtual ~GameComponent(void);
+		GameComponent(const GameComponent& gameComponent) = delete;
+		GameComponent(GameComponent&& gameComponent);
+		GameComponent& operator=(const GameComponent& gameComponent) = delete;
+		GameComponent& operator=(GameComponent&& gameComponent);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

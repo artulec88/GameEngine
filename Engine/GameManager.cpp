@@ -40,7 +40,6 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 Engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
-	m_rootGameNode(),
 	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
 	m_textureFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory()),
 	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
@@ -114,11 +113,6 @@ void Engine::GameManager::ScrollEvent(double xOffset, double yOffset)
 //	CHECK_CONDITION_ENGINE(shader != NULL, ERR, "Shader is NULL.");
 //	return shader;
 //}
-
-void Engine::GameManager::AddToSceneRoot(GameNode* child)
-{
-	m_rootGameNode.AddChild(child);
-}
 
 void Engine::GameManager::AddGuiControl(const Rendering::Controls::GuiControl& guiControl)
 {

@@ -21,6 +21,10 @@ namespace Engine
 	public:
 		ENGINE_API SoundEffectComponent(const std::string& soundEffectPath);
 		ENGINE_API virtual ~SoundEffectComponent(void);
+		SoundEffectComponent(const SoundEffectComponent& soundEffectComponent) = delete;
+		SoundEffectComponent(SoundEffectComponent&& soundEffectComponent) = default;
+		SoundEffectComponent& operator=(const SoundEffectComponent& soundEffectComponent) = delete;
+		SoundEffectComponent& operator=(SoundEffectComponent&& soundEffectComponent) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

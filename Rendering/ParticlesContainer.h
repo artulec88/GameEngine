@@ -32,7 +32,8 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			explicit ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask);
+			ParticlesContainer();
+			ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask);
 			~ParticlesContainer();
 
 			/// <summary> Particles container copy constructor. </summary>
@@ -86,6 +87,8 @@ namespace Rendering
 			void SwapData(size_t a, size_t b);
 			Math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
 			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
+			inline void SetMaxParticlesCount(size_t maxCount) { m_count = maxCount; }
+			void SetAttributesMask(Attributes::AttributesMask attributesMask);
 			std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */
 

@@ -7,9 +7,8 @@
 
 /* static */ bool Rendering::Lighting::SpotLight::spotLightsEnabled = true;
 
-Rendering::Lighting::SpotLight::SpotLight(const Shader& shader, const Shader& terrainShader,
-	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
-	PointLight(shader, terrainShader, noShadowShader, noShadowTerrainShader),
+Rendering::Lighting::SpotLight::SpotLight() :
+	PointLight(),
 	m_cutoff(REAL_ZERO)
 {
 }

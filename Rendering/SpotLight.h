@@ -27,17 +27,25 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API SpotLight(const Shader& shader, const Shader& terrainShader,
-				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API SpotLight();
 			RENDERING_API virtual ~SpotLight(void);
+
+			/// <summary> Spot light copy constructor. </summary>
+			SpotLight(const SpotLight& spotLight) = delete;
+			/// <summary> Spot light move constructor. </summary>
+			RENDERING_API SpotLight(SpotLight&& spotLight) = default;
+			/// <summary> Spot light copy assignment operator. </summary>
+			SpotLight& operator=(const SpotLight& spotLight) = delete;
+			/// <summary> Spot light move assignment operator. </summary>
+			RENDERING_API SpotLight& operator=(SpotLight&& spotLight) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
-			Math::Real GetCutoff() const { return m_cutoff; };
+			RENDERING_API Math::Real GetCutoff() const { return m_cutoff; };
 			//virtual void InitializeShaders();
-			virtual bool IsEnabled() const;
+			RENDERING_API virtual bool IsEnabled() const;
 
 			RENDERING_API void SetShadowInfo(const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real projectionNearPlane,
 				Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);

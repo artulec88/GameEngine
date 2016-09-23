@@ -24,8 +24,21 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit LightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory);
-		virtual ~LightBuilder(void);
+		LightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory, T* light) :
+			Utility::Builder<T>(light),
+			m_lightIndex(0),
+			m_lightIndexStr("0"),
+			m_shaderFactory(shaderFactory),
+			m_textureFactory(textureFactory),
+			m_pos(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+			m_rot(),
+			m_color(Rendering::ColorNames::WHITE),
+			m_intensity(REAL_ZERO)
+		{
+		}
+		virtual ~LightBuilder(void)
+		{
+		}
 
 		LightBuilder(const LightBuilder& lightBuilder) = delete;
 		LightBuilder(LightBuilder&& lightBuilder) = delete;
@@ -35,12 +48,15 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildPart1();
-		virtual void BuildPart2();
-		void SetLightIndex(int lightIndex);
+		virtual void BuildPart1() = 0;
+		virtual void BuildPart2() = 0;
+		virtual void BuildPart3() = 0;
+		void SetLightIndex(int lightIndex)
+		{
+			m_lightIndex = lightIndex;
+			m_lightIndexStr = std::to_string(lightIndex);
+		}
 	protected:
-		virtual void SetupLightShaders() = 0;
-		virtual void SetupLightParams() = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -49,6 +65,11 @@ namespace Game
 		std::string m_lightIndexStr;
 		const Engine::ShaderFactory& m_shaderFactory;
 		const Rendering::TextureFactory& m_textureFactory;
+
+		Math::Vector3D m_pos;
+		Math::Quaternion m_rot;
+		Rendering::Color m_color;
+		Math::Real m_intensity;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
@@ -59,13 +80,9 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory) :
-			LightBuilder(shaderFactory, textureFactory)
-		{
-		}
-		virtual ~DirectionalLightBuilder(void)
-		{
-		}
+		DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+			Rendering::Lighting::DirectionalLight* directionalLight);
+		virtual ~DirectionalLightBuilder(void);
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
 		DirectionalLightBuilder(DirectionalLightBuilder&& directionalLightBuilder) = delete;
 		DirectionalLightBuilder& operator=(const DirectionalLightBuilder& directionalLightBuilder) = delete;
@@ -74,11 +91,18 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void SetupLightShaders();
-		virtual void SetupLightParams();
+		virtual void BuildPart1();
+		virtual void BuildPart2();
+		virtual void BuildPart3();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
+	private:
+		Math::Real m_halfShadowArea;
+		int m_shadowMapSizeAsPowerOf2;
+		Math::Real m_shadowSoftness;
+		Math::Real m_lightBleedingReductionFactor;
+		Math::Real m_minVariance;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class DirectionalLightBuilder */
 
@@ -89,7 +113,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit PointLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory);
+		PointLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+			Rendering::Lighting::PointLight* pointLight);
 		virtual ~PointLightBuilder(void) { };
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
 		PointLightBuilder(PointLightBuilder&& pointLightBuilder) = delete;
@@ -99,8 +124,9 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void SetupLightShaders();
-		virtual void SetupLightParams();
+		virtual void BuildPart1();
+		virtual void BuildPart2();
+		virtual void BuildPart3();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -112,6 +138,8 @@ namespace Game
 		const Rendering::Color M_DEFAULT_POINT_LIGHT_COLOR;
 		const Math::Real M_DEFAULT_POINT_LIGHT_INTENSITY;
 		const Rendering::Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION;
+
+		Rendering::Attenuation m_attenuation;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PointLightBuilder */
 
@@ -122,7 +150,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit SpotLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory);
+		SpotLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+			Rendering::Lighting::SpotLight* spotLight);
 		virtual ~SpotLightBuilder(void) { };
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;
 		SpotLightBuilder(SpotLightBuilder&& spotLightBuilder) = delete;
@@ -132,8 +161,9 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void SetupLightShaders();
-		virtual void SetupLightParams();
+		virtual void BuildPart1();
+		virtual void BuildPart2();
+		virtual void BuildPart3();
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -150,6 +180,14 @@ namespace Game
 		const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS;
 		const Math::Real M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT;
 		const Math::Real M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE;
+
+		Rendering::Attenuation m_attenuation;
+		Math::Angle m_viewAngle;
+		int m_shadowMapSizeAsPowerOf2;
+		Math::Real m_nearPlane;
+		Math::Real m_shadowSoftness;
+		Math::Real m_lightBleedingReductionFactor;
+		Math::Real m_minVariance;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SpotLightBuilder */
 } /* end namespace Game */

@@ -46,6 +46,9 @@
     <ClCompile Include="ParticlesSystemBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CameraBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameStats.h">
@@ -93,9 +96,6 @@
     <ClInclude Include="LightBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LightBuilder_impl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TextureIDs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -103,6 +103,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ParticlesSystemBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

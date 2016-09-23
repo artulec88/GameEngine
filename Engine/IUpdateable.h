@@ -11,7 +11,7 @@ namespace Engine
 	/// </summary>
 	class IUpdateable
 	{
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Creates the updateable object. </summary>
 		ENGINE_API IUpdateable()
@@ -22,9 +22,18 @@ namespace Engine
 		ENGINE_API virtual ~IUpdateable(void)
 		{
 		}
-	/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/// <summary> Updateable object copy constructor. </summary>
+		IUpdateable(const IUpdateable& iUpdateable) = delete;
+		/// <summary> Updateable object move constructor. </summary>
+		IUpdateable(IUpdateable&& iUpdateable) = default;
+		/// <summary> Updateable object copy assignment operator. </summary>
+		IUpdateable& operator=(const IUpdateable& iUpdateable) = delete;
+		/// <summary> Updateable object move assignment operator. </summary>
+		IUpdateable& operator=(IUpdateable&& iUpdateable) = default;
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		/// <summary> Called when the updateable objects should advance its simulation state. </summary>
 		/// <param name="elapsedTime"> Time by which to advance the simulation. </param>
@@ -32,11 +41,11 @@ namespace Engine
 		/// In this call, the object should advance its own simulation according to the amount of elapsed time.
 		/// </remarks>
 		virtual void Update(Math::Real elapsedTime) = 0;
-	/* ==================== Non-static member functions end ==================== */
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
-	/* ==================== Non-static member variables end ==================== */
-}; /* end class IUpdateable */
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class IUpdateable */
 
 } /* end namespace Engine */
 

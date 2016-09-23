@@ -17,10 +17,17 @@ namespace Rendering
 	class Camera /* : public BaseCamera */
 	{
 		/* ==================== Static variables and functions begin ==================== */
+	private:
+		static constexpr Math::Real DEFAULT_SENSITIVITY = 0.05f;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>
+		/// The default constructor of the camera object.
+		/// </summary>
+		RENDERING_API Camera();
+
 		/// <summary>
 		/// The constructor of the camera object.
 		/// </summary>
@@ -48,33 +55,34 @@ namespace Rendering
 		RENDERING_API ~Camera(void);
 
 		/// <summary> The camera copy constructor. </summary>
-		RENDERING_API Camera(const Camera& camera);
+		RENDERING_API Camera(const Camera& camera) = default;
 
 		/// <summary> The camera move constructor. </summary>
-		RENDERING_API Camera(Camera&& camera);
+		RENDERING_API Camera(Camera&& camera) = default;
 		
 		/// <summary> The camera copy assignment operator. </summary>
-		Camera& operator=(const Camera& camera) = delete;
+		Camera& operator=(const Camera& camera) = default;
 
 		/// <summary> The camera move assignment operator. </summary>
-		Camera& operator=(Camera&& camera) = delete;
+		Camera& operator=(Camera&& camera) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		const Math::Vector3D& GetPos() const { return m_pos; }
-		const Math::Quaternion& GetRot() const { return m_rot; }
-		Math::Vector3D& GetPos() { return m_pos; }
-		Math::Quaternion& GetRot() { return m_rot; }
-		void SetPos(const Math::Vector3D& position) { m_pos = position; }
-		void SetRot(const Math::Quaternion& rotation) { m_rot = rotation; }
+		RENDERING_API const Math::Vector3D& GetPos() const { return m_pos; }
+		RENDERING_API const Math::Quaternion& GetRot() const { return m_rot; }
+		RENDERING_API Math::Vector3D& GetPos() { return m_pos; }
+		RENDERING_API Math::Quaternion& GetRot() { return m_rot; }
+		RENDERING_API void SetPos(const Math::Vector3D& position) { m_pos = position; }
+		RENDERING_API void SetRot(const Math::Quaternion& rotation) { m_rot = rotation; }
 
-		Math::Real GetSensitivity() const { return m_sensitivity; }
-		inline void Activate() { m_isActive = true; }
-		inline void Deactivate() { m_isActive = false; }
-		inline bool IsActive() const { return m_isActive; }
+		RENDERING_API Math::Real GetSensitivity() const { return m_sensitivity; }
+		RENDERING_API void SetSensitivity(Math::Real sensitivity) { m_sensitivity = sensitivity; }
+		RENDERING_API inline void Activate() { m_isActive = true; }
+		RENDERING_API inline void Deactivate() { m_isActive = false; }
+		RENDERING_API inline bool IsActive() const { return m_isActive; }
 		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projection; }
-		inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
+		RENDERING_API inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
 		RENDERING_API Math::Matrix4D GetViewMatrix() const;
 		RENDERING_API Math::Matrix4D GetViewProjection() const;
 		/* ==================== Non-static member functions end ==================== */

@@ -28,7 +28,7 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API FontFactory(const Shader& textShader, const std::string& texturesDirectory, const std::string& fontsDirectory);
+			RENDERING_API FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory);
 			RENDERING_API ~FontFactory(void);
 			FontFactory(const FontFactory& fontFactory) = delete;
 			void operator=(const FontFactory& fontFactory) = delete;
@@ -41,7 +41,7 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			const Shader& m_textShader;
+			const Shader* m_textShader;
 			std::map<FontTypes::FontType, Font> m_fontMap;
 			const std::string& m_texturesDirectory;
 			const std::string& m_fontsDirectory;

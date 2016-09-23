@@ -23,6 +23,11 @@ namespace Engine
 		ENGINE_API virtual ~IStateHandler(void)
 		{
 		}
+
+		IStateHandler(const IStateHandler& iStateHandler) = delete;
+		IStateHandler(IStateHandler&& iStateHandler) = default;
+		IStateHandler& operator=(const IStateHandler& iStateHandler) = delete;
+		IStateHandler& operator=(IStateHandler&& iStateHandler) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

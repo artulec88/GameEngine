@@ -25,6 +25,21 @@ Math::Angle::Angle(Angle&& angle) :
 	STOP_PROFILING_MATH("3");
 }
 
+Math::Angle& Math::Angle::operator=(const Angle& angle)
+{
+	START_PROFILING_MATH(false, "");
+	m_angle = angle.m_angle;
+	STOP_PROFILING_MATH("");
+	return (*this);
+}
+
+Math::Angle& Math::Angle::operator=(Angle&& angle)
+{
+	START_PROFILING_MATH(false, "");
+	m_angle = std::move(angle.m_angle);
+	STOP_PROFILING_MATH("");
+	return (*this);
+}
 
 Math::Angle Math::Angle::operator-() const
 {
@@ -99,22 +114,6 @@ Math::Angle& Math::Angle::operator/=(Real s)
 //	swap(*this, angle);
 //	return *this;
 //}
-
-Math::Angle& Math::Angle::operator=(const Angle& angle)
-{
-	START_PROFILING_MATH(false, "");
-	m_angle = angle.m_angle;
-	STOP_PROFILING_MATH("");
-	return (*this);
-}
-
-Math::Angle& Math::Angle::operator=(Angle&& angle)
-{
-	START_PROFILING_MATH(false, "");
-	m_angle = std::move(angle.m_angle);
-	STOP_PROFILING_MATH("");
-	return (*this);
-}
 
 bool Math::Angle::operator==(const Angle& angle) const
 {

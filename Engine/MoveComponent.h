@@ -25,6 +25,10 @@ namespace Engine
 	public:
 		ENGINE_API MoveComponent(Physics::PhysicsObject* physicsObject, Math::Real movementSpeed, Math::Real runSpeedFactor, Math::Angle& rotationSpeed, Math::Real strafeSpeed, Math::Real jumpSpeed);
 		ENGINE_API virtual ~MoveComponent(void);
+		MoveComponent(const MoveComponent& moveComponent) = delete;
+		MoveComponent(MoveComponent&& moveComponent) = default;
+		MoveComponent& operator=(const MoveComponent& moveComponent) = delete;
+		MoveComponent& operator=(MoveComponent&& moveComponent) = default;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

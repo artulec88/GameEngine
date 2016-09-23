@@ -12,6 +12,7 @@
 
 Engine::GameNode::GameNode() :
 	m_ID(++GameNode::gameNodeCount),
+	m_transform(),
 	m_physicsObject(nullptr)
 {
 	DEBUG_LOG_ENGINE("Game node with ID ", m_ID, " has been created.");
@@ -46,13 +47,53 @@ Engine::GameNode::~GameNode(void)
 	{
 		SAFE_DELETE(m_components[i]);
 	}
-	m_components.clear();
+	if (!m_components.empty())
+	{
+		m_components.clear();
+	}
 	for (unsigned int i = 0; i < m_childrenGameNodes.size(); ++i)
 	{
 		SAFE_DELETE(m_childrenGameNodes[i]);
 	}
-	m_childrenGameNodes.clear();
-	DEBUG_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
+	if (!m_childrenGameNodes.empty())
+	{
+		m_childrenGameNodes.clear();
+	}
+	DELOCUST_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
+}
+
+Engine::GameNode::GameNode(GameNode&& gameNode) :
+	m_ID(std::move(gameNode.m_ID)),
+	m_childrenGameNodes(std::move(gameNode.m_childrenGameNodes)),
+	m_components(std::move(gameNode.m_components)),
+	m_renderableComponents(std::move(gameNode.m_renderableComponents)),
+	m_inputableMouseComponents(std::move(gameNode.m_inputableMouseComponents)),
+	m_updateableComponents(std::move(gameNode.m_updateableComponents)),
+	m_transform(std::move(gameNode.m_transform)),
+	m_physicsObject(std::move(gameNode.m_physicsObject)),
+	m_actionsToCommands(std::move(gameNode.m_actionsToCommands)),
+	m_statesToCommands(std::move(gameNode.m_statesToCommands))
+{
+	//gameNode.m_components.clear();
+	//gameNode.m_childrenGameNodes.clear();
+}
+
+Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
+{
+	m_ID = std::move(gameNode.m_ID);
+	m_childrenGameNodes = std::move(gameNode.m_childrenGameNodes);
+	m_components = std::move(gameNode.m_components);
+	m_renderableComponents = std::move(gameNode.m_renderableComponents);
+	m_inputableMouseComponents = std::move(gameNode.m_inputableMouseComponents);
+	m_updateableComponents = std::move(gameNode.m_updateableComponents);
+	m_transform = std::move(gameNode.m_transform);
+	m_physicsObject = std::move(gameNode.m_physicsObject);
+	m_actionsToCommands = std::move(gameNode.m_actionsToCommands);
+	m_statesToCommands = std::move(gameNode.m_statesToCommands);
+
+	//gameNode.m_components.clear();
+	//gameNode.m_childrenGameNodes.clear();
+	return *this;
 }
 
 void Engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)
@@ -157,7 +198,7 @@ void Engine::GameNode::Update(Math::Real delta)
 	}
 }
 
-void Engine::GameNode::Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const
+void Engine::GameNode::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
 {
 	for (std::vector<IRenderable*>::const_iterator gameComponentItr = m_renderableComponents.begin(); gameComponentItr != m_renderableComponents.end(); ++gameComponentItr)
 	{

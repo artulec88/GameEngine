@@ -184,7 +184,10 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 		{ GLFW_KEY_S, Input::RawInputKeys::KEY_S }, { GLFW_KEY_T, Input::RawInputKeys::KEY_T }, { GLFW_KEY_U, Input::RawInputKeys::KEY_U }, { GLFW_KEY_V, Input::RawInputKeys::KEY_V },
 		{ GLFW_KEY_W, Input::RawInputKeys::KEY_W }, { GLFW_KEY_X, Input::RawInputKeys::KEY_X }, { GLFW_KEY_Y, Input::RawInputKeys::KEY_Y }, { GLFW_KEY_Z, Input::RawInputKeys::KEY_Z },
 		{ GLFW_KEY_UP, Input::RawInputKeys::KEY_UP }, { GLFW_KEY_DOWN, Input::RawInputKeys::KEY_DOWN }, { GLFW_KEY_ESCAPE, Input::RawInputKeys::KEY_ESCAPE }, { GLFW_KEY_ENTER, Input::RawInputKeys::KEY_ENTER },
-		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT } }),
+		{ GLFW_MOUSE_BUTTON_LEFT, Input::RawInputKeys::MOUSE_KEY_LEFT }, { GLFW_MOUSE_BUTTON_MIDDLE, Input::RawInputKeys::MOUSE_KEY_MIDDLE }, { GLFW_MOUSE_BUTTON_RIGHT, Input::RawInputKeys::MOUSE_KEY_RIGHT },
+		{ GLFW_KEY_SPACE, Input::RawInputKeys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, Input::RawInputKeys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, Input::RawInputKeys::KEY_LEFT_ALT },
+		{ GLFW_KEY_LEFT_SHIFT, Input::RawInputKeys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, Input::RawInputKeys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, Input::RawInputKeys::KEY_RIGHT_ALT },
+		{ GLFW_KEY_RIGHT_SHIFT, Input::RawInputKeys::KEY_RIGHT_SHIFT } }),
 	m_inputMapping("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\" + GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),

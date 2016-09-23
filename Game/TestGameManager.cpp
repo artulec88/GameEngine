@@ -328,80 +328,47 @@ void Game::TestGameManager::Load()
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_ALWAYS_GAME(!m_isGameLoaded, Utility::Logging::ERR, "Loading the game run into a problem. The game has already been loaded.");
 
-	Engine::GameNode* testMesh1 = new Engine::GameNode();
-	testMesh1->GetTransform().SetPos(-2.0f, 2.0f, 2.0f);
-	testMesh1->GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
-	testMesh1->GetTransform().SetScale(0.1f);
-	Engine::GameNode* testMesh2 = new Engine::GameNode();
-	testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
-	//testMesh2->GetTransform().SetScale(1.5f);
-	testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
-	testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0, m_textureFactory.CreateTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"), m_textureFactory.CreateTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
-	m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
-	testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	AddToSceneRoot(testMesh1);
-	//AddToSceneRoot(testMesh2);
-	testMesh1->AddChild(testMesh2);
-	Engine::GameNode* testMesh3 = new Engine::GameNode();
-	testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
-	testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
-	testMesh3->GetTransform().SetScale(0.25f);
-	testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
-	AddToSceneRoot(testMesh3);
+	//Engine::GameNode* testMesh1 = new Engine::GameNode();
+	//testMesh1->GetTransform().SetPos(-2.0f, 2.0f, 2.0f);
+	//testMesh1->GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
+	//testMesh1->GetTransform().SetScale(0.1f);
+	//Engine::GameNode* testMesh2 = new Engine::GameNode();
+	//testMesh2->GetTransform().SetPos(9.0f, 0.0f, 0.0f);
+	////testMesh2->GetTransform().SetScale(1.5f);
+	//testMesh2->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
+	//testMesh1->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0, m_textureFactory.CreateTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"), m_textureFactory.CreateTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
+	//m_resourcesLoaded += 4; // TODO: Consider creating some prettier solution. This is ugly
+	//testMesh2->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	//AddToSceneRoot(testMesh1);
+	////AddToSceneRoot(testMesh2);
+	//testMesh1->AddChild(testMesh2);
+	//Engine::GameNode* testMesh3 = new Engine::GameNode();
+	//testMesh3->GetTransform().SetPos(-1.0f, 0.5f, 1.0f);
+	//testMesh3->GetTransform().SetRot(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(0.0f), Math::Angle(-180.0f)));
+	//testMesh3->GetTransform().SetScale(0.25f);
+	//testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
+	//AddToSceneRoot(testMesh3);
 
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 
-	const int treeCount = 30;
-	for (int i = 0; i < treeCount; ++i)
-	{
-		Engine::GameNode* treeNode = new Engine::GameNode();
-		Math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
-		Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
-		Math::Real y = 0.0f;
-		treeNode->GetTransform().SetPos(x, y, z);
-		treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
-		treeNode->GetTransform().SetScale(0.01f);
-		//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
-		treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-		//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-		AddToSceneRoot(treeNode);
-	}
-
-	const int boulderCount = 30;
-	for (int i = 0; i < boulderCount; ++i)
-	{
-		Engine::GameNode* boulderNode = new Engine::GameNode();
-		Math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
-		Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
-		Math::Real y = 0.0f;
-		boulderNode->GetTransform().SetPos(x, y, z);
-		boulderNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
-		boulderNode->GetTransform().SetScale(0.01f);
-		//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
-		boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
-			new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-		//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-		AddToSceneRoot(boulderNode);
-	}
-
-	Engine::GameNode* monkeyNode1 = new Engine::GameNode();
-	monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
-		new Rendering::Mesh("monkey3.obj"),
-		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::CHESSBOARD, "chessboard3.jpg"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	//monkeyNode1->AddComponent(new Engine::LookAtComponent());
-	m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
-	monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
-	monkeyNode1->GetTransform().SetScale(0.1f);
-	//monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
-	//monkeyNode1->AddComponent(new LookAtComponent());
-	//monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
-	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000),
-	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f),
-	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
-	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f),
-	//	Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)),
-	//	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
-	AddToSceneRoot(monkeyNode1);
+	//Engine::GameNode* monkeyNode1 = new Engine::GameNode();
+	//monkeyNode1->AddComponent(new Engine::MeshRendererComponent(
+	//	new Rendering::Mesh("monkey3.obj"),
+	//	new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::CHESSBOARD, "chessboard3.jpg"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	////monkeyNode1->AddComponent(new Engine::LookAtComponent());
+	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
+	//monkeyNode1->GetTransform().SetPos(10.0f, -4.75f, 4.0f);
+	//monkeyNode1->GetTransform().SetScale(0.1f);
+	////monkeyNode1->GetTransform().SetRotation(Quaternion(Vector3D(0, 1, 0), Angle(-45)));
+	////monkeyNode1->AddComponent(new LookAtComponent());
+	////monkeyNode1->AddComponent(new Engine::ParticleGeneratorComponent(this, new Rendering::ParticleTexture(GET_CONFIG_VALUE_STR_GAME("particleGeneratorTexture", "particleFire.png"), GET_CONFIG_VALUE_GAME("particleGeneratorTextureRowsCount", 4), GET_CONFIG_VALUE_GAME("particleGeneratorTextureIsAdditive", true)),
+	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesPerSecondCount", 1000),
+	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesLifeSpanLimit", 0.8f),
+	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesSpeed", 0.02f),
+	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesGravityComplient", 0.3f),
+	////	Math::Angle(GET_CONFIG_VALUE_GAME("particleGeneratorParticlesRotation", REAL_ZERO)),
+	////	GET_CONFIG_VALUE_GAME("particleGeneratorParticlesScale", 0.005f)));
+	//AddToSceneRoot(monkeyNode1);
 
 	//GameNode* monkeyNode2 = new GameNode();
 	//monkeyNode2->AddComponent(new MeshRenderer(
@@ -422,21 +389,6 @@ void Game::TestGameManager::Load()
 	//}
 	//m_resourcesLoaded += 2; // TODO: Consider creating some prettier solution. This is ugly
 
-	Engine::GameNode* playerNode = new Engine::GameNode();
-	const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
-	const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
-	const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
-	playerNode->GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
-	playerNode->GetTransform().SetScale(0.0005f);
-	playerNode->CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	playerNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_textureFactory.CreateTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
-	playerNode->AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	//playerNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
-	Rendering::Particles::ParticlesSystem* particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
-	playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
-	m_resourcesLoaded += 2;
-	AddToSceneRoot(playerNode);
-
 	m_isGameLoaded = true;
 	CHECK_CONDITION_ALWAYS_GAME(m_isGameLoaded, Utility::Logging::CRITICAL, "The game has not been loaded properly.");
 	STOP_PROFILING_GAME("");
@@ -444,8 +396,8 @@ void Game::TestGameManager::Load()
 }
 
 // TODO: temporary code. Remove in the future.
-Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect)
-{
+//Rendering::Particles::ParticlesSystem Game::TestGameManager::CreateParticlesSystem(ParticleEffects::ParticleEffect particleEffect)
+//{
 	//ParticlesSystemBuilder particlesSystemBuilder(this, particleEffect);
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
 	//particlesSystemBuilderDirector.Construct();
@@ -456,19 +408,14 @@ Rendering::Particles::ParticlesSystem* Game::TestGameManager::CreateParticlesSys
 	//}
 	//return particlesSystem;
 
-	START_PROFILING_GAME(true, "");
+	//START_PROFILING_GAME(true, "");
 
-	ParticlesSystemBuilder particlesSystemBuilder(this, particleEffect);
-	Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
-	particlesSystemBuilderDirector.Construct();
-	Rendering::Particles::ParticlesSystem* particlesSystem = particlesSystemBuilder.Get();
-	if (particlesSystem != NULL)
-	{
-		INFO_LOG_GAME("Particles system for effect ", particleEffect, " has been created.");
-	}
-	STOP_PROFILING_GAME("");
-	return particlesSystem;
-}
+	//ParticlesSystemBuilder particlesSystemBuilder(this, particleEffect);
+	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
+	//Rendering::Particles::ParticlesSystem particlesSystem(particlesSystemBuilderDirector.Construct());
+	//STOP_PROFILING_GAME("");
+	//return particlesSystem;
+//}
 
 //
 //void Game::CleanUp()

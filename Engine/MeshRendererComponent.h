@@ -12,22 +12,26 @@ namespace Engine
 
 	class MeshRendererComponent : public GameComponent, public IRenderable
 	{
-	/* ==================== Constructors and destructors begin ==================== */
+		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API MeshRendererComponent(Rendering::Mesh* mesh, Rendering::Material* material);
 		ENGINE_API virtual ~MeshRendererComponent(void);
-	/* ==================== Constructors and destructors end ==================== */
+		MeshRendererComponent(const MeshRendererComponent& meshRendererComponent) = delete;
+		MeshRendererComponent(MeshRendererComponent&& meshRendererComponent);
+		MeshRendererComponent& operator=(const MeshRendererComponent& meshRendererComponent) = delete;
+		MeshRendererComponent& operator=(MeshRendererComponent&& meshRendererComponent);
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const;
-	/* ==================== Non-static member functions end ==================== */
+		virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		Rendering::Mesh* m_mesh;
 		Rendering::Material* m_material;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshRendererComponent */
 
 } /* end namespace Engine */

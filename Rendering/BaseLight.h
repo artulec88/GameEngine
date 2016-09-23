@@ -29,40 +29,39 @@ namespace Rendering
 			/// <summary>
 			/// Base light constructor.
 			/// </summary>
-			/// <param name="shader">The shader used for standard meshes.</param>
-			/// <param name="terrainShader">The shader used specifically for the terrain meshes.</param>
-			/// <param name="noShadowShader">The shader used for standard meshes when shadow-casting is disabled.</param>
-			/// <param name="noShadowTerrainShader">The shader used for terrain meshes when shadow-casting is disabled.</param>
-			RENDERING_API BaseLight(const Shader& shader, const Shader& terrainShader,
-				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API BaseLight();
 
 			/// <summary>The destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
 			
-			BaseLight(const BaseLight& baseLight) = delete; // Copy constructor
-			BaseLight(BaseLight&& baseLight) = delete; // Move constructor
-			BaseLight& operator=(const BaseLight& baseLight) = delete; // Copy assignment operator
-			BaseLight& operator=(BaseLight&& baseLight) = delete; // Move assignment operator
+			/// <summary> Base light copy constructor. </summary>
+			RENDERING_API BaseLight(const BaseLight& baseLight) = delete;
+			/// <summary> Base light move constructor. </summary>
+			RENDERING_API BaseLight(BaseLight&& baseLight) = default;
+			/// <summary> Base light copy assignment operator. </summary>
+			BaseLight& operator=(const BaseLight& baseLight) = delete;
+			/// <summary> Base light move assignment operator. </summary>
+			BaseLight& operator=(BaseLight&& baseLight) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
 			//virtual void Update(Math::Real delta);
 			//virtual void Render(Shader* shader, Renderer* renderer);
-			const Color& GetColor() const { return m_color; }
-			Math::Real GetIntensity() const { return m_intensity; }
-			RENDERING_API inline const Shader& GetShader() const { return m_shader; }
-			RENDERING_API inline const Shader& GetTerrainShader() const { return m_terrainShader; }
-			RENDERING_API inline const Shader& GetNoShadowShader() const { return m_noShadowShader; }
-			RENDERING_API inline const Shader& GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
+			RENDERING_API const Color& GetColor() const { return m_color; }
+			RENDERING_API Math::Real GetIntensity() const { return m_intensity; }
+			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
+			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
+			RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
+			RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
 			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
-			virtual bool IsEnabled() const { return m_isEnabled; }
+			RENDERING_API virtual bool IsEnabled() const { return m_isEnabled; }
 
-			bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
+			RENDERING_API bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
 
-			virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
-			Math::Transform& GetTransform() { return m_transform; }
-			const Math::Transform& GetTransform() const { return m_transform; }
+			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
+			RENDERING_API Math::Transform& GetTransform() { return m_transform; }
+			RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
 
 			RENDERING_API void SetTransform(const Math::Transform& transform) { m_transform = transform; }
 			RENDERING_API void SetColor(const Color& color) { m_color = color; }
@@ -72,9 +71,21 @@ namespace Rendering
 				Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
+			/// <summary> Sets the shader. </summary>
+			/// <param name="shader">The shader used for standard meshes.</param>
+			RENDERING_API void SetShader(const Shader* shader) { m_shader = shader; }
+			/// <summary> Sets the terrain shader. </summary>
+			/// <param name="terrainShader">The shader used specifically for the terrain meshes.</param>
+			RENDERING_API void SetTerrainShader(const Shader* terrainShader) { m_terrainShader = terrainShader; }
+			/// <summary> Sets the no-shadow shader. </summary>
+			/// <param name="noShadowShader">The shader used for standard meshes when shadow-casting is disabled.</param>
+			RENDERING_API void SetNoShadowShader(const Shader* noShadowShader) { m_noShadowShader = noShadowShader; }
+			/// <summary> Sets the no-shadow terrain shader. </summary>
+			/// <param name="noShadowTerrainShader">The shader used for terrain meshes when shadow-casting is disabled.</param>
+			RENDERING_API void SetNoShadowTerrainShader(const Shader* noShadowTerrainShader) { m_noShadowTerrainShader = noShadowTerrainShader; }
 
 #ifdef ANT_TWEAK_BAR_ENABLED
-			virtual void InitializeTweakBar(TwBar* lightsBar);
+			RENDERING_API virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
 			/* ==================== Non-static member functions end ==================== */
 
@@ -90,16 +101,16 @@ namespace Rendering
 			Math::Real m_intensity;
 
 			/// <summary>The default shader for the light.</summary>
-			const Shader& m_shader;
+			const Shader* m_shader;
 
 			/// <summary>The terrain shader for the light.</summary>
-			const Shader& m_terrainShader;
+			const Shader* m_terrainShader;
 
 			/// <summary> The default shader with no shadow calculation for the light. </summary>
-			const Shader& m_noShadowShader;
+			const Shader* m_noShadowShader;
 
 			/// <summary> The terrain shader with no shadow calculation for the light. </summary>
-			const Shader& m_noShadowTerrainShader;
+			const Shader* m_noShadowTerrainShader;
 
 			/// <summary>The information about the shadow that the light casts.</summary>
 			std::unique_ptr<ShadowInfo> m_shadowInfo;

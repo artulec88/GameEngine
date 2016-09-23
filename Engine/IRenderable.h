@@ -26,11 +26,20 @@ namespace Engine
 		ENGINE_API virtual ~IRenderable(void)
 		{
 		}
+
+		/// <summary> Renderable object copy constructor. </summary>
+		IRenderable(const IRenderable& iRenderable) = delete;
+		/// <summary> Renderable object move constructor. </summary>
+		IRenderable(IRenderable&& iRenderable) = default;
+		/// <summary> Renderable object copy assignment operator. </summary>
+		IRenderable& operator=(const IRenderable& iRenderable) = delete;
+		/// <summary> Renderable object move assignment operator. </summary>
+		IRenderable& operator=(IRenderable&& iRenderable) = default;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const = 0;
+		ENGINE_API virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

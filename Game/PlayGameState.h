@@ -60,6 +60,7 @@ namespace Game
 		void AddTerrainNode();
 		void AddWaterNodes();
 		void AddSkyboxNode();
+		void AddPlayerNode();
 		void AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial);
 		void AddCameras(Engine::GameNode* entityToFollow);
 		void AddLights();
@@ -71,9 +72,9 @@ namespace Game
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 
-		const Rendering::Shader& GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		const Rendering::Shader& GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		const Rendering::Shader& GetWaterShader(Rendering::Renderer* renderer) const
+		const Rendering::Shader* GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		const Rendering::Shader* GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		const Rendering::Shader* GetWaterShader(Rendering::Renderer* renderer) const
 		{
 			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
 				m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::WATER) :
@@ -102,7 +103,7 @@ namespace Game
 
 		inline int GetSpotLightsCount() const
 		{
-			return static_cast<int>(m_directionalAndSpotLights.size()) - m_directionalLightsCount;
+			return static_cast<int>(m_spotLights.size());
 		}
 
 		/// <summary>
@@ -116,14 +117,16 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		Engine::GameNode m_rootGameNode;
 		Engine::GameNode m_terrainNode;
 		Rendering::TerrainMesh* m_terrainMesh;
 		Rendering::Material* m_terrainMaterial;
 
 		Engine::GameNode m_waterNode;
-		Engine::GameNode* m_skyboxNode;
+		Engine::GameNode m_skyboxNode;
+		Engine::GameNode m_playerNode;
 		std::vector<Engine::GameNode*> m_billboardsNodes;
-		std::vector<Rendering::Camera*> m_cameras;
+		std::vector<Rendering::Camera> m_cameras;
 		unsigned int m_currentCameraIndex;
 
 		bool m_isMouseLocked;
@@ -142,14 +145,18 @@ namespace Game
 		Rendering::Color m_ambientNighttimeColor;
 		Rendering::Color m_ambientLightColor;
 
+		// TODO: We should store each type of available light in different vector. The PlayGameState should not know about possible light types.
+		// Program to interface (BaseLight) instead of concrete implementations (DirectionalLight, PointLight, SpotLight, ...).
 		/// <summary> The number of directional lights currently being used in the game. </summary>
 		int m_directionalLightsCount;
 		/// <summary> The vector of all lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_lights;
-		/// <summary> The vector of directional and spot lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::BaseLight*> m_directionalAndSpotLights;
+		//std::vector<Rendering::Lighting::BaseLight*> m_lights;
+		/// <summary> The vector of directional lights that are used by the game engine. </summary>
+		std::vector<Rendering::Lighting::DirectionalLight> m_directionalLights;
+		/// <summary> The vector of spot lights that are used by the game engine. </summary>
+		std::vector<Rendering::Lighting::SpotLight> m_spotLights;
 		/// <summary> The vector of point lights that are used by the game engine. </summary>
-		std::vector<Rendering::Lighting::PointLight*> m_pointLights;
+		std::vector<Rendering::Lighting::PointLight> m_pointLights;
 		//std::vector<Lighting::SpotLight*> m_spotLights;
 
 		Math::Vector2D m_previousMousePos, m_mousePos;

@@ -25,6 +25,11 @@ namespace Engine
 		ENGINE_API virtual ~IRangeHandler(void)
 		{
 		}
+
+		IRangeHandler(const IRangeHandler& iRangeHandler) = delete;
+		IRangeHandler(IRangeHandler&& iRangeHandler) = default;
+		IRangeHandler& operator=(const IRangeHandler& iRangeHandler) = delete;
+		IRangeHandler& operator=(IRangeHandler&& iRangeHandler) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

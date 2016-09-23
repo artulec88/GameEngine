@@ -33,6 +33,10 @@ namespace Engine
 			const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
 			const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel);
 		virtual ~DirectionalLightComponent();
+		DirectionalLightComponent(const DirectionalLightComponent& directionalLightComponent) = delete;
+		DirectionalLightComponent(DirectionalLightComponent&& directionalLightComponent);
+		DirectionalLightComponent& operator=(const DirectionalLightComponent& directionalLightComponent) = delete;
+		DirectionalLightComponent& operator=(DirectionalLightComponent&& directionalLightComponent);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

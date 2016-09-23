@@ -25,33 +25,44 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, const ParticleTexture& particleTexture);
+			RENDERING_API ParticlesSystem();
+			RENDERING_API ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, const ParticleTexture* particleTexture);
 			RENDERING_API ~ParticlesSystem();
 
 			/// <summary> Particles system copy constructor. </summary>
 			ParticlesSystem(const ParticlesSystem& particlesSystem) = delete;
 			/// <summary> Particles system move constructor. </summary>
-			ParticlesSystem(ParticlesSystem&& particlesSystem) = delete;
+			RENDERING_API ParticlesSystem(ParticlesSystem&& particlesSystem) = default;
 			/// <summary> Particles system copy assignment operator. </summary>
 			ParticlesSystem& operator=(const ParticlesSystem& particlesSystem) = delete;
 			/// <summary> Particles system move assignment operator. </summary>
-			ParticlesSystem& operator=(ParticlesSystem&& particlesSystem) = delete;
+			RENDERING_API ParticlesSystem& operator=(ParticlesSystem&& particlesSystem) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			RENDERING_API void Update(Math::Real deltaTime);
 			RENDERING_API void Reset();
-			RENDERING_API const ParticleTexture& GetTexture() const { return m_texture; }
+			RENDERING_API const ParticleTexture* GetTexture() const { return m_texture; }
 			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetCount(); }
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
 			RENDERING_API void AddUpdater(ParticlesUpdater* updater) { m_updaters.push_back(updater); }
-			const Math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
-			const Math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
-			Math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
-			Math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
-			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_particles.IsAttributeEnabled(attribute); }
+			RENDERING_API const Math::Vector3D& GetPosition(size_t i) const { return m_particles.GetPosition(i); }
+			RENDERING_API const Math::Angle& GetRotation(size_t i) const { return m_particles.GetRotation(i); }
+			RENDERING_API Math::Real GetScale(size_t i) const { return m_particles.GetScale(i); }
+			RENDERING_API Math::Real CalculateLifeStageFactor(size_t i) const { return m_particles.CalculateLifeStageFactor(i); }
+			RENDERING_API bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_particles.IsAttributeEnabled(attribute); }
+			RENDERING_API void SetMaxParticlesCount(size_t maxCount)
+			{
+				m_count = maxCount;
+				m_particles.SetMaxParticlesCount(m_count);
+			}
+			RENDERING_API void SetAttributesMask(Attributes::AttributesMask attributesMask)
+			{
+				m_particles.SetAttributesMask(attributesMask);
+			}
+			RENDERING_API void SetParticleTexture(const ParticleTexture* particleTexture) { m_texture = particleTexture; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -60,7 +71,7 @@ namespace Rendering
 			ParticlesContainer m_particles;
 			std::vector<ParticlesEmitter> m_emitters;
 			std::vector<ParticlesUpdater*> m_updaters;
-			const ParticleTexture& m_texture;
+			const ParticleTexture* m_texture;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesSystem */
 	} /* end namespace Particles */

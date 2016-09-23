@@ -16,7 +16,10 @@ namespace Utility {
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Builder constructor. </summary>
-		Builder()
+		/// <param name="object"> The object that is already created, but not yet initialized and
+		/// which will be the output result of the whole building operation. </param>
+		Builder(T* object) :
+			m_object(object)
 		{
 		}
 		/// <summary> Builder destructor. </summary>
@@ -45,12 +48,16 @@ namespace Utility {
 		{
 		}
 
-		T* Get() { return m_object; }
+		/// <summary> Returns the properly initialized object. </summary>
+		/// <returns> The already initialized object. </returns>
+		T* Get()
+		{
+			return m_object;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		//std::unique_ptr<T> m_object;
 		T* m_object;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Builder<T> */

@@ -12,6 +12,26 @@
 
 #include <sstream>
 
+Rendering::Camera::Camera() :
+	m_pos(REAL_ZERO, REAL_ZERO, REAL_ZERO),
+	m_rot(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+	m_projection(Math::Matrix4D::IDENTITY_MATRIX),
+	//m_viewMatrix(m_transform.GetTransformedRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(m_transform.GetTransformedPos().Negate())),
+	m_sensitivity(DEFAULT_SENSITIVITY),
+	m_isActive(false)
+#ifdef ANT_TWEAK_BAR_ENABLED
+	, m_prevFov(REAL_ZERO),
+	m_fov(REAL_ZERO),
+	m_prevAspectRatio(REAL_ZERO),
+	m_aspectRatio(REAL_ZERO),
+	m_prevNearPlane(REAL_ZERO),
+	m_nearPlane(REAL_ZERO),
+	m_prevFarPlane(REAL_ZERO),
+	m_farPlane(REAL_ZERO)
+#endif
+{
+}
+
 Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	m_pos(position),
 	m_rot(rotation),
@@ -20,14 +40,14 @@ Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion
 	m_sensitivity(sensitivity),
 	m_isActive(false)
 #ifdef ANT_TWEAK_BAR_ENABLED
-	, m_prevFov(0.0f),
-	m_fov(0.0f),
-	m_prevAspectRatio(0.0f),
-	m_aspectRatio(0.0f),
-	m_prevNearPlane(0.0f),
-	m_nearPlane(0.0f),
-	m_prevFarPlane(0.0f),
-	m_farPlane(0.0f)
+	, m_prevFov(REAL_ZERO),
+	m_fov(REAL_ZERO),
+	m_prevAspectRatio(REAL_ZERO),
+	m_aspectRatio(REAL_ZERO),
+	m_prevNearPlane(REAL_ZERO),
+	m_nearPlane(REAL_ZERO),
+	m_prevFarPlane(REAL_ZERO),
+	m_farPlane(REAL_ZERO)
 #endif
 {
 }
@@ -53,46 +73,6 @@ Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion
 }
 
 Rendering::Camera::~Camera()
-{
-}
-
-Rendering::Camera::Camera(const Camera& camera) :
-	m_pos(camera.m_pos),
-	m_rot(camera.m_rot),
-	m_projection(camera.m_projection),
-	//m_viewMatrix(m_transform.GetTransformedRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(m_transform.GetTransformedPos().Negate())),
-	m_sensitivity(camera.m_sensitivity),
-	m_isActive(camera.m_isActive)
-#ifdef ANT_TWEAK_BAR_ENABLED
-	, m_prevFov(camera.m_prevFov),
-	m_fov(camera.m_fov),
-	m_prevAspectRatio(camera.m_prevAspectRatio),
-	m_aspectRatio(camera.m_aspectRatio),
-	m_prevNearPlane(camera.m_prevNearPlane),
-	m_nearPlane(camera.m_nearPlane),
-	m_prevFarPlane(camera.m_prevFarPlane),
-	m_farPlane(camera.m_farPlane)
-#endif
-{
-}
-
-Rendering::Camera::Camera(Camera&& camera) :
-	m_pos(std::move(camera.m_pos)),
-	m_rot(std::move(camera.m_rot)),
-	m_projection(std::move(camera.m_projection)),
-	//m_viewMatrix(m_transform.GetTransformedRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(m_transform.GetTransformedPos().Negate())),
-	m_sensitivity(std::move(camera.m_sensitivity)),
-	m_isActive(std::move(camera.m_isActive))
-#ifdef ANT_TWEAK_BAR_ENABLED
-	, m_prevFov(std::move(camera.m_prevFov)),
-	m_fov(std::move(camera.m_fov)),
-	m_prevAspectRatio(std::move(camera.m_prevAspectRatio)),
-	m_aspectRatio(std::move(camera.m_aspectRatio)),
-	m_prevNearPlane(std::move(camera.m_prevNearPlane)),
-	m_nearPlane(std::move(camera.m_nearPlane)),
-	m_prevFarPlane(std::move(camera.m_prevFarPlane)),
-	m_farPlane(std::move(camera.m_farPlane))
-#endif
 {
 }
 

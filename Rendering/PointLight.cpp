@@ -5,9 +5,8 @@
 
 /* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
 
-Rendering::Lighting::PointLight::PointLight(const Shader& shader, const Shader& terrainShader,
-	const Shader& noShadowShader, const Shader& noShadowTerrainShader) :
-	BaseLight(shader, terrainShader, noShadowShader, noShadowTerrainShader),
+Rendering::Lighting::PointLight::PointLight() :
+	BaseLight(),
 	m_attenuation(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_range(REAL_ZERO)
 {

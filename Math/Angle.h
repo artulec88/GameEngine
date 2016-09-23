@@ -79,6 +79,13 @@ namespace Math
 			START_PROFILING_MATH(false, "");
 			STOP_PROFILING_MATH("");
 		}
+
+		/// <summary> Angle copy assignment operator. </summary>
+		//MATH_API Angle& operator=(Angle angle);
+		/// <summary> Angle copy assignment operator. </summary>
+		MATH_API Angle& operator=(const Angle& angle);
+		/// <summary> Angle move assignment operator. </summary>
+		MATH_API Angle& operator=(Angle&& angle);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -236,12 +243,6 @@ namespace Math
 		MATH_API Angle& operator*=(Real s);
 		MATH_API Angle& operator/=(Real s);
 
-		/// <summary> Angle copy assignment operator. </summary>
-		//MATH_API Angle& operator=(Angle angle);
-		/// <summary> Angle copy assignment operator. </summary>
-		MATH_API Angle& operator=(const Angle& angle);
-		/// <summary> Angle move assignment operator. </summary>
-		MATH_API Angle& operator=(Angle&& angle);
 		MATH_API bool operator==(const Angle& angle) const;
 		MATH_API bool operator!=(const Angle& angle) const;
 		MATH_API bool operator>(const Angle& angle) const;

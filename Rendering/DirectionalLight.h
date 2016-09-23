@@ -25,23 +25,31 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API DirectionalLight(const Shader& shader, const Shader& terrainShader,
-				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API DirectionalLight();
 			RENDERING_API virtual ~DirectionalLight(void);
+			
+			/// <summary> Directional light copy constructor. </summary>
+			DirectionalLight(const DirectionalLight& directionalLight) = default;
+			/// <summary> Directional light move constructor. </summary>
+			RENDERING_API DirectionalLight(DirectionalLight&& directionalLight) = default;
+			/// <summary> Directional light copy assignment operator. </summary>
+			DirectionalLight& operator=(const DirectionalLight& directionalLight) = delete;
+			/// <summary> Directional light move assignment operator. </summary>
+			RENDERING_API DirectionalLight& operator=(DirectionalLight&& directionalLight) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
-			virtual bool IsEnabled() const;
+			RENDERING_API virtual bool IsEnabled() const;
 
-			virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot);
+			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
 
 			RENDERING_API void SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
 				Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 
-			std::string ToString() const;
+			RENDERING_API std::string ToString() const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

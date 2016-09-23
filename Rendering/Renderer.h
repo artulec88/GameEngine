@@ -72,17 +72,17 @@ namespace Rendering
 		RENDERING_API void BindWaterRefractionTexture() const;
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
-		RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader& shader) const;
-		RENDERING_API void FinalizeRenderScene(const Shader& filterShader);
+		RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
+		RENDERING_API void FinalizeRenderScene(const Shader* filterShader);
 		//RENDERING_API void Render(const GameNode& node);
 
 		RENDERING_API bool InitShadowMap();
-		RENDERING_API void FinalizeShadowMapRendering(const Shader& filterShader);
+		RENDERING_API void FinalizeShadowMapRendering(const Shader* filterShader);
 
-		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader& guiControlShader) const;
+		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader* guiControlShader) const;
 
-		RENDERING_API void RenderParticles(const Shader& particleShader, const Particles::ParticlesSystem& particleSystem) const;
-		RENDERING_API void RenderParticles(const Shader& particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const;
+		RENDERING_API void RenderParticles(const Shader* particleShader, const Particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(const Shader* particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -99,8 +99,8 @@ namespace Rendering
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
-		RENDERING_API inline void BindShader(const Shader& shader) { shader.Bind(); }
-		RENDERING_API inline void UpdateRendererUniforms(const Shader& shader) { shader.UpdateRendererUniforms(this); }
+		RENDERING_API inline void BindShader(const Shader* shader) { shader->Bind(); }
+		RENDERING_API inline void UpdateRendererUniforms(const Shader* shader) { shader->UpdateRendererUniforms(this); }
 
 		RENDERING_API inline void ClearScreen() const
 		{
@@ -154,7 +154,7 @@ namespace Rendering
 			CHECK_CONDITION_EXIT_RENDERING(m_currentLight != NULL, Utility::Logging::ERR, "Current light is NULL.");
 			return m_currentLight;
 		}
-		inline const Lighting::BaseLight* SetCurrentLight(Lighting::BaseLight* light)
+		inline const Lighting::BaseLight* SetCurrentLight(const Lighting::BaseLight* light)
 		{
 			// TODO: Null check?
 			m_currentLight = light;
@@ -169,7 +169,7 @@ namespace Rendering
 		{
 			return m_currentPointLight;
 		}
-		inline const Lighting::PointLight* SetCurrentPointLight(Lighting::PointLight* pointLight)
+		inline const Lighting::PointLight* SetCurrentPointLight(const Lighting::PointLight* pointLight)
 		{
 			// TODO: Index range checking
 			m_currentPointLight = pointLight;
@@ -184,14 +184,9 @@ namespace Rendering
 			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::EMERGENCY, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
-		inline Camera& GetCurrentCamera()
-		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::EMERGENCY, "Current camera is NULL.");
-			return *m_currentCamera;
-		}
 
 		//RENDERING_API void SetMenuCameraAsCurrent();
-		RENDERING_API void SetCurrentCamera(Camera* camera);
+		RENDERING_API void SetCurrentCamera(const Camera* camera);
 
 		RENDERING_API void BindAsRenderTarget() const;
 		RENDERING_API void InitLightRendering() const;
@@ -230,7 +225,7 @@ namespace Rendering
 		/// <summary>
 		/// Rendering debug nodes, i.e. the nodes that do not belong to the scene, but can be used to see the intermediate results of some other processing (e.g. how shadow map looks).
 		/// </summary>
-		RENDERING_API void RenderDebugNodes(const Shader& guiShader);
+		RENDERING_API void RenderDebugNodes(const Shader* guiShader);
 
 		/// <summary>
 		/// Adds a line segment to the debug drawing queue.
@@ -302,8 +297,8 @@ namespace Rendering
 		}
 	private:
 		//Texture* InitializeCubeMapTexture(const std::string& cubeMapTextureDirectory);
-		void BlurShadowMap(const Shader& filterShader, int shadowMapIndex, Math::Real blurAmount);
-		void ApplyFilter(const Shader& filterShader, const Texture* source, const Texture* dest);
+		void BlurShadowMap(const Shader* filterShader, int shadowMapIndex, Math::Real blurAmount);
+		void ApplyFilter(const Shader* filterShader, const Texture* source, const Texture* dest);
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -319,15 +314,15 @@ namespace Rendering
 		CONST_IF_TWEAK_BAR_DISABLED FogEffect::FogInfo m_fogInfo;
 
 		CONST_IF_TWEAK_BAR_DISABLED bool m_ambientLightEnabled;
-		Lighting::BaseLight* m_currentLight;
+		const Lighting::BaseLight* m_currentLight;
 		/// <summary>
 		/// Current point light.
 		/// </summary>
-		Lighting::PointLight* m_currentPointLight;
+		const Lighting::PointLight* m_currentPointLight;
 		//Lighting::SpotLight* m_currentSpotLight; // current spot light
 
-		Camera* m_currentCamera;
-		Camera* m_tempCamera;
+		const Camera* m_currentCamera;
+		const Camera* m_tempCamera;
 
 		Texture m_displayTexture;
 

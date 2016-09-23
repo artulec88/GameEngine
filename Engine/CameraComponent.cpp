@@ -18,6 +18,21 @@ Engine::CameraComponent::~CameraComponent(void)
 {
 }
 
+Engine::CameraComponent::CameraComponent(CameraComponent&& cameraComponent) :
+	GameComponent(std::move(cameraComponent)),
+	IUpdateable(std::move(cameraComponent)),
+	m_camera(std::move(cameraComponent.m_camera))
+{
+}
+
+Engine::CameraComponent& Engine::CameraComponent::operator=(CameraComponent&& cameraComponent)
+{
+	GameComponent::operator=(std::move(cameraComponent));
+	IUpdateable::operator=(std::move(cameraComponent));
+	m_camera = std::move(cameraComponent.m_camera);
+	return *this;
+}
+
 void Engine::CameraComponent::Update(Math::Real deltaTime)
 {
 	if (!m_camera->IsActive())
@@ -41,6 +56,7 @@ void Engine::CameraComponent::Update(Math::Real deltaTime)
 
 Engine::CameraMoveComponent::CameraMoveComponent(Rendering::Camera* camera) :
 	CameraComponent(camera),
+	IInputableMouse(),
 	m_forward(false),
 	m_backward(false),
 	m_left(false),
@@ -56,6 +72,37 @@ Engine::CameraMoveComponent::CameraMoveComponent(Rendering::Camera* camera) :
 
 Engine::CameraMoveComponent::~CameraMoveComponent(void)
 {
+}
+
+Engine::CameraMoveComponent::CameraMoveComponent(CameraMoveComponent&& cameraMoveComponent) :
+	CameraComponent(std::move(cameraMoveComponent)),
+	IInputableMouse(std::move(cameraMoveComponent)),
+	m_forward(std::move(cameraMoveComponent.m_forward)),
+	m_backward(std::move(cameraMoveComponent.m_backward)),
+	m_left(std::move(cameraMoveComponent.m_left)),
+	m_right(std::move(cameraMoveComponent.m_right)),
+	m_up(std::move(cameraMoveComponent.m_up)),
+	m_down(std::move(cameraMoveComponent.m_down)),
+	m_velocity(std::move(cameraMoveComponent.m_velocity)),
+	m_maxSpeed(std::move(cameraMoveComponent.m_maxSpeed)),
+	m_isLocked(std::move(cameraMoveComponent.m_isLocked))
+{
+}
+
+Engine::CameraMoveComponent& Engine::CameraMoveComponent::operator=(CameraMoveComponent&& cameraMoveComponent)
+{
+	CameraComponent::operator=(std::move(cameraMoveComponent));
+	IInputableMouse::operator=(std::move(cameraMoveComponent));
+	m_forward = std::move(cameraMoveComponent.m_forward);
+	m_backward = std::move(cameraMoveComponent.m_backward);
+	m_left = std::move(cameraMoveComponent.m_left);
+	m_right = std::move(cameraMoveComponent.m_right);
+	m_up = std::move(cameraMoveComponent.m_up);
+	m_down = std::move(cameraMoveComponent.m_down);
+	m_velocity = std::move(cameraMoveComponent.m_velocity);
+	m_maxSpeed = std::move(cameraMoveComponent.m_maxSpeed);
+	m_isLocked = std::move(cameraMoveComponent.m_isLocked);
+	return *this;
 }
 
 void Engine::CameraMoveComponent::MouseButtonEvent(int button, int action, int mods)
@@ -203,6 +250,8 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(camera),
+	IStateHandler(),
+	IRangeHandler(),
 	m_gameEntityToFollow(entityToFollow),
 	m_distanceFromEntity(initialDistanceFromEntity),
 	m_changingAngleAroundEntity(false),
@@ -220,6 +269,43 @@ Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, 
 
 Engine::CameraFollowComponent::~CameraFollowComponent(void)
 {
+}
+
+Engine::CameraFollowComponent::CameraFollowComponent(CameraFollowComponent&& cameraFollowComponent) :
+	CameraComponent(std::move(cameraFollowComponent)),
+	IStateHandler(std::move(cameraFollowComponent)),
+	IRangeHandler(std::move(cameraFollowComponent)),
+	m_gameEntityToFollow(std::move(cameraFollowComponent.m_gameEntityToFollow)),
+	m_distanceFromEntity(std::move(cameraFollowComponent.m_distanceFromEntity)),
+	m_changingAngleAroundEntity(std::move(cameraFollowComponent.m_changingAngleAroundEntity)),
+	m_angleAroundEntitySpeed(std::move(cameraFollowComponent.m_angleAroundEntitySpeed)),
+	m_currentAngleAroundEntity(std::move(cameraFollowComponent.m_currentAngleAroundEntity)),
+	m_changingPitch(std::move(cameraFollowComponent.m_changingPitch)),
+	m_pitchRotationSpeed(std::move(cameraFollowComponent.m_pitchRotationSpeed)),
+	m_currentPitchAngle(std::move(cameraFollowComponent.m_currentPitchAngle)),
+	m_mousePos(std::move(cameraFollowComponent.m_mousePos)),
+	m_prevMousePos(std::move(cameraFollowComponent.m_prevMousePos)),
+	m_mousePosChanged(std::move(cameraFollowComponent.m_mousePosChanged))
+{
+}
+
+Engine::CameraFollowComponent& Engine::CameraFollowComponent::operator=(CameraFollowComponent&& cameraFollowComponent)
+{
+	CameraComponent::operator=(std::move(cameraFollowComponent));
+	IStateHandler::operator=(std::move(cameraFollowComponent));
+	IRangeHandler::operator=(std::move(cameraFollowComponent));
+	m_gameEntityToFollow = std::move(cameraFollowComponent.m_gameEntityToFollow);
+	m_distanceFromEntity = std::move(cameraFollowComponent.m_distanceFromEntity);
+	m_changingAngleAroundEntity = std::move(cameraFollowComponent.m_changingAngleAroundEntity);
+	m_angleAroundEntitySpeed = std::move(cameraFollowComponent.m_angleAroundEntitySpeed);
+	m_currentAngleAroundEntity = std::move(cameraFollowComponent.m_currentAngleAroundEntity);
+	m_changingPitch = std::move(cameraFollowComponent.m_changingPitch);
+	m_pitchRotationSpeed = std::move(cameraFollowComponent.m_pitchRotationSpeed);
+	m_currentPitchAngle = std::move(cameraFollowComponent.m_currentPitchAngle);
+	m_mousePos = std::move(cameraFollowComponent.m_mousePos);
+	m_prevMousePos = std::move(cameraFollowComponent.m_prevMousePos);
+	m_mousePosChanged = std::move(cameraFollowComponent.m_mousePosChanged);
+	return *this;
 }
 
 //void Engine::CameraFollowComponent::MouseButtonEvent(int button, int action, int mods)

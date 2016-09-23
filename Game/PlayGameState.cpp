@@ -1,14 +1,16 @@
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
 #include "LightBuilder.h"
-#include "LightBuilder_impl.h"
 #include "TextureIDs.h"
 #include "GameNodeBuilder.h"
+#include "CameraBuilder.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\BillboardRendererComponent.h"
+#include "Engine\PhysicsComponent.h"
+#include "Engine\GravityComponent.h"
 #include "Engine\GameNode.h"
 
 #include "Rendering\ParticlesSystem.h"
@@ -26,7 +28,9 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	m_terrainMesh(NULL),
 	m_terrainMaterial(NULL),
 	m_waterNode(),
-	m_skyboxNode(NULL),
+	m_skyboxNode(),
+	m_playerNode(),
+	m_currentCameraIndex(-1),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
 	m_mousePicker(),
@@ -54,8 +58,8 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 		GET_CONFIG_VALUE_GAME("ambientNighttimeColorBlue", 0.02f)),
 	m_ambientLightColor(m_ambientDaytimeColor),
 	m_directionalLightsCount(0),
-	m_lights(),
-	m_directionalAndSpotLights(),
+	m_directionalLights(),
+	m_spotLights(),
 	m_pointLights(),
 	m_previousMousePos(REAL_ZERO, REAL_ZERO),
 	m_mousePos(REAL_ZERO, REAL_ZERO),
@@ -69,14 +73,9 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 
 Game::PlayGameState::~PlayGameState(void)
 {
-	SAFE_DELETE(m_skyboxNode);
 	for (auto billboardNode = m_billboardsNodes.begin(); billboardNode != m_billboardsNodes.end(); ++billboardNode)
 	{
 		SAFE_DELETE(*billboardNode);
-	}
-	for (auto camera = m_cameras.begin(); camera != m_cameras.end(); ++camera)
-	{
-		SAFE_DELETE(*camera);
 	}
 }
 
@@ -88,6 +87,7 @@ void Game::PlayGameState::Entered()
 	AddTerrainNode();
 	AddWaterNodes();
 	AddSkyboxNode();
+	AddPlayerNode();
 	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_1,
 		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
@@ -99,6 +99,40 @@ void Game::PlayGameState::Entered()
 		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 	AddCameras(NULL);
 	AddLights(); // Adding all kinds of light (directional, point, spot)
+	
+	//const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	//const int treeCount = 30;
+	//for (int i = 0; i < treeCount; ++i)
+	//{
+	//	Engine::GameNode* treeNode = new Engine::GameNode();
+	//	Math::Real x = randomGenerator.NextFloat(0.0f, 30.0f);
+	//	Math::Real z = randomGenerator.NextFloat(0.0f, 20.0f);
+	//	Math::Real y = 0.0f;
+	//	treeNode->GetTransform().SetPos(x, y, z);
+	//	treeNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
+	//	treeNode->GetTransform().SetScale(0.01f);
+	//	//treeNode->SetPhysicsObject(new Physics::PhysicsObject(treeNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	//	treeNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("lowPolyTree.obj"), new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::TREE, "lowPolyTree.png"), 1.0f, 8.0f, m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	//	//treeNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	//	AddToSceneRoot(treeNode);
+	//}
+
+	//const int boulderCount = 30;
+	//for (int i = 0; i < boulderCount; ++i)
+	//{
+	//	Engine::GameNode* boulderNode = new Engine::GameNode();
+	//	Math::Real x = randomGenerator.NextFloat(0.0f, 100.0f);
+	//	Math::Real z = randomGenerator.NextFloat(0.0f, 100.0f);
+	//	Math::Real y = 0.0f;
+	//	boulderNode->GetTransform().SetPos(x, y, z);
+	//	boulderNode->GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(0.0f), Math::Angle(randomGenerator.NextFloat(0.0f, 180.0f)), Math::Angle(0.0f))));
+	//	boulderNode->GetTransform().SetScale(0.01f);
+	//	//boulderNode->SetPhysicsObject(new Physics::PhysicsObject(boulderNode->GetTransform(), 1282.0f, Math::Vector3D(0.0f, 0.0f, 0.0f)));
+	//	boulderNode->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("boulder.obj"),
+	//		new Rendering::Material(m_textureFactory.CreateTexture(TextureIDs::BOULDER, "boulder.png"), 0.01f, 22.0f, m_textureFactory.CreateTexture(TextureIDs::BOULDER_NORMAL_MAP, "boulderNormal.png"), m_textureFactory.GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	//	//boulderNode->AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	//	AddToSceneRoot(boulderNode);
+	//}
 
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("PLAY game state has been placed in the game state manager");
@@ -210,12 +244,28 @@ void Game::PlayGameState::AddSkyboxNode()
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
-	SkyboxBuilder skyboxBuilder(m_gameManager);
+	SkyboxBuilder skyboxBuilder(m_gameManager, &m_skyboxNode);
 	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
 	skyboxBuilderDirector.Construct();
-	m_skyboxNode = skyboxBuilder.Get();
 	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING_GAME("");
+}
+
+void Game::PlayGameState::AddPlayerNode()
+{
+	//const Math::Real playerPositionX = GET_CONFIG_VALUE_GAME("playerPosition_X", 11.2f);
+	//const Math::Real playerPositionZ = GET_CONFIG_VALUE_GAME("playerPosition_Z", 1.95f);
+	//const Math::Real playerPositionY = 1.82f; // m_terrainMesh->GetHeightAt(Math::Vector2D(playerPositionX, playerPositionZ));
+	//m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
+	//m_playerNode.GetTransform().SetScale(0.0005f);
+	//m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
+	//m_playerNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	//m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
+	//m_playerNode.AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	////Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
+	////playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
+	////m_resourcesLoaded += 2;
+	//m_rootGameNode.AddChild(&m_playerNode);
 }
 
 void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
@@ -264,18 +314,21 @@ void Game::PlayGameState::AddCameras(Engine::GameNode* entityToFollow)
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
-	CameraBuilder cameraBuilder(m_gameManager);
-	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
+		// TODO: This is not efficient! Creating instances each iteration.
+		Rendering::Camera camera;
+		CameraBuilder cameraBuilder(m_gameManager, &camera);
 		cameraBuilder.SetCameraIndex(i);
 		//cameraBuilder.SetEntityToFollow(entityToFollow);
+		Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
 		cameraBuilderDirector.Construct();
 		if (m_cameras.empty())
 		{
-			cameraBuilder.Get()->Activate();
+			camera.Activate();
+			m_currentCameraIndex = 0;
 		}
-		m_cameras.push_back(cameraBuilder.Get());
+		m_cameras.push_back(camera);
 		CRITICAL_LOG_GAME("You forgot to add camera node to scene root node.!!!");
 		CRITICAL_LOG_GAME("There are no camera components in the application anymore!!!");
 		//AddToSceneRoot(cameraNode);
@@ -305,17 +358,14 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
+	Rendering::Lighting::DirectionalLight directionalLight;
+	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &directionalLight);
 	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
-	Rendering::Lighting::DirectionalLight* directionalLight = directionalLightBuilder.Get();
-	if (directionalLight != NULL)
-	{
-		INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight->GetIntensity(), " is being added to directional / spot lights vector");
-		++m_directionalLightsCount;
-		m_directionalAndSpotLights.push_back(directionalLight);
-		m_lights.push_back(directionalLight);
-	}
+	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
+	++m_directionalLightsCount;
+	m_directionalLights.push_back(std::move(directionalLight));
+	//m_lights.push_back(directionalLight);
 }
 
 void Game::PlayGameState::AddPointLights()
@@ -324,20 +374,15 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
+		Rendering::Lighting::PointLight pointLight;
+		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &pointLight);
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
 			pointLightBuilder.SetLightIndex(i);
 			lightBuilderDirector.Construct();
-			Rendering::Lighting::PointLight* pointLight = pointLightBuilder.Get();
-
-			if (pointLight != NULL)
-			{
-				INFO_LOG_RENDERING("Point light with intensity = ", pointLight->GetIntensity(), " is being added to point lights vector");
-				m_pointLights.push_back(pointLight);
-				m_lights.push_back(pointLight);
-			}
+			m_pointLights.push_back(std::move(pointLight));
+			//m_lights.push_back(pointLight);
 		}
 		NOTICE_LOG_GAME(pointLightsCount, " point lights created");
 	}
@@ -353,19 +398,15 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory());
+		Rendering::Lighting::SpotLight spotLight;
+		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &spotLight);
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
 			spotLightBuilder.SetLightIndex(i);
 			lightBuilderDirector.Construct();
-			Rendering::Lighting::SpotLight* spotLight = spotLightBuilder.Get();
-			if (spotLight != NULL)
-			{
-				INFO_LOG_RENDERING("Spot light with intensity = ", spotLight->GetIntensity(), " is being added to directional / spot lights vector");
-				m_directionalAndSpotLights.push_back(spotLight);
-				m_lights.push_back(spotLight);
-			}
+			m_spotLights.push_back(std::move(spotLight));
+			//m_lights.push_back(spotLight);
 		}
 		NOTICE_LOG_GAME(spotLightsCount, " spot lights created");
 	}
@@ -382,6 +423,26 @@ void Game::PlayGameState::Handle(Engine::Actions::Action action)
 	{
 	case Engine::Actions::SHOW_PLAY_MENU:
 		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
+		break;
+	case Engine::Actions::MOVE_CAMERA_UP:
+		m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() + 0.05f);
+		//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
+		break;
+	case Engine::Actions::MOVE_CAMERA_DOWN:
+		m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() - 0.05f);
+		//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
+		break;
+	case Engine::Actions::MOVE_CAMERA_LEFT:
+		m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() - 0.05f);
+		break;
+	case Engine::Actions::MOVE_CAMERA_RIGHT:
+		m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() + 0.05f);
+		break;
+	case Engine::Actions::MOVE_CAMERA_FORWARD:
+		m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() + 0.05f);
+		break;
+	case Engine::Actions::MOVE_CAMERA_BACKWARD:
+		m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() - 0.05f);
 		break;
 	default:
 		INFO_LOG_GAME("Action ", action, " is not supported by the PLAY game state.");
@@ -433,7 +494,7 @@ void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 void Game::PlayGameState::MouseButtonEvent(int button, int action, int mods)
 {
 	START_PROFILING_GAME(true, "");
-	m_gameManager->GetRootGameNode().MouseButtonEvent(button, action, mods);
+	m_rootGameNode.MouseButtonEvent(button, action, mods);
 	//switch (action)
 	//{
 	//case GLFW_PRESS:
@@ -461,7 +522,7 @@ void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 	//const Rendering::Camera& currentCamera = Engine::CoreEngine::GetCoreEngine()->GetCurrentCamera();
 	//m_mousePicker.CalculateCurrentRay(xPos, yPos, currentCamera.GetProjection(), currentCamera.GetViewMatrix());
 
-	//m_gameManager->GetRootGameNode().MousePosEvent(xPos, yPos);
+	//m_rootGameNode.MousePosEvent(xPos, yPos);
 
 
 	//if (!m_isMouseLocked)
@@ -499,7 +560,7 @@ void Game::PlayGameState::MousePosEvent(double xPos, double yPos)
 void Game::PlayGameState::ScrollEvent(double xOffset, double yOffset)
 {
 	START_PROFILING_GAME(true, "");
-	m_gameManager->GetRootGameNode().ScrollEvent(xOffset, yOffset);
+	m_rootGameNode.ScrollEvent(xOffset, yOffset);
 	STOP_PROFILING_GAME("");
 }
 
@@ -512,7 +573,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	DEBUG_LOG_GAME("PLAY game state rendering");
 
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
-	renderer->SetCurrentCamera(m_cameras[m_currentCameraIndex]);
+	renderer->SetCurrentCamera(&m_cameras[m_currentCameraIndex]);
 
 	RenderWaterTextures(renderer);
 
@@ -520,7 +581,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	renderer->ClearScreen();
 
 	RenderSceneWithAmbientLight(renderer);
-	//m_gameManager->GetRootGameNode().Render(shader, renderer);
+	//m_rootGameNode.Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
 	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
@@ -550,12 +611,12 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
-	const Rendering::Shader& ambientShader = GetAmbientShader(renderer->GetFogInfo());
+	const Rendering::Shader* ambientShader = GetAmbientShader(renderer->GetFogInfo());
 	renderer->BindShader(ambientShader);
 	renderer->UpdateRendererUniforms(ambientShader);
-	m_gameManager->GetRootGameNode().Render(ambientShader, renderer);
+	m_rootGameNode.Render(ambientShader, renderer);
 	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
-	const Rendering::Shader& ambientTerrainShader = GetAmbientTerrainShader(renderer->GetFogInfo());
+	const Rendering::Shader* ambientTerrainShader = GetAmbientTerrainShader(renderer->GetFogInfo());
 	renderer->BindShader(ambientTerrainShader);
 	renderer->UpdateRendererUniforms(ambientTerrainShader);
 	m_terrainNode.Render(ambientTerrainShader, renderer);
@@ -571,13 +632,13 @@ void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* render
 
 	for (size_t i = 0; i < m_pointLights.size(); ++i)
 	{
-		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(m_pointLights[i]);
+		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(&(m_pointLights[i]));
 		if (currentPointLight->IsEnabled())
 		{
 			DEBUG_LOG_GAME("Point light at index ", i, " is disabled");
 			continue;
 		}
-		m_gameManager->GetRootGameNode().Render(currentPointLight->GetShader(), renderer);
+		m_rootGameNode.Render(currentPointLight->GetShader(), renderer);
 		m_terrainNode.Render(currentPointLight->GetTerrainShader(), renderer);
 	}
 }
@@ -585,18 +646,18 @@ void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* render
 void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
-	for (std::vector<Rendering::Lighting::BaseLight*>::const_iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
+	for (auto lightItr = m_directionalLights.begin(); lightItr != m_directionalLights.end(); ++lightItr)
 	{
-		if ((*lightItr)->IsEnabled())
+		if (lightItr->IsEnabled())
 		{
-			const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(*lightItr);
+			const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const Rendering::Shader& shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP);
+				const Rendering::Shader* shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP);
 				renderer->BindShader(shadowMapShader);
 				renderer->UpdateRendererUniforms(shadowMapShader);
-				m_gameManager->GetRootGameNode().Render(shadowMapShader, renderer);
+				m_rootGameNode.Render(shadowMapShader, renderer);
 				m_terrainNode.Render(shadowMapShader, renderer); // TODO: Probably unnecessary
 				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_GAUSSIAN_BLUR));
 			}
@@ -605,7 +666,34 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
 			renderer->BindShader(currentLight->GetShader());
 			renderer->UpdateRendererUniforms(currentLight->GetShader());
-			m_gameManager->GetRootGameNode().Render(currentLight->GetShader(), renderer);
+			m_rootGameNode.Render(currentLight->GetShader(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShader());
+			renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
+			m_terrainNode.Render(currentLight->GetTerrainShader(), renderer);
+			renderer->FinalizeLightRendering();
+		}
+	}
+	for (auto lightItr = m_spotLights.begin(); lightItr != m_spotLights.end(); ++lightItr)
+	{
+		if (lightItr->IsEnabled())
+		{
+			const Rendering::Lighting::BaseLight* currentLight = renderer->SetCurrentLight(&(*lightItr));
+			if (renderer->InitShadowMap())
+			{
+				// Render scene using shadow mapping shader
+				const Rendering::Shader* shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SHADOW_MAP);
+				renderer->BindShader(shadowMapShader);
+				renderer->UpdateRendererUniforms(shadowMapShader);
+				m_rootGameNode.Render(shadowMapShader, renderer);
+				m_terrainNode.Render(shadowMapShader, renderer); // TODO: Probably unnecessary
+				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::FILTER_GAUSSIAN_BLUR));
+			}
+
+			renderer->InitLightRendering();
+			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
+			renderer->BindShader(currentLight->GetShader());
+			renderer->UpdateRendererUniforms(currentLight->GetShader());
+			m_rootGameNode.Render(currentLight->GetShader(), renderer);
 			renderer->BindShader(currentLight->GetTerrainShader());
 			renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
 			m_terrainNode.Render(currentLight->GetTerrainShader(), renderer);
@@ -620,7 +708,6 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Skybox rendering started");
 
-	m_skyboxNode->GetTransform().SetPos(renderer->GetCurrentCamera().GetPos());
 	//if (m_fogEnabled)
 	//{
 	//	STOP_PROFILING_GAME("");
@@ -635,15 +722,16 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	renderer->SetDepthFuncLessOrEqual();
-	const Rendering::Shader& skyboxShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SKYBOX);
+	const Rendering::Shader* skyboxShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::SKYBOX);
 	renderer->BindShader(skyboxShader);
 	renderer->UpdateRendererUniforms(skyboxShader);
-	m_skyboxNode->Render(skyboxShader, renderer);
+	m_skyboxNode.Render(skyboxShader, renderer);
 	renderer->SetDepthFuncDefault();
 	renderer->SetCullFaceDefault();
 	//glEnable(GL_DEPTH_TEST);
 	//Rendering::CheckErrorCode("Renderer::Render", "Rendering skybox");
 
+	DEBUG_LOG_GAME("Skybox rendering finished");
 	STOP_PROFILING_GAME("");
 }
 
@@ -666,19 +754,21 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
-	Rendering::Camera& currentCamera = renderer->GetCurrentCamera();
-	const Math::Real cameraHeight = currentCamera.GetPos().GetY();
+	Rendering::Camera reflectionCamera(m_cameras[m_currentCameraIndex]);
+	const Math::Real cameraHeight = reflectionCamera.GetPos().GetY();
 	Math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
-	currentCamera.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	currentCamera.GetRot().InvertPitch();
+	reflectionCamera.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
+	reflectionCamera.GetRot().InvertPitch();
 
 	renderer->EnableWaterReflectionClippingPlane(-m_waterNode.GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	renderer->BindWaterReflectionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 
 	renderer->SetDepthTest(false);
+	renderer->SetCurrentCamera(&reflectionCamera);
 	RenderSkybox(renderer);
 	RenderSceneWithAmbientLight(renderer);
+	renderer->SetCurrentCamera(&m_cameras[m_currentCameraIndex]);
 
 	//RenderSceneWithPointLights(renderer);
 	//for (std::vector<Rendering::Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
@@ -705,8 +795,8 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 
 	//BindAsRenderTarget();
 
-	currentCamera.GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
-	currentCamera.GetRot().InvertPitch();
+	//m_cameras[m_currentCameraIndex].GetPos().SetY(cameraHeight); // TODO: use m_altCamera instead of the main camera.
+	//m_cameras[m_currentCameraIndex].GetRot().InvertPitch();
 
 	STOP_PROFILING_GAME("");
 }
@@ -772,7 +862,7 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//		(*waterNodeItr)->Render(waterNoDirectionalLightShader, this);
 	//	}
 	//}
-	const Rendering::Shader& waterShader = GetWaterShader(renderer);
+	const Rendering::Shader* waterShader = GetWaterShader(renderer);
 	renderer->BindShader(waterShader);
 	renderer->UpdateRendererUniforms(waterShader);
 	m_waterNode.Render(waterShader, renderer);
@@ -789,7 +879,7 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	const Rendering::Shader& billboardShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD);
+	const Rendering::Shader* billboardShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::BILLBOARD);
 	renderer->BindShader(billboardShader);
 	renderer->UpdateRendererUniforms(billboardShader);
 	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
@@ -806,7 +896,7 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
-	const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
+	const Rendering::Shader* particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
 	renderer->BindShader(particlesShader);
 	renderer->UpdateRendererUniforms(particlesShader);
 	for (auto particleSystemItr = m_gameManager->GetParticlesSystems().begin(); particleSystemItr != m_gameManager->GetParticlesSystems().end(); ++particleSystemItr)
@@ -824,8 +914,9 @@ void Game::PlayGameState::Update(Math::Real elapsedTime)
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("PLAY game state updating");
-	m_gameManager->GetRootGameNode().Update(elapsedTime);
-	m_skyboxNode->Update(elapsedTime);
+	m_rootGameNode.Update(elapsedTime);
+	m_skyboxNode.Update(elapsedTime);
+	m_skyboxNode.GetTransform().SetPos(m_cameras[m_currentCameraIndex].GetPos()); // TODO: Instead, skyboxNode should have a simple component that does exactly that!
 
 	//EMERGENCY_LOG_GAME("Elapsed time: ", elapsedTime * 1000.0f, " [ms]");
 	m_inGameDateTime += Utility::Timing::TimeSpan(elapsedTime * m_clockSpeed * 1000000.0f, Utility::Timing::MICROSECOND);
@@ -906,7 +997,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	STOP_PROFILING_GAME("");
 //}
 
-const Rendering::Shader& Game::PlayGameState::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
+const Rendering::Shader* Game::PlayGameState::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
@@ -945,7 +1036,7 @@ const Rendering::Shader& Game::PlayGameState::GetAmbientShader(const Rendering::
 	return m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::AMBIENT);
 }
 
-const Rendering::Shader& Game::PlayGameState::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
+const Rendering::Shader* Game::PlayGameState::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled())
@@ -987,9 +1078,9 @@ unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 {
 	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
 		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
-	m_cameras[m_currentCameraIndex]->Deactivate();
+	m_cameras[m_currentCameraIndex].Deactivate();
 	m_currentCameraIndex = cameraIndex;
-	m_cameras[m_currentCameraIndex]->Activate();
+	m_cameras[m_currentCameraIndex].Activate();
 #ifndef ANT_TWEAK_BAR_ENABLED
 	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
 	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());

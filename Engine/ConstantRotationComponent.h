@@ -17,6 +17,10 @@ namespace Engine
 	public:
 		ENGINE_API ConstantRotationComponent(const Math::Vector3D& rotationAxis, const Math::Angle& rotationSpeedAngle);
 		ENGINE_API virtual ~ConstantRotationComponent(void);
+		ConstantRotationComponent(const ConstantRotationComponent& constantRotationComponent) = delete;
+		ConstantRotationComponent(ConstantRotationComponent&& constantRotationComponent) = default;
+		ConstantRotationComponent& operator=(const ConstantRotationComponent& constantRotationComponent) = delete;
+		ConstantRotationComponent& operator=(ConstantRotationComponent&& constantRotationComponent) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

@@ -25,43 +25,19 @@ namespace Rendering
 			m_exponent(exponent)
 		{
 		}
-
-		/// <summary> Attenuation copy constructor. </summary>
-		RENDERING_API Attenuation(const Attenuation& attenuation) :
-			m_constant(attenuation.m_constant),
-			m_linear(attenuation.m_linear),
-			m_exponent(attenuation.m_exponent)
-		{
-		}
-		
-		/// <summary> Attenuation move constructor. </summary>
-		RENDERING_API Attenuation(Attenuation&& attenuation) :
-			m_constant(std::move(attenuation.m_constant)),
-			m_linear(std::move(attenuation.m_linear)),
-			m_exponent(std::move(attenuation.m_exponent))
-		{
-		}
-
 		/// <summary> The destructor </summary>
 		RENDERING_API ~Attenuation(void)
 		{
 		}
 
-		RENDERING_API Attenuation& operator=(const Attenuation& attenuation)
-		{
-			m_constant = attenuation.m_constant;
-			m_linear = attenuation.m_linear;
-			m_exponent = attenuation.m_exponent;
-			return *this;
-		}
-
-		RENDERING_API Attenuation& operator=(Attenuation&& attenuation)
-		{
-			m_constant = std::move(attenuation.m_constant);
-			m_linear = std::move(attenuation.m_linear);
-			m_exponent = std::move(attenuation.m_exponent);
-			return *this;
-		}
+		/// <summary> Attenuation copy constructor. </summary>
+		RENDERING_API Attenuation(const Attenuation& attenuation) = default;
+		/// <summary> Attenuation move constructor. </summary>
+		RENDERING_API Attenuation(Attenuation&& attenuation) = default;
+		/// <summary> Attenuation copy assignment operator. </summary>
+		RENDERING_API Attenuation& operator=(const Attenuation& attenuation) = default;
+		/// <summary> Attenuation move assignment operator. </summary>
+		RENDERING_API Attenuation& operator=(Attenuation&& attenuation) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

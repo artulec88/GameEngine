@@ -16,11 +16,15 @@ namespace Engine
 	public:
 		ENGINE_API BillboardsRendererComponent(Rendering::BillboardMesh* billboardMesh, Rendering::Material* billboardMaterial);
 		ENGINE_API virtual ~BillboardsRendererComponent(void);
+		BillboardsRendererComponent(const BillboardsRendererComponent& billboardsRendererComponent) = delete;
+		ENGINE_API BillboardsRendererComponent(BillboardsRendererComponent&& billboardsRendererComponent);
+		BillboardsRendererComponent& operator=(const BillboardsRendererComponent& billboardsRendererComponent) = delete;
+		ENGINE_API BillboardsRendererComponent& operator=(BillboardsRendererComponent&& billboardsRendererComponent);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const;
+		virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

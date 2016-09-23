@@ -16,6 +16,10 @@ namespace Engine
 	public:
 		SpotLightComponent(Rendering::Lighting::SpotLight* spotLight);
 		virtual ~SpotLightComponent();
+		SpotLightComponent(const SpotLightComponent& spotLightComponent) = delete;
+		SpotLightComponent(SpotLightComponent&& spotLightComponent);
+		SpotLightComponent& operator=(const SpotLightComponent& spotLightComponent) = delete;
+		SpotLightComponent& operator=(SpotLightComponent&& spotLightComponent);
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

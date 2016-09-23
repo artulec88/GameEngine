@@ -25,7 +25,7 @@ Engine::MenuEntry::~MenuEntry()
 {
 }
 
-void Engine::MenuEntry::Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const
+void Engine::MenuEntry::Render(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const
 {
 	renderer->RenderGuiControl(*m_guiControl, guiControlShader);
 }
@@ -105,7 +105,7 @@ Engine::CompositeMenuEntry::~CompositeMenuEntry(void)
 	//}
 //}
 
-void Engine::CompositeMenuEntry::RenderAll(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const
+void Engine::CompositeMenuEntry::RenderAll(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const
 {
 	for (std::vector<MenuEntry*>::const_iterator menuEntryItr = m_childrenMenuEntries.begin(); menuEntryItr != m_childrenMenuEntries.end(); ++menuEntryItr)
 	{
@@ -257,7 +257,7 @@ Engine::ValueMenuEntry::~ValueMenuEntry(void)
 {
 }
 
-void Engine::ValueMenuEntry::Render(Rendering::Renderer* renderer, const Rendering::Shader& guiControlShader) const
+void Engine::ValueMenuEntry::Render(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const
 {
 	MenuEntry::Render(renderer, guiControlShader); // base class rendering
 	// TODO: Rendering other GUI controls.

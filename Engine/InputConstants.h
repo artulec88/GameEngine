@@ -14,6 +14,7 @@ namespace Engine
 				KEY_ESCAPE = 0,
 				KEY_ENTER,
 				KEY_TAB,
+				KEY_SPACE,
 				KEY_BACKSPACE,
 				KEY_INSERT,
 				KEY_DELETE,

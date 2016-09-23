@@ -47,7 +47,7 @@ namespace Engine
 		/// <summary>
 		/// Game node move constructor.
 		/// </summary>
-		GameNode(GameNode&& gameNode) = delete;
+		ENGINE_API GameNode(GameNode&& gameNode);
 		/// <summary>
 		/// Game node copy assignment operator.
 		/// </summary>
@@ -55,7 +55,7 @@ namespace Engine
 		/// <summary>
 		/// Game node move assignment operator.
 		/// </summary>
-		GameNode& operator=(GameNode&& gameNode) = delete;
+		ENGINE_API GameNode& operator=(GameNode&& gameNode);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -70,7 +70,7 @@ namespace Engine
 
 		//ENGINE_API void InputAll(Math::Real delta);
 		ENGINE_API void Update(Math::Real elapsedTime);
-		ENGINE_API void Render(const Rendering::Shader& shader, Rendering::Renderer* renderer) const;
+		ENGINE_API void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
 		ENGINE_API void RegisterCommandForAction(Actions::Action action, GameNodeCommand* gameNodeCommand)
 		{
 			m_actionsToCommands.insert(std::make_pair(action, gameNodeCommand));

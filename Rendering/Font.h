@@ -41,7 +41,7 @@ namespace Rendering
 			/// <param name="fontShader"> The shader that will be used the font when rendering text. </param>
 			/// <param name="fontTextureAtlasFileName"> The file name of the font texture atlas containing the graphical representation for all characters. </param>
 			/// <param name="fontMetaDataFileName"> The file name of the font meta data containing the information about each character. </param>
-			Font(const Shader& fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
+			Font(const Shader* fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName);
 			/// <summary> Font destructor. </summary>
 			~Font(void);
 			/// <summary> Font copy constructor. </summary>
@@ -68,7 +68,7 @@ namespace Rendering
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
-			const Shader& m_shader;
+			const Shader* m_shader;
 			Texture m_textureAtlas;
 			const std::string m_metaDataFileName;
 

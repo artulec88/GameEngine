@@ -140,7 +140,7 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 	}
 }
 
-void Rendering::Controls::GuiButtonControl::Draw(const Shader& guiControlShader, const Renderer& renderer) const
+void Rendering::Controls::GuiButtonControl::Draw(const Shader* guiControlShader, const Renderer& renderer) const
 {
 	if (m_font != NULL)
 	{
@@ -151,10 +151,10 @@ void Rendering::Controls::GuiButtonControl::Draw(const Shader& guiControlShader,
 	{
 		DELOCUST_LOG_RENDERING("Rendering button with icon");
 		//renderer.Render(*m_mesh, NULL, Math::Transform(), guiControlShader);
-		guiControlShader.Bind();
+		guiControlShader->Bind();
 		m_iconTexture->Bind(0);
-		guiControlShader.SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
-		guiControlShader.SetUniformi("guiTexture", 0);
+		guiControlShader->SetUniformMatrix("guiTransformationMatrix", m_iconTransformationMatrix);
+		guiControlShader->SetUniformi("guiTexture", 0);
 		m_mesh->Draw();
 	}
 }

@@ -183,7 +183,6 @@
     <ClInclude Include="LightFactory.h" />
     <ClInclude Include="LookAtComponent.h" />
     <ClInclude Include="MenuEntry.h" />
-    <ClInclude Include="MeshGroupRendererComponent.h" />
     <ClInclude Include="MeshRendererComponent.h" />
     <ClInclude Include="MousePicker.h" />
     <ClInclude Include="MoveComponent.h" />
@@ -235,7 +234,6 @@
     <ClCompile Include="LightFactory.cpp" />
     <ClCompile Include="LookAtComponent.cpp" />
     <ClCompile Include="MenuEntry.cpp" />
-    <ClCompile Include="MeshGroupRendererComponent.cpp" />
     <ClCompile Include="MeshRendererComponent.cpp" />
     <ClCompile Include="MousePicker.cpp" />
     <ClCompile Include="MoveComponent.cpp" />

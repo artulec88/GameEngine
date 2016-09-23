@@ -21,16 +21,24 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API PointLight(const Shader& shader, const Shader& terrainShader,
-				const Shader& noShadowShader, const Shader& noShadowTerrainShader);
+			RENDERING_API PointLight();
 			RENDERING_API virtual ~PointLight(void);
+
+			/// <summary> Point light copy constructor. </summary>
+			PointLight(const PointLight& pointLight) = default;
+			/// <summary> Point light move constructor. </summary>
+			RENDERING_API PointLight(PointLight&& pointLight) = default;
+			/// <summary> Point light copy assignment operator. </summary>
+			PointLight& operator=(const PointLight& pointLight) = delete;
+			/// <summary> Point light move assignment operator. </summary>
+			RENDERING_API PointLight& operator=(PointLight&& pointLight) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			Attenuation GetAttenuation() const { return m_attenuation; };
-			Math::Real GetRange() const { return m_range; };
-			virtual bool IsEnabled() const;
+			RENDERING_API Attenuation GetAttenuation() const { return m_attenuation; };
+			RENDERING_API Math::Real GetRange() const { return m_range; };
+			RENDERING_API virtual bool IsEnabled() const;
 
 			RENDERING_API void SetAttenuation(const Attenuation& attenuation)
 			{

@@ -94,7 +94,6 @@ namespace Engine
 		//ENGINE_API virtual void Notify(GameNode* gameNode, Actions::Action action /*const GameEvent& gameEvent*/) const;
 		ENGINE_API void Render(Rendering::Renderer* renderer) const;
 
-		ENGINE_API inline GameNode& GetRootGameNode() { return m_rootGameNode; }
 		ENGINE_API inline const std::vector<Rendering::Particles::ParticlesSystem*>& GetParticlesSystems() const { return m_particlesSystems; }
 		//ENGINE_API inline const FontMap& GetTexts() const { return m_texts; }
 
@@ -176,7 +175,6 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		GameNode m_rootGameNode;
 		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
 		ShaderFactory m_shaderFactory;
 		Rendering::TextureFactory m_textureFactory;

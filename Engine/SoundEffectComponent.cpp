@@ -3,6 +3,7 @@
 #include "CoreEngine.h"
 
 Engine::SoundEffectComponent::SoundEffectComponent(const std::string& soundEffectPath) :
+	GameComponent(),
 	m_soundEffectPath(soundEffectPath)
 {
 	//CoreEngine::GetCoreEngine()->GetAudioEngine()->LoadSoundEffect3D(m_soundEffectPath);
