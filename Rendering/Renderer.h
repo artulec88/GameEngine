@@ -181,7 +181,7 @@ namespace Rendering
 
 		inline const Camera& GetCurrentCamera() const
 		{
-			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::EMERGENCY, "Current camera is NULL.");
+			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::CRITICAL, "Current camera is NULL.");
 			return *m_currentCamera;
 		}
 

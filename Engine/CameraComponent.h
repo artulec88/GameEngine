@@ -9,11 +9,13 @@
 
 #include "Rendering\Camera.h"
 
+#include <vector>
+
 namespace Engine
 {
 	namespace CameraTypes
 	{
-		enum CameraBehaviorType
+		enum CameraType
 		{
 			STATIC_CAMERA = 0,
 			ROTATION_ONLY_CAMERA,
@@ -21,8 +23,8 @@ namespace Engine
 			MOVE_FREELY_CAMERA,
 			FOLLOW_ENTITY_CAMERA,
 			FOLLOW_ENTITY_WITH_ROTATION_CAMERA
-		};
-	}
+		}; /* end enum CameraType */
+	} /* end namespace CameraTypes */
 
 	class CameraComponent : public GameComponent, public IUpdateable
 	{
@@ -94,7 +96,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+		ENGINE_API CameraFollowComponent(Rendering::Camera* camera, const GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 			Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle);
 		ENGINE_API virtual ~CameraFollowComponent(void);
 		CameraFollowComponent(const CameraFollowComponent& cameraFollowComponent) = delete;
@@ -115,7 +117,7 @@ namespace Engine
 		/// <summary>
 		/// Entity to follow.
 		/// </summary>
-		GameNode* m_gameEntityToFollow;
+		const GameNode* m_gameEntityToFollow;
 
 		/// <summary>
 		/// The value representing the zoom. In other words, it defines how close to the entity being followed the camera should be placed.

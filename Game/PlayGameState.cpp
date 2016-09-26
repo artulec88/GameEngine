@@ -310,13 +310,15 @@ void Game::PlayGameState::AddCameras()
 
 	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
 
+	//Engine::GameNode cameraNode;
 	Rendering::Camera camera;
 	CameraBuilder cameraBuilder(m_gameManager, &camera);
+	//CameraNodeBuilder cameraNodeBuilder(m_gameManager, &cameraNode, &camera);
 	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
+	//Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(cameraNodeBuilder);
 	for (int i = 0; i < cameraCount; ++i)
 	{
 		cameraBuilder.SetCameraIndex(i);
-		//cameraBuilder.SetEntityToFollow(entityToFollow);
 		cameraBuilderDirector.Construct();
 		if (m_cameras.empty())
 		{
@@ -326,7 +328,11 @@ void Game::PlayGameState::AddCameras()
 		m_cameras.push_back(camera);
 		CRITICAL_LOG_GAME("You forgot to add camera node to scene root node.!!!");
 		CRITICAL_LOG_GAME("There are no camera components in the application anymore!!!");
-		//AddToSceneRoot(cameraNode);
+
+		//cameraNodeBuilder.SetCameraIndex(i);
+		//cameraNodeBuilder.SetGameNodeToFollow(&m_playerNode);
+		//cameraNodeBuilderDirector.Construct();
+		//m_rootGameNode.AddChild(&cameraNode);
 	}
 	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
 	STOP_PROFILING_GAME("");

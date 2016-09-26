@@ -35,9 +35,10 @@ Engine::CameraComponent& Engine::CameraComponent::operator=(CameraComponent&& ca
 
 void Engine::CameraComponent::Update(Math::Real deltaTime)
 {
-	if (!m_camera->IsActive())
+	if (m_camera->IsActive())
 	{
-		return;
+		m_camera->SetPos(GetTransform().GetTransformedPos());
+		m_camera->SetRot(GetTransform().GetTransformedRot());
 	}
 #ifdef ANT_TWEAK_BAR_ENABLED
 	//if ((!Math::AlmostEqual(m_prevAspectRatio, m_aspectRatio)) || (!Math::AlmostEqual(m_prevNearPlane, m_nearPlane)) || (!Math::AlmostEqual(m_prevFarPlane, m_farPlane)) || (m_prevFov != m_fov))
@@ -247,7 +248,7 @@ void Engine::CameraMoveComponent::Update(Math::Real deltaTime)
 /* static */ const Math::Angle Engine::CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
 /* static */ const Math::Angle Engine::CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
 
-Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
+Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, const GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 	CameraComponent(camera),
 	IStateHandler(),
