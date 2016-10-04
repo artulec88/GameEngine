@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="AABBColliderComponent.h" />
     <ClInclude Include="ActionConstants.h" />
+    <ClInclude Include="CameraBehavior.h" />
     <ClInclude Include="ConstantRotationComponent.h" />
     <ClInclude Include="GameNodeMoveCommand.h" />
     <ClInclude Include="IActionHandler.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="AABBColliderComponent.cpp" />
     <ClCompile Include="AiComponent.cpp" />
     <ClCompile Include="BillboardRendererComponent.cpp" />
+    <ClCompile Include="CameraBehavior.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="ConstantRotationComponent.cpp" />
     <ClCompile Include="CoreEngine.cpp" />

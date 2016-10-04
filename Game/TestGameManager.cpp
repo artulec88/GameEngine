@@ -38,7 +38,7 @@
 Game::TestGameManager::TestGameManager() :
 	GameManager(),
 	RESOURCES_TO_LOAD(26),
-	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("cameraHeightUpdateInterval", 0.01f)),
+	CAMERA_HEIGHT_UPDATE_INTERVAL(GET_CONFIG_VALUE_GAME("defaultCameraHeightUpdateInterval", 0.01f)),
 	m_resourcesLoaded(0),
 	m_introGameState(nullptr),
 	m_menuGameState(nullptr),

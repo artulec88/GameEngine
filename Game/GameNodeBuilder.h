@@ -6,11 +6,13 @@
 #include "Engine\GameManager.h"
 #include "Engine\MeshRendererComponent.h"
 #include "Engine\ConstantRotationComponent.h"
+#include "Engine\CameraBehavior.h"
 
 #include "Rendering\Camera.h"
 #include "Rendering\Texture.h"
 
 #include "Utility\Builder.h"
+#include "Utility\StringUtility.h"
 
 #include <string>
 
@@ -44,11 +46,38 @@ namespace Game
 	class CameraNodeBuilder : public GameNodeBuilder
 	{
 		/* ==================== Static variables and functions begin ==================== */
+	private:
+		static /* constexpr */ Engine::CameraBehaviorTypes::CameraBehaviorType ConvertToCameraBehaviorType(const std::string& cameraBehaviorTypeStr)
+		{
+			const std::string cameraBehaviorTypeLowercaseStr = Utility::StringUtility::MakeLowercase(cameraBehaviorTypeStr);
+			if (cameraBehaviorTypeLowercaseStr == "static")
+			{
+				return Engine::CameraBehaviorTypes::STATIC;
+			}
+			else if (cameraBehaviorTypeLowercaseStr == "rotation")
+			{
+				return Engine::CameraBehaviorTypes::ROTATION_ONLY;
+			}
+			else if (cameraBehaviorTypeLowercaseStr == "movement")
+			{
+				return Engine::CameraBehaviorTypes::MOVEMENT_ONLY;
+			}
+			else if (cameraBehaviorTypeLowercaseStr == "follow_entity")
+			{
+				return Engine::CameraBehaviorTypes::FOLLOW_ENTITY;
+			}
+			else if (cameraBehaviorTypeLowercaseStr == "follow_entity_with_rotation")
+			{
+				return Engine::CameraBehaviorTypes::FOLLOW_ENTITY_WITH_ROTATION;
+			}
+			WARNING_LOG_GAME("Unknown camera behavior type \"", cameraBehaviorTypeStr, "\". Using STATIC as default.");
+			return Engine::CameraBehaviorTypes::STATIC;
+		}
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraNodeBuilder(Engine::GameManager* gameManager, Engine::GameNode* cameraNode, Rendering::Camera* camera);
+		CameraNodeBuilder(Engine::GameManager* gameManager, Engine::GameNode* cameraNode);
 		virtual ~CameraNodeBuilder(void);
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
@@ -60,11 +89,7 @@ namespace Game
 	public:
 		virtual void BuildPart1();
 		virtual void BuildPart2();
-		void SetCameraIndex(unsigned int cameraIndex)
-		{
-			m_cameraIndex = cameraIndex;
-			m_cameraIndexStr = std::to_string(m_cameraIndex);
-		}
+		virtual void BuildPart3();
 		void SetGameNodeToFollow(const Engine::GameNode* gameNodeToFollow)
 		{
 			m_gameNodeToFollow = gameNodeToFollow;
@@ -73,9 +98,30 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Rendering::Camera* m_camera;
-		unsigned int m_cameraIndex;
-		std::string m_cameraIndexStr;
+		const Math::Vector3D M_DEFAULT_CAMERA_POS;
+		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X;
+		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y;
+		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z;
+		const Math::Angle M_DEFAULT_CAMERA_FIELD_OF_VIEW;
+		const Math::Real M_DEFAULT_CAMERA_ASPECT_RATIO;
+		const Math::Real M_DEFAULT_CAMERA_NEAR_PLANE;
+		const Math::Real M_DEFAULT_CAMERA_FAR_PLANE;
+		const Math::Real M_DEFAULT_CAMERA_SENSITIVITY;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
+		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
+		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
+
+		std::size_t m_camerasCount;
+		std::vector<Math::Vector3D> m_positions;
+		std::vector<Math::Quaternion> m_rotations;
+		std::vector<Engine::CameraBehavior*> m_cameraBehaviors;
+		std::vector<Math::Angle> m_fovs;
+		std::vector<Math::Real> m_aspectRatios;
+		std::vector<Math::Real> m_nearPlanes;
+		std::vector<Math::Real> m_farPlanes;
+		std::vector<Math::Real> m_sensitivities;
+
 		const Engine::GameNode* m_gameNodeToFollow;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraNodeBuilder */

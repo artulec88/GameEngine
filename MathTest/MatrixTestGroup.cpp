@@ -72,8 +72,8 @@ void MatrixTestMultiplyByMatrixOperator::StartTest()
 {
 	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultMatrix == m_expectedMultiplyResultMatrix, Utility::Logging::ERR,
-		"The multiplication of matrices ", m_matrix.ToString(), " and ", m_matrix2.ToString(), " equals ", multiplyResultMatrix.ToString(),
-		". It is different than expected ", m_expectedMultiplyResultMatrix.ToString());
+		"The multiplication of matrices:\n", m_matrix.ToString(), " and:\n", m_matrix2.ToString(), " equals:\n", multiplyResultMatrix.ToString(),
+		". It is different than expected:\n", m_expectedMultiplyResultMatrix.ToString());
 }
 
 void MatrixTestMultiplyByMatrixOperator::StartTimeTest()

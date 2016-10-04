@@ -48,10 +48,10 @@ Utility::Logging::ILogger::~ILogger(void)
 void Utility::Logging::ILogger::SetLevel(LogLevel level)
 {
 	//mutex.Lock();
-	//if ((!m_modified) || (level > this->m_level))
+	//if ((!m_modified) || (level > m_level))
 	//{
 	//	std::cout << "Logging level set to " << LevelNames[level] << std::endl;
-	//	this->m_level = level;
+	//	m_level = level;
 	//}
 	//m_modified = true;
 	//mutex.Unlock();

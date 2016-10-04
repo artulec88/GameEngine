@@ -244,35 +244,19 @@ void Rendering::Uniforms::MatrixUniform::Update(const Renderer* renderer, const 
 {
 	if (GetName() == "T_lightMatrix")
 	{
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &((renderer->GetLightMatrix() * transform->GetTransformation())[0][0]));
-#else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetLightMatrix() * transform->GetTransformation()).At(0));
-#endif
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetLightMatrix() * transform->GetTransformation()).Data());
 	}
 	else if (GetName() == "T_MVP")
 	{
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(renderer->GetCurrentCamera().GetViewProjection() * transform->GetTransformation())[0][0]);
-#else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetCurrentCamera().GetViewProjection() * transform->GetTransformation()).At(0));
-#endif
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, (renderer->GetCurrentCamera().GetViewProjection() * transform->GetTransformation()).Data());
 	}
 	else if (GetName() == "T_VP")
 	{
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(renderer->GetCurrentCamera().GetViewProjection()[0][0]));
-#else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, renderer->GetCurrentCamera().GetViewProjection().At(0));
-#endif
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, renderer->GetCurrentCamera().GetViewProjection().Data());
 	}
 	else if (GetName() == "T_model")
 	{
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, &(transform->GetTransformation()[0][0]));
-#else
-		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, transform->GetTransformation().At(0));
-#endif
+		glUniformMatrix4fv(GetLocation(), 1, GL_FALSE, transform->GetTransformation().Data());
 	}
 }
 /* ==================== MatrixUniform class implementation end ==================== */

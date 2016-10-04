@@ -128,11 +128,6 @@ Math::Real Math::Quaternion::Length() const
 	return static_cast<Real>(sqrt(static_cast<Real>(LengthSquared())));
 }
 
-Math::Real Math::Quaternion::LengthSquared() const
-{
-	return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
-}
-
 void Math::Quaternion::InvertPitch()
 {
 	// TODO: Warning. This function has not yet been tested. Use with caution.
@@ -146,18 +141,15 @@ Math::Quaternion Math::Quaternion::Normalized() const
 	return Quaternion(m_x / length, m_y / length, m_z / length, m_w / length);
 }
 
-void Math::Quaternion::Normalize()
+Math::Quaternion& Math::Quaternion::Normalize()
 {
+	CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(LengthSquared(), REAL_ONE), Utility::Logging::DEBUG, "The quaternion is already normalized");
 	Real length = Length();
-	if (AlmostEqual(length , REAL_ONE))
-	{
-		DEBUG_LOG_MATH("The quaternion is already normalized");
-		return;
-	}
 	m_x /= length;
 	m_y /= length;
 	m_z /= length;
 	m_w /= length;
+	return *this;
 }
 
 bool Math::Quaternion::IsNormalized() const
@@ -166,16 +158,139 @@ bool Math::Quaternion::IsNormalized() const
 	return AlmostEqual(lengthSquared, REAL_ONE);
 }
 
+Math::Quaternion Math::Quaternion::Negated() const
+{
+	/*return operator-();*/
+	/*return -(*this);*/
+	return Quaternion(-m_x, -m_y, -m_z, -m_w);
+}
+
+Math::Quaternion& Math::Quaternion::Negate()
+{
+	m_x = -m_x;
+	m_y = -m_y;
+	m_z = -m_z;
+	m_w = -m_w;
+	return *this;
+}
+
+#ifdef PASS_QUATERNION_BY_VALUE
+Math::Quaternion Math::Quaternion::operator*(Quaternion q) const
+{
+	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
+	q.Set(m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY(),
+		m_y * q.GetW() + m_w * q.GetY() + m_z * q.GetX() - m_x * q.GetZ(),
+		m_z * q.GetW() + m_w * q.GetZ() + m_x * q.GetY() - m_y * q.GetX(),
+		m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ());
+	return q;
+}
+
+Math::Quaternion Math::Quaternion::Nlerp(Quaternion q, Real nlerpFactor, bool shortest) const
+{
+	if (shortest && (Dot(q) < REAL_ZERO))
+	{
+		q.Negate();
+	}
+	const Math::Real oneMinusNLerpFactor = REAL_ONE - nlerpFactor;
+	q.Set(m_x * oneMinusNLerpFactor + q.GetX() * nlerpFactor,
+		m_y * oneMinusNLerpFactor + q.GetY() * nlerpFactor,
+		m_z * oneMinusNLerpFactor + q.GetZ() * nlerpFactor,
+		m_w * oneMinusNLerpFactor + q.GetW() * nlerpFactor);
+	q.Normalize();
+	return q;
+}
+
+Math::Quaternion Math::Quaternion::Slerp(Quaternion q, Real slerpFactor, bool shortest) const
+{
+	// CHECKED
+	Real cos = Dot(q);
+
+	if (shortest && cos < 0)
+	{
+		cos = -cos;
+		q.Negate();
+	}
+
+	if (abs(cos) > 1 - EPSILON)
+	{
+		// use normal interpolation, but instead of calling "return Nlerp(q, slerpFactor, false);"
+		// which would cause another quaternion to be copy constructed we simply copy and paste the function NLerp here.
+		const Math::Real oneMinusSLerpFactor = REAL_ONE - slerpFactor;
+		q.Set(m_x * oneMinusSLerpFactor + q.GetX() * slerpFactor,
+			m_y * oneMinusSLerpFactor + q.GetY() * slerpFactor,
+			m_z * oneMinusSLerpFactor + q.GetZ() * slerpFactor,
+			m_w * oneMinusSLerpFactor + q.GetW() * slerpFactor);
+		q.Normalize();
+		return q;
+	}
+
+	const Real sinus = static_cast<Real>(sqrt(REAL_ONE - cos * cos));
+	const Real angle = atan2(sinus, cos);
+	const Real invSinus = REAL_ONE / sinus;
+
+	Real srcFactor = static_cast<Real>(sin((REAL_ONE - slerpFactor) * angle)) * invSinus;
+	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
+
+	q.Set(m_x * srcFactor + q.GetX() * destFactor,
+		m_y * srcFactor + q.GetY() * destFactor,
+		m_z * srcFactor + q.GetZ() * destFactor,
+		m_w * srcFactor + q.GetW() * destFactor);
+	q.Normalize();
+	return q;
+	//return Quaternion((*this) * srcFactor + q * destFactor); // FIXME: Check quaternion multiplication
+}
+#else
 Math::Quaternion Math::Quaternion::operator*(const Quaternion& q) const
 {
 	// The subtractions in these equations come from the imaginary numbers multiplication, because i * i = -1.
-	Real x = m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY();
-	Real y = m_y * q.GetW() + m_w * q.GetY() + m_z * q.GetX() - m_x * q.GetZ();
-	Real z = m_z * q.GetW() + m_w * q.GetZ() + m_x * q.GetY() - m_y * q.GetX();
-	Real w = m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ();
-
-	return Quaternion(x, y, z, w);
+	return Quaternion(m_x * q.GetW() + m_w * q.GetX() + m_y * q.GetZ() - m_z * q.GetY(),
+		m_y * q.GetW() + m_w * q.GetY() + m_z * q.GetX() - m_x * q.GetZ(),
+		m_z * q.GetW() + m_w * q.GetZ() + m_x * q.GetY() - m_y * q.GetX(),
+		m_w * q.GetW() - m_x * q.GetX() - m_y * q.GetY() - m_z * q.GetZ());
 }
+
+Math::Quaternion Math::Quaternion::Nlerp(const Quaternion& q, Real nlerpFactor, bool shortest) const
+{
+	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
+	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();  // FIXME: Check quaternion multiplication
+
+	//if (shortest && Dot(q) < REAL_ZERO)
+	//{
+	//	return Quaternion((-q.GetX() - m_x) * nlerpFactor + m_x, (-q.GetY() - m_y) * nlerpFactor + m_y, (-q.GetZ() - m_z) * nlerpFactor + m_z, (-q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
+	//}
+	//else
+	//{
+	//	return Quaternion((q.GetX() - m_x) * nlerpFactor + m_x, (q.GetY() - m_y) * nlerpFactor + m_y, (q.GetZ() - m_z) * nlerpFactor + m_z, (q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
+	//}
+}
+
+Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
+{
+	// CHECKED
+	Real cos = Dot(q);
+	Quaternion fixedQ(q);
+
+	if (shortest && cos < 0)
+	{
+		cos = -cos;
+		fixedQ = -q; // TODO: Replace with fixedQ.Negate();
+	}
+
+	if (abs(cos) > 1 - EPSILON)
+	{
+		return Nlerp(fixedQ, slerpFactor, false);
+	}
+
+	Real sinus = static_cast<Real>(sqrt(REAL_ONE - cos * cos));
+	Real angle = atan2(sinus, cos);
+	Real invSinus = REAL_ONE / sinus;
+
+	Real srcFactor = static_cast<Real>(sin((REAL_ONE - slerpFactor) * angle)) * invSinus;
+	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
+
+	return Quaternion((*this) * srcFactor + fixedQ * destFactor); // FIXME: Check quaternion multiplication
+}
+#endif
 
 Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
 {
@@ -191,52 +306,6 @@ Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
 Math::Real Math::Quaternion::Dot(const Quaternion& q) const
 {
 	return m_x * q.GetX() + m_y * q.GetY() + m_z * q.GetZ() + m_w * q.GetW();
-}
-
-Math::Quaternion Math::Quaternion::Nlerp1(const Quaternion& q, Real nlerpFactor, bool shortest) const
-{
-	Quaternion fixedQ((shortest && Dot(q) < REAL_ZERO) ? -q : q);
-	return (((fixedQ - *this) * nlerpFactor) + *this).Normalized();  // FIXME: Check quaternion multiplication
-}
-
-Math::Quaternion Math::Quaternion::Nlerp2(const Quaternion& q, Real nlerpFactor, bool shortest) const
-{
-	// FIXME: Check quaternion multiplication
-	if (shortest && Dot(q) < REAL_ZERO)
-	{
-		return Quaternion((-q.GetX() - m_x) * nlerpFactor + m_x, (-q.GetY() - m_y) * nlerpFactor + m_y, (-q.GetZ() - m_z) * nlerpFactor + m_z, (-q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
-	}
-	else
-	{
-		return Quaternion((q.GetX() - m_x) * nlerpFactor + m_x, (q.GetY() - m_y) * nlerpFactor + m_y, (q.GetZ() - m_z) * nlerpFactor + m_z, (q.GetW() - m_w) * nlerpFactor + m_w).Normalized();
-	}
-}
-
-Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, bool shortest) const
-{
-	// CHECKED
-	Real cos = this->Dot(q);
-	Quaternion fixedQ(q);
-
-	if (shortest && cos < 0)
-	{
-		cos = -cos;
-		fixedQ = -q; // TODO: Replace with fixedQ.Negate();
-	}
-
-	if (abs(cos) > 1 - EPSILON)
-	{
-		return Nlerp2(fixedQ, slerpFactor, false);
-	}
-
-	Real sinus = static_cast<Real>(sqrt(REAL_ONE - cos * cos));
-	Real angle = atan2(sinus, cos);
-	Real invSinus = REAL_ONE / sinus;
-
-	Real srcFactor = static_cast<Real>(sin((REAL_ONE - slerpFactor) * angle)) * invSinus;
-	Real destFactor = static_cast<Real>(sin(slerpFactor * angle)) * invSinus;
-
-	return Quaternion((*this) * srcFactor + fixedQ * destFactor); // FIXME: Check quaternion multiplication
 }
 
 Math::Vector3D Math::Quaternion::GetBack() const
@@ -262,24 +331,6 @@ Math::Vector3D Math::Quaternion::GetRight() const
 Math::Vector3D Math::Quaternion::GetLeft() const
 {
 	return Vector3D(-REAL_ONE, REAL_ZERO, REAL_ZERO).Rotate(*this);
-}
-
-Math::Quaternion& Math::Quaternion::operator=(const Quaternion& q)
-{
-	m_x = q.GetX();
-	m_y = q.GetY();
-	m_z = q.GetZ();
-	m_w = q.GetW();
-	return *this;
-}
-
-Math::Quaternion& Math::Quaternion::operator=(Quaternion&& q)
-{
-	m_x = std::move(q.m_x);
-	m_y = std::move(q.m_y);
-	m_z = std::move(q.m_z);
-	m_w = std::move(q.m_w);
-	return *this;
 }
 
 bool Math::Quaternion::operator==(const Quaternion& q) const

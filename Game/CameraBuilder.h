@@ -4,6 +4,7 @@
 #include "Def.h"
 #include "Engine\GameNode.h"
 #include "Engine\GameManager.h"
+#include "Engine\CameraComponent.h"
 
 #include "Rendering\Texture.h"
 
@@ -14,14 +15,14 @@
 namespace Game
 {
 
-	class CameraBuilder : public Utility::Builder<Rendering::Camera>
+	class CameraBuilder : public Utility::Builder<Rendering::BaseCamera>
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraBuilder(Engine::GameManager* gameManager, Rendering::Camera* camera);
+		CameraBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera);
 		virtual ~CameraBuilder(void);
 		CameraBuilder(CameraBuilder& cameraBuilder) = delete;
 		CameraBuilder(CameraBuilder&& cameraBuilder) = delete;

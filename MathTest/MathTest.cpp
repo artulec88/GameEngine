@@ -384,27 +384,18 @@ void QuaternionTest()
 	/* ==================== QUATERNION TEST #2- calculating rotation matrix- end ==================== */
 
 	/* ==================== QUATERNION TEST #3- calculating linear interpolation- begin ==================== */
-	INFO_LOG_MATH_TEST("Profiling quaternion linear interpolation functions begin");
+	INFO_LOG_MATH_TEST("Profiling quaternion linear interpolation function begin");
 	const int QUATERNION_LINEAR_INTERPOLATION_ITERATIONS = 1000000;
 	timer.Reset();
 	for (int i = 0; i < QUATERNION_LINEAR_INTERPOLATION_ITERATIONS; ++i)
 	{
 		Quaternion q1 = RandomQuaternion();
 		Quaternion q2 = RandomQuaternion();
-		q1.Nlerp1(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
+		q1.Nlerp(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
 	}
 	timer.Stop();
-	TimeReport("Average time for quaternion linear interpolation function #1", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
+	TimeReport("Average time for quaternion linear interpolation function", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
 
-	timer.Reset();
-	for (int i = 0; i < QUATERNION_LINEAR_INTERPOLATION_ITERATIONS; ++i)
-	{
-		Quaternion q1 = RandomQuaternion();
-		Quaternion q2 = RandomQuaternion();
-		q1.Nlerp2(q2, g_randomGenerator.NextFloat(0.0f, 1.0f), false);
-	}
-	timer.Stop();
-	TimeReport("Average time for quaternion linear interpolation function #2", timer, Timing::MICROSECOND, QUATERNION_LINEAR_INTERPOLATION_ITERATIONS);
 	DEBUG_LOG_MATH_TEST("Profiling quaternion linear interpolation functions end.");
 	/* ==================== QUATERNION TEST #3- calculating linear interpolation- end ==================== */
 }
@@ -462,7 +453,8 @@ void MatrixTest()
 	Matrix4D matrix15(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f), Vector3D(0.0f, 2.0f, 5.0f)); // rotation matrix
 	Matrix4D matrix16(1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 1);
 	Matrix4D matrix17(-1, 2, -3, 4, -5, 6, -7, 8, -9, 10, -11, 12, -13, 14, -15, 16);
-	Matrix4D matrix18(-38, 44, -50, 56, -98, 116, -134, 152, -158, 188, -218, 248, -231, 274, -317, 360);
+	Matrix4D leftMultiplication(-38, 44, -50, 56, -98, 116, -134, 152, -158, 188, -218, 248, -231, 274, -317, 360);
+	Matrix4D rightMultiplication(34, 36, 38, 4, 66, 68, 70, 8, 98, 100, 102, 12, 130, 132, 134, 16);
 
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(matrix1, Matrix4D::IDENTITY_MATRIX, true));
 	matrixTests.AddTest(new MathTest::MatrixTestCompare(Matrix4D::IDENTITY_MATRIX, matrix1, true));
@@ -482,13 +474,15 @@ void MatrixTest()
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(Matrix4D::IDENTITY_MATRIX, matrix5, matrix5));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix12, Matrix4D::IDENTITY_MATRIX, matrix12));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix3, Matrix4D::IDENTITY_MATRIX, matrix3));
-	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix16, matrix17, matrix18));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix16, matrix17, rightMultiplication));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByMatrixOperator(matrix17, matrix16, leftMultiplication));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix1, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix2, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix3, Vector3D(2, 3, 5), Vector3D(4, 6, 10)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix4, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix5, Vector3D(2, 3, 5), Vector3D(5, -2, 7)));
-	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix6, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
+	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix6, Vector3D(2, 3, 5), Vector3D(0.2f, 0.3f, -1.102102102102102102102102f)));
+	
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix7, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix8, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix9, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
@@ -1195,10 +1189,10 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	AngleTest();
-	VectorTest();
+	//AngleTest();
+	//VectorTest();
 	//QuaternionTest();
-	//MatrixTest();
+	MatrixTest();
 	//SortTest();
 	//SortTestTime();
 

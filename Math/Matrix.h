@@ -45,10 +45,10 @@ namespace Math
 		/// <summary>
 		/// Creates a 4x4 matrix and assigns a specified value for each of all 16 elements.
 		/// </summary>
-		MATH_API Matrix4D(Math::Real m00, Math::Real m01, Math::Real m02, Math::Real m03,
-			Math::Real m10, Math::Real m11, Math::Real m12, Math::Real m13,
-			Math::Real m20, Math::Real m21, Math::Real m22, Math::Real m23,
-			Math::Real m30, Math::Real m31, Math::Real m32, Math::Real m33);
+		MATH_API Matrix4D(Real m00, Real m01, Real m02, Real m03,
+			Real m10, Real m11, Real m12, Real m13,
+			Real m20, Real m21, Real m22, Real m23,
+			Real m30, Real m31, Real m32, Real m33);
 		/// <summary> Creates a matrix based on the screen position and the scale. </summary>
 		/// <param name='screenPosition'> The position on the screen </param>
 		/// <param name='scale'> The scale </param>
@@ -128,6 +128,10 @@ namespace Math
 		MATH_API inline void SetElement(int i, int j, Real value);
 		MATH_API inline Real GetElement(int i, int j) const;
 
+		/// <summary>
+		/// Performs the multiplication of matrices. The given matrix <paramref name="m"/> is multiplied with the current matrix.
+		/// </summary>
+		/// <returns> The result of multiplying the given matrix <paramref name="m"/> with the current matrix. </returns>
 		MATH_API Matrix4D operator*(const Matrix4D& m) const;
 		MATH_API Vector3D operator*(const Vector3D& vec) const;
 		MATH_API Vector4D operator*(const Vector4D& vec) const;
@@ -135,13 +139,15 @@ namespace Math
 		MATH_API bool operator==(const Matrix4D& m) const;
 		MATH_API bool operator!=(const Matrix4D& m) const;
 
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		MATH_API inline const Math::Real* operator[](int index) const;
-		MATH_API inline Math::Real* operator[](int index);
-#else
-		MATH_API inline const Math::Real* At(int index) const;
-		MATH_API inline Math::Real operator[](int index) const;
-#endif
+		/// <summary>
+		/// Returns the pointer to the matrix data.
+		/// </summary>
+		/// <returns> Pointer to constant matrix data. </returns>
+		MATH_API inline const Real* Data() const
+		{
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			return &m_values[0][0];
+		}
 
 		MATH_API void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
 		MATH_API void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
@@ -158,6 +164,16 @@ namespace Math
 
 		MATH_API std::string ToString() const;
 	private:
+		inline const Real* operator[](int index) const
+		{
+			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			return &m_values[index][0];
+		}
+		inline Real* operator[](int index)
+		{
+			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			return &m_values[index][0];
+		}
 		void SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 		/* ==================== Non-static member functions end ==================== */
 
@@ -198,31 +214,6 @@ namespace Math
 		m_values[i * MATRIX_SIZE + j] = value;
 #endif
 	}
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	inline const Math::Real* Matrix4D::operator[](int index) const
-	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
-		return &m_values[index][0];
-	}
-	inline Math::Real* Matrix4D::operator[](int index)
-	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
-		return &m_values[index][0];
-	}
-#else
-	inline const Math::Real* Matrix4D::At(int index) const
-	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect index given (", index, ")");
-		return &m_values[index];
-	}
-	inline Math::Real Matrix4D::operator[](int index) const
-	{
-		CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE * MATRIX_SIZE), Utility::Logging::ERR, "Incorrect index given (", index, ")");
-		return m_values[index];
-	}
-#endif
-
 } /* end namespace Math */
 
 #endif /* __MATH_MATRIX_H__ */

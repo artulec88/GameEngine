@@ -660,26 +660,26 @@ class BucketSort : public ISort
 	class Bucket
 	{
 	public:
-		Bucket() : lowBound(REAL_MIN), highBound(REAL_MAX)
+		Bucket() : m_lowBound(REAL_MIN), m_highBound(REAL_MAX)
 		{
 		}
-		Bucket(Math::Real lowBound, Math::Real highBound) : lowBound(lowBound), highBound(highBound)
+		Bucket(Math::Real lowBound, Math::Real highBound) : m_lowBound(lowBound), m_highBound(highBound)
 		{
 		}
 	public:
 		bool IsEmpty() const { return m_vectors.empty(); }
-		Math::Real GetLowBound() const { return lowBound; }
-		Math::Real GetHighBound() const { return highBound; }
-		void SetLowBound(Math::Real lowBound) { this->lowBound = lowBound; }
-		void SetHighBound(Math::Real highBound) { this->highBound = highBound; }
+		Math::Real GetLowBound() const { return m_lowBound; }
+		Math::Real GetHighBound() const { return m_highBound; }
+		void SetLowBound(Math::Real lowBound) { m_lowBound = lowBound; }
+		void SetHighBound(Math::Real highBound) { m_highBound = highBound; }
 		void PushVector(const T& vector) { m_vectors.push_back(vector); }
 		T* GetVectors() { return &m_vectors[0]; }
 		const T& GetVector(int i) const { return m_vectors[i]; }
 		size_t GetVectorsSize() const { return m_vectors.size(); }
 	private:
 		std::vector<T> m_vectors;
-		Math::Real lowBound; // TODO: Remove this member variable in the future. It is not used anywhere
-		Math::Real highBound; // TODO: Remove this member variable in the future. It is not used anywhere.
+		Math::Real m_lowBound; // TODO: Remove this member variable in the future. It is not used anywhere
+		Math::Real m_highBound; // TODO: Remove this member variable in the future. It is not used anywhere.
 	};
 /* ==================== Static variables and functions begin ==================== */
 /* ==================== Static variables and functions end ==================== */

@@ -30,7 +30,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	m_waterNode(),
 	m_skyboxNode(),
 	m_playerNode(),
-	m_currentCameraIndex(-1),
+	m_camerasNode(),
 	m_isMouseLocked(false),
 	m_gameManager(gameManager),
 	m_mousePicker(),
@@ -305,36 +305,38 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 void Game::PlayGameState::AddCameras()
 {
 	START_PROFILING_GAME(true, "");
-	const int cameraCount = GET_CONFIG_VALUE_GAME("cameraCount", 3);
-	CHECK_CONDITION_EXIT_ALWAYS_GAME(cameraCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
 
-	DEBUG_LOG_GAME("Creating ", cameraCount, " camera(-s)");
+	// TODO: temporary code begin.
+	m_cameras.push_back(Rendering::Camera(Math::Vector3D(50.0f, 0.5f, 49.95f), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 0.026f));
+	m_currentCameraIndex = 0;
+	// TODO: temporary code end.
 
-	//Engine::GameNode cameraNode;
-	Rendering::Camera camera;
-	CameraBuilder cameraBuilder(m_gameManager, &camera);
-	//CameraNodeBuilder cameraNodeBuilder(m_gameManager, &cameraNode, &camera);
-	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
-	//Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(cameraNodeBuilder);
-	for (int i = 0; i < cameraCount; ++i)
-	{
-		cameraBuilder.SetCameraIndex(i);
-		cameraBuilderDirector.Construct();
-		if (m_cameras.empty())
-		{
-			camera.Activate();
-			m_currentCameraIndex = 0;
-		}
-		m_cameras.push_back(camera);
-		CRITICAL_LOG_GAME("You forgot to add camera node to scene root node.!!!");
-		CRITICAL_LOG_GAME("There are no camera components in the application anymore!!!");
+	Engine::GameNode cameraNode;
+	//Rendering::Camera camera;
+	//CameraBuilder cameraBuilder(m_gameManager, &camera);
+	CameraNodeBuilder cameraNodeBuilder(m_gameManager, &cameraNode);
+	//Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
+	Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(cameraNodeBuilder);
+	cameraNodeBuilderDirector.Construct();
+	//for (int i = 0; i < cameraCount; ++i)
+	//{
+	//	cameraBuilder.SetCameraIndex(i);
+	//	cameraBuilderDirector.Construct();
+	//	if (m_cameras.empty())
+	//	{
+	//		camera.Activate();
+	//		m_currentCameraIndex = 0;
+	//	}
+	//	m_cameras.push_back(camera);
+	//	CRITICAL_LOG_GAME("You forgot to add camera node to scene root node.!!!");
+	//	CRITICAL_LOG_GAME("There are no camera components in the application anymore!!!");
 
-		//cameraNodeBuilder.SetCameraIndex(i);
-		//cameraNodeBuilder.SetGameNodeToFollow(&m_playerNode);
-		//cameraNodeBuilderDirector.Construct();
-		//m_rootGameNode.AddChild(&cameraNode);
-	}
-	NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
+	//	//cameraNodeBuilder.SetCameraIndex(i);
+	//	//cameraNodeBuilder.SetGameNodeToFollow(&m_playerNode);
+	//	//cameraNodeBuilderDirector.Construct();
+	//	//m_rootGameNode.AddChild(&cameraNode);
+	//}
+	//NOTICE_LOG_GAME(cameraCount, " camera(-s) created");
 	STOP_PROFILING_GAME("");
 }
 
@@ -425,26 +427,26 @@ void Game::PlayGameState::Handle(Engine::Actions::Action action)
 	case Engine::Actions::SHOW_PLAY_MENU:
 		m_gameManager->SetTransition(new Engine::GameStateTransitioning::GameStateTransition(m_gameManager->GetPlayMainMenuGameState(), Engine::GameStateTransitioning::PUSH, Engine::GameStateModality::EXCLUSIVE));
 		break;
-	case Engine::Actions::MOVE_CAMERA_UP:
-		m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() + 0.05f);
-		//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
-		break;
-	case Engine::Actions::MOVE_CAMERA_DOWN:
-		m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() - 0.05f);
-		//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
-		break;
-	case Engine::Actions::MOVE_CAMERA_LEFT:
-		m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() - 0.05f);
-		break;
-	case Engine::Actions::MOVE_CAMERA_RIGHT:
-		m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() + 0.05f);
-		break;
-	case Engine::Actions::MOVE_CAMERA_FORWARD:
-		m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() + 0.05f);
-		break;
-	case Engine::Actions::MOVE_CAMERA_BACKWARD:
-		m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() - 0.05f);
-		break;
+	//case Engine::Actions::MOVE_CAMERA_UP:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() + 0.05f);
+	//	//CRITICAL_LOG_GAME("Moving up... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
+	//	break;
+	//case Engine::Actions::MOVE_CAMERA_DOWN:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetY(m_cameras[m_currentCameraIndex].GetPos().GetY() - 0.05f);
+	//	//CRITICAL_LOG_GAME("Moving down... Current position: " + m_cameras[m_currentCameraIndex].GetPos().ToString());
+	//	break;
+	//case Engine::Actions::MOVE_CAMERA_LEFT:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() - 0.05f);
+	//	break;
+	//case Engine::Actions::MOVE_CAMERA_RIGHT:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetX(m_cameras[m_currentCameraIndex].GetPos().GetX() + 0.05f);
+	//	break;
+	//case Engine::Actions::MOVE_CAMERA_FORWARD:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() + 0.05f);
+	//	break;
+	//case Engine::Actions::MOVE_CAMERA_BACKWARD:
+	//	m_cameras[m_currentCameraIndex].GetPos().SetZ(m_cameras[m_currentCameraIndex].GetPos().GetZ() - 0.05f);
+	//	break;
 	default:
 		INFO_LOG_GAME("Action ", action, " is not supported by the PLAY game state.");
 	}
@@ -576,7 +578,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	renderer->InitRenderScene(m_ambientLightColor, m_dayNightMixFactor);
 	renderer->SetCurrentCamera(&m_cameras[m_currentCameraIndex]);
 
-	RenderWaterTextures(renderer);
+	//RenderWaterTextures(renderer);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
@@ -584,18 +586,18 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	RenderSceneWithAmbientLight(renderer);
 	//m_rootGameNode.Render(shader, renderer);
 	//RenderSceneWithPointLights(renderer); // Point light rendering
-	RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
+	//RenderSceneWithDirectionalAndSpotLights(renderer); // Directional and spot light rendering
 
-	RenderWaterNodes(renderer);
+	//RenderWaterNodes(renderer);
 
-	RenderBillboardNodes(renderer);
+	//RenderBillboardNodes(renderer);
 
 	RenderSkybox(renderer);
 
-	RenderParticles(renderer);
+	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	//renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
@@ -755,11 +757,12 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
 	// TODO: The camera should be accessible from the game manager. It shouldn't be necessary to access them via rendering engine.
-	Rendering::Camera reflectionCamera(m_cameras[m_currentCameraIndex]);
+	const Rendering::Camera& currentCameraCopy(renderer->GetCurrentCamera());
+	Rendering::Camera reflectionCamera(currentCameraCopy);
 	const Math::Real cameraHeight = reflectionCamera.GetPos().GetY();
 	Math::Real distance = 2.0f * (cameraHeight - m_waterNode.GetTransform().GetTransformedPos().GetY());
-	reflectionCamera.GetPos().SetY(cameraHeight - distance); // TODO: use m_altCamera instead of the main camera.
-	reflectionCamera.GetRot().InvertPitch();
+	//reflectionCamera.GetPos().SetY(cameraHeight - distance); // TODO: Uncomment. use m_altCamera instead of the main camera.
+	//reflectionCamera.GetRot().InvertPitch(); // TODO: Uncomment.
 
 	renderer->EnableWaterReflectionClippingPlane(-m_waterNode.GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	renderer->BindWaterReflectionTexture();
@@ -769,7 +772,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	renderer->SetCurrentCamera(&reflectionCamera);
 	RenderSkybox(renderer);
 	RenderSceneWithAmbientLight(renderer);
-	renderer->SetCurrentCamera(&m_cameras[m_currentCameraIndex]);
+	renderer->SetCurrentCamera(&currentCameraCopy);
 
 	//RenderSceneWithPointLights(renderer);
 	//for (std::vector<Rendering::Lighting::BaseLight*>::iterator lightItr = m_directionalAndSpotLights.begin(); lightItr != m_directionalAndSpotLights.end(); ++lightItr)
@@ -1079,30 +1082,33 @@ unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)
 {
 	CHECK_CONDITION_RENDERING((cameraIndex >= 0) && (cameraIndex < m_cameras.size()), Utility::Logging::ERR, "Incorrect current camera index. Passed ",
 		cameraIndex, " when the correct range is (", 0, ", ", m_cameras.size(), ").");
-	m_cameras[m_currentCameraIndex].Deactivate();
-	m_currentCameraIndex = cameraIndex;
-	m_cameras[m_currentCameraIndex].Activate();
+	//m_cameras[m_currentCameraIndex].Deactivate();
+	//m_currentCameraIndex = cameraIndex;
+	//m_cameras[m_currentCameraIndex].Activate();
 #ifndef ANT_TWEAK_BAR_ENABLED
 	NOTICE_LOG_RENDERING("Switched to camera #", m_currentCameraIndex + 1);
 	//DEBUG_LOG_RENDERING("Current camera parameters: ", m_cameras[m_currentCameraIndex]->ToString());
 #endif
-	return m_currentCameraIndex;
+	//return m_currentCameraIndex;
+	return 0;
 }
 
 unsigned int Game::PlayGameState::NextCamera()
 {
-	if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
-	{
-		m_currentCameraIndex = -1;
-	}
-	return SetCurrentCamera(m_currentCameraIndex + 1);
+	//if (m_currentCameraIndex == static_cast<int>(m_cameras.size()) - 1)
+	//{
+	//	m_currentCameraIndex = -1;
+	//}
+	//return SetCurrentCamera(m_currentCameraIndex + 1);
+	return 0;
 }
 
 unsigned int Game::PlayGameState::PrevCamera()
 {
-	if (m_currentCameraIndex == 0)
-	{
-		m_currentCameraIndex = m_cameras.size();
-	}
-	return SetCurrentCamera(m_currentCameraIndex - 1);
+	//if (m_currentCameraIndex == 0)
+	//{
+	//	m_currentCameraIndex = m_cameras.size();
+	//}
+	//return SetCurrentCamera(m_currentCameraIndex - 1);
+	return 0;
 }

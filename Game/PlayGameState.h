@@ -129,7 +129,8 @@ namespace Game
 		
 		std::vector<Rendering::Camera> m_cameras;
 		unsigned int m_currentCameraIndex;
-		std::vector<Engine::GameNode> m_cameraNodes;
+		//std::vector<Engine::GameNode> m_cameraNodes;
+		Engine::GameNode m_camerasNode;
 
 		bool m_isMouseLocked;
 		Engine::GameManager* m_gameManager;

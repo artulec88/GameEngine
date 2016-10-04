@@ -58,7 +58,7 @@ Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v)
 
 bool Math::Vector2D::operator==(const Vector2D& v) const
 {
-	return ( AlmostEqual(this->GetX(), v.GetX()) && AlmostEqual(this->GetY(), v.GetY()) );
+	return ( AlmostEqual(m_x, v.GetX()) && AlmostEqual(m_y, v.GetY()) );
 }
 
 bool Math::Vector2D::operator!=(const Vector2D& v) const
@@ -85,10 +85,46 @@ Math::Real Math::Vector2D::Max() const
 	return (m_x > m_y) ? m_x : m_y;
 }
 
+#ifdef PASS_VECTOR_BY_VALUE
+Math::Vector2D Math::Vector2D::Max(Vector2D v) const
+{
+	if (m_x > v.GetX())
+	{
+		v.SetX(m_x);
+	}
+	if (m_y > v.GetY())
+	{
+		v.SetY(m_y);
+	}
+	return v;
+}
+
+Math::Vector2D Math::Vector2D::Lerp(Vector2D vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
+	vec.SetX(m_x * (REAL_ONE - lerpFactor) + vec.GetX() * lerpFactor);
+	vec.SetY(m_y * (REAL_ONE - lerpFactor) + vec.GetY() * lerpFactor);
+	return vec;
+	
+	//vec = ((vec - (*this)) * lerpFactor) + (*this);
+	//return vec;
+}
+#else
 Math::Vector2D Math::Vector2D::Max(const Vector2D& v) const
 {
 	return Vector2D((m_x > v.GetX()) ? m_x : v.GetX(), m_y > v.GetY() ? m_y : v.GetY());
 }
+
+Math::Vector2D Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
+	return Math::Vector2D(m_x * (REAL_ONE - lerpFactor) + vec.GetX() * lerpFactor,
+		m_y * (REAL_ONE - lerpFactor) + vec.GetY() * lerpFactor);
+	//return ((vec - (*this)) * lerpFactor) + (*this);
+}
+#endif
 
 Math::Vector2D Math::Vector2D::Rotate(const Angle& angle)
 {
@@ -96,13 +132,6 @@ Math::Vector2D Math::Vector2D::Rotate(const Angle& angle)
 	const Real sine = angle.Sin();
 
 	return Vector2D(m_x * cosine - m_y * sine, m_x * sine + m_y * cosine);
-}
-
-Math::Vector2D Math::Vector2D::Lerp(const Vector2D& vec, Real lerpFactor) const
-{
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
-		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
 std::string Math::Vector2D::ToString() const
@@ -125,10 +154,52 @@ Math::Real Math::Vector3D::Max() const
 	return (m_x > m_y) ? ((m_x > m_z) ? m_x : m_z) : ((m_y > m_z) ? m_y : m_z);
 }
 
+#ifdef PASS_VECTOR_BY_VALUE
+Math::Vector3D Math::Vector3D::Lerp(Vector3D vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
+	const Math::Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
+	vec.Set(m_x * oneMinusLerpFactor + vec.GetX() * lerpFactor,
+		m_y * oneMinusLerpFactor + vec.GetY() * lerpFactor,
+		m_z * oneMinusLerpFactor + vec.GetZ() * lerpFactor);
+	return vec;
+	
+	// vec = ((vec - (*this)) * lerpFactor) + (*this);
+	// return vec;
+}
+Math::Vector3D Math::Vector3D::Max(Vector3D v) const
+{
+	if (m_x > v.GetX())
+	{
+		v.SetX(m_x);
+	}
+	if (m_y > v.GetY())
+	{
+		v.SetY(m_y);
+	}
+	if (m_z > v.GetZ())
+	{
+		v.SetZ(m_z);
+	}
+	return v;
+}
+#else
+Math::Vector3D Math::Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
+	const Math::Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
+	return Math::Vector3D(m_x * oneMinusLerpFactor + vec.GetX() * lerpFactor,
+		m_y * oneMinusLerpFactor + vec.GetY() * lerpFactor,
+		m_z * oneMinusLerpFactor + vec.GetZ() * lerpFactor);
+	//return ((vec - (*this)) * lerpFactor) + (*this);
+}
 Math::Vector3D Math::Vector3D::Max(const Vector3D& v) const
 {
 	return Vector3D((m_x > v.GetX()) ? m_x : v.GetX(), m_y > v.GetY() ? m_y : v.GetY(), m_z > v.GetZ() ? m_z : v.GetZ());
 }
+#endif
 
 Math::Vector3D Math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 {
@@ -140,9 +211,9 @@ Math::Vector3D Math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 
 	//Quaternion w((rotation * (*this)) * conjugate);
 
-	//this->m_x = w.GetX();
-	//this->m_y = w.GetY();
-	//this->m_z = w.GetZ();
+	//m_x = w.GetX();
+	//m_y = w.GetY();
+	//m_z = w.GetZ();
 
 	//return *this;
 
@@ -150,13 +221,14 @@ Math::Vector3D Math::Vector3D::Rotate(const Vector3D& axis, const Angle& angle)
 	Real sinAngle = static_cast<Real>(-angle.Sin()); // sin(-alpha) == -sin(alpha)
 	Real cosAngle = static_cast<Real>(angle.Cos()); // cos(-alpha) == cos(alpha)
 
-	return this->Cross(axis * sinAngle) + // rotation on local X
+	return Cross(axis * sinAngle) + // rotation on local X
 		(*this * cosAngle) + // rotation on local Z
-		(axis * (this->Dot(axis * (REAL_ONE - cosAngle)))); // rotation on local Y
+		(axis * (Dot(axis * (REAL_ONE - cosAngle)))); // rotation on local Y
 }
 
 Math::Vector3D Math::Vector3D::Rotate(const Quaternion& rotation) const
 {
+	// TODO: This function should be reimplemented to avoid unnecessary copies of quaternions.
 	Quaternion w = rotation * (*this) * rotation.Conjugate(); // FIXME: Check quaternion multiplication
 	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
@@ -236,13 +308,6 @@ bool Math::Vector3D::operator!=(const Vector3D& v) const
 bool Math::Vector3D::IsNormalized() const
 {
 	return AlmostEqual(LengthSquared(), REAL_ONE);
-}
-
-Math::Vector3D Math::Vector3D::Lerp(const Vector3D& vec, Real lerpFactor) const
-{
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
-		"Vector3D linear interpolation performed with the incorrect factor ", lerpFactor);
-	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
 void Math::Vector3D::Approach(Real step, const Vector3D& approachedVector)
@@ -348,10 +413,51 @@ Math::Real Math::Vector4D::Max() const
 	return maxComponent;
 }
 
+#ifdef PASS_VECTOR_BY_VALUE
+Math::Vector4D Math::Vector4D::Max(Vector4D v) const
+{
+	if (m_x > v.GetX())
+	{
+		v.SetX(m_x);
+	}
+	if (m_y > v.GetY())
+	{
+		v.SetY(m_y);
+	}
+	if (m_z > v.GetZ())
+	{
+		v.SetZ(m_z);
+	}
+	if (m_w > v.GetW())
+	{
+		v.SetW(m_w);
+	}
+	return v;
+}
+Math::Vector4D Math::Vector4D::Lerp(Vector4D vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
+	vec.Set(m_x * (REAL_ONE - lerpFactor) + vec.GetX(),
+		m_y * (REAL_ONE - lerpFactor) + vec.GetY(),
+		m_z * (REAL_ONE - lerpFactor) + vec.GetZ(),
+		m_w * (REAL_ONE - lerpFactor) + vec.GetW());
+	return vec;
+	
+	//return ((vec - (*this)) * lerpFactor) + (*this);
+}
+#else
 Math::Vector4D Math::Vector4D::Max(const Vector4D& v) const
 {
 	return Vector4D((m_x > v.GetX()) ? m_x : v.GetX(), m_y > v.GetY() ? m_y : v.GetY(), m_z > v.GetZ() ? m_z : v.GetZ(), m_w > v.GetW() ? m_w : v.GetW());
 }
+Math::Vector4D Math::Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
+{
+	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
+		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
+	return ((vec - (*this)) * lerpFactor) + (*this);
+}
+#endif
 
 Math::Vector4D& Math::Vector4D::operator+=(const Vector4D& v)
 {
@@ -437,13 +543,6 @@ bool Math::Vector4D::operator!=(const Vector4D& v) const
 bool Math::Vector4D::IsNormalized() const
 {
 	return AlmostEqual(LengthSquared(), REAL_ONE);
-}
-
-Math::Vector4D Math::Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
-{
-	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
-		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	return ((vec - (*this)) * lerpFactor) + (*this);
 }
 
 void Math::Vector4D::Approach(Real step, const Vector4D& approachedVector)

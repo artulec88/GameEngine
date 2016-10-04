@@ -272,7 +272,7 @@ QuaternionTestNlerp::~QuaternionTestNlerp(void)
 
 void QuaternionTestNlerp::StartTest()
 {
-	Math::Quaternion nlerpQuaternion = m_quaternion.Nlerp1(m_quaternion2, m_nlerpFactor, m_shortest);
+	Math::Quaternion nlerpQuaternion = m_quaternion.Nlerp(m_quaternion2, m_nlerpFactor, m_shortest);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(nlerpQuaternion == m_expectedNlerpQuaternion, Utility::Logging::ERR,
 		"The linear interpolation of quaternions ", m_quaternion.ToString(), " and ", m_quaternion2.ToString(), " with the factor equal to ",
 		m_nlerpFactor, " is a quaternion ", nlerpQuaternion.ToString(), ". It is different than expected ", m_expectedNlerpQuaternion.ToString());

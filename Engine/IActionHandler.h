@@ -23,6 +23,10 @@ namespace Engine
 		ENGINE_API virtual ~IActionHandler(void)
 		{
 		}
+		IActionHandler(const IActionHandler& actionHandler) = delete;
+		ENGINE_API IActionHandler(IActionHandler&& actionHandler) = default;
+		IActionHandler& operator=(const IActionHandler& actionHandler) = delete;
+		ENGINE_API IActionHandler& operator=(IActionHandler&& actionHandler) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

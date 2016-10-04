@@ -3,8 +3,8 @@
 #include "Utility\IConfig.h"
 
 /* ==================== CameraBuilder implementation begin ==================== */
-Game::CameraBuilder::CameraBuilder(Engine::GameManager* gameManager, Rendering::Camera* camera) :
-	Utility::Builder<Rendering::Camera>(camera),
+Game::CameraBuilder::CameraBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera) :
+	Utility::Builder<Rendering::BaseCamera>(camera),
 	m_gameManager(gameManager),
 	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_GAME("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosZ", 0.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultCameraAngleX", -45.0f)),

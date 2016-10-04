@@ -375,7 +375,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	}
 	//if (calcTangents)
 	//{
-	//	this->CalcTangents(vertices, verticesCount);
+	//	CalcTangents(vertices, verticesCount);
 	//}
 
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");

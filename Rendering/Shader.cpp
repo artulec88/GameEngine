@@ -733,11 +733,7 @@ void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Ma
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-		glUniformMatrix4fv(itr->second, 1, GL_FALSE, &(matrix[0][0]));
-#else
-		glUniformMatrix4fv(itr->second, 1, GL_FALSE, matrix.At(0));
-#endif
+		glUniformMatrix4fv(itr->second, 1, GL_FALSE, matrix.Data());
 	}
 	STOP_PROFILING_RENDERING("");
 }

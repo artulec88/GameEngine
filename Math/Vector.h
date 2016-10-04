@@ -6,6 +6,8 @@
 //#include "FloatingPoint.h"
 #include <string> // for ToString() method
 
+#define PASS_VECTOR_BY_VALUE
+
 namespace Math
 {
 	class Quaternion;
@@ -15,8 +17,14 @@ namespace Math
 	/// </summary>
 	class Vector2D
 	{
+		/* ==================== Static variables and functions begin ==================== */
+	private:
+		//static constexpr Vector2D ZERO_VECTOR{ REAL_ZERO, REAL_ZERO };
+		/* ==================== Static variables and functions end ==================== */
+
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>Two-dimensional vector default constructor.</summary>
 		MATH_API constexpr Vector2D() :
 			m_x(REAL_ZERO),
 			m_y(REAL_ZERO)
@@ -71,13 +79,24 @@ namespace Math
 			return *this;
 		}
 
+#ifdef PASS_VECTOR_BY_VALUE
 		Vector2D operator+(Vector2D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY()); return v; }
-		Vector2D operator-() const { return Vector2D(-m_x, -m_y); }
+		Vector2D operator-(Vector2D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY()); return v; }
+		Vector2D operator*(Vector2D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY()); return v; }
+		Vector2D operator/(Vector2D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY()); return v; }
+		Vector2D Max(Vector2D v) const;
+		Vector2D Lerp(Vector2D vec, Real lerpFactor) const; // TODO: Write tests!
+#else
+		Vector2D operator+(const Vector2D& v) const { return Math::Vector2D(m_x + v.GetX(), m_y + v.GetY()); }
 		Vector2D operator-(const Vector2D& v) const { return Vector2D(m_x - v.GetX(), m_y - v.GetY()); }
-		Vector2D operator*(Real s) const { return Vector2D(s * m_x, s * m_y); }
 		Vector2D operator*(const Vector2D& v) const { return Vector2D(m_x * v.GetX(), m_y * v.GetY()); }
-		Vector2D operator/(Real s) const { return Vector2D(m_x / s, m_y / s); }
 		Vector2D operator/(const Vector2D& v) const { return Vector2D(m_x / v.GetX(), m_y / v.GetY()); }
+		Vector2D Max(const Vector2D& v) const;
+		Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
+#endif
+		Vector2D operator-() const { return Vector2D(-m_x, -m_y); }
+		Vector2D operator*(Real s) const { return Vector2D(s * m_x, s * m_y); }
+		Vector2D operator/(Real s) const { return Vector2D(m_x / s, m_y / s); }
 
 		MATH_API Vector2D& operator+=(const Vector2D& v);
 		MATH_API Vector2D& operator-=(const Vector2D& v);
@@ -133,18 +152,16 @@ namespace Math
 		}
 
 		Real Max() const;
-		Vector2D Max(const Vector2D& v) const;
 		Vector2D Rotate(const Angle& angle);
-
-		Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
-
 	public:
 		MATH_API std::string ToString() const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		/// <summary>The X component value of the two-dimensional vector.</summary>
 		Real m_x;
+		/// <summary>The Y component value of the two-dimensional vector.</summary>
 		Real m_y;
 		// TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 	/* ==================== Non-static member variables end ==================== */
@@ -156,6 +173,9 @@ namespace Math
 	/// </summary>
 	class Vector3D
 	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
+
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		MATH_API constexpr Vector3D() :
@@ -218,13 +238,44 @@ namespace Math
 			return *this;
 		}
 
+#ifdef PASS_VECTOR_BY_VALUE
+		Vector3D operator+(Vector3D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); return v; }
+		Vector3D operator-(Vector3D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); return v; }
+		Vector3D operator*(Vector3D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ()); return v; }
+		Vector3D operator/(Vector3D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); return v; }
+		Vector3D Cross(Vector3D v) const
+		{
+			v.Set(m_y * v.GetZ() - m_z * v.GetY(),
+				m_z * v.GetX() - m_x * v.GetZ(),
+				m_x * v.GetY() - m_y * v.GetX());
+			return v;
+		}
+		/// <summary>
+		/// Calculates linear interpolation between two three-dimensional vectors.
+		/// </summary>
+		MATH_API Vector3D Lerp(Vector3D vec, Real lerpFactor) const;
+		Vector3D Max(Vector3D v) const;
+#else
 		Vector3D operator+(const Vector3D& v) const { return Vector3D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); }
-		Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
 		Vector3D operator-(const Vector3D& v) const { return Vector3D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); }
-		Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
 		Vector3D operator*(const Vector3D& v) const { return Vector3D(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ()); }
+		Vector3D operator/(const Vector3D& v) const { return Vector3D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); }
+		Vector3D Cross(const Vector3D& v) const
+		{
+			return Vector3D(m_y * v.GetZ() - m_z * v.GetY(),
+				m_z * v.GetX() - m_x * v.GetZ(),
+				m_x * v.GetY() - m_y * v.GetX());
+		}
+		/// <summary>
+		/// Calculates linear interpolation between two three-dimensional vectors.
+		/// </summary>
+		MATH_API Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const;
+		Vector3D Max(const Vector3D& v) const;
+#endif
+		
+		Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
+		Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
 		Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); };
-		Vector3D operator/(const Vector3D v) const { return Vector3D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); };
 
 		MATH_API Vector3D& operator+=(const Vector3D& v);
 		MATH_API Vector3D& operator-=(const Vector3D& v);
@@ -268,22 +319,15 @@ namespace Math
 		MATH_API bool IsNormalized() const;
 
 		//Vector3D Rotate(Real angle);
-		Vector3D Rotate(const Vector3D& axis, const Angle& angle);
+		Vector3D Rotate(const Vector3D& axis, const Angle& angle); // TODO: Possible improvement by passing axis by value. Check that!
 		MATH_API Vector3D Rotate(const Quaternion& rotation) const;
 
 		Real Dot(const Vector3D& v) const
 		{
 			return (m_x * v.GetX() + m_y * v.GetY() + m_z * v.GetZ());
 		}
-		Vector3D Cross(const Vector3D& v) const
-		{
-			return Vector3D(m_y * v.GetZ() - m_z * v.GetY(),
-				m_z * v.GetX() - m_x * v.GetZ(),
-				m_x * v.GetY() - m_y * v.GetX());
-		}
 
 		Real Max() const;
-		Vector3D Max(const Vector3D& v) const;
 
 		// vector swizzling
 		Vector2D GetXY() const { return Vector2D(m_x, m_y); }
@@ -298,9 +342,6 @@ namespace Math
 		MATH_API void ApproachY(Real step, Real approachedValue);
 		MATH_API void ApproachZ(Real step, Real approachedValue);
 		MATH_API void Threshold(Real maxLength);
-
-		// interpolation LERP
-		MATH_API Vector3D Lerp(const Vector3D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 		MATH_API std::string ToString() const;
 		/* ==================== Non-static member functions end ==================== */
@@ -387,13 +428,30 @@ namespace Math
 			return *this;
 		}
 
+#ifdef PASS_VECTOR_BY_VALUE
+		Vector4D operator+(Vector4D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ(), m_w + v.GetW()); return v; }
+		Vector4D operator-(Vector4D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ(), m_w - v.GetW()); return v; }
+		Vector4D operator*(Vector4D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ(), m_w * v.GetW()); return v; }
+		Vector4D operator/(Vector4D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); return v; };
+		Vector4D Max(Vector4D v) const;
+		/// <summary>
+		/// Calculates linear interpolation between two four-dimensional vectors.
+		/// </summary>
+		MATH_API Vector4D Lerp(Vector4D vec, Real lerpFactor) const; // TODO: Write tests!
+#else
 		Vector4D operator+(const Vector4D& v) const { return Vector4D(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ(), m_w + v.GetW()); }
-		Vector4D operator-() const { return Vector4D(-m_x, -m_y, -m_z, -m_w); }
 		Vector4D operator-(const Vector4D& v) const { return Vector4D(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ(), m_w - v.GetW()); }
-		Vector4D operator*(Real s) const { return Vector4D(s * m_x, s * m_y, s * m_z, s * m_w); }
 		Vector4D operator*(const Vector4D& v) const { return Vector4D(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ(), m_w * v.GetW()); }
+		Vector4D operator/(const Vector4D& v) const { return Vector4D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); };
+		Vector4D Max(const Vector4D& v) const;
+		/// <summary>
+		/// Calculates linear interpolation between two four-dimensional vectors.
+		/// </summary>
+		MATH_API Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
+#endif
+		Vector4D operator-() const { return Vector4D(-m_x, -m_y, -m_z, -m_w); }
+		Vector4D operator*(Real s) const { return Vector4D(s * m_x, s * m_y, s * m_z, s * m_w); }
 		Vector4D operator/(Real s) const { return Vector4D(m_x / s, m_y / s, m_z / s, m_w / s); }
-		Vector4D operator/(const Vector4D v) const { return Vector4D(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); };
 
 		MATH_API Vector4D& operator+=(const Vector4D& v);
 		MATH_API Vector4D& operator-=(const Vector4D& v);
@@ -431,7 +489,6 @@ namespace Math
 		}
 
 		Real Max() const;
-		Vector4D Max(const Vector4D& v) const;
 
 		/* ==================== Vector swizzling begin ==================== */
 		MATH_API Vector2D GetXY() const { return Vector2D(m_x, m_y); }
@@ -472,9 +529,6 @@ namespace Math
 		void ApproachZ(Real step, Real approachedValue);
 		void ApproachW(Real step, Real approachedValue);
 		void Threshold(Real maxLength);
-
-		// interpolation LERP
-		MATH_API Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 
 		MATH_API std::string ToString() const;
 		/* ==================== Non-static member functions end ==================== */

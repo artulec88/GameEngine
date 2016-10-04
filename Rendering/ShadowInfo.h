@@ -13,7 +13,7 @@ namespace Rendering
 	/// </summary>
 	struct ShadowCameraTransform
 	{
-		ShadowCameraTransform(Math::Vector3D& position, Math::Quaternion& rotation) :
+		ShadowCameraTransform(const Math::Vector3D& position, const Math::Quaternion& rotation) :
 			m_pos(position),
 			m_rot(rotation)
 		{

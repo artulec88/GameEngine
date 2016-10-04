@@ -92,15 +92,17 @@ namespace Math
 
 	 /* ==================== Non-static member variables begin ==================== */
 	private:
-		/// <summary>
-		/// The position.
-		/// </summary>
+		/// <summary> The position relative to the parent transform. </summary>
 		Vector3D m_pos;
 
-		/// <summary>
-		/// The rotation.
-		/// </summary>
+		/// <summary> The transformed position. The position relative to the origin. </summary>
+		//mutable Vector3D m_transformedPos;
+
+		/// <summary> The rotation relative to the parent transform. </summary>
 		Quaternion m_rotation;
+
+		/// <summary> The transformed rotation. The rotation relative to the origin. </summary>
+		//mutable Quaternion m_transformedRotation;
 
 		/// <summary>
 		/// The scale.
