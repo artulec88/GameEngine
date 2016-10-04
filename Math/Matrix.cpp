@@ -310,6 +310,60 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #2 end ==================== */
 
 	/* ==================== SOLUTION #3 begin ==================== */
+//	const Math::Real m00 = m_values[0][0]; const Math::Real m01 = m_values[0][1]; const Math::Real m02 = m_values[0][2]; const Math::Real m03 = m_values[0][3];
+//	const Math::Real m10 = m_values[1][0]; const Math::Real m11 = m_values[1][1]; const Math::Real m12 = m_values[1][2]; const Math::Real m13 = m_values[1][3];
+//	const Math::Real m20 = m_values[2][0]; const Math::Real m21 = m_values[2][1]; const Math::Real m22 = m_values[2][2]; const Math::Real m23 = m_values[2][3];
+//	const Math::Real m30 = m_values[3][0]; const Math::Real m31 = m_values[3][1]; const Math::Real m32 = m_values[3][2]; const Math::Real m33 = m_values[3][3];
+//
+//	const Math::Real b00 = mat.m_values[0][0]; const Math::Real b01 = mat.m_values[0][1]; const Math::Real b02 = mat.m_values[0][2]; const Math::Real b03 = mat.m_values[0][3];
+//	const Math::Real b10 = mat.m_values[1][0]; const Math::Real b11 = mat.m_values[1][1]; const Math::Real b12 = mat.m_values[1][2]; const Math::Real b13 = mat.m_values[1][3];
+//	const Math::Real b20 = mat.m_values[2][0]; const Math::Real b21 = mat.m_values[2][1]; const Math::Real b22 = mat.m_values[2][2]; const Math::Real b23 = mat.m_values[2][3];
+//	const Math::Real b30 = mat.m_values[3][0]; const Math::Real b31 = mat.m_values[3][1]; const Math::Real b32 = mat.m_values[3][2]; const Math::Real b33 = mat.m_values[3][3];
+//
+//#ifdef MATRIX_MODE_TWO_DIMENSIONS
+//	matrix.m_values[0][0] = m00 * b00 + m10 * b01 + m20 * b02 + m30 * b03;
+//	matrix.m_values[0][1] = m01 * b00 + m11 * b01 + m21 * b02 + m31 * b03;
+//	matrix.m_values[0][2] = m02 * b00 + m12 * b01 + m22 * b02 + m32 * b03;
+//	matrix.m_values[0][3] = m03 * b00 + m13 * b01 + m23 * b02 + m33 * b03;
+//
+//	matrix.m_values[1][0] = m00 * b10 + m10 * b11 + m20 * b12 + m30 * b13;
+//	matrix.m_values[1][1] = m01 * b10 + m11 * b11 + m21 * b12 + m31 * b13;
+//	matrix.m_values[1][2] = m02 * b10 + m12 * b11 + m22 * b12 + m32 * b13;
+//	matrix.m_values[1][3] = m03 * b10 + m13 * b11 + m23 * b12 + m33 * b13;
+//
+//	matrix.m_values[2][0] = m00 * b20 + m10 * b21 + m20 * b22 + m30 * b23;
+//	matrix.m_values[2][1] = m01 * b20 + m11 * b21 + m21 * b22 + m31 * b23;
+//	matrix.m_values[2][2] = m02 * b20 + m12 * b21 + m22 * b22 + m32 * b23;
+//	matrix.m_values[2][3] = m03 * b20 + m13 * b21 + m23 * b22 + m33 * b23;
+//
+//	matrix.m_values[3][0] = m00 * b30 + m10 * b31 + m20 * b32 + m30 * b33;
+//	matrix.m_values[3][1] = m01 * b30 + m11 * b31 + m21 * b32 + m31 * b33;
+//	matrix.m_values[3][2] = m02 * b30 + m12 * b31 + m22 * b32 + m32 * b33;
+//	matrix.m_values[3][3] = m03 * b30 + m13 * b31 + m23 * b32 + m33 * b33;
+//#else
+//	matrix.m_values[0] = m00 * b00 + m10 * b01 + m20 * b02 + m30 * b03;
+//	matrix.m_values[1] = m01 * b00 + m11 * b01 + m21 * b02 + m31 * b03;
+//	matrix.m_values[2] = m02 * b00 + m12 * b01 + m22 * b02 + m32 * b03;
+//	matrix.m_values[3] = m03 * b00 + m13 * b01 + m23 * b02 + m33 * b03;
+//
+//	matrix.m_values[4] = m00 * b10 + m10 * b11 + m20 * b12 + m30 * b13;
+//	matrix.m_values[5] = m01 * b10 + m11 * b11 + m21 * b12 + m31 * b13;
+//	matrix.m_values[6] = m02 * b10 + m12 * b11 + m22 * b12 + m32 * b13;
+//	matrix.m_values[7] = m03 * b10 + m13 * b11 + m23 * b12 + m33 * b13;
+//
+//	matrix.m_values[8] = m00 * b20 + m10 * b21 + m20 * b22 + m30 * b23;
+//	matrix.m_values[9] = m01 * b20 + m11 * b21 + m21 * b22 + m31 * b23;
+//	matrix.m_values[10] = m02 * b20 + m12 * b21 + m22 * b22 + m32 * b23;
+//	matrix.m_values[11] = m03 * b20 + m13 * b21 + m23 * b22 + m33 * b23;
+//
+//	matrix.m_values[12] = m00 * b30 + m10 * b31 + m20 * b32 + m30 * b33;
+//	matrix.m_values[13] = m01 * b30 + m11 * b31 + m21 * b32 + m31 * b33;
+//	matrix.m_values[14] = m02 * b30 + m12 * b31 + m22 * b32 + m32 * b33;
+//	matrix.m_values[15] = m03 * b30 + m13 * b31 + m23 * b32 + m33 * b33;
+//#endif
+	/* ==================== SOLUTION #3 end ==================== */
+
+	/* ==================== SOLUTION #4 begin ==================== */
 	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
 	//{
 	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
@@ -324,7 +378,7 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	//	}
 	//}
 	//return matrix;
-	/* ==================== SOLUTION #3 end ==================== */
+	/* ==================== SOLUTION #4 end ==================== */
 }
 
 Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const

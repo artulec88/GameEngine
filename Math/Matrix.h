@@ -168,7 +168,11 @@ namespace Math
 		MATH_API inline const Real* Data() const
 		{
 			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[0][0];
+#else
+			return &m_values[0];
+#endif
 		}
 
 		MATH_API void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
@@ -189,12 +193,20 @@ namespace Math
 		inline const Real* operator[](int index) const
 		{
 			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[index][0];
+#else
+			return &m_values[index];
+#endif
 		}
 		inline Real* operator[](int index)
 		{
 			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[index][0];
+#else
+			return &m_values[index];
+#endif
 		}
 		void SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 		/* ==================== Non-static member functions end ==================== */
