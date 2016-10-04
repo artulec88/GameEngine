@@ -81,14 +81,14 @@ namespace Math
 		/// <remarks> See http://planning.cs.uiuc.edu/node102.html </remarks>
 		MATH_API Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='forward'>The forward vector.</param>
-		/// <param name='up'>The up vector.</param>
+		/// <param name='forward'>The forward vector. It must be normalized.</param>
+		/// <param name='up'>The up vector. It must be normalized.</param>
 		/// <returns>Rotation matrix.</returns>
 		MATH_API Matrix4D(const Vector3D& forward, const Vector3D& up);
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='forward'>The forward vector.</param>
-		/// <param name='up'>The up vector.</param>
-		/// <param name='right'>The right vector.</param>
+		/// <param name='forward'>The forward vector. It must be normalized.</param>
+		/// <param name='up'>The up vector. It must be normalized.</param>
+		/// <param name='right'>The right vector. It must be normalized.</param>
 		/// <returns>Rotation matrix.</returns>
 		MATH_API Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 		/// <summary>Creates perspective projection matrix based on the specified parameters.</summary>
@@ -107,6 +107,8 @@ namespace Math
 		/// <param name='farPlane'>The distance to the farther depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
 		/// <returns>Ortographic projection matrix.</returns>
 		MATH_API Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
+
+#ifdef PROFILING_MATH_MODULE_ENABLED
 		/// <summary>A simple matrix copy-constructor.</summary>
 		/// <param name='mat'>A matrix which is to be copied.</param>
 		/// <returns>A deep copy of the given matrix.</returns>
@@ -116,11 +118,31 @@ namespace Math
 		/// <param name='mat'>A matrix which is to be moved.</param>
 		MATH_API Matrix4D(Matrix4D&& mat);
 
-		MATH_API Matrix4D& operator=(const Matrix4D& mat); // copy assignment operator
-		MATH_API Matrix4D& operator=(Matrix4D&& mat); // move assignment operator
+		/// <summary> Matrix copy assignment operator. </summary>
+		MATH_API Matrix4D& operator=(const Matrix4D& mat);
+		/// <summary> Matrix move assignment operator. </summary>
+		MATH_API Matrix4D& operator=(Matrix4D&& mat);
 
 		/// <summary>A simple matrix destructor.</summary>
 		MATH_API ~Matrix4D();
+#else
+		/// <summary>A simple matrix copy-constructor.</summary>
+		/// <param name='mat'>A matrix which is to be copied.</param>
+		/// <returns>A deep copy of the given matrix.</returns>
+		MATH_API Matrix4D(const Matrix4D& mat) = default;
+
+		/// <summary>A simple matrix move-constructor.</summary>
+		/// <param name='mat'>A matrix which is to be moved.</param>
+		MATH_API Matrix4D(Matrix4D&& mat) = default;
+
+		/// <summary> Matrix copy assignment operator. </summary>
+		MATH_API Matrix4D& operator=(const Matrix4D& mat) = default;
+		/// <summary> Matrix move assignment operator. </summary>
+		MATH_API Matrix4D& operator=(Matrix4D&& mat) = default;
+
+		/// <summary>A simple matrix destructor.</summary>
+		MATH_API ~Matrix4D() = default;
+#endif
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

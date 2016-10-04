@@ -590,14 +590,14 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 	//RenderWaterNodes(renderer);
 
-	//RenderBillboardNodes(renderer);
+	RenderBillboardNodes(renderer);
 
 	RenderSkybox(renderer);
 
 	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	//renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
 #endif
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?

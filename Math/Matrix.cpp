@@ -20,17 +20,7 @@
 }
 
 Math::Matrix4D::Matrix4D() :
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values({ { { { REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO } },
-	{ { REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO } },
-	{ { REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO } },
-	{ { REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE } } } })
-#else
-	m_values({ { REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE } })
-#endif
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "1");
 	STOP_PROFILING_MATH("1");
@@ -56,91 +46,36 @@ Math::Matrix4D::Matrix4D(Real m00, Real m01, Real m02, Real m03,
 	STOP_PROFILING_MATH("2");
 }
 
-Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
+	Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
 {
-	// TODO: Improve.
 	START_PROFILING_MATH(false, "3");
-	Matrix4D translateMatrix(screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO);
-	Matrix4D scaleMatrix;
-	scaleMatrix.SetScaleMatrix(scale.GetX(), scale.GetY(), REAL_ONE);
-	Matrix4D result = translateMatrix * scaleMatrix; // FIXME: Check matrix multiplication
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	for (int i = 0; i < MATRIX_SIZE; ++i)
-	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
-		{
-			m_values[i][j] = result[i][j];
-		}
-	}
-#else
-	for (int i = 0; i < MATRIX_SIZE * MATRIX_SIZE; ++i)
-	{
-		m_values[i] = result[i];
-	}
-#endif
-
 	STOP_PROFILING_MATH("3");
-	}
+}
 
-Math::Matrix4D::Matrix4D(Real scale)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(Real scale) :
+	Matrix4D(scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "4");
-	SetScaleMatrix(scale, scale, scale);
 	STOP_PROFILING_MATH("4");
 }
 
-Math::Matrix4D::Matrix4D(Real posX, Real posY, Real posZ)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(Real posX, Real posY, Real posZ) :
+	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, posX, posY, posZ, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "5");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = REAL_ONE;		m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
-	m_values[1][0] = REAL_ZERO;	m_values[1][1] = REAL_ONE;		m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
-	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = REAL_ONE;		m_values[2][3] = REAL_ZERO;
-	m_values[3][0] = posX;			m_values[3][1] = posY;			m_values[3][2] = posZ;			m_values[3][3] = REAL_ONE;
-#else
-	m_values[0] = REAL_ONE;	m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
-	m_values[4] = REAL_ZERO;	m_values[5] = REAL_ONE;	m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
-	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = REAL_ONE;	m_values[11] = REAL_ZERO;
-	m_values[12] = posX;		m_values[13] = posY;		m_values[14] = posZ;		m_values[15] = REAL_ONE;
-#endif
-
 	STOP_PROFILING_MATH("5");
 }
 
-Math::Matrix4D::Matrix4D(const Vector3D& pos)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Vector3D& pos) :
+	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.GetX(), pos.GetY(), pos.GetZ(), REAL_ONE)
 {
 	START_PROFILING_MATH(false, "6");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = REAL_ONE;		m_values[0][1] = REAL_ZERO;	m_values[0][2] = REAL_ZERO;	m_values[0][3] = REAL_ZERO;
-	m_values[1][0] = REAL_ZERO;	m_values[1][1] = REAL_ONE;		m_values[1][2] = REAL_ZERO;	m_values[1][3] = REAL_ZERO;
-	m_values[2][0] = REAL_ZERO;	m_values[2][1] = REAL_ZERO;	m_values[2][2] = REAL_ONE;		m_values[2][3] = REAL_ZERO;
-	m_values[3][0] = pos.GetX();	m_values[3][1] = pos.GetY();	m_values[3][2] = pos.GetZ();	m_values[3][3] = REAL_ONE;
-#else
-	m_values[0] = REAL_ONE;	m_values[1] = REAL_ZERO;	m_values[2] = REAL_ZERO;	m_values[3] = REAL_ZERO;
-	m_values[4] = REAL_ZERO;	m_values[5] = REAL_ONE;	m_values[6] = REAL_ZERO;	m_values[7] = REAL_ZERO;
-	m_values[8] = REAL_ZERO;	m_values[9] = REAL_ZERO;	m_values[10] = REAL_ONE;	m_values[11] = REAL_ZERO;
-	m_values[12] = pos.GetX();	m_values[13] = pos.GetY();	m_values[14] = pos.GetZ();	m_values[15] = REAL_ONE;
-#endif
 	STOP_PROFILING_MATH("6");
 }
 
-Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
+	Matrix4D()
 {
 	START_PROFILING_MATH(false, "7");
 	const Real xSin = angleX.Sin();
@@ -162,10 +97,8 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY)
 	STOP_PROFILING_MATH("7");
 }
 
-Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ) :
+	Matrix4D()
 {
 	START_PROFILING_MATH(false, "8"); // TODO: As there are two methods with the same name "RotationEuler" their stats will be stored in the same place (which is not good). Fix it!
 	const Real xSin = angleX.Sin();
@@ -216,20 +149,18 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 	/* ==================== SOLUTION #2 end ==================== */
 }
 
-Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right) :
+	Matrix4D(right.GetX(), up.GetX(), forward.GetX(), REAL_ZERO, right.GetY(), up.GetY(), forward.GetY(), REAL_ZERO, right.GetZ(), up.GetZ(), forward.GetZ(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "9");
-	SetRotationFromVectors(forward, up, right);
+	CHECK_CONDITION_MATH(right.IsNormalized(), Utility::Logging::ERR, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
+	CHECK_CONDITION_MATH(up.IsNormalized(), Utility::Logging::ERR, "Cannot correctly perform the rotation. The specified up vector is not normalized.");
+	CHECK_CONDITION_MATH(forward.IsNormalized(), Utility::Logging::ERR, "Cannot correctly perform the rotation. The specified forward vector is not normalized.");
 	STOP_PROFILING_MATH("9");
 }
 
-Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up) :
+	Matrix4D()
 {
 	START_PROFILING_MATH(false, "10");
 	Vector3D n = forward.Normalized();
@@ -239,88 +170,29 @@ Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up)
 	STOP_PROFILING_MATH("10");
 }
 
-Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* Aspect */, Real nearPlane /* Near plane */, Real farPlane /* Far plane */) :
+	Matrix4D()
 {
 	START_PROFILING_MATH(false, "11");
 	SetPerspectiveProjection(fov, aspect, nearPlane, farPlane);
 	STOP_PROFILING_MATH("11");
 }
 
-Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
+Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane) :
+	Matrix4D(2.0f / (right - left), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, 2.0f / (top - bottom), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, -2.0f / (farPlane - nearPlane), REAL_ZERO, -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), REAL_ONE)
 {
 	START_PROFILING_MATH(false, "12");
-
-	const Real width = right - left;
-	const Real height = top - bottom;
-	const Real depth = farPlane - nearPlane;
-	const Real temp = static_cast<Real>(2.0f);
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = temp / width;				m_values[0][1] = REAL_ZERO;					m_values[0][2] = REAL_ZERO;							m_values[0][3] = REAL_ZERO;
-	m_values[1][0] = REAL_ZERO;					m_values[1][1] = temp / height;				m_values[1][2] = REAL_ZERO;							m_values[1][3] = REAL_ZERO;
-	m_values[2][0] = REAL_ZERO;					m_values[2][1] = REAL_ZERO;					m_values[2][2] = -temp / depth;						m_values[2][3] = REAL_ZERO;
-	m_values[3][0] = -(right + left) / width;	m_values[3][1] = -(top + bottom) / height;	m_values[3][2] = -(farPlane + nearPlane) / depth;	m_values[3][3] = REAL_ONE;
-#else
-	m_values[0] = temp / width;				m_values[1] = REAL_ZERO;					m_values[2] = REAL_ZERO;							m_values[3] = REAL_ZERO;
-	m_values[4] = REAL_ZERO;				m_values[5] = temp / height;				m_values[6] = REAL_ZERO;							m_values[7] = REAL_ZERO;
-	m_values[8] = REAL_ZERO;				m_values[9] = REAL_ZERO;					m_values[10] = -temp / depth;						m_values[11] = REAL_ZERO;
-	m_values[12] = -(right + left) / width;	m_values[13] = -(top + bottom) / height;	m_values[14] = -(farPlane + nearPlane) / depth;		m_values[15] = REAL_ONE;
-#endif
 	STOP_PROFILING_MATH("12");
 }
 
-Math::Matrix4D::Matrix4D(const Matrix4D& mat)
 #ifdef PROFILING_MATH_MODULE_ENABLED
-	: m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
+	m_values(mat.m_values)
+#ifdef PROFILING_MATH_MODULE_ENABLED
+	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
 {
 	START_PROFILING_MATH(false, "13");
-	// TODO: Check which of the three solution is faster
-
-	/* ==================== SOLUTION #1 begin ==================== */
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
-	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
-	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
-	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
-#else
-	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
-	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
-	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];		m_values[11] = mat[11];
-	m_values[12] = mat[12];		m_values[13] = mat[13];		m_values[14] = mat[14];		m_values[15] = mat[15];
-#endif
-	/* ==================== SOLUTION #1 end ==================== */
-
-	/* ==================== SOLUTION #2 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-// #ifdef MATRIX_MODE_TWO_DIMENSIONS
-	//		m_values[i][j] = mat[i][j];
-//#else
-	//		m_values[i * MATRIX_SIZE + j] = mat[i * MATRIX_SIZE + j];
-//#endif
-	//	}
-	//}
-	/* ==================== SOLUTION #2 end ==================== */
-
-	/* ==================== SOLUTION #3 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-	//		this->SetElement(i, j, mat.GetElement(i, j));
-	//	}
-	//}
-	/* ==================== SOLUTION #3 end ==================== */
-
 	CHECK_CONDITION_MATH((*this) == mat, Utility::Logging::ERR, "The copy constructor should cause the two matrices to be equal, but they are not.");
 	STOP_PROFILING_MATH("13");
 }
@@ -339,63 +211,26 @@ Math::Matrix4D::~Matrix4D()
 {
 }
 
-std::string Math::Matrix4D::ToString() const
+Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 {
-	const std::string INDENTATION_STRING = "\t";
-	std::stringstream s("");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[0][0] << INDENTATION_STRING;
-	s << m_values[0][1] << INDENTATION_STRING;
-	s << m_values[0][2] << INDENTATION_STRING;
-	s << m_values[0][3] << INDENTATION_STRING;
-#else
-	s << m_values[0] << INDENTATION_STRING;
-	s << m_values[1] << INDENTATION_STRING;
-	s << m_values[2] << INDENTATION_STRING;
-	s << m_values[3] << INDENTATION_STRING;
-#endif
-	s << std::endl;
+	START_PROFILING_MATH(true, "");
 
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[1][0] << INDENTATION_STRING;
-	s << m_values[1][1] << INDENTATION_STRING;
-	s << m_values[1][2] << INDENTATION_STRING;
-	s << m_values[1][3] << INDENTATION_STRING;
-#else
-	s << m_values[4] << INDENTATION_STRING;
-	s << m_values[5] << INDENTATION_STRING;
-	s << m_values[6] << INDENTATION_STRING;
-	s << m_values[7] << INDENTATION_STRING;
-#endif
-	s << std::endl;
+	m_values = mat.m_values;
+	//std::copy(mat.m_values.begin(), mat.m_values.end(), m_values.begin());
 
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[2][0] << INDENTATION_STRING;
-	s << m_values[2][1] << INDENTATION_STRING;
-	s << m_values[2][2] << INDENTATION_STRING;
-	s << m_values[2][3] << INDENTATION_STRING;
-#else
-	s << m_values[8] << INDENTATION_STRING;
-	s << m_values[9] << INDENTATION_STRING;
-	s << m_values[10] << INDENTATION_STRING;
-	s << m_values[11] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[3][0] << INDENTATION_STRING;
-	s << m_values[3][1] << INDENTATION_STRING;
-	s << m_values[3][2] << INDENTATION_STRING;
-	s << m_values[3][3] << INDENTATION_STRING;
-#else
-	s << m_values[12] << INDENTATION_STRING;
-	s << m_values[13] << INDENTATION_STRING;
-	s << m_values[14] << INDENTATION_STRING;
-	s << m_values[15] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-	return s.str();
+	SLOW_ASSERT((*this) == mat);
+	STOP_PROFILING_MATH("");
+	return *this;
 }
+
+Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
+{
+	START_PROFILING_MATH(false, "");
+	m_values = std::move(mat.m_values);
+	STOP_PROFILING_MATH("");
+	return *this;
+}
+#endif
 
 Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 {
@@ -566,59 +401,6 @@ bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
 bool Math::Matrix4D::operator!=(const Matrix4D& matrix) const
 {
 	return (!((*this) == matrix));
-}
-
-Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
-{
-	START_PROFILING_MATH(true, "");
-	// TODO: Check which of the three solution is faster
-
-	/* ==================== SOLUTION #1 begin ==================== */
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values[0][0] = mat[0][0];	m_values[0][1] = mat[0][1];	m_values[0][2] = mat[0][2];	m_values[0][3] = mat[0][3];
-	m_values[1][0] = mat[1][0];	m_values[1][1] = mat[1][1];	m_values[1][2] = mat[1][2];	m_values[1][3] = mat[1][3];
-	m_values[2][0] = mat[2][0];	m_values[2][1] = mat[2][1];	m_values[2][2] = mat[2][2];	m_values[2][3] = mat[2][3];
-	m_values[3][0] = mat[3][0];	m_values[3][1] = mat[3][1];	m_values[3][2] = mat[3][2];	m_values[3][3] = mat[3][3];
-#else
-	m_values[0] = mat[0];		m_values[1] = mat[1];		m_values[2] = mat[2];		m_values[3] = mat[3];
-	m_values[4] = mat[4];		m_values[5] = mat[5];		m_values[6] = mat[6];		m_values[7] = mat[7];
-	m_values[8] = mat[8];		m_values[9] = mat[9];		m_values[10] = mat[10];	m_values[11] = mat[11];
-	m_values[12] = mat[12];	m_values[13] = mat[13];	m_values[14] = mat[14];	m_values[15] = mat[15];
-#endif
-	/* ==================== SOLUTION #1 end ==================== */
-
-	/* ==================== SOLUTION #2 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-	//		m_values[i][j] = mat[i][j];
-	//	}
-	//}
-	/* ==================== SOLUTION #2 end ==================== */
-
-	/* ==================== SOLUTION #3 begin ==================== */
-	//for (int i = 0; i < MATRIX_SIZE; ++i)
-	//{
-	//	for (int j = 0; j < MATRIX_SIZE; ++j)
-	//	{
-	//		this->SetElement(i, j, mat.GetElement(i, j));
-	//	}
-	//}
-	/* ==================== SOLUTION #3 end ==================== */
-
-	SLOW_ASSERT((*this) == mat);
-
-	STOP_PROFILING_MATH("");
-	return *this;
-}
-
-Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
-{
-	START_PROFILING_MATH(false, "");
-	m_values = std::move(mat.m_values);
-	STOP_PROFILING_MATH("");
-	return *this;
 }
 
 Math::Matrix4D Math::Matrix4D::Transposition() const
@@ -870,4 +652,62 @@ void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	m_values[8] = right.GetZ();	m_values[9] = up.GetZ();	m_values[10] = forward.GetZ();	m_values[11] = REAL_ZERO;
 	m_values[12] = REAL_ZERO;		m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;		m_values[15] = REAL_ONE;
 #endif
+}
+
+std::string Math::Matrix4D::ToString() const
+{
+	constexpr char* INDENTATION_STRING = "\t";
+	std::stringstream s("");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	s << m_values[0][0] << INDENTATION_STRING;
+	s << m_values[0][1] << INDENTATION_STRING;
+	s << m_values[0][2] << INDENTATION_STRING;
+	s << m_values[0][3] << INDENTATION_STRING;
+#else
+	s << m_values[0] << INDENTATION_STRING;
+	s << m_values[1] << INDENTATION_STRING;
+	s << m_values[2] << INDENTATION_STRING;
+	s << m_values[3] << INDENTATION_STRING;
+#endif
+	s << std::endl;
+
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	s << m_values[1][0] << INDENTATION_STRING;
+	s << m_values[1][1] << INDENTATION_STRING;
+	s << m_values[1][2] << INDENTATION_STRING;
+	s << m_values[1][3] << INDENTATION_STRING;
+#else
+	s << m_values[4] << INDENTATION_STRING;
+	s << m_values[5] << INDENTATION_STRING;
+	s << m_values[6] << INDENTATION_STRING;
+	s << m_values[7] << INDENTATION_STRING;
+#endif
+	s << std::endl;
+
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	s << m_values[2][0] << INDENTATION_STRING;
+	s << m_values[2][1] << INDENTATION_STRING;
+	s << m_values[2][2] << INDENTATION_STRING;
+	s << m_values[2][3] << INDENTATION_STRING;
+#else
+	s << m_values[8] << INDENTATION_STRING;
+	s << m_values[9] << INDENTATION_STRING;
+	s << m_values[10] << INDENTATION_STRING;
+	s << m_values[11] << INDENTATION_STRING;
+#endif
+	s << std::endl;
+
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+	s << m_values[3][0] << INDENTATION_STRING;
+	s << m_values[3][1] << INDENTATION_STRING;
+	s << m_values[3][2] << INDENTATION_STRING;
+	s << m_values[3][3] << INDENTATION_STRING;
+#else
+	s << m_values[12] << INDENTATION_STRING;
+	s << m_values[13] << INDENTATION_STRING;
+	s << m_values[14] << INDENTATION_STRING;
+	s << m_values[15] << INDENTATION_STRING;
+#endif
+	s << std::endl;
+	return s.str();
 }
