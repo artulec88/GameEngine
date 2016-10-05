@@ -22,6 +22,7 @@
 #include <ctime>
 #include <string>
 #include <thread>
+#include <xmmintrin.h>
 //#include <iostream>
 //#include <fstream>
 
@@ -428,6 +429,27 @@ Matrix4D RandomMatrix(Real min, Real max)
 	return matrix;
 }
 
+void M4x4_SSE(const Math::Real* A, const Math::Real* B, Math::Real* C) {
+	__m128 row1 = _mm_load_ps(&B[0]);
+	__m128 row2 = _mm_load_ps(&B[4]);
+	__m128 row3 = _mm_load_ps(&B[8]);
+	__m128 row4 = _mm_load_ps(&B[12]);
+	for (int i = 0; i < 4; i++) {
+		__m128 brod1 = _mm_set1_ps(A[4 * i + 0]);
+		__m128 brod2 = _mm_set1_ps(A[4 * i + 1]);
+		__m128 brod3 = _mm_set1_ps(A[4 * i + 2]);
+		__m128 brod4 = _mm_set1_ps(A[4 * i + 3]);
+		__m128 row = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(brod1, row1),
+				_mm_mul_ps(brod2, row2)),
+			_mm_add_ps(
+				_mm_mul_ps(brod3, row3),
+				_mm_mul_ps(brod4, row4)));
+		_mm_store_ps(&C[4 * i], row);
+	}
+}
+
 void MatrixTest()
 {
 	if (!matrixTestEnabled)
@@ -482,7 +504,7 @@ void MatrixTest()
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix4, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix5, Vector3D(2, 3, 5), Vector3D(5, -2, 7)));
 	matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix6, Vector3D(2, 3, 5), Vector3D(0.2f, 0.3f, -1.102102102102102102102102f)));
-	
+
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix7, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix8, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
 	//matrixTests.AddTest(new MathTest::MatrixTestMultiplyByVectorOperator(matrix9, Vector3D(2, 3, 5), Vector3D(2, 3, 5)));
@@ -503,7 +525,7 @@ void MatrixTest()
 	Matrix4D identityMatrix2(Matrix4D::IDENTITY_MATRIX);
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
-	const int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
+	constexpr int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
 	Matrix4D testMatrix1(Matrix4D::IDENTITY_MATRIX);
 	TestReport(testMatrix1.IsIdentity(), "The function Matrix::IsIdentity() failed.");
 
@@ -514,11 +536,11 @@ void MatrixTest()
 		Matrix4D testMatrix2(Matrix4D::IDENTITY_MATRIX);
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrix creation:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	TimeReport("Average time for identity matrix creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
 	/* ==================== MATRIX TEST #1 end ==================== */
 
 	/* ==================== MATRIX TEST #2 begin ==================== */
-	const int NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
+	constexpr int NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
 	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
 	{
@@ -526,11 +548,11 @@ void MatrixTest()
 		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
-	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #2 end ==================== */
 
 	/* ==================== MATRIX TEST #3 begin ==================== */
-	const int NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
+	constexpr int NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
 	Matrix4D mat1 = RandomMatrix(REAL_ZERO, REAL_ONE);
 	Matrix4D mat2 = RandomMatrix(REAL_ZERO, REAL_ONE);
 	timer.Reset();
@@ -540,19 +562,59 @@ void MatrixTest()
 		//CHECK_CONDITION_MATH_TEST(result == mat1 * mat2, Utility::ERR, "Random matrix multiplication result is incorrect.");
 	}
 	timer.Stop();
-	TimeReport("Average time for random matrices multiplication:\t", timer, Timing::MICROSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
+	TimeReport("Average time for random matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_RANDOM_MATRIX_MULTIPLICATION_ITERATIONS);
 	/* ==================== MATRIX TEST #3 end ==================== */
 
 	/* ==================== MATRIX TEST #4 begin ==================== */
-	const int NUMBER_OF_ROTATION_EULER_ITERATIONS = 100000;
+	constexpr int NUMBER_OF_ROTATION_EULER_ITERATIONS = 100000;
 	timer.Reset();
 	for (unsigned int i = 0; i < NUMBER_OF_ROTATION_EULER_ITERATIONS; ++i)
 	{
 		Matrix4D result(RandomAngle(), RandomAngle(), RandomAngle());
 	}
 	timer.Stop();
-	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, Timing::MICROSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
+	TimeReport("Average time for rotation Euler matrix calculation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ROTATION_EULER_ITERATIONS);
 	/* ==================== MATRIX TEST #4 end ==================== */
+
+	constexpr int NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS = 1000000;
+	std::array<float, 16> array1d_1 = { { 1.0f, 2.0f, 3.0f, 0.0f, 5.0f, 6.0f, 7.0f, 0.0f, 9.0f, 10.0f, 11.0f, 0.0f, 13.0f, 14.0f, 15.0f, 1.0f } };
+	std::array<float, 16> array1d_2 = { { -1.0f, 2.0f, -3.0f, 4.0f, -5.0f, 6.0f, -7.0f, 8.0f, -9.0f, 10.0f, -11.0f, 12.0f, -13.0f, 14.0f, -15.0f, 16.0f } };
+	std::array<float, 16> leftArray1d = { { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f } };
+	const std::array<float, 16> leftArrayExpected1d = { { -38.0f, 44.0f, -50.0f, 56.0f, -98.0f, 116.0f, -134.0f, 152.0f, -158.0f, 188.0f, -218.0f, 248.0f, -231.0f, 274.0f, -317.0f, 360.0f } };
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS; ++i)
+	{
+		M4x4_SSE(array1d_1.data(), array1d_2.data(), leftArray1d.data());
+	}
+	timer.Stop();
+	//for (int i = 0; i < 16; ++i)
+	//{
+	//	cout << "array1[" << i << "] = " << array1d_1[i] << endl;
+	//	cout << "array2[" << i << "] = " << array1d_2[i] << endl;
+	//	cout << "leftArray[" << i << "] = " << leftArray1d[i] << endl;
+	//}
+	TimeReport("Average time for SSE 1D matrix multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
+
+	std::array<std::array<float, 4>, 4> array2d_1{ {{{ 1.0f, 2.0f, 3.0f, 0.0f}}, {{5.0f, 6.0f, 7.0f, 0.0f}}, {{9.0f, 10.0f, 11.0f, 0.0f}}, {{13.0f, 14.0f, 15.0f, 1.0f}}} };
+	std::array<std::array<float, 4>, 4> array2d_2{ { { { -1.0f, 2.0f, -3.0f, 4.0f } },{ { -5.0f, 6.0f, -7.0f, 8.0f } },{ { -9.0f, 10.0f, -11.0f, 12.0f } },{ { -13.0f, 14.0f, -15.0f, 16.0f } } } };
+	std::array<std::array<float, 4>, 4> leftArray2d{ {{ { 0.0f, 0.0f, 0.0f, 0.0f }}, {{0.0f, 0.0f, 0.0f, 0.0f}}, {{0.0f, 0.0f, 0.0f, 0.0f}}, {{0.0f, 0.0f, 0.0f, 0.0f } }} };
+	const std::array<std::array<float, 4>, 4> leftArrayExpected2d{ { { { -38.0f, 44.0f, -50.0f, 56.0f}}, {{-98.0f, 116.0f, -134.0f, 152.0f}}, {{-158.0f, 188.0f, -218.0f, 248.0f}}, {{-231.0f, 274.0f, -317.0f, 360.0f } }} };
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS; ++i)
+	{
+		M4x4_SSE(array2d_1[0].data(), array2d_2[0].data(), leftArray2d[0].data());
+	}
+	timer.Stop();
+	//for (int i = 0; i < 4; ++i)
+	//{
+	//	for (int j = 0; j < 4; ++j)
+	//	{
+	//		cout << "array1[" << i << "][" << j << "] = " << array2d_1[i][j] << endl;
+	//		cout << "array2[" << i << "][" << j << "] = " << array2d_2[i][j] << endl;
+	//		cout << "leftArray[" << i << "][" << j << "] = " << leftArray2d[i][j] << endl;
+	//	}
+	//}
+	TimeReport("Average time for SSE 2D matrix multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
 }
 
 void SortTest()
@@ -1156,7 +1218,7 @@ void OtherTests()
 		ss.clear();
 		ss << "Value " << values[i] << " clamped to range [-1.5; 1.0] equals " << minusOneAndHalfToOneClampValues[i];
 		TestReport(AlmostEqual(Clamp(values[i], -1.5f, 1.0f), minusOneAndHalfToOneClampValues[i]), ss.str());
-		
+
 		ss.clear();
 		ss << "RoundUpPow2 for the value " << intValues[i] << " should be equal to " << roundUpPow2Values[i];
 		TestReport(AlmostEqual(RoundUpPow2(intValues[i]), roundUpPow2Values[i]), ss.str());

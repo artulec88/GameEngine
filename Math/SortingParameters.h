@@ -37,9 +37,10 @@ namespace Math
 		public:
 			SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
 			virtual ~SortingParametersChain(void);
-		private:
-			SortingParametersChain(const SortingParametersChain& sortingParametersChain) {} // don't implement
-			void operator=(const SortingParametersChain& sortingParametersChain) {} // don't implement
+			SortingParametersChain(const SortingParametersChain& sortingParametersChain) = delete;
+			SortingParametersChain(SortingParametersChain&& sortingParametersChain) = delete;
+			SortingParametersChain& operator=(const SortingParametersChain& sortingParametersChain) = delete;
+			SortingParametersChain& operator=(SortingParametersChain&& sortingParametersChain) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

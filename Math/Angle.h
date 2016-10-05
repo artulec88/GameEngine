@@ -264,7 +264,7 @@ namespace Math
 		/// <summary>
 		/// The value of an angle, specified in <code>Unit::RADIAN</code>.
 		/// </summary>
-		Real m_angle;
+		Real m_angle; // TODO: Compiler warning C4820: '4' bytes padding added after data member 'm_angle'.
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
 		Statistics::ClassStats& m_classStats;

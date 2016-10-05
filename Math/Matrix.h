@@ -11,10 +11,12 @@
 
 #include "Utility\ILogger.h"
 
+#include <iostream>
+#include <type_traits> // for static_assert
 #include <string>
 
 #define MATRIX_SIZE 4
-#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
+//#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
 namespace Math
 {
@@ -108,7 +110,6 @@ namespace Math
 		/// <returns>Ortographic projection matrix.</returns>
 		MATH_API Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 
-#ifdef PROFILING_MATH_MODULE_ENABLED
 		/// <summary>A simple matrix copy-constructor.</summary>
 		/// <param name='mat'>A matrix which is to be copied.</param>
 		/// <returns>A deep copy of the given matrix.</returns>
@@ -125,24 +126,8 @@ namespace Math
 
 		/// <summary>A simple matrix destructor.</summary>
 		MATH_API ~Matrix4D();
-#else
-		/// <summary>A simple matrix copy-constructor.</summary>
-		/// <param name='mat'>A matrix which is to be copied.</param>
-		/// <returns>A deep copy of the given matrix.</returns>
-		MATH_API Matrix4D(const Matrix4D& mat) = default;
-
-		/// <summary>A simple matrix move-constructor.</summary>
-		/// <param name='mat'>A matrix which is to be moved.</param>
-		MATH_API Matrix4D(Matrix4D&& mat) = default;
-
-		/// <summary> Matrix copy assignment operator. </summary>
-		MATH_API Matrix4D& operator=(const Matrix4D& mat) = default;
-		/// <summary> Matrix move assignment operator. </summary>
-		MATH_API Matrix4D& operator=(Matrix4D&& mat) = default;
-
-		/// <summary>A simple matrix destructor.</summary>
-		MATH_API ~Matrix4D() = default;
-#endif
+	private:
+		Matrix4D(const Math::Real* values);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -169,9 +154,9 @@ namespace Math
 		{
 			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-			return &m_values[0][0];
+			return m_values[0].data();
 #else
-			return &m_values[0];
+			return m_values.data();
 #endif
 		}
 
@@ -190,6 +175,20 @@ namespace Math
 
 		MATH_API std::string ToString() const;
 	private:
+		/// <summary>
+		/// Returns the pointer to the matrix data.
+		/// </summary>
+		/// <returns> Pointer to constant matrix data. </returns>
+		MATH_API inline Real* DataPtr()
+		{
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+			return &m_values[0][0];
+#else
+			return m_values.data();
+#endif
+		}
+		void M4x4_SSE(const Real* A, const Real* B, Real* C) const;
 		inline const Real* operator[](int index) const
 		{
 			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
@@ -223,8 +222,11 @@ namespace Math
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
 		Statistics::ClassStats& m_classStats;
+#else
+		uint8_t m_padding[4];
 #endif
 		/* ==================== Non-static member variables end ==================== */
+
 	}; /* end class Matrix */
 
 	inline Real Matrix4D::GetElement(int i, int j) const
@@ -248,6 +250,7 @@ namespace Math
 		m_values[i * MATRIX_SIZE + j] = value;
 #endif
 	}
+
 } /* end namespace Math */
 
 #endif /* __MATH_MATRIX_H__ */

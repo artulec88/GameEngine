@@ -115,7 +115,7 @@ namespace Math
 		Transform* m_parentTransform;
 		mutable Matrix4D m_transformation;
 		mutable Matrix4D m_parentTransformation;
-		mutable bool m_isChanged;
+		mutable bool m_isChanged; // TODO: Compiler warning '7' bytes padding added after 'm_isChanged'.
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Transform */
 

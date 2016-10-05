@@ -8,6 +8,8 @@
 #include <iostream>
 #include <utility>
 
+#include <xmmintrin.h>
+
 #ifdef PROFILING_MATH_MODULE_ENABLED
 /* static */ Math::Statistics::ClassStats& Math::Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
 #endif
@@ -22,6 +24,7 @@
 Math::Matrix4D::Matrix4D() :
 	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
+	//static_assert(std::alignment_of(Matrix4D)::value == 16, “Alignment of Matrix4D must be 16”);
 	START_PROFILING_MATH(false, "1");
 	STOP_PROFILING_MATH("1");
 }
@@ -185,7 +188,6 @@ Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real near
 	STOP_PROFILING_MATH("12");
 }
 
-#ifdef PROFILING_MATH_MODULE_ENABLED
 Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 	m_values(mat.m_values)
 #ifdef PROFILING_MATH_MODULE_ENABLED
@@ -193,17 +195,19 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 #endif
 {
 	START_PROFILING_MATH(false, "13");
+	//ERROR_LOG_MATH("Matrix copy constructor");
 	CHECK_CONDITION_MATH((*this) == mat, Utility::Logging::ERR, "The copy constructor should cause the two matrices to be equal, but they are not.");
 	STOP_PROFILING_MATH("13");
 }
 
 Math::Matrix4D::Matrix4D(Matrix4D&& mat) :
-	m_values(std::move(mat.m_values)),
+	m_values(std::move(mat.m_values))
 #ifdef PROFILING_MATH_MODULE_ENABLED
-	m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
 #endif
 {
 	START_PROFILING_MATH(false, "14");
+	//ERROR_LOG_MATH("Matrix move constructor");
 	STOP_PROFILING_MATH("14");
 }
 
@@ -217,6 +221,7 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 
 	m_values = mat.m_values;
 	//std::copy(mat.m_values.begin(), mat.m_values.end(), m_values.begin());
+	//ERROR_LOG_MATH("Matrix copy assignment operator");
 
 	SLOW_ASSERT((*this) == mat);
 	STOP_PROFILING_MATH("");
@@ -227,17 +232,44 @@ Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
 {
 	START_PROFILING_MATH(false, "");
 	m_values = std::move(mat.m_values);
+	//ERROR_LOG_MATH("Matrix move assignment operator");
 	STOP_PROFILING_MATH("");
 	return *this;
 }
-#endif
+
+Math::Matrix4D::Matrix4D(const Math::Real* values) :
+	Matrix4D(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7], values[8], values[9], values[10], values[11], values[12], values[13], values[14], values[15])
+{
+	START_PROFILING_MATH(false, "15");
+	STOP_PROFILING_MATH("15");
+}
+
+void Math::Matrix4D::M4x4_SSE(const Real* A, const Real* B, Real* C) const {
+	__m128 row1 = _mm_load_ps(&B[0]);
+	__m128 row2 = _mm_load_ps(&B[4]);
+	__m128 row3 = _mm_load_ps(&B[8]);
+	__m128 row4 = _mm_load_ps(&B[12]);
+	for (int i = 0; i<4; i++) {
+		__m128 brod1 = _mm_set1_ps(A[4 * i + 0]);
+		__m128 brod2 = _mm_set1_ps(A[4 * i + 1]);
+		__m128 brod3 = _mm_set1_ps(A[4 * i + 2]);
+		__m128 brod4 = _mm_set1_ps(A[4 * i + 3]);
+		__m128 row = _mm_add_ps(
+			_mm_add_ps(
+				_mm_mul_ps(brod1, row1),
+				_mm_mul_ps(brod2, row2)),
+			_mm_add_ps(
+				_mm_mul_ps(brod3, row3),
+				_mm_mul_ps(brod4, row4)));
+		_mm_store_ps(&C[4 * i], row);
+	}
+}
 
 Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 {
 	START_PROFILING_MATH(true, "");
 	/* ==================== SOLUTION #1 (doesn't work!!!) begin ==================== */
 	//Matrix4D matrix;
-
 	//matrix.m_values[0][0] = m_values[0][0] * mat.m_values[0][0] + m_values[1][0] * mat.m_values[0][1] + m_values[2][0] * mat.m_values[0][2];
 	//matrix.m_values[0][1] = m_values[0][1] * mat.m_values[0][0] + m_values[1][1] * mat.m_values[0][1] + m_values[2][1] * mat.m_values[0][2];
 	//matrix.m_values[0][2] = m_values[0][2] * mat.m_values[0][0] + m_values[1][2] * mat.m_values[0][1] + m_values[2][2] * mat.m_values[0][2];
@@ -257,8 +289,6 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	//matrix.m_values[3][1] = m_values[0][1] * mat.m_values[3][0] + m_values[1][1] * mat.m_values[3][1] + m_values[2][1] * mat.m_values[3][2] + m_values[3][1];
 	//matrix.m_values[3][2] = m_values[0][2] * mat.m_values[3][0] + m_values[1][2] * mat.m_values[3][1] + m_values[2][2] * mat.m_values[3][2] + m_values[3][2];
 	//matrix.m_values[3][3] = REAL_ONE;
-	//
-	//return matrix;
 	/* ==================== SOLUTION #1 (doesn't work!!!) end ==================== */
 
 	/* ==================== SOLUTION #2 begin ==================== */
@@ -304,12 +334,12 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	matrix.m_values[14] = m_values[2] * mat.m_values[12] + m_values[6] * mat.m_values[13] + m_values[10] * mat.m_values[14] + m_values[14] * mat.m_values[15];
 	matrix.m_values[15] = m_values[3] * mat.m_values[12] + m_values[7] * mat.m_values[13] + m_values[11] * mat.m_values[14] + m_values[15] * mat.m_values[15];
 #endif
-
 	STOP_PROFILING_MATH("");
 	return matrix;
 	/* ==================== SOLUTION #2 end ==================== */
 
 	/* ==================== SOLUTION #3 begin ==================== */
+	//Matrix4D matrix;
 //	const Math::Real m00 = m_values[0][0]; const Math::Real m01 = m_values[0][1]; const Math::Real m02 = m_values[0][2]; const Math::Real m03 = m_values[0][3];
 //	const Math::Real m10 = m_values[1][0]; const Math::Real m11 = m_values[1][1]; const Math::Real m12 = m_values[1][2]; const Math::Real m13 = m_values[1][3];
 //	const Math::Real m20 = m_values[2][0]; const Math::Real m21 = m_values[2][1]; const Math::Real m22 = m_values[2][2]; const Math::Real m23 = m_values[2][3];
@@ -364,6 +394,7 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	/* ==================== SOLUTION #3 end ==================== */
 
 	/* ==================== SOLUTION #4 begin ==================== */
+	//Matrix4D matrix;
 	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
 	//{
 	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
@@ -379,6 +410,20 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 	//}
 	//return matrix;
 	/* ==================== SOLUTION #4 end ==================== */
+
+	/* ==================== SOLUTION #5 begin ==================== */
+//#ifdef MATRIX_MODE_TWO_DIMENSIONS
+//	std::array<std::array<Real, MATRIX_SIZE>, MATRIX_SIZE> result;
+//	M4x4_SSE(Data(), mat.Data(), &result[0][0]);
+//	STOP_PROFILING_MATH("");
+//	return Matrix4D(&result[0][0]);
+//#else
+//	std::array<Real, MATRIX_SIZE * MATRIX_SIZE> result;
+//	M4x4_SSE(Data(), mat.Data(), &result[0]);
+//	STOP_PROFILING_MATH("");
+//	return Matrix4D(&result[0]);
+//#endif
+	/* ==================== SOLUTION #5 end ==================== */
 }
 
 Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
