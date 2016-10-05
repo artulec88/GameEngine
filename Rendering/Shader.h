@@ -18,7 +18,6 @@
 #include "Math\Statistics.h"
 #endif
 
-#include "Utility\ReferenceCounter.h"
 #include <map>
 #include <vector>
 #include <string>

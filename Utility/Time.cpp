@@ -56,6 +56,7 @@
 	case MILLISECOND: return "[ms]";
 	case MICROSECOND: return "[us]";
 	case NANOSECOND: return "[ns]";
+	case TIME_UNITS_COUNT:
 	default:
 		ERROR_LOG_UTILITY("Unknown time unit: ", timeUnit);
 		return "[unknown time unit]";
@@ -142,6 +143,7 @@ bool Utility::Timing::DateTime::operator>(const DateTime& dateTime) const
 
 std::string Utility::Timing::DateTime::ToString(const char *format /* = "%Y-%m-%d %H:%M:%S" */) const
 {
+	// TODO: Format parameter not used.
 	std::time_t time = std::chrono::system_clock::to_time_t(std::chrono::time_point_cast<std::chrono::seconds>(m_timePoint));
 	std::stringstream ss("");
 	ss << std::put_time(std::localtime(&time), "%F %T");

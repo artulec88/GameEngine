@@ -6,9 +6,10 @@
 	
 Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = NULL */) :
 	ILogger(fileName),
-	m_modified(false),
 	m_indentDepth(0),
-	m_dateTimeFormat("%H:%M:%S")
+	m_dateTimeFormat("%H:%M:%S"),
+	m_console(),
+	m_modified(false)
 {
 	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
 	ReadConsoleColorsFromConfigFile();
@@ -77,6 +78,7 @@ void Utility::Logging::LoggerWindows::SetConsoleColor(LogLevel level) const
 	case DELOCUST:
 		SetConsoleTextAttribute(m_console, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 		break;
+	case COUNT:
 	default:
 		ERROR_LOG_UTILITY("Incorrect logging level set: ", level);
 		break;

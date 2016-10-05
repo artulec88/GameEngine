@@ -43,10 +43,10 @@ namespace Utility
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			bool m_modified;
-			int m_indentDepth;
+			int m_indentDepth; // TODO: Compiler warning C4820: '4' bytes padding added after data member m_indentDepth
 			const char* m_dateTimeFormat;
 			HANDLE m_console;
+			bool m_modified; // TODO: Compiler warning C4820: '7' bytes padding added after data member m_modified
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class LoggerWindows */
 	} /* end namespace Logging */

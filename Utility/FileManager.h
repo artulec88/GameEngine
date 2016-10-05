@@ -34,9 +34,10 @@ namespace Utility
 	public:
 		UTILITY_API FileManager();
 		UTILITY_API ~FileManager(void);
-	private:
-		FileManager(FileManager& fileManager) {} // don't implement
-		void operator=(FileManager& fileManager) {} // don't implement
+		FileManager(const FileManager& fileManager) = delete;
+		FileManager(FileManager&& fileManager) = delete;
+		FileManager& operator=(const FileManager& fileManager) = delete;
+		FileManager& operator=(FileManager&& fileManager) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

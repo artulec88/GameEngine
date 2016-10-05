@@ -2,7 +2,6 @@
 #define __RENDERING_TEXTURE_H__
 
 #include "Rendering.h"
-#include "Utility\ReferenceCounter.h"
 #include <string>
 #include <map>
 #include "Math\Matrix.h"
@@ -30,11 +29,10 @@ namespace Rendering
 		/// </summary>
 		TextureData(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName);
 		~TextureData(void);
-		//TextureData(const TextureData& textureData) = default;
+		TextureData(const TextureData& textureData) = delete;
 		TextureData(TextureData&& textureData);
-	private:
-		//TextureData(const TextureData& textureData) {} // don't implement
-		//void operator=(const TextureData& textureData) {} // don't implement
+		TextureData& operator=(const TextureData& textureData) = delete;
+		TextureData& operator=(TextureData&& textureData) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

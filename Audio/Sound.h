@@ -2,14 +2,13 @@
 #define __AUDIO_SOUND_H__
 
 #include "Audio.h"
-#include "Utility\ReferenceCounter.h"
 
 #include "fmod.hpp"
 #include <string>
 
 namespace Audio
 {
-	class SoundData : Utility::ReferenceCounter
+	class SoundData
 	{
 	/* ==================== Static variables begin ==================== */
 	/* ==================== Static variables end ==================== */
@@ -18,9 +17,10 @@ namespace Audio
 	public:
 		explicit SoundData(const std::string& audioFileName);
 		~SoundData(void);
-	private:
-		SoundData(const SoundData& soundData);
-		void operator=(const SoundData& soundData);
+		SoundData(const SoundData& soundData) = delete;
+		SoundData(SoundData&& soundData) = delete;
+		SoundData& operator=(const SoundData& soundData) = delete;
+		SoundData& operator=(SoundData&& soundData) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static member functions begin ==================== */

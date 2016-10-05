@@ -6,7 +6,6 @@
 #include "Math\Matrix.h"
 #include "Math\Vector.h"
 #include "Math\HeightsGenerator.h"
-#include "Utility\ReferenceCounter.h"
 #include "Utility\ILogger.h"
 
 #include <string>
@@ -40,7 +39,7 @@ namespace std
 
 namespace Rendering
 {
-	class MeshData : public Utility::ReferenceCounter
+	class MeshData
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -52,13 +51,14 @@ namespace Rendering
 		/// </summary>
 		//MeshData();
 		MeshData(GLsizei indexSize);
-		virtual ~MeshData(void);
-	private:
-		MeshData(const MeshData& meshData); // don't implement
-		void operator=(const MeshData& meshData); // don't implement
-	/* ==================== Constructors and destructors end ==================== */
+		~MeshData(void);
+		MeshData(const MeshData& meshData) = delete;
+		MeshData(MeshData&& meshData);
+		MeshData& operator=(const MeshData& meshData) = delete;
+		MeshData& operator=(MeshData&& meshData) = delete;
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		GLuint GetVAO() const { return m_vao; }
 
@@ -141,7 +141,7 @@ namespace Rendering
 		/// <summary>
 		/// Vertex buffer objects. A handle to data representing the whole mesh (positions, texture coordinates, normals, etc.).
 		/// </summary>
-		GLuint m_buffers[MESH_DATA_BUFFERS_COUNT];
+		std::array<GLuint, MESH_DATA_BUFFERS_COUNT> m_buffers;
 
 		/// <summary>
 		/// Index buffer object.
@@ -178,9 +178,7 @@ namespace Rendering
 			}
 		}; // end class MeshComparator
 
-	/* ==================== Static variables begin ==================== */
-	private:
-		static std::map<std::string, MeshData*> meshResourceMap;
+		/* ==================== Static variables begin ==================== */
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -223,9 +221,8 @@ namespace Rendering
 	protected:
 		std::string m_fileName;
 		GLenum m_mode;
-		MeshData* m_meshData;
-		/* ==================== Non-static member variables end ==================== */
-
+		std::shared_ptr<MeshData> m_meshData;
+	/* ==================== Non-static member variables end ==================== */
 	}; /* end class Mesh */
 
 	/// <summary>

@@ -28,6 +28,10 @@ namespace Utility
 	public:
 		IConfig(const std::string& fileName);
 		virtual ~IConfig();
+		IConfig(const IConfig& config) = delete;
+		IConfig(IConfig&& config) = delete;
+		IConfig& operator=(const IConfig& config) = delete;
+		IConfig& operator=(IConfig&& config) = delete;
 		/* ==================== Constructors and destructors begin ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

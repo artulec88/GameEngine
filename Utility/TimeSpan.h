@@ -70,6 +70,7 @@ namespace Utility
 				case NANOSECOND:
 					m_duration = std::chrono::nanoseconds(timeValue);
 					break;
+				case TIME_UNITS_COUNT:
 				default:
 					break;
 				}
@@ -199,6 +200,7 @@ namespace Utility
 					return m_duration < std::chrono::microseconds(1);
 				case NANOSECOND:
 					return m_duration < std::chrono::nanoseconds(1);
+				case TIME_UNITS_COUNT:
 				default:
 					// TODO: Print message about incorrect time unit
 					return true;
@@ -224,6 +226,9 @@ namespace Utility
 					return m_duration > std::chrono::microseconds(1);
 				case NANOSECOND:
 					return m_duration > std::chrono::nanoseconds(1);
+				case TIME_UNITS_COUNT:
+				default:
+					return true;
 				}
 			}
 			std::string ToString(TimeUnit timeUnit) const
@@ -248,6 +253,7 @@ namespace Utility
 					break;
 				case NANOSECOND:
 					ss << m_duration.count() << " [ns]";
+				case TIME_UNITS_COUNT:
 				default:
 					// TODO: Error message
 					break;

@@ -41,8 +41,6 @@
 #define TANGENTS_ATTRIBUTE_LOCATION 3
 #define BITANGENTS_ATTRIBUTE_LOCATION 4
 
-/* static */ std::map<std::string, Rendering::MeshData*> Rendering::Mesh::meshResourceMap;
-
 //Rendering::MeshData::MeshData() :
 //	m_vao(0),
 //	m_vbos(),
@@ -55,9 +53,10 @@
 
 Rendering::MeshData::MeshData(GLsizei indexSize) :
 	m_vao(0),
+	m_buffers({ {0, 0, 0, 0, 0, 0, 0} }),
+	//m_ibo(0),
 	m_size(indexSize)
 {
-	memset(m_buffers, NULL, sizeof(m_buffers)); // fill the buffers with zeros (or NULLs)
 	DELOCUST_LOG_RENDERING("Created mesh data: ", ToString());
 }
 
@@ -85,6 +84,16 @@ Rendering::MeshData::~MeshData(void)
 		glDeleteVertexArrays(1, &m_vao);
 		m_vao = 0;
 	}
+}
+
+Rendering::MeshData::MeshData(MeshData&& meshData) :
+	m_vao(std::move(meshData.m_vao)),
+	m_buffers(std::move(meshData.m_buffers)),
+	//m_ibo(std::move(meshData.m_ibo)),
+	m_size(std::move(meshData.m_size))
+{
+	meshData.m_vao = 0;
+	meshData.m_buffers.fill(0);
 }
 
 void Rendering::MeshData::CreateVAO()
@@ -188,16 +197,6 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 
 Rendering::Mesh::~Mesh(void)
 {
-	CHECK_CONDITION_RENDERING(m_meshData != NULL, Utility::Logging::WARNING, "Destructing the mesh aborted. Mesh data is already NULL.");
-	m_meshData->RemoveReference();
-	if (!m_meshData->IsReferenced())
-	{
-		if (m_fileName.length() > 0)
-		{
-			meshResourceMap.erase(m_fileName);
-		}
-		SAFE_DELETE(m_meshData);
-	}
 }
 
 Rendering::Mesh::Mesh(Mesh&& mesh) :
@@ -211,12 +210,12 @@ Rendering::Mesh::Mesh(Mesh&& mesh) :
 void Rendering::Mesh::Initialize()
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started Mesh initialization");
-	if (m_meshData != NULL)
+
+	if (m_meshData != nullptr)
 	{
 		DEBUG_LOG_RENDERING("Mesh data already initialized");
 		return;
 	}
-
 	if (m_fileName.empty() || m_fileName.compare("") == 0) // TODO: Are these conditions the same?
 	{
 		ERROR_LOG_RENDERING("Mesh data cannot be initialized. File name is not specified");
@@ -231,14 +230,6 @@ void Rendering::Mesh::Initialize()
 	//std::string extension = name.substr(name.find_last_of(".") + 1);
 	//DELOCUST_LOG_RENDERING("Extension is = \"", extension, "\"");
 
-	std::map<std::string, MeshData*>::const_iterator itr = meshResourceMap.find(m_fileName);
-	if (itr != meshResourceMap.end()) // the mesh has been already loaded
-	{
-		DEBUG_LOG_RENDERING("Model \"", name, "\" is already loaded. Using already loaded mesh data.");
-		m_meshData = itr->second;
-		m_meshData->AddReference();
-		return;
-	}
 #ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
 	timer.Start();
@@ -308,8 +299,6 @@ void Rendering::Mesh::Initialize()
 	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
 	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), (int*)&indices[0], static_cast<int>(indices.size()), false);
 
-	meshResourceMap.insert(std::pair<std::string, MeshData*>(m_fileName, m_meshData));
-
 #ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
 	INFO_LOG_RENDERING("Loading model took ", timer.GetTimeSpan().ToString());
@@ -330,7 +319,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
-	m_meshData = new MeshData(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
+	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
 	m_meshData->CreateVAO();
@@ -367,7 +356,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
-	m_meshData = new MeshData(static_cast<GLsizei>((indices != NULL) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
+	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>((indices != NULL) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	if (calcNormalsEnabled)
 	{
@@ -1134,8 +1123,6 @@ void Rendering::TextMesh::ReplaceData(Math::Vector2D* screenPositions, Math::Vec
 	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
 	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, screenVerticesCount * sizeof(Vertex2D), screenVertices);
-
-	SAFE_DELETE(m_meshData);
 
 	// TODO: Optimize this! Removing whole VAO and VBOs just to replace it with other VAO and VBOs seems unneccessary.
 

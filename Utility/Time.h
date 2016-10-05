@@ -201,6 +201,7 @@ namespace Utility {
 				case MILLISECOND: return std::chrono::duration_cast<std::chrono::milliseconds>(m_stopTime - m_startTime).count();
 				case MICROSECOND: return std::chrono::duration_cast<std::chrono::microseconds>(m_stopTime - m_startTime).count();
 				case NANOSECOND: return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
+				case TIME_UNITS_COUNT:
 				default:
 					//ERROR_LOG_UTILITY("Incorrect time unit specified: ", timeUnit);
 					return std::chrono::duration_cast<std::chrono::nanoseconds>(m_stopTime - m_startTime).count();
@@ -225,6 +226,7 @@ namespace Utility {
 			std::chrono::time_point<std::chrono::system_clock> m_startTime;
 			std::chrono::time_point<std::chrono::system_clock> m_stopTime;
 			bool m_isRunning;
+			// TODO: Compiler warning C4820: '7' bytes padding added after data member m_isRunning.
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Timer */
 

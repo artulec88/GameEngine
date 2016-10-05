@@ -215,8 +215,8 @@ namespace Utility
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			LogLevel m_level;
 			Outs m_outs;
+			LogLevel m_level; // TODO: Compiler warning C4820: '4' bytes padding added after data member 'm_level'
 			// TODO: Store console colors from configuration file
 		/* ==================== Non-static member variables end ==================== */
 		}; /* end class ILogger */
