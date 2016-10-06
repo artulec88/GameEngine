@@ -8,30 +8,29 @@ Math::AABB::AABB(const Math::Vector3D& bottomLeftPos, const Vector3D& topRightPo
 {
 }
 
-Math::AABB::AABB(const AABB& aabb) : // copy constructor
-	m_bottomLeftPos(aabb.GetBottomLeftPos()),
-	m_topRightPos(aabb.GetTopRightPos())
+Math::AABB::AABB(const AABB& aabb) :
+	m_bottomLeftPos(aabb.m_bottomLeftPos),
+	m_topRightPos(aabb.m_topRightPos)
 {
 }
 
-Math::AABB::AABB(AABB&& aabb) : // move constructor
+Math::AABB::AABB(AABB&& aabb) :
 	m_bottomLeftPos(std::move(aabb.m_bottomLeftPos)),
 	m_topRightPos(std::move(aabb.m_topRightPos))
 {
-	// TODO: Reset the state of the move-from object (is it really neccessary?)
 }
 
-Math::AABB& Math::AABB::operator=(const AABB& aabb) // copy assignment operator
+Math::AABB& Math::AABB::operator=(const AABB& aabb)
 {
-	m_bottomLeftPos = aabb.GetBottomLeftPos();
-	m_topRightPos = aabb.GetTopRightPos();
+	m_bottomLeftPos = aabb.m_bottomLeftPos;
+	m_topRightPos = aabb.m_topRightPos;
 	return *this;
 }
 
-Math::AABB& Math::AABB::operator=(AABB&& aabb) // move assignment operator
+Math::AABB& Math::AABB::operator=(AABB&& aabb)
 {
-	m_bottomLeftPos = std::move(aabb.GetBottomLeftPos());
-	m_topRightPos = std::move(aabb.GetTopRightPos());
+	m_bottomLeftPos = std::move(aabb.m_bottomLeftPos);
+	m_topRightPos = std::move(aabb.m_topRightPos);
 	// TODO: Reset the state of the move-from object (is it really neccessary?)
 	return *this;
 }

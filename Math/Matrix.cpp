@@ -10,44 +10,7 @@
 
 #include <xmmintrin.h>
 
-#ifdef PROFILING_MATH_MODULE_ENABLED
-/* static */ Math::Statistics::ClassStats& Math::Matrix4D::s_classStats(STATS_STORAGE.GetClassStats("Matrix4DStatic"));
-#endif
-
 /* static */ const Math::Matrix4D Math::Matrix4D::IDENTITY_MATRIX;
-
-/* static */ int Math::Matrix4D::Signum(int i, int j)
-{
-	return ((i + j) % 2) ? -1 : 1;
-}
-
-Math::Matrix4D::Matrix4D() :
-	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
-{
-	//static_assert(std::alignment_of(Matrix4D)::value == 16, “Alignment of Matrix4D must be 16”);
-	START_PROFILING_MATH(false, "1");
-	STOP_PROFILING_MATH("1");
-}
-
-Math::Matrix4D::Matrix4D(Real m00, Real m01, Real m02, Real m03,
-	Real m10, Real m11, Real m12, Real m13,
-	Real m20, Real m21, Real m22, Real m23,
-	Real m30, Real m31, Real m32, Real m33) :
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	m_values({ { { { m00, m01, m02, m03 } },
-	{ { m10, m11, m12, m13 } },
-	{ { m20, m21, m22, m23 } },
-	{ { m30, m31, m32, m33 } } } })
-#else
-	m_values({ { m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33 } })
-#endif
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
-#endif
-{
-	START_PROFILING_MATH(false, "2");
-	STOP_PROFILING_MATH("2");
-}
 
 Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
 	Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)

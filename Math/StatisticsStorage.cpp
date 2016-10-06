@@ -1,15 +1,11 @@
 #include "stdafx.h"
-#include "IStatisticsStorage.h"
+#include "StatisticsStorage.h"
 #include <sstream>
 #include <fstream>
 
-/* static */ Math::Statistics::IStatisticsStorage& Math::Statistics::IStatisticsStorage::GetStatisticsStorage()
-{
-	static IStatisticsStorage statisticsStorage;
-	return statisticsStorage;
-}
+/* static */ Math::Statistics::StatisticsStorage Math::Statistics::StatisticsStorage::statsStorage;
 
-Math::Statistics::IStatisticsStorage::IStatisticsStorage() :
+Math::Statistics::StatisticsStorage::StatisticsStorage() :
 	m_classStatistics(),
 	m_timer()
 {
@@ -17,14 +13,14 @@ Math::Statistics::IStatisticsStorage::IStatisticsStorage() :
 	//CRITICAL_LOG_MATH("Creating new statistics storage");
 }
 
-Math::Statistics::IStatisticsStorage::~IStatisticsStorage(void)
+Math::Statistics::StatisticsStorage::~StatisticsStorage(void)
 {
 	//m_timer.Stop();
 	//PrintReport();
-	//DEBUG_LOG_MATH("IStatisticsStorage destructor");
+	//DEBUG_LOG_MATH("StatisticsStorage destructor");
 }
 
-Math::Statistics::ClassStats& Math::Statistics::IStatisticsStorage::GetClassStats(const std::string& className)
+Math::Statistics::ClassStats& Math::Statistics::StatisticsStorage::GetClassStats(const std::string& className)
 {
 	ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.find(className);
 	if (classStatsItr == m_classStatistics.end())
@@ -37,7 +33,7 @@ Math::Statistics::ClassStats& Math::Statistics::IStatisticsStorage::GetClassStat
 	return *classStatsItr->second;
 }
 
-void Math::Statistics::IStatisticsStorage::PrintSimpleReport() const
+void Math::Statistics::StatisticsStorage::PrintSimpleReport() const
 {
 	std::stringstream ss("");
 	for (ClassNames2ClassStatsMap::const_iterator classStatsItr = m_classStatistics.begin(); classStatsItr != m_classStatistics.end(); ++classStatsItr)
@@ -47,7 +43,7 @@ void Math::Statistics::IStatisticsStorage::PrintSimpleReport() const
 	INFO_LOG_MATH("Simple report = \"", ss.str(), "\"");
 }
 
-void Math::Statistics::IStatisticsStorage::PrintReport() const
+void Math::Statistics::StatisticsStorage::PrintReport() const
 {
 	// Elapsed time should specify how much time has passed since the start of the application until the shutdown.
 	Utility::Logging::ILogger::GetLogger("Math").AddStream("ApplicationStats.txt");

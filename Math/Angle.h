@@ -6,7 +6,7 @@
 #include <string>
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
-#include "IStatisticsStorage.h"
+#include "StatisticsStorage.h"
 #endif
 
 namespace Math

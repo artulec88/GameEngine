@@ -29,7 +29,7 @@
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 #include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #endif
 
 #ifdef ANT_TWEAK_BAR_ENABLED

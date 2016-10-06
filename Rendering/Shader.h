@@ -14,7 +14,7 @@
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
 

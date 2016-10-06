@@ -2,7 +2,7 @@
 #define __MATH_TEST_STATS_TEST_H__
 
 #include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #include "StatsTesting.h"
 
 namespace MathTest

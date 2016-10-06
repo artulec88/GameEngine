@@ -6,7 +6,7 @@
 
 #ifdef PROFILING_PHYSICS_MODULE_ENABLED
 #include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #endif
 
 #include <vector>

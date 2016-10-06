@@ -16,7 +16,7 @@
 //#include "Math\Effect_impl.h"
 
 #ifdef PROFILING_GAME_MODULE_ENABLED
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
 

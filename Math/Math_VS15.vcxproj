@@ -155,7 +155,8 @@
     <ClInclude Include="Interpolation.h" />
     <ClInclude Include="IntersectInfo.h" />
     <ClInclude Include="ISort.h" />
-    <ClInclude Include="IStatisticsStorage.h" />
+    <ClInclude Include="NewMatrix.h" />
+    <ClInclude Include="StatisticsStorage.h" />
     <ClInclude Include="KDTree.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Matrix.h" />
@@ -202,7 +203,7 @@
     <ClCompile Include="Interpolation_impl.h" />
     <ClCompile Include="IntersectInfo.cpp" />
     <ClCompile Include="ISort.cpp" />
-    <ClCompile Include="IStatisticsStorage.cpp" />
+    <ClCompile Include="StatisticsStorage.cpp" />
     <ClCompile Include="KDTree.cpp" />
     <ClCompile Include="Math.cpp" />
     <ClCompile Include="Matrix.cpp" />

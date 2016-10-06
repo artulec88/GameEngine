@@ -23,7 +23,7 @@
 
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 #include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #include "Math\UtmostSamples.h"
 #include "Math\UtmostSamples_impl.h"
 #include <vector>

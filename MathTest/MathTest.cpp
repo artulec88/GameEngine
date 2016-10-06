@@ -1,6 +1,7 @@
 #include "Math\Angle.h"
 #include "Math\FloatingPoint.h"
 #include "Math\Matrix.h"
+#include "Math\NewMatrix.h"
 #include "Math\Quaternion.h"
 #include "Math\Vector.h"
 #include "Math\ISort.h"
@@ -448,6 +449,56 @@ void M4x4_SSE(const Math::Real* A, const Math::Real* B, Math::Real* C) {
 				_mm_mul_ps(brod4, row4)));
 		_mm_store_ps(&C[4 * i], row);
 	}
+}
+
+void NewMatrixTest()
+{
+	//auto matrix = Math::Matrix<int, 100>::IDENTITY;
+	//for (int test = 0; test < 4; ++test)
+	//{
+	//	switch (test)
+	//	{
+	//	case matrix[5][5] * matrix[5][6]:
+	//		CRITICAL_LOG_MATH_TEST("Test == 0");
+	//		break;
+	//	case matrix[2][2]:
+	//		CRITICAL_LOG_MATH_TEST("Test == 1");
+	//		break;
+	//	case matrix[2][2] + matrix[3][3]:
+	//		CRITICAL_LOG_MATH_TEST("Test == 2");
+	//		break;
+	//	default:
+	//		CRITICAL_LOG_MATH_TEST("Default");
+	//		break;
+	//	}
+	//}
+
+	auto identityMatrix1 = Math::Matrix<int, 60, 45>::IDENTITY;
+	auto identityMatrix2 = Math::Matrix<int, 45, 70>::IDENTITY;
+
+	/* ==================== MATRIX TEST #1 begin ==================== */
+	constexpr int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
+	Timing::Timer timer;
+	timer.Start();
+	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
+	{
+		auto m = Math::Matrix<int, 33>::IDENTITY;
+	}
+	timer.Stop();
+	TimeReport("Average time for identity matrix creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
+	/* ==================== MATRIX TEST #1 end ==================== */
+
+	/* ==================== MATRIX TEST #2 begin ==================== */
+	constexpr int NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS = 2000000;
+	timer.Reset();
+	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS; ++i)
+	{
+		auto result = identityMatrix1 * identityMatrix2; // FIXME: Check matrix multiplication
+		CHECK_CONDITION_MATH_TEST(result == identityMatrix1 * identityMatrix2, Utility::Logging::ERR, "Identity matrix multiplication result is incorrect.");
+	}
+	timer.Stop();
+	TimeReport("Average time for identity matrices multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_MULTIPLICATION_ITERATIONS);
+	/* ==================== MATRIX TEST #2 end ==================== */
 }
 
 void MatrixTest()
@@ -1255,6 +1306,7 @@ int main(int argc, char* argv[])
 	//VectorTest();
 	//QuaternionTest();
 	MatrixTest();
+	NewMatrixTest();
 	//SortTest();
 	//SortTestTime();
 

@@ -34,10 +34,25 @@ namespace Math
 		/// <param name='topRightPos'>The top-right vertex of the AABB.</param>
 		MATH_API AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos);
 
-		MATH_API AABB(const AABB& aabb); // copy constructor
-		MATH_API AABB(AABB&& aabb); // move constructor
-		MATH_API AABB& operator=(const AABB& aabb); // copy assignment operator
-		MATH_API AABB& operator=(AABB&& aabb); // move assignment operator
+		/// <summary>
+		/// Axis-aligned bounding box copy constructor.
+		/// </summary>
+		MATH_API AABB(const AABB& aabb);
+		
+		/// <summary>
+		/// Axis-aligned bounding box move constructor.
+		/// </summary>
+		MATH_API AABB(AABB&& aabb);
+
+		/// <summary>
+		/// Axis-aligned bounding box copy assignment operator.
+		/// </summary>
+		MATH_API AABB& operator=(const AABB& aabb);
+
+		/// <summary>
+		/// Axis-aligned bounding box move assignment operator.
+		/// </summary>
+		MATH_API AABB& operator=(AABB&& aabb);
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.

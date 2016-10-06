@@ -6,7 +6,7 @@
 #include "Vector.h"
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
-#include "IStatisticsStorage.h"
+#include "StatisticsStorage.h"
 #endif
 
 #include "Utility\ILogger.h"
@@ -20,7 +20,6 @@
 
 namespace Math
 {
-
 	/// <summary> The class representing the 4x4 matrix. </summary>
 	/// <remarks>
 	///	The matrix is defined in a column-major ordering.
@@ -30,27 +29,50 @@ namespace Math
 	class Matrix4D
 	{
 		/* ==================== Static variables and functions begin ==================== */
-#ifdef PROFILING_MATH_MODULE_ENABLED
-	private:
-		static Statistics::ClassStats& s_classStats;
-#endif
 	public:
+		static constexpr int Signum(int i, int j)
+		{
+			return ((i + j) % 2) ? -1 : 1;
+		}
 		MATH_API static const Matrix4D IDENTITY_MATRIX; // TODO: Try to make IDENTITY_MATRIX constexpr (see http://www.cplusplus.com/forum/general/121300/).
-		static int Signum(int i, int j);
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
 		/// <returns>Identity matrix.</returns>
-		MATH_API Matrix4D();
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D() :
+			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
+		{
+			//static_assert(std::alignment_of(Matrix4D)::value == 16, “Alignment of Matrix4D must be 16”);
+			START_PROFILING_MATH(false, "1");
+			STOP_PROFILING_MATH("1");
+		}
 		/// <summary>
 		/// Creates a 4x4 matrix and assigns a specified value for each of all 16 elements.
 		/// </summary>
-		MATH_API Matrix4D(Real m00, Real m01, Real m02, Real m03,
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real m00, Real m01, Real m02, Real m03,
 			Real m10, Real m11, Real m12, Real m13,
 			Real m20, Real m21, Real m22, Real m23,
-			Real m30, Real m31, Real m32, Real m33);
+			Real m30, Real m31, Real m32, Real m33) :
+#ifdef MATRIX_MODE_TWO_DIMENSIONS
+			m_values({ { { { m00, m01, m02, m03 } },
+			{ { m10, m11, m12, m13 } },
+			{ { m20, m21, m22, m23 } },
+			{ { m30, m31, m32, m33 } } } })
+#else
+			m_values({ { m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33 } })
+#endif
+#ifdef PROFILING_MATH_MODULE_ENABLED
+			, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
+#else
+			, m_padding({0, 0, 0, 0})
+#endif
+		{
+			START_PROFILING_MATH(false, "2");
+			STOP_PROFILING_MATH("2");
+		}
+
 		/// <summary> Creates a matrix based on the screen position and the scale. </summary>
 		/// <param name='screenPosition'> The position on the screen </param>
 		/// <param name='scale'> The scale </param>
@@ -223,11 +245,11 @@ namespace Math
 #ifdef PROFILING_MATH_MODULE_ENABLED
 		Statistics::ClassStats& m_classStats;
 #else
-		uint8_t m_padding[4];
+		std::array<uint8_t, 4> m_padding;
 #endif
 		/* ==================== Non-static member variables end ==================== */
 
-	}; /* end class Matrix */
+	}; /* end class Matrix4D */
 
 	inline Real Matrix4D::GetElement(int i, int j) const
 	{

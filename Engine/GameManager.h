@@ -29,7 +29,7 @@
 #include "Math\Math.h"
 #ifdef CALCULATE_ENGINE_STATS
 #include "Math\Statistics.h"
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #endif
 
 #include <amp.h>

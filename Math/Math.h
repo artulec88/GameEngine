@@ -32,17 +32,21 @@
 #define DEBUG_LOG_MATH(...) DEBUG_LOG("Math", ##__VA_ARGS__)
 #define DELOCUST_LOG_MATH(...) DELOCUST_LOG("Math", ##__VA_ARGS__)
 
-#define PROFILING_MATH_MODULE_ENABLED
+//#define PROFILING_MATH_MODULE_ENABLED
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #define START_PROFILING_STATIC_MATH(measureTime, param) START_PROFILING_STATIC("Math", measureTime, param)
 #define STOP_PROFILING_STATIC_MATH(param) STOP_PROFILING_STATIC("Math", param)
 #define START_PROFILING_MATH(measureTime, param) START_PROFILING("Math", measureTime, param)
 #define STOP_PROFILING_MATH(param) STOP_PROFILING("Math", param)
+#define CONSTEXPR_IF_PROFILING_DISABLED
+#define CONSTEXPR_IF_PROFILING_DISABLED_OR_CONST const
 #else
 #define START_PROFILING_STATIC_MATH(measureTime, param)
 #define STOP_PROFILING_STATIC_MATH(param)
 #define START_PROFILING_MATH(measureTime, param)
 #define STOP_PROFILING_MATH(param)
+#define CONSTEXPR_IF_PROFILING_DISABLED constexpr
+#define CONSTEXPR_IF_PROFILING_DISABLED_OR_CONST constexpr
 #endif
 
 #define CHECK_CONDITION_MATH(expr, logLevel, ...) CHECK_CONDITION(expr, "Math", logLevel, ##__VA_ARGS__)

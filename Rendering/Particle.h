@@ -7,7 +7,7 @@
 #include "Math\Angle.h"
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
-#include "Math\IStatisticsStorage.h"
+#include "Math\StatisticsStorage.h"
 #include "Math\Statistics.h"
 #endif
 
