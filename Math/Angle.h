@@ -14,6 +14,7 @@ namespace Math
 
 	namespace Unit
 	{
+		// TODO: Make this enum scoped.
 		/// <summary>
 		/// Possible units for the angles.
 		/// </summary>

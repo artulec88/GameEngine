@@ -35,12 +35,29 @@ namespace Math
 		MATH_API AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos);
 
 		/// <summary>
+		/// Axis-aligned bounding rectangle copy constructor.
+		/// </summary>
+		MATH_API AABR(const AABR& aabr) = default;
+
+		/// <summary>
+		/// Axis-aligned bounding rectangle move constructor.
+		/// </summary>
+		MATH_API AABR(AABR&& aabr) = default;
+
+		/// <summary>
+		/// Axis-aligned bounding rectangle copy assignment operator.
+		/// </summary>
+		MATH_API AABR& operator=(const AABR& aabr) = default;
+
+		/// <summary>
+		/// Axis-aligned bounding rectangle move assignment operator.
+		/// </summary>
+		MATH_API AABR& operator=(AABR&& aabr) = default;
+
+		/// <summary>
 		/// The destructor of the axis-aligned bounding rectangle.
 		/// </summary>
 		MATH_API ~AABR(void);
-	private:
-		//IntersectInfo(const IntersectInfo& intersectInfo) {} // don't implement
-		//void operator=(const IntersectInfo& intersectInfo) {} // don't implement
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */

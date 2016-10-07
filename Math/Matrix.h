@@ -77,21 +77,41 @@ namespace Math
 		/// <param name='screenPosition'> The position on the screen </param>
 		/// <param name='scale'> The scale </param>
 		/// <remarks> The function is used for the gui textures. </remarks>
-		MATH_API Matrix4D(const Vector2D& screenPosition, const Vector2D& scale);
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
+			Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
+		{
+			START_PROFILING_MATH(false, "3");
+			STOP_PROFILING_MATH("3");
+		}
 		/// <summary>Creates scale matrix based on the specified parameter.</summary>
 		/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
 		/// <returns>Scale matrix.</returns>
-		MATH_API explicit Matrix4D(Real scale);
+		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real scale) :
+			Matrix4D(scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
+		{
+			START_PROFILING_MATH(false, "4");
+			STOP_PROFILING_MATH("4");
+		}
 		/// <summary>Creates translation matrix based on the specified parameters.</summary>
 		/// <param name='posX'>The X coordinate of the translation.</param>
 		/// <param name='posY'>The Y coordinate of the translation.</param>
 		/// <param name='posZ'>The Z coordinate of the translation.</param>
 		/// <returns>Translation matrix.</returns>
-		MATH_API Matrix4D(Real posX, Real posY, Real posZ);
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real posX, Real posY, Real posZ) :
+			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, posX, posY, posZ, REAL_ONE)
+		{
+			START_PROFILING_MATH(false, "5");
+			STOP_PROFILING_MATH("5");
+		}
 		/// <summary>Creates translation matrix based on the specified parameter.</summary>
 		/// <param name='pos'>The 3D translation vector.</param>
 		/// <returns>Translation matrix.</returns>
-		MATH_API explicit Matrix4D(const Vector3D& pos);
+		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(const Vector3D& pos) :
+			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.GetX(), pos.GetY(), pos.GetZ(), REAL_ONE)
+		{
+			START_PROFILING_MATH(false, "6");
+			STOP_PROFILING_MATH("6");
+		}
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
 		/// <param name='angleX'>The rotation angle around X axis.</param>
 		/// <param name='angleY'>The rotation angle around Y axis.</param>

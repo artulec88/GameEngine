@@ -37,22 +37,22 @@ namespace Math
 		/// <summary>
 		/// Axis-aligned bounding box copy constructor.
 		/// </summary>
-		MATH_API AABB(const AABB& aabb);
+		MATH_API AABB(const AABB& aabb) = default;
 		
 		/// <summary>
 		/// Axis-aligned bounding box move constructor.
 		/// </summary>
-		MATH_API AABB(AABB&& aabb);
+		MATH_API AABB(AABB&& aabb) = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy assignment operator.
 		/// </summary>
-		MATH_API AABB& operator=(const AABB& aabb);
+		MATH_API AABB& operator=(const AABB& aabb) = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move assignment operator.
 		/// </summary>
-		MATH_API AABB& operator=(AABB&& aabb);
+		MATH_API AABB& operator=(AABB&& aabb) = default;
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.

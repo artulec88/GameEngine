@@ -12,34 +12,6 @@
 
 /* static */ const Math::Matrix4D Math::Matrix4D::IDENTITY_MATRIX;
 
-Math::Matrix4D::Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
-	Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
-{
-	START_PROFILING_MATH(false, "3");
-	STOP_PROFILING_MATH("3");
-}
-
-Math::Matrix4D::Matrix4D(Real scale) :
-	Matrix4D(scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
-{
-	START_PROFILING_MATH(false, "4");
-	STOP_PROFILING_MATH("4");
-}
-
-Math::Matrix4D::Matrix4D(Real posX, Real posY, Real posZ) :
-	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, posX, posY, posZ, REAL_ONE)
-{
-	START_PROFILING_MATH(false, "5");
-	STOP_PROFILING_MATH("5");
-}
-
-Math::Matrix4D::Matrix4D(const Vector3D& pos) :
-	Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.GetX(), pos.GetY(), pos.GetZ(), REAL_ONE)
-{
-	START_PROFILING_MATH(false, "6");
-	STOP_PROFILING_MATH("6");
-}
-
 Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY) :
 	Matrix4D()
 {
