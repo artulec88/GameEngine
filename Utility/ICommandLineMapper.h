@@ -27,6 +27,10 @@ namespace Utility
 	public:
 		ICommandLineMapper();
 		virtual ~ICommandLineMapper();
+		ICommandLineMapper(const ICommandLineMapper& commandLineMapper) = delete;
+		ICommandLineMapper(ICommandLineMapper&& commandLineMapper) = delete;
+		ICommandLineMapper& operator=(const ICommandLineMapper& commandLineMapper) = delete;
+		ICommandLineMapper& operator=(ICommandLineMapper&& commandLineMapper) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

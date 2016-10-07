@@ -153,7 +153,6 @@ std::string Utility::Timing::DateTime::ToString(const char *format /* = "%Y-%m-%
 
 /* ==================== Timer class begin ==================== */
 Utility::Timing::Timer::Timer() :
-	m_isRunning(false),
 	m_startTime(),
 	m_stopTime()
 {
@@ -189,7 +188,6 @@ void Utility::Timing::Timer::Start()
 {
 	CHECK_CONDITION_RETURN_VOID_UTILITY(!m_isRunning, Logging::ERR, "Starting the timer which is already running");
 	m_startTime = std::chrono::system_clock::now();
-	m_isRunning = true;
 }
 
 void Utility::Timing::Timer::Reset()
@@ -201,5 +199,4 @@ void Utility::Timing::Timer::Stop()
 {
 	CHECK_CONDITION_RETURN_VOID_UTILITY(m_isRunning, Logging::ERR, "Stopping the timer which is already stopped.");
 	m_stopTime = std::chrono::system_clock::now();
-	m_isRunning = false;
 }

@@ -9,7 +9,8 @@
 	DEBUG_LOG_UTILITY("Reading configuration for module \"", moduleName, "\" from file \"", configFileName, "\".");
 	CHECK_CONDITION_RETURN_VOID_UTILITY(configurations.find(moduleName) == configurations.end(), Logging::ERR,
 		"Configuration for \"", configFileName, "\" module \"", moduleName, "\" has already been created");
-	configurations[moduleName] = std::make_unique<Config>(configFileName);
+	configurations[moduleName] = std::make_unique<Config>();
+	configurations[moduleName]->LoadFromFile(configFileName);
 }
 
 /* static */ const Utility::IConfig& Utility::IConfig::GetConfig(const std::string& moduleName)
@@ -19,10 +20,8 @@
 	return *confItr->second;
 }
 
-Utility::IConfig::IConfig(const std::string& fileName) :
-	m_fileName(fileName)
+Utility::IConfig::IConfig()
 {
-	//LoadFromFile();
 }
 
 Utility::IConfig::~IConfig()

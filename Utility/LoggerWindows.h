@@ -28,7 +28,16 @@ namespace Utility
 			/// <summary>
 			/// Windows-specific logger destructor.
 			/// </summary>
-			~LoggerWindows();
+			virtual ~LoggerWindows();
+
+			/// <summary> Windows logger copy constructor. </summary>
+			LoggerWindows(const LoggerWindows& loggerWindows) = delete;
+			/// <summary> Windows logger move constructor. </summary>
+			LoggerWindows(LoggerWindows&& loggerWindows) = delete;
+			/// <summary> Windows logger copy assignment operator. </summary>
+			LoggerWindows& operator=(const LoggerWindows& loggerWindows) = delete;
+			/// <summary> Windows logger move assignment operator. </summary>
+			LoggerWindows& operator=(LoggerWindows&& loggerWindows) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

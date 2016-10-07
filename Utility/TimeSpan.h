@@ -11,6 +11,7 @@ namespace Utility
 	namespace Timing
 	{
 
+		// TODO: Make this enum scoped.
 		/// <summary> Possible time units. </summary>
 		enum TimeUnit
 		{

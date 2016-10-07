@@ -134,6 +134,7 @@ namespace Utility
 {
 	namespace Logging
 	{
+		// TODO: Make this enum scoped.
 		enum LogLevel
 		{
 			CRITICAL = 0,
@@ -169,6 +170,15 @@ namespace Utility
 			/// Base logger destructor.
 			/// </summary>
 			virtual ~ILogger(void);
+
+			/// <summary> Base logger copy constructor. </summary>
+			ILogger(const ILogger& logger) = delete;
+			/// <summary> Base logger move constructor. </summary>
+			ILogger(ILogger&& logger) = delete;
+			/// <summary> Base logger copy assignment operator. </summary>
+			ILogger& operator=(const ILogger& logger) = delete;
+			/// <summary> Base logger move assignment operator. </summary>
+			ILogger& operator=(ILogger&& logger) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

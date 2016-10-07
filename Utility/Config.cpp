@@ -8,17 +8,10 @@
 //Config::ValuesMap Config::cfgNotDefinedValues;
 //bool Config::isInitialized = false;
 
-Utility::Config::Config(const std::string& fileName) :
-	IConfig(fileName)
+Utility::Config::Config() :
+	IConfig()
 {
-	LoadFromFile();
 }
-
-//Utility::Config::Config(const std::string& fileName)
-//{
-//	LoadFromFile(fileName);
-//}
-//
 
 Utility::Config::~Config()
 {
@@ -26,11 +19,11 @@ Utility::Config::~Config()
 	//m_cfgNotDefinedValues.clear();
 }
 
-void Utility::Config::LoadFromFile()
+void Utility::Config::LoadFromFile(const std::string& fileName)
 {
-	INFO_LOG_UTILITY("Loading configuration from file \"", m_fileName, "\".");
-	std::ifstream file(m_fileName);
-	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(file.is_open(), Logging::ERR, "Could not open configuration file \"", m_fileName, "\".");
+	INFO_LOG_UTILITY("Loading configuration from file \"", fileName, "\".");
+	std::ifstream file(fileName);
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_UTILITY(file.is_open(), Logging::ERR, "Could not open configuration file \"", fileName, "\".");
 	m_cfgValues.clear();
 	//cfgNotDefinedValues.clear();
 
@@ -38,7 +31,7 @@ void Utility::Config::LoadFromFile()
 	while (!file.eof())
 	{
 		//file >> name;
-		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Logging::EMERGENCY, "Error occured in the stream while reading the configuration file ", m_fileName);
+		CHECK_CONDITION_EXIT_ALWAYS_UTILITY(!file.fail(), Logging::EMERGENCY, "Error occured in the stream while reading the configuration file ", fileName);
 		std::getline(file, line);
 		if ((line.empty()) || (line[0] == '#')) // ignore comment lines
 		{

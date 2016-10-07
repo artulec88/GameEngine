@@ -24,8 +24,18 @@ namespace Utility
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit Config(const std::string& fileName);
+		/// <summary> Config default constructor. </summary>
+		explicit Config();
+		/// <summary> Config destructor. </summary>
 		virtual ~Config();
+		/// <summary> Config copy constructor. </summary>
+		Config(const Config& config) = delete;
+		/// <summary> Config move constructor. </summary>
+		Config(Config&& config) = delete;
+		/// <summary> Config copy assignment operator. </summary>
+		Config& operator=(const Config& config) = delete;
+		/// <summary> Config move assignment operator. </summary>
+		Config& operator=(Config&& config) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -35,8 +45,8 @@ namespace Utility
 		/// The correct format for storing configuration data is:
 		/// <code>name = value</code> - defines parameter "name" with value "val".
 		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed.
-		///
-		void LoadFromFile();
+		/// </summary>
+		virtual void LoadFromFile(const std::string& fileName);
 
 		/**
 		* Returns the value of given config parameter, or defValue
@@ -74,7 +84,7 @@ namespace Utility
 		//	return value;
 		//}
 
-		std::string GetArg(const std::string& name, const std::string& defValue) const;
+		virtual std::string GetArg(const std::string& name, const std::string& defValue) const;
 
 		/**
 		* Returns formatted list of configure parameters, that were used but defined in the configuration file,

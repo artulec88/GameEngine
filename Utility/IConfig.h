@@ -26,7 +26,7 @@ namespace Utility
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		IConfig(const std::string& fileName);
+		IConfig();
 		virtual ~IConfig();
 		IConfig(const IConfig& config) = delete;
 		IConfig(IConfig&& config) = delete;
@@ -41,7 +41,7 @@ namespace Utility
 		/// <code>name = value</code> - defines parameter "name" with value "val".
 		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed
 		/// </summary>
-		virtual void LoadFromFile() = 0;
+		virtual void LoadFromFile(const std::string& fileName) = 0;
 
 		/// <summary>
 		/// Returns the value (in a string) of given config parameter, or defValue
@@ -69,7 +69,6 @@ namespace Utility
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const std::string m_fileName;
 		/* ==================== Non-static member functions end ==================== */
 	}; /* end class IConfig */
 

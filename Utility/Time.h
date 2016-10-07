@@ -23,6 +23,7 @@
 namespace Utility {
 	namespace Timing
 	{
+		// TODO: Make this enum scoped.
 		enum Daytime
 		{
 			NIGHT = 0,
@@ -211,7 +212,7 @@ namespace Utility {
 			UTILITY_API void Start();
 			UTILITY_API void Reset();
 			UTILITY_API void Stop();
-			UTILITY_API bool IsRunning() const { return m_isRunning; }
+			UTILITY_API bool IsRunning() const { return m_startTime > m_stopTime; }
 			UTILITY_API std::string ToString(TimeUnit timeUnit = NANOSECOND) const
 			{
 				std::stringstream ss("");
@@ -225,7 +226,7 @@ namespace Utility {
 		private:
 			std::chrono::time_point<std::chrono::system_clock> m_startTime;
 			std::chrono::time_point<std::chrono::system_clock> m_stopTime;
-			bool m_isRunning;
+			//bool m_isRunning;
 			// TODO: Compiler warning C4820: '7' bytes padding added after data member m_isRunning.
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Timer */

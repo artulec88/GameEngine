@@ -11,7 +11,6 @@
 
 namespace Utility
 {
-
 	class CommandLineMapper : public ICommandLineMapper
 	{
 		typedef std::map<std::string, std::string> ArgsToValuesMap;
@@ -19,6 +18,10 @@ namespace Utility
 	public:
 		CommandLineMapper(int argc, char* argv[]);
 		virtual ~CommandLineMapper();
+		CommandLineMapper(const CommandLineMapper& commandLineMapper) = delete;
+		CommandLineMapper(CommandLineMapper&& commandLineMapper) = delete;
+		CommandLineMapper& operator=(const CommandLineMapper& commandLineMapper) = delete;
+		CommandLineMapper& operator=(CommandLineMapper&& commandLineMapper) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
