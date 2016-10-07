@@ -212,6 +212,8 @@
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderFactory.h" />
+    <ClInclude Include="ShaderIDs.h" />
     <ClInclude Include="ShadowInfo.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="stb_image.h" />
@@ -272,6 +274,7 @@
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Resource.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShadowInfo.cpp" />
     <ClCompile Include="SpotLight.cpp" />
     <ClCompile Include="stb_image.cpp" />

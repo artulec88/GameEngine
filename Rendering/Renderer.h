@@ -179,7 +179,7 @@ namespace Rendering
 
 		inline const FogEffect::FogInfo& GetFogInfo() const { return m_fogInfo; }
 
-		inline const Camera& GetCurrentCamera() const
+		inline const BaseCamera& GetCurrentCamera() const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_currentCamera != NULL, Utility::Logging::CRITICAL, "Current camera is NULL.");
 			return *m_currentCamera;
@@ -321,8 +321,8 @@ namespace Rendering
 		const Lighting::PointLight* m_currentPointLight;
 		//Lighting::SpotLight* m_currentSpotLight; // current spot light
 
-		const Camera* m_currentCamera;
-		const Camera* m_tempCamera;
+		const BaseCamera* m_currentCamera;
+		const BaseCamera* m_tempCamera;
 
 		Texture m_displayTexture;
 

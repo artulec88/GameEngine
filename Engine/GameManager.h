@@ -9,10 +9,10 @@
 #include "GameNode.h"
 #include "GameCommand.h"
 #include "InputMapping.h"
-#include "ShaderFactory.h"
 //#include "Observer.h"
 
 #include "Rendering\TextureFactory.h"
+#include "Rendering\ShaderFactory.h"
 #include "Rendering\Mesh.h"
 #include "Rendering\Shader.h"
 #include "Rendering\Material.h"
@@ -100,7 +100,7 @@ namespace Engine
 		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
-		ENGINE_API void AddShader(ShaderTypes::ShaderType shaderType, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderType, shaderFileName); }
+		ENGINE_API void AddShader(int shaderID, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderID, shaderFileName); }
 		ENGINE_API const Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) { return m_textureFactory.CreateTexture(textureID, textureFileName); }
 		ENGINE_API const Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) { return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory); }
 		ENGINE_API const Rendering::Particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
@@ -164,19 +164,17 @@ namespace Engine
 		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
 		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const;
 
-		ENGINE_API inline const ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
+		ENGINE_API inline const Rendering::ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
 		ENGINE_API inline const Rendering::TextureFactory& GetTextureFactory() const { return m_textureFactory; }
 	public:
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
-	protected:
-		ENGINE_API void AddToSceneRoot(GameNode* child);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
-		ShaderFactory m_shaderFactory;
+		Rendering::ShaderFactory m_shaderFactory;
 		Rendering::TextureFactory m_textureFactory;
 		Rendering::Text::FontFactory m_fontFactory;
 		std::unique_ptr<GameStateManager> m_gameStateManager;

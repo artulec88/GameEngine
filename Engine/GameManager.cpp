@@ -42,7 +42,7 @@ Engine::GameManager::GameManager() :
 	IUpdateable(),
 	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
 	m_textureFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory()),
-	m_fontFactory(m_shaderFactory.GetShader(ShaderTypes::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
+	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(std::make_unique<Engine::DefaultGameStateManager>()),
 	m_isGameLoaded(false),
 	m_emptyGameCommand(),

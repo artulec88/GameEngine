@@ -159,7 +159,7 @@ void Game::PlayMenuGameState::Render(Rendering::Renderer* renderer) const
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	m_currentMenuEntry->Render(renderer, m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	m_currentMenuEntry->Render(renderer, m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
 	STOP_PROFILING_GAME("");
 }
 

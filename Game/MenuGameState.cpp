@@ -192,7 +192,7 @@ void Game::MenuGameState::Revealed()
 
 void Game::MenuGameState::AddShaders()
 {
-	m_gameManager->AddShader(Engine::ShaderTypes::PARTICLES, GET_CONFIG_VALUE_STR_GAME("particleShader", "particle-shader.glsl"));
+	m_gameManager->AddShader(Rendering::ShaderIDs::PARTICLES, GET_CONFIG_VALUE_STR_GAME("particleShader", "particle-shader.glsl"));
 }
 
 void Game::MenuGameState::Handle(Engine::Actions::Action action)
@@ -296,7 +296,7 @@ void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	m_currentMenuEntry->GetParent()->RenderAll(renderer, m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::GUI));
+	m_currentMenuEntry->GetParent()->RenderAll(renderer, m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
 	RenderParticles(renderer);
 	//renderer->FinalizeRenderScene();
 
@@ -307,7 +307,7 @@ void Game::MenuGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	//DEBUG_LOG_GAME("Rendering particles started");
-	//const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::PARTICLES);
+	//const Rendering::Shader& particlesShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::PARTICLES);
 	//renderer->BindShader(particlesShader);
 	//renderer->UpdateRendererUniforms(particlesShader);
 	//renderer->RenderParticles(particlesShader, *m_particlesSystem);

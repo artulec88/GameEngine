@@ -129,9 +129,6 @@
     <ClInclude Include="ActionConstants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderFactory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LightFactory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -246,9 +243,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameNodeMoveCommand.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderFactory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LightFactory.cpp">

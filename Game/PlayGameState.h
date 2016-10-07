@@ -77,8 +77,8 @@ namespace Game
 		const Rendering::Shader* GetWaterShader(Rendering::Renderer* renderer) const
 		{
 			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
-				m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::WATER) :
-				m_gameManager->GetShaderFactory().GetShader(Engine::ShaderTypes::WATER_NO_DIRECTIONAL_LIGHT);
+				m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::WATER) :
+				m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT);
 		}
 
 		void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;

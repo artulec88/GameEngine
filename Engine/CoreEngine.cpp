@@ -620,7 +620,7 @@ void Engine::CoreEngine::Run()
 			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			fpsGuiButton.SetText(ss.str());
-			m_renderer->RenderGuiControl(fpsGuiButton, m_game->GetShaderFactory().GetShader(ShaderTypes::GUI));
+			m_renderer->RenderGuiControl(fpsGuiButton, m_game->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif

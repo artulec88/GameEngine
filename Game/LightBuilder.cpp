@@ -3,7 +3,7 @@
 #include "Utility\IConfig.h"
 
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
-Game::DirectionalLightBuilder::DirectionalLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::DirectionalLightBuilder::DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
 	Rendering::Lighting::DirectionalLight* directionalLight) :
 	LightBuilder(shaderFactory, textureFactory, directionalLight),
 	m_halfShadowArea(40.0f),
@@ -32,7 +32,7 @@ void Game::DirectionalLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("directionalLightAngleX", defaultDirectionalLightRotationX.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("directionalLightAngleY", defaultDirectionalLightRotationY.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
-	DEBUG_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 
@@ -68,10 +68,10 @@ void Game::DirectionalLightBuilder::BuildPart2()
 
 void Game::DirectionalLightBuilder::BuildPart3()
 {
-	m_object->SetShader(m_shaderFactory.GetShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT));
-	m_object->SetTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN));
-	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT_NO_SHADOWS));
-	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
+	m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT));
+	m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN));
+	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS));
+	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS));
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	m_object->SetTransform(Math::Transform(m_pos, m_rot, REAL_ONE));
@@ -110,7 +110,7 @@ void Game::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Game::PointLightBuilder::PointLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
 	Rendering::Lighting::PointLight* pointLight) :
 	LightBuilder(shaderFactory, textureFactory, pointLight),
 	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosZ", REAL_ZERO)),
@@ -135,7 +135,7 @@ void Game::PointLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-	DEBUG_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 
@@ -171,10 +171,10 @@ void Game::PointLightBuilder::BuildMeshRenderer()
 
 void Game::PointLightBuilder::BuildPart3()
 {
-	m_object->SetShader(m_shaderFactory.GetShader(Engine::ShaderTypes::POINT_LIGHT));
-	m_object->SetTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::POINT_LIGHT_TERRAIN));
-	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Engine::ShaderTypes::POINT_LIGHT_NO_SHADOWS));
-	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::POINT_LIGHT_TERRAIN_NO_SHADOWS));
+	m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT));
+	m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN));
+	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS));
+	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS));
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	m_object->SetTransform(Math::Transform(m_pos, m_rot, REAL_ONE));
@@ -190,7 +190,7 @@ void Game::PointLightBuilder::BuildPart3()
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Game::SpotLightBuilder::SpotLightBuilder(const Engine::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
 	Rendering::Lighting::SpotLight* spotLight) :
 	LightBuilder(shaderFactory, textureFactory, spotLight),
 	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosZ", REAL_ZERO)),
@@ -226,7 +226,7 @@ void Game::SpotLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-	DEBUG_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 
@@ -269,10 +269,10 @@ void Game::SpotLightBuilder::BuildMeshRenderer()
 
 void Game::SpotLightBuilder::BuildPart3()
 {
-	m_object->SetShader(m_shaderFactory.GetShader(Engine::ShaderTypes::SPOT_LIGHT));
-	m_object->SetTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::SPOT_LIGHT_TERRAIN));
-	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Engine::ShaderTypes::SPOT_LIGHT_NO_SHADOWS));
-	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Engine::ShaderTypes::SPOT_LIGHT_TERRAIN_NO_SHADOWS));
+	m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT));
+	m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN));
+	m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS));
+	m_object->SetNoShadowTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS));
 	// TODO: Add new shaders: "fogShader" and "fogTerrainShader".
 
 	m_object->SetTransform(Math::Transform(m_pos, m_rot));
