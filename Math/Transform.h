@@ -55,6 +55,7 @@ namespace Math
 			}
 			CalculateParentTransformation();
 			return m_parentTransformation.Transform(m_pos);
+			//return m_parentTransform->GetTransformedPos() + m_pos; // TODO: shouldn't it be enough?
 		}
 		Quaternion GetTransformedRot() const
 		{
@@ -104,9 +105,7 @@ namespace Math
 		/// <summary> The transformed rotation. The rotation relative to the origin. </summary>
 		//mutable Quaternion m_transformedRotation;
 
-		/// <summary>
-		/// The scale.
-		/// </summary>
+		/// <summary> The scale. /// </summary>
 		Real m_scale;
 
 		/// <summary>

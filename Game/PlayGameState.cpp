@@ -24,6 +24,7 @@
 
 Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName) :
 	GameState(inputMappingContextName),
+	m_rootGameNode(),
 	m_terrainNode(),
 	m_terrainMesh(NULL),
 	m_terrainMaterial(NULL),
