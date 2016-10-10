@@ -66,9 +66,9 @@ void TestReport(bool statusCode /* false if error */, const std::string& reportE
 	INFO_LOG_MATH_TEST("Test #", testNumber, " passed");
 }
 
-void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const int NUMBER_OF_ITERATIONS = 1)
+void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
+	//CHECK_CONDITION_EXIT_ALWAYS_MATH_TEST(!timer.IsRunning(), Logging::ERR, "Timer is still running");
 	double elapsedTime = static_cast<double>(timer.GetDuration(timeUnit));
 	elapsedTime /= NUMBER_OF_ITERATIONS;
 	//timeSpan.AdjustUnitToValue();

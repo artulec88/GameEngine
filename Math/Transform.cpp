@@ -5,8 +5,13 @@
 
 #include <sstream>
 
-Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
-	m_pos(pos),
+Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rotation /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
+	Transform(pos.GetX(), pos.GetY(), pos.GetZ(), rotation, scale)
+{
+}
+
+Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& rot /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
+	m_pos(posX, posY, posZ),
 	m_rotation(rot),
 	m_scale(scale),
 	m_parentTransform(NULL),
@@ -123,10 +128,12 @@ Math::Matrix4D Math::Transform::GetTransformation() const
 		//	DEBUG_LOG_MATH("IsChangedCount = ", isChangedCount, ";\t IsNotChangedCount = ", isNotChangedCount);
 		//}
 
-		Matrix4D translationMatrix(m_pos);
-		Matrix4D scaleMatrix(m_scale);
+		//Matrix4D scaleMatrix(m_scale);
 
-		m_transformation = translationMatrix * m_rotation.ToRotationMatrix() * scaleMatrix; // FIXME: Check matrix multiplication
+		// TODO: Include multiplying by scale matrix only if scale is not 1.0.
+		// TODO: Cache somewhere the rotation matrix of the quaternion.
+		m_transformation = Matrix4D(m_pos) * m_rotation.ToRotationMatrix() * Matrix4D(m_scale); // FIXME: Check matrix multiplication
+		//m_transformation *= m_scale;
 		m_isChanged = false;
 	}
 	else /* if (! IsHierarchyChanged()) */
@@ -199,11 +206,22 @@ Math::Quaternion Math::Transform::GetLookAtRotation(const Vector3D& point, const
 void Math::Transform::SetParent(Transform* t)
 {
 	m_parentTransform = t;
+	m_isChanged = true;
 }
 
 std::string Math::Transform::ToString() const
 {
 	std::stringstream ss("");
-	ss << "Pos = " << m_pos.ToString() << "; Rot = " << m_rotation.ToString() << "; Scale = " << m_scale;
+	ss << "Pos = " << m_pos.ToString() << "; Rot = " << m_rotation.ToString() << "; Scale = " << GetScale();
 	return ss.str();
+}
+
+bool Math::Transform::operator==(const Transform& transform) const
+{
+	return GetTransformation() == transform.GetTransformation();
+}
+
+bool Math::Transform::operator!=(const Transform& transform) const
+{
+	return !operator==(transform);
 }

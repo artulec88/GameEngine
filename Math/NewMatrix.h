@@ -18,10 +18,23 @@
 
 namespace Math
 {
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS>
+	namespace MatrixOrderings
+	{
+		enum MatrixOrdering
+		{
+			ROW_MAJOR = 0,
+			COLUMN_MAJOR
+		}; /* end enum MatrixOrdering */
+	} /* end MatrixOrderings */
+
+	template <int...> struct seq {};
+	template <int N, int... S> struct gens : gens<N-1, N-1, S...> {};
+	template <int... S> struct gens<0, S...> { typedef seq<S...> type; };
+
+	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, MatrixOrderings::MatrixOrdering ORDERING = MatrixOrderings::ROW_MAJOR>
 	class Matrix;
 
-	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS>
+	template <typename T, std::size_t ROWS = 4, std::size_t COLS = ROWS, MatrixOrderings::MatrixOrdering ORDERING = MatrixOrderings::ROW_MAJOR>
 	struct IdentityMatrix
 	{
 		constexpr IdentityMatrix()
@@ -47,13 +60,13 @@ namespace Math
 		constexpr Row operator[] (std::size_t i) const { return Row(i); }
 		
 		template <std::size_t COLS_RIGHT>
-		constexpr IdentityMatrix<T, ROWS, COLS_RIGHT> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT>& identityMatrix) const
+		constexpr IdentityMatrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT, ORDERING>& identityMatrix) const
 		{
-			return IdentityMatrix<T, ROWS, COLS_RIGHT>();
+			return IdentityMatrix<T, ROWS, COLS_RIGHT, ORDERING>();
 		}
 		
 		template <std::size_t COLS_RIGHT>
-		constexpr Matrix<T, ROWS, COLS_RIGHT> operator*(const Matrix<T, COLS, COLS_RIGHT>& matrix) const
+		constexpr Matrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const Matrix<T, COLS, COLS_RIGHT, ORDERING>& matrix) const
 		{
 			return matrix;
 		}
@@ -65,12 +78,12 @@ namespace Math
 	/// See http://www.in.tum.de/fileadmin/user_upload/Lehrstuehle/Lehrstuhl_XV/Teaching/SS07/Praktikum/MatricesTips.pdf for details.
 	/// http://stackoverflow.com/questions/10718061/should-arrays-be-used-in-c.
 	/// </remarks>
-	template <typename T, std::size_t ROWS, std::size_t COLS>
+	template <typename T, std::size_t ROWS, std::size_t COLS, MatrixOrderings::MatrixOrdering ORDERING>
 	class Matrix
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	public:
-		static constexpr IdentityMatrix<T, ROWS, COLS> IDENTITY{};
+		static constexpr IdentityMatrix<T, ROWS, COLS, ORDERING> IDENTITY{};
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -86,7 +99,7 @@ namespace Math
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		template <std::size_t COLS_RIGHT>
-		constexpr Matrix<T, ROWS, COLS_RIGHT> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT>& identityMatrix) const
+		constexpr Matrix<T, ROWS, COLS_RIGHT, ORDERING> operator*(const IdentityMatrix<T, COLS, COLS_RIGHT, ORDERING>& identityMatrix) const
 		{
 			return *this;
 		}

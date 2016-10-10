@@ -186,7 +186,7 @@ Utility::Timing::Timer::~Timer()
 
 void Utility::Timing::Timer::Start()
 {
-	CHECK_CONDITION_RETURN_VOID_UTILITY(!m_isRunning, Logging::ERR, "Starting the timer which is already running");
+	//CHECK_CONDITION_RETURN_VOID_UTILITY(!m_isRunning, Logging::ERR, "Starting the timer which is already running");
 	m_startTime = std::chrono::system_clock::now();
 }
 
@@ -197,6 +197,6 @@ void Utility::Timing::Timer::Reset()
 
 void Utility::Timing::Timer::Stop()
 {
-	CHECK_CONDITION_RETURN_VOID_UTILITY(m_isRunning, Logging::ERR, "Stopping the timer which is already stopped.");
+	//CHECK_CONDITION_RETURN_VOID_UTILITY(m_isRunning, Logging::ERR, "Stopping the timer which is already stopped.");
 	m_stopTime = std::chrono::system_clock::now();
 }

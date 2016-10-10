@@ -18,7 +18,12 @@ namespace Math
 	public:
 		/// <summary> Transform constructor. </summary>
 		MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-			const Quaternion& rot = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+			const Quaternion& rotation = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+			Real scale = REAL_ONE);
+
+		/// <summary> Transform constructor. </summary>
+		MATH_API Transform(Real posX, Real posY, Real posZ,
+			const Quaternion& rotation = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform copy constructor. </summary>
@@ -41,8 +46,11 @@ namespace Math
 		Vector3D& GetPos() { return m_pos; }
 		const Vector3D& GetPos() const { return m_pos; }
 		const Quaternion& GetRot() const { return m_rotation; }
-		Quaternion& GetRot() { return m_rotation; }
+		//Quaternion& GetRot() { return m_rotation; }
 		Real GetScale() const { return m_scale; }
+		//Real GetScaleX() const { return m_scaleMatrix.GetElement(0, 0); }
+		//Real GetScaleY() const { return m_scaleMatrix.GetElement(1, 1); }
+		//Real GetScaleZ() const { return m_scaleMatrix.GetElement(2, 2); }
 
 		void LookAt(const Vector3D& point, const Vector3D& up);
 		Quaternion GetLookAtRotation(const Vector3D& point, const Vector3D& up) const;
@@ -65,11 +73,24 @@ namespace Math
 			}
 			return m_parentTransform->GetTransformedRot() * m_rotation; // FIXME: Check quaternion multiplication
 		}
+		//Math::Real GetTransformedScale() const
+		//{
+		//	WARNING_LOG_MATH("Function not tested. Use with caution.");
+		//	if (m_parentTransform == NULL)
+		//	{
+		//		return m_scale;
+		//	}
+		//	return m_parentTransform->GetTransformedScale() * m_scale;
+		//}
 
 		void SetPos(const Vector3D& pos) { m_pos = pos; m_isChanged = true; }
 		void SetPos(Real x, Real y, Real z) { m_pos.Set(x, y, z); m_isChanged = true; }
 		void SetRot(const Quaternion& rot) { m_rotation = rot; m_isChanged = true; }
-		void SetScale(Real scale) { m_scale = scale; m_isChanged = true; }
+		void SetScale(Real scale)
+		{
+			m_scale = scale;
+			m_isChanged = true;
+		}
 
 		MATH_API void SetParent(Transform* t);
 
@@ -89,6 +110,9 @@ namespace Math
 		 * @brief returns true if the transformation itself or any parent transformation is changed
 		 */
 		 //bool IsHierarchyChanged() const;
+
+		MATH_API bool operator==(const Transform& transform) const;
+		MATH_API bool operator!=(const Transform& transform) const;
 	 /* ==================== Non-static member functions end ==================== */
 
 	 /* ==================== Non-static member variables begin ==================== */
@@ -105,8 +129,10 @@ namespace Math
 		/// <summary> The transformed rotation. The rotation relative to the origin. </summary>
 		//mutable Quaternion m_transformedRotation;
 
-		/// <summary> The scale. /// </summary>
+		/// <summary> The scale. </summary>
+		/// TODO: Instead of storing a Real value, we should store a scale matrix directly.
 		Real m_scale;
+		//Math::Matrix4D m_scaleMatrix;
 
 		/// <summary>
 		/// The parent transform.
