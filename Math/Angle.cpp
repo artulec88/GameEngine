@@ -156,14 +156,3 @@ bool Math::Angle::operator<=(const Angle& angle) const
 	STOP_PROFILING_MATH("");
 	return (! (m_angle > angle.m_angle));
 }
-
-std::string Math::Angle::ToString() const
-{
-	START_PROFILING_MATH(false, "");
-	STOP_PROFILING_MATH("");
-	std::stringstream ss("");
-	//ss << GetAngleInDegrees() << L'\u2103'; // TODO: Check whether the correct "degree" sign is displayed.
-	//ss << GetAngleInDegrees() << '248'; // TODO: Check whether the correct "degree" sign is displayed.
-	ss << ToDeg(m_angle) << " degrees";
-	return ss.str();
-}

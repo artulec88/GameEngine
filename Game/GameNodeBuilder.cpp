@@ -67,7 +67,7 @@ void Game::CameraNodeBuilder::BuildPart1()
 		Math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
 		Math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
 		Math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-		DELOCUST_LOG_ENGINE("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+		DELOCUST_LOG_ENGINE("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 		m_rotations[i] = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 
 		// Setting camera type

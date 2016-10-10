@@ -157,6 +157,7 @@
     <ClCompile Include="QuaternionTestGroup.cpp" />
     <ClCompile Include="StatsTest.cpp" />
     <ClCompile Include="Test.cpp" />
+    <ClCompile Include="TransformTestGroup.cpp" />
     <ClCompile Include="VectorTestGroup.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ClInclude Include="StatsTest.h" />
     <ClInclude Include="StatsTesting.h" />
     <ClInclude Include="Test.h" />
+    <ClInclude Include="TransformTestGroup.h" />
     <ClInclude Include="VectorTestGroup.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

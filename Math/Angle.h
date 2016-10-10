@@ -257,7 +257,11 @@ namespace Math
 		//	swap(angle1.m_angle, angle2.m_angle); // by swapping the member of two classes, the two instances are effectively swapped
 		//}
 
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Angle& angle)
+		{
+			out << Math::ToDeg(angle.m_angle) << " degrees";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

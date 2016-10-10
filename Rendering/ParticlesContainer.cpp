@@ -276,7 +276,7 @@ std::string Rendering::Particles::ParticlesContainer::ToString() const
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::ROTATION))
 		{
-			ss << " rot = " << m_rotations[i].ToString();
+			ss << " rot = " << m_rotations[i];
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::SCALE))
 		{

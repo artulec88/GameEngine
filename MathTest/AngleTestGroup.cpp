@@ -87,23 +87,23 @@ void AngleTestCompare::StartTest()
 {
 	bool compareResult = (m_angle == m_compareAngle);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " and angle ", m_compareAngle.ToString(), " comparison result not as expected.");
+		"The angle ", m_angle, " and angle ", m_compareAngle, " comparison result not as expected.");
 	bool diffCompareResult = (m_angle != m_compareAngle);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != m_expectedCompareResult, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString() , " and angle ", m_compareAngle.ToString(), " diff operator result not as expected.");
+		"The angle ", m_angle , " and angle ", m_compareAngle, " diff operator result not as expected.");
 	CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::Logging::ERR,
 		"The operators == and != should always give opposite results.");
 
 	bool lessResult = (m_angle < m_compareAngle);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(lessResult == m_expectedLessResult, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " was expected to be smaller than angle ", m_compareAngle.ToString(), " but it is not.");
+		"The angle ", m_angle, " was expected to be smaller than angle ", m_compareAngle, " but it is not.");
 
 	bool greaterResult = (m_angle > m_compareAngle);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(greaterResult == m_expectedGreaterResult, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " was expected to be greater than angle ", m_compareAngle.ToString(), " but it is not.");
+		"The angle ", m_angle, " was expected to be greater than angle ", m_compareAngle, " but it is not.");
 
 	CHECK_CONDITION_ALWAYS_MATH_TEST(!lessResult || !greaterResult, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " cannot be both smaller and greater than some other angle at the same time.");
+		"The angle ", m_angle, " cannot be both smaller and greater than some other angle at the same time.");
 }
 
 void AngleTestCompare::StartTimeTest()
@@ -167,49 +167,49 @@ void AngleTestTrigonometry::StartTest()
 	Math::Real sinValue = m_angle.Sin();
 	bool sinEqual = Math::AlmostEqual(sinValue, m_expectedSinValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
-		"The sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+		"The sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
 
 	sinValue = m_angle.FastSin1();
 	sinEqual = abs(sinValue - m_expectedSinValue) < DIFF_THRESHOLD;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
-		"The first approximate sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+		"The first approximate sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
 
 	sinValue = m_angle.FastSin2();
 	sinEqual = abs(sinValue - m_expectedSinValue) < DIFF_THRESHOLD;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(sinEqual, Utility::Logging::ERR,
-		"The second approximate sinus of an angle ", m_angle.ToString(), " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
+		"The second approximate sinus of an angle ", m_angle, " equals ", sinValue, " while it was expected to be ", m_expectedSinValue, ".");
 
 	Math::Real cosValue = m_angle.Cos();
 	bool cosEqual = Math::AlmostEqual(cosValue, m_expectedCosValue);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
-		"The cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+		"The cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
 
 	cosValue = m_angle.FastCos1();
 	cosEqual = abs(cosValue - m_expectedCosValue) < DIFF_THRESHOLD;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
-		"The first approximate cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+		"The first approximate cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
 
 	cosValue = m_angle.FastCos2();
 	cosEqual = abs(cosValue - m_expectedCosValue) < DIFF_THRESHOLD;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(cosEqual, Utility::Logging::ERR,
-		"The second approximate cosinus of an angle ", m_angle.ToString(), " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
+		"The second approximate cosinus of an angle ", m_angle, " equals ", cosValue, " while it was expected to be ", m_expectedCosValue, ".");
 
 	if (!Math::AlmostEqual(cosValue, REAL_ZERO))
 	{
 		Math::Real tanValue = m_angle.Tan();
 		bool tanEqual = Math::AlmostEqual(tanValue, m_expectedTanValue);
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
-			"The tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+			"The tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
 
 		tanValue = m_angle.FastTan1();
 		tanEqual = abs(tanValue - m_expectedTanValue) < DIFF_THRESHOLD;
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
-			"The first approximate tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+			"The first approximate tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
 
 		tanValue = m_angle.FastTan2();
 		tanEqual = abs(tanValue - m_expectedTanValue) < DIFF_THRESHOLD;
 		CHECK_CONDITION_ALWAYS_MATH_TEST(tanEqual, Utility::Logging::ERR,
-			"The second approximate tangent of an angle ", m_angle.ToString(), " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
+			"The second approximate tangent of an angle ", m_angle, " equals ", tanValue, " while it was expected to be ", m_expectedTanValue, ".");
 	}
 }
 
@@ -247,62 +247,62 @@ void AngleTestOperators::StartTest()
 
 	const Math::Angle anglesSum = m_angle + m_angle2;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(anglesSum == m_expectedAnglesSum, Utility::Logging::ERR,
-		"The sum of angle ", m_angle.ToString(), " and angle ", m_angle2.ToString(), " equals ", anglesSum.ToString(),
-		" while it was expected to equal ", m_expectedAnglesSum.ToString());
+		"The sum of angle ", m_angle, " and angle ", m_angle2, " equals ", anglesSum,
+		" while it was expected to equal ", m_expectedAnglesSum);
 	m_angle += m_angle2;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle == m_expectedAnglesSum, Utility::Logging::ERR,
-		"The sum of angle ", angleCopy.ToString(), " and angle ", m_angle2.ToString(), " equals ", m_angle.ToString(),
-		" while it was expected to equal ", m_expectedAnglesSum.ToString());
+		"The sum of angle ", angleCopy, " and angle ", m_angle2, " equals ", m_angle,
+		" while it was expected to equal ", m_expectedAnglesSum);
 	m_angle = angleCopy;
 
 	const Math::Angle anglesDiff = m_angle - m_angle2;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(anglesDiff == m_expectedAnglesDiff, Utility::Logging::ERR,
-		"The difference between angle ", m_angle.ToString(), " and angle ", m_angle2.ToString(), " equals ", anglesDiff.ToString(),
-		" while it was expected to equal ", m_expectedAnglesDiff.ToString());
+		"The difference between angle ", m_angle, " and angle ", m_angle2, " equals ", anglesDiff,
+		" while it was expected to equal ", m_expectedAnglesDiff);
 	m_angle -= m_angle2;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle == m_expectedAnglesDiff, Utility::Logging::ERR,
-		"The difference between angle ", angleCopy.ToString(), " and angle ", m_angle2.ToString(), " equals ", m_angle.ToString(),
-		" while it was expected to equal ", m_expectedAnglesDiff.ToString());
+		"The difference between angle ", angleCopy, " and angle ", m_angle2, " equals ", m_angle,
+		" while it was expected to equal ", m_expectedAnglesDiff);
 	m_angle = angleCopy;
 
 	const Math::Angle angle1TimesValue = m_angle * m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle1TimesValue == m_expectedAngle1TimesValue, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " multiplied by ", m_value, " equals ", angle1TimesValue.ToString(),
-		" while it was expected to equal ", m_expectedAngle1TimesValue.ToString());
+		"The angle ", m_angle, " multiplied by ", m_value, " equals ", angle1TimesValue,
+		" while it was expected to equal ", m_expectedAngle1TimesValue);
 	m_angle *= m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle == m_expectedAngle1TimesValue, Utility::Logging::ERR,
-		"The angle ", angleCopy.ToString(), " multiplied by ", m_value, " equals ", m_angle.ToString(),
-		" while it was expected to equal ", m_expectedAngle1TimesValue.ToString());
+		"The angle ", angleCopy, " multiplied by ", m_value, " equals ", m_angle,
+		" while it was expected to equal ", m_expectedAngle1TimesValue);
 	m_angle = angleCopy;
 
 	const Math::Angle angle1OverValue = m_angle / m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle1OverValue == m_expectedAngle1OverValue, Utility::Logging::ERR,
-		"The angle ", m_angle.ToString(), " divided by ", m_value, " equals ", angle1OverValue.ToString(),
-		" while it was expected to equal ", m_expectedAngle1OverValue.ToString());
+		"The angle ", m_angle, " divided by ", m_value, " equals ", angle1OverValue,
+		" while it was expected to equal ", m_expectedAngle1OverValue);
 	m_angle /= m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle == m_expectedAngle1OverValue, Utility::Logging::ERR,
-		"The angle ", angleCopy.ToString(), " divided by ", m_value, " equals ", m_angle.ToString(),
-		" while it was expected to equal ", m_expectedAngle1OverValue.ToString());
+		"The angle ", angleCopy, " divided by ", m_value, " equals ", m_angle,
+		" while it was expected to equal ", m_expectedAngle1OverValue);
 	m_angle = angleCopy;
 
 	const Math::Angle angle2TimesValue = m_angle2 * m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle2TimesValue == m_expectedAngle2TimesValue, Utility::Logging::ERR,
-		"The angle ", m_angle2.ToString(), " multiplied by ", m_value, " equals ", angle2TimesValue.ToString(),
-		" while it was expected to equal ", m_expectedAngle2TimesValue.ToString());
+		"The angle ", m_angle2, " multiplied by ", m_value, " equals ", angle2TimesValue,
+		" while it was expected to equal ", m_expectedAngle2TimesValue);
 	m_angle2 *= m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle2 == m_expectedAngle2TimesValue, Utility::Logging::ERR,
-		"The angle ", angle2Copy.ToString(), " multiplied by ", m_value, " equals ", m_angle2.ToString(),
-		" while it was expected to equal ", m_expectedAngle2TimesValue.ToString());
+		"The angle ", angle2Copy, " multiplied by ", m_value, " equals ", m_angle2,
+		" while it was expected to equal ", m_expectedAngle2TimesValue);
 	m_angle2 = angle2Copy;
 
 	const Math::Angle angle2OverValue = m_angle2 / m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(angle2OverValue == m_expectedAngle2OverValue, Utility::Logging::ERR,
-		"The angle ", m_angle2.ToString(), " divided by ", m_value, " equals ", angle2OverValue.ToString(),
-		" while it was expected to equal ", m_expectedAngle2OverValue.ToString());
+		"The angle ", m_angle2, " divided by ", m_value, " equals ", angle2OverValue,
+		" while it was expected to equal ", m_expectedAngle2OverValue);
 	m_angle2 /= m_value;
 	CHECK_CONDITION_ALWAYS_MATH_TEST(m_angle2 == m_expectedAngle2OverValue, Utility::Logging::ERR,
-		"The angle ", angle2Copy.ToString(), " divided by ", m_value, " equals ", m_angle2.ToString(),
-		" while it was expected to equal ", m_expectedAngle2OverValue.ToString());
+		"The angle ", angle2Copy, " divided by ", m_value, " equals ", m_angle2,
+		" while it was expected to equal ", m_expectedAngle2OverValue);
 	m_angle2 = angle2Copy;
 }
 

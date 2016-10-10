@@ -18,6 +18,7 @@
 #include "VectorTestGroup.h"
 #include "QuaternionTestGroup.h"
 #include "MatrixTestGroup.h"
+#include "TransformTestGroup.h"
 #include "Def.h"
 
 #include <ctime>
@@ -39,6 +40,7 @@ unsigned int testNumber = 0;
 bool angleTestEnabled = true;
 bool vectorTestEnabled = true;
 bool matrixTestEnabled = true;
+bool transformTestEnabled = true;
 bool quaternionTestEnabled = true;
 bool sortingTestEnabled = true;
 bool kdTreeTestEnabled = true;
@@ -473,8 +475,8 @@ void NewMatrixTest()
 	//	}
 	//}
 
-	auto identityMatrix1 = Math::Matrix<int, 60, 45>::IDENTITY;
-	auto identityMatrix2 = Math::Matrix<int, 45, 70>::IDENTITY;
+	auto identityMatrix1 = Math::Matrix<int, 60, 45, MatrixOrderings::ROW_MAJOR>::IDENTITY;
+	auto identityMatrix2 = Math::Matrix<int, 45, 70, MatrixOrderings::ROW_MAJOR>::IDENTITY;
 
 	/* ==================== MATRIX TEST #1 begin ==================== */
 	constexpr int NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS = 1000000;
@@ -482,7 +484,7 @@ void NewMatrixTest()
 	timer.Start();
 	for (unsigned int i = 0; i < NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS; ++i)
 	{
-		auto m = Math::Matrix<int, 33>::IDENTITY;
+		auto m = Math::Matrix<int, 33, 44, MatrixOrderings::ROW_MAJOR>::IDENTITY;
 	}
 	timer.Stop();
 	TimeReport("Average time for identity matrix creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_IDENTITY_MATRIX_CREATION_ITERATIONS);
@@ -666,6 +668,26 @@ void MatrixTest()
 	//	}
 	//}
 	TimeReport("Average time for SSE 2D matrix multiplication:\t", timer, Timing::NANOSECOND, NUMBER_OF_SSE_MATRIX_MULTIPLICATIONS);
+}
+
+void TransformTest()
+{
+	if (!transformTestEnabled)
+	{
+		return;
+	}
+	MathTest::TransformTestGroup transformTests;
+
+	transformTests.AddTest(new MathTest::TransformTestCompare(Transform(), Transform(), true));
+	transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(), 1.0f),
+		Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(), 1.0f),
+		Transform(Vector3D(2.0f, 4.0f, 6.0f), Quaternion(), 1.0f)));
+	//transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(50.0f)), 1.0f),
+	//	Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(0.0f)), 1.0f),
+	//	Transform(Vector3D(2.0f, 4.0f, 6.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(50.0f)), 1.0f)));
+
+	transformTests.StartTests();
+	transformTests.StartTimeTests();
 }
 
 void SortTest()
@@ -1307,6 +1329,7 @@ int main(int argc, char* argv[])
 	//QuaternionTest();
 	MatrixTest();
 	NewMatrixTest();
+	TransformTest();
 	//SortTest();
 	//SortTestTime();
 

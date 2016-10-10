@@ -32,7 +32,7 @@ void Game::DirectionalLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("directionalLightAngleX", defaultDirectionalLightRotationX.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("directionalLightAngleY", defaultDirectionalLightRotationY.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
-	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 
@@ -135,7 +135,7 @@ void Game::PointLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("pointLightAngleX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("pointLightAngleY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 
@@ -226,7 +226,7 @@ void Game::SpotLightBuilder::BuildPart1()
 	Math::Angle angleX(GET_CONFIG_VALUE_GAME("spotLightAngleX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
 	Math::Angle angleY(GET_CONFIG_VALUE_GAME("spotLightAngleY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
 	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-	DEBUG_LOG_GAME("angleX=", angleX.ToString(), ", angleY=", angleY.ToString(), ", angleZ=", angleZ.ToString());
+	DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 }
 

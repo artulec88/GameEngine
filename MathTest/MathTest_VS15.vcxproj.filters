@@ -22,6 +22,9 @@
     <ClCompile Include="AngleTestGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TransformTestGroup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MatrixTestGroup.h">
@@ -46,6 +49,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Def.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformTestGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
