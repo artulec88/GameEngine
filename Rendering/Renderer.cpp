@@ -684,7 +684,7 @@ void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Renderer::SetCurrentCamera(const Camera* camera)
+void Rendering::Renderer::SetCurrentCamera(const BaseCamera* camera)
 {
 	CHECK_CONDITION_RENDERING(camera != NULL, Utility::Logging::ERROR, "Cannot set current camera. Given camera is NULL.");
 	//if (camera == NULL)

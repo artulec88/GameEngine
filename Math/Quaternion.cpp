@@ -342,11 +342,3 @@ bool Math::Quaternion::operator!=(const Quaternion& q) const
 {
 	return ( !AlmostEqual(m_x, q.GetX()) || !AlmostEqual(m_y, q.GetY()) || !AlmostEqual(m_z, q.GetZ()) || !AlmostEqual(m_w, q.GetW()) );
 }
-
-std::string Math::Quaternion::ToString() const
-{
-	// TODO: Set precision (std::precision)
-	std::stringstream ss("");
-	ss << m_x << " " << m_y << " " << m_z << " " << m_w << " ";
-	return ss.str();
-}

@@ -27,14 +27,14 @@ namespace Math
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform copy constructor. </summary>
-		MATH_API Transform(const Transform& transform);
+		MATH_API Transform(const Transform& transform) = default;
 		/// <summary> Transform move constructor. </summary>
-		MATH_API Transform(Transform&& transform);
+		MATH_API Transform(Transform&& transform) = default;
 
 		/// <summary> Transform copy assignment operator. </summary>
-		MATH_API Transform& operator=(const Transform& transform);
+		MATH_API Transform& operator=(const Transform& transform) = default;
 		/// <summary> Transform move assignment operator. </summary>
-		MATH_API Transform& operator=(Transform&& transform);
+		MATH_API Transform& operator=(Transform&& transform) = default;
 
 		MATH_API ~Transform();
 		/* ==================== Constructors and destructors end ==================== */
@@ -43,7 +43,6 @@ namespace Math
 	public:
 		MATH_API Matrix4D GetTransformation() const;
 
-		Vector3D& GetPos() { return m_pos; }
 		const Vector3D& GetPos() const { return m_pos; }
 		const Quaternion& GetRot() const { return m_rotation; }
 		//Quaternion& GetRot() { return m_rotation; }
@@ -84,7 +83,15 @@ namespace Math
 		//}
 
 		void SetPos(const Vector3D& pos) { m_pos = pos; m_isChanged = true; }
-		void SetPos(Real x, Real y, Real z) { m_pos.Set(x, y, z); m_isChanged = true; }
+		void SetPos(Math::Real x, Math::Real y, Math::Real z) { m_pos.Set(x, y, z); m_isChanged = true; }
+		void SetPosX(Math::Real x) { m_pos.SetX(x); m_isChanged = true; }
+		void SetPosY(Math::Real y) { m_pos.SetY(y); m_isChanged = true; }
+		void SetPosZ(Math::Real z) { m_pos.SetZ(z); m_isChanged = true; }
+		void IncreasePos(Math::Real x, Math::Real y, Math::Real z) { m_pos.Increase(x, y, z); m_isChanged = true; }
+		void IncreasePos(const Math::Vector3D& translation) { m_pos.Increase(translation); m_isChanged = true; }
+		void IncreasePosX(Real x) { m_pos.IncreaseX(x); }
+		void IncreasePosY(Real y) { m_pos.IncreaseY(y); }
+		void IncreasePosZ(Real z) { m_pos.IncreaseZ(z); }
 		void SetRot(const Quaternion& rot) { m_rotation = rot; m_isChanged = true; }
 		void SetScale(Real scale)
 		{

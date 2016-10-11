@@ -127,7 +127,11 @@ namespace Math
 		/// </summary>
 		MATH_API Matrix4D ToRotationMatrix() const;
 
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Quaternion& q)
+		{
+			out << std::setprecision(4) << "(x=" << q.m_x << "; y=" << q.m_y << "; z=" << q.m_z << "; w=" << q.m_w << ")";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

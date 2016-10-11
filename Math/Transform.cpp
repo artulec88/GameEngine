@@ -21,28 +21,28 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 {
 }
 
-Math::Transform::Transform(const Transform& transform) :
-	m_pos(transform.m_pos),
-	m_rotation(transform.m_rotation),
-	m_scale(transform.m_scale),
-	m_parentTransform(transform.m_parentTransform),
-	m_transformation(transform.m_transformation),
-	m_parentTransformation(transform.m_parentTransformation),
-	m_isChanged(true)
-{
-}
+//Math::Transform::Transform(const Transform& transform) :
+//	m_pos(transform.m_pos),
+//	m_rotation(transform.m_rotation),
+//	m_scale(transform.m_scale),
+//	m_parentTransform(transform.m_parentTransform),
+//	m_transformation(transform.m_transformation),
+//	m_parentTransformation(transform.m_parentTransformation),
+//	m_isChanged(true)
+//{
+//}
 
-Math::Transform::Transform(Transform&& transform) :
-	m_pos(std::move(transform.m_pos)),
-	m_rotation(std::move(transform.m_rotation)),
-	m_scale(std::move(transform.m_scale)),
-	m_parentTransform(std::move(transform.m_parentTransform)),
-	m_transformation(std::move(transform.m_transformation)),
-	m_parentTransformation(std::move(transform.m_parentTransformation)),
-	m_isChanged(true)
-{
-	//transform.m_parentTransform = NULL;
-}
+//Math::Transform::Transform(Transform&& transform) :
+//	m_pos(std::move(transform.m_pos)),
+//	m_rotation(std::move(transform.m_rotation)),
+//	m_scale(std::move(transform.m_scale)),
+//	m_parentTransform(std::move(transform.m_parentTransform)),
+//	m_transformation(std::move(transform.m_transformation)),
+//	m_parentTransformation(std::move(transform.m_parentTransformation)),
+//	m_isChanged(true)
+//{
+//	//transform.m_parentTransform = NULL;
+//}
 
 //Math::Transform& Math::Transform::operator=(const Transform& transform)
 //{
@@ -77,29 +77,29 @@ Math::Transform::~Transform()
 	//DEBUG_LOG_MATH("Transform is being destroyed");
 }
 
-Math::Transform& Math::Transform::operator=(const Transform& transform)
-{
-	m_pos = transform.m_pos;
-	m_rotation = transform.m_rotation;
-	m_scale = transform.m_scale;
-	m_parentTransform = transform.m_parentTransform;
-	m_transformation = transform.m_transformation;
-	m_parentTransformation = transform.m_parentTransformation;
-	m_isChanged = transform.m_isChanged;
-	return *this;
-}
+//Math::Transform& Math::Transform::operator=(const Transform& transform)
+//{
+//	m_pos = transform.m_pos;
+//	m_rotation = transform.m_rotation;
+//	m_scale = transform.m_scale;
+//	m_parentTransform = transform.m_parentTransform;
+//	m_transformation = transform.m_transformation;
+//	m_parentTransformation = transform.m_parentTransformation;
+//	m_isChanged = transform.m_isChanged;
+//	return *this;
+//}
 
-Math::Transform& Math::Transform::operator=(Transform&& transform)
-{
-	m_pos = std::move(transform.m_pos);
-	m_rotation = std::move(transform.m_rotation);
-	m_scale = std::move(transform.m_scale);
-	m_parentTransform = std::move(transform.m_parentTransform);
-	m_transformation = std::move(transform.m_transformation);
-	m_parentTransformation = std::move(transform.m_parentTransformation);
-	m_isChanged = std::move(transform.m_isChanged);
-	return *this;
-}
+//Math::Transform& Math::Transform::operator=(Transform&& transform)
+//{
+//	m_pos = std::move(transform.m_pos);
+//	m_rotation = std::move(transform.m_rotation);
+//	m_scale = std::move(transform.m_scale);
+//	m_parentTransform = std::move(transform.m_parentTransform);
+//	m_transformation = std::move(transform.m_transformation);
+//	m_parentTransformation = std::move(transform.m_parentTransformation);
+//	m_isChanged = std::move(transform.m_isChanged);
+//	return *this;
+//}
 
 //bool Math::Transform::IsHierarchyChanged() const
 //{
@@ -212,7 +212,7 @@ void Math::Transform::SetParent(Transform* t)
 std::string Math::Transform::ToString() const
 {
 	std::stringstream ss("");
-	ss << "Pos = " << m_pos.ToString() << "; Rot = " << m_rotation.ToString() << "; Scale = " << GetScale();
+	ss << "Pos = " << m_pos << "; Rot = " << m_rotation << "; Scale = " << GetScale();
 	return ss.str();
 }
 

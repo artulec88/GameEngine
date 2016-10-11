@@ -3,8 +3,6 @@
 #include "Quaternion.h"
 #include "FloatingPoint.h"
 #include <math.h>
-#include <sstream>
-#include <iomanip>
 
 Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v)
 {
@@ -134,21 +132,7 @@ Math::Vector2D Math::Vector2D::Rotate(const Angle& angle)
 	return Vector2D(m_x * cosine - m_y * sine, m_x * sine + m_y * cosine);
 }
 
-std::string Math::Vector2D::ToString() const
-{
-	std::stringstream ss("");
-	ss << "(x=" << m_x << "; y=" << m_y << ")";
-	return ss.str();
-}
-
 /* ==================== Vector3D ==================== */
-std::string Math::Vector3D::ToString() const
-{
-	std::stringstream ss("");
-	ss << std::setprecision(4) << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << ")";
-	return ss.str();
-}
-
 Math::Real Math::Vector3D::Max() const
 {
 	return (m_x > m_y) ? ((m_x > m_z) ? m_x : m_z) : ((m_y > m_z) ? m_y : m_z);
@@ -392,13 +376,6 @@ void Math::Vector3D::Threshold(Real maxLength)
 }
 
 /* ==================== Vector4D ==================== */
-std::string Math::Vector4D::ToString() const
-{
-	std::stringstream ss("");
-	ss << "(x=" << m_x << "; y=" << m_y << "; z=" << m_z << "; w=" << m_w << ")";
-	return ss.str();
-}
-
 Math::Real Math::Vector4D::Max() const
 {
 	Real maxComponent = (m_x > m_y) ? m_x : m_y;

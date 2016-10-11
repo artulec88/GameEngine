@@ -61,6 +61,6 @@ Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius
 	{
 		w += translationPoint;
 	}
-	DEBUG_LOG_MATH("Random position on plane: ", w.ToString());
+	DEBUG_LOG_MATH("Random position on plane: ", w);
 	return w;
 }

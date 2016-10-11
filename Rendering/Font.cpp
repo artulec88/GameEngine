@@ -165,9 +165,9 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"yoffset\" attribute found in the font meta data file");
 		Math::Real yOffset = (Utility::StringUtility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
-		DEBUG_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord).ToString(), ",\n\ttexSize = ",
-			Math::Vector2D(xTextureSize, yTextureSize).ToString(), ",\n\toffset = ", Math::Vector2D(xOffset, yOffset).ToString(), ",\n\tquadSize = ",
-			Math::Vector2D(quadWidth, quadHeight).ToString(), ",\n\txAdvance = ", xAdvance);
+		DEBUG_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
+			Math::Vector2D(xTextureSize, yTextureSize), ",\n\toffset = ", Math::Vector2D(xOffset, yOffset), ",\n\tquadSize = ",
+			Math::Vector2D(quadWidth, quadHeight), ",\n\txAdvance = ", xAdvance);
 		m_metaData.insert(std::pair<int, Character>(id, Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance)));
 		//m_metaData[id] = Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance);
 	}

@@ -221,7 +221,7 @@ std::string Math::KDTree::ToString(int depth) const
 	{
 		s << INDENTATION_STRING;
 	}
-	s << "Parent: " << m_position.ToString() << " with value " << m_value << " has following children:" << std::endl;
+	s << "Parent: " << m_position << " with value " << m_value << " has following children:" << std::endl;
 	for (int i = 0; i < depth + 1; ++i)
 	{
 		s << INDENTATION_STRING;

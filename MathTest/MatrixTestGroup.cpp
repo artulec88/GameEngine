@@ -97,8 +97,8 @@ void MatrixTestMultiplyByVectorOperator::StartTest()
 {
 	Math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Logging::ERR,
-		"The multiplication of matrix:\n", m_matrix.ToString(), " and vector ", m_vector.ToString(), " equals ", multiplyResultVector.ToString(),
-		". It is different than expected ", m_expectedMultiplyResultVector.ToString(), ".");
+		"The multiplication of matrix:\n", m_matrix.ToString(), " and vector ", m_vector, " equals ", multiplyResultVector,
+		". It is different than expected ", m_expectedMultiplyResultVector, ".");
 }
 
 void MatrixTestMultiplyByVectorOperator::StartTimeTest()

@@ -47,6 +47,7 @@ Engine::GameManager::GameManager() :
 	m_isGameLoaded(false),
 	m_emptyGameCommand(),
 	m_actionsToGameCommandsMap(),
+	//m_actionsToHandlersMap(),
 	//m_actionsToGameCommandsMap({ { Input::Actions::EMPTY, std::make_unique<EmptyGameCommand>() } }), // cannot do it this way since it requires copying the unique_ptr object
 	m_actionsToGameNodesMap()
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -131,6 +132,7 @@ void Engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSyst
 
 void Engine::GameManager::Input(Actions::Action actionID)
 {
+	CRITICAL_LOG_ENGINE("Handling action: ", actionID);
 	ActionsToGameCommandsMap::const_iterator gameCommandItr = m_actionsToGameCommandsMap.find(actionID);
 	if (gameCommandItr != m_actionsToGameCommandsMap.end())
 	{
@@ -138,6 +140,14 @@ void Engine::GameManager::Input(Actions::Action actionID)
 	}
 	else
 	{
+		//auto actionHandlerItr = m_actionsToHandlersMap.find(actionID);
+		//if (actionHandlerItr != m_actionsToHandlersMap.end())
+		//{
+		//	for (auto actionHandler = actionHandlerItr->second.begin(); actionHandler != actionHandlerItr->second.end(); ++actionHandlerItr)
+		//	{
+		//		(*actionHandler)->Handle(actionID);
+		//	}
+		//}
 		m_gameStateManager->Handle(actionID);
 		for (std::list<GameNode*>::iterator gameNodeItr = m_actionsToGameNodesMap[actionID].begin(); gameNodeItr != m_actionsToGameNodesMap[actionID].end(); ++gameNodeItr)
 		{

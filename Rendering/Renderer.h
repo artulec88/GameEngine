@@ -186,7 +186,7 @@ namespace Rendering
 		}
 
 		//RENDERING_API void SetMenuCameraAsCurrent();
-		RENDERING_API void SetCurrentCamera(const Camera* camera);
+		RENDERING_API void SetCurrentCamera(const BaseCamera* camera);
 
 		RENDERING_API void BindAsRenderTarget() const;
 		RENDERING_API void InitLightRendering() const;

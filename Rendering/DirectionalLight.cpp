@@ -72,6 +72,6 @@ void Rendering::Lighting::DirectionalLight::SetShadowInfo(Math::Real halfShadowA
 std::string Rendering::Lighting::DirectionalLight::ToString() const
 {
 	std::stringstream ss("");
-	ss << "(Intensity=" << m_intensity << "; Color=" << m_color.ToString() << "; Direction=" << GetTransform().GetTransformedRot().GetForward().ToString() << ")";
+	ss << "(Intensity=" << m_intensity << "; Color=" << m_color.ToString() << "; Direction=" << GetTransform().GetTransformedRot().GetForward() << ")";
 	return ss.str();
 }

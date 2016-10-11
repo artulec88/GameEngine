@@ -79,11 +79,11 @@ void TransformTestParent::StartTest()
 {
 	Math::Vector3D childPos = m_childTransform.GetTransformedPos();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(childPos == m_expectedChildFinalTransform.GetPos(), Utility::Logging::ERR,
-		"The transformed position of the child transform equals: ", childPos.ToString(), " while it was expected to equal: ", m_expectedChildFinalTransform.GetPos().ToString());
+		"The transformed position of the child transform equals: ", childPos, " while it was expected to equal: ", m_expectedChildFinalTransform.GetPos());
 
 	Math::Quaternion childRot = m_childTransform.GetTransformedRot();
 	CHECK_CONDITION_ALWAYS_MATH_TEST(childRot == m_expectedChildFinalTransform.GetRot(), Utility::Logging::ERR,
-		"The transformed rotation of the child transform equals: ", childRot.ToString(), " while it was expected to equal: ", m_expectedChildFinalTransform.GetRot().ToString());
+		"The transformed rotation of the child transform equals: ", childRot, " while it was expected to equal: ", m_expectedChildFinalTransform.GetRot());
 
 	// TODO: GetTransformedScale
 }

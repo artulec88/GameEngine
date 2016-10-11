@@ -97,7 +97,7 @@ namespace Rendering
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the Vector2D \"", name, "\" with values \"", vec2DMap[name].ToString(), "\" to vector \"", vec.ToString(), "\"");
+				DELOCUST_LOG_RENDERING("Modifying the Vector2D \"", name, "\" with values \"", vec2DMap[name], "\" to vector \"", vec, "\"");
 				vec2DMap[name] = vec;
 			}
 		}
@@ -111,7 +111,7 @@ namespace Rendering
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the Vector3D \"", name, "\" with values \"", vec3DMap[name].ToString(), "\" to vector \"", vec.ToString(), "\"");
+				DELOCUST_LOG_RENDERING("Modifying the Vector3D \"", name, "\" with values \"", vec3DMap[name], "\" to vector \"", vec, "\"");
 				vec3DMap[name] = vec;
 			}
 		}
@@ -125,7 +125,7 @@ namespace Rendering
 			}
 			else
 			{
-				DELOCUST_LOG_RENDERING("Modifying the Vector4D \"", name, "\" with values \"", m_vec4DMap[name].ToString(), "\" to vector \"", vec.ToString(), "\"");
+				DELOCUST_LOG_RENDERING("Modifying the Vector4D \"", name, "\" with values \"", m_vec4DMap[name], "\" to vector \"", vec, "\"");
 				m_vec4DMap[name] = vec;
 			}
 		}

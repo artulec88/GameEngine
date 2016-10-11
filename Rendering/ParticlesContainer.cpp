@@ -256,15 +256,15 @@ std::string Rendering::Particles::ParticlesContainer::ToString() const
 		ss << std::endl << "p[" << i << "] = {";
 		if (m_attributesMask.IsAttributeEnabled(Attributes::POSITION))
 		{
-			ss << " pos = " << m_positions[i].ToString();
+			ss << " pos = " << m_positions[i];
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
 		{
-			ss << " vel = " << m_velocities[i].ToString();
+			ss << " vel = " << m_velocities[i];
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
 		{
-			ss << " acc = " << m_accelerations[i].ToString();
+			ss << " acc = " << m_accelerations[i];
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))
 		{
@@ -284,7 +284,7 @@ std::string Rendering::Particles::ParticlesContainer::ToString() const
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET))
 		{
-			ss << " texOffset = " << m_textureOffsets[i].ToString();
+			ss << " texOffset = " << m_textureOffsets[i];
 		}
 		if (m_attributesMask.IsAttributeEnabled(Attributes::COLOR))
 		{

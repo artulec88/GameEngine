@@ -12,32 +12,77 @@
 
 namespace Engine
 {
-
+	/// <summary>
+	/// The base class for all game components. Game components are the actual logic that one can perform on the entity.
+	/// </summary>
 	class GameComponent //: public GameNodeCommand
 	{
+		/* ==================== Static variables and functions begin ==================== */
+		/* ==================== Static variables and functions end ==================== */
+
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary>
+		/// Game component default constructor.
+		/// </summary>
 		GameComponent();
+		/// <summary>
+		/// Game component destructor.
+		/// </summary>
 		virtual ~GameComponent(void);
+		/// <summary>
+		/// Game component copy constructor.
+		/// </summary>
+		/// <param name="gameComponent> The game component we want to copy construct from. </param>
 		GameComponent(const GameComponent& gameComponent) = delete;
-		GameComponent(GameComponent&& gameComponent);
+		/// <summary>
+		/// Game component move constructor.
+		/// </summary>
+		/// <param name="gameComponent> The game component we want to move construct from. </param>
+		GameComponent(GameComponent&& gameComponent) = default;
+		/// <summary>
+		/// Game component copy assignment operator.
+		/// </summary>
+		/// <param name="gameComponent> The game component we want to copy assign from. </param>
+		/// <returns> The game component we assigned new values to. </returns>
 		GameComponent& operator=(const GameComponent& gameComponent) = delete;
-		GameComponent& operator=(GameComponent&& gameComponent);
-	/* ==================== Constructors and destructors end ==================== */
+		/// <summary>
+		/// Game component move assignment operator.
+		/// </summary>
+		/// <param name="gameComponent> The game component we want to move assign from. </param>
+		/// <returns> The game component we assigned new values to. </returns>
+		GameComponent& operator=(GameComponent&& gameComponent) = default;
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions begin ==================== */
 	public:
 		//virtual void Execute() const = 0;
-		void SetParent(GameNode* parentGameNode);
-		Math::Transform& GetTransform();
-		const Math::Transform& GetTransform() const;
-		Physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
-	/* ==================== Non-static member functions end ==================== */
 
-	/* ==================== Non-static member variables begin ==================== */
+		/// <summary>
+		/// Sets the parent entity for the game component.
+		/// </summary>
+		/// <param name="parentGameNode"> The game node this component is attached to. </param>
+		void SetParent(GameNode* parentGameNode);
+
+		/// <summary>
+		/// Retrieves the transform of the parent game node.
+		/// </summary>
+		/// <returns> The modifiable transform of the parent game node. </returns>
+		Math::Transform& GetTransform();
+
+		/// <summary>
+		/// Retrieves the transform of the parent game node.
+		/// </summary>
+		/// <returns> The unmodifiable transform of the parent game node. </returns>
+		const Math::Transform& GetTransform() const;
+
+		Physics::PhysicsObject* GetPhysicsObject() { return m_parentGameNode->GetPhysicsObject(); }
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		GameNode* m_parentGameNode;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameComponent */
 
 } /* end namespace Engine */

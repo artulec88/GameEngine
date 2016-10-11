@@ -125,9 +125,10 @@ namespace Game
 		Engine::GameNode m_waterNode;
 		Engine::GameNode m_skyboxNode;
 		Engine::GameNode m_playerNode;
+		std::vector<Engine::GameNode> m_nodes;
 		std::vector<Engine::GameNode> m_billboardsNodes;
 		
-		std::vector<Rendering::Camera> m_cameras;
+		std::vector<Rendering::BaseCamera*> m_cameras;
 		unsigned int m_currentCameraIndex;
 		//std::vector<Engine::GameNode> m_cameraNodes;
 		Engine::GameNode m_camerasNode;

@@ -58,6 +58,15 @@ namespace Rendering
 		RENDERING_API virtual const Math::Vector3D& GetPos() const = 0;
 		RENDERING_API virtual const Math::Quaternion& GetRot() const = 0;
 		RENDERING_API virtual void SetPos(const Math::Vector3D& position) = 0;
+		RENDERING_API virtual void SetPos(Math::Real x, Math::Real y, Math::Real z) = 0;
+		RENDERING_API virtual void SetPosX(Math::Real x) = 0;
+		RENDERING_API virtual void SetPosY(Math::Real y) = 0;
+		RENDERING_API virtual void SetPosZ(Math::Real z) = 0;
+		RENDERING_API virtual void IncreasePos(Math::Real x, Math::Real y, Math::Real z) = 0;
+		RENDERING_API virtual void IncreasePos(const Math::Vector3D& translation) = 0;
+		RENDERING_API virtual void IncreasePosX(Math::Real x) = 0;
+		RENDERING_API virtual void IncreasePosY(Math::Real y) = 0;
+		RENDERING_API virtual void IncreasePosZ(Math::Real z) = 0;
 		RENDERING_API virtual void SetRot(const Math::Quaternion& rotation) = 0;
 		RENDERING_API Math::Real GetSensitivity() const { return m_sensitivity; }
 		RENDERING_API void SetSensitivity(Math::Real sensitivity) { m_sensitivity = sensitivity; }

@@ -4,7 +4,7 @@
 #include "Math.h"
 #include "Angle.h"
 //#include "FloatingPoint.h"
-#include <string> // for ToString() method
+#include <iomanip>
 
 #define PASS_VECTOR_BY_VALUE
 
@@ -54,6 +54,10 @@ namespace Math
 		constexpr inline Real GetY() const { return m_y; }
 		inline void SetX(Real x) { m_x = x; }
 		inline void SetY(Real y) { m_y = y; }
+		inline void Increase(Real x, Real y) { m_x += x; m_y += y; }
+		inline void Increase(const Math::Vector2D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); }
+		inline void IncreaseX(Real x) { m_x += x; }
+		inline void IncreaseY(Real y) { m_y += y; }
 		inline void Set(Real x, Real y) { m_x = x; m_y = y; }
 
 		constexpr Real SumOfComponents() const { return m_x + m_y; }
@@ -154,7 +158,11 @@ namespace Math
 		Real Max() const;
 		Vector2D Rotate(const Angle& angle);
 	public:
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Vector2D& vector)
+		{
+			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << ")";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -213,6 +221,11 @@ namespace Math
 		inline void SetY(Real y) { m_y = y; }
 		inline void SetZ(Real z) { m_z = z; }
 		inline void Set(Real x, Real y, Real z) { m_x = x; m_y = y; m_z = z; }
+		inline void Increase(Real x, Real y, Real z) { m_x += x; m_y += y; m_z += z; }
+		inline void Increase(const Math::Vector3D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); m_z += translation.GetZ(); }
+		inline void IncreaseX(Real x) { m_x += x; }
+		inline void IncreaseY(Real y) { m_y += y; }
+		inline void IncreaseZ(Real z) { m_z += z; }
 
 		constexpr Real SumOfComponents() const { return m_x + m_y + m_z; }
 		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z); }
@@ -343,7 +356,11 @@ namespace Math
 		MATH_API void ApproachZ(Real step, Real approachedValue);
 		MATH_API void Threshold(Real maxLength);
 
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Vector3D& vector)
+		{
+			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << "; z=" << vector.m_z << ")";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -402,6 +419,12 @@ namespace Math
 		inline void SetZ(Real z) { m_z = z; }
 		inline void SetW(Real w) { m_w = w; }
 		inline void Set(Real x, Real y, Real z, Real w) { m_x = x; m_y = y; m_z = z; m_w = w; }
+		inline void Increase(Real x, Real y, Real z, Real w) { m_x += x; m_y += y; m_z += z; m_w += w; }
+		inline void Increase(const Math::Vector4D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); m_z += translation.GetZ(); m_w += translation.GetW(); }
+		inline void IncreaseX(Real x) { m_x += x; }
+		inline void IncreaseY(Real y) { m_y += y; }
+		inline void IncreaseZ(Real z) { m_z += z; }
+		inline void IncreaseW(Real w) { m_w += w; }
 
 		constexpr Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
 		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }
@@ -530,7 +553,11 @@ namespace Math
 		void ApproachW(Real step, Real approachedValue);
 		void Threshold(Real maxLength);
 
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Vector4D& vector)
+		{
+			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << "; z=" << vector.m_z << "; w=" << vector.m_w << ")";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

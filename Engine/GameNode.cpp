@@ -66,7 +66,11 @@ Engine::GameNode::GameNode(GameNode&& gameNode) :
 	m_actionsToCommands(std::move(gameNode.m_actionsToCommands)),
 	m_statesToCommands(std::move(gameNode.m_statesToCommands))
 {
-	//gameNode.m_components.clear();
+	gameNode.m_components.clear();
+	for (auto componentItr = m_components.begin(); componentItr != m_components.end(); ++componentItr)
+	{
+		(*componentItr)->SetParent(this);
+	}
 }
 
 Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
@@ -82,7 +86,11 @@ Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
 	m_actionsToCommands = std::move(gameNode.m_actionsToCommands);
 	m_statesToCommands = std::move(gameNode.m_statesToCommands);
 
-	//gameNode.m_components.clear();
+	gameNode.m_components.clear();
+	for (auto componentItr = m_components.begin(); componentItr != m_components.end(); ++componentItr)
+	{
+		(*componentItr)->SetParent(this);
+	}
 	return *this;
 }
 

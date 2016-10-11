@@ -9,6 +9,7 @@
 #include "GameNode.h"
 #include "GameCommand.h"
 #include "InputMapping.h"
+#include "IActionHandler.h"
 //#include "Observer.h"
 
 #include "Rendering\TextureFactory.h"
@@ -41,6 +42,7 @@ namespace Engine
 	{
 		typedef std::map<const Rendering::Text::Font*, std::vector<Rendering::Controls::GuiButtonControl>, Rendering::Text::FontComparator> FontMap;
 		typedef std::map<Actions::Action, std::list<GameNode*>> ActionsToGameNodesMap;
+		typedef std::map<Actions::Action, std::vector<IActionHandler*>> ActionsToHandlersMap;
 		typedef std::map<Actions::Action, const GameCommand*> ActionsToGameCommandsMap;
 		typedef std::map<States::State, std::list<GameNode*>> StatesToGameNodesMap;
 		typedef std::map<States::State, const GameCommand*> StatesToGameCommandsMap;
@@ -182,6 +184,8 @@ namespace Engine
 
 		const EmptyGameCommand m_emptyGameCommand;
 		ActionsToGameCommandsMap m_actionsToGameCommandsMap;
+		//ActionsToHandlersMap m_actionsToHandlersMap;
+
 		//Rendering::Effects::EffectFactory m_effectFactory;
 
 		/// <summary>

@@ -650,7 +650,7 @@ void Rendering::Shader::SetUniformf(const std::string& name, Math::Real value) c
 void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::Vector2D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 2D \"", name, "\":", vector);
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
@@ -664,7 +664,7 @@ void Rendering::Shader::SetUniformVector2D(const std::string& name, const Math::
 void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::Vector3D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector);
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
@@ -682,7 +682,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::Vector4D& vector) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector);
 	std::map<std::string, GLint>::const_iterator itr;
 	//if (name.compare("R_directionalLight.direction") == 0)
 	//{
