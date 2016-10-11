@@ -4,9 +4,6 @@
 #include "Rendering.h"
 #include "BaseCamera.h"
 #include "Math\Transform.h"
-#include "Math\Vector.h"
-#include "Math\Matrix.h"
-#include "Math\Angle.h"
 #include <string>
 
 namespace Rendering
@@ -67,28 +64,14 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API virtual const Math::Vector3D& GetPos() const { return m_pos; }
-		RENDERING_API virtual const Math::Quaternion& GetRot() const { return m_rot; }
-		RENDERING_API virtual void SetPos(const Math::Vector3D& position) { m_pos = position; }
-		RENDERING_API virtual void SetPos(Math::Real x, Math::Real y, Math::Real z) { m_pos.Set(x, y, z); }
-		RENDERING_API virtual void SetPosX(Math::Real x) { m_pos.SetX(x); }
-		RENDERING_API virtual void SetPosY(Math::Real y) { m_pos.SetY(y); }
-		RENDERING_API virtual void SetPosZ(Math::Real z) { m_pos.SetZ(z); }
-		RENDERING_API virtual void IncreasePos(Math::Real x, Math::Real y, Math::Real z) { m_pos.Increase(x, y, z); }
-		RENDERING_API virtual void IncreasePos(const Math::Vector3D& translation) { m_pos.Increase(translation); }
-		RENDERING_API virtual void IncreasePosX(Math::Real x) { m_pos.IncreaseX(x); }
-		RENDERING_API virtual void IncreasePosY(Math::Real y) { m_pos.IncreaseY(y); }
-		RENDERING_API virtual void IncreasePosZ(Math::Real z) { m_pos.IncreaseZ(z); }
-		RENDERING_API virtual void SetRot(const Math::Quaternion& rotation) { m_rot = rotation; }
+		RENDERING_API virtual Math::Transform& GetTransform() { return m_transform; }
+		RENDERING_API virtual const Math::Transform& GetTransform() const { return m_transform; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		/// <summary> The camera position. </summary>
-		Math::Vector3D m_pos;
-
-		/// <summary> The camera rotation. </summary>
-		Math::Quaternion m_rot;
+		/// <summary> The camera transform. </summary>
+		Math::Transform m_transform;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Camera */
 

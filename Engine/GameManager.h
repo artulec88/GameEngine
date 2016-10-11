@@ -158,6 +158,8 @@ namespace Engine
 		//	return m_effectFactory.GetVec3DEffect(effectType, variant);
 		//}
 
+		ENGINE_API void CentralizeCursor() const;
+
 		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
 		{
 			return m_textureFactory.GetTexture(textureID);

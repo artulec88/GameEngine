@@ -236,6 +236,11 @@ void Engine::GameManager::PlaySoundEffect(const std::string& soundEffectFileName
 	CoreEngine::GetCoreEngine()->GetAudioEngine().PlaySoundEffect(soundEffectFileName, volume, pitch);
 }
 
+void Engine::GameManager::CentralizeCursor() const
+{
+	CoreEngine::GetCoreEngine()->CentralizeCursor();
+}
+
 #ifdef ANT_TWEAK_BAR_ENABLED
 void Engine::GameManager::InitializeTweakBars()
 {

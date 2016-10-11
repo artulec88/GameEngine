@@ -84,8 +84,8 @@ void Game::CameraBuilder::BuildPart2()
 
 void Game::CameraBuilder::BuildPart3()
 {
-	m_object->SetPos(m_pos);
-	m_object->SetRot(m_rot);
+	m_object->GetTransform().SetPos(m_pos);
+	m_object->GetTransform().SetRot(m_rot);
 	m_object->SetSensitivity(m_sensitivity);
 	m_object->SetProjection(Math::Matrix4D(m_fov, m_aspectRatio, m_nearPlane, m_farPlane));
 }

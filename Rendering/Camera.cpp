@@ -14,22 +14,19 @@
 
 Rendering::Camera::Camera() :
 	BaseCamera(Math::Matrix4D::IDENTITY_MATRIX),
-	m_pos(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-	m_rot(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
+	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, Math::Quaternion(), REAL_ONE)
 {
 }
 
 Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	BaseCamera(projectionMatrix, sensitivity),
-	m_pos(position),
-	m_rot(rotation)
+	m_transform(position, rotation, REAL_ONE)
 {
 }
 
 Rendering::Camera::Camera(const Math::Vector3D& position, const Math::Quaternion& rotation, const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
 	BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane, sensitivity),
-	m_pos(position),
-	m_rot(rotation)
+	m_transform(position, rotation, REAL_ONE)
 {
 }
 

@@ -581,9 +581,9 @@ bool Rendering::Renderer::InitShadowMap()
 	if ( /* (m_shadowEnabled) && */ (shadowInfo != NULL))
 	{
 		m_altCamera.SetProjection(shadowInfo->GetProjection());
-		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetPos(), m_currentCamera->GetRot());
-		m_altCamera.SetPos(shadowCameraTransform.m_pos);
-		m_altCamera.SetRot(shadowCameraTransform.m_rot);
+		ShadowCameraTransform shadowCameraTransform = m_currentLight->CalcShadowCameraTransform(m_currentCamera->GetTransform().GetPos(), m_currentCamera->GetTransform().GetRot());
+		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
+		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
 		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection().ToString(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication

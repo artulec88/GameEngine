@@ -15,7 +15,7 @@
 
 namespace Engine
 {
-	class CameraComponent : public GameComponent, public Rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
+	class CameraComponent : public GameComponent, Rendering::BaseCamera, public IActionHandler, public IStateHandler, public IRangeHandler
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -72,19 +72,8 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual const Math::Vector3D& GetPos() const { m_pos = GetTransform().GetTransformedPos(); return m_pos; }
-		ENGINE_API virtual const Math::Quaternion& GetRot() const { m_rot = GetTransform().GetTransformedRot(); return m_rot; }
-		ENGINE_API virtual void SetPos(const Math::Vector3D& position) { GetTransform().SetPos(position); }
-		ENGINE_API virtual void SetPos(Math::Real x, Math::Real y, Math::Real z) { GetTransform().SetPos(x, y, z); }
-		ENGINE_API virtual void SetPosX(Math::Real x) { GetTransform().SetPosX(x); }
-		ENGINE_API virtual void SetPosY(Math::Real y) { GetTransform().SetPosY(y); }
-		ENGINE_API virtual void SetPosZ(Math::Real z) { GetTransform().SetPosZ(z); }
-		ENGINE_API virtual void IncreasePos(Math::Real x, Math::Real y, Math::Real z) { GetTransform().IncreasePos(x, y, z); }
-		ENGINE_API virtual void IncreasePos(const Math::Vector3D& translation) { GetTransform().IncreasePos(translation); }
-		ENGINE_API virtual void IncreasePosX(Math::Real x) { GetTransform().IncreasePosX(x); }
-		ENGINE_API virtual void IncreasePosY(Math::Real y) { GetTransform().IncreasePosY(y); }
-		ENGINE_API virtual void IncreasePosZ(Math::Real z) { GetTransform().IncreasePosZ(z); }
-		ENGINE_API virtual void SetRot(const Math::Quaternion& rotation) { GetTransform().SetRot(rotation); }
+		ENGINE_API virtual Math::Transform& GetTransform() { return GameComponent::GetTransform(); }
+		ENGINE_API virtual const Math::Transform& GetTransform() const { return GameComponent::GetTransform(); }
 		ENGINE_API void SetCameraBehavior(CameraBehavior* cameraBehavior) { m_cameraBehavior = cameraBehavior; }
 		ENGINE_API void Handle(Actions::Action action)
 		{
@@ -115,9 +104,6 @@ namespace Engine
 		/// The type of behavior of the camera. By modifying this member variable one can change the way the camera reacts to player's input.
 		/// </summary>
 		CameraBehavior* m_cameraBehavior;
-
-		mutable Math::Vector3D m_pos;
-		mutable Math::Quaternion m_rot;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraComponent */
 

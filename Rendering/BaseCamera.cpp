@@ -53,7 +53,7 @@ Math::Matrix4D Rendering::BaseCamera::GetViewMatrix() const
 	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
-	return GetRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(GetPos().Negated()); // FIXME: Check matrix multiplication
+	return GetTransform().GetRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(GetTransform().GetPos().Negated()); // FIXME: Check matrix multiplication
 }
 
 Math::Matrix4D Rendering::BaseCamera::GetViewProjection() const
@@ -75,6 +75,6 @@ Math::Matrix4D Rendering::BaseCamera::GetViewProjection() const
 	// Math::Matrix4D cameraRotation = GetTransform().GetTransformedRot().Conjugate().ToRotationMatrix();
 	/* ==================== SOLUTION #3 end ==================== */
 
-	return m_projection * GetRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(GetPos().Negated()); // FIXME: Check matrix multiplication
+	return m_projection * GetTransform().GetRot().Conjugate().ToRotationMatrix() * Math::Matrix4D(GetTransform().GetPos().Negated()); // FIXME: Check matrix multiplication
 	//return m_projection * m_viewMatrix;
 }

@@ -762,12 +762,7 @@ void Engine::CoreEngine::SetCursorPos(Math::Real xPos, Math::Real yPos)
 
 void Engine::CoreEngine::CentralizeCursor()
 {
-	if (m_renderer == NULL)
-	{
-		CRITICAL_LOG_ENGINE("Cannot set cursor position. The rendering engine is NULL.");
-		return;
-	}
-	glfwSetCursorPos(m_window, static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
+	SetCursorPos(static_cast<Math::Real>(m_windowWidth) / 2, static_cast<Math::Real>(m_windowHeight) / 2);
 }
 
 void Engine::CoreEngine::AddBillboardNode(GameNode* billboardNode)
