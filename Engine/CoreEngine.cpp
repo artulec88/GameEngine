@@ -213,11 +213,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	NOTICE_LOG_ENGINE("Main application construction started");
 	STATS_STORAGE.StartTimer();
 
-	if (s_coreEngine != NULL)
-	{
-		ERROR_LOG_ENGINE("Constructor called when a singleton instance of MainApp class has already been created");
-		SAFE_DELETE(s_coreEngine);
-	}
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(s_coreEngine == NULL, Utility::Logging::ERR, "Constructor called when a singleton instance of MainApp class has already been created");
 	s_coreEngine = this;
 
 	CreateAudioEngine();
@@ -384,11 +380,7 @@ void Engine::CoreEngine::InitGlew()
 	glewExperimental = true; // Needed in core profile
 	GLenum err = glewInit();
 
-	if (GLEW_OK != err)
-	{
-		ERROR_LOG_ENGINE("Error while initializing GLEW: ", glewGetErrorString(err));
-		exit(EXIT_FAILURE);
-	}
+	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(GLEW_OK == err, Utility::Logging::EMERGENCY, "Error while initializing GLEW: ", glewGetErrorString(err));
 	if (GLEW_VERSION_2_0)
 	{
 		DEBUG_LOG_ENGINE("OpenGL 2.0 supported");
@@ -420,11 +412,7 @@ void Engine::CoreEngine::Start(GameManager* gameManager)
 {
 	START_PROFILING_ENGINE(true, "");
 	m_game = gameManager;
-	if (m_isRunning)
-	{
-		WARNING_LOG_ENGINE("The core engine instance is already running");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(!m_isRunning, Utility::Logging::WARNING, "The order to start core engine ignored. Core engine instance is already running.");
 	NOTICE_LOG_ENGINE("The core engine started");
 
 	Run();
@@ -434,11 +422,7 @@ void Engine::CoreEngine::Start(GameManager* gameManager)
 void Engine::CoreEngine::Stop()
 {
 	START_PROFILING_ENGINE(true, "");
-	if (!m_isRunning)
-	{
-		WARNING_LOG_ENGINE("The core engine instance is not running");
-		return;
-	}
+	CHECK_CONDITION_RETURN_VOID_ALWAYS_ENGINE(m_isRunning, Utility::Logging::WARNING, "The order to stop core engine ignored. The core engine instance is not running.");
 
 	m_isRunning = false;
 	RequestWindowClose();
