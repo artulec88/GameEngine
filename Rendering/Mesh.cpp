@@ -83,44 +83,8 @@ Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 {
 }
 
-Rendering::Mesh::Mesh(Math::Vector3D* positions, int verticesCount,
-	int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(""),
-	m_mode(mode),
-	m_meshData(nullptr)
-{
-	AddVertices(positions, NULL, NULL, NULL, NULL, verticesCount, indices, indicesCount, calcNormalsEnabled);
-}
-
-Rendering::Mesh::Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, int verticesCount,
-	int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(""),
-	m_mode(mode),
-	m_meshData(nullptr)
-{
-	AddVertices(positions, textureCoordinates, NULL, NULL, NULL, verticesCount, indices, indicesCount, calcNormalsEnabled);
-}
-
-Rendering::Mesh::Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, int verticesCount,
-	int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(""),
-	m_mode(mode),
-	m_meshData(nullptr)
-{
-	AddVertices(positions, textureCoordinates, normals, NULL, NULL, verticesCount, indices, indicesCount, calcNormalsEnabled);
-}
-
-Rendering::Mesh::Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount,
-	int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
-	m_fileName(""),
-	m_mode(mode),
-	m_meshData(nullptr)
-{
-	AddVertices(positions, textureCoordinates, normals, tangents, NULL, verticesCount, indices, indicesCount, calcNormalsEnabled);
-}
-
-Rendering::Mesh::Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount,
-	int* indices, int indicesCount, bool calcNormalsEnabled /* = true */, GLenum mode /* = GL_TRIANGLES */) :
+Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates /* = nullptr */,
+	Math::Vector3D* normals /* = nullptr */, Math::Vector3D* tangents /* = nullptr */, Math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(""),
 	m_mode(mode),
 	m_meshData(nullptr)
@@ -128,37 +92,30 @@ Rendering::Mesh::Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordina
 	AddVertices(positions, textureCoordinates, normals, tangents, bitangents, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount) :
+Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode /* = GL_TRIANGLE_STRIP */) :
 	m_fileName(""),
-	m_mode(GL_TRIANGLE_STRIP),
+	m_mode(mode),
 	m_meshData(nullptr)
 {
 	CHECK_CONDITION_EXIT_RENDERING(verticesCount > 0, Utility::Logging::ERR, "Cannot create a mesh. Specified number of vertices is not greater than 0 (", verticesCount, ")");
-	CHECK_CONDITION_EXIT_RENDERING(screenPositions != NULL, Utility::Logging::ERR, "Cannot create a mesh. Specified positions array is NULL.");
+	CHECK_CONDITION_EXIT_RENDERING(screenPositions != nullptr, Utility::Logging::ERR, "Cannot create a mesh. Specified positions array is nullptr.");
 	AddVertices(screenPositions, textureCoordinates, verticesCount);
 }
 
 Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	m_fileName(fileName),
 	m_mode(mode),
-	m_meshData(NULL)
+	m_meshData(nullptr)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started Mesh initialization");
-
-	if (m_fileName.empty() || m_fileName.compare("") == 0) // TODO: Are these conditions the same?
-	{
-		ERROR_LOG_RENDERING("Mesh data cannot be initialized. File name is not specified");
-	}
+	CHECK_CONDITION_RENDERING(!m_fileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
 	std::string name = m_fileName;
 	const char *tmp = strrchr(name.c_str(), '\\');
-	if (tmp != NULL)
+	if (tmp != nullptr)
 	{
 		name.assign(tmp + 1);
 	}
-	//std::string extension = name.substr(name.find_last_of(".") + 1);
-	//DELOCUST_LOG_RENDERING("Extension is = \"", extension, "\"");
-
 #ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
 	timer.Start();
@@ -172,9 +129,10 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace);
 
-	CHECK_CONDITION_EXIT_RENDERING(scene != NULL, Utility::Logging::CRITICAL, "Error while loading a mesh \"", name, "\"");
-	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != NULL) && (scene->mNumMeshes > 0), Utility::Logging::CRITICAL,
-		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", name, "\". One of the possible solutions is to check whether the model has any additional lines at the end.");
+	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, Utility::Logging::CRITICAL, "Error while loading a mesh \"", name, "\"");
+	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != nullptr) && (scene->mNumMeshes > 0), Utility::Logging::CRITICAL,
+		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", name,
+		"\". One of the possible solutions is to check whether the model has any additional lines at the end.");
 
 	const aiMesh* model = scene->mMeshes[0];
 	std::vector<Math::Vector3D> positions;
@@ -195,13 +153,13 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 		const aiVector3D* pNormal = &(model->mNormals[i]);
 		const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
 		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
-		if (pTangent == NULL)
+		if (pTangent == nullptr)
 		{
 			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", name, "\"");
 			pTangent = &aiZeroVector;
 		}
 		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
-		//if (pBitangent == NULL)
+		//if (pBitangent == nullptr)
 		//{
 		//	ERROR_LOG_RENDERING("Bitangent calculated incorrectly");
 		//	pBitangent = &aiZeroVector;
@@ -226,7 +184,7 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 		indices.push_back(face.mIndices[2]);
 	}
 	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), (int*)&indices[0], static_cast<int>(indices.size()), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), (int*)&indices[0], static_cast<int>(indices.size()), false);
 
 #ifdef MEASURE_MESH_TIME_ENABLED
 	timer.Stop();
@@ -262,7 +220,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 #endif
 	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>(verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
 	m_meshData->CreateVBO(MeshBufferTypes::POSITIONS);
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::POSITIONS));
@@ -270,7 +228,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
-	if (textureCoordinates != NULL)
+	if (textureCoordinates != nullptr)
 	{
 		m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES);
 		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::TEXTURE_COORDINATES));
@@ -292,7 +250,8 @@ void Rendering::Mesh::FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAtt
 		DELOCUST_LOG_RENDERING("positions[", i, "] = ", positions[i]);
 	}
 #endif
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
+	CHECK_CONDITION_RENDERING(!m_meshData->HasVBO(buffer), Utility::Logging::WARNING, "Filling buffer that is already initialized.");
 	m_meshData->Bind();
 	if (!m_meshData->HasVBO(buffer))
 	{
@@ -312,14 +271,14 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i].ToString(), "\n\tTex:\t", textureCoordinates[i].ToString(), "\n\tNormal:\t", normals[i].ToString());
+		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i], "\n\tTex:\t", textureCoordinates[i], "\n\tNormal:\t", normals[i]);
 	}
 	for (size_t i = 0; i < indicesCount; ++i)
 	{
 		DELOCUST_LOG_RENDERING("index[", i, "]: ", indices[i]);
 	}
 #endif
-	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>((indices != NULL) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
+	m_meshData = std::make_shared<MeshData>(static_cast<GLsizei>((indices != nullptr) ? indicesCount : verticesCount)); // TODO: size_t is bigger than GLsizei, so errors will come if indicesCount > 2^32.
 
 	if (calcNormalsEnabled)
 	{
@@ -330,54 +289,48 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 	//	CalcTangents(vertices, verticesCount);
 	//}
 
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
-	m_meshData->CreateVBO(MeshBufferTypes::POSITIONS);
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::POSITIONS));
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::POSITIONS));
 	glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), positions, GL_STATIC_DRAW);
 	glVertexAttribPointer(MeshAttributeLocations::POSITIONS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
 
-	if (textureCoordinates != NULL)
+	if (textureCoordinates != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::TEXTURE_COORDINATES));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TEXTURE_COORDINATES));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector2D), textureCoordinates, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, 2, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
 	}
 
-	if (normals != NULL)
+	if (normals != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::NORMALS);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::NORMALS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::NORMALS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), normals, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::NORMALS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::NORMALS);
 	}
 
-	if (tangents != NULL)
+	if (tangents != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::TANGENTS);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::TANGENTS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::TANGENTS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), tangents, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::TANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::TANGENTS);
 	}
 
-	if (bitangents != NULL)
+	if (bitangents != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::BITANGENTS);
-		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::BITANGENTS));
+		glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::BITANGENTS));
 		glBufferData(GL_ARRAY_BUFFER, verticesCount * sizeof(Math::Vector3D), bitangents, GL_STATIC_DRAW);
 		glVertexAttribPointer(MeshAttributeLocations::BITANGENTS, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(MeshAttributeLocations::BITANGENTS);
 	}
 
-	if (indices != NULL)
+	if (indices != nullptr)
 	{
-		m_meshData->CreateVBO(MeshBufferTypes::INDEX);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INDEX));
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::INDEX));
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesCount * sizeof(int), indices, GL_STATIC_DRAW);
 	}
 
@@ -428,7 +381,7 @@ void Rendering::Mesh::AddVertices(Math::Vector3D* positions, Math::Vector2D* tex
 void Rendering::Mesh::Draw() const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started drawing the Mesh");
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	m_meshData->Bind();
 
@@ -530,7 +483,7 @@ Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigne
 	m_billboardsCount(billboardsCount)
 {
 	Math::Vector3D zeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	AddVertices(&zeroVector, NULL, NULL, NULL, NULL, 1, NULL, 0, false);
+	AddVertices(&zeroVector, nullptr, nullptr, nullptr, nullptr, 1, nullptr, 0, false);
 
 	CHECK_CONDITION_EXIT_RENDERING(billboardsCount > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified number of billboards is not greater than 0 (", billboardsCount, ")");
 	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
@@ -567,7 +520,7 @@ Rendering::BillboardMesh::BillboardMesh(BillboardMesh&& billboardMesh) :
 
 void Rendering::BillboardMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 	m_meshData->Bind();
 
 	glDrawArraysInstanced(m_mode, 0, 1, m_billboardsCount);
@@ -588,12 +541,12 @@ Rendering::InstanceMesh::InstanceMesh(Math::Vector2D* positions, unsigned int po
 	CHECK_CONDITION_EXIT_RENDERING(m_maxParticlesCount > 0, Utility::Logging::ERR, "Cannot create a mesh. Specified maximum number of particles is not greater than 0 (", m_maxParticlesCount, ")");
 	CHECK_CONDITION_EXIT_RENDERING(m_instanceDataLength > 0, Utility::Logging::ERR, "Cannot create a instance mesh. Specified instance data length is not greater than 0 (", instanceDataLength, ").");
 	
-	AddVertices(positions, NULL, positionsCount);
+	AddVertices(positions, nullptr, positionsCount);
 
 	m_meshData->Bind();
 	m_meshData->CreateVBO(MeshBufferTypes::INSTANCE); // instanced attributes will be stored in this VBO
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_maxParticlesCount * m_instanceDataLength, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_maxParticlesCount * m_instanceDataLength, nullptr, GL_STREAM_DRAW);
 	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, m_instanceDataLength * sizeof(Math::Real), (GLvoid*)0);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);
 	glVertexAttribDivisor(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 1);
@@ -636,7 +589,7 @@ Rendering::InstanceMesh::InstanceMesh(InstanceMesh&& instanceMesh) :
 
 void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	// Updating the instance VBO begin
 	//m_meshData->Bind();
@@ -698,14 +651,14 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	/* Loading heightmap begin */
 	std::string name = heightMapFileName;
 	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
-	if (tmp != NULL)
+	if (tmp != nullptr)
 	{
 		name.assign(tmp + 1);
 	}
 	int bytesPerPixel;
 	unsigned char* heightMapData = stbi_load(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\" + heightMapFileName).c_str(),
 		&m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel, 1 /* we only care about one RED component for now (the heightmap is grayscale) */);
-	CHECK_CONDITION_EXIT_RENDERING(heightMapData != NULL, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
+	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
 	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
 	//for (int i = 0; i < heightMapWidth; ++i)
 	//{
@@ -782,7 +735,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 //#endif
 
 	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
 
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
@@ -867,7 +820,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	//#endif
 
 	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], NULL, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
@@ -1079,7 +1032,7 @@ Rendering::TextMesh::TextMesh(TextMesh&& textMesh) :
 
 void Rendering::TextMesh::Draw() const
 {
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, Utility::Logging::CRITICAL, "Mesh data instance is NULL");
+	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
 
 	m_meshData->Bind();
 	glDrawArrays(m_mode, 0, m_meshData->GetSize());
@@ -1088,7 +1041,7 @@ void Rendering::TextMesh::Draw() const
 
 void Rendering::TextMesh::ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount)
 {
-	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != NULL, CRITICAL, "Mesh data instance is NULL");
+	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, CRITICAL, "Mesh data instance is nullptr");
 	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
 	//glBufferSubData(GL_ARRAY_BUFFER, 0, screenVerticesCount * sizeof(Vertex2D), screenVertices);
 

@@ -303,7 +303,8 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 {
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 	Math::Real angle = 0.0f;
-	std::vector<Math::Real> billboardsModelMatrices(billboardsCount * Math::Matrix4D::SIZE * Math::Matrix4D::SIZE);
+	std::vector<Math::Real> billboardsModelMatrices;
+	billboardsModelMatrices.reserve(billboardsCount * Math::Matrix4D::SIZE * Math::Matrix4D::SIZE);
 	for (int i = 0; i < billboardsCount; ++i)
 	{
 		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);

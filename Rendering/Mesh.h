@@ -149,8 +149,6 @@ namespace Rendering
 			return m_buffers[buffer];
 		}
 
-		//size_t GetVBOsCount() const { return m_vbos.size(); }
-
 		/// <summary>
 		/// Creates the buffer and stores its handle in the array of available Vertex Buffer Objects (VBOs).
 		/// </summary>
@@ -232,60 +230,26 @@ namespace Rendering
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		explicit Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
 		/// <summary> Mesh constructor. </summary>
-		/// <param name="positions"> The array of 3D positions in the mesh. </param>
-		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
 		/// <param name="indices"> The array of indices in the mesh. </param>
 		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="verticesCount">
+		/// The number of vertices in each non-<code>nullptr</code> arrays: <paramref name="positions"/>,
+		/// <paramref name="textureCoordinates"/>, <paramref name="normals"/>, <paramref name="tangents"/> and <paramref name="bitangents"/>.
+		/// </param>
+		/// <param name="positions"> The array of 3D positions in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
+		/// <param name="normals"> The array of 3D normal vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
+		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
+		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. The array must contain <paramref name="verticesCount/> elements.</param>
 		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector3D* positions, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		/// <summary> Mesh constructor. </summary>
-		/// <param name="positions"> The array of 3D positions in the mesh. </param>
-		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
-		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
-		/// <param name="indices"> The array of indices in the mesh. </param>
-		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
-		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
-		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		/// <summary> Mesh constructor. </summary>
-		/// <param name="positions"> The array of 3D positions in the mesh. </param>
-		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
-		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
-		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
-		/// <param name="indices"> The array of indices in the mesh. </param>
-		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
-		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
-		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		/// <summary> Mesh constructor. </summary>
-		/// <param name="positions"> The array of 3D positions in the mesh. </param>
-		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
-		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
-		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. </param>
-		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
-		/// <param name="indices"> The array of indices in the mesh. </param>
-		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
-		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
-		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		/// <summary> Mesh constructor. </summary>
-		/// <param name="positions"> The array of 3D positions in the mesh. </param>
-		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
-		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
-		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. </param>
-		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. </param>
-		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
-		/// <param name="indices"> The array of indices in the mesh. </param>
-		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
-		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
-		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates = nullptr, Math::Vector3D* normals = nullptr, Math::Vector3D* tangents = nullptr, Math::Vector3D* bitangents = nullptr, bool calcNormalsEnabled = false, GLenum mode = GL_TRIANGLES);
 		/// <summary> Mesh constructor. </summary>
 		/// <param name="positions"> The array of 2D screen positions in the mesh. </param>
 		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
 		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
-		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount);
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode = GL_TRIANGLE_STRIP);
 		/// <summary> Mesh destructor. </summary>
 		virtual ~Mesh(void);
 		/// <summary> Mesh copy constructor. </summary>
