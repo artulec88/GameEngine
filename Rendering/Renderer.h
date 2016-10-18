@@ -17,6 +17,7 @@
 #include "FogInfo.h"
 #include "ParticlesContainer.h"
 #include "ParticlesSystem.h"
+#include "MeshFactory.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
@@ -56,7 +57,7 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Renderer(int windowWidth, int windowHeight, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 		RENDERING_API virtual ~Renderer(void);
 		Renderer(const Renderer& renderer) = delete; // copy constructor
 		Renderer(Renderer&& renderer) = delete; // move constructor
@@ -72,7 +73,7 @@ namespace Rendering
 		RENDERING_API void BindWaterRefractionTexture() const;
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
-		RENDERING_API void Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const;
+		RENDERING_API void Render(int meshID, const Material* material, const Math::Transform& transform, const Shader* shader) const;
 		RENDERING_API void FinalizeRenderScene(const Shader* filterShader);
 		//RENDERING_API void Render(const GameNode& node);
 
@@ -98,6 +99,9 @@ namespace Rendering
 		RENDERING_API Rendering::Aliasing::AntiAliasingMethod GetAntiAliasingMethod() const { return m_antiAliasingMethod; }
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
+
+		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
+		RENDERING_API void CreateMesh(int meshID, const std::string& meshFileName);
 
 		RENDERING_API inline void BindShader(const Shader* shader) { shader->Bind(); }
 		RENDERING_API inline void UpdateRendererUniforms(const Shader* shader) { shader->UpdateRendererUniforms(this); }
@@ -326,12 +330,14 @@ namespace Rendering
 
 		Texture m_displayTexture;
 
+		MeshFactory m_meshFactory;
+
 		/// <summary> The filter camera always facing the screen. </summary>
 		Camera m_filterCamera; // TODO: This camera should be marked as const
 		/// <summary> The alternative camera for shadow mapping, rendering to texture etc. </summary>
 		Camera m_altCamera;
 		Math::Transform m_filterTransform;
-		Mesh m_filterMesh;
+		const Mesh* m_filterMesh;
 
 		//ShaderFactory m_shaderFactory;
 
@@ -378,7 +384,7 @@ namespace Rendering
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_waterNormalVerticalFactor;
 
 		int m_maxParticlesCount;
-		InstanceMesh m_particleQuad;
+		const InstanceMesh* m_particleQuad;
 		mutable std::vector<Math::Real> m_particleInstanceVboData;
 
 		MappedValues m_mappedValues;
@@ -398,7 +404,7 @@ namespace Rendering
 
 #ifdef DEBUG_RENDERING_ENABLED
 		std::vector<GuiTexture> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
-		GuiMesh m_debugQuad;
+		const Mesh* m_debugQuad;
 #endif
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED

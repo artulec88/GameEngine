@@ -45,7 +45,12 @@ namespace Rendering
 			auto meshItr = m_meshType2MeshMap.find(meshID);
 			if (meshItr == m_meshType2MeshMap.end())
 			{
-				ERROR_LOG_RENDERING("No mesh has been created for the specified ID (", meshID, ").");
+				auto instanceMeshItr = m_meshType2InstanceMeshMap.find(meshID);
+				if (instanceMeshItr == m_meshType2InstanceMeshMap.end())
+				{
+					ERROR_LOG_RENDERING("No mesh has been created for the specified ID (", meshID, ").");
+				}
+				return &instanceMeshItr->second;
 			}
 			return &meshItr->second;
 		}
@@ -62,8 +67,13 @@ namespace Rendering
 		/// The map storing all meshes by their unique ID.
 		/// </summary>
 		std::map<int, Mesh> m_meshType2MeshMap;
+
+		/// <summary>
+		/// The map storing all instance meshes by their unique ID.
+		/// </summary>
+		std::map<int, InstanceMesh> m_meshType2InstanceMeshMap;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class TextureFactory */
+	}; /* end class MeshFactory */
 
 } /* end namespace Rendering */
 

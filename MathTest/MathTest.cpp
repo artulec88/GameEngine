@@ -421,9 +421,9 @@ Matrix4D RandomMatrix(Real min, Real max)
 		max = temp;
 	}
 	Matrix4D matrix;
-	for (int i = 0; i < MATRIX_SIZE; ++i)
+	for (int i = 0; i < Matrix4D::SIZE; ++i)
 	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
+		for (int j = 0; j < Matrix4D::SIZE; ++j)
 		{
 			Real value = g_randomGenerator.NextFloat(min, max);
 			matrix.SetElement(i, j, value);

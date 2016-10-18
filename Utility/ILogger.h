@@ -206,7 +206,7 @@ namespace Utility
 			virtual void ReadConsoleColorsFromConfigFile() = 0;
 		private:
 			template <typename T, typename... Args>
-			void LogRecursive(LogLevel level, const char* file, int line, std::ostringstream& msg, T value, const Args&... args)
+			void LogRecursive(LogLevel level, const char* file, int line, std::ostringstream& msg, const T& value, const Args&... args)
 			{
 				msg << value;
 				LogRecursive(level, file, line, msg, args...);

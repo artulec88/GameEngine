@@ -2,9 +2,11 @@
 #define __RENDERING_TEXTURE_H__
 
 #include "Rendering.h"
+
+#include "Math\Matrix.h"
+
 #include <string>
 #include <map>
-#include "Math\Matrix.h"
 
 namespace Rendering
 {

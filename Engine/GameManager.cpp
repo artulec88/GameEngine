@@ -130,6 +130,16 @@ void Engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSyst
 	m_particlesSystems.push_back(particlesSystem);
 }
 
+void Engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
+{
+	CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
+}
+
+const Rendering::Mesh* Engine::GameManager::GetMesh(int meshID) const
+{
+	return CoreEngine::GetCoreEngine()->GetMesh(meshID);
+}
+
 void Engine::GameManager::Input(Actions::Action actionID)
 {
 	CRITICAL_LOG_ENGINE("Handling action: ", actionID);

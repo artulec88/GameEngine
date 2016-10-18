@@ -3,38 +3,27 @@
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
 
-Engine::MeshRendererComponent::MeshRendererComponent(Rendering::Mesh* mesh, Rendering::Material* material) :
+Engine::MeshRendererComponent::MeshRendererComponent(int meshID, const Rendering::Material* material) :
 	GameComponent(),
 	IRenderable(),
-	m_mesh(mesh),
+	m_meshID(meshID),
 	m_material(material)
 {
-	CHECK_CONDITION_EXIT_ENGINE(m_mesh != NULL, Utility::Logging::ERR, "Cannot create a mesh renderer instance. The specified mesh is NULL.");
-	m_mesh->Initialize();
-	if (m_material == NULL)
-	{
-		WARNING_LOG_ENGINE("The material given to the mesh renderer is NULL.");
-	}
-	//if (m_mesh != NULL)
-	//{
-	//	m_mesh->AddReference();
-	//}
+	CHECK_CONDITION_ENGINE(m_material != NULL, Utility::Logging::WARNING, "The material given to the mesh renderer component is NULL.");
 }
 
 
 Engine::MeshRendererComponent::~MeshRendererComponent(void)
 {
-	SAFE_DELETE(m_mesh);
 	SAFE_DELETE(m_material);
 }
 
 Engine::MeshRendererComponent::MeshRendererComponent(MeshRendererComponent&& meshRendererComponent) :
 	GameComponent(std::move(meshRendererComponent)),
 	IRenderable(std::move(meshRendererComponent)),
-	m_mesh(std::move(meshRendererComponent.m_mesh)),
+	m_meshID(std::move(meshRendererComponent.m_meshID)),
 	m_material(std::move(meshRendererComponent.m_material))
 {
-	meshRendererComponent.m_mesh = NULL;
 	meshRendererComponent.m_material = NULL;
 }
 
@@ -42,9 +31,8 @@ Engine::MeshRendererComponent& Engine::MeshRendererComponent::operator=(MeshRend
 {
 	GameComponent::operator=(std::move(meshRendererComponent));
 	IRenderable::operator=(std::move(meshRendererComponent));
-	m_mesh = std::move(meshRendererComponent.m_mesh);
+	m_meshID = std::move(meshRendererComponent.m_meshID);
 	m_material = std::move(meshRendererComponent.m_material);
-	meshRendererComponent.m_mesh = NULL;
 	meshRendererComponent.m_material = NULL;
 	return *this;
 }
@@ -58,5 +46,5 @@ void Engine::MeshRendererComponent::Render(const Rendering::Shader* shader, Rend
 
 	//const Math::Transform& transform = GetTransform();
 	//renderer->AddRenderCommand(shader, m_mesh, m_material, &transform);
-	renderer->Render(*m_mesh, m_material, GetTransform(), shader);
+	renderer->Render(m_meshID, m_material, GetTransform(), shader);
 }

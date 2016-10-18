@@ -1,6 +1,7 @@
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
 #include "LightBuilder.h"
+#include "MeshIDs.h"
 #include "TextureIDs.h"
 #include "GameNodeBuilder.h"
 #include "CameraBuilder.h"
@@ -15,6 +16,7 @@
 
 #include "Rendering\ParticlesSystem.h"
 #include "Rendering\Shader.h"
+#include "Rendering\MeshIDs.h"
 
 #include "Math\FloatingPoint.h"
 
@@ -86,19 +88,19 @@ void Game::PlayGameState::Entered()
 	START_PROFILING_GAME(true, "");
 
 	AddShaders();
-	AddTerrainNode();
+	//AddTerrainNode();
 	AddWaterNodes();
 	AddSkyboxNode();
-	AddPlayerNode();
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_1,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_2,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
-	AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_3,
-		GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
-		m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	//AddPlayerNode();
+	//AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_1", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_1,
+	//	GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_1", "Tree1.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+	//	m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	//AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_2", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_2,
+	//	GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_2", "Tree2.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+	//	m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
+	//AddBillboards(GET_CONFIG_VALUE_GAME("billboardsTreeCount_3", 10), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BILLBOARD_TREE_3,
+	//	GET_CONFIG_VALUE_STR_GAME("billboardTreeTexture_3", "Tree3.png")), 1.0f, 8.0f, m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
+	//	m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP)));
 	AddCameras();
 	AddLights(); // Adding all kinds of light (directional, point, spot)
 
@@ -106,14 +108,14 @@ void Game::PlayGameState::Entered()
 	testMesh1.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh1PosX", 42.0f), GET_CONFIG_VALUE_GAME("testMesh1PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh1PosZ", 40.0f));
 	testMesh1.GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1.GetTransform().SetScale(0.1f);
-	testMesh1.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"),
+	testMesh1.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
 		new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0,
 			m_gameManager->AddTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"),
 			m_gameManager->AddTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	Engine::GameNode testMesh2;
 	testMesh2.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh2PosX", 8.0f), GET_CONFIG_VALUE_GAME("testMesh2PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh2PosZ", 0.0f));
 	testMesh2.GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
-	testMesh2.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"),
+	testMesh2.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
 		new Rendering::Material(m_gameManager->GetTexture(TextureIDs::BRICKS), 0.0f, 0,
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
@@ -234,8 +236,8 @@ void Game::PlayGameState::AddTerrainNode()
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Adding terrain node");
-	m_terrainMesh = new Rendering::TerrainMesh(0, 0, Math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
-		GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f)), GET_CONFIG_VALUE_GAME("terrainVertexCount", 128));
+	//m_terrainMesh = new Rendering::TerrainMesh(0, 0, Math::HeightsGenerator(0, 0, GET_CONFIG_VALUE_GAME("terrainVertexCount", 128), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorAmplitude", 70.0f),
+	//	GET_CONFIG_VALUE_GAME("terrainHeightGeneratorOctavesCount", 3), GET_CONFIG_VALUE_GAME("terrainHeightGeneratorRoughness", 0.3f)), GET_CONFIG_VALUE_GAME("terrainVertexCount", 128));
 	m_terrainMaterial = new Rendering::Material(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture", "grass4.jpg")), GET_CONFIG_VALUE_GAME("defaultSpecularIntensity", 1.0f),
 		GET_CONFIG_VALUE_GAME("defaultSpecularPower", 8.0f), m_gameManager->AddTexture(TextureIDs::TERRAIN_NORMAL_MAP, GET_CONFIG_VALUE_STR_GAME("terrainNormalMap", "grass_normal.jpg")),
 		m_gameManager->AddTexture(TextureIDs::TERRAIN_DISPLACEMENT_MAP, GET_CONFIG_VALUE_STR_GAME("terrainDisplacementMap", "grass_disp.jpg")),
@@ -247,10 +249,9 @@ void Game::PlayGameState::AddTerrainNode()
 	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_3, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture3", "mud.png")), "diffuse3");
 	m_terrainMaterial->SetAdditionalTexture(m_gameManager->AddTexture(TextureIDs::TERRAIN_DIFFUSE_4, GET_CONFIG_VALUE_STR_GAME("terrainDiffuseTexture4", "path.png")), "diffuse4");
 	//m_resourcesLoaded += 1; // TODO: Consider creating some prettier solution. This is ugly
-	m_terrainNode.AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, m_terrainMaterial));
+	//m_terrainNode.AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, m_terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	//m_terrainNode->GetTransform().SetScale(20.0f);
-	//m_terrainMesh->Initialize();
 	m_terrainMesh->TransformPositions(m_terrainNode.GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	STOP_PROFILING_GAME("");
@@ -260,7 +261,8 @@ void Game::PlayGameState::AddWaterNodes()
 {
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	m_waterNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("myPlane.obj"), NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
+	m_waterNode.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
+		NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));
 	m_waterNode.GetTransform().SetScale(0.2f);
@@ -287,7 +289,8 @@ void Game::PlayGameState::AddPlayerNode()
 	m_playerNode.GetTransform().SetPos(playerPositionX, playerPositionY, playerPositionZ);
 	m_playerNode.GetTransform().SetScale(0.0005f);
 	m_playerNode.CreatePhysicsObject(122.0f, Math::Vector3D(0.0f, 0.0f, 0.0f));
-	m_playerNode.AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("mike\\Mike.obj"), new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
+	m_gameManager->AddMesh(MeshIDs::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
+	m_playerNode.AddComponent(new Engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
 	m_playerNode.AddComponent(new Engine::GravityComponent(m_terrainMesh));
 	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
@@ -300,8 +303,7 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 {
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 	Math::Real angle = 0.0f;
-	std::vector<Math::Real> billboardsModelMatrices;
-	billboardsModelMatrices.reserve(billboardsCount * MATRIX_SIZE * MATRIX_SIZE);
+	std::vector<Math::Real> billboardsModelMatrices(billboardsCount * Math::Matrix4D::SIZE * Math::Matrix4D::SIZE);
 	for (int i = 0; i < billboardsCount; ++i)
 	{
 		Math::Real x = randomGenerator.NextFloat(0.0f, 150.0f);
@@ -330,7 +332,8 @@ void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering:
 		billboardsModelMatrices.push_back(billboardModelMatrix.GetElement(3, 3));
 	}
 	Engine::GameNode billboardsNode;
-	billboardsNode.AddComponent(new Engine::BillboardsRendererComponent(new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, MATRIX_SIZE * MATRIX_SIZE), billboardsMaterial));
+	//m_gameManager->AddMesh(MeshIDs::BILLBOARD, new Rendering::BillboardMesh(&billboardsModelMatrices[0], billboardsCount, Math::Matrix4D::SIZE * Math::Matrix4D::SIZE));
+	billboardsNode.AddComponent(new Engine::BillboardsRendererComponent(MeshIDs::BILLBOARD, billboardsMaterial));
 	m_billboardsNodes.push_back(std::move(billboardsNode));
 }
 

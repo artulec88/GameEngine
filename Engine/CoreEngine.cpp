@@ -287,7 +287,7 @@ void Engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int h
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_ENGINE("Creating Renderer instance started");
-	m_renderer = std::make_unique<Rendering::Renderer>(width, height, antiAliasingMethod);
+	m_renderer = std::make_unique<Rendering::Renderer>(width, height, m_modelsDirectory, antiAliasingMethod);
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");

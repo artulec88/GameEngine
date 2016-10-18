@@ -22,8 +22,6 @@
 //#define TEXTURE_ATLAS_OFFSET_CALCULATION
 //#define MEASURE_MESH_TIME_ENABLED
 
-#define MESH_DATA_BUFFERS_COUNT 7
-
 // Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
 namespace std
 {
@@ -39,6 +37,37 @@ namespace std
 
 namespace Rendering
 {
+	namespace MeshBufferTypes
+	{
+		enum MeshBufferType
+		{
+			INDEX = 0,
+			POSITIONS = 1,
+			TEXTURE_COORDINATES = 2,
+			NORMALS = 3,
+			TANGENTS = 4,
+			BITANGENTS = 5,
+			INSTANCE = 6,
+			COUNT
+		}; /* end enum MeshBufferType */
+	} /* end namespace MeshBufferTypes */
+
+	namespace MeshAttributeLocations
+	{
+		enum MeshAttributeLocation
+		{
+			POSITIONS = 0,
+			TEXTURE_COORDINATES = 1,
+			NORMALS = 2,
+			TANGENTS = 3,
+			BITANGENTS = 4,
+			COUNT
+		}; /* end enum MeshAttributeLocation */
+	} /* end namespace MeshAttributeLocations */
+
+	/// <summary>
+	/// The low-level representation of the mesh.
+	/// </summary>
 	class MeshData
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -46,33 +75,44 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary>
-		/// Simple mesh data constructor without index buffer object.
-		/// </summary>
-		//MeshData();
-		MeshData(GLsizei indexSize);
+		/// <summary> Simple mesh data constructor. </summary>
+		/// <param name="size"> The size of data the mesh data will store. </param>
+		explicit MeshData(GLsizei size);
+		/// <summary> Mesh data destructor. </summary>
 		~MeshData(void);
+		/// <summary> Mesh data copy constructor. </summary>
+		/// <param name="meshData"> The mesh data to copy from. </param>
 		MeshData(const MeshData& meshData) = delete;
+		/// <summary> Mesh data move constructor. </summary>
+		/// <param name="meshData"> The mesh data to move from. </param>
 		MeshData(MeshData&& meshData);
+		/// <summary> Mesh data copy assignment operator. </summary>
+		/// <param name="meshData"> The mesh data to copy assign from. </param>
+		/// <returns> The newly copy assigned mesh data. </returns>
 		MeshData& operator=(const MeshData& meshData) = delete;
+		/// <summary> Mesh data move assignment operator. </summary>
+		/// <param name="meshData"> The mesh data to move assign from. </param>
+		/// <returns> The newly move assigned mesh data. </returns>
 		MeshData& operator=(MeshData&& meshData) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		GLuint GetVAO() const { return m_vao; }
+		/// <summary> Returns the handle to the Vertex Array Object (VAO) used by the mesh data. </summary>
+		/// <returns> The handle to the Vertex Array Object (VAO) used by the mesh data. </returns>
+		inline GLuint GetVAO() const { return m_vao; }
 
-		void CreateVAO();
-
+		/// <summary> Binds the mesh data's Vertex Array Object (VAO) to be currently used by the rendering context. </summary>
 		inline void Bind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
 			//WARNING_LOG_RENDERING("Binding mesh data \"", ToString(), "\".");
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with id=0");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
 			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
 		}
 
+		/// <summary> Unbinds the mesh data's Vertex Array Object (VAO). </summary>
 		inline void Unbind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
@@ -86,41 +126,37 @@ namespace Rendering
 			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data unbinding");
 		}
 
-		bool HasVBO(unsigned int index) const
+		/// <summary> Checks whether the buffer stored under specified key (<paramref name="buffer/>) is created and available. </summary>
+		/// <returns> <code>True</code> if the buffer under specified <paramref name="buffer"/> is available (<code>!= 0</code>) and <code>false</code> otherwise. </returns>
+		bool HasVBO(MeshBufferTypes::MeshBufferType buffer) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Logging::CRITICAL, "Cannot access buffer at index ", index, ". Mesh data = \"", ToString(), "\"");
-			return m_buffers[index] != 0;
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
+				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
+			return m_buffers[buffer] != 0;
 		}
 
 		/// <summary>
-		/// Returns the handle for the vertex buffer object under specified index.
+		/// Returns the handle to the vertex buffer object stored under specified key (<paramref name="buffer"/>).
 		/// </summary>
-		/// <param name="index"> The index of the VBO we want to get ID of </param>
-		/// <returns> A handle to the vertex buffer object. </returns>
-		GLuint GetVBO(unsigned int index) const
+		/// <param name="buffer"> The index of the VBO we want to get the handle to. </param>
+		/// <returns> A handle to the vertex buffer object stored under specified key (<paramref name="buffer"/>). </returns>
+		GLuint GetVBO(MeshBufferTypes::MeshBufferType buffer) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(index >= 0 && index < MESH_DATA_BUFFERS_COUNT, Utility::Logging::CRITICAL, "Cannot access buffer at index ", index, ". Mesh data = \"", ToString(), "\"");
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_buffers[index] != 0, Utility::Logging::CRITICAL, "The buffer under index ", index, " is 0. Mesh data = \"", ToString(), "\"");
-			return m_buffers[index];
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
+				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_buffers[buffer] != 0, Utility::Logging::CRITICAL,
+				"The buffer under index ", buffer, " is 0. Mesh data = \"", *this, "\"");
+			return m_buffers[buffer];
 		}
 
 		//size_t GetVBOsCount() const { return m_vbos.size(); }
 
 		/// <summary>
-		/// Creates the collection of VBOs and stores it in the vector of available VBOs.
+		/// Creates the buffer and stores its handle in the array of available Vertex Buffer Objects (VBOs).
 		/// </summary>
-		void CreateVBO(int index);
-
-		/// <summary>
-		/// Creates IBO.
-		/// </summary>
-		//void CreateIBO();
-
-		/// <summary>
-		/// Returns the handle for the index buffer object.
-		/// </summary>
-		/// <returns> A handle to the index buffer object. </returns>
-		//GLuint GetIBO() const { return m_ibo; }
+		/// <param name="buffer"> The buffer key we want to store a handle to new VBO in. </param>
+		/// <returns> The handle to the newly created vertex buffer object (VBO). </returns>
+		GLuint CreateVBO(MeshBufferTypes::MeshBufferType buffer);
 
 		/// <summary>
 		/// Returns the size of the mesh.
@@ -128,7 +164,20 @@ namespace Rendering
 		/// <returns> The size of the mesh. </returns>
 		GLsizei GetSize() const { return m_size; }
 
-		std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const MeshData& meshData)
+		{
+			out << "VAO = " << meshData.m_vao << "; VBOs = [";
+			for (int i = 0; i < MeshBufferTypes::COUNT; ++i)
+			{
+				out << meshData.m_buffers[i];
+				if (i + 1 < MeshBufferTypes::COUNT)
+				{
+					out << "; ";
+				}
+			}
+			out << "] ";
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -141,12 +190,7 @@ namespace Rendering
 		/// <summary>
 		/// Vertex buffer objects. A handle to data representing the whole mesh (positions, texture coordinates, normals, etc.).
 		/// </summary>
-		std::array<GLuint, MESH_DATA_BUFFERS_COUNT> m_buffers;
-
-		/// <summary>
-		/// Index buffer object.
-		/// </summary>
-		//GLuint m_ibo;
+		std::array<GLuint, MeshBufferTypes::COUNT> m_buffers;
 
 		/// <summary>
 		/// The size. It represents how much data there is in the vertex buffer object.
@@ -183,30 +227,87 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-		RENDERING_API Mesh(Math::Vector3D* positions, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		RENDERING_API Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
-		RENDERING_API virtual ~Mesh(void);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="fileName"> The file name storing the mesh data. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		explicit Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 3D positions in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		/// <param name="indices"> The array of indices in the mesh. </param>
+		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector3D* positions, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 3D positions in the mesh. </param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		/// <param name="indices"> The array of indices in the mesh. </param>
+		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 3D positions in the mesh. </param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
+		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		/// <param name="indices"> The array of indices in the mesh. </param>
+		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 3D positions in the mesh. </param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
+		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
+		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		/// <param name="indices"> The array of indices in the mesh. </param>
+		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 3D positions in the mesh. </param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
+		/// <param name="normals"> The array of 3D normal vectors in the mesh. </param>
+		/// <param name="tangents"> The array of 3D tanget vectors in the mesh. </param>
+		/// <param name="bitangents"> The array of 3D bitangent vectors in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		/// <param name="indices"> The array of indices in the mesh. </param>
+		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
+		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		Mesh(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled = true, GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="positions"> The array of 2D screen positions in the mesh. </param>
+		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
+		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
+		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount);
+		/// <summary> Mesh destructor. </summary>
+		virtual ~Mesh(void);
 		/// <summary> Mesh copy constructor. </summary>
 		Mesh(const Mesh& Mesh) = delete;
 		/// <summary> Mesh move constructor. </summary>
-		RENDERING_API Mesh(Mesh&& mesh);
+		Mesh(Mesh&& mesh);
 		/// <summary> Mesh copy assignment operator. </summary>
 		Mesh& operator=(const Mesh& mesh) = delete;
 		/// <summary> Mesh move assignment operator. </summary>
 		Mesh& operator=(Mesh&& mesh) = delete;
 	protected:
-		Mesh(GLenum mode = GL_TRIANGLES);
+		/// <summary> Mesh constructor. </summary>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		explicit Mesh(GLenum mode = GL_TRIANGLES);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API void Initialize(); // TODO: Try to remove it, the initialization should be handled in the constructor
 		virtual void Draw() const;
 	protected:
+		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, Math::Real* data, unsigned int dataCount);
+
 		void AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount);
 		void AddVertices(Math::Vector3D* positions, Math::Vector2D* textureCoordinates, Math::Vector3D* normals, Math::Vector3D* tangents, Math::Vector3D* bitangents, int verticesCount, int* indices, int indicesCount, bool calcNormalsEnabled);
 		void CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const;
@@ -222,11 +323,11 @@ namespace Rendering
 		std::string m_fileName;
 		GLenum m_mode;
 		std::shared_ptr<MeshData> m_meshData;
-	/* ==================== Non-static member variables end ==================== */
+		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Mesh */
 
 	/// <summary>
-	/// The billboard mesh that is going to be rendered on the screen.
+	/// The billboards mesh. It holds a mesh to be used by a specific number of billboards at the same time.
 	/// </summary>
 	class BillboardMesh : public Mesh
 	{
@@ -235,16 +336,26 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
-		RENDERING_API virtual ~BillboardMesh(void);
-	private: // disable copy constructor and assignment operator
-		BillboardMesh(BillboardMesh& billboardMesh);
-		void operator=(BillboardMesh& billboardMesh);
+		/// <summary> Billboards mesh constructor. </summary>
+		/// <param name="modelMatricesValues"> The array of model matrices for each billboard. </param>
+		/// <param name="billboardsCount"> The number of billboards that will use this billboards mesh. </param>
+		/// <param name="billboardDataLength"> The data length for a single billboard in the <paramref name="modelMatricesValues"/>. </param>
+		BillboardMesh(Math::Real* modelMatricesValues, unsigned int billboardsCount, unsigned int billboardDataLength);
+		/// <summary> Billboards mesh destructor. </summary>
+		virtual ~BillboardMesh(void);
+		/// <summary> Billboards mesh copy constructor. </summary>
+		BillboardMesh(const BillboardMesh& billboardMesh) = delete;
+		/// <summary> Billboards mesh move constructor. </summary>
+		BillboardMesh(BillboardMesh&& billboardMesh);
+		/// <summary> Billboards mesh copy assignment operator. </summary>
+		BillboardMesh& operator=(const BillboardMesh& billboardMesh) = delete;
+		/// <summary> Billboards mesh move assignment operator. </summary>
+		BillboardMesh& operator=(BillboardMesh&& billboardMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Draw() const;
+		virtual void Draw() const override;
 		/* ==================== Non-static member functions end ==================== */
 
 
@@ -253,31 +364,6 @@ namespace Rendering
 		unsigned int m_billboardsCount;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class BillboardMesh */
-
-	/// <summary>
-	/// The simple GUI mesh that is going to be rendered on the screen.
-	/// </summary>
-	class GuiMesh : public Mesh
-	{
-		/* ==================== Constructors and destructors begin ==================== */
-	public:
-		GuiMesh(Math::Vector2D* positions, unsigned int positionsCount);
-		virtual ~GuiMesh(void);
-	private: // disable copy constructor and assignment operator
-		GuiMesh(GuiMesh& mesh);
-		void operator=(GuiMesh& mesh);
-		/* ==================== Constructors and destructors end ==================== */
-
-		/* ==================== Non-static member functions begin ==================== */
-	public:
-		//virtual void Draw() const;
-	/* ==================== Non-static member functions end ==================== */
-
-	/* ==================== Non-static member variables begin ==================== */
-	private:
-		unsigned int m_positionsCount;
-		/* ==================== Non-static member variables end ==================== */
-	}; /* end class GuiMesh */
 
 	/// <summary>
 	/// The instance mesh that is used by particles.
@@ -305,7 +391,7 @@ namespace Rendering
 		/// <summary>
 		/// Instance mesh move constructor.
 		/// </summary>
-		InstanceMesh(InstanceMesh&& instanceMesh) = delete;
+		InstanceMesh(InstanceMesh&& instanceMesh);
 		/// <summary>
 		/// Instance mesh copy assignment operator.
 		/// </summary>
@@ -318,6 +404,8 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary> Gives information about the amount of data one instance uses. </summary>
+		/// <returns> The amount of data used by every instance. </returns>
 		unsigned int GetInstanceDataLength() const { return m_instanceDataLength; }
 		void Draw(Math::Real* data, unsigned int dataSize, unsigned int particlesCount) const;
 		/* ==================== Non-static member functions end ==================== */
@@ -347,13 +435,35 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
-		RENDERING_API TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
-		RENDERING_API TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
-		RENDERING_API virtual ~TerrainMesh(void);
-	private: // disable copy constructor and assignment operator
-		TerrainMesh(TerrainMesh& terrainMesh);
-		void operator=(TerrainMesh& terrainMesh);
+		/// <summary> Terrain mesh constructor. </summary>
+		/// <param name="fileName"> The file storing the model for the terrain mesh. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		explicit TerrainMesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+		/// <summary> Terrain mesh constructor. </summary>
+		/// <param name="gridX"> The X position on the grid. </param>
+		/// <param name="gridZ"> The Z position on the grid. </param>
+		/// <param name="heightMapFileName">
+		/// The height map file name. The height map is a grey-scale texture where the brighter the color the higher the respective point on the terrain will be.
+		/// </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode = GL_TRIANGLES);
+		/// <summary> Terrain mesh constructor. </summary>
+		/// <param name="gridX"> The X position on the grid. </param>
+		/// <param name="gridZ"> The Z position on the grid. </param>
+		/// <param name="heightsGenerator"> The heights generator. </param>
+		/// <param name="vertexCount"> The number of vertices for the terrain. </param>
+		/// <param name="mode"> The mode in which the mesh will be stored. </param>
+		TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
+		/// <summary> Terrain mesh destructor. </summary>
+		virtual ~TerrainMesh(void);
+		/// <summary> Terrain mesh copy constructor. </summary>
+		TerrainMesh(const TerrainMesh& terrainMesh) = delete;
+		/// <summary> Terrain mesh move constructor. </summary>
+		TerrainMesh(TerrainMesh&& terrainMesh) = delete;
+		/// <summary> Terrain mesh copy assignment operator. </summary>
+		TerrainMesh& operator=(const TerrainMesh& terrainMesh) = delete;
+		/// <summary> Terrain mesh copy assignment operator. </summary>
+		TerrainMesh& operator=(TerrainMesh&& terrainMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -362,7 +472,7 @@ namespace Rendering
 		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
 		RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 	protected:
-		virtual void SavePositions(const std::vector<Math::Vector3D>& positions);
+		virtual void SavePositions(const std::vector<Math::Vector3D>& positions) override;
 	private:
 		int GetHeightMapIndex(int x, int z) const;
 		Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
@@ -392,6 +502,8 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TerrainMesh */
 
+
+	// TODO: TextMesh could probably be removed. Its functionality should go directly into the Mesh class.
 	/// <summary>
 	/// The text mesh that is going to be rendered on the screen.
 	/// </summary>
@@ -402,16 +514,23 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API TextMesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount, GLenum mode = GL_TRIANGLES);
-		RENDERING_API virtual ~TextMesh(void);
-	private: // disable copy constructor and assignment operator
-		TextMesh(TextMesh& textMesh);
-		void operator=(TextMesh& textMesh);
+		/// <summary> Text mesh constructor. </summary>
+		TextMesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount, GLenum mode = GL_TRIANGLES);
+		/// <summary> Text mesh destructor. </summary>
+		virtual ~TextMesh(void);
+		/// <summary> Text mesh copy constructor. </summary>
+		TextMesh(const TextMesh& textMesh) = delete;
+		/// <summary> Text mesh move constructor. </summary>
+		TextMesh(TextMesh&& textMesh);
+		/// <summary> Text mesh copy assignment operator. </summary>
+		TextMesh& operator=(const TextMesh& textMesh) = delete;
+		/// <summary> Text mesh move assignment operator. </summary>
+		TextMesh& operator=(TextMesh&& textMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void Draw() const;
+		virtual void Draw() const override;
 		void ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount);
 		/* ==================== Non-static member functions end ==================== */
 

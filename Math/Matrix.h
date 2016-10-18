@@ -15,7 +15,6 @@
 #include <type_traits> // for static_assert
 #include <string>
 
-#define MATRIX_SIZE 4
 //#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
 namespace Math
@@ -30,11 +29,12 @@ namespace Math
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	public:
+		static constexpr int SIZE = 4;
+		MATH_API static const Matrix4D IDENTITY_MATRIX; // TODO: Try to make IDENTITY_MATRIX constexpr (see http://www.cplusplus.com/forum/general/121300/).
 		static constexpr int Signum(int i, int j)
 		{
 			return ((i + j) % 2) ? -1 : 1;
 		}
-		MATH_API static const Matrix4D IDENTITY_MATRIX; // TODO: Try to make IDENTITY_MATRIX constexpr (see http://www.cplusplus.com/forum/general/121300/).
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -194,7 +194,7 @@ namespace Math
 		/// <returns> Pointer to constant matrix data. </returns>
 		MATH_API inline const Real* Data() const
 		{
-			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return m_values[0].data();
 #else
@@ -223,7 +223,7 @@ namespace Math
 		/// <returns> Pointer to constant matrix data. </returns>
 		MATH_API inline Real* DataPtr()
 		{
-			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			//CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[0][0];
 #else
@@ -233,7 +233,7 @@ namespace Math
 		void M4x4_SSE(const Real* A, const Real* B, Real* C) const;
 		inline const Real* operator[](int index) const
 		{
-			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[index][0];
 #else
@@ -242,7 +242,7 @@ namespace Math
 		}
 		inline Real* operator[](int index)
 		{
-			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
+			CHECK_CONDITION_EXIT_MATH((index >= 0) && (index < SIZE), Utility::Logging::ERR, "Incorrect row index given (", index, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			return &m_values[index][0];
 #else
@@ -254,12 +254,12 @@ namespace Math
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		// TODO: Consider using a one-dimensional array to store MATRIX_SIZE * MATRIX_SIZE elements.
+		// TODO: Consider using a one-dimensional array to store SIZE * SIZE elements.
 		// TODO: Read an article http://stackoverflow.com/questions/17259877/1d-or-2d-array-whats-faster.
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
-		std::array<std::array<Real, MATRIX_SIZE>, MATRIX_SIZE> m_values;
+		std::array<std::array<Real, SIZE>, SIZE> m_values;
 #else
-		std::array<Real, MATRIX_SIZE * MATRIX_SIZE> m_values;
+		std::array<Real, SIZE * SIZE> m_values;
 #endif
 
 #ifdef PROFILING_MATH_MODULE_ENABLED
@@ -273,23 +273,23 @@ namespace Math
 
 	inline Real Matrix4D::GetElement(int i, int j) const
 	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
+		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
+		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		return m_values[i][j];
 #else
-		return m_values[i * MATRIX_SIZE + j];
+		return m_values[i * SIZE + j];
 #endif
 	}
 
 	inline void Matrix4D::SetElement(int i, int j, Real value)
 	{
-		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
-		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < MATRIX_SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
+		CHECK_CONDITION_EXIT_MATH((i >= 0) && (i < SIZE), Utility::Logging::ERR, "Incorrect row index given (", i, ")");
+		CHECK_CONDITION_EXIT_MATH((j >= 0) && (j < SIZE), Utility::Logging::ERR, "Incorrect column index given (", j, ")");
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		m_values[i][j] = value;
 #else
-		m_values[i * MATRIX_SIZE + j] = value;
+		m_values[i * SIZE + j] = value;
 #endif
 	}
 

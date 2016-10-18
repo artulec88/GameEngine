@@ -14,7 +14,7 @@ namespace Engine
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API MeshRendererComponent(Rendering::Mesh* mesh, Rendering::Material* material);
+		ENGINE_API MeshRendererComponent(int meshID, const Rendering::Material* material);
 		ENGINE_API virtual ~MeshRendererComponent(void);
 		MeshRendererComponent(const MeshRendererComponent& meshRendererComponent) = delete;
 		MeshRendererComponent(MeshRendererComponent&& meshRendererComponent);
@@ -29,8 +29,8 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::Mesh* m_mesh;
-		Rendering::Material* m_material;
+		int m_meshID;
+		const Rendering::Material* m_material;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshRendererComponent */
 

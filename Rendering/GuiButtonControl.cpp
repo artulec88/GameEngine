@@ -33,8 +33,9 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	}
 	else
 	{
+		// Replace all such calls to create new meshes with reference to one single mesh (probably MeshIDs::SIMPLE_QUAD).
 		Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
-		m_mesh = std::make_unique<GuiMesh>(quadVertexPositions, 4);
+		m_mesh = std::make_unique<Mesh>(quadVertexPositions, nullptr, 4);
 	}
 }
 

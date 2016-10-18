@@ -21,10 +21,10 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>The texture factory constructor.</summary>
-		/// <param name="texturesDirectory"> The textures directory. </param>
+		/// <param name="texturesDirectory"> The textures directory where all textures are stored. </param>
 		RENDERING_API TextureFactory(const std::string& texturesDirectory);
 
-		/// <summary>The destructor.</summary>
+		/// <summary>The texture factory destructor.</summary>
 		RENDERING_API ~TextureFactory(void);
 
 		/// <summary> Texture factory copy constructor. </summary>

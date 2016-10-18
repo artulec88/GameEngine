@@ -1,5 +1,6 @@
 #include "GameNodeBuilder.h"
 #include "TextureIDs.h"
+#include "MeshIDs.h"
 
 #include "Engine\CameraComponent.h"
 #include "Engine\CameraBehavior.h"
@@ -172,7 +173,8 @@ void Game::SkyboxBuilder::BuildPart1()
 	Rendering::Material* skyboxMaterial = new Rendering::Material(skyboxTextureDay, "cubeMapDay");
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
-	m_meshRendererComponent = new Engine::MeshRendererComponent(new Rendering::Mesh(GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj")), skyboxMaterial);
+	m_gameManager->AddMesh(MeshIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
+	m_meshRendererComponent = new Engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial);
 }
 
 void Game::SkyboxBuilder::BuildPart2()

@@ -131,6 +131,9 @@ namespace Engine
 
 		ENGINE_API void AddBillboardNode(GameNode* billboardNode);
 		ENGINE_API void AddPhysicsObject(Physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
+		
+		ENGINE_API const Rendering::Mesh* GetMesh(int meshID) const { return m_renderer->GetMesh(meshID); }
+		ENGINE_API void AddMesh(int meshID, const std::string& meshFileName) { m_renderer->CreateMesh(meshID, meshFileName); }
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);
 		ENGINE_API void PopInputContext();

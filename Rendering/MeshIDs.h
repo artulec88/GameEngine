@@ -8,6 +8,8 @@ namespace Rendering
 		enum MeshID
 		{
 			SIMPLE_QUAD,
+			PARTICLE_QUAD,
+			DEBUG_QUAD,
 			COUNT,
 		}; /* end enum MeshID */
 	} /* end namespace MeshIDs */

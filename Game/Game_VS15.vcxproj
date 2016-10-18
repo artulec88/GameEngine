@@ -170,6 +170,7 @@
     <ClInclude Include="LoadGameCommand.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />
+    <ClInclude Include="MeshIDs.h" />
     <ClInclude Include="ParticleEffects.h" />
     <ClInclude Include="ParticlesSystemBuilder.h" />
     <ClInclude Include="PlayGameState.h" />

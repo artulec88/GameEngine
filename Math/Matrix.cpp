@@ -330,13 +330,13 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 
 	/* ==================== SOLUTION #4 begin ==================== */
 	//Matrix4D matrix;
-	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
+	//for (unsigned int i = 0; i < SIZE; ++i)
 	//{
-	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
+	//	for (unsigned int j = 0; j < SIZE; ++j)
 	//	{
 	//		//matrix.m_values[i][j] = REAL_ZERO;
 	//		Real sum = REAL_ZERO;
-	//		for (unsigned int k = 0; k < MATRIX_SIZE; ++k)
+	//		for (unsigned int k = 0; k < SIZE; ++k)
 	//		{
 	//			sum += m_values[k][j] * mat.m_values[i][k];
 	//		}
@@ -348,12 +348,12 @@ Math::Matrix4D Math::Matrix4D::operator*(const Matrix4D& mat) const
 
 	/* ==================== SOLUTION #5 begin ==================== */
 //#ifdef MATRIX_MODE_TWO_DIMENSIONS
-//	std::array<std::array<Real, MATRIX_SIZE>, MATRIX_SIZE> result;
+//	std::array<std::array<Real, SIZE>, SIZE> result;
 //	M4x4_SSE(Data(), mat.Data(), &result[0][0]);
 //	STOP_PROFILING_MATH("");
 //	return Matrix4D(&result[0][0]);
 //#else
-//	std::array<Real, MATRIX_SIZE * MATRIX_SIZE> result;
+//	std::array<Real, SIZE * SIZE> result;
 //	M4x4_SSE(Data(), mat.Data(), &result[0]);
 //	STOP_PROFILING_MATH("");
 //	return Matrix4D(&result[0]);
@@ -413,14 +413,14 @@ bool Math::Matrix4D::operator==(const Matrix4D& matrix) const
 	 * the numbers using simple tools, like epsilon?
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
-	for (int i = 0; i < MATRIX_SIZE; ++i)
+	for (int i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
+		for (int j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			if (!AlmostEqual(matrix.GetElement(i, j), m_values[i][j]))
 #else
-			if (!AlmostEqual(matrix.GetElement(i, j), m_values[i * MATRIX_SIZE + j]))
+			if (!AlmostEqual(matrix.GetElement(i, j), m_values[i * SIZE + j]))
 #endif
 			{
 				STOP_PROFILING_MATH("");
@@ -442,14 +442,14 @@ Math::Matrix4D Math::Matrix4D::Transposition() const
 	START_PROFILING_MATH(true, "");
 	Matrix4D matrix;
 
-	for (int i = 0; i < MATRIX_SIZE; ++i)
+	for (int i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
+		for (int j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			matrix.m_values[i][j] = m_values[j][i];
 #else
-			matrix.m_values[i * MATRIX_SIZE + j] = m_values[j * MATRIX_SIZE + i];
+			matrix.m_values[i * SIZE + j] = m_values[j * SIZE + i];
 #endif
 		}
 }
@@ -492,8 +492,8 @@ Math::Real Math::Matrix4D::Det(int p, int q) const
 		result += m_values[i[k]][j[0]] * m_values[i[(k + 1) % 3]][j[1]] * m_values[i[(k + 2) % 3]][j[2]];
 		result -= m_values[i[k]][j[2]] * m_values[i[(k + 1) % 3]][j[1]] * m_values[i[(k + 2) % 3]][j[0]];
 #else
-		result += m_values[i[k] * MATRIX_SIZE + j[0]] * m_values[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m_values[i[(k + 2) % 3] * MATRIX_SIZE + j[2]];
-		result -= m_values[i[k] * MATRIX_SIZE + j[2]] * m_values[i[(k + 1) % 3] * MATRIX_SIZE + j[1]] * m_values[i[(k + 2) % 3] * MATRIX_SIZE + j[0]];
+		result += m_values[i[k] * SIZE + j[0]] * m_values[i[(k + 1) % 3] * SIZE + j[1]] * m_values[i[(k + 2) % 3] * SIZE + j[2]];
+		result -= m_values[i[k] * SIZE + j[2]] * m_values[i[(k + 1) % 3] * SIZE + j[1]] * m_values[i[(k + 2) % 3] * SIZE + j[0]];
 #endif
 }
 
@@ -506,12 +506,12 @@ Math::Matrix4D Math::Matrix4D::Inversion() const
 {
 	START_PROFILING_MATH(true, "");
 	Real det = 0;
-	for (int j = 0; j < MATRIX_SIZE; ++j)
+	for (int j = 0; j < SIZE; ++j)
 	{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 		det += Signum(3, j) * m_values[3][j] * Det(3, j);
 #else
-		det += Signum(3, j) * m_values[3 * MATRIX_SIZE + j] * Det(3, j);
+		det += Signum(3, j) * m_values[3 * SIZE + j] * Det(3, j);
 #endif
 	}
 
@@ -523,14 +523,14 @@ Math::Matrix4D Math::Matrix4D::Inversion() const
 
 	Matrix4D result;
 
-	for (int i = 0; i < MATRIX_SIZE; ++i)
+	for (int i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
+		for (int j = 0; j < SIZE; ++j)
 		{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 			result.m_values[j][i] = Signum(i, j) * Det(i, j) / det;
 #else
-			result.m_values[j * MATRIX_SIZE + i] = Signum(i, j) * Det(i, j) / det;
+			result.m_values[j * SIZE + i] = Signum(i, j) * Det(i, j) / det;
 #endif
 		}
 }
@@ -554,16 +554,16 @@ bool Math::Matrix4D::IsIdentity() const
 	 * Additionaly, maybe consider creating a static function in the Math library for comparing numbers?
 	 */
 
-	for (int i = 0; i < MATRIX_SIZE; ++i)
+	for (int i = 0; i < SIZE; ++i)
 	{
-		for (int j = 0; j < MATRIX_SIZE; ++j)
+		for (int j = 0; j < SIZE; ++j)
 		{
 			if (i == j)
 			{
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 				if (!AlmostEqual(REAL_ONE, m_values[i][j]))
 #else
-				if (!AlmostEqual(REAL_ONE, m_values[i * MATRIX_SIZE + j]))
+				if (!AlmostEqual(REAL_ONE, m_values[i * SIZE + j]))
 #endif
 				{
 					STOP_PROFILING_MATH("");
@@ -575,7 +575,7 @@ bool Math::Matrix4D::IsIdentity() const
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 				if (!AlmostEqual(REAL_ZERO, m_values[i][j]))
 #else
-				if (!AlmostEqual(REAL_ZERO, m_values[i * MATRIX_SIZE + j]))
+				if (!AlmostEqual(REAL_ZERO, m_values[i * SIZE + j]))
 #endif
 				{
 					STOP_PROFILING_MATH("");
@@ -652,9 +652,9 @@ Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
 
 	//Vector3D ret(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 
-	//for (unsigned int i = 0; i < MATRIX_SIZE; ++i)
+	//for (unsigned int i = 0; i < SIZE; ++i)
 	//{
-	//	for (unsigned int j = 0; j < MATRIX_SIZE; ++j)
+	//	for (unsigned int j = 0; j < SIZE; ++j)
 	//	{
 	//		ret.opera
 	//	}

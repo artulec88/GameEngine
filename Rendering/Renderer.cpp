@@ -6,11 +6,14 @@
 #include "SpotLight.h"
 #include "ShadowInfo.h"
 #include "Mesh.h"
+#include "MeshIDs.h"
+
+#include "Math\FloatingPoint.h"
+
 #include "Utility\IConfig.h"
 #include "Utility\ILogger.h"
 #include "Utility\FileManager.h"
 //#include "Utility\FileNotFoundException.h"
-#include "Math\FloatingPoint.h"
 
 #include <stddef.h>
 #include <iomanip>
@@ -22,7 +25,7 @@
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 ///* static */ const int Renderer::SHADOW_MAPS_COUNT = 11;
 
-Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
+Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
 	m_antiAliasingMethod(antiAliasingMethod),
@@ -44,10 +47,11 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
+	m_meshFactory(modelsDirectory),
 	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
-	m_filterMesh("plane4.obj"),
+	m_filterMesh(m_meshFactory.GetMesh(MeshIDs::SIMPLE_QUAD)),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
@@ -96,13 +100,9 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 	m_waterLightReflectionEnabled(false),
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
-	m_maxParticlesCount(GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000)),
-#ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
-	m_particleQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(), 4, m_maxParticlesCount, 21),
-#else
-	m_particleQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(), 4, m_maxParticlesCount, 17),
-#endif
-	m_particleInstanceVboData(m_maxParticlesCount * m_particleQuad.GetInstanceDataLength()),
+	m_maxParticlesCount(GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000)), // TODO: This variable is also retrieved in the MeshFactory.
+	m_particleQuad(dynamic_cast<const InstanceMesh*>(m_meshFactory.GetMesh(MeshIDs::PARTICLE_QUAD))),
+	m_particleInstanceVboData(m_maxParticlesCount * m_particleQuad->GetInstanceDataLength()),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
 	, m_propertiesBar(NULL),
@@ -113,7 +113,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
 	//,m_guiTextures(),
-	, m_debugQuad(std::vector<Math::Vector2D>{ Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) }.data(), 4)
+	, m_debugQuad(m_meshFactory.GetMesh(MeshIDs::DEBUG_QUAD))
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
@@ -150,8 +150,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, Rendering::Alia
 #endif
 
 	//m_altCamera.GetTransform().Rotate(Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Angle(180));
-
-	m_filterMesh.Initialize();
 
 	m_cubeShadowMap.Init(windowWidth, windowHeight);
 
@@ -201,6 +199,11 @@ Rendering::Renderer::~Renderer(void)
 
 	STOP_PROFILING_RENDERING("");
 	NOTICE_LOG_RENDERING("Rendering engine destroyed");
+}
+
+void Rendering::Renderer::CreateMesh(int meshID, const std::string& meshFileName)
+{
+	m_meshFactory.CreateMesh(meshID, meshFileName);
 }
 
 /* TODO: Remove in the future */
@@ -304,12 +307,12 @@ void Rendering::Renderer::FinalizeRenderScene(const Shader* filterShader)
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Renderer::Render(const Mesh& mesh, const Material* material, const Math::Transform& transform, const Shader* shader) const
+void Rendering::Renderer::Render(int meshID, const Material* material, const Math::Transform& transform, const Shader* shader) const
 {
 	//START_PROFILING_RENDERING(true, "");
 	//shader.Bind();
 	shader->UpdateUniforms(transform, material, this);
-	mesh.Draw();
+	m_meshFactory.GetMesh(meshID)->Draw();
 	//STOP_PROFILING_RENDERING;
 }
 
@@ -466,7 +469,7 @@ void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Pa
 		m_particleInstanceVboData.push_back(particlesSystem.CalculateLifeStageFactor(i));
 #endif
 	}
-	m_particleQuad.Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesSystem.GetAliveParticlesCount());
+	m_particleQuad->Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesSystem.GetAliveParticlesCount());
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -556,7 +559,7 @@ void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Pa
 		m_particleInstanceVboData.push_back(particles[i].CalculateLifeStageFactor());
 #endif
 	}
-	m_particleQuad.Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesCount);
+	m_particleQuad->Draw(&m_particleInstanceVboData[0], static_cast<int>(m_particleInstanceVboData.size()), particlesCount);
 	if (Rendering::glDepthTestEnabled)
 	{
 		glEnable(GL_DEPTH_TEST);
@@ -677,7 +680,7 @@ void Rendering::Renderer::ApplyFilter(const Shader* filterShader, const Texture*
 	filterShader->Bind();
 	filterShader->UpdateRendererUniforms(this);
 	filterShader->UpdateUniforms(m_filterTransform, NULL, this);
-	m_filterMesh.Draw();
+	m_filterMesh->Draw();
 
 	m_currentCamera = m_tempCamera;
 	m_mappedValues.SetTexture("filterTexture", NULL);
@@ -744,7 +747,7 @@ void Rendering::Renderer::RenderDebugNodes(const Shader* guiShader)
 		guiTextureItr->Bind(0);
 		guiShader->SetUniformMatrix("guiTransformationMatrix", guiTextureItr->GetTransformationMatrix());
 		guiShader->SetUniformi("guiTexture", 0);
-		m_debugQuad.Draw();
+		m_debugQuad->Draw();
 	}
 	//Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
 	//m_shadowMaps[9]->Bind();

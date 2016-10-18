@@ -92,7 +92,7 @@ void Game::DirectionalLightBuilder::BuildMeshRenderer()
 	//Material directionalLightLineMaterial("directionalLightLine_material", Texture("DirectionalLight.png"), 1, 8);
 
 	m_gameNode->GetTransform().SetScale(0.4f); /* TODO: Don't use hardcoded values! Ever! */
-	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("DirectionalLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::DIRECTIONAL_LIGHT), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(m_gameManager->GetMesh("DirectionalLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::DIRECTIONAL_LIGHT), 1.0f, 8.0f)));
 
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
@@ -164,7 +164,7 @@ void Game::PointLightBuilder::BuildPart2()
 void Game::PointLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around point light node position to let the user see the source
-	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ new Rendering::Mesh("PointLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::POINT_LIGHT), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(/* new Mesh("Bulb\\Bulb.obj") */ m_gameManager->GetMesh("PointLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::POINT_LIGHT), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.005f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif
@@ -262,7 +262,7 @@ void Game::SpotLightBuilder::BuildPart2()
 void Game::SpotLightBuilder::BuildMeshRenderer()
 {
 	// Rendering a small box around spot light node position to let the user see the source
-	m_gameNode->AddComponent(new MeshRendererComponent(new Rendering::Mesh("SpotLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::SPOT_LIGHT), 1.0f, 8.0f)));
+	m_gameNode->AddComponent(new MeshRendererComponent(m_gameManager->GetMesh("SpotLight.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::SPOT_LIGHT), 1.0f, 8.0f)));
 	m_gameNode->GetTransform().SetScale(0.1f); /* TODO: Don't use hard-coded values! Ever! */
 }
 #endif

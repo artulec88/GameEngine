@@ -14,7 +14,7 @@ namespace Engine
 	{
 	/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API BillboardsRendererComponent(Rendering::BillboardMesh* billboardMesh, Rendering::Material* billboardMaterial);
+		ENGINE_API BillboardsRendererComponent(int billboardMeshID, Rendering::Material* billboardMaterial);
 		ENGINE_API virtual ~BillboardsRendererComponent(void);
 		BillboardsRendererComponent(const BillboardsRendererComponent& billboardsRendererComponent) = delete;
 		ENGINE_API BillboardsRendererComponent(BillboardsRendererComponent&& billboardsRendererComponent);
@@ -29,7 +29,7 @@ namespace Engine
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
-		Rendering::BillboardMesh* m_billboardMesh;
+		int m_billboardMeshID;
 		Rendering::Material* m_billboardMaterial;
 	/* ==================== Non-static member variables end ==================== */
 	}; /* end class BillboardRendererComponent */

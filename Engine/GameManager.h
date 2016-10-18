@@ -102,6 +102,9 @@ namespace Engine
 		ENGINE_API virtual Math::Real GetLoadingProgress() const = 0;
 		ENGINE_API bool IsGameLoaded() const { return m_isGameLoaded; }
 
+		ENGINE_API void AddMesh(int meshID, const std::string& meshFileName) const;
+		ENGINE_API inline const Rendering::Mesh* GetMesh(int meshID) const;
+
 		ENGINE_API void AddShader(int shaderID, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderID, shaderFileName); }
 		ENGINE_API const Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) { return m_textureFactory.CreateTexture(textureID, textureFileName); }
 		ENGINE_API const Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) { return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory); }
