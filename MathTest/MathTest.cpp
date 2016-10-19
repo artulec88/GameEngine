@@ -1243,9 +1243,9 @@ void HeightsGeneratorTests()
 	Math::Real roughness = 0.3f;
 	Math::HeightsGenerator heightsGenerator(0, 0, 128, amplitude, octaves, roughness);
 
-	const int WIDTH = 8;
-	const int HEIGHT = 8;
-	Math::Real* heights = new Math::Real[WIDTH * HEIGHT];
+	constexpr int WIDTH = 8;
+	constexpr int HEIGHT = 8;
+	std::array<Math::Real, WIDTH * HEIGHT> heights;
 	for (int z = 0; z < HEIGHT; ++z)
 	{
 		for (int x = 0; x < WIDTH; ++x)
@@ -1254,7 +1254,6 @@ void HeightsGeneratorTests()
 			INFO_LOG_MATH_TEST("heights[", z, "][", x, "] = ", heights[z * WIDTH + x]);
 		}
 	}
-	SAFE_DELETE_JUST_TABLE(heights);
 
 	timer.Stop();
 
