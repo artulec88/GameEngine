@@ -616,10 +616,6 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 
 
 /* ==================== TerrainMesh class implementation begin ==================== */
-/* static */ const int Rendering::TerrainMesh::SIZE = 400;
-/* static */ const float Rendering::TerrainMesh::HEIGHTMAP_MAX_HEIGHT = 5.0f;
-/* static */ const float Rendering::TerrainMesh::MAX_PIXEL_COLOR = 255.0f;
-
 Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
 	Mesh(fileName, mode),
 	m_x(0),

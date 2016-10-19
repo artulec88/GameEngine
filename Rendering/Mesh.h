@@ -391,14 +391,14 @@ namespace Rendering
 		/* ==================== Static variables begin ==================== */
 	private:
 		/// <summary> The size of the single squared-size terrain tile. </summary>
-		static const int SIZE;
+		static constexpr int SIZE = 400;
 		/// <summary>
 		/// The maximal height of the terrain. The negative value represents the minimal height of the terrain.
 		/// In other words, the terrain height always lies in range [-HEIGHTMAP_MAX_HEIGHT; HEIGHTMAP_MAX_HEIGHT].
 		/// </summary>
-		static const float HEIGHTMAP_MAX_HEIGHT;
+		static constexpr Math::Real HEIGHTMAP_MAX_HEIGHT = 5.0f;
 		/// <summary> The maximum value for color of the single pixel in the height map. </summary>
-		static const float MAX_PIXEL_COLOR;
+		static constexpr Math::Real MAX_PIXEL_COLOR = 255.0f;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -430,7 +430,7 @@ namespace Rendering
 		TerrainMesh(TerrainMesh&& terrainMesh) = delete;
 		/// <summary> Terrain mesh copy assignment operator. </summary>
 		TerrainMesh& operator=(const TerrainMesh& terrainMesh) = delete;
-		/// <summary> Terrain mesh copy assignment operator. </summary>
+		/// <summary> Terrain mesh move assignment operator. </summary>
 		TerrainMesh& operator=(TerrainMesh&& terrainMesh) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
