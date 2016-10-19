@@ -7,9 +7,10 @@ namespace Rendering
 	{
 		enum MeshID
 		{
-			SIMPLE_QUAD,
-			PARTICLE_QUAD,
-			DEBUG_QUAD,
+			SIMPLE_PLANE,
+			PARTICLE,
+			DEBUG,
+			//TERRAIN,
 			COUNT,
 		}; /* end enum MeshID */
 	} /* end namespace MeshIDs */

@@ -108,14 +108,14 @@ void Game::PlayGameState::Entered()
 	testMesh1.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh1PosX", 42.0f), GET_CONFIG_VALUE_GAME("testMesh1PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh1PosZ", 40.0f));
 	testMesh1.GetTransform().SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO));
 	testMesh1.GetTransform().SetScale(0.1f);
-	testMesh1.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
+	testMesh1.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->AddTexture(TextureIDs::BRICKS, "bricks2.jpg"), 0.0f, 0,
 			m_gameManager->AddTexture(TextureIDs::BRICKS_NORMAL_MAP, "bricks2_normal.jpg"),
 			m_gameManager->AddTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP, "bricks2_disp.jpg"), 0.04f, -1.0f)));
 	Engine::GameNode testMesh2;
 	testMesh2.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("testMesh2PosX", 8.0f), GET_CONFIG_VALUE_GAME("testMesh2PosY", 1.0f), GET_CONFIG_VALUE_GAME("testMesh2PosZ", 0.0f));
 	testMesh2.GetTransform().SetRot(Math::Quaternion(Math::Matrix4D(Math::Angle(90.0f), Math::Angle(90.0f), Math::Angle(0.0f))));
-	testMesh2.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
+	testMesh2.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		new Rendering::Material(m_gameManager->GetTexture(TextureIDs::BRICKS), 0.0f, 0,
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_NORMAL_MAP),
 			m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
@@ -261,7 +261,7 @@ void Game::PlayGameState::AddWaterNodes()
 {
 	// It seems we have a problem with sharing resources. If I use the plane.obj (which I use in other entities) then we'll have problems with rendering (e.g. disappearing billboards).
 	// If I change it to myPlane.obj which is not used in other entities the errors seem to be gone.
-	m_waterNode.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_QUAD,
+	m_waterNode.AddComponent(new Engine::MeshRendererComponent(Rendering::MeshIDs::SIMPLE_PLANE,
 		NULL /* The NULL material fixes the problem with rendering both billboards and water nodes simultaneously. TODO: But why / how? */));
 	//m_resourcesLoaded += 2;
 	m_waterNode.GetTransform().SetPos(GET_CONFIG_VALUE_GAME("waterNodePosX", -18.0f), GET_CONFIG_VALUE_GAME("waterNodePosY", 0.0f), GET_CONFIG_VALUE_GAME("waterNodePosZ", -12.0f));

@@ -51,7 +51,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
-	m_filterMesh(m_meshFactory.GetMesh(MeshIDs::SIMPLE_QUAD)),
+	m_filterMesh(m_meshFactory.GetMesh(MeshIDs::SIMPLE_PLANE)),
 	m_fxaaSpanMax(GET_CONFIG_VALUE_RENDERING("fxaaSpanMax", 8.0f)),
 	m_fxaaReduceMin(GET_CONFIG_VALUE_RENDERING("fxaaReduceMin", REAL_ONE / 128.0f)),
 	m_fxaaReduceMul(GET_CONFIG_VALUE_RENDERING("fxaaReduceMul", REAL_ONE / 8.0f)),
@@ -101,7 +101,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_waterFresnelEffectFactor(GET_CONFIG_VALUE_RENDERING("waterFresnelEffectFactor", 2.0f)),
 	m_waterNormalVerticalFactor(GET_CONFIG_VALUE_RENDERING("waterNormalVerticalFactor", 3.0f)),
 	m_maxParticlesCount(GET_CONFIG_VALUE_RENDERING("maxParticlesCount", 10000)), // TODO: This variable is also retrieved in the MeshFactory.
-	m_particleQuad(dynamic_cast<const InstanceMesh*>(m_meshFactory.GetMesh(MeshIDs::PARTICLE_QUAD))),
+	m_particleQuad(dynamic_cast<const InstanceMesh*>(m_meshFactory.GetMesh(MeshIDs::PARTICLE))),
 	m_particleInstanceVboData(m_maxParticlesCount * m_particleQuad->GetInstanceDataLength()),
 	m_mappedValues()
 #ifdef ANT_TWEAK_BAR_ENABLED
@@ -113,7 +113,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
 	//,m_guiTextures(),
-	, m_debugQuad(m_meshFactory.GetMesh(MeshIDs::DEBUG_QUAD))
+	, m_debugQuad(m_meshFactory.GetMesh(MeshIDs::DEBUG))
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
