@@ -77,7 +77,9 @@ GLuint Rendering::MeshData::CreateVBO(MeshBufferTypes::MeshBufferType buffer)
 
 /* ==================== Mesh class implementation begin ==================== */
 Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
+#ifdef STORE_MESH_FILE_NAME
 	m_fileName(""),
+#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -85,7 +87,9 @@ Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 
 Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates /* = nullptr */,
 	Math::Vector3D* normals /* = nullptr */, Math::Vector3D* tangents /* = nullptr */, Math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
+#ifdef STORE_MESH_FILE_NAME
 	m_fileName(""),
+#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -93,7 +97,9 @@ Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::V
 }
 
 Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode /* = GL_TRIANGLE_STRIP */) :
+#ifdef STORE_MESH_FILE_NAME
 	m_fileName(""),
+#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -103,35 +109,31 @@ Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCo
 }
 
 Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
+#ifdef STORE_MESH_FILE_NAME
 	m_fileName(fileName),
+#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started Mesh initialization");
-	CHECK_CONDITION_RENDERING(!m_fileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
+	CHECK_CONDITION_RENDERING(!fileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
 
-	std::string name = m_fileName;
-	const char *tmp = strrchr(name.c_str(), '\\');
-	if (tmp != nullptr)
-	{
-		name.assign(tmp + 1);
-	}
 #ifdef MEASURE_MESH_TIME_ENABLED
 	Utility::Timing::Timer timer;
 	timer.Start();
 #endif
-	INFO_LOG_RENDERING("Loading model from file \"", name, "\"");
+	INFO_LOG_RENDERING("Loading model from file \"", fileName, "\"");
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(m_fileName.c_str(),
+	const aiScene* scene = importer.ReadFile(fileName.c_str(),
 		aiProcess_Triangulate | /* aiProcess_FlipWindingOrder | */
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |
 		aiProcess_CalcTangentSpace);
 
-	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, Utility::Logging::CRITICAL, "Error while loading a mesh \"", name, "\"");
+	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, Utility::Logging::CRITICAL, "Error while loading a mesh \"", fileName, "\"");
 	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != nullptr) && (scene->mNumMeshes > 0), Utility::Logging::CRITICAL,
-		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", name,
+		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", fileName,
 		"\". One of the possible solutions is to check whether the model has any additional lines at the end.");
 
 	const aiMesh* model = scene->mMeshes[0];
@@ -155,7 +157,7 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
 		if (pTangent == nullptr)
 		{
-			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", name, "\"");
+			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", fileName, "\"");
 			pTangent = &aiZeroVector;
 		}
 		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
@@ -198,11 +200,17 @@ Rendering::Mesh::~Mesh(void)
 }
 
 Rendering::Mesh::Mesh(Mesh&& mesh) :
+#ifdef STORE_MESH_FILE_NAME
 	m_fileName(std::move(mesh.m_fileName)),
+#endif
 	m_mode(std::move(mesh.m_mode)),
 	m_meshData(std::move(mesh.m_meshData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
 {
+#ifdef STORE_MESH_FILE_NAME
 	DELOCUST_LOG_RENDERING("Mesh \"", m_fileName, "\" moved.");
+#else
+	DELOCUST_LOG_RENDERING("Mesh move constructor");
+#endif
 }
 
 void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount)

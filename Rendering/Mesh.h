@@ -21,6 +21,7 @@
 
 //#define TEXTURE_ATLAS_OFFSET_CALCULATION
 //#define MEASURE_MESH_TIME_ENABLED
+//#define STORE_MESH_FILE_NAME
 
 // Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
 namespace std
@@ -270,6 +271,7 @@ namespace Rendering
 	public:
 		virtual void Draw() const;
 	protected:
+		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
 		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, Math::Real* data, unsigned int dataCount);
 
 		void AddVertices(Math::Vector2D* positions, Math::Vector2D* textureCoordinates, int verticesCount);
@@ -284,7 +286,9 @@ namespace Rendering
 
 	/* ==================== Non-static member variables begin ==================== */
 	protected:
+#ifdef STORE_MESH_FILE_NAME
 		std::string m_fileName;
+#endif
 		GLenum m_mode;
 		std::shared_ptr<MeshData> m_meshData;
 		/* ==================== Non-static member variables end ==================== */
