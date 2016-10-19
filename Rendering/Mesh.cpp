@@ -497,8 +497,7 @@ Rendering::BillboardMesh::BillboardMesh(Math::Real* modelMatricesValues, unsigne
 	CHECK_CONDITION_EXIT_RENDERING(billboardDataLength > 0, Utility::Logging::ERR, "Cannot create a billboard mesh. Specified billboard data length is not greater than 0 (", billboardDataLength, ")");
 
 	m_meshData->Bind();
-	m_meshData->CreateVBO(MeshBufferTypes::INSTANCE); // instanced attributes will be stored in this VBO
-	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(MeshBufferTypes::INSTANCE));
+	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->CreateVBO(MeshBufferTypes::INSTANCE));
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Math::Real) * m_billboardsCount * billboardDataLength, modelMatricesValues, GL_STATIC_DRAW);
 	glVertexAttribPointer(1 /* MVP_MATRIX_COLUMN_1_LOCATION */, 4, GL_FLOAT, GL_FALSE, billboardDataLength * sizeof(Math::Real), (GLvoid*)0);
 	glEnableVertexAttribArray(1 /* MVP_MATRIX_COLUMN_1_LOCATION */);

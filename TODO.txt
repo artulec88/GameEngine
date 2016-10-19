@@ -41,3 +41,4 @@
 24. All game menu related settings should be in the separate config file (maybe an XML?). Maybe there should be several config files: one for the rendering module, one for Physics, one for Audio and so on.
 25. Get rid of all calls to Engine::CoreEngine::GetCoreEngine()...
 26. Implement ParticleSystemBuilder in the Game module.
+27. Instead of having TerrainMesh doing rendering and storing the height values (double responsibility) it should only be responsible for rendering. The height values should somehow be stored in the MeshHeightComponent game component.
