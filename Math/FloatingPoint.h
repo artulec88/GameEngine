@@ -54,19 +54,19 @@ namespace Math
 		typedef typename TypeWithSize<sizeof(RawType)>::UInt Bits;
 
 	public: /* Constants */
-		static const size_t s_kBitCount = 8 * sizeof(RawType); // number of bits in a number
-		static const size_t s_kFractionBitCount = std::numeric_limits<RawType>::digits - 1; // number of fraction bits in a number
-		static const size_t s_kExponentBitCount = s_kBitCount - 1 - s_kFractionBitCount; // number of exponent bits in a number
-		static const Bits s_kSignBitMask = static_cast<Bits>(1) << (s_kBitCount - 1); // The mask for the sign bit
-		static const Bits s_kFractionBitMask = ~static_cast<Bits>(0) >> (s_kExponentBitCount + 1); // The mask for the fraction bits
-		static const Bits s_kExponentBitMask = ~(s_kSignBitMask | s_kFractionBitMask);
+		static constexpr size_t s_kBitCount = 8 * sizeof(RawType); // number of bits in a number
+		static constexpr size_t s_kFractionBitCount = std::numeric_limits<RawType>::digits - 1; // number of fraction bits in a number
+		static constexpr size_t s_kExponentBitCount = s_kBitCount - 1 - s_kFractionBitCount; // number of exponent bits in a number
+		static constexpr Bits s_kSignBitMask = static_cast<Bits>(1) << (s_kBitCount - 1); // The mask for the sign bit
+		static constexpr Bits s_kFractionBitMask = ~static_cast<Bits>(0) >> (s_kExponentBitCount + 1); // The mask for the fraction bits
+		static constexpr Bits s_kExponentBitMask = ~(s_kSignBitMask | s_kFractionBitMask);
 		/**
 		 * How many ULP's (Units in the Last Place) we want to tolerate when comparing two numbers. The larger the value the more error we allow.
 		 * The value 0 means that two numbers must be exactly the same to be considered equal. The maximum error of a single floating-point operation is 0.5 ULP.
 		 * On Intel CPU's all floating-point calculations are done with 80-bit precision, while double has 64 bits. Therefore, 4 should be enough for ordinary use.
 		 * See the article http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm for more details on ULP
 		 */
-		static const size_t s_kMaxUlps = 4;
+		static constexpr size_t s_kMaxUlps = 4;
 
 	public: /* non-static methods */
 		/**

@@ -2,11 +2,6 @@
 #include "MappedValues.h"
 #include "Utility\ILogger.h"
 
-/* static */ const Math::Real Rendering::MappedValues::DEFAULT_VALUE = REAL_ZERO;
-/* static */ const Math::Vector2D Rendering::MappedValues::DEFAULT_VECTOR2D(REAL_ZERO, REAL_ZERO);
-/* static */ const Math::Vector3D Rendering::MappedValues::DEFAULT_VECTOR3D(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-/* static */ const Math::Vector4D Rendering::MappedValues::DEFAULT_VECTOR4D(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO);
-
 Rendering::MappedValues::MappedValues()
 {
 	DEBUG_LOG_RENDERING("Mapped values container created.");

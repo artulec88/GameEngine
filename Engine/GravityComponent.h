@@ -17,7 +17,9 @@ namespace Engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static const Math::Vector3D GRAVITY_ACCELERATION;
+		// TODO: Don't hard-code any value! Ever!
+		// TODO: This variable should be moved into the Physics engine and be accessible from anywhere (similarily as stdlog is accessible).
+		static constexpr Math::Vector3D GRAVITY_ACCELERATION{ 0.0f, -9.8f, 0.0f };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

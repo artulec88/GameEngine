@@ -125,7 +125,7 @@ namespace Math
 		{
 		/* ==================== Static variables begin ==================== */
 		private:
-			static const Real DEFAULT_DURATION;
+			static constexpr Real DEFAULT_DURATION = 0.5f;
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

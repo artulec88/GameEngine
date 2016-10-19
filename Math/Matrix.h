@@ -41,7 +41,7 @@ namespace Math
 	public:
 		/// <summary>Default Matrix4D constructor. It creates an identity matrix.</summary>
 		/// <returns>Identity matrix.</returns>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D() :
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D() :
 			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 		{
 			//static_assert(std::alignment_of(Matrix4D)::value == 16, “Alignment of Matrix4D must be 16”);
@@ -51,7 +51,7 @@ namespace Math
 		/// <summary>
 		/// Creates a 4x4 matrix and assigns a specified value for each of all 16 elements.
 		/// </summary>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real m00, Real m01, Real m02, Real m03,
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real m00, Real m01, Real m02, Real m03,
 			Real m10, Real m11, Real m12, Real m13,
 			Real m20, Real m21, Real m22, Real m23,
 			Real m30, Real m31, Real m32, Real m33) :
@@ -77,7 +77,7 @@ namespace Math
 		/// <param name='screenPosition'> The position on the screen </param>
 		/// <param name='scale'> The scale </param>
 		/// <remarks> The function is used for the gui textures. </remarks>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
 			Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "3");
@@ -86,7 +86,7 @@ namespace Math
 		/// <summary>Creates scale matrix based on the specified parameter.</summary>
 		/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
 		/// <returns>Scale matrix.</returns>
-		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real scale) :
+		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real scale) :
 			Matrix4D(scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "4");
@@ -97,7 +97,7 @@ namespace Math
 		/// <param name='posY'>The Y coordinate of the translation.</param>
 		/// <param name='posZ'>The Z coordinate of the translation.</param>
 		/// <returns>Translation matrix.</returns>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(Real posX, Real posY, Real posZ) :
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real posX, Real posY, Real posZ) :
 			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, posX, posY, posZ, REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "5");
@@ -106,7 +106,7 @@ namespace Math
 		/// <summary>Creates translation matrix based on the specified parameter.</summary>
 		/// <param name='pos'>The 3D translation vector.</param>
 		/// <returns>Translation matrix.</returns>
-		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED Matrix4D(const Vector3D& pos) :
+		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector3D& pos) :
 			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.GetX(), pos.GetY(), pos.GetZ(), REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "6");

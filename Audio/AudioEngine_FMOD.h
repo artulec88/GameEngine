@@ -16,8 +16,8 @@ namespace Audio
 		typedef std::map<std::string, FMOD::Sound*> Filenames2Sounds;
 	/* ==================== Static variables begin ==================== */
 	private:
-		static const Math::Real OCTAVE_RATIO;
-		static const Math::Real SEMITONE_RATIO;
+		static constexpr Math::Real OCTAVE_RATIO = 2.0f;
+		static constexpr Math::Real SEMITONE_RATIO = 1.0594630943592952645618252949463f; // = 2^(1/12)
 	/* ==================== Static variables end ==================== */
 
 	/* ==================== Constructors and destructors begin ==================== */

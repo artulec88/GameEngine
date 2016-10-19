@@ -19,7 +19,7 @@ namespace Rendering
 		/* ==================== Static variables and functions begin ==================== */
 	public:
 		/// <summary> The maximum numbers of bound textures in OpenGL. </summary>
-		static const int MAX_BOUND_TEXTURES_COUNT;
+		static constexpr int MAX_BOUND_TEXTURES_COUNT = 32;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

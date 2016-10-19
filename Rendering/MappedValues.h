@@ -37,10 +37,10 @@ namespace Rendering
 
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static const Math::Real DEFAULT_VALUE;
-		static const Math::Vector2D DEFAULT_VECTOR2D;
-		static const Math::Vector3D DEFAULT_VECTOR3D;
-		static const Math::Vector4D DEFAULT_VECTOR4D;
+		static constexpr Math::Real DEFAULT_VALUE = REAL_ZERO;
+		static constexpr Math::Vector2D DEFAULT_VECTOR2D{ REAL_ZERO, REAL_ZERO };
+		static constexpr Math::Vector3D DEFAULT_VECTOR3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
+		static constexpr Math::Vector4D DEFAULT_VECTOR4D{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

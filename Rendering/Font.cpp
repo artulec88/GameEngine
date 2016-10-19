@@ -5,17 +5,6 @@
 #include <fstream>
 #include <algorithm> // std::find
 
-/* static */ const Math::Real Rendering::Text::Font::LINE_HEIGHT = 0.03f;
-/* static */ const int Rendering::Text::Font::SPACE_ASCII_CODE = 32;
-/* static */ const int Rendering::Text::Font::PADDING_TOP_INDEX = 0;
-/* static */ const int Rendering::Text::Font::PADDING_LEFT_INDEX = 1;
-/* static */ const int Rendering::Text::Font::PADDING_BOTTOM_INDEX = 2;
-/* static */ const int Rendering::Text::Font::PADDING_RIGHT_INDEX = 3;
-/* static */ const int Rendering::Text::Font::DESIRED_PADDING = 8;
-
-/* static */ const char Rendering::Text::Font::META_DATA_SPLITTER[2] = { ' ', '=' };
-/* static */ const char Rendering::Text::Font::NUMBER_SEPARATOR = ',';
-
 Rendering::Text::Font::Font(const Shader* fontShader, const std::string& fontTextureAtlasFileName, const std::string& fontMetaDataFileName) :
 	m_shader(fontShader),
 	m_textureAtlas(fontTextureAtlasFileName),

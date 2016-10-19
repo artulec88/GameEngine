@@ -51,18 +51,37 @@ namespace Rendering
 	{
 		/* ==================== Static variables begin ==================== */
 	private:
-		static const int SHADOW_MAPS_COUNT = 11;
-		static const Math::Matrix4D BIAS_MATRIX;
+		static constexpr int SHADOW_MAPS_COUNT = 11;
+		static const Math::Matrix4D BIAS_MATRIX; // TODO: Make it a constexpr
 		/* ==================== Static variables end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Rendering engine constructor. </summary>
+		/// <param name="windowWidth"> The width of the window. </param>
+		/// <param name="windowHeight"> The height of the window. </param>
+		/// <param name="modelsDirectory"> The system directory where all models are stored. </param>
+		/// <param name="antiAliasingMethod"> The anti-aliasing method to be used by the rendering engine. </param>
 		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+
+		/// <summary> Rendering engine destructor. </summary>
 		RENDERING_API virtual ~Renderer(void);
-		Renderer(const Renderer& renderer) = delete; // copy constructor
-		Renderer(Renderer&& renderer) = delete; // move constructor
-		Renderer& operator=(const Renderer& renderer) = delete; // copy assignment operator
-		Renderer& operator=(Renderer&& renderer) = delete; // move assignment operator
+		
+		/// <summary> Rendering engine copy constructor. </summary>
+		/// <param name="renderer"> The rendering engine to copy construct from. </param>
+		Renderer(const Renderer& renderer) = delete;
+
+		/// <summary> Rendering engine move constructor. </summary>
+		/// <param name="renderer"> The rendering engine to move construct from. </param>
+		Renderer(Renderer&& renderer) = delete;
+
+		/// <summary> Rendering engine copy assignment operator. </summary>
+		/// <param name="renderer"> The rendering engine to copy assign from. </param>
+		Renderer& operator=(const Renderer& renderer) = delete;
+
+		/// <summary> Rendering engine move assignment operator. </summary>
+		/// <param name="renderer"> The rendering engine to move assign from. </param>
+		Renderer& operator=(Renderer&& renderer) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */

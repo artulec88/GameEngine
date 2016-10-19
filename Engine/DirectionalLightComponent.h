@@ -24,7 +24,7 @@ namespace Engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static const Math::Real TROPIC_OF_CANCER_SINUS;
+		static constexpr Math::Real TROPIC_OF_CANCER_SINUS = 0.39794863131f;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

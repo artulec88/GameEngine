@@ -20,19 +20,19 @@ namespace Rendering
 		{
 			/* ==================== Static variables begin ==================== */
 		public:
-			static const Math::Real LINE_HEIGHT;
-			static const int SPACE_ASCII_CODE;
+			static constexpr Math::Real LINE_HEIGHT = 0.03f;
+			static constexpr int SPACE_ASCII_CODE = 32;
 		private:
-			static const int PADDING_TOP_INDEX;
-			static const int PADDING_LEFT_INDEX;
-			static const int PADDING_BOTTOM_INDEX;
-			static const int PADDING_RIGHT_INDEX;
-			static const int DESIRED_PADDING;
+			static constexpr int PADDING_TOP_INDEX = 0;
+			static constexpr int PADDING_LEFT_INDEX = 1;
+			static constexpr int PADDING_BOTTOM_INDEX = 2;
+			static constexpr int PADDING_RIGHT_INDEX = 3;
+			static constexpr int DESIRED_PADDING = 8;
 			/// <summary> The number of sides (left, top, right, bottom) for the padding. </summary>
-			static const int PADDING_SIDES_COUNT = 4;
+			static constexpr int PADDING_SIDES_COUNT = 4;
 
-			static const char META_DATA_SPLITTER[2];
-			static const char NUMBER_SEPARATOR;
+			static constexpr char META_DATA_SPLITTER[2] = { ' ', '=' };
+			static constexpr char NUMBER_SEPARATOR = ',';
 			/* ==================== Static variables end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */

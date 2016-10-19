@@ -84,9 +84,6 @@ void Math::Effects::SmoothTransitionEffect<T>::Update(Real deltaTime)
 
 /* ==================== BlinkEffect<T> class begin ==================== */
 template <class T>
-/* static */ const Math::Real Math::Effects::BlinkEffect<T>::DEFAULT_DURATION = 0.5f;
-
-template <class T>
 Math::Effects::BlinkEffect<T>::BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount) :
 	Effect(values[0]),
 	m_currentIndex(0),

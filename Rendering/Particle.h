@@ -21,7 +21,7 @@ namespace Rendering
 		class Particle
 		{
 			/* ==================== Static variables begin ==================== */
-			static const Math::Real GRAVITY_ACCELERATION; // TODO: The same is defined in the GravityComponent class.
+			static constexpr Math::Real GRAVITY_ACCELERATION = -9.8f; // TODO: The same is defined in the GravityComponent class.
 			/* ==================== Static variables end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */

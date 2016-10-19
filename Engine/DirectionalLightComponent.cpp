@@ -5,8 +5,6 @@
 #include "Utility\IConfig.h"
 #include "Utility\Time.h"
 
-/* static */ const Math::Real Engine::DirectionalLightComponent::TROPIC_OF_CANCER_SINUS = 0.39794863131f;
-
 Engine::DirectionalLightComponent::DirectionalLightComponent(Rendering::Lighting::DirectionalLight* directionalLight, Math::Real maxIntensity, const Rendering::Color& sunDaytimeColor,
 	const Rendering::Color& sunNearHorizonColor, const Rendering::Color& sunNighttimeColor, const Math::Angle& latitude, const Math::Angle& longitude,
 	const Math::Angle& firstElevationLevel, const Math::Angle& secondElevationLevel, const Math::Angle& thirdElevationLevel) :

@@ -18,7 +18,7 @@ namespace Engine
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		//static const Math::Real GRAVITY;
+		//static const Math::Real GRAVITY; // TODO: Decide whether this value should be stored here or somewhere else.
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */

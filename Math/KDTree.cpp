@@ -16,7 +16,7 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 #endif
 {
 	START_PROFILING_MATH(true, "");
-	CHECK_CONDITION_EXIT_MATH(positions != NULL, Utility::Logging::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
+	CHECK_CONDITION_EXIT_MATH(positions != nullptr, Utility::Logging::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
 	BuildTree(positions, positionsCount, depth);
 	STOP_PROFILING_MATH("");
 }
@@ -58,11 +58,6 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 }
 
 //int numberOfPositionsChecked = 0; // just to measure how many nodes have actually been checked / visited during the search for the nearest positions
-
-Math::Real Math::KDTree::SearchNearestValue(const Vector2D& position) const
-{
-	return SearchNearestValue(position.GetX(), position.GetY());
-}
 
 Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) const
 {
@@ -127,11 +122,6 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 //	result /= sumOfInversedDistances;
 //	return result;
 	/* ==================== METHOD #2 end ==================== */
-}
-
-void Math::KDTree::SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
-{
-	return SearchNearestValue(position.GetX(), position.GetY(), depth, minDistanceValues, minDistances);
 }
 
 void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
@@ -215,7 +205,7 @@ std::string Math::KDTree::ToString() const
 
 std::string Math::KDTree::ToString(int depth) const
 {
-	static const std::string INDENTATION_STRING = "  ";
+	constexpr char* INDENTATION_STRING = "  ";
 	std::stringstream s("");
 	for (int i = 0; i < depth; ++i)
 	{

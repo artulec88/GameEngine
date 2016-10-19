@@ -6,8 +6,6 @@
 #include "Utility\ILogger.h"
 #include "Math\Math.h"
 
-/* static */ const int Rendering::TextureData::MAX_BOUND_TEXTURES_COUNT = 32;
-
 Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping,
 	GLenum attachment) :
 	m_textureTarget(textureTarget),

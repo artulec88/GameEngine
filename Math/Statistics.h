@@ -40,14 +40,34 @@ namespace Math {
 		{
 			/* ==================== Static variables and functions begin ==================== */
 		private:
-			static const int MAX_STATS_LEVEL;
-			static const int MAX_SAMPLES_COUNT;
+			static constexpr int MAX_STATS_LEVEL = 3;
+			static constexpr int MAX_SAMPLES_COUNT = 1000;
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Stats constructor. </summary>
+			/// <param name="level"> The stats hierarchy level. </param>
 			MATH_API Stats(int level = 0);
+
+			/// <summary> Stats destructor. </summary>
 			MATH_API ~Stats(void);
+
+			/// <summary> Stats copy constructor. </summary>
+			/// <param name="stats"> The stats to copy construct from. </param>
+			MATH_API Stats(const Stats& stats) = delete;
+
+			/// <summary> Stats move constructor. </summary>
+			/// <param name="stats"> The stats to move construct from. </param>
+			MATH_API Stats(Stats&& stats) = delete;
+
+			/// <summary> Stats copy assignment operator. </summary>
+			/// <param name="stats"> The stats to copy assign from. </param>
+			MATH_API Stats& operator=(const Stats& stats) = delete;
+
+			/// <summary> Stats move assignment operator. </summary>
+			/// <param name="stats"> The stats to move assign from. </param>
+			MATH_API Stats& operator=(Stats&& stats) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

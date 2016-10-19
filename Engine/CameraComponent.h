@@ -143,10 +143,10 @@ namespace Engine
 	//{
 	//	/* ==================== Static variables and functions begin ==================== */
 	//private:
-	//	static const Math::Real MINIMUM_DISTANCE_TO_ENTITY;
-	//	static const Math::Real MAXIMUM_DISTANCE_TO_ENTITY;
-	//	static const Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE;
-	//	static const Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE;
+	//	static constexpr Math::Real MINIMUM_DISTANCE_TO_ENTITY = 0.1f;
+	//	static constexpr Math::Real MAXIMUM_DISTANCE_TO_ENTITY = 0.5f;
+	//	static constexpr Math::Angle CameraFollowComponent::MINIMUM_PITCH_ANGLE{ 2.0f };
+	//	static constexpr Math::Angle CameraFollowComponent::MAXIMUM_PITCH_ANGLE{ 70.0f };
 	//	/* ==================== Static variables and functions end ==================== */
 
 	//	/* ==================== Constructors and destructors begin ==================== */

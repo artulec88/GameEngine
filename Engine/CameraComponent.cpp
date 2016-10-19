@@ -264,11 +264,6 @@ Engine::CameraComponent& Engine::CameraComponent::operator=(CameraComponent&& ca
 ////	return ss.str();
 ////}
 //
-///* static */ const Math::Real Engine::CameraFollowComponent::MINIMUM_DISTANCE_TO_ENTITY = 0.1f;
-///* static */ const Math::Real Engine::CameraFollowComponent::MAXIMUM_DISTANCE_TO_ENTITY = 0.5f;
-///* static */ const Math::Angle Engine::CameraFollowComponent::MINIMUM_PITCH_ANGLE(2.0f);
-///* static */ const Math::Angle Engine::CameraFollowComponent::MAXIMUM_PITCH_ANGLE(70.0f);
-//
 //Engine::CameraFollowComponent::CameraFollowComponent(Rendering::Camera* camera, const GameNode* entityToFollow, Math::Real initialDistanceFromEntity,
 //	Math::Real angleAroundEntitySpeed, Math::Real pitchRotationSpeed, const Math::Angle& initialPitchAngle) :
 //	CameraComponent(camera),

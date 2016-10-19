@@ -10,12 +10,6 @@
 #include <fstream>
 #include <sstream>
 
-template <typename T>
-/* static */ const int Math::Statistics::Stats<T>::MAX_STATS_LEVEL = 3;
-
-template <typename T>
-/* static */ const int Math::Statistics::Stats<T>::MAX_SAMPLES_COUNT = 1000;
-
 /* ==================== Stats begin ==================== */
 template <typename T>
 Math::Statistics::Stats<T>::Stats(int level /* = 0 */) :

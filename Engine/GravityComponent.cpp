@@ -7,10 +7,6 @@
 
 #include "Utility\IConfig.h"
 
-// TODO: Don't hard-code any value! Ever!
-// TODO: This variable should be moved into the Physics engine and be accessible from anywhere (similarily as stdlog is accessible).
-/* static */ const Math::Vector3D Engine::GravityComponent::GRAVITY_ACCELERATION(0.0f, -9.8f, 0.0f);
-
 Engine::GravityComponent::GravityComponent(const Rendering::TerrainMesh* terrainMesh) :
 	GameComponent(),
 	IUpdateable(),
