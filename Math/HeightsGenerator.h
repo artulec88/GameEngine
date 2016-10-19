@@ -7,6 +7,7 @@
 
 namespace Math
 {
+	/// <summary> The random floating-point values generator for a given input positions. </summary>
 	class HeightsGenerator
 	{
 	/* ==================== Static variables and functions begin ==================== */
@@ -51,6 +52,10 @@ namespace Math
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary> Generates a random (but constant for the given input parameters) vale (height) for the specified input position. </summary>
+		/// <param name="x"> The X component of the position we want to generate height for. </param>
+		/// <param name="y"> The Y component of the position we want to generate height for. </param>
+		/// <returns> The value (height) generated for the given input position [<paramref name="x"/>, <paramref name="y"/>]. </returns>
 		MATH_API Real GenerateHeight(Real x, Real z) const;
 	private:
 		/// <summary>
@@ -74,6 +79,8 @@ namespace Math
 		/// For a given pair of floats the function will always return the same result during runtime, although this value will be random.
 		/// Once the heights generator is created the noise function mustn't change.
 		/// </summary>
+		/// <param name="x"> The X component of the position we want to calculate noise for. </param>
+		/// <param name="y"> The Y component of the position we want to calculate noise for. </param>
 		/// <returns> The random number between <code>-1</code> and <code>1</code>.</returns>
 		Real GetNoise(int x, int z) const;
 	/* ==================== Non-static member functions end ==================== */
@@ -87,12 +94,26 @@ namespace Math
 		/// Defines the amplitude of the generated heights. The final heights cannot exceed the specified amplitude.
 		/// </summary>
 		Real m_heightAmplitude;
+		
+		/// <summary>
+		/// The number of noise functions that we are going to use during heights generation process.
+		/// </summary>
 		int m_octaves;
+
+		/// <summary>
+		/// The frequency factor. The higher the value the more...
+		/// </summary>
+		Math::Real m_freqFactor;
+
+		/// <summary>
+		/// The amount that we decrease the amplitude by for each higher-frequency octave.
+		/// In other words, this value will determine how rough the final output of the generation process (e.g. terrain) will be.
+		/// </summary>
 		Math::Real m_roughness;
 
-		const Real M_SMOOTH_CORNERS_FACTOR;
-		const Real M_SMOOTH_SIDES_FACTOR;
-		const Real M_SMOOTH_CENTER_FACTOR;
+		Real m_smoothCornersFactor;
+		Real m_smoothSidesFactor;
+		Real m_smoothCenterFactor;
 
 		/// <summary>
 		/// The interpolator we use in heights generation process.

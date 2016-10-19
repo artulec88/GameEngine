@@ -10,10 +10,11 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	m_offsetZ(gridZ * (vertexCount - 1)),
 	m_heightAmplitude(heightAmplitude),
 	m_octaves(octaves),
+	m_freqFactor(3.0f), /* TODO: Don't use hard-coded values */
 	m_roughness(roughness),
-	M_SMOOTH_CORNERS_FACTOR(16.0f),
-	M_SMOOTH_SIDES_FACTOR(8.0f),
-	M_SMOOTH_CENTER_FACTOR(4.0f),
+	m_smoothCornersFactor(16.0f),
+	m_smoothSidesFactor(8.0f),
+	m_smoothCenterFactor(4.0f),
 	m_interpolator(std::make_unique<Interpolation::CosineInterpolator<Math::Real>>()),
 	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE, 1000000000))
 {
@@ -23,13 +24,16 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	int z = 14;
 	Real noise1 = GetNoise(x, z);
 	Real noise2 = GetNoise(x, z);
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise1, noise2), Utility::Logging::ERR, "The noise function does not return the same output for a given input (", noise1, " and ", noise2, ")");
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise1, noise2), Utility::Logging::ERR,
+		"The noise function does not return the same output for a given input (", noise1, " and ", noise2, ")");
 	x += 1;
 	z += -4;
 	Real noise3 = GetNoise(x, z);
 	Real noise4 = GetNoise(x, z);
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), Utility::Logging::ERR, "The noise function does not return the same output for a given input (", noise3, " and ", noise4, ")");
-	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), Utility::Logging::ERR, "The noise function always returns the same output for any input (", noise1, ")");
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(AlmostEqual(noise3, noise4), Utility::Logging::ERR,
+		"The noise function does not return the same output for a given input (", noise3, " and ", noise4, ")");
+	CHECK_CONDITION_EXIT_ALWAYS_MATH(!AlmostEqual(noise1, noise3), Utility::Logging::ERR,
+		"The noise function always returns the same output for any input (", noise1, ")");
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input end ==================== */
 }
 
@@ -40,10 +44,10 @@ Math::HeightsGenerator::~HeightsGenerator()
 Math::Real Math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 {
 	Real totalHeight = REAL_ZERO;
-	Real d = pow(3.0f, m_octaves - 1);
+	Real d = pow(m_freqFactor, m_octaves - 1);
 	for (int i = 0; i < m_octaves; ++i)
 	{
-		Real freq = pow(3.0f, i) / d;
+		Real freq = pow(m_freqFactor, i) / d;
 		Real amplitude = pow(m_roughness, i) * m_heightAmplitude;
 		totalHeight += GetInterpolatedNoise((x + m_offsetX) * freq, (z + m_offsetZ) * freq) * amplitude;
 	}
@@ -73,9 +77,9 @@ Math::Real Math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 Math::Real Math::HeightsGenerator::GetSmoothNoise(int x, int z) const
 {
 	// TODO: Place for an improvement. Create a GaussianBlur class which would be able to smooth noise values a little bit more efficiently.
-	Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / M_SMOOTH_CORNERS_FACTOR;
-	Real sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / M_SMOOTH_SIDES_FACTOR;
-	Real center = GetNoise(x, z) / M_SMOOTH_CENTER_FACTOR;
+	Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
+	Real sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / m_smoothSidesFactor;
+	Real center = GetNoise(x, z) / m_smoothCenterFactor;
 	return corners + sides + center;
 }
 
