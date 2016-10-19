@@ -12,7 +12,7 @@ Rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory) :
 {
 	// This way we make sure that Mesh's move ctrs are used instead of copy ctrs.
 	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::SIMPLE_QUAD,
-		Mesh(GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"))));
+		Mesh(m_modelsDirectory + GET_CONFIG_VALUE_STR_RENDERING("simpleQuadMeshFileName", "plane4.obj"))));
 #ifdef TEXTURE_ATLAS_OFFSET_CALCULATION
 	m_meshType2InstanceMeshMap.insert(std::make_pair(MeshIDs::PARTICLE_QUAD,
 		InstanceMesh(std::vector<Math::Vector2D>{ Math::Vector2D(-0.5f, -0.5f), Math::Vector2D(-0.5f, 0.5f), Math::Vector2D(0.5f, -0.5f), Math::Vector2D(0.5f, 0.5f) }.data(),
@@ -37,7 +37,7 @@ Rendering::MeshFactory::~MeshFactory()
 const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std::string& meshFileName)
 {
 	std::pair<std::map<int, Mesh>::iterator, bool> meshPair =
-		m_meshType2MeshMap.insert(std::make_pair(meshID, Mesh(meshFileName)));
+		m_meshType2MeshMap.insert(std::make_pair(meshID, Mesh(m_modelsDirectory + meshFileName)));
 	CHECK_CONDITION_RENDERING(meshPair.second, Utility::Logging::WARNING, "Mesh \"", meshFileName, "\" has already been created.");
 	return &meshPair.first->second;
 }

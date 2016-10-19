@@ -123,7 +123,7 @@ Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES
 	INFO_LOG_RENDERING("Loading model from file \"", name, "\"");
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\" + m_fileName).c_str(),
+	const aiScene* scene = importer.ReadFile(m_fileName.c_str(),
 		aiProcess_Triangulate | /* aiProcess_FlipWindingOrder | */
 		aiProcess_GenSmoothNormals |
 		aiProcess_FlipUVs |
