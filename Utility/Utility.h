@@ -36,9 +36,9 @@
 #define MEASURE_TIME_ENABLED
 //#endif
 
-#define SAFE_DELETE(p) if(p != NULL) { delete p; p = NULL; }
-#define SAFE_DELETE_WHOLE_TABLE(p, c) for(int i = 0; i < c; ++i) { if (p[i] != NULL) { delete p[i]; p[i] = NULL; } } delete [] p; p = NULL;
-#define SAFE_DELETE_JUST_TABLE(p) if (p != NULL) { delete [] p; p = NULL; }
+#define SAFE_DELETE(p) if(p != nullptr) { delete p; p = nullptr; }
+#define SAFE_DELETE_WHOLE_TABLE(p, c) for(int i = 0; i < c; ++i) { if (p[i] != nullptr) { delete p[i]; p[i] = nullptr; } } delete [] p; p = nullptr;
+#define SAFE_DELETE_JUST_TABLE(p) if (p != nullptr) { delete [] p; p = nullptr; }
 
 #ifdef _DEBUG
 #define CHECK_CONDITION(expr, moduleName, logLevel, ...) do { if (!(expr)) { Utility::Logging::ILogger::GetLogger(moduleName).Log(logLevel, LOGPLACE, ##__VA_ARGS__); } } while (0)

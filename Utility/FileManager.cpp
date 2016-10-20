@@ -129,7 +129,7 @@ std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std
 	//std::vector<std::string> filenames;
 	//DIR* dir;
 	//struct dirent* ent;
-	//if ((dir = opendir(directoryPath.c_str())) != NULL)
+	//if ((dir = opendir(directoryPath.c_str())) != nullptr)
 	//{
 	//	// print all files and directories within directory
 	//	/* 
@@ -142,7 +142,7 @@ std::vector<std::string> Utility::FileManager::ListAllFilesInDirectory(const std
 	//	 * #define DT_CHR      S_IFCHR
 	//	 * #define DT_BLK      S_IFBLK
 	//	 */
-	//	while ((ent = readdir(dir)) != NULL)
+	//	while ((ent = readdir(dir)) != nullptr)
 	//	{
 	//		if (ent->d_type == DT_REG) // is regular file
 	//		{

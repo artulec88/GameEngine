@@ -24,7 +24,7 @@ namespace Utility
 			/// <summary>
 			/// Windows-specific logger constructor.
 			/// </summary>
-			LoggerWindows(const char* fileName = NULL);
+			explicit LoggerWindows(const char* fileName = nullptr);
 			/// <summary>
 			/// Windows-specific logger destructor.
 			/// </summary>

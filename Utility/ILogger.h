@@ -164,7 +164,7 @@ namespace Utility
 			/// <summary>
 			/// Base logger constructor.
 			/// </summary>
-			ILogger(const char* fileName = NULL);
+			explicit ILogger(const char* fileName = nullptr);
 
 			/// <summary>
 			/// Base logger destructor.

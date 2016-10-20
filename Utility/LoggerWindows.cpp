@@ -4,7 +4,7 @@
 #include <string>
 #include "Time.h"
 	
-Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = NULL */) :
+Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = nullptr */) :
 	ILogger(fileName),
 	m_indentDepth(0),
 	m_dateTimeFormat("%H:%M:%S"),

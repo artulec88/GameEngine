@@ -15,7 +15,7 @@ Physics::PhysicsObject::PhysicsObject(Math::Transform& transform, Math::Real mas
 	m_totalTorque( /* TODO: Specify total torque */),
 	m_frictionForce( /* TODO: Specify friction force */),
 	m_totalImpulse( /* TODO: Specify total impulse */),
-	m_aabbCollider(NULL)
+	m_aabbCollider(nullptr)
 {
 }
 
@@ -75,7 +75,7 @@ void Physics::PhysicsObject::AddCollider(Collider* collider)
 
 Math::IntersectInfo Physics::PhysicsObject::Intersect(const PhysicsObject& otherPhysicsObject) const
 {
-	if ((m_aabbCollider == NULL) || (otherPhysicsObject.GetAABBCollider() == NULL))
+	if ((m_aabbCollider == nullptr) || (otherPhysicsObject.GetAABBCollider() == nullptr))
 	{
 		return Math::IntersectInfo(false, 0.0f /* some arbitrary value */);
 	}

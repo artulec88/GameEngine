@@ -27,10 +27,10 @@
 	return *ILogger::loggers[moduleName];
 }
 
-Utility::Logging::ILogger::ILogger(const char* fileName /* = NULL */) :
+Utility::Logging::ILogger::ILogger(const char* fileName /* = nullptr */) :
 	m_level(NOTICE)
 {
-	if (fileName != NULL)
+	if (fileName != nullptr)
 	{
 		AddStream(fileName);
 	}

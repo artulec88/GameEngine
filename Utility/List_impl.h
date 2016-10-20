@@ -1,9 +1,12 @@
 #include "stdafx.h"
+#ifndef __UTILITY_CONTAINER_LIST_IMPL_H__
+#define __UTILITY_CONTAINER_LIST_IMPL_H__
+
 #include "List.h"
 #include "ILogger.h"
 
 template <class T>
-Utility::Container::List<T>::List(const T& item, List<T>* tailList = NULL) :
+Utility::Container::List<T>::List(const T& item, List<T>* tailList = nullptr) :
 	m_item(item),
 	m_tailList(tailList)
 {
@@ -54,7 +57,7 @@ template <class T>
 int Utility::Container::List<T>::GetSize() const
 {
 	int size = 1;
-	while (m_tailList != NULL)
+	while (m_tailList != nullptr)
 	{
 		m_tailList = m_tailList->GetTail();
 		++size;
@@ -65,7 +68,7 @@ int Utility::Container::List<T>::GetSize() const
 template <class T>
 void Utility::Container::List<T>::RemoveTailFront()
 {
-	if (m_tailList == NULL)
+	if (m_tailList == nullptr)
 	{
 		return;
 	}
@@ -79,7 +82,7 @@ void Utility::Container::List<T>::RemoveTailItem(const T& itemToRemove, bool rem
 {
 	List<T>* prevNode = this;
 	List<T>* tailList = m_tailList;
-	while (tailList != NULL)
+	while (tailList != nullptr)
 	{
 		if (tailList->GetItem() == itemToRemove)
 		{
@@ -97,3 +100,5 @@ void Utility::Container::List<T>::RemoveTailItem(const T& itemToRemove, bool rem
 		}
 	}
 }
+
+#endif /* __UTILITY_CONTAINER_LIST_IMPL_H__ */
