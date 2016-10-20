@@ -42,11 +42,11 @@ namespace Utility
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Fill(const std::string& strLevel, LogLevel level);
-			virtual void ResetConsoleColor() const;
+			virtual void Fill(const std::string& strLevel, LogLevel level) override;
+			virtual void ResetConsoleColor() const override;
 		protected:
-			virtual void SetConsoleColor(LogLevel level) const;
-			virtual void ReadConsoleColorsFromConfigFile();
+			virtual void SetConsoleColor(LogLevel level) const override;
+			virtual void ReadConsoleColorsFromConfigFile() override;
 		private:
 			/* ==================== Non-static member functions end ==================== */
 

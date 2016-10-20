@@ -16,9 +16,11 @@ namespace Utility {
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Builder constructor. </summary>
-		/// <param name="object"> The object that is already created, but not yet initialized and
-		/// which will be the output result of the whole building operation. </param>
-		Builder(T* object) :
+		/// <param name="object">
+		/// The object that is already created, but not yet initialized and
+		/// which will be the output result of the whole building operation.
+		/// </param>
+		explicit Builder(T* object) :
 			m_object(object)
 		{
 		}

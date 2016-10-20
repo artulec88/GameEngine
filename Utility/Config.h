@@ -46,7 +46,7 @@ namespace Utility
 		/// <code>name = value</code> - defines parameter "name" with value "val".
 		/// Lines starting with "#" sign are marked as comments and ignored when file is being parsed.
 		/// </summary>
-		virtual void LoadFromFile(const std::string& fileName);
+		virtual void LoadFromFile(const std::string& fileName) override;
 
 		/**
 		* Returns the value of given config parameter, or defValue
@@ -84,7 +84,7 @@ namespace Utility
 		//	return value;
 		//}
 
-		virtual std::string GetArg(const std::string& name, const std::string& defValue) const;
+		virtual std::string GetArg(const std::string& name, const std::string& defValue) const override;
 
 		/**
 		* Returns formatted list of configure parameters, that were used but defined in the configuration file,

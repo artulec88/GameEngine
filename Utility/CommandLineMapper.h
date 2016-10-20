@@ -16,18 +16,38 @@ namespace Utility
 		typedef std::map<std::string, std::string> ArgsToValuesMap;
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Command line parameters mapping object constructor. </summary>
+		/// <param name="argc"> The number of command line parameters. </param>
+		/// <param name="argv"> The array of command line parameter values. </param>
 		CommandLineMapper(int argc, char* argv[]);
+		
+		/// <summary> Command line parameters mapping object destructor. </summary>
 		virtual ~CommandLineMapper();
+
+		/// <summary> Command line parameters mapping object copy constructor. </summary>
+		/// <param name="commandLineMapper"> The command line parameters mapping object to copy construct from. </param>
 		CommandLineMapper(const CommandLineMapper& commandLineMapper) = delete;
+
+		/// <summary> Command line parameters mapping object move constructor. </summary>
+		/// <param name="commandLineMapper"> The command line parameters mapping object to move construct from. </param>
 		CommandLineMapper(CommandLineMapper&& commandLineMapper) = delete;
+
+		/// <summary> Command line parameters mapping object copy assignment operator. </summary>
+		/// <param name="commandLineMapper"> The command line parameters mapping object to copy assign from. </param>
 		CommandLineMapper& operator=(const CommandLineMapper& commandLineMapper) = delete;
+
+		/// <summary> Command line parameters mapping object move assignment operator. </summary>
+		/// <param name="commandLineMapper"> The command line parameters mapping object to move assign from. </param>
 		CommandLineMapper& operator=(CommandLineMapper&& commandLineMapper) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const;
-		virtual inline bool IsPresent(const std::string& opt) const { return m_argsToValuesMap.find(opt) != m_argsToValuesMap.end(); }
+		virtual inline bool IsPresent(const std::string& opt) const override
+		{
+			return m_argsToValuesMap.find(opt) != m_argsToValuesMap.end();
+		}
+		virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

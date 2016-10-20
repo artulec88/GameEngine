@@ -3,7 +3,9 @@
 #include "Utility\Time.h"
 #include "Utility\TimeSpan.h"
 #include "Utility\Array.h"
-//#include "Utility\Array_impl.h"
+#include "Utility\Array_impl.h"
+#include "Utility\Vector.h"
+#include "Utility\Vector_impl.h"
 #include "Utility\StringUtility.h"
 
 #include <ctime>
@@ -16,6 +18,7 @@ using namespace Utility;
 unsigned int testNumber = 0;
 
 bool arrayTestEnabled = true;
+bool vectorTestEnabled = true;
 bool stringUtilityTestEnabled = true;
 bool timeTestEnabled = true;
 
@@ -55,29 +58,65 @@ void ArrayTest()
 
 	NOTICE_LOG(MODULE_NAME, "Array test started");
 	/* ==================== ARRAY TEST #1- integer array testing- begin ==================== */
-	Container::Array<int> intArray(8, 2);
+	Container::Array<int, 8> intArray;
 	intArray.SetElement(0, 1);
 	intArray.SetElement(2, 5);
-	TestReport(intArray.GetSize() == intArray.GetMaxSize(), "The size of the integer array and its maximum size should be equal at this point.");
-	for (int i = 0; i < intArray.GetSize(); ++i)
+	intArray.SetElement(8, 2); // This line should log a Index-Out-Of-Range error message.
+	for (unsigned int i = 0; i < intArray.GetSize(); ++i)
 	{
 		INFO_LOG(MODULE_NAME, "intArray[", i, "] = ", intArray[i]);
 	}
 	/* ==================== ARRAY TEST #1- integer array testing- end ==================== */
 
 	/* ==================== ARRAY TEST #2- float array testing- begin ==================== */
-	Container::Array<float> floatArray(4, 2);
+	Container::Array<float, 4> floatArray;
 	floatArray.SetElement(0, 1.2f);
 	floatArray.SetElement(2, 5.5f);
+	floatArray.SetElement(4, 2.2f); // This line should log a Index-Out-Of-Range error message.
 	floatArray[1] = 2.4f;
 	floatArray[3] = 4.8f;
-	TestReport(floatArray.GetSize() == floatArray.GetMaxSize(), "The size of the float array and its maximum size should be equal at this point.");
-	for (int i = 0; i < floatArray.GetSize(); ++i)
+	floatArray[4] = 1.75f; // This line should log a Index-Out-Of-Range error message.
+	for (unsigned int i = 0; i < floatArray.GetSize(); ++i)
 	{
 		INFO_LOG(MODULE_NAME, "floatArray[", i, "] = ", floatArray[i]);
 	}
 	/* ==================== ARRAY TEST #2- float array testing- end ==================== */
 	NOTICE_LOG(MODULE_NAME, "Array test finished");
+}
+
+void VectorTest()
+{
+	if (!vectorTestEnabled)
+	{
+		return;
+	}
+
+	NOTICE_LOG(MODULE_NAME, "Vector test started");
+	/* ==================== VECTOR TEST #1- integer array testing- begin ==================== */
+	Container::Vector<int> intVector(8, 2);
+	intVector.SetElement(0, 1);
+	intVector.SetElement(2, 5);
+	intVector[3] = 4;
+	TestReport(intVector.GetSize() == intVector.GetMaxSize(), "The size of the integer vector and its maximum size should be equal at this point.");
+	for (unsigned int i = 0; i < intVector.GetSize(); ++i)
+	{
+		DEBUG_LOG(MODULE_NAME, "intVector[", i, "] = ", intVector[i]);
+	}
+	/* ==================== VECTOR TEST #1- integer array testing- end ==================== */
+
+	/* ==================== VECTOR TEST #2- float array testing- begin ==================== */
+	Container::Vector<float> floatVector(4, 2);
+	floatVector.SetElement(0, 1.2f);
+	floatVector.SetElement(2, 5.5f);
+	floatVector[1] = 2.4f;
+	floatVector[3] = 4.8f;
+	TestReport(floatVector.GetSize() == floatVector.GetMaxSize(), "The size of the float vector and its maximum size should be equal at this point.");
+	for (unsigned int i = 0; i < floatVector.GetSize(); ++i)
+	{
+		DEBUG_LOG(MODULE_NAME, "floatVector[", i, "] = ", floatVector[i]);
+	}
+	/* ==================== VECTOR TEST #2- float array testing- end ==================== */
+	NOTICE_LOG(MODULE_NAME, "Vector test finished");
 }
 
 void StringUtilityTest()
@@ -245,8 +284,9 @@ int main(int argc, char* argv[])
 	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
 
 	ArrayTest();
-	StringUtilityTest();
-	TimeTest();
+	VectorTest();
+	//StringUtilityTest();
+	//TimeTest();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

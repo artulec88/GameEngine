@@ -16,7 +16,7 @@ namespace Utility
 	public:
 		/// <summary> Builder director constructor. </summary>
 		/// <param name="builder"> The specific builder for constructing the object. </param>
-		BuilderDirector(Builder<T>& builder) :
+		explicit BuilderDirector(Builder<T>& builder) :
 			m_builder(builder)
 		{
 		}
