@@ -25,7 +25,8 @@ Rendering::MeshFactory::MeshFactory(const std::string& modelsDirectory) :
 
 #ifdef DEBUG_RENDERING_ENABLED
 	m_meshType2MeshMap.insert(std::make_pair(MeshIDs::DEBUG,
-		Mesh(std::vector<Math::Vector2D>{ Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) }.data(), NULL, 4)));
+		Mesh(std::vector<Math::Vector2D>{ Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) }.data(),
+			nullptr, 4, GL_TRIANGLE_STRIP)));
 #endif
 }
 

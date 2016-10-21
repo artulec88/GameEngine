@@ -108,7 +108,7 @@ namespace Rendering
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
 			//WARNING_LOG_RENDERING("Binding mesh data \"", ToString(), "\".");
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
+			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
 			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
 		}
@@ -129,9 +129,9 @@ namespace Rendering
 
 		/// <summary> Checks whether the buffer stored under specified key (<paramref name="buffer/>) is created and available. </summary>
 		/// <returns> <code>True</code> if the buffer under specified <paramref name="buffer"/> is available (<code>!= 0</code>) and <code>false</code> otherwise. </returns>
-		bool HasVBO(MeshBufferTypes::MeshBufferType buffer) const
+		inline bool HasVBO(MeshBufferTypes::MeshBufferType buffer) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
+			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
 			return m_buffers[buffer] != 0;
 		}
@@ -143,9 +143,9 @@ namespace Rendering
 		/// <returns> A handle to the vertex buffer object stored under specified key (<paramref name="buffer"/>). </returns>
 		GLuint GetVBO(MeshBufferTypes::MeshBufferType buffer) const
 		{
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
+			CHECK_CONDITION_EXIT_RENDERING(buffer >= 0 && buffer < MeshBufferTypes::COUNT,
 				Utility::Logging::CRITICAL, "Cannot access buffer at index ", buffer, ". Mesh data = \"", *this, "\"");
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_buffers[buffer] != 0, Utility::Logging::CRITICAL,
+			CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, Utility::Logging::CRITICAL,
 				"The buffer under index ", buffer, " is 0. Mesh data = \"", *this, "\"");
 			return m_buffers[buffer];
 		}
@@ -156,6 +156,8 @@ namespace Rendering
 		/// <param name="buffer"> The buffer key we want to store a handle to new VBO in. </param>
 		/// <returns> The handle to the newly created vertex buffer object (VBO). </returns>
 		GLuint CreateVBO(MeshBufferTypes::MeshBufferType buffer);
+
+		void ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 
 		/// <summary>
 		/// Returns the size of the mesh.
@@ -250,7 +252,7 @@ namespace Rendering
 		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
 		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode = GL_TRIANGLE_STRIP);
+		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode);
 		/// <summary> Mesh destructor. </summary>
 		virtual ~Mesh(void);
 		/// <summary> Mesh copy constructor. </summary>
@@ -270,7 +272,24 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void Draw() const;
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, int* data, int dataCount)
+		{
+			ReplaceData(buffer, data, dataCount, sizeof(int), 1);
+		}
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Real* data, int dataCount)
+		{
+			ReplaceData(buffer, data, dataCount, sizeof(Math::Real), 1);
+		}
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Vector2D* data, int dataCount)
+		{
+			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector2D), 2);
+		}
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Vector3D* data, int dataCount)
+		{
+			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector3D), 3);
+		}
 	protected:
+		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);
 		void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, Math::Real* data, unsigned int dataCount);
 
@@ -469,44 +488,6 @@ namespace Rendering
 #endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TerrainMesh */
-
-
-	// TODO: TextMesh could probably be removed. Its functionality should go directly into the Mesh class.
-	/// <summary>
-	/// The text mesh that is going to be rendered on the screen.
-	/// </summary>
-	class TextMesh : public Mesh
-	{
-		/* ==================== Static variables begin ==================== */
-		/* ==================== Static variables end ==================== */
-
-		/* ==================== Constructors and destructors begin ==================== */
-	public:
-		/// <summary> Text mesh constructor. </summary>
-		TextMesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount, GLenum mode = GL_TRIANGLES);
-		/// <summary> Text mesh destructor. </summary>
-		virtual ~TextMesh(void);
-		/// <summary> Text mesh copy constructor. </summary>
-		TextMesh(const TextMesh& textMesh) = delete;
-		/// <summary> Text mesh move constructor. </summary>
-		TextMesh(TextMesh&& textMesh);
-		/// <summary> Text mesh copy assignment operator. </summary>
-		TextMesh& operator=(const TextMesh& textMesh) = delete;
-		/// <summary> Text mesh move assignment operator. </summary>
-		TextMesh& operator=(TextMesh&& textMesh) = delete;
-		/* ==================== Constructors and destructors end ==================== */
-
-		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void Draw() const override;
-		void ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount);
-		/* ==================== Non-static member functions end ==================== */
-
-
-		/* ==================== Non-static member variables begin ==================== */
-	private:
-		/* ==================== Non-static member variables end ==================== */
-	}; /* end class TextMesh */
 
 } /* end namespace Rendering */
 

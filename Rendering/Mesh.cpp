@@ -73,6 +73,51 @@ GLuint Rendering::MeshData::CreateVBO(MeshBufferTypes::MeshBufferType buffer)
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO creation");
 	return m_buffers[buffer];
 }
+
+void Rendering::MeshData::ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
+{
+	Rendering::CheckErrorCode(__FUNCTION__, "Started VBO data replacement function");
+	CHECK_CONDITION_EXIT_RENDERING(m_buffers[buffer] != 0, Utility::Logging::EMERGENCY,
+		"Cannot replace data in the mesh data buffer. The buffer has not been intialized.");
+
+	// TODO: Check special cases such as MeshBufferTypes::INDEX and MeshBufferTypes::INSTANCE.
+	Bind();
+	switch (buffer)
+	{
+	case MeshBufferTypes::INDEX:
+		break;
+	case MeshBufferTypes::POSITIONS:
+		//glDeleteBuffers(1, &m_buffers[MeshBufferTypes::POSITIONS]);
+		//glGenBuffers(1, &m_buffers[MeshBufferTypes::POSITIONS]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[MeshBufferTypes::POSITIONS]);
+		glBufferData(GL_ARRAY_BUFFER, dataCount * singleDataEntrySize, data, GL_STATIC_DRAW);
+		glVertexAttribPointer(MeshAttributeLocations::POSITIONS, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(MeshAttributeLocations::POSITIONS);
+		m_size = dataCount;
+		break;
+	case MeshBufferTypes::TEXTURE_COORDINATES:
+		//glDeleteBuffers(1, &m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
+		//glGenBuffers(1, &m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
+		glBindBuffer(GL_ARRAY_BUFFER, m_buffers[MeshBufferTypes::TEXTURE_COORDINATES]);
+		glBufferData(GL_ARRAY_BUFFER, dataCount * singleDataEntrySize, data, GL_STATIC_DRAW);
+		glVertexAttribPointer(MeshAttributeLocations::TEXTURE_COORDINATES, singleDataComponentsCount, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(MeshAttributeLocations::TEXTURE_COORDINATES);
+		break;
+	case MeshBufferTypes::NORMALS:
+		break;
+	case MeshBufferTypes::TANGENTS:
+		break;
+	case MeshBufferTypes::BITANGENTS:
+		break;
+	case MeshBufferTypes::INSTANCE:
+		break;
+	case MeshBufferTypes::COUNT:
+	default:
+		ERROR_LOG_RENDERING("Invalid buffer specified: ", buffer, ".");
+	}
+	Unbind();
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO data replacement function");
+}
 /* ==================== MeshData class implementation end ==================== */
 
 /* ==================== Mesh class implementation begin ==================== */
@@ -96,7 +141,7 @@ Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::V
 	AddVertices(positions, textureCoordinates, normals, tangents, bitangents, verticesCount, indices, indicesCount, calcNormalsEnabled);
 }
 
-Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode /* = GL_TRIANGLE_STRIP */) :
+Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
 #ifdef STORE_MESH_FILE_NAME
 	m_fileName(""),
 #endif
@@ -406,6 +451,16 @@ void Rendering::Mesh::Draw() const
 
 	m_meshData->Unbind();
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished drawing the Mesh");
+}
+
+void Rendering::Mesh::ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount)
+{
+	Rendering::CheckErrorCode(__FUNCTION__, "Started replacing data in the Mesh");
+	//CRITICAL_LOG_RENDERING("Replacing data in the mesh. The functionality has not been tested yet.");
+	CHECK_CONDITION_RETURN_VOID_RENDERING(m_meshData->HasVBO(buffer), Utility::Logging::EMERGENCY,
+		"Cannot replace data in buffer ", buffer, " because this buffer has not been initialized at all.");
+	m_meshData->ReplaceVBO(buffer, data, dataCount, singleDataEntrySize, singleDataComponentsCount);
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished replacing data in the Mesh");
 }
 
 void Rendering::Mesh::CalcNormals(Math::Vector3D*& normals, Math::Vector3D* positions, size_t verticesCount, const int* indices, size_t indicesCount) const
@@ -1016,40 +1071,3 @@ void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transforma
 #endif
 }
 /* ==================== TerrainMesh class implementation end ==================== */
-
-/* ==================== TextMesh class implementation begin ==================== */
-Rendering::TextMesh::TextMesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount, GLenum mode /* = GL_TRIANGLES */) :
-	Mesh(mode)
-{
-	AddVertices(screenPositions, textureCoordinates, verticesCount);
-}
-
-Rendering::TextMesh::~TextMesh(void)
-{
-}
-
-Rendering::TextMesh::TextMesh(TextMesh&& textMesh) :
-	Mesh(std::move(textMesh))
-{
-}
-
-void Rendering::TextMesh::Draw() const
-{
-	CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, Utility::Logging::CRITICAL, "Mesh data instance is nullptr");
-
-	m_meshData->Bind();
-	glDrawArrays(m_mode, 0, m_meshData->GetSize());
-	m_meshData->Unbind();
-}
-
-void Rendering::TextMesh::ReplaceData(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, int verticesCount)
-{
-	//CHECK_CONDITION_EXIT_RENDERING(m_meshData != nullptr, CRITICAL, "Mesh data instance is nullptr");
-	//glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO());
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, screenVerticesCount * sizeof(Vertex2D), screenVertices);
-
-	// TODO: Optimize this! Removing whole VAO and VBOs just to replace it with other VAO and VBOs seems unneccessary.
-
-	AddVertices(screenPositions, textureCoordinates, verticesCount);
-}
-/* ==================== TextMesh class implementation end ==================== */

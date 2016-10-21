@@ -26,7 +26,7 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	m_borderWidth(borderWidth),
 	m_borderEdgeTransitionWidth(borderEdgeTransitionWidth)
 {
-	if (m_font != NULL)
+	if (m_font != NULL && !text.empty())
 	{
 		// TODO: Investigate more thoroughly what happens exactly when text == "". Some errors seem to appear when we don't call SetText for an empty string.
 		SetText(text);
@@ -35,7 +35,8 @@ Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text,
 	{
 		// Replace all such calls to create new meshes with reference to one single mesh (probably MeshIDs::SIMPLE_QUAD).
 		Math::Vector2D quadVertexPositions[] = { Math::Vector2D(-REAL_ONE, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ONE), Math::Vector2D(-REAL_ONE, -REAL_ONE), Math::Vector2D(REAL_ONE, -REAL_ONE) };
-		m_mesh = std::make_unique<Mesh>(quadVertexPositions, nullptr, 4);
+		Math::Vector2D quadTexCoords[] = { Math::Vector2D(REAL_ZERO, REAL_ZERO), Math::Vector2D(REAL_ZERO, REAL_ONE), Math::Vector2D(REAL_ONE, REAL_ZERO), Math::Vector2D(REAL_ONE, REAL_ONE) };
+		m_mesh = std::make_unique<Mesh>(quadVertexPositions, quadTexCoords, 4, GL_TRIANGLE_STRIP);
 	}
 }
 
@@ -133,11 +134,12 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 	MoveAABR(minCursorX, cursorY, maxCursorX, REAL_ZERO);
 	if (m_mesh == nullptr)
 	{
-		m_mesh = std::make_unique<TextMesh>(&positions[0], &textureCoordinates[0], positions.size());
+		m_mesh = std::make_unique<Mesh>(&positions[0], &textureCoordinates[0], positions.size(), GL_TRIANGLES);
 	}
 	else
 	{
-		(static_cast<TextMesh*>(m_mesh.get()))->ReplaceData(&positions[0], &textureCoordinates[0], static_cast<int>(positions.size()));
+		m_mesh->ReplaceData(MeshBufferTypes::POSITIONS, positions.data(), positions.size());
+		m_mesh->ReplaceData(MeshBufferTypes::TEXTURE_COORDINATES, textureCoordinates.data(), textureCoordinates.size());
 	}
 }
 

@@ -40,6 +40,10 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
+		//RENDERING_API const Mesh* CreateBillboardMesh(int meshID, const std::string& meshFileName);
+		//RENDERING_API const Mesh* CreateInstanceMesh(int meshID, const std::string& meshFileName);
+		//RENDERING_API const Mesh* CreateTerrainMesh(int meshID, const std::string& meshFileName);
+		//RENDERING_API const Mesh* CreateTextMesh(int meshID, const std::string& meshFileName);
 		RENDERING_API inline const Mesh* GetMesh(int meshID) const
 		{
 			auto meshItr = m_meshType2MeshMap.find(meshID);
@@ -72,6 +76,16 @@ namespace Rendering
 		/// The map storing all instance meshes by their unique ID.
 		/// </summary>
 		std::map<int, InstanceMesh> m_meshType2InstanceMeshMap;
+
+		/// <summary>
+		/// The map storing all terrain meshes by their unique ID.
+		/// </summary>
+		std::map<int, TerrainMesh> m_meshType2TerrainMeshMap;
+
+		/// <summary>
+		/// The map storing all billboard meshes by their unique ID.
+		/// </summary>
+		std::map<int, BillboardMesh> m_meshType2BillboardMeshMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshFactory */
 
