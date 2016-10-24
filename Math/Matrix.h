@@ -75,10 +75,14 @@ namespace Math
 
 		/// <summary> Creates a matrix based on the screen position and the scale. </summary>
 		/// <param name='screenPosition'> The position on the screen </param>
+		/// <param name="screenRotationAngle"> The rotation angle. </param>
 		/// <param name='scale'> The scale </param>
 		/// <remarks> The function is used for the gui textures. </remarks>
-		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector2D& screenPosition, const Vector2D& scale) :
-			Matrix4D(scale.GetX(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale.GetY(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
+		MATH_API Matrix4D(const Vector2D& screenPosition, const Angle& screenRotationAngle, const Vector2D& scale) :
+			Matrix4D(screenRotationAngle.Cos() * scale.GetX(), screenRotationAngle.Sin() * scale.GetY(), REAL_ZERO, REAL_ZERO,
+				-screenRotationAngle.Sin() * scale.GetX(), screenRotationAngle.Cos() * scale.GetY(), REAL_ZERO, REAL_ZERO,
+				REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO,
+				screenPosition.GetX(), screenPosition.GetY(), REAL_ZERO, REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "3");
 			STOP_PROFILING_MATH("3");

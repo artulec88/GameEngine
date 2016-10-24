@@ -8,6 +8,8 @@
 #include <string>
 #include <map>
 
+//#define STORE_TEXTURE_FILE_NAME
+
 namespace Rendering
 {
 
@@ -43,7 +45,6 @@ namespace Rendering
 		void BindAsRenderTarget() const;
 		inline int GetWidth() const { return m_width; }
 		inline int GetHeight() const { return m_height; }
-		bool Compare(const TextureData& textureData) const;
 	private:
 		void InitTextures(unsigned char** data, GLfloat* filters, GLenum* internalFormat, GLenum* format, GLenum wrapping);
 		void InitRenderTargets(GLenum* attachments);
@@ -81,6 +82,24 @@ namespace Rendering
 
 	class Texture
 	{
+		/// <summary>
+		/// The <code>Texture</code> objects comparator.
+		/// </summary>
+		/// <remarks>
+		/// It is more efficient to pass a function-object in a function call than pass function pointers.
+		/// That is why, instead of creating a Compare(const Texture& other) method in the <code>Texture</code> class itself and pass the pointer to this function whenever it is needed,
+		/// it is better to create a <code>TextureComparator</code> object and pass its temporary instance. The reason is that function-objects are almost always inlined by the compiler.
+		/// See https://en.wikibooks.org/wiki/Optimizing_C%2B%2B/Writing_efficient_code/Performance_improving_features#Function-objects.
+		/// </remarks>
+		//class TextureComparator
+		//{
+		//public:
+		//	bool operator() (const Texture& lhs, const Texture& rhs) const
+		//	{
+		//		return lhs.m_textureData < rhs.m_textureData;
+		//	}
+		//}; // end class TextureComparator
+
 		/* ==================== Static variables begin ==================== */
 		/* ==================== Static variables end ==================== */
 
@@ -132,7 +151,9 @@ namespace Rendering
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		TextureData m_textureData;
+#ifdef STORE_TEXTURE_FILE_NAME
 		std::string m_fileName;
+#endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Texture */
 
@@ -146,6 +167,7 @@ namespace Rendering
 		/// <summary> GUI texture constructor. </summary>
 		/// <param name="fileName"> The file name of the texture. </param>
 		/// <param name="position"> The screen position of the GUI texture. </param>
+		/// <param name="rotationAngle"> The rotation angle on the screen of the GUI texture. </param>
 		/// <param name="scale"> The scale used when rendering the GUI texture. </param>
 		/// <param name="textureTarget"> The OpenGL texture target. </param>
 		/// <param name="filter">
@@ -165,7 +187,7 @@ namespace Rendering
 		/// <code>GL_REPEAT</code>, or <code>GL_MIRROR_CLAMP_TO_EDGE</code>. See https://www.opengl.org/sdk/docs/man/docbook4/xhtml/glTexParameter.xml for details.
 		/// </param>
 		/// <param name="attachment"> The attachments for the rendering targets of the texture. Particularly, useful for rendering to texture mechanism. </param>
-		RENDERING_API GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D& scale, GLenum textureTarget = GL_TEXTURE_2D,
+		RENDERING_API GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Angle& rotationAngle, const Math::Vector2D& scale, GLenum textureTarget = GL_TEXTURE_2D,
 			GLfloat filter = GL_LINEAR_MIPMAP_LINEAR, GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, GLenum wrapping = GL_REPEAT, GLenum attachment = GL_NONE);
 		/// <summary> GUI texture destructor. </summary>
 		RENDERING_API virtual ~GuiTexture(void);

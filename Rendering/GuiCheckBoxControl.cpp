@@ -2,8 +2,8 @@
 #include "GuiCheckBoxControl.h"
 
 
-Rendering::Controls::GuiCheckBoxControl::GuiCheckBoxControl(Texture* texture, const Math::Vector2D& screenPosition) :
-	GuiControl(screenPosition),
+Rendering::Controls::GuiCheckBoxControl::GuiCheckBoxControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle) :
+	GuiControl(screenPosition, screenRotationAngle),
 	m_texture(texture)
 {
 }

@@ -35,7 +35,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API MenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture, const Math::Vector2D& screenPosition,
-			Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+			const Math::Angle& screenRotation, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 			Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~MenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
@@ -80,7 +80,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API CompositeMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~CompositeMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
@@ -122,7 +122,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ActionMenuEntry(Engine::Actions::Action actionID, const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ActionMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */
@@ -152,7 +152,7 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API ValueMenuEntry(const std::string& text, const Rendering::Text::Font* font, Math::Real fontSize, const Rendering::Texture* iconTexture,
-			const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
+			const Math::Vector2D& screenPosition, const Math::Angle& screenRotation, Math::Real maxLineLength, const Rendering::Color& textColor, const Rendering::Color& outlineColor, const Math::Vector2D& offset,
 			bool isCentered = false, Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 		ENGINE_API virtual ~ValueMenuEntry(void);
 		/* ==================== Constructors and destructors end ==================== */

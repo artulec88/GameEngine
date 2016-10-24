@@ -38,6 +38,9 @@ namespace Rendering
 			/// The position on the screen where the top left corner of the text should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).
 			/// </param>
+			/// <param name="screenRotationAngle">
+			/// The rotation angle of the GUI button control.
+			/// </param>
 			/// <param name="maxLineLength">
 			/// Basically, the width of the virtual page in terms of screen width
 			/// (1 is full screen width, 0.5 is half the width of the screen etc.).
@@ -61,7 +64,7 @@ namespace Rendering
 			/// <param name="borderWidth"> The border width. </param>
 			/// <param name="borderEdgeTransitionWidth"> The border edge transition width. </param>
 			RENDERING_API GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture, const Math::Vector2D& screenPosition,
-				Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
+				const Math::Angle& screenRotationAngle, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset, bool isCentered = false,
 				Math::Real characterWidth = 0.5f, Math::Real characterEdgeTransitionWidth = 0.1f, Math::Real borderWidth = 0.4f, Math::Real borderEdgeTransitionWidth = 0.1f);
 			RENDERING_API virtual ~GuiButtonControl(void);
 			//private:

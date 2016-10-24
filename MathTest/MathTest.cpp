@@ -523,7 +523,7 @@ void MatrixTest()
 	Matrix4D matrix10(Vector3D(5.0f, 10.0f, 15.0f)); // translation matrix
 	Matrix4D matrix11(5.0f, 10.0f, 15.0f); // translation matrix
 	Matrix4D matrix12(Angle(75.0f), 1.333f, 0.1f, 1000.0f); // perspective projection
-	Matrix4D matrix13(Vector2D(5.0f, -2.0f), Vector2D(0.5f, 1.2f));
+	Matrix4D matrix13(Vector2D(5.0f, -2.0f), Math::Angle(0.0f), Vector2D(0.5f, 1.2f));
 	Matrix4D matrix14(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f)); // rotation matrix
 	Matrix4D matrix15(Vector3D(1.0f, 0.0f, 0.0f), Vector3D(0.0f, 1.0f, 0.0f), Vector3D(0.0f, 2.0f, 5.0f)); // rotation matrix
 	Matrix4D matrix16(1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 1);

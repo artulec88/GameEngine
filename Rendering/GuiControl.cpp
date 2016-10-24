@@ -3,9 +3,10 @@
 
 #include "Utility\ILogger.h"
 
-Rendering::Controls::GuiControl::GuiControl(const Math::Vector2D& screenPosition) :
+Rendering::Controls::GuiControl::GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle) :
 	m_screenPosition(screenPosition),
-	m_aabr(screenPosition, screenPosition),
+	m_screenRotation(screenRotationAngle),
+	m_aabr(screenPosition, screenPosition), // TODO: Not correct if screen rotation angle != 0
 	m_mesh(nullptr)
 {
 }

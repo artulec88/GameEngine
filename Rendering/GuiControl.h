@@ -42,7 +42,10 @@ namespace Rendering
 			/// The position on the screen where the top left corner of this GUI control should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).
 			/// </param>
-			RENDERING_API GuiControl(const Math::Vector2D& screenPosition);
+			/// <param name="screenRotationAngle">
+			/// The rotation on the screen of the GUI control.
+			/// </param>
+			RENDERING_API GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle);
 
 			/// <summary>
 			/// Destroys the GUI control.
@@ -78,6 +81,14 @@ namespace Rendering
 			RENDERING_API const Math::Vector2D& GetScreenPosition() const { return m_screenPosition; }
 
 			/// <summary>
+			/// The rotation of the GUI control.
+			/// </summary>
+			/// <returns>
+			/// The angle representing the rotation of the GUI control.
+			/// </returns>
+			RENDERING_API const Math::Angle& GetScreenRotation() const { return m_screenRotation; }
+
+			/// <summary>
 			/// Draws the GUI control on the screen using the specified rendering engine.
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI control.</param>
@@ -98,6 +109,7 @@ namespace Rendering
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			Math::Vector2D m_screenPosition;
+			Math::Angle m_screenRotation;
 			Math::AABR m_aabr;
 		protected:
 			std::unique_ptr<Mesh> m_mesh;

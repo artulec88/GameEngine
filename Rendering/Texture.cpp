@@ -6,6 +6,7 @@
 #include "Utility\ILogger.h"
 #include "Math\Math.h"
 
+/* ==================== TextureData class implementation begin ==================== */
 Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureTarget, GLfloat filter, GLenum internalFormat, GLenum format, GLenum wrapping,
 	GLenum attachment) :
 	m_textureTarget(textureTarget),
@@ -293,66 +294,67 @@ void Rendering::TextureData::BindAsRenderTarget() const
 	glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
 	glViewport(0, 0, m_width, m_height);
 }
+/* ==================== TextureData class implementation end ==================== */
 
-// TODO: Don't use function pointers. Instead, create TextureComparator object and pass it instead as a function-object. Function-objects tend to inlined almost always, which isn't the case for function pointers.
-bool Rendering::TextureData::Compare(const TextureData& textureData) const
-{
-	if ((m_textureTarget != textureData.m_textureTarget) || (m_width != textureData.m_width) || (m_height != textureData.m_height) ||
-		(m_framebuffer != textureData.m_framebuffer) || (m_renderbuffer != textureData.m_renderbuffer) || (m_texturesCount != textureData.m_texturesCount))
-	{
-		return false;
-	}
-
-	for (int i = 0; i < m_texturesCount; ++i)
-	{
-		if (m_textureIDs[i] != textureData.m_textureIDs[i])
-		{
-			return false;
-		}
-	}
-	return true;
-}
-
+/* ==================== Texture class implementation begin ==================== */
 Rendering::Texture::Texture(const std::string& fileName, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */,
 	GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	m_textureData(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
-	m_fileName(fileName)
+	m_textureData(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment)
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName(fileName)
+#endif
 {
 	INFO_LOG_RENDERING("Texture \"", fileName, "\" has been created.");
 }
 
 Rendering::Texture::Texture(int width /* = 0 */, int height /* = 0 */, unsigned char* data /* = 0 */, GLenum textureTarget /* = GL_TEXTURE_2D */, GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */,
 	GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	m_textureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment),
-	m_fileName()
+	m_textureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, wrapping, &attachment)
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName()
+#endif
 {
 	CHECK_CONDITION_RENDERING((width > 0) && (height > 0), Utility::Logging::ERR, "Cannot initialize texture. Passed texture size is incorrect (width=", width, "; height=", height, ")");
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 Rendering::Texture::Texture(int texturesCount, int width, int height, unsigned char** data, GLenum textureTarget, GLfloat* filters, GLenum* internalFormats, GLenum* formats, GLenum wrapping, GLenum* attachments) :
-	m_textureData(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, wrapping, attachments),
-	m_fileName()
+	m_textureData(textureTarget, width, height, texturesCount, data, filters, internalFormats, formats, wrapping, attachments)
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName()
+#endif
 {
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != nullptr, Utility::Logging::ERR, "Texture data creation failed. Texture data is NULL.");
 }
 
 Rendering::Texture::Texture(const std::string& posXFileName, const std::string& negXFileName, const std::string& posYFileName, const std::string& negYFileName, const std::string& posZFileName, const std::string& negZFileName) :
-	m_textureData(posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName),
-	m_fileName()
+	m_textureData(posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName)
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName()
+#endif
 {
 }
 
 Rendering::Texture::~Texture(void)
 {
+#ifdef STORE_TEXTURE_FILE_NAME
 	DELOCUST_LOG_RENDERING("Texture \"", m_fileName, "\" destroyed.");
+#else
+	DELOCUST_LOG_RENDERING("Texture destroyed.");
+#endif
 }
 
 Rendering::Texture::Texture(Texture&& texture) :
-	m_textureData(std::move(texture.m_textureData)), // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
-	m_fileName(std::move(texture.m_fileName))
+	m_textureData(std::move(texture.m_textureData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
+#ifdef STORE_TEXTURE_FILE_NAME
+	, m_fileName(std::move(texture.m_fileName))
+#endif
 {
+#ifdef STORE_TEXTURE_FILE_NAME
 	DELOCUST_LOG_RENDERING("Texture \"", m_fileName, "\" moved.");
+#else
+	DELOCUST_LOG_RENDERING("Texture moved.");
+#endif
 }
 
 void Rendering::Texture::Bind(unsigned int unit /* = 0 */, unsigned int textureIndex /* = 0 */) const
@@ -369,12 +371,13 @@ void Rendering::Texture::BindAsRenderTarget() const
 	CHECK_CONDITION_EXIT_RENDERING(m_textureData != NULL, Utility::Logging::EMERGENCY, "Cannot bind the texture as render target. Texture data is NULL.");
 	m_textureData.BindAsRenderTarget();
 }
+/* ==================== Texture class implementation end ==================== */
 
-
-Rendering::GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Vector2D& scale, GLenum textureTarget /* = GL_TEXTURE_2D */,
+/* ==================== GuiTexture class implementation begin ==================== */
+Rendering::GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Angle& rotationAngle, const Math::Vector2D& scale, GLenum textureTarget /* = GL_TEXTURE_2D */,
 	GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
 	Texture(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
-	m_transformationMatrix(position, scale),
+	m_transformationMatrix(position, rotationAngle, scale),
 	m_position(position),
 	m_scale(scale)
 {
@@ -394,7 +397,9 @@ Rendering::GuiTexture::GuiTexture(GuiTexture&& guiTexture) :
 {
 	DELOCUST_LOG_RENDERING("GUI texture moved.");
 }
+/* ==================== GuiTexture class implementation end ==================== */
 
+/* ==================== ParticleTexture class implementation begin ==================== */
 Rendering::Particles::ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
 	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_NONE),
 	m_rowsCount(rowsCount),
@@ -413,6 +418,7 @@ Rendering::Particles::ParticleTexture::ParticleTexture(ParticleTexture&& particl
 {
 	DELOCUST_LOG_RENDERING("Particle texture moved.");
 }
+/* ==================== ParticleTexture class implementation end ==================== */
 
 //Rendering::CubeShadowMapTexture::CubeShadowMapTexture(int windowWidth, int windowHeight)
 //{

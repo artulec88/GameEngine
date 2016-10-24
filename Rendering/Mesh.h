@@ -157,6 +157,14 @@ namespace Rendering
 		/// <returns> The handle to the newly created vertex buffer object (VBO). </returns>
 		GLuint CreateVBO(MeshBufferTypes::MeshBufferType buffer);
 
+		/// <summary>
+		/// Modifies the specified <paramref name="buffer"/> with the new values stored in <paramref name="data"/> array.
+		/// </summary>
+		/// <param name="buffer"> The type of buffer we want to modify (e.g. POSITIONS or TEXTURE_COORDINATES). </param>
+		/// <param name="data"> The pointer to array of data that will replace the previous buffer storage. The array's length is <paramref name="dataCount"/>. </param>
+		/// <param name="dataCount"> The length of the array specified in <paramref name="data"/> pointer. </param>
+		/// <param name="singleDataEntrySize"> The size in bytes of the single value in the <paramref name="data"/> array. </param>
+		/// <param name="singleDataComponentsCount"> The number of attributes (or components) a single <paramref name="data"/> entry has. <param>
 		void ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 
 		/// <summary>

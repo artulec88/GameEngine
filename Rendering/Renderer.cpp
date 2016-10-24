@@ -160,7 +160,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_guiTextures.push_back(GuiTexture("chessboard3.jpg", Math::Vector2D(0.5f, 0.5f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiTextures.push_back(GuiTexture("chessboard3.jpg", Math::Vector2D(1.0f, 0.0f), Math::Angle(30.0f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 	//m_guiTextures.push_back(GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
 #endif

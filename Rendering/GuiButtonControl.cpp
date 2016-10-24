@@ -6,15 +6,15 @@
 #include <sstream>
 
 Rendering::Controls::GuiButtonControl::GuiButtonControl(const std::string& text, const Text::Font* font, Math::Real fontSize, const Texture* iconTexture,
-	const Math::Vector2D& screenPosition, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset,
+	const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, Math::Real maxLineLength, const Color& textColor, const Color& outlineColor, const Math::Vector2D& offset,
 	bool isCentered /* = false */, Math::Real characterWidth /* = 0.5f */, Math::Real characterEdgeTransitionWidth /* = 0.1f */, Math::Real borderWidth /* = 0.4f */,
 	Math::Real borderEdgeTransitionWidth /* = 0.1f */) :
-	GuiControl(screenPosition),
+	GuiControl(screenPosition, screenRotationAngle),
 	m_text(text),
 	m_font(font),
 	m_fontSize(fontSize),
 	m_iconTexture(iconTexture),
-	m_iconTransformationMatrix(screenPosition, Math::Vector2D(0.05f, 0.05f)),
+	m_iconTransformationMatrix(screenPosition, screenRotationAngle, Math::Vector2D(0.05f, 0.05f)),
 	m_color(textColor),
 	m_outlineColor(outlineColor),
 	m_maxLineLength(maxLineLength),
