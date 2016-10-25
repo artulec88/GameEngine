@@ -13,7 +13,7 @@ Rendering::Controls::GuiCheckBoxControl::~GuiCheckBoxControl()
 {
 }
 
-void Rendering::Controls::GuiCheckBoxControl::Draw(Rendering::Renderer* renderer) const
+void Rendering::Controls::GuiCheckBoxControl::Draw(const Shader* guiControlShader, const Renderer& renderer) const
 {
 	ERROR_LOG_RENDERING("GuiCheckBox control doesn't support rendering yet.");
 }

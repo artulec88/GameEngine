@@ -1,24 +1,15 @@
-#ifndef __RENDERING_GUI_CHECK_BOX_CONTROL_H__
-#define __RENDERING_GUI_CHECK_BOX_CONTROL_H__
+#ifndef __RENDERING_GUI_IMAGE_CONTROL_H__
+#define __RENDERING_GUI_IMAGE_CONTROL_H__
 
 #include "Rendering.h"
 #include "GuiControl.h"
-#include "Font.h"
-#include "Mesh.h"
-#include "Shader.h"
 #include "Texture.h"
-
-#include "Math\Vector.h"
-#include "Math\AABR.h"
-
-#include <string>
-#include <vector>
 
 namespace Rendering
 {
 	namespace Controls
 	{
-		class GuiCheckBoxControl : public GuiControl
+		class GuiImageControl : public GuiControl
 		{
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
@@ -26,38 +17,40 @@ namespace Rendering
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
-			/// Creates a new GUI check box control.
+			/// Creates a new GUI image control.
 			/// </summary>
-			/// <param name="texture"> The texture that will be applied to the checkbox mesh. </param>
+			/// <param name="texture"> The texture that will be applied on the GUI image mesh. </param>
 			/// <param name="screenPosition">
-			/// The position on the screen where the top left corner of the text should be rendered.
+			/// The position on the screen where the top left corner of the GUI image should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).
 			/// </param>
 			/// <param name="screenRotationAngle"> The angle the GUI control will be rotated by. </param>
-			/// <param name="scale"> The scale of the GUI check box control. </param>
-			RENDERING_API GuiCheckBoxControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
-			RENDERING_API virtual ~GuiCheckBoxControl(void);
+			/// <param name="scale"> The scale of this GUI image control. </param>
+			RENDERING_API GuiImageControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
+			
+			/// <summary> GUI image control destructor. </summary>
+			RENDERING_API virtual ~GuiImageControl(void);
 
-			/// <summary> GUI check box control copy constructor. </summary>
-			GuiCheckBoxControl(const GuiCheckBoxControl& guiCheckBoxControl) = delete;
+			/// <summary> GUI image control copy constructor. </summary>
+			GuiImageControl(const GuiImageControl& guiImageControl) = delete;
 
-			/// <summary> GUI check box control move constructor. </summary>
-			GuiCheckBoxControl(GuiCheckBoxControl&& guiCheckBoxControl) = delete;
+			/// <summary> GUI image control move constructor. </summary>
+			GuiImageControl(GuiImageControl&& guiImageControl) = delete;
 
-			/// <summary> GUI check box control copy assignment operator. </summary>
-			GuiCheckBoxControl& operator=(const GuiCheckBoxControl& guiCheckBoxControl) = delete;
+			/// <summary> GUI image control copy assignment operator. </summary>
+			GuiImageControl& operator=(const GuiImageControl& guiImageControl) = delete;
 
-			/// <summary> GUI check box control move assignment operator. </summary>
-			GuiCheckBoxControl& operator=(GuiCheckBoxControl&& guiCheckBoxControl) = delete;
+			/// <summary> GUI image control move assignment operator. </summary>
+			GuiImageControl& operator=(GuiImageControl&& guiImageControl) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary>
-			/// Draws the GUI check box on the screen using the specified rendering engine and shader.
+			/// Draws the GUI image control on the screen using the specified rendering engine and shader.
 			/// </summary>
-			/// <param name="guiControlShader">The shader to be used when drawing the GUI check box.</param>
-			/// <param name="renderer">The rendering engine to be used when drawing the GUI check box.</param>
+			/// <param name="guiControlShader">The shader to be used when drawing the GUI image.</param>
+			/// <param name="renderer">The rendering engine to be used when drawing the GUI image.</param>
 			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
 			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) override;
@@ -74,8 +67,8 @@ namespace Rendering
 		private:
 			Texture* m_texture;
 			/* ==================== Non-static member variables end ==================== */
-		}; /* end class GuiCheckBoxControl */
+		}; /* end class GuiImageControl */
 	} /* end namespace Controls */
 } /* end namespace Rendering */
 
-#endif // __RENDERING_GUI_CHECK_BOX_CONTROL_H__
+#endif // __RENDERING_GUI_IMAGE_CONTROL_H__

@@ -7,7 +7,7 @@ Rendering::Controls::GuiControl::GuiControl(const Math::Vector2D& screenPosition
 	m_screenPosition(screenPosition),
 	m_screenRotation(screenRotationAngle),
 	m_scale(scale),
-	m_transformMatrix(screenPosition, screenRotationAngle, scale),
+	m_transformMatrix(m_screenPosition, m_screenRotation, m_scale),
 	m_aabr(screenPosition, screenPosition) // TODO: Not correct if screen rotation angle != 0
 {
 }

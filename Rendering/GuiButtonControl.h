@@ -122,15 +122,15 @@ namespace Rendering
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI button.</param>
 			/// <param name="renderer">The rendering engine to be used when drawing the GUI button.</param>
-			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const;
+			RENDERING_API virtual void Draw(const Shader* guiControlShader, const Renderer& renderer) const override;
 
-			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect);
-			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect);
-			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect);
-			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
-			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
-			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
-			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect);
+			RENDERING_API virtual void ApplyColorEffect(const Math::Effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOutlineColorEffect(const Math::Effects::Effect<Color>& effect) override;
+			RENDERING_API virtual void ApplyOffsetEffect(const Math::Effects::Effect<Math::Vector2D>& effect) override;
+			RENDERING_API virtual void ApplyCharacterWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
+			RENDERING_API virtual void ApplyCharacterEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
+			RENDERING_API virtual void ApplyBorderEdgeTransitionWidthEffect(const Math::Effects::Effect<Math::Real>& effect) override;
 		private:
 			/// <summary>
 			/// Returns the number of lines of text. This is determined when the text is loaded
