@@ -18,6 +18,7 @@
 #include "ParticlesContainer.h"
 #include "ParticlesSystem.h"
 #include "MeshFactory.h"
+#include "GuiControl.h"
 
 #include "Math\Angle.h"
 #include "Math\Vector.h"
@@ -248,7 +249,7 @@ namespace Rendering
 		/// <summary>
 		/// Rendering debug nodes, i.e. the nodes that do not belong to the scene, but can be used to see the intermediate results of some other processing (e.g. how shadow map looks).
 		/// </summary>
-		RENDERING_API void RenderDebugNodes(const Shader* guiShader);
+		RENDERING_API void RenderDebugGuiControls(const Shader* guiShader);
 
 		/// <summary>
 		/// Adds a line segment to the debug drawing queue.
@@ -422,8 +423,7 @@ namespace Rendering
 
 
 #ifdef DEBUG_RENDERING_ENABLED
-		std::vector<GuiTexture> m_guiTextures; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
-		const Mesh* m_debugQuad;
+		std::vector<std::unique_ptr<Controls::GuiControl>> m_guiControls; // https://www.youtube.com/watch?v=vOmJ1lyiJ4A&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=24
 #endif
 
 #ifdef PROFILING_RENDERING_MODULE_ENABLED

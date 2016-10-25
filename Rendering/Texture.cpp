@@ -373,32 +373,6 @@ void Rendering::Texture::BindAsRenderTarget() const
 }
 /* ==================== Texture class implementation end ==================== */
 
-/* ==================== GuiTexture class implementation begin ==================== */
-Rendering::GuiTexture::GuiTexture(const std::string& fileName, const Math::Vector2D& position, const Math::Angle& rotationAngle, const Math::Vector2D& scale, GLenum textureTarget /* = GL_TEXTURE_2D */,
-	GLfloat filter /* = GL_LINEAR_MIPMAP_LINEAR */, GLenum internalFormat /* = GL_RGBA */, GLenum format /* = GL_RGBA */, GLenum wrapping /* = GL_REPEAT */, GLenum attachment /* = GL_NONE */) :
-	Texture(fileName, textureTarget, filter, internalFormat, format, wrapping, attachment),
-	m_transformationMatrix(position, rotationAngle, scale),
-	m_position(position),
-	m_scale(scale)
-{
-	DELOCUST_LOG_RENDERING("GUI texture \"", fileName, "\" created.");
-}
-
-Rendering::GuiTexture::~GuiTexture(void)
-{
-	DELOCUST_LOG_RENDERING("GUI texture destroyed.");
-}
-
-Rendering::GuiTexture::GuiTexture(GuiTexture&& guiTexture) :
-	Texture(std::move(guiTexture)),
-	m_transformationMatrix(std::move(guiTexture.m_transformationMatrix)),
-	m_position(std::move(guiTexture.m_position)),
-	m_scale(std::move(guiTexture.m_scale))
-{
-	DELOCUST_LOG_RENDERING("GUI texture moved.");
-}
-/* ==================== GuiTexture class implementation end ==================== */
-
 /* ==================== ParticleTexture class implementation begin ==================== */
 Rendering::Particles::ParticleTexture::ParticleTexture(const std::string& fileName, int rowsCount, bool isAdditive) :
 	Texture(fileName, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA, GL_RGBA, GL_REPEAT, GL_NONE),

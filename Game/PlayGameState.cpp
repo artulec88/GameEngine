@@ -675,7 +675,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugNodes(m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
+	renderer->RenderDebugGuiControls(m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
 #endif
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?

@@ -7,6 +7,7 @@
 #include "ShadowInfo.h"
 #include "Mesh.h"
 #include "MeshIDs.h"
+#include "GuiImageControl.h"
 
 #include "Math\FloatingPoint.h"
 
@@ -112,7 +113,6 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 #endif
 #ifdef DEBUG_RENDERING_ENABLED
 	//,m_guiTextures(),
-	, m_debugQuad(m_meshFactory.GetMesh(MeshIDs::DEBUG))
 #endif
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	,m_classStats(STATS_STORAGE.GetClassStats("Renderer"))
@@ -160,9 +160,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 #endif
 
 #ifdef DEBUG_RENDERING_ENABLED
-	m_guiTextures.push_back(GuiTexture("chessboard3.jpg", Math::Vector2D(1.0f, 0.0f), Math::Angle(30.0f), Math::Vector2D(0.25f, 0.25f)));
-	//m_guiTextures.push_back(GuiTexture("crate.jpg", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
-	//m_guiTextures.push_back(GuiTexture("verdana.png", Math::Vector2D(0.45f, 0.45f), Math::Vector2D(0.25f, 0.25f)));
+	m_guiControls.push_back(std::make_unique<Controls::GuiImageControl>(&m_shadowMaps[9], Math::Vector2D(1.0, 0.0f), Math::Angle(30.0f), Math::Vector2D(0.25f, 0.25f)));
 #endif
 
 	STOP_PROFILING_RENDERING("");
@@ -374,7 +372,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 		glDisable(GL_BLEND);
 	}
 	//glEnable(GL_CULL_FACE);
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished main text rendering function");
+	Rendering::CheckErrorCode(__FUNCTION__, "Finished main GUI control rendering function");
 }
 
 void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Particles::ParticlesSystem& particlesSystem) const
@@ -735,30 +733,16 @@ void Rendering::Renderer::BindCubeShadowMap(unsigned int textureUnit) const
 }
 
 #ifdef DEBUG_RENDERING_ENABLED
-void Rendering::Renderer::RenderDebugNodes(const Shader* guiShader)
+void Rendering::Renderer::RenderDebugGuiControls(const Shader* guiShader)
 {
 	guiShader->Bind();
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable(GL_DEPTH_TEST);
-	for (std::vector<GuiTexture>::const_iterator guiTextureItr = m_guiTextures.begin(); guiTextureItr != m_guiTextures.end(); ++guiTextureItr)
+	for (auto guiControlItr = m_guiControls.begin(); guiControlItr != m_guiControls.end(); ++guiControlItr)
 	{
-		guiTextureItr->Bind(0);
-		guiShader->SetUniformMatrix("guiTransformationMatrix", guiTextureItr->GetTransformationMatrix());
-		guiShader->SetUniformi("guiTexture", 0);
-		m_debugQuad->Draw();
+		(*guiControlItr)->Draw(guiShader, *this);
 	}
-	//Math::Matrix4D transformationMatrix1(Math::Vector2D(0.74f, 0.74f), Math::Vector2D(0.25f, 0.25f));
-	//m_shadowMaps[9]->Bind();
-	//m_waterReflectionTexture->Bind();
-	//guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix1);
-	//guiShader->SetUniformi("guiTexture", 0);
-	//m_debugQuad->Draw();
-
-	//Math::Matrix4D transformationMatrix2(Math::Vector2D(0.74f, -0.24f), Math::Vector2D(0.25f, 0.25f));
-	//m_waterRefractionTexture->Bind();
-	//guiShader->SetUniformMatrix("guiTransformationMatrix", transformationMatrix2);
-	//m_debugQuad->Draw();
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
