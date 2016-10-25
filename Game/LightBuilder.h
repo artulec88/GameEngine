@@ -3,8 +3,9 @@
 
 #include "Def.h"
 
+#include "Engine\GameManager.h"
+
 #include "Rendering\ShaderFactory.h"
-#include "Rendering\TextureFactory.h"
 #include "Rendering\DirectionalLight.h"
 #include "Rendering\PointLight.h"
 #include "Rendering\SpotLight.h"
@@ -23,12 +24,12 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory, T* light) :
+		LightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory, T* light) :
 			Utility::Builder<T>(light),
 			m_lightIndex(0),
 			m_lightIndexStr("0"),
+			m_gameManager(gameManager),
 			m_shaderFactory(shaderFactory),
-			m_textureFactory(textureFactory),
 			m_pos(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 			m_rot(),
 			m_color(Rendering::ColorNames::WHITE),
@@ -62,8 +63,8 @@ namespace Game
 	protected:
 		int m_lightIndex;
 		std::string m_lightIndexStr;
+		Engine::GameManager* m_gameManager;
 		const Rendering::ShaderFactory& m_shaderFactory;
-		const Rendering::TextureFactory& m_textureFactory;
 
 		Math::Vector3D m_pos;
 		Math::Quaternion m_rot;
@@ -79,7 +80,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+		DirectionalLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 			Rendering::Lighting::DirectionalLight* directionalLight);
 		virtual ~DirectionalLightBuilder(void);
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
@@ -112,7 +113,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PointLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+		PointLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 			Rendering::Lighting::PointLight* pointLight);
 		virtual ~PointLightBuilder(void) { };
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
@@ -149,7 +150,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+		SpotLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 			Rendering::Lighting::SpotLight* spotLight);
 		virtual ~SpotLightBuilder(void) { };
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;

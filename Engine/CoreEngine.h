@@ -133,7 +133,24 @@ namespace Engine
 		ENGINE_API void AddPhysicsObject(Physics::PhysicsObject* physicsObject); // TODO: In the future only the specialized Builder should call this function (the PhysicsObjectBuilder). Once it is done remove ENGINE_API from here.
 		
 		ENGINE_API const Rendering::Mesh* GetMesh(int meshID) const { return m_renderer->GetMesh(meshID); }
-		ENGINE_API void AddMesh(int meshID, const std::string& meshFileName) { m_renderer->CreateMesh(meshID, meshFileName); }
+		ENGINE_API const Rendering::Mesh* AddMesh(int meshID, const std::string& meshFileName) { return m_renderer->CreateMesh(meshID, meshFileName); }
+
+		ENGINE_API const Rendering::Texture* AddTexture(int textureID, const std::string& textureFileName) const
+		{
+			return m_renderer->CreateTexture(textureID, textureFileName);
+		}
+		ENGINE_API const Rendering::Texture* AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+		{
+			return m_renderer->CreateCubeTexture(textureID, cubeMapTextureDirectory);
+		}
+		ENGINE_API const Rendering::Particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+		{
+			return m_renderer->CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+		}
+		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const
+		{
+			return m_renderer->GetTexture(textureID);
+		}
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);
 		ENGINE_API void PopInputContext();

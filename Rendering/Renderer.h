@@ -18,6 +18,7 @@
 #include "ParticlesContainer.h"
 #include "ParticlesSystem.h"
 #include "MeshFactory.h"
+#include "TextureFactory.h"
 #include "GuiControl.h"
 
 #include "Math\Angle.h"
@@ -62,8 +63,10 @@ namespace Rendering
 		/// <param name="windowWidth"> The width of the window. </param>
 		/// <param name="windowHeight"> The height of the window. </param>
 		/// <param name="modelsDirectory"> The system directory where all models are stored. </param>
+		/// <param name="texturesDirectory"> The system directory where all textures are stored. </param>
 		/// <param name="antiAliasingMethod"> The anti-aliasing method to be used by the rendering engine. </param>
-		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory,
+			const std::string& texturesDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
 
 		/// <summary> Rendering engine destructor. </summary>
 		RENDERING_API virtual ~Renderer(void);
@@ -120,7 +123,21 @@ namespace Rendering
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
 		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
-		RENDERING_API void CreateMesh(int meshID, const std::string& meshFileName);
+		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
+
+		RENDERING_API const Texture* GetTexture(int textureID) const { return m_textureFactory.GetTexture(textureID); }
+		RENDERING_API const Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName)
+		{
+			return m_textureFactory.CreateTexture(textureID, textureFileName);
+		}
+		RENDERING_API const Rendering::Texture* CreateCubeTexture(int textureID, const std::string& cubeMapTextureDirectory)
+		{
+			return m_textureFactory.CreateCubeTexture(textureID, cubeMapTextureDirectory);
+		}
+		RENDERING_API const Rendering::Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive)
+		{
+			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+		}
 
 		RENDERING_API inline void BindShader(const Shader* shader) { shader->Bind(); }
 		RENDERING_API inline void UpdateRendererUniforms(const Shader* shader) { shader->UpdateRendererUniforms(this); }
@@ -347,9 +364,10 @@ namespace Rendering
 		const BaseCamera* m_currentCamera;
 		const BaseCamera* m_tempCamera;
 
-		Texture m_displayTexture;
-
 		MeshFactory m_meshFactory;
+		TextureFactory m_textureFactory;
+
+		Texture m_displayTexture;
 
 		/// <summary> The filter camera always facing the screen. </summary>
 		Camera m_filterCamera; // TODO: This camera should be marked as const

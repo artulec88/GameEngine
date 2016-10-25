@@ -3,9 +3,9 @@
 #include "Utility\IConfig.h"
 
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
-Game::DirectionalLightBuilder::DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::DirectionalLightBuilder::DirectionalLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 	Rendering::Lighting::DirectionalLight* directionalLight) :
-	LightBuilder(shaderFactory, textureFactory, directionalLight),
+	LightBuilder(gameManager, shaderFactory, directionalLight),
 	m_halfShadowArea(40.0f),
 	m_shadowMapSizeAsPowerOf2(10),
 	m_shadowSoftness(REAL_ONE),
@@ -110,9 +110,9 @@ void Game::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Game::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::PointLightBuilder::PointLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 	Rendering::Lighting::PointLight* pointLight) :
-	LightBuilder(shaderFactory, textureFactory, pointLight),
+	LightBuilder(gameManager, shaderFactory, pointLight),
 	M_DEFAULT_POINT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultPointLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultPointLightPosZ", REAL_ZERO)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultPointLightAngleX", -45.0f)),
 	M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultPointLightAngleY", REAL_ZERO)),
@@ -190,9 +190,9 @@ void Game::PointLightBuilder::BuildPart3()
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Game::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory, const Rendering::TextureFactory& textureFactory,
+Game::SpotLightBuilder::SpotLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
 	Rendering::Lighting::SpotLight* spotLight) :
-	LightBuilder(shaderFactory, textureFactory, spotLight),
+	LightBuilder(gameManager, shaderFactory, spotLight),
 	M_DEFAULT_SPOT_LIGHT_POS(GET_CONFIG_VALUE_GAME("defaultSpotLightPosX", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosY", REAL_ZERO), GET_CONFIG_VALUE_GAME("defaultSpotLightPosZ", REAL_ZERO)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultSpotLightAngleX", -45.0f)),
 	M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultSpotLightAngleY", REAL_ZERO)),

@@ -399,7 +399,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	NOTICE_LOG_GAME("Directional lights enabled");
 
 	Rendering::Lighting::DirectionalLight directionalLight;
-	DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &directionalLight);
+	DirectionalLightBuilder directionalLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &directionalLight);
 	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
 	lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
@@ -415,7 +415,7 @@ void Game::PlayGameState::AddPointLights()
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
 		Rendering::Lighting::PointLight pointLight;
-		PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &pointLight);
+		PointLightBuilder pointLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &pointLight);
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
@@ -439,7 +439,7 @@ void Game::PlayGameState::AddSpotLights()
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
 		Rendering::Lighting::SpotLight spotLight;
-		SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory(), m_gameManager->GetTextureFactory(), &spotLight);
+		SpotLightBuilder spotLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &spotLight);
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{

@@ -41,7 +41,6 @@ Engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
 	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
-	m_textureFactory(CoreEngine::GetCoreEngine()->GetTexturesDirectory()),
 	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(std::make_unique<Engine::DefaultGameStateManager>()),
 	m_isGameLoaded(false),
@@ -130,14 +129,34 @@ void Engine::GameManager::AddParticlesSystem(Rendering::Particles::ParticlesSyst
 	m_particlesSystems.push_back(particlesSystem);
 }
 
-void Engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
+const Rendering::Mesh* Engine::GameManager::AddMesh(int meshID, const std::string& meshFileName) const
 {
-	CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
+	return CoreEngine::GetCoreEngine()->AddMesh(meshID, meshFileName);
 }
 
 const Rendering::Mesh* Engine::GameManager::GetMesh(int meshID) const
 {
 	return CoreEngine::GetCoreEngine()->GetMesh(meshID);
+}
+
+const Rendering::Texture* Engine::GameManager::AddTexture(int textureID, const std::string& textureFileName) const
+{
+	return CoreEngine::GetCoreEngine()->AddTexture(textureID, textureFileName);
+}
+
+const Rendering::Texture* Engine::GameManager::AddCubeTexture(int textureID, const std::string& cubeMapTextureDirectory) const
+{
+	return CoreEngine::GetCoreEngine()->AddCubeTexture(textureID, cubeMapTextureDirectory);
+}
+
+const Rendering::Particles::ParticleTexture* Engine::GameManager::AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const
+{
+	return CoreEngine::GetCoreEngine()->AddParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
+}
+
+const Rendering::Texture* Engine::GameManager::GetTexture(int textureID) const
+{
+	return CoreEngine::GetCoreEngine()->GetTexture(textureID);
 }
 
 void Engine::GameManager::Input(Actions::Action actionID)

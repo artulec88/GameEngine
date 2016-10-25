@@ -25,7 +25,7 @@
 /* static */ const Math::Matrix4D Rendering::Renderer::BIAS_MATRIX(Math::Matrix4D(0.5f /* scale matrix */) * Math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 
-Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
+Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, const std::string& texturesDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
 	m_antiAliasingMethod(antiAliasingMethod),
@@ -46,8 +46,9 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	//m_currentSpotLight(NULL),
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
-	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_meshFactory(modelsDirectory),
+	m_textureFactory(texturesDirectory),
+	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
 	m_altCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Matrix4D(), 0.005f),
 	m_filterTransform(Math::Vector3D(), Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO) /* to make the plane face towards the camera. See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations" https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */, REAL_ONE),
@@ -198,9 +199,9 @@ Rendering::Renderer::~Renderer(void)
 	NOTICE_LOG_RENDERING("Rendering engine destroyed");
 }
 
-void Rendering::Renderer::CreateMesh(int meshID, const std::string& meshFileName)
+const Rendering::Mesh* Rendering::Renderer::CreateMesh(int meshID, const std::string& meshFileName)
 {
-	m_meshFactory.CreateMesh(meshID, meshFileName);
+	return m_meshFactory.CreateMesh(meshID, meshFileName);
 }
 
 /* TODO: Remove in the future */
