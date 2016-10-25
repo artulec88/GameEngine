@@ -103,7 +103,6 @@ namespace Rendering
 		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader* guiControlShader) const;
 
 		RENDERING_API void RenderParticles(const Shader* particleShader, const Particles::ParticlesSystem& particleSystem) const;
-		RENDERING_API void RenderParticles(const Shader* particleShader, const Particles::ParticleTexture* particleTexture, const Particles::Particle* particles, int particlesCount) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
