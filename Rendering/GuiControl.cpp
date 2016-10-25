@@ -3,11 +3,12 @@
 
 #include "Utility\ILogger.h"
 
-Rendering::Controls::GuiControl::GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle) :
+Rendering::Controls::GuiControl::GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale) :
 	m_screenPosition(screenPosition),
 	m_screenRotation(screenRotationAngle),
-	m_aabr(screenPosition, screenPosition), // TODO: Not correct if screen rotation angle != 0
-	m_mesh(nullptr)
+	m_scale(scale),
+	m_transformMatrix(screenPosition, screenRotationAngle, scale),
+	m_aabr(screenPosition, screenPosition) // TODO: Not correct if screen rotation angle != 0
 {
 }
 

@@ -26,7 +26,7 @@ namespace Rendering
 		//}; /* end enum ControlType */
 
 		/// <summary>
-		/// The GUI control
+		/// The GUI control.
 		/// </summary>
 		class GuiControl
 		{
@@ -45,14 +45,27 @@ namespace Rendering
 			/// <param name="screenRotationAngle">
 			/// The rotation on the screen of the GUI control.
 			/// </param>
-			RENDERING_API GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle);
+			/// <param name="scale">
+			/// The scale of the GUI control.
+			/// </param>
+			RENDERING_API GuiControl(const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
 
 			/// <summary>
 			/// Destroys the GUI control.
 			/// </summary>
 			RENDERING_API virtual ~GuiControl(void);
-			GuiControl(GuiControl& guiControl) = delete;
-			void operator=(GuiControl& guiControl) = delete;
+
+			/// <summary> GUI control copy constructor. </summary>
+			GuiControl(const GuiControl& guiControl) = delete;
+
+			/// <summary> GUI control move constructor. </summary>
+			GuiControl(GuiControl&& guiControl) = delete;
+
+			/// <summary> GUI control copy assignment operator. </summary>
+			GuiControl& operator=(const GuiControl& guiControl) = delete;
+
+			/// <summary> GUI control move assignment operator. </summary>
+			GuiControl& operator=(GuiControl&& guiControl) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -89,6 +102,22 @@ namespace Rendering
 			RENDERING_API const Math::Angle& GetScreenRotation() const { return m_screenRotation; }
 
 			/// <summary>
+			/// The scale of the GUI control.
+			/// </summary>
+			/// <returns>
+			/// The scale of the GUI control.
+			/// </returns>
+			RENDERING_API const Math::Vector2D& GetScale() const { return m_scale; }
+
+			/// <summary>
+			/// The transformation matrix of this GUI control.
+			/// </summary>
+			/// <returns>
+			/// The transformation matrix representing the scale, rotation and translation operations of the GUI control.
+			/// </returns>
+			RENDERING_API const Math::Matrix4D& GetTransformMatrix() const { return m_transformMatrix; }
+
+			/// <summary>
 			/// Draws the GUI control on the screen using the specified rendering engine.
 			/// </summary>
 			/// <param name="guiControlShader">The shader to be used when drawing the GUI control.</param>
@@ -110,9 +139,9 @@ namespace Rendering
 		private:
 			Math::Vector2D m_screenPosition;
 			Math::Angle m_screenRotation;
+			Math::Vector2D m_scale;
+			Math::Matrix4D m_transformMatrix;
 			Math::AABR m_aabr;
-		protected:
-			std::unique_ptr<Mesh> m_mesh;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class GuiControl */
 	} /* end namespace Controls */

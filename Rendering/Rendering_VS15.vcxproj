@@ -188,6 +188,7 @@
     <ClInclude Include="GuiCheckBoxControl.h" />
     <ClInclude Include="GuiControl.h" />
     <ClInclude Include="GuiButtonControl.h" />
+    <ClInclude Include="GuiImageControl.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
@@ -252,6 +253,7 @@
     <ClCompile Include="GuiCheckBoxControl.cpp" />
     <ClCompile Include="GuiControl.cpp" />
     <ClCompile Include="GuiButtonControl.cpp" />
+    <ClCompile Include="GuiImageControl.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />

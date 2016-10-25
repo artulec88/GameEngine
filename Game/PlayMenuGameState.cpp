@@ -12,7 +12,7 @@
 Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, const std::string& inputMappingContextName, const Rendering::Text::Font* playMainMenuFont, Math::Real playMainMenuFontSize) :
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
-	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.0f, 0.0f), Math::Angle(0.0f), 1.0f,
+	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.0f, 0.0f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f,
 		Rendering::Color(Rendering::ColorNames::BLACK), Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	//m_notSelectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 2)),
 	//m_selectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::BLINK, 2)),
@@ -30,23 +30,23 @@ Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, con
 	/**
 	* TODO: Calculating the proper locations for the menu entries and updating these locations whenever the window is resized.
 	*/
-	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.7f), Math::Angle(0.0f), 0.5f,
-		Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true);
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), Math::Angle(0.0f), 0.5f,
-		Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), 0.5f,
-		Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
-	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), Math::Angle(0.0f), 0.5f,
-		Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	Engine::MenuEntry* playMenuOptionsMenuEntry = new Engine::CompositeMenuEntry("Options", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.7f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true);
+	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Sound", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.25f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Graphics", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+	playMenuOptionsMenuEntry->AddChild(new Engine::CompositeMenuEntry("Controls", playMainMenuFont, playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.75f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f),
+		0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(playMenuOptionsMenuEntry);
 	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::RESUME_GAME, "Resume", playMainMenuFont,
-		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.1f), Math::Angle(0.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.1f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::SAVE_GAME, "Save",playMainMenuFont,
-		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.3f), Math::Angle(0.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.3f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::LOAD_GAME, "Load",playMainMenuFont,
-		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.5f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 	m_playMainMenuRootEntry.AddChild(new Engine::ActionMenuEntry(Engine::Actions::QUIT_GAME, "Quit", playMainMenuFont,
-		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.9f), Math::Angle(0.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
+		playMainMenuFontSize, NULL, Math::Vector2D(0.25f, 0.9f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 0.5f, Rendering::Color(1.0f, 0.0f, 0.0f), Rendering::Color(0.0f, 1.0f, 0.0f), Math::Vector2D(0.005f, 0.005f), true));
 
 	m_currentMenuEntry = m_playMainMenuRootEntry.SelectChild(0);
 }

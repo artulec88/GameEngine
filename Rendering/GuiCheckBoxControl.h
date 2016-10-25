@@ -33,11 +33,22 @@ namespace Rendering
 			/// The position on the screen where the top left corner of the text should be rendered.
 			/// The top left corner of the screen is (0, 0) and the bottom right is (1, 1).
 			/// </param>
-			/// <param name="screenRotationAngle">
-			/// The angle the GUI control will be rotated by.
-			/// </param>
-			RENDERING_API GuiCheckBoxControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle);
+			/// <param name="screenRotationAngle"> The angle the GUI control will be rotated by. </param>
+			/// <param name="scale"> The scale of the GUI check box control. </param>
+			RENDERING_API GuiCheckBoxControl(Texture* texture, const Math::Vector2D& screenPosition, const Math::Angle& screenRotationAngle, const Math::Vector2D& scale);
 			RENDERING_API virtual ~GuiCheckBoxControl(void);
+
+			/// <summary> GUI check box control copy constructor. </summary>
+			GuiCheckBoxControl(const GuiCheckBoxControl& guiCheckBoxControl) = delete;
+
+			/// <summary> GUI check box control move constructor. </summary>
+			GuiCheckBoxControl(GuiCheckBoxControl&& guiCheckBoxControl) = delete;
+
+			/// <summary> GUI check box control copy assignment operator. </summary>
+			GuiCheckBoxControl& operator=(const GuiCheckBoxControl& guiCheckBoxControl) = delete;
+
+			/// <summary> GUI check box control move assignment operator. </summary>
+			GuiCheckBoxControl& operator=(GuiCheckBoxControl&& guiCheckBoxControl) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
