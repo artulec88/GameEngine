@@ -1,3 +1,6 @@
+#include "PizzaBuilder.h"
+
+#include "Utility\BuilderDirector.h"
 #include "Utility\ICommandLineMapper.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
@@ -14,6 +17,7 @@
 
 using namespace std;
 using namespace Utility;
+using namespace UtilityTest;
 
 unsigned int testNumber = 0;
 
@@ -271,6 +275,25 @@ void TimeTest()
 	NOTICE_LOG(MODULE_NAME, "Time test finished");
 }
 
+void BuilderTest()
+{
+	HawaiianPizzaBuilder hawaiianPizzaBuilder;
+	hawaiianPizzaBuilder.AddSauceIngredient("pineapple");
+	BuilderDirector<Pizza> waiter(&hawaiianPizzaBuilder);
+	Pizza pizza = waiter.Construct();
+	NOTICE_LOG(MODULE_NAME, pizza);
+
+	SpicyPizzaBuilder spicyPizzaBuilder;
+	spicyPizzaBuilder.AddSauceIngredient("jalapeno").AddSauceIngredient("chili");
+	spicyPizzaBuilder.SetTopping("someCustomSpicyTopping").SetDough("someCustomSpicyDough");
+	waiter.SetBuilder(&spicyPizzaBuilder);
+	pizza = waiter.Construct();
+	NOTICE_LOG(MODULE_NAME, pizza);
+	spicyPizzaBuilder.SetDefault();
+	pizza = waiter.Construct();
+	NOTICE_LOG(MODULE_NAME, pizza);
+}
+
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -287,6 +310,7 @@ int main(int argc, char* argv[])
 	VectorTest();
 	//StringUtilityTest();
 	//TimeTest();
+	BuilderTest();
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;

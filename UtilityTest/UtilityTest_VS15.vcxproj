@@ -19,7 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Pizza.cpp" />
+    <ClCompile Include="PizzaBuilder.cpp" />
+    <ClCompile Include="Spaghetti.cpp" />
     <ClCompile Include="UtilityTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Pizza.h" />
+    <ClInclude Include="PizzaBuilder.h" />
+    <ClInclude Include="Spaghetti.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2DA5A2F4-F658-4EA9-A6C4-60DD85756756}</ProjectGuid>

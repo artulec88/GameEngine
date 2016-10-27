@@ -2,10 +2,12 @@
 #define __UTILITY_BUILDER_DIRECTOR_H__
 
 #include "Utility.h"
-#include "Builder.h"
 
 namespace Utility
 {
+	template <class T>
+	class Builder;
+
 	template <class T>
 	class BuilderDirector
 	{
@@ -16,7 +18,7 @@ namespace Utility
 	public:
 		/// <summary> Builder director constructor. </summary>
 		/// <param name="builder"> The specific builder for constructing the object. </param>
-		explicit BuilderDirector(Builder<T>& builder) :
+		explicit BuilderDirector(Builder<T>* builder) :
 			m_builder(builder)
 		{
 		}
@@ -36,21 +38,26 @@ namespace Utility
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		void Construct() const
+		void SetBuilder(Builder<T>* builder)
 		{
-			m_builder.BuildPart1();
-			m_builder.BuildPart2();
-			m_builder.BuildPart3();
-			m_builder.Get();
+			m_builder = builder;
+		}
+
+		T Construct() const
+		{
+			m_builder->BuildPart1();
+			m_builder->BuildPart2();
+			m_builder->BuildPart3();
+			return m_builder->Get();
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		Builder<T>& m_builder;
+		Builder<T>* m_builder;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class BuilderDirector */
+	}; /* end class BuilderDirector<T> */
 
-} /* end namespace Engine */
+} /* end namespace Utility */
 
 #endif // __UTILITY_BUILDER_DIRECTOR_H__
