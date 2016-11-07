@@ -34,7 +34,7 @@ namespace Rendering
 			/// <param name="intensity"> The intensity of the light. </param>
 			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
 
-			/// <summary>The destructor.</summary>
+			/// <summary>The base light destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
 			
 			/// <summary> Base light copy constructor. </summary>
@@ -55,6 +55,7 @@ namespace Rendering
 			/// <summary> Gets the current color of the light. </summary>
 			/// <returns> Current color of the light. </returns>
 			RENDERING_API const Color& GetColor() const { return m_color; }
+
 			/// <summary> Sets new color for the light. </summary>
 			/// <param name="color"> The new color for the light. </param>
 			RENDERING_API void SetColor(const Color& color) { m_color = color; }
@@ -62,6 +63,7 @@ namespace Rendering
 			/// <summary> Gets the current intensity of the light. </summary>
 			/// <returns> Current intensity of the light. </returns>
 			RENDERING_API Math::Real GetIntensity() const { return m_intensity; }
+
 			/// <summary> Sets new intensity for the light. </summary>
 			/// <param name="intensity"> New intensity for the light. </returns>
 			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
@@ -141,10 +143,10 @@ namespace Rendering
 			/// <summary>The information about the shadow that the light casts.</summary>
 			std::unique_ptr<ShadowInfo> m_shadowInfo;
 
-			/// <summary>The information whether the light is enabled or not.</summary>
+			/// <summary>The information whether the light is enabled (the value <code>true</code>) or not (the value <code>false</code>).</summary>
 			bool m_isEnabled;
 
-			/// <summary>The information about whether the light casts shadows or not.</summary>
+			/// <summary>The information about whether the light casts shadows (the value <code>true</code>) or not (the value <code>false</code>).</summary>
 			bool m_isShadowingEnabled;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BaseLight */
