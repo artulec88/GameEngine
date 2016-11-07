@@ -55,28 +55,43 @@ namespace Rendering
 			/// <summary> Gets the current color of the light. </summary>
 			/// <returns> Current color of the light. </returns>
 			RENDERING_API const Color& GetColor() const { return m_color; }
+			/// <summary> Sets new color for the light. </summary>
+			/// <param name="color"> The new color for the light. </param>
+			RENDERING_API void SetColor(const Color& color) { m_color = color; }
 
 			/// <summary> Gets the current intensity of the light. </summary>
 			/// <returns> Current intensity of the light. </returns>
 			RENDERING_API Math::Real GetIntensity() const { return m_intensity; }
+			/// <summary> Sets new intensity for the light. </summary>
+			/// <param name="intensity"> New intensity for the light. </returns>
+			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
 
+			/// <summary> Gives information whether light casts shadows or not. </summary>
+			/// <returns> <code>true</code> if the light casts shadows and <code>false</code> otherwise. </returns>
+			RENDERING_API bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
+
+			/// <summary> Gives information whether the light is enabled or not. </summary>
+			/// <returns> <code>true</code> if the light is enabled and <code>false</code> otherwise. </returns>
+			RENDERING_API virtual bool IsEnabled() const { return m_isEnabled; } // TODO: Consider removing "virtual" keyword
+
+			/// <summary> Gets the current light transform. </summary>
+			/// <returns> Light transform reference. </returns>
+			RENDERING_API Math::Transform& GetTransform() { return m_transform; }
+
+			/// <summary> Gets the current light transform. </summary>
+			/// <returns> Constant light transform reference. </returns>
+			RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
 
 			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
 			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
 			RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }
 			RENDERING_API inline const Shader* GetNoShadowTerrainShader() const { return m_noShadowTerrainShader; }
-			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
-			RENDERING_API virtual bool IsEnabled() const { return m_isEnabled; }
 
-			RENDERING_API bool IsShadowingEnabled() const { return m_isShadowingEnabled; }
+			RENDERING_API inline const ShadowInfo* GetShadowInfo() const { return m_shadowInfo.get(); }
 
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
-			RENDERING_API Math::Transform& GetTransform() { return m_transform; }
-			RENDERING_API const Math::Transform& GetTransform() const { return m_transform; }
 
 			RENDERING_API void SetTransform(const Math::Transform& transform) { m_transform = transform; }
-			RENDERING_API void SetColor(const Color& color) { m_color = color; }
-			RENDERING_API void SetIntensity(Math::Real intensity) { m_intensity = intensity; }
 			RENDERING_API void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
 				Math::Real shadowSoftness = REAL_ONE, Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 				Math::Real minVariance = static_cast<Math::Real>(0.00002f));

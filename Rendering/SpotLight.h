@@ -45,7 +45,7 @@ namespace Rendering {
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 			RENDERING_API Math::Real GetCutoff() const { return m_cutoff; };
 			//virtual void InitializeShaders();
-			RENDERING_API virtual bool IsEnabled() const;
+			RENDERING_API virtual bool IsEnabled() const override;
 
 			RENDERING_API void SetShadowInfo(const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real projectionNearPlane,
 				Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);

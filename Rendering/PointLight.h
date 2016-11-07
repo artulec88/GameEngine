@@ -38,7 +38,7 @@ namespace Rendering {
 		public:
 			RENDERING_API Attenuation GetAttenuation() const { return m_attenuation; };
 			RENDERING_API Math::Real GetRange() const { return m_range; };
-			RENDERING_API virtual bool IsEnabled() const;
+			RENDERING_API virtual bool IsEnabled() const override;
 
 			RENDERING_API void SetAttenuation(const Attenuation& attenuation)
 			{

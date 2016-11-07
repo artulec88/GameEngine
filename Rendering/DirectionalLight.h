@@ -42,7 +42,7 @@ namespace Rendering {
 		public:
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
-			RENDERING_API virtual bool IsEnabled() const;
+			RENDERING_API virtual bool IsEnabled() const override;
 
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
 
