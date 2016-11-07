@@ -107,7 +107,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Rendering_VS15.lib;Math_VS15.lib;Utility_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rendering_VS15.lib;Math_VS15.lib;Utility_VS15.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -143,7 +143,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\aosesik\Documents\Visual Studio 2015\Projects\GameEngine\x64\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Rendering_VS15.lib;Math_VS15.lib;Utility_VS15.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Rendering_VS15.lib;Math_VS15.lib;Utility_VS15.lib;opengl32.lib;glfw3.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

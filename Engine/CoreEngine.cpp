@@ -306,7 +306,7 @@ void Engine::CoreEngine::InitGlfw(bool fullscreenEnabled, int width, int height,
 	DEBUG_LOG_ENGINE("Initializing GLFW started");
 	CHECK_CONDITION_EXIT_ALWAYS_ENGINE(glfwInit(), Utility::Logging::CRITICAL, "Failed to initialize GLFW.");
 
-	int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
+	const int antiAliasingSamples = GET_CONFIG_VALUE_ENGINE("antiAliasingSamples", 4); // TODO: This parameter belongs in the Rendering module. The config value should also be retrieved from the rendering configuration file.
 	switch (antiAliasingMethod)
 	{
 	case Rendering::Aliasing::NONE:
