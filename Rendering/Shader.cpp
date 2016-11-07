@@ -666,10 +666,6 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 3D \"", name, "\":", vector);
 	std::map<std::string, GLint>::const_iterator itr;
-	//if (name.compare("R_directionalLight.direction") == 0)
-	//{
-	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
-	//}
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
@@ -684,10 +680,6 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, const Math::
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\":", vector);
 	std::map<std::string, GLint>::const_iterator itr;
-	//if (name.compare("R_directionalLight.direction") == 0)
-	//{
-	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
-	//}
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform4f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
@@ -702,10 +694,6 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 	START_PROFILING_RENDERING(false, "");
 	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform vector 4D \"", name, "\": [", x, "; ", y, "; ", z, "; ", w, "].");
 	std::map<std::string, GLint>::const_iterator itr;
-	//if (name.compare("R_directionalLight.direction") == 0)
-	//{
-	//	CRITICAL_LOG_RENDERING("Directional light direction = \"", vector.ToString(), "\"");
-	//}
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
 		glUniform4f(itr->second, x, y, z, w);
@@ -716,7 +704,7 @@ void Rendering::Shader::SetUniformVector4D(const std::string& name, Math::Real x
 void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Color& color) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform color \"", uniformName, "\":\n", color);
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(uniformName, itr))
 	{

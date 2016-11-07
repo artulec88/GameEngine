@@ -5,7 +5,6 @@
 #include "Angle.h"
 #include "Vector.h"
 #include "Matrix.h"
-#include <string> // for ToString() method
 
 #define PASS_QUATERNION_BY_VALUE
 

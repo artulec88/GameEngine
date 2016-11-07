@@ -72,7 +72,7 @@ namespace Rendering
 
 			/// <summary> Gives information whether the light is enabled or not. </summary>
 			/// <returns> <code>true</code> if the light is enabled and <code>false</code> otherwise. </returns>
-			RENDERING_API virtual bool IsEnabled() const { return m_isEnabled; } // TODO: Consider removing "virtual" keyword
+			RENDERING_API bool IsEnabled() const { return m_isEnabled; }
 
 			/// <summary> Gets the current light transform. </summary>
 			/// <returns> Light transform reference. </returns>

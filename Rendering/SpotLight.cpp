@@ -5,8 +5,6 @@
 #include "Utility\IConfig.h"
 #include "Math\Matrix.h"
 
-/* static */ bool Rendering::Lighting::SpotLight::spotLightsEnabled = true;
-
 Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
 	PointLight(transform, color, intensity),
 	m_cutoff(REAL_ZERO)
@@ -29,13 +27,4 @@ void Rendering::Lighting::SpotLight::SetShadowInfo(const Math::Angle& viewAngle,
 			false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize spot light. Shadow info is NULL.");
 	}
-}
-
-bool Rendering::Lighting::SpotLight::IsEnabled() const
-{
-	if (!spotLightsEnabled)
-	{
-		return false;
-	}
-	return BaseLight::IsEnabled();
 }

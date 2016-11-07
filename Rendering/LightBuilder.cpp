@@ -115,9 +115,9 @@ void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
 
 	Math::Vector3D forwardVec = m_gameNode->GetTransform().GetTransformedRot().GetForward().Normalized();
 	Math::Vector3D rayEndPosition = forwardVec * 2.0f;
-	//DELOCUST_LOG_ENGINE("light position = ", m_gameNode->GetTransform().GetTransformedPos().ToString(), ";\t light rotation = ",
-	//	m_gameNode->GetTransform().GetTransformedRot().ToString(), ";\t light forward vector = ", forwardVec.ToString(), ";\t light end pos = ",
-	//	(m_gameNode->GetTransform().GetTransformedPos() + rayEndPosition).ToString());
+	//DELOCUST_LOG_ENGINE("light position = ", m_gameNode->GetTransform().GetTransformedPos(), ";\t light rotation = ",
+	//	m_gameNode->GetTransform().GetTransformedRot(), ";\t light forward vector = ", forwardVec, ";\t light end pos = ",
+	//	(m_gameNode->GetTransform().GetTransformedPos() + rayEndPosition));
 
 	//Vertex vertices [] = { Vertex(Math::Vector3D()), Vertex(rayEndPosition) };
 	//int indices [] = { 0, 1 };

@@ -266,11 +266,12 @@ namespace Rendering
 		{
 			return Color(m_values.Lerp(color.m_values, lerpFactor));
 		}
-		RENDERING_API std::string ToString() const
+
+		friend std::ostream& operator<<(std::ostream& out, const Color& color)
 		{
-			std::stringstream ss("");
-			ss << "(red=" << GetRed() << "; green=" << GetGreen() << "; blue=" << GetBlue() << "; alpha=" << GetAlpha() << ")";
-			return ss.str();
+			out << "(red=" << color.GetRed() << "; green=" << color.GetGreen() << "; blue=" <<
+				color.GetBlue() << "; alpha=" << color.GetAlpha() << ")";
+			return out;
 		}
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 

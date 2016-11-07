@@ -13,10 +13,6 @@ namespace Rendering {
 		class PointLight : public BaseLight
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		public:
-			static bool pointLightsEnabled;
-		public:
-			RENDERING_API static bool* ArePointLightsEnabled() { return &pointLightsEnabled; }
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
@@ -38,7 +34,6 @@ namespace Rendering {
 		public:
 			RENDERING_API Attenuation GetAttenuation() const { return m_attenuation; };
 			RENDERING_API Math::Real GetRange() const { return m_range; };
-			RENDERING_API virtual bool IsEnabled() const override;
 
 			RENDERING_API void SetAttenuation(const Attenuation& attenuation)
 			{

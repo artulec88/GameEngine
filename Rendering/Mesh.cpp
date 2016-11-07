@@ -264,7 +264,7 @@ void Rendering::Mesh::AddVertices(Math::Vector2D* positions, Math::Vector2D* tex
 #ifdef DELOCUST_ENABLED
 	for (size_t i = 0; i < verticesCount; ++i)
 	{
-		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i].ToString(), "\n\tTex:\t", textureCoordinates[i].ToString(), "\n\tNormal:\t", normals[i].ToString());
+		DELOCUST_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", positions[i], "\n\tTex:\t", textureCoordinates[i], "\n\tNormal:\t", normals[i]);
 	}
 	for (size_t i = 0; i < indicesCount; ++i)
 	{
@@ -752,7 +752,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
-			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position.ToString());
+			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
 			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
 			normals.push_back(CalculateNormal(x, z, heightMapData));
@@ -784,7 +784,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& hei
 	//int i = 0;
 	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
 	//{
-		//CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos.ToString(), "\n\tTex:\t", vertexItr->m_texCoord.ToString(), "\n\tNormal:\t", vertexItr->m_normal.ToString());
+		//CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
 	//}
 	//for (size_t i = 0; i < INDICES_COUNT; ++i)
 	//{
@@ -838,7 +838,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			Math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
-			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position.ToString());
+			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
 			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
 			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
 			normals.push_back(CalculateNormal(x, z, heightsGenerator));
@@ -869,7 +869,7 @@ Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGen
 	//int i = 0;
 	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
 	//{
-	//	CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos.ToString(), "\n\tTex:\t", vertexItr->m_texCoord.ToString(), "\n\tNormal:\t", vertexItr->m_normal.ToString());
+	//	CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
 	//}
 	//for (size_t i = 0; i < INDICES_COUNT; ++i)
 	//{
@@ -962,7 +962,7 @@ Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
 #endif
 #if defined HEIGHTS_KD_TREE
 	Math::Real y = m_kdTree->SearchNearestValue(x, z);
-	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz.ToString(), "\"");
+	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz, "\"");
 #elif defined HEIGHTS_HEIGHTMAP
 	Math::Real terrainX = x - m_x;
 	Math::Real terrainZ = z - m_z;
@@ -1039,8 +1039,8 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 #endif
 
 	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&m_positions[0], uniquePositions.size(), COMPONENT_Y);
-	//INFO_LOG_RENDERING("The minimum value is ", m_positions[0].ToString());
-	//INFO_LOG_RENDERING("The maximum value is ", m_positions[uniquePositions.size() - 1].ToString());
+	//INFO_LOG_RENDERING("The minimum value is ", m_positions[0]);
+	//INFO_LOG_RENDERING("The maximum value is ", m_positions[uniquePositions.size() - 1]);
 
 	m_vertexCount = m_positions.size();
 	INFO_LOG_RENDERING("Terrain consists of ", m_vertexCount, " unique positions");
@@ -1056,15 +1056,15 @@ void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& po
 void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
 {
 #ifdef HEIGHTS_KD_TREE
-	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix.ToString());
+	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix);
 	CHECK_CONDITION_EXIT_RENDERING(!m_positions.empty(), Utility::EMERGENCY, "Cannot transform the positions. The positions array is empty.");
 	for (int i = 0; i < m_vertexCount; ++i)
 	{
-		//std::string oldPos = positions[i].ToString();
+		//std::string oldPos = positions[i];
 		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
 		//if ((i % 1000 == 0) || (i == m_vertexCount - 1))
 		//{
-		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i].ToString());
+		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i]);
 		//}
 	}
 	m_kdTree = std::make_unique<Math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);

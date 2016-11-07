@@ -54,7 +54,7 @@ void Rendering::Particles::Generators::PlanePositionGenerator::Generate(Math::Re
 	for (size_t i = startId; i < endId; ++i)
 	{
 		//Math::Vector3D randomPos(m_plane.GenerateRandomPositionWithinRadius(m_radius));
-		//CRITICAL_LOG_MATH("Random position on plane: ", randomPos.ToString());
+		//CRITICAL_LOG_MATH("Random position on plane: ", randomPos);
 		//Set(particleContainer, i, randomPos);
 		Set(particleContainer, i, m_plane.GenerateRandomPositionWithinRadius(m_radius, m_translationPoint));
 	}

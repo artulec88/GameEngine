@@ -5,8 +5,6 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-/* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
-
 Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
 	BaseLight(transform, color, intensity),
 	m_halfShadowArea(REAL_ZERO)
@@ -15,15 +13,6 @@ Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& t
 
 Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
 {
-}
-
-bool Rendering::Lighting::DirectionalLight::IsEnabled() const
-{
-	if (!directionalLightsEnabled)
-	{
-		return false;
-	}
-	return BaseLight::IsEnabled();
 }
 
 Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const
@@ -67,11 +56,4 @@ void Rendering::Lighting::DirectionalLight::SetShadowInfo(Math::Real halfShadowA
 			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
 	}
-}
-
-std::string Rendering::Lighting::DirectionalLight::ToString() const
-{
-	std::stringstream ss("");
-	ss << "(Intensity=" << m_intensity << "; Color=" << m_color.ToString() << "; Direction=" << GetTransform().GetTransformedRot().GetForward() << ")";
-	return ss.str();
 }

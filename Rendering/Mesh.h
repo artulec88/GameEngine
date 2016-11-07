@@ -107,7 +107,7 @@ namespace Rendering
 		inline void Bind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data binding");
-			//WARNING_LOG_RENDERING("Binding mesh data \"", ToString(), "\".");
+			//WARNING_LOG_RENDERING("Binding mesh data \"", *this, "\".");
 			CHECK_CONDITION_EXIT_RENDERING(m_vao != 0, Utility::Logging::CRITICAL, "Trying to bind the VAO with value 0");
 			glBindVertexArray(m_vao);
 			Rendering::CheckErrorCode(__FUNCTION__, "Finished mesh data binding");
@@ -117,7 +117,7 @@ namespace Rendering
 		inline void Unbind() const
 		{
 			Rendering::CheckErrorCode(__FUNCTION__, "Started mesh data unbinding");
-			//WARNING_LOG_RENDERING("Unbinding mesh data \"", ToString(), "\".");
+			//WARNING_LOG_RENDERING("Unbinding mesh data \"", *this, "\".");
 			//int index = 0;
 			//for (std::vector<GLuint>::const_iterator vboItr = m_vbos.begin(); vboItr != m_vbos.end(); ++vboItr, ++index)
 			//{

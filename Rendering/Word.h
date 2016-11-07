@@ -40,7 +40,14 @@ namespace Rendering
 			inline Math::Real GetWordWidth() const { return m_width; }
 			void Clear();
 
-			std::string ToString() const;
+			friend std::ostream& operator<<(std::ostream& out, const Word& word)
+			{
+				for (auto charItr = word.m_characters.begin(); charItr != word.m_characters.end(); ++charItr)
+				{
+					out << charItr->GetAsciiCode() << ",";
+				}
+				return out;
+			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

@@ -48,17 +48,6 @@ void Math::Interpolation::Interpolator<T>::PushInterpolationObject(const T& inte
 		}
 	}
 }
-
-//template <class T>
-//std::string Math::Interpolation::Interpolator<T>::ToString() const
-//{
-	//std::stringstream ss("[");
-	//std::vector<T>::const_iterator interpolationObjectItr = m_interpolationObjects.begin();
-	//for (std::vector<Real>::const_iterator timeItr = m_times.begin(); timeItr != m_times.end(); ++timeItr, ++interpolationObjectItr)
-	//{
-	//	ss << "<" << *timeItr << "; " << interpolationObjectItr
-	//}
-//}
 /* ==================== class Interpolator end ==================== */
 
 /* ==================== class LinearInterpolator begin ==================== */

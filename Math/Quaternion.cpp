@@ -32,7 +32,7 @@ Math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
-		//DEBUG_LOG_MATH("temp = ", temp, "; s = ", s, "; quaternion = ", ToString());
+		//DEBUG_LOG_MATH("temp = ", temp, "; s = ", s, "; quaternion = ", *this);
 	}
 	else if ( (m00 > m11) && (m00 > m22) )
 	{
@@ -79,7 +79,7 @@ Math::Quaternion::Quaternion(const Matrix4D& rotMatrix)
 		m_x = (rotMatrix.GetElement(1, 2) - rotMatrix.GetElement(2, 1)) * s;
 		m_y = (rotMatrix.GetElement(2, 0) - rotMatrix.GetElement(0, 2)) * s;
 		m_z = (rotMatrix.GetElement(0, 1) - rotMatrix.GetElement(1, 0)) * s;
-		//DEBUG_LOG_MATH("temp = ", temp, "; s = ", s, "; quaternion = ", ToString());
+		//DEBUG_LOG_MATH("temp = ", temp, "; s = ", s, "; quaternion = ", *this);
 	}
 	else if ( (m00 > m11) && (m00 > m22) )
 	{

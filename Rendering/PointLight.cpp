@@ -3,8 +3,6 @@
 #include "Shader.h"
 #include "Utility\IConfig.h"
 
-/* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
-
 Rendering::Lighting::PointLight::PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
 	BaseLight(transform, color, intensity),
 	m_attenuation(REAL_ZERO, REAL_ZERO, REAL_ZERO),
@@ -34,16 +32,7 @@ void Rendering::Lighting::PointLight::CalculateRange()
 	m_range = (-b + sqrt(b*b - 4*a*c)) / (2*a);
 }
 
-bool Rendering::Lighting::PointLight::IsEnabled() const
-{
-	if (!pointLightsEnabled)
-	{
-		return false;
-	}
-	return BaseLight::IsEnabled();
-}
-
-float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
+//float gTemp = REAL_ZERO; // TODO: Just temporary. Remove in the future.
 
 //void PointLight::Update(Math::Real deltaTime)
 //{

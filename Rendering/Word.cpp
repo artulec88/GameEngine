@@ -24,13 +24,3 @@ void Rendering::Text::Word::Clear()
 	m_width = REAL_ZERO;
 	m_characters.clear();
 }
-
-std::string Rendering::Text::Word::ToString() const
-{
-	std::stringstream ss("");
-	for (std::vector<Character>::const_iterator charItr = m_characters.begin(); charItr != m_characters.end(); ++charItr)
-	{
-		ss << charItr->GetAsciiCode() << ",";
-	}
-	return ss.str();
-}

@@ -345,7 +345,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader* guiControlShader) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
-	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"", guiControl.GetScreenPosition().ToString(), "\"");
+	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"", guiControl.GetScreenPosition(), "\"");
 	//glDisable(GL_CULL_FACE);
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -497,7 +497,7 @@ bool Rendering::Renderer::InitShadowMap()
 		m_altCamera.GetTransform().SetPos(shadowCameraTransform.m_pos);
 		m_altCamera.GetTransform().SetRot(shadowCameraTransform.m_rot);
 
-		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection().ToString(), "\"");
+		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
 		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
 		m_mappedValues.SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
@@ -738,9 +738,6 @@ void Rendering::Renderer::InitializeTweakBars()
 	TwAddVarRW(m_propertiesBar, "fogGradient", TW_TYPE_REAL, m_fogInfo.GetGradientPtr(), " label='Gradient' group='Fog' step=0.1 min=0.1 max=20.0 ");
 	TwAddVarRW(m_propertiesBar, "fogFallOffType", fogFallOffType, m_fogInfo.GetFallOffTypePtr(), " label='Fall-off type' group='Fog' ");
 	TwAddVarRW(m_propertiesBar, "fogCalculationType", fogCalculationType, m_fogInfo.GetCalculationTypePtr(), " label='Calculation type' group='Fog' ");
-	TwAddVarRW(m_propertiesBar, "directionalLightsEnabled", TW_TYPE_BOOLCPP, Lighting::DirectionalLight::GetDirectionalLightsEnabled(), " label='Directional light' group=Lights");
-	TwAddVarRW(m_propertiesBar, "pointLightsEnabled", TW_TYPE_BOOLCPP, Lighting::PointLight::ArePointLightsEnabled(), " label='Point lights' group=Lights");
-	TwAddVarRW(m_propertiesBar, "spotLightsEnabled", TW_TYPE_BOOLCPP, Lighting::SpotLight::GetSpotLightsEnabled(), " label='Spot lights' group=Lights");
 	//TwAddVarRW(m_propertiesBar, "shadowsEnabled", TW_TYPE_BOOLCPP, &m_shadowsEnabled, " label='Render shadows' group=Shadows");
 	//TwAddVarRW(m_propertiesBar, "pointLightShadowsEnabled", TW_TYPE_BOOLCPP, &m_pointLightShadowsEnabled, " label='Render point light shadows' group=Shadows ");
 	TwAddVarRW(m_propertiesBar, "fxaaSpanMax", TW_TYPE_REAL, &m_fxaaSpanMax, " min=0.0 step=0.1 label='Max span' group='FXAA' ");

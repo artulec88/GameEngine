@@ -16,18 +16,13 @@ namespace Rendering {
 		class DirectionalLight : public BaseLight
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		private:
-			static bool directionalLightsEnabled;
-		public:
-			static bool* GetDirectionalLightsEnabled() { return &directionalLightsEnabled; }
-
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
 			RENDERING_API virtual ~DirectionalLight(void);
-			
+
 			/// <summary> Directional light copy constructor. </summary>
 			DirectionalLight(const DirectionalLight& directionalLight) = default;
 			/// <summary> Directional light move constructor. </summary>
@@ -42,14 +37,17 @@ namespace Rendering {
 		public:
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
-			RENDERING_API virtual bool IsEnabled() const override;
-
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
 
 			RENDERING_API void SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
 				Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 
-			RENDERING_API std::string ToString() const;
+			friend std::ostream& operator<<(std::ostream& out, const DirectionalLight& directionalLight)
+			{
+				out << "Directional light: " << std::endl << "(Intensity=" << directionalLight.m_intensity << "; Color=" <<
+					directionalLight.m_color << "; Direction=" << directionalLight.GetTransform().GetTransformedRot().GetForward() << ")";
+				return out;
+			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

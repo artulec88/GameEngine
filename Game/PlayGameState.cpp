@@ -700,12 +700,6 @@ void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* rende
 
 void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
 {
-	if (!Rendering::Lighting::PointLight::ArePointLightsEnabled())
-	{
-		DEBUG_LOG_GAME("All point lights are disabled");
-		return;
-	}
-
 	for (size_t i = 0; i < m_pointLights.size(); ++i)
 	{
 		const Rendering::Lighting::PointLight* currentPointLight = renderer->SetCurrentPointLight(&(m_pointLights[i]));

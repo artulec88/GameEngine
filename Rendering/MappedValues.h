@@ -139,7 +139,7 @@ namespace Rendering
 		//	}
 		//	else
 		//	{
-		//		DELOCUST_LOG_RENDERING("Modifying the color \"", name, "\" with values \"", m_vec4DMap[name].ToString(), "\" to color \"", color.ToString(), "\"");
+		//		DELOCUST_LOG_RENDERING("Modifying the color \"", name, "\" with values \"", m_vec4DMap[name], "\" to color \"", color, "\"");
 		//		m_vec4DMap[name] = color.GetValues();
 		//	}
 		//}
