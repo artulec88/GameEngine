@@ -5,10 +5,10 @@
 #include "Shader.h"
 #include "Utility\ILogger.h"
 
-Rendering::Lighting::BaseLight::BaseLight() :
-	m_transform(),
-	m_color(Color(ColorNames::WHITE)),
-	m_intensity(REAL_ZERO),
+Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
+	m_transform(transform),
+	m_color(color),
+	m_intensity(intensity),
 	m_shader(NULL),
 	m_terrainShader(NULL),
 	m_noShadowShader(NULL),

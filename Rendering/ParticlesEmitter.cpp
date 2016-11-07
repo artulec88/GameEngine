@@ -31,7 +31,7 @@ void Rendering::Particles::ParticlesEmitter::Emit(Math::Real deltaTime, Particle
 		//ERROR_LOG_RENDERING("Delta time = ", deltaTime, "[ms]. MaxNewParticles = ", maxNewParticles, ". StartId = ", startId, ". EndId = ",
 		//	endId, ". Alive = ", particleContainer->GetAliveCount(), ". All = ", particleContainer->GetCount());
 
-		for (auto &gen : m_generators)
+		for (auto& gen : m_generators)
 		{
 			gen->Generate(deltaTime, particleContainer, startId, endId);
 		}

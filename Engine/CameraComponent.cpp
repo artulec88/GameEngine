@@ -7,29 +7,9 @@
 #include "Math\FloatingPoint.h"
 
 /* ==================== CameraComponent class implementation begin ==================== */
-Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, CameraBehavior* cameraBehavior /* = NULL */) :
-	GameComponent(),
-	Rendering::BaseCamera(projectionMatrix),
-	IActionHandler(),
-	IStateHandler(),
-	IRangeHandler(),
-	m_cameraBehavior(cameraBehavior)
-{
-}
-
 Engine::CameraComponent::CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, CameraBehavior* cameraBehavior /* = NULL */) :
 	GameComponent(),
 	Rendering::BaseCamera(projectionMatrix, sensitivity),
-	IActionHandler(),
-	IStateHandler(),
-	IRangeHandler(),
-	m_cameraBehavior(cameraBehavior)
-{
-}
-
-Engine::CameraComponent::CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, CameraBehavior* cameraBehavior /* = NULL */) :
-	GameComponent(),
-	Rendering::BaseCamera(FoV, aspectRatio, zNearPlane, zFarPlane),
 	IActionHandler(),
 	IStateHandler(),
 	IRangeHandler(),

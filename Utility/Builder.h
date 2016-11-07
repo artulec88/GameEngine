@@ -38,13 +38,7 @@ namespace Utility {
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
 		virtual T Get() = 0;
-		virtual void BuildPart1() = 0;
-		virtual void BuildPart2()
-		{
-		}
-		virtual void BuildPart3()
-		{
-		}
+		virtual void BuildParts() = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

@@ -143,15 +143,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraBuilder.cpp" />
     <ClCompile Include="GameNodeBuilder.cpp" />
     <ClCompile Include="IntroGameState.cpp" />
-    <ClCompile Include="LightBuilder.cpp" />
     <ClCompile Include="LoadGameCommand.cpp" />
     <ClCompile Include="LoadGameState.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MenuGameState.cpp" />
-    <ClCompile Include="ParticlesSystemBuilder.cpp" />
     <ClCompile Include="PlayGameState.cpp" />
     <ClCompile Include="PlayMenuGameState.cpp" />
     <ClCompile Include="ResumeGameCommand.cpp" />
@@ -161,18 +158,14 @@
     <ClCompile Include="TestGameManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraBuilder.h" />
     <ClInclude Include="Def.h" />
     <ClInclude Include="GameNodeBuilder.h" />
     <ClInclude Include="GameStats.h" />
     <ClInclude Include="IntroGameState.h" />
-    <ClInclude Include="LightBuilder.h" />
     <ClInclude Include="LoadGameCommand.h" />
     <ClInclude Include="LoadGameState.h" />
     <ClInclude Include="MenuGameState.h" />
     <ClInclude Include="MeshIDs.h" />
-    <ClInclude Include="ParticleEffects.h" />
-    <ClInclude Include="ParticlesSystemBuilder.h" />
     <ClInclude Include="PlayGameState.h" />
     <ClInclude Include="PlayMenuGameState.h" />
     <ClInclude Include="ResumeGameCommand.h" />

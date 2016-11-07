@@ -38,8 +38,12 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Game node constructor. </summary>
 		ENGINE_API GameNode();
+
+		/// <summary> Game node destructor. </summary>
 		ENGINE_API ~GameNode(void);
+
 		/// <summary>
 		/// Game node copy constructor.
 		/// </summary>
@@ -60,6 +64,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		ENGINE_API GameNode Clone() const;
 		ENGINE_API int GetID() const { return m_ID; }; // just for easier debugging purposes
 		ENGINE_API GameNode* AddChild(GameNode* child);
 		ENGINE_API GameNode* AddComponent(GameComponent* component);

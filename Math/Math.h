@@ -126,7 +126,7 @@ namespace Math
 	/// <summary>
 	/// For unsigned integer-like values it returns the minimum integer-like value that is both a power of <code>2</code>
 	/// and greater or equal to the given <paramref name="number"/>. For example, for a given set of values [ -3, 0, 1, 2, 5, 10 ]
-	/// the function will return [ 0, 0, 1, 2, 8, 16 ].
+	/// the function would return [ 0, 0, 1, 2, 8, 16 ] respectively.
 	/// </summary>
 	template<typename Type>
 	Type RoundUpPow2(Type number)

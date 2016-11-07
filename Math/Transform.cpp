@@ -209,12 +209,6 @@ void Math::Transform::SetParent(Transform* t)
 	m_isChanged = true;
 }
 
-std::string Math::Transform::ToString() const
-{
-	std::stringstream ss("");
-	ss << "Pos = " << m_pos << "; Rot = " << m_rotation << "; Scale = " << GetScale();
-	return ss.str();
-}
 
 bool Math::Transform::operator==(const Transform& transform) const
 {

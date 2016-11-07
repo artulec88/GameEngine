@@ -2,11 +2,11 @@
 #define __RENDERING_BASE_CAMERA_H__
 
 #include "Rendering.h"
+
 #include "Math\Transform.h"
 #include "Math\Vector.h"
 #include "Math\Matrix.h"
 #include "Math\Angle.h"
-#include <string>
 
 namespace Rendering
 {
@@ -17,7 +17,6 @@ namespace Rendering
 	{
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr Math::Real DEFAULT_SENSITIVITY = 0.05f;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -27,7 +26,7 @@ namespace Rendering
 		/// </summary>
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API BaseCamera(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity = DEFAULT_SENSITIVITY);
+		RENDERING_API BaseCamera(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity);
 		/// <summary>
 		/// The constructor of the base camera object.
 		/// </summary>
@@ -36,7 +35,7 @@ namespace Rendering
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
 		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		RENDERING_API BaseCamera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity = DEFAULT_SENSITIVITY);
+		RENDERING_API BaseCamera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity);
 
 		/// <summary>
 		/// The destructor of the camera object.
@@ -55,27 +54,65 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary> Returns the reference to the transform of the camera. </summary>
+		/// <returns> The reference to the transform of the camera. </returns>
 		RENDERING_API virtual Math::Transform& GetTransform() = 0;
+
+		/// <summary> Returns the constant reference to the transform of the camera. </summary>
+		/// <returns> The constant reference to the transform of the camera. </returns>
 		RENDERING_API virtual const Math::Transform& GetTransform() const = 0;
+
+		/// <summary> Returns the sensitivity of the camera. </summary>
+		/// <returns> The sensitivity of the camera. </returns>
 		RENDERING_API Math::Real GetSensitivity() const { return m_sensitivity; }
+
+		/// <summary> Sets the sensitivity of the camera. </summary>
+		/// <param name="sensitivity"> The new sensitivity of the camera. </param>
 		RENDERING_API void SetSensitivity(Math::Real sensitivity) { m_sensitivity = sensitivity; }
+
+		/// <summary> Activates the camera. </summary>
 		RENDERING_API void Activate() { m_isActive = true; }
+
+		/// <summary> Deactivates the camera. </summary>
 		RENDERING_API void Deactivate() { m_isActive = false; }
+
+		/// <summary> Checks whether the camera is active (<code>true</code> is returned) or not (<code>false</code> is returned). </summary>
+		/// <returns> <code>true</code> when the camera is currently active and <code>false</code> otherwise. </returns>
 		RENDERING_API inline bool IsActive() const { return m_isActive; }
+
 		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projection; }
 		RENDERING_API inline void SetProjection(const Math::Matrix4D& projection) { m_projection = projection; }
 		RENDERING_API Math::Matrix4D GetViewMatrix() const;
 		RENDERING_API Math::Matrix4D GetViewProjection() const;
+
+		friend std::ostream& operator<<(std::ostream& out, const BaseCamera& camera)
+		{
+			out << "Camera: " << std::endl << camera.GetTransform() << std::endl << "Projection matrix: " <<
+				std::endl << camera.m_projection << "Sensitivity: " << camera.m_sensitivity << std::endl << "Active: " <<
+				(camera.m_isActive ? "Yes" : "No");
+			return out;
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
+		/// <summary>
+		/// The projection matrix of the camera. It describes the mapping of a pinhole camera (see https://en.wikipedia.org/wiki/Pinhole_camera)
+		/// from 3D points in the world to 2D points in an image. Let <code>x</code> be a representation of a 3D point in homogeneous coordinates (4D vector)
+		/// and let <code>y</code> be a representation of the image of this point in the pinhole camera (3D vector). Then the following relation holds:
+		/// <code>y~Cx</code> where <code>C</code> is the camera projection matrix and the <code>~</code> sign implies that the left and right hand sides
+		/// are equal up to a non-zero scalar multiplication.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Camera_matrix, https://en.wikipedia.org/wiki/3D_projection.
+		/// </remarks>
 		Math::Matrix4D m_projection;
 
 		/// <summary>
 		/// The camera sensitivity. The amount representing how fast the camera reacts to player's input.
 		/// </summary>
 		Math::Real m_sensitivity;
+
 		/// <summary>
 		/// The <code>bool</code> value indicating whether the camera is a currently active camera (<code>true</code>) or not (<code>false</code>).
 		/// </summary>
@@ -86,7 +123,7 @@ namespace Rendering
 		Math::Real m_prevNearPlane, m_nearPlane, m_prevFarPlane, m_farPlane;
 #endif
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class Camera */
+	}; /* end class BaseCamera */
 
 } /* end namespace Rendering */
 

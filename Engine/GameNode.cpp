@@ -54,6 +54,20 @@ Engine::GameNode::~GameNode(void)
 	DELOCUST_LOG_ENGINE("Game node (ID=", m_ID, ") destruction finished");
 }
 
+//Engine::GameNode::GameNode(const GameNode& gameNode) :
+//	m_ID(++GameNode::gameNodeCount),
+//	m_childrenGameNodes(gameNode.m_childrenGameNodes),
+//	m_components(gameNode.m_components),
+//	m_renderableComponents(gameNode.m_renderableComponents),
+//	m_inputableMouseComponents(gameNode.m_inputableMouseComponents),
+//	m_updateableComponents(gameNode.m_updateableComponents),
+//	m_transform(gameNode.m_transform),
+//	m_physicsObject(gameNode.m_physicsObject),
+//	m_actionsToCommands(gameNode.m_actionsToCommands),
+//	m_statesToCommands(gameNode.m_statesToCommands)
+//{
+//}
+
 Engine::GameNode::GameNode(GameNode&& gameNode) :
 	m_ID(std::move(gameNode.m_ID)),
 	m_childrenGameNodes(std::move(gameNode.m_childrenGameNodes)),
@@ -92,6 +106,13 @@ Engine::GameNode& Engine::GameNode::operator=(GameNode&& gameNode)
 		(*componentItr)->SetParent(this);
 	}
 	return *this;
+}
+
+Engine::GameNode Engine::GameNode::Clone() const
+{
+	GameNode cloneGameNode;
+	// TODO: Finish the implementation
+	return cloneGameNode;
 }
 
 void Engine::GameNode::CreatePhysicsObject(Math::Real mass, const Math::Vector3D& linearVelocity)

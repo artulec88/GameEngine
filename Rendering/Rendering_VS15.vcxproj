@@ -178,6 +178,7 @@
     <ClInclude Include="BaseCamera.h" />
     <ClInclude Include="BaseLight.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraBuilder.h" />
     <ClInclude Include="Character.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="CubeShadowMap.h" />
@@ -189,6 +190,7 @@
     <ClInclude Include="GuiControl.h" />
     <ClInclude Include="GuiButtonControl.h" />
     <ClInclude Include="GuiImageControl.h" />
+    <ClInclude Include="LightBuilder.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="MappedValues.h" />
     <ClInclude Include="Material.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleAccelerationGenerator.h" />
     <ClInclude Include="ParticleAttributes.h" />
+    <ClInclude Include="ParticleEffects.h" />
     <ClInclude Include="ParticleLifeSpanGenerator.h" />
     <ClInclude Include="ParticlePositionGenerator.h" />
     <ClInclude Include="ParticleRotationGenerator.h" />
@@ -205,6 +208,7 @@
     <ClInclude Include="ParticlesContainer.h" />
     <ClInclude Include="ParticlesEmitter.h" />
     <ClInclude Include="ParticleAttributeGenerator.h" />
+    <ClInclude Include="ParticlesSystemBuilder.h" />
     <ClInclude Include="ParticlesUpdater.h" />
     <ClInclude Include="ParticlesSystem.h" />
     <ClInclude Include="ParticleVelocityGenerator.h" />
@@ -220,6 +224,7 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureBuilder.h" />
     <ClInclude Include="TextureFactory.h" />
     <ClInclude Include="TextureIDs.h" />
     <ClInclude Include="Uniform.h" />
@@ -230,6 +235,7 @@
     <ClCompile Include="BaseCamera.cpp" />
     <ClCompile Include="BaseLight.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraBuilder.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="CubeShadowMap.cpp" />
     <ClCompile Include="DirectionalLight.cpp" />
@@ -254,6 +260,7 @@
     <ClCompile Include="GuiControl.cpp" />
     <ClCompile Include="GuiButtonControl.cpp" />
     <ClCompile Include="GuiImageControl.cpp" />
+    <ClCompile Include="LightBuilder.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="MappedValues.cpp" />
     <ClCompile Include="Material.cpp" />
@@ -268,6 +275,7 @@
     <ClCompile Include="ParticlesContainer.cpp" />
     <ClCompile Include="ParticlesEmitter.cpp" />
     <ClCompile Include="ParticleAttributeGenerator.cpp" />
+    <ClCompile Include="ParticlesSystemBuilder.cpp" />
     <ClCompile Include="ParticlesUpdater.cpp" />
     <ClCompile Include="ParticlesSystem.cpp" />
     <ClCompile Include="ParticleVelocityGenerator.cpp" />
@@ -287,6 +295,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureBuilder.cpp" />
     <ClCompile Include="TextureFactory.cpp" />
     <ClCompile Include="Uniform.cpp" />
     <ClCompile Include="Word.cpp" />

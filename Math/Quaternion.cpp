@@ -121,6 +121,8 @@ Math::Matrix4D Math::Quaternion::ToRotationMatrix() const
 	return Matrix4D(Vector3D(2.0f * (GetX() * GetZ() - GetW() * GetY()), 2.0f * (GetY() * GetZ() + GetW() * GetX()), 1.0f - 2.0f * (GetX() * GetX() + GetY() * GetY())),
 		Vector3D(2.0f * (GetX()*GetY() + GetW()*GetZ()), 1.0f - 2.0f * (GetX()*GetX() + GetZ()*GetZ()), 2.0f * (GetY()*GetZ() - GetW()*GetX())),
 		Vector3D(1.0f - 2.0f * (GetY()*GetY() + GetZ()*GetZ()), 2.0f * (GetX()*GetY() - GetW()*GetZ()), 2.0f * (GetX()*GetZ() + GetW()*GetY())));
+
+	// TODO: Read Computer Graphics From Pixels to Programmable Graphics Hardware by Alexey Boreskov- chapter Transformations in 3D, projections, quaternions (page 79).
 }
 
 Math::Real Math::Quaternion::Length() const

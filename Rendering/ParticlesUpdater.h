@@ -28,14 +28,17 @@ namespace Rendering
 			RENDERING_API ParticlesUpdater();
 			RENDERING_API virtual ~ParticlesUpdater();
 
-			///// <summary> Particle generator copy constructor. </summary>
-			//ParticlePropertyGenerator(const ParticlePropertyGenerator& particlePropertyGenerator) = delete;
-			///// <summary> Particle generator move constructor. </summary>
-			//ParticlePropertyGenerator(ParticlePropertyGenerator&& particlePropertyGenerator) = delete;
-			///// <summary> Particle generator copy assignment operator. </summary>
-			//ParticlePropertyGenerator& operator=(const ParticlePropertyGenerator& particlePropertyGenerator) = delete;
-			///// <summary> Particle generator move assignment operator. </summary>
-			//ParticlePropertyGenerator& operator=(ParticlePropertyGenerator&& particlePropertyGenerator) = delete;
+			/// <summary> Particle updater copy constructor. </summary>
+			ParticlesUpdater(const ParticlesUpdater& particlesUpdater) = delete;
+
+			/// <summary> Particle updater move constructor. </summary>
+			ParticlesUpdater(ParticlesUpdater&& particlesUpdater) = default;
+
+			/// <summary> Particle updater copy assignment operator. </summary>
+			ParticlesUpdater& operator=(const ParticlesUpdater& particlesUpdater) = delete;
+
+			/// <summary> Particle updater move assignment operator. </summary>
+			ParticlesUpdater& operator=(ParticlesUpdater&& particlesUpdater) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

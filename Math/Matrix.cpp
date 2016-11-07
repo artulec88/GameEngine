@@ -117,7 +117,10 @@ Math::Matrix4D::Matrix4D(const Angle& fov /* Field of View */, Real aspect /* As
 }
 
 Math::Matrix4D::Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane) :
-	Matrix4D(2.0f / (right - left), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, 2.0f / (top - bottom), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, -2.0f / (farPlane - nearPlane), REAL_ZERO, -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), REAL_ONE)
+	Matrix4D(2.0f / (right - left), REAL_ZERO, REAL_ZERO, REAL_ZERO,
+		REAL_ZERO, 2.0f / (top - bottom), REAL_ZERO, REAL_ZERO,
+		REAL_ZERO, REAL_ZERO, -2.0f / (farPlane - nearPlane), REAL_ZERO,
+		-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(farPlane + nearPlane) / (farPlane - nearPlane), REAL_ONE)
 {
 	START_PROFILING_MATH(false, "12");
 	STOP_PROFILING_MATH("12");
@@ -605,6 +608,26 @@ void Math::Matrix4D::SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ)
 	STOP_PROFILING_MATH("");
 }
 
+void Math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane)
+{
+	SetElement(0, 0, 2.0f / (right - left));
+	SetElement(0, 1, REAL_ZERO);
+	SetElement(0, 2, REAL_ZERO);
+	SetElement(0, 3, REAL_ZERO);
+	SetElement(1, 0, REAL_ZERO);
+	SetElement(1, 1, 2.0f / (top - bottom));
+	SetElement(1, 2, REAL_ZERO);
+	SetElement(1, 3, REAL_ZERO);
+	SetElement(2, 0, REAL_ZERO);
+	SetElement(2, 1, REAL_ZERO);
+	SetElement(2, 2, -2.0f / (farPlane - nearPlane));
+	SetElement(2, 3, REAL_ZERO);
+	SetElement(3, 0, -(right + left) / (right - left));
+	SetElement(3, 1, -(top + bottom) / (top - bottom));
+	SetElement(3, 2, -(farPlane + nearPlane) / (farPlane - nearPlane));
+	SetElement(3, 3, REAL_ONE);
+}
+
 void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane)
 {
 	START_PROFILING_MATH(false, "");
@@ -686,62 +709,4 @@ void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	m_values[8] = right.GetZ();	m_values[9] = up.GetZ();	m_values[10] = forward.GetZ();	m_values[11] = REAL_ZERO;
 	m_values[12] = REAL_ZERO;		m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;		m_values[15] = REAL_ONE;
 #endif
-}
-
-std::string Math::Matrix4D::ToString() const
-{
-	constexpr char* INDENTATION_STRING = "\t";
-	std::stringstream s("");
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[0][0] << INDENTATION_STRING;
-	s << m_values[0][1] << INDENTATION_STRING;
-	s << m_values[0][2] << INDENTATION_STRING;
-	s << m_values[0][3] << INDENTATION_STRING;
-#else
-	s << m_values[0] << INDENTATION_STRING;
-	s << m_values[1] << INDENTATION_STRING;
-	s << m_values[2] << INDENTATION_STRING;
-	s << m_values[3] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[1][0] << INDENTATION_STRING;
-	s << m_values[1][1] << INDENTATION_STRING;
-	s << m_values[1][2] << INDENTATION_STRING;
-	s << m_values[1][3] << INDENTATION_STRING;
-#else
-	s << m_values[4] << INDENTATION_STRING;
-	s << m_values[5] << INDENTATION_STRING;
-	s << m_values[6] << INDENTATION_STRING;
-	s << m_values[7] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[2][0] << INDENTATION_STRING;
-	s << m_values[2][1] << INDENTATION_STRING;
-	s << m_values[2][2] << INDENTATION_STRING;
-	s << m_values[2][3] << INDENTATION_STRING;
-#else
-	s << m_values[8] << INDENTATION_STRING;
-	s << m_values[9] << INDENTATION_STRING;
-	s << m_values[10] << INDENTATION_STRING;
-	s << m_values[11] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-
-#ifdef MATRIX_MODE_TWO_DIMENSIONS
-	s << m_values[3][0] << INDENTATION_STRING;
-	s << m_values[3][1] << INDENTATION_STRING;
-	s << m_values[3][2] << INDENTATION_STRING;
-	s << m_values[3][3] << INDENTATION_STRING;
-#else
-	s << m_values[12] << INDENTATION_STRING;
-	s << m_values[13] << INDENTATION_STRING;
-	s << m_values[14] << INDENTATION_STRING;
-	s << m_values[15] << INDENTATION_STRING;
-#endif
-	s << std::endl;
-	return s.str();
 }

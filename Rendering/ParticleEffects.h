@@ -1,7 +1,7 @@
-#ifndef __GAME_PARTICLE_EFFECTS_H__
-#define __GAME_PARTICLE_EFFECTS_H__
+#ifndef __RENDERING_PARTICLE_EFFECTS_H__
+#define __RENDERING_PARTICLE_EFFECTS_H__
 
-namespace Game
+namespace Rendering
 {
 	namespace ParticleEffects
 	{
@@ -13,6 +13,6 @@ namespace Game
 			SMOKE
 		}; /* end enum ParticleEffect */
 	} /* end namespace ParticleEffects */
-} /* end namespace Game */
+} /* end namespace Rendering */
 
-#endif /* __GAME_PARTICLE_EFFECTS_H__ */
+#endif /* __RENDERING_PARTICLE_EFFECTS_H__ */

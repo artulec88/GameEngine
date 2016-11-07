@@ -13,7 +13,6 @@
 
 #include <iostream>
 #include <type_traits> // for static_assert
-#include <string>
 
 //#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
@@ -207,6 +206,7 @@ namespace Math
 		}
 
 		MATH_API void SetScaleMatrix(Real scaleX, Real scaleY, Real scaleZ);
+		MATH_API void SetOrthogonalProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 		MATH_API void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
 
 		MATH_API Vector3D Transform(const Vector3D& vec); // TODO: Write tests
@@ -219,7 +219,14 @@ namespace Math
 		/// <returns>True if the matrix is an identity matrix. False otherwise.</returns>
 		MATH_API bool IsIdentity() const;
 
-		MATH_API std::string ToString() const;
+		friend std::ostream& operator<<(std::ostream& out, const Matrix4D& matrix)
+		{
+			out << std::setprecision(4) << matrix.GetElement(0, 0) << "; " << matrix.GetElement(0, 1) << "; " << matrix.GetElement(0, 2) << "; " << matrix.GetElement(0, 3) << std::endl;
+			out << std::setprecision(4) << matrix.GetElement(1, 0) << "; " << matrix.GetElement(1, 1) << "; " << matrix.GetElement(1, 2) << "; " << matrix.GetElement(1, 3) << std::endl;
+			out << std::setprecision(4) << matrix.GetElement(2, 0) << "; " << matrix.GetElement(2, 1) << "; " << matrix.GetElement(2, 2) << "; " << matrix.GetElement(2, 3) << std::endl;
+			out << std::setprecision(4) << matrix.GetElement(3, 0) << "; " << matrix.GetElement(3, 1) << "; " << matrix.GetElement(3, 2) << "; " << matrix.GetElement(3, 3) << std::endl;
+			return out;
+		}
 	private:
 		/// <summary>
 		/// Returns the pointer to the matrix data.

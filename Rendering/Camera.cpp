@@ -13,7 +13,7 @@
 #include <sstream>
 
 Rendering::Camera::Camera() :
-	BaseCamera(Math::Matrix4D::IDENTITY_MATRIX),
+	BaseCamera(Math::Matrix4D::IDENTITY_MATRIX, 0.05f /* TODO: Don't ever use hard-coded values */),
 	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, Math::Quaternion(), REAL_ONE)
 {
 }

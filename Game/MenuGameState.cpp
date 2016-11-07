@@ -3,14 +3,13 @@
 #include "PlayGameState.h"
 #include "LoadGameState.h"
 #include "StartGameCommand.h"
-#include "ParticlesSystemBuilder.h"
-#include "ParticleEffects.h"
 
 #include "Engine\CoreEngine.h"
 #include "Engine\GameManager.h"
 #include "Engine\GameCommand.h"
 #include "Engine\ParticlesSystemComponent.h"
 
+#include "Rendering\ParticlesSystemBuilder.h"
 #include "Rendering\Shader.h"
 
 #include "Math\Effect_impl.h"

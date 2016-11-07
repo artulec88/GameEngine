@@ -7,7 +7,6 @@
 #include "PlayMenuGameState.h"
 #include "LoadGameState.h"
 #include "GameNodeBuilder.h"
-#include "ParticlesSystemBuilder.h"
 
 #include "Engine\CoreEngine.h"
 #include "Engine\BillboardRendererComponent.h"

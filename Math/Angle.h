@@ -40,7 +40,7 @@ namespace Math
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API Angle() :
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Angle() :
 			m_angle(REAL_ZERO)
 #ifdef PROFILING_MATH_MODULE_ENABLED
 			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))
@@ -56,7 +56,7 @@ namespace Math
 		/// <remarks>
 		/// Explicit constructor is used, so that <code>Real</code> cannot be easily cast to Angle without the developer knowing about that.
 		/// </remarks>
-		MATH_API explicit Angle(Real angle, Unit::UnitType unit = Unit::DEGREE) :
+		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH explicit Angle(Real angle, Unit::UnitType unit = Unit::DEGREE) :
 			m_angle((unit == Unit::RADIAN) ? angle : ToRad(angle))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 			, m_classStats(STATS_STORAGE.GetClassStats("Angle"))

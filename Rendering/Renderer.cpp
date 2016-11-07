@@ -388,9 +388,10 @@ void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Pa
 	}
 	DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
 	particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
-	particlesSystem.GetTexture()->Bind();
+	const Particles::ParticleTexture* particleTexture = static_cast<const Particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureID()));
+	particleTexture->Bind();
 	particleShader->SetUniformi("particleTexture", 0);
-	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particlesSystem.GetTexture()->GetRowsCount()));
+	particleShader->SetUniformf("textureAtlasRowsCount", static_cast<Math::Real>(particleTexture->GetRowsCount()));
 	if (Rendering::glDepthTestEnabled)
 	{
 		glDisable(GL_DEPTH_TEST);
@@ -399,7 +400,7 @@ void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Pa
 	{
 		glEnable(GL_BLEND);
 	}
-	glBlendFunc(GL_SRC_ALPHA, particlesSystem.GetTexture()->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFunc(GL_SRC_ALPHA, particleTexture->IsAdditive() ? GL_ONE : GL_ONE_MINUS_SRC_ALPHA);
 
 	m_particleInstanceVboData.clear();
 	const Math::Matrix4D cameraViewMatrix = m_currentCamera->GetViewMatrix();

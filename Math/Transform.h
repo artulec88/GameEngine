@@ -7,8 +7,6 @@
 #include "Quaternion.h"
 #include "Matrix.h"
 
-#include <string>
-
 namespace Math
 {
 
@@ -111,8 +109,6 @@ namespace Math
 			m_parentTransformation = m_parentTransform->GetTransformation();
 		}
 
-		MATH_API std::string ToString() const;
-
 		/**
 		 * @brief returns true if the transformation itself or any parent transformation is changed
 		 */
@@ -120,6 +116,13 @@ namespace Math
 
 		MATH_API bool operator==(const Transform& transform) const;
 		MATH_API bool operator!=(const Transform& transform) const;
+
+		friend std::ostream& operator<<(std::ostream& out, const Transform& transform)
+		{
+			out << "Transform: position: " << transform.m_pos << " rotation: " << transform.m_rotation << " scale: " <<
+				transform.m_scale << " hasParent: " << ((transform.m_parentTransform != nullptr) ? "Yes" : "No");
+			return out;
+		}
 	 /* ==================== Non-static member functions end ==================== */
 
 	 /* ==================== Non-static member variables begin ==================== */

@@ -26,13 +26,7 @@ namespace Engine
 		/// The constructor of the camera component object.
 		/// </summary>
 		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
-		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const Math::Matrix4D& projectionMatrix, CameraBehavior* cameraBehavior = NULL);
-		/// <summary>
-		/// The constructor of the camera component object.
-		/// </summary>
-		/// <param name="projectionMatrix">The projection matrix of the camera.</param>
-		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
+		/// <param name="sensitivity"> The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
 		/// <param name="cameraBehavior"> The behavior of the camera. </param>
 		ENGINE_API CameraComponent(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity, CameraBehavior* cameraBehavior = NULL);
 		/// <summary>
@@ -42,17 +36,7 @@ namespace Engine
 		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
 		/// <param name="zNearPlane">The near plane of the camera.</param>
 		/// <param name="zFarPlane">The far plane of the camera.</param>
-		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
-		/// <param name="cameraBehavior"> The behavior of the camera. </param>
-		ENGINE_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, CameraBehavior* cameraBehavior = NULL);
-		/// <summary>
-		/// The constructor of the base camera object.
-		/// </summary>
-		/// <param name="fov">The field of view of the camera.</param>
-		/// <param name="aspectRatio">The aspect ratio of the camera.</param>
-		/// <param name="zNearPlane">The near plane of the camera.</param>
-		/// <param name="zFarPlane">The far plane of the camera.</param>
-		/// <param name="sensitivity">The value representing how fast the camera reacts to player input.</param>
+		/// <param name="sensitivity">The sensitivity of the camera. The value representing how fast the camera reacts to player input. </param>
 		/// <param name="cameraBehavior"> The behavior of the camera. </param>
 		ENGINE_API CameraComponent(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity, CameraBehavior* cameraBehavior = NULL);
 		ENGINE_API virtual ~CameraComponent(void);

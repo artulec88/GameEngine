@@ -7,8 +7,8 @@
 
 /* static */ bool Rendering::Lighting::DirectionalLight::directionalLightsEnabled = true;
 
-Rendering::Lighting::DirectionalLight::DirectionalLight() :
-	BaseLight(),
+Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
+	BaseLight(transform, color, intensity),
 	m_halfShadowArea(REAL_ZERO)
 {
 }

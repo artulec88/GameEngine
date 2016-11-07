@@ -27,7 +27,7 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API SpotLight();
+			RENDERING_API SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
 			RENDERING_API virtual ~SpotLight(void);
 
 			/// <summary> Spot light copy constructor. </summary>

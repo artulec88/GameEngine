@@ -1,21 +1,26 @@
 #include "stdafx.h"
 #include "ParticlesSystem.h"
-
+#include "Texture.h"
+#include "Shader.h"
+#include "ShaderIDs.h"
+#include "TextureIDs.h"
 
 #include "Utility\ILogger.h"
 
 Rendering::Particles::ParticlesSystem::ParticlesSystem() :
-	ParticlesSystem(0, Attributes::AttributesMask(0), NULL)
+	ParticlesSystem(0, Attributes::AttributesMask(0), TextureIDs::INVALID, ShaderIDs::INVALID)
 {
 }
 
-Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, const ParticleTexture* particleTexture) :
+Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, int particleTextureID, int particleShaderID) :
 	m_count(maxCount),
 	m_particles(maxCount, attributesMask),
 	m_emitters(),
 	m_updaters(),
-	m_texture(particleTexture)
+	m_textureID(particleTextureID),
+	m_shaderID(particleShaderID)
 {
+	// TODO: Determine m_shaderID based on the given attributesMask
 }
 
 

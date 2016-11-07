@@ -35,21 +35,49 @@ namespace Rendering
 			/// The value does not necessarily have to be an integer.
 			/// </param>
 			RENDERING_API explicit ParticlesEmitter(Math::Real numberOfParticlesToGeneratePerSecond);
+
+			/// <summary> Particles emitter destructor. </summary>
 			RENDERING_API ~ParticlesEmitter();
 
 			/// <summary> Particles emitter copy constructor. </summary>
 			ParticlesEmitter(const ParticlesEmitter& particlesEmitter) = default;
+
 			/// <summary> Particles emitter move constructor. </summary>
 			ParticlesEmitter(ParticlesEmitter&& particlesEmitter) = default;
+
 			/// <summary> Particles emitter copy assignment operator. </summary>
 			ParticlesEmitter& operator=(const ParticlesEmitter& particlesEmitter) = delete;
+
 			/// <summary> Particles emitter move assignment operator. </summary>
-			ParticlesEmitter& operator=(ParticlesEmitter&& particlesEmitter) = delete;
+			ParticlesEmitter& operator=(ParticlesEmitter&& particlesEmitter) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Based on the given <paramref name="numberOfParticlesToGeneratePerSecond"> the time for one particle to be generated is calculated.
+			/// </summary>
+			/// <param name="numberOfParticlesToGeneratePerSecond">
+			/// The number of particles to generate per second.
+			/// The value does not necessarily have to be an integer.
+			/// </param>
+			RENDERING_API void SetParticlesCountToGeneratePerSecond(Math::Real numberOfParticlesToGeneratePerSecond)
+			{
+				m_timeToEmitOneParticle = REAL_ONE / numberOfParticlesToGeneratePerSecond;
+			}
+
+			/// <summary>
+			/// Simulates the emitter by the specified <paramref name="deltaTime/> time.
+			/// It emits <code>P = floor(deltaTime / m_timeToEmitOneParticle)</code> particles in the given <paramref name="particleContainer"/>.
+			/// Emission of a single particle means setting its properties by the particles generators and reviving it.
+			/// </summary>
+			/// <param name="deltaTime"> The time that has passed since the last emission. </param>
+			/// <param name="particleContainer"> The container of particles that will store the emitted particles. </param>
 			RENDERING_API void Emit(Math::Real deltaTime, ParticlesContainer* particleContainer);
+
+			/// <summary>
+			/// Adds additional particle attribute generator to the emitter. The generator will be used when new particles are emitted by this specific particles emitter.
+			/// <param name="particleAttributeGenerator"> The specific particle attribute generator. </param>
 			RENDERING_API void AddGenerator(ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
 			/* ==================== Non-static member functions end ==================== */
 
@@ -59,10 +87,15 @@ namespace Rendering
 			/// Elapsed time since last particles emission in seconds.
 			/// </summary>
 			Math::Real m_currentTimer; // TODO: Replace with timespan object
+
 			/// <summary>
 			/// The time in seconds that needs to pass for the one particle to be generated.
 			/// </summary>
 			Math::Real m_timeToEmitOneParticle;
+
+			/// <summary>
+			/// The generatos that particles emitter uses 
+			/// </summary>
 			std::vector<ParticleAttributeGenerator*> m_generators;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesEmitter */

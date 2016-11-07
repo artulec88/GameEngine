@@ -1,20 +1,19 @@
-#ifndef __GAME_LIGHT_BUILDER_H__
-#define __GAME_LIGHT_BUILDER_H__
+#ifndef __RENDERING_LIGHT_BUILDER_H__
+#define __RENDERING_LIGHT_BUILDER_H__
 
-#include "Def.h"
+#include "Rendering.h"
 
-#include "Engine\GameManager.h"
-
-#include "Rendering\ShaderFactory.h"
-#include "Rendering\DirectionalLight.h"
-#include "Rendering\PointLight.h"
-#include "Rendering\SpotLight.h"
+#include "ShaderFactory.h"
+#include "DirectionalLight.h"
+#include "PointLight.h"
+#include "SpotLight.h"
 
 #include "Utility\Builder.h"
+#include "Utility\IConfig.h"
 
 #include <string>
 
-namespace Game
+namespace Rendering
 {
 	template <class T>
 	class LightBuilder : public Utility::Builder<T>
@@ -24,16 +23,19 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory, T* light) :
-			Utility::Builder<T>(light),
+		LightBuilder(const Rendering::ShaderFactory& shaderFactory, const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity) :
+			Utility::Builder<T>(),
 			m_lightIndex(0),
 			m_lightIndexStr("0"),
-			m_gameManager(gameManager),
 			m_shaderFactory(shaderFactory),
-			m_pos(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-			m_rot(),
-			m_color(Rendering::ColorNames::WHITE),
-			m_intensity(REAL_ZERO)
+			M_DEFAULT_POS(defaultPosition),
+			M_DEFAULT_ROT(defaultRotation),
+			M_DEFAULT_COLOR(defaultColor),
+			M_DEFAULT_INTENSITY(defaultIntensity),
+			m_pos(M_DEFAULT_POS),
+			m_rot(M_DEFAULT_ROT),
+			m_color(M_DEFAULT_COLOR),
+			m_intensity(M_DEFAULT_INTENSITY)
 		{
 		}
 		virtual ~LightBuilder(void)
@@ -48,23 +50,44 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildPart1() = 0;
-		virtual void BuildPart2() = 0;
-		virtual void BuildPart3() = 0;
+		virtual void BuildParts() override
+		{
+			BuildTransform();
+			BuildLightParams();
+			//BuildShadowParams();
+			BuildShaderParams();
+		}
+
+		virtual void SetDefault()
+		{
+			m_pos = M_DEFAULT_POS;
+			m_rot = M_DEFAULT_ROT;
+			m_color = M_DEFAULT_COLOR;
+			m_intensity = M_DEFAULT_INTENSITY;
+		}
+
 		void SetLightIndex(int lightIndex)
 		{
 			m_lightIndex = lightIndex;
 			m_lightIndexStr = std::to_string(lightIndex);
 		}
 	protected:
+		virtual void BuildTransform() = 0;
+		virtual void BuildLightParams() = 0;
+		//virtual void BuildShadowParams() = 0;
+		virtual void BuildShaderParams() = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		int m_lightIndex;
 		std::string m_lightIndexStr;
-		Engine::GameManager* m_gameManager;
 		const Rendering::ShaderFactory& m_shaderFactory;
+
+		const Math::Vector3D M_DEFAULT_POS; // TODO: Make it static constexpr in the future.
+		const Math::Quaternion M_DEFAULT_ROT; // TODO: Make it static constexpr in the future.
+		const Color M_DEFAULT_COLOR; // TODO: Make it static constexpr in the future.
+		const Math::Real M_DEFAULT_INTENSITY; // TODO: Make it static constexpr in the future.
 
 		Math::Vector3D m_pos;
 		Math::Quaternion m_rot;
@@ -80,9 +103,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		DirectionalLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
-			Rendering::Lighting::DirectionalLight* directionalLight);
-		virtual ~DirectionalLightBuilder(void);
+		RENDERING_API DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory);
+		RENDERING_API virtual ~DirectionalLightBuilder(void);
 		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
 		DirectionalLightBuilder(DirectionalLightBuilder&& directionalLightBuilder) = delete;
 		DirectionalLightBuilder& operator=(const DirectionalLightBuilder& directionalLightBuilder) = delete;
@@ -90,14 +112,29 @@ namespace Game
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
-		virtual void BuildPart1();
-		virtual void BuildPart2();
-		virtual void BuildPart3();
+	protected:
+		virtual void BuildTransform() override;
+		virtual void BuildLightParams() override;
+		virtual void BuildShaderParams() override;
+		virtual void SetDefault() override;
+		virtual Lighting::DirectionalLight Get() override
+		{
+			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		//const Math::Vector3D M_DEFAULT_DIRECTIONAL_LIGHT_POS; // TODO: Make it a static constexpr in the future.
+		//const Math::Angle M_DEFAULT_DIRECTIONAL_LIGHT_ROTATION_ANGLE_X; // TODO: Make it a static constexpr in the future.
+		//const Math::Angle M_DEFAULT_DIRECTIONAL_LIGHT_ROTATION_ANGLE_Y; // TODO: Make it a static constexpr in the future.
+		//const Math::Angle M_DEFAULT_DIRECTIONAL_LIGHT_ROTATION_ANGLE_Z; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_HALF_SHADOW_AREA; // TODO: Make it a static constexpr in the future.
+		const int M_DEFAULT_SHADOW_MAP_SIZE_AS_POWER_OF_2; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_SHADOW_SOFTNESS; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_LIGHT_BLEEDING_REDUCTION_FACTOR; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_MIN_VARIANCE; // TODO: Make it a static constexpr in the future.
+
 		Math::Real m_halfShadowArea;
 		int m_shadowMapSizeAsPowerOf2;
 		Math::Real m_shadowSoftness;
@@ -113,9 +150,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		PointLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
-			Rendering::Lighting::PointLight* pointLight);
-		virtual ~PointLightBuilder(void) { };
+		RENDERING_API PointLightBuilder(const Rendering::ShaderFactory& shaderFactory);
+		RENDERING_API virtual ~PointLightBuilder(void) { };
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
 		PointLightBuilder(PointLightBuilder&& pointLightBuilder) = delete;
 		PointLightBuilder& operator=(const PointLightBuilder& pointLightBuilder) = delete;
@@ -124,20 +160,20 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildPart1();
-		virtual void BuildPart2();
-		virtual void BuildPart3();
+		virtual void BuildTransform() override;
+		virtual void BuildLightParams() override;
+		//virtual void BuildShadowParams() override;
+		virtual void BuildShaderParams() override;
+		virtual void SetDefault() override;
+		virtual Lighting::PointLight Get() override
+		{
+			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Math::Vector3D M_DEFAULT_POINT_LIGHT_POS;
-		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_X;
-		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Y;
-		const Math::Angle M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z;
-		const Rendering::Color M_DEFAULT_POINT_LIGHT_COLOR;
-		const Math::Real M_DEFAULT_POINT_LIGHT_INTENSITY;
-		const Rendering::Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION;
+		const Rendering::Attenuation M_DEFAULT_POINT_LIGHT_ATTENUATION; // TODO: Make it static and constexpr
 
 		Rendering::Attenuation m_attenuation;
 		/* ==================== Non-static member variables end ==================== */
@@ -150,9 +186,8 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		SpotLightBuilder(Engine::GameManager* gameManager, const Rendering::ShaderFactory& shaderFactory,
-			Rendering::Lighting::SpotLight* spotLight);
-		virtual ~SpotLightBuilder(void) { };
+		RENDERING_API SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory);
+		RENDERING_API virtual ~SpotLightBuilder(void) { };
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;
 		SpotLightBuilder(SpotLightBuilder&& spotLightBuilder) = delete;
 		SpotLightBuilder& operator=(const SpotLightBuilder& spotLightBuilder) = delete;
@@ -161,25 +196,26 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildPart1();
-		virtual void BuildPart2();
-		virtual void BuildPart3();
+		virtual void BuildTransform() override;
+		virtual void BuildLightParams() override;
+		//virtual void BuildShadowParams() override;
+		virtual void BuildShaderParams() override;
+		virtual void SetDefault() override;
+		virtual Lighting::SpotLight Get() override
+		{
+			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Math::Vector3D M_DEFAULT_SPOT_LIGHT_POS;
-		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_X;
-		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Y;
-		const Math::Angle M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z;
-		const Rendering::Color M_DEFAULT_SPOT_LIGHT_COLOR;
-		const Math::Real M_DEFAULT_SPOT_LIGHT_INTENSITY;
-		const Rendering::Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION;
-		const Math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
-		const int M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2;
-		const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS;
-		const Math::Real M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_AMOUNT;
-		const Math::Real M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE;
+		const Rendering::Attenuation M_DEFAULT_SPOT_LIGHT_ATTENUATION; // TODO: Make it static constexpr in the future.
+		const Math::Angle M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE; // TODO: Make it static constexpr in the future.
+		const int M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2; // TODO: Make it static constexpr in the future.
+		const Math::Real M_DEFAULT_SPOT_LIGHT_PROJECTION_NEAR_PLANE; // TODO: Make it static constexpr in the future.
+		const Math::Real M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS; // TODO: Make it static constexpr in the future.
+		const Math::Real M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_FACTOR; // TODO: Make it static constexpr in the future.
+		const Math::Real M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE; // TODO: Make it static constexpr in the future.
 
 		Rendering::Attenuation m_attenuation;
 		Math::Angle m_viewAngle;
@@ -190,6 +226,6 @@ namespace Game
 		Math::Real m_minVariance;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class SpotLightBuilder */
-} /* end namespace Game */
+} /* end namespace Rendering */
 
-#endif /* __GAME_LIGHT_BUILDER_H__ */
+#endif /* __RENDERING_LIGHT_BUILDER_H__ */

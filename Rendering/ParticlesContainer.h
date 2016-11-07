@@ -32,18 +32,28 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Particles container default constructor. </summary>
 			ParticlesContainer();
+
+			/// <summary> Particles container constructor. </summary>
+			/// <param name="maxCount"> The maximum number of particles the system may store. </param>
+			/// <param name="attributesMask"> The mask representing which attributes each particle in the container will have. </param>
 			ParticlesContainer(size_t maxCount, const Attributes::AttributesMask& attributesMask);
+
+			/// <summary> Particles container destructor. </summary>
 			~ParticlesContainer();
 
 			/// <summary> Particles container copy constructor. </summary>
 			ParticlesContainer(const ParticlesContainer& particlesContainer) = delete;
+
 			/// <summary> Particles container move constructor. </summary>
-			ParticlesContainer(ParticlesContainer&& particlesContainer) = delete;
+			ParticlesContainer(ParticlesContainer&& particlesContainer) = default;
+
 			/// <summary> Particles container copy assignment operator. </summary>
 			ParticlesContainer& operator=(const ParticlesContainer& particlesContainer) = delete;
+
 			/// <summary> Particles container move assignment operator. </summary>
-			ParticlesContainer& operator=(ParticlesContainer&& particlesContainer) = delete;
+			ParticlesContainer& operator=(ParticlesContainer&& particlesContainer) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -89,7 +99,13 @@ namespace Rendering
 			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
 			inline void SetMaxParticlesCount(size_t maxCount) { m_count = maxCount; }
 			void SetAttributesMask(Attributes::AttributesMask attributesMask);
-			std::string ToString() const;
+			
+			friend std::ostream& operator<<(std::ostream& out, const ParticlesContainer& particlesContainer)
+			{
+				out << "Particles container: " << std::endl << "Attributes mask: " << particlesContainer.m_attributesMask <<
+					"; count: " << particlesContainer.m_count << "; alive: " << particlesContainer.m_countAlive;
+				return out;
+			}
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

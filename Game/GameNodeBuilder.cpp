@@ -8,9 +8,10 @@
 #include "Utility\IConfig.h"
 
 /* ==================== GameNodeBuilder implementation begin ==================== */
-Game::GameNodeBuilder::GameNodeBuilder(Engine::GameManager* gameManager, Engine::GameNode* gameNode) :
-	Utility::Builder<Engine::GameNode>(gameNode),
-	m_gameManager(gameManager)
+Game::GameNodeBuilder::GameNodeBuilder(Engine::GameManager* gameManager) :
+	Utility::Builder<Engine::GameNode>(),
+	m_gameManager(gameManager),
+	m_gameNode()
 {
 }
 
@@ -20,8 +21,8 @@ Game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-Game::CameraNodeBuilder::CameraNodeBuilder(Engine::GameManager* gameManager, Engine::GameNode* cameraNode) :
-	GameNodeBuilder(gameManager, cameraNode),
+Game::CameraNodeBuilder::CameraNodeBuilder(Engine::GameManager* gameManager) :
+	GameNodeBuilder(gameManager),
 	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_GAME("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosZ", 0.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultCameraAngleX", -45.0f)),
 	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultCameraAngleY", 0.0f)),
@@ -54,7 +55,7 @@ Game::CameraNodeBuilder::~CameraNodeBuilder()
 {
 }
 
-void Game::CameraNodeBuilder::BuildPart1()
+void Game::CameraNodeBuilder::BuildTransform()
 {
 	for (std::size_t i = 0; i < m_camerasCount; ++i)
 	{
@@ -108,7 +109,7 @@ void Game::CameraNodeBuilder::BuildPart1()
 	//m_object->GetTransform().SetRot(m_camera->GetRot());
 }
 
-void Game::CameraNodeBuilder::BuildPart2()
+void Game::CameraNodeBuilder::BuildComponents()
 {
 	//Math::Real initialDistanceFromEntity = GET_CONFIG_VALUE_GAME("cameraFollowEntityInitialDistance_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f));
 	//Math::Real angleAroundEntitySpeed = GET_CONFIG_VALUE_GAME("cameraFollowAngleAroundEntitySpeed_" + m_cameraIndexStr, GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f));
@@ -130,25 +131,13 @@ void Game::CameraNodeBuilder::BuildPart2()
 	//}
 	//m_object->AddComponent(camerasComponent);
 }
-
-void Game::CameraNodeBuilder::BuildPart3()
-{
-}
-
-#ifdef BUILD_MESH_RENDERER
-void Game::CameraNodeBuilder::BuildMeshRenderer()
-{
-}
-#endif
-
-/* ==================== SkyboxBuilder implementation end ==================== */
+/* ==================== CameraNodeBuilder implementation end ==================== */
 
 /* ==================== SkyboxBuilder implementation begin ==================== */
-Game::SkyboxBuilder::SkyboxBuilder(Engine::GameManager* gameManager, Engine::GameNode* skyboxNode) :
-	GameNodeBuilder(gameManager, skyboxNode),
+Game::SkyboxBuilder::SkyboxBuilder(Engine::GameManager* gameManager) :
+	GameNodeBuilder(gameManager),
 	m_gameManager(gameManager),
-	m_scale(5.0f),
-	m_meshRendererComponent(NULL)
+	m_scale(GET_CONFIG_VALUE_GAME("skyboxScale", 5.0f))
 {
 }
 
@@ -156,10 +145,14 @@ Game::SkyboxBuilder::~SkyboxBuilder()
 {
 }
 
-void Game::SkyboxBuilder::BuildPart1()
+void Game::SkyboxBuilder::BuildTransform()
 {
-	m_scale = GET_CONFIG_VALUE_GAME("skyboxScale", 5.0f);
+	m_gameNode.GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_gameNode.GetTransform().SetScale(m_scale);
+}
 
+void Game::SkyboxBuilder::BuildComponents()
+{
 	std::string cubeMapDayDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxDayDirectory", "SkyboxDebug");
 	std::string cubeMapNightDirectory = GET_CONFIG_VALUE_STR_GAME("skyboxNightDirectory", "SkyboxDebug");
 	const Rendering::Texture* skyboxTextureDay = m_gameManager->AddCubeTexture(TextureIDs::SKYBOX_DAY, cubeMapDayDirectory);
@@ -174,22 +167,8 @@ void Game::SkyboxBuilder::BuildPart1()
 	skyboxMaterial->SetAdditionalTexture(skyboxTextureNight, "cubeMapNight");
 
 	m_gameManager->AddMesh(MeshIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxModel", "cube.obj"));
-	m_meshRendererComponent = new Engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial);
+	m_gameNode.AddComponent(new Engine::MeshRendererComponent(MeshIDs::SKYBOX, skyboxMaterial));
+
+	m_gameNode.AddComponent(new Engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
 }
-
-void Game::SkyboxBuilder::BuildPart2()
-{
-	m_object->GetTransform().SetPos(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	m_object->GetTransform().SetScale(m_scale);
-
-	m_object->AddComponent(m_meshRendererComponent);
-	m_object->AddComponent(new Engine::ConstantRotationComponent(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(GET_CONFIG_VALUE_GAME("skyboxRotationSpeed", 0.00005f))));
-}
-
-#ifdef BUILD_MESH_RENDERER
-void Game::SkyboxBuilder::BuildMeshRenderer()
-{
-}
-#endif
-
 /* ==================== SkyboxBuilder implementation end ==================== */

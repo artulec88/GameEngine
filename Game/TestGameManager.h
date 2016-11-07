@@ -7,7 +7,6 @@
 #include "ResumeGameCommand.h"
 #include "SaveGameCommand.h"
 #include "LoadGameCommand.h"
-#include "ParticleEffects.h"
 
 #include "Engine\QuitGameCommand.h"
 #include "Engine\GameManager.h"

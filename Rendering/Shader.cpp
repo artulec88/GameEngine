@@ -729,7 +729,7 @@ void Rendering::Shader::SetUniformColor(const std::string& uniformName, const Co
 void Rendering::Shader::SetUniformMatrix(const std::string& name, const Math::Matrix4D& matrix) const
 {
 	START_PROFILING_RENDERING(false, "");
-	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix.ToString());
+	DELOCUST_LOG_RENDERING("Shader \"", m_fileName, "\": setting uniform matrix \"", name, "\":\n", matrix);
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{

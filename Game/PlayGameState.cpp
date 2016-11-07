@@ -1,10 +1,8 @@
 #include "PlayGameState.h"
 #include "PlayMenuGameState.h"
-#include "LightBuilder.h"
 #include "MeshIDs.h"
 #include "TextureIDs.h"
 #include "GameNodeBuilder.h"
-#include "CameraBuilder.h"
 
 #include "Engine\GameManager.h"
 #include "Engine\CoreEngine.h"
@@ -14,7 +12,9 @@
 #include "Engine\GravityComponent.h"
 #include "Engine\GameNode.h"
 
-#include "Rendering\ParticlesSystem.h"
+#include "Rendering\CameraBuilder.h"
+#include "Rendering\LightBuilder.h"
+#include "Rendering\ParticlesSystemBuilder.h"
 #include "Rendering\Shader.h"
 #include "Rendering\MeshIDs.h"
 
@@ -275,9 +275,9 @@ void Game::PlayGameState::AddSkyboxNode()
 
 	DEBUG_LOG_GAME("Creating a skybox");
 
-	SkyboxBuilder skyboxBuilder(m_gameManager, &m_skyboxNode);
-	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(skyboxBuilder);
-	skyboxBuilderDirector.Construct();
+	SkyboxBuilder skyboxBuilder(m_gameManager);
+	Utility::BuilderDirector<Engine::GameNode> skyboxBuilderDirector(&skyboxBuilder);
+	m_skyboxNode = skyboxBuilderDirector.Construct();
 	NOTICE_LOG_GAME("The skybox has been created");
 	STOP_PROFILING_GAME("");
 }
@@ -348,13 +348,12 @@ void Game::PlayGameState::AddCameras()
 	m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 
-	Engine::GameNode cameraNode;
 	//Rendering::Camera camera;
 	//CameraBuilder cameraBuilder(m_gameManager, &camera);
-	CameraNodeBuilder cameraNodeBuilder(m_gameManager, &cameraNode);
+	CameraNodeBuilder cameraNodeBuilder(m_gameManager);
 	//Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
-	Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(cameraNodeBuilder);
-	cameraNodeBuilderDirector.Construct();
+	Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(&cameraNodeBuilder);
+	Engine::GameNode cameraNode = cameraNodeBuilderDirector.Construct();
 	//for (int i = 0; i < cameraCount; ++i)
 	//{
 	//	cameraBuilder.SetCameraIndex(i);
@@ -398,10 +397,9 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	Rendering::Lighting::DirectionalLight directionalLight;
-	DirectionalLightBuilder directionalLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &directionalLight);
-	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(directionalLightBuilder);
-	lightBuilderDirector.Construct();
+	Rendering::DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory());
+	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
+	Rendering::Lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
 	++m_directionalLightsCount;
 	m_directionalLights.push_back(std::move(directionalLight));
@@ -414,13 +412,12 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		Rendering::Lighting::PointLight pointLight;
-		PointLightBuilder pointLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &pointLight);
-		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(pointLightBuilder);
+		Rendering::PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory());
+		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
 			pointLightBuilder.SetLightIndex(i);
-			lightBuilderDirector.Construct();
+			Rendering::Lighting::PointLight pointLight = lightBuilderDirector.Construct();
 			m_pointLights.push_back(std::move(pointLight));
 			//m_lights.push_back(pointLight);
 		}
@@ -438,14 +435,12 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		Rendering::Lighting::SpotLight spotLight;
-		SpotLightBuilder spotLightBuilder(m_gameManager, m_gameManager->GetShaderFactory(), &spotLight);
-		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(spotLightBuilder);
+		Rendering::SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory());
+		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
 			spotLightBuilder.SetLightIndex(i);
-			lightBuilderDirector.Construct();
-			m_spotLights.push_back(std::move(spotLight));
+			m_spotLights.push_back(std::move(lightBuilderDirector.Construct()));
 			//m_lights.push_back(spotLight);
 		}
 		NOTICE_LOG_GAME(spotLightsCount, " spot lights created");

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BaseCamera.h"
 
-Rendering::BaseCamera::BaseCamera(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity /* = DEFAULT_SENSITIVITY */ ) :
+Rendering::BaseCamera::BaseCamera(const Math::Matrix4D& projectionMatrix, Math::Real sensitivity) :
 	m_projection(projectionMatrix),
 	m_sensitivity(sensitivity),
 	m_isActive(false)
@@ -18,7 +18,7 @@ Rendering::BaseCamera::BaseCamera(const Math::Matrix4D& projectionMatrix, Math::
 {
 }
 
-Rendering::BaseCamera::BaseCamera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity /* = DEFAULT_SENSITIVITY */) :
+Rendering::BaseCamera::BaseCamera(const Math::Angle& FoV, Math::Real aspectRatio, Math::Real zNearPlane, Math::Real zFarPlane, Math::Real sensitivity) :
 	m_projection(FoV, aspectRatio, zNearPlane, zFarPlane),
 	m_sensitivity(sensitivity),
 	m_isActive(false)

@@ -21,7 +21,7 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			RENDERING_API PointLight();
+			RENDERING_API PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
 			RENDERING_API virtual ~PointLight(void);
 
 			/// <summary> Point light copy constructor. </summary>

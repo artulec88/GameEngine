@@ -46,6 +46,18 @@ namespace Rendering
 					m_attributesMask(attributesMask)
 				{
 				}
+
+				/// <summary> Attributes mask copy constructor. </summary>
+				AttributesMask(const AttributesMask& attributesMask) = default;
+
+				/// <summary> Attributes mask move constructor. </summary>
+				AttributesMask(AttributesMask&& attributesMask) = default;
+
+				/// <summary> Attributes mask copy assignment operator. </summary>
+				AttributesMask& operator=(const AttributesMask& attributesMask) = default;
+
+				/// <summary> Attributes mask move assignment operator. </summary>
+				AttributesMask& operator=(AttributesMask&& attributesMask) = default;
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
@@ -80,6 +92,12 @@ namespace Rendering
 				{
 					m_attributesMask |= static_cast<int>(attr);
 					return *this;
+				}
+
+				friend std::ostream& operator<<(std::ostream& out, const AttributesMask& attributesMask)
+				{
+					out << attributesMask.m_attributesMask;
+					return out;
 				}
 				/* ==================== Non-static member functions end ==================== */
 

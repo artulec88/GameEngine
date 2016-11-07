@@ -5,8 +5,8 @@
 
 /* static */ bool Rendering::Lighting::PointLight::pointLightsEnabled = true;
 
-Rendering::Lighting::PointLight::PointLight() :
-	BaseLight(),
+Rendering::Lighting::PointLight::PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
+	BaseLight(transform, color, intensity),
 	m_attenuation(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_range(REAL_ZERO)
 {

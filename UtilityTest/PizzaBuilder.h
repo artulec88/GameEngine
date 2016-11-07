@@ -27,27 +27,19 @@ namespace UtilityTest
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
+	protected:
 		virtual Pizza Get() override
 		{
 			return Pizza(m_dough, m_sauce, m_topping);
 		}
 
-		virtual void BuildPart1() override
+		virtual void BuildParts() override
 		{
 			BuildDough();
-		}
-
-		virtual void BuildPart2() override
-		{
 			BuildSauce();
-		}
-
-		virtual void BuildPart3() override
-		{
 			BuildTopping();
 		}
-
+	public:
 		virtual void SetDefault()
 		{
 			m_dough = M_DEFAULT_PIZZA_DOUGH;

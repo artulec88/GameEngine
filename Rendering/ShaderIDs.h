@@ -7,7 +7,8 @@ namespace Rendering
 	{
 		enum ShaderID
 		{
-			AMBIENT = 0,
+			INVALID = 0,
+			AMBIENT,
 			AMBIENT_TERRAIN,
 			AMBIENT_FOG_LINEAR_PLANE_BASED,
 			AMBIENT_FOG_EXPONENTIAL_PLANE_BASED,
@@ -30,6 +31,7 @@ namespace Rendering
 			WATER_NO_DIRECTIONAL_LIGHT,
 			BILLBOARD,
 			PARTICLES,
+			PARTICLES_COLORS, // For particles that have colors attributes.
 			GUI,
 			DIRECTIONAL_LIGHT,
 			DIRECTIONAL_LIGHT_TERRAIN,
@@ -44,7 +46,7 @@ namespace Rendering
 			SPOT_LIGHT_NO_SHADOWS,
 			SPOT_LIGHT_TERRAIN_NO_SHADOWS,
 			// TODO: Add more shader types
-			COUNT
+			COUNT  // This value must always stay as the last one in the enum. It only represents the number of available basic texture IDs.
 		}; /* end enum ShaderID */
 	} /* end namespace ShaderIDs */
 } /* end namespace Rendering */

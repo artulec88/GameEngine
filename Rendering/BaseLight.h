@@ -29,27 +29,38 @@ namespace Rendering
 			/// <summary>
 			/// Base light constructor.
 			/// </summary>
-			RENDERING_API BaseLight();
+			/// <param name="transform"> The light transform. </param>
+			/// <param name="color"> The color of the light. </param>
+			/// <param name="intensity"> The intensity of the light. </param>
+			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
 
 			/// <summary>The destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
 			
 			/// <summary> Base light copy constructor. </summary>
 			RENDERING_API BaseLight(const BaseLight& baseLight) = delete;
+
 			/// <summary> Base light move constructor. </summary>
 			RENDERING_API BaseLight(BaseLight&& baseLight) = default;
+
 			/// <summary> Base light copy assignment operator. </summary>
 			BaseLight& operator=(const BaseLight& baseLight) = delete;
+
 			/// <summary> Base light move assignment operator. </summary>
 			BaseLight& operator=(BaseLight&& baseLight) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			//virtual void Update(Math::Real delta);
-			//virtual void Render(Shader* shader, Renderer* renderer);
+			/// <summary> Gets the current color of the light. </summary>
+			/// <returns> Current color of the light. </returns>
 			RENDERING_API const Color& GetColor() const { return m_color; }
+
+			/// <summary> Gets the current intensity of the light. </summary>
+			/// <returns> Current intensity of the light. </returns>
 			RENDERING_API Math::Real GetIntensity() const { return m_intensity; }
+
+
 			RENDERING_API inline const Shader* GetShader() const { return m_shader; }
 			RENDERING_API inline const Shader* GetTerrainShader() const { return m_terrainShader; }
 			RENDERING_API inline const Shader* GetNoShadowShader() const { return m_noShadowShader; }

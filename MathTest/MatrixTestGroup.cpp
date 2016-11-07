@@ -46,7 +46,7 @@ void MatrixTestCompare::StartTest()
 {
 	bool compareResult = (m_matrix == m_compareMatrix);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
-		"The matrix ", m_matrix.ToString() , " and matrix ", m_compareMatrix.ToString(), " comparison result is not as expected.");
+		"The matrix ", m_matrix, " and matrix ", m_compareMatrix, " comparison result is not as expected.");
 
 	// TODO: Test != operator
 }
@@ -72,8 +72,8 @@ void MatrixTestMultiplyByMatrixOperator::StartTest()
 {
 	Math::Matrix4D multiplyResultMatrix = m_matrix * m_matrix2; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultMatrix == m_expectedMultiplyResultMatrix, Utility::Logging::ERR,
-		"The multiplication of matrices:\n", m_matrix.ToString(), " and:\n", m_matrix2.ToString(), " equals:\n", multiplyResultMatrix.ToString(),
-		". It is different than expected:\n", m_expectedMultiplyResultMatrix.ToString());
+		"The multiplication of matrices:\n", m_matrix, " and:\n", m_matrix2, " equals:\n", multiplyResultMatrix,
+		". It is different than expected:\n", m_expectedMultiplyResultMatrix);
 }
 
 void MatrixTestMultiplyByMatrixOperator::StartTimeTest()
@@ -97,7 +97,7 @@ void MatrixTestMultiplyByVectorOperator::StartTest()
 {
 	Math::Vector3D multiplyResultVector = m_matrix * m_vector; // FIXME: Check matrix multiplication
 	CHECK_CONDITION_ALWAYS_MATH_TEST(multiplyResultVector == m_expectedMultiplyResultVector, Utility::Logging::ERR,
-		"The multiplication of matrix:\n", m_matrix.ToString(), " and vector ", m_vector, " equals ", multiplyResultVector,
+		"The multiplication of matrix:\n", m_matrix, " and vector ", m_vector, " equals ", multiplyResultVector,
 		". It is different than expected ", m_expectedMultiplyResultVector, ".");
 }
 

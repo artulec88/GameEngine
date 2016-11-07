@@ -7,8 +7,8 @@
 
 /* static */ bool Rendering::Lighting::SpotLight::spotLightsEnabled = true;
 
-Rendering::Lighting::SpotLight::SpotLight() :
-	PointLight(),
+Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
+	PointLight(transform, color, intensity),
 	m_cutoff(REAL_ZERO)
 {
 }

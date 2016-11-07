@@ -46,14 +46,14 @@ void TransformTestCompare::StartTest()
 {
 	bool compareResult = (m_transform == m_compareTransform);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult == m_expectedCompareResult, Utility::Logging::ERR,
-		"The transform ", m_transform.ToString(), " and transform ", m_compareTransform.ToString(), " equality comparison result is not as expected.");
+		"The transform ", m_transform, " and transform ", m_compareTransform, " equality comparison result is not as expected.");
 
 	bool diffResult = (m_transform != m_compareTransform);
 	CHECK_CONDITION_ALWAYS_MATH_TEST(diffResult == !m_expectedCompareResult, Utility::Logging::ERR,
-		"The transform ", m_transform.ToString(), " and transform ", m_compareTransform.ToString(), " inequality comparison result is not as expected.");
+		"The transform ", m_transform, " and transform ", m_compareTransform, " inequality comparison result is not as expected.");
 
 	CHECK_CONDITION_ALWAYS_MATH_TEST(compareResult != diffResult, Utility::Logging::ERR,
-		"The transform ", m_transform.ToString(), " and transform ", m_compareTransform.ToString(), " equality and inequality comparisons results are the same.");
+		"The transform ", m_transform, " and transform ", m_compareTransform, " equality and inequality comparisons results are the same.");
 }
 
 void TransformTestCompare::StartTimeTest()
