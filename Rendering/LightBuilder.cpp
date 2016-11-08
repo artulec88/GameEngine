@@ -27,8 +27,8 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 {
 }
 
-void Rendering::DirectionalLightBuilder::BuildTransform()
-{
+//void Rendering::DirectionalLightBuilder::BuildTransform()
+//{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("directionalLightPosX", GET_CONFIG_VALUE_GAME("defaultDirectionalLightPosX", 0.0f)),
 	//	GET_CONFIG_VALUE_GAME("directionalLightPosY", GET_CONFIG_VALUE_GAME("defaultDirectionalLightPosY", 0.0f)),
@@ -43,7 +43,7 @@ void Rendering::DirectionalLightBuilder::BuildTransform()
 	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("directionalLightAngleZ", defaultDirectionalLightRotationZ.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
-}
+//}
 
 void Rendering::DirectionalLightBuilder::BuildLightParams()
 {
@@ -75,8 +75,13 @@ void Rendering::DirectionalLightBuilder::BuildLightParams()
 	////	Math::Angle(GET_CONFIG_VALUE_GAME("sunlightThirdElevationLevel", REAL_ONE))));
 }
 
-void Rendering::DirectionalLightBuilder::BuildShaderParams()
+void Rendering::DirectionalLightBuilder::BuildShaders()
 {
+	m_shader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT);
+	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN);
+	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS);
+	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS);
+
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN));
 	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS));
@@ -143,8 +148,8 @@ Rendering::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& 
 {
 }
 
-void Rendering::PointLightBuilder::BuildTransform()
-{
+//void Rendering::PointLightBuilder::BuildTransform()
+//{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("pointLightPosX_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetX()),
 	//	GET_CONFIG_VALUE_GAME("pointLightPosY_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_POS.GetY()),
@@ -156,7 +161,7 @@ void Rendering::PointLightBuilder::BuildTransform()
 	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("pointLightAngleZ_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
-}
+//}
 
 void Rendering::PointLightBuilder::BuildLightParams()
 {
@@ -179,8 +184,13 @@ void Rendering::PointLightBuilder::BuildLightParams()
 	//// TODO: Setting additional point light information
 }
 
-void Rendering::PointLightBuilder::BuildShaderParams()
+void Rendering::PointLightBuilder::BuildShaders()
 {
+	m_shader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT);
+	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_TERRAIN);
+	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_NO_SHADOWS);
+	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS);
+
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN));
 	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS));
@@ -240,8 +250,8 @@ Rendering::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& sh
 {
 }
 
-void Rendering::SpotLightBuilder::BuildTransform()
-{
+//void Rendering::SpotLightBuilder::BuildTransform()
+//{
 	//// Determining position
 	//m_pos.Set(GET_CONFIG_VALUE_GAME("spotLightPosX_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetX()),
 	//	GET_CONFIG_VALUE_GAME("spotLightPosY_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_POS.GetY()),
@@ -253,7 +263,7 @@ void Rendering::SpotLightBuilder::BuildTransform()
 	//Math::Angle angleZ(GET_CONFIG_VALUE_GAME("spotLightAngleZ_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
 	//DEBUG_LOG_GAME("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
-}
+//}
 
 void Rendering::SpotLightBuilder::BuildLightParams()
 {
@@ -283,8 +293,13 @@ void Rendering::SpotLightBuilder::BuildLightParams()
 	//// TODO: Setting additional spot light information
 }
 
-void Rendering::SpotLightBuilder::BuildShaderParams()
+void Rendering::SpotLightBuilder::BuildShaders()
 {
+	m_shader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT);
+	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_TERRAIN);
+	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_NO_SHADOWS);
+	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS);
+
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN));
 	//m_object->SetNoShadowShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS));

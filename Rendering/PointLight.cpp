@@ -3,8 +3,9 @@
 #include "Shader.h"
 #include "Utility\IConfig.h"
 
-Rendering::Lighting::PointLight::PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
-	BaseLight(transform, color, intensity),
+Rendering::Lighting::PointLight::PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
+	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
 	m_attenuation(REAL_ZERO, REAL_ZERO, REAL_ZERO),
 	m_range(REAL_ZERO)
 {

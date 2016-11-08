@@ -5,8 +5,9 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
-	BaseLight(transform, color, intensity),
+Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
+	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
 	m_halfShadowArea(REAL_ZERO)
 {
 }

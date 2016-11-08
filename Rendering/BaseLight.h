@@ -32,7 +32,8 @@ namespace Rendering
 			/// <param name="transform"> The light transform. </param>
 			/// <param name="color"> The color of the light. </param>
 			/// <param name="intensity"> The intensity of the light. </param>
-			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
+			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
+				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader);
 
 			/// <summary>The base light destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
@@ -99,19 +100,6 @@ namespace Rendering
 				Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
-			/// <summary> Sets the shader. </summary>
-			/// <param name="shader">The shader used for standard meshes.</param>
-			RENDERING_API void SetShader(const Shader* shader) { m_shader = shader; }
-			/// <summary> Sets the terrain shader. </summary>
-			/// <param name="terrainShader">The shader used specifically for the terrain meshes.</param>
-			RENDERING_API void SetTerrainShader(const Shader* terrainShader) { m_terrainShader = terrainShader; }
-			/// <summary> Sets the no-shadow shader. </summary>
-			/// <param name="noShadowShader">The shader used for standard meshes when shadow-casting is disabled.</param>
-			RENDERING_API void SetNoShadowShader(const Shader* noShadowShader) { m_noShadowShader = noShadowShader; }
-			/// <summary> Sets the no-shadow terrain shader. </summary>
-			/// <param name="noShadowTerrainShader">The shader used for terrain meshes when shadow-casting is disabled.</param>
-			RENDERING_API void SetNoShadowTerrainShader(const Shader* noShadowTerrainShader) { m_noShadowTerrainShader = noShadowTerrainShader; }
-
 #ifdef ANT_TWEAK_BAR_ENABLED
 			RENDERING_API virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif

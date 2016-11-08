@@ -24,7 +24,6 @@ namespace Rendering
 
 	/// <summary> The fog calculation strategy. </summary>
 	extern TwType fogCalculationType;
-	extern TwType angleUnitType;
 	RENDERING_API extern TwType angleType;
 	extern TwType vector3DType;
 	extern TwType matrix4DRowType;

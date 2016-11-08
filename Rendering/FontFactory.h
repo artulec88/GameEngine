@@ -31,7 +31,9 @@ namespace Rendering
 			RENDERING_API FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory);
 			RENDERING_API ~FontFactory(void);
 			FontFactory(const FontFactory& fontFactory) = delete;
-			void operator=(const FontFactory& fontFactory) = delete;
+			FontFactory(FontFactory&& fontFactory) = delete;
+			FontFactory& operator=(const FontFactory& fontFactory) = delete;
+			FontFactory& operator=(FontFactory&& fontFactory) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */

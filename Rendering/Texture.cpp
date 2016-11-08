@@ -237,7 +237,7 @@ void Rendering::TextureData::InitRenderTargets(GLenum* attachments)
 
 	for (int i = 0; i < m_texturesCount; ++i)
 	{
-		DEBUG_LOG_RENDERING("The texture uses ", attachments[i], " as an attachment");
+		DELOCUST_LOG_RENDERING("The texture uses ", attachments[i], " as an attachment");
 		if ( (attachments[i] == GL_DEPTH_ATTACHMENT) || (attachments[i] == GL_STENCIL_ATTACHMENT) )
 		{
 			/**
@@ -276,7 +276,7 @@ void Rendering::TextureData::InitRenderTargets(GLenum* attachments)
 	}
 	if (!hasDepth)
 	{
-		DEBUG_LOG_RENDERING("The texture does not have any depth attachment. Creating the render buffer is started.");
+		DELOCUST_LOG_RENDERING("The texture does not have any depth attachment. Creating the render buffer is started.");
 		glGenRenderbuffers(1, &m_renderbuffer);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_renderbuffer);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);

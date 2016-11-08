@@ -25,8 +25,6 @@ namespace Rendering
 	public:
 		LightBuilder(const Rendering::ShaderFactory& shaderFactory, const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity) :
 			Utility::Builder<T>(),
-			m_lightIndex(0),
-			m_lightIndexStr("0"),
 			m_shaderFactory(shaderFactory),
 			M_DEFAULT_POS(defaultPosition),
 			M_DEFAULT_ROT(defaultRotation),
@@ -35,7 +33,11 @@ namespace Rendering
 			m_pos(M_DEFAULT_POS),
 			m_rot(M_DEFAULT_ROT),
 			m_color(M_DEFAULT_COLOR),
-			m_intensity(M_DEFAULT_INTENSITY)
+			m_intensity(M_DEFAULT_INTENSITY),
+			m_shader(nullptr),
+			m_terrainShader(nullptr),
+			m_noShadowShader(nullptr),
+			m_noShadowTerrainShader(nullptr)
 		{
 		}
 		virtual ~LightBuilder(void)
@@ -52,10 +54,9 @@ namespace Rendering
 	public:
 		virtual void BuildParts() override
 		{
-			BuildTransform();
 			BuildLightParams();
-			//BuildShadowParams();
-			BuildShaderParams();
+			//BuildShadowInfo();
+			BuildShaders();
 		}
 
 		virtual void SetDefault()
@@ -66,22 +67,33 @@ namespace Rendering
 			m_intensity = M_DEFAULT_INTENSITY;
 		}
 
-		void SetLightIndex(int lightIndex)
+		LightBuilder<T>& SetPosition(const Math::Vector3D& position)
 		{
-			m_lightIndex = lightIndex;
-			m_lightIndexStr = std::to_string(lightIndex);
+			return SetPosition(position.GetX(), position.GetY(), position.GetZ());
+		}
+		LightBuilder<T>& SetPosition(Math::Real posX, Math::Real posY, Math::Real posZ)
+		{
+			m_pos.Set(posX, posY, posZ);
+			return *this;
+		}
+		LightBuilder<T>& SetColor(const Color& color)
+		{
+			m_color = color;
+			return *this;
+		}
+		LightBuilder<T>& SetIntensity(Math::Real intensity)
+		{
+			m_intensity = intensity;
+			return *this;
 		}
 	protected:
-		virtual void BuildTransform() = 0;
 		virtual void BuildLightParams() = 0;
-		//virtual void BuildShadowParams() = 0;
-		virtual void BuildShaderParams() = 0;
+		//virtual void BuildShadowInfo() = 0;
+		virtual void BuildShaders() = 0;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		int m_lightIndex;
-		std::string m_lightIndexStr;
 		const Rendering::ShaderFactory& m_shaderFactory;
 
 		const Math::Vector3D M_DEFAULT_POS; // TODO: Make it static constexpr in the future.
@@ -93,6 +105,11 @@ namespace Rendering
 		Math::Quaternion m_rot;
 		Rendering::Color m_color;
 		Math::Real m_intensity;
+
+		const Shader* m_shader;
+		const Shader* m_terrainShader;
+		const Shader* m_noShadowShader;
+		const Shader* m_noShadowTerrainShader;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
@@ -134,13 +151,12 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	protected:
-		virtual void BuildTransform() override;
 		virtual void BuildLightParams() override;
-		virtual void BuildShaderParams() override;
+		virtual void BuildShaders() override;
 		virtual void SetDefault() override;
 		virtual Lighting::DirectionalLight Get() override
 		{
-			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader);
 		}
 		/* ==================== Non-static member functions end ==================== */
 
@@ -181,14 +197,13 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildTransform() override;
 		virtual void BuildLightParams() override;
 		//virtual void BuildShadowParams() override;
-		virtual void BuildShaderParams() override;
+		virtual void BuildShaders() override;
 		virtual void SetDefault() override;
 		virtual Lighting::PointLight Get() override
 		{
-			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader);
 		}
 		/* ==================== Non-static member functions end ==================== */
 
@@ -217,14 +232,13 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildTransform() override;
 		virtual void BuildLightParams() override;
 		//virtual void BuildShadowParams() override;
-		virtual void BuildShaderParams() override;
+		virtual void BuildShaders() override;
 		virtual void SetDefault() override;
 		virtual Lighting::SpotLight Get() override
 		{
-			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity);
+			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader);
 		}
 		/* ==================== Non-static member functions end ==================== */
 

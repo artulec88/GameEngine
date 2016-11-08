@@ -7,7 +7,6 @@
 
 TwType Rendering::fogFallOffType;
 TwType Rendering::fogCalculationType;
-TwType Rendering::angleUnitType;
 TwType Rendering::angleType;
 TwType Rendering::vector3DType;
 TwType Rendering::matrix4DRowType;
@@ -28,11 +27,8 @@ TwType Rendering::shadowInfoType;
 	};
 	fogCalculationType = TwDefineEnum("FogCalculationType", fogCalculationTypeEV, 2);
 
-	// array used to describe the Angle::Unit enum values
-	TwEnumVal angleUnitEV[] = { { Math::Unit::DEGREE, "Degree" }, { Math::Unit::RADIAN, "Rad" } };
-	angleUnitType = TwDefineEnum("Unit", angleUnitEV, 2);
-	TwStructMember angleMembers[] = { { "Angle", TW_TYPE_REAL, 0, " precision=1 "}, { "Unit", angleUnitType, 4, ""} };
-	angleType = TwDefineStruct("Angle", angleMembers, 2, sizeof(Math::Angle), NULL, NULL);
+	TwStructMember angleMembers[] = { { "Angle", TW_TYPE_REAL, 0, " precision=1 "} };
+	angleType = TwDefineStruct("Angle", angleMembers, 1, sizeof(Math::Angle), NULL, NULL);
 
 	TwStructMember vector3DMembers[3] = {
 		{ "X", TW_TYPE_REAL, 0, " precision=2 "},

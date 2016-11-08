@@ -1,5 +1,7 @@
+/// Returns 0.0 if pixel is in shadow and 1.0 if the pixel is not in shadow.
 float SampleShadowMap(sampler2D shadowMap, vec2 coords, float compare)
 {
+	// texture2D(shadowMap, coords.xy).r returns the distance of the nearest object from the light perspective at coords.xy position.
 	return step(compare, texture2D(shadowMap, coords.xy).r);
 }
 

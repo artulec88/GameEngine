@@ -5,6 +5,8 @@
 #include "Rendering\ShaderFactory.h"
 #include "Rendering\ParticlesSystemBuilder.h"
 #include "Rendering\Renderer.h"
+#include "Rendering\GuiButtonControl.h"
+#include "Rendering\FontFactory.h"
 
 #include "Math\StatisticsStorage.h"
 #include "Math\RandomGeneratorFactory.h"
@@ -17,7 +19,7 @@
 #include <GLFW\glfw3.h>
 #include <ctime>
 #include <string>
-//#include <thread>
+#include <thread>
 //#include <xmmintrin.h>
 //#include <iostream>
 //#include <fstream>
@@ -28,6 +30,8 @@ using namespace Utility;
 using namespace std;
 
 const std::string MODULE_NAME = "MathTest";
+constexpr int WINDOW_WIDTH = 1600;
+constexpr int WINDOW_HEIGHT = 900;
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
@@ -378,6 +382,143 @@ void ParticlesSystemBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
 
+Math::Real GetTime()
+{
+	return static_cast<Math::Real>(glfwGetTime());
+	//return Time(glfwGetTime());
+
+	//return Time::Now();
+}
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+void InitializeTestTweakBars()
+{
+	Rendering::AntTweakBarTypes::InitializeTweakBarTypes();
+
+	TwWindowSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+
+	TwBar* coreEnginePropertiesBar = TwNewBar("RenderingTestPropertiesBar");
+	TwAddVarRO(coreEnginePropertiesBar, "windowWidth", TW_TYPE_INT32, &WINDOW_WIDTH, " label='Window width' ");
+	TwAddVarRO(coreEnginePropertiesBar, "windowHeight", TW_TYPE_INT32, &WINDOW_HEIGHT, " label='Window height' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "clockSpeed", TW_TYPE_REAL, &m_clockSpeed, " label='Clock speed' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "timeOfDay", TW_TYPE_REAL, &m_timeOfDay, " label='Time of day' ");
+
+	//TwEnumVal daytimeEV[] = { { Utility::Timing::NIGHT, "Night" }, { Utility::Timing::BEFORE_DAWN, "Before dawn" }, { Utility::Timing::SUNRISE, "Sunrise" },
+	//	{ Utility::Timing::DAY, "Day" }, { Utility::Timing::SUNSET, "Sunset" }, { Utility::Timing::AFTER_DUSK, "After dusk" } };
+	//TwType daytimeType = TwDefineEnum("Daytime", daytimeEV, 6);
+	//TwAddVarRW(coreEnginePropertiesBar, "daytime", daytimeType, &m_daytime, " label='Daytime' ");
+
+	//TwAddVarRW(coreEnginePropertiesBar, "sunElevation", Rendering::angleType, &m_sunElevation, " label='Sun elevation' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunAzimuth", Rendering::angleType, &m_sunAzimuth, " label='Sun azimuth' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunFirstElevationLevel", Rendering::angleType, &M_FIRST_ELEVATION_LEVEL, " label='First elevation level' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunSecondElevationLevel", Rendering::angleType, &M_SECOND_ELEVATION_LEVEL, " label='Second elevation level' ");
+	//TwAddVarRW(coreEnginePropertiesBar, "sunThirdElevationLevel", Rendering::angleType, &M_THIRD_ELEVATION_LEVEL, " label='Third elevation level' ");
+
+	TwDefine(" RenderingTestPropertiesBar refresh=0.5 ");
+	//double refreshRate = 0.2;
+	//TwSetParam(coreEnginePropertiesBar, NULL, "refresh", TW_PARAM_DOUBLE, 1, &refreshRate);
+
+	//TwSetParam(coreEnginePropertiesBar, NULL, "visible", TW_PARAM_CSTRING, 1, "false"); // Hide the bar at startup
+}
+#endif
+
+void RenderScene()
+{
+	renderer->BindAsRenderTarget();
+	renderer->ClearScreen(0.0f, 0.0f, 0.3f, 1.0f);
+}
+
+void Run()
+{
+	constexpr int THREAD_SLEEP_TIME = 10;
+	constexpr Math::Real MAX_FPS = 500.0f;
+	constexpr Math::Real FRAME_TIME = 1.0f / MAX_FPS;
+	
+	//Rendering::Controls::GuiButtonControl fpsGuiButton("text", Text::FontTypes::CANDARA, 2.5f, NULL,
+	//	Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
+	//	Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+
+#ifdef ANT_TWEAK_BAR_ENABLED
+	Rendering::InitializeTweakBars();
+	InitializeTestTweakBars();
+#endif
+
+	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
+	Math::Real previousTime = GetTime();
+
+	while (true)
+	{
+		//CRITICAL_LOG_ENGINE("START");
+		/* ==================== REGION #1 begin ====================*/
+		bool isRenderRequired = false;
+
+		// flCurrentTime will be lying around from last frame. It's now the previous time.
+		Math::Real currentTime = GetTime();
+		Math::Real passedTime = currentTime - previousTime;
+		DELOCUST_LOG_RENDERING_TEST("Passed time: ", passedTime * 1000.0f, " [ms]");
+
+		previousTime = currentTime;
+
+		// TODO: If unprocessing time is big then each frame it will only get bigger and bigger each frame
+		// FPS will plummet, as a result.
+		unprocessingTime += passedTime;
+		/* ==================== REGION #1 end ====================*/
+
+		/* ==================== REGION #2 begin ====================*/
+		while (unprocessingTime > FRAME_TIME)
+		{
+			//previousTime = GetTime();
+			isRenderRequired = true;
+			/**
+			*TODO: The function IsCloseRequested() is called thousand times before actually returning true and closing the application.
+			* Instead we should only check it from time to time or maybe only in some specific game states (e.g. PlayMenuGameState)
+			*/
+			if (glfwWindowShouldClose(window) != 0)
+			{
+				return;
+			}
+			/* ==================== REGION #2_1 begin ====================*/
+			glfwPollEvents();
+			/* ==================== REGION #2_1 end ====================*/
+
+			/* ==================== REGION #2_2 begin ====================*/
+			//m_game->Input(m_inputMapping.GetMappedInput());
+			//m_inputMapping.ClearActions();
+			//m_inputMapping.ClearRanges();
+			//m_game->Update(m_frameTime);
+#ifdef DRAW_FPS
+			fpsGuiButton.Update(m_frameTime);
+#endif
+			/* ==================== REGION #2_2 end ====================*/
+#ifdef ANT_TWEAK_BAR_ENABLED
+			Rendering::CheckChangesAndUpdateGLState();
+#endif
+			unprocessingTime -= FRAME_TIME;
+		}
+		/* ==================== REGION #2 end ====================*/
+
+		/* ==================== REGION #3 begin ====================*/
+		if (isRenderRequired)
+		{
+			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
+			//m_game->Render(renderer.get());
+			RenderScene();
+#ifdef ANT_TWEAK_BAR_ENABLED
+			int resultCode = TwDraw();
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, Utility::Logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
+#endif
+			glfwSwapBuffers(window);
+		}
+		else
+		{
+			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
+			std::this_thread::sleep_for(std::chrono::milliseconds(THREAD_SLEEP_TIME)); // Sleep for some time to prevent the thread from constant looping
+		}
+		/* ==================== REGION #3 end ====================*/
+		//CRITICAL_LOG_ENGINE("STOP");
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	srand((unsigned int)time(NULL));
@@ -397,7 +538,8 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	CreateRenderer(false, 1600, 900, "3D rendering tests", Rendering::Aliasing::NONE);
+	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", Rendering::Aliasing::NONE);
+	Run();
 
 	//MeshTest();
 	//TextureTest();
@@ -411,6 +553,8 @@ int main(int argc, char* argv[])
 
 	Logging::ILogger::GetLogger(MODULE_NAME).ResetConsoleColor();
 	std::cout << "Bye!" << std::endl;
+
+	glfwTerminate(); // Terminate GLFW
 
 	return 0;
 }

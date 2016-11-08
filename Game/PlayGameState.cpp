@@ -416,7 +416,6 @@ void Game::PlayGameState::AddPointLights()
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
-			pointLightBuilder.SetLightIndex(i);
 			Rendering::Lighting::PointLight pointLight = lightBuilderDirector.Construct();
 			m_pointLights.push_back(std::move(pointLight));
 			//m_lights.push_back(pointLight);
@@ -439,7 +438,6 @@ void Game::PlayGameState::AddSpotLights()
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
-			spotLightBuilder.SetLightIndex(i);
 			m_spotLights.push_back(std::move(lightBuilderDirector.Construct()));
 			//m_lights.push_back(spotLight);
 		}

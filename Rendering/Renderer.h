@@ -54,6 +54,11 @@ namespace Rendering
 		/* ==================== Static variables begin ==================== */
 	private:
 		static constexpr int SHADOW_MAPS_COUNT = 11;
+
+		/// <summary>
+		/// The matrix that transforms the shadow map coordinates from [-1, 1] range to [0, 1] range.
+		/// Thanks to this matrix we don't have to transform the shadow map coordinates in the fragment shader for each light.
+		/// </summary>
 		static const Math::Matrix4D BIAS_MATRIX; // TODO: Make it a constexpr
 		/* ==================== Static variables end ==================== */
 
@@ -389,6 +394,8 @@ namespace Rendering
 		std::array<Texture, SHADOW_MAPS_COUNT> m_shadowMapTempTargets;
 
 		std::map<std::string, unsigned int> m_samplerMap;
+
+		/// <summary> The matrix represents the way the world looks from the light perspective. </summary>
 		Math::Matrix4D m_lightMatrix;
 
 		/// <summary>

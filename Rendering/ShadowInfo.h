@@ -44,11 +44,11 @@ namespace Rendering
 		/// <param name="flipFacesEnabled"><code>true</code> when </param>
 		/// <param name="shadowMapSizeAsPowerOf2"> The size of the shadow map the light uses. </param>
 		/// <param name="shadowSoftness"> The softness of the shadow. </param>
-		/// <param name="lightBleedingReductionAmount"></param>
+		/// <param name="lightBleedingReductionFactor"> The light bleeding reduction factor. </param>
 		/// <param name="minVariance"></param>
 		ShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled,
 			int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
-			Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
+			Math::Real lightBleedingReductionFactor = static_cast<Math::Real>(0.2f),
 			Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 
 		//ShadowInfo(Math::Matrix4D&& projection, bool flipFacesEnabled,
@@ -80,12 +80,29 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API inline const Math::Matrix4D& GetProjection() const { return m_projectionMatrix; }
-		RENDERING_API inline Math::Real GetShadowSoftness() const { return m_shadowSoftness; }
-		RENDERING_API inline Math::Real GetMinVariance() const { return m_minVariance; }
-		RENDERING_API inline Math::Real GetLightBleedingReductionAmount() const { return m_lightBleedingReductionAmount; }
-		RENDERING_API inline bool IsFlipFacesEnabled() const { return m_flipFacesEnabled; }
-		RENDERING_API inline int GetShadowMapSizeAsPowerOf2() const { return m_shadowMapSizeAsPowerOf2; }
+		/// <summary> Gets the projection matrix that shadow info uses. </summary>
+		/// <returns> The projection matrix that shadow info uses. </returns>
+		RENDERING_API inline const Math::Matrix4D& GetProjection() const noexcept { return m_projectionMatrix; }
+
+		/// <summary> Gets the shadow softness value. </summary>
+		/// <returns> The shadow softness value. </returns>
+		RENDERING_API inline Math::Real GetShadowSoftness() const noexcept { return m_shadowSoftness; }
+
+		/// <summary> Gets the minimal variance of the shadow info. </summary>
+		/// <returns> The minimal variance of the shadow info. </returns>
+		RENDERING_API inline Math::Real GetMinVariance() const noexcept { return m_minVariance; }
+
+		/// <summary> Gets the light bleeding reduction factor. </summary>
+		/// <returns> The light bleeding reduction factor. </returns>
+		RENDERING_API inline Math::Real GetLightBleedingReductionFactor() const noexcept { return m_lightBleedingReductionFactor; }
+
+		/// <summary> Gets the information whether or not the rendering engine should first turn on backface culling before rendering to the shadow map. </summary>
+		/// <returns> <code>true</code> when before rendering to shadow map we should turn on backface culling. Otherwise <code>false</code>. </returns>
+		RENDERING_API inline bool IsFlipFacesEnabled() const noexcept { return m_flipFacesEnabled; }
+
+		/// <summary> Gets the exponent of the final shadow map size. </summary>
+		/// <returns> The exponent of the final shadow map size. </returns>
+		RENDERING_API inline int GetShadowMapSizeAsPowerOf2() const noexcept { return m_shadowMapSizeAsPowerOf2; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -95,10 +112,22 @@ namespace Rendering
 		/// (e.g. for directional light this is an orthogonal projection matrix, because all its rays go in parallel to one another).
 		/// </summary>
 		Math::Matrix4D m_projectionMatrix;
+
+		/// <summary>
+		/// Stores the information whether or not we are supposed to flip the culling faces (from back to front and vice versa) before rendering to the shadow map.
+		/// This way we can overcome the "Peter Panning" problem (see http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-16-shadow-mapping/).
+		/// Due to the non-infinite resolution of the shadow map the pixels right near to the object casting the shadow tend to be incorrectly lit as if they were not in shadow.
+		/// This makes the object look as if it were flying (hence the term "Peter Panning"). If we enable backface culling then there will be a polygon of the object which faces
+		/// the light, which will occlude the other side, which wouldn't normally be rendered without backface culling. The drawback is that we have twice as many triangles to render.
+		/// </summary>
 		bool m_flipFacesEnabled;
+
+		/// <summary>
+		/// The exponent that determines the size of the shadow map the shadow info uses. The shadow map size is equal to <code>2^(m_shadowMapSizeAsPowerOf2)</code>.
+		/// </summary>
 		int m_shadowMapSizeAsPowerOf2;
 		Math::Real m_shadowSoftness;
-		Math::Real m_lightBleedingReductionAmount;
+		Math::Real m_lightBleedingReductionFactor;
 		Math::Real m_minVariance;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class ShadowInfo */

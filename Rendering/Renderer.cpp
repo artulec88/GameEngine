@@ -499,7 +499,7 @@ bool Rendering::Renderer::InitShadowMap()
 
 		//CRITICAL_LOG_RENDERING("AltCamera.GetViewProjection() = \"", m_altCamera.GetViewProjection(), "\"");
 		m_lightMatrix = BIAS_MATRIX * m_altCamera.GetViewProjection(); // FIXME: Check matrix multiplication
-		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionAmount());
+		m_mappedValues.SetReal("shadowLightBleedingReductionFactor", shadowInfo->GetLightBleedingReductionFactor());
 		m_mappedValues.SetReal("shadowVarianceMin", shadowInfo->GetMinVariance());
 
 		m_tempCamera = m_currentCamera;

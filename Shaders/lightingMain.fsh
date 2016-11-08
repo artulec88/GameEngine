@@ -19,7 +19,11 @@ bool InRange(float val)
 
 float CalcShadowAmount(sampler2D shadowMap, vec4 initialShadowMapCoords)
 {
-	vec3 shadowMapCoords = (initialShadowMapCoords.xyz/initialShadowMapCoords.w);
+	vec3 shadowMapCoords = (initialShadowMapCoords.xyz / initialShadowMapCoords.w); // Perspective division
+	
+	// shadowMapCoords.z stores the distance of the current pixel from the light perspective
+	// shadowMap on the other hand stores the distance of the nearest object of the current pixel.
+	// By comparing the two values we can find out whether pixel is in shadow or not.
 	
 	if(InRange(shadowMapCoords.z) && InRange(shadowMapCoords.x) && InRange(shadowMapCoords.y))
 	{

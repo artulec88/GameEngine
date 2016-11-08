@@ -225,7 +225,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 }
 
 
-	Engine::CoreEngine::~CoreEngine(void)
+Engine::CoreEngine::~CoreEngine(void)
 {
 	DEBUG_LOG_ENGINE("Core engine destruction started");
 
@@ -617,7 +617,7 @@ void Engine::CoreEngine::Run()
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 			++m_renderingRequiredCount;
 #endif
-	}
+		}
 		else
 		{
 			//INFO_LOG_ENGINE("Rendering is not required. Moving on...");
@@ -629,7 +629,7 @@ void Engine::CoreEngine::Run()
 		STOP_TIMER(timer, m_countStats3, m_minMaxTime3, m_timeSum3);
 		/* ==================== REGION #3 end ====================*/
 		//CRITICAL_LOG_ENGINE("STOP");
-}
+	}
 }
 
 void Engine::CoreEngine::WindowResizeEvent(GLFWwindow* window, int width, int height)

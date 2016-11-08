@@ -5,8 +5,9 @@
 #include "Utility\IConfig.h"
 #include "Math\Matrix.h"
 
-Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity) :
-	PointLight(transform, color, intensity),
+Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
+	PointLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
 	m_cutoff(REAL_ZERO)
 {
 }
