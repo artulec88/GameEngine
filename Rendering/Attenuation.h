@@ -6,7 +6,6 @@
 
 namespace Rendering
 {
-
 	/// <summary> The class representing the gradual loss in intensity of light. </summary>
 	class Attenuation
 	{
@@ -42,9 +41,17 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	public:
-		RENDERING_API inline Math::Real GetConstant() const { return m_constant; };
-		RENDERING_API inline Math::Real GetLinear() const { return m_linear; };
-		RENDERING_API inline Math::Real GetExponent() const { return m_exponent; };
+		/// <summary> Gets the constant factor of the attenuation. </summary>
+		/// <returns> The constant factor in gradual loss of attenuation. </returns>
+		RENDERING_API inline Math::Real GetConstant() const noexcept { return m_constant; };
+
+		/// <summary> Gets the linear factor of the attenuation. </summary>
+		/// <returns> The linear factor in gradual loss of attenuation. </returns>
+		RENDERING_API inline Math::Real GetLinear() const noexcept { return m_linear; };
+
+		/// <summary> Gets the exponent factor of the attenuation. </summary>
+		/// <returns> The exponent factor in gradual loss of attenuation. </returns>
+		RENDERING_API inline Math::Real GetExponent() const noexcept { return m_exponent; };
 		/* ==================== Non-static member variables end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -65,7 +72,6 @@ namespace Rendering
 		Math::Real m_exponent;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Attenuation */
-
 } /* end namespace Rendering */
 
 #endif /* __RENDERING_ATTENUATION_H__ */

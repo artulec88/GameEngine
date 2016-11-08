@@ -96,6 +96,9 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
+	/// <summary>
+	/// Directional light builder.
+	/// </summary>
 	class DirectionalLightBuilder : public LightBuilder<Rendering::Lighting::DirectionalLight>
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -103,11 +106,29 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Directional light builder constructor. </summary>
+		/// <param name="shaderFactory"> The shader factory. </param>
 		RENDERING_API DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory);
+
+		/// <summary> Directional light builder destructor. </summary>
 		RENDERING_API virtual ~DirectionalLightBuilder(void);
-		DirectionalLightBuilder(DirectionalLightBuilder& directionalLightBuilder) = delete;
+
+		/// <summary> Directional light builder copy constructor. </summary>
+		/// <param name="directionalLightBuilder"> The directional light builder to copy construct from. </param>
+		DirectionalLightBuilder(const DirectionalLightBuilder& directionalLightBuilder) = delete;
+
+		/// <summary> Directional light builder move constructor. </summary>
+		/// <param name="directionalLightBuilder"> The directional light builder to move construct from. </param>
 		DirectionalLightBuilder(DirectionalLightBuilder&& directionalLightBuilder) = delete;
+
+		/// <summary> Directional light builder copy assignment operator. </summary>
+		/// <param name="directionalLightBuilder"> The directional light builder to copy assign from. </param>
+		/// <returns> The newly copy-assigned directional light builder. </returns>
 		DirectionalLightBuilder& operator=(const DirectionalLightBuilder& directionalLightBuilder) = delete;
+
+		/// <summary> Directional light builder move assignment operator. </summary>
+		/// <param name="directionalLightBuilder"> The directional light builder to move assign from. </param>
+		/// <returns> The newly move-assigned directional light builder. </returns>
 		DirectionalLightBuilder& operator=(DirectionalLightBuilder&& directionalLightBuilder) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 

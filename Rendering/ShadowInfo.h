@@ -26,11 +26,15 @@ namespace Rendering
 	/// <summary>
 	/// Stores all information a light needs to cast shadows.
 	/// </summary>
+	/// <remarks>
+	/// Watch https://www.youtube.com/watch?v=CAMvRfN14r0&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl&index=9&t=289s.
+	/// </remarks>
 	class ShadowInfo
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary>
+		/// Shadow info constructor.
 		/// </summary>
 		/// <param name="projection">
 		/// The projection matrix that is used by the camera when we render the shadow map.
@@ -46,14 +50,32 @@ namespace Rendering
 			int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
 			Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
 			Math::Real minVariance = static_cast<Math::Real>(0.00002f));
-		ShadowInfo(Math::Matrix4D&& projection, bool flipFacesEnabled,
-			int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
-			Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-			Math::Real minVariance = static_cast<Math::Real>(0.00002f));
-		virtual ~ShadowInfo();
 
+		//ShadowInfo(Math::Matrix4D&& projection, bool flipFacesEnabled,
+		//	int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness = REAL_ONE,
+		//	Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
+		//	Math::Real minVariance = static_cast<Math::Real>(0.00002f));
+
+		/// <summary> Shadow info destructor. </summary>
+		~ShadowInfo();
+
+		/// <summary> Shadow info copy constructor. </summary>
+		/// <param name="shadowInfo"> The shadow info to copy construct from. </param>
 		ShadowInfo(const ShadowInfo& shadowInfo) = delete;
-		void operator=(const ShadowInfo& shadowInfo) = delete;
+
+		/// <summary> Shadow info move constructor. </summary>
+		/// <param name="shadowInfo"> The shadow info to move construct from. </param>
+		ShadowInfo(ShadowInfo&& shadowInfo) = delete;
+
+		/// <summary> Shadow info copy assignment operator. </summary>
+		/// <param name="shadowInfo"> The shadow info to copy assign from. </param>
+		/// <returns> The newly copy-assigned shadow info object. </returns>
+		ShadowInfo& operator=(const ShadowInfo& shadowInfo) = delete;
+
+		/// <summary> Shadow info move assignment operator. </summary>
+		/// <param name="shadowInfo"> The shadow info to move assign from. </param>
+		/// <returns> The newly move-assigned shadow info object. </returns>
+		ShadowInfo& operator=(ShadowInfo&& shadowInfo) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

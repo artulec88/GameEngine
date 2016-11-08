@@ -54,6 +54,6 @@ void Rendering::Lighting::DirectionalLight::SetShadowInfo(Math::Real halfShadowA
 	{
 		BaseLight::SetShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea),
 			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is NULL.");
+		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is nullptr.");
 	}
 }

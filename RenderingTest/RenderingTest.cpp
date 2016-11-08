@@ -34,6 +34,7 @@ GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
 
 const std::string modelsDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\";
+const std::string shadersDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\";
 const std::string texturesDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\";
 unsigned int testNumber = 0;
 bool meshTestEnabled = true;
@@ -354,10 +355,10 @@ void LightBuilderTest()
 		return;
 	}
 
-	//ShaderFactory shaderFactory("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\");
+	ShaderFactory shaderFactory(shadersDirectory);
 
-	//DirectionalLightBuilder directionalLightBuilder(shaderFactory);
-	//BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
+	DirectionalLightBuilder directionalLightBuilder(shaderFactory);
+	BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
 }
 
 void ParticlesSystemBuilderTest()

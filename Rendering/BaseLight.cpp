@@ -9,10 +9,10 @@ Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, cons
 	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
-	m_shader(NULL),
-	m_terrainShader(NULL),
-	m_noShadowShader(NULL),
-	m_noShadowTerrainShader(NULL),
+	m_shader(nullptr),
+	m_terrainShader(nullptr),
+	m_noShadowShader(nullptr),
+	m_noShadowTerrainShader(nullptr),
 	m_shadowInfo(nullptr),
 	m_isEnabled(false),
 	m_isShadowingEnabled(false)
@@ -55,10 +55,7 @@ void Rendering::Lighting::BaseLight::SetShadowInfo(const Math::Matrix4D& project
 	Math::Real shadowSoftness /* = REAL_ONE */, Math::Real lightBleedingReductionAmount /* = static_cast<Math::Real>(0.2f) */,
 	Math::Real minVariance /* = static_cast<Math::Real>(0.00002f) */)
 {
-	if (m_shadowInfo != NULL)
-	{
-		WARNING_LOG_RENDERING("Setting new shadow info for the light seems dubious.");
-	}
+	CHECK_CONDITION_RENDERING(m_shadowInfo == nullptr, Utility::Logging::WARNING, "Setting new shadow info for the light seems dubious.");
 	m_shadowInfo = std::make_unique<ShadowInfo>(projection, flipFacesEnabled, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
 }
 

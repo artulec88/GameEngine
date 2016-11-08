@@ -20,7 +20,13 @@ namespace Rendering {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Directional light constructor. </summary>
+			/// <param name="transform"> The transform of the directiona light. </param>
+			/// <param name="color"> The color this directional light will emit. </param>
+			/// <param name="intensity"> The intensity of this directional light. </param>
 			RENDERING_API DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity);
+
+			/// <summary> Directional light destructor. </summary>
 			RENDERING_API virtual ~DirectionalLight(void);
 
 			/// <summary> Directional light copy constructor. </summary>
