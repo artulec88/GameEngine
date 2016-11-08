@@ -21,6 +21,9 @@ namespace Rendering
 			}; /* end enum FontType */
 		} /* end namespace FontTypes */
 
+		/// <summary>
+		/// Font factory.
+		/// </summary>
 		class FontFactory
 		{
 			/* ==================== Static variables begin ==================== */
@@ -28,11 +31,31 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Font factory constructor. </summary>
+			/// <param name="textShader"> The shader that will be used for rendering text. </param>
+			/// <param name="texturesDirectory"> The directory where all font textures are stored. </param>
+			/// <param name="fontsDirectory"> The directory where meta data for all fonts are stored. </param>
 			RENDERING_API FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory);
+
+			/// <summary> Font factory destructor. </summary>
 			RENDERING_API ~FontFactory(void);
+
+			/// <summary> Font factory copy constructor. </summary>
+			/// <param name="fontFactory"> The font factory to copy construct from. </param>
 			FontFactory(const FontFactory& fontFactory) = delete;
+
+			/// <summary> Font factory move constructor. </summary>
+			/// <param name="fontFactory"> The font factory to move construct from. </param>
 			FontFactory(FontFactory&& fontFactory) = delete;
+
+			/// <summary> Font factory copy assignment operator. </summary>
+			/// <param name="fontFactory"> The font factory to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned font factory. </returns>
 			FontFactory& operator=(const FontFactory& fontFactory) = delete;
+
+			/// <summary> Font factory move assignment operator. </summary>
+			/// <param name="fontFactory"> The font factory to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned font factory. </returns>
 			FontFactory& operator=(FontFactory&& fontFactory) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 

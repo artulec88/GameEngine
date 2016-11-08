@@ -29,7 +29,11 @@ using namespace Math;
 using namespace Utility;
 using namespace std;
 
-const std::string MODULE_NAME = "MathTest";
+const string MODULE_NAME = "MathTest";
+const string MODELS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\";
+const string SHADERS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\";
+const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\";
+const string FONTS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\";
 constexpr int WINDOW_WIDTH = 1600;
 constexpr int WINDOW_HEIGHT = 900;
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
@@ -37,9 +41,6 @@ GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
 
-const std::string modelsDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\";
-const std::string shadersDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\";
-const std::string texturesDirectory = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\";
 unsigned int testNumber = 0;
 bool meshTestEnabled = true;
 bool textureTestEnabled = true;
@@ -301,7 +302,7 @@ void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::st
 	glfwSetErrorCallback(&ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance started");
-	renderer = std::make_unique<Rendering::Renderer>(width, height, modelsDirectory, texturesDirectory, antiAliasingMethod);
+	renderer = std::make_unique<Rendering::Renderer>(width, height, std::string(MODELS_DIR), std::string(TEXTURES_DIR), antiAliasingMethod);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
@@ -352,14 +353,12 @@ void CameraBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
-void LightBuilderTest()
+void LightBuilderTest(const ShaderFactory& shaderFactory)
 {
 	if (!lightBuilderTestEnabled)
 	{
 		return;
 	}
-
-	ShaderFactory shaderFactory(shadersDirectory);
 
 	DirectionalLightBuilder directionalLightBuilder(shaderFactory);
 	BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
@@ -428,27 +427,32 @@ void RenderScene()
 	renderer->ClearScreen(0.0f, 0.0f, 0.3f, 1.0f);
 }
 
-void Run()
+void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
 {
 	constexpr int THREAD_SLEEP_TIME = 10;
 	constexpr Math::Real MAX_FPS = 500.0f;
 	constexpr Math::Real FRAME_TIME = 1.0f / MAX_FPS;
 	
-	//Rendering::Controls::GuiButtonControl fpsGuiButton("text", Text::FontTypes::CANDARA, 2.5f, NULL,
-	//	Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
-	//	Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+	Rendering::Controls::GuiButtonControl fpsGuiButton("text", fontFactory->GetFont(Text::FontTypes::CANDARA), 1.25f, NULL,
+		Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
+		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();
 	InitializeTestTweakBars();
 #endif
 
+	Math::Real fpsSample = 1.0f; // represents the time after which FPS value is calculated and logged
+	int framesCount = 0;
+	Math::Real frameTimeCounter = REAL_ZERO;
+	int fps = 0;
+	Math::Real spf = REAL_ZERO;
+
 	Math::Real unprocessingTime = REAL_ZERO; // used to cap the FPS when it gets too high
 	Math::Real previousTime = GetTime();
 
 	while (true)
 	{
-		//CRITICAL_LOG_ENGINE("START");
 		/* ==================== REGION #1 begin ====================*/
 		bool isRenderRequired = false;
 
@@ -458,21 +462,23 @@ void Run()
 		DELOCUST_LOG_RENDERING_TEST("Passed time: ", passedTime * 1000.0f, " [ms]");
 
 		previousTime = currentTime;
-
-		// TODO: If unprocessing time is big then each frame it will only get bigger and bigger each frame
-		// FPS will plummet, as a result.
 		unprocessingTime += passedTime;
+
+		frameTimeCounter += passedTime;
+		if (frameTimeCounter >= fpsSample)
+		{
+			fps = static_cast<int>(framesCount / fpsSample); // Frames Per Second
+			spf = 1000 * frameTimeCounter / framesCount; // Seconds Per Frame
+			//DEBUG_LOG_RENDERING_TEST("FPS = ", fps, "\t Average time per frame = ", spf, " [ms]");
+			framesCount = 0;
+			frameTimeCounter = REAL_ZERO;
+		}
 		/* ==================== REGION #1 end ====================*/
 
 		/* ==================== REGION #2 begin ====================*/
 		while (unprocessingTime > FRAME_TIME)
 		{
-			//previousTime = GetTime();
 			isRenderRequired = true;
-			/**
-			*TODO: The function IsCloseRequested() is called thousand times before actually returning true and closing the application.
-			* Instead we should only check it from time to time or maybe only in some specific game states (e.g. PlayMenuGameState)
-			*/
 			if (glfwWindowShouldClose(window) != 0)
 			{
 				return;
@@ -486,9 +492,7 @@ void Run()
 			//m_inputMapping.ClearActions();
 			//m_inputMapping.ClearRanges();
 			//m_game->Update(m_frameTime);
-#ifdef DRAW_FPS
-			fpsGuiButton.Update(m_frameTime);
-#endif
+			fpsGuiButton.Update(FRAME_TIME);
 			/* ==================== REGION #2_2 end ====================*/
 #ifdef ANT_TWEAK_BAR_ENABLED
 			Rendering::CheckChangesAndUpdateGLState();
@@ -503,6 +507,12 @@ void Run()
 			//m_renderer->SetReal("timeOfDay", m_timeOfDay);
 			//m_game->Render(renderer.get());
 			RenderScene();
+
+			++framesCount;
+			std::stringstream ss;
+			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
+			fpsGuiButton.SetText(ss.str());
+			renderer->RenderGuiControl(fpsGuiButton, shaderFactory.GetShader(Rendering::ShaderIDs::GUI));
 #ifdef ANT_TWEAK_BAR_ENABLED
 			int resultCode = TwDraw();
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, Utility::Logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
@@ -534,17 +544,19 @@ int main(int argc, char* argv[])
 	Logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), Logging::INFO);
 	Logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), Logging::INFO);
 
-	IConfig::CreateConfig("Rendering", commandLineMapper->Get("-configRendering", "..\\..\\Config\\ConfigRendering.cfg"));
+	IConfig::CreateConfig("Rendering", commandLineMapper->Get("-configRendering", "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\ConfigRendering.cfg"));
 
 	STATS_STORAGE.StartTimer();
 
 	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", Rendering::Aliasing::NONE);
-	Run();
+	ShaderFactory shaderFactory(SHADERS_DIR);
+	Text::FontFactory fontFactory(shaderFactory.GetShader(ShaderIDs::TEXT), TEXTURES_DIR, FONTS_DIR);
+	Run(&fontFactory, shaderFactory);
 
 	//MeshTest();
 	//TextureTest();
 	CameraBuilderTest();
-	LightBuilderTest();
+	LightBuilderTest(shaderFactory);
 	ParticlesSystemBuilderTest();
 	//OtherTests();
 
