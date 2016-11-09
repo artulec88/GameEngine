@@ -65,7 +65,7 @@ namespace Rendering
 
 		/// <summary> Shadow info move constructor. </summary>
 		/// <param name="shadowInfo"> The shadow info to move construct from. </param>
-		ShadowInfo(ShadowInfo&& shadowInfo) = delete;
+		ShadowInfo(ShadowInfo&& shadowInfo) = default;
 
 		/// <summary> Shadow info copy assignment operator. </summary>
 		/// <param name="shadowInfo"> The shadow info to copy assign from. </param>
@@ -75,7 +75,7 @@ namespace Rendering
 		/// <summary> Shadow info move assignment operator. </summary>
 		/// <param name="shadowInfo"> The shadow info to move assign from. </param>
 		/// <returns> The newly move-assigned shadow info object. </returns>
-		ShadowInfo& operator=(ShadowInfo&& shadowInfo) = delete;
+		ShadowInfo& operator=(ShadowInfo&& shadowInfo) = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */

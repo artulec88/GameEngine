@@ -9,17 +9,11 @@ Rendering::DirectionalLightBuilder::DirectionalLightBuilder(const Rendering::Sha
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightColorAlpha", 1.0f)),
-		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightIntensity", 1.0f)),
+		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoFlipFacesEnabled", true),
+		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoShadowMapSizeAsPowerOf2", 9), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoShadowSoftness", 1.0f),
+		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoLightBleedingReductionFactor", 0.2f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowInfoMinVariance", 0.002f)),
 	M_DEFAULT_HALF_SHADOW_AREA(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightHalfShadowArea", 40.0f)),
-	M_DEFAULT_SHADOW_MAP_SIZE_AS_POWER_OF_2(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowMapSizeAsPowerOf2", 10)),
-	M_DEFAULT_SHADOW_SOFTNESS(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightShadowSoftness", 1.0f)),
-	M_DEFAULT_LIGHT_BLEEDING_REDUCTION_FACTOR(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightBleedingReductionFactor", 0.2f)),
-	M_DEFAULT_MIN_VARIANCE(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightMinVariance", 0.00002f)),
-	m_halfShadowArea(M_DEFAULT_HALF_SHADOW_AREA),
-	m_shadowMapSizeAsPowerOf2(M_DEFAULT_SHADOW_MAP_SIZE_AS_POWER_OF_2),
-	m_shadowSoftness(M_DEFAULT_SHADOW_SOFTNESS),
-	m_lightBleedingReductionFactor(M_DEFAULT_LIGHT_BLEEDING_REDUCTION_FACTOR),
-	m_minVariance(M_DEFAULT_MIN_VARIANCE)
+	m_halfShadowArea(M_DEFAULT_HALF_SHADOW_AREA)
 {
 }
 
@@ -45,8 +39,8 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-void Rendering::DirectionalLightBuilder::BuildLightParams()
-{
+//void Rendering::DirectionalLightBuilder::BuildLightParams()
+//{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("directionalLightColorRed", GET_CONFIG_VALUE_GAME("defaultDirectionalLightColorRed", REAL_ONE)),
 	//	GET_CONFIG_VALUE_GAME("directionalLightColorGreen", GET_CONFIG_VALUE_GAME("defaultDirectionalLightColorGreen", REAL_ONE)),
@@ -73,7 +67,7 @@ void Rendering::DirectionalLightBuilder::BuildLightParams()
 	////	Math::Angle(GET_CONFIG_VALUE_GAME("latitude", 52.0f)), Math::Angle(GET_CONFIG_VALUE_GAME("longitude", -16.0f)),
 	////	Math::Angle(GET_CONFIG_VALUE_GAME("sunlightFirstElevationLevel", -REAL_ONE)), Math::Angle(GET_CONFIG_VALUE_GAME("sunlightSecondElevationLevel", REAL_ZERO)),
 	////	Math::Angle(GET_CONFIG_VALUE_GAME("sunlightThirdElevationLevel", REAL_ONE))));
-}
+//}
 
 void Rendering::DirectionalLightBuilder::BuildShaders()
 {
@@ -102,10 +96,6 @@ void Rendering::DirectionalLightBuilder::SetDefault()
 {
 	Rendering::LightBuilder<Lighting::DirectionalLight>::SetDefault();
 	m_halfShadowArea = M_DEFAULT_HALF_SHADOW_AREA;
-	m_shadowMapSizeAsPowerOf2 = M_DEFAULT_SHADOW_MAP_SIZE_AS_POWER_OF_2;
-	m_shadowSoftness = M_DEFAULT_SHADOW_SOFTNESS;
-	m_lightBleedingReductionFactor = M_DEFAULT_LIGHT_BLEEDING_REDUCTION_FACTOR;
-	m_minVariance = M_DEFAULT_MIN_VARIANCE;
 }
 
 #ifdef BUILD_MESH_RENDERER
@@ -141,7 +131,7 @@ Rendering::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& 
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultPointLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultPointLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightColorAlpha", 1.0f)),
-		GET_CONFIG_VALUE_RENDERING("defaultPointLightIntensity", 1.0f)),
+		GET_CONFIG_VALUE_RENDERING("defaultPointLightIntensity", 1.0f), false, 0, REAL_ONE, REAL_ZERO, REAL_ZERO),
 	M_DEFAULT_POINT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationConstant", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultPointLightAttenuationExponent", REAL_ZERO)),
 	m_attenuation(M_DEFAULT_POINT_LIGHT_ATTENUATION)
@@ -163,8 +153,8 @@ Rendering::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& 
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-void Rendering::PointLightBuilder::BuildLightParams()
-{
+//void Rendering::PointLightBuilder::BuildLightParams()
+//{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("pointLightColorRed_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetRed()),
 	//	GET_CONFIG_VALUE_GAME("pointLightColorGreen_" + m_lightIndexStr, M_DEFAULT_POINT_LIGHT_COLOR.GetGreen()),
@@ -182,7 +172,7 @@ void Rendering::PointLightBuilder::BuildLightParams()
 
 	//// TODO: Setting shadow info
 	//// TODO: Setting additional point light information
-}
+//}
 
 void Rendering::PointLightBuilder::BuildShaders()
 {
@@ -232,21 +222,15 @@ Rendering::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& sh
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleZ", 0.0f)))),
 		Color(GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorRed", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorGreen", 1.0f),
 			GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorBlue", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightColorAlpha", 1.0f)),
-		GET_CONFIG_VALUE_RENDERING("defaultSpotLightIntensity", 1.0f)),
+		GET_CONFIG_VALUE_RENDERING("defaultSpotLightIntensity", 1.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoFlipFacesEnabled", false),
+		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowMapSizeAsPowerOf2", 10), GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoShadowSoftness", REAL_ONE),
+		GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoLightBleedingReductionFactor", 0.2f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightMinVariance", 0.00002f)),
 	M_DEFAULT_SPOT_LIGHT_ATTENUATION(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationConstant", 0.5f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationLinear", 0.1f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightAttenuationExponent", 0.05f)),
 	M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightViewAngle", 120.0f), Math::Unit::DEGREE),
-	M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowMapSizeAsPowerOf2", 10)), // 2 ^ 10 = 1024
-	M_DEFAULT_SPOT_LIGHT_PROJECTION_NEAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightProjectionNearPlane", 0.1f)),
-	M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowSoftness", REAL_ONE)),
-	M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_FACTOR(GET_CONFIG_VALUE_RENDERING("defaultSpotLightLightBleedingReductionFactor", 0.2f)),
-	M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightMinVariance", 0.00002f)),
+	M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE(GET_CONFIG_VALUE_RENDERING("defaultSpotLightShadowInfoProjectionNearPlane", 0.1f)),
 	m_attenuation(M_DEFAULT_SPOT_LIGHT_ATTENUATION),
 	m_viewAngle(M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE),
-	m_shadowMapSizeAsPowerOf2(M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2),
-	m_nearPlane(0.1f),
-	m_shadowSoftness(M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS),
-	m_lightBleedingReductionFactor(M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_FACTOR),
-	m_minVariance(M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE)
+	m_shadowInfoProjectionNearPlane(M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE)
 {
 }
 
@@ -265,8 +249,8 @@ Rendering::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& sh
 	//m_rot = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 //}
 
-void Rendering::SpotLightBuilder::BuildLightParams()
-{
+//void Rendering::SpotLightBuilder::BuildLightParams()
+//{
 	//// Determining color
 	//m_color.Set(GET_CONFIG_VALUE_GAME("spotLightColorRed_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetRed()),
 	//	GET_CONFIG_VALUE_GAME("spotLightColorGreen_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_COLOR.GetGreen()),
@@ -291,7 +275,7 @@ void Rendering::SpotLightBuilder::BuildLightParams()
 	//m_minVariance = GET_CONFIG_VALUE_GAME("spotLightMinVariance_" + m_lightIndexStr, M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE);
 
 	//// TODO: Setting additional spot light information
-}
+//}
 
 void Rendering::SpotLightBuilder::BuildShaders()
 {
@@ -322,11 +306,7 @@ void Rendering::SpotLightBuilder::SetDefault()
 	Rendering::LightBuilder<Lighting::SpotLight>::SetDefault();
 	m_attenuation = M_DEFAULT_SPOT_LIGHT_ATTENUATION;
 	m_viewAngle = M_DEFAULT_SPOT_LIGHT_VIEW_ANGLE;
-	m_shadowMapSizeAsPowerOf2 = M_DEFAULT_SPOT_LIGHT_SHADOW_MAP_SIZE_AS_POWER_OF_2;
-	m_nearPlane = M_DEFAULT_SPOT_LIGHT_PROJECTION_NEAR_PLANE;
-	m_shadowSoftness = M_DEFAULT_SPOT_LIGHT_SHADOW_SOFTNESS;
-	m_lightBleedingReductionFactor = M_DEFAULT_SPOT_LIGHT_LIGHT_BLEEDING_REDUCTION_FACTOR;
-	m_minVariance = M_DEFAULT_SPOT_LIGHT_MIN_VARIANCE;
+	m_shadowInfoProjectionNearPlane = M_DEFAULT_SPOT_LIGHT_SHADOW_INFO_PROJECTION_NEAR_PLANE;
 }
 
 

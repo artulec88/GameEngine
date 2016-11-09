@@ -6,10 +6,19 @@
 #include "Math\Matrix.h"
 
 Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
-	PointLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
-	m_cutoff(REAL_ZERO)
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader, const Attenuation& attenuation,
+	Math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2,
+	Math::Real shadowInfoShadowSoftness, Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance,
+	const Math::Angle& viewAngle) :
+	PointLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader, attenuation),
+	m_cutoff((viewAngle / 2).Cos())
 {
+	SetIsShadowingEnabled(shadowInfoShadowMapSizeAsPowerOf2 != 0);
+	if (IsShadowingEnabled())
+	{
+		SetShadowInfo(Math::Matrix4D(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, shadowInfoProjectionNearPlane, m_range),
+			shadowInfoFlipFacesEnabled, shadowInfoShadowMapSizeAsPowerOf2, shadowInfoShadowSoftness, shadowInfoLightBleedingReductionFactor, shadowInfoMinVariance);
+	}
 }
 
 
@@ -17,15 +26,3 @@ Rendering::Lighting::SpotLight::~SpotLight(void)
 {
 }
 
-void Rendering::Lighting::SpotLight::SetShadowInfo(const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real projectionNearPlane,
-	Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance)
-{
-	m_isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); // shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows at all
-	m_cutoff = (viewAngle / 2).Cos();
-	if (m_isShadowingEnabled)
-	{
-		BaseLight::SetShadowInfo(Math::Matrix4D(viewAngle, REAL_ONE /* because shadow maps are supposed to be squares */, projectionNearPlane, m_range),
-			false, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != NULL, Utility::Logging::CRITICAL, "Cannot initialize spot light. Shadow info is NULL.");
-	}
-}

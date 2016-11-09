@@ -24,7 +24,12 @@ namespace Rendering {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader);
+				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader,
+				const Attenuation& attenuation, Math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled,
+				int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness, Math::Real shadowInfoLightBleedingReductionFactor,
+				Math::Real shadowInfoMinVariance, const Math::Angle& viewAngle);
+
+			/// <summary> Spot light destructor. </summary>
 			RENDERING_API virtual ~SpotLight(void);
 
 			/// <summary> Spot light copy constructor. </summary>
@@ -39,12 +44,16 @@ namespace Rendering {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
-			RENDERING_API Math::Real GetCutoff() const { return m_cutoff; };
-			//virtual void InitializeShaders();
-
-			RENDERING_API void SetShadowInfo(const Math::Angle& viewAngle, int shadowMapSizeAsPowerOf2, Math::Real projectionNearPlane,
-				Math::Real shadowSoftness, Math::Real lightBleedingReductionAmount, Math::Real minVariance);
+			/// <summary>
+			/// Returns a value of a cosine (so it is in range between <code>-1</code> and <code>1</code>) of the angle
+			/// between light direction and the spot light's cone edge.
+			/// If the value of the cosine between a light direction and spot light direction vectors is
+			/// smaller than cutoff then the point is not in the spot light cone.
+			/// If <code>cutoff == 0.0</code> then field of view is equal to 180 degrees.
+			/// If <code>cutoff == 1.0</code> then field of view equals 0 degrees.
+			/// </summary>
+			/// <returns> The cosine value of the view angle of the spot light. </returns>
+			RENDERING_API Math::Real GetCutoff() const noexcept { return m_cutoff; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

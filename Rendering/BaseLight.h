@@ -33,7 +33,7 @@ namespace Rendering
 			/// <param name="color"> The color of the light. </param>
 			/// <param name="intensity"> The intensity of the light. </param>
 			RENDERING_API BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader);
+				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader, bool isShadowingEnabled = false);
 
 			/// <summary>The base light destructor.</summary>
 			RENDERING_API virtual ~BaseLight(void);
@@ -95,14 +95,14 @@ namespace Rendering
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
 
 			RENDERING_API void SetTransform(const Math::Transform& transform) { m_transform = transform; }
-			RENDERING_API void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
-				Math::Real shadowSoftness = REAL_ONE, Math::Real lightBleedingReductionAmount = static_cast<Math::Real>(0.2f),
-				Math::Real minVariance = static_cast<Math::Real>(0.00002f));
 			RENDERING_API void SetIsEnabled(bool isEnabled) { m_isEnabled = isEnabled; }
 			RENDERING_API void SetIsShadowingEnabled(bool isShadowingEnabled) { m_isShadowingEnabled = isShadowingEnabled; }
 #ifdef ANT_TWEAK_BAR_ENABLED
 			RENDERING_API virtual void InitializeTweakBar(TwBar* lightsBar);
 #endif
+		protected:
+			void SetShadowInfo(const Math::Matrix4D& projection, bool flipFacesEnabled, int shadowMapSizeAsPowerOf2,
+				Math::Real shadowSoftness, Math::Real lightBleedingReductionFactor, Math::Real minVariance);
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

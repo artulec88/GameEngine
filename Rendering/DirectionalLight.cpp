@@ -6,10 +6,17 @@
 #include "Utility\IConfig.h"
 
 Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
-	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader),
-	m_halfShadowArea(REAL_ZERO)
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader,
+	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness,
+	Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance, Math::Real halfShadowArea) :
+	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader, (shadowInfoShadowMapSizeAsPowerOf2 != 0)),
+	m_halfShadowArea(halfShadowArea)
 {
+	if (IsShadowingEnabled())
+	{
+		SetShadowInfo(Math::Matrix4D(-m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea, -m_halfShadowArea, m_halfShadowArea),
+			true, shadowInfoShadowMapSizeAsPowerOf2, shadowInfoShadowSoftness, shadowInfoLightBleedingReductionFactor, shadowInfoMinVariance);
+	}
 }
 
 Rendering::Lighting::DirectionalLight::~DirectionalLight(void)
@@ -44,17 +51,4 @@ Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShad
 	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);
 	/* ==================== Fixing the shimmering effect end ==================== */
 	return shadowCameraTransform;
-}
-
-void Rendering::Lighting::DirectionalLight::SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
-	Math::Real lightBleedingReductionAmount, Math::Real minVariance)
-{
-	m_isShadowingEnabled = (shadowMapSizeAsPowerOf2 != 0); /* shadowMapSizeAsPowerOf2 == 0 means the light doesn't cast shadows */
-	m_halfShadowArea = halfShadowArea;
-	if (m_isShadowingEnabled)
-	{
-		BaseLight::SetShadowInfo(Math::Matrix4D(-halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea, -halfShadowArea, halfShadowArea),
-			true, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
-		CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, Utility::Logging::CRITICAL, "Cannot initialize directional light. Shadow info is nullptr.");
-	}
 }

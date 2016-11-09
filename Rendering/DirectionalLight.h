@@ -24,8 +24,20 @@ namespace Rendering {
 			/// <param name="transform"> The transform of the directiona light. </param>
 			/// <param name="color"> The color this directional light will emit. </param>
 			/// <param name="intensity"> The intensity of this directional light. </param>
+			/// <param name="shader"> The directional light shader for all standard meshes. </param>
+			/// <param name="terrainShader"> The directional light shader for terrain meshes. </param>
+			/// <param name="noShadowShader"> The directional light shader for all standard meshes without shadow casting calculation. </param>
+			/// <param name="noShadowTerrainShader"> The directional light shader for terrain meshes without shadow casting calculation. </param>
+			/// <param name="shadowInfoFlipFacesEnabled"> The information whether the backface culling should be enabled for rendering the light or not. </param>
+			/// <param name="shadowInfoShadowMapSizeAsPowerOf2"> The value of the exponent in the equation for calculating the shadow map size to be used by the directional light. </param>
+			/// <param name="shadowInfoShadowSoftness"> The softness of the directiona light shadow. </param>
+			/// <param nane="shadowInfoLightBleedingReductionFactor"> The light bleeding reduction factor. </param>
+			/// <param name="shadowInfoMinVariance"> The minimal variance in Variance Shadow Mapping calculation for the directional light. </param>
+			/// <param name="halfShadowArea"> The half shadow area for the directiona light. </param>
 			RENDERING_API DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader);
+				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader,
+				bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness,
+				Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance, Math::Real halfShadowArea);
 
 			/// <summary> Directional light destructor. </summary>
 			RENDERING_API virtual ~DirectionalLight(void);
@@ -45,9 +57,6 @@ namespace Rendering {
 			//Math::Vector3D GetDirection() const { return GetTransform().GetTransformedRot().GetForward(); }
 
 			RENDERING_API virtual ShadowCameraTransform CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const;
-
-			RENDERING_API void SetShadowInfo(Math::Real halfShadowArea, int shadowMapSizeAsPowerOf2, Math::Real shadowSoftness,
-				Math::Real lightBleedingReductionAmount, Math::Real minVariance);
 
 			friend std::ostream& operator<<(std::ostream& out, const DirectionalLight& directionalLight)
 			{

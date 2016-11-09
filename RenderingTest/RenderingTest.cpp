@@ -362,6 +362,8 @@ void LightBuilderTest(const ShaderFactory& shaderFactory)
 
 	DirectionalLightBuilder directionalLightBuilder(shaderFactory);
 	BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
+	Lighting::DirectionalLight directionalLight = directionalLightBuilderDirector.Construct();
+	NOTICE_LOG_RENDERING_TEST(directionalLight);
 }
 
 void ParticlesSystemBuilderTest()

@@ -6,7 +6,7 @@
 #include "Utility\ILogger.h"
 
 Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader) :
+	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader, bool isShadowingEnabled /* = false */) :
 	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
@@ -15,8 +15,8 @@ Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, cons
 	m_noShadowShader(noShadowShader),
 	m_noShadowTerrainShader(noShadowTerrainShader),
 	m_shadowInfo(nullptr),
-	m_isEnabled(false),
-	m_isShadowingEnabled(false)
+	m_isEnabled(true),
+	m_isShadowingEnabled(isShadowingEnabled)
 {
 }
 
@@ -58,6 +58,7 @@ void Rendering::Lighting::BaseLight::SetShadowInfo(const Math::Matrix4D& project
 {
 	CHECK_CONDITION_RENDERING(m_shadowInfo == nullptr, Utility::Logging::WARNING, "Setting new shadow info for the light seems dubious.");
 	m_shadowInfo = std::make_unique<ShadowInfo>(projection, flipFacesEnabled, shadowMapSizeAsPowerOf2, shadowSoftness, lightBleedingReductionAmount, minVariance);
+	CHECK_CONDITION_EXIT_RENDERING(m_shadowInfo != nullptr, Utility::Logging::CRITICAL, "Cannot initialize the light. Shadow info is nullptr.");
 }
 
 Rendering::ShadowCameraTransform Rendering::Lighting::BaseLight::CalcShadowCameraTransform(const Math::Vector3D& cameraPos, const Math::Quaternion& cameraRot) const

@@ -18,7 +18,10 @@ namespace Rendering {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			RENDERING_API PointLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader);
+				const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader,
+				const Attenuation& attenuation);
+
+			/// <summary> Point light destructor. </summary>
 			RENDERING_API virtual ~PointLight(void);
 
 			/// <summary> Point light copy constructor. </summary>
@@ -33,22 +36,29 @@ namespace Rendering {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			RENDERING_API Attenuation GetAttenuation() const { return m_attenuation; };
-			RENDERING_API Math::Real GetRange() const { return m_range; };
+			/// <summary> Gets the attenuation of the point light. </summary>
+			/// <returns> The attenuation of the point light. </returns>
+			RENDERING_API Attenuation GetAttenuation() const noexcept { return m_attenuation; }
+			
+			/// <summary> Gets the range of the point light. </summary>
+			/// <returns> The range of the point light. </returns>			
+			RENDERING_API Math::Real GetRange() const noexcept { return m_range; }
 
-			RENDERING_API void SetAttenuation(const Attenuation& attenuation)
-			{
-				m_attenuation = attenuation;
-				CalculateRange();
-			}
-			//RENDERING_API void SetRange(Math::Real range) { m_range = range; }
+			//RENDERING_API void SetAttenuation(const Attenuation& attenuation)
+			//{
+			//	m_attenuation = attenuation;
+			//	m_range = CalculateRange();
+			//}
 		private:
-			void CalculateRange();
+			Math::Real CalculateRange();
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
+			/// <summary> The attenuation of the point light. </summary>
 			Attenuation m_attenuation;
+
+			/// <summary> The range of the point light. </summary>
 			Math::Real m_range;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class PointLight */
