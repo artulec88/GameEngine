@@ -45,6 +45,8 @@ GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
 
+Camera camera;
+
 Transform planeTransform;
 const int PLANE_MESH_ID = MeshIDs::COUNT;
 const Mesh* planeMesh = nullptr;
@@ -351,7 +353,7 @@ void CameraBuilderTest()
 
 	OrthoCameraBuilder orthoCameraBuilder;
 	BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
-	Rendering::Camera camera = cameraBuilderDirector.Construct();
+	camera = cameraBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(camera);
 	camera = orthoCameraBuilder.SetPos(4.0f, 4.0f, 0.0f).SetNearPlane(0.1f).SetFarPlane(10000.0f).Get();
 	NOTICE_LOG_RENDERING_TEST(camera);
@@ -451,10 +453,11 @@ void RenderScene()
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(0.0f, 0.0f, 0.3f, 1.0f);
 
-	renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
+	renderer->SetCurrentCamera(&camera);
+	//renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
 }
 
-void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
+void Run()
 {
 	constexpr int THREAD_SLEEP_TIME = 10;
 	constexpr Math::Real MAX_FPS = 500.0f;
@@ -462,7 +465,7 @@ void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
 
 	CreateScene();
 
-	Rendering::Controls::GuiButtonControl fpsGuiButton("text", fontFactory->GetFont(Text::FontTypes::CANDARA), 1.25f, NULL,
+	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontTypes::CANDARA), 1.25f, NULL,
 		Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
 		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
@@ -578,13 +581,11 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StartTimer();
 
 	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", Rendering::Aliasing::NONE);
-	ShaderFactory shaderFactory(SHADERS_DIR);
-	Text::FontFactory fontFactory(shaderFactory.GetShader(ShaderIDs::TEXT), TEXTURES_DIR, FONTS_DIR);
-	Run(&fontFactory, shaderFactory);
+	CameraBuilderTest();
+	Run();
 
 	//MeshTest();
 	//TextureTest();
-	CameraBuilderTest();
 	LightBuilderTest();
 	ParticlesSystemBuilderTest();
 	//OtherTests();
