@@ -5,11 +5,11 @@
 #include "ShadowInfo.h"
 #include "Utility\IConfig.h"
 
-Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader,
+Rendering::Lighting::DirectionalLight::DirectionalLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID,
 	bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2, Math::Real shadowInfoShadowSoftness,
 	Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance, Math::Real halfShadowArea) :
-	BaseLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader, (shadowInfoShadowMapSizeAsPowerOf2 != 0)),
+	BaseLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, (shadowInfoShadowMapSizeAsPowerOf2 != 0)),
 	m_halfShadowArea(halfShadowArea)
 {
 	if (IsShadowingEnabled())

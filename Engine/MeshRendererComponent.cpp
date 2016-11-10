@@ -37,7 +37,7 @@ Engine::MeshRendererComponent& Engine::MeshRendererComponent::operator=(MeshRend
 	return *this;
 }
 
-void Engine::MeshRendererComponent::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void Engine::MeshRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering mesh started");
 	CHECK_CONDITION_EXIT_ENGINE(renderer != NULL, Utility::Logging::CRITICAL, "Rendering a mesh failed. Rendering engine is NULL.");
@@ -46,5 +46,5 @@ void Engine::MeshRendererComponent::Render(const Rendering::Shader* shader, Rend
 
 	//const Math::Transform& transform = GetTransform();
 	//renderer->AddRenderCommand(shader, m_mesh, m_material, &transform);
-	renderer->Render(m_meshID, m_material, GetTransform(), shader);
+	renderer->Render(m_meshID, m_material, GetTransform(), shaderID);
 }

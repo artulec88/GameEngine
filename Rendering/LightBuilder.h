@@ -3,7 +3,7 @@
 
 #include "Rendering.h"
 
-#include "ShaderFactory.h"
+#include "ShaderIDs.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
@@ -23,11 +23,10 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		LightBuilder(const Rendering::ShaderFactory& shaderFactory, const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity,
+		LightBuilder(const Math::Vector3D& defaultPosition, const Math::Quaternion& defaultRotation, const Color& defaultColor, Math::Real defaultIntensity,
 			bool defaultShadowInfoFlipFacesEnabled, int defaultShadowInfoShadowMapSizeAsPowerOf2, Math::Real defaultShadowInfoShadowSoftness, Math::Real defaultShadowInfoLightBleedingReductionFactor,
 			Math::Real defaultShadowInfoMinVariance) :
 			Utility::Builder<T>(),
-			m_shaderFactory(shaderFactory),
 			M_DEFAULT_POS(defaultPosition),
 			M_DEFAULT_ROT(defaultRotation),
 			M_DEFAULT_COLOR(defaultColor),
@@ -46,10 +45,10 @@ namespace Rendering
 			m_shadowInfoShadowSoftness(M_DEFAULT_SHADOW_INFO_SHADOW_SOFTNESS),
 			m_shadowInfoLightBleedingReductionFactor(M_DEFAULT_SHADOW_INFO_LIGHT_BLEEDING_REDUCTION_FACTOR),
 			m_shadowInfoMinVariance(M_DEFAULT_SHADOW_INFO_MIN_VARIANCE),
-			m_shader(nullptr),
-			m_terrainShader(nullptr),
-			m_noShadowShader(nullptr),
-			m_noShadowTerrainShader(nullptr)
+			m_shaderID(ShaderIDs::INVALID),
+			m_terrainShaderID(ShaderIDs::INVALID),
+			m_noShadowShaderID(ShaderIDs::INVALID),
+			m_noShadowTerrainShaderID(ShaderIDs::INVALID)
 		{
 		}
 		virtual ~LightBuilder(void)
@@ -142,8 +141,6 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Rendering::ShaderFactory& m_shaderFactory;
-
 		const Math::Vector3D M_DEFAULT_POS; // TODO: Make it static constexpr in the future.
 		const Math::Quaternion M_DEFAULT_ROT; // TODO: Make it static constexpr in the future.
 		const Color M_DEFAULT_COLOR; // TODO: Make it static constexpr in the future.
@@ -165,10 +162,10 @@ namespace Rendering
 		Math::Real m_shadowInfoLightBleedingReductionFactor;
 		Math::Real m_shadowInfoMinVariance;
 
-		const Shader* m_shader;
-		const Shader* m_terrainShader;
-		const Shader* m_noShadowShader;
-		const Shader* m_noShadowTerrainShader;
+		int m_shaderID;
+		int m_terrainShaderID;
+		int m_noShadowShaderID;
+		int m_noShadowTerrainShaderID;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class LightBuilder<T> */
 
@@ -183,8 +180,7 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Directional light builder constructor. </summary>
-		/// <param name="shaderFactory"> The shader factory. </param>
-		RENDERING_API DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory);
+		RENDERING_API DirectionalLightBuilder();
 
 		/// <summary> Directional light builder destructor. </summary>
 		RENDERING_API virtual ~DirectionalLightBuilder(void);
@@ -214,7 +210,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::DirectionalLight Get() override
 		{
-			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader,
+			return Lighting::DirectionalLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness, m_shadowInfoLightBleedingReductionFactor,
 				m_shadowInfoMinVariance, m_halfShadowArea);
 		}
@@ -228,6 +224,10 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class DirectionalLightBuilder */
 
+
+	/// <summary>
+	/// Point light builder.
+	/// </summary>
 	class PointLightBuilder : public LightBuilder<Rendering::Lighting::PointLight>
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -235,11 +235,30 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API PointLightBuilder(const Rendering::ShaderFactory& shaderFactory);
-		RENDERING_API virtual ~PointLightBuilder(void) { };
+		/// <summary> Point light builder constructor. </summary>
+		RENDERING_API PointLightBuilder();
+
+		/// <summary> Point light builder destructor. </summary>
+		RENDERING_API virtual ~PointLightBuilder(void)
+		{
+		}
+
+		/// <summary> Point light builder copy constructor. </summary>
+		/// <param name="pointLightBuilder"> The point light builder to copy construct from. </param>
 		PointLightBuilder(PointLightBuilder& pointLightBuilder) = delete;
+
+		/// <summary> Point light builder move constructor. </summary>
+		/// <param name="pointLightBuilder"> The point light builder to move construct from. </param>
 		PointLightBuilder(PointLightBuilder&& pointLightBuilder) = delete;
+
+		/// <summary> Point light builder copy assignment operator. </summary>
+		/// <param name="pointLightBuilder"> The point light builder to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned point light builder. </returns>
 		PointLightBuilder& operator=(const PointLightBuilder& pointLightBuilder) = delete;
+
+		/// <summary> Point light builder move assignment operator. </summary>
+		/// <param name="pointLightBuilder"> The point light builder to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned point light builder. </returns>
 		PointLightBuilder& operator=(PointLightBuilder&& pointLightBuilder) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -249,7 +268,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::PointLight Get() override
 		{
-			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader,
+			return Lighting::PointLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_attenuation);
 		}
 		/* ==================== Non-static member functions end ==================== */
@@ -262,6 +281,10 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class PointLightBuilder */
 
+
+	/// <summary>
+	/// Spot light builder.
+	/// </summary>
 	class SpotLightBuilder : public LightBuilder<Rendering::Lighting::SpotLight>
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -269,11 +292,30 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory);
-		RENDERING_API virtual ~SpotLightBuilder(void) { };
+		/// <summary> Spot light builder constructor. </summary>
+		RENDERING_API SpotLightBuilder();
+
+		/// <summary> Spot light builder destructor. </summary>
+		RENDERING_API virtual ~SpotLightBuilder(void)
+		{
+		}
+
+		/// <summary> Spot light builder copy constructor. </summary>
+		/// <param name="spotLightBuilder"> The spot light builder to copy construct from. </param>
 		SpotLightBuilder(SpotLightBuilder& spotLightBuilder) = delete;
+
+		/// <summary> Spot light builder move constructor. </summary>
+		/// <param name="spotLightBuilder"> The spot light builder to move construct from. </param>
 		SpotLightBuilder(SpotLightBuilder&& spotLightBuilder) = delete;
+
+		/// <summary> Spot light builder copy assignment operator. </summary>
+		/// <param name="spotLightBuilder"> The spot light builder to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned spot light builder. </returns>
 		SpotLightBuilder& operator=(const SpotLightBuilder& spotLightBuilder) = delete;
+
+		/// <summary> Spot light builder move assignment operator. </summary>
+		/// <param name="spotLightBuilder"> The spot light builder to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned spot light builder. </returns>
 		SpotLightBuilder& operator=(SpotLightBuilder&& spotLightBuilder) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -283,7 +325,7 @@ namespace Rendering
 		virtual void SetDefault() override;
 		virtual Lighting::SpotLight Get() override
 		{
-			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shader, m_terrainShader, m_noShadowShader, m_noShadowTerrainShader,
+			return Lighting::SpotLight(Math::Transform(m_pos, m_rot), m_color, m_intensity, m_shaderID, m_terrainShaderID, m_noShadowShaderID, m_noShadowTerrainShaderID,
 				m_attenuation, m_shadowInfoProjectionNearPlane, m_isShadowInfoFlipFacesEnabled, m_shadowInfoShadowMapSizeAsPowerOf2, m_shadowInfoShadowSoftness,
 				m_shadowInfoLightBleedingReductionFactor, m_shadowInfoMinVariance, m_viewAngle);
 		}

@@ -42,9 +42,9 @@ namespace Engine
 		/// <summary>
 		/// Issues the render call to the specific <paramref name="renderer"/> using the given <paramref name="shader"/>.
 		/// </summary>
-		/// <param name="shader"> The shader to be used by <paramref name="renderer"/>. </param>
+		/// <param name="shaderID"> The ID of the shader to be used by <paramref name="renderer"/>. </param>
 		/// <param name="renderer"> The rendering engine to handle the rendering call. </param>
-		ENGINE_API virtual void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const = 0;
+		ENGINE_API virtual void Render(int shaderID, Rendering::Renderer* renderer) const = 0;
 	/* ==================== Non-static member functions end ==================== */
 
 	/* ==================== Non-static member variables begin ==================== */

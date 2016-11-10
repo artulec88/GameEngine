@@ -36,7 +36,7 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API void CreateShader(int shaderID, const std::string& shaderFileName);
+		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
 		RENDERING_API inline const Shader* GetShader(int shaderID) const
 		{
 			CHECK_CONDITION_EXIT_RENDERING(m_shaderType2ShaderMap.find(shaderID) != m_shaderType2ShaderMap.end(), Utility::Logging::EMERGENCY,

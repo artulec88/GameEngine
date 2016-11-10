@@ -72,13 +72,12 @@ namespace Game
 		unsigned int NextCamera();
 		unsigned int PrevCamera();
 
-		const Rendering::Shader* GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		const Rendering::Shader* GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const;
-		const Rendering::Shader* GetWaterShader(Rendering::Renderer* renderer) const
+		int GetAmbientShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		int GetAmbientTerrainShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const;
+		int GetWaterShaderID(Rendering::Renderer* renderer) const
 		{
 			return ((m_directionalLightsCount > 0) && (renderer->IsWaterLightReflectionEnabled())) ?
-				m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::WATER) :
-				m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT);
+				Rendering::ShaderIDs::WATER : Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT;
 		}
 
 		void RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const;

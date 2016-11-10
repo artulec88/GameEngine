@@ -35,11 +35,27 @@ namespace Rendering
 		RENDERING_API Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap,
 			const Texture* displacementMap, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
 		RENDERING_API Material(const Texture* texture, const std::string& textureName);
+		
+		/// <summary> Material destructor. </summary>
 		RENDERING_API ~Material(void);
-		Material(const Material& material) = delete; // copy constructor
-		Material(Material&& material) = delete; // move constructor
-		Material& operator=(const Material& material) = delete; // copy assignment operator
-		Material& operator=(Material&& material) = delete; // move assignment operator
+
+		/// <summary> Material copy constructor. </summary>
+		/// <param name="material"> The material to copy construct from. </param>
+		Material(const Material& material) = delete;
+
+		/// <summary> Material move constructor. </summary>
+		/// <param name="material"> The material to move construct from. </param>
+		Material(Material&& material) = delete;
+
+		/// <summary> Material copy assignment operator. </summary>
+		/// <param name="material"> The material to copy assign from. </param>
+		/// <returns> The newly copy-assigned material. </returns>
+		Material& operator=(const Material& material) = delete;
+		
+		/// <summary> Material move assignment operator. </summary>
+		/// <param name="material"> The material to move assign from. </param>
+		/// <returns> The newly move-assigned material. </returns>
+		Material& operator=(Material&& material) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 

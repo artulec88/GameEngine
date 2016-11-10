@@ -160,8 +160,6 @@ Game::MenuGameState::~MenuGameState(void)
 
 void Game::MenuGameState::Entered()
 {
-	AddShaders();
-
 	//ParticlesSystemBuilder particlesSystemBuilder(m_gameManager, ParticleEffects::FOUNTAIN);
 	//Utility::BuilderDirector<Rendering::Particles::ParticlesSystem> particlesSystemBuilderDirector(particlesSystemBuilder);
 	//particlesSystemBuilderDirector.Construct();
@@ -188,11 +186,6 @@ void Game::MenuGameState::Revealed()
 {
 	Engine::CoreEngine::GetCoreEngine()->PushInputContext(m_inputMappingContextName);
 	INFO_LOG_GAME("Menu game state has become the topmost game state in the game state manager's stack");
-}
-
-void Game::MenuGameState::AddShaders()
-{
-	m_gameManager->AddShader(Rendering::ShaderIDs::PARTICLES, GET_CONFIG_VALUE_STR_GAME("particleShader", "particle-shader.glsl"));
 }
 
 void Game::MenuGameState::Handle(Engine::Actions::Action action)
@@ -296,7 +289,7 @@ void Game::MenuGameState::Render(Rendering::Renderer* renderer) const
 
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(/* TODO: specify menu game state clear screen color */);
-	m_currentMenuEntry->GetParent()->RenderAll(renderer, m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
+	m_currentMenuEntry->GetParent()->RenderAll(Rendering::ShaderIDs::GUI, renderer);
 	RenderParticles(renderer);
 	//renderer->FinalizeRenderScene();
 

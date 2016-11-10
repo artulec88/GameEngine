@@ -7,7 +7,11 @@
 #include "Rendering\Renderer.h"
 #include "Rendering\GuiButtonControl.h"
 #include "Rendering\FontFactory.h"
+#include "Rendering\Mesh.h"
+#include "Rendering\MeshIDs.h"
+#include "Rendering\Material.h"
 
+#include "Math\Transform.h"
 #include "Math\StatisticsStorage.h"
 #include "Math\RandomGeneratorFactory.h"
 
@@ -40,6 +44,12 @@ const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGen
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
+
+Transform planeTransform;
+const int PLANE_MESH_ID = MeshIDs::COUNT;
+const Mesh* planeMesh = nullptr;
+const int PLANE_DIFFUSE_TEXTURE_ID = TextureIDs::COUNT;
+std::unique_ptr<Material> planeMaterial = nullptr;
 
 unsigned int testNumber = 0;
 bool meshTestEnabled = true;
@@ -179,7 +189,7 @@ void ErrorCallback(int errorCode, const char* description)
 		ERROR_LOG_RENDERING_TEST("The requested format is not supported or available. Error description: ", description);
 		break;
 	default:
-		ERROR_LOG_RENDERING_TEST("Unknown GLFW error event occurred with code ", errorCode, " and message: Error description: ", description);
+		CRITICAL_LOG_RENDERING_TEST("Unknown GLFW error event occurred with code ", errorCode, " and message: Error description: ", description);
 	}
 	exit(EXIT_FAILURE);
 }
@@ -302,7 +312,7 @@ void CreateRenderer(bool fullscreenEnabled, int width, int height, const std::st
 	glfwSetErrorCallback(&ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance started");
-	renderer = std::make_unique<Rendering::Renderer>(width, height, std::string(MODELS_DIR), std::string(TEXTURES_DIR), antiAliasingMethod);
+	renderer = std::make_unique<Rendering::Renderer>(width, height, MODELS_DIR, TEXTURES_DIR, SHADERS_DIR, FONTS_DIR, antiAliasingMethod);
 	NOTICE_LOG_RENDERING_TEST("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_RENDERING_TEST(renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
@@ -353,14 +363,14 @@ void CameraBuilderTest()
 	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
-void LightBuilderTest(const ShaderFactory& shaderFactory)
+void LightBuilderTest()
 {
 	if (!lightBuilderTestEnabled)
 	{
 		return;
 	}
 
-	DirectionalLightBuilder directionalLightBuilder(shaderFactory);
+	DirectionalLightBuilder directionalLightBuilder;
 	BuilderDirector<Lighting::DirectionalLight> directionalLightBuilderDirector(&directionalLightBuilder);
 	Lighting::DirectionalLight directionalLight = directionalLightBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(directionalLight);
@@ -423,10 +433,25 @@ void InitializeTestTweakBars()
 }
 #endif
 
+void CreateScene()
+{
+	renderer->CreateTexture(PLANE_DIFFUSE_TEXTURE_ID, "chessboard3.jpg");
+	planeMaterial = std::make_unique<Material>(renderer->GetTexture(PLANE_DIFFUSE_TEXTURE_ID), 8.0f, 1.0f,
+		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
+	planeMesh = renderer->CreateMesh(PLANE_MESH_ID, "plane4.obj");
+	planeTransform.SetPos(0.0f, 0.0f, 0.5f);
+	planeTransform.SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
+		/* to make the plane face towards the camera.
+		See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
+		https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
+}
+
 void RenderScene()
 {
 	renderer->BindAsRenderTarget();
 	renderer->ClearScreen(0.0f, 0.0f, 0.3f, 1.0f);
+
+	renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
 }
 
 void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
@@ -434,7 +459,9 @@ void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
 	constexpr int THREAD_SLEEP_TIME = 10;
 	constexpr Math::Real MAX_FPS = 500.0f;
 	constexpr Math::Real FRAME_TIME = 1.0f / MAX_FPS;
-	
+
+	CreateScene();
+
 	Rendering::Controls::GuiButtonControl fpsGuiButton("text", fontFactory->GetFont(Text::FontTypes::CANDARA), 1.25f, NULL,
 		Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
 		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
@@ -514,7 +541,7 @@ void Run(Text::FontFactory* fontFactory, const ShaderFactory& shaderFactory)
 			std::stringstream ss;
 			ss << "FPS = " << fps << " SPF[ms] = " << std::setprecision(4) << spf; // TODO: This allocates memory which seemes unneccessary.
 			fpsGuiButton.SetText(ss.str());
-			renderer->RenderGuiControl(fpsGuiButton, shaderFactory.GetShader(Rendering::ShaderIDs::GUI));
+			renderer->RenderGuiControl(fpsGuiButton, Rendering::ShaderIDs::GUI);
 #ifdef ANT_TWEAK_BAR_ENABLED
 			int resultCode = TwDraw();
 			CHECK_CONDITION_EXIT_ALWAYS_RENDERING_TEST(resultCode == 1, Utility::Logging::ERR, "TwDraw() function failed with message: \"", TwGetLastError(), "\".");
@@ -558,7 +585,7 @@ int main(int argc, char* argv[])
 	//MeshTest();
 	//TextureTest();
 	CameraBuilderTest();
-	LightBuilderTest(shaderFactory);
+	LightBuilderTest();
 	ParticlesSystemBuilderTest();
 	//OtherTests();
 

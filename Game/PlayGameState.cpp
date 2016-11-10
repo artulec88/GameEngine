@@ -397,7 +397,7 @@ void Game::PlayGameState::AddDirectionalLight()
 	}
 	NOTICE_LOG_GAME("Directional lights enabled");
 
-	Rendering::DirectionalLightBuilder directionalLightBuilder(m_gameManager->GetShaderFactory());
+	Rendering::DirectionalLightBuilder directionalLightBuilder;
 	Utility::BuilderDirector<Rendering::Lighting::DirectionalLight> lightBuilderDirector(&directionalLightBuilder);
 	Rendering::Lighting::DirectionalLight directionalLight = lightBuilderDirector.Construct();
 	INFO_LOG_RENDERING("Directional light with intensity = ", directionalLight.GetIntensity(), " is being added to directional / spot lights vector");
@@ -412,7 +412,7 @@ void Game::PlayGameState::AddPointLights()
 	if (pointLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", pointLightsCount, " point lights");
-		Rendering::PointLightBuilder pointLightBuilder(m_gameManager->GetShaderFactory());
+		Rendering::PointLightBuilder pointLightBuilder;
 		Utility::BuilderDirector<Rendering::Lighting::PointLight> lightBuilderDirector(&pointLightBuilder);
 		for (int i = 0; i < pointLightsCount; ++i)
 		{
@@ -434,7 +434,7 @@ void Game::PlayGameState::AddSpotLights()
 	if (spotLightsCount > 0)
 	{
 		DEBUG_LOG_GAME("Creating ", spotLightsCount, " spot lights");
-		Rendering::SpotLightBuilder spotLightBuilder(m_gameManager->GetShaderFactory());
+		Rendering::SpotLightBuilder spotLightBuilder;
 		Utility::BuilderDirector<Rendering::Lighting::SpotLight> lightBuilderDirector(&spotLightBuilder);
 		for (int i = 0; i < spotLightsCount; ++i)
 		{
@@ -668,16 +668,16 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	//RenderParticles(renderer);
 
 #ifdef DEBUG_RENDERING_ENABLED
-	renderer->RenderDebugGuiControls(m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
+	renderer->RenderDebugGuiControls(m_gameManager->GetShader(Rendering::ShaderIDs::GUI));
 #endif
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
-		m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::FILTER_FXAA) :
-		m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::FILTER_NULL));
+		m_gameManager->GetShader(Rendering::ShaderIDs::FILTER_FXAA) :
+		m_gameManager->GetShader(Rendering::ShaderIDs::FILTER_NULL));
 
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());
-	renderer->RenderGuiControl(m_inGameTimeGuiButton, m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::TEXT));
+	renderer->RenderGuiControl(m_inGameTimeGuiButton, Rendering::ShaderIDs::TEXT);
 #endif
 
 	STOP_PROFILING_GAME("");
@@ -685,15 +685,15 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 
 void Game::PlayGameState::RenderSceneWithAmbientLight(Rendering::Renderer* renderer) const
 {
-	const Rendering::Shader* ambientShader = GetAmbientShader(renderer->GetFogInfo());
-	renderer->BindShader(ambientShader);
-	renderer->UpdateRendererUniforms(ambientShader);
-	m_rootGameNode.Render(ambientShader, renderer);
+	int ambientShaderID = GetAmbientShaderID(renderer->GetFogInfo());
+	renderer->BindShader(ambientShaderID);
+	renderer->UpdateRendererUniforms(ambientShaderID);
+	m_rootGameNode.Render(ambientShaderID, renderer);
 	CHECK_CONDITION_GAME(m_gameManager->GetTerrainNode() != NULL, Utility::Logging::ERR, "Cannot render terrain. There are no terrain nodes registered.");
-	const Rendering::Shader* ambientTerrainShader = GetAmbientTerrainShader(renderer->GetFogInfo());
-	renderer->BindShader(ambientTerrainShader);
-	renderer->UpdateRendererUniforms(ambientTerrainShader);
-	m_terrainNode.Render(ambientTerrainShader, renderer);
+	int ambientTerrainShaderID = GetAmbientTerrainShaderID(renderer->GetFogInfo());
+	renderer->BindShader(ambientTerrainShaderID);
+	renderer->UpdateRendererUniforms(ambientTerrainShaderID);
+	m_terrainNode.Render(ambientTerrainShaderID, renderer);
 }
 
 void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* renderer) const
@@ -706,8 +706,8 @@ void Game::PlayGameState::RenderSceneWithPointLights(Rendering::Renderer* render
 			DEBUG_LOG_GAME("Point light at index ", i, " is disabled");
 			continue;
 		}
-		m_rootGameNode.Render(currentPointLight->GetShader(), renderer);
-		m_terrainNode.Render(currentPointLight->GetTerrainShader(), renderer);
+		m_rootGameNode.Render(currentPointLight->GetShaderID(), renderer);
+		m_terrainNode.Render(currentPointLight->GetTerrainShaderID(), renderer);
 	}
 }
 
@@ -722,22 +722,22 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const Rendering::Shader* shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::SHADOW_MAP);
-				renderer->BindShader(shadowMapShader);
-				renderer->UpdateRendererUniforms(shadowMapShader);
-				m_rootGameNode.Render(shadowMapShader, renderer);
-				m_terrainNode.Render(shadowMapShader, renderer); // TODO: Probably unnecessary
-				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR));
+				const int shadowMapShaderID = Rendering::ShaderIDs::SHADOW_MAP;
+				renderer->BindShader(shadowMapShaderID);
+				renderer->UpdateRendererUniforms(shadowMapShaderID);
+				m_rootGameNode.Render(shadowMapShaderID, renderer);
+				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
+				renderer->FinalizeShadowMapRendering(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR);
 			}
 
 			renderer->InitLightRendering();
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
-			renderer->BindShader(currentLight->GetShader());
-			renderer->UpdateRendererUniforms(currentLight->GetShader());
-			m_rootGameNode.Render(currentLight->GetShader(), renderer);
-			renderer->BindShader(currentLight->GetTerrainShader());
-			renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
-			m_terrainNode.Render(currentLight->GetTerrainShader(), renderer);
+			renderer->BindShader(currentLight->GetShaderID());
+			renderer->UpdateRendererUniforms(currentLight->GetShaderID());
+			m_rootGameNode.Render(currentLight->GetShaderID(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShaderID());
+			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderID());
+			m_terrainNode.Render(currentLight->GetTerrainShaderID(), renderer);
 			renderer->FinalizeLightRendering();
 		}
 	}
@@ -749,22 +749,22 @@ void Game::PlayGameState::RenderSceneWithDirectionalAndSpotLights(Rendering::Ren
 			if (renderer->InitShadowMap())
 			{
 				// Render scene using shadow mapping shader
-				const Rendering::Shader* shadowMapShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::SHADOW_MAP);
-				renderer->BindShader(shadowMapShader);
-				renderer->UpdateRendererUniforms(shadowMapShader);
-				m_rootGameNode.Render(shadowMapShader, renderer);
-				m_terrainNode.Render(shadowMapShader, renderer); // TODO: Probably unnecessary
-				renderer->FinalizeShadowMapRendering(m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR));
+				const int shadowMapShaderID = Rendering::ShaderIDs::SHADOW_MAP;
+				renderer->BindShader(shadowMapShaderID);
+				renderer->UpdateRendererUniforms(shadowMapShaderID);
+				m_rootGameNode.Render(shadowMapShaderID, renderer);
+				m_terrainNode.Render(shadowMapShaderID, renderer); // TODO: Probably unnecessary
+				renderer->FinalizeShadowMapRendering(Rendering::ShaderIDs::FILTER_GAUSSIAN_BLUR);
 			}
 
 			renderer->InitLightRendering();
 			// TODO: Render scene with light is not ready. Check the function Renderer::RenderSceneWithLight(Lighting::BaseLight* light, const GameNode& gameNode, bool isCastingShadowsEnabled /* = true */).
-			renderer->BindShader(currentLight->GetShader());
-			renderer->UpdateRendererUniforms(currentLight->GetShader());
-			m_rootGameNode.Render(currentLight->GetShader(), renderer);
-			renderer->BindShader(currentLight->GetTerrainShader());
-			renderer->UpdateRendererUniforms(currentLight->GetTerrainShader());
-			m_terrainNode.Render(currentLight->GetTerrainShader(), renderer);
+			renderer->BindShader(currentLight->GetShaderID());
+			renderer->UpdateRendererUniforms(currentLight->GetShaderID());
+			m_rootGameNode.Render(currentLight->GetShaderID(), renderer);
+			renderer->BindShader(currentLight->GetTerrainShaderID());
+			renderer->UpdateRendererUniforms(currentLight->GetTerrainShaderID());
+			m_terrainNode.Render(currentLight->GetTerrainShaderID(), renderer);
 			renderer->FinalizeLightRendering();
 		}
 	}
@@ -790,10 +790,10 @@ void Game::PlayGameState::RenderSkybox(Rendering::Renderer* renderer) const
 	 * To make it part of the scene we change the depth function to "less than or equal".
 	 */
 	renderer->SetDepthFuncLessOrEqual();
-	const Rendering::Shader* skyboxShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::SKYBOX);
-	renderer->BindShader(skyboxShader);
-	renderer->UpdateRendererUniforms(skyboxShader);
-	m_skyboxNode.Render(skyboxShader, renderer);
+	const int skyboxShaderID = Rendering::ShaderIDs::SKYBOX;
+	renderer->BindShader(skyboxShaderID);
+	renderer->UpdateRendererUniforms(skyboxShaderID);
+	m_skyboxNode.Render(skyboxShaderID, renderer);
 	renderer->SetDepthFuncDefault();
 	renderer->SetCullFaceDefault();
 	//glEnable(GL_DEPTH_TEST);
@@ -933,10 +933,10 @@ void Game::PlayGameState::RenderWaterNodes(Rendering::Renderer* renderer) const
 	//		(*waterNodeItr)->Render(waterNoDirectionalLightShader, this);
 	//	}
 	//}
-	const Rendering::Shader* waterShader = GetWaterShader(renderer);
-	renderer->BindShader(waterShader);
-	renderer->UpdateRendererUniforms(waterShader);
-	m_waterNode.Render(waterShader, renderer);
+	const int waterShaderID = GetWaterShaderID(renderer);
+	renderer->BindShader(waterShaderID);
+	renderer->UpdateRendererUniforms(waterShaderID);
+	m_waterNode.Render(waterShaderID, renderer);
 	STOP_PROFILING_GAME("");
 }
 
@@ -950,12 +950,12 @@ void Game::PlayGameState::RenderBillboardNodes(Rendering::Renderer* renderer) co
 	// GL_ONE_MINUS_DST_ALPHA, GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR, GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA, GL_SRC_ALPHA_SATURATE,
 	// GL_SRC1_COLOR, GL_ONE_MINUS_SRC1_COLOR, GL_SRC1_ALPHA, and GL_ONE_MINUS_SRC1_ALPHA
 	renderer->SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	const Rendering::Shader* billboardShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::BILLBOARD);
-	renderer->BindShader(billboardShader);
-	renderer->UpdateRendererUniforms(billboardShader);
+	const int billboardShaderID = Rendering::ShaderIDs::BILLBOARD;
+	renderer->BindShader(billboardShaderID);
+	renderer->UpdateRendererUniforms(billboardShaderID);
 	for (auto billboardsNodeItr = m_billboardsNodes.begin(); billboardsNodeItr != m_billboardsNodes.end(); ++billboardsNodeItr)
 	{
-		billboardsNodeItr->Render(billboardShader, renderer);
+		billboardsNodeItr->Render(billboardShaderID, renderer);
 	}
 	//renderer->SetDepthTest(true);
 	renderer->SetBlendingEnabled(false);
@@ -967,16 +967,16 @@ void Game::PlayGameState::RenderParticles(Rendering::Renderer* renderer) const
 {
 	START_PROFILING_GAME(true, "");
 	DEBUG_LOG_GAME("Rendering particles started");
-	const Rendering::Shader* particlesShader = m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::PARTICLES);
-	renderer->BindShader(particlesShader);
-	renderer->UpdateRendererUniforms(particlesShader);
+	const int particlesShaderID = Rendering::ShaderIDs::PARTICLES;
+	renderer->BindShader(particlesShaderID);
+	renderer->UpdateRendererUniforms(particlesShaderID);
 	for (auto particleSystemItr = m_gameManager->GetParticlesSystems().begin(); particleSystemItr != m_gameManager->GetParticlesSystems().end(); ++particleSystemItr)
 	{
 		//if (!(*particleSystemItr)->GetTexture()->IsAdditive())
 		//{
 			//(*particleSystemItr)->SortParticles(renderer->GetCurrentCamera().GetPos());
 		//}
-		renderer->RenderParticles(particlesShader, *(*particleSystemItr));
+		renderer->RenderParticles(particlesShaderID, *(*particleSystemItr));
 	}
 	STOP_PROFILING_GAME("");
 }
@@ -1068,7 +1068,7 @@ void Game::PlayGameState::CalculateSunElevationAndAzimuth()
 //	STOP_PROFILING_GAME("");
 //}
 
-const Rendering::Shader* Game::PlayGameState::GetAmbientShader(const Rendering::FogEffect::FogInfo& fogInfo) const
+int Game::PlayGameState::GetAmbientShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled()) // if (fogInfo != NULL)
@@ -1081,12 +1081,12 @@ const Rendering::Shader* Game::PlayGameState::GetAmbientShader(const Rendering::
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED;
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED;
 			}
 		}
 		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
@@ -1094,20 +1094,20 @@ const Rendering::Shader* Game::PlayGameState::GetAmbientShader(const Rendering::
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED;
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED;
 			}
 		}
 	}
 	STOP_PROFILING_ENGINE("");
-	return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT);
+	return Rendering::ShaderIDs::AMBIENT;
 }
 
-const Rendering::Shader* Game::PlayGameState::GetAmbientTerrainShader(const Rendering::FogEffect::FogInfo& fogInfo) const
+int Game::PlayGameState::GetAmbientTerrainShaderID(const Rendering::FogEffect::FogInfo& fogInfo) const
 {
 	START_PROFILING_ENGINE(true, "");
 	if (fogInfo.IsEnabled())
@@ -1119,12 +1119,12 @@ const Rendering::Shader* Game::PlayGameState::GetAmbientTerrainShader(const Rend
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED;
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED;
 			}
 		}
 		else if (fogInfo.GetFallOffType() == Rendering::FogEffect::EXPONENTIAL)
@@ -1132,17 +1132,17 @@ const Rendering::Shader* Game::PlayGameState::GetAmbientTerrainShader(const Rend
 			if (fogInfo.GetCalculationType() == Rendering::FogEffect::PLANE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED;
 			}
 			else if (fogInfo.GetCalculationType() == Rendering::FogEffect::RANGE_BASED)
 			{
 				STOP_PROFILING_ENGINE("");
-				return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED);
+				return Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED;
 			}
 			}
 		}
 	STOP_PROFILING_ENGINE("");
-	return m_gameManager->GetShaderFactory().GetShader(Rendering::ShaderIDs::AMBIENT_TERRAIN);
+	return Rendering::ShaderIDs::AMBIENT_TERRAIN;
 	}
 
 unsigned int Game::PlayGameState::SetCurrentCamera(unsigned int cameraIndex)

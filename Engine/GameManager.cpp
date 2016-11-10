@@ -40,8 +40,6 @@ Engine::GameManager* Engine::GameManager::s_gameManager = NULL;
 Engine::GameManager::GameManager() :
 	//Observer(),
 	IUpdateable(),
-	m_shaderFactory(CoreEngine::GetCoreEngine()->GetShadersDirectory()),
-	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), CoreEngine::GetCoreEngine()->GetTexturesDirectory(), CoreEngine::GetCoreEngine()->GetFontsDirectory()),
 	m_gameStateManager(std::make_unique<Engine::DefaultGameStateManager>()),
 	m_isGameLoaded(false),
 	m_emptyGameCommand(),
@@ -159,6 +157,16 @@ const Rendering::Texture* Engine::GameManager::GetTexture(int textureID) const
 	return CoreEngine::GetCoreEngine()->GetTexture(textureID);
 }
 
+const Rendering::Shader* Engine::GameManager::AddShader(int shaderID, const std::string& shaderFileName) const
+{
+	return CoreEngine::GetCoreEngine()->AddShader(shaderID, shaderFileName);
+}
+
+const Rendering::Shader* Engine::GameManager::GetShader(int shaderID) const
+{
+	return CoreEngine::GetCoreEngine()->GetShader(shaderID);
+}
+
 void Engine::GameManager::Input(Actions::Action actionID)
 {
 	CRITICAL_LOG_ENGINE("Handling action: ", actionID);
@@ -252,7 +260,7 @@ void Engine::GameManager::RequestGameQuit() const
 
 const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontTypes::FontType fontType)
 {
-	return m_fontFactory.GetFont(fontType);
+	return CoreEngine::GetCoreEngine()->GetFont(fontType);
 }
 
 void Engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const

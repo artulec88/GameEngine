@@ -151,6 +151,18 @@ namespace Engine
 		{
 			return m_renderer->GetTexture(textureID);
 		}
+		ENGINE_API const Rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const
+		{
+			return m_renderer->CreateShader(shaderID, shaderFileName);
+		}
+		ENGINE_API const Rendering::Shader* GetShader(int shaderID) const
+		{
+			return m_renderer->GetShader(shaderID);
+		}
+		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType)
+		{
+			return m_renderer->GetFont(fontType);
+		}
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);
 		ENGINE_API void PopInputContext();

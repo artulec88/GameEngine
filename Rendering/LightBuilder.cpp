@@ -2,8 +2,8 @@
 #include "LightBuilder.h"
 
 /* ==================== DirectionalLightBuilder implementation begin ==================== */
-Rendering::DirectionalLightBuilder::DirectionalLightBuilder(const Rendering::ShaderFactory& shaderFactory) :
-	LightBuilder(shaderFactory, Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosX", 0.0f),
+Rendering::DirectionalLightBuilder::DirectionalLightBuilder() :
+	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightPosZ", 0.0f)),
 		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleX", -45.0f)),
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultDirectionalLightAngleZ", 0.0f)))),
@@ -71,10 +71,10 @@ Rendering::DirectionalLightBuilder::~DirectionalLightBuilder()
 
 void Rendering::DirectionalLightBuilder::BuildShaders()
 {
-	m_shader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT);
-	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN);
-	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS);
-	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS);
+	m_shaderID = ShaderIDs::DIRECTIONAL_LIGHT;
+	m_terrainShaderID = ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN;
+	m_noShadowShaderID = ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN));
@@ -124,8 +124,8 @@ void Rendering::DirectionalLightBuilder::BuildMeshRenderer()
 /* ==================== DirectionalLightBuilder implementation end ==================== */
 
 /* ==================== PointLightBuilder implementation begin ==================== */
-Rendering::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& shaderFactory) :
-	LightBuilder(shaderFactory, Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultPointLightPosX", 0.0f),
+Rendering::PointLightBuilder::PointLightBuilder() :
+	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultPointLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultPointLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultPointLightPosZ", 0.0f)),
 		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleX", -45.0f)),
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultPointLightAngleZ", 0.0f)))),
@@ -176,10 +176,10 @@ Rendering::PointLightBuilder::PointLightBuilder(const Rendering::ShaderFactory& 
 
 void Rendering::PointLightBuilder::BuildShaders()
 {
-	m_shader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT);
-	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_TERRAIN);
-	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_NO_SHADOWS);
-	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS);
+	m_shaderID = ShaderIDs::POINT_LIGHT;
+	m_terrainShaderID = ShaderIDs::POINT_LIGHT_TERRAIN;
+	m_noShadowShaderID = ShaderIDs::POINT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN));
@@ -215,8 +215,8 @@ void Rendering::PointLightBuilder::BuildMeshRenderer()
 /* ==================== PointLightBuilder implementation end ==================== */
 
 /* ==================== SpotLightBuilder implementation begin ==================== */
-Rendering::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& shaderFactory) :
-	LightBuilder(shaderFactory, Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosX", 0.0f),
+Rendering::SpotLightBuilder::SpotLightBuilder() :
+	LightBuilder(Math::Vector3D(GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosX", 0.0f),
 		GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosY", 0.0f), GET_CONFIG_VALUE_RENDERING("defaultSpotLightPosZ", 0.0f)),
 		Math::Quaternion(Math::Matrix4D(Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleX", -45.0f)),
 			Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_RENDERING("defaultSpotLightAngleZ", 0.0f)))),
@@ -279,10 +279,10 @@ Rendering::SpotLightBuilder::SpotLightBuilder(const Rendering::ShaderFactory& sh
 
 void Rendering::SpotLightBuilder::BuildShaders()
 {
-	m_shader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT);
-	m_terrainShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_TERRAIN);
-	m_noShadowShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_NO_SHADOWS);
-	m_noShadowTerrainShader = m_shaderFactory.GetShader(ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS);
+	m_shaderID = ShaderIDs::SPOT_LIGHT;
+	m_terrainShaderID = ShaderIDs::SPOT_LIGHT_TERRAIN;
+	m_noShadowShaderID = ShaderIDs::SPOT_LIGHT_NO_SHADOWS;
+	m_noShadowTerrainShaderID = ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS;
 
 	//m_object->SetShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT));
 	//m_object->SetTerrainShader(m_shaderFactory.GetShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN));

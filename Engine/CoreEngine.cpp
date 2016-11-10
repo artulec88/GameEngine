@@ -287,7 +287,7 @@ void Engine::CoreEngine::CreateRenderer(bool fullscreenEnabled, int width, int h
 	glfwSetErrorCallback(&CoreEngine::ErrorCallback);
 	//DEBUG_LOG_ENGINE("Thread window address: ", threadWindow);
 	NOTICE_LOG_ENGINE("Creating Renderer instance started");
-	m_renderer = std::make_unique<Rendering::Renderer>(width, height, m_modelsDirectory, m_texturesDirectory, antiAliasingMethod);
+	m_renderer = std::make_unique<Rendering::Renderer>(width, height, m_modelsDirectory, m_texturesDirectory, m_shadersDirectory, m_fontsDirectory, antiAliasingMethod);
 	NOTICE_LOG_ENGINE("Creating Renderer instance finished");
 
 	CHECK_CONDITION_EXIT_ENGINE(m_renderer != NULL, Utility::Logging::CRITICAL, "Failed to create a renderer.");
@@ -605,7 +605,7 @@ void Engine::CoreEngine::Run()
 			//ERROR_LOG_ENGINE("2: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 			fpsGuiButton.SetText(ss.str());
-			m_renderer->RenderGuiControl(fpsGuiButton, m_game->GetShaderFactory().GetShader(Rendering::ShaderIDs::GUI));
+			m_renderer->RenderGuiControl(fpsGuiButton, Rendering::ShaderIDs::GUI);
 			//ERROR_LOG_ENGINE("3: ", numberOfAllocs1, " ", numberOfAllocs2, " ", numberOfAllocs3, " ", numberOfAllocs4, "\t",
 			//	numberOfDeallocs1, " ", numberOfDeallocs2, " ", numberOfDeallocs3, " ", numberOfDeallocs4);
 #endif
@@ -644,10 +644,10 @@ void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 	switch (errorCode)
 	{
 	case GLFW_NOT_INITIALIZED:
-		ERROR_LOG_ENGINE("GLFW has not been initialized. Error description: ", description);
+		CRITICAL_LOG_ENGINE("GLFW has not been initialized. Error description: ", description);
 		break;
 	case GLFW_NO_CURRENT_CONTEXT:
-		ERROR_LOG_ENGINE("No context is current for this thread. Error description: ", description);
+		CRITICAL_LOG_ENGINE("No context is current for this thread. Error description: ", description);
 		break;
 	case GLFW_INVALID_ENUM:
 		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid enum value. Error description: ", description);
@@ -656,10 +656,10 @@ void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 		ERROR_LOG_ENGINE("One of the arguments to the function was an invalid value. Error description: ", description);
 		break;
 	case GLFW_OUT_OF_MEMORY:
-		ERROR_LOG_ENGINE("A memory allocation failed. Error description: ", description);
+		CRITICAL_LOG_ENGINE("A memory allocation failed. Error description: ", description);
 		break;
 	case GLFW_API_UNAVAILABLE:
-		ERROR_LOG_ENGINE("GLFW could not find support for the requested client API on the system. Error description: ", description);
+		EMERGENCY_LOG_ENGINE("GLFW could not find support for the requested client API on the system. Error description: ", description);
 		break;
 	case GLFW_VERSION_UNAVAILABLE:
 		ERROR_LOG_ENGINE("The requested OpenGL or OpenGL ES version is not available. Error description: ", description);
@@ -671,7 +671,7 @@ void Engine::CoreEngine::ErrorCallbackEvent(int errorCode, const char* descripti
 		ERROR_LOG_ENGINE("The requested format is not supported or available. Error description: ", description);
 		break;
 	default:
-		ERROR_LOG_ENGINE("Unknown GLFW error event occurred with code ", errorCode, " and message: Error description: ", description);
+		CRITICAL_LOG_ENGINE("Unknown GLFW error event occurred with code ", errorCode, " and message: Error description: ", description);
 	}
 	exit(EXIT_FAILURE);
 }

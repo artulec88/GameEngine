@@ -34,13 +34,13 @@ Engine::BillboardsRendererComponent& Engine::BillboardsRendererComponent::operat
 	return *this;
 }
 
-void Engine::BillboardsRendererComponent::Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const
+void Engine::BillboardsRendererComponent::Render(int shaderID, Rendering::Renderer* renderer) const
 {
 	//CRITICAL_LOG_ENGINE("Rendering billboards started");
 	//shader->Bind();
 	//shader->UpdateUniforms(GetTransform(), m_billboardMaterial, renderer);
 	//m_billboardMesh->Draw();
 
-	renderer->Render(m_billboardMeshID, m_billboardMaterial, GetTransform(), shader);
+	renderer->Render(m_billboardMeshID, m_billboardMaterial, GetTransform(), shaderID);
 	//renderer->RenderBillboards(*m_billboardMesh, m_billboardMaterial, shader);
 }

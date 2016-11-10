@@ -17,7 +17,9 @@
 #include "FogInfo.h"
 #include "ParticlesContainer.h"
 #include "ParticlesSystem.h"
+#include "FontFactory.h"
 #include "MeshFactory.h"
+#include "ShaderFactory.h"
 #include "TextureFactory.h"
 #include "GuiControl.h"
 
@@ -69,9 +71,11 @@ namespace Rendering
 		/// <param name="windowHeight"> The height of the window. </param>
 		/// <param name="modelsDirectory"> The system directory where all models are stored. </param>
 		/// <param name="texturesDirectory"> The system directory where all textures are stored. </param>
+		/// <param name="shadersDirectory"> The system directory where all shaders are stored. </param>
 		/// <param name="antiAliasingMethod"> The anti-aliasing method to be used by the rendering engine. </param>
 		RENDERING_API Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory,
-			const std::string& texturesDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod);
+			const std::string& texturesDirectory, const std::string& shadersDirectory,
+			const std::string& fontsDirectory, Aliasing::AntiAliasingMethod antiAliasingMethod);
 
 		/// <summary> Rendering engine destructor. </summary>
 		RENDERING_API virtual ~Renderer(void);
@@ -101,16 +105,16 @@ namespace Rendering
 		RENDERING_API void BindWaterRefractionTexture() const;
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
-		RENDERING_API void Render(int meshID, const Material* material, const Math::Transform& transform, const Shader* shader) const;
+		RENDERING_API void Render(int meshID, const Material* material, const Math::Transform& transform, int shaderID) const;
 		RENDERING_API void FinalizeRenderScene(const Shader* filterShader);
 		//RENDERING_API void Render(const GameNode& node);
 
 		RENDERING_API bool InitShadowMap();
-		RENDERING_API void FinalizeShadowMapRendering(const Shader* filterShader);
+		RENDERING_API void FinalizeShadowMapRendering(int filterShaderID);
 
-		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, const Shader* guiControlShader) const;
+		RENDERING_API void RenderGuiControl(const Controls::GuiControl& guiControl, int guiControlShaderID) const;
 
-		RENDERING_API void RenderParticles(const Shader* particleShader, const Particles::ParticlesSystem& particleSystem) const;
+		RENDERING_API void RenderParticles(int particleShaderID, const Particles::ParticlesSystem& particleSystem) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		/// <summary>
@@ -127,10 +131,9 @@ namespace Rendering
 		RENDERING_API void SetWindowWidth(int windowWidth) { m_windowWidth = windowWidth; }
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
-		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
+		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
 
-		RENDERING_API const Texture* GetTexture(int textureID) const { return m_textureFactory.GetTexture(textureID); }
 		RENDERING_API const Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName)
 		{
 			return m_textureFactory.CreateTexture(textureID, textureFileName);
@@ -143,9 +146,15 @@ namespace Rendering
 		{
 			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
+		RENDERING_API const Texture* GetTexture(int textureID) const { return m_textureFactory.GetTexture(textureID); }
 
-		RENDERING_API inline void BindShader(const Shader* shader) { shader->Bind(); }
-		RENDERING_API inline void UpdateRendererUniforms(const Shader* shader) { shader->UpdateRendererUniforms(this); }
+		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
+		RENDERING_API const Shader* GetShader(int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
+
+		RENDERING_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType);
+
+		RENDERING_API inline void BindShader(int shaderID) { m_shaderFactory.GetShader(shaderID)->Bind(); }
+		RENDERING_API inline void UpdateRendererUniforms(int shaderID) { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }
 
 		RENDERING_API inline void ClearScreen() const
 		{
@@ -369,6 +378,8 @@ namespace Rendering
 		const BaseCamera* m_currentCamera;
 		const BaseCamera* m_tempCamera;
 
+		ShaderFactory m_shaderFactory;
+		Text::FontFactory m_fontFactory;
 		MeshFactory m_meshFactory;
 		TextureFactory m_textureFactory;
 
@@ -380,8 +391,6 @@ namespace Rendering
 		Camera m_altCamera;
 		Math::Transform m_filterTransform;
 		const Mesh* m_filterMesh;
-
-		//ShaderFactory m_shaderFactory;
 
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaSpanMax;
 		CONST_IF_TWEAK_BAR_DISABLED Math::Real m_fxaaReduceMin;

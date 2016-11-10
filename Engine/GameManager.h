@@ -12,13 +12,9 @@
 #include "IActionHandler.h"
 //#include "Observer.h"
 
-#include "Rendering\ShaderFactory.h"
-#include "Rendering\Mesh.h"
-#include "Rendering\Shader.h"
 #include "Rendering\Material.h"
 #include "Rendering\BaseLight.h"
 #include "Rendering\Camera.h"
-#include "Rendering\FontFactory.h"
 #include "Rendering\FogInfo.h"
 #include "Rendering\GuiButtonControl.h"
 #include "Rendering\Texture.h"
@@ -109,7 +105,11 @@ namespace Engine
 		ENGINE_API const Rendering::Particles::ParticleTexture* AddParticleTexture(int textureID, const std::string& particleTextureFileName, int rowsCount, bool isAdditive) const;
 		ENGINE_API inline const Rendering::Texture* GetTexture(int textureID) const;
 
-		ENGINE_API void AddShader(int shaderID, const std::string& shaderFileName) { m_shaderFactory.CreateShader(shaderID, shaderFileName); }
+		ENGINE_API const Rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const;
+		ENGINE_API const Rendering::Shader* GetShader(int shaderID) const;
+
+		//ENGINE_API const Rendering::Text::Font* AddFont()
+		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType); // TODO: "int fontID" instead of "Rendering::Text::FontTypes::FontType fontType"?
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();
@@ -120,8 +120,6 @@ namespace Engine
 		ENGINE_API virtual GameState* GetLoadGameState() = 0;
 		ENGINE_API virtual GameState* GetPlayGameState() = 0;
 		ENGINE_API virtual GameState* GetPlayMainMenuGameState() = 0;
-
-		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType);
 
 		// TODO: Think about removing the window parameter from the event handling functions below.
 		ENGINE_API virtual void WindowResizeEvent(int width, int height);
@@ -163,8 +161,6 @@ namespace Engine
 
 		ENGINE_API void LoadSoundEffect(const std::string& soundEffectFileName) const;
 		ENGINE_API void PlaySoundEffect(const std::string& soundEffectFileName, Math::Real volume, Math::Real pitch) const;
-
-		ENGINE_API inline const Rendering::ShaderFactory& GetShaderFactory() const { return m_shaderFactory; }
 	public:
 		ENGINE_API void AddGuiControl(const Rendering::Controls::GuiControl& guiControl);
 		ENGINE_API void AddParticlesSystem(Rendering::Particles::ParticlesSystem* particlesSystem);
@@ -173,8 +169,6 @@ namespace Engine
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
 		std::vector<Rendering::Particles::ParticlesSystem*> m_particlesSystems;
-		Rendering::ShaderFactory m_shaderFactory;
-		Rendering::Text::FontFactory m_fontFactory;
 		std::unique_ptr<GameStateManager> m_gameStateManager;
 		bool m_isGameLoaded;
 

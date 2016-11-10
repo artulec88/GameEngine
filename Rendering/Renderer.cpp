@@ -25,7 +25,8 @@
 /* static */ const Math::Matrix4D Rendering::Renderer::BIAS_MATRIX(Math::Matrix4D(0.5f /* scale matrix */) * Math::Matrix4D(REAL_ONE, REAL_ONE, REAL_ONE /* translation matrix */)); // FIXME: Check matrix multiplication
 ///* static */ const Matrix4D Renderer::BIAS_MATRIX;
 
-Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, const std::string& texturesDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
+Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::string& modelsDirectory, const std::string& texturesDirectory, const std::string& shadersDirectory,
+	const std::string& fontsDirectory, Rendering::Aliasing::AntiAliasingMethod antiAliasingMethod) :
 	m_windowWidth(windowWidth),
 	m_windowHeight(windowHeight),
 	m_antiAliasingMethod(antiAliasingMethod),
@@ -46,6 +47,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	//m_currentSpotLight(NULL),
 	m_currentCamera(NULL),
 	m_tempCamera(NULL),
+	m_shaderFactory(shadersDirectory),
+	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), texturesDirectory, fontsDirectory),
 	m_meshFactory(modelsDirectory),
 	m_textureFactory(texturesDirectory),
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
@@ -204,6 +207,16 @@ const Rendering::Mesh* Rendering::Renderer::CreateMesh(int meshID, const std::st
 	return m_meshFactory.CreateMesh(meshID, meshFileName);
 }
 
+const Rendering::Shader* Rendering::Renderer::CreateShader(int shaderID, const std::string& shaderFileName)
+{
+	return m_shaderFactory.CreateShader(shaderID, shaderFileName);
+}
+
+const Rendering::Text::Font* Rendering::Renderer::GetFont(Rendering::Text::FontTypes::FontType fontType)
+{
+	return m_fontFactory.GetFont(fontType);
+}
+
 /* TODO: Remove in the future */
 struct CameraDirection
 {
@@ -305,11 +318,11 @@ void Rendering::Renderer::FinalizeRenderScene(const Shader* filterShader)
 	STOP_PROFILING_RENDERING("");
 }
 
-void Rendering::Renderer::Render(int meshID, const Material* material, const Math::Transform& transform, const Shader* shader) const
+void Rendering::Renderer::Render(int meshID, const Material* material, const Math::Transform& transform, int shaderID) const
 {
 	//START_PROFILING_RENDERING(true, "");
 	//shader.Bind();
-	shader->UpdateUniforms(transform, material, this);
+	m_shaderFactory.GetShader(shaderID)->UpdateUniforms(transform, material, this);
 	m_meshFactory.GetMesh(meshID)->Draw();
 	//STOP_PROFILING_RENDERING;
 }
@@ -342,7 +355,7 @@ void Rendering::Renderer::DisableClippingPlanes()
 	m_mappedValues.SetVector4D("clipPlane", m_defaultClipPlane); // The workaround for some drivers ignoring the glDisable(GL_CLIP_DISTANCE0) method
 }
 
-void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, const Shader* guiControlShader) const
+void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiControl, int guiControlShaderID) const
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started main GUI control rendering function");
 	//CRITICAL_LOG_RENDERING("Started drawing GUI control at screen position \"", guiControl.GetScreenPosition(), "\"");
@@ -362,7 +375,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 	*/
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
-	guiControl.Draw(guiControlShader, *this);
+	guiControl.Draw(m_shaderFactory.GetShader(guiControlShaderID), *this);
 
 	if (Rendering::glDepthTestEnabled)
 	{
@@ -376,7 +389,7 @@ void Rendering::Renderer::RenderGuiControl(const Controls::GuiControl& guiContro
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished main GUI control rendering function");
 }
 
-void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Particles::ParticlesSystem& particlesSystem) const
+void Rendering::Renderer::RenderParticles(int particleShaderID, const Particles::ParticlesSystem& particlesSystem) const
 {
 	START_PROFILING_RENDERING(true, "");
 	Rendering::CheckErrorCode(__FUNCTION__, "Started particles rendering");
@@ -387,6 +400,7 @@ void Rendering::Renderer::RenderParticles(const Shader* particleShader, const Pa
 		return;
 	}
 	DEBUG_LOG_RENDERING("Rendering particles started. There are ", particlesSystem.GetAliveParticlesCount(), " alive particles currently in the game.");
+	const Shader* particleShader = m_shaderFactory.GetShader(particleShaderID);
 	particleShader->Bind(); // TODO: This can be performed once and not each time we call this function (during one render-pass of course).
 	const Particles::ParticleTexture* particleTexture = static_cast<const Particles::ParticleTexture*>(m_textureFactory.GetTexture(particlesSystem.GetTextureID()));
 	particleTexture->Bind();
@@ -522,7 +536,7 @@ bool Rendering::Renderer::InitShadowMap()
 	}
 }
 
-void Rendering::Renderer::FinalizeShadowMapRendering(const Shader* filterShader)
+void Rendering::Renderer::FinalizeShadowMapRendering(int filterShaderID)
 {
 	const ShadowInfo* shadowInfo = m_currentLight->GetShadowInfo();
 	if (shadowInfo != NULL)
@@ -541,7 +555,7 @@ void Rendering::Renderer::FinalizeShadowMapRendering(const Shader* filterShader)
 			//ApplyFilter(m_shaderFactory.GetShader(ShaderTypes::FILTER_NULL), GetTexture("shadowMapTempTarget"), GetTexture("shadowMap"));
 			if (!Math::AlmostEqual(shadowInfo->GetShadowSoftness(), REAL_ZERO))
 			{
-				BlurShadowMap(filterShader, shadowMapIndex, shadowInfo->GetShadowSoftness());
+				BlurShadowMap(m_shaderFactory.GetShader(filterShaderID), shadowMapIndex, shadowInfo->GetShadowSoftness());
 			}
 		}
 	}

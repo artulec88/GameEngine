@@ -75,7 +75,7 @@ namespace Engine
 
 		//ENGINE_API void InputAll(Math::Real delta);
 		ENGINE_API void Update(Math::Real elapsedTime);
-		ENGINE_API void Render(const Rendering::Shader* shader, Rendering::Renderer* renderer) const;
+		ENGINE_API void Render(int shaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API void RegisterCommandForAction(Actions::Action action, GameNodeCommand* gameNodeCommand)
 		{
 			m_actionsToCommands.insert(std::make_pair(action, gameNodeCommand));

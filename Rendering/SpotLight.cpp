@@ -5,12 +5,12 @@
 #include "Utility\IConfig.h"
 #include "Math\Matrix.h"
 
-Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader, const Attenuation& attenuation,
+Rendering::Lighting::SpotLight::SpotLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, const Attenuation& attenuation,
 	Math::Real shadowInfoProjectionNearPlane, bool shadowInfoFlipFacesEnabled, int shadowInfoShadowMapSizeAsPowerOf2,
 	Math::Real shadowInfoShadowSoftness, Math::Real shadowInfoLightBleedingReductionFactor, Math::Real shadowInfoMinVariance,
 	const Math::Angle& viewAngle) :
-	PointLight(transform, color, intensity, shader, terrainShader, noShadowShader, noShadowTerrainShader, attenuation),
+	PointLight(transform, color, intensity, shaderID, terrainShaderID, noShadowShaderID, noShadowTerrainShaderID, attenuation),
 	m_cutoff((viewAngle / 2).Cos())
 {
 	SetIsShadowingEnabled(shadowInfoShadowMapSizeAsPowerOf2 != 0);

@@ -1,19 +1,16 @@
 #include "StdAfx.h"
 #include "BaseLight.h"
-//#include "CoreEngine.h"
-#include "Renderer.h"
-#include "Shader.h"
 #include "Utility\ILogger.h"
 
-Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, const Shader* shader,
-	const Shader* terrainShader, const Shader* noShadowShader, const Shader* noShadowTerrainShader, bool isShadowingEnabled /* = false */) :
+Rendering::Lighting::BaseLight::BaseLight(const Math::Transform& transform, const Color& color, Math::Real intensity, int shaderID,
+	int terrainShaderID, int noShadowShaderID, int noShadowTerrainShaderID, bool isShadowingEnabled /* = false */) :
 	m_transform(transform),
 	m_color(color),
 	m_intensity(intensity),
-	m_shader(shader),
-	m_terrainShader(terrainShader),
-	m_noShadowShader(noShadowShader),
-	m_noShadowTerrainShader(noShadowTerrainShader),
+	m_shaderID(shaderID),
+	m_terrainShaderID(terrainShaderID),
+	m_noShadowShaderID(noShadowShaderID),
+	m_noShadowTerrainShaderID(noShadowTerrainShaderID),
 	m_shadowInfo(nullptr),
 	m_isEnabled(true),
 	m_isShadowingEnabled(isShadowingEnabled)

@@ -50,7 +50,6 @@ namespace Game
 
 		virtual void Update(Math::Real deltaTime);
 	private:
-		void AddShaders();
 		void DeselectAll();
 		void SelectChild(size_t childIndex);
 		void RenderParticles(Rendering::Renderer* renderer) const;

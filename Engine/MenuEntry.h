@@ -3,6 +3,7 @@
 
 #include "Engine.h"
 #include "ActionConstants.h"
+#include "IRenderable.h"
 
 #include "Rendering\Renderer.h"
 #include "Rendering\Font.h"
@@ -27,7 +28,7 @@ namespace Engine
 	/// * standard menu entries (that may or may not contain children menu entries), e.g. "Start", "Quit" or "Options".
 	/// * special menu enries used in "Options"-related menus. They have no children, but they have values, e.g. "Shadows enabled ... Yes/No".
 	/// </summary>
-	class MenuEntry
+	class MenuEntry : public IRenderable
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
@@ -42,7 +43,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const;
+		ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual void Dispatch() = 0;
 		ENGINE_API virtual MenuEntry* GoTo() { return this; }
@@ -87,7 +88,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const;
+		//ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void AddChild(MenuEntry* menuEntry);
 		ENGINE_API virtual void Dispatch();
 		ENGINE_API virtual MenuEntry* GoTo() { return m_childrenMenuEntries[m_selectedMenuEntryIndex]; }
@@ -99,7 +100,7 @@ namespace Engine
 		ENGINE_API void ApplyBorderWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
 		ENGINE_API void ApplyBorderEdgeTransitionWidthEffectToAll(const Math::Effects::Effect<Math::Real>& effect);
 
-		ENGINE_API void RenderAll(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const;
+		ENGINE_API void RenderAll(int guiControlShaderID, Rendering::Renderer* renderer) const;
 		ENGINE_API size_t GetSelectedChildIndex() const { return m_selectedMenuEntryIndex; }
 		ENGINE_API size_t GetSelectedChildIndex(Math::Real xPos, Math::Real yPos) const;
 		ENGINE_API MenuEntry* SelectPrevChild();
@@ -159,7 +160,7 @@ namespace Engine
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		ENGINE_API virtual void Render(Rendering::Renderer* renderer, const Rendering::Shader* guiControlShader) const;
+		ENGINE_API virtual void Render(int guiControlShaderID, Rendering::Renderer* renderer) const override;
 		ENGINE_API virtual void Dispatch();
 
 		//template<class _Ty, class... _Types> inline typename enable_if<!is_array<_Ty>::value, unique_ptr<_Ty> >::type make_unique(_Types&&... _Args)
