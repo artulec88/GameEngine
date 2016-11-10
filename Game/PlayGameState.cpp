@@ -671,9 +671,7 @@ void Game::PlayGameState::Render(Rendering::Renderer* renderer) const
 	renderer->RenderDebugGuiControls(m_gameManager->GetShader(Rendering::ShaderIDs::GUI));
 #endif
 
-	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
-		m_gameManager->GetShader(Rendering::ShaderIDs::FILTER_FXAA) :
-		m_gameManager->GetShader(Rendering::ShaderIDs::FILTER_NULL));
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ? Rendering::ShaderIDs::FILTER_FXAA : Rendering::ShaderIDs::FILTER_NULL);
 
 #ifdef DRAW_GAME_TIME
 	m_inGameTimeGuiButton.SetText(m_inGameDateTime.ToString());

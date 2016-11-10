@@ -356,7 +356,7 @@ void CameraBuilderTest()
 	camera = cameraBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(camera);
 	camera = orthoCameraBuilder.SetPos(4.0f, 4.0f, 0.0f).SetNearPlane(0.1f).SetFarPlane(10000.0f).Get();
-	NOTICE_LOG_RENDERING_TEST(camera);
+	//NOTICE_LOG_RENDERING_TEST(camera);
 
 	PerspectiveCameraBuilder persepectiveCameraBuilder;
 	persepectiveCameraBuilder.SetPos(3.0f, 15.0f, -3.0f);
@@ -450,11 +450,19 @@ void CreateScene()
 
 void RenderScene()
 {
-	renderer->BindAsRenderTarget();
-	renderer->ClearScreen(0.0f, 0.0f, 0.3f, 1.0f);
-
+	renderer->InitRenderScene(Color(ColorNames::GREY), 0.5f);
 	renderer->SetCurrentCamera(&camera);
-	//renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
+
+	renderer->BindDisplayTexture();
+	renderer->ClearScreen(0.0f, 0.2f, 0.7f, 1.0f);
+
+	renderer->BindShader(ShaderIDs::AMBIENT);
+	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
+	renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
+
+	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
+		Rendering::ShaderIDs::FILTER_FXAA :
+		Rendering::ShaderIDs::FILTER_NULL);
 }
 
 void Run()

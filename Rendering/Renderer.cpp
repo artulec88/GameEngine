@@ -307,13 +307,13 @@ void Rendering::Renderer::InitWaterNodesRendering()
 	m_mappedValues.SetReal("waterNormalVerticalFactor", m_waterNormalVerticalFactor);
 }
 
-void Rendering::Renderer::FinalizeRenderScene(const Shader* filterShader)
+void Rendering::Renderer::FinalizeRenderScene(int filterShaderID)
 {
 	START_PROFILING_RENDERING(true, "");
 	m_mappedValues.SetVector3D("inverseFilterTextureSize",
 		Math::Vector3D(REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetWidth(), REAL_ONE / m_mappedValues.GetTexture("displayTexture")->GetHeight(), REAL_ZERO));
 
-	ApplyFilter(filterShader, m_mappedValues.GetTexture("displayTexture"), NULL);
+	ApplyFilter(m_shaderFactory.GetShader(filterShaderID), m_mappedValues.GetTexture("displayTexture"), NULL);
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished scene rendering");
 	STOP_PROFILING_RENDERING("");
 }

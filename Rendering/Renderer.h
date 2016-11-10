@@ -106,7 +106,7 @@ namespace Rendering
 		RENDERING_API void InitWaterNodesRendering();
 		//RENDERING_API void RenderWithAmbientLight(const Mesh& mesh, const Material* material, const Math::Transform& transform) const;
 		RENDERING_API void Render(int meshID, const Material* material, const Math::Transform& transform, int shaderID) const;
-		RENDERING_API void FinalizeRenderScene(const Shader* filterShader);
+		RENDERING_API void FinalizeRenderScene(int filterShaderID);
 		//RENDERING_API void Render(const GameNode& node);
 
 		RENDERING_API bool InitShadowMap();
