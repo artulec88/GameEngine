@@ -23,6 +23,7 @@
 
 #define GET_CONFIG_VALUE_RENDERING(cfgName, defValue) GET_CONFIG_VALUE("Rendering", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_RENDERING(cfgName, defValue) GET_CONFIG_VALUE_STR("Rendering", cfgName, defValue)
+#define HAS_CONFIG_VALUE_RENDERING(cfgName) HAS_CONFIG_VALUE("Rendering", cfgName)
 
 #define CRITICAL_LOG_RENDERING(...) CRITICAL_LOG("Rendering", ##__VA_ARGS__)
 #define EMERGENCY_LOG_RENDERING(...) EMERGENCY_LOG("Rendering", ##__VA_ARGS__)

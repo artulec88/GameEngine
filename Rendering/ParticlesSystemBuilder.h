@@ -50,7 +50,7 @@ namespace Rendering
 			{
 				return ParticlesSystem(m_maxCount, m_attributesMask, m_textureID, m_shaderID);
 			}
-			virtual void BuildParts() override;
+			virtual void Build() override;
 			
 			/// <summary> Sets the maximum number of particles that final particles system will be able to maintain. </summary>
 			/// <param name="maxCount"> The maximum number of particles that final particles system will be able to maintain. </param>

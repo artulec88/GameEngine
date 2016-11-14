@@ -33,7 +33,7 @@ namespace UtilityTest
 			return Pizza(m_dough, m_sauce, m_topping);
 		}
 
-		virtual void BuildParts() override
+		virtual void Build() override
 		{
 			BuildDough();
 			BuildSauce();

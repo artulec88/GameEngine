@@ -86,6 +86,8 @@ namespace Utility
 
 		virtual std::string GetArg(const std::string& name, const std::string& defValue) const override;
 
+		virtual bool HasArg(const std::string& name) const override;
+
 		/**
 		* Returns formatted list of configure parameters, that were used but defined in the configuration file,
 		* together with their last used default value.

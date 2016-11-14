@@ -11,6 +11,7 @@
 
 #define GET_CONFIG_VALUE_AUDIO(cfgName, defValue) GET_CONFIG_VALUE("Audio", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_AUDIO(cfgName, defValue) GET_CONFIG_VALUE_STR("Audio", cfgName, defValue)
+#define HAS_CONFIG_VALUE_AUDIO(cfgName) HAS_CONFIG_VALUE("Audio", cfgName)
 
 #define CRITICAL_LOG_AUDIO(...) CRITICAL_LOG("Audio", ##__VA_ARGS__)
 #define EMERGENCY_LOG_AUDIO(...) EMERGENCY_LOG("Audio", ##__VA_ARGS__)

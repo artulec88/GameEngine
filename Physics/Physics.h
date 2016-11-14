@@ -9,6 +9,7 @@
 
 #define GET_CONFIG_VALUE_PHYSICS(cfgName, defValue) GET_CONFIG_VALUE("Physics", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_PHYSICS(cfgName, defValue) GET_CONFIG_VALUE_STR("Physics", cfgName, defValue)
+#define HAS_CONFIG_VALUE_PHYSICS(cfgName) HAS_CONFIG_VALUE("Physics", cfgName)
 
 #define CRITICAL_LOG_PHYSICS(...) CRITICAL_LOG("Physics", ##__VA_ARGS__)
 #define EMERGENCY_LOG_PHYSICS(...) EMERGENCY_LOG("Physics", ##__VA_ARGS__)

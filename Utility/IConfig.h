@@ -9,6 +9,7 @@
 #include <string>
 #define GET_CONFIG_VALUE(moduleName, cfgName, defValue) Utility::IConfig::GetConfig(moduleName).Get(cfgName, defValue)
 #define GET_CONFIG_VALUE_STR(moduleName, cfgName, defValue) Utility::IConfig::GetConfig(moduleName).GetArg(cfgName, defValue)
+#define HAS_CONFIG_VALUE(moduleName, cfgName) Utility::IConfig::GetConfig(moduleName).HasArg(cfgName)
 
 namespace Utility
 {
@@ -48,6 +49,16 @@ namespace Utility
 		/// if the parameter has not been specified in the configuration file.
 		///
 		virtual std::string GetArg(const std::string& name, const std::string& defValue) const = 0;
+
+		/// <summary>
+		/// Gives information whether or not the configuration has a value defined for the argument with given <paramref name="name"/>.
+		/// If no such argument is found then <code>false</code> is returned.
+		/// </summary>
+		/// <returns>
+		/// <code>true</code> if the configuration has some value specified for the argument with the specified <paramref name="name"/>.
+		/// Otherwise <code>false</code> is returned.
+		/// </returns>
+		virtual bool HasArg(const std::string& name) const = 0;
 
 		template <typename Type>
 		Type Get(const std::string& name, const Type& defValue) const

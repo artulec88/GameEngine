@@ -30,7 +30,7 @@ Engine::Input::InputMapping::InputMapping(const std::string& contextListFileName
 			//Utility::IConfig::CreateConfig()
 			const std::string name = Utility::FileManager::AttemptRead<std::string>(inFile);
 			const std::string fileName = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\" + Utility::FileManager::AttemptRead<std::string>(inFile);
-			EMERGENCY_LOG_ENGINE("Input context \"", name, "\" initialized with file \"", fileName, "\".");
+			INFO_LOG_ENGINE("Input context \"", name, "\" initialized with file \"", fileName, "\".");
 			m_inputContexts[name] = std::make_unique<InputContext>(std::ifstream(fileName));
 		}
 	}

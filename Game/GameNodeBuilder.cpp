@@ -21,34 +21,18 @@ Game::GameNodeBuilder::~GameNodeBuilder()
 /* ==================== GameNodeBuilder implementation end ==================== */
 
 /* ==================== CameraNodeBuilder implementation begin ==================== */
-Game::CameraNodeBuilder::CameraNodeBuilder(Engine::GameManager* gameManager) :
+Game::CameraNodeBuilder::CameraNodeBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera) :
 	GameNodeBuilder(gameManager),
-	M_DEFAULT_CAMERA_POS(GET_CONFIG_VALUE_GAME("defaultCameraPosX", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosY", 0.0f), GET_CONFIG_VALUE_GAME("defaultCameraPosZ", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_X(GET_CONFIG_VALUE_GAME("defaultCameraAngleX", -45.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Y(GET_CONFIG_VALUE_GAME("defaultCameraAngleY", 0.0f)),
-	M_DEFAULT_CAMERA_ROTATION_ANGLE_Z(GET_CONFIG_VALUE_GAME("defaultCameraAngleZ", 0.0f)),
-	M_DEFAULT_CAMERA_FIELD_OF_VIEW(GET_CONFIG_VALUE_GAME("defaultCameraFoV", 70.0f)),
-	M_DEFAULT_CAMERA_ASPECT_RATIO(GET_CONFIG_VALUE_GAME("defaultCameraAspectRatio", static_cast<Math::Real>(800) / 600)),
-	M_DEFAULT_CAMERA_NEAR_PLANE(GET_CONFIG_VALUE_GAME("defaultCameraNearPlane", 0.1f)),
-	M_DEFAULT_CAMERA_FAR_PLANE(GET_CONFIG_VALUE_GAME("defaultCameraFarPlane", 1000.0f)),
-	M_DEFAULT_CAMERA_SENSITIVITY(GET_CONFIG_VALUE_GAME("defaultCameraSensitivity", 0.005f)),
+	M_DEFAULT_CAMERA_BEHAVIOR_TYPE(static_cast<Engine::CameraBehaviorTypes::CameraBehaviorType>(
+		GET_CONFIG_VALUE_GAME("defaultCameraBehaviorType", static_cast<int>(Engine::CameraBehaviorTypes::STATIC)))),
 	M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY(GET_CONFIG_VALUE_GAME("defaultCameraFollowEntityInitialDistance", 0.25f)),
 	M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowAngleAroundEntitySpeed", 0.24f)),
 	M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED(GET_CONFIG_VALUE_GAME("defaultCameraFollowPitchRotationSpeed", 0.1f)),
 	M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE(GET_CONFIG_VALUE_GAME("defaultCameraFollowInitialPitchAngle", 30.0f)),
-	m_camerasCount(GET_CONFIG_VALUE_GAME("camerasCount", 3)),
-	m_positions(m_camerasCount),
-	m_rotations(m_camerasCount),
-	m_cameraBehaviors(m_camerasCount),
-	m_fovs(m_camerasCount),
-	m_aspectRatios(m_camerasCount),
-	m_nearPlanes(m_camerasCount),
-	m_farPlanes(m_camerasCount),
-	m_sensitivities(m_camerasCount),
+	m_camera(camera),
+	m_cameraBehaviorType(M_DEFAULT_CAMERA_BEHAVIOR_TYPE),
 	m_gameNodeToFollow(NULL)
 {
-	CHECK_CONDITION_EXIT_ALWAYS_GAME(m_camerasCount >= 1, Utility::Logging::CRITICAL, "No cameras defined in the rendering engine.");
-	DEBUG_LOG_GAME("Creating ", m_camerasCount, " camera(-s)");
 }
 
 Game::CameraNodeBuilder::~CameraNodeBuilder()
@@ -57,56 +41,56 @@ Game::CameraNodeBuilder::~CameraNodeBuilder()
 
 void Game::CameraNodeBuilder::BuildTransform()
 {
-	for (std::size_t i = 0; i < m_camerasCount; ++i)
-	{
-		const std::string indexStr = std::to_string(i + 1);
-		// Setting position
-		m_positions[i].Set(GET_CONFIG_VALUE_GAME("cameraPosX_" + indexStr, M_DEFAULT_CAMERA_POS.GetX()),
-			GET_CONFIG_VALUE_GAME("cameraPosY_" + indexStr, M_DEFAULT_CAMERA_POS.GetY()),
-			GET_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr, M_DEFAULT_CAMERA_POS.GetZ()));
+	//for (std::size_t i = 0; i < m_camerasCount; ++i)
+	//{
+	//	const std::string indexStr = std::to_string(i + 1);
+	//	// Setting position
+	//	m_positions[i].Set(GET_CONFIG_VALUE_GAME("cameraPosX_" + indexStr, M_DEFAULT_CAMERA_POS.GetX()),
+	//		GET_CONFIG_VALUE_GAME("cameraPosY_" + indexStr, M_DEFAULT_CAMERA_POS.GetY()),
+	//		GET_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr, M_DEFAULT_CAMERA_POS.GetZ()));
 
-		// Setting rotation
-		Math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
-		Math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
-		Math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
-		DELOCUST_LOG_ENGINE("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
-		m_rotations[i] = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
+	//	// Setting rotation
+	//	Math::Angle angleX(GET_CONFIG_VALUE_GAME("cameraAngleX_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_X.Get(Math::Unit::DEGREE)));
+	//	Math::Angle angleY(GET_CONFIG_VALUE_GAME("cameraAngleY_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y.Get(Math::Unit::DEGREE)));
+	//	Math::Angle angleZ(GET_CONFIG_VALUE_GAME("cameraAngleZ_" + indexStr, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z.Get(Math::Unit::DEGREE)));
+	//	DELOCUST_LOG_ENGINE("angleX=", angleX, ", angleY=", angleY, ", angleZ=", angleZ);
+	//	m_rotations[i] = Math::Quaternion(Math::Matrix4D(angleX, angleY, angleZ));
 
-		// Setting camera type
-		Engine::CameraBehaviorTypes::CameraBehaviorType cameraBehaviorType = ConvertToCameraBehaviorType(GET_CONFIG_VALUE_STR_GAME("cameraType" + indexStr, "Static"));
-		switch (cameraBehaviorType)
-		{
-		case Engine::CameraBehaviorTypes::STATIC:
-			m_cameraBehaviors[i] = new Engine::StaticCameraBehavior();
-			break;
-		case Engine::CameraBehaviorTypes::ROTATION_ONLY:
-			m_cameraBehaviors[i] = new Engine::RotationCameraBehavior();
-			break;
-		case Engine::CameraBehaviorTypes::MOVEMENT_ONLY:
-			m_cameraBehaviors[i] = new Engine::MovementCameraBehavior();
-			break;
-		case Engine::CameraBehaviorTypes::FOLLOW_ENTITY:
-			m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
-			break;
-		case Engine::CameraBehaviorTypes::FOLLOW_ENTITY_WITH_ROTATION:
-			m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
-			break;
-		default:
-			WARNING_LOG_GAME("Unknown camera behavior type ", cameraBehaviorType, ". Using STATIC as default.");
-			m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
-			break;
-		}
+	//	// Setting camera type
+	//	Engine::CameraBehaviorTypes::CameraBehaviorType cameraBehaviorType = ConvertToCameraBehaviorType(GET_CONFIG_VALUE_STR_GAME("cameraType" + indexStr, "Static"));
+	//	switch (cameraBehaviorType)
+	//	{
+	//	case Engine::CameraBehaviorTypes::STATIC:
+	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior();
+	//		break;
+	//	case Engine::CameraBehaviorTypes::ROTATION_ONLY:
+	//		m_cameraBehaviors[i] = new Engine::RotationCameraBehavior();
+	//		break;
+	//	case Engine::CameraBehaviorTypes::MOVEMENT_ONLY:
+	//		m_cameraBehaviors[i] = new Engine::MovementCameraBehavior();
+	//		break;
+	//	case Engine::CameraBehaviorTypes::FOLLOW_ENTITY:
+	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
+	//		break;
+	//	case Engine::CameraBehaviorTypes::FOLLOW_ENTITY_WITH_ROTATION:
+	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
+	//		break;
+	//	default:
+	//		WARNING_LOG_GAME("Unknown camera behavior type ", cameraBehaviorType, ". Using STATIC as default.");
+	//		m_cameraBehaviors[i] = new Engine::StaticCameraBehavior(); // TODO: Create appropriate camera behavior for the behavior type
+	//		break;
+	//	}
 
-		// Setting camera parameters
-		m_fovs[i].Set(GET_CONFIG_VALUE_GAME("cameraFoV_" + indexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
-		m_aspectRatios[i] = GET_CONFIG_VALUE_GAME("cameraAspectRatio_" + indexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
-		m_nearPlanes[i] = GET_CONFIG_VALUE_GAME("cameraNearPlane_" + indexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
-		m_farPlanes[i] = GET_CONFIG_VALUE_GAME("cameraFarPlane_" + indexStr, M_DEFAULT_CAMERA_FAR_PLANE);
-		m_sensitivities[i] = GET_CONFIG_VALUE_GAME("cameraSensitivity_" + indexStr, M_DEFAULT_CAMERA_SENSITIVITY);
-	}
+	//	// Setting camera parameters
+	//	m_fovs[i].Set(GET_CONFIG_VALUE_GAME("cameraFoV_" + indexStr, M_DEFAULT_CAMERA_FIELD_OF_VIEW.Get(Math::Unit::DEGREE)), Math::Unit::DEGREE);
+	//	m_aspectRatios[i] = GET_CONFIG_VALUE_GAME("cameraAspectRatio_" + indexStr, M_DEFAULT_CAMERA_ASPECT_RATIO);
+	//	m_nearPlanes[i] = GET_CONFIG_VALUE_GAME("cameraNearPlane_" + indexStr, M_DEFAULT_CAMERA_NEAR_PLANE);
+	//	m_farPlanes[i] = GET_CONFIG_VALUE_GAME("cameraFarPlane_" + indexStr, M_DEFAULT_CAMERA_FAR_PLANE);
+	//	m_sensitivities[i] = GET_CONFIG_VALUE_GAME("cameraSensitivity_" + indexStr, M_DEFAULT_CAMERA_SENSITIVITY);
+	//}
 
-	//m_object->GetTransform().SetPos(m_camera->GetPos());
-	//m_object->GetTransform().SetRot(m_camera->GetRot());
+	////m_object->GetTransform().SetPos(m_camera->GetPos());
+	////m_object->GetTransform().SetRot(m_camera->GetRot());
 }
 
 void Game::CameraNodeBuilder::BuildComponents()

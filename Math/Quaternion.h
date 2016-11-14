@@ -37,7 +37,7 @@ namespace Math
 		/// <param name="axis">An axis around which we want to rotate.</param>
 		/// <param name="angle">An angle by which we want to rotate.</param>
 		MATH_API Quaternion(const Vector3D& axis, const Angle& angle);
-		MATH_API Quaternion(const Matrix4D& rotMatrix);
+		MATH_API explicit Quaternion(const Matrix4D& rotMatrix);
 		MATH_API Quaternion(const Quaternion& q) = default;
 		MATH_API Quaternion(Quaternion&& q) = default;
 		MATH_API Quaternion& operator=(const Quaternion& q) = default;

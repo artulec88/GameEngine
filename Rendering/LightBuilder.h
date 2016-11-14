@@ -63,7 +63,7 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildParts() override
+		virtual void Build() override
 		{
 			BuildShaders();
 		}

@@ -45,7 +45,7 @@ namespace Utility
 
 		T Construct() const
 		{
-			m_builder->BuildParts();
+			m_builder->Build();
 			return m_builder->Get();
 		}
 		/* ==================== Non-static member functions end ==================== */

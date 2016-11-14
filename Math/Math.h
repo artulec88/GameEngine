@@ -22,6 +22,7 @@
 
 #define GET_CONFIG_VALUE_MATH(cfgName, defValue) GET_CONFIG_VALUE("Math", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_MATH(cfgName, defValue) GET_CONFIG_VALUE_STR("Math", cfgName, defValue)
+#define HAS_CONFIG_VALUE_MATH(cfgName) HAS_CONFIG_VALUE("Math", cfgName)
 
 #define CRITICAL_LOG_MATH(...) CRITICAL_LOG("Math", ##__VA_ARGS__)
 #define EMERGENCY_LOG_MATH(...) EMERGENCY_LOG("Math", ##__VA_ARGS__)

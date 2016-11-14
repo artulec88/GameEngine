@@ -202,35 +202,34 @@ void Game::PlayGameState::Revealed()
 
 void Game::PlayGameState::AddShaders()
 {
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT, GET_CONFIG_VALUE_STR_GAME("ambientLightShader", "forward-ambient.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("ambientLightTerrainShader", "forward-ambient-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP, GET_CONFIG_VALUE_STR_GAME("shadowMapShader", "ShadowMapGenerator.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP_CUBE, GET_CONFIG_VALUE_STR_GAME("cubeShadowMapShader", "CubeShadowMapGenerator.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxShader", "skybox-shader.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX_PROCEDURAL, GET_CONFIG_VALUE_STR_GAME("skyboxProceduralShader", "skybox-procedural-shader.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::WATER, GET_CONFIG_VALUE_STR_GAME("waterShader", "water-shader.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("waterNoDirectionalLightShader", "water-no-directional-light-shader.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::BILLBOARD, GET_CONFIG_VALUE_STR_GAME("billboardShader", "billboard-shader.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("directionalLightShader", "forward-directional.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("directionalLightTerrainShader", "forward-directional-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowShader", "forward-directional-no-shadows.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT, GET_CONFIG_VALUE_STR_GAME("pointLightShader", "forward-point.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("pointLightTerrainShader", "forward-point-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowShader", "forward-point-no-shadows.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT, GET_CONFIG_VALUE_STR_GAME("spotLightShader", "forward-spot.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("spotLightTerrainShader", "forward-spot-terrain.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowShader", "forward-spot-no-shadows.glsl"));
-	m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("ambientLightTerrainShader", "forward-ambient-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedShader", "forward-ambient-fog-linear-plane-based.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedShader", "forward-ambient-fog-exponential-plane-based.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedShader", "forward-ambient-fog-linear-range-based.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedShader", "forward-ambient-fog-exponential-range-based.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearPlaneBasedTerrainShader", "forward-ambient-fog-linear-plane-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_PLANE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialPlaneBasedTerrainShader", "forward-ambient-fog-exponential-plane-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_LINEAR_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogLinearRangeBasedTerrainShader", "forward-ambient-fog-linear-range-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::AMBIENT_TERRAIN_FOG_EXPONENTIAL_RANGE_BASED, GET_CONFIG_VALUE_STR_GAME("ambientLightFogExponentialRangeBasedTerrainShader", "forward-ambient-fog-exponential-range-based-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP, GET_CONFIG_VALUE_STR_GAME("shadowMapShader", "ShadowMapGenerator.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SHADOW_MAP_CUBE, GET_CONFIG_VALUE_STR_GAME("cubeShadowMapShader", "CubeShadowMapGenerator.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX, GET_CONFIG_VALUE_STR_GAME("skyboxShader", "skybox-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SKYBOX_PROCEDURAL, GET_CONFIG_VALUE_STR_GAME("skyboxProceduralShader", "skybox-procedural-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::WATER, GET_CONFIG_VALUE_STR_GAME("waterShader", "water-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::WATER_NO_DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("waterNoDirectionalLightShader", "water-no-directional-light-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::BILLBOARD, GET_CONFIG_VALUE_STR_GAME("billboardShader", "billboard-shader.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT, GET_CONFIG_VALUE_STR_GAME("directionalLightShader", "forward-directional.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("directionalLightTerrainShader", "forward-directional-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowShader", "forward-directional-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::DIRECTIONAL_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("directionalLightNoShadowTerrainShader", "forward-directional-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT, GET_CONFIG_VALUE_STR_GAME("pointLightShader", "forward-point.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("pointLightTerrainShader", "forward-point-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowShader", "forward-point-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::POINT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("pointLightNoShadowTerrainShader", "forward-point-terrain-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT, GET_CONFIG_VALUE_STR_GAME("spotLightShader", "forward-spot.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN, GET_CONFIG_VALUE_STR_GAME("spotLightTerrainShader", "forward-spot-terrain.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowShader", "forward-spot-no-shadows.glsl"));
+	//m_gameManager->AddShader(Rendering::ShaderIDs::SPOT_LIGHT_TERRAIN_NO_SHADOWS, GET_CONFIG_VALUE_STR_GAME("spotLightNoShadowTerrainShader", "forward-spot-terrain-no-shadows.glsl"));
 }
 
 void Game::PlayGameState::AddTerrainNode()
@@ -348,12 +347,30 @@ void Game::PlayGameState::AddCameras()
 	m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 
-	//Rendering::Camera camera;
-	//CameraBuilder cameraBuilder(m_gameManager, &camera);
-	CameraNodeBuilder cameraNodeBuilder(m_gameManager);
-	//Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(cameraBuilder);
-	Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(&cameraNodeBuilder);
-	Engine::GameNode cameraNode = cameraNodeBuilderDirector.Construct();
+	Rendering::PerspectiveCameraBuilder cameraBuilder;
+	Utility::BuilderDirector<Rendering::Camera> cameraBuilderDirector(&cameraBuilder);
+	int camerasCount = GET_CONFIG_VALUE_GAME("camerasCount", 3);
+	for (int i = 0; i < camerasCount; ++i)
+	{
+		const std::string indexStr = std::to_string(i + 1);
+		if (HAS_CONFIG_VALUE_GAME("cameraPosX_" + indexStr))
+		{
+			cameraBuilder.SetPosX(GET_CONFIG_VALUE_GAME("cameraPosX_" + indexStr, 0.0f));
+		}
+		if (HAS_CONFIG_VALUE_GAME("cameraPosY_" + indexStr))
+		{
+			cameraBuilder.SetPosY(GET_CONFIG_VALUE_GAME("cameraPosY_" + indexStr, 0.0f));
+		}
+		if (HAS_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr))
+		{
+			cameraBuilder.SetPosZ(GET_CONFIG_VALUE_GAME("cameraPosZ_" + indexStr, 0.0f));
+		}
+		Rendering::Camera camera = cameraBuilderDirector.Construct();
+	}
+
+	//CameraNodeBuilder cameraNodeBuilder(m_gameManager, &camera);
+	//Utility::BuilderDirector<Engine::GameNode> cameraNodeBuilderDirector(&cameraNodeBuilder);
+	//Engine::GameNode cameraNode = cameraNodeBuilderDirector.Construct();
 	//for (int i = 0; i < cameraCount; ++i)
 	//{
 	//	cameraBuilder.SetCameraIndex(i);

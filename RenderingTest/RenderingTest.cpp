@@ -45,6 +45,7 @@ GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
 
+bool cameraRotationEnabled = false;
 Camera camera;
 
 Transform planeTransform;
@@ -87,6 +88,28 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	switch (key)
+	{
+	case GLFW_KEY_A:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetLeft() * camera.GetSensitivity());
+		break;
+	case GLFW_KEY_W:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetForward() * camera.GetSensitivity());
+		break;
+	case GLFW_KEY_S:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetBack() * camera.GetSensitivity());
+		break;
+	case GLFW_KEY_D:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetRight() * camera.GetSensitivity());
+		break;
+	case GLFW_KEY_LEFT_CONTROL:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetDown() * camera.GetSensitivity());
+		break;
+	case GLFW_KEY_SPACE:
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetUp() * camera.GetSensitivity());
+		break;
+	}
+	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
 void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -105,6 +128,15 @@ void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int
 
 void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
+	{
+		cameraRotationEnabled = ((action == GLFW_PRESS) || (action == GLFW_REPEAT));
+		if (cameraRotationEnabled)
+		{
+			Math::Vector2D centerPosition(static_cast<Math::Real>(WINDOW_WIDTH) / 2, static_cast<Math::Real>(WINDOW_HEIGHT) / 2);
+			glfwSetCursorPos(window, centerPosition.GetX(), centerPosition.GetY());
+		}
+	}
 }
 
 void MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
@@ -123,6 +155,29 @@ void MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 
 void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
+	if (cameraRotationEnabled)
+	{
+		Math::Vector2D centerPosition(static_cast<Math::Real>(WINDOW_WIDTH) / 2, static_cast<Math::Real>(WINDOW_HEIGHT) / 2);
+		Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
+		deltaPosition -= centerPosition;
+
+		bool rotX = !Math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
+		bool rotY = !Math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
+
+		if (rotX || rotY)
+		{
+			if (rotX)
+			{
+				camera.GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * camera.GetSensitivity()));
+			}
+			if (rotY)
+			{
+				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * camera.GetSensitivity()));
+			}
+			//NOTICE_LOG_RENDERING_TEST("Camera's rotation: ", camera.GetTransform().GetRot());
+			glfwSetCursorPos(window, centerPosition.GetX(), centerPosition.GetY());
+		}
+	}
 }
 
 void MousePosCallback(GLFWwindow* window, double xPos, double yPos)
@@ -358,9 +413,10 @@ void CameraBuilderTest()
 	camera = orthoCameraBuilder.SetPos(4.0f, 4.0f, 0.0f).SetNearPlane(0.1f).SetFarPlane(10000.0f).Get();
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
-	PerspectiveCameraBuilder persepectiveCameraBuilder;
-	persepectiveCameraBuilder.SetPos(3.0f, 15.0f, -3.0f);
-	cameraBuilderDirector.SetBuilder(&persepectiveCameraBuilder);
+	PerspectiveCameraBuilder perspectiveCameraBuilder;
+	perspectiveCameraBuilder.SetAspectRatio(4.0f / 3.0f).SetFieldOfView(Math::Angle(110.0f)).
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f);
+	cameraBuilderDirector.SetBuilder(&perspectiveCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(camera);
 }
@@ -390,7 +446,8 @@ void ParticlesSystemBuilderTest()
 	Particles::ParticlesSystem particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 
-	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetTextureID(TextureIDs::INVALID).SetShaderID(ShaderIDs::PARTICLES_COLORS);
+	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).
+		SetTextureID(TextureIDs::INVALID).SetShaderID(ShaderIDs::PARTICLES_COLORS);
 	particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 }
@@ -437,10 +494,18 @@ void InitializeTestTweakBars()
 
 void CreateScene()
 {
+	PerspectiveCameraBuilder perspectiveCameraBuilder;
+	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.2f);
+	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
+	camera = cameraBuilderDirector.Construct();
+	//camera.Activate();
+	NOTICE_LOG_RENDERING_TEST(camera);
+
 	renderer->CreateTexture(PLANE_DIFFUSE_TEXTURE_ID, "chessboard3.jpg");
 	planeMaterial = std::make_unique<Material>(renderer->GetTexture(PLANE_DIFFUSE_TEXTURE_ID), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
-	planeMesh = renderer->CreateMesh(PLANE_MESH_ID, "plane4.obj");
+	planeMesh = renderer->CreateMesh(PLANE_MESH_ID, "cube.obj");
 	planeTransform.SetPos(0.0f, 0.0f, 0.5f);
 	planeTransform.SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 		/* to make the plane face towards the camera.
@@ -448,13 +513,18 @@ void CreateScene()
 		https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
 }
 
+//Math::Angle angleStep(1.0f);
+
 void RenderScene()
 {
 	renderer->InitRenderScene(Color(ColorNames::GREY), 0.5f);
 	renderer->SetCurrentCamera(&camera);
 
+	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
+	//NOTICE_LOG_RENDERING_TEST(camera);
+
 	renderer->BindDisplayTexture();
-	renderer->ClearScreen(0.0f, 0.2f, 0.7f, 1.0f);
+	renderer->ClearScreen();
 
 	renderer->BindShader(ShaderIDs::AMBIENT);
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
@@ -589,10 +659,10 @@ int main(int argc, char* argv[])
 	STATS_STORAGE.StartTimer();
 
 	CreateRenderer(false, WINDOW_WIDTH, WINDOW_HEIGHT, "3D rendering tests", Rendering::Aliasing::NONE);
-	CameraBuilderTest();
 	Run();
 
 	//MeshTest();
+	CameraBuilderTest();
 	//TextureTest();
 	LightBuilderTest();
 	ParticlesSystemBuilderTest();

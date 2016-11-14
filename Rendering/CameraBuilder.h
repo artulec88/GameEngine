@@ -47,7 +47,7 @@ namespace Rendering
 			return Camera(m_pos, m_rot, m_projectionMatrix, m_sensitivity);
 		}
 
-		RENDERING_API virtual void BuildParts() override
+		RENDERING_API virtual void Build() override
 		{
 			BuildTransform();
 			BuildProjectionMatrix();
@@ -56,8 +56,8 @@ namespace Rendering
 
 		RENDERING_API virtual void SetDefault()
 		{
-			m_pos = M_DEFAULT_CAMERA_POS;
-			m_rot = Math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z);
+			m_pos.Set(M_DEFAULT_CAMERA_POS_X, M_DEFAULT_CAMERA_POS_Y, M_DEFAULT_CAMERA_POS_Z);
+			m_rot = Math::Quaternion(Math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z));
 			m_nearPlane = M_DEFAULT_CAMERA_NEAR_PLANE;
 			m_farPlane = M_DEFAULT_CAMERA_FAR_PLANE;
 			// m_projectionMatrix is built from other member variables so there is no need to set default value to it.
@@ -72,6 +72,21 @@ namespace Rendering
 		RENDERING_API CameraBuilder& SetPos(const Math::Vector3D& position)
 		{
 			m_pos = position;
+			return *this;
+		}
+		RENDERING_API CameraBuilder& SetPosX(Math::Real posX)
+		{
+			m_pos.SetX(posX);
+			return *this;
+		}
+		RENDERING_API CameraBuilder& SetPosY(Math::Real posY)
+		{
+			m_pos.SetY(posY);
+			return *this;
+		}
+		RENDERING_API CameraBuilder& SetPosZ(Math::Real posZ)
+		{
+			m_pos.SetZ(posZ);
 			return *this;
 		}
 		RENDERING_API CameraBuilder& SetRot(const Math::Quaternion& rotation)
@@ -98,7 +113,9 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Math::Vector3D M_DEFAULT_CAMERA_POS; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_CAMERA_POS_X; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_CAMERA_POS_Y; // TODO: Make it a static constexpr in the future.
+		const Math::Real M_DEFAULT_CAMERA_POS_Z; // TODO: Make it a static constexpr in the future.
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X; // TODO: Make it a static constexpr in the future.
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y; // TODO: Make it a static constexpr in the future.
 		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z; // TODO: Make it a static constexpr in the future.

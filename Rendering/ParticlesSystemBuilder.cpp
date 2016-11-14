@@ -53,7 +53,7 @@ Rendering::Particles::ParticlesSystemBuilder::~ParticlesSystemBuilder()
 {
 }
 
-void Rendering::Particles::ParticlesSystemBuilder::BuildParts()
+void Rendering::Particles::ParticlesSystemBuilder::Build()
 {
 
 	//m_particleTexture = m_gameManager->AddParticleTexture(m_textureID,

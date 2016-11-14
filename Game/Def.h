@@ -3,6 +3,7 @@
 
 #define GET_CONFIG_VALUE_GAME(cfgName, defValue) GET_CONFIG_VALUE("Game", cfgName, defValue)
 #define GET_CONFIG_VALUE_STR_GAME(cfgName, defValue) GET_CONFIG_VALUE_STR("Game", cfgName, defValue)
+#define HAS_CONFIG_VALUE_GAME(cfgName) HAS_CONFIG_VALUE("Game", cfgName)
 
 #define CRITICAL_LOG_GAME(...) CRITICAL_LOG("Game", ##__VA_ARGS__)
 #define EMERGENCY_LOG_GAME(...) EMERGENCY_LOG("Game", ##__VA_ARGS__)

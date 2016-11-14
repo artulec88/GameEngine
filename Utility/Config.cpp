@@ -77,6 +77,11 @@ std::string Utility::Config::GetArg(const std::string& name, const std::string& 
 	return valueMapIt->second;
 }
 
+bool Utility::Config::HasArg(const std::string& name) const
+{
+	return m_cfgValues.find(name) != m_cfgValues.end();
+}
+
 //std::string Utility::Config::ReportUndefined()
 //{
 //	std::stringstream stream;

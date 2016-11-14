@@ -41,7 +41,7 @@ namespace Game
 			//return std::move(m_gameNode);
 		}
 
-		virtual void BuildParts() override
+		virtual void Build() override
 		{
 			BuildTransform();
 			BuildComponents();
@@ -63,6 +63,8 @@ namespace Game
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class GameNodeBuilder */
 
+
+	/// <summary> Game node for the cameras. </summary>
 	class CameraNodeBuilder : public GameNodeBuilder
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -97,7 +99,7 @@ namespace Game
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		CameraNodeBuilder(Engine::GameManager* gameManager);
+		CameraNodeBuilder(Engine::GameManager* gameManager, Rendering::BaseCamera* camera);
 		virtual ~CameraNodeBuilder(void);
 		CameraNodeBuilder(CameraNodeBuilder& cameraNodeBuilder) = delete;
 		CameraNodeBuilder(CameraNodeBuilder&& cameraNodeBuilder) = delete;
@@ -107,8 +109,8 @@ namespace Game
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		virtual void BuildTransform();
-		virtual void BuildComponents();
+		virtual void BuildTransform() override;
+		virtual void BuildComponents() override;
 		void SetGameNodeToFollow(const Engine::GameNode* gameNodeToFollow)
 		{
 			m_gameNodeToFollow = gameNodeToFollow;
@@ -117,29 +119,14 @@ namespace Game
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Math::Vector3D M_DEFAULT_CAMERA_POS;
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_X;
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Y;
-		const Math::Angle M_DEFAULT_CAMERA_ROTATION_ANGLE_Z;
-		const Math::Angle M_DEFAULT_CAMERA_FIELD_OF_VIEW;
-		const Math::Real M_DEFAULT_CAMERA_ASPECT_RATIO;
-		const Math::Real M_DEFAULT_CAMERA_NEAR_PLANE;
-		const Math::Real M_DEFAULT_CAMERA_FAR_PLANE;
-		const Math::Real M_DEFAULT_CAMERA_SENSITIVITY;
+		const Engine::CameraBehaviorTypes::CameraBehaviorType M_DEFAULT_CAMERA_BEHAVIOR_TYPE;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_INITIAL_DISTANCE_FROM_ENTITY;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_ANGLE_AROUND_ENTITY_SPEED;
 		const Math::Real M_DEFAULT_CAMERA_FOLLOW_PITCH_ROTATION_SPEED;
 		const Math::Angle M_DEFAULT_CAMERA_FOLLOW_INITIAL_PITCH_ANGLE;
 
-		std::size_t m_camerasCount;
-		std::vector<Math::Vector3D> m_positions;
-		std::vector<Math::Quaternion> m_rotations;
-		std::vector<Engine::CameraBehavior*> m_cameraBehaviors;
-		std::vector<Math::Angle> m_fovs;
-		std::vector<Math::Real> m_aspectRatios;
-		std::vector<Math::Real> m_nearPlanes;
-		std::vector<Math::Real> m_farPlanes;
-		std::vector<Math::Real> m_sensitivities;
+		Rendering::BaseCamera* m_camera;
+		Engine::CameraBehaviorTypes::CameraBehaviorType m_cameraBehaviorType;
 
 		const Engine::GameNode* m_gameNodeToFollow;
 		/* ==================== Non-static member variables end ==================== */
