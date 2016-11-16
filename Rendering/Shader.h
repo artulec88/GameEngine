@@ -41,7 +41,7 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ShaderData(const std::string& fileName);
+		ShaderData(const std::string& directoryPath, const std::string& fileName);
 		~ShaderData(void);
 		ShaderData(const ShaderData& shaderData) = delete;
 		ShaderData(ShaderData&& shaderData);
@@ -69,7 +69,7 @@ namespace Rendering
 		bool IsUniformPresent(const std::string& uniformName, std::map<std::string, GLint>::const_iterator& itr) const;
 		//const std::vector<Uniforms::UniformStruct>& GetStructUniforms() const { return m_structUniforms; }
 	private:
-		std::string LoadShaderData(const std::string& fileName) const;
+		std::string LoadShaderData(const std::string& directoryPath, const std::string& fileName) const;
 		void AddVertexShader(const std::string& vertexShaderText);
 		void AddGeometryShader(const std::string& geometryShaderText);
 		void AddFragmentShader(const std::string& fragmentShaderText);
@@ -120,8 +120,9 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Shader constructor. </summary>
+		/// <param name="directoryPath"> The path to the system directory where the shader's file with name <paramref name="fileName"/> should be located in. </param>
 		/// <param name="fileName"> The file name which contains the shader's code. </param>
-		RENDERING_API Shader(const std::string& fileName);
+		RENDERING_API Shader(const std::string& directoryPath, const std::string& fileName);
 		/// <summary> Shader destructor. </summary>
 		RENDERING_API ~Shader(void);
 

@@ -157,7 +157,8 @@ Engine::CoreEngine* Engine::CoreEngine::s_coreEngine = nullptr;
 #endif
 }
 
-Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
+Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
+	const std::string& configDirectory /* = "..\\Config\\" */, const std::string& shadersDirectory /* = "..\\Shaders\\" */,
 	const std::string& modelsDirectory /* = "..\\Models\\" */, const std::string& texturesDirectory /* = "..\\Textures\\" */,
 	const std::string& fontsDirectory /* = "..\\Fonts\\" */, const std::string& audioDirectory /* = "..\\Sounds\\" */) :
 	m_window(NULL),
@@ -171,6 +172,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 	m_audioEngine(nullptr),
 	m_physicsEngine(NULL),
 	m_renderer(nullptr),
+	m_configDirectory(configDirectory),
 	m_shadersDirectory(shadersDirectory),
 	m_modelsDirectory(modelsDirectory),
 	m_texturesDirectory(texturesDirectory),
@@ -188,7 +190,7 @@ Engine::CoreEngine::CoreEngine(bool fullscreenEnabled, int width, int height, co
 		{ GLFW_KEY_SPACE, Input::RawInputKeys::KEY_SPACE }, { GLFW_KEY_LEFT_CONTROL, Input::RawInputKeys::KEY_LEFT_CONTROL }, { GLFW_KEY_LEFT_ALT, Input::RawInputKeys::KEY_LEFT_ALT },
 		{ GLFW_KEY_LEFT_SHIFT, Input::RawInputKeys::KEY_LEFT_SHIFT },{ GLFW_KEY_RIGHT_CONTROL, Input::RawInputKeys::KEY_RIGHT_CONTROL },{ GLFW_KEY_RIGHT_ALT, Input::RawInputKeys::KEY_RIGHT_ALT },
 		{ GLFW_KEY_RIGHT_SHIFT, Input::RawInputKeys::KEY_RIGHT_SHIFT } }),
-	m_inputMapping("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\" + GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
+	m_inputMapping(m_configDirectory, GET_CONFIG_VALUE_STR_ENGINE("inputContextsListFileName", "ContextsList.txt"))
 #ifdef PROFILING_ENGINE_MODULE_ENABLED
 	, m_countStats1(0),
 	m_timeSum1(REAL_ZERO),
@@ -452,7 +454,7 @@ void Engine::CoreEngine::Run()
 	//Math::Vector3D inGameTimeColors[] = { Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 1.0f) };
 	//Math::Real inGameTimeTimes[] = { 0.0f, 1.0f, 5.5f };
 	// TODO: In the future the FPS and in-game time GUI controls should be a simple GuiTextBoxControls instead of GuiButtonControl.
-	Rendering::Controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(Rendering::Text::FontTypes::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
+	Rendering::Controls::GuiButtonControl fpsGuiButton("text", m_game->GetFont(Rendering::Text::FontIDs::CANDARA), GET_CONFIG_VALUE_ENGINE("fontSizeFPS", 2.5f), NULL,
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenPositionFPSX", 0.0f), GET_CONFIG_VALUE_ENGINE("screenPositionFPSY", 0.0f)), Math::Angle(GET_CONFIG_VALUE_ENGINE("screenRotationFPS", 0.0f)),
 		Math::Vector2D(GET_CONFIG_VALUE_ENGINE("screenScaleFPSX", 1.0f), GET_CONFIG_VALUE_ENGINE("screenScaleFPSY", 1.0f)),
 		GET_CONFIG_VALUE_ENGINE("maxLineLengthFPS", 0.5f), Rendering::Color(GET_CONFIG_VALUE_ENGINE("colorFPSRed", 1.0f), GET_CONFIG_VALUE_ENGINE("colorFPSGreen", 0.0f), GET_CONFIG_VALUE_ENGINE("colorFPSBlue", 0.0f)),

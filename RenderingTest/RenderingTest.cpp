@@ -34,6 +34,7 @@ using namespace Utility;
 using namespace std;
 
 const string MODULE_NAME = "MathTest";
+const string CONFIG_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\";
 const string MODELS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Models\\";
 const string SHADERS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\";
 const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\";
@@ -48,11 +49,13 @@ std::unique_ptr<Renderer> renderer = nullptr;
 bool cameraRotationEnabled = false;
 Camera camera;
 
-Transform planeTransform;
-const int PLANE_MESH_ID = MeshIDs::COUNT;
-const Mesh* planeMesh = nullptr;
-const int PLANE_DIFFUSE_TEXTURE_ID = TextureIDs::COUNT;
-std::unique_ptr<Material> planeMaterial = nullptr;
+constexpr int CUBE_MESHES_ROWS = 20;
+constexpr int CUBE_MESHES_COLS = 20;
+std::array<Transform, CUBE_MESHES_ROWS * CUBE_MESHES_COLS> cubeTransforms;
+constexpr int CUBE_MESH_ID = MeshIDs::COUNT;
+const Mesh* cubeMesh = nullptr;
+const int CUBE_DIFFUSE_TEXTURE_ID = TextureIDs::COUNT;
+std::unique_ptr<Material> cubeMaterial = nullptr;
 
 unsigned int testNumber = 0;
 bool meshTestEnabled = true;
@@ -494,23 +497,32 @@ void InitializeTestTweakBars()
 
 void CreateScene()
 {
+	OrthoCameraBuilder orthoCameraBuilder;
+	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
+		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.2f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
 		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.2f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
+	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
-	//camera.Activate();
 	NOTICE_LOG_RENDERING_TEST(camera);
 
-	renderer->CreateTexture(PLANE_DIFFUSE_TEXTURE_ID, "chessboard3.jpg");
-	planeMaterial = std::make_unique<Material>(renderer->GetTexture(PLANE_DIFFUSE_TEXTURE_ID), 8.0f, 1.0f,
+	renderer->CreateTexture(CUBE_DIFFUSE_TEXTURE_ID, "chessboard3.jpg");
+	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(CUBE_DIFFUSE_TEXTURE_ID), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
-	planeMesh = renderer->CreateMesh(PLANE_MESH_ID, "cube.obj");
-	planeTransform.SetPos(0.0f, 0.0f, 0.5f);
-	planeTransform.SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
-		/* to make the plane face towards the camera.
-		See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
-		https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
+	cubeMesh = renderer->CreateMesh(CUBE_MESH_ID, "cube.obj");
+	for (int i = 0; i < CUBE_MESHES_ROWS; ++i)
+	{
+		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
+		{
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(2.5f * static_cast<Math::Real>(j), 0.0f, 2.5f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
+				/* to make the plane face towards the camera.
+				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
+				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
+		}
+	}
 }
 
 //Math::Angle angleStep(1.0f);
@@ -528,7 +540,10 @@ void RenderScene()
 
 	renderer->BindShader(ShaderIDs::AMBIENT);
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
-	renderer->Render(PLANE_MESH_ID, planeMaterial.get(), planeTransform, ShaderIDs::AMBIENT);
+	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
+	{
+		renderer->Render(CUBE_MESH_ID, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
+	}
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
 		Rendering::ShaderIDs::FILTER_FXAA :
@@ -543,7 +558,7 @@ void Run()
 
 	CreateScene();
 
-	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontTypes::CANDARA), 1.25f, NULL,
+	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontIDs::CANDARA), 1.25f, NULL,
 		Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
 		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 

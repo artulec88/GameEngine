@@ -34,7 +34,8 @@ void PrintHelp()
 	std::cout << std::endl;
 }
 
-void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirectory, std::string* modelsDirectory, std::string* texturesDirectory, std::string* fontsDirectory, std::string* audioDirectory)
+void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirectory, std::string* shaderDirectory, std::string* modelsDirectory,
+	std::string* texturesDirectory, std::string* fontsDirectory, std::string* audioDirectory)
 {
 	std::unique_ptr<Utility::ICommandLineMapper> commandLineMapper = Utility::ICommandLineMapper::CreateCommandLineMapper(argc, argv);
 	if (commandLineMapper->IsPresent("-help"))
@@ -43,13 +44,17 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* shaderDirect
 		system("pause");
 		exit(EXIT_SUCCESS);
 	}
-	Utility::IConfig::CreateConfig("Audio", commandLineMapper->Get("-configAudio", "..\\Config\\ConfigAudio.cfg"));
-	Utility::IConfig::CreateConfig("Physics", commandLineMapper->Get("-configPhysics", "..\\Config\\ConfigPhysics.cfg"));
-	Utility::IConfig::CreateConfig("Rendering", commandLineMapper->Get("-configRendering", "..\\Config\\ConfigRendering.cfg"));
-	Utility::IConfig::CreateConfig("Engine", commandLineMapper->Get("-configEngine", "..\\Config\\ConfigEngine.cfg"));
-	Utility::IConfig::CreateConfig("Game", commandLineMapper->Get("-configGame", "..\\Config\\ConfigGame.cfg"));
-	Utility::IConfig::CreateConfig("Math", commandLineMapper->Get("-configMath", "..\\Config\\ConfigMath.cfg"));
-	Utility::IConfig::CreateConfig("Utility", commandLineMapper->Get("-configUtility", "..\\Config\\ConfigUtility.cfg"));
+
+	// Initializing config directory
+	*configDirectory = commandLineMapper->Get("-configDirectory", "..\\..\\Config\\");
+
+	Utility::IConfig::CreateConfig("Audio", *configDirectory + commandLineMapper->Get("-configAudio", "ConfigAudio.cfg"));
+	Utility::IConfig::CreateConfig("Physics", *configDirectory + commandLineMapper->Get("-configPhysics", "ConfigPhysics.cfg"));
+	Utility::IConfig::CreateConfig("Rendering", *configDirectory + commandLineMapper->Get("-configRendering", "ConfigRendering.cfg"));
+	Utility::IConfig::CreateConfig("Engine", *configDirectory + commandLineMapper->Get("-configEngine", "ConfigEngine.cfg"));
+	Utility::IConfig::CreateConfig("Game", *configDirectory + commandLineMapper->Get("-configGame", "ConfigGame.cfg"));
+	Utility::IConfig::CreateConfig("Math", *configDirectory + commandLineMapper->Get("-configMath", "ConfigMath.cfg"));
+	Utility::IConfig::CreateConfig("Utility", *configDirectory + commandLineMapper->Get("-configUtility", "ConfigUtility.cfg"));
 
 	Utility::Logging::ILogger::GetLogger("Audio").Fill((commandLineMapper->IsPresent("-logAudio")) ? commandLineMapper->Get("-logAudio", "Info") :
 		GET_CONFIG_VALUE_STR_GAME("LoggingLevelAudio", "Info"), Utility::Logging::INFO); // Initializing audio logger
@@ -93,12 +98,12 @@ int main(int argc, char* argv[])
 	//int bytes = GetModuleFileName(NULL, pBuff, len);
 	//printf("Current working directory = %s\n", argv[0]);
 
-	std::string shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
-	ReadSettingsAndParameters(argc, argv, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
+	std::string configDirectory, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory;
+	ReadSettingsAndParameters(argc, argv, &configDirectory, &shaderDirectory, &modelsDirectory, &texturesDirectory, &fontsDirectory, &audioDirectory);
 
 	/* ==================== Create game instance and run ==================== */
 	Engine::CoreEngine engine(GET_CONFIG_VALUE_GAME("fullscreenEnabled", false), GET_CONFIG_VALUE_GAME("windowWidth", 1024), GET_CONFIG_VALUE_GAME("windowHeight", 600),
-		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
+		GET_CONFIG_VALUE_STR_GAME("windowTitle", "Default window title").c_str(), configDirectory, shaderDirectory, modelsDirectory, texturesDirectory, fontsDirectory, audioDirectory);
 	Game::TestGameManager game;
 	engine.Start(&game);
 	return EXIT_SUCCESS;

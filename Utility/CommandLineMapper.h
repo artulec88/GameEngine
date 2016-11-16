@@ -13,7 +13,7 @@ namespace Utility
 {
 	class CommandLineMapper : public ICommandLineMapper
 	{
-		typedef std::map<std::string, std::string> ArgsToValuesMap;
+		using ArgsToValuesMap = std::map<std::string, std::string>;
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Command line parameters mapping object constructor. </summary>

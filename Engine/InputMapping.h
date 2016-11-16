@@ -55,7 +55,7 @@ namespace Engine
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			ENGINE_API InputMapping();
-			ENGINE_API explicit InputMapping(const std::string& contextListFileName);
+			ENGINE_API InputMapping(const std::string& configDirectory, const std::string& contextListFileName);
 			ENGINE_API ~InputMapping();
 			/* ==================== Constructors and destructors end ==================== */
 

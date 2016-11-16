@@ -28,12 +28,21 @@ namespace Rendering
 		RENDERING_API ~MeshFactory(void);
 
 		/// <summary> Mesh factory copy constructor. </summary>
+		/// <param name="meshFactory"> The mesh factory to copy construct from. </param>
 		MeshFactory(const MeshFactory& meshFactory) = delete;
+
 		/// <summary> Mesh factory move constructor. </summary>
+		/// <param name="meshFactory"> The mesh factory to move construct from. </param>
 		MeshFactory(MeshFactory&& meshFactory) = delete;
+
 		/// <summary> Mesh factory copy assignment operator. </summary>
+		/// <param name="meshFactory"> The mesh factory to copy assign from. </param>
+		/// <returns> The reference of the newly copy-assigned mesh factory. </returns>
 		MeshFactory& operator=(MeshFactory& meshFactory) = delete;
+
 		/// <summary> Mesh factory move assignment operator. </summary>
+		/// <param name="meshFactory"> The mesh factory to move assign from. </param>
+		/// <returns> The reference of the newly move-assigned mesh factory. </returns>
 		MeshFactory& operator=(MeshFactory&& meshFactory) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -43,20 +52,12 @@ namespace Rendering
 		//RENDERING_API const Mesh* CreateBillboardMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateInstanceMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateTerrainMesh(int meshID, const std::string& meshFileName);
-		//RENDERING_API const Mesh* CreateTextMesh(int meshID, const std::string& meshFileName);
 		RENDERING_API inline const Mesh* GetMesh(int meshID) const
 		{
 			auto meshItr = m_meshType2MeshMap.find(meshID);
-			if (meshItr == m_meshType2MeshMap.end())
-			{
-				auto instanceMeshItr = m_meshType2InstanceMeshMap.find(meshID);
-				if (instanceMeshItr == m_meshType2InstanceMeshMap.end())
-				{
-					ERROR_LOG_RENDERING("No mesh has been created for the specified ID (", meshID, ").");
-				}
-				return &instanceMeshItr->second;
-			}
-			return &meshItr->second;
+			CHECK_CONDITION_EXIT_RENDERING(meshItr != m_meshType2MeshMap.end(), Utility::Logging::ERR,
+				"No mesh has been created for the specified ID (", meshID, ").");
+			return meshItr->second.get();
 		}
 		/* ==================== Non-static member functions end ==================== */
 
@@ -70,22 +71,22 @@ namespace Rendering
 		/// <summary>
 		/// The map storing all meshes by their unique ID.
 		/// </summary>
-		std::map<int, Mesh> m_meshType2MeshMap;
+		std::map<int, std::unique_ptr<Mesh>> m_meshType2MeshMap;
 
-		/// <summary>
-		/// The map storing all instance meshes by their unique ID.
-		/// </summary>
-		std::map<int, InstanceMesh> m_meshType2InstanceMeshMap;
+		///// <summary>
+		///// The map storing all instance meshes by their unique ID.
+		///// </summary>
+		//std::map<int, InstanceMesh> m_meshType2InstanceMeshMap;
 
-		/// <summary>
-		/// The map storing all terrain meshes by their unique ID.
-		/// </summary>
-		std::map<int, TerrainMesh> m_meshType2TerrainMeshMap;
+		///// <summary>
+		///// The map storing all terrain meshes by their unique ID.
+		///// </summary>
+		//std::map<int, TerrainMesh> m_meshType2TerrainMeshMap;
 
-		/// <summary>
-		/// The map storing all billboard meshes by their unique ID.
-		/// </summary>
-		std::map<int, BillboardMesh> m_meshType2BillboardMeshMap;
+		///// <summary>
+		///// The map storing all billboard meshes by their unique ID.
+		///// </summary>
+		//std::map<int, BillboardMesh> m_meshType2BillboardMeshMap;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class MeshFactory */
 

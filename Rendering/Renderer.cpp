@@ -212,9 +212,14 @@ const Rendering::Shader* Rendering::Renderer::CreateShader(int shaderID, const s
 	return m_shaderFactory.CreateShader(shaderID, shaderFileName);
 }
 
-const Rendering::Text::Font* Rendering::Renderer::GetFont(Rendering::Text::FontTypes::FontType fontType)
+const Rendering::Text::Font* Rendering::Renderer::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
-	return m_fontFactory.GetFont(fontType);
+	return m_fontFactory.CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
+}
+
+const Rendering::Text::Font* Rendering::Renderer::GetFont(int fontID) const
+{
+	return m_fontFactory.GetFont(fontID);
 }
 
 /* TODO: Remove in the future */

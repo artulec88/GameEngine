@@ -150,7 +150,7 @@ namespace Utility
 
 		class ILogger
 		{
-			typedef std::vector<std::ofstream> Outs;
+			using Outs = std::vector<std::ofstream>;
 			/* ==================== Static variables and functions begin ==================== */
 		protected:
 			static std::map<std::string, std::unique_ptr<ILogger>> loggers;

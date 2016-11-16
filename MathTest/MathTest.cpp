@@ -1318,8 +1318,14 @@ int main(int argc, char* argv[])
 	//	system("pause");
 	//	return 0;
 	//}
-	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
+
+	//constexpr int ACCEPTABLE_PROGRAM_ARGUMENTS_COUNT = 4;
+	//const std::array<std::string, ACCEPTABLE_PROGRAM_ARGUMENTS_COUNT> acceptableProgramArguments = { "-help", "-logUtility", "-logMath", "-log" };
+
+	Logging::ILogger::GetLogger("Utility").Fill(commandLineMapper->Get("-logUtility", "Info"), Logging::INFO);
 	Logging::ILogger::GetLogger("Math").Fill(commandLineMapper->Get("-logMath", "Info"), Logging::INFO);
+	Logging::ILogger::GetLogger(MODULE_NAME).Fill(commandLineMapper->Get("-log", ""), Logging::INFO);
+	
 
 	STATS_STORAGE.StartTimer();
 

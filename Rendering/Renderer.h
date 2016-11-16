@@ -151,7 +151,8 @@ namespace Rendering
 		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);
 		RENDERING_API const Shader* GetShader(int shaderID) const { return m_shaderFactory.GetShader(shaderID); }
 
-		RENDERING_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType);
+		RENDERING_API const Rendering::Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		RENDERING_API const Rendering::Text::Font* GetFont(int fontID) const;
 
 		RENDERING_API inline void BindShader(int shaderID) { m_shaderFactory.GetShader(shaderID)->Bind(); }
 		RENDERING_API inline void UpdateRendererUniforms(int shaderID) { m_shaderFactory.GetShader(shaderID)->UpdateRendererUniforms(this); }

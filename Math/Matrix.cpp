@@ -622,9 +622,9 @@ void Math::Matrix4D::SetOrthogonalProjection(Real left, Real right, Real bottom,
 	SetElement(2, 1, REAL_ZERO);
 	SetElement(2, 2, -2.0f / (farPlane - nearPlane));
 	SetElement(2, 3, REAL_ZERO);
-	SetElement(3, 0, -(right + left) / (right - left));
-	SetElement(3, 1, -(top + bottom) / (top - bottom));
-	SetElement(3, 2, -(farPlane + nearPlane) / (farPlane - nearPlane));
+	SetElement(3, 0, (-(right + left)) / (right - left));
+	SetElement(3, 1, (-(top + bottom)) / (top - bottom));
+	SetElement(3, 2, (-(farPlane + nearPlane)) / (farPlane - nearPlane));
 	SetElement(3, 3, REAL_ONE);
 }
 

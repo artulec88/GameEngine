@@ -68,9 +68,9 @@ namespace Engine
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		ENGINE_API CoreEngine(bool fullscreenEnabled, int width, int height, const char* title,
-			const std::string& shadersDirectory = "..\\Shaders\\", const std::string& modelsDirectory = "..\\Models\\",
-			const std::string& texturesDirectory = "..\\Textures\\", const std::string& fontsDirectory = "..\\Fonts\\",
-			const std::string& audioDirectory = "..\\Sounds\\");
+			const std::string& configDirectory = "..\\Config\\", const std::string& shadersDirectory = "..\\Shaders\\",
+			const std::string& modelsDirectory = "..\\Models\\", const std::string& texturesDirectory = "..\\Textures\\",
+			const std::string& fontsDirectory = "..\\Fonts\\", const std::string& audioDirectory = "..\\Sounds\\");
 		ENGINE_API ~CoreEngine(void);
 		CoreEngine(const CoreEngine& coreEngine) = delete;
 		void operator=(const CoreEngine& coreEngine) = delete;
@@ -159,9 +159,13 @@ namespace Engine
 		{
 			return m_renderer->GetShader(shaderID);
 		}
-		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType)
+		ENGINE_API const Rendering::Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 		{
-			return m_renderer->GetFont(fontType);
+			return m_renderer->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
+		}
+		ENGINE_API const Rendering::Text::Font* GetFont(int fontID) const
+		{
+			return m_renderer->GetFont(fontID);
 		}
 
 		ENGINE_API void PushInputContext(const std::string& inputContextName);
@@ -216,6 +220,8 @@ namespace Engine
 		Physics::PhysicsEngine* m_physicsEngine;
 		std::unique_ptr<Rendering::Renderer> m_renderer; // TODO: Replace unique_ptr with a simple instance of Rendering::Renderer.
 
+		/// <summary> Specifies where to look for the configuration files. </summary>
+		const std::string m_configDirectory;
 		/// <summary> Specifies where to look for the shader files. </summary>
 		const std::string m_shadersDirectory;
 		/// <summary> Specifies where to look for the model files. </summary>

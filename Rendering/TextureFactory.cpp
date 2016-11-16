@@ -12,9 +12,12 @@ Rendering::TextureFactory::TextureFactory(const std::string& texturesDirectory) 
 {
 	// This way we make sure that Texture's move ctrs are used instead of copy ctrs.
 	//m_textureType2TextureMap.insert(std::make_pair(TextureTypes::DEFAULT, Rendering::Texture(GET_CONFIG_VALUE_STR_ENGINE("defaultNormalMap", "defaultNormalMap.jpg"))));
-	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_TEXTURE, Rendering::Texture(GET_CONFIG_VALUE_STR_RENDERING("defaultTexture", "defaultTexture.png"))));
-	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_NORMAL_MAP, Rendering::Texture(GET_CONFIG_VALUE_STR_RENDERING("defaultNormalMap", "defaultNormalMap.jpg"))));
-	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_DISPLACEMENT_MAP, Rendering::Texture(GET_CONFIG_VALUE_STR_RENDERING("defaultDisplacementMap", "defaultDisplacementMap.jpg"))));
+	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_TEXTURE, Rendering::Texture(m_texturesDirectory +
+		GET_CONFIG_VALUE_STR_RENDERING("defaultTexture", "defaultTexture.png"))));
+	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_NORMAL_MAP, Rendering::Texture(m_texturesDirectory +
+		GET_CONFIG_VALUE_STR_RENDERING("defaultNormalMap", "defaultNormalMap.jpg"))));
+	m_textureType2TextureMap.insert(std::make_pair(TextureIDs::DEFAULT_DISPLACEMENT_MAP, Rendering::Texture(m_texturesDirectory +
+		GET_CONFIG_VALUE_STR_RENDERING("defaultDisplacementMap", "defaultDisplacementMap.jpg"))));
 }
 
 
@@ -26,7 +29,7 @@ const Rendering::Texture* Rendering::TextureFactory::CreateTexture(int textureID
 {
 	INFO_LOG_RENDERING("Creating texture \"", textureFileName, "\" for ID ", textureID);
 	std::pair<std::map<int, Texture>::iterator, bool> texturePair =
-		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(textureFileName)));
+		m_textureType2TextureMap.insert(std::make_pair(textureID, Texture(m_texturesDirectory + textureFileName)));
 	CHECK_CONDITION_RENDERING(texturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
 	DEBUG_LOG_RENDERING("Texture \"", textureFileName, "\" has been created for ID ", textureID);
 	return &texturePair.first->second;
@@ -102,7 +105,7 @@ const Rendering::Particles::ParticleTexture* Rendering::TextureFactory::CreatePa
 {
 	INFO_LOG_RENDERING("Creating particles texture \"", textureFileName, "\" for ID ", textureID);
 	std::pair<std::map<int, Particles::ParticleTexture>::iterator, bool> particleTexturePair =
-		m_textureType2ParticleTextureMap.insert(std::make_pair(textureID, Particles::ParticleTexture(textureFileName, rowsCount, isAdditive)));
+		m_textureType2ParticleTextureMap.insert(std::make_pair(textureID, Particles::ParticleTexture(m_texturesDirectory + textureFileName, rowsCount, isAdditive)));
 	CHECK_CONDITION_RENDERING(particleTexturePair.second, Utility::Logging::WARNING, "Texture \"", textureFileName, "\" has already been created.");
 	return &particleTexturePair.first->second;
 }

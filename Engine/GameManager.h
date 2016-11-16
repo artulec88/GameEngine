@@ -28,7 +28,7 @@
 #include "Math\StatisticsStorage.h"
 #endif
 
-#include <amp.h>
+//#include <amp.h>
 #include <vector>
 
 namespace Engine
@@ -108,8 +108,8 @@ namespace Engine
 		ENGINE_API const Rendering::Shader* AddShader(int shaderID, const std::string& shaderFileName) const;
 		ENGINE_API const Rendering::Shader* GetShader(int shaderID) const;
 
-		//ENGINE_API const Rendering::Text::Font* AddFont()
-		ENGINE_API const Rendering::Text::Font* GetFont(Rendering::Text::FontTypes::FontType fontType); // TODO: "int fontID" instead of "Rendering::Text::FontTypes::FontType fontType"?
+		ENGINE_API const Rendering::Text::Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+		ENGINE_API const Rendering::Text::Font* GetFont(int fontID) const;
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 		virtual void InitializeTweakBars();

@@ -131,6 +131,9 @@ namespace Rendering
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class CameraBuilder */
 
+	/// <summary>
+	/// Orthographic projection camera builder.
+	/// </summary>
 	class OrthoCameraBuilder : public CameraBuilder
 	{
 		/* ==================== Static variables and functions begin ==================== */
@@ -138,11 +141,28 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
+		/// <summary> Orthographic projection camera builder constructor. </summary>
 		RENDERING_API OrthoCameraBuilder();
+
+		/// <summary> Orthographic projection camera builder destructor. </summary>
 		RENDERING_API virtual ~OrthoCameraBuilder(void);
+
+		/// <summary> Orthographic projection camera builder copy constructor. </summary>
+		/// <param name="orthoCameraBuilder"> The orthographic projection camera builder to copy construct from. </param>
 		OrthoCameraBuilder(OrthoCameraBuilder& orthoCameraBuilder) = delete;
+
+		/// <summary> Orthographic projection camera builder move constructor. </summary>
+		/// <param name="orthoCameraBuilder"> The orthographic projection camera builder to move construct from. </param>
 		OrthoCameraBuilder(OrthoCameraBuilder&& orthoCameraBuilder) = delete;
+
+		/// <summary> Orthographic projection camera builder copy assignment operator. </summary>
+		/// <param name="orthoCameraBuilder"> The orthographic projection camera builder to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned orthographic projection camera builder. </returns>
 		OrthoCameraBuilder& operator=(const OrthoCameraBuilder& orthoCameraBuilder) = delete;
+
+		/// <summary> Orthographic projection camera builder move assignment operator. </summary>
+		/// <param name="orthoCameraBuilder"> The orthographic projection camera builder to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned orthographic projection camera builder. </returns>
 		OrthoCameraBuilder& operator=(OrthoCameraBuilder&& orthoCameraBuilder) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 

@@ -258,9 +258,14 @@ void Engine::GameManager::RequestGameQuit() const
 	CoreEngine::GetCoreEngine()->RequestWindowClose();
 }
 
-const Rendering::Text::Font* Engine::GameManager::GetFont(Rendering::Text::FontTypes::FontType fontType)
+const Rendering::Text::Font* Engine::GameManager::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
-	return CoreEngine::GetCoreEngine()->GetFont(fontType);
+	return CoreEngine::GetCoreEngine()->CreateFont(fontID, fontTextureFileName, fontMetaDataFileName);
+}
+
+const Rendering::Text::Font* Engine::GameManager::GetFont(int fontID) const
+{
+	return CoreEngine::GetCoreEngine()->GetFont(fontID);
 }
 
 void Engine::GameManager::LoadSoundEffect(const std::string& soundEffectFileName) const

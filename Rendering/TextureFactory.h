@@ -28,12 +28,21 @@ namespace Rendering
 		RENDERING_API ~TextureFactory(void);
 
 		/// <summary> Texture factory copy constructor. </summary>
+		/// <param name="textureFactory"> The reference of the texture factory to copy construct from. </param>
 		TextureFactory(const TextureFactory& textureFactory) = delete;
+
 		/// <summary> Texture factory move constructor. </summary>
+		/// <param name="textureFactory"> The r-value reference of the texture factory to move construct from. </param>
 		TextureFactory(TextureFactory&& textureFactory) = delete;
+
 		/// <summary> Texture factory copy assignment operator. </summary>
+		/// <param name="textureFactory"> The reference of the texture factory to copy assign from. </param>
+		/// <returns> The reference of the newly copy-assigned texture factory. </returns>
 		TextureFactory& operator=(TextureFactory& textureFactory) = delete;
+
 		/// <summary> Texture factory move assignment operator. </summary>
+		/// <param name="textureFactory"> The r-value reference of the texture factory to move assign from. </param>
+		/// <returns> The reference of the newly move-assigned texture factory. </returns>
 		TextureFactory& operator=(TextureFactory&& textureFactory) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 

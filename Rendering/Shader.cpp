@@ -11,13 +11,13 @@
 
 ///* static */ std::map<std::string, std::shared_ptr<Rendering::ShaderData>> Rendering::Shader::shaderResourceMap;
 
-Rendering::ShaderData::ShaderData(const std::string& fileName) :
+Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::string& fileName) :
 	m_programID(glCreateProgram())
 {
 	DELOCUST_LOG_RENDERING("ShaderData constructor called for file name: \"", fileName, "\". ");
 	CHECK_CONDITION_EXIT_ALWAYS_RENDERING(m_programID != 0, Utility::Logging::CRITICAL, "Error while creating shader program. Program ID is still 0.");
 
-	std::string shaderText = LoadShaderData(fileName);
+	std::string shaderText = LoadShaderData(directoryPath, fileName);
 	//CRITICAL_LOG_RENDERING("Shader text for shader file \"", fileName, "\" is:\n", shaderText);
 	bool geometryShaderPresent = (shaderText.find("defined(GS_BUILD)") != std::string::npos); // geometry shader found
 
@@ -71,8 +71,7 @@ Rendering::ShaderData::ShaderData(const std::string& fileName) :
 
 Rendering::ShaderData::~ShaderData()
 {
-	DELOCUST_LOG_RENDERING("ShaderData destructor called for program: ", m_programID, ". ");
-	DEBUG_LOG_RENDERING("Destroying shader data for shader program: ", m_programID);
+	DELOCUST_LOG_RENDERING("Destroying shader data for shader program: ", m_programID, ".");
 	for (std::vector<GLuint>::iterator shaderItr = m_shaders.begin(); shaderItr != m_shaders.end(); ++shaderItr)
 	{
 		glDetachShader(m_programID, *shaderItr);
@@ -101,19 +100,12 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 	//shaderData.m_structUniforms.clear();
 }
 
-std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) const
+std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPath, const std::string& fileName) const
 {
-	std::string name = fileName;
-	const char *tmp = strrchr(name.c_str(), '\\');
-	if (tmp != NULL)
-	{
-		name.assign(tmp + 1);
-	}
-	DEBUG_LOG_RENDERING("Loading shader data from file \"", name, "\"");
+	DEBUG_LOG_RENDERING("Loading shader data from file \"", fileName, "\"");
 
-	//std::ifstream file(fileName);
-	std::ifstream file(("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Shaders\\" + fileName));
-	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), Utility::Logging::ERR, "Unable to open shader file \"", name, "\". Check the path.");
+	std::ifstream file(directoryPath + fileName);
+	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), Utility::Logging::ERR, "Unable to open shader file \"", fileName, "\". Check the path.");
 
 	std::string output;
 	std::string line;
@@ -137,13 +129,13 @@ std::string Rendering::ShaderData::LoadShaderData(const std::string& fileName) c
 			//{
 			//	std::cout << i << "):\t" << tokens[i] << std::endl;
 			//}
-			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, Utility::Logging::ERR, "Error while reading #include directive in the shader file \"", name, "\"");
+			CHECK_CONDITION_EXIT_ALWAYS_RENDERING(tokens.size() > 1, Utility::Logging::ERR, "Error while reading #include directive in the shader file \"", fileName, "\"");
 			std::string includeFileName = tokens[1];
 			//DEBUG_LOG_RENDERING("Tokens[1] = \"", tokens[1], "\". IncludeFileName=\"", includeFileName, "\"");
 			//includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
 			//DEBUG_LOG_RENDERING("Loading an include shader file \"", includeFileName, "\"");
 
-			std::string fragmentToAppend = LoadShaderData(includeFileName);
+			std::string fragmentToAppend = LoadShaderData(directoryPath, includeFileName);
 			output.append(fragmentToAppend + "\n");
 		}
 	}
@@ -540,8 +532,8 @@ bool Rendering::ShaderData::IsUniformPresent(const std::string& uniformName, std
 }
 
 /* ==================== Shader class begin ==================== */
-Rendering::Shader::Shader(const std::string& fileName) :
-	m_shaderData(fileName),
+Rendering::Shader::Shader(const std::string& directoryPath, const std::string& fileName) :
+	m_shaderData(directoryPath, fileName),
 	m_fileName(fileName)
 #ifdef PROFILING_RENDERING_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Shader"))

@@ -240,6 +240,7 @@ namespace Rendering
 		/// <param name="fileName"> The file name storing the mesh data. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		explicit Mesh(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+
 		/// <summary> Mesh constructor. </summary>
 		/// <param name="indices"> The array of indices in the mesh. </param>
 		/// <param name="indicesCount"> The number of indices in the <paramref name="indices"/> array. </param>
@@ -255,21 +256,33 @@ namespace Rendering
 		/// <param name="calcNormalsEnabled"> <code>True</code> if normal vectors should be calculated and <code>false</code> otherwise. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates = nullptr, Math::Vector3D* normals = nullptr, Math::Vector3D* tangents = nullptr, Math::Vector3D* bitangents = nullptr, bool calcNormalsEnabled = false, GLenum mode = GL_TRIANGLES);
+
 		/// <summary> Mesh constructor. </summary>
 		/// <param name="positions"> The array of 2D screen positions in the mesh. </param>
 		/// <param name="textureCoordinates"> The array of 2D texture coordinates in the mesh. </param>
 		/// <param name="verticesCount"> The number of positions in the <paramref name="positions"/> array. </param>
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode);
+
 		/// <summary> Mesh destructor. </summary>
 		virtual ~Mesh(void);
+
 		/// <summary> Mesh copy constructor. </summary>
-		Mesh(const Mesh& Mesh) = delete;
+		/// <param name="mesh"> The reference to the mesh we want to copy construct from. </param>
+		Mesh(const Mesh& mesh) = delete;
+
 		/// <summary> Mesh move constructor. </summary>
+		/// <param name="mesh"> The r-value reference to the mesh we want to copy construct from. </param>
 		Mesh(Mesh&& mesh);
+
 		/// <summary> Mesh copy assignment operator. </summary>
+		/// <param name="mesh"> The reference to the mesh we want to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned mesh. </returns>
 		Mesh& operator=(const Mesh& mesh) = delete;
+
 		/// <summary> Mesh move assignment operator. </summary>
+		/// <param name="mesh"> The r-value reference to the mesh we want to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned mesh. </returns>
 		Mesh& operator=(Mesh&& mesh) = delete;
 	protected:
 		/// <summary> Mesh constructor. </summary>

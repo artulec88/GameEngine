@@ -30,7 +30,7 @@ namespace Audio
 			AUDIO_API virtual void PlayAudio(AudioObject& audioObject);
 			AUDIO_API virtual void PauseAudio(AudioObject& audioObject);
 			AUDIO_API virtual void StopAudio(AudioObject& audioObject);
-			AUDIO_API void GenerateSamples(UINT8* stream, int streamLength);
+			AUDIO_API void GenerateSamples(int* stream, int streamLength);
 		private:
 			/// <summary>
 			/// Removes the audio object from the vector of audio objects currently being played.

@@ -18,7 +18,7 @@ namespace Utility
 	/// </summary>
 	class Config : public IConfig
 	{
-		typedef std::map<std::string, std::string> ValuesMap;
+		using ValuesMap = std::map<std::string, std::string>;
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 

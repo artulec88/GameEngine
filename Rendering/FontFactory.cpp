@@ -4,10 +4,15 @@
 
 Rendering::Text::FontFactory::FontFactory(const Shader* textShader, const std::string& texturesDirectory, const std::string& fontsDirectory) :
 	m_textShader(textShader),
-	m_fontMap(),
+	m_fontType2FontMap(),
 	m_texturesDirectory(texturesDirectory),
 	m_fontsDirectory(fontsDirectory)
+	// TODO: If we initialize the map this way then Font's copy ctrs will be used (instead of move ctrs). Google that!
+	//m_fontsMap({ { FontIDs::CAMBRIA, std::move(Font(/*params*/) } )
 {
+	m_fontType2FontMap.emplace(FontIDs::CAMBRIA, Font(m_textShader, m_texturesDirectory + "cambria.png", m_fontsDirectory + "cambria.fnt"));
+	m_fontType2FontMap.emplace(FontIDs::CANDARA, Font(m_textShader, m_texturesDirectory + "candara.png", m_fontsDirectory + "candara.fnt"));
+	m_fontType2FontMap.emplace(FontIDs::SEGOE, Font(m_textShader, m_texturesDirectory + "segoe.png", m_fontsDirectory + "segoe.fnt"));
 }
 
 
@@ -15,30 +20,18 @@ Rendering::Text::FontFactory::~FontFactory()
 {
 }
 
-const Rendering::Text::Font* Rendering::Text::FontFactory::GetFont(FontTypes::FontType fontType)
+const Rendering::Text::Font* Rendering::Text::FontFactory::CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName)
 {
-	DEBUG_LOG_RENDERING("Retrieving font for font type: ", fontType);
-	std::map<FontTypes::FontType, Font>::const_iterator fontItr = m_fontMap.find(fontType);
-	if (fontItr == m_fontMap.end())
-	{
-		std::pair<std::map<FontTypes::FontType, Font>::iterator, bool> itr;
-		switch (fontType)
-		{
-		case FontTypes::CAMBRIA:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"cambria.png", m_fontsDirectory + "cambria.fnt")));
-			break;
-		case FontTypes::CANDARA:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"candara.png", m_fontsDirectory + "candara.fnt")));
-			break;
-		case FontTypes::SEGOE:
-			itr = m_fontMap.emplace(std::make_pair(fontType, Font(m_textShader, /*m_texturesDirectory + */"segoe.png", m_fontsDirectory + "segoe.fnt")));
-			break;
-		default:
-			EMERGENCY_LOG_RENDERING("The specified font type (", fontType, ") is not supported by the game engine.");
-			return &m_fontMap.begin()->second;
-		}
-		CHECK_CONDITION_RENDERING(itr.second, Utility::Logging::EMERGENCY, "The font type (", fontType, ") has already existed in the font map.");
-		return &itr.first->second;
-	}
-	return &fontItr->second;
+	std::pair<std::map<int, Font>::iterator, bool> fontPair =
+		m_fontType2FontMap.insert(std::make_pair(fontID, Font(m_textShader, m_texturesDirectory + fontTextureFileName, m_fontsDirectory + fontMetaDataFileName)));
+	CHECK_CONDITION_RENDERING(fontPair.second, Utility::Logging::WARNING, "Font \"", fontTextureFileName, "\" has already been created.");
+	return &fontPair.first->second;
+}
+
+const Rendering::Text::Font* Rendering::Text::FontFactory::GetFont(int fontID) const
+{
+	DEBUG_LOG_RENDERING("Retrieving font for font ID: ", fontID);
+	CHECK_CONDITION_EXIT_RENDERING(m_fontType2FontMap.find(fontID) != m_fontType2FontMap.end(), Utility::Logging::EMERGENCY,
+		"No font has been created for the specified type of font (", fontID, ").");
+	return &m_fontType2FontMap.find(fontID)->second;
 }

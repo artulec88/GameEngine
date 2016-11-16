@@ -15,10 +15,10 @@ Engine::Input::InputMapping::InputMapping() //:
 	m_inputContexts.insert(std::make_pair("mainMenuInputContext", std::make_unique<InputContext>("mainMenuInputContext")));
 }
 
-Engine::Input::InputMapping::InputMapping(const std::string& contextListFileName)
+Engine::Input::InputMapping::InputMapping(const std::string& configDirectory, const std::string& contextListFileName)
 {
 	unsigned count;
-	std::ifstream inFile(contextListFileName);
+	std::ifstream inFile(configDirectory + contextListFileName);
 	if (!(inFile >> count))
 	{
 		EMERGENCY_LOG_ENGINE("Failed to read context list file \"", contextListFileName, "\".");
@@ -29,7 +29,7 @@ Engine::Input::InputMapping::InputMapping(const std::string& contextListFileName
 		{
 			//Utility::IConfig::CreateConfig()
 			const std::string name = Utility::FileManager::AttemptRead<std::string>(inFile);
-			const std::string fileName = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Config\\" + Utility::FileManager::AttemptRead<std::string>(inFile);
+			const std::string fileName = configDirectory + Utility::FileManager::AttemptRead<std::string>(inFile);
 			INFO_LOG_ENGINE("Input context \"", name, "\" initialized with file \"", fileName, "\".");
 			m_inputContexts[name] = std::make_unique<InputContext>(std::ifstream(fileName));
 		}

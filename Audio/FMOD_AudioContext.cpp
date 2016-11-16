@@ -30,7 +30,7 @@ void Audio::Fmod::FmodAudioContext::StopAudio(AudioObject& audioObject)
 	}
 }
 
-void Audio::Fmod::FmodAudioContext::GenerateSamples(UINT8* stream, int streamLength)
+void Audio::Fmod::FmodAudioContext::GenerateSamples(int* stream, int streamLength)
 {
 }
 

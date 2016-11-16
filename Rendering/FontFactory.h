@@ -9,17 +9,17 @@ namespace Rendering
 {
 	namespace Text
 	{
-		namespace FontTypes
+		namespace FontIDs
 		{
-			enum FontType
+			enum FontID
 			{
 				CANDARA = 0,
 				SEGOE,
 				CAMBRIA,
 				
 				COUNT
-			}; /* end enum FontType */
-		} /* end namespace FontTypes */
+			}; /* end enum FontID */
+		} /* end namespace FontIDs */
 
 		/// <summary>
 		/// Font factory.
@@ -61,13 +61,14 @@ namespace Rendering
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			RENDERING_API const Font* GetFont(FontTypes::FontType fontType);
+			RENDERING_API const Font* CreateFont(int fontID, const std::string& fontTextureFileName, const std::string& fontMetaDataFileName);
+			RENDERING_API const Font* GetFont(int fontID) const;
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
 			const Shader* m_textShader;
-			std::map<FontTypes::FontType, Font> m_fontMap;
+			std::map<int, Font> m_fontType2FontMap;
 			const std::string& m_texturesDirectory;
 			const std::string& m_fontsDirectory;
 			/* ==================== Non-static member variables end ==================== */
