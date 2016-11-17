@@ -4,7 +4,7 @@
 
 Rendering::MappedValues::MappedValues()
 {
-	DEBUG_LOG_RENDERING("Mapped values container created.");
+	DELOCUST_LOG_RENDERING("Mapped values container created.");
 }
 
 Rendering::MappedValues::~MappedValues()

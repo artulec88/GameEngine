@@ -716,16 +716,16 @@ void Rendering::CheckErrorCode(const char* functionName, const char* comment)
 	}
 }
 
-/**
- * See https://www.opengl.org/sdk/docs/man3/xhtml/glCheckFramebufferStatus.xml
- */
 void Rendering::CheckFramebufferStatus()
 {
+	/**
+	* See https://www.opengl.org/sdk/docs/man3/xhtml/glCheckFramebufferStatus.xml
+	*/
 	GLenum framebufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	switch (framebufferStatus)
 	{
 	case GL_FRAMEBUFFER_COMPLETE:
-		DEBUG_LOG_RENDERING("Framebuffer is in status: GL_FRAMEBUFFER_COMPLETE");
+		DELOCUST_LOG_RENDERING("Framebuffer is in status: GL_FRAMEBUFFER_COMPLETE");
 		break;
 	case GL_FRAMEBUFFER_UNDEFINED:
 		ERROR_LOG_RENDERING("Framebuffer is in status: GL_FRAMEBUFFER_UNDEFINED");

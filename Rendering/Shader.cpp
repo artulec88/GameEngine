@@ -33,7 +33,7 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	AddVertexShader(vertexShaderText);
 	if (geometryShaderPresent)
 	{
-		DEBUG_LOG_RENDERING("Geometry shader found in file \"", fileName, "\"");
+		DELOCUST_LOG_RENDERING("Geometry shader found in file \"", fileName, "\"");
 		AddGeometryShader(geometryShaderText);
 	}
 	AddFragmentShader(fragmentShaderText);
@@ -53,10 +53,10 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	//ERROR_LOG_RENDERING("Fragment shader text = ", fragmentShaderText);
 	//AddShaderUniforms(fragmentShaderText);
 
-#ifdef DEBUG_LOGGING_ENABLED
+#ifdef DELOCUST_LOGGING_ENABLED
 	//for (std::vector<Uniforms::UniformStruct>::const_iterator structUniformItr = m_structUniforms.begin(); structUniformItr != m_structUniforms.end(); ++structUniformItr)
 	//{
-	//	DEBUG_LOG_RENDERING("Struct uniform \"", structUniformItr->name, "\".");
+	//	DELOCUST_LOG_RENDERING("Struct uniform \"", structUniformItr->name, "\".");
 	//	for (std::vector<Uniforms::Uniform>::const_iterator structUniformUniformsItr = structUniformItr->uniforms.begin(); structUniformUniformsItr != structUniformItr->uniforms.end(); ++structUniformUniformsItr)
 	//	{
 	//		DELOCUST_LOG_RENDERING("Uniform \"", structUniformUniformsItr->name, "\" with type: ", structUniformUniformsItr->type, " has location: ", structUniformUniformsItr->location);
@@ -64,7 +64,7 @@ Rendering::ShaderData::ShaderData(const std::string& directoryPath, const std::s
 	//}
 	for (std::vector<std::unique_ptr<Uniforms::UniformBase>>::const_iterator uniformItr = m_uniforms.begin(); uniformItr != m_uniforms.end(); ++uniformItr)
 	{
-		DEBUG_LOG_RENDERING("Uniform: \"", (*uniformItr)->GetName(), "\" with type: ", (*uniformItr)->GetType());
+		DELOCUST_LOG_RENDERING("Uniform: \"", (*uniformItr)->GetName(), "\" with type: ", (*uniformItr)->GetType());
 	}
 #endif
 }
@@ -102,7 +102,7 @@ Rendering::ShaderData::ShaderData(ShaderData&& shaderData) :
 
 std::string Rendering::ShaderData::LoadShaderData(const std::string& directoryPath, const std::string& fileName) const
 {
-	DEBUG_LOG_RENDERING("Loading shader data from file \"", fileName, "\"");
+	DELOCUST_LOG_RENDERING("Loading shader data from file \"", fileName, "\"");
 
 	std::ifstream file(directoryPath + fileName);
 	CHECK_CONDITION_EXIT_RENDERING(file.is_open(), Utility::Logging::ERR, "Unable to open shader file \"", fileName, "\". Check the path.");
@@ -187,14 +187,8 @@ bool Rendering::ShaderData::Compile()
 		ERROR_LOG_RENDERING("Error validating shader program ", m_programID, ":\n", &errorMessage[0], "\r");
 	}
 
-	if (!compileSuccess)
-	{
-		ERROR_LOG_RENDERING("Shader program ", m_programID, " compilation error occurred. Investigate the problem.");
-	}
-	else
-	{
-		DEBUG_LOG_RENDERING("Shader program ", m_programID, " compiled successfully");
-	}
+	CHECK_CONDITION_RENDERING(compileSuccess, Utility::Logging::EMERGENCY,
+		"Shader program ", m_programID, " compilation error occurred. Investigate the problem.");
 	return compileSuccess;
 }
 
@@ -315,16 +309,14 @@ void Rendering::ShaderData::AddAllAttributes(const std::string& vertexShaderText
 void Rendering::ShaderData::AddShaderUniforms(const std::string& shaderText)
 {
 	std::vector<Uniforms::UniformStructInfo> structInfos = FindUniformStructInfos(shaderText);
-#ifdef DEBUG_LOGGING_ENABLED
+#ifdef DELOCUST_LOGGING_ENABLED
 	for (std::vector<Uniforms::UniformStructInfo>::const_iterator itr = structInfos.begin(); itr != structInfos.end(); ++itr)
 	{
-		DEBUG_LOG_RENDERING("struct.name = \"", itr->name, "\"");
-#ifdef DELOCUST_LOGGING_ENABLED
+		DELOCUST_LOG_RENDERING("struct.name = \"", itr->name, "\"");
 		for (std::vector<Uniforms::UniformInfo>::const_iterator innerItr = itr->uniformInfos.begin(); innerItr != itr->uniformInfos.end(); ++innerItr)
 		{
 			DELOCUST_LOG_RENDERING("\t .memberName.name = \"", innerItr->name, "\"\t .memberName.uniformType = ", innerItr->type);
 		}
-#endif
 	}
 #endif
 
@@ -539,8 +531,7 @@ Rendering::Shader::Shader(const std::string& directoryPath, const std::string& f
 	, m_classStats(STATS_STORAGE.GetClassStats("Shader"))
 #endif
 {
-	//DELOCUST_LOG_RENDERING("Shader constructor called for file name: \"", m_fileName, "\". ");
-	DEBUG_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
+	DELOCUST_LOG_RENDERING("Shader constructed based on filename \"", fileName, "\"");
 }
 
 

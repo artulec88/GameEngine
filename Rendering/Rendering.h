@@ -145,6 +145,11 @@ namespace Rendering
 
 	RENDERING_API void InitGraphics(int width, int height, Aliasing::AntiAliasingMethod antiAliasingMethod);
 	void CheckErrorCode(const char* functionName, const char* comment);
+
+	/// <summary>
+	/// Checks main rendering engine framebuffer status.
+	/// See https://www.opengl.org/sdk/docs/man3/xhtml/glCheckFramebufferStatus.xml.
+	/// </summary>
 	void CheckFramebufferStatus();
 
 	//void ReadAlphaTestParameter();

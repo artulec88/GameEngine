@@ -69,7 +69,7 @@ GLuint Rendering::MeshData::CreateVBO(MeshBufferTypes::MeshBufferType buffer)
 {
 	Rendering::CheckErrorCode(__FUNCTION__, "Started VBO creation");
 	glGenBuffers(1, &m_buffers[buffer]);
-	DEBUG_LOG_RENDERING("Created VBO at index ", buffer, " for mesh data \"", *this, "\"");
+	DELOCUST_LOG_RENDERING("Created VBO at index ", buffer, " for mesh data \"", *this, "\"");
 	Rendering::CheckErrorCode(__FUNCTION__, "Finished VBO creation");
 	return m_buffers[buffer];
 }

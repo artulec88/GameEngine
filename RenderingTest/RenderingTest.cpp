@@ -516,11 +516,12 @@ void CreateScene()
 	{
 		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(2.5f * static_cast<Math::Real>(j), 0.0f, 2.5f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(4.5f * static_cast<Math::Real>(j), 0.0f, 4.5f * static_cast<Math::Real>(i));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
 				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(1.0f + i * j * 0.01f);
 		}
 	}
 }

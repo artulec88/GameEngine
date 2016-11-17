@@ -69,7 +69,7 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				{
 					m_padding[index] = Utility::StringUtility::ToInt(subTokens[index]);
 				}
-				DEBUG_LOG_RENDERING("Padding left = ", m_padding[PADDING_LEFT_INDEX], "; top = ", m_padding[PADDING_TOP_INDEX],
+				DELOCUST_LOG_RENDERING("Padding left = ", m_padding[PADDING_LEFT_INDEX], "; top = ", m_padding[PADDING_TOP_INDEX],
 					"; right = ", m_padding[PADDING_RIGHT_INDEX], "; bottom = ", m_padding[PADDING_BOTTOM_INDEX]);
 				// Padding calculation end
 			}
@@ -83,14 +83,14 @@ void Rendering::Text::Font::ReadMetaDataFile(const std::string& fontMetaDataFile
 				int lineHeightPixels = Utility::StringUtility::ToInt(*(tokenItr + 1)) - m_padding[PADDING_TOP_INDEX] - m_padding[PADDING_BOTTOM_INDEX];
 				m_verticalPerPixelSize = LINE_HEIGHT / lineHeightPixels;
 				m_horizontalPerPixelSize = m_verticalPerPixelSize / m_aspectRatio;
-				DEBUG_LOG_RENDERING("Per pixel sizes: horizontal = ", m_horizontalPerPixelSize, ", vertical = ", m_verticalPerPixelSize);
+				DELOCUST_LOG_RENDERING("Per pixel sizes: horizontal = ", m_horizontalPerPixelSize, ", vertical = ", m_verticalPerPixelSize);
 				// Line sizes calculation end
 
 				tokenItr = std::find(tokens.begin(), tokens.end(), "scaleW");
 				CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 					"No \"scaleW\" attribute found in the font meta data file \"", fontMetaDataFileName, "\"");
 				imageWidth = Utility::StringUtility::ToInt(*(tokenItr + 1));
-				DEBUG_LOG_RENDERING("Image width = ", imageWidth);
+				DELOCUST_LOG_RENDERING("Image width = ", imageWidth);
 			}
 			else if (tokens[0].compare("char") == 0)
 			{
@@ -154,7 +154,7 @@ void Rendering::Text::Font::AddCharacter(std::vector<std::string>& tokens, int i
 		CHECK_CONDITION_RENDERING(tokenItr != tokens.end(), Utility::Logging::ERR,
 			"No \"yoffset\" attribute found in the font meta data file");
 		Math::Real yOffset = (Utility::StringUtility::ToInt(*(tokenItr + 1)) + m_padding[PADDING_TOP_INDEX] - DESIRED_PADDING) * m_verticalPerPixelSize;
-		DEBUG_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
+		DELOCUST_LOG_RENDERING("New character ID = ", id, " ='", id, "')\n\ttexCoord = ", Math::Vector2D(xTextureCoord, yTextureCoord), ",\n\ttexSize = ",
 			Math::Vector2D(xTextureSize, yTextureSize), ",\n\toffset = ", Math::Vector2D(xOffset, yOffset), ",\n\tquadSize = ",
 			Math::Vector2D(quadWidth, quadHeight), ",\n\txAdvance = ", xAdvance);
 		m_metaData.insert(std::pair<int, Character>(id, Character(id, Math::Vector2D(xTextureCoord, yTextureCoord), Math::Vector2D(xTextureSize, yTextureSize), Math::Vector2D(xOffset, yOffset), Math::Vector2D(quadWidth, quadHeight), xAdvance)));
