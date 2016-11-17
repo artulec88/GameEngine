@@ -55,6 +55,8 @@ Rendering::ShaderFactory::ShaderFactory(const std::string& shadersDirectory) :
 		GET_CONFIG_VALUE_STR_RENDERING("defaultBillboardShader", "billboard-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderIDs::PARTICLES, Rendering::Shader(m_shadersDirectory,
 		GET_CONFIG_VALUE_STR_RENDERING("defaultParticleShader", "particle-shader.glsl")));
+	m_shaderType2ShaderMap.emplace(ShaderIDs::PARTICLES_COLORS, Rendering::Shader(m_shadersDirectory,
+		GET_CONFIG_VALUE_STR_RENDERING("defaultParticleColorShader", "particle-shader-color.glsl"))),
 	m_shaderType2ShaderMap.emplace(ShaderIDs::GUI, Rendering::Shader(m_shadersDirectory,
 		GET_CONFIG_VALUE_STR_RENDERING("defaultGuiShader", "gui-shader.glsl")));
 	m_shaderType2ShaderMap.emplace(ShaderIDs::DIRECTIONAL_LIGHT, Rendering::Shader(m_shadersDirectory,

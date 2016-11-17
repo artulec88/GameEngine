@@ -12,6 +12,7 @@
 #include "Rendering\Material.h"
 
 #include "Math\Transform.h"
+#include "Math\HeightsGenerator.h"
 #include "Math\StatisticsStorage.h"
 #include "Math\RandomGeneratorFactory.h"
 
@@ -41,7 +42,7 @@ const string TEXTURES_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\
 const string FONTS_DIR = "C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Fonts\\";
 constexpr int WINDOW_WIDTH = 1600;
 constexpr int WINDOW_HEIGHT = 900;
-const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
 GLFWwindow* window = nullptr;
 GLFWwindow* threadWindow = nullptr;
 std::unique_ptr<Renderer> renderer = nullptr;
@@ -49,12 +50,44 @@ std::unique_ptr<Renderer> renderer = nullptr;
 bool cameraRotationEnabled = false;
 Camera camera;
 
+Particles::ParticlesSystem particlesSystem;
+
+namespace TestMeshIDs
+{
+	enum TestMeshID
+	{
+		TERRAIN = MeshIDs::COUNT,
+		CUBE
+	};
+}
+
+namespace TestTextureIDs
+{
+	enum TestTextureID
+	{
+		TERRAIN_DIFFUSE = TextureIDs::COUNT,
+		TERRAIN_DIFFUSE_2,
+		TERRAIN_DIFFUSE_3,
+		TERRAIN_DIFFUSE_4,
+		TERRAIN_NORMAL_MAP,
+		TERRAIN_DISPLACEMENT_MAP,
+		TERRAIN_BLEND_MAP,
+		CUBE_DIFFUSE
+	};
+}
+
+constexpr int TERRAIN_VERTEX_COUNT = 128;
+constexpr Math::Real TERRAIN_HEIGHT_GENERATOR_AMPLITUDE = 70.0f;
+constexpr int TERRAIN_HEIGHT_GENERATOR_OCTAVES_COUNT = 3;
+constexpr Math::Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
+Transform terrainTransform;
+std::unique_ptr<Material> terrainMaterial = nullptr;
+const Mesh* terrainMesh = nullptr;
+
 constexpr int CUBE_MESHES_ROWS = 20;
 constexpr int CUBE_MESHES_COLS = 20;
 std::array<Transform, CUBE_MESHES_ROWS * CUBE_MESHES_COLS> cubeTransforms;
-constexpr int CUBE_MESH_ID = MeshIDs::COUNT;
 const Mesh* cubeMesh = nullptr;
-const int CUBE_DIFFUSE_TEXTURE_ID = TextureIDs::COUNT;
 std::unique_ptr<Material> cubeMaterial = nullptr;
 
 unsigned int testNumber = 0;
@@ -446,7 +479,7 @@ void ParticlesSystemBuilderTest()
 
 	Particles::ParticlesSystemBuilder particlesSystemBuilder;
 	BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
-	Particles::ParticlesSystem particlesSystem = particlesSystemBuilderDirector.Construct();
+	particlesSystem = particlesSystemBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(particlesSystem);
 
 	particlesSystemBuilder.SetMaxCount(10).SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).
@@ -507,23 +540,39 @@ void CreateScene()
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(camera);
+	
+	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
+		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
+		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_BLEND_MAP, "terrainBlendMap.png"), "blendMap");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
+	terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "terrain02.obj");
+	terrainTransform.SetScale(20.0f);
 
-	renderer->CreateTexture(CUBE_DIFFUSE_TEXTURE_ID, "chessboard3.jpg");
-	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(CUBE_DIFFUSE_TEXTURE_ID), 8.0f, 1.0f,
+	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
+	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
-	cubeMesh = renderer->CreateMesh(CUBE_MESH_ID, "cube.obj");
+	cubeMesh = renderer->CreateMesh(TestMeshIDs::CUBE, "cube.obj");
 	for (int i = 0; i < CUBE_MESHES_ROWS; ++i)
 	{
 		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(4.5f * static_cast<Math::Real>(j), 0.0f, 4.5f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(2.5f * static_cast<Math::Real>(j), 0.0f, 2.5f * static_cast<Math::Real>(i));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
 				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(1.0f + i * j * 0.01f);
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(0.5f + i * j * 0.01f);
 		}
 	}
+
+	//Particles::ParticlesSystemBuilder particlesSystemBuilder;
+	//particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).
+	//	SetShaderID(ShaderIDs::PARTICLES_COLORS);
+	//Utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	//particlesSystem = particlesSystemBuilderDirector.Construct();
 }
 
 //Math::Angle angleStep(1.0f);
@@ -543,8 +592,11 @@ void RenderScene()
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
 	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
 	{
-		renderer->Render(CUBE_MESH_ID, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
+		renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
 	}
+	renderer->BindShader(ShaderIDs::AMBIENT_TERRAIN);
+	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT_TERRAIN);
+	renderer->Render(TestMeshIDs::TERRAIN, terrainMaterial.get(), terrainTransform, ShaderIDs::AMBIENT_TERRAIN);
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
 		Rendering::ShaderIDs::FILTER_FXAA :

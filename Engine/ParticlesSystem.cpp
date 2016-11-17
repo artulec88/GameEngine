@@ -11,7 +11,7 @@ Engine::ParticlesSystem::ParticlesSystem(Rendering::Particles::ParticleTexture* 
 	m_timeForGeneratingOneParticle(1.0f / particlesPerSecondCount),
 	m_aliveParticlesCount(0),
 	m_lastRevivedParticleIndex(0),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

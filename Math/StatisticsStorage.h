@@ -17,7 +17,7 @@ namespace Math {
 
 		class StatisticsStorage
 		{
-			typedef std::map<std::string, std::unique_ptr<ClassStats>> ClassNames2ClassStatsMap;
+			using ClassNames2ClassStatsMap = std::map<std::string, std::unique_ptr<ClassStats>>;
 			/* ==================== Static variables and functions begin ==================== */
 		private:
 			static StatisticsStorage statsStorage;

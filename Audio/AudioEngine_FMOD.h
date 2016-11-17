@@ -13,7 +13,7 @@ namespace Audio
 	class AudioEngine_FMOD : public IAudioEngine
 	{
 		/* TODO: Better key for more efficient map search ? */
-		typedef std::map<std::string, FMOD::Sound*> Filenames2Sounds;
+		using Filenames2Sounds = std::map<std::string, FMOD::Sound*>;
 	/* ==================== Static variables begin ==================== */
 	private:
 		static constexpr Math::Real OCTAVE_RATIO = 2.0f;

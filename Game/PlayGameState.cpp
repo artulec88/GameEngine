@@ -301,7 +301,7 @@ void Game::PlayGameState::AddPlayerNode()
 
 void Game::PlayGameState::AddBillboards(unsigned int billboardsCount, Rendering::Material* billboardsMaterial)
 {
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
 	Math::Real angle = 0.0f;
 	std::vector<Math::Real> billboardsModelMatrices;
 	billboardsModelMatrices.reserve(billboardsCount * Math::Matrix4D::SIZE * Math::Matrix4D::SIZE);

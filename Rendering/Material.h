@@ -34,6 +34,12 @@ namespace Rendering
 		/// <param name="displacementOffset">The displacement offset.</param>
 		RENDERING_API Material(const Texture* diffuseTexture, Math::Real specularIntensity, Math::Real specularPower, const Texture* normalMap,
 			const Texture* displacementMap, Math::Real displacementScale = REAL_ZERO, Math::Real displacementOffset = REAL_ZERO);
+
+		/// <summary>
+		/// Material constructor that takes a <paramref name="texture"/> with name <paramref name="textureName"/>.
+		/// </summary>
+		/// <param name="texture"> The texture the material will use. </param>
+		/// <param name="textureName"> The name of the texture for texture-lookup mechanism. </param>
 		RENDERING_API Material(const Texture* texture, const std::string& textureName);
 		
 		/// <summary> Material destructor. </summary>
@@ -74,12 +80,22 @@ namespace Rendering
 #ifdef ANT_TWEAK_BAR_ENABLED
 		RENDERING_API virtual void InitializeTweakBar(TwBar* tweakBar, const char* groupName);
 #endif
-		bool HasMultipleTextures() const { return m_hasMultipleTextures; }
+
+		/// <summary> Gives information whether or not the material uses multiple textures. </summary>
+		/// <returns> <code>true</code> when material uses multiple textures (at least two) and <code>false</code> otherwise. </returns>
+		inline bool HasMultipleTextures() const noexcept { return m_hasMultipleTextures; }
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
+		/// <summary>
+		/// Mapped values container.
+		/// </summary>
 		MappedValues m_mappedValues;
+		
+		/// <summary>
+		/// Indicates whether the material uses multiple textures (value <code>true</code>) or not (value <code>false</code>).
+		/// </summary>
 		bool m_hasMultipleTextures;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Material */

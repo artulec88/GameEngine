@@ -38,7 +38,7 @@ Rendering::Particles::Generators::RangeAccelerationGenerator::RangeAccelerationG
 	m_maxAccelerationY(maxAccelerationY),
 	m_minAccelerationZ(minAccelerationZ),
 	m_maxAccelerationZ(maxAccelerationZ),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

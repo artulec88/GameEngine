@@ -40,7 +40,7 @@ Rendering::Particles::Generators::PlanePositionGenerator::PlanePositionGenerator
 	m_plane(plane),
 	m_radius(radius),
 	m_translationPoint(50.0f, 0.0f, 50.0f),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 
@@ -84,7 +84,7 @@ Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(Mat
 	m_maxY(maxY),
 	m_minZ(minZ),
 	m_maxZ(maxZ),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 
@@ -113,7 +113,7 @@ Rendering::Particles::Generators::EllipsoidPositionGenerator::EllipsoidPositionG
 	m_a(a),
 	m_b(b),
 	m_c(c),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

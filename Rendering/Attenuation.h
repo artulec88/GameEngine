@@ -18,25 +18,34 @@ namespace Rendering
 		/// <param name="constant"> Constant attribute of attenuation </param>
 		/// <param name="linear"> Linear attribute of attenuation </param>
 		/// <param name="exponent"> Exponent attribute of attenuation </param>
-		RENDERING_API explicit Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) :
+		RENDERING_API explicit Attenuation(Math::Real constant = REAL_ZERO, Math::Real linear = REAL_ZERO, Math::Real exponent = REAL_ONE) noexcept :
 			m_constant(constant),
 			m_linear(linear),
 			m_exponent(exponent)
 		{
 		}
 		/// <summary> The destructor </summary>
-		RENDERING_API ~Attenuation(void)
+		RENDERING_API ~Attenuation(void) noexcept
 		{
 		}
 
 		/// <summary> Attenuation copy constructor. </summary>
-		RENDERING_API Attenuation(const Attenuation& attenuation) = default;
+		/// <param name="attenuation"> The attenuation to copy construct from. </param>
+		RENDERING_API Attenuation(const Attenuation& attenuation) noexcept = default;
+
 		/// <summary> Attenuation move constructor. </summary>
-		RENDERING_API Attenuation(Attenuation&& attenuation) = default;
+		/// <param name="attenuation"> The attenuation to move construct from. </param>
+		RENDERING_API Attenuation(Attenuation&& attenuation) noexcept = default;
+
 		/// <summary> Attenuation copy assignment operator. </summary>
-		RENDERING_API Attenuation& operator=(const Attenuation& attenuation) = default;
+		/// <param name="attenuation"> The attenuation to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned attenuation. </returns>
+		RENDERING_API Attenuation& operator=(const Attenuation& attenuation) noexcept = default;
+
 		/// <summary> Attenuation move assignment operator. </summary>
-		RENDERING_API Attenuation& operator=(Attenuation&& attenuation) = default;
+		/// <param name="attenuation"> The r-value reference of the attenuation to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned attenuation. </returns>
+		RENDERING_API Attenuation& operator=(Attenuation&& attenuation) noexcept = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

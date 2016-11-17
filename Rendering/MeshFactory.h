@@ -49,6 +49,7 @@ namespace Rendering
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
+		//RENDERING_API const TerrainMesh* CreateTerrainMesh(int meshID, int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount);
 		//RENDERING_API const Mesh* CreateBillboardMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateInstanceMesh(int meshID, const std::string& meshFileName);
 		//RENDERING_API const Mesh* CreateTerrainMesh(int meshID, const std::string& meshFileName);

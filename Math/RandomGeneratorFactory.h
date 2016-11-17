@@ -11,9 +11,9 @@ namespace Math
 {
 	namespace Random
 	{
-		namespace Generators
+		namespace GeneratorIDs
 		{
-			enum Generator
+			enum GeneratorID
 			{
 				SIMPLE = 0,
 				DEFAULT_RANDOM_ENGINE,
@@ -33,15 +33,15 @@ namespace Math
 				RANLUX48_BASE,
 				SHUFFLE_ORDER_ENGINE,
 				SUBTRACT_WITH_CARRY_ENGINE
-			}; /* end enum Generator */
-		} /* end namespace Generators */
+			}; /* end enum GeneratorID */
+		} /* end namespace GeneratorIDs */
 
 		/// <summary>
 		/// The random number generator factory.
 		/// </summary>
 		class RandomGeneratorFactory
 		{
-			typedef std::map<Generators::Generator, std::unique_ptr<RandomGenerator>> RandomGeneratorsMap;
+			using RandomGeneratorsMap = std::map<GeneratorIDs::GeneratorID, std::unique_ptr<RandomGenerator>>;
 		/* ==================== Static variables begin ==================== */
 		public:
 			MATH_API static RandomGeneratorFactory& GetRandomGeneratorFactory();
@@ -58,14 +58,37 @@ namespace Math
 			/// The destructor of the random number generator factory.
 			/// </summary>
 			~RandomGeneratorFactory(void);
+
+			/// <summary> Random generator factory copy constructor. </summary>
+			/// <param name="randomGeneratorFactory"> The random generator factory to copy construct from. </param>
+			RandomGeneratorFactory(const RandomGeneratorFactory& randomGeneratorFactory) = delete;
+
+			/// <summary> Random generator factory move constructor. </summary>
+			/// <param name="randomGeneratorFactory"> The r-value reference of the random generator factory to move construct from. </param>
+			RandomGeneratorFactory(RandomGeneratorFactory&& randomGeneratorFactory) = delete;
+
+			/// <summary> Random generator factory copy assignment operator. </summary>
+			/// <param name="randomGeneratorFactory"> The random generator factory to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned random generator factory. </returns>
+			RandomGeneratorFactory& operator=(const RandomGeneratorFactory& randomGeneratorFactory) = delete;
+
+			/// <summary> Random generator factory move assignment operator. </summary>
+			/// <param name="randomGeneratorFactory"> The r-value reference of the random generator factory to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned random generator factory. </returns>
+			RandomGeneratorFactory& operator=(RandomGeneratorFactory&& randomGeneratorFactory) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
 		public:
 			/// <summary>
-			/// Returns a random generator object.
+			/// Returns a unmodifiable reference of the random generator object that client may use for generating random values.
 			/// </summary>
-			MATH_API const RandomGenerator& GetRandomGenerator(Generators::Generator randomGenerator, unsigned seed = ((unsigned int)time(NULL)));
+			/// <param name="randomGeneratorID"> The ID of the random generator the client wants to use for random number generation. </param>
+			/// <param name="seed"> The seed that the returned random generator will use. </param>
+			/// <returns>
+			/// The unmodifiable reference of the random generator stored for the specified <paramref name="randomGeneratorID"/> and initialized with the given <paramref name="seed"/>.
+			/// </returns>
+			MATH_API const RandomGenerator& GetRandomGenerator(GeneratorIDs::GeneratorID randomGeneratorID, unsigned seed = ((unsigned int)time(NULL)));
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

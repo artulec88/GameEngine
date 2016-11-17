@@ -28,7 +28,7 @@ Rendering::Particles::Generators::RangeRotationGenerator::RangeRotationGenerator
 	RotationGenerator(),
 	m_minAngleInRadians(minAngle.Get()),
 	m_maxAngleInRadians(maxAngle.Get()),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

@@ -16,7 +16,7 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	m_smoothSidesFactor(8.0f),
 	m_smoothCenterFactor(4.0f),
 	m_interpolator(std::make_unique<Interpolation::CosineInterpolator<Math::Real>>()),
-	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE, 1000000000))
+	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE, 1000000000))
 {
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
 	// TODO: In the future this test should be moved to MathTest project.

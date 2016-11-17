@@ -348,7 +348,7 @@ void Game::TestGameManager::Load()
 	//testMesh3->AddComponent(new Engine::MeshRendererComponent(new Rendering::Mesh("plane.obj"), new Rendering::Material(m_textureFactory.GetTexture(TextureIDs::BRICKS), 0.0f, 0, m_textureFactory.GetTexture(TextureIDs::BRICKS_NORMAL_MAP), m_textureFactory.GetTexture(TextureIDs::BRICKS_DISPLACEMENT_MAP), 0.04f, -1.0f)));;
 	//AddToSceneRoot(testMesh3);
 
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
 
 	//Engine::GameNode* monkeyNode1 = new Engine::GameNode();
 	//monkeyNode1->AddComponent(new Engine::MeshRendererComponent(

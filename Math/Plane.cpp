@@ -45,7 +45,7 @@ Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius
 	Math::Vector3D w(Math::AlmostEqual(m_normal.GetX(), REAL_ZERO) ?
 		m_normal.Cross(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO)) :
 		m_normal.Cross(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE)));
-	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
 	//ERROR_LOG_MATH("Before rotation: ", w);
 	w = w.Rotate(m_normal, Math::Angle(randomGenerator.NextFloat(REAL_ZERO, 360.0f)));
 	//ERROR_LOG_MATH("After rotation: ", w);

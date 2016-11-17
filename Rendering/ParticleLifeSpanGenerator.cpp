@@ -28,7 +28,7 @@ Rendering::Particles::Generators::RangeLifeSpanLimitGenerator::RangeLifeSpanLimi
 	LifeSpanLimitGenerator(),
 	m_minLifeSpanLimit(minLifeSpanLimit),
 	m_maxLifeSpanLimit(maxLifeSpanLimit),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

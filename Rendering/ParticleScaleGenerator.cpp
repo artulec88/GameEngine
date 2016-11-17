@@ -28,7 +28,7 @@ Rendering::Particles::Generators::RangeScaleGenerator::RangeScaleGenerator(Math:
 	ScaleGenerator(),
 	m_minScale(minScale),
 	m_maxScale(maxScale),
-	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE))
+	m_randomGenerator(Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE))
 {
 }
 

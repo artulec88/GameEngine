@@ -64,7 +64,7 @@
 
 namespace Math
 {
-	typedef float Real;
+	using Real = float;
 
 	/// <summary> The constant value of PI (https://pl.wikipedia.org/wiki/Pi) </summary>
 	/// <remarks>

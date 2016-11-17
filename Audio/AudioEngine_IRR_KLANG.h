@@ -10,7 +10,7 @@ namespace Audio
 	class AudioEngine_IRR_KLANG : public IAudioEngine
 	{
 		/* TODO: Better key for more efficient map search ? */
-		typedef std::map<std::string, irrklang::ISoundSource*> Filenames2SoundSources;
+		using Filenames2SoundSources = std::map<std::string, irrklang::ISoundSource*>;
 
 		/* ==================== Static variables begin ==================== */
 		/* ==================== Static variables end ==================== */

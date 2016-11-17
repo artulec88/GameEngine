@@ -48,7 +48,7 @@ bool statsTestEnabled = true;
 bool heightsGeneratorTestsEnabled = true;
 bool otherTestsEnabled = true;
 
-const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::Generators::SIMPLE);
+const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
 const std::string MODULE_NAME = "MathTest";
 
 void ReportError(const std::string& reportStr)
