@@ -211,7 +211,8 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 		m_textureOffsets.reset(new Math::Vector2D[m_count]);
 		for (size_t i = 0; i < m_count; ++i)
 		{
-			m_textureOffsets[i].Set(REAL_ZERO, REAL_ZERO);
+			m_textureOffsets[i].x = REAL_ZERO;
+			m_textureOffsets[i].y = REAL_ZERO;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::COLOR))

@@ -20,7 +20,7 @@ namespace Math
 		/// </summary>
 		/// <param name="gridX"> The x-th grid. </param>
 		/// <param name="gridZ"> The z-th grid. </param>
-		/// <param name="vertexCount"> The number of vertices along one grid side </param>
+		/// <param name="vertexCount"> The number of vertices along one grid side. </param>
 		/// <param name="heightAmplitude">Defines the amplitude of the generated heights. The final heights cannot exceed the specified amplitude.</param>
 		/// <param name="octaves"> The number of noise functions we want to use for the heights generator. </param>
 		/// <param name="roughness"> The roughness of the heights generator. It indicates how much we decrease the amplitude by for each higher-frequency octave. </param>
@@ -52,10 +52,10 @@ namespace Math
 
 	/* ==================== Non-static member functions begin ==================== */
 	public:
-		/// <summary> Generates a random (but constant for the given input parameters) vale (height) for the specified input position. </summary>
+		/// <summary> Generates a random (but constant for the given input parameters) value (height) for the specified input position. </summary>
 		/// <param name="x"> The X component of the position we want to generate height for. </param>
-		/// <param name="y"> The Y component of the position we want to generate height for. </param>
-		/// <returns> The value (height) generated for the given input position [<paramref name="x"/>, <paramref name="y"/>]. </returns>
+		/// <param name="z"> The Z component of the position we want to generate height for. </param>
+		/// <returns> The value (height) generated for the given input position [<paramref name="x"/>, <paramref name="z"/>]. </returns>
 		MATH_API Real GenerateHeight(Real x, Real z) const;
 	private:
 		/// <summary>

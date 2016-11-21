@@ -551,26 +551,26 @@ void Game::PlayGameState::Handle(Engine::Ranges::Range range, Math::Real value)
 	switch (range)
 	{
 	case Engine::Ranges::AXIS_X:
-		m_previousMousePos.SetX(m_mousePos.GetX());
-		m_mousePos.SetX(value);
+		m_previousMousePos.x = m_mousePos.x;
+		m_mousePos.x = value;
 		m_mousePosChanged = true;
 		if (m_isMouseLocked)
 		{
 			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(Math::Vector3D(0, 1, 0),
-				Math::Angle(500.0f * (m_mousePos.GetX() - m_previousMousePos.GetX()) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
+				Math::Angle(500.0f * (m_mousePos.x - m_previousMousePos.x) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
 		}
 		DEBUG_LOG_GAME("Mouse pos = ", m_mousePos);
 		break;
 	case Engine::Ranges::AXIS_Y:
-		m_previousMousePos.SetY(m_mousePos.GetY());
-		m_mousePos.SetY(value);
+		m_previousMousePos.y = m_mousePos.y;
+		m_mousePos.y = value;
 		m_mousePosChanged = true;
 		if (m_isMouseLocked)
 		{
 			m_cameras[m_currentCameraIndex]->GetTransform().Rotate(m_cameras[m_currentCameraIndex]->GetTransform().GetRot().GetRight(),
-				Math::Angle((m_mousePos.GetY() - m_previousMousePos.GetY()) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
+				Math::Angle((m_mousePos.y - m_previousMousePos.y) * m_cameras[m_currentCameraIndex]->GetSensitivity()));
 			//m_gameManager->CentralizeCursor(); // TODO: Rotation ceases to work. But why?
 			m_isMouseLocked = false;
 		}

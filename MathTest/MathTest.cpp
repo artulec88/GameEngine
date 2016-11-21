@@ -234,10 +234,10 @@ void VectorTest()
 		return;
 	}
 	MathTest::VectorTestGroup vectorTests;
-	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f), true));
-	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 1.0f), false));
-	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), false));
-	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 1.0f), false));
+	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, ZERO_VECTOR_2D, true));
+	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(0.0f, 1.0f), false));
+	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 0.0f), false));
+	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 1.0f), false));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 0.0f, 0.0f), true));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, 0.0f), Math::Vector3D(0.0f, 1.0f, 0.0f), false));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, 0.0f), Math::Vector3D(1.0f, 0.0f, 0.0f), false));
@@ -246,7 +246,7 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, 0.0f, 0.0f), Math::Vector4D(0.0f, 1.0f, 0.0f, 0.0f), false));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, 0.0f, 0.0f), Math::Vector4D(1.0f, 0.0f, 0.0f, 0.0f), false));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, 0.0f, 0.0f), Math::Vector4D(1.0f, 1.0f, 0.0f, 0.0f), false));
-	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), 0.0f));
+	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector2D>(ZERO_VECTOR_2D, 0.0f));
 	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector2D>(Math::Vector2D(1.0f, 0.0f), 1.0f));
 	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector2D>(Math::Vector2D(12.0f, -4.0f), 4.0f * sqrtf(10.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, 0.0f), 0.0f));
@@ -256,7 +256,7 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector4D>(Math::Vector4D(1.0f, 0.0f, 0.0f, 0.0f), 1.0f));
 	vectorTests.AddTest(new MathTest::VectorTestLength<Math::Vector4D>(Math::Vector4D(1.0f, 2.0f, 5.0f, -3.0f), sqrtf(39.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector2D>(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 1.0f)));
-	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 0.0f), Math::Vector2D(1.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector2D>(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(2.0f, 1.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector3D>(Math::Vector3D(0.0f, 1.0f, 0.0f), Math::Vector3D(1.0f, 0.0f, 0.0f), Math::Vector3D(1.0f, 1.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, 0.0f), Math::Vector3D(1.0f, 0.0f, -1.0f), Math::Vector3D(1.0f, 0.0f, -1.0f)));
@@ -265,7 +265,7 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, -3.0f, 4.0f), Math::Vector4D(1.0f, 0.0f, 2.0f, -3.0f), Math::Vector4D(1.0f, 0.0f, -1.0f, 1.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestAddOperator<Math::Vector4D>(Math::Vector4D(1.0f, 1.0f, 5.0f, 6.0f), Math::Vector4D(1.0f, 0.0f, 5.0f, 5.0f), Math::Vector4D(2.0f, 1.0f, 10.0f, 11.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector2D>(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(-1.0f, 1.0f)));
-	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(-1.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 0.0f), Math::Vector2D(-1.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector2D>(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), Math::Vector2D(0.0f, 1.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector3D>(Math::Vector3D(0.0f, 1.0f, 2.0f), Math::Vector3D(1.0f, 0.0f, 2.0f), Math::Vector3D(-1.0f, 1.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, -2.0f), Math::Vector3D(1.0f, 0.0f, -1.0f), Math::Vector3D(-1.0f, 0.0f, -1.0f)));
@@ -273,8 +273,8 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector4D>(Math::Vector4D(0.0f, 1.0f, 2.0f, -2.0f), Math::Vector4D(1.0f, 0.0f, -2.0f, -3.0f), Math::Vector4D(-1.0f, 1.0f, 4.0f, 1.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, -4.0f, -5.0f), Math::Vector4D(1.0f, 0.0f, -5.0f, 4.0f), Math::Vector4D(-1.0f, 0.0f, 1.0f, -9.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestSubtractOperator<Math::Vector4D>(Math::Vector4D(1.0f, 1.0f, -8.0f, 5.0f), Math::Vector4D(1.0f, 0.0f, 6.0f, -7.0f), Math::Vector4D(0.0f, 1.0f, -14.0f, 12.0f)));
-	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector2D>(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), 0.2f, Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.2f)));
-	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 0.0f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector2D>(Math::Vector2D(0.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), 0.2f, ZERO_VECTOR_2D, Math::Vector2D(0.0f, 0.2f)));
+	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 0.0f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector2D>(Math::Vector2D(1.0f, 1.0f), Math::Vector2D(1.0f, 0.0f), 0.75f, Math::Vector2D(1.0f, 0.0f), Math::Vector2D(0.75f, 0.75f)));
 	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector3D>(Math::Vector3D(0.0f, 1.0f, 2.0f), Math::Vector3D(1.0f, 0.0f, 4.0f), 0.2f, Math::Vector3D(0.0f, 0.0f, 8.0f), Math::Vector3D(0.0f, 0.2f, 0.4f)));
 	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, -1.0f), Math::Vector3D(1.0f, 0.0f, -5.0f), 0.5f, Math::Vector3D(0.0f, 0.0f, 5.0f), Math::Vector3D(0.0f, 0.0f, -0.5f)));
@@ -283,7 +283,7 @@ void VectorTest()
 	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector4D>(Math::Vector4D(0.0f, 0.0f, -5.0f, -1.0f), Math::Vector4D(1.0f, 0.0f, 0.0f, 1.0f), 0.5f, Math::Vector4D(0.0f, 0.0f, 0.0f, -1.0f), Math::Vector4D(0.0f, 0.0f, -2.5f, -0.5f)));
 	vectorTests.AddTest(new MathTest::VectorTestMultiplyOperator<Math::Vector4D>(Math::Vector4D(1.0f, 1.0f, 0.0f, 2.0f), Math::Vector4D(1.0f, 0.0f, -2.0f, 5.0f), 0.75f, Math::Vector4D(1.0f, 0.0f, 0.0f, 10.0f), Math::Vector4D(0.75f, 0.75f, 0.0f, 1.5f)));
 	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector2D>(Math::Vector2D(8.0f, 1.0f), Math::Vector2D(1.0f, 2.0f), 0.2f, Math::Vector2D(8.0f, 0.5f), Math::Vector2D(40.0f, 5.0f)));
-	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector2D>(Math::Vector2D(0.0f, 0.0f), Math::Vector2D(1.0f, 5.0f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
+	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 5.0f), 0.5f, Math::Vector2D(0.0f, 0.0f), Math::Vector2D(0.0f, 0.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector2D>(Math::Vector2D(1.0f, 10.0f), Math::Vector2D(1.0f, -2.0f), 0.75f, Math::Vector2D(1.0f, -5.0f), Math::Vector2D(4.0f / 3.0f, 40.0f / 3.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector3D>(Math::Vector3D(0.0f, 1.0f, 2.0f), Math::Vector3D(1.0f, 2.0f, 4.0f), 0.2f, Math::Vector3D(0.0f, 0.5f, 0.5f), Math::Vector3D(0.0f, 5.0f, 10.0f)));
 	vectorTests.AddTest(new MathTest::VectorTestDivideOperator<Math::Vector3D>(Math::Vector3D(0.0f, 0.0f, -1.0f), Math::Vector3D(1.0f, 10.0f, -5.0f), 0.5f, Math::Vector3D(0.0f, 0.0f, 0.2f), Math::Vector3D(0.0f, 0.0f, -2.0f)));
@@ -414,7 +414,7 @@ Angle RandomAngle()
 
 Matrix4D RandomMatrix(Real min, Real max)
 {
-	if (min < max)
+	if (min > max)
 	{
 		Real temp = min;
 		min = max;
@@ -723,8 +723,8 @@ void SortTest()
 	//initialVectors[11].SetX(-2.0f); initialVectors[4].SetY(5.0f); // sumOfComponents = 3	sumOfAbsComponents = 7	sumOfSquaredComponents = 29
 	for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 	{
-		initialVectors[i].SetX(g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X));
-		initialVectors[i].SetY(g_randomGenerator.NextFloat(LOWER_BOUND_Y, HIGHER_BOUND_Y));
+		initialVectors[i].x = g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X);
+		initialVectors[i].y = g_randomGenerator.NextFloat(LOWER_BOUND_Y, HIGHER_BOUND_Y);
 		DEBUG_LOG_MATH_TEST("initialVectors[", i, "] = ", initialVectors[i]);
 	}
 
@@ -763,13 +763,13 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			bool firstCriterionEqual = AlmostEqual(vectors[i + 1].GetX(), vectors[i].GetX());
-			if ((!firstCriterionEqual && vectors[i + 1].GetX() < vectors[i].GetX()) ||
-				(firstCriterionEqual && (vectors[i + 1].GetY() > vectors[i].GetY())))
+			bool firstCriterionEqual = AlmostEqual(vectors[i + 1].x, vectors[i].x);
+			if ((!firstCriterionEqual && vectors[i + 1].x < vectors[i].x) ||
+				(firstCriterionEqual && (vectors[i + 1].y > vectors[i].y)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in ASCENDING order by X component failed. Vectors[", i + 1, "] (",
-					vectors[i + 1], ") (sorting key value = ", vectors[i + 1].GetX(), ") should precede Vectors[", i, "] (", vectors[i],
-					") (sorting key value = ", vectors[i].GetX(), ")");
+					vectors[i + 1], ") (sorting key value = ", vectors[i + 1].x, ") should precede Vectors[", i, "] (", vectors[i],
+					") (sorting key value = ", vectors[i].x, ")");
 				sortingTestCasePassed = false;
 				break;
 			}
@@ -800,10 +800,10 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if ((vectors[i + 1].GetX() > vectors[i].GetX()) || ((AlmostEqual(vectors[i + 1].GetX(), vectors[i].GetX())) && (vectors[i + 1].GetY() > vectors[i].GetY())))
+			if ((vectors[i + 1].x > vectors[i].x) || ((AlmostEqual(vectors[i + 1].x, vectors[i].x)) && (vectors[i + 1].y > vectors[i].y)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in DESCENDING order by X component failed. Vectors[", i + 1, "] (",
-					vectors[i + 1], ") (sorting key value = ", vectors[i + 1].GetX(), ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].GetX(), ")");
+					vectors[i + 1], ") (sorting key value = ", vectors[i + 1].x, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].x, ")");
 				sortingTestCasePassed = false;
 				break;
 			}
@@ -836,10 +836,10 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if ((vectors[i + 1].GetY() < vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
+			if ((vectors[i + 1].y < vectors[i].y) || ((AlmostEqual(vectors[i + 1].y, vectors[i].y)) && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in ASCENDING order by Y component failed. Vectors[", i + 1, "] (", vectors[i + 1],
-					") (sorting key value = ", vectors[i + 1].GetY(), ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].GetY(), ")");
+					") (sorting key value = ", vectors[i + 1].y, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].y, ")");
 				sortingTestCasePassed = false;
 				break;
 			}
@@ -870,10 +870,10 @@ void SortTest()
 
 		for (int i = 0; i < NUMBER_OF_VECTORS - 1; ++i) // Checking if vectors are sorted correctly
 		{
-			if ((vectors[i + 1].GetY() > vectors[i].GetY()) || ((AlmostEqual(vectors[i + 1].GetY(), vectors[i].GetY())) && (vectors[i + 1].GetX() > vectors[i].GetX())))
+			if ((vectors[i + 1].y > vectors[i].y) || ((AlmostEqual(vectors[i + 1].y, vectors[i].y)) && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in DESCENDING order by Y component failed. Vectors[", i + 1, "] (", vectors[i + 1],
-					") (sorting key value = ", vectors[i + 1].GetY(), ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].GetY(), ")");
+					") (sorting key value = ", vectors[i + 1].y, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", vectors[i].y, ")");
 				sortingTestCasePassed = false;
 				break;
 			}
@@ -908,7 +908,7 @@ void SortTest()
 			Math::Real sumOfComponents2 = vectors[i + 1].SumOfComponents();
 			bool firstCriterionEqual = AlmostEqual(sumOfComponents2, sumOfComponents1);
 			if ((!firstCriterionEqual && sumOfComponents2 < sumOfComponents1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in ASCENDING order by sum of components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", sumOfComponents2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", sumOfComponents1, ")");
@@ -946,7 +946,7 @@ void SortTest()
 			Math::Real sumOfComponents2 = vectors[i + 1].SumOfComponents();
 			bool firstCriterionEqual = AlmostEqual(sumOfComponents2, sumOfComponents1);
 			if ((!firstCriterionEqual && sumOfComponents2 > sumOfComponents1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in DESCENDING order by sum of components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", sumOfComponents2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", sumOfComponents1, ")");
@@ -984,7 +984,7 @@ void SortTest()
 			Math::Real sumOfAbsoluteComponents2 = vectors[i + 1].SumOfAbsoluteComponents();
 			bool firstCriterionEqual = AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1);
 			if ((!firstCriterionEqual && sumOfAbsoluteComponents2 < sumOfAbsoluteComponents1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in ASCENDING order by sum of absolute components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", sumOfAbsoluteComponents2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", sumOfAbsoluteComponents1, ")");
@@ -1022,7 +1022,7 @@ void SortTest()
 			Math::Real sumOfAbsoluteComponents2 = vectors[i + 1].SumOfAbsoluteComponents();
 			bool firstCriterionEqual = AlmostEqual(sumOfAbsoluteComponents2, sumOfAbsoluteComponents1);
 			if ((!firstCriterionEqual && sumOfAbsoluteComponents2 > sumOfAbsoluteComponents1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in DESCENDING order by sum of absolute components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", sumOfAbsoluteComponents2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", sumOfAbsoluteComponents1, ")");
@@ -1060,7 +1060,7 @@ void SortTest()
 			Math::Real lengthSquared2 = vectors[i + 1].LengthSquared();
 			bool firstCriterionEqual = AlmostEqual(lengthSquared2, lengthSquared1);
 			if ((!firstCriterionEqual && lengthSquared2 < lengthSquared1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in ASCENDING order by sum of squared components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", lengthSquared2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", lengthSquared1, ")");
@@ -1098,7 +1098,7 @@ void SortTest()
 			Math::Real lengthSquared2 = vectors[i + 1].LengthSquared();
 			bool firstCriterionEqual = AlmostEqual(lengthSquared2, lengthSquared1);
 			if ((!firstCriterionEqual && lengthSquared2 > lengthSquared1) ||
-				(firstCriterionEqual && (vectors[i + 1].GetX() > vectors[i].GetX())))
+				(firstCriterionEqual && (vectors[i + 1].x > vectors[i].x)))
 			{
 				ERROR_LOG_MATH_TEST(sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]], " in DESCENDING order by sum of squared components failed. Vectors[", i + 1, "] (", vectors[i + 1],
 					") (sorting key value = ", lengthSquared2, ") should precede Vectors[", i, "] (", vectors[i], ") (sorting key value = ", lengthSquared1, ")");
@@ -1154,16 +1154,16 @@ void KDTreeTest()
 	//DEBUG_LOG_MATH_TEST("K-d tree structure:\n", kdTree->ToString());
 
 	Math::Vector2D* searchPositions = new Math::Vector2D[NUMBER_OF_SEARCH_POSITIONS];
-	searchPositions[0].SetX(2.0f); searchPositions[0].SetY(3.0f);
-	searchPositions[1].SetX(5.0f); searchPositions[1].SetY(4.0f);
-	searchPositions[2].SetX(9.0f); searchPositions[2].SetY(6.0f);
-	searchPositions[3].SetX(4.0f); searchPositions[3].SetY(7.0f);
-	searchPositions[4].SetX(8.0f); searchPositions[4].SetY(1.0f);
-	searchPositions[5].SetX(7.0f); searchPositions[5].SetY(2.0f);
-	searchPositions[6].SetX(6.0f); searchPositions[6].SetY(2.0f);
-	searchPositions[7].SetX(7.0f); searchPositions[7].SetY(3.0f);
-	searchPositions[8].SetX(8.0f); searchPositions[8].SetY(4.0f);
-	searchPositions[9].SetX(9.0f); searchPositions[9].SetY(5.0f);
+	searchPositions[0].x = 2.0f; searchPositions[0].y = 3.0f;
+	searchPositions[1].x = 5.0f; searchPositions[1].y = 4.0f;
+	searchPositions[2].x = 9.0f; searchPositions[2].y = 6.0f;
+	searchPositions[3].x = 4.0f; searchPositions[3].y = 7.0f;
+	searchPositions[4].x = 8.0f; searchPositions[4].y = 1.0f;
+	searchPositions[5].x = 7.0f; searchPositions[5].y = 2.0f;
+	searchPositions[6].x = 6.0f; searchPositions[6].y = 2.0f;
+	searchPositions[7].x = 7.0f; searchPositions[7].y = 3.0f;
+	searchPositions[8].x = 8.0f; searchPositions[8].y = 4.0f;
+	searchPositions[9].x = 9.0f; searchPositions[9].y = 5.0f;
 	for (int i = 0; i < NUMBER_OF_SEARCH_POSITIONS; ++i)
 	{
 		Real height = kdTree->SearchNearestValue(searchPositions[i]);
@@ -1335,7 +1335,7 @@ int main(int argc, char* argv[])
 	MatrixTest();
 	NewMatrixTest();
 	TransformTest();
-	//SortTest();
+	SortTest();
 	//SortTestTime();
 
 	//KDTreeTest();

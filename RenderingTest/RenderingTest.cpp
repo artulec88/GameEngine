@@ -170,7 +170,7 @@ void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 		if (cameraRotationEnabled)
 		{
 			Math::Vector2D centerPosition(static_cast<Math::Real>(WINDOW_WIDTH) / 2, static_cast<Math::Real>(WINDOW_HEIGHT) / 2);
-			glfwSetCursorPos(window, centerPosition.GetX(), centerPosition.GetY());
+			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
 		}
 	}
 }
@@ -197,21 +197,21 @@ void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 		Math::Vector2D deltaPosition(static_cast<Math::Real>(xPos), static_cast<Math::Real>(yPos));
 		deltaPosition -= centerPosition;
 
-		bool rotX = !Math::AlmostEqual(deltaPosition.GetX(), REAL_ZERO);
-		bool rotY = !Math::AlmostEqual(deltaPosition.GetY(), REAL_ZERO);
+		bool rotX = !Math::AlmostEqual(deltaPosition.x, REAL_ZERO);
+		bool rotY = !Math::AlmostEqual(deltaPosition.y, REAL_ZERO);
 
 		if (rotX || rotY)
 		{
 			if (rotX)
 			{
-				camera.GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.GetX() * camera.GetSensitivity()));
+				camera.GetTransform().Rotate(Math::Vector3D(0, 1, 0), Math::Angle(deltaPosition.x * camera.GetSensitivity()));
 			}
 			if (rotY)
 			{
-				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.GetY() * camera.GetSensitivity()));
+				camera.GetTransform().Rotate(camera.GetTransform().GetRot().GetRight(), Math::Angle(deltaPosition.y * camera.GetSensitivity()));
 			}
 			//NOTICE_LOG_RENDERING_TEST("Camera's rotation: ", camera.GetTransform().GetRot());
-			glfwSetCursorPos(window, centerPosition.GetX(), centerPosition.GetY());
+			glfwSetCursorPos(window, centerPosition.x, centerPosition.y);
 		}
 	}
 }
@@ -612,7 +612,7 @@ void Run()
 	CreateScene();
 
 	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontIDs::CANDARA), 1.25f, NULL,
-		Math::Vector2D(0.0f, 0.0f), Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
+		ZERO_VECTOR_2D, Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
 		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED

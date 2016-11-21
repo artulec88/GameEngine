@@ -161,13 +161,13 @@ namespace Math {
 				{
 				case VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
-					result = v.GetX();
+					result = v.x;
 					break;
 				case COMPONENT_X:
-					result = v.GetX();
+					result = v.x;
 					break;
 				case COMPONENT_Y:
-					result = v.GetY();
+					result = v.y;
 					break;
 				case COMPONENT_Z:
 					EMERGENCY_LOG_MATH("Cannot determine the value of the Z component for the 2D vector.");
@@ -183,7 +183,7 @@ namespace Math {
 					break;
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
-					result = v.GetX();
+					result = v.x;
 					break;
 				}
 				return result;

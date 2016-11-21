@@ -19,11 +19,6 @@ Math::AABR::~AABR()
 {
 }
 
-Math::IntersectInfo Math::AABR::DoesContainPoint(const Math::Vector2D& point) const
-{
-	return DoesContainPoint(point.GetX(), point.GetY());
-}
-
 Math::IntersectInfo Math::AABR::DoesContainPoint(Math::Real x, Math::Real y) const
 {
 	Math::Real distanceX = CalcDistanceToNearestFaceX(x);
@@ -48,22 +43,22 @@ Math::IntersectInfo Math::AABR::DoesIntersectAABR(const Math::AABR& aabr) const
 Math::Real Math::AABR::CalcDistanceToNearestFaceX(Math::Real x) const
 {
 	Math::Real distanceX;
-	if (x < m_bottomLeftPos.GetX())
+	if (x < m_bottomLeftPos.x)
 	{
 		// positive value, because X is outside the AABR
-		distanceX = m_bottomLeftPos.GetX() - x;
+		distanceX = m_bottomLeftPos.x - x;
 	}
-	else if (x > m_topRightPos.GetX())
+	else if (x > m_topRightPos.x)
 	{
 		// positive value, because X is outside the AABR
-		distanceX = x - m_topRightPos.GetX();
+		distanceX = x - m_topRightPos.x;
 	}
 	else
 	{
-		distanceX = x - m_bottomLeftPos.GetX();
-		if ((m_topRightPos.GetX() - x) < distanceX)
+		distanceX = x - m_bottomLeftPos.x;
+		if ((m_topRightPos.x - x) < distanceX)
 		{
-			distanceX = m_topRightPos.GetX() - x;
+			distanceX = m_topRightPos.x - x;
 		}
 		distanceX = -distanceX;
 		// negative value, because X is inside the AABR
@@ -74,22 +69,22 @@ Math::Real Math::AABR::CalcDistanceToNearestFaceX(Math::Real x) const
 Math::Real Math::AABR::CalcDistanceToNearestFaceY(Math::Real y) const
 {
 	Math::Real distanceY;
-	if (y < m_topRightPos.GetY())
+	if (y < m_topRightPos.y)
 	{
 		// positive value, because Y is outside the AABR
-		distanceY = m_topRightPos.GetY() - y;
+		distanceY = m_topRightPos.y - y;
 	}
-	else if (y > m_bottomLeftPos.GetY())
+	else if (y > m_bottomLeftPos.y)
 	{
 		// positive value, because Y is outside the AABR
-		distanceY = y - m_bottomLeftPos.GetY();
+		distanceY = y - m_bottomLeftPos.y;
 	}
 	else
 	{
-		distanceY = y - m_topRightPos.GetY();
-		if ((m_bottomLeftPos.GetY() - y) < distanceY)
+		distanceY = y - m_topRightPos.y;
+		if ((m_bottomLeftPos.y - y) < distanceY)
 		{
-			distanceY = m_bottomLeftPos.GetY() - y;
+			distanceY = m_bottomLeftPos.y - y;
 		}
 		distanceY = -distanceY;
 		// negative value, because Y is inside the AABR

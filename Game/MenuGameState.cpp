@@ -22,7 +22,7 @@ Game::MenuGameState::MenuGameState(Engine::GameManager* gameManager, const std::
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	//m_particlesSystem(NULL),
-	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL, Math::Vector2D(0.0f, 0.0f), Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorNames::BLACK),
+	m_mainMenuRootEntry("Main menu", mainMenuFont, mainMenuFontSize, NULL, Math::ZERO_VECTOR_2D, Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f, Rendering::Color(Rendering::ColorNames::BLACK),
 		Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	m_notSelectedMenuEntryColorEffect(std::make_unique<Math::Effects::NoEffect<Rendering::Color>>(Rendering::Color(GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorRed", 1.0f),
 		GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorGreen", 1.0f), GET_CONFIG_VALUE_GAME("mainMenuNotSelectedEntryColorBlue", 1.0f),

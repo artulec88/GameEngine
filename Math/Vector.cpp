@@ -6,31 +6,31 @@
 
 Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v)
 {
-	m_x += v.GetX();
-	m_y += v.GetY();
+	x += v.x;
+	y += v.y;
 
 	return *this;
 }
 
 Math::Vector2D& Math::Vector2D::operator-=(const Vector2D& v)
 {
-	m_x -= v.GetX();
-	m_y -= v.GetY();
+	x -= v.x;
+	y -= v.y;
 
 	return *this;
 }
 
 Math::Vector2D& Math::Vector2D::operator*=(Math::Real value)
 {
-	m_x *= value;
-	m_y *= value;
+	x *= value;
+	y *= value;
 	return *this;
 }
 
 Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v)
 {
-	m_x *= v.GetX();
-	m_y *= v.GetY();
+	x *= v.x;
+	y *= v.y;
 
 	return *this;
 }
@@ -38,8 +38,8 @@ Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v)
 Math::Vector2D& Math::Vector2D::operator/=(Real s)
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 2D vector by zero is impossible. Returning the unmodified vector.");
-	m_x /= s;
-	m_y /= s;
+	x /= s;
+	y /= s;
 
 	return *this;
 }
@@ -48,15 +48,15 @@ Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v)
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
-	m_x /= v.GetX();
-	m_y /= v.GetY();
+	x /= v.x;
+	y /= v.y;
 
 	return *this;
 }
 
 bool Math::Vector2D::operator==(const Vector2D& v) const
 {
-	return ( AlmostEqual(m_x, v.GetX()) && AlmostEqual(m_y, v.GetY()) );
+	return ( AlmostEqual(x, v.x) && AlmostEqual(y, v.y) );
 }
 
 bool Math::Vector2D::operator!=(const Vector2D& v) const
@@ -73,26 +73,26 @@ Math::Vector2D Math::Vector2D::Perp(bool normalizingEnabled /* = false */) const
 {
 	if (normalizingEnabled)
 	{
-		return Vector2D(m_y, -m_x).Normalized();
+		return Vector2D(y, -x).Normalized();
 	}
-	return Vector2D(m_y, -m_x);
+	return Vector2D(y, -x);
 }
 
 Math::Real Math::Vector2D::Max() const
 {
-	return (m_x > m_y) ? m_x : m_y;
+	return (x > y) ? x : y;
 }
 
 #ifdef PASS_VECTOR_BY_VALUE
 Math::Vector2D Math::Vector2D::Max(Vector2D v) const
 {
-	if (m_x > v.GetX())
+	if (x > v.x)
 	{
-		v.SetX(m_x);
+		v.x = x;
 	}
-	if (m_y > v.GetY())
+	if (y > v.y)
 	{
-		v.SetY(m_y);
+		v.y = y;
 	}
 	return v;
 }
@@ -101,8 +101,8 @@ Math::Vector2D Math::Vector2D::Lerp(Vector2D vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	vec.SetX(m_x * (REAL_ONE - lerpFactor) + vec.GetX() * lerpFactor);
-	vec.SetY(m_y * (REAL_ONE - lerpFactor) + vec.GetY() * lerpFactor);
+	vec.x = x * (REAL_ONE - lerpFactor) + vec.x * lerpFactor;
+	vec.y = y * (REAL_ONE - lerpFactor) + vec.y * lerpFactor;
 	return vec;
 	
 	//vec = ((vec - (*this)) * lerpFactor) + (*this);
@@ -129,7 +129,7 @@ Math::Vector2D Math::Vector2D::Rotate(const Angle& angle)
 	const Real cosine = angle.Cos();
 	const Real sine = angle.Sin();
 
-	return Vector2D(m_x * cosine - m_y * sine, m_x * sine + m_y * cosine);
+	return Vector2D(x * cosine - y * sine, x * sine + y * cosine);
 }
 
 /* ==================== Vector3D ==================== */

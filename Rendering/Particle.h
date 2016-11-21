@@ -99,8 +99,8 @@ namespace Rendering
 			{
 				int column = index % textureAtlasRowsCount;
 				int row = index / textureAtlasRowsCount;
-				textureOffset.SetX(static_cast<Math::Real>(column) / textureAtlasRowsCount);
-				textureOffset.SetY(static_cast<Math::Real>(row) / textureAtlasRowsCount);
+				textureOffset.x = static_cast<Math::Real>(column) / textureAtlasRowsCount;
+				textureOffset.y = static_cast<Math::Real>(row) / textureAtlasRowsCount;
 			}
 			/* ==================== Non-static member functions end ==================== */
 

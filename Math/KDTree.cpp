@@ -43,7 +43,7 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 	//}
 
 	const size_t medianIndex = positionsCount / 2;
-	m_position.Set(positions[medianIndex].GetX(), positions[medianIndex].GetZ());
+	m_position = positions[medianIndex].GetXZ();
 	m_value = positions[medianIndex].GetY();
 
 	if (medianIndex > 0)
@@ -129,7 +129,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 	START_PROFILING_MATH(true, "");
 	//++numberOfPositionsChecked;
 	//DELOCUST_LOG_MATH("Visiting the node with position (", m_position.ToString(), ") and value ", m_value);
-	Real distance = (x - m_position.GetX()) * (x - m_position.GetX()) + (z - m_position.GetY()) * (z - m_position.GetY());
+	Real distance = (x - m_position.x) * (x - m_position.x) + (z - m_position.y) * (z - m_position.y);
 	int j = m_numberOfSamples - 1;
 	while ( (j >= 0) && (minDistances[j] > distance) )
 	{
@@ -154,7 +154,7 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 	}
 
 	Real positionComponentValue = ((depth % 2) == 0) ? x : z;
-	Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.GetX() : m_position.GetY();
+	Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.x : m_position.y;
 	bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
 
 	if (searchLeftTreeFirst)

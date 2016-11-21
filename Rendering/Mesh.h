@@ -476,7 +476,7 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.GetX(), xz.GetY()); }
+		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
 		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
 		RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
 	protected:

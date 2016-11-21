@@ -168,7 +168,7 @@ Rendering::Uniforms::Vector2DUniform::~Vector2DUniform()
 void Rendering::Uniforms::Vector2DUniform::Update(const Renderer* renderer, const Math::Transform* transform, const Material* material)
 {
 	const Math::Vector2D& vector = renderer->GetVec2D(GetUnprefixedName());
-	glUniform2f(GetLocation(), vector.GetX(), vector.GetY());
+	glUniform2f(GetLocation(), vector.x, vector.y);
 }
 /* ==================== Vector2DUniform class implementation end ==================== */
 

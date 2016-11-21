@@ -37,21 +37,27 @@ namespace Math
 		/// <summary>
 		/// Axis-aligned bounding rectangle copy constructor.
 		/// </summary>
+		/// <param name="aabr"> The axis-aligned bounding rectangle to copy construct from. </param>
 		MATH_API AABR(const AABR& aabr) = default;
 
 		/// <summary>
 		/// Axis-aligned bounding rectangle move constructor.
 		/// </summary>
+		/// <param name="aabr"> The r-value reference to the axis-aligned bounding rectangle to move construct from. </param>
 		MATH_API AABR(AABR&& aabr) = default;
 
 		/// <summary>
 		/// Axis-aligned bounding rectangle copy assignment operator.
 		/// </summary>
+		/// <param name="aabr"> The reference to the axis-aligned bounding rectangle to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned axis-aligned bounding rectangle. </returns>
 		MATH_API AABR& operator=(const AABR& aabr) = default;
 
 		/// <summary>
 		/// Axis-aligned bounding rectangle move assignment operator.
 		/// </summary>
+		/// <param name="aabr"> The r-value reference to the axis-aligned bounding rectangle to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned axis-aligned bounding rectangle. </returns>
 		MATH_API AABR& operator=(AABR&& aabr) = default;
 
 		/// <summary>
@@ -63,7 +69,7 @@ namespace Math
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		MATH_API IntersectInfo DoesContainPoint(Math::Real x, Math::Real y) const;
-		MATH_API IntersectInfo DoesContainPoint(const Math::Vector2D& point) const;
+		MATH_API IntersectInfo DoesContainPoint(const Math::Vector2D& point) const { return DoesContainPoint(point.x, point.y); }
 		MATH_API IntersectInfo DoesIntersectAABR(const AABR& aabr) const;
 		MATH_API inline const Vector2D& GetBottomLeftPos() const { return m_bottomLeftPos; }
 		MATH_API inline const Vector2D& GetTopRightPos() const { return m_topRightPos; }

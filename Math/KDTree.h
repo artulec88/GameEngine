@@ -39,21 +39,28 @@ namespace Math
 		/// The k-d tree is a hierarchical structure. The root of this structure is at depth level 0.
 		/// </param>
 		MATH_API KDTree(Vector3D* positions, size_t positionsCount, int numberOfSamples = 1, int depth = 0);
+
 		/// <summary>
 		/// k-d tree destructor.
 		/// </summary>
 		MATH_API ~KDTree(void);
+
 		/// <summary> K-d tree copy constructor. </summary>
 		/// <param name="kdTree"> The k-d tree to copy construct from. </param>
 		MATH_API KDTree(const KDTree& kdTree) = delete;
+
 		/// <summary> K-d tree move constructor. </summary>
 		/// <param name="kdTree"> The k-d tree to move construct from. </param>
 		MATH_API KDTree(KDTree&& kdTree) = delete;
+
 		/// <summary> K-d tree copy assignment operator. </summary>
 		/// <param name="kdTree"> The k-d tree to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned k-d tree. </returns>
 		MATH_API KDTree& operator=(const KDTree& kdTree) = delete;
+
 		/// <summary> K-d tree move assignment operator. </summary>
 		/// <param name="kdTree"> The k-d tree to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned k-d tree. </returns>
 		MATH_API KDTree& operator=(KDTree&& kdTree) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 
@@ -67,7 +74,7 @@ namespace Math
 		/// <returns>The interpolated nearest value for the given <paramref name="position"/>.</returns>
 		MATH_API Real SearchNearestValue(const Vector2D& position) const
 		{
-			return SearchNearestValue(position.GetX(), position.GetY());
+			return SearchNearestValue(position.x, position.y);
 		}
 
 		/// <summary>
@@ -103,7 +110,7 @@ namespace Math
 		void BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth);
 		void SearchNearestValue(const Vector2D& position, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
 		{
-			SearchNearestValue(position.GetX(), position.GetY(), depth, minDistanceValues, minDistances);
+			SearchNearestValue(position.x, position.y, depth, minDistanceValues, minDistances);
 		}
 		void SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
 		std::string ToString(int depth) const;

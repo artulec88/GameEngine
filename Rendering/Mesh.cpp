@@ -505,8 +505,8 @@ void Rendering::Mesh::CalcTangents(Math::Vector3D*& tangents, Math::Vector3D* po
 		Math::Vector2D deltaUV2 = textureCoordinates[i + 2] - textureCoordinates[i];
 
 		Math::Real r = REAL_ONE / (deltaUV1.Cross(deltaUV2));
-		Math::Vector3D tangent = (deltaPos1 * deltaUV2.GetY() - deltaPos2 * deltaUV1.GetY()) * r;
-		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.GetX() - deltaPos1 * deltaUV2.GetX()) * r;
+		Math::Vector3D tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+		Math::Vector3D bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
 
 		// Set the same tangent for all three vertices of the triangle. They will be merged later, during indexing.
 		tangents[i] = tangent;

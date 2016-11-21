@@ -15,79 +15,121 @@ namespace Math
 	/// <summary>
 	/// Two dimensional vector representation.
 	/// </summary>
-	class Vector2D
+	struct Vector2D
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
-		//static constexpr Vector2D ZERO_VECTOR{ REAL_ZERO, REAL_ZERO };
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary>Two-dimensional vector default constructor.</summary>
-		MATH_API constexpr Vector2D() :
-			m_x(REAL_ZERO),
-			m_y(REAL_ZERO)
+		/// <summary> Two-dimensional vector default constructor. </summary>
+		MATH_API constexpr Vector2D() noexcept:
+			x(REAL_ZERO),
+			y(REAL_ZERO)
 		{
 		}
-		MATH_API constexpr explicit Vector2D(Real xy) :
-			m_x(xy),
-			m_y(xy)
+
+		/// <summary> Two-dimensional vector constructor that initializes all its components to the specified <paramref name="xy"/> value. </summary>
+		/// <param name="xy"> The value that will be used to initialize all components of the 2D vector. </param>
+		MATH_API constexpr explicit Vector2D(Real xy) noexcept:
+			x(xy),
+			y(xy)
 		{
 		}
-		MATH_API constexpr Vector2D(Real x, Real y) :
-			m_x(x),
-			m_y(y)
+
+		/// <summary>
+		/// Two-dimensional vector constructor that initializes its X and Y components to the
+		/// specified <paramref name="_x"/> and <paramref name="y"/> values respectively.
+		/// </summary>
+		/// <param name="_x"> The value that will be used to initialize the X component of the 2D vector. </param>
+		/// <param name="_y"> The value that will be used to initialize the Y component of the 2D vector. </param>
+		MATH_API constexpr Vector2D(Real _x, Real _y) noexcept:
+			x(_x),
+			y(_y)
 		{
 		}
-		MATH_API constexpr Vector2D(const Vector2D& v) = default;
-		MATH_API constexpr Vector2D(Vector2D&& v) = default;
+
+		/// <summary>
+		/// Two-dimensional vector copy constructor that initializes its X and Y components using the specified 2D vector <paramref name="v"/>.
+		/// </summary>
+		/// <param name="v"> The reference to the 2D vector that will be used to copy construct new two-dimensional vector. </param>
+		MATH_API constexpr Vector2D(const Vector2D& v) noexcept = default;
+
+		/// <summary>
+		/// Two-dimensional vector move constructor that initializes its X and Y components using the specified 2D vector <paramref name="v"/>.
+		/// </summary>
+		/// <param name="v"> The r-value reference to the 2D vector that will be used to move construct new two-dimensional vector. </param>
+		MATH_API constexpr Vector2D(Vector2D&& v) noexcept = default;
+
+		/// <summary> Two-dimensional vector destructor. </summary>
 		MATH_API ~Vector2D() = default;
 
-		MATH_API Vector2D& operator=(const Vector2D& v) = default;
-		MATH_API Vector2D& operator=(Vector2D&& v) = default;
+
+		/// <summary>
+		/// Two-dimensional vector copy assignment operator that initializes its X and Y components using the specified 2D vector <paramref name="v"/>.
+		/// </summary>
+		/// <param name="v"> The reference to the 2D vector we will copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned two-dimensional vector. </returns>
+		MATH_API Vector2D& operator=(const Vector2D& v) noexcept = default;
+
+		/// <summary>
+		/// Two-dimensional vector move assignment operator that initializes its X and Y components using the specified 2D vector <paramref name="v"/>.
+		/// </summary>
+		/// <param name="v"> The r-value reference to the 2D vector we will move assign from. </param>
+		/// <returns> The reference to the newly move-assigned two-dimensional vector. </returns>
+		MATH_API Vector2D& operator=(Vector2D&& v) noexcept = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		constexpr inline Real GetX() const { return m_x; }
-		constexpr inline Real GetY() const { return m_y; }
-		inline void SetX(Real x) { m_x = x; }
-		inline void SetY(Real y) { m_y = y; }
-		inline void Increase(Real x, Real y) { m_x += x; m_y += y; }
-		inline void Increase(const Math::Vector2D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); }
-		inline void IncreaseX(Real x) { m_x += x; }
-		inline void IncreaseY(Real y) { m_y += y; }
-		inline void Set(Real x, Real y) { m_x = x; m_y = y; }
-
-		constexpr Real SumOfComponents() const { return m_x + m_y; }
-		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y); }
+		constexpr Real SumOfComponents() const noexcept { return x + y; }
+		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y); }
 
 		MATH_API Real Length() const { return sqrt(LengthSquared()); }
-		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(m_x * m_x + m_y * m_y); }
+		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(x * x + y * y); }
 
 		/// <summary>
 		/// Creates a negation of the vector and returns it. The current vector stays untouched.
 		/// </summary>
-		constexpr Vector2D Negated() const
+		constexpr Vector2D Negated() const noexcept
 		{
-			return Vector2D(-m_x, -m_y);
+			return Vector2D(-x, -y);
 		}
 		/// <summary>
 		/// Negates all vector components and returns itself.
 		/// </summary>
-		Vector2D& Negate()
+		Vector2D& Negate() noexcept
 		{
-			m_x = -m_x;
-			m_y = -m_y;
+			x = -x;
+			y = -y;
 			return *this;
 		}
 
 #ifdef PASS_VECTOR_BY_VALUE
-		Vector2D operator+(Vector2D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY()); return v; }
-		Vector2D operator-(Vector2D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY()); return v; }
-		Vector2D operator*(Vector2D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY()); return v; }
-		Vector2D operator/(Vector2D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY()); return v; }
+		Vector2D operator+(Vector2D v) const
+		{
+			v.x += x;
+			v.y += y;
+			return v;
+		}
+		Vector2D operator-(Vector2D v) const
+		{
+			v.x = x - v.x;
+			v.y = y - v.y;
+			return v;
+		}
+		Vector2D operator*(Vector2D v) const
+		{
+			v.x *= x;
+			v.y *= y;
+			return v;
+		}
+		Vector2D operator/(Vector2D v) const
+		{
+			v.x = x / v.x;
+			v.y = y / v.y;
+			return v;
+		}
 		Vector2D Max(Vector2D v) const;
 		Vector2D Lerp(Vector2D vec, Real lerpFactor) const; // TODO: Write tests!
 #else
@@ -98,9 +140,9 @@ namespace Math
 		Vector2D Max(const Vector2D& v) const;
 		Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 #endif
-		Vector2D operator-() const { return Vector2D(-m_x, -m_y); }
-		Vector2D operator*(Real s) const { return Vector2D(s * m_x, s * m_y); }
-		Vector2D operator/(Real s) const { return Vector2D(m_x / s, m_y / s); }
+		Vector2D operator-() const { return Vector2D(-x, -y); }
+		Vector2D operator*(Real s) const { return Vector2D(s * x, s * y); }
+		Vector2D operator/(Real s) const { return Vector2D(x / s, y / s); }
 
 		MATH_API Vector2D& operator+=(const Vector2D& v);
 		MATH_API Vector2D& operator-=(const Vector2D& v);
@@ -121,7 +163,7 @@ namespace Math
 			//}
 			// return (*this) / static_cast<Real>(sqrt(length));
 			Real length = Length();
-			return Vector2D(m_x / length, m_y / length);
+			return Vector2D(x / length, y / length);
 		}
 		Vector2D& Normalize()
 		{
@@ -133,8 +175,8 @@ namespace Math
 			//*this /= static_cast<Real>(sqrt(length));
 
 			Real length = Length();
-			m_x /= length;
-			m_y /= length;
+			x /= length;
+			y /= length;
 			return *this;
 		}
 		MATH_API bool IsNormalized() const;
@@ -147,12 +189,12 @@ namespace Math
 
 		Real Cross(const Vector2D& v) const
 		{
-			return m_x * v.GetY() - m_y * v.GetX();
+			return x * v.y - y * v.x;
 		}
 
 		Real Dot(const Vector2D& v) const
 		{
-			return (m_x * v.GetX() + m_y * v.GetY());
+			return (x * v.x + y * v.y);
 		}
 
 		Real Max() const;
@@ -160,20 +202,20 @@ namespace Math
 	public:
 		friend std::ostream& operator<<(std::ostream& out, const Vector2D& vector)
 		{
-			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << ")";
+			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.x << ")";
 			return out;
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
+	public:
 		/// <summary>The X component value of the two-dimensional vector.</summary>
-		Real m_x;
+		Real x;
 		/// <summary>The Y component value of the two-dimensional vector.</summary>
-		Real m_y;
+		Real y;
 		// TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class Vector2D */
+	}; /* end struct Vector2D */
 
 
 	/// <summary>
@@ -578,6 +620,9 @@ namespace Math
 			Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
 			Math::Real xPos, Math::Real zPos);
 	} /* end namespace Interpolation */
+
+	constexpr Vector2D ZERO_VECTOR_2D{ REAL_ZERO, REAL_ZERO };
+
 } /* end namespace Math */
 
 #endif /* __MATH_VECTOR_H__ */

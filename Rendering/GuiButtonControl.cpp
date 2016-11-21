@@ -103,10 +103,10 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 			for (std::vector<Text::Character>::const_iterator characterItr = wordItr->GetCharacters().begin(); characterItr != wordItr->GetCharacters().end(); ++characterItr)
 			{
 				// Adding positions
-				const Math::Real x = cursorX + (characterItr->GetOffset().GetX() * m_fontSize);
-				const Math::Real y = cursorY + (characterItr->GetOffset().GetY() * m_fontSize);
-				const Math::Real maxX = x + (characterItr->GetSize().GetX() * m_fontSize);
-				const Math::Real maxY = y + (characterItr->GetSize().GetY() * m_fontSize);
+				const Math::Real x = cursorX + (characterItr->GetOffset().x * m_fontSize);
+				const Math::Real y = cursorY + (characterItr->GetOffset().y * m_fontSize);
+				const Math::Real maxX = x + (characterItr->GetSize().x * m_fontSize);
+				const Math::Real maxY = y + (characterItr->GetSize().y * m_fontSize);
 				const Math::Real properX = (2.0f * x) - 1.0f;
 				const Math::Real properY = (-2.0f * y) + 1.0f;
 				const Math::Real properMaxX = (2.0f * maxX) - 1.0f;
@@ -116,10 +116,10 @@ void Rendering::Controls::GuiButtonControl::SetText(const std::string& text)
 				//	");\n\t(properX, properY) = (", properX, ", ", properY, ");\n\t(properMaxX, properMaxY) = (", properMaxX, ", ", properMaxY, ");");
 
 				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0
-				positions.emplace_back(properMaxX, properY); textureCoordinates.emplace_back(characterItr->GetMaxTextureCoords().GetX(), characterItr->GetTextureCoords().GetY()); // 4
+				positions.emplace_back(properMaxX, properY); textureCoordinates.emplace_back(characterItr->GetMaxTextureCoords().x, characterItr->GetTextureCoords().y); // 4
 				positions.emplace_back(properMaxX, properMaxY); textureCoordinates.push_back(characterItr->GetMaxTextureCoords()); // 2
 				positions.emplace_back(properMaxX, properMaxY); textureCoordinates.push_back(characterItr->GetMaxTextureCoords()); // 2
-				positions.emplace_back(properX, properMaxY); textureCoordinates.emplace_back(characterItr->GetTextureCoords().GetX(), characterItr->GetMaxTextureCoords().GetY()); // 1
+				positions.emplace_back(properX, properMaxY); textureCoordinates.emplace_back(characterItr->GetTextureCoords().x, characterItr->GetMaxTextureCoords().y); // 1
 				positions.emplace_back(properX, properY); textureCoordinates.push_back(characterItr->GetTextureCoords()); // 0
 
 				cursorX += characterItr->GetXAdvance() * m_fontSize;
