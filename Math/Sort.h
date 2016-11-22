@@ -67,11 +67,8 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 
 				bool swapOccured = false;
 				size_t n = vectorSize;
@@ -151,11 +148,8 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
 
 				for (int i = 1; i < vectorSize; ++i)
 				{
@@ -231,16 +225,10 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the selection sort algorithm. The specified table is NULL");
-					return;
-				}
-
-				if (vectorSize < 2)
-				{
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
+				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(vectorSize >= 2, Utility::Logging::DEBUG,
+					"Selection sort operation ignored. Only one element to sort.");
 
 				for (int k = 0; k < vectorSize - 1; ++k)
 				{
@@ -322,11 +310,8 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the merge sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 				std::vector<T> auxiliaryTable(vectorSize);
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable.data());
 			}
@@ -561,11 +546,8 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the quick sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters);
 			}
 
@@ -662,17 +644,14 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
 				const size_t QUARTER_VECTOR_SIZE = vectorSize / 4;
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
-					return;
-				}
 				const size_t FIRST_CONST_INDEX = 1;
 				const size_t LAST_CONST_INDEX = 701;
 				const Math::Real RECURSIVE_INDEX_STEP = 2.25f;
 				int constIndices[] = { FIRST_CONST_INDEX, 4, 10, 23, 57, 132, 301, LAST_CONST_INDEX };
-				std::vector<size_t> indices(constIndices, constIndices + sizeof(constIndices) / sizeof(size_t));
+				std::vector<size_t> indices(constIndices, constIndices + sizeof(constIndices) / sizeof(int));
 				if (indices.back() >= QUARTER_VECTOR_SIZE)
 				{
 					do
@@ -689,23 +668,25 @@ namespace Math {
 						nextIndex = Floor(static_cast<Math::Real>(nextIndex) * RECURSIVE_INDEX_STEP);
 					}
 				}
-				CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Logging::ERR, "Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = ", vectorSize, " and the gap = ", indices.back());
-				CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::Logging::ERR, "Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to ", FIRST_CONST_INDEX, ", but is equal to ", indices.front());
+				CHECK_CONDITION_MATH(indices.back() < QUARTER_VECTOR_SIZE, Utility::Logging::ERR,
+					"Incorrect calculation of the initial gap value for the shell sort algorithm. The vector size = ", vectorSize, " and the gap = ", indices.back());
+				CHECK_CONDITION_MATH(indices.front() == FIRST_CONST_INDEX, Utility::Logging::ERR,
+					"Incorrect calculation of the last gap value for the shell sort algorithm. The last gap value must be equal to ", FIRST_CONST_INDEX, ", but is equal to ", indices.front());
 
 				while (!indices.empty())
 				{
 					size_t gap = indices.back();
-					for (size_t j = vectorSize - gap - 1; j >= 0; --j)
+					for (size_t i = gap; i < vectorSize; ++i)
 					{
-						T vec = vectors[j];
-						size_t i = j + gap;
-						while ((i < vectorSize) && (NeedSwapping(vec, vectors[i], sortingParameters)))
+						T temp(vectors[i]);
+						size_t j = i;
+						for (; j >= gap && NeedSwapping(vectors[j - gap], temp, sortingParameters); j -= gap)
 						{
-							vectors[i - gap] = vectors[i];
-							i += gap;
+							vectors[j] = vectors[j - gap];
 						}
-						vectors[i - gap] = vec;
+						vectors[j] = temp;
 					}
+					//DELOCUST_LOG_MATH("Popping back from the indices collection.");
 					indices.pop_back();
 				}
 			}
@@ -774,11 +755,8 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 
 				size_t gap = vectorSize;
 
@@ -996,11 +974,8 @@ namespace Math {
 		private:
 			void FindMinMax(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 
 				minValue = REAL_MAX;
 				maxValue = REAL_MIN;
@@ -1021,11 +996,8 @@ namespace Math {
 
 			void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
 			{
-				if (vectors == NULL)
-				{
-					EMERGENCY_LOG_MATH("Cannot sort the table using the comb sort algorithm. The specified table is NULL");
-					return;
-				}
+				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
+					"Cannot sort the table. The specified table is NULL");
 
 				minValue = REAL_MAX;
 				maxValue = REAL_MIN;
