@@ -702,25 +702,23 @@ void SortTest()
 	//sortingOutputFile.open("sortingOutput.txt");
 
 	NOTICE_LOG_MATH_TEST("Sorting test started");
-	constexpr int NUMBER_OF_VECTORS = 10;
+	constexpr int NUMBER_OF_VECTORS = 10000;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
 	const Real LOWER_BOUND_Y = -20.0f;
 	const Real HIGHER_BOUND_Y = 20.0f;
 	std::array<Vector2D, NUMBER_OF_VECTORS> initialVectors;
 	std::array<Vector2D, NUMBER_OF_VECTORS> vectors;
-	//initialVectors[0].SetX(REAL_ONE); initialVectors[5].SetY(REAL_ONE); // sumOfComponents = 2	sumOfAbsComponents = 2	sumOfSquaredComponents = 2
-	//initialVectors[1].SetX(REAL_ONE); initialVectors[6].SetY(2.0f); // sumOfComponents = 3	sumOfAbsComponents = 3	sumOfSquaredComponents = 5
-	//initialVectors[2].SetX(REAL_ONE); initialVectors[7].SetY(3.0f); // sumOfComponents = 4	sumOfAbsComponents = 4	sumOfSquaredComponents = 10
-	//initialVectors[3].SetX(REAL_ONE); initialVectors[8].SetY(4.0f); // sumOfComponents = 5	sumOfAbsComponents = 5	sumOfSquaredComponents = 17
-	//initialVectors[4].SetX(REAL_ONE); initialVectors[9].SetY(5.0f); // sumOfComponents = 6	sumOfAbsComponents = 6	sumOfSquaredComponents = 26
-	//initialVectors[5].SetX(REAL_ZERO); initialVectors[0].SetY(REAL_ONE); // sumOfComponents = 1	sumOfAbsComponents = 1	sumOfSquaredComponents = 1
-	//initialVectors[6].SetX(REAL_ZERO); initialVectors[1].SetY(2.0f); // sumOfComponents = 2	sumOfAbsComponents = 2	sumOfSquaredComponents = 4
-	//initialVectors[7].SetX(REAL_ZERO); initialVectors[2].SetY(3.0f); // sumOfComponents = 3	sumOfAbsComponents = 3	sumOfSquaredComponents = 9
-	//initialVectors[8].SetX(REAL_ZERO); initialVectors[3].SetY(4.0f); // sumOfComponents = 4	sumOfAbsComponents = 4	sumOfSquaredComponents = 16
-	//initialVectors[9].SetX(REAL_ZERO); initialVectors[4].SetY(5.0f); // sumOfComponents = 5	sumOfAbsComponents = 5	sumOfSquaredComponents = 25
-	//initialVectors[10].SetX(-1.0f); initialVectors[4].SetY(2.0f); // sumOfComponents = 1	sumOfAbsComponents = 3	sumOfSquaredComponents = 5
-	//initialVectors[11].SetX(-2.0f); initialVectors[4].SetY(5.0f); // sumOfComponents = 3	sumOfAbsComponents = 7	sumOfSquaredComponents = 29
+	//initialVectors[0].x = 1.0f; initialVectors[5].y = 1.0f; // sumOfComponents = 2		sumOfAbsComponents = 2	sumOfSquaredComponents = 2
+	//initialVectors[1].x = -1.0f; initialVectors[6].y = 2.0f; // sumOfComponents = 1		sumOfAbsComponents = 3	sumOfSquaredComponents = 5
+	//initialVectors[2].x = 2.0f; initialVectors[7].y = 3.0f; // sumOfComponents = 5		sumOfAbsComponents = 5	sumOfSquaredComponents = 13
+	//initialVectors[3].x = -2.0f; initialVectors[8].y = 4.0f; // sumOfComponents = 2		sumOfAbsComponents = 6	sumOfSquaredComponents = 20
+	//initialVectors[4].x = 3.0f; initialVectors[9].y = 5.0f; // sumOfComponents = 8		sumOfAbsComponents = 8	sumOfSquaredComponents = 34
+	//initialVectors[5].x = -3.0f; initialVectors[0].y = 1.0f; // sumOfComponents = -2	sumOfAbsComponents = 4	sumOfSquaredComponents = 10
+	//initialVectors[6].x = 4.0f; initialVectors[1].y = 2.0f; // sumOfComponents = 6		sumOfAbsComponents = 6	sumOfSquaredComponents = 20
+	//initialVectors[7].x = -4.0f; initialVectors[2].y = 3.0f; // sumOfComponents = -1	sumOfAbsComponents = 7	sumOfSquaredComponents = 25
+	//initialVectors[8].x  = 5.0f; initialVectors[3].y = 4.0f; // sumOfComponents = 9		sumOfAbsComponents = 9	sumOfSquaredComponents = 41
+	//initialVectors[9].x = -5.0f; initialVectors[4].y = 5.0f; // sumOfComponents = 0		sumOfAbsComponents = 10	sumOfSquaredComponents = 50
 	for (int i = 0; i < NUMBER_OF_VECTORS; ++i)
 	{
 		initialVectors[i].x = g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X);
@@ -729,7 +727,7 @@ void SortTest()
 	}
 
 	constexpr int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const std::array<int, NUMBER_OF_SORTING_METHODS> chosenSortingMethodIndices = { 4 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const std::array<int, NUMBER_OF_SORTING_METHODS> chosenSortingMethodIndices = { 5 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
 	const std::array<Sorting::SortingAlgorithms::SortingAlgorithm, Sorting::SortingAlgorithms::COUNT> sortingMethods = { Sorting::SortingAlgorithms::BUBBLE_SORT,
 		Sorting::SortingAlgorithms::INSERTION_SORT, Sorting::SortingAlgorithms::SELECTION_SORT, Sorting::SortingAlgorithms::MERGE_SORT,
 		Sorting::SortingAlgorithms::HEAP_SORT, Sorting::SortingAlgorithms::QUICK_SORT, Sorting::SortingAlgorithms::SHELL_SORT,

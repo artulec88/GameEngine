@@ -10,6 +10,7 @@
 
 namespace Math {
 	namespace Sorting {
+
 		/// <summary>
 		/// The object representation of the bubble sort algorithm.
 		/// </summary>
@@ -94,6 +95,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BubbleSort */
 
+		/// <summary>
+		/// The object representation of the insertion sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Insertion_sort for details.
+		/// </remarks>
 		class InsertionSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -101,8 +108,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Insertion sort object constructor. </summary>
 			InsertionSort();
+
+			/// <summary> Insertion sort object destructor. </summary>
 			virtual ~InsertionSort(void);
+
+			/// <summary> Insertion sort object copy constructor. </summary>
+			/// <param name="insertionSort"> The insertion sort object to copy construct from. </param>
+			InsertionSort(const InsertionSort& insertionSort) = delete;
+
+			/// <summary> Insertion sort object move constructor. </summary>
+			/// <param name="insertionSort"> The r-value reference of the insertion sort object to move construct from. </param>
+			InsertionSort(InsertionSort&& insertionSort) = delete;
+
+			/// <summary> Insertion sort object copy assignment operator. </summary>
+			/// <param name="insertionSort"> The insertion sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned insertion sort object. </returns>
+			InsertionSort& operator=(const InsertionSort& insertionSort) = delete;
+
+			/// <summary> Insertion sort object move assignment operator. </summary>
+			/// <param name="insertionSort"> The r-value reference of the insertion sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned insertion sort object. </returns>
+			InsertionSort& operator=(InsertionSort&& insertionSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -147,6 +175,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class InsertionSort */
 
+		/// <summary>
+		/// The object representation of the selection sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Selection_sort for details.
+		/// </remarks>
 		class SelectionSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -154,8 +188,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Selection sort object constructor. </summary>
 			SelectionSort();
+
+			/// <summary> Selection sort object destructor. </summary>
 			virtual ~SelectionSort(void);
+
+			/// <summary> Selection sort object copy constructor. </summary>
+			/// <param name="selectionSort"> The selection sort object to copy construct from. </param>
+			SelectionSort(const SelectionSort& selectionSort) = delete;
+
+			/// <summary> Selection sort object move constructor. </summary>
+			/// <param name="selectionSort"> The r-value reference of the selection sort object to move construct from. </param>
+			SelectionSort(SelectionSort&& selectionSort) = delete;
+
+			/// <summary> Selection sort object copy assignment operator. </summary>
+			/// <param name="selectionSort"> The selection sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned selection sort object. </returns>
+			SelectionSort& operator=(const SelectionSort& selectionSort) = delete;
+
+			/// <summary> Selection sort object move assignment operator. </summary>
+			/// <param name="selectionSort"> The r-value reference of the selection sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned selection sort object. </returns>
+			SelectionSort& operator=(SelectionSort&& selectionSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -211,6 +266,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SelectionSort */
 
+		/// <summary>
+		/// The object representation of the merge sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Merge_sort for details.
+		/// </remarks>
 		class MergeSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -218,8 +279,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Merge sort object constructor. </summary>
 			MergeSort();
+
+			/// <summary> Merge sort object destructor. </summary>
 			virtual ~MergeSort(void);
+
+			/// <summary> Merge sort object copy constructor. </summary>
+			/// <param name="mergeSort"> The merge sort object to copy construct from. </param>
+			MergeSort(const MergeSort& mergeSort) = delete;
+
+			/// <summary> Merge sort object move constructor. </summary>
+			/// <param name="mergeSort"> The r-value reference of the merge sort object to move construct from. </param>
+			MergeSort(MergeSort&& mergeSort) = delete;
+
+			/// <summary> Merge sort object copy assignment operator. </summary>
+			/// <param name="mergeSort"> The merge sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned merge sort object. </returns>
+			MergeSort& operator=(const MergeSort& mergeSort) = delete;
+
+			/// <summary> Merge sort object move assignment operator. </summary>
+			/// <param name="mergeSort"> The r-value reference of the merge sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned merge sort object. </returns>
+			MergeSort& operator=(MergeSort&& mergeSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -301,6 +383,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class MergeSort */
 
+		/// <summary>
+		/// The object representation of the heap sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Heap_sort for details.
+		/// </remarks>
 		class HeapSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -308,8 +396,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Heap sort object constructor. </summary>
 			HeapSort();
+
+			/// <summary> Heap sort object destructor. </summary>
 			virtual ~HeapSort(void);
+
+			/// <summary> Heap sort object copy constructor. </summary>
+			/// <param name="heapSort"> The heap sort object to copy construct from. </param>
+			HeapSort(const HeapSort& heapSort) = delete;
+
+			/// <summary> Heap sort object move constructor. </summary>
+			/// <param name="heapSort"> The r-value reference of the heap sort object to move construct from. </param>
+			HeapSort(HeapSort&& heapSort) = delete;
+
+			/// <summary> Heap sort object copy assignment operator. </summary>
+			/// <param name="heapSort"> The heap sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned heap sort object. </returns>
+			HeapSort& operator=(const HeapSort& heapSort) = delete;
+
+			/// <summary> Heap sort object move assignment operator. </summary>
+			/// <param name="heapSort"> The r-value reference of the heap sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned heap sort object. </returns>
+			HeapSort& operator=(HeapSort&& heapSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -396,6 +505,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class HeapSort */
 
+		/// <summary>
+		/// The object representation of the quick sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Quick_sort for details.
+		/// </remarks>
 		class QuickSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -403,8 +518,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Quick sort object constructor. </summary>
 			QuickSort();
+
+			/// <summary> Quick sort object destructor. </summary>
 			virtual ~QuickSort(void);
+
+			/// <summary> Quick sort object copy constructor. </summary>
+			/// <param name="quickSort"> The quick sort object to copy construct from. </param>
+			QuickSort(const QuickSort& quickSort) = delete;
+
+			/// <summary> Quick sort object move constructor. </summary>
+			/// <param name="quickSort"> The r-value reference of the quick sort object to move construct from. </param>
+			QuickSort(QuickSort&& quickSort) = delete;
+
+			/// <summary> Quick sort object copy assignment operator. </summary>
+			/// <param name="quickSort"> The quick sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned quick sort object. </returns>
+			QuickSort& operator=(const QuickSort& quickSort) = delete;
+
+			/// <summary> Quick sort object move assignment operator. </summary>
+			/// <param name="quickSort"> The r-value reference of the quick sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned quick sort object. </returns>
+			QuickSort& operator=(QuickSort&& quickSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -436,50 +572,33 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t left, size_t right, const SortingParametersChain& sortingParameters)
 			{
-				if (left >= right)
-				{
-					return;
-				}
+				DEBUG_LOG_MATH("Quick sort started for the range of indices: [", left, "; ", right, "].");
+				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(left < right, Utility::Logging::WARNING,
+					"Calling quick sort method with incorrect values for left and right indices (", left, ", ", right, " respectively).");
 
-				T pivot = vectors[left];
-				size_t i = left - 1;
-				size_t j = right + 1;
-				do
+				const size_t pivotIndex = left;
+				T pivot = vectors[pivotIndex];
+				Swap(vectors[pivotIndex], vectors[right]);
+
+				size_t index = left;
+				for (size_t i = left; i < right; ++i)
 				{
-					do
+					if (NeedSwapping(pivot, vectors[i], sortingParameters))
 					{
-						if (i > right)
-							break;
-						++i;
-						//DEBUG_LOG_MATH("i = ", i, "; left = ", left, "; right = ", right, "; vectors[", i, "] = ", vectors[i].ToString(), "; pivot = ", pivot.ToString());
-					} while ((i != left) && !NeedSwapping(vectors[i], pivot, sortingParameters)); // TODO: Check this condition more thoroughly
-					do
-					{
-						if (j <= left)
-							break;
-						--j;
-						//DEBUG_LOG_MATH("j = ", j, "; left = ", left, "; right = ", right, "; vectors[", j, "] = ", vectors[j].ToString(), "; pivot = ", pivot.ToString());
-					} while (!NeedSwapping(pivot, vectors[j], sortingParameters)); // TODO: Check this condition more thoroughly
-					if (i < j)
-					{
-						//DEBUG_LOG_MATH("Swapping vectors[", i, "] (", vectors[i].ToString(), ") with vectors[", j, "] (", vectors[j].ToString(), ")");
-						Swap(vectors[i], vectors[j]);
+						Swap(vectors[i], vectors[index]);
+						++index;
 					}
-				} while (!(i > j));
-				//DEBUG_LOG_MATH("left1 = ", left, "; right1 = ", j);
-				//if (j == right)
-				//{
-				//	CRITICAL_LOG_MATH("Calling the quick sort with the same indices. Stack overflow exception will occur.");
-				//	exit(EXIT_FAILURE);
-				//}
-				Sort(vectors, left, j, sortingParameters);
-				//DEBUG_LOG_MATH("left2 = ", i, "; right2 = ", right);
-				//if (i == left)
-				//{
-				//	CRITICAL_LOG_MATH("Calling the quick sort with the same indices. Stack overflow exception will occur.");
-				//	exit(EXIT_FAILURE);
-				//}
-				Sort(vectors, i, right, sortingParameters);
+				}
+				Swap(vectors[index], vectors[right]);
+
+				if (index > left + 1) // "if (index - 1 > left)" could fail when index == 0, because of size_t not handling negative values correctly.
+				{
+					Sort(vectors, left, index - 1, sortingParameters);
+				}
+				if (right > index + 1)
+				{
+					Sort(vectors, index + 1, right, sortingParameters);
+				}
 			}
 			/* ==================== Non-static member functions end ==================== */
 
@@ -487,6 +606,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class QuickSort */
 
+		/// <summary>
+		/// The object representation of the shell sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Shell_sort for details.
+		/// </remarks>
 		class ShellSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -494,8 +619,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Shell sort object constructor. </summary>
 			ShellSort();
+
+			/// <summary> Shell sort object destructor. </summary>
 			virtual ~ShellSort(void);
+
+			/// <summary> Shell sort object copy constructor. </summary>
+			/// <param name="quickSort"> The shell sort object to copy construct from. </param>
+			ShellSort(const ShellSort& shellSort) = delete;
+
+			/// <summary> Shell sort object move constructor. </summary>
+			/// <param name="quickSort"> The r-value reference of the shell sort object to move construct from. </param>
+			ShellSort(ShellSort&& shellSort) = delete;
+
+			/// <summary> Shell sort object copy assignment operator. </summary>
+			/// <param name="quickSort"> The shell sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned shell sort object. </returns>
+			ShellSort& operator=(const ShellSort& shellSort) = delete;
+
+			/// <summary> Shell sort object move assignment operator. </summary>
+			/// <param name="quickSort"> The r-value reference of the shell sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned shell sort object. </returns>
+			ShellSort& operator=(ShellSort&& shellSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -569,6 +715,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ShellSort */
 
+		/// <summary>
+		/// The object representation of the comb sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Comb_sort for details.
+		/// </remarks>
 		class CombSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -576,8 +728,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Comb sort object constructor. </summary>
 			CombSort();
+
+			/// <summary> Comb sort object destructor. </summary>
 			virtual ~CombSort(void);
+
+			/// <summary> Comb sort object copy constructor. </summary>
+			/// <param name="combSort"> The comb sort object to copy construct from. </param>
+			CombSort(const CombSort& combSort) = delete;
+
+			/// <summary> Comb sort object move constructor. </summary>
+			/// <param name="combSort"> The r-value reference of the comb sort object to move construct from. </param>
+			CombSort(CombSort&& combSort) = delete;
+
+			/// <summary> Comb sort object copy assignment operator. </summary>
+			/// <param name="combSort"> The comb sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned comb sort object. </returns>
+			CombSort& operator=(const CombSort& combSort) = delete;
+
+			/// <summary> Comb sort object move assignment operator. </summary>
+			/// <param name="combSort"> The r-value reference of the comb sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned comb sort object. </returns>
+			CombSort& operator=(CombSort&& combSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -637,9 +810,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class CombSort */
 
-		/**
-		 * Counting sort is only useful for sorting integer values
-		 */
+		/// <summary>
+		/// The object representation of the counting sort algorithm. Counting sort is only applicable for sorting integer values.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Counting_sort for details.
+		/// </remarks>
 		class CountingSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -647,8 +823,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Counting sort object constructor. </summary>
 			CountingSort();
+
+			/// <summary> Counting sort object destructor. </summary>
 			virtual ~CountingSort(void);
+
+			/// <summary> Counting sort object copy constructor. </summary>
+			/// <param name="countingSort"> The counting sort object to copy construct from. </param>
+			CountingSort(const CountingSort& countingSort) = delete;
+
+			/// <summary> Counting sort object move constructor. </summary>
+			/// <param name="countingSort"> The r-value reference of the counting sort object to move construct from. </param>
+			CountingSort(CountingSort&& countingSort) = delete;
+
+			/// <summary> Counting sort object copy assignment operator. </summary>
+			/// <param name="countingSort"> The counting sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned counting sort object. </returns>
+			CountingSort& operator=(const CountingSort& countingSort) = delete;
+
+			/// <summary> Counting sort object move assignment operator. </summary>
+			/// <param name="countingSort"> The r-value reference of the counting sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned counting sort object. </returns>
+			CountingSort& operator=(CountingSort&& countingSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -665,6 +862,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class CountingSort */
 
+		/// <summary>
+		/// The object representation of the radix sort algorithm. Radix sort is only applicable for sorting integer values.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Radix_sort for details.
+		/// </remarks>
 		class RadixSort : public ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
@@ -672,8 +875,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Radix sort object constructor. </summary>
 			RadixSort();
+
+			/// <summary> Radix sort object destructor. </summary>
 			virtual ~RadixSort(void);
+
+			/// <summary> Radix sort object copy constructor. </summary>
+			/// <param name="radixSort"> The radix sort object to copy construct from. </param>
+			RadixSort(const RadixSort& radixSort) = delete;
+
+			/// <summary> Radix sort object move constructor. </summary>
+			/// <param name="radixSort"> The r-value reference of the radix sort object to move construct from. </param>
+			RadixSort(RadixSort&& radixSort) = delete;
+
+			/// <summary> Radix sort object copy assignment operator. </summary>
+			/// <param name="radixSort"> The radix sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned radix sort object. </returns>
+			RadixSort& operator=(const RadixSort& radixSort) = delete;
+
+			/// <summary> Radix sort object move assignment operator. </summary>
+			/// <param name="radixSort"> The r-value reference of the radix sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned radix sort object. </returns>
+			RadixSort& operator=(RadixSort&& radixSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -690,6 +914,12 @@ namespace Math {
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class RadixSort */
 
+		/// <summary>
+		/// The object representation of the bucket sort algorithm.
+		/// </summary>
+		/// <remarks>
+		/// See https://en.wikipedia.org/wiki/Bucket_sort for details.
+		/// </remarks>
 		class BucketSort : public ISort
 		{
 			template <typename T>
@@ -722,8 +952,29 @@ namespace Math {
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Bucket sort object constructor. </summary>
 			BucketSort();
+
+			/// <summary> Bucket sort object destructor. </summary>
 			virtual ~BucketSort(void);
+
+			/// <summary> Bucket sort object copy constructor. </summary>
+			/// <param name="bucketSort"> The bucket sort object to copy construct from. </param>
+			BucketSort(const BucketSort& bucketSort) = delete;
+
+			/// <summary> Bucket sort object move constructor. </summary>
+			/// <param name="bucketSort"> The r-value reference of the bucket sort object to move construct from. </param>
+			BucketSort(BucketSort&& bucketSort) = delete;
+
+			/// <summary> Bucket sort object copy assignment operator. </summary>
+			/// <param name="bucketSort"> The bucket sort object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned bucket sort object. </returns>
+			BucketSort& operator=(const BucketSort& bucketSort) = delete;
+
+			/// <summary> Bucket sort object move assignment operator. </summary>
+			/// <param name="bucketSort"> The r-value reference of the bucket sort object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned bucket sort object. </returns>
+			BucketSort& operator=(BucketSort&& bucketSort) = delete;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
