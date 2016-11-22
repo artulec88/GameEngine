@@ -3,7 +3,7 @@
 #include "Sort.h"
 
 /* ==================== BubbleSort class implementation begin ==================== */
-Math::Sorting::BubbleSort::BubbleSort() : ISort(SortingAlgorithms::BUBBLE_SORT)
+Math::Sorting::BubbleSort::BubbleSort() : ISort()
 {
 }
 
@@ -43,7 +43,7 @@ void Math::Sorting::BubbleSort::Sort(Math::Vector3D* vectors, size_t vectorSize,
 /* ==================== BubbleSort class implementation end ==================== */
 
 /* ==================== InsertionSort class implementation begin ==================== */
-Math::Sorting::InsertionSort::InsertionSort() : ISort(SortingAlgorithms::INSERTION_SORT)
+Math::Sorting::InsertionSort::InsertionSort() : ISort()
 {
 }
 
@@ -83,7 +83,7 @@ void Math::Sorting::InsertionSort::Sort(Math::Vector3D* vectors, size_t vectorSi
 /* ==================== InsertionSort class implementation end ==================== */
 
 /* ==================== SelectionSort class implementation begin ==================== */
-Math::Sorting::SelectionSort::SelectionSort() : ISort(SortingAlgorithms::SELECTION_SORT)
+Math::Sorting::SelectionSort::SelectionSort() : ISort()
 {
 }
 
@@ -123,7 +123,7 @@ void Math::Sorting::SelectionSort::Sort(Math::Vector3D* vectors, size_t vectorSi
 /* ==================== SelectionSort class implementation end ==================== */
 
 /* ==================== MergeSort class implementation begin ==================== */
-Math::Sorting::MergeSort::MergeSort() : ISort(SortingAlgorithms::MERGE_SORT)
+Math::Sorting::MergeSort::MergeSort() : ISort()
 {
 }
 
@@ -163,7 +163,7 @@ void Math::Sorting::MergeSort::Sort(Math::Vector3D* vectors, size_t vectorSize, 
 /* ==================== MergeSort class implementation end ==================== */
 
 /* ==================== HeapSort class implementation begin ==================== */
-Math::Sorting::HeapSort::HeapSort() : ISort(SortingAlgorithms::HEAP_SORT)
+Math::Sorting::HeapSort::HeapSort() : ISort()
 {
 }
 
@@ -203,7 +203,7 @@ void Math::Sorting::HeapSort::Sort(Math::Vector3D* vectors, size_t vectorSize, c
 /* ==================== HeapSort class implementation end ==================== */
 
 /* ==================== QuickSort class implementation begin ==================== */
-Math::Sorting::QuickSort::QuickSort() : ISort(SortingAlgorithms::QUICK_SORT)
+Math::Sorting::QuickSort::QuickSort() : ISort()
 {
 }
 
@@ -243,7 +243,7 @@ void Math::Sorting::QuickSort::Sort(Math::Vector3D* vectors, size_t vectorSize, 
 /* ==================== QuickSort class implementation end ==================== */
 
 /* ==================== ShellSort class implementation begin ==================== */
-Math::Sorting::ShellSort::ShellSort() : ISort(SortingAlgorithms::SHELL_SORT)
+Math::Sorting::ShellSort::ShellSort() : ISort()
 {
 }
 
@@ -283,7 +283,7 @@ void Math::Sorting::ShellSort::Sort(Math::Vector3D* vectors, size_t vectorSize, 
 /* ==================== ShellSort class implementation end ==================== */
 
 /* ==================== CombSort class implementation begin ==================== */
-Math::Sorting::CombSort::CombSort() : ISort(SortingAlgorithms::COMB_SORT)
+Math::Sorting::CombSort::CombSort() : ISort()
 {
 }
 
@@ -323,7 +323,7 @@ void Math::Sorting::CombSort::Sort(Math::Vector3D* vectors, size_t vectorSize, c
 /* ==================== CombSort class implementation end ==================== */
 
 /* ==================== CountingSort class implementation begin ==================== */
-Math::Sorting::CountingSort::CountingSort() : ISort(SortingAlgorithms::COUNTING_SORT)
+Math::Sorting::CountingSort::CountingSort() : ISort()
 {
 }
 
@@ -400,7 +400,7 @@ void Math::Sorting::CountingSort::Sort(Math::Vector3D* vectors, size_t vectorSiz
 /* ==================== CountingSort class implementation end ==================== */
 
 /* ==================== RadixSort class implementation begin ==================== */
-Math::Sorting::RadixSort::RadixSort() : ISort(SortingAlgorithms::RADIX_SORT)
+Math::Sorting::RadixSort::RadixSort() : ISort()
 {
 }
 
@@ -445,7 +445,7 @@ void Math::Sorting::RadixSort::Sort(Math::Vector3D* vectors, size_t vectorSize, 
 /* ==================== RadixSort class implementation end ==================== */
 
 /* ==================== BucketSort class implementation begin ==================== */
-Math::Sorting::BucketSort::BucketSort() : ISort(SortingAlgorithms::BUCKET_SORT)
+Math::Sorting::BucketSort::BucketSort() : ISort()
 {
 }
 

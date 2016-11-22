@@ -702,13 +702,13 @@ void SortTest()
 	//sortingOutputFile.open("sortingOutput.txt");
 
 	NOTICE_LOG_MATH_TEST("Sorting test started");
-	const int NUMBER_OF_VECTORS = 10000;
+	constexpr int NUMBER_OF_VECTORS = 10;
 	const Real LOWER_BOUND_X = -20.0f;
 	const Real HIGHER_BOUND_X = 20.0f;
 	const Real LOWER_BOUND_Y = -20.0f;
 	const Real HIGHER_BOUND_Y = 20.0f;
-	Vector2D* initialVectors = new Vector2D[NUMBER_OF_VECTORS];
-	Vector2D* vectors = new Vector2D[NUMBER_OF_VECTORS];
+	std::array<Vector2D, NUMBER_OF_VECTORS> initialVectors;
+	std::array<Vector2D, NUMBER_OF_VECTORS> vectors;
 	//initialVectors[0].SetX(REAL_ONE); initialVectors[5].SetY(REAL_ONE); // sumOfComponents = 2	sumOfAbsComponents = 2	sumOfSquaredComponents = 2
 	//initialVectors[1].SetX(REAL_ONE); initialVectors[6].SetY(2.0f); // sumOfComponents = 3	sumOfAbsComponents = 3	sumOfSquaredComponents = 5
 	//initialVectors[2].SetX(REAL_ONE); initialVectors[7].SetY(3.0f); // sumOfComponents = 4	sumOfAbsComponents = 4	sumOfSquaredComponents = 10
@@ -728,15 +728,17 @@ void SortTest()
 		DEBUG_LOG_MATH_TEST("initialVectors[", i, "] = ", initialVectors[i]);
 	}
 
-	const int NUMBER_OF_SORTING_METHODS = 3; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
-	const int chosenSortingMethodIndices[] = { 0, 1, 2 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
-	Sorting::SortingAlgorithms::SortingAlgorithm sortingMethods[] = { Sorting::SortingAlgorithms::BUBBLE_SORT, Sorting::SortingAlgorithms::INSERTION_SORT, Sorting::SortingAlgorithms::SELECTION_SORT,
-		Sorting::SortingAlgorithms::MERGE_SORT, Sorting::SortingAlgorithms::HEAP_SORT, Sorting::SortingAlgorithms::QUICK_SORT, Sorting::SortingAlgorithms::SHELL_SORT,
-		Sorting::SortingAlgorithms::COMB_SORT, Sorting::SortingAlgorithms::COUNTING_SORT, Sorting::SortingAlgorithms::RADIX_SORT, Sorting::SortingAlgorithms::BUCKET_SORT };
-	std::string sortingMethodsStr[] = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
+	constexpr int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
+	const std::array<int, NUMBER_OF_SORTING_METHODS> chosenSortingMethodIndices = { 4 }; // its length must match the value of NUMBER_OF_SORTING_METHODS variable
+	const std::array<Sorting::SortingAlgorithms::SortingAlgorithm, Sorting::SortingAlgorithms::COUNT> sortingMethods = { Sorting::SortingAlgorithms::BUBBLE_SORT,
+		Sorting::SortingAlgorithms::INSERTION_SORT, Sorting::SortingAlgorithms::SELECTION_SORT, Sorting::SortingAlgorithms::MERGE_SORT,
+		Sorting::SortingAlgorithms::HEAP_SORT, Sorting::SortingAlgorithms::QUICK_SORT, Sorting::SortingAlgorithms::SHELL_SORT,
+		Sorting::SortingAlgorithms::COMB_SORT, Sorting::SortingAlgorithms::COUNTING_SORT, Sorting::SortingAlgorithms::RADIX_SORT,
+		Sorting::SortingAlgorithms::BUCKET_SORT };
+	const std::array<std::string, Sorting::SortingAlgorithms::COUNT> sortingMethodsStr = { "Bubble sort", "Insertion sort", "Selection sort", "Merge sort",
 		"Heap sort", "Quick sort", "Shell sort", "Comb sort", "Counting sort", "Radix sort", "Bucket sort" };
 
-	const int NUMBER_OF_TIME_TESTS_ITERATIONS = 20;
+	constexpr int NUMBER_OF_TIME_TESTS_ITERATIONS = 20;
 	/**
 	 * TODO: Instead of measuring the time needed to perform NUMBER_OF_TIME_TESTS_ITERATION sorts it should be more efficient to count the number of successful sorts within given period of time.
 	 * If this time limit is passed then sorting is stopped no matter if it's finished or not.
@@ -756,7 +758,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -793,7 +795,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by X component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -829,7 +831,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -863,7 +865,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by Y component", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -897,7 +899,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -935,7 +937,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -973,7 +975,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -1011,7 +1013,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of absolute components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -1049,7 +1051,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for ASCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -1087,7 +1089,7 @@ void SortTest()
 			{
 				vectors[i] = initialVectors[i];
 			}
-			sorter->Sort(vectors, NUMBER_OF_VECTORS, sortingParameters);
+			sorter->Sort(vectors.data(), NUMBER_OF_VECTORS, sortingParameters);
 		}
 		timer.Stop();
 		TimeReport("Average time for DESCENDING " + sortingMethodsStr[chosenSortingMethodIndices[sortingMethodIndex]] + " by sum of squared components", timer, Timing::MILLISECOND, NUMBER_OF_TIME_TESTS_ITERATIONS);
@@ -1115,8 +1117,6 @@ void SortTest()
 		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending end ==================== */
 	}
 
-	SAFE_DELETE_JUST_TABLE(initialVectors);
-	SAFE_DELETE_JUST_TABLE(vectors);
 	NOTICE_LOG_MATH_TEST("Sorting test finished");
 }
 

@@ -202,7 +202,7 @@ namespace Math
 	public:
 		friend std::ostream& operator<<(std::ostream& out, const Vector2D& vector)
 		{
-			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.x << ")";
+			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.y << ")";
 			return out;
 		}
 		/* ==================== Non-static member functions end ==================== */

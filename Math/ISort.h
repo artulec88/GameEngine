@@ -60,28 +60,54 @@ namespace Math {
 				/// <summary>
 				/// Bucket sort algorithm (see https://en.wikipedia.org/wiki/Bucket_sort).
 				/// </summary>
-				BUCKET_SORT
+				BUCKET_SORT,
+
+				COUNT
 			}; /* end enum SortingAlgorithm */
 		} /* end enum SortingAlgorithms */
 
-		/// <summary>The base class for all sorting classes. It also serves as a "factory", that is creating specific instances of ISort classes.</summary>
+		/// <summary>
+		/// The base class for all sorting classes. It also serves as a "factory", that is creating specific instances of <code>ISort</code> classes.
+		/// </summary>
 		class ISort
 		{
 			/* ==================== Static variables and functions begin ==================== */
 		public:
 			/// <summary>
-			/// A factory-like method for creating specific sorting objects.
+			/// A factory-like method for creating specific sorting objects based on the given <paramref name="sortingAlgorithm"/>.
 			/// </summary>
-			MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithms::SortingAlgorithm sortingMethod);
+			MATH_API static std::unique_ptr<ISort> GetSortingObject(SortingAlgorithms::SortingAlgorithm sortingAlgorithm);
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			MATH_API ISort(SortingAlgorithms::SortingAlgorithm sortingMethod);
-			MATH_API virtual ~ISort(void);
-		private:
-			ISort(const ISort& sortObject) {} // don't implement
-			void operator=(const ISort& sortObject) {} // don't implement
+			/// <summary> The constructor of the sorting object. </summary>
+			MATH_API ISort()
+			{
+			}
+
+			/// <summary> The destructor of the sorting object. </summary>
+			MATH_API virtual ~ISort(void)
+			{
+			}
+			
+			/// <summary> The copy constructor of the sorting object. </summary>
+			/// <param name="sortObject"> The sorting object to copy construct from. </param>
+			ISort(const ISort& sortObject) = delete;
+
+			/// <summary> The move constructor of the sorting object. </summary>
+			/// <param name="sortObject"> The r-value reference of the sorting object to move construct from. </param>
+			ISort(ISort&& sortObject) = delete;
+
+			/// <summary> The copy assignment operator of the sorting object. </summary>
+			/// <param name="sortObject"> The sorting object to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned <code>ISort</code> object. </returns>
+			ISort& operator=(const ISort& sortObject) = delete;
+
+			/// <summary> The move assignment operator of the sorting object. </summary>
+			/// <param name="sortObject"> The r-value reference of the sorting object to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned <code>ISort</code> object. </returns>
+			ISort& operator=(ISort&& sortObject) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
@@ -92,7 +118,6 @@ namespace Math {
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
 			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
-			MATH_API SortingAlgorithms::SortingAlgorithm GetSortingAlgorithm() const { return m_sortingAlgorithm; }
 		protected:
 			template <typename T>
 			bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
@@ -156,72 +181,43 @@ namespace Math {
 
 			Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
 			{
-				Math::Real result;
 				switch (sortingKey)
 				{
 				case VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
-					result = v.x;
-					break;
-				case COMPONENT_X:
-					result = v.x;
-					break;
-				case COMPONENT_Y:
-					result = v.y;
-					break;
+					return v.x;
+				case COMPONENT_X: return v.x;
+				case COMPONENT_Y: return v.y;
 				case COMPONENT_Z:
 					EMERGENCY_LOG_MATH("Cannot determine the value of the Z component for the 2D vector.");
 					exit(EXIT_FAILURE);
-				case SUM_OF_SQUARED_COMPONENTS:
-					result = v.LengthSquared();
-					break;
-				case SUM_OF_COMPONENTS:
-					result = v.SumOfComponents();
-					break;
-				case SUM_OF_ABSOLUTE_COMPONENTS:
-					result = v.SumOfAbsoluteComponents();
-					break;
+				case SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
-					result = v.x;
+					return v.x;
 					break;
 				}
-				return result;
 			}
 
 			Math::Real CollectValueByKey(const Math::Vector3D& v, SortingKey sortingKey)
 			{
-				Math::Real result;
 				switch (sortingKey)
 				{
 				case VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
-					result = v.GetX();
-					break;
-				case COMPONENT_X:
-					result = v.GetX();
-					break;
-				case COMPONENT_Y:
-					result = v.GetY();
-					break;
-				case COMPONENT_Z:
-					result = v.GetZ();
-					break;
-				case SUM_OF_SQUARED_COMPONENTS:
-					result = v.LengthSquared();
-					break;
-				case SUM_OF_COMPONENTS:
-					result = v.SumOfComponents();
-					break;
-				case SUM_OF_ABSOLUTE_COMPONENTS:
-					result = v.SumOfAbsoluteComponents();
-					break;
+					return v.GetX();
+				case COMPONENT_X: return v.GetX();
+				case COMPONENT_Y: return v.GetY();
+				case COMPONENT_Z: return v.GetZ();
+				case SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
-					result = v.GetX();
-					break;
+					return v.GetX();
 				}
-				return result;
 			}
 
 			template <typename T>
@@ -241,7 +237,6 @@ namespace Math {
 
 			/* ==================== Non-static member variables begin ==================== */
 		protected:
-			SortingAlgorithms::SortingAlgorithm m_sortingAlgorithm;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ISort */
 
