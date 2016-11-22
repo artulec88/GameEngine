@@ -32,39 +32,54 @@ namespace Math
 		/// </summary>
 		/// <param name='bottomLeftPos'>The bottom-left vertex of the AABB.</param>
 		/// <param name='topRightPos'>The top-right vertex of the AABB.</param>
-		MATH_API AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos);
+		MATH_API AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy constructor.
 		/// </summary>
-		MATH_API AABB(const AABB& aabb) = default;
-		
+		MATH_API AABB(const AABB& aabb) noexcept = default;
+
 		/// <summary>
 		/// Axis-aligned bounding box move constructor.
 		/// </summary>
-		MATH_API AABB(AABB&& aabb) = default;
+		MATH_API AABB(AABB&& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy assignment operator.
 		/// </summary>
-		MATH_API AABB& operator=(const AABB& aabb) = default;
+		MATH_API AABB& operator=(const AABB& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move assignment operator.
 		/// </summary>
-		MATH_API AABB& operator=(AABB&& aabb) = default;
+		MATH_API AABB& operator=(AABB&& aabb) noexcept = default;
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.
 		/// </summary>
 		MATH_API ~AABB(void);
-	/* ==================== Constructors and destructors end ==================== */
+		/* ==================== Constructors and destructors end ==================== */
 
-	/* ==================== Non-static, non-virtual member functions begin ==================== */
+		/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
-		IntersectInfo DoesIntersectAABB(const AABB& aabb) const;
-		inline const Vector3D& GetBottomLeftPos() const { return m_bottomLeftPos; }
-		inline const Vector3D& GetTopRightPos() const { return m_topRightPos; }
+		/// <summary>
+		/// Gives information about the potential intersection between the current axis-aligned bounding box and given <paramref name="aabb"/>.
+		/// </summary>
+		/// <param name="aabb"> The axis-aligned bounding box we want to check the potential intersection against. </param>
+		/// <returns> The intersection info. </returns>
+		IntersectInfo DoesIntersectAABB(const AABB& aabb) const noexcept;
+
+		/// <summary>
+		/// Gives the bottom left position of the axis-aligned bounding box.
+		/// </summary>
+		/// <returns> The bottom left position of the AABB. </returns>
+		inline const Vector3D& GetBottomLeftPos() const noexcept { return m_bottomLeftPos; }
+
+		/// <summary>
+		/// Gives the top right position of the axis-aligned bounding box.
+		/// </summary>
+		/// <returns> The top right position of the AABB. </returns>
+		inline const Vector3D& GetTopRightPos() const noexcept { return m_topRightPos; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
