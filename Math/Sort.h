@@ -932,6 +932,14 @@ namespace Math {
 				Bucket(Math::Real lowBound, Math::Real highBound) : m_lowBound(lowBound), m_highBound(highBound)
 				{
 				}
+				~Bucket()
+				{
+				}
+
+				Bucket(const Bucket& bucket) = delete;
+				Bucket(Bucket&& bucket) = default;
+				Bucket& operator=(const Bucket& bucket) = delete;
+				Bucket& operator=(Bucket&& bucket) = delete;
 			public:
 				bool IsEmpty() const { return m_vectors.empty(); }
 				Math::Real GetLowBound() const { return m_lowBound; }
@@ -1051,7 +1059,7 @@ namespace Math {
 				Math::Real bucketLowBound = minValue;
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
-					buckets.emplace_back(Bucket<T>(bucketLowBound, bucketLowBound + bucketWidth));
+					buckets.emplace_back(bucketLowBound, bucketLowBound + bucketWidth);
 					//DEBUG_LOG_MATH("Bucket[", i, "] takes range [", bucketLowBound, "; ", bucketLowBound + bucketWidth, ")");
 					bucketLowBound += bucketWidth;
 				}
@@ -1134,7 +1142,7 @@ namespace Math {
 				Math::Real bucketLowBound = minValue;
 				for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 				{
-					buckets.emplace_back(Bucket<T>(bucketLowBound, bucketLowBound + bucketWidth));
+					buckets.emplace_back(bucketLowBound, bucketLowBound + bucketWidth);
 					//DEBUG_LOG_MATH("Bucket[", i, "] takes range [", bucketLowBound, "; ", bucketLowBound + bucketWidth, ")");
 					bucketLowBound += bucketWidth;
 				}
