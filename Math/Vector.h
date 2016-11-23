@@ -356,6 +356,13 @@ namespace Math
 			v.z = z / v.z;
 			return v;
 		}
+		/// <summary>
+		/// Calculates and returns the cross product of the two vectors (the current one and the given <paramref name="v"/> vector).
+		/// The magnitude of the cross product of two vectors <code>a</code> and <code>b</code> is equal to the area of the parallelogram
+		/// formed on two sides by <code>a</code> and <code>b</code>.
+		/// </summary>
+		/// <param name="v"> The vector for cross product calculation. </param>
+		/// <returns> The cross product of the current vector and the specified vector <paramref name="v"/>. </returns>
 		Vector3D Cross(Vector3D v) const
 		{
 			v.x = y * v.z - z * v.y;

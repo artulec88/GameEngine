@@ -3,10 +3,10 @@
 
 #include "Math.h"
 #include "Vector.h"
+#include "Angle.h"
 
 namespace Math
 {
-	class Angle;
 
 	/// <summary>
 	/// The mathematical representation of the triangle. Read "3D math primer for graphics and game development" page 257.
@@ -76,7 +76,35 @@ namespace Math
 		/// <returns> The length of the edge opposite the third vertex of the triangle. </returns>
 		MATH_API Real CalculateEdgeLength3() const noexcept { return (m_v2 - m_v1).Length(); }
 
-		//MATH_API Angle Calculate
+		/// <summary>
+		/// Calculates and returns the angle in opposition to the first vertex of the triangle (<code>m_v1</code>).
+		/// </summary>
+		/// <returns> The angle located in opposition to the first vertex of the triangle. </returns>
+		MATH_API Angle CalculateAngle1() const noexcept;
+
+		/// <summary>
+		/// Calculates and returns the angle in opposition to the second vertex of the triangle (<code>m_v2</code>).
+		/// </summary>
+		/// <returns> The angle located in opposition to the second vertex of the triangle. </returns>
+		MATH_API Angle CalculateAngle2() const noexcept;
+
+		/// <summary>
+		/// Calculates and returns the angle in opposition to the third vertex of the triangle (<code>m_v3</code>).
+		/// </summary>
+		/// <returns> The angle located in opposition to the third vertex of the triangle. </returns>
+		MATH_API Angle CalculateAngle3() const noexcept;
+
+		/// <summary>
+		/// Calculates and returns the area of the triangle.
+		/// Read "3D math primer for graphics and game development" page 273 on how to calculate the area of a triangle from its vertices.
+		/// </summary>
+		/// <returns> The area of the triangle. </returns>
+		MATH_API Real CalculateArea() const noexcept;
+	private:
+		/// <summary>
+		/// Checks triangle inequality. See https://en.wikipedia.org/wiki/Triangle_inequality for details.
+		/// </summary>
+		bool IsCorrect() const noexcept;
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
