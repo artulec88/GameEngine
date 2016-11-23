@@ -396,10 +396,10 @@ Math::Vector4D Math::Matrix4D::operator*(const Vector4D& vec) const
 	Real z = m_values[2][0] * vec.GetX() + m_values[2][1] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[2][3];
 	Real w = m_values[3][0] * vec.GetX() + m_values[3][1] * vec.GetY() + m_values[3][2] * vec.GetZ() + m_values[3][3];
 #else
-	Real x = m_values[0] * vec.GetX() + m_values[1] * vec.GetY() + m_values[2] * vec.GetZ() + m_values[3];
-	Real y = m_values[4] * vec.GetX() + m_values[5] * vec.GetY() + m_values[6] * vec.GetZ() + m_values[7];
-	Real z = m_values[8] * vec.GetX() + m_values[9] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[11];
-	Real w = m_values[12] * vec.GetX() + m_values[13] * vec.GetY() + m_values[14] * vec.GetZ() + m_values[15];
+	Real x = m_values[0] * vec.x + m_values[1] * vec.y + m_values[2] * vec.z + m_values[3];
+	Real y = m_values[4] * vec.x + m_values[5] * vec.y + m_values[6] * vec.z + m_values[7];
+	Real z = m_values[8] * vec.x + m_values[9] * vec.y + m_values[10] * vec.z + m_values[11];
+	Real w = m_values[12] * vec.x + m_values[13] * vec.y + m_values[14] * vec.z + m_values[15];
 #endif
 	STOP_PROFILING_MATH("");
 	return Vector4D(x, y, z, w);

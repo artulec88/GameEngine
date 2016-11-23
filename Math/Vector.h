@@ -82,11 +82,11 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		void Zero() noexcept
-		{
-			x = REAL_ZERO;
-			y = REAL_ZERO;
-		}
+		inline void Set(Real _x, Real _y) noexcept { x = _x; y = _y; }
+		inline void Increase(Real _x, Real _y) noexcept { x += _x; y += _y; }
+		inline void Increase(const Math::Vector2D& translation) noexcept { operator+=(translation); }
+		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO); }
+
 		constexpr Real SumOfComponents() const noexcept { return x + y; }
 		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y); }
 
@@ -149,12 +149,12 @@ namespace Math
 		Vector2D operator*(Real s) const { return Vector2D(s * x, s * y); }
 		Vector2D operator/(Real s) const { return Vector2D(x / s, y / s); }
 
-		MATH_API Vector2D& operator+=(const Vector2D& v);
-		MATH_API Vector2D& operator-=(const Vector2D& v);
-		MATH_API Vector2D& operator*=(Real s);
-		MATH_API Vector2D& operator*=(const Vector2D& v);
-		MATH_API Vector2D& operator/=(Real s);
-		MATH_API Vector2D& operator/=(const Vector2D& v);
+		MATH_API Vector2D& operator+=(const Vector2D& v) noexcept;
+		MATH_API Vector2D& operator-=(const Vector2D& v) noexcept;
+		MATH_API Vector2D& operator*=(Real s) noexcept;
+		MATH_API Vector2D& operator*=(const Vector2D& v) noexcept;
+		MATH_API Vector2D& operator/=(Real s) noexcept;
+		MATH_API Vector2D& operator/=(const Vector2D& v) noexcept;
 		MATH_API bool operator!=(const Vector2D& v) const;
 		MATH_API bool operator==(const Vector2D& v) const;
 
@@ -298,14 +298,13 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		void Zero() noexcept
-		{
-			x = REAL_ZERO;
-			y = REAL_ZERO;
-			z = REAL_ZERO;
-		}
-		constexpr Real SumOfComponents() const { return x + y + z; }
-		constexpr Real SumOfAbsoluteComponents() const { return Absolute(x) + Absolute(y) + Absolute(z); }
+		inline void Set(Real _x, Real _y, Real _z) noexcept { x = _x; y = _y; z = _z; }
+		inline void Increase(Real _x, Real _y, Real _z) noexcept { x += _x; y += _y; z += _z; }
+		inline void Increase(const Math::Vector3D& translation) noexcept { operator+=(translation); }
+		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
+
+		constexpr Real SumOfComponents() const noexcept { return x + y + z; }
+		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y) + Absolute(z); }
 
 		MATH_API Real Length() const { return sqrt(LengthSquared()); }
 		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(x * x + y * y + z * z); }
@@ -391,12 +390,12 @@ namespace Math
 		Vector3D operator*(Real s) const { return Vector3D(s * x, s * y, s * z); };
 		Vector3D operator/(Real s) const { return Vector3D(x / s, y / s, z / s); };
 
-		MATH_API Vector3D& operator+=(const Vector3D& v);
-		MATH_API Vector3D& operator-=(const Vector3D& v);
-		MATH_API Vector3D& operator*=(Real s);
-		MATH_API Vector3D& operator*=(const Vector3D& v);
-		MATH_API Vector3D& operator/=(Real s);
-		MATH_API Vector3D& operator/=(const Vector3D& v);
+		MATH_API Vector3D& operator+=(const Vector3D& v) noexcept;
+		MATH_API Vector3D& operator-=(const Vector3D& v) noexcept;
+		MATH_API Vector3D& operator*=(Real s) noexcept;
+		MATH_API Vector3D& operator*=(const Vector3D& v) noexcept;
+		MATH_API Vector3D& operator/=(Real s) noexcept;
+		MATH_API Vector3D& operator/=(const Vector3D& v) noexcept;
 		MATH_API bool operator!=(const Vector3D& v) const;
 		MATH_API bool operator==(const Vector3D& v) const;
 
@@ -476,94 +475,98 @@ namespace Math
 	/// <summary>
 	/// Four dimensional vector representation.
 	/// </summary>
-	class Vector4D
+	struct Vector4D
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API constexpr Vector4D() :
-			m_x(REAL_ZERO),
-			m_y(REAL_ZERO),
-			m_z(REAL_ZERO),
-			m_w(REAL_ZERO)
+		MATH_API constexpr Vector4D() noexcept :
+			Vector4D(REAL_ZERO)
 		{
 		}
-		MATH_API constexpr explicit Vector4D(Real xyzw) :
-			m_x(xyzw),
-			m_y(xyzw),
-			m_z(xyzw),
-			m_w(xyzw)
+		MATH_API constexpr explicit Vector4D(Real xyzw) noexcept :
+			Vector4D(xyzw, xyzw, xyzw, xyzw)
 		{
 		}
-		MATH_API constexpr Vector4D(Real x, Real y, Real z, Real w) :
-			m_x(x),
-			m_y(y),
-			m_z(z),
-			m_w(w)
+		MATH_API constexpr Vector4D(Real _x, Real _y, Real _z, Real _w) noexcept :
+			x(_x),
+			y(_y),
+			z(_z),
+			w(_w)
 		{
 		}
-		MATH_API constexpr Vector4D(const Vector4D& v) = default;
-		MATH_API constexpr Vector4D(Vector4D&& v) = default;
+		MATH_API constexpr Vector4D(const Vector4D& v) noexcept = default;
+		MATH_API constexpr Vector4D(Vector4D&& v) noexcept = default;
 		MATH_API ~Vector4D() = default;
 
-		MATH_API Vector4D& operator=(const Vector4D& v) = default;
-		MATH_API Vector4D& operator=(Vector4D&& v) = default;
+		MATH_API Vector4D& operator=(const Vector4D& v) noexcept = default;
+		MATH_API Vector4D& operator=(Vector4D&& v) noexcept = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		constexpr inline Real GetX() const { return m_x; }
-		constexpr inline Real GetY() const { return m_y; }
-		constexpr inline Real GetZ() const { return m_z; }
-		constexpr inline Real GetW() const { return m_w; }
-		inline void SetX(Real x) { m_x = x; }
-		inline void SetY(Real y) { m_y = y; }
-		inline void SetZ(Real z) { m_z = z; }
-		inline void SetW(Real w) { m_w = w; }
-		inline void Set(Real x, Real y, Real z, Real w) { m_x = x; m_y = y; m_z = z; m_w = w; }
-		inline void Increase(Real x, Real y, Real z, Real w) { m_x += x; m_y += y; m_z += z; m_w += w; }
-		inline void Increase(const Math::Vector4D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); m_z += translation.GetZ(); m_w += translation.GetW(); }
-		inline void IncreaseX(Real x) { m_x += x; }
-		inline void IncreaseY(Real y) { m_y += y; }
-		inline void IncreaseZ(Real z) { m_z += z; }
-		inline void IncreaseW(Real w) { m_w += w; }
-
-		void Zero() noexcept
-		{
-			m_x = REAL_ZERO;
-			m_y = REAL_ZERO;
-			m_z = REAL_ZERO;
-			m_w = REAL_ZERO;
-		}
-		constexpr Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
-		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }
+		inline void Set(Real _x, Real _y, Real _z, Real _w) noexcept { x = _x; y = _y; z = _z; w = _w; }
+		inline void Increase(Real _x, Real _y, Real _z, Real _w) noexcept { x += _x; y += _y; z += _z; w += _w; }
+		inline void Increase(const Math::Vector4D& translation) noexcept { operator+=(translation); }
+		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO); }
+		
+		constexpr Real SumOfComponents() const noexcept { return x + y + z + w; }
+		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y) + Absolute(z) + Absolute(w); }
 
 		MATH_API Real Length() const { return sqrt(LengthSquared()); }
-		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w); }
+		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(x * x + y * y + z * z + w * w); }
 
 		/// <summary>
 		/// Creates a negation of the vector and returns it. The current vector stays untouched.
 		/// </summary>
 		Vector4D Negated() const
 		{
-			return Vector4D(-m_x, -m_y, -m_z, -m_w);
+			return Vector4D(-x, -y, -z, -w);
 		}
 		/// <summary>
 		/// Negates all vector components and returns itself.
 		/// </summary>
 		Vector4D& Negate()
 		{
-			m_x = -m_x;
-			m_y = -m_y;
-			m_z = -m_z;
-			m_w = -m_w;
+			x = -x;
+			y = -y;
+			z = -z;
+			w = -w;
 			return *this;
 		}
 
 #ifdef PASS_VECTOR_BY_VALUE
-		Vector4D operator+(Vector4D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ(), m_w + v.GetW()); return v; }
-		Vector4D operator-(Vector4D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ(), m_w - v.GetW()); return v; }
-		Vector4D operator*(Vector4D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ(), m_w * v.GetW()); return v; }
-		Vector4D operator/(Vector4D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ(), m_w / v.GetW()); return v; };
+		Vector4D operator+(Vector4D v) const
+		{
+			v.x += x;
+			v.y += y;
+			v.z += z;
+			v.w += w;
+			return v;
+		}
+		Vector4D operator-(Vector4D v) const
+		{
+			v.x = x - v.x;
+			v.y = y - v.y;
+			v.z = z - v.z;
+			v.w = w - v.w;
+			return v;
+		}
+		Vector4D operator*(Vector4D v) const
+		{
+			v.x *= x;
+			v.y *= y;
+			v.z *= z;
+			v.w *= w;
+			return v;
+		}
+		Vector4D operator/(Vector4D v) const
+		{
+			v.x = x / v.x;
+			v.y = y / v.y;
+			v.z = z / v.z;
+			v.w = w / v.w;
+			return v;
+		}
 		Vector4D Max(Vector4D v) const;
 		/// <summary>
 		/// Calculates linear interpolation between two four-dimensional vectors.
@@ -580,16 +583,16 @@ namespace Math
 		/// </summary>
 		MATH_API Vector4D Lerp(const Vector4D& vec, Real lerpFactor) const; // TODO: Write tests!
 #endif
-		Vector4D operator-() const { return Vector4D(-m_x, -m_y, -m_z, -m_w); }
-		Vector4D operator*(Real s) const { return Vector4D(s * m_x, s * m_y, s * m_z, s * m_w); }
-		Vector4D operator/(Real s) const { return Vector4D(m_x / s, m_y / s, m_z / s, m_w / s); }
+		Vector4D operator-() const { return Vector4D(-x, -y, -z, -w); }
+		Vector4D operator*(Real s) const { return Vector4D(s * x, s * y, s * z, s * w); }
+		Vector4D operator/(Real s) const { return Vector4D(x / s, y / s, z / s, w / s); }
 
-		MATH_API Vector4D& operator+=(const Vector4D& v);
-		MATH_API Vector4D& operator-=(const Vector4D& v);
-		MATH_API Vector4D& operator*=(Real s);
-		MATH_API Vector4D& operator*=(const Vector4D& v);
-		MATH_API Vector4D& operator/=(Real s);
-		MATH_API Vector4D& operator/=(const Vector4D& v);
+		MATH_API Vector4D& operator+=(const Vector4D& v) noexcept;
+		MATH_API Vector4D& operator-=(const Vector4D& v) noexcept;
+		MATH_API Vector4D& operator*=(Real s) noexcept;
+		MATH_API Vector4D& operator*=(const Vector4D& v) noexcept;
+		MATH_API Vector4D& operator/=(Real s) noexcept;
+		MATH_API Vector4D& operator/=(const Vector4D& v) noexcept;
 		MATH_API bool operator!=(const Vector4D& v) const;
 		MATH_API bool operator==(const Vector4D& v) const;
 
@@ -616,42 +619,42 @@ namespace Math
 
 		Real Dot(const Vector4D& v) const
 		{
-			return (m_x * v.GetX() + m_y * v.GetY() + m_z * v.GetZ() + m_w * v.GetW());
+			return (x * v.x + y * v.y + z * v.z + w * v.w);
 		}
 
 		Real Max() const;
 
 		/* ==================== Vector swizzling begin ==================== */
-		MATH_API Vector2D GetXY() const { return Vector2D(m_x, m_y); }
-		Vector2D GetXZ() const { return Vector2D(m_x, m_z); }
-		Vector2D GetYZ() const { return Vector2D(m_y, m_z); }
-		Vector2D GetYX() const { return Vector2D(m_y, m_x); }
-		Vector2D GetZX() const { return Vector2D(m_z, m_x); }
-		Vector2D GetZY() const { return Vector2D(m_z, m_y); }
-		MATH_API Vector3D GetXYZ() const { return Vector3D(m_x, m_y, m_z); }
-		Vector3D GetXYW() const { return Vector3D(m_x, m_y, m_w); }
-		Vector3D GetXZY() const { return Vector3D(m_x, m_z, m_y); }
-		Vector3D GetXZW() const { return Vector3D(m_x, m_z, m_w); }
-		Vector3D GetXWY() const { return Vector3D(m_x, m_w, m_y); }
-		Vector3D GetXWZ() const { return Vector3D(m_x, m_w, m_z); }
-		Vector3D GetYXZ() const { return Vector3D(m_y, m_x, m_z); }
-		Vector3D GetYXW() const { return Vector3D(m_y, m_x, m_w); }
-		Vector3D GetYZX() const { return Vector3D(m_y, m_z, m_x); }
-		Vector3D GetYZW() const { return Vector3D(m_y, m_z, m_w); }
-		Vector3D GetYWX() const { return Vector3D(m_y, m_w, m_x); }
-		Vector3D GetYWZ() const { return Vector3D(m_y, m_w, m_z); }
-		Vector3D GetZXY() const { return Vector3D(m_z, m_x, m_y); }
-		Vector3D GetZXW() const { return Vector3D(m_z, m_x, m_w); }
-		Vector3D GetZYX() const { return Vector3D(m_z, m_y, m_x); }
-		Vector3D GetZYW() const { return Vector3D(m_z, m_y, m_w); }
-		Vector3D GetZWX() const { return Vector3D(m_z, m_w, m_x); }
-		Vector3D GetZWY() const { return Vector3D(m_z, m_w, m_y); }
-		Vector3D GetWXY() const { return Vector3D(m_w, m_x, m_y); }
-		Vector3D GetWXZ() const { return Vector3D(m_w, m_x, m_z); }
-		Vector3D GetWYX() const { return Vector3D(m_w, m_y, m_x); }
-		Vector3D GetWYZ() const { return Vector3D(m_w, m_y, m_z); }
-		Vector3D GetWZX() const { return Vector3D(m_w, m_z, m_x); }
-		Vector3D GetWZY() const { return Vector3D(m_w, m_z, m_y); }
+		MATH_API Vector2D GetXY() const { return Vector2D(x, y); }
+		Vector2D GetXZ() const { return Vector2D(x, z); }
+		Vector2D GetYZ() const { return Vector2D(y, z); }
+		Vector2D GetYX() const { return Vector2D(y, x); }
+		Vector2D GetZX() const { return Vector2D(z, x); }
+		Vector2D GetZY() const { return Vector2D(z, y); }
+		MATH_API Vector3D GetXYZ() const { return Vector3D(x, y, z); }
+		Vector3D GetXYW() const { return Vector3D(x, y, w); }
+		Vector3D GetXZY() const { return Vector3D(x, z, y); }
+		Vector3D GetXZW() const { return Vector3D(x, z, w); }
+		Vector3D GetXWY() const { return Vector3D(x, w, y); }
+		Vector3D GetXWZ() const { return Vector3D(x, w, z); }
+		Vector3D GetYXZ() const { return Vector3D(y, x, z); }
+		Vector3D GetYXW() const { return Vector3D(y, x, w); }
+		Vector3D GetYZX() const { return Vector3D(y, z, x); }
+		Vector3D GetYZW() const { return Vector3D(y, z, w); }
+		Vector3D GetYWX() const { return Vector3D(y, w, x); }
+		Vector3D GetYWZ() const { return Vector3D(y, w, z); }
+		Vector3D GetZXY() const { return Vector3D(z, x, y); }
+		Vector3D GetZXW() const { return Vector3D(z, x, w); }
+		Vector3D GetZYX() const { return Vector3D(z, y, x); }
+		Vector3D GetZYW() const { return Vector3D(z, y, w); }
+		Vector3D GetZWX() const { return Vector3D(z, w, x); }
+		Vector3D GetZWY() const { return Vector3D(z, w, y); }
+		Vector3D GetWXY() const { return Vector3D(w, x, y); }
+		Vector3D GetWXZ() const { return Vector3D(w, x, z); }
+		Vector3D GetWYX() const { return Vector3D(w, y, x); }
+		Vector3D GetWYZ() const { return Vector3D(w, y, z); }
+		Vector3D GetWZX() const { return Vector3D(w, z, x); }
+		Vector3D GetWZY() const { return Vector3D(w, z, y); }
 		/* ==================== Vector swizzling end ==================== */
 
 		void Approach(Real step, const Vector4D& approachedVector);
@@ -663,20 +666,20 @@ namespace Math
 
 		friend std::ostream& operator<<(std::ostream& out, const Vector4D& vector)
 		{
-			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << "; z=" << vector.m_z << "; w=" << vector.m_w << ")";
+			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.y << "; z=" << vector.z << "; w=" << vector.w << ")";
 			return out;
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
-		Real m_x;
-		Real m_y;
-		Real m_z;
-		Real m_w;
+	public:
+		Real x;
+		Real y;
+		Real z;
+		Real w;
 		//Real padding; // TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class Vector4D */
+	}; /* end struct Vector4D */
 
 	namespace Interpolation
 	{

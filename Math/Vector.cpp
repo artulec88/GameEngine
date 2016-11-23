@@ -4,7 +4,7 @@
 #include "FloatingPoint.h"
 #include <math.h>
 
-Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v)
+Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v) noexcept
 {
 	x += v.x;
 	y += v.y;
@@ -12,7 +12,7 @@ Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v)
 	return *this;
 }
 
-Math::Vector2D& Math::Vector2D::operator-=(const Vector2D& v)
+Math::Vector2D& Math::Vector2D::operator-=(const Vector2D& v) noexcept
 {
 	x -= v.x;
 	y -= v.y;
@@ -20,14 +20,14 @@ Math::Vector2D& Math::Vector2D::operator-=(const Vector2D& v)
 	return *this;
 }
 
-Math::Vector2D& Math::Vector2D::operator*=(Math::Real value)
+Math::Vector2D& Math::Vector2D::operator*=(Math::Real value) noexcept
 {
 	x *= value;
 	y *= value;
 	return *this;
 }
 
-Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v)
+Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v) noexcept
 {
 	x *= v.x;
 	y *= v.y;
@@ -35,7 +35,7 @@ Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v)
 	return *this;
 }
 
-Math::Vector2D& Math::Vector2D::operator/=(Real s)
+Math::Vector2D& Math::Vector2D::operator/=(Real s) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 2D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
@@ -44,7 +44,7 @@ Math::Vector2D& Math::Vector2D::operator/=(Real s)
 	return *this;
 }
 
-Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v)
+Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
@@ -217,7 +217,7 @@ Math::Vector3D Math::Vector3D::Rotate(const Quaternion& rotation) const
 	return Vector3D(w.GetX(), w.GetY(), w.GetZ());
 }
 
-Math::Vector3D& Math::Vector3D::operator+=(const Vector3D& v)
+Math::Vector3D& Math::Vector3D::operator+=(const Vector3D& v) noexcept
 {
 	x += v.x;
 	y += v.y;
@@ -225,7 +225,7 @@ Math::Vector3D& Math::Vector3D::operator+=(const Vector3D& v)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator-=(const Vector3D& v)
+Math::Vector3D& Math::Vector3D::operator-=(const Vector3D& v) noexcept
 {
 	x -= v.x;
 	y -= v.y;
@@ -233,7 +233,7 @@ Math::Vector3D& Math::Vector3D::operator-=(const Vector3D& v)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator*=(Math::Real value)
+Math::Vector3D& Math::Vector3D::operator*=(Math::Real value) noexcept
 {
 	x *= value;
 	y *= value;
@@ -241,7 +241,7 @@ Math::Vector3D& Math::Vector3D::operator*=(Math::Real value)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator*=(const Vector3D& v)
+Math::Vector3D& Math::Vector3D::operator*=(const Vector3D& v) noexcept
 {
 	x *= v.x;
 	y *= v.y;
@@ -249,7 +249,7 @@ Math::Vector3D& Math::Vector3D::operator*=(const Vector3D& v)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator/=(Real s)
+Math::Vector3D& Math::Vector3D::operator/=(Real s) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 3D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
@@ -258,7 +258,7 @@ Math::Vector3D& Math::Vector3D::operator/=(Real s)
 	return *this;
 }
 
-Math::Vector3D& Math::Vector3D::operator/=(const Vector3D& v)
+Math::Vector3D& Math::Vector3D::operator/=(const Vector3D& v) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
@@ -374,36 +374,27 @@ void Math::Vector3D::Threshold(Real maxLength)
 /* ==================== Vector4D ==================== */
 Math::Real Math::Vector4D::Max() const
 {
-	Real maxComponent = (m_x > m_y) ? m_x : m_y;
-	if (m_z > maxComponent)
-	{
-		maxComponent = m_z;
-	}
-	if (m_w > maxComponent)
-	{
-		maxComponent = m_w;
-	}
-	return maxComponent;
+	return (x > y) ? ((x > z) ? x : z) : ((y > z) ? y : z);
 }
 
 #ifdef PASS_VECTOR_BY_VALUE
 Math::Vector4D Math::Vector4D::Max(Vector4D v) const
 {
-	if (m_x > v.GetX())
+	if (x > v.x)
 	{
-		v.SetX(m_x);
+		v.x = x;
 	}
-	if (m_y > v.GetY())
+	if (y > v.y)
 	{
-		v.SetY(m_y);
+		v.y = y;
 	}
-	if (m_z > v.GetZ())
+	if (z > v.z)
 	{
-		v.SetZ(m_z);
+		v.z = z;
 	}
-	if (m_w > v.GetW())
+	if (w > v.w)
 	{
-		v.SetW(m_w);
+		v.w = w;
 	}
 	return v;
 }
@@ -411,10 +402,11 @@ Math::Vector4D Math::Vector4D::Lerp(Vector4D vec, Real lerpFactor) const
 {
 	CHECK_CONDITION_MATH(!(lerpFactor < REAL_ZERO || lerpFactor > REAL_ONE), Utility::Logging::ERR,
 		"Vector2D linear interpolation performed with the incorrect factor ", lerpFactor);
-	vec.Set(m_x * (REAL_ONE - lerpFactor) + vec.GetX(),
-		m_y * (REAL_ONE - lerpFactor) + vec.GetY(),
-		m_z * (REAL_ONE - lerpFactor) + vec.GetZ(),
-		m_w * (REAL_ONE - lerpFactor) + vec.GetW());
+	const Real oneMinusLerpFactor = REAL_ONE - lerpFactor;
+	vec.x = x * oneMinusLerpFactor + vec.x * lerpFactor;
+	vec.y = y * oneMinusLerpFactor + vec.y * lerpFactor;
+	vec.z = z * oneMinusLerpFactor + vec.z * lerpFactor;
+	vec.w = w * oneMinusLerpFactor + vec.w * lerpFactor;
 	return vec;
 	
 	//return ((vec - (*this)) * lerpFactor) + (*this);
@@ -432,78 +424,78 @@ Math::Vector4D Math::Vector4D::Lerp(const Vector4D& vec, Real lerpFactor) const
 }
 #endif
 
-Math::Vector4D& Math::Vector4D::operator+=(const Vector4D& v)
+Math::Vector4D& Math::Vector4D::operator+=(const Vector4D& v) noexcept
 {
-	m_x += v.GetX();
-	m_y += v.GetY();
-	m_z += v.GetZ();
-	m_w += v.GetW();
+	x += v.x;
+	y += v.y;
+	z += v.z;
+	w += v.w;
 
 	return *this;
 }
 
-Math::Vector4D& Math::Vector4D::operator-=(const Vector4D& v)
+Math::Vector4D& Math::Vector4D::operator-=(const Vector4D& v) noexcept
 {
-	m_x -= v.GetX();
-	m_y -= v.GetY();
-	m_z -= v.GetZ();
-	m_w -= v.GetW();
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
+	w -= v.w;
 
 	return *this;
 }
 
-Math::Vector4D& Math::Vector4D::operator*=(Math::Real value)
+Math::Vector4D& Math::Vector4D::operator*=(Math::Real value) noexcept
 {
-	m_x *= value;
-	m_y *= value;
-	m_z *= value;
-	m_w *= value;
+	x *= value;
+	y *= value;
+	z *= value;
+	w *= value;
 	return *this;
 }
 
-Math::Vector4D& Math::Vector4D::operator*=(const Vector4D& v)
+Math::Vector4D& Math::Vector4D::operator*=(const Vector4D& v) noexcept
 {
-	m_x *= v.GetX();
-	m_y *= v.GetY();
-	m_z *= v.GetZ();
-	m_w *= v.GetW();
+	x *= v.x;
+	y *= v.y;
+	z *= v.z;
+	w *= v.w;
 
 	return *this;
 }
 
-Math::Vector4D& Math::Vector4D::operator/=(Real s)
+Math::Vector4D& Math::Vector4D::operator/=(Real s) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 4D vector by zero is impossible. Returning the unmodified vector.");
-	m_x /= s;
-	m_y /= s;
-	m_z /= s;
-	m_w /= s;
+	x /= s;
+	y /= s;
+	z /= s;
+	w /= s;
 	return *this;
 }
 
-Math::Vector4D& Math::Vector4D::operator/=(const Vector4D& v)
+Math::Vector4D& Math::Vector4D::operator/=(const Vector4D& v) noexcept
 {
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
 	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetW(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (w == 0). Returning the unmodified vector.");
-	m_x /= v.GetX();
-	m_y /= v.GetY();
-	m_z /= v.GetZ();
-	m_w /= v.GetW();
+	x /= v.x;
+	y /= v.y;
+	z /= v.z;
+	w /= v.w;
 
 	return *this;
 }
 
 inline bool Math::Vector4D::operator==(const Vector4D& v) const
 {
-	if (!AlmostEqual(m_x, v.GetX()))
+	if (!AlmostEqual(x, v.x))
 		return false;
-	if (!AlmostEqual(m_y, v.GetY()))
+	if (!AlmostEqual(y, v.y))
 		return false;
-	if (!AlmostEqual(m_z, v.GetZ()))
+	if (!AlmostEqual(z, v.z))
 		return false;
-	if (!AlmostEqual(m_w, v.GetW()))
+	if (!AlmostEqual(w, v.w))
 		return false;
 	return true;
 }
@@ -520,88 +512,88 @@ bool Math::Vector4D::IsNormalized() const
 
 void Math::Vector4D::Approach(Real step, const Vector4D& approachedVector)
 {
-	ApproachX(step, approachedVector.GetX());
-	ApproachY(step, approachedVector.GetY());
-	ApproachZ(step, approachedVector.GetZ());
-	ApproachW(step, approachedVector.GetW());
+	ApproachX(step, approachedVector.x);
+	ApproachY(step, approachedVector.y);
+	ApproachZ(step, approachedVector.z);
+	ApproachW(step, approachedVector.w);
 }
 
 void Math::Vector4D::ApproachX(Real step, Real approachedValue)
 {
-	if (m_x > approachedValue)
+	if (x > approachedValue)
 	{
-		m_x -= step;
-		if (m_x < approachedValue)
+		x -= step;
+		if (x < approachedValue)
 		{
-			m_x = approachedValue;
+			x = approachedValue;
 		}
 	}
 	else
 	{
-		m_x += step;
-		if (m_x > approachedValue)
+		x += step;
+		if (x > approachedValue)
 		{
-			m_x = approachedValue;
+			x = approachedValue;
 		}
 	}
 }
 
 void Math::Vector4D::ApproachY(Real step, Real approachedValue)
 {
-	if (m_y > approachedValue)
+	if (y > approachedValue)
 	{
-		m_y -= step;
-		if (m_y < approachedValue)
+		y -= step;
+		if (y < approachedValue)
 		{
-			m_y = approachedValue;
+			y = approachedValue;
 		}
 	}
 	else
 	{
-		m_y += step;
-		if (m_y > approachedValue)
+		y += step;
+		if (y > approachedValue)
 		{
-			m_y = approachedValue;
+			y = approachedValue;
 		}
 	}
 }
 
 void Math::Vector4D::ApproachZ(Real step, Real approachedValue)
 {
-	if (m_z > approachedValue)
+	if (z > approachedValue)
 	{
-		m_z -= step;
-		if (m_z < approachedValue)
+		z -= step;
+		if (z < approachedValue)
 		{
-			m_z = approachedValue;
+			z = approachedValue;
 		}
 	}
 	else
 	{
-		m_z += step;
-		if (m_z > approachedValue)
+		z += step;
+		if (z > approachedValue)
 		{
-			m_z = approachedValue;
+			z = approachedValue;
 		}
 	}
 }
 
 void Math::Vector4D::ApproachW(Real step, Real approachedValue)
 {
-	if (m_w > approachedValue)
+	if (w > approachedValue)
 	{
-		m_w -= step;
-		if (m_w < approachedValue)
+		w -= step;
+		if (w < approachedValue)
 		{
-			m_w = approachedValue;
+			w = approachedValue;
 		}
 	}
 	else
 	{
-		m_w += step;
-		if (m_w > approachedValue)
+		w += step;
+		if (w > approachedValue)
 		{
-			m_w = approachedValue;
+			w = approachedValue;
 		}
 	}
 }
@@ -614,10 +606,10 @@ void Math::Vector4D::Threshold(Real maxLength)
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		const Real quotient = length / maxLength;
 		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
-		m_x /= quotient;
-		m_y /= quotient;
-		m_z /= quotient;
-		m_w /= quotient;
+		x /= quotient;
+		y /= quotient;
+		z /= quotient;
+		w /= quotient;
 	}
 }
 

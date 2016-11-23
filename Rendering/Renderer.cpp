@@ -339,13 +339,13 @@ void Rendering::Renderer::Render(int meshID, const Material* material, const Mat
 
 void Rendering::Renderer::EnableWaterReflectionClippingPlane(Math::Real height)
 {
-	m_waterReflectionClippingPlane.SetW(height);
+	m_waterReflectionClippingPlane.w = height;
 	m_mappedValues.SetVector4D("clipPlane", m_waterReflectionClippingPlane);
 }
 
 void Rendering::Renderer::EnableWaterRefractionClippingPlane(Math::Real height)
 {
-	m_waterRefractionClippingPlane.SetW(height);
+	m_waterRefractionClippingPlane.w = height;
 	m_mappedValues.SetVector4D("clipPlane", m_waterRefractionClippingPlane);
 }
 

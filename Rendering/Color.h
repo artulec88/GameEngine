@@ -233,27 +233,33 @@ namespace Rendering
 	public:
 		/// <summary> Retrieves the red component of the color. </summary>
 		/// <returns> The red component of the color. </returns>
-		RENDERING_API Math::Real GetRed() const { return m_values.GetX(); }
+		RENDERING_API Math::Real GetRed() const { return m_values.x; }
 
 		/// <summary> Retrieves the green component of the color. </summary>
 		/// <returns> The green component of the color. </returns>
-		RENDERING_API Math::Real GetGreen() const { return m_values.GetY(); }
+		RENDERING_API Math::Real GetGreen() const { return m_values.y; }
 
 		/// <summary> Retrieves the blue component of the color. </summary>
 		/// <returns> The blue component of the color. </returns>
-		RENDERING_API Math::Real GetBlue() const { return m_values.GetZ(); }
+		RENDERING_API Math::Real GetBlue() const { return m_values.z; }
 
 		/// <summary> Retrieves the alpha component of the color. </summary>
 		/// <returns> The alpha component of the color. </returns>
-		RENDERING_API Math::Real GetAlpha() const { return m_values.GetW(); }
+		RENDERING_API Math::Real GetAlpha() const { return m_values.w; }
 
 		RENDERING_API const Math::Vector4D& GetValues() const { return m_values; }
 
-		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha) { m_values.Set(red, green, blue, alpha); }
-		RENDERING_API void SetRed(Math::Real red) { m_values.SetX(red); }
-		RENDERING_API void SetGreen(Math::Real green) { m_values.SetY(green); }
-		RENDERING_API void SetBlue(Math::Real blue) { m_values.SetZ(blue); }
-		RENDERING_API void SetAlpha(Math::Real alpha) { m_values.SetW(alpha); }
+		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha)
+		{
+			SetRed(red);
+			SetGreen(green);
+			SetBlue(blue);
+			SetAlpha(alpha);
+		}
+		RENDERING_API inline void SetRed(Math::Real red) noexcept { m_values.x = red; }
+		RENDERING_API inline void SetGreen(Math::Real green) noexcept { m_values.y = green; }
+		RENDERING_API inline void SetBlue(Math::Real blue) noexcept { m_values.z = blue; }
+		RENDERING_API inline void SetAlpha(Math::Real alpha) noexcept { m_values.w = alpha; }
 
 		RENDERING_API Color operator+(const Color& color) const;
 		RENDERING_API Color& operator+=(const Color& color);

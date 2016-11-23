@@ -219,12 +219,12 @@ void Rendering::Uniforms::Vector4DUniform::Update(const Renderer* renderer, cons
 	if (GetPrefix() == "R_")
 	{
 		const Math::Vector4D& vector = renderer->GetVec4D(GetUnprefixedName());
-		glUniform4f(GetLocation(), vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
+		glUniform4f(GetLocation(), vector.x, vector.y, vector.z, vector.w);
 	}
 	else
 	{
 		const Math::Vector4D& vector = material->GetVec4D(GetName());
-		glUniform4f(GetLocation(), vector.GetX(), vector.GetY(), vector.GetZ(), vector.GetW());
+		glUniform4f(GetLocation(), vector.x, vector.y, vector.z, vector.w);
 	}
 }
 /* ==================== Vector4DUniform class implementation end ==================== */

@@ -84,19 +84,19 @@ namespace Math
 	constexpr Real RAD_TO_DEG_MULTIPLIER = 180 / PI;
 
 	template<typename Type>
-	constexpr Type Absolute(Type v)
+	constexpr Type Absolute(Type v) noexcept
 	{
 		return (v < 0) ? -v : v;
 	}
 
 	template<typename Type>
-	constexpr Type ToRad(Type angleInDegrees)
+	constexpr Type ToRad(Type angleInDegrees) noexcept
 	{
 		return static_cast<Type>(Math::DEG_TO_RAD_MULTIPLIER * angleInDegrees);
 	}
 
 	template<typename Type>
-	constexpr Type ToDeg(Type angleInRadians)
+	constexpr Type ToDeg(Type angleInRadians) noexcept
 	{
 		return static_cast<Type>(Math::RAD_TO_DEG_MULTIPLIER * angleInRadians);
 	}
@@ -114,7 +114,7 @@ namespace Math
 //	}
 
 	template<typename Type>
-	constexpr Type Clamp(const Type& a, const Type& min, const Type& max)
+	constexpr Type Clamp(const Type& a, const Type& min, const Type& max) noexcept
 	{
 		return (a < min) ? min : ((a > max) ? max : a);
 	}
@@ -130,7 +130,7 @@ namespace Math
 	/// the function would return [ 0, 0, 1, 2, 8, 16 ] respectively.
 	/// </summary>
 	template<typename Type>
-	Type RoundUpPow2(Type number)
+	Type RoundUpPow2(Type number) noexcept
 	{
 		if (number < 0)
 		{

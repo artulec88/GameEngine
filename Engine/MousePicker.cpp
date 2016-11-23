@@ -33,8 +33,8 @@ void Engine::MousePicker::CalculateCurrentRay(double xPos, double yPos, const Ma
 	// Transforming into 4D eye space
 	Math::Vector4D eyeSpaceRay(projectionMatrix.Inversion() * homogeneousClipCoordinatesRay);
 	// Now we manually set the Z, W components to mean "forwards (Z=-1), and not a point (W=0)".
-	eyeSpaceRay.SetZ(-1.0f);
-	eyeSpaceRay.SetW(0.0f);
+	eyeSpaceRay.z = -1.0f;
+	eyeSpaceRay.w = 0.0f;
 	DEBUG_LOG_ENGINE("Eye space ray = ", eyeSpaceRay);
 
 	// Transforming into 4D world coordinates
