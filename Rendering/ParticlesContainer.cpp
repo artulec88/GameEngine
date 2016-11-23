@@ -150,7 +150,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 		m_positions.reset(new Math::Vector3D[m_count]);
 		for (size_t i = 0; i < m_count; ++i)
 		{
-			m_positions[i].Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_positions[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
@@ -158,7 +158,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 		m_velocities.reset(new Math::Vector3D[m_count]);
 		for (size_t i = 0; i < m_count; ++i)
 		{
-			m_velocities[i].Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_velocities[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
@@ -166,7 +166,7 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 		m_accelerations.reset(new Math::Vector3D[m_count]);
 		for (size_t i = 0; i < m_count; ++i)
 		{
-			m_accelerations[i].Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+			m_accelerations[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))

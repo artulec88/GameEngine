@@ -44,8 +44,8 @@ Rendering::ShadowCameraTransform Rendering::Lighting::DirectionalLight::CalcShad
 	Math::Vector3D lightSpaceCameraPos(shadowCameraTransform.m_pos.Rotate(shadowCameraTransform.m_rot.Conjugate()));
 
 	// Now we need to snap the lightSpaceCameraPos to shadow map texel size increments
-	lightSpaceCameraPos.SetX(worldSpaceShadowMapTexelSize * floor(lightSpaceCameraPos.GetX() / worldSpaceShadowMapTexelSize));
-	lightSpaceCameraPos.SetY(worldSpaceShadowMapTexelSize * floor(lightSpaceCameraPos.GetY() / worldSpaceShadowMapTexelSize));
+	lightSpaceCameraPos.x = worldSpaceShadowMapTexelSize * Math::Floor(lightSpaceCameraPos.x / worldSpaceShadowMapTexelSize);
+	lightSpaceCameraPos.y = worldSpaceShadowMapTexelSize * Math::Floor(lightSpaceCameraPos.y / worldSpaceShadowMapTexelSize);
 
 	// Now we transform back from the light space into the world space
 	shadowCameraTransform.m_pos = lightSpaceCameraPos.Rotate(shadowCameraTransform.m_rot);

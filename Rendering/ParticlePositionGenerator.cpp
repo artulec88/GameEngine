@@ -63,16 +63,16 @@ void Rendering::Particles::Generators::PlanePositionGenerator::Generate(Math::Re
 
 /* ==================== class BoxPositionGenerator begin ==================== */
 Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const Math::AABB& aabb) :
-	BoxPositionGenerator(aabb.GetBottomLeftPos().GetX(), aabb.GetTopRightPos().GetX(),
-		aabb.GetBottomLeftPos().GetY(), aabb.GetTopRightPos().GetY(),
-		aabb.GetBottomLeftPos().GetZ(), aabb.GetTopRightPos().GetZ())
+	BoxPositionGenerator(aabb.GetBottomLeftPos().x, aabb.GetTopRightPos().x,
+		aabb.GetBottomLeftPos().y, aabb.GetTopRightPos().y,
+		aabb.GetBottomLeftPos().z, aabb.GetTopRightPos().z)
 {
 }
 
 Rendering::Particles::Generators::BoxPositionGenerator::BoxPositionGenerator(const Math::Vector3D& centerPosition, Math::Real xOffset, Math::Real yOffset, Math::Real zOffset) :
-	BoxPositionGenerator(centerPosition.GetX() - xOffset, centerPosition.GetX() + xOffset,
-		centerPosition.GetY() - yOffset, centerPosition.GetY() + yOffset,
-		centerPosition.GetZ() - zOffset, centerPosition.GetZ() + zOffset)
+	BoxPositionGenerator(centerPosition.x - xOffset, centerPosition.x + xOffset,
+		centerPosition.y - yOffset, centerPosition.y + yOffset,
+		centerPosition.z - zOffset, centerPosition.z + zOffset)
 {
 }
 

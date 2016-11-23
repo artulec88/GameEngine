@@ -88,7 +88,7 @@ Math::Matrix4D::Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& 
 }
 
 Math::Matrix4D::Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right) :
-	Matrix4D(right.GetX(), up.GetX(), forward.GetX(), REAL_ZERO, right.GetY(), up.GetY(), forward.GetY(), REAL_ZERO, right.GetZ(), up.GetZ(), forward.GetZ(), REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
+	Matrix4D(right.x, up.x, forward.x, REAL_ZERO, right.y, up.y, forward.y, REAL_ZERO, right.z, up.z, forward.z, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 {
 	START_PROFILING_MATH(false, "9");
 	CHECK_CONDITION_MATH(right.IsNormalized(), Utility::Logging::ERR, "Cannot correctly perform the rotation. The specified right vector is not normalized.");
@@ -373,10 +373,10 @@ Math::Vector3D Math::Matrix4D::operator*(const Vector3D& vec) const
 	Real y = (m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1]) * oneperw;
 	Real z = (m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]) * oneperw;
 #else
-	const Real oneperw = REAL_ONE / (m_values[3] * vec.GetX() + m_values[7] * vec.GetY() + m_values[11] * vec.GetZ() + m_values[15]);
-	Real x = (m_values[0] * vec.GetX() + m_values[4] * vec.GetY() + m_values[8] * vec.GetZ() + m_values[12]) * oneperw;
-	Real y = (m_values[1] * vec.GetX() + m_values[5] * vec.GetY() + m_values[9] * vec.GetZ() + m_values[13]) * oneperw;
-	Real z = (m_values[2] * vec.GetX() + m_values[6] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[14]) * oneperw;
+	const Real oneperw = REAL_ONE / (m_values[3] * vec.x + m_values[7] * vec.y + m_values[11] * vec.z + m_values[15]);
+	Real x = (m_values[0] * vec.x + m_values[4] * vec.y + m_values[8] * vec.z + m_values[12]) * oneperw;
+	Real y = (m_values[1] * vec.x + m_values[5] * vec.y + m_values[9] * vec.z + m_values[13]) * oneperw;
+	Real z = (m_values[2] * vec.x + m_values[6] * vec.y + m_values[10] * vec.z + m_values[14]) * oneperw;
 #endif
 	STOP_PROFILING_MATH("");
 	return Vector3D(x, y, z);
@@ -668,9 +668,9 @@ Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
 		m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1],
 		m_values[0][2] * vec.GetX() + m_values[1][2] * vec.GetY() + m_values[2][2] * vec.GetZ() + m_values[3][2]);
 #else
-	return Vector3D(m_values[0] * vec.GetX() + m_values[4] * vec.GetY() + m_values[8] * vec.GetZ() + m_values[12],
-		m_values[1] * vec.GetX() + m_values[5] * vec.GetY() + m_values[9] * vec.GetZ() + m_values[13],
-		m_values[2] * vec.GetX() + m_values[6] * vec.GetY() + m_values[10] * vec.GetZ() + m_values[14]);
+	return Vector3D(m_values[0] * vec.x + m_values[4] * vec.y + m_values[8] * vec.z + m_values[12],
+		m_values[1] * vec.x + m_values[5] * vec.y + m_values[9] * vec.z + m_values[13],
+		m_values[2] * vec.x + m_values[6] * vec.y + m_values[10] * vec.z + m_values[14]);
 #endif
 
 	//Vector3D ret(REAL_ZERO, REAL_ZERO, REAL_ZERO);
@@ -704,9 +704,9 @@ void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	m_values[2][0] = r.GetZ();		m_values[2][1] = u.GetZ();		m_values[2][2] = f.GetZ();		m_values[2][3] = REAL_ZERO;
 	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;	m_values[3][3] = REAL_ONE;
 #else
-	m_values[0] = right.GetX();	m_values[1] = up.GetX();	m_values[2] = forward.GetX();	m_values[3] = REAL_ZERO;
-	m_values[4] = right.GetY();	m_values[5] = up.GetY();	m_values[6] = forward.GetY();	m_values[7] = REAL_ZERO;
-	m_values[8] = right.GetZ();	m_values[9] = up.GetZ();	m_values[10] = forward.GetZ();	m_values[11] = REAL_ZERO;
-	m_values[12] = REAL_ZERO;		m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;		m_values[15] = REAL_ONE;
+	m_values[0] = right.x;		m_values[1] = up.x;			m_values[2] = forward.x;	m_values[3] = REAL_ZERO;
+	m_values[4] = right.y;		m_values[5] = up.y;			m_values[6] = forward.y;	m_values[7] = REAL_ZERO;
+	m_values[8] = right.z;		m_values[9] = up.z;			m_values[10] = forward.z;	m_values[11] = REAL_ZERO;
+	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
 #endif
 }

@@ -8,9 +8,9 @@ Math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 	Angle halfAngle(angle / 2);
 	Real sinHalfAngle = halfAngle.Sin();
 
-	m_x = axis.GetX() * sinHalfAngle;
-	m_y = axis.GetY() * sinHalfAngle;
-	m_z = axis.GetZ() * sinHalfAngle;
+	m_x = axis.x * sinHalfAngle;
+	m_y = axis.y * sinHalfAngle;
+	m_z = axis.z * sinHalfAngle;
 	m_w = halfAngle.Cos();
 }
 
@@ -297,10 +297,10 @@ Math::Quaternion Math::Quaternion::Slerp(const Quaternion& q, Real slerpFactor, 
 Math::Quaternion Math::Quaternion::operator*(const Vector3D& vec) const
 {
 	// CHECKED
-	Real w = -m_x * vec.GetX() - m_y * vec.GetY() - m_z * vec.GetZ();
-	Real x = m_w * vec.GetX() + m_y * vec.GetZ() - m_z * vec.GetY();
-	Real y = m_w * vec.GetY() + m_z * vec.GetX() - m_x * vec.GetZ();
-	Real z = m_w * vec.GetZ() + m_x * vec.GetY() - m_y * vec.GetX();
+	Real w = -m_x * vec.x - m_y * vec.y - m_z * vec.z;
+	Real x = m_w * vec.x + m_y * vec.z - m_z * vec.y;
+	Real y = m_w * vec.y + m_z * vec.x - m_x * vec.z;
+	Real z = m_w * vec.z + m_x * vec.y - m_y * vec.x;
 
 	return Quaternion(x, y, z, w);
 }

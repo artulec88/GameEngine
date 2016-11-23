@@ -1133,12 +1133,12 @@ void KDTreeTest()
 	const Real LOWER_BOUND_Y = -20.0f; const Real HIGHER_BOUND_Y = 20.0f;
 	const Real LOWER_BOUND_Z = -20.0f; const Real HIGHER_BOUND_Z = 20.0f;
 	Vector3D* positions = new Vector3D[NUMBER_OF_POSITIONS];
-	positions[0].SetX(2.0f); positions[0].SetY(3.0f); positions[0].SetZ(2.0f);
-	positions[1].SetX(5.0f); positions[1].SetY(4.0f); positions[1].SetZ(4.0f);
-	positions[2].SetX(9.0f); positions[2].SetY(6.0f); positions[2].SetZ(-2.0f);
-	positions[3].SetX(4.0f); positions[3].SetY(7.0f); positions[3].SetZ(1.0f);
-	positions[4].SetX(8.0f); positions[4].SetY(1.0f); positions[4].SetZ(12.0f);
-	positions[5].SetX(7.0f); positions[5].SetY(2.0f); positions[5].SetZ(6.0f);
+	positions[0].x = 2.0f; positions[0].y = 3.0f; positions[0].z = 2.0f;
+	positions[1].x = 5.0f; positions[1].y = 4.0f; positions[1].z = 4.0f;
+	positions[2].x = 9.0f; positions[2].y = 6.0f; positions[2].z = -2.0f;
+	positions[3].x = 4.0f; positions[3].y = 7.0f; positions[3].z = 1.0f;
+	positions[4].x = 8.0f; positions[4].y = 1.0f; positions[4].z = 12.0f;
+	positions[5].x = 7.0f; positions[5].y = 2.0f; positions[5].z = 6.0f;
 	//for (int i = 0; i < NUMBER_OF_POSITIONS; ++i)
 	//{
 	//	positions[i].SetX(g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X));

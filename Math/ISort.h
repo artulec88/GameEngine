@@ -207,16 +207,16 @@ namespace Math {
 				{
 				case VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
-					return v.GetX();
-				case COMPONENT_X: return v.GetX();
-				case COMPONENT_Y: return v.GetY();
-				case COMPONENT_Z: return v.GetZ();
+					return v.x;
+				case COMPONENT_X: return v.x;
+				case COMPONENT_Y: return v.y;
+				case COMPONENT_Z: return v.z;
 				case SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
 				case SUM_OF_COMPONENTS: return v.SumOfComponents();
 				case SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
-					return v.GetX();
+					return v.x;
 				}
 			}
 

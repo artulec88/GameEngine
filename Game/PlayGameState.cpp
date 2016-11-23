@@ -846,7 +846,7 @@ void Game::PlayGameState::RenderWaterReflectionTexture(Rendering::Renderer* rend
 	//reflectionCamera.GetPos().SetY(cameraHeight - distance); // TODO: Uncomment. use m_altCamera instead of the main camera.
 	//reflectionCamera.GetRot().InvertPitch(); // TODO: Uncomment.
 
-	renderer->EnableWaterReflectionClippingPlane(-m_waterNode.GetTransform().GetTransformedPos().GetY() + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
+	renderer->EnableWaterReflectionClippingPlane(-m_waterNode.GetTransform().GetTransformedPos().y + 0.1f /* we add 0.1f to remove some glitches on the water surface */);
 	renderer->BindWaterReflectionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 
@@ -892,7 +892,7 @@ void Game::PlayGameState::RenderWaterRefractionTexture(Rendering::Renderer* rend
 	START_PROFILING_GAME(true, "");
 	CHECK_CONDITION_RETURN_VOID_GAME(m_gameManager->GetWaterNode() != NULL, Utility::Logging::DEBUG, "There are no water nodes registered in the rendering engine");
 
-	renderer->EnableWaterRefractionClippingPlane(m_waterNode.GetTransform().GetTransformedPos().GetY());
+	renderer->EnableWaterRefractionClippingPlane(m_waterNode.GetTransform().GetTransformedPos().y);
 	renderer->BindWaterRefractionTexture();
 	renderer->ClearScreen(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE);
 

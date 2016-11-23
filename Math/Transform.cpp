@@ -5,8 +5,10 @@
 
 #include <sstream>
 
-Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */, const Quaternion& rotation /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */, Real scale /* = REAL_ONE */) :
-	Transform(pos.GetX(), pos.GetY(), pos.GetZ(), rotation, scale)
+Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
+	const Quaternion& rotation /* = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE) */,
+	Real scale /* = REAL_ONE */) :
+	Transform(pos.x, pos.y, pos.z, rotation, scale)
 {
 }
 
@@ -14,7 +16,7 @@ Math::Transform::Transform(Real posX, Real posY, Real posZ, const Quaternion& ro
 	m_pos(posX, posY, posZ),
 	m_rotation(rot),
 	m_scale(scale),
-	m_parentTransform(NULL),
+	m_parentTransform(nullptr),
 	m_transformation(),
 	m_parentTransformation(),
 	m_isChanged(true)

@@ -35,14 +35,14 @@ Math::IntersectInfo Math::Plane::DoesIntersectSphere(const Sphere& sphere) const
 Math::Vector3D Math::Plane::CalculatePointClosestToOrigin() const
 {
 	Math::Real normalVectorLengthSquared = m_normal.LengthSquared();
-	return Math::Vector3D(m_normal.GetX() * -m_distance / normalVectorLengthSquared,
-		m_normal.GetY() * -m_distance / normalVectorLengthSquared,
-		m_normal.GetZ() * -m_distance / normalVectorLengthSquared);
+	return Math::Vector3D(m_normal.x * -m_distance / normalVectorLengthSquared,
+		m_normal.y * -m_distance / normalVectorLengthSquared,
+		m_normal.z * -m_distance / normalVectorLengthSquared);
 }
 
 Math::Vector3D Math::Plane::GenerateRandomPositionWithinRadius(Math::Real radius, const Math::Vector3D& translationPoint) const
 {
-	Math::Vector3D w(Math::AlmostEqual(m_normal.GetX(), REAL_ZERO) ?
+	Math::Vector3D w(Math::AlmostEqual(m_normal.x, REAL_ZERO) ?
 		m_normal.Cross(Math::Vector3D(REAL_ONE, REAL_ZERO, REAL_ZERO)) :
 		m_normal.Cross(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ONE)));
 	const Math::Random::RandomGenerator& randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);

@@ -22,18 +22,18 @@ namespace Math
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		/// <summary> Two-dimensional vector default constructor. </summary>
+		/// <summary>
+		/// Two-dimensional vector default constructor. It initializes the X and Y components to value <code>0.0</code>.
+		/// </summary>
 		MATH_API constexpr Vector2D() noexcept:
-			x(REAL_ZERO),
-			y(REAL_ZERO)
+			Vector2D(REAL_ZERO)
 		{
 		}
 
 		/// <summary> Two-dimensional vector constructor that initializes all its components to the specified <paramref name="xy"/> value. </summary>
 		/// <param name="xy"> The value that will be used to initialize all components of the 2D vector. </param>
 		MATH_API constexpr explicit Vector2D(Real xy) noexcept:
-			x(xy),
-			y(xy)
+			Vector2D(xy, xy)
 		{
 		}
 
@@ -82,6 +82,11 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		void Zero() noexcept
+		{
+			x = REAL_ZERO;
+			y = REAL_ZERO;
+		}
 		constexpr Real SumOfComponents() const noexcept { return x + y; }
 		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y); }
 
@@ -221,88 +226,142 @@ namespace Math
 	/// <summary>
 	/// Three dimensional vector representation.
 	/// </summary>
-	class Vector3D
+	struct Vector3D
 	{
 		/* ==================== Static variables and functions begin ==================== */
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MATH_API constexpr Vector3D() :
-			m_x(REAL_ZERO),
-			m_y(REAL_ZERO),
-			m_z(REAL_ZERO)
+		/// <summary>
+		/// Three-dimensional vector default constructor. It initializes the X, Y and Z components to value <code>0.0</code>.
+		/// </summary>
+		MATH_API constexpr Vector3D() noexcept:
+			Vector3D(REAL_ZERO)
 		{
 		}
-		MATH_API constexpr explicit Vector3D(Real xyz) :
-			m_x(xyz),
-			m_y(xyz),
-			m_z(xyz)
+
+		/// <summary>
+		/// Three-dimensional vector constructor. It initializes all vector components with the specified <paramref name="xyz"/> value.
+		/// </summary>
+		/// <param name="xyz"> The value that each component of the vector will be initialized with. </param>
+		MATH_API constexpr explicit Vector3D(Real xyz) noexcept :
+			Vector3D(xyz, xyz, xyz)
 		{
 		}
-		MATH_API constexpr Vector3D(Real x, Real y, Real z) :
-			m_x(x),
-			m_y(y),
-			m_z(z)
+
+		/// <summary>
+		/// Three-dimensional vector constructor. It initializes X, Y and Z components of the vector with the given <paramref name="_x"/>,
+		/// <paramref name="_y"/> and <paramref name="_z"/> values.
+		/// </summary>
+		/// <param name="_x"> The value X component of the vector will be initialized with. </param>
+		/// <param name="_y"> The value Y component of the vector will be initialized with. </param>
+		/// <param name="_z"> The value Z component of the vector will be initialized with. </param>
+		MATH_API constexpr Vector3D(Real _x, Real _y, Real _z) noexcept :
+			x(_x),
+			y(_y),
+			z(_z)
 		{
 		}
-		MATH_API constexpr Vector3D(const Vector3D& v) = default;
-		MATH_API constexpr Vector3D(Vector3D&& v) = default;
+
+		/// <summary>
+		/// Three-dimensional vector copy constructor.
+		/// </summary>
+		/// <param name="v"> The 3D vector that will be used to copy construct a new vector. </param>
+		MATH_API constexpr Vector3D(const Vector3D& v) noexcept = default;
+
+		/// <summary>
+		/// Three-dimensional vector move constructor.
+		/// </summary>
+		/// <param name="v"> The r-value reference of the 3D vector that will be used to move construct a new vector. </param>
+		MATH_API constexpr Vector3D(Vector3D&& v) noexcept = default;
+
+		/// <summary>
+		/// Three-dimensional vector destructor.
+		/// </summary>
 		MATH_API ~Vector3D() = default;
 
-		MATH_API Vector3D& operator=(const Vector3D& v) = default;
-		MATH_API Vector3D& operator=(Vector3D&& v) = default;
+		/// <summary>
+		/// Three-dimensional vector copy assignment operator.
+		/// </summary>
+		/// <param name="v"> The 3D vector that we will copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned 3D vector. </returns>
+		MATH_API Vector3D& operator=(const Vector3D& v) noexcept = default;
+
+		/// <summary>
+		/// Three-dimensional vector move assignment operator.
+		/// </summary>
+		/// <param name="v"> The r-value reference of the 3D vector that we will move assign from. </param>
+		/// <returns> The reference to the newly move-assigned 3D vector. </returns>
+		MATH_API Vector3D& operator=(Vector3D&& v) noexcept = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		constexpr inline Real GetX() const { return m_x; }
-		constexpr inline Real GetY() const { return m_y; }
-		constexpr inline Real GetZ() const { return m_z; }
-		inline void SetX(Real x) { m_x = x; }
-		inline void SetY(Real y) { m_y = y; }
-		inline void SetZ(Real z) { m_z = z; }
-		inline void Set(Real x, Real y, Real z) { m_x = x; m_y = y; m_z = z; }
-		inline void Increase(Real x, Real y, Real z) { m_x += x; m_y += y; m_z += z; }
-		inline void Increase(const Math::Vector3D& translation) { m_x += translation.GetX(); m_y += translation.GetY(); m_z += translation.GetZ(); }
-		inline void IncreaseX(Real x) { m_x += x; }
-		inline void IncreaseY(Real y) { m_y += y; }
-		inline void IncreaseZ(Real z) { m_z += z; }
-
-		constexpr Real SumOfComponents() const { return m_x + m_y + m_z; }
-		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z); }
+		void Zero() noexcept
+		{
+			x = REAL_ZERO;
+			y = REAL_ZERO;
+			z = REAL_ZERO;
+		}
+		constexpr Real SumOfComponents() const { return x + y + z; }
+		constexpr Real SumOfAbsoluteComponents() const { return Absolute(x) + Absolute(y) + Absolute(z); }
 
 		MATH_API Real Length() const { return sqrt(LengthSquared()); }
-		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z); }
+		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(x * x + y * y + z * z); }
 
 		/// <summary>
 		/// Creates a negation of the vector and returns it. The current vector stays untouched.
 		/// </summary>
 		Vector3D Negated() const
 		{
-			return Vector3D(-m_x, -m_y, -m_z);
+			return Vector3D(-x, -y, -z);
 		}
 		/// <summary>
 		/// Negates all vector components and returns itself.
 		/// </summary>
 		Vector3D& Negate()
 		{
-			m_x = -m_x;
-			m_y = -m_y;
-			m_z = -m_z;
+			x = -x;
+			y = -y;
+			z = -z;
 			return *this;
 		}
 
 #ifdef PASS_VECTOR_BY_VALUE
-		Vector3D operator+(Vector3D v) const { v.Set(m_x + v.GetX(), m_y + v.GetY(), m_z + v.GetZ()); return v; }
-		Vector3D operator-(Vector3D v) const { v.Set(m_x - v.GetX(), m_y - v.GetY(), m_z - v.GetZ()); return v; }
-		Vector3D operator*(Vector3D v) const { v.Set(m_x * v.GetX(), m_y * v.GetY(), m_z * v.GetZ()); return v; }
-		Vector3D operator/(Vector3D v) const { v.Set(m_x / v.GetX(), m_y / v.GetY(), m_z / v.GetZ()); return v; }
+		Vector3D operator+(Vector3D v) const
+		{
+			v.x += x;
+			v.y += y;
+			v.z += z;
+			return v;
+		}
+		Vector3D operator-(Vector3D v) const
+		{
+			v.x = x - v.x;
+			v.y = y - v.y;
+			v.z = z - v.z;
+			return v;
+		}
+		Vector3D operator*(Vector3D v) const
+		{
+			v.x *= x;
+			v.y *= y;
+			v.z *= z;
+			return v;
+		}
+		Vector3D operator/(Vector3D v) const
+		{
+			v.x = x / v.x;
+			v.y = y / v.y;
+			v.z = z / v.z;
+			return v;
+		}
 		Vector3D Cross(Vector3D v) const
 		{
-			v.Set(m_y * v.GetZ() - m_z * v.GetY(),
-				m_z * v.GetX() - m_x * v.GetZ(),
-				m_x * v.GetY() - m_y * v.GetX());
+			v.x = y * v.z - z * v.y;
+			v.y = z * v.x - x * v.z;
+			v.z = x * v.y - y * v.x;
 			return v;
 		}
 		/// <summary>
@@ -328,9 +387,9 @@ namespace Math
 		Vector3D Max(const Vector3D& v) const;
 #endif
 		
-		Vector3D operator-() const { return Vector3D(-m_x, -m_y, -m_z); };
-		Vector3D operator*(Real s) const { return Vector3D(s * m_x, s * m_y, s * m_z); };
-		Vector3D operator/(Real s) const { return Vector3D(m_x / s, m_y / s, m_z / s); };
+		Vector3D operator-() const { return Vector3D(-x, -y, -z); };
+		Vector3D operator*(Real s) const { return Vector3D(s * x, s * y, s * z); };
+		Vector3D operator/(Real s) const { return Vector3D(x / s, y / s, z / s); };
 
 		MATH_API Vector3D& operator+=(const Vector3D& v);
 		MATH_API Vector3D& operator-=(const Vector3D& v);
@@ -350,13 +409,13 @@ namespace Math
 		 */
 		std::size_t to_size_t() const
 		{
-			return static_cast<std::size_t>(m_x * 31 + m_y * 17 + m_z);
+			return static_cast<std::size_t>(x * 31 + y * 17 + z);
 		}
 
 		Vector3D Normalized() const
 		{
 			Real length = Length();
-			return Vector3D(m_x / length, m_y / length, m_z / length);
+			return Vector3D(x / length, y / length, z / length);
 		}
 		Vector3D& Normalize()
 		{
@@ -379,18 +438,18 @@ namespace Math
 
 		Real Dot(const Vector3D& v) const
 		{
-			return (m_x * v.GetX() + m_y * v.GetY() + m_z * v.GetZ());
+			return (x * v.x + y * v.y + z * v.z);
 		}
 
 		Real Max() const;
 
 		// vector swizzling
-		Vector2D GetXY() const { return Vector2D(m_x, m_y); }
-		Vector2D GetXZ() const { return Vector2D(m_x, m_z); }
-		Vector2D GetYZ() const { return Vector2D(m_y, m_z); }
-		Vector2D GetYX() const { return Vector2D(m_y, m_x); }
-		Vector2D GetZX() const { return Vector2D(m_z, m_x); }
-		Vector2D GetZY() const { return Vector2D(m_z, m_y); }
+		Vector2D GetXY() const { return Vector2D(x, y); }
+		Vector2D GetXZ() const { return Vector2D(x, z); }
+		Vector2D GetYZ() const { return Vector2D(y, z); }
+		Vector2D GetYX() const { return Vector2D(y, x); }
+		Vector2D GetZX() const { return Vector2D(z, x); }
+		Vector2D GetZY() const { return Vector2D(z, y); }
 
 		void Approach(Real step, const Vector3D& approachedVector);
 		MATH_API void ApproachX(Real step, Real approachedValue);
@@ -400,19 +459,19 @@ namespace Math
 
 		friend std::ostream& operator<<(std::ostream& out, const Vector3D& vector)
 		{
-			out << std::setprecision(4) << "(x=" << vector.m_x << "; y=" << vector.m_y << "; z=" << vector.m_z << ")";
+			out << std::setprecision(4) << "(x=" << vector.x << "; y=" << vector.y << "; z=" << vector.z << ")";
 			return out;
 		}
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	private:
-		Real m_x;
-		Real m_y;
-		Real m_z;
+	public:
+		Real x;
+		Real y;
+		Real z;
 		//Real padding; // TODO: Read about memory layout. A good way to start is the book "3D Game Engine Architecture" by David H. Eberly (section 2.2.3. "Vectors").
 	/* ==================== Non-static member variables end ==================== */
-	}; /* end class Vector3D */
+	}; /* end struct Vector3D */
 
 	/// <summary>
 	/// Four dimensional vector representation.
@@ -468,6 +527,13 @@ namespace Math
 		inline void IncreaseZ(Real z) { m_z += z; }
 		inline void IncreaseW(Real w) { m_w += w; }
 
+		void Zero() noexcept
+		{
+			m_x = REAL_ZERO;
+			m_y = REAL_ZERO;
+			m_z = REAL_ZERO;
+			m_w = REAL_ZERO;
+		}
 		constexpr Real SumOfComponents() const { return m_x + m_y + m_z + m_w; }
 		constexpr Real SumOfAbsoluteComponents() const { return Absolute(m_x) + Absolute(m_y) + Absolute(m_z) + Absolute(m_w); }
 
@@ -614,14 +680,15 @@ namespace Math
 
 	namespace Interpolation
 	{
-		MATH_API Math::Real BarycentricInterpolation(const Math::Vector3D& pos1, const Math::Vector3D& pos2, const Math::Vector3D& pos3, Math::Real xPos, Math::Real zPos);
-		MATH_API Math::Real BarycentricInterpolation(Math::Real xPos1, Math::Real yPos1, Math::Real zPos1,
-			Math::Real xPos2, Math::Real yPos2, Math::Real zPos2,
-			Math::Real xPos3, Math::Real yPos3, Math::Real zPos3,
-			Math::Real xPos, Math::Real zPos);
+		MATH_API Math::Real BarycentricInterpolation(const Vector3D& pos1, const Vector3D& pos2, const Vector3D& pos3, Real xPos, Real zPos);
+		MATH_API Math::Real BarycentricInterpolation(Real xPos1, Real yPos1, Real zPos1,
+			Real xPos2, Real yPos2, Real zPos2,
+			Real xPos3, Real yPos3, Real zPos3,
+			Real xPos, Real zPos);
 	} /* end namespace Interpolation */
 
 	constexpr Vector2D ZERO_VECTOR_2D{ REAL_ZERO, REAL_ZERO };
+	constexpr Vector3D ZERO_VECTOR_3D{ REAL_ZERO, REAL_ZERO, REAL_ZERO };
 
 } /* end namespace Math */
 

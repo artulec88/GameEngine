@@ -49,19 +49,19 @@ Engine::GravityComponent& Engine::GravityComponent::operator=(GravityComponent&&
 
 void Engine::GravityComponent::Update(Math::Real deltaTime)
 {
-	Math::Real terrainHeight = (Math::AlmostEqual(GetTransform().GetPos().GetX(), m_lastX) && Math::AlmostEqual(GetTransform().GetPos().GetZ(), m_lastZ)) ? m_lastHeight :
-		m_terrainMesh->GetHeightAt(GetTransform().GetPos().GetX(), GetTransform().GetPos().GetZ()) + m_heightAdjustment;
-	m_lastX = GetTransform().GetPos().GetX();
-	m_lastZ = GetTransform().GetPos().GetZ();
+	Math::Real terrainHeight = (Math::AlmostEqual(GetTransform().GetPos().x, m_lastX) && Math::AlmostEqual(GetTransform().GetPos().z, m_lastZ)) ? m_lastHeight :
+		m_terrainMesh->GetHeightAt(GetTransform().GetPos().x, GetTransform().GetPos().z) + m_heightAdjustment;
+	m_lastX = GetTransform().GetPos().x;
+	m_lastZ = GetTransform().GetPos().z;
 	m_lastHeight = terrainHeight;
-	if (GetTransform().GetPos().GetY() > terrainHeight)
+	if (GetTransform().GetPos().y > terrainHeight)
 	{
 		GetPhysicsObject()->ApplyLinearAcceleration(GRAVITY_ACCELERATION);
 	}
 	else
 	{
 		// Applying an impulse to stop the physics object immediately
-		GetPhysicsObject()->GetLinearVelocity().SetY(REAL_ZERO);
+		GetPhysicsObject()->GetLinearVelocity().y = REAL_ZERO;
 		GetTransform().SetPosY(terrainHeight);
 	}
 

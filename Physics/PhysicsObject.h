@@ -54,7 +54,10 @@ namespace Physics
 		PHYSICS_API inline Math::Real GetFrictionCoefficientKinetic() const { return m_frictionCoefficientKinetic; }
 		PHYSICS_API inline Math::Real GetRestitutionCoefficient() const { return m_restitutionCoefficient; }
 
-		PHYSICS_API void Stop() { m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO); }
+		PHYSICS_API void Stop()
+		{
+			m_linearVelocity.Zero();
+		}
 		PHYSICS_API void SetLinearVelocity(const Math::Vector3D& linearVelocity) { m_linearVelocity = linearVelocity; }
 
 		const Collider* GetAABBCollider() const { return m_aabbCollider; }

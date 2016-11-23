@@ -56,7 +56,9 @@ namespace Rendering
 
 		RENDERING_API virtual void SetDefault()
 		{
-			m_pos.Set(M_DEFAULT_CAMERA_POS_X, M_DEFAULT_CAMERA_POS_Y, M_DEFAULT_CAMERA_POS_Z);
+			m_pos.x = M_DEFAULT_CAMERA_POS_X;
+			m_pos.y = M_DEFAULT_CAMERA_POS_Y;
+			m_pos.z = M_DEFAULT_CAMERA_POS_Z;
 			m_rot = Math::Quaternion(Math::Matrix4D(M_DEFAULT_CAMERA_ROTATION_ANGLE_X, M_DEFAULT_CAMERA_ROTATION_ANGLE_Y, M_DEFAULT_CAMERA_ROTATION_ANGLE_Z));
 			m_nearPlane = M_DEFAULT_CAMERA_NEAR_PLANE;
 			m_farPlane = M_DEFAULT_CAMERA_FAR_PLANE;
@@ -66,7 +68,9 @@ namespace Rendering
 
 		RENDERING_API CameraBuilder& SetPos(Math::Real posX, Math::Real posY, Math::Real posZ)
 		{
-			m_pos.Set(posX, posY, posZ);
+			m_pos.x = posX;
+			m_pos.y = posY;
+			m_pos.z = posZ;
 			return *this;
 		}
 		RENDERING_API CameraBuilder& SetPos(const Math::Vector3D& position)
@@ -76,17 +80,17 @@ namespace Rendering
 		}
 		RENDERING_API CameraBuilder& SetPosX(Math::Real posX)
 		{
-			m_pos.SetX(posX);
+			m_pos.x = posX;
 			return *this;
 		}
 		RENDERING_API CameraBuilder& SetPosY(Math::Real posY)
 		{
-			m_pos.SetY(posY);
+			m_pos.y = posY;
 			return *this;
 		}
 		RENDERING_API CameraBuilder& SetPosZ(Math::Real posZ)
 		{
-			m_pos.SetZ(posZ);
+			m_pos.z = posZ;
 			return *this;
 		}
 		RENDERING_API CameraBuilder& SetRot(const Math::Quaternion& rotation)

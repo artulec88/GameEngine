@@ -110,7 +110,7 @@ namespace Math
 		/// <param name='pos'>The 3D translation vector.</param>
 		/// <returns>Translation matrix.</returns>
 		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector3D& pos) :
-			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.GetX(), pos.GetY(), pos.GetZ(), REAL_ONE)
+			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.x, pos.y, pos.z, REAL_ONE)
 		{
 			START_PROFILING_MATH(false, "6");
 			STOP_PROFILING_MATH("6");

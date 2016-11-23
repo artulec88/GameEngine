@@ -38,7 +38,7 @@ void Physics::PhysicsObject::Simulate(Math::Real passedTime)
 	//m_linearVelocity.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
 
 	// Reset forces
-	m_totalForce.Set(REAL_ZERO, REAL_ZERO, REAL_ZERO);
+	m_totalForce.Zero();
 	//m_transform.SetPos(m_transform.GetPos() + m_linearVelocity * passedTime);
 }
 

@@ -651,7 +651,7 @@ void Rendering::Shader::SetUniformVector3D(const std::string& name, const Math::
 	std::map<std::string, GLint>::const_iterator itr;
 	if (m_shaderData.IsUniformPresent(name, itr))
 	{
-		glUniform3f(itr->second, vector.GetX(), vector.GetY(), vector.GetZ());
+		glUniform3f(itr->second, vector.x, vector.y, vector.z);
 		//glUniform3fv(itr->second, 1, vector.At());
 		// TODO: Check whether glUniform3fv(itr->second, 3, vector) is faster.
 	}

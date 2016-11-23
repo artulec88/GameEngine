@@ -120,7 +120,7 @@ void Rendering::Particles::Particle::Revive(const Math::Vector3D& position, cons
 bool Rendering::Particles::Particle::Update(Math::Real deltaTime)
 {
 	START_PROFILING_RENDERING(false, "");
-	m_velocity.SetY(m_velocity.GetY() + GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime);
+	m_velocity.y += GRAVITY_ACCELERATION * m_gravityEffectFactor * deltaTime;
 	m_position += m_velocity * deltaTime;
 	m_lifeSpan += deltaTime;
 

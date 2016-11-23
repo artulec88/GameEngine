@@ -163,7 +163,7 @@ Rendering::Color::Color(Math::Real red, Math::Real green, Math::Real blue, Math:
 }
 
 Rendering::Color::Color(const Math::Vector3D& rgbVector) :
-	m_values(rgbVector.GetX(), rgbVector.GetY(), rgbVector.GetZ(), REAL_ONE)
+	m_values(rgbVector.x, rgbVector.y, rgbVector.z, REAL_ONE)
 {
 }
 

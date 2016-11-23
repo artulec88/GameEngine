@@ -44,7 +44,7 @@ void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, i
 
 	const size_t medianIndex = positionsCount / 2;
 	m_position = positions[medianIndex].GetXZ();
-	m_value = positions[medianIndex].GetY();
+	m_value = positions[medianIndex].y;
 
 	if (medianIndex > 0)
 	{

@@ -72,11 +72,26 @@ namespace Rendering
 			inline Math::Real GetScale(size_t i) const { return m_scales[i]; }
 			inline Math::Real* GetScalePtr(size_t i) { return &m_scales[i]; }
 			inline void SetPosition(size_t i, const Math::Vector3D& newPosition) { m_positions[i] = newPosition; }
-			inline void SetPosition(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_positions[i].Set(x, y, z); }
+			inline void SetPosition(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			{
+				m_positions[i].x = x;
+				m_positions[i].y = y;
+				m_positions[i].z = z;
+			}
 			inline void SetVelocity(size_t i, const Math::Vector3D& newVelocity) { m_velocities[i] = newVelocity; }
-			inline void SetVelocity(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_velocities[i].Set(x, y, z); }
+			inline void SetVelocity(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			{
+				m_velocities[i].x = x;
+				m_velocities[i].y = y;
+				m_velocities[i].z = z;
+			}
 			inline void SetAcceleration(size_t i, const Math::Vector3D& newAcceleration) { m_accelerations[i] = newAcceleration; }
-			inline void SetAcceleration(size_t i, Math::Real x, Math::Real y, Math::Real z) { m_accelerations[i].Set(x, y, z); }
+			inline void SetAcceleration(size_t i, Math::Real x, Math::Real y, Math::Real z)
+			{
+				m_accelerations[i].x = x;
+				m_accelerations[i].y = y;
+				m_accelerations[i].z = z;
+			}
 			inline void SetGravityEffectFactor(size_t i, Math::Real newGravityEffectFactor) { m_gravityEffectFactors[i] = newGravityEffectFactor; }
 			inline void SetLifeSpanLimit(size_t i, Math::Real newLifeSpanLimit) { m_lifeSpanLimits[i] = newLifeSpanLimit; }
 			inline void SetLifeSpan(size_t i, Math::Real newLifeSpan) { m_lifeSpans[i] = newLifeSpan; }

@@ -5,7 +5,7 @@
 
 /* ==================== class ConstantVelocityGenerator begin ==================== */
 Rendering::Particles::Generators::ConstantVelocityGenerator::ConstantVelocityGenerator(const Math::Vector3D& velocity) :
-	ConstantVelocityGenerator(velocity.GetX(), velocity.GetY(), velocity.GetZ())
+	ConstantVelocityGenerator(velocity.x, velocity.y, velocity.z)
 {
 }
 

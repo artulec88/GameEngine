@@ -203,8 +203,8 @@ void Audio::AudioEngine_FMOD::PlaySoundEffect3D(const std::string& path, Math::R
 	Math::Real frequency;
 	channel->getFrequency(&frequency);
 	channel->setFrequency(ChangeSemitone(frequency, pitch));
-	const FMOD_VECTOR fmodPosition = { position.GetX(), position.GetY(), position.GetZ() };
-	const FMOD_VECTOR fmodVelocity = { velocity.GetX(), velocity.GetY(), velocity.GetZ() };
+	const FMOD_VECTOR fmodPosition = { position.x, position.y, position.z };
+	const FMOD_VECTOR fmodVelocity = { velocity.x, velocity.y, velocity.z };
 	channel->set3DAttributes(&fmodPosition, &fmodVelocity);
 	channel->setPaused(false);
 }

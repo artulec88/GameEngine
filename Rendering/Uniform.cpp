@@ -188,17 +188,17 @@ void Rendering::Uniforms::Vector3DUniform::Update(const Renderer* renderer, cons
 	if (GetPrefix() == "R_")
 	{
 		const Math::Vector3D& vector = renderer->GetVec3D(GetUnprefixedName());
-		glUniform3f(GetLocation(), vector.GetX(), vector.GetY(), vector.GetZ());
+		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 	else if (GetName() == "C_eyePos")
 	{
 		const Math::Vector3D& vector = renderer->GetCurrentCamera().GetTransform().GetPos();
-		glUniform3f(GetLocation(), vector.GetX(), vector.GetY(), vector.GetZ());
+		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 	else
 	{
 		const Math::Vector3D& vector = material->GetVec3D(GetName());
-		glUniform3f(GetLocation(), vector.GetX(), vector.GetY(), vector.GetZ());
+		glUniform3f(GetLocation(), vector.x, vector.y, vector.z);
 	}
 }
 /* ==================== Vector3DUniform class implementation end ==================== */
@@ -296,7 +296,7 @@ void Rendering::Uniforms::DirectionalLightUniform::Update(const Renderer* render
 {
 	const Lighting::BaseLight* currentLight = renderer->GetCurrentLight();
 	const Math::Vector3D& forwardVector = currentLight->GetTransform().GetTransformedRot().GetForward();
-	glUniform3f(m_directionLocation, forwardVector.GetX(), forwardVector.GetY(), forwardVector.GetZ());
+	glUniform3f(m_directionLocation, forwardVector.x, forwardVector.y, forwardVector.z);
 	glUniform4f(GetColorLocation(), currentLight->GetColor().GetRed(), currentLight->GetColor().GetGreen(), currentLight->GetColor().GetBlue(), currentLight->GetColor().GetAlpha());
 	glUniform1f(GetIntensityLocation(), currentLight->GetIntensity());
 }
@@ -344,7 +344,7 @@ void Rendering::Uniforms::PointLightUniform::Update(const Renderer* renderer, co
 	glUniform1f(m_linearFactorLocation, pointLight->GetAttenuation().GetLinear());
 	glUniform1f(m_exponentFactorLocation, pointLight->GetAttenuation().GetExponent());
 	const Math::Vector3D& posVector = pointLight->GetTransform().GetTransformedPos();
-	glUniform3f(m_positionLocation, posVector.GetX(), posVector.GetY(), posVector.GetZ());
+	glUniform3f(m_positionLocation, posVector.x, posVector.y, posVector.z);
 	glUniform1f(m_rangeLocation, pointLight->GetRange());
 }
 /* ==================== PointLightUniform class implementation end ==================== */
@@ -376,10 +376,10 @@ void Rendering::Uniforms::SpotLightUniform::Update(const Renderer* renderer, con
 	glUniform1f(m_linearFactorLocation, spotLight->GetAttenuation().GetLinear());
 	glUniform1f(m_exponentFactorLocation, spotLight->GetAttenuation().GetExponent());
 	const Math::Vector3D& posVector = spotLight->GetTransform().GetTransformedPos();
-	glUniform3f(m_positionLocation, posVector.GetX(), posVector.GetY(), posVector.GetZ());
+	glUniform3f(m_positionLocation, posVector.x, posVector.y, posVector.z);
 	glUniform1f(m_rangeLocation, spotLight->GetRange());
 	const Math::Vector3D& forwardVector = spotLight->GetTransform().GetTransformedRot().GetForward();
-	glUniform3f(m_directionLocation, forwardVector.GetX(), forwardVector.GetY(), forwardVector.GetZ());
+	glUniform3f(m_directionLocation, forwardVector.x, forwardVector.y, forwardVector.z);
 	glUniform1f(m_cutoffLocation, spotLight->GetCutoff());
 }
 /* ==================== SpotLightUniform class implementation end ==================== */
