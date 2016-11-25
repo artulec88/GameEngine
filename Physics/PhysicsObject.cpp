@@ -77,7 +77,7 @@ Math::IntersectInfo Physics::PhysicsObject::Intersect(const PhysicsObject& other
 {
 	if ((m_aabbCollider == nullptr) || (otherPhysicsObject.GetAABBCollider() == nullptr))
 	{
-		return Math::IntersectInfo(false, 0.0f /* some arbitrary value */);
+		return Math::IntersectInfo(REAL_ONE /* some arbitrary (but positive) value */);
 	}
 	return m_aabbCollider->Intersect(*otherPhysicsObject.GetAABBCollider());
 }

@@ -12,13 +12,6 @@ template <class T>
 Math::Effects::Effect<T>::~Effect()
 {
 }
-
-template <class T>
-void Math::Effects::Effect<T>::Update(Real deltaTime)
-{
-	// NOP
-	return;
-}
 /* ==================== Effect<T> class end ==================== */
 
 /* ==================== NoEffect<T> class begin ==================== */
@@ -31,6 +24,13 @@ Math::Effects::NoEffect<T>::NoEffect(const T& initialValue) :
 template <class T>
 Math::Effects::NoEffect<T>::~NoEffect()
 {
+}
+
+template <class T>
+void Math::Effects::NoEffect<T>::Update(Real deltaTime)
+{
+	// NOP
+	return;
 }
 /* ==================== NoEffect<T> class end ==================== */
 

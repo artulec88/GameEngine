@@ -2,8 +2,8 @@
 #include "IntersectInfo.h"
 
 
-Math::IntersectInfo::IntersectInfo(bool isIntersecting, Math::Real distance) :
-	m_isIntersecting(isIntersecting),
+Math::IntersectInfo::IntersectInfo(Real distance) :
+	m_isIntersecting(distance < REAL_ZERO),
 	m_distance(distance)
 {
 }

@@ -26,10 +26,7 @@ Math::IntersectInfo Math::Plane::DoesIntersectSphere(const Sphere& sphere) const
 	Math::Real distanceFromSphereCenter = m_normal.Dot(sphere.GetCenter());
 	distanceFromSphereCenter += m_distance; // now it represents the distance between the plane and the sphere
 	distanceFromSphereCenter = Math::Absolute(distanceFromSphereCenter);
-
-	Math::Real distanceFromSphere = distanceFromSphereCenter - sphere.GetRadius();
-
-	return Math::IntersectInfo(distanceFromSphere < REAL_ZERO, distanceFromSphere);
+	return IntersectInfo(distanceFromSphereCenter - sphere.GetRadius());
 }
 
 Math::Vector3D Math::Plane::CalculatePointClosestToOrigin() const

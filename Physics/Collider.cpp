@@ -26,5 +26,5 @@ Math::IntersectInfo Physics::Collider::Intersect(const Collider& collider) const
 	}
 
 	CRITICAL_LOG_PHYSICS("Only bounding spheres collision is currently handled by the physics engine. Other colliders are not yet supported.");
-	return Math::IntersectInfo(false, REAL_ZERO);
+	return Math::IntersectInfo(REAL_ONE /* some arbitrary (but positive) value */);
 }

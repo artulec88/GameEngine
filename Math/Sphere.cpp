@@ -16,7 +16,7 @@ Math::Sphere::~Sphere(void)
 
 Math::IntersectInfo Math::Sphere::DoesIntersectSphere(const Sphere& sphere) const
 {
-	Math::Real radiusDistance = m_radius + sphere.GetRadius();
-	Math::Real centerDistance = (sphere.GetCenter() - m_center).Length();
-	return Math::IntersectInfo(centerDistance < radiusDistance, centerDistance - radiusDistance);
+	Real radiusDistance = m_radius + sphere.GetRadius();
+	Real centerDistance = (sphere.GetCenter() - m_center).Length();
+	return Math::IntersectInfo(centerDistance - radiusDistance);
 }

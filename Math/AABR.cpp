@@ -3,7 +3,7 @@
 #include "IntersectInfo.h"
 #include "Utility\ILogger.h"
 
-Math::AABR::AABR(const Math::Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
+Math::AABR::AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept:
 	m_bottomLeftPos(bottomLeftPos),
 	m_topRightPos(topRightPos)
 {
@@ -19,30 +19,25 @@ Math::AABR::~AABR()
 {
 }
 
-Math::IntersectInfo Math::AABR::DoesContainPoint(Math::Real x, Math::Real y) const noexcept
+Math::IntersectInfo Math::AABR::DoesContainPoint(Real x, Real y) const noexcept
 {
-	Math::Real distanceX = CalcDistanceToNearestFaceX(x);
-	Math::Real distanceY = CalcDistanceToNearestFaceY(y);
+	Real distanceX = CalcDistanceToNearestFaceX(x);
+	Real distanceY = CalcDistanceToNearestFaceY(y);
 	//DELOCUST_LOG_MATH("DistanceX = ", distanceX, ", distanceY = ", distanceY);
-	bool isIntersecting = !((distanceX > 0) || (distanceY > 0));
-	return Math::IntersectInfo(isIntersecting, (distanceX > distanceY) ? distanceX : distanceY);
+	return IntersectInfo((distanceX < distanceY) ? distanceX : distanceY);
 }
 
-Math::IntersectInfo Math::AABR::DoesIntersectAABR(const Math::AABR& aabr) const noexcept
+Math::IntersectInfo Math::AABR::DoesIntersectAABR(const AABR& aabr) const noexcept
 {
 	// TODO: Remove intermediate local variables.
-	Math::Vector2D distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
-	Math::Vector2D distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
-	Math::Vector2D distances = distances1.Max(distances2);
-
-	Math::Real maxDistance = distances.Max();
-
-	return Math::IntersectInfo(maxDistance < 0, maxDistance);
+	Vector2D distances1 = aabr.GetBottomLeftPos() - m_topRightPos;
+	Vector2D distances2 = m_bottomLeftPos - aabr.GetTopRightPos();
+	return IntersectInfo(distances1.Max(distances2).Max());
 }
 
-Math::Real Math::AABR::CalcDistanceToNearestFaceX(Math::Real x) const noexcept
+Math::Real Math::AABR::CalcDistanceToNearestFaceX(Real x) const noexcept
 {
-	Math::Real distanceX;
+	Real distanceX;
 	if (x < m_bottomLeftPos.x)
 	{
 		// positive value, because X is outside the AABR
@@ -66,9 +61,9 @@ Math::Real Math::AABR::CalcDistanceToNearestFaceX(Math::Real x) const noexcept
 	return distanceX;
 }
 
-Math::Real Math::AABR::CalcDistanceToNearestFaceY(Math::Real y) const noexcept
+Math::Real Math::AABR::CalcDistanceToNearestFaceY(Real y) const noexcept
 {
-	Math::Real distanceY;
+	Real distanceY;
 	if (y < m_topRightPos.y)
 	{
 		// positive value, because Y is outside the AABR

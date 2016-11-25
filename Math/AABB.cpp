@@ -2,7 +2,7 @@
 #include "AABB.h"
 #include "IntersectInfo.h"
 
-Math::AABB::AABB(const Math::Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept:
+Math::AABB::AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept:
 	m_bottomLeftPos(bottomLeftPos),
 	m_topRightPos(topRightPos)
 {
@@ -39,14 +39,10 @@ Math::AABB::~AABB()
 {
 }
 
-Math::IntersectInfo Math::AABB::DoesIntersectAABB(const Math::AABB& aabb) const noexcept
+Math::IntersectInfo Math::AABB::DoesIntersectAABB(const AABB& aabb) const noexcept
 {
 	// TODO: Remove intermediate local variables.
-	const Math::Vector3D distances1 = aabb.GetBottomLeftPos() - m_topRightPos;
-	const Math::Vector3D distances2 = m_bottomLeftPos - aabb.GetTopRightPos();
-	const Math::Vector3D distances = distances1.Max(distances2);
-
-	const Math::Real maxDistance = distances.Max();
-
-	return Math::IntersectInfo(maxDistance < 0, maxDistance);
+	const Vector3D distances1 = aabb.GetBottomLeftPos() - m_topRightPos;
+	const Vector3D distances2 = m_bottomLeftPos - aabb.GetTopRightPos();
+	return IntersectInfo(distances1.Max(distances2).Max());
 }

@@ -162,6 +162,13 @@ T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
 
 /* ==================== class HermiteInterpolator begin ==================== */
 template <class T>
+Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator() :
+	Interpolator(),
+	m_derivatives(nullptr)
+{
+}
+
+template <class T>
 Math::Interpolation::HermiteInterpolator<T>::HermiteInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount),
 	m_derivatives(NULL)
@@ -214,6 +221,13 @@ void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 }
 
 template <class T>
+T Math::Interpolation::HermiteInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
+{
+	WARNING_LOG_MATH("This function has not been implemented yet");
+	return value1;
+}
+
+template <class T>
 T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) const
 {
 	WARNING_LOG_MATH("This function has not been tested yet");
@@ -247,6 +261,12 @@ T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) cons
 
 /* ==================== class BarycentricInterpolator begin ==================== */
 template <class T>
+Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator() :
+	Interpolator()
+{
+}
+
+template <class T>
 Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T* interpolationObjects, const Real* times, int interpolationObjectsCount) :
 	Interpolator(interpolationObjects, times, interpolationObjectsCount)
 {
@@ -255,6 +275,13 @@ Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T
 template <class T>
 Math::Interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
 {
+}
+
+template <class T>
+T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
+{
+	WARNING_LOG_MATH("This function has not been implemented yet");
+	return value1;
 }
 
 template <class T>
