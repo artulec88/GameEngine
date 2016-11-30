@@ -309,6 +309,15 @@ namespace Rendering
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector3D), 3);
 		}
+
+		/// <summary> Retrieves the data from the given <paramref name="buffer"/>. </summary>
+		/// <param name="buffer"> The type of the buffer we want to retrieve data from. </param>
+		/// <param name="bufferEntriesCount"> A specific pointer to an integer where the number of buffer entries is returned. <param>
+		/// <returns>
+		/// The pointer to data that is stored in the specified <paramref name="buffer"/>.
+		/// The value of the parameter <paramref name="bufferEntriesCount"/> contains the number of entries the buffer (and the returned pointer) stores.
+		/// </returns>
+		RENDERING_API void* GetBufferData(MeshBufferTypes::MeshBufferType buffer, int* bufferEntriesCount) const;
 	protected:
 		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, void* data, int dataCount, int singleDataEntrySize, int singleDataComponentsCount);
 		//void FillBuffer(MeshBufferTypes::MeshBufferType buffer, MeshAttributeLocations::MeshAttributeLocation attributeLocation, int* data, unsigned int dataCount);

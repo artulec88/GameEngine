@@ -568,6 +568,15 @@ void CreateScene()
 		}
 	}
 
+	int bufferEntriesCount;
+	void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
+	CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
+	Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
+	for (int i = 0; i < bufferEntriesCount; ++i)
+	{
+		ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
+	}
+
 	//Particles::ParticlesSystemBuilder particlesSystemBuilder;
 	//particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).
 	//	SetShaderID(ShaderIDs::PARTICLES_COLORS);
