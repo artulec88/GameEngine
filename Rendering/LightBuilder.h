@@ -90,9 +90,9 @@ namespace Rendering
 			m_pos.Set(posX, posY, posZ);
 			return *this;
 		}
-		LightBuilder<T>& SetColor(ColorNames::ColorName colorName)
+		LightBuilder<T>& SetColor(ColorIDs::ColorID colorID)
 		{
-			m_color = Color(colorName);
+			m_color = Color(colorID);
 			return *this;
 		}
 		LightBuilder<T>& SetColor(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha = REAL_ONE)

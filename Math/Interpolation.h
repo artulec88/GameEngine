@@ -10,11 +10,23 @@ namespace Math
 	namespace Interpolation
 	{
 
+		namespace InterpolationTypes
+		{
+			enum InterpolationType
+			{
+				LINEAR,
+				COSINE,
+				HERMITE,
+				BARYCENTRIC
+			}; /* end enum InterpolationType */
+		} /* end namespace InterpolationTypes */
+
 		/// <summary> Interpolator class serves as a base class for all types of interpolation methods. </summary>
 		template <class T>
 		class Interpolator
 		{
 			/* ==================== Static variables and functions begin ==================== */
+		public:
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
@@ -56,7 +68,6 @@ namespace Math
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual T Interpolate(const T& value1, const T& value2, Real factor) const = 0;
 			virtual T Interpolate(Real time) const = 0;
 			void PushInterpolationObject(const T& interpolationObject, Real time);
 			Real GetStartTime() const { return m_times.front(); }
@@ -116,7 +127,6 @@ namespace Math
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual T Interpolate(const T& value1, const T& value2, Real factor) const override;
 			virtual T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 		}; /* end class LinearInterpolator */
@@ -167,7 +177,6 @@ namespace Math
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual T Interpolate(const T& value1, const T& value2, Real factor) const override;
 			virtual T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 		}; /* end class CosineInterpolator */
@@ -247,7 +256,6 @@ namespace Math
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual T Interpolate(const T& value1, const T& value2, Real factor) const override;
 			virtual T Interpolate(Real time) const override;
 		private:
 			void CalculateDerivatives(const T* interpolationObjects, int interpolationObjectsCount, const T& derivative0, const T& derivativeN);
@@ -305,7 +313,6 @@ namespace Math
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual T Interpolate(const T& value1, const T& value2, Real factor) const override; // TODO: Implement that
 			virtual T Interpolate(Real time) const override;
 			/* ==================== Non-static member functions end ==================== */
 
@@ -313,6 +320,92 @@ namespace Math
 		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BarycentricInterpolator */
+
+		/// <summary>
+		/// Performs the requested type of interpolation between two specified input values (<paramref name="value1"/>
+		/// and <paramref name="value2"/>) with the given interpolation factor (<paramref name="factor"/>).
+		/// </summary>
+		/// <param name="interpolationType"> The type of interpolation the client wants to use to interpolate between the input values. </param>
+		/// <param name="value1"> The first input value we interpolate. </param>
+		/// <param name="value2"> The second input value we interpolate. </param>
+		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
+		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
+		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
+		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
+		/// </param>
+		/// <returns>
+		/// The output being the interpolated value between two specified input values, the interpolation factor and the type of
+		/// interpolation the client wanted to use.
+		/// </returns>
+		template <class T>
+		T Interpolate(InterpolationTypes::InterpolationType interpolationType, const T& value1, const T& value2, Real factor);
+
+		/// <summary> Linearly interpolates between two given values. </summary>
+		/// <param name="value1"> The first input value we interpolate. </param>
+		/// <param name="value2"> The second input value we interpolate. </param>
+		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
+		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
+		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
+		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
+		/// </param>
+		/// <returns>
+		/// The output which is the linearly-interpolated value between given <paramref name="value1"/> and <paramref name="value2"/>
+		/// with the given interpolation factor (<paramref name="factor"/>).
+		   /// </returns>
+		template <class T>
+		T InterpolateLinear(const T& value1, const T& value2, Real factor);
+
+		/// <summary> Performs the cosine interpolation between two given values. </summary>
+		/// <param name="value1"> The first input value we interpolate. </param>
+		/// <param name="value2"> The second input value we interpolate. </param>
+		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
+		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
+		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
+		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
+		/// </param>
+		/// <returns>
+		/// The output which is the cosine-interpolated value between given <paramref name="value1"/> and <paramref name="value2"/>
+		/// with the given interpolation factor (<paramref name="factor"/>).
+		/// </returns>
+		template <class T>
+		T InterpolateCosine(const T& value1, const T& value2, Real factor);
+
+		/// <summary> Performs the Hermite interpolation between two given values. </summary>
+		/// <param name="value1"> The first input value we interpolate. </param>
+		/// <param name="value2"> The second input value we interpolate. </param>
+		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
+		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
+		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
+		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
+		/// </param>
+		/// <returns>
+		/// The output which is the Hermite-interpolated value between given <paramref name="value1"/> and <paramref name="value2"/>
+		/// with the given interpolation factor (<paramref name="factor"/>).
+		/// </returns>
+		template <class T>
+		T InterpolateHermite(const T& value1, const T& value2, Real factor);
+
+
+		/// <summary> Performs the barycentric interpolation between two given values. </summary>
+		/// <param name="value1"> The first input value we interpolate. </param>
+		/// <param name="value2"> The second input value we interpolate. </param>
+		/// <param name="factor"> The factor value in range from <code>0</code> to <code>1</code>.
+		/// It represents how much the output value will take from <paramref name="value1"/> and how much from <paramref name="value2"/>.
+		/// The greater the factor the more output value will take from <paramref name="value2"/>. In an extreme, degenerate case when
+		/// <paramref name="factor"/> equals <code>1</code> the output value will be exactly the same as the <paramref name="value2"/>.
+		/// On the other hand, if <paramref name="factor"/> equals <code>0</code> then the output will equal <paramref name="value1"/>.
+		/// </param>
+		/// <returns>
+		/// The output which is the barycentric-interpolated value between given <paramref name="value1"/> and <paramref name="value2"/>
+		/// with the given interpolation factor (<paramref name="factor"/>).
+		/// </returns>
+		template <class T>
+		T InterpolateBarycentric(const T& value1, const T& value2, Real factor);
+
 
 	} /* end namespace Interpolation */
 

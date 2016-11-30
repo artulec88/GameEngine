@@ -37,7 +37,8 @@ Math::Vector2D& Math::Vector2D::operator*=(const Vector2D& v) noexcept
 
 Math::Vector2D& Math::Vector2D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 2D vector by zero is impossible. Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+		"Dividing the 2D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
 
@@ -46,8 +47,10 @@ Math::Vector2D& Math::Vector2D::operator/=(Real s) noexcept
 
 Math::Vector2D& Math::Vector2D::operator/=(const Vector2D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
 
@@ -67,20 +70,6 @@ bool Math::Vector2D::operator!=(const Vector2D& v) const
 bool Math::Vector2D::IsNormalized() const
 {
 	return AlmostEqual(LengthSquared(), REAL_ONE);
-}
-
-Math::Vector2D Math::Vector2D::Perp(bool normalizingEnabled /* = false */) const
-{
-	if (normalizingEnabled)
-	{
-		return Vector2D(y, -x).Normalized();
-	}
-	return Vector2D(y, -x);
-}
-
-Math::Real Math::Vector2D::Max() const
-{
-	return (x > y) ? x : y;
 }
 
 #ifdef PASS_VECTOR_BY_VALUE
@@ -251,7 +240,8 @@ Math::Vector3D& Math::Vector3D::operator*=(const Vector3D& v) noexcept
 
 Math::Vector3D& Math::Vector3D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 3D vector by zero is impossible. Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+		"Dividing the 3D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
 	z /= s;
@@ -260,9 +250,12 @@ Math::Vector3D& Math::Vector3D::operator/=(Real s) noexcept
 
 Math::Vector3D& Math::Vector3D::operator/=(const Vector3D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
 	z /= v.z;
@@ -362,9 +355,11 @@ void Math::Vector3D::Threshold(Real maxLength)
 	Real length = Length();
 	if (length > maxLength)
 	{
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
+			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		Real quotient = length / maxLength;
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
+			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
 		y /= quotient;
 		z /= quotient;
@@ -465,7 +460,8 @@ Math::Vector4D& Math::Vector4D::operator*=(const Vector4D& v) noexcept
 
 Math::Vector4D& Math::Vector4D::operator/=(Real s) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR, "Dividing the 4D vector by zero is impossible. Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(s, REAL_ZERO), *this, Utility::Logging::ERR,
+		"Dividing the 4D vector by zero is impossible. Returning the unmodified vector.");
 	x /= s;
 	y /= s;
 	z /= s;
@@ -475,10 +471,14 @@ Math::Vector4D& Math::Vector4D::operator/=(Real s) noexcept
 
 Math::Vector4D& Math::Vector4D::operator/=(const Vector4D& v) noexcept
 {
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
-	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetW(), REAL_ZERO), *this, Utility::Logging::ERR, "Cannot perform the division of the vector (w == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetX(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (x == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetY(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (y == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetZ(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (z == 0). Returning the unmodified vector.");
+	CHECK_CONDITION_RETURN_MATH(!AlmostEqual(v.GetW(), REAL_ZERO), *this, Utility::Logging::ERR,
+		"Cannot perform the division of the vector (w == 0). Returning the unmodified vector.");
 	x /= v.x;
 	y /= v.y;
 	z /= v.z;
@@ -603,9 +603,11 @@ void Math::Vector4D::Threshold(Real maxLength)
 	Real length = Length();
 	if (length > maxLength)
 	{
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(maxLength, REAL_ZERO), Utility::Logging::ERR,
+			"Cannot perform the threshold operation (the specified threshold is 0). Returning the unmodified vector.");
 		const Real quotient = length / maxLength;
-		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR, "Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
+		CHECK_CONDITION_RETURN_VOID_MATH(!AlmostEqual(quotient, REAL_ZERO), Utility::Logging::ERR,
+			"Cannot perform the threshold operation (the specified quotient is 0). Returning the unmodified vector.");
 		x /= quotient;
 		y /= quotient;
 		z /= quotient;

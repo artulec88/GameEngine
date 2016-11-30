@@ -11,12 +11,12 @@
 
 namespace Rendering
 {
-	namespace ColorNames
+	namespace ColorIDs
 	{
 		/// <summary>
 		/// See http://www.w3schools.com/colors/colors_hex.asp.
 		/// </summary>
-		enum ColorName
+		enum ColorID
 		{
 			INDIAN_RED = 0, /// <summary> Red-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=205,92,92 </summary>
 			LIGHT_CORAL, /// <summary> Red-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=240,128,128 </summary>
@@ -156,10 +156,10 @@ namespace Rendering
 			SLATE_GREY, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=112,128,144 </summary>
 			BLACK, /// <summary> Grey-group color. http://www.w3schools.com/colors/color_tryit.asp?rgb=0,0,0 </summary>
 			COUNT
-		}; /* end enum ColorName */
-	} /* end namespace ColorNames */
+		}; /* end enum ColorID */
+	} /* end namespace ColorIDs */
 
-	/// <summary>The representation of color in the game engine.</summary>
+	/// <summary>The representation of color in the rendering engine.</summary>
 	/// <remarks>The color is a simple adapter for the Math library's <code>Vector4D</code> class.</remarks>
 	class Color
 	{
@@ -167,89 +167,127 @@ namespace Rendering
 		struct ColorNameEntry
 		{
 			char const* name;
-			ColorNames::ColorName colorId;
+			ColorIDs::ColorID colorId;
 		}; /* end struct ColorNameEntry */
 
 		/* ==================== Static variables and functions begin ==================== */
 	private:
-		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", ColorNames::INDIAN_RED},
-		{ "light_coral", ColorNames::INDIAN_RED },{ "salmon", ColorNames::INDIAN_RED },{ "dark_salmon", ColorNames::INDIAN_RED },{ "light_salmon", ColorNames::INDIAN_RED },
-		{ "crimson", ColorNames::INDIAN_RED },{ "red", ColorNames::INDIAN_RED },{ "fire_brick", ColorNames::INDIAN_RED },{ "dark_red", ColorNames::INDIAN_RED },
-		{ "pink", ColorNames::INDIAN_RED },{ "light_pink", ColorNames::INDIAN_RED },{ "hot_pink", ColorNames::INDIAN_RED },{ "deep_pink", ColorNames::INDIAN_RED },
-		{ "medium_violet_red", ColorNames::INDIAN_RED },{ "pale_violet_red", ColorNames::INDIAN_RED },{ "coral", ColorNames::INDIAN_RED },{ "tomato", ColorNames::INDIAN_RED },
-		{ "orange_red", ColorNames::INDIAN_RED },{ "dark_orange", ColorNames::INDIAN_RED },{ "orange", ColorNames::INDIAN_RED },{ "gold", ColorNames::INDIAN_RED },
-		{ "yellow", ColorNames::INDIAN_RED },{ "light_yellow", ColorNames::INDIAN_RED },{ "lemon_chiffon", ColorNames::INDIAN_RED },{ "light_goldenrod_yellow", ColorNames::INDIAN_RED },
-		{ "papaya_whip", ColorNames::INDIAN_RED },{ "moccasin", ColorNames::INDIAN_RED },{ "peach_puff", ColorNames::INDIAN_RED },{ "pale_goldenrod", ColorNames::INDIAN_RED },
-		{ "khaki", ColorNames::INDIAN_RED },{ "dark_khaki", ColorNames::INDIAN_RED },{ "lavender", ColorNames::INDIAN_RED },{ "thistle", ColorNames::INDIAN_RED },
-		{ "plum", ColorNames::INDIAN_RED },{ "violet", ColorNames::INDIAN_RED },{ "orchid", ColorNames::INDIAN_RED },{ "fuchsia", ColorNames::INDIAN_RED },
-		{ "magenta", ColorNames::INDIAN_RED },{ "medium_orchid", ColorNames::INDIAN_RED },{ "blue_violet", ColorNames::INDIAN_RED },{ "dark_violet", ColorNames::INDIAN_RED },
-		{ "dark_orchid", ColorNames::INDIAN_RED },{ "dark_magenta", ColorNames::INDIAN_RED },{ "purple", ColorNames::INDIAN_RED },{ "indigo", ColorNames::INDIAN_RED },
-		{ "state_blue", ColorNames::INDIAN_RED },{ "dark_state_blue", ColorNames::INDIAN_RED },{ "medium_state_blue", ColorNames::INDIAN_RED },{ "green_yellow", ColorNames::INDIAN_RED },
-		{ "chartreuse", ColorNames::INDIAN_RED },{ "lawn_green", ColorNames::INDIAN_RED },{ "lime", ColorNames::INDIAN_RED },{ "lime_green", ColorNames::INDIAN_RED },
-		{ "pale_green", ColorNames::INDIAN_RED },{ "light_green", ColorNames::INDIAN_RED },{ "medium_spring_green", ColorNames::INDIAN_RED },{ "spring_green", ColorNames::INDIAN_RED },
-		{ "medium_sea_green", ColorNames::INDIAN_RED },{ "sea_green", ColorNames::INDIAN_RED },{ "forest_green", ColorNames::INDIAN_RED },{ "green", ColorNames::INDIAN_RED },
-		{ "dark_green", ColorNames::INDIAN_RED },{ "yellow_green", ColorNames::INDIAN_RED },{ "olive_drab", ColorNames::INDIAN_RED },{ "olive", ColorNames::INDIAN_RED },
-		{ "dark_olive_green", ColorNames::INDIAN_RED },{ "medium_aquamarine", ColorNames::INDIAN_RED },{ "dark_sea_green", ColorNames::INDIAN_RED },{ "light_sea_green", ColorNames::INDIAN_RED },
-		{ "dark_cyan", ColorNames::INDIAN_RED },{ "teal", ColorNames::INDIAN_RED },{ "aqua", ColorNames::INDIAN_RED },{ "cyan", ColorNames::INDIAN_RED },
-		{ "light_cyan", ColorNames::INDIAN_RED },{ "pale_turquoise", ColorNames::INDIAN_RED },{ "aquamarine", ColorNames::INDIAN_RED },{ "turquoise", ColorNames::INDIAN_RED },
-		{ "medium_turquoise", ColorNames::INDIAN_RED },{ "dark_turquoise", ColorNames::INDIAN_RED },{ "cadet_blue", ColorNames::INDIAN_RED },{ "steel_blue", ColorNames::INDIAN_RED },
-		{ "light_steel_blue", ColorNames::INDIAN_RED },{ "powder_blue", ColorNames::INDIAN_RED },{ "light_blue", ColorNames::INDIAN_RED },{ "sky_blue", ColorNames::INDIAN_RED },
-		{ "light_sky_blue", ColorNames::INDIAN_RED },{ "deep_sky_blue", ColorNames::INDIAN_RED },{ "dodger_blue", ColorNames::INDIAN_RED },{ "cornflower_blue", ColorNames::INDIAN_RED },
-		{ "royal_blue", ColorNames::INDIAN_RED },{ "medium_blue", ColorNames::INDIAN_RED },{ "dark_blue", ColorNames::INDIAN_RED },{ "navy", ColorNames::INDIAN_RED },
-		{ "midnight_blue", ColorNames::INDIAN_RED },{ "cornsilk", ColorNames::INDIAN_RED },{ "blanched_almond", ColorNames::INDIAN_RED },{ "bisque", ColorNames::INDIAN_RED },
-		{ "navajo_white", ColorNames::INDIAN_RED },{ "wheat", ColorNames::INDIAN_RED },{ "burly_wood", ColorNames::INDIAN_RED },{ "tan", ColorNames::INDIAN_RED },
-		{ "rosy_brown", ColorNames::INDIAN_RED },{ "sandy_brown", ColorNames::INDIAN_RED },{ "goldenrod", ColorNames::INDIAN_RED },{ "dark_goldenrod", ColorNames::INDIAN_RED },
-		{ "peru", ColorNames::INDIAN_RED },{ "chocolate", ColorNames::INDIAN_RED },{ "saddle_brown", ColorNames::INDIAN_RED },{ "sienna", ColorNames::INDIAN_RED },
-		{ "brown", ColorNames::INDIAN_RED },{ "maroon", ColorNames::INDIAN_RED },{ "white", ColorNames::INDIAN_RED },{ "snow", ColorNames::INDIAN_RED },
-		{ "honeydew", ColorNames::INDIAN_RED },{ "mint_cream", ColorNames::INDIAN_RED },{ "azure", ColorNames::INDIAN_RED },{ "alice_blue", ColorNames::INDIAN_RED },
-		{ "ghost_white", ColorNames::INDIAN_RED },{ "white_smoke", ColorNames::INDIAN_RED },{ "seashell", ColorNames::INDIAN_RED },{ "beige", ColorNames::INDIAN_RED },
-		{ "old_lace", ColorNames::INDIAN_RED },{ "floral_white", ColorNames::INDIAN_RED },{ "ivory", ColorNames::INDIAN_RED },{ "antique_white", ColorNames::INDIAN_RED },
-		{ "linen", ColorNames::INDIAN_RED },{ "lavender_blush", ColorNames::INDIAN_RED },{ "misty_rose", ColorNames::INDIAN_RED },{ "gainsboro", ColorNames::INDIAN_RED },
-		{ "light_grey", ColorNames::INDIAN_RED },{ "silver", ColorNames::INDIAN_RED },{ "dark_grey", ColorNames::INDIAN_RED },{ "grey", ColorNames::INDIAN_RED },
-		{ "dim_grey", ColorNames::INDIAN_RED },{ "light_slate_grey", ColorNames::INDIAN_RED },{ "slate_grey", ColorNames::INDIAN_RED },{ "black", ColorNames::INDIAN_RED } };
+		static constexpr ColorNameEntry COLOR_NAMES[] = { {"indian_red", ColorIDs::INDIAN_RED},
+		{ "light_coral", ColorIDs::INDIAN_RED },{ "salmon", ColorIDs::INDIAN_RED },{ "dark_salmon", ColorIDs::INDIAN_RED },{ "light_salmon", ColorIDs::INDIAN_RED },
+		{ "crimson", ColorIDs::INDIAN_RED },{ "red", ColorIDs::INDIAN_RED },{ "fire_brick", ColorIDs::INDIAN_RED },{ "dark_red", ColorIDs::INDIAN_RED },
+		{ "pink", ColorIDs::INDIAN_RED },{ "light_pink", ColorIDs::INDIAN_RED },{ "hot_pink", ColorIDs::INDIAN_RED },{ "deep_pink", ColorIDs::INDIAN_RED },
+		{ "medium_violet_red", ColorIDs::INDIAN_RED },{ "pale_violet_red", ColorIDs::INDIAN_RED },{ "coral", ColorIDs::INDIAN_RED },{ "tomato", ColorIDs::INDIAN_RED },
+		{ "orange_red", ColorIDs::INDIAN_RED },{ "dark_orange", ColorIDs::INDIAN_RED },{ "orange", ColorIDs::INDIAN_RED },{ "gold", ColorIDs::INDIAN_RED },
+		{ "yellow", ColorIDs::INDIAN_RED },{ "light_yellow", ColorIDs::INDIAN_RED },{ "lemon_chiffon", ColorIDs::INDIAN_RED },{ "light_goldenrod_yellow", ColorIDs::INDIAN_RED },
+		{ "papaya_whip", ColorIDs::INDIAN_RED },{ "moccasin", ColorIDs::INDIAN_RED },{ "peach_puff", ColorIDs::INDIAN_RED },{ "pale_goldenrod", ColorIDs::INDIAN_RED },
+		{ "khaki", ColorIDs::INDIAN_RED },{ "dark_khaki", ColorIDs::INDIAN_RED },{ "lavender", ColorIDs::INDIAN_RED },{ "thistle", ColorIDs::INDIAN_RED },
+		{ "plum", ColorIDs::INDIAN_RED },{ "violet", ColorIDs::INDIAN_RED },{ "orchid", ColorIDs::INDIAN_RED },{ "fuchsia", ColorIDs::INDIAN_RED },
+		{ "magenta", ColorIDs::INDIAN_RED },{ "medium_orchid", ColorIDs::INDIAN_RED },{ "blue_violet", ColorIDs::INDIAN_RED },{ "dark_violet", ColorIDs::INDIAN_RED },
+		{ "dark_orchid", ColorIDs::INDIAN_RED },{ "dark_magenta", ColorIDs::INDIAN_RED },{ "purple", ColorIDs::INDIAN_RED },{ "indigo", ColorIDs::INDIAN_RED },
+		{ "state_blue", ColorIDs::INDIAN_RED },{ "dark_state_blue", ColorIDs::INDIAN_RED },{ "medium_state_blue", ColorIDs::INDIAN_RED },{ "green_yellow", ColorIDs::INDIAN_RED },
+		{ "chartreuse", ColorIDs::INDIAN_RED },{ "lawn_green", ColorIDs::INDIAN_RED },{ "lime", ColorIDs::INDIAN_RED },{ "lime_green", ColorIDs::INDIAN_RED },
+		{ "pale_green", ColorIDs::INDIAN_RED },{ "light_green", ColorIDs::INDIAN_RED },{ "medium_spring_green", ColorIDs::INDIAN_RED },{ "spring_green", ColorIDs::INDIAN_RED },
+		{ "medium_sea_green", ColorIDs::INDIAN_RED },{ "sea_green", ColorIDs::INDIAN_RED },{ "forest_green", ColorIDs::INDIAN_RED },{ "green", ColorIDs::INDIAN_RED },
+		{ "dark_green", ColorIDs::INDIAN_RED },{ "yellow_green", ColorIDs::INDIAN_RED },{ "olive_drab", ColorIDs::INDIAN_RED },{ "olive", ColorIDs::INDIAN_RED },
+		{ "dark_olive_green", ColorIDs::INDIAN_RED },{ "medium_aquamarine", ColorIDs::INDIAN_RED },{ "dark_sea_green", ColorIDs::INDIAN_RED },{ "light_sea_green", ColorIDs::INDIAN_RED },
+		{ "dark_cyan", ColorIDs::INDIAN_RED },{ "teal", ColorIDs::INDIAN_RED },{ "aqua", ColorIDs::INDIAN_RED },{ "cyan", ColorIDs::INDIAN_RED },
+		{ "light_cyan", ColorIDs::INDIAN_RED },{ "pale_turquoise", ColorIDs::INDIAN_RED },{ "aquamarine", ColorIDs::INDIAN_RED },{ "turquoise", ColorIDs::INDIAN_RED },
+		{ "medium_turquoise", ColorIDs::INDIAN_RED },{ "dark_turquoise", ColorIDs::INDIAN_RED },{ "cadet_blue", ColorIDs::INDIAN_RED },{ "steel_blue", ColorIDs::INDIAN_RED },
+		{ "light_steel_blue", ColorIDs::INDIAN_RED },{ "powder_blue", ColorIDs::INDIAN_RED },{ "light_blue", ColorIDs::INDIAN_RED },{ "sky_blue", ColorIDs::INDIAN_RED },
+		{ "light_sky_blue", ColorIDs::INDIAN_RED },{ "deep_sky_blue", ColorIDs::INDIAN_RED },{ "dodger_blue", ColorIDs::INDIAN_RED },{ "cornflower_blue", ColorIDs::INDIAN_RED },
+		{ "royal_blue", ColorIDs::INDIAN_RED },{ "medium_blue", ColorIDs::INDIAN_RED },{ "dark_blue", ColorIDs::INDIAN_RED },{ "navy", ColorIDs::INDIAN_RED },
+		{ "midnight_blue", ColorIDs::INDIAN_RED },{ "cornsilk", ColorIDs::INDIAN_RED },{ "blanched_almond", ColorIDs::INDIAN_RED },{ "bisque", ColorIDs::INDIAN_RED },
+		{ "navajo_white", ColorIDs::INDIAN_RED },{ "wheat", ColorIDs::INDIAN_RED },{ "burly_wood", ColorIDs::INDIAN_RED },{ "tan", ColorIDs::INDIAN_RED },
+		{ "rosy_brown", ColorIDs::INDIAN_RED },{ "sandy_brown", ColorIDs::INDIAN_RED },{ "goldenrod", ColorIDs::INDIAN_RED },{ "dark_goldenrod", ColorIDs::INDIAN_RED },
+		{ "peru", ColorIDs::INDIAN_RED },{ "chocolate", ColorIDs::INDIAN_RED },{ "saddle_brown", ColorIDs::INDIAN_RED },{ "sienna", ColorIDs::INDIAN_RED },
+		{ "brown", ColorIDs::INDIAN_RED },{ "maroon", ColorIDs::INDIAN_RED },{ "white", ColorIDs::INDIAN_RED },{ "snow", ColorIDs::INDIAN_RED },
+		{ "honeydew", ColorIDs::INDIAN_RED },{ "mint_cream", ColorIDs::INDIAN_RED },{ "azure", ColorIDs::INDIAN_RED },{ "alice_blue", ColorIDs::INDIAN_RED },
+		{ "ghost_white", ColorIDs::INDIAN_RED },{ "white_smoke", ColorIDs::INDIAN_RED },{ "seashell", ColorIDs::INDIAN_RED },{ "beige", ColorIDs::INDIAN_RED },
+		{ "old_lace", ColorIDs::INDIAN_RED },{ "floral_white", ColorIDs::INDIAN_RED },{ "ivory", ColorIDs::INDIAN_RED },{ "antique_white", ColorIDs::INDIAN_RED },
+		{ "linen", ColorIDs::INDIAN_RED },{ "lavender_blush", ColorIDs::INDIAN_RED },{ "misty_rose", ColorIDs::INDIAN_RED },{ "gainsboro", ColorIDs::INDIAN_RED },
+		{ "light_grey", ColorIDs::INDIAN_RED },{ "silver", ColorIDs::INDIAN_RED },{ "dark_grey", ColorIDs::INDIAN_RED },{ "grey", ColorIDs::INDIAN_RED },
+		{ "dim_grey", ColorIDs::INDIAN_RED },{ "light_slate_grey", ColorIDs::INDIAN_RED },{ "slate_grey", ColorIDs::INDIAN_RED },{ "black", ColorIDs::INDIAN_RED } };
 		static constexpr bool Same(const char* x, const char* y)
 		{
 			return (!*x && !*y) ? true : (*x == *y && Same(x + 1, y + 1));
 		}
-		static constexpr ColorNames::ColorName Value(char const *name, ColorNameEntry const *entries) {
+		static constexpr ColorIDs::ColorID Value(char const *name, ColorNameEntry const *entries) {
 			return Same(entries->name, name) ? entries->colorId : Value(name, entries + 1);
 		}
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		RENDERING_API explicit Color(const std::string& colorName);
-		RENDERING_API explicit Color(ColorNames::ColorName colorName);
-		RENDERING_API explicit Color(Math::Real red = REAL_ONE, Math::Real green = REAL_ONE, Math::Real blue = REAL_ONE, Math::Real alpha = REAL_ONE);
-		RENDERING_API explicit Color(const Math::Vector3D& rgbVector);
-		RENDERING_API explicit Color(const Math::Vector4D& rgbaVector);
-		RENDERING_API Color(const Color& color);
-		RENDERING_API Color(Color&& color);
+		/// <summary> Color constructor. </summary>
+		/// <param name="colorName"> The name of the color to be used. </param>
+		RENDERING_API explicit Color(const std::string& colorName) noexcept;
+
+		/// <summary> Color constructor. </summary>
+		/// <param name="colorID"> The ID of the color to be used. </param>
+		RENDERING_API explicit Color(ColorIDs::ColorID colorID) noexcept;
+
+		/// <summary> Color constructor. </summary>
+		/// <param name="red"> The value of the RED component of the color to be used. </param>
+		/// <param name="green"> The value of the GREEN component of the color to be used. </param>
+		/// <param name="blue"> The value of the BLUE component of the color to be used. </param>
+		/// <param name="alpha"> The value of the ALPHA component of the color to be used. </param>
+		RENDERING_API explicit Color(Math::Real red = REAL_ONE, Math::Real green = REAL_ONE, Math::Real blue = REAL_ONE, Math::Real alpha = REAL_ONE) noexcept;
+
+		/// <summary> Color constructor. </summary>
+		/// <param name="rgbVector">
+		/// The RGB three-dimensional vector containing red, green and blue values respectively in X, Y and Z components.
+		/// </param>
+		RENDERING_API explicit Color(const Math::Vector3D& rgbVector) noexcept;
+
+		/// <summary> Color constructor. </summary>
+		/// <param name="rgbaVector">
+		/// The RGBA four-dimensional vector containing red, green, blue and alpha values respectively in X, Y, Z and W components.
+		/// </param>
+		RENDERING_API explicit Color(const Math::Vector4D& rgbaVector) noexcept;
+
+		/// <summary> Color copy constructor. </summary>
+		/// <param name="color"> The color to copy construct from. </param>
+		RENDERING_API Color(const Color& color) noexcept = default;
+
+		/// <summary> Color move constructor. </summary>
+		/// <param name="color"> The r-value reference of the color to move construct from. </param>
+		RENDERING_API Color(Color&& color) noexcept = default;
+
+		/// <summary> Color copy assignment operator. </summary>
+		/// <param name="color"> The color to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned color. </returns>
+		RENDERING_API Color& operator=(const Color& color) noexcept = default;
+
+		/// <summary> Color move assignment operator. </summary>
+		/// <param name="color"> The color to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned color. </returns>
+		RENDERING_API Color& operator=(Color&& color) noexcept = default;
+
+		/// <summary> Color destructor. </summary>
 		RENDERING_API ~Color();
-		RENDERING_API Color& operator=(const Color& color);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		/// <summary> Retrieves the red component of the color. </summary>
 		/// <returns> The red component of the color. </returns>
-		RENDERING_API Math::Real GetRed() const { return m_values.x; }
+		RENDERING_API Math::Real GetRed() const noexcept { return m_values.x; }
 
 		/// <summary> Retrieves the green component of the color. </summary>
 		/// <returns> The green component of the color. </returns>
-		RENDERING_API Math::Real GetGreen() const { return m_values.y; }
+		RENDERING_API Math::Real GetGreen() const noexcept { return m_values.y; }
 
 		/// <summary> Retrieves the blue component of the color. </summary>
 		/// <returns> The blue component of the color. </returns>
-		RENDERING_API Math::Real GetBlue() const { return m_values.z; }
+		RENDERING_API Math::Real GetBlue() const noexcept { return m_values.z; }
 
 		/// <summary> Retrieves the alpha component of the color. </summary>
 		/// <returns> The alpha component of the color. </returns>
-		RENDERING_API Math::Real GetAlpha() const { return m_values.w; }
+		RENDERING_API Math::Real GetAlpha() const noexcept { return m_values.w; }
 
-		RENDERING_API const Math::Vector4D& GetValues() const { return m_values; }
+		RENDERING_API const Math::Vector4D& GetValues() const noexcept { return m_values; }
 
-		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha)
+		RENDERING_API void Set(Math::Real red, Math::Real green, Math::Real blue, Math::Real alpha) noexcept
 		{
 			SetRed(red);
 			SetGreen(green);
@@ -261,14 +299,14 @@ namespace Rendering
 		RENDERING_API inline void SetBlue(Math::Real blue) noexcept { m_values.z = blue; }
 		RENDERING_API inline void SetAlpha(Math::Real alpha) noexcept { m_values.w = alpha; }
 
-		RENDERING_API Color operator+(const Color& color) const;
-		RENDERING_API Color& operator+=(const Color& color);
-		RENDERING_API Color operator*(Math::Real value) const;
-		RENDERING_API Color& operator*=(Math::Real value);
-		RENDERING_API Color operator*(const Color& color) const;
-		RENDERING_API Color& operator*=(const Color& color);
+		RENDERING_API Color operator+(const Color& color) const noexcept;
+		RENDERING_API Color& operator+=(const Color& color) noexcept;
+		RENDERING_API Color operator*(Math::Real value) const noexcept;
+		RENDERING_API Color& operator*=(Math::Real value) noexcept;
+		RENDERING_API Color operator*(const Color& color) const noexcept;
+		RENDERING_API Color& operator*=(const Color& color) noexcept;
 
-		RENDERING_API Color Lerp(const Color& color, Math::Real lerpFactor) const
+		RENDERING_API Color Lerp(const Color& color, Math::Real lerpFactor) const noexcept
 		{
 			return Color(m_values.Lerp(color.m_values, lerpFactor));
 		}

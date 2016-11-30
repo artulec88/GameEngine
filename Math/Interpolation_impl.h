@@ -69,12 +69,6 @@ Math::Interpolation::LinearInterpolator<T>::~LinearInterpolator()
 }
 
 template <class T>
-T Math::Interpolation::LinearInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
-{
-	return (value1 * (REAL_ONE - factor)) + (value2 * factor);
-}
-
-template <class T>
 T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 {
 	// Handle boundary conditions
@@ -100,7 +94,7 @@ T Math::Interpolation::LinearInterpolator<T>::Interpolate(Math::Real time) const
 	Math::Real time1 = m_times[index];
 	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
 
-	return Interpolate(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
+	return InterpolateLinear(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
 /* ==================== class LinearInterpolator end ==================== */
 
@@ -120,14 +114,6 @@ Math::Interpolation::CosineInterpolator<T>::CosineInterpolator(const T* interpol
 template <class T>
 Math::Interpolation::CosineInterpolator<T>::~CosineInterpolator()
 {
-}
-
-template <class T>
-T Math::Interpolation::CosineInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
-{
-	const Angle angle(factor * PI, Math::Unit::RADIAN);
-	const Real cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
-	return (value1 * (REAL_ONE - cosineFactor)) + (value2 * cosineFactor);
 }
 
 template <class T>
@@ -156,7 +142,7 @@ T Math::Interpolation::CosineInterpolator<T>::Interpolate(Math::Real time) const
 	Math::Real time1 = m_times[index];
 	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
 
-	return Interpolate(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
+	return InterpolateCosine(m_interpolationObjects[index - 1], m_interpolationObjects[index], interpolationFactor);
 }
 /* ==================== class CosineInterpolator end ==================== */
 
@@ -221,13 +207,6 @@ void Math::Interpolation::HermiteInterpolator<T>::CalculateDerivatives(const T* 
 }
 
 template <class T>
-T Math::Interpolation::HermiteInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
-{
-	WARNING_LOG_MATH("This function has not been implemented yet");
-	return value1;
-}
-
-template <class T>
 T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) const
 {
 	WARNING_LOG_MATH("This function has not been tested yet");
@@ -255,7 +234,8 @@ T Math::Interpolation::HermiteInterpolator<T>::Interpolate(Math::Real time) cons
 	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
-	return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
+	return InterpolateHermite(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
+	//return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
 }
 /* ==================== class HermiteInterpolator end ==================== */
 
@@ -275,13 +255,6 @@ Math::Interpolation::BarycentricInterpolator<T>::BarycentricInterpolator(const T
 template <class T>
 Math::Interpolation::BarycentricInterpolator<T>::~BarycentricInterpolator()
 {
-}
-
-template <class T>
-T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(const T& value1, const T& value2, Real factor) const
-{
-	WARNING_LOG_MATH("This function has not been implemented yet");
-	return value1;
 }
 
 template <class T>
@@ -312,6 +285,52 @@ T Math::Interpolation::BarycentricInterpolator<T>::Interpolate(Math::Real time) 
 	Math::Real interpolationFactor = (time - time0) / (time1 - time0);
 
 	// Evaluate the interpolation
-	return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
+	return InterpolateBarycentric(m_interpolationObjects[index + 1], m_interpolationObjects[index], interpolationFactor);
+	//return ((REAL_ONE - interpolationFactor) * m_interpolationObjects[index]) + (interpolationFactor * m_interpolationObjects[index + 1]);
 }
 /* ==================== class BarycentricInterpolator end ==================== */
+
+template <class T>
+T Math::Interpolation::Interpolate(InterpolationTypes::InterpolationType interpolationType, const T& value1, const T& value2, Real factor)
+{
+	switch (interpolationType)
+	{
+	case InterpolationTypes::LINEAR:
+		return InterpolateLinear(value1, value2, factor);
+	case InterpolationTypes::COSINE:
+		return InterpolateCosine(value1, value2, factor);
+	case InterpolationTypes::HERMITE:
+		return InterpolateHermite(value1, value2, factor);
+	case InterpolationTypes::BARYCENTRIC:
+		return InterpolateBarycentric(value1, value2, factor);
+	default:
+		WARNING_LOG_MATH("Incorrect interpolation type specified (", interpolationType, "). Linear interpolation will be used instead.");
+		return InterpolateLinear(value1, value2, factor);
+	}
+}
+
+template <class T>
+T Math::Interpolation::InterpolateLinear(const T& value1, const T& value2, Real factor)
+{
+	return (value1 * (REAL_ONE - factor)) + (value2 * factor);
+}
+
+template <class T>
+T Math::Interpolation::InterpolateCosine(const T& value1, const T& value2, Real factor)
+{
+	const Angle angle(factor * PI, Math::Unit::RADIAN);
+	const Real cosineFactor = (REAL_ONE - angle.Cos()) * 0.5f; // value from 0 to 1.
+	return (value1 * (REAL_ONE - cosineFactor)) + (value2 * cosineFactor);
+}
+
+template <class T>
+T Math::Interpolation::InterpolateHermite(const T& value1, const T& value2, Real factor)
+{
+	return value1;
+}
+
+template <class T>
+T Math::Interpolation::InterpolateBarycentric(const T& value1, const T& value2, Real factor)
+{
+	return value1;
+}

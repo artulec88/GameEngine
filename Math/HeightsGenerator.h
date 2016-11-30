@@ -116,9 +116,9 @@ namespace Math
 		Real m_smoothCenterFactor;
 
 		/// <summary>
-		/// The interpolator we use in heights generation process.
+		/// The interpolator type we use in heights generation process.
 		/// </summary>
-		std::unique_ptr<Interpolation::Interpolator<Math::Real>> m_interpolator;
+		Interpolation::InterpolationTypes::InterpolationType m_interpolationType;
 
 		const Random::RandomGenerator& m_randomGenerator;
 	/* ==================== Non-static member variables end ==================== */

@@ -138,16 +138,16 @@ namespace Math
 		Vector2D Max(Vector2D v) const;
 		Vector2D Lerp(Vector2D vec, Real lerpFactor) const; // TODO: Write tests!
 #else
-		Vector2D operator+(const Vector2D& v) const { return Math::Vector2D(m_x + v.GetX(), m_y + v.GetY()); }
-		Vector2D operator-(const Vector2D& v) const { return Vector2D(m_x - v.GetX(), m_y - v.GetY()); }
-		Vector2D operator*(const Vector2D& v) const { return Vector2D(m_x * v.GetX(), m_y * v.GetY()); }
-		Vector2D operator/(const Vector2D& v) const { return Vector2D(m_x / v.GetX(), m_y / v.GetY()); }
+		constexpr Vector2D operator+(const Vector2D& v) const { return Vector2D(m_x + v.GetX(), m_y + v.GetY()); }
+		constexpr Vector2D operator-(const Vector2D& v) const { return Vector2D(m_x - v.GetX(), m_y - v.GetY()); }
+		constexpr Vector2D operator*(const Vector2D& v) const { return Vector2D(m_x * v.GetX(), m_y * v.GetY()); }
+		constexpr Vector2D operator/(const Vector2D& v) const { return Vector2D(m_x / v.GetX(), m_y / v.GetY()); }
 		Vector2D Max(const Vector2D& v) const;
 		Vector2D Lerp(const Vector2D& vec, Real lerpFactor) const; // TODO: Write tests!
 #endif
-		Vector2D operator-() const { return Vector2D(-x, -y); }
-		Vector2D operator*(Real s) const { return Vector2D(s * x, s * y); }
-		Vector2D operator/(Real s) const { return Vector2D(x / s, y / s); }
+		constexpr Vector2D operator-() const { return Vector2D(-x, -y); }
+		constexpr Vector2D operator*(Real s) const { return Vector2D(s * x, s * y); }
+		constexpr Vector2D operator/(Real s) const { return Vector2D(x / s, y / s); }
 
 		MATH_API Vector2D& operator+=(const Vector2D& v) noexcept;
 		MATH_API Vector2D& operator-=(const Vector2D& v) noexcept;
@@ -167,7 +167,7 @@ namespace Math
 			//	return (*this);
 			//}
 			// return (*this) / static_cast<Real>(sqrt(length));
-			Real length = Length();
+			const Real length = Length();
 			return Vector2D(x / length, y / length);
 		}
 		Vector2D& Normalize()
@@ -184,25 +184,54 @@ namespace Math
 			y /= length;
 			return *this;
 		}
+
+		/// <summary>
+		/// Gives information about whether or not the vector is normalized or not (i.e. its length is equal to <code>1</code> or not).
+		/// </summary>
+		/// <returns> <code>true</code> when vector's length is equal to <code>1</code> and <code>false</code> otherwise. </returns>
 		MATH_API bool IsNormalized() const;
 
 		/// <summary>
-		/// Given a two-dimensional vector (x, y) the function returns a two-dimensional vector perpendicular to it.
-		/// This is done by swapping the components and changing the sign of one of them. <code>Perp((x, y)) = (y, -x)</code>.
+		/// Given a two-dimensional vector [x, y] the function returns a two-dimensional vector perpendicular to it.
+		/// This is done by swapping the components and changing the sign of one of them. <code>Perp([x, y]) = [y, -x]</code>.
 		/// </summary>
-		Vector2D Perp(bool normalizingEnabled = false) const;
+		/// <param name="isNormalizingEnabled">
+		/// A simple <code>bool</code> flag indicating whether the result should be normalized (<code>true</code>) or not (<code>false</code>).
+		/// </param>
+		/// <returns> The two-dimensional vector being perpendicular to the current vector. </returns>
+		constexpr Vector2D Perp(bool isNormalizingEnabled = false) const
+		{
+			return (isNormalizingEnabled) ? Vector2D(y, -x).Normalized() : Vector2D(y, -x);
+		}
 
-		Real Cross(const Vector2D& v) const
+		/// <summary>
+		/// Calculates the cross product of the current vector with the specified <paramref name="v"/>.
+		/// </summary>
+		/// <param name="v"> The two-dimensional vector to be used to compute the cross product. </param>
+		/// <returns> The cross product of the current vector with the given <paramref name="v"/>. </returns>
+		constexpr Real Cross(const Vector2D& v) const noexcept
 		{
 			return x * v.y - y * v.x;
 		}
 
-		Real Dot(const Vector2D& v) const
+		/// <summary> Calculates the dot product of the current vector with the specified <paramref name="v"/>. </summary>
+		/// <param name="v"> The two-dimensional vector to be used to compute the dot product. </param>
+		/// <returns> The dot product of the current vector with the given <paramref name="v"/>. </returns>
+		constexpr Real Dot(const Vector2D& v) const noexcept
 		{
 			return (x * v.x + y * v.y);
 		}
 
-		Real Max() const;
+		/// <summary> Finds and returns the component that is the greatest. </summary>
+		/// <returns> The greatest component of the current two-dimensional vector. </returns>
+		constexpr Real Max() const noexcept
+		{
+			return (x > y) ? x : y;
+		}
+
+		/// <summary> Rotates the vector by a given <paramref name="angle"/>. </summary>
+		/// <param name="angle"> The angle to rotate the vector by. </param>
+		/// <returns> The two-dimensional vector of the result of rotation. </returns>
 		Vector2D Rotate(const Angle& angle);
 	public:
 		friend std::ostream& operator<<(std::ostream& out, const Vector2D& vector)

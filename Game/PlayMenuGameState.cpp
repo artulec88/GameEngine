@@ -13,7 +13,7 @@ Game::PlayMenuGameState::PlayMenuGameState(Engine::GameManager* gameManager, con
 	Engine::GameState(inputMappingContextName),
 	m_gameManager(gameManager),
 	m_playMainMenuRootEntry("Play main menu", playMainMenuFont, playMainMenuFontSize, NULL, Math::ZERO_VECTOR_2D, Math::Angle(0.0f), Math::Vector2D(1.0f, 1.0f), 1.0f,
-		Rendering::Color(Rendering::ColorNames::BLACK), Rendering::Color(Rendering::ColorNames::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
+		Rendering::Color(Rendering::ColorIDs::BLACK), Rendering::Color(Rendering::ColorIDs::BLACK), Math::Vector2D(REAL_ZERO, REAL_ZERO)),
 	//m_notSelectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 2)),
 	//m_selectedMenuEntryColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::BLINK, 2)),
 	//m_notSelectedMenuEntryOutlineColorEffect(Engine::GameManager::GetGameManager()->GetVec3DEffect(Rendering::Effects::STATIC, 1)),

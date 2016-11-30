@@ -56,8 +56,7 @@ namespace Engine
 					{
 						v = m_maxInput;
 					}
-					Math::Interpolation::LinearInterpolator<RangeType> interpolator;
-					return interpolator.Interpolate(m_minOutput, m_maxOutput, (v - m_minInput) / (m_maxInput - m_minInput));
+					return Math::Interpolation::InterpolateLinear<RangeType>(m_minOutput, m_maxOutput, (v - m_minInput) / (m_maxInput - m_minInput));
 				}
 
 				Math::Real m_minInput;

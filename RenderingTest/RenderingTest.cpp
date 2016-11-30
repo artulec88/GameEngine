@@ -579,7 +579,7 @@ void CreateScene()
 
 void RenderScene()
 {
-	renderer->InitRenderScene(Color(ColorNames::GREY), 0.5f);
+	renderer->InitRenderScene(Color(ColorIDs::GREY), 0.5f);
 	renderer->SetCurrentCamera(&camera);
 
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
@@ -612,8 +612,8 @@ void Run()
 	CreateScene();
 
 	Rendering::Controls::GuiButtonControl fpsGuiButton("text", renderer->GetFont(Text::FontIDs::CANDARA), 1.25f, NULL,
-		ZERO_VECTOR_2D, Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorNames::RED),
-		Color(ColorNames::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
+		ZERO_VECTOR_2D, Math::Angle(45.0f), Math::Vector2D(1.0f, 1.0f), 0.25f, Color(ColorIDs::RED),
+		Color(ColorIDs::GREEN), Math::Vector2D(0.0f, 0.005f), false, 0.5f, 0.1f, 0.4f, 0.2f);
 
 #ifdef ANT_TWEAK_BAR_ENABLED
 	Rendering::InitializeTweakBars();

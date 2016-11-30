@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "HeightsGenerator.h"
 #include "Interpolation_impl.h"
-#include "Utility\ILogger.h"
 #include "FloatingPoint.h"
+
+#include "Utility\ILogger.h"
+
 #include <math.h>
 
 Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, Math::Real heightAmplitude, int octaves, Math::Real roughness) :
@@ -15,7 +17,7 @@ Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, 
 	m_smoothCornersFactor(16.0f),
 	m_smoothSidesFactor(8.0f),
 	m_smoothCenterFactor(4.0f),
-	m_interpolator(std::make_unique<Interpolation::CosineInterpolator<Math::Real>>()),
+	m_interpolationType(Interpolation::InterpolationTypes::COSINE),
 	m_randomGenerator(Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE, 1000000000))
 {
 	/* ==================== Small unit test to check whether GetNoise function always returns the same output for a given input begin ==================== */
@@ -69,9 +71,9 @@ Math::Real Math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 	Real height3 = GetSmoothNoise(intX, intZ + 1);
 	Real height4 = GetSmoothNoise(intX + 1, intZ + 1);
 
-	Math::Real i1 = m_interpolator->Interpolate(height1, height2, fractX);
-	Math::Real i2 = m_interpolator->Interpolate(height3, height4, fractX);
-	return m_interpolator->Interpolate(i1, i2, fractZ);
+	Math::Real i1 = Interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
+	Math::Real i2 = Interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
+	return Interpolation::Interpolate<Real>(m_interpolationType, i1, i2, fractZ);
 }
 
 Math::Real Math::HeightsGenerator::GetSmoothNoise(int x, int z) const

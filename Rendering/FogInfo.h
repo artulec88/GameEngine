@@ -26,14 +26,37 @@ namespace Rendering
 			/// <param name="fallOffType"> The fall-off type for the fog. </param>
 			/// <param name="calculationType"> The calculation type of the fog. </param>
 			/// <param name="isEnabled"><code>true</code> when specified fog is enabled and <code>false</code> otherwise.</param>
-			FogInfo(Color fogColor = Color(ColorNames::GAINSBORO), Math::Real fogStartDistance = 8.0f, Math::Real fogEndDistance = 50.0f, Math::Real fogDensityFactor = 0.2f,
-				Math::Real fogGradient = 0.005f, FogFallOffType fogFallOffType = EXPONENTIAL, FogCalculationType fogCalculationType = RANGE_BASED, bool isEnabled = true);
-			~FogInfo();
+			FogInfo(Color fogColor = Color(ColorIDs::GAINSBORO), Math::Real fogStartDistance = 8.0f, Math::Real fogEndDistance = 50.0f, Math::Real fogDensityFactor = 0.2f,
+				Math::Real fogGradient = 0.005f, FogFallOffType fogFallOffType = EXPONENTIAL, FogCalculationType fogCalculationType = RANGE_BASED, bool isEnabled = true) noexcept;
+			
+			/// <summary> Fog information destructor. </summary>
+			~FogInfo() = default;
 
-			FogInfo(const FogInfo& fogInfo); // copy constructor
-			FogInfo(FogInfo&& fogInfo); // move constructor
-			void operator=(const FogInfo& fogInfo); // copy assignment operator
-			void operator=(FogInfo&& fogInfo); // move assignment operator
+			/// <summary>
+			/// Fog information copy constructor.
+			/// </summary>
+			/// <param name="fogInfo"> The fog information to copy construct from. </param>
+			FogInfo(const FogInfo& fogInfo) noexcept = default;
+
+			/// <summary>
+			/// Fog information move constructor.
+			/// </summary>
+			/// <param name="fogInfo"> The r-value reference of the fog information to move construct from. </param>
+			FogInfo(FogInfo&& fogInfo) noexcept = default;
+
+			/// <summary>
+			/// Fog information copy assignment operator.
+			/// </summary>
+			/// <param name="fogInfo"> The fog information to copy assign from. </param>
+			/// <returns> The reference to the newly copy-assigned fog information object. </returns>
+			FogInfo& operator=(const FogInfo& fogInfo) noexcept = default;
+
+			/// <summary>
+			/// Fog information move assignment operator.
+			/// </summary>
+			/// <param name="fogInfo"> The r-value reference of the fog information to move assign from. </param>
+			/// <returns> The reference to the newly move-assigned fog information object. </returns>
+			FogInfo& operator=(FogInfo&& fogInfo) noexcept = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
