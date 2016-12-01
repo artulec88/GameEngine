@@ -10,6 +10,7 @@
 #include "Rendering\Mesh.h"
 #include "Rendering\MeshIDs.h"
 #include "Rendering\Material.h"
+#include "Rendering\Terrain.h"
 
 #include "Math\Transform.h"
 #include "Math\HeightsGenerator.h"
@@ -83,6 +84,7 @@ constexpr Math::Real TERRAIN_HEIGHT_GENERATOR_ROUGHNESS = 0.3f;
 Transform terrainTransform;
 std::unique_ptr<Material> terrainMaterial = nullptr;
 const Mesh* terrainMesh = nullptr;
+std::unique_ptr<Terrain> terrain;
 
 constexpr int CUBE_MESHES_ROWS = 20;
 constexpr int CUBE_MESHES_COLS = 20;
@@ -124,28 +126,29 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	Real runModeSpeed = (mods == GLFW_MOD_SHIFT) ? 10.0f : 1.0f;
 	switch (key)
 	{
 	case GLFW_KEY_A:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetLeft() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetLeft() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	case GLFW_KEY_W:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetForward() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetForward() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	case GLFW_KEY_S:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetBack() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetBack() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	case GLFW_KEY_D:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetRight() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetRight() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetDown() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetDown() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	case GLFW_KEY_SPACE:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetUp() * camera.GetSensitivity());
+		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetUp() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	}
-	NOTICE_LOG_RENDERING_TEST(camera);
+	//NOTICE_LOG_RENDERING_TEST(camera);
 }
 
 void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -532,10 +535,10 @@ void CreateScene()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
 	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
-		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.2f);
+		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.5f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.2f);
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.5f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
@@ -549,7 +552,13 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
 	terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "terrain02.obj");
-	terrainTransform.SetScale(20.0f);
+	terrainTransform.SetScale(2.0f);
+
+	terrain = std::make_unique<Terrain>(terrainMesh, terrainTransform.GetTransformation());
+	const Real x = -0.125f;
+	const Real z = 7.125f;
+	Real height = terrain->GetHeightAt(x, z);
+	ERROR_LOG_RENDERING_TEST("Height at position [", x, "; ", z, "] = ", height);
 
 	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
@@ -586,13 +595,18 @@ void CreateScene()
 
 //Math::Angle angleStep(1.0f);
 
+void UpdateScene(Math::Real frameTime)
+{
+	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
+	//NOTICE_LOG_RENDERING_TEST(camera);
+
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
+}
+
 void RenderScene()
 {
 	renderer->InitRenderScene(Color(ColorIDs::GREY), 0.5f);
 	renderer->SetCurrentCamera(&camera);
-
-	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
-	//NOTICE_LOG_RENDERING_TEST(camera);
 
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
@@ -678,7 +692,8 @@ void Run()
 			//m_game->Input(m_inputMapping.GetMappedInput());
 			//m_inputMapping.ClearActions();
 			//m_inputMapping.ClearRanges();
-			//m_game->Update(m_frameTime);
+			//m_game->Update(FRAME_TIME);
+			UpdateScene(FRAME_TIME);
 			fpsGuiButton.Update(FRAME_TIME);
 			/* ==================== REGION #2_2 end ====================*/
 #ifdef ANT_TWEAK_BAR_ENABLED

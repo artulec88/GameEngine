@@ -209,7 +209,8 @@ namespace Math
 		MATH_API void SetOrthogonalProjection(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 		MATH_API void SetPerspectiveProjection(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
 
-		MATH_API Vector3D Transform(const Vector3D& vec); // TODO: Write tests
+		MATH_API Vector3D Transform(const Vector3D& vec) const; // TODO: Write tests
+		MATH_API Vector3D* TransformPositions(Vector3D* vectors, int vectorsCount) const;
 
 		MATH_API Matrix4D Transposition() const;
 		MATH_API Matrix4D Inversion() const; // TODO: Write tests

@@ -23,19 +23,6 @@
 //#define MEASURE_MESH_TIME_ENABLED
 //#define STORE_MESH_FILE_NAME
 
-// Type cast conversion to make Math::Vector3D possible to use in std::unordered_set object.
-namespace std
-{
-	template <>
-	struct hash<Math::Vector3D>
-	{
-		std::size_t operator()(const Math::Vector3D& vector) const
-		{
-			return vector.to_size_t();
-		}
-	};
-}
-
 namespace Rendering
 {
 	namespace MeshBufferTypes
@@ -308,6 +295,17 @@ namespace Rendering
 		void ReplaceData(MeshBufferTypes::MeshBufferType buffer, Math::Vector3D* data, int dataCount)
 		{
 			ReplaceData(buffer, data, dataCount, sizeof(Math::Vector3D), 3);
+		}
+
+		/// <summary> Returns the size of the buffer indicated by the parameter <paramref name="bufferType"/>. </summary>
+		/// <param name="bufferType"> The type of the buffer the client wants to know the size of. </param>
+		/// <returns> The size of the buffer stored under the key <paramref name="bufferType"/>. </returns>
+		RENDERING_API int GetBufferSize(MeshBufferTypes::MeshBufferType bufferType) const
+		{
+			glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(bufferType));
+			GLint bufferSize;
+			glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+			return bufferSize;
 		}
 
 		/// <summary> Retrieves the data from the given <paramref name="buffer"/>. </summary>

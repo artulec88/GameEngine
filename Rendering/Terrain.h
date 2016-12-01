@@ -27,9 +27,9 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Terrain mesh constructor. </summary>
-		/// <param name="fileName"> The file storing the model for the terrain mesh. </param>
-		/// <param name="mode"> The mode in which the mesh will be stored. </param>
-		explicit Terrain(const std::string& fileName, GLenum mode = GL_TRIANGLES);
+		/// <param name="terrainMesh"> The terrain mesh. </param>
+		/// <param name="transformationMatrix"> The world transformation matrix of the terrain. </param>
+		RENDERING_API explicit Terrain(const Mesh* terrainMesh, const Math::Matrix4D& transformationMatrix);
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="gridX"> The X position on the grid. </param>
 		/// <param name="gridZ"> The Z position on the grid. </param>
@@ -46,7 +46,7 @@ namespace Rendering
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		//Terrain(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
 		/// <summary> Terrain mesh destructor. </summary>
-		virtual ~Terrain(void);
+		RENDERING_API virtual ~Terrain(void);
 		/// <summary> Terrain mesh copy constructor. </summary>
 		Terrain(const Terrain& Terrain) = delete;
 		/// <summary> Terrain mesh move constructor. </summary>
@@ -59,9 +59,31 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		//RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
-		//RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
-		//RENDERING_API void TransformPositions(const Math::Matrix4D& transformationMatrix);
+		/// <summary>
+		/// Finds and returns the height of the terrain at given location <paramref name="xz"/>.
+		/// </summary>
+		/// <param name="xz">
+		/// The two-dimensional vector representing the location in the world.
+		/// The output of the function will represent the height of the terrain at that particular location.
+		/// </param>
+		/// <returns> The height of the terrain at location <paramref name="xz"/>. </returns>
+		RENDERING_API Math::Real GetHeightAt(const Math::Vector2D& xz) const { return GetHeightAt(xz.x, xz.y); }
+
+		/// <summary>
+		/// Finds and returns the height of the terrain at location given by the two specified X and Z components
+		/// (<paramref name="x"/> and <paramref name="z"/> respectively).
+		/// </summary>
+		/// <param name="x">
+		/// The X component of the location in the world for which we want to determine the height of the terrain.
+		/// </param>
+		/// <param name="z">
+		/// The Z component of the location in the world for which we want to determine the height of the terrain.
+		/// </param>
+		/// <returns>
+		/// The height of the terrain at location given by the two specified X and Z components
+		/// (<paramref name="x"/> and <paramref name="z"/> respectively).
+		/// </returns>
+		RENDERING_API Math::Real GetHeightAt(Math::Real x, Math::Real y) const;
 	private:
 		//int GetHeightMapIndex(int x, int z) const;
 		//Math::Real CalculateHeightAt(int x, int z, unsigned char* heightMapData);
@@ -73,23 +95,20 @@ namespace Rendering
 
 		/* ==================== Non-static member variables begin ==================== */
 	private:
-		const Mesh* m_terrainMesh;
+		//const Mesh* m_terrainMesh;
 
 		/// <summary> The position of the single terrain tile along the X axis. </summary>
 		int m_x;
 		/// <summary> The position of the single terrain tile along the Z axis. </summary>
 		int m_z;
 
-		int m_vertexCount;
-#ifdef HEIGHTS_KD_TREE
-		std::vector<Math::Vector3D> m_positions;
-		const unsigned int m_kdTreeSamples;
-		std::unique_ptr<Math::KDTree> m_kdTree;
-#elif defined HEIGHTS_HEIGHTMAP
-		int m_heightMapWidth, m_heightMapHeight;
-		std::vector<Math::Real> m_heights;
-		Math::Real m_gridSquareSize;
-#endif
+//#ifdef HEIGHTS_KD_TREE
+		Math::KDTree m_kdTree;
+//#elif defined HEIGHTS_HEIGHTMAP
+//		int m_heightMapWidth, m_heightMapHeight;
+//		std::vector<Math::Real> m_heights;
+//		Math::Real m_gridSquareSize;
+//#endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Terrain */
 

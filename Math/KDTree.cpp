@@ -2,7 +2,7 @@
 #include "KDTree.h"
 #include "ISort.h"
 #include "SortingParameters.h"
-#include <sstream>
+
 #include "Utility\ILogger.h"
 
 Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
@@ -12,12 +12,55 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 	m_position(REAL_ZERO, REAL_ZERO),
 	m_value(REAL_ZERO)
 #ifdef PROFILING_MATH_MODULE_ENABLED
-	,m_classStats(STATS_STORAGE.GetClassStats("KDTree"))
+	, m_classStats(STATS_STORAGE.GetClassStats("KDTree"))
 #endif
 {
 	START_PROFILING_MATH(true, "");
-	CHECK_CONDITION_EXIT_MATH(positions != nullptr, Utility::Logging::EMERGENCY, "Cannot transform the positions. The positions array is NULL.");
-	BuildTree(positions, positionsCount, depth);
+	CHECK_CONDITION_EXIT_MATH(positions != nullptr, Utility::Logging::EMERGENCY,
+		"Cannot create K-d tree. The positions array is nullptr.");
+	CHECK_CONDITION_EXIT_MATH(positionsCount > 0, Utility::Logging::EMERGENCY,
+		"Cannot create K-d tree. The number of positions is not positive (", positionsCount, ").");
+
+	if (depth == 0)
+	{
+		DEBUG_LOG_MATH("The array of positions consists of ", positionsCount, " entries.");
+		std::vector<Vector3D> uniquePositions;
+		for (unsigned int i = 0; i < positionsCount; ++i)
+		{
+			// for positions with equal XZ components we want to store only the one with the greatest Y value.
+			bool sameXZvectorFound = false;
+			const Vector2D xz = positions[i].GetXZ();
+			for (std::vector<Vector3D>::iterator vecItr = uniquePositions.begin(); vecItr != uniquePositions.end(); ++vecItr)
+			{
+				if ((xz == vecItr->GetXZ()))
+				{
+					if (positions[i].y > vecItr->y)
+					{
+						vecItr->y = positions[i].y;
+					}
+					sameXZvectorFound = true;
+					break;
+				}
+			}
+			if (!sameXZvectorFound)
+			{
+				uniquePositions.push_back(positions[i]);
+			}
+		}
+		INFO_LOG_MATH("The array consists of ", uniquePositions.size(), " unique entries");
+
+		//for (size_t i = 0; i < uniquePositions.size(); ++i)
+		//{
+		//	WARNING_LOG_MATH("Unique position[", i, "] = ", uniquePositions[i], ".");
+		//}
+
+		BuildTree(uniquePositions.data(), uniquePositions.size(), depth);
+	}
+	else
+	{
+		BuildTree(positions, positionsCount, depth);
+	}
+
 	STOP_PROFILING_MATH("");
 }
 

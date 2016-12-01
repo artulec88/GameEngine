@@ -69,6 +69,7 @@ namespace Math
 		/// <summary>
 		/// Searches the tree to find specific number of (<see cref="m_numberOfSamples"/>) closest tree nodes to the given <paramref name="position"/>.
 		/// Then it interpolates their values based on their distances to the specified <paramref name="position"/> and returns the result.
+		/// See also : http://en.wikipedia.org/wiki/Nearest_neighbor_search.
 		/// </summary>
 		/// <param name="position">The position for which we want to determine the nearest value.</param>
 		/// <returns>The interpolated nearest value for the given <paramref name="position"/>.</returns>
@@ -80,6 +81,7 @@ namespace Math
 		/// <summary>
 		/// Searches the tree to find specific number of (<see cref="m_numberOfSamples"/>) closest tree nodes to the given <paramref name="position"/>.
 		/// Then it interpolates their values based on their distances to the specified <paramref name="position"/> and returns the result.
+		/// See also : http://en.wikipedia.org/wiki/Nearest_neighbor_search.
 		/// </summary>
 		/// <param name="posX">The X component of the position for which we want to determine the nearest value.</param>
 		/// <param name="posZ">The Z component of the position for which we want to determine the nearest value.</param>

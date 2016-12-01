@@ -343,7 +343,7 @@ void Game::PlayGameState::AddCameras()
 	START_PROFILING_GAME(true, "");
 
 	// TODO: temporary code begin.
-	m_cameras.push_back(new Rendering::Camera(Math::Vector3D(50.0f, 0.5f, 49.95f), Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE), Math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
+	m_cameras.push_back(new Rendering::Camera(Math::Vector3D(50.0f, 0.5f, 49.95f), Math::NO_ROTATION_QUATERNION, Math::Angle(70.0f), 1.7f, 0.1f, 1000.0f, 5.026f));
 	m_currentCameraIndex = 0;
 	// TODO: temporary code end.
 

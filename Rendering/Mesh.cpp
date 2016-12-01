@@ -471,31 +471,33 @@ void* Rendering::Mesh::GetBufferData(MeshBufferTypes::MeshBufferType buffer, int
 	//m_meshData->Bind();
 	glBindBuffer(GL_ARRAY_BUFFER, m_meshData->GetVBO(buffer));
 
-	GLint bufferSize;
-	glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bufferSize);
+	GLint bufferSize = GetBufferSize(buffer);
 	void* data = glMapBufferRange(GL_ARRAY_BUFFER, 0, bufferSize, GL_MAP_READ_BIT);
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 
-	switch (buffer)
+	if (bufferEntriesCount != nullptr)
 	{
-	case MeshBufferTypes::POSITIONS:
-	case MeshBufferTypes::NORMALS:
-	case MeshBufferTypes::TANGENTS:
-	case MeshBufferTypes::BITANGENTS:
-		*bufferEntriesCount = bufferSize / sizeof(Math::Vector3D);
-		break;
-	case MeshBufferTypes::TEXTURE_COORDINATES:
-		*bufferEntriesCount = bufferSize / sizeof(Math::Vector2D);
-		break;
-	case MeshBufferTypes::INDEX:
-		*bufferEntriesCount = bufferSize / sizeof(int);
-		break;
-	case MeshBufferTypes::INSTANCE:
-		*bufferEntriesCount = bufferSize / sizeof(Math::Real);
-		break;
-	default:
-		ERROR_LOG_RENDERING("Invalid buffer type (", buffer, ") specified. Cannot determine the number of entries in the buffer.");
-		*bufferEntriesCount = 0;
+		switch (buffer)
+		{
+		case MeshBufferTypes::POSITIONS:
+		case MeshBufferTypes::NORMALS:
+		case MeshBufferTypes::TANGENTS:
+		case MeshBufferTypes::BITANGENTS:
+			*bufferEntriesCount = bufferSize / sizeof(Math::Vector3D);
+			break;
+		case MeshBufferTypes::TEXTURE_COORDINATES:
+			*bufferEntriesCount = bufferSize / sizeof(Math::Vector2D);
+			break;
+		case MeshBufferTypes::INDEX:
+			*bufferEntriesCount = bufferSize / sizeof(int);
+			break;
+		case MeshBufferTypes::INSTANCE:
+			*bufferEntriesCount = bufferSize / sizeof(Math::Real);
+			break;
+		default:
+			ERROR_LOG_RENDERING("Invalid buffer type (", buffer, ") specified. Cannot determine the number of entries in the buffer.");
+			*bufferEntriesCount = 0;
+		}
 	}
 	return data;
 }

@@ -25,12 +25,21 @@ namespace Math
 		/// <summary>
 		/// Default constructor of the quaternion. The quaternion is set up in a way to represent no rotation at all.
 		/// </summary>
-		MATH_API constexpr Quaternion() : m_x(REAL_ZERO), m_y(REAL_ZERO), m_z(REAL_ZERO), m_w(REAL_ONE)
+		MATH_API constexpr Quaternion() : Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 		{
 		}
+
+		/// <summary>
+		/// Quaternion constructor. It takes four floating-point parameters representing each of the components of the quaternion.
+		/// </summary>
+		/// <param name="x"> The X component of the quaternion. </param>
+		/// <param name="y"> The Y component of the quaternion. </param>
+		/// <param name="z"> The Z component of the quaternion. </param>
+		/// <param name="w"> The W component of the quaternion. </param>
 		MATH_API constexpr Quaternion(Real x, Real y, Real z, Real w) : m_x(x), m_y(y), m_z(z), m_w(w)
 		{
 		}
+
 		/// <summary>
 		/// Creates a new quaternion based on the axis given as parameter <paramref name="axis"/> around we want to rotate by the angle <paramref name="angle"/>.
 		/// </summary>
@@ -46,10 +55,10 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		inline constexpr Real GetX() const { return m_x; };
-		inline constexpr Real GetY() const { return m_y; };
-		inline constexpr Real GetZ() const { return m_z; };
-		inline constexpr Real GetW() const { return m_w; };
+		inline constexpr Real GetX() const noexcept { return m_x; };
+		inline constexpr Real GetY() const noexcept { return m_y; };
+		inline constexpr Real GetZ() const noexcept { return m_z; };
+		inline constexpr Real GetW() const noexcept { return m_w; };
 
 		inline void Set(Math::Real x, Math::Real y, Math::Real z, Math::Real w)
 		{
@@ -156,6 +165,8 @@ namespace Math
 		Real m_w;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Quaternion */
+
+	constexpr Quaternion NO_ROTATION_QUATERNION{ REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE };
 
 } /* end namespace Math */
 

@@ -16,12 +16,12 @@ namespace Math
 	public:
 		/// <summary> Transform constructor. </summary>
 		MATH_API explicit Transform(const Vector3D& pos = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO),
-			const Quaternion& rotation = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+			const Quaternion& rotation = Math::NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform constructor. </summary>
 		MATH_API Transform(Real posX, Real posY, Real posZ,
-			const Quaternion& rotation = Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE),
+			const Quaternion& rotation = Math::NO_ROTATION_QUATERNION,
 			Real scale = REAL_ONE);
 
 		/// <summary> Transform copy constructor. </summary>

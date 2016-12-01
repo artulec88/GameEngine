@@ -661,8 +661,9 @@ void Math::Matrix4D::SetPerspectiveProjection(const Angle& fov, Real aspect, Rea
 	STOP_PROFILING_MATH("");
 }
 
-Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
+Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec) const
 {
+	// This function is very similar (almost the same) to the Matrix4D.operator*(Vector3D) function. Investigate that and remove one of them if possible.
 #ifdef MATRIX_MODE_TWO_DIMENSIONS
 	return Vector3D(m_values[0][0] * vec.GetX() + m_values[1][0] * vec.GetY() + m_values[2][0] * vec.GetZ() + m_values[3][0],
 		m_values[0][1] * vec.GetX() + m_values[1][1] * vec.GetY() + m_values[2][1] * vec.GetZ() + m_values[3][1],
@@ -682,6 +683,15 @@ Math::Vector3D Math::Matrix4D::Transform(const Vector3D& vec)
 	//		ret.opera
 	//	}
 	//}
+}
+
+Math::Vector3D* Math::Matrix4D::TransformPositions(Vector3D* vectors, int vectorsCount) const
+{
+	for (int i = 0; i < vectorsCount; ++i)
+	{
+		vectors[i] = Transform(vectors[i]);
+	}
+	return vectors;
 }
 
 void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vector3D& up, const Vector3D& right)

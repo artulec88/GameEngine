@@ -13,7 +13,7 @@
 
 Rendering::Camera::Camera() :
 	BaseCamera(Math::Matrix4D::IDENTITY_MATRIX, 0.05f /* TODO: Don't ever use hard-coded values */),
-	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, Math::Quaternion(), REAL_ONE)
+	m_transform(REAL_ZERO, REAL_ZERO, REAL_ZERO, Math::NO_ROTATION_QUATERNION, REAL_ONE)
 {
 }
 

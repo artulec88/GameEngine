@@ -679,9 +679,9 @@ void TransformTest()
 	MathTest::TransformTestGroup transformTests;
 
 	transformTests.AddTest(new MathTest::TransformTestCompare(Transform(), Transform(), true));
-	transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(), 1.0f),
-		Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(), 1.0f),
-		Transform(Vector3D(2.0f, 4.0f, 6.0f), Quaternion(), 1.0f)));
+	transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Math::NO_ROTATION_QUATERNION, 1.0f),
+		Transform(Vector3D(1.0f, 2.0f, 3.0f), Math::NO_ROTATION_QUATERNION, 1.0f),
+		Transform(Vector3D(2.0f, 4.0f, 6.0f), Math::NO_ROTATION_QUATERNION, 1.0f)));
 	//transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(50.0f)), 1.0f),
 	//	Transform(Vector3D(1.0f, 2.0f, 3.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(0.0f)), 1.0f),
 	//	Transform(Vector3D(2.0f, 4.0f, 6.0f), Quaternion(Vector3D(0.0f, 1.0f, 0.0f), Angle(50.0f)), 1.0f)));
@@ -1126,13 +1126,13 @@ void KDTreeTest()
 	}
 
 	NOTICE_LOG_MATH_TEST("K-d tree test started");
-	const int NUMBER_OF_POSITIONS = 6;
-	const int NUMBER_OF_SEARCH_POSITIONS = 10;
-	const int NUMBER_OF_INTERPOLATED_NEAREST_POINTS = 1; // number of nearest points which will be used for calculating the final result
-	const Real LOWER_BOUND_X = -20.0f; const Real HIGHER_BOUND_X = 20.0f;
-	const Real LOWER_BOUND_Y = -20.0f; const Real HIGHER_BOUND_Y = 20.0f;
-	const Real LOWER_BOUND_Z = -20.0f; const Real HIGHER_BOUND_Z = 20.0f;
-	Vector3D* positions = new Vector3D[NUMBER_OF_POSITIONS];
+	constexpr int NUMBER_OF_POSITIONS = 6;
+	constexpr int NUMBER_OF_SEARCH_POSITIONS = 10;
+	constexpr int NUMBER_OF_INTERPOLATED_NEAREST_POINTS = 1; // number of nearest points which will be used for calculating the final result
+	constexpr Real LOWER_BOUND_X = -20.0f; constexpr Real HIGHER_BOUND_X = 20.0f;
+	constexpr Real LOWER_BOUND_Y = -20.0f; constexpr Real HIGHER_BOUND_Y = 20.0f;
+	constexpr Real LOWER_BOUND_Z = -20.0f; constexpr Real HIGHER_BOUND_Z = 20.0f;
+	std::array<Vector3D, NUMBER_OF_POSITIONS> positions;
 	positions[0].x = 2.0f; positions[0].y = 3.0f; positions[0].z = 2.0f;
 	positions[1].x = 5.0f; positions[1].y = 4.0f; positions[1].z = 4.0f;
 	positions[2].x = 9.0f; positions[2].y = 6.0f; positions[2].z = -2.0f;
@@ -1147,11 +1147,11 @@ void KDTreeTest()
 	//	DEBUG_LOG_MATH_TEST("positions[", i, "] = ", positions[i].ToString());
 	//}
 
-	std::unique_ptr<KDTree> kdTree = std::make_unique<KDTree>(positions, NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
+	std::unique_ptr<KDTree> kdTree = std::make_unique<KDTree>(positions.data(), NUMBER_OF_POSITIONS, NUMBER_OF_INTERPOLATED_NEAREST_POINTS);
 
 	//DEBUG_LOG_MATH_TEST("K-d tree structure:\n", kdTree->ToString());
 
-	Math::Vector2D* searchPositions = new Math::Vector2D[NUMBER_OF_SEARCH_POSITIONS];
+	std::array<Math::Vector2D, NUMBER_OF_SEARCH_POSITIONS> searchPositions;
 	searchPositions[0].x = 2.0f; searchPositions[0].y = 3.0f;
 	searchPositions[1].x = 5.0f; searchPositions[1].y = 4.0f;
 	searchPositions[2].x = 9.0f; searchPositions[2].y = 6.0f;
@@ -1167,11 +1167,8 @@ void KDTreeTest()
 		Real height = kdTree->SearchNearestValue(searchPositions[i]);
 		//INFO_LOG_MATH_TEST("The nearest point for search point (", searchPositions[i].ToString(), ") is (", minDistancePositions[0].ToString(),
 		//	"). The minimum distance equals ", minDistances[0], " and returned height is ", height);
-		INFO_LOG_MATH_TEST("The final result for position (", searchPositions[i], ") in k-d tree search is ", height);
+		INFO_LOG_MATH_TEST("The final result for position ", searchPositions[i], " in k-d tree search is ", height);
 	}
-
-	SAFE_DELETE_JUST_TABLE(searchPositions);
-	SAFE_DELETE_JUST_TABLE(positions);
 }
 
 void StatsTest()
@@ -1336,7 +1333,7 @@ int main(int argc, char* argv[])
 	SortTest();
 	//SortTestTime();
 
-	//KDTreeTest();
+	KDTreeTest();
 
 	//StatsTest();
 
