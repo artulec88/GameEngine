@@ -115,6 +115,12 @@ namespace Math
 			SearchNearestValue(position.x, position.y, depth, minDistanceValues, minDistances);
 		}
 		void SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
+		
+		/// <summary>
+		/// See: http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml,
+		/// https://en.wikipedia.org/wiki/Multivariate_interpolation, https://en.wikipedia.org/wiki/Inverse_distance_weighting.
+		/// </summary>
+		Real Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const;
 		std::string ToString(int depth) const;
 		/* ==================== Non-static member functions end ==================== */
 

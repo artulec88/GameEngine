@@ -148,7 +148,7 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetUp() * camera.GetSensitivity() * runModeSpeed);
 		break;
 	}
-	//NOTICE_LOG_RENDERING_TEST(camera);
+	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
 void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -551,14 +551,21 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
-	terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "terrain02.obj");
-	terrainTransform.SetScale(2.0f);
+	terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
+	//terrainTransform.SetScale(2.0f);
 
 	terrain = std::make_unique<Terrain>(terrainMesh, terrainTransform.GetTransformation());
-	const Real x = -0.125f;
-	const Real z = 7.125f;
-	Real height = terrain->GetHeightAt(x, z);
-	ERROR_LOG_RENDERING_TEST("Height at position [", x, "; ", z, "] = ", height);
+	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 4;
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f };
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -1.0f, 1.0f, -3.0f, 3.0f };
+	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
+	{
+		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
+		{
+			Real height = terrain->GetHeightAt(xPositions[i], zPositions[j]);
+			ERROR_LOG_RENDERING_TEST("Height at position [", xPositions[i], "; ", zPositions[j], "] = ", height);
+		}
+	}
 
 	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
@@ -600,7 +607,7 @@ void UpdateScene(Math::Real frameTime)
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.1f);
 }
 
 void RenderScene()
@@ -611,12 +618,12 @@ void RenderScene()
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
 
-	renderer->BindShader(ShaderIDs::AMBIENT);
-	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
-	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
-	{
-		renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
-	}
+	//renderer->BindShader(ShaderIDs::AMBIENT);
+	//renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
+	//for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
+	//{
+	//	renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
+	//}
 	renderer->BindShader(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->Render(TestMeshIDs::TERRAIN, terrainMaterial.get(), terrainTransform, ShaderIDs::AMBIENT_TERRAIN);

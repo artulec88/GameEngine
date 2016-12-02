@@ -2,8 +2,11 @@
 #include "KDTree.h"
 #include "ISort.h"
 #include "SortingParameters.h"
+//#include "Triangle.h"
 
 #include "Utility\ILogger.h"
+
+#include <math.h>
 
 Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
 	m_leftTree(nullptr),
@@ -123,48 +126,15 @@ Math::Real Math::KDTree::SearchNearestValue(Math::Real posX, Math::Real posZ) co
 	// See: http://en.wikipedia.org/wiki/Inverse_distance_weighting
 	// TODO: Create different strategies (strategy pattern) for weighted average calculation
 	// TODO: Measure which method (#1 or #2) is faster
-	/* ==================== METHOD #1 begin ==================== */
-	if (AlmostEqual(minDistances[0], REAL_ZERO))
-	{
-		STOP_PROFILING_MATH("");
-		return minDistanceValues[0];
-	}
-	Real sumOfDistances = REAL_ZERO;
-	for (int i = 0; i < m_numberOfSamples; ++i)
-	{
-		sumOfDistances += minDistances[i];
-	}
-	Real result = REAL_ZERO;
-	Real sumOfWeights = REAL_ZERO;
-	for (int i = 0; i < m_numberOfSamples; ++i)
-	{
-		Real weight = sumOfDistances / minDistances[i];
-		sumOfWeights += weight;
-		result += minDistanceValues[i] * weight;
-	}
-	result /= sumOfWeights;
+
+	//for (int i = 0; i < m_numberOfSamples; ++i)
+	//{
+	//	ERROR_LOG_MATH("minDistances[", i, "] = ", minDistances[i], "; minDistanceValues[", i, "] = ", minDistanceValues[i]);
+	//}
+
+	Real result = Interpolate(minDistanceValues, minDistances);
 	STOP_PROFILING_MATH("");
 	return result;
-	/* ==================== METHOD #1 end ==================== */
-	
-	/* ==================== METHOD #2 begin ==================== */
-//	if (AlmostEqual(m_minDistances[0], REAL_ZERO))
-//	{
-//		return m_minDistancePositions[0].GetY();
-//	}
-//	Real sumOfInversedDistances = REAL_ZERO;
-//	for (int i = 0; i < m_numberOfSamples; ++i)
-//	{
-//		sumOfInversedDistances += REAL_ONE / m_minDistances[i];
-//	}
-//	Real result = REAL_ZERO;
-//	for (int i = 0; i < m_numberOfSamples; ++i)
-//	{
-//		result += m_minDistancePositions[i].GetY() / m_minDistances[i];
-//	}
-//	result /= sumOfInversedDistances;
-//	return result;
-	/* ==================== METHOD #2 end ==================== */
 }
 
 void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
@@ -239,6 +209,47 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		}
 	}
 	STOP_PROFILING_MATH("");
+}
+
+Math::Real Math::KDTree::Interpolate(std::vector<Real>& minDistanceValues, std::vector<Real>& minDistances) const
+{
+	/* ==================== METHOD #1 (Inverse Distance Weighting- http://www.gitta.info/ContiSpatVar/en/html/Interpolatio_learningObject2.xhtml) begin ==================== */
+	//const Real exponent = 4.0f;
+	if (AlmostEqual(minDistances[0], REAL_ZERO))
+	{
+		STOP_PROFILING_MATH("");
+		return minDistanceValues[0];
+	}
+	Real sumOfInversedDistances = REAL_ZERO;
+	for (int i = 0; i < m_numberOfSamples; ++i)
+	{
+		sumOfInversedDistances += REAL_ONE / minDistances[i];
+		//sumOfInversedDistances += REAL_ONE / pow(minDistances[i], exponent);
+	}
+	Real result = REAL_ZERO;
+	for (int i = 0; i < m_numberOfSamples; ++i)
+	{
+		result += minDistanceValues[i] / minDistances[i];
+		//result += minDistanceValues[i] / pow(minDistances[i], exponent);
+	}
+	result /= sumOfInversedDistances;
+	STOP_PROFILING_MATH("");
+	return result;
+	/* ==================== METHOD #1 end ==================== */
+
+	/* ==================== METHOD #2 begin ==================== */
+	// TODO: Create a polygon of m_numberOfSamples vertices. Then find the barycentric coordinates
+
+	//if (AlmostEqual(minDistances[0], REAL_ZERO))
+	//{
+	//	STOP_PROFILING_MATH("");
+	//	return minDistanceValues[0];
+	//}
+	//Triangle t(Vector3D(-8, -2, 8), Vector3D(-8, -1, -8), Vector3D(8, 1, 8));
+	//t.
+	//STOP_PROFILING_MATH("");
+	//return result;
+	/* ==================== METHOD #2 end ==================== */
 }
 
 std::string Math::KDTree::ToString() const

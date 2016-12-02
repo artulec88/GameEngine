@@ -7,7 +7,7 @@ Rendering::Terrain::Terrain(const Mesh* terrainMesh, const Math::Matrix4D& trans
 	m_x(0),
 	m_z(0),
 	m_kdTree(transformationMatrix.TransformPositions(static_cast<Math::Vector3D*>(terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, nullptr)), terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D)),
-		terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D), 1, 0)
+		terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D), 2, 0)
 {
 }
 
