@@ -8,6 +8,7 @@
 #include "Math\KDTree.h"
 #include "Math\HeightsGenerator.h"
 #include "Math\RandomGeneratorFactory.h"
+#include "Math\Surface.h"
 
 #include "Utility\ICommandLineMapper.h"
 #include "Utility\ILogger.h"
@@ -46,6 +47,7 @@ bool sortingTestEnabled = true;
 bool kdTreeTestEnabled = true;
 bool statsTestEnabled = true;
 bool heightsGeneratorTestsEnabled = true;
+bool surfaceTestsEnabled = true;
 bool otherTestsEnabled = true;
 
 const Math::Random::RandomGenerator& g_randomGenerator = Math::Random::RandomGeneratorFactory::GetRandomGeneratorFactory().GetRandomGenerator(Math::Random::GeneratorIDs::SIMPLE);
@@ -59,11 +61,14 @@ void ReportError(const std::string& reportStr)
 void TestReport(bool statusCode /* false if error */, const std::string& reportErrorStr)
 {
 	testNumber++;
-	if (statusCode == false)
+	if (!statusCode)
 	{
 		ReportError(reportErrorStr);
 	}
-	INFO_LOG_MATH_TEST("Test #", testNumber, " passed");
+	else
+	{
+		INFO_LOG_MATH_TEST("Test #", testNumber, " passed");
+	}
 }
 
 void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::TimeUnit timeUnit, const unsigned int NUMBER_OF_ITERATIONS = 1)
@@ -746,8 +751,8 @@ void SortTest()
 		std::unique_ptr<Sorting::ISort> sorter = Sorting::ISort::GetSortingObject(sortingMethods[chosenSortingMethodIndices[sortingMethodIndex]]);
 		/* ==================== SORTING TEST #1- sorting Vector2D objects by X component ascending begin ==================== */
 		bool sortingTestCasePassed = true;
-		Sorting::SortingParametersChain sortingParameters(Sorting::COMPONENT_X, Sorting::ASCENDING);
-		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::COMPONENT_Y, Sorting::DESCENDING));
+		Sorting::SortingParametersChain sortingParameters(Sorting::Keys::COMPONENT_X, Sorting::Orders::ASCENDING);
+		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::Keys::COMPONENT_Y, Sorting::Orders::DESCENDING));
 		Timing::Timer timer;
 		timer.Start();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
@@ -784,8 +789,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #2- sorting Vector2D objects by X component descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::COMPONENT_X);
-		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
+		sortingParameters.SetKey(Sorting::Keys::COMPONENT_X);
+		sortingParameters.SetOrder(Sorting::Orders::DESCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -819,9 +824,9 @@ void SortTest()
 		/* ==================== SORTING TEST #3- sorting Vector2D objects by Y component ascending begin ==================== */
 		sortingTestCasePassed = true;
 		sortingParameters.ResetChainLink();
-		sortingParameters.SetSortingKey(Sorting::COMPONENT_Y);
-		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
-		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::COMPONENT_X, Sorting::DESCENDING));
+		sortingParameters.SetKey(Sorting::Keys::COMPONENT_Y);
+		sortingParameters.SetOrder(Sorting::Orders::ASCENDING);
+		sortingParameters.AddChainLink(new Sorting::SortingParametersChain(Sorting::Keys::COMPONENT_X, Sorting::Orders::DESCENDING));
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -854,8 +859,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #4- sorting Vector2D objects by Y component descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::COMPONENT_Y);
-		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
+		sortingParameters.SetKey(Sorting::Keys::COMPONENT_Y);
+		sortingParameters.SetOrder(Sorting::Orders::DESCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -888,8 +893,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #5- sorting Vector2D objects by sum of components ascending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::ASCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -926,8 +931,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #6- sorting Vector2D objects by sum of components descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::DESCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -964,8 +969,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #7- sorting Vector2D objects by sum of absolute components ascending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_ABSOLUTE_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_ABSOLUTE_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::ASCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -1002,8 +1007,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #8- sorting Vector2D objects by sum of absolute components descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_ABSOLUTE_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_ABSOLUTE_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::DESCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -1040,8 +1045,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #9- sorting Vector2D objects by sum of squared components ascending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_SQUARED_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::ASCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_SQUARED_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::ASCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -1078,8 +1083,8 @@ void SortTest()
 
 		/* ==================== SORTING TEST #10- sorting Vector2D objects by sum of squared components descending begin ==================== */
 		sortingTestCasePassed = true;
-		sortingParameters.SetSortingKey(Sorting::SUM_OF_SQUARED_COMPONENTS);
-		sortingParameters.SetSortingDirection(Sorting::DESCENDING);
+		sortingParameters.SetKey(Sorting::Keys::SUM_OF_SQUARED_COMPONENTS);
+		sortingParameters.SetOrder(Sorting::Orders::DESCENDING);
 		timer.Reset();
 		for (int k = 0; k < NUMBER_OF_TIME_TESTS_ITERATIONS; ++k)
 		{
@@ -1169,6 +1174,8 @@ void KDTreeTest()
 		//	"). The minimum distance equals ", minDistances[0], " and returned height is ", height);
 		INFO_LOG_MATH_TEST("The final result for position ", searchPositions[i], " in k-d tree search is ", height);
 	}
+
+	NOTICE_LOG_MATH_TEST("K-d tree test finished");
 }
 
 void StatsTest()
@@ -1257,6 +1264,61 @@ void HeightsGeneratorTests()
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
 }
 
+void SurfaceTest()
+{
+	if (!surfaceTestsEnabled)
+	{
+		return;
+	}
+
+	NOTICE_LOG_MATH_TEST("Surface test started");
+
+	/* ==================== SURFACE TEST #1- create a surface- begin ==================== */
+	constexpr int SURFACE_WIDTH = 50;
+	constexpr int SURFACE_DEPTH = 50;
+	constexpr int HORIZONTAL_VERTICES_COUNT = 6;
+	constexpr int VERTICAL_VERTICES_COUNT = 6;
+	std::array<Real, HORIZONTAL_VERTICES_COUNT * VERTICAL_VERTICES_COUNT> heights = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
+	Surface surface1(Vector2D(5.0f, 5.0f), SURFACE_WIDTH, SURFACE_DEPTH, HORIZONTAL_VERTICES_COUNT, VERTICAL_VERTICES_COUNT, heights.data());
+
+	constexpr int SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT = 10;
+	std::array<Vector2D, SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT> surface1Heights = { Vector2D(5.0f, 5.0f), Vector2D(10.0f, 5.0f), Vector2D(12.2f, 5.0f), Vector2D(12.2f, 8.0f),
+		Vector2D(15.0f, 5.0f), Vector2D(19.0f, 5.0f), Vector2D(32.2f, 14.0f), Vector2D(32.2f, 17.1f), Vector2D(32.2f, 18.7f), Vector2D(40.0f, 20.1f) };
+	std::array<Real, SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT> surface1ExpectedHeights = { 0.0f, 0.5f, 0.72f, 2.52f, 1.0f, 1.4f, 8.12f, 9.98f, 10.94f, 12.56f };
+
+	for (int i = 0; i < SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
+	{
+		Real height = surface1.GetHeightAt(surface1Heights[i]);
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface1Heights[i] << ". Expected height equals: " << surface1ExpectedHeights[i];
+		TestReport(AlmostEqual(height, surface1ExpectedHeights[i]), ss.str());
+	}
+	/* ==================== SURFACE TEST #1- create a surface- end ==================== */
+
+	/* ==================== SURFACE TEST #2- create a surface out of collection of random 3D positions- begin ==================== */
+	constexpr int RANDOM_POSITIONS_COUNT = 12;
+	std::array<Vector3D, RANDOM_POSITIONS_COUNT> positions = { Vector3D(3.0f, 0.0f, 0.0f), Vector3D(1.0f, 1.0f, 1.0f), Vector3D(6.0f, 2.0f, 1.0f),
+		Vector3D(4.0f, 3.0f, 2.0f), Vector3D(0.0f, 4.0f, 3.0f), Vector3D(2.0f, 5.0f, 3.0f), Vector3D(5.0f, 6.0f, 3.0f), Vector3D(4.5f, 7.0f, 3.5f),
+		Vector3D(3.0f, 8.0f, 4.0f), Vector3D(1.5f, 9.0f, 5.0f), Vector3D(5.0f, 10.0f, 5.0f), Vector3D(4.0f, 11.0f, 6.0f) };
+	Surface surface2(positions.data(), RANDOM_POSITIONS_COUNT);
+
+	constexpr int SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT = 10;
+	std::array<Vector2D, SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT> surface2Heights = { Vector2D(5.0f, 5.0f), Vector2D(10.0f, 5.0f), Vector2D(12.2f, 5.0f), Vector2D(12.2f, 8.0f),
+		Vector2D(15.0f, 5.0f), Vector2D(19.0f, 5.0f), Vector2D(32.2f, 14.0f), Vector2D(32.2f, 17.1f), Vector2D(32.2f, 18.7f), Vector2D(40.0f, 20.1f) };
+	std::array<Real, SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT> surface2ExpectedHeights = { 0.0f, 0.5f, 0.72f, 2.52f, 1.0f, 1.4f, 8.12f, 9.98f, 10.94f, 12.56f };
+
+	for (int i = 0; i < SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
+	{
+		Real height = surface2.GetHeightAt(surface2Heights[i]);
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface2Heights[i] << ". Expected height equals: " << surface2ExpectedHeights[i];
+		TestReport(AlmostEqual(height, surface2ExpectedHeights[i]), ss.str());
+	}
+	/* ==================== SURFACE TEST #2- create a surface out of collection of random 3D positions- end ==================== */
+
+	NOTICE_LOG_MATH_TEST("Surface test finished");
+}
+
 void OtherTests()
 {
 	if (!otherTestsEnabled)
@@ -1332,6 +1394,7 @@ int main(int argc, char* argv[])
 	TransformTest();
 	SortTest();
 	//SortTestTime();
+	SurfaceTest();
 
 	KDTreeTest();
 

@@ -51,24 +51,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 
 				bool swapOccured = false;
 				size_t n = vectorSize;
@@ -132,24 +132,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
+					"Cannot sort the table using the insertion sort algorithm. The specified table is nullptr");
 
 				for (int i = 1; i < vectorSize; ++i)
 				{
@@ -209,24 +209,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(vectorSize >= 2, Utility::Logging::DEBUG,
 					"Selection sort operation ignored. Only one element to sort.");
 
@@ -294,24 +294,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 				std::vector<T> auxiliaryTable(vectorSize);
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters, auxiliaryTable.data());
 			}
@@ -408,17 +408,17 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING);
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
@@ -530,24 +530,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 				Sort<T>(vectors, 0, vectorSize - 1, sortingParameters);
 			}
 
@@ -628,24 +628,24 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table using the insertion sort algorithm. The specified table is NULL");
+					"Cannot sort the table using the insertion sort algorithm. The specified table is nullptr");
 				const size_t QUARTER_VECTOR_SIZE = vectorSize / 4;
 				const size_t FIRST_CONST_INDEX = 1;
 				const size_t LAST_CONST_INDEX = 701;
@@ -736,10 +736,10 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
@@ -747,16 +747,16 @@ namespace Math {
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
 			{
-				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingDirection));
+				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
 
 			template <typename T>
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 
 				size_t gap = vectorSize;
 
@@ -828,10 +828,10 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
@@ -880,10 +880,10 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			/* ==================== Non-static member functions end ==================== */
@@ -965,17 +965,17 @@ namespace Math {
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
-			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) override;
+			virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
+			virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) override;
 			virtual void Sort(Math::Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
-			void FindMinMax(Math::Vector2D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
+			void FindMinMax(Math::Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey, Math::Real& minValue, Math::Real& maxValue)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 
 				minValue = REAL_MAX;
 				maxValue = REAL_MIN;
@@ -994,10 +994,10 @@ namespace Math {
 				CHECK_CONDITION_MATH(!(maxValue < minValue), Utility::Logging::ERR, "Incorrect values for min and max keys. The minimum = ", minValue, " and the maximum = ", maxValue);
 			}
 
-			void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, SortingKey sortingKey, Math::Real& minValue, Math::Real& maxValue)
+			void FindMinMax(Math::Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey, Math::Real& minValue, Math::Real& maxValue)
 			{
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
-					"Cannot sort the table. The specified table is NULL");
+					"Cannot sort the table. The specified table is nullptr");
 
 				minValue = REAL_MAX;
 				maxValue = REAL_MIN;
@@ -1017,7 +1017,7 @@ namespace Math {
 			}
 
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, SortingKey sortingKey, SortingDirection sortingDirection)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey, Orders::Order sortingOrder)
 			{
 				Math::Real minValue, maxValue;
 				FindMinMax(vectors, vectorSize, sortingKey, minValue, maxValue);
@@ -1060,7 +1060,7 @@ namespace Math {
 					//}
 					if (!buckets[i].IsEmpty())
 					{
-						insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingDirection);
+						insertionSorter->Sort(buckets[i].GetVectors(), buckets[i].GetVectorsSize(), sortingKey, sortingOrder);
 					}
 				}
 
@@ -1073,9 +1073,9 @@ namespace Math {
 				//}
 
 				int index = 0;
-				switch (sortingDirection)
+				switch (sortingOrder)
 				{
-				case ASCENDING:
+				case Orders::ASCENDING:
 					for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1084,7 +1084,7 @@ namespace Math {
 						}
 					}
 					break;
-				case DESCENDING:
+				case Orders::DESCENDING:
 					for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1094,7 +1094,8 @@ namespace Math {
 					}
 					break;
 				default:
-					ERROR_LOG_MATH("Unknown sorting direction value (", sortingDirection, "). Only ASCENDING (", ASCENDING, ") and DESCENDING (", DESCENDING, ") are acceptable.");
+					ERROR_LOG_MATH("Unknown sorting direction value (", sortingOrder, "). Only ASCENDING (", Orders::ASCENDING,
+						") and DESCENDING (", Orders::DESCENDING, ") are acceptable.");
 					break;
 				}
 			}
@@ -1103,7 +1104,7 @@ namespace Math {
 			void Sort(T* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters)
 			{
 				Math::Real minValue, maxValue;
-				FindMinMax(vectors, vectorSize, sortingParameters.GetSortingKey(), minValue, maxValue);
+				FindMinMax(vectors, vectorSize, sortingParameters.GetKey(), minValue, maxValue);
 				//DEBUG_LOG_MATH("minValue = ", minValue, "; maxValue = ", maxValue);
 
 				//const int NUMBER_OF_BUCKETS = ((vectorSize / 20) < 2) ? 2 : vectorSize / 20; // estimated by myself
@@ -1121,7 +1122,7 @@ namespace Math {
 
 				for (int i = 0; i < vectorSize; ++i)
 				{
-					Math::Real value = CollectValueByKey(vectors[i], sortingParameters.GetSortingKey());
+					Math::Real value = CollectValueByKey(vectors[i], sortingParameters.GetKey());
 					//DEBUG_LOG_MATH("vectors[", i, "] = ", vectors[i].ToString(), " and the value = ", value);
 
 					// Calculate the index of the bucket to which we will add the vector
@@ -1156,9 +1157,9 @@ namespace Math {
 				//}
 
 				int index = 0;
-				switch (sortingParameters.GetSortingDirection())
+				switch (sortingParameters.GetOrder())
 				{
-				case ASCENDING:
+				case Orders::ASCENDING:
 					for (int i = 0; i < NUMBER_OF_BUCKETS; ++i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1167,7 +1168,7 @@ namespace Math {
 						}
 					}
 					break;
-				case DESCENDING:
+				case Orders::DESCENDING:
 					for (int i = NUMBER_OF_BUCKETS - 1; i >= 0; --i)
 					{
 						for (int j = 0; j < buckets[i].GetVectorsSize(); ++j, ++index)
@@ -1177,8 +1178,8 @@ namespace Math {
 					}
 					break;
 				default:
-					ERROR_LOG_MATH("Unknown sorting direction value (", sortingParameters.GetSortingDirection(), "). Only ASCENDING (",
-						ASCENDING, ") and DESCENDING (", DESCENDING, ") are acceptable.");
+					ERROR_LOG_MATH("Unknown sorting order value (", sortingParameters.GetOrder(), "). Only ASCENDING (",
+						Orders::ASCENDING, ") and DESCENDING (", Orders::DESCENDING, ") are acceptable.");
 					break;
 				}
 			}

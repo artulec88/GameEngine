@@ -148,7 +148,8 @@ T Math::Statistics::Stats<T>::CalculateMedian(StatsID statsID)
 		return static_cast<T>(0);
 	}
 
-	Math::Sorting::ISort::GetSortingObject(Math::Sorting::SortingAlgorithms::MERGE_SORT)->Sort(&m_samples[statsID][0], static_cast<int>(m_samples[statsID].size()), Sorting::ASCENDING);
+	Math::Sorting::ISort::GetSortingObject(Math::Sorting::SortingAlgorithms::MERGE_SORT)->Sort(&m_samples[statsID][0],
+		static_cast<int>(m_samples[statsID].size()), Sorting::Orders::ASCENDING);
 
 	const int index = static_cast<int>(m_samples[statsID].size()) / 2;
 	if ((m_samples[statsID].size() % 2) == 0)

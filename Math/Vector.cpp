@@ -626,9 +626,10 @@ Math::Real Math::Interpolation::BarycentricInterpolation(Real xPos1, Real yPos1,
 	Real xPos3, Real yPos3, Real zPos3,
 	Real xPos, Real zPos)
 {
-	Math::Real det = (zPos2 - zPos3) * (xPos1 - xPos3) + (xPos3 - xPos2) * (zPos1 - zPos3);
-	Math::Real l1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
-	Math::Real l2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
-	Math::Real l3 = 1.0f - l1 - l2;
-	return l1 * yPos1 + l2 * yPos2 + l3 * yPos3;
+	Real det = ((zPos2 - zPos3) * (xPos1 - xPos3)) + ((xPos3 - xPos2) * (zPos1 - zPos3));
+	Real b1 = ((zPos2 - zPos3) * (xPos - xPos3) + (xPos3 - xPos2) * (zPos - zPos3)) / det;
+	Real b2 = ((zPos3 - zPos1) * (xPos - xPos3) + (xPos1 - xPos3) * (zPos - zPos3)) / det;
+	Real b3 = 1.0f - b1 - b2;
+	//CRITICAL_LOG_MATH("[", xPos, "; ", zPos, "]: det = ", det, "; b1 = ", b1, "; b2 = ", b2, "; b3 = ", b3, "; result = ", b1 * yPos1 + b2 * yPos2 + b3 * yPos3);
+	return b1 * yPos1 + b2 * yPos2 + b3 * yPos3;
 }

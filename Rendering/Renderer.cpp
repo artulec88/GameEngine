@@ -49,7 +49,7 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_tempCamera(NULL),
 	m_shaderFactory(shadersDirectory),
 	m_fontFactory(m_shaderFactory.GetShader(Rendering::ShaderIDs::TEXT), texturesDirectory, fontsDirectory),
-	m_meshFactory(modelsDirectory),
+	m_meshFactory(modelsDirectory, texturesDirectory),
 	m_textureFactory(texturesDirectory),
 	m_displayTexture(windowWidth, windowHeight, NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_filterCamera(Math::Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO), Math::Quaternion(Math::Vector3D(REAL_ZERO, REAL_ONE, REAL_ZERO), Math::Angle(180.0f)), Math::Matrix4D::IDENTITY_MATRIX, 0.005f),
@@ -205,6 +205,11 @@ Rendering::Renderer::~Renderer(void)
 const Rendering::Mesh* Rendering::Renderer::CreateMesh(int meshID, const std::string& meshFileName)
 {
 	return m_meshFactory.CreateMesh(meshID, meshFileName);
+}
+
+const Rendering::Mesh* Rendering::Renderer::CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight /* = 5.0f */)
+{
+	return m_meshFactory.CreateMeshFromHeightMap(meshID, heightMapFileName, heightMapMaxHeight);
 }
 
 const Rendering::Shader* Rendering::Renderer::CreateShader(int shaderID, const std::string& shaderFileName)

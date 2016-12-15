@@ -551,10 +551,11 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
-	terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
+	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
+	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug2.png", 5.0f);
 	//terrainTransform.SetScale(2.0f);
 
-	terrain = std::make_unique<Terrain>(terrainMesh, terrainTransform.GetTransformation());
+	terrain = std::make_unique<Terrain>(terrainMesh, terrainTransform);
 	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 4;
 	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f };
 	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -1.0f, 1.0f, -3.0f, 3.0f };

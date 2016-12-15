@@ -112,27 +112,27 @@ namespace Math {
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			MATH_API virtual void Sort(int* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
-			MATH_API virtual void Sort(Real* values, size_t valuesCount, SortingDirection sortingDirection = ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
-			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, SortingKey sortingKey = COMPONENT_X, SortingDirection sortingDirection = ASCENDING) = 0;
+			MATH_API virtual void Sort(int* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Real* values, size_t valuesCount, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
+			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING) = 0;
 			MATH_API virtual void Sort(Vector2D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 			MATH_API virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) = 0;
 		protected:
 			template <typename T>
 			bool NeedSwapping(const T& v1, const T& v2, const SortingParametersChain& sortingParameters)
 			{
-				return NeedSwapping<T>(v1, v2, sortingParameters.GetSortingDirection());
+				return NeedSwapping<T>(v1, v2, sortingParameters.GetOrder());
 			}
 
 			template <typename T>
-			bool NeedSwapping(const T& v1, const T& v2, SortingDirection sortingDirection)
+			bool NeedSwapping(const T& v1, const T& v2, Orders::Order sortingOrder)
 			{
-				switch (sortingDirection)
+				switch (sortingOrder)
 				{
-				case ASCENDING:
+				case Orders::ASCENDING:
 					return (v2 < v1);
-				case DESCENDING:
+				case Orders::DESCENDING:
 					return (v2 > v1);
 				default:
 					ERROR_LOG_MATH("Unknown sorting direction specified.");
@@ -145,9 +145,9 @@ namespace Math {
 			bool NeedSwapping(const Math::Vector2D& vec1, const Math::Vector2D& vec2, const SortingParametersChain& sortingParameters)
 			{
 				/* Checking parameters */
-				SortingDirection sortingDirection = sortingParameters.GetSortingDirection();
-				SortingKey sortingKey = sortingParameters.GetSortingKey();
-				if (sortingKey == COMPONENT_Z)
+				Orders::Order sortingOrder = sortingParameters.GetOrder();
+				Keys::Key sortingKey = sortingParameters.GetKey();
+				if (sortingKey == Keys::COMPONENT_Z)
 				{
 					ERROR_LOG_MATH("Sorting 2D vectors by Z component is not possible. 2D vectors are defined with XY components.");
 					return false;
@@ -160,14 +160,14 @@ namespace Math {
 				{
 					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 				}
-				return NeedSwapping(v1, v2, sortingDirection);
+				return NeedSwapping(v1, v2, sortingOrder);
 			}
 
 			template <>
 			bool NeedSwapping(const Math::Vector3D& vec1, const Math::Vector3D& vec2, const SortingParametersChain& sortingParameters)
 			{
-				SortingDirection sortingDirection = sortingParameters.GetSortingDirection();
-				SortingKey sortingKey = sortingParameters.GetSortingKey();
+				Orders::Order sortingOrder = sortingParameters.GetOrder();
+				Keys::Key sortingKey = sortingParameters.GetKey();
 
 				Math::Real v1 = CollectValueByKey(vec1, sortingKey);
 				Math::Real v2 = CollectValueByKey(vec2, sortingKey);
@@ -176,24 +176,24 @@ namespace Math {
 				{
 					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 				}
-				return NeedSwapping(v1, v2, sortingDirection);
+				return NeedSwapping(v1, v2, sortingOrder);
 			}
 
-			Math::Real CollectValueByKey(const Math::Vector2D& v, SortingKey sortingKey)
+			Math::Real CollectValueByKey(const Math::Vector2D& v, Keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
-				case VALUE:
+				case Keys::VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 					return v.x;
-				case COMPONENT_X: return v.x;
-				case COMPONENT_Y: return v.y;
-				case COMPONENT_Z:
+				case Keys::COMPONENT_X: return v.x;
+				case Keys::COMPONENT_Y: return v.y;
+				case Keys::COMPONENT_Z:
 					EMERGENCY_LOG_MATH("Cannot determine the value of the Z component for the 2D vector.");
 					exit(EXIT_FAILURE);
-				case SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
-				case SUM_OF_COMPONENTS: return v.SumOfComponents();
-				case SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
+				case Keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case Keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case Keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 					return v.x;
@@ -201,19 +201,19 @@ namespace Math {
 				}
 			}
 
-			Math::Real CollectValueByKey(const Math::Vector3D& v, SortingKey sortingKey)
+			Math::Real CollectValueByKey(const Math::Vector3D& v, Keys::Key sortingKey)
 			{
 				switch (sortingKey)
 				{
-				case VALUE:
+				case Keys::VALUE:
 					WARNING_LOG_MATH("VALUE sorting key is incorrect for the 2D vector. Returning X component instead.");
 					return v.x;
-				case COMPONENT_X: return v.x;
-				case COMPONENT_Y: return v.y;
-				case COMPONENT_Z: return v.z;
-				case SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
-				case SUM_OF_COMPONENTS: return v.SumOfComponents();
-				case SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
+				case Keys::COMPONENT_X: return v.x;
+				case Keys::COMPONENT_Y: return v.y;
+				case Keys::COMPONENT_Z: return v.z;
+				case Keys::SUM_OF_SQUARED_COMPONENTS: return v.LengthSquared();
+				case Keys::SUM_OF_COMPONENTS: return v.SumOfComponents();
+				case Keys::SUM_OF_ABSOLUTE_COMPONENTS: return v.SumOfAbsoluteComponents();
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 					return v.x;

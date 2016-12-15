@@ -7,27 +7,32 @@ namespace Math
 {
 	namespace Sorting
 	{
-
-		/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
-		enum MATH_API SortingKey
+		namespace Keys
 		{
-			VALUE = 0,
-			COMPONENT_X,
-			COMPONENT_Y,
-			COMPONENT_Z,
-			SUM_OF_COMPONENTS,
-			SUM_OF_ABSOLUTE_COMPONENTS,
-			SUM_OF_SQUARED_COMPONENTS
-		};
+			/// <summary> The sorting key represents the attribute based on which the ordering is performed. </summary>
+			enum Key
+			{
+				VALUE = 0,
+				COMPONENT_X,
+				COMPONENT_Y,
+				COMPONENT_Z,
+				SUM_OF_COMPONENTS,
+				SUM_OF_ABSOLUTE_COMPONENTS,
+				SUM_OF_SQUARED_COMPONENTS
+			}; /* end enum SortingKey */
+		} /* end namespace SortingKeys */
 
-		/// <summary> The direction represents the order in which the sorting is performed. </summary>
-		enum MATH_API SortingDirection
+		namespace Orders
 		{
-			ASCENDING = 0,
-			DESCENDING
-		};
+			/// <summary> The direction represents the order in which the sorting is performed. </summary>
+			enum Order
+			{
+				ASCENDING = 0,
+				DESCENDING
+			}; /* end enum Order */
+		} /* end namespace Orders */
 
-		class MATH_API SortingParametersChain
+		class SortingParametersChain
 		{
 		public:
 			/* ==================== Static variables and functions begin ==================== */
@@ -35,8 +40,8 @@ namespace Math
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
-			SortingParametersChain(SortingKey sortingKey, SortingDirection sortingDirection);
-			virtual ~SortingParametersChain(void);
+			MATH_API SortingParametersChain(Keys::Key sortingKey, Orders::Order sortingOrder);
+			MATH_API ~SortingParametersChain(void);
 			SortingParametersChain(const SortingParametersChain& sortingParametersChain) = delete;
 			SortingParametersChain(SortingParametersChain&& sortingParametersChain) = delete;
 			SortingParametersChain& operator=(const SortingParametersChain& sortingParametersChain) = delete;
@@ -45,20 +50,20 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 		public:
-			void ResetChainLink();
-			void AddChainLink(SortingParametersChain* sortingChainParameters);
-			SortingKey GetSortingKey() const { return m_sortingKey; }
-			SortingDirection GetSortingDirection() const { return m_sortingDirection; }
-			void SetSortingKey(SortingKey sortingKey);
-			void SetSortingDirection(SortingDirection sortingDirection) { m_sortingDirection = sortingDirection; }
-			const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
+			MATH_API void ResetChainLink();
+			MATH_API void AddChainLink(SortingParametersChain* sortingChainParameters);
+			MATH_API Keys::Key GetKey() const { return m_sortingKey; }
+			MATH_API Orders::Order GetOrder() const { return m_order; }
+			MATH_API void SetKey(Keys::Key sortingKey);
+			MATH_API void SetOrder(Orders::Order sortingOrder) { m_order = sortingOrder; }
+			MATH_API const SortingParametersChain* GetSortingParametersChain() const { return m_sortingParametersChain; }
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
 		private:
 			SortingParametersChain* m_sortingParametersChain;
-			SortingKey m_sortingKey;
-			SortingDirection m_sortingDirection;
+			Keys::Key m_sortingKey;
+			Orders::Order m_order;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SortingParametersChain */
 

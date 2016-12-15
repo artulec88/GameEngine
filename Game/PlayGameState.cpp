@@ -28,7 +28,7 @@ Game::PlayGameState::PlayGameState(Engine::GameManager* gameManager, const std::
 	GameState(inputMappingContextName),
 	m_rootGameNode(),
 	m_terrainNode(),
-	m_terrainMesh(NULL),
+	m_terrain(nullptr),
 	m_terrainMaterial(NULL),
 	m_waterNode(),
 	m_skyboxNode(),
@@ -252,7 +252,7 @@ void Game::PlayGameState::AddTerrainNode()
 	//m_terrainNode.AddComponent(new Engine::MeshRendererComponent(m_terrainMesh, m_terrainMaterial));
 	//m_terrainNode->GetTransform().SetPos(0.0f, 0.0f, 5.0f);
 	//m_terrainNode->GetTransform().SetScale(20.0f);
-	m_terrainMesh->TransformPositions(m_terrainNode.GetTransform().GetTransformation());
+	//m_terrain->TransformPositions(m_terrainNode.GetTransform().GetTransformation());
 	//AddToSceneRoot(m_terrainNode); // Terrain node uses special shaders, so we don't actually add it to the game scene hierarchy. Instead we just register it for the renderer to use it.
 	STOP_PROFILING_GAME("");
 }
@@ -292,7 +292,7 @@ void Game::PlayGameState::AddPlayerNode()
 	m_gameManager->AddMesh(MeshIDs::PLAYER, GET_CONFIG_VALUE_STR_GAME("playerMesh", "mike\\Mike.obj"));
 	m_playerNode.AddComponent(new Engine::MeshRendererComponent(MeshIDs::PLAYER, new Rendering::Material(m_gameManager->AddTexture(TextureIDs::PLAYER, "mike_d.tga"), 1.0f, 8.0f, m_gameManager->AddTexture(TextureIDs::PLAYER_NORMAL_MAP, "mike_n.tga"), m_gameManager->GetTexture(Rendering::TextureIDs::DEFAULT_DISPLACEMENT_MAP))));
 	m_playerNode.AddComponent(new Engine::PhysicsComponent(2555.5f, 2855.2f)); //, 0.26f, 5.0f, Math::Angle(152.0f, Math::Unit::DEGREE), 0.015f, 0.0002f));
-	m_playerNode.AddComponent(new Engine::GravityComponent(m_terrainMesh));
+	m_playerNode.AddComponent(new Engine::GravityComponent(m_terrain));
 	//Rendering::Particles::ParticlesSystem particlesSystem = CreateParticlesSystem(ParticleEffects::FOUNTAIN);
 	//playerNode->AddComponent(new Engine::ParticlesSystemComponent(this, particlesSystem));
 	//m_resourcesLoaded += 2;

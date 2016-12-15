@@ -132,6 +132,7 @@ namespace Rendering
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
+		RENDERING_API const Mesh* CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight = 5.0f);
 		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
 
 		RENDERING_API const Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName)

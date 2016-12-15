@@ -107,6 +107,12 @@ namespace Math
 		return static_cast<int>(floor(value));
 	}
 
+	template<typename Type>
+	constexpr int Ceil(Type value)
+	{
+		return static_cast<int>(ceil(value));
+	}
+
 //	Math::Real RealMin()
 //	{
 //#undef max

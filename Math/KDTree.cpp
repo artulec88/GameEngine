@@ -74,13 +74,13 @@ Math::KDTree::~KDTree(void)
 void Math::KDTree::BuildTree(Math::Vector3D* positions, size_t positionsCount, int depth)
 {
 	START_PROFILING_MATH(true, "");
-	Sorting::SortingKey sortingKey = (depth % 2 == 0) ? Sorting::COMPONENT_X : Sorting::COMPONENT_Z;
+	Sorting::Keys::Key sortingKey = (depth % 2 == 0) ? Sorting::Keys::COMPONENT_X : Sorting::Keys::COMPONENT_Z;
 	//DEBUG_LOG_MATH("Before sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)
 	//{
 	//	DEBUG_LOG_MATH("depth = ", depth, ") positions[", i, "] = ", positions[i].ToString());
 	//}
-	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::ASCENDING);
+	Sorting::SortingParametersChain sortingParameters(sortingKey, Sorting::Orders::ASCENDING);
 	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::MERGE_SORT)->Sort(positions, positionsCount, sortingParameters);
 	//DEBUG_LOG_MATH("After sorting: depth = ", depth);
 	//for (int i = 0; i < positionsCount; ++i)

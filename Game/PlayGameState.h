@@ -12,6 +12,7 @@
 
 #include "Rendering\Shader.h"
 #include "Rendering\Renderer.h"
+#include "Rendering\Terrain.h"
 
 #include "Math\Math.h"
 #ifdef PROFILING_GAME_MODULE_ENABLED
@@ -118,7 +119,7 @@ namespace Game
 	private:
 		Engine::GameNode m_rootGameNode;
 		Engine::GameNode m_terrainNode;
-		Rendering::TerrainMesh* m_terrainMesh;
+		Rendering::Terrain* m_terrain;
 		Rendering::Material* m_terrainMaterial;
 
 		Engine::GameNode m_waterNode;

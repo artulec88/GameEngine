@@ -5,7 +5,7 @@
 #include "GameComponent.h"
 #include "IUpdateable.h"
 
-#include "Rendering\Mesh.h"
+#include "Rendering\Terrain.h"
 
 #include "Math\Vector.h"
 
@@ -24,7 +24,7 @@ namespace Engine
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		ENGINE_API GravityComponent(const Rendering::TerrainMesh* terrainMesh);
+		ENGINE_API GravityComponent(const Rendering::Terrain* terrain);
 		ENGINE_API virtual ~GravityComponent(void);
 		GravityComponent(const GravityComponent& gravityComponent) = delete;
 		GravityComponent(GravityComponent&& gravityComponent);
@@ -39,7 +39,7 @@ namespace Engine
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
-		const Rendering::TerrainMesh* m_terrainMesh;
+		const Rendering::Terrain* m_terrain;
 		Math::Real m_lastX, m_lastZ, m_lastHeight;
 		Math::Real m_heightAdjustment;
 		/* ==================== Non-static member variables end ==================== */

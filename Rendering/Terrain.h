@@ -4,7 +4,16 @@
 #include "Rendering.h"
 #include "Mesh.h"
 
+#include "Math\Transform.h"
+
+//#define HEIGHTS_KD_TREE
+#define HEIGHTS_SURFACE
+
+#ifdef HEIGHTS_KD_TREE
 #include "Math\KDTree.h"
+#elif defined HEIGHTS_SURFACE
+#include "Math\Surface.h"
+#endif
 
 namespace Rendering
 {
@@ -28,8 +37,8 @@ namespace Rendering
 	public:
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="terrainMesh"> The terrain mesh. </param>
-		/// <param name="transformationMatrix"> The world transformation matrix of the terrain. </param>
-		RENDERING_API explicit Terrain(const Mesh* terrainMesh, const Math::Matrix4D& transformationMatrix);
+		/// <param name="terrainTransform"> The world transform of the terrain. </param>
+		RENDERING_API explicit Terrain(const Mesh* terrainMesh, const Math::Transform& terrainTransform);
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="gridX"> The X position on the grid. </param>
 		/// <param name="gridZ"> The Z position on the grid. </param>
@@ -102,13 +111,11 @@ namespace Rendering
 		/// <summary> The position of the single terrain tile along the Z axis. </summary>
 		int m_z;
 
-//#ifdef HEIGHTS_KD_TREE
+#ifdef HEIGHTS_KD_TREE
 		Math::KDTree m_kdTree;
-//#elif defined HEIGHTS_HEIGHTMAP
-//		int m_heightMapWidth, m_heightMapHeight;
-//		std::vector<Math::Real> m_heights;
-//		Math::Real m_gridSquareSize;
-//#endif
+#elif defined HEIGHTS_SURFACE
+		Math::Surface m_surface;
+#endif
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class Terrain */
 

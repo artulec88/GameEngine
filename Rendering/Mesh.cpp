@@ -12,10 +12,6 @@
 #include "Utility\Time.h"
 #include "Math\ISort.h"
 
-#include <assimp\Importer.hpp>
-#include <assimp\scene.h>
-#include <assimp\postprocess.h>
-
 #include <unordered_set>
 #include <fstream>
 
@@ -122,9 +118,6 @@ void Rendering::MeshData::ReplaceVBO(MeshBufferTypes::MeshBufferType buffer, voi
 
 /* ==================== Mesh class implementation begin ==================== */
 Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
-#ifdef STORE_MESH_FILE_NAME
-	m_fileName(""),
-#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -132,9 +125,6 @@ Rendering::Mesh::Mesh(GLenum mode /* = GL_TRIANGLES */) :
 
 Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::Vector3D* positions, Math::Vector2D* textureCoordinates /* = nullptr */,
 	Math::Vector3D* normals /* = nullptr */, Math::Vector3D* tangents /* = nullptr */, Math::Vector3D* bitangents /* = nullptr */, bool calcNormalsEnabled /* = false */, GLenum mode /* = GL_TRIANGLES */) :
-#ifdef STORE_MESH_FILE_NAME
-	m_fileName(""),
-#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -142,9 +132,6 @@ Rendering::Mesh::Mesh(int* indices, int indicesCount, int verticesCount, Math::V
 }
 
 Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCoordinates, unsigned int verticesCount, GLenum mode) :
-#ifdef STORE_MESH_FILE_NAME
-	m_fileName(""),
-#endif
 	m_mode(mode),
 	m_meshData(nullptr)
 {
@@ -153,101 +140,11 @@ Rendering::Mesh::Mesh(Math::Vector2D* screenPositions, Math::Vector2D* textureCo
 	AddVertices(screenPositions, textureCoordinates, verticesCount);
 }
 
-Rendering::Mesh::Mesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
-#ifdef STORE_MESH_FILE_NAME
-	m_fileName(fileName),
-#endif
-	m_mode(mode),
-	m_meshData(nullptr)
-{
-	Rendering::CheckErrorCode(__FUNCTION__, "Started Mesh initialization");
-	CHECK_CONDITION_RENDERING(!fileName.empty(), Utility::Logging::ERR, "Mesh data cannot be initialized. File name is not specified");
-
-#ifdef MEASURE_MESH_TIME_ENABLED
-	Utility::Timing::Timer timer;
-	timer.Start();
-#endif
-	INFO_LOG_RENDERING("Loading model from file \"", fileName, "\"");
-
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(fileName.c_str(),
-		aiProcess_Triangulate | /* aiProcess_FlipWindingOrder | */
-		aiProcess_GenSmoothNormals |
-		aiProcess_FlipUVs |
-		aiProcess_CalcTangentSpace);
-
-	CHECK_CONDITION_EXIT_RENDERING(scene != nullptr, Utility::Logging::CRITICAL, "Error while loading a mesh \"", fileName, "\"");
-	CHECK_CONDITION_EXIT_RENDERING((scene->mMeshes != nullptr) && (scene->mNumMeshes > 0), Utility::Logging::CRITICAL,
-		"Incorrect number of meshes loaded- ", scene->mNumMeshes, "- check the model \"", fileName,
-		"\". One of the possible solutions is to check whether the model has any additional lines at the end.");
-
-	const aiMesh* model = scene->mMeshes[0];
-	std::vector<Math::Vector3D> positions;
-	positions.reserve(model->mNumVertices);
-	std::vector<Math::Vector2D> textureCoordinates;
-	textureCoordinates.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> normals;
-	normals.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> tangents;
-	tangents.reserve(model->mNumVertices);
-	std::vector<Math::Vector3D> bitangents;
-	bitangents.reserve(model->mNumVertices);
-
-	const aiVector3D aiZeroVector(REAL_ZERO, REAL_ZERO, REAL_ZERO);
-	for (unsigned int i = 0; i < model->mNumVertices; ++i)
-	{
-		const aiVector3D* pPos = &(model->mVertices[i]);
-		const aiVector3D* pNormal = &(model->mNormals[i]);
-		const aiVector3D* pTexCoord = model->HasTextureCoords(0) ? &(model->mTextureCoords[0][i]) : &aiZeroVector;
-		const aiVector3D* pTangent = model->HasTangentsAndBitangents() ? &(model->mTangents[i]) : &aiZeroVector;
-		if (pTangent == nullptr)
-		{
-			ERROR_LOG_RENDERING("Tangent calculated incorrectly for the mesh file name \"", fileName, "\"");
-			pTangent = &aiZeroVector;
-		}
-		//const aiVector3D* pBitangent = model->HasTangentsAndBitangents() ? &(model->mBitangents[i]) : &aiZeroVector;
-		//if (pBitangent == nullptr)
-		//{
-		//	ERROR_LOG_RENDERING("Bitangent calculated incorrectly");
-		//	pBitangent = &aiZeroVector;
-		//}
-
-		//Math::Vector3D vertexBitangent(pBitangent->x, pBitangent->y, pBitangent->z);
-
-		positions.emplace_back(pPos->x, pPos->y, pPos->z);
-		textureCoordinates.emplace_back(pTexCoord->x, pTexCoord->y);
-		normals.emplace_back(pNormal->x, pNormal->y, pNormal->z);
-		tangents.emplace_back(pTangent->x, pTangent->y, pTangent->z);
-	}
-
-	std::vector<int> indices;
-	indices.reserve(model->mNumFaces * 3 /* each face is a triangle and has 3 vertices */);
-	for (unsigned int i = 0; i < model->mNumFaces; ++i)
-	{
-		const aiFace& face = model->mFaces[i];
-		CHECK_CONDITION_ALWAYS_RENDERING(face.mNumIndices == 3, Utility::Logging::WARNING, "The face has ", face.mNumIndices, " indices when only triangle faces are supported.");
-		indices.push_back(face.mIndices[0]);
-		indices.push_back(face.mIndices[1]);
-		indices.push_back(face.mIndices[2]);
-	}
-	SavePositions(positions); // used by TerrainMesh to save the positions. For Mesh instances it does nothing as it is not necessary to store them.
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), (int*)&indices[0], static_cast<int>(indices.size()), false);
-
-#ifdef MEASURE_MESH_TIME_ENABLED
-	timer.Stop();
-	INFO_LOG_RENDERING("Loading model took ", timer.GetTimeSpan().ToString());
-#endif
-	Rendering::CheckErrorCode(__FUNCTION__, "Finished Mesh initialization");
-}
-
 Rendering::Mesh::~Mesh(void)
 {
 }
 
 Rendering::Mesh::Mesh(Mesh&& mesh) :
-#ifdef STORE_MESH_FILE_NAME
-	m_fileName(std::move(mesh.m_fileName)),
-#endif
 	m_mode(std::move(mesh.m_mode)),
 	m_meshData(std::move(mesh.m_meshData)) // http://stackoverflow.com/questions/29643974/using-stdmove-with-stdshared-ptr
 {
@@ -710,403 +607,403 @@ void Rendering::InstanceMesh::Draw(Math::Real* data, unsigned int dataSize, unsi
 
 
 /* ==================== TerrainMesh class implementation begin ==================== */
-Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
-	Mesh(fileName, mode),
-	m_x(0),
-	m_z(0),
-	m_vertexCount(0)
-#ifdef HEIGHTS_KD_TREE
-	,m_positions(),
-	m_kdTree(nullptr),
-	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
-#elif defined HEIGHTS_HEIGHTMAP
-	, m_heights(),
-	m_gridSquareSize(0)
-#endif
-{
-	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
-}
-
-Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
-	Mesh(mode),
-	m_x(gridX),
-	m_z(gridZ),
-	m_vertexCount(0)
-#ifdef HEIGHTS_KD_TREE
-	, m_positions(),
-	m_kdTree(nullptr),
-	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
-#elif defined HEIGHTS_HEIGHTMAP
-	, m_heightMapWidth(0),
-	m_heightMapHeight(0),
-	m_heights(),
-	m_gridSquareSize(0)
-#endif
-{
-	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
-
-	/* Loading heightmap begin */
-	std::string name = heightMapFileName;
-	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
-	if (tmp != nullptr)
-	{
-		name.assign(tmp + 1);
-	}
-	int bytesPerPixel;
-	unsigned char* heightMapData = stbi_load(heightMapFileName.c_str(), &m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel,
-		1 /* we only care about one RED component for now (the heightmap is grayscale) */);
-	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
-	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
-	//for (int i = 0; i < heightMapWidth; ++i)
-	//{
-	//	for (int j = 0; j < heightMapHeight; ++j)
-	//	{
-	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = ", heightMapData[i * heightMapWidth + j]);
-	//	}
-	//}
-	/* Loading heightmap finished */
-
-	m_vertexCount = m_heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
-	const int vertexCountMinusOne = m_vertexCount - 1;
-#ifdef HEIGHTS_KD_TREE
-	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
-#else
-	m_heights.reserve(m_heightMapWidth * m_heightMapHeight);
-	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
-#endif
-	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
-
-	std::vector<Math::Vector3D> positions;
-	positions.reserve(m_vertexCount);
-	std::vector<Math::Vector2D> textureCoordinates;
-	textureCoordinates.reserve(m_vertexCount);
-	std::vector<Math::Vector3D> normals;
-	normals.reserve(m_vertexCount);
-	std::vector<Math::Vector3D> tangents;
-	tangents.reserve(m_vertexCount);
-	for (int z = vertexCountMinusOne; z >= 0; --z)
-	{
-		const Math::Real zReal = static_cast<Math::Real>(z);
-		for (int x = 0; x < m_vertexCount; ++x)
-		{
-			const Math::Real xReal = static_cast<Math::Real>(x);
-			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
-			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
-			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
-			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
-			normals.push_back(CalculateNormal(x, z, heightMapData));
-			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
-		}
-	}
-	stbi_image_free(heightMapData);
-	
-	std::vector<int> indices;
-	indices.reserve(vertexCountMinusOne * vertexCountMinusOne * 6);
-	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
-	{
-		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
-		{
-			int topLeft = (gz * m_vertexCount) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
-			int bottomRight = bottomLeft + 1;
-			indices.push_back(topLeft);
-			indices.push_back(topRight);
-			indices.push_back(bottomLeft);
-			indices.push_back(bottomLeft);
-			indices.push_back(topRight);
-			indices.push_back(bottomRight);
-		}
-	}
-	
-//#ifdef DELOCUST_ENABLED
-	//int i = 0;
-	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
-	//{
-		//CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
-	//}
-	//for (size_t i = 0; i < INDICES_COUNT; ++i)
-	//{
-	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
-	//}
+//Rendering::TerrainMesh::TerrainMesh(const std::string& fileName, GLenum mode /* = GL_TRIANGLES */) :
+//	Mesh(fileName, mode),
+//	m_x(0),
+//	m_z(0),
+//	m_vertexCount(0)
+//#ifdef HEIGHTS_KD_TREE
+//	,m_positions(),
+//	m_kdTree(nullptr),
+//	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
+//#elif defined HEIGHTS_HEIGHTMAP
+//	, m_heights(),
+//	m_gridSquareSize(0)
 //#endif
-
-	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
-
-	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
-}
-
-Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
-	Mesh(mode),
-	m_x(gridX),
-	m_z(gridZ),
-	m_vertexCount(vertexCount)
-#ifdef HEIGHTS_KD_TREE
-	, m_positions(m_vertexCount),
-	m_kdTree(nullptr),
-	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
-#elif defined HEIGHTS_HEIGHTMAP
-	, m_heightMapWidth(vertexCount),
-	m_heightMapHeight(vertexCount),
-	m_heights(m_heightMapWidth * m_heightMapHeight),
-	m_gridSquareSize(0)
-#endif
-{
-	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
-	const int vertexCountMinusOne = m_vertexCount - 1;
-#ifdef HEIGHTS_KD_TREE
-	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
-#else
-	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
-#endif
-	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
-
-	std::vector<Math::Vector3D> positions;
-	positions.reserve(m_vertexCount);
-	std::vector<Math::Vector2D> textureCoordinates;
-	textureCoordinates.reserve(m_vertexCount);
-	std::vector<Math::Vector3D> normals;
-	normals.reserve(m_vertexCount);
-	std::vector<Math::Vector3D> tangents;
-	tangents.reserve(m_vertexCount);
-	for (int z = vertexCountMinusOne; z >= 0; --z)
-	{
-		const Math::Real zReal = static_cast<Math::Real>(z);
-		for (int x = 0; x < m_vertexCount; ++x)
-		{
-			const Math::Real xReal = static_cast<Math::Real>(x);
-			Math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
-			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
-			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
-			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
-			normals.push_back(CalculateNormal(x, z, heightsGenerator));
-			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
-		}
-	}
-
-	std::vector<int> indices;
-	indices.reserve(vertexCountMinusOne * vertexCountMinusOne * 6);
-	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
-	{
-		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
-		{
-			int topLeft = (gz * m_vertexCount) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
-			int bottomRight = bottomLeft + 1;
-			indices.push_back(topLeft);
-			indices.push_back(topRight);
-			indices.push_back(bottomLeft);
-			indices.push_back(bottomLeft);
-			indices.push_back(topRight);
-			indices.push_back(bottomRight);
-		}
-	}
-
-	//#ifdef DELOCUST_ENABLED
-	//int i = 0;
-	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
-	//{
-	//	CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
-	//}
-	//for (size_t i = 0; i < INDICES_COUNT; ++i)
-	//{
-	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
-	//}
-	//#endif
-
-	SavePositions(positions);
-	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
-	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
-}
-
-Rendering::TerrainMesh::~TerrainMesh(void)
-{
-#ifdef HEIGHTS_KD_TREE
-#elif defined HEIGHTS_HEIGHTMAP
-	//SAFE_DELETE_WHOLE_TABLE(m_heights, m_vertexCount);
-#endif
-}
-
-int Rendering::TerrainMesh::GetHeightMapIndex(int x, int z) const
-{
-	return (m_heightMapWidth * m_heightMapHeight) - ((z + 1) * m_heightMapWidth) + x;
-}
-
-Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData)
-{
-	// TODO: Range checking
-	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
-	const int heightMapIndex = GetHeightMapIndex(x, z);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
-	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
-	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * HEIGHTMAP_MAX_HEIGHT;
-#ifdef HEIGHTS_HEIGHTMAP
-	m_heights[heightMapIndex] = height;
-#endif
-	return height;
-}
-
-Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator)
-{
-	// TODO: Range checking
-	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
-		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
-	const int heightMapIndex = GetHeightMapIndex(x, z);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
-	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = heightsGenerator.GenerateHeight(static_cast<Math::Real>(x), static_cast<Math::Real>(z));
-#ifdef HEIGHTS_HEIGHTMAP
-	m_heights[heightMapIndex] = height;
-#endif
-	return height;
-}
-
-Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData)
-{
-	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightMapData) : REAL_ZERO;
-	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightMapData) : REAL_ZERO;
-	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightMapData) : REAL_ZERO;
-	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightMapData) : REAL_ZERO;
-	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
-	normal.Normalize();
-	return normal;
-}
-
-Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator)
-{
-	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightsGenerator) : REAL_ZERO;
-	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightsGenerator) : REAL_ZERO;
-	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightsGenerator) : REAL_ZERO;
-	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightsGenerator) : REAL_ZERO;
-	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
-	normal.Normalize();
-	return normal;
-}
-
-/**
- * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
- * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
- */
-Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
-{
-#ifdef MEASURE_MESH_TIME_ENABLED
-	Utility::Timing::Timer timer;
-	timer.Start();
-#endif
-#if defined HEIGHTS_KD_TREE
-	Math::Real y = m_kdTree->SearchNearestValue(x, z);
-	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz, "\"");
-#elif defined HEIGHTS_HEIGHTMAP
-	Math::Real terrainX = x - m_x;
-	Math::Real terrainZ = z - m_z;
-	int gridX = Math::Floor(terrainX / m_gridSquareSize);
-	int gridZ = Math::Floor(terrainZ / m_gridSquareSize);
-	if (gridX < 0 || gridX >= m_vertexCount - 1 || gridZ < 0 || gridZ >= m_vertexCount - 1)
-	{
-		return REAL_ZERO;
-	}
-	Math::Real xCoord = fmod(terrainX, m_gridSquareSize) / m_gridSquareSize;
-	Math::Real zCoord = fmod(terrainZ, m_gridSquareSize) / m_gridSquareSize;
-	Math::Real y;
-	if (xCoord <= (1.0f - zCoord))
-	{
-		y = Math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightMapIndex(gridX, gridZ)], 0.0f,
-			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
-			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
-			xCoord, zCoord);
-		//for (int i = 2; i > -3; --i)
-		//{
-			//CRITICAL_LOG_RENDERING(i, ") Heights: [", gridX - 2, "][", gridZ + i, "] = ", ((gridX - 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 2][gridZ + i],
-			//	"; [", gridX - 1, "][", gridZ + i, "] = ", ((gridX - 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 1][gridZ + i],
-			//	"; [", gridX, "][", gridZ + i, "] = ", ((gridX < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX][gridZ + i],
-			//	"; [", gridX + 1, "][", gridZ + i, "] = ", ((gridX + 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 1][gridZ + i],
-			//	"; [", gridX + 2, "][", gridZ + i, "] = ", ((gridX + 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 2][gridZ + i]);
-		//}
-		//EMERGENCY_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX, gridZ), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
-	}
-	else
-	{
-		y = Math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
-			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], 1.0f,
-			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
-			xCoord, zCoord);
-		//ERROR_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ + 1), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
-		//	m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
-	}
-	//y -= 0.35f;
-#endif
-
-#ifdef MEASURE_MESH_TIME_ENABLED
-	timer.Stop();
-	DEBUG_LOG_RENDERING("Camera's height calculation took ", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString());
-#endif
-
-	return y;
-}
-
-/**
- * TODO: See this page for a possible ways to optimize this function
- * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
- */
-void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
-{
-#ifdef HEIGHTS_KD_TREE
-#ifdef MEASURE_MESH_TIME_ENABLED
-	clock_t begin = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-#endif
-	DEBUG_LOG_RENDERING("Terrain consists of ", positions.size(), " positions");
-	std::unordered_set<Math::Vector3D> verticesSet;
-	for (unsigned int i = 0; i < positions.size(); ++i)
-	{
-		verticesSet.insert(positions[i]);
-	}
-	m_positions.assign(verticesSet.begin(), verticesSet.end()); // store only unique positions.
-#ifdef MEASURE_MESH_TIME_ENABLED
-	clock_t end = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
-	DEBUG_LOG_RENDERING("Removing duplicates from the vector of positions took ", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC), " [ms]", );
-#endif
-
-	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&m_positions[0], uniquePositions.size(), COMPONENT_Y);
-	//INFO_LOG_RENDERING("The minimum value is ", m_positions[0]);
-	//INFO_LOG_RENDERING("The maximum value is ", m_positions[uniquePositions.size() - 1]);
-
-	m_vertexCount = m_positions.size();
-	INFO_LOG_RENDERING("Terrain consists of ", m_vertexCount, " unique positions");
-#endif
-
-	/**
-	 * TODO: Think of a nice way to store positions so that access time in GetHeightAt(x, z) is optimized. Maybe a Binary Tree? Maybe a k-d tree?
-	 * Maybe find the minimum and maximum value for "Y" component of all positions and then use bucket sort (http://en.wikipedia.org/wiki/Bucket_sort)
-	 * based on "Y" values?
-	 */
-}
-
-void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
-{
-#ifdef HEIGHTS_KD_TREE
-	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix);
-	CHECK_CONDITION_EXIT_RENDERING(!m_positions.empty(), Utility::EMERGENCY, "Cannot transform the positions. The positions array is empty.");
-	for (int i = 0; i < m_vertexCount; ++i)
-	{
-		//std::string oldPos = positions[i];
-		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
-		//if ((i % 1000 == 0) || (i == m_vertexCount - 1))
-		//{
-		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i]);
-		//}
-	}
-	m_kdTree = std::make_unique<Math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);
-#endif
-}
+//{
+//	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
+//}
+//
+//Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const std::string& heightMapFileName, GLenum mode /* = GL_TRIANGLES */) :
+//	Mesh(mode),
+//	m_x(gridX),
+//	m_z(gridZ),
+//	m_vertexCount(0)
+//#ifdef HEIGHTS_KD_TREE
+//	, m_positions(),
+//	m_kdTree(nullptr),
+//	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
+//#elif defined HEIGHTS_HEIGHTMAP
+//	, m_heightMapWidth(0),
+//	m_heightMapHeight(0),
+//	m_heights(),
+//	m_gridSquareSize(0)
+//#endif
+//{
+//	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
+//
+//	/* Loading heightmap begin */
+//	std::string name = heightMapFileName;
+//	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
+//	if (tmp != nullptr)
+//	{
+//		name.assign(tmp + 1);
+//	}
+//	int bytesPerPixel;
+//	unsigned char* heightMapData = stbi_load(heightMapFileName.c_str(), &m_heightMapWidth, &m_heightMapHeight, &bytesPerPixel,
+//		1 /* we only care about one RED component for now (the heightmap is grayscale) */);
+//	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
+//	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
+//	//for (int i = 0; i < heightMapWidth; ++i)
+//	//{
+//	//	for (int j = 0; j < heightMapHeight; ++j)
+//	//	{
+//	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = ", heightMapData[i * heightMapWidth + j]);
+//	//	}
+//	//}
+//	/* Loading heightmap finished */
+//
+//	m_vertexCount = m_heightMapHeight; // The number of vertices along each side of the single terrain tile. It is equal to the height of the height map image.
+//	const int vertexCountMinusOne = m_vertexCount - 1;
+//#ifdef HEIGHTS_KD_TREE
+//	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
+//#else
+//	m_heights.reserve(m_heightMapWidth * m_heightMapHeight);
+//	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
+//#endif
+//	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
+//
+//	std::vector<Math::Vector3D> positions;
+//	positions.reserve(m_vertexCount);
+//	std::vector<Math::Vector2D> textureCoordinates;
+//	textureCoordinates.reserve(m_vertexCount);
+//	std::vector<Math::Vector3D> normals;
+//	normals.reserve(m_vertexCount);
+//	std::vector<Math::Vector3D> tangents;
+//	tangents.reserve(m_vertexCount);
+//	for (int z = vertexCountMinusOne; z >= 0; --z)
+//	{
+//		const Math::Real zReal = static_cast<Math::Real>(z);
+//		for (int x = 0; x < m_vertexCount; ++x)
+//		{
+//			const Math::Real xReal = static_cast<Math::Real>(x);
+//			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapData);
+//			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
+//			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
+//			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
+//			normals.push_back(CalculateNormal(x, z, heightMapData));
+//			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
+//		}
+//	}
+//	stbi_image_free(heightMapData);
+//	
+//	std::vector<int> indices;
+//	indices.reserve(vertexCountMinusOne * vertexCountMinusOne * 6);
+//	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
+//	{
+//		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
+//		{
+//			int topLeft = (gz * m_vertexCount) + gx;
+//			int topRight = topLeft + 1;
+//			int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
+//			int bottomRight = bottomLeft + 1;
+//			indices.push_back(topLeft);
+//			indices.push_back(topRight);
+//			indices.push_back(bottomLeft);
+//			indices.push_back(bottomLeft);
+//			indices.push_back(topRight);
+//			indices.push_back(bottomRight);
+//		}
+//	}
+//	
+////#ifdef DELOCUST_ENABLED
+//	//int i = 0;
+//	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
+//	//{
+//		//CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
+//	//}
+//	//for (size_t i = 0; i < INDICES_COUNT; ++i)
+//	//{
+//	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
+//	//}
+////#endif
+//
+//	SavePositions(positions);
+//	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+//
+//	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
+//}
+//
+//Rendering::TerrainMesh::TerrainMesh(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode /* = GL_TRIANGLES */) :
+//	Mesh(mode),
+//	m_x(gridX),
+//	m_z(gridZ),
+//	m_vertexCount(vertexCount)
+//#ifdef HEIGHTS_KD_TREE
+//	, m_positions(m_vertexCount),
+//	m_kdTree(nullptr),
+//	m_kdTreeSamples(GET_CONFIG_VALUE_RENDERING("kdTreeSamples", 8))
+//#elif defined HEIGHTS_HEIGHTMAP
+//	, m_heightMapWidth(vertexCount),
+//	m_heightMapHeight(vertexCount),
+//	m_heights(m_heightMapWidth * m_heightMapHeight),
+//	m_gridSquareSize(0)
+//#endif
+//{
+//	DEBUG_LOG_RENDERING("Terrain mesh construction has started.");
+//	const int vertexCountMinusOne = m_vertexCount - 1;
+//#ifdef HEIGHTS_KD_TREE
+//	//m_vertexCount = VERTEX_COUNT * VERTEX_COUNT;
+//#else
+//	m_gridSquareSize = static_cast<Math::Real>(SIZE) / vertexCountMinusOne;
+//#endif
+//	//const int INDICES_COUNT = 6 * (VERTEX_COUNT - 1) * (VERTEX_COUNT - 1); // The number of indices.
+//
+//	std::vector<Math::Vector3D> positions;
+//	positions.reserve(m_vertexCount);
+//	std::vector<Math::Vector2D> textureCoordinates;
+//	textureCoordinates.reserve(m_vertexCount);
+//	std::vector<Math::Vector3D> normals;
+//	normals.reserve(m_vertexCount);
+//	std::vector<Math::Vector3D> tangents;
+//	tangents.reserve(m_vertexCount);
+//	for (int z = vertexCountMinusOne; z >= 0; --z)
+//	{
+//		const Math::Real zReal = static_cast<Math::Real>(z);
+//		for (int x = 0; x < m_vertexCount; ++x)
+//		{
+//			const Math::Real xReal = static_cast<Math::Real>(x);
+//			Math::Real terrainHeight = CalculateHeightAt(x, z, heightsGenerator);
+//			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
+//			positions.emplace_back(xReal / vertexCountMinusOne * SIZE, terrainHeight, zReal / vertexCountMinusOne * SIZE);
+//			textureCoordinates.emplace_back(xReal / vertexCountMinusOne, zReal / vertexCountMinusOne);
+//			normals.push_back(CalculateNormal(x, z, heightsGenerator));
+//			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
+//		}
+//	}
+//
+//	std::vector<int> indices;
+//	indices.reserve(vertexCountMinusOne * vertexCountMinusOne * 6);
+//	for (int gz = 0; gz < vertexCountMinusOne; ++gz)
+//	{
+//		for (int gx = 0; gx < vertexCountMinusOne; ++gx)
+//		{
+//			int topLeft = (gz * m_vertexCount) + gx;
+//			int topRight = topLeft + 1;
+//			int bottomLeft = ((gz + 1) * m_vertexCount) + gx;
+//			int bottomRight = bottomLeft + 1;
+//			indices.push_back(topLeft);
+//			indices.push_back(topRight);
+//			indices.push_back(bottomLeft);
+//			indices.push_back(bottomLeft);
+//			indices.push_back(topRight);
+//			indices.push_back(bottomRight);
+//		}
+//	}
+//
+//	//#ifdef DELOCUST_ENABLED
+//	//int i = 0;
+//	//for (std::vector<Vertex>::const_iterator vertexItr = vertices.begin(); vertexItr != vertices.end(); ++vertexItr, ++i)
+//	//{
+//	//	CRITICAL_LOG_RENDERING("vertex[", i, "]:\n\tPos:\t", vertexItr->m_pos, "\n\tTex:\t", vertexItr->m_texCoord, "\n\tNormal:\t", vertexItr->m_normal);
+//	//}
+//	//for (size_t i = 0; i < INDICES_COUNT; ++i)
+//	//{
+//	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
+//	//}
+//	//#endif
+//
+//	SavePositions(positions);
+//	AddVertices(&positions[0], &textureCoordinates[0], &normals[0], &tangents[0], nullptr, static_cast<int>(positions.size()), &indices[0], static_cast<int>(indices.size()), false);
+//	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
+//}
+//
+//Rendering::TerrainMesh::~TerrainMesh(void)
+//{
+//#ifdef HEIGHTS_KD_TREE
+//#elif defined HEIGHTS_HEIGHTMAP
+//	//SAFE_DELETE_WHOLE_TABLE(m_heights, m_vertexCount);
+//#endif
+//}
+//
+//int Rendering::TerrainMesh::GetHeightMapIndex(int x, int z) const
+//{
+//	return (m_heightMapWidth * m_heightMapHeight) - ((z + 1) * m_heightMapWidth) + x;
+//}
+//
+//Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, unsigned char* heightMapData)
+//{
+//	// TODO: Range checking
+//	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
+//		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
+//	const int heightMapIndex = GetHeightMapIndex(x, z);
+//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
+//		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
+//	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
+//	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
+//	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * HEIGHTMAP_MAX_HEIGHT;
+//#ifdef HEIGHTS_HEIGHTMAP
+//	m_heights[heightMapIndex] = height;
+//#endif
+//	return height;
+//}
+//
+//Math::Real Rendering::TerrainMesh::CalculateHeightAt(int x, int z, const Math::HeightsGenerator& heightsGenerator)
+//{
+//	// TODO: Range checking
+//	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < m_heightMapWidth && z >= 0 && z < m_heightMapHeight, REAL_ZERO,
+//		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
+//	const int heightMapIndex = GetHeightMapIndex(x, z);
+//	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < m_heightMapWidth * m_heightMapHeight, Utility::Logging::ERR,
+//		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", m_heightMapWidth * m_heightMapHeight, ")");
+//	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
+//	Math::Real height = heightsGenerator.GenerateHeight(static_cast<Math::Real>(x), static_cast<Math::Real>(z));
+//#ifdef HEIGHTS_HEIGHTMAP
+//	m_heights[heightMapIndex] = height;
+//#endif
+//	return height;
+//}
+//
+//Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, unsigned char* heightMapData)
+//{
+//	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightMapData) : REAL_ZERO;
+//	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightMapData) : REAL_ZERO;
+//	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightMapData) : REAL_ZERO;
+//	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightMapData) : REAL_ZERO;
+//	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+//	normal.Normalize();
+//	return normal;
+//}
+//
+//Math::Vector3D Rendering::TerrainMesh::CalculateNormal(int x, int z, const Math::HeightsGenerator& heightsGenerator)
+//{
+//	Math::Real heightLeft = (x - 1) >= 0 ? CalculateHeightAt(x - 1, z, heightsGenerator) : REAL_ZERO;
+//	Math::Real heightRight = (x + 1) < m_heightMapWidth ? CalculateHeightAt(x + 1, z, heightsGenerator) : REAL_ZERO;
+//	Math::Real heightDown = (z - 1) >= 0 ? CalculateHeightAt(x, z - 1, heightsGenerator) : REAL_ZERO;
+//	Math::Real heightUp = (z + 1) < m_heightMapHeight ? CalculateHeightAt(x, z + 1, heightsGenerator) : REAL_ZERO;
+//	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
+//	normal.Normalize();
+//	return normal;
+//}
+//
+///**
+// * Performs the k-NN search in the 2-dimensional space in order to find the k closest points to the given point (xz).
+// * See also: http://en.wikipedia.org/wiki/Nearest_neighbor_search
+// */
+//Math::Real Rendering::TerrainMesh::GetHeightAt(Math::Real x, Math::Real z) const
+//{
+//#ifdef MEASURE_MESH_TIME_ENABLED
+//	Utility::Timing::Timer timer;
+//	timer.Start();
+//#endif
+//#if defined HEIGHTS_KD_TREE
+//	Math::Real y = m_kdTree->SearchNearestValue(x, z);
+//	//DEBUG_LOG_RENDERING("Height ", y, " returned for position \"", xz, "\"");
+//#elif defined HEIGHTS_HEIGHTMAP
+//	Math::Real terrainX = x - m_x;
+//	Math::Real terrainZ = z - m_z;
+//	int gridX = Math::Floor(terrainX / m_gridSquareSize);
+//	int gridZ = Math::Floor(terrainZ / m_gridSquareSize);
+//	if (gridX < 0 || gridX >= m_vertexCount - 1 || gridZ < 0 || gridZ >= m_vertexCount - 1)
+//	{
+//		return REAL_ZERO;
+//	}
+//	Math::Real xCoord = fmod(terrainX, m_gridSquareSize) / m_gridSquareSize;
+//	Math::Real zCoord = fmod(terrainZ, m_gridSquareSize) / m_gridSquareSize;
+//	Math::Real y;
+//	if (xCoord <= (1.0f - zCoord))
+//	{
+//		y = Math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightMapIndex(gridX, gridZ)], 0.0f,
+//			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
+//			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
+//			xCoord, zCoord);
+//		//for (int i = 2; i > -3; --i)
+//		//{
+//			//CRITICAL_LOG_RENDERING(i, ") Heights: [", gridX - 2, "][", gridZ + i, "] = ", ((gridX - 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 2][gridZ + i],
+//			//	"; [", gridX - 1, "][", gridZ + i, "] = ", ((gridX - 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX - 1][gridZ + i],
+//			//	"; [", gridX, "][", gridZ + i, "] = ", ((gridX < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX][gridZ + i],
+//			//	"; [", gridX + 1, "][", gridZ + i, "] = ", ((gridX + 1 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 1][gridZ + i],
+//			//	"; [", gridX + 2, "][", gridZ + i, "] = ", ((gridX + 2 < 0) || (gridZ + i < 0)) ? -999.0f : m_heights[gridX + 2][gridZ + i]);
+//		//}
+//		//EMERGENCY_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX, gridZ), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
+//	}
+//	else
+//	{
+//		y = Math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ)], 0.0f,
+//			1.0f, m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], 1.0f,
+//			0.0f, m_heights[GetHeightMapIndex(gridX, gridZ + 1)], 1.0f,
+//			xCoord, zCoord);
+//		//ERROR_LOG_RENDERING("Grid = [", gridX, ", ", gridZ, "]. Coords = [", xCoord, ", ", zCoord, "]. Height[", GetHeightMapIndex(gridX + 1, gridZ), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ)], ", Height[", GetHeightMapIndex(gridX + 1, gridZ + 1), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX + 1, gridZ + 1)], ", Height[", GetHeightMapIndex(gridX, gridZ + 1), "] = ",
+//		//	m_heights[GetHeightMapIndex(gridX, gridZ + 1)], ". Final height = ", y);
+//	}
+//	//y -= 0.35f;
+//#endif
+//
+//#ifdef MEASURE_MESH_TIME_ENABLED
+//	timer.Stop();
+//	DEBUG_LOG_RENDERING("Camera's height calculation took ", timer.GetTimeSpan(Utility::Timing::MICROSECOND).ToString());
+//#endif
+//
+//	return y;
+//}
+//
+///**
+// * TODO: See this page for a possible ways to optimize this function
+// * (http://stackoverflow.com/questions/1041620/whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector)
+// */
+//void Rendering::TerrainMesh::SavePositions(const std::vector<Math::Vector3D>& positions)
+//{
+//#ifdef HEIGHTS_KD_TREE
+//#ifdef MEASURE_MESH_TIME_ENABLED
+//	clock_t begin = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
+//#endif
+//	DEBUG_LOG_RENDERING("Terrain consists of ", positions.size(), " positions");
+//	std::unordered_set<Math::Vector3D> verticesSet;
+//	for (unsigned int i = 0; i < positions.size(); ++i)
+//	{
+//		verticesSet.insert(positions[i]);
+//	}
+//	m_positions.assign(verticesSet.begin(), verticesSet.end()); // store only unique positions.
+//#ifdef MEASURE_MESH_TIME_ENABLED
+//	clock_t end = clock(); // TODO: Replace with Utility::Timer. Use QueryPerformanceCounter() instead of clock() function when measuring time. It is more accurate.
+//	DEBUG_LOG_RENDERING("Removing duplicates from the vector of positions took ", 1000.0 * static_cast<double>(end - begin) / (CLOCKS_PER_SEC), " [ms]", );
+//#endif
+//
+//	//ISort::GetSortingObject(ISort::QUICK_SORT)->Sort(&m_positions[0], uniquePositions.size(), COMPONENT_Y);
+//	//INFO_LOG_RENDERING("The minimum value is ", m_positions[0]);
+//	//INFO_LOG_RENDERING("The maximum value is ", m_positions[uniquePositions.size() - 1]);
+//
+//	m_vertexCount = m_positions.size();
+//	INFO_LOG_RENDERING("Terrain consists of ", m_vertexCount, " unique positions");
+//#endif
+//
+//	/**
+//	 * TODO: Think of a nice way to store positions so that access time in GetHeightAt(x, z) is optimized. Maybe a Binary Tree? Maybe a k-d tree?
+//	 * Maybe find the minimum and maximum value for "Y" component of all positions and then use bucket sort (http://en.wikipedia.org/wiki/Bucket_sort)
+//	 * based on "Y" values?
+//	 */
+//}
+//
+//void Rendering::TerrainMesh::TransformPositions(const Math::Matrix4D& transformationMatrix)
+//{
+//#ifdef HEIGHTS_KD_TREE
+//	DEBUG_LOG_RENDERING("Transformation matrix = \n", transformationMatrix);
+//	CHECK_CONDITION_EXIT_RENDERING(!m_positions.empty(), Utility::EMERGENCY, "Cannot transform the positions. The positions array is empty.");
+//	for (int i = 0; i < m_vertexCount; ++i)
+//	{
+//		//std::string oldPos = positions[i];
+//		m_positions[i] = transformationMatrix * m_positions[i]; // FIXME: Check matrix multiplication
+//		//if ((i % 1000 == 0) || (i == m_vertexCount - 1))
+//		//{
+//		//	DELOCUST_LOG_RENDERING(i, ") Old position = ", oldPos, ". New Position = ", positions[i]);
+//		//}
+//	}
+//	m_kdTree = std::make_unique<Math::KDTree>(m_positions, m_vertexCount, m_kdTreeSamples);
+//#endif
+//}
 /* ==================== TerrainMesh class implementation end ==================== */
