@@ -82,15 +82,44 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// Sets the values of the X and Y components.
+		/// </summary>
+		/// <param name="_x"> The new value for the X component of the vector. </param>
+		/// <param name="_y"> The new value for the Y component of the vector. </param>
 		inline void Set(Real _x, Real _y) noexcept { x = _x; y = _y; }
+
+		/// <summary>
+		/// Increases the values of the X and Y components.
+		/// </summary>
+		/// <param name="_x"> The increase of the X component of the vector. </param>
+		/// <param name="_y"> The increase of the Y component of the vector. </param>
 		inline void Increase(Real _x, Real _y) noexcept { x += _x; y += _y; }
+
+		/// <summary>
+		/// Increases the values of the X and Y components.
+		/// </summary>
+		/// <param name="translation"> The 2D vector representing the translation of the current vector. </param>
 		inline void Increase(const Math::Vector2D& translation) noexcept { operator+=(translation); }
+
+		/// <summary>
+		/// Resets the values of both X and Y components of the vector.
+		/// </summary>
 		inline void Zero() noexcept { Set(REAL_ZERO, REAL_ZERO); }
 
+		/// <summary> Calculates and returns the sum of components of the vector. </summary>
 		constexpr Real SumOfComponents() const noexcept { return x + y; }
+
+		/// <summary> Calculates and returns the sum of vector components' absolute values. </summary>
 		constexpr Real SumOfAbsoluteComponents() const noexcept { return Absolute(x) + Absolute(y); }
 
+		/// <summary> Calculates and returns the length of the vector. </summary>
 		MATH_API Real Length() const { return sqrt(LengthSquared()); }
+
+		/// <summary>
+		/// Calculates and returns the squared length of the vector.
+		/// It is advisable to use this function instead of <code>Length()</code> because it is less time-consuming.
+		/// </summary>
 		MATH_API constexpr Real LengthSquared() const { return static_cast<Real>(x * x + y * y); }
 
 		/// <summary>

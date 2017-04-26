@@ -81,14 +81,3 @@ bool Utility::Config::HasArg(const std::string& name) const
 {
 	return m_cfgValues.find(name) != m_cfgValues.end();
 }
-
-//std::string Utility::Config::ReportUndefined()
-//{
-//	std::stringstream stream;
-//	for (ValuesMap::iterator it = cfgNotDefinedValues.begin(); it != cfgNotDefinedValues.end(); ++it)
-//	{
-//		stream << it->first << " = " << it->second << "\n";
-//	}
-//
-//	return stream.str();
-//}

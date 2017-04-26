@@ -17,7 +17,9 @@ namespace Utility
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Builder director constructor. </summary>
-		/// <param name="builder"> The specific builder for constructing the object. </param>
+		/// <param name="builder">
+		/// The specific builder for constructing the objects of type <code>T</code>.
+		/// </param>
 		explicit BuilderDirector(Builder<T>* builder) :
 			m_builder(builder)
 		{
@@ -38,11 +40,17 @@ namespace Utility
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary> Sets the builder to be used by the director. </summary>
+		/// <param name="builder">
+		/// The specific builder for constructing the objects of type <code>T</code>.
+		/// </param>
 		void SetBuilder(Builder<T>* builder)
 		{
 			m_builder = builder;
 		}
 
+		/// <summary> Builds the object using the current builder and returns it. </summary>
+		/// <returns> The object of type <code>T</code> built using the current builder. </returns>
 		T Construct() const
 		{
 			m_builder->Build();

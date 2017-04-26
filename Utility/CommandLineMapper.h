@@ -1,8 +1,6 @@
 #ifndef __UTILITY_COMMAND_LINE_MAPPER_H__
 #define __UTILITY_COMMAND_LINE_MAPPER_H__
 
-//#pragma warning(disable:4251)
-
 #include "Utility.h"
 #include "ICommandLineMapper.h"
 
@@ -43,15 +41,34 @@ namespace Utility
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// Returns <code>true</code> if the argument <paramref name="opt"/> is found in the map of property-value pairs and <code>false</code> otherwise.
+		/// </summary>
+		/// <returns>
+		/// <code>true</code> if the argument <paramref name="opt"/> is found in the map of property-value pairs and <code>false</code> otherwise.
+		/// </returns>
 		virtual inline bool IsPresent(const std::string& opt) const override
 		{
 			return m_argsToValuesMap.find(opt) != m_argsToValuesMap.end();
 		}
+
+		/// <summary>
+		/// Retrieves the <code>std::string</code> representation of the value that was assigned in the command line for the argument <paramref name="opt"/>.
+		/// In case of an error (in particular, if no such argument is found) then <paramref name="defaultValue"/> is returned.
+		/// </summary>
+		/// <param name="opt">The name of the argument we want to retrieve the value for. </param>
+		/// <param name="defaultValue">
+		/// The default value that will be returned in case of an error (e.g. when argument does not have any value assigned).
+		/// </param>
+		/// <returns>
+		/// The <code>std::string</code> representation of the value that was assigned in the command line for the argument <paramref name="opt"/>.
+		/// In case of an error (in particular, if no such argument is found) then <paramref name="defaultValue"/> is returned.
+		/// </returns>
 		virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const override;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
+	private:
 		// TODO: Check if Array<std::string> is a better solution than using STL vector
 		//Container
 		ArgsToValuesMap m_argsToValuesMap;
