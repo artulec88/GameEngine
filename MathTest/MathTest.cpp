@@ -1346,16 +1346,17 @@ void SurfaceTest()
 	NOTICE_LOG_MATH_TEST("More complex surface test finished");
 	/* ==================== SURFACE TEST #2- more complex surface- end ==================== */
 
-	/* ==================== SURFACE TEST #3- create a surface out of collection of random 3D positions- begin ==================== */
+	/* ==================== SURFACE TEST #3- create a simple surface out of collection of random 3D positions- begin ==================== */
 	NOTICE_LOG_MATH_TEST("Customary simple surface test started");
-	constexpr int RANDOM_POSITIONS_COUNT_3 = 3;
-	std::array<Vector3D, RANDOM_POSITIONS_COUNT_3> positions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(10.0f, 3.0f, 10.0f) };
+	constexpr int RANDOM_POSITIONS_COUNT_3 = 5;
+	std::array<Vector3D, RANDOM_POSITIONS_COUNT_3> positions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(10.0f, 3.0f, 10.0f),
+		Vector3D(5.0f, 0.5f, 0.0f), Vector3D(2.5f, 2.0f, 8.0f) };
 	Surface surface3(positions3.data(), RANDOM_POSITIONS_COUNT_3);
 
 	constexpr int SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3 = 18;
-	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3> surfacePositions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(5.0f, 0.5f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(0.0f, 0.7f, 5.0f),
-		Vector3D(5.0f, 1.2f, 5.0f), Vector3D(10.0f, 2.0f, 5.0f), Vector3D(2.5f, 0.25f, 0.0f), Vector3D(2.5f, 0.6f, 2.5f), Vector3D(2.5f, 0.95f, 5.0f), Vector3D(2.5f, 1.3f, 7.5f), Vector3D(2.5f, 1.8f, 10.0f),
-		Vector3D(4.0f, 1.34f, 6.5f), Vector3D(1.3f, 0.6424f, 3.66f), Vector3D(7.2f, 1.252f, 3.5f), Vector3D(9.8f, 2.868f, 9.5f), Vector3D(9.9f, 0.9956f, 0.04f), Vector3D(1.2f, 1.31f, 8.5f), Vector3D(3.5f, 1.2306f, 6.29f) };
+	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3> surfacePositions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(5.0f, 0.5f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(0.0f, 1.12402093f, 5.0f),
+		Vector3D(5.0f, 1.68146205f, 5.0f), Vector3D(10.0f, 1.70000017f, 5.0f), Vector3D(2.5f, 0.25f, 0.0f), Vector3D(2.5f, 0.812010465f, 2.5f), Vector3D(2.5f, 1.40274149f, 5.0f), Vector3D(2.5f, 1.79819995f, 7.5f), Vector3D(2.5f, 2.04217964f, 10.0f),
+		Vector3D(4.0f, 1.776953148f, 6.5f), Vector3D(1.3f, 0.952783321f, 3.66f), Vector3D(7.2f, 1.479618772f, 3.5f), Vector3D(9.8f, 2.836776874f, 9.5f), Vector3D(9.9f, 0.999451696f, 0.04f), Vector3D(1.2f, 1.811448643f, 8.5f), Vector3D(3.5f, 1.718286279f, 6.29f) };
 	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3; ++i)
 	{
 		Real height = surface3.GetHeightAt(surfacePositions3[i].GetXZ());
@@ -1364,7 +1365,7 @@ void SurfaceTest()
 		TestReport(AlmostEqual(height, surfacePositions3[i].y), ss.str());
 	}
 	NOTICE_LOG_MATH_TEST("Customary simple surface test finished");
-	/* ==================== SURFACE TEST #3- create a surface out of collection of random 3D positions- end ==================== */
+	/* ==================== SURFACE TEST #3- create a simple surface out of collection of random 3D positions- end ==================== */
 
 	/* ==================== SURFACE TEST #4- create a surface out of collection of random 3D positions- begin ==================== */
 	NOTICE_LOG_MATH_TEST("Customary complex surface test started");
