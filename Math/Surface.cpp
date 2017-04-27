@@ -66,10 +66,15 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	// Find minimum distance between any two positions that have different Y values.
 	Real minDistance = FindMinimumDistanceBetweenPairOfPositions(positions, positionsCount);
 
+	DEBUG_LOG_MATH("Min distance between pair of positions that have different Y values = ", minDistance);
+
 	m_horizontalVerticesCount = Ceil(surfaceWidth / minDistance) + 1;
 	m_verticalVerticesCount = Ceil(surfaceDepth / minDistance) + 1;
 	m_squareWidth = surfaceWidth / (m_horizontalVerticesCount - 1);
 	m_squareDepth = surfaceDepth / (m_verticalVerticesCount - 1);
+
+	DEBUG_LOG_MATH("Horizontal vertices count = ", m_horizontalVerticesCount, ". Vertical vertices count = ", m_verticalVerticesCount);
+	DEBUG_LOG_MATH("Square width = ", m_squareWidth, ". Square depth = ", m_squareDepth);
 
 	// Interpolate between points to create a collection of heights.
 	KDTree kdTree(positions, positionsCount, 3);
@@ -79,7 +84,7 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 		{
 			Vector2D position = m_position + Vector2D(j * m_squareWidth, i * m_squareDepth);
 			m_heights.push_back(kdTree.SearchNearestValue(position));
-			ERROR_LOG_MATH("Height for position: ", position, " equals ", m_heights.back());
+			DELOCUST_LOG_MATH("Height for position [", i, "][", j, "] = ", position, " equals ", m_heights.back());
 		}
 	}
 }
@@ -90,7 +95,7 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	Real surfaceZ = z - m_position.y;
 	int gridX = Math::Floor(surfaceX / m_squareWidth);
 	int gridZ = Math::Floor(surfaceZ / m_squareDepth);
-	if (gridX < 0 || gridX >= m_horizontalVerticesCount - 1 || gridZ < 0 || gridZ >= m_verticalVerticesCount - 1)
+	if (gridX < 0 || gridX >= m_horizontalVerticesCount || gridZ < 0 || gridZ >= m_verticalVerticesCount)
 	{
 		return REAL_ZERO;
 	}
@@ -99,8 +104,8 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	Real y;
 	if (xCoord <= (REAL_ONE - zCoord))
 	{
-		//DEBUG_LOG_MATH("Left triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ),
-		//	"; ", GetHeightsIndex(gridX, gridZ + 1));
+		DEBUG_LOG_MATH("Left triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ),
+			"; ", GetHeightsIndex(gridX, gridZ + 1));
 		y = Math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightsIndex(gridX, gridZ)], 0.0f,
 			1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ)], 0.0f,
 			0.0f, m_heights[GetHeightsIndex(gridX, gridZ + 1)], 1.0f,
@@ -108,8 +113,8 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	}
 	else
 	{
-		//DEBUG_LOG_MATH("Right triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX + 1, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ + 1),
-		//	"; ", GetHeightsIndex(gridX, gridZ + 1));
+		DEBUG_LOG_MATH("Right triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX + 1, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ + 1),
+			"; ", GetHeightsIndex(gridX, gridZ + 1));
 		y = Math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ)], 0.0f,
 			1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ + 1)], 1.0f,
 			0.0f, m_heights[GetHeightsIndex(gridX, gridZ + 1)], 1.0f,
@@ -131,6 +136,15 @@ Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(Vector3D* ve
 	Sorting::SortingParametersChain sortParamsZ(Sorting::Keys::COMPONENT_Y /* (sic!) this is not a mistake- we sort Vector2D objects so we need to use Y component */, Sorting::Orders::ASCENDING);
 	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::QUICK_SORT)->Sort(positionsSortedByX.data(), vectorsCount, sortParamsX);
 	Sorting::ISort::GetSortingObject(Sorting::SortingAlgorithms::QUICK_SORT)->Sort(positionsSortedByZ.data(), vectorsCount, sortParamsZ);
+
+	//for (unsigned int i = 0; i < positionsSortedByX.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("Posititions sorted by X #", i, " = ", positionsSortedByX[i]);
+	//}
+	//for (unsigned int i = 0; i < positionsSortedByZ.size(); ++i)
+	//{
+	//	ERROR_LOG_MATH("Posititions sorted by Z #", i, " = ", positionsSortedByZ[i]);
+	//}
 
 	// Use recursive function FindMinimumDistanceBetweenPairOfPositions() to find the smallest distance
 	return sqrt(FindMinimumDistanceBetweenPairOfPositions(positionsSortedByX, positionsSortedByZ));

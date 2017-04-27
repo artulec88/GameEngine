@@ -47,6 +47,7 @@ bool sortingTestEnabled = true;
 bool kdTreeTestEnabled = true;
 bool statsTestEnabled = true;
 bool heightsGeneratorTestsEnabled = true;
+bool interpolationTestsEnabled = true;
 bool surfaceTestsEnabled = true;
 bool otherTestsEnabled = true;
 
@@ -1264,6 +1265,35 @@ void HeightsGeneratorTests()
 	//std::cout << "Total elapsed time = " << totalElapsedTime << "[s]. Another total elapsed time = " << anotherTotalElapsedTime << "[s]." << std::endl;
 }
 
+void InterpolationTest()
+{
+	if (!interpolationTestsEnabled)
+	{
+		return;
+	}
+
+	NOTICE_LOG_MATH_TEST("Interpolation tests started");
+	const Vector3D vertexA(REAL_ZERO, 10.0f, 2.0f / 3.0f);
+	const Vector3D vertexB(2.0f / 3.0f, 9.0f, 2.0f / 3.0f);
+	const Vector3D vertexC(2.0f / 3.0f, 8.0f, REAL_ZERO);
+	const Vector3D vertexD(REAL_ZERO, 7.0f, REAL_ZERO);
+	/* ==================== INTERPOLATION TEST #1- barycentric- begin ==================== */
+	constexpr int TEST_POSITIONS_COUNT = 4;
+	std::array<Vector2D, TEST_POSITIONS_COUNT> testPositions = { Vector2D(vertexA.x, vertexA.z), Vector2D(vertexB.x, vertexB.z), Vector2D(vertexC.x, vertexC.z),
+		Vector2D(vertexD.x, vertexD.z) };
+	std::array<Real, TEST_POSITIONS_COUNT> testPositionsExpectedHeights = { vertexA.y, vertexB.y, vertexC.y, vertexD.y };
+	for (int i = 0; i < TEST_POSITIONS_COUNT; ++i)
+	{
+		Real height = Interpolation::BarycentricInterpolation(vertexA, vertexC, vertexD, testPositions[i].x, testPositions[i].y);
+		//Real height = Interpolation::BarycentricInterpolation(vertexA, vertexB, vertexC, testPositions[i].x, testPositions[i].y);
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the triangle at position: " << testPositions[i] << ". Expected height equals: " << testPositionsExpectedHeights[i];
+		TestReport(AlmostEqual(height, testPositionsExpectedHeights[i]), ss.str());
+	}
+	/* ==================== INTERPOLATION TEST #2- barycentric- begin ==================== */
+	NOTICE_LOG_MATH_TEST("Interpolation tests finished");
+}
+
 void SurfaceTest()
 {
 	if (!surfaceTestsEnabled)
@@ -1271,52 +1301,91 @@ void SurfaceTest()
 		return;
 	}
 
-	NOTICE_LOG_MATH_TEST("Surface test started");
+	/* ==================== SURFACE TEST #1- simple surface- begin ==================== */
+	NOTICE_LOG_MATH_TEST("Simple surface test started");
+	constexpr int SIMPLE_SURFACE_WIDTH = 10;
+	constexpr int SIMPLE_SURFACE_DEPTH = 10;
+	constexpr int SIMPLE_HORIZONTAL_VERTICES_COUNT = 2;
+	constexpr int SIMPLE_VERTICAL_VERTICES_COUNT = 2;
+	std::array<Real, SIMPLE_HORIZONTAL_VERTICES_COUNT * SIMPLE_VERTICAL_VERTICES_COUNT> simpleHeights = { 0, 1, 2, 3 };
+	Surface surface1(Vector2D(0.0f, 0.0f), SIMPLE_SURFACE_WIDTH, SIMPLE_SURFACE_DEPTH, SIMPLE_HORIZONTAL_VERTICES_COUNT, SIMPLE_VERTICAL_VERTICES_COUNT, simpleHeights.data());
 
-	/* ==================== SURFACE TEST #1- create a surface- begin ==================== */
+	constexpr int SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT = 18;
+	std::array<Vector3D, SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT> surfacePositions = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(5.0f, 0.5f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(0.0f, 1.0f, 5.0f),
+		Vector3D(5.0f, 1.5f, 5.0f), Vector3D(10.0f, 2.0f, 5.0f), Vector3D(2.5f, 0.25f, 0.0f), Vector3D(2.5f, 0.75f, 2.5f), Vector3D(2.5f, 1.25f, 5.0f), Vector3D(2.5f, 1.75f, 7.5f), Vector3D(2.5f, 2.25f, 10.0f),
+		Vector3D(4.0f, 1.7f, 6.5f), Vector3D(1.3f, 0.862f, 3.66f), Vector3D(7.2f, 1.42f, 3.5f), Vector3D(9.8f, 2.88f, 9.5f), Vector3D(9.9f, 0.998f, 0.04f), Vector3D(1.2f, 1.82f, 8.5f), Vector3D(3.5f, 1.608f, 6.29f) };
+	for (int i = 0; i < SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
+	{
+		Real height = surface1.GetHeightAt(surfacePositions[i].GetXZ());
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions[i].GetXZ() << ". Expected height equals: " << surfacePositions[i].y;
+		TestReport(AlmostEqual(height, surfacePositions[i].y), ss.str());
+	}
+	NOTICE_LOG_MATH_TEST("Simple surface test finished");
+	/* ==================== SURFACE TEST #1- simple surface- end ==================== */
+
+	/* ==================== SURFACE TEST #2- more complex surface- begin ==================== */
+	NOTICE_LOG_MATH_TEST("More complex surface test started");
 	constexpr int SURFACE_WIDTH = 50;
 	constexpr int SURFACE_DEPTH = 50;
 	constexpr int HORIZONTAL_VERTICES_COUNT = 6;
 	constexpr int VERTICAL_VERTICES_COUNT = 6;
 	std::array<Real, HORIZONTAL_VERTICES_COUNT * VERTICAL_VERTICES_COUNT> heights = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 };
-	Surface surface1(Vector2D(5.0f, 5.0f), SURFACE_WIDTH, SURFACE_DEPTH, HORIZONTAL_VERTICES_COUNT, VERTICAL_VERTICES_COUNT, heights.data());
-
-	constexpr int SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT = 10;
-	std::array<Vector2D, SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT> surface1Heights = { Vector2D(5.0f, 5.0f), Vector2D(10.0f, 5.0f), Vector2D(12.2f, 5.0f), Vector2D(12.2f, 8.0f),
-		Vector2D(15.0f, 5.0f), Vector2D(19.0f, 5.0f), Vector2D(32.2f, 14.0f), Vector2D(32.2f, 17.1f), Vector2D(32.2f, 18.7f), Vector2D(40.0f, 20.1f) };
-	std::array<Real, SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT> surface1ExpectedHeights = { 0.0f, 0.5f, 0.72f, 2.52f, 1.0f, 1.4f, 8.12f, 9.98f, 10.94f, 12.56f };
-
-	for (int i = 0; i < SURFACE1_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
-	{
-		Real height = surface1.GetHeightAt(surface1Heights[i]);
-		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface1Heights[i] << ". Expected height equals: " << surface1ExpectedHeights[i];
-		TestReport(AlmostEqual(height, surface1ExpectedHeights[i]), ss.str());
-	}
-	/* ==================== SURFACE TEST #1- create a surface- end ==================== */
-
-	/* ==================== SURFACE TEST #2- create a surface out of collection of random 3D positions- begin ==================== */
-	constexpr int RANDOM_POSITIONS_COUNT = 12;
-	std::array<Vector3D, RANDOM_POSITIONS_COUNT> positions = { Vector3D(3.0f, 0.0f, 0.0f), Vector3D(1.0f, 1.0f, 1.0f), Vector3D(6.0f, 2.0f, 1.0f),
-		Vector3D(4.0f, 3.0f, 2.0f), Vector3D(0.0f, 4.0f, 3.0f), Vector3D(2.0f, 5.0f, 3.0f), Vector3D(5.0f, 6.0f, 3.0f), Vector3D(4.5f, 7.0f, 3.5f),
-		Vector3D(3.0f, 8.0f, 4.0f), Vector3D(1.5f, 9.0f, 5.0f), Vector3D(5.0f, 10.0f, 5.0f), Vector3D(4.0f, 11.0f, 6.0f) };
-	Surface surface2(positions.data(), RANDOM_POSITIONS_COUNT);
+	Surface surface2(Vector2D(5.0f, 5.0f), SURFACE_WIDTH, SURFACE_DEPTH, HORIZONTAL_VERTICES_COUNT, VERTICAL_VERTICES_COUNT, heights.data());
 
 	constexpr int SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT = 10;
-	std::array<Vector2D, SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT> surface2Heights = { Vector2D(5.0f, 5.0f), Vector2D(10.0f, 5.0f), Vector2D(12.2f, 5.0f), Vector2D(12.2f, 8.0f),
-		Vector2D(15.0f, 5.0f), Vector2D(19.0f, 5.0f), Vector2D(32.2f, 14.0f), Vector2D(32.2f, 17.1f), Vector2D(32.2f, 18.7f), Vector2D(40.0f, 20.1f) };
-	std::array<Real, SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT> surface2ExpectedHeights = { 0.0f, 0.5f, 0.72f, 2.52f, 1.0f, 1.4f, 8.12f, 9.98f, 10.94f, 12.56f };
-
+	std::array<Vector3D, SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT> surface2Positions = { Vector3D(5.0f, 0.0f, 5.0f), Vector3D(10.0f, 0.5f, 5.0f), Vector3D(12.2f, 0.72f, 5.0f), Vector3D(12.2f, 2.52f, 8.0f),
+		Vector3D(15.0f, 1.0f, 5.0f), Vector3D(19.0f, 1.4f, 5.0f), Vector3D(32.2f, 8.12f, 14.0f), Vector3D(32.2f, 9.98f, 17.1f), Vector3D(32.2f, 10.94f, 18.7f), Vector3D(40.0f, 12.56f, 20.1f) };
 	for (int i = 0; i < SURFACE2_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
 	{
-		Real height = surface2.GetHeightAt(surface2Heights[i]);
+		Real height = surface2.GetHeightAt(surface2Positions[i].GetXZ());
 		stringstream ss("");
-		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface2Heights[i] << ". Expected height equals: " << surface2ExpectedHeights[i];
-		TestReport(AlmostEqual(height, surface2ExpectedHeights[i]), ss.str());
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surface2Positions[i].GetXZ() << ". Expected height equals: " << surface2Positions[i].y;
+		TestReport(AlmostEqual(height, surface2Positions[i].y), ss.str());
 	}
-	/* ==================== SURFACE TEST #2- create a surface out of collection of random 3D positions- end ==================== */
+	NOTICE_LOG_MATH_TEST("More complex surface test finished");
+	/* ==================== SURFACE TEST #2- more complex surface- end ==================== */
 
-	NOTICE_LOG_MATH_TEST("Surface test finished");
+	/* ==================== SURFACE TEST #3- create a surface out of collection of random 3D positions- begin ==================== */
+	NOTICE_LOG_MATH_TEST("Customary simple surface test started");
+	constexpr int RANDOM_POSITIONS_COUNT_3 = 3;
+	std::array<Vector3D, RANDOM_POSITIONS_COUNT_3> positions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(10.0f, 3.0f, 10.0f) };
+	Surface surface3(positions3.data(), RANDOM_POSITIONS_COUNT_3);
+
+	constexpr int SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3 = 18;
+	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3> surfacePositions3 = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(5.0f, 0.5f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(0.0f, 0.7f, 5.0f),
+		Vector3D(5.0f, 1.2f, 5.0f), Vector3D(10.0f, 2.0f, 5.0f), Vector3D(2.5f, 0.25f, 0.0f), Vector3D(2.5f, 0.6f, 2.5f), Vector3D(2.5f, 0.95f, 5.0f), Vector3D(2.5f, 1.3f, 7.5f), Vector3D(2.5f, 1.8f, 10.0f),
+		Vector3D(4.0f, 1.34f, 6.5f), Vector3D(1.3f, 0.6424f, 3.66f), Vector3D(7.2f, 1.252f, 3.5f), Vector3D(9.8f, 2.868f, 9.5f), Vector3D(9.9f, 0.9956f, 0.04f), Vector3D(1.2f, 1.31f, 8.5f), Vector3D(3.5f, 1.2306f, 6.29f) };
+	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_3; ++i)
+	{
+		Real height = surface3.GetHeightAt(surfacePositions3[i].GetXZ());
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions3[i].GetXZ() << ". Expected height equals: " << surfacePositions3[i].y;
+		TestReport(AlmostEqual(height, surfacePositions3[i].y), ss.str());
+	}
+	NOTICE_LOG_MATH_TEST("Customary simple surface test finished");
+	/* ==================== SURFACE TEST #3- create a surface out of collection of random 3D positions- end ==================== */
+
+	/* ==================== SURFACE TEST #4- create a surface out of collection of random 3D positions- begin ==================== */
+	NOTICE_LOG_MATH_TEST("Customary complex surface test started");
+	constexpr int RANDOM_POSITIONS_COUNT_4 = 12;
+	std::array<Vector3D, RANDOM_POSITIONS_COUNT_4> positions4 = { Vector3D(3.0f, 0.0f, 0.0f), Vector3D(1.0f, 1.0f, 1.0f), Vector3D(6.0f, 2.0f, 1.0f),
+		Vector3D(4.0f, 3.0f, 2.0f), Vector3D(0.0f, 4.0f, 3.0f), Vector3D(2.0f, 5.0f, 3.0f), Vector3D(5.0f, 6.0f, 3.0f), Vector3D(4.5f, 7.0f, 3.5f),
+		Vector3D(3.0f, 8.0f, 4.0f), Vector3D(1.5f, 9.0f, 5.0f), Vector3D(5.0f, 10.0f, 5.0f), Vector3D(4.0f, 11.0f, 6.0f) };
+	Surface surface4(positions4.data(), RANDOM_POSITIONS_COUNT_4);
+
+	constexpr int SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4 = 10;
+	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4> surfacePositions4 = { Vector3D(5.0f, 9.75358249f, 5.0f), Vector3D(1.0f, 3.71893555f, 2.5f), Vector3D(5.0f, 8.17587081f, 4.9f),
+		Vector3D(5.0f, 2.52f, 5.1f), Vector3D(15.0f, 1.0f, 5.0f), Vector3D(19.0f, 1.4f, 5.0f), Vector3D(32.2f, 8.12f, 14.0f), Vector3D(32.2f, 9.98f, 17.1f), Vector3D(32.2f, 10.94f, 18.7f), Vector3D(40.0f, 12.56f, 20.1f) };
+	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4; ++i)
+	{
+		Real height = surface4.GetHeightAt(surfacePositions4[i].GetXZ());
+		stringstream ss("");
+		ss << "Incorrect height (" << height << ") calculated for the surface at position: " << surfacePositions4[i].GetXZ() << ". Expected height equals: " << surfacePositions4[i].y;
+		TestReport(AlmostEqual(height, surfacePositions4[i].y), ss.str());
+	}
+	NOTICE_LOG_MATH_TEST("Customary complex surface test finished");
+	/* ==================== SURFACE TEST #4- create a surface out of collection of random 3D positions- end ==================== */
 }
 
 void OtherTests()
@@ -1394,6 +1463,7 @@ int main(int argc, char* argv[])
 	TransformTest();
 	SortTest();
 	//SortTestTime();
+	InterpolationTest();
 	SurfaceTest();
 
 	KDTreeTest();

@@ -29,7 +29,7 @@ namespace Math
 		/// <param name="surfaceVerticalVerticesCount"> The number of vertices along the Z axis of the surface. </param>
 		/// <param name"heights">
 		/// The pointer to heights values. The array must consist of exactly
-		/// <code>surfaceHorizontalVerticesCount * surfaceVerticalVerticesCount</code> elements.
+		/// <paramref name="surfaceHorizontalVerticesCount"/> * <paramref name="surfaceVerticalVerticesCount"/> elements.
 		/// </param>
 		MATH_API Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWidth, int surfaceDepth,
 			int surfaceHorizontalVerticesCount, int surfaceVerticalVerticesCount, Real* heights);

@@ -554,7 +554,7 @@ namespace Math {
 			template <typename T>
 			void Sort(T* vectors, size_t left, size_t right, const SortingParametersChain& sortingParameters)
 			{
-				DEBUG_LOG_MATH("Quick sort started for the range of indices: [", left, "; ", right, "].");
+				DELOCUST_LOG_MATH("Quick sort started for the range of indices: [", left, "; ", right, "].");
 				CHECK_CONDITION_RETURN_VOID_ALWAYS_MATH(left < right, Utility::Logging::WARNING,
 					"Calling quick sort method with incorrect values for left and right indices (", left, ", ", right, " respectively).");
 
