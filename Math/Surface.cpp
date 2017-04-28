@@ -100,7 +100,15 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 		return REAL_ZERO;
 	}
 	Real xCoord = fmod(surfaceX, m_squareWidth) / m_squareWidth;
+	if (AlmostEqual(xCoord, REAL_ONE)) // xCoord should never be >= REAL_ONE, but due to floating-point errors this may happen.
+	{
+		xCoord = REAL_ZERO;
+	}
 	Real zCoord = fmod(surfaceZ, m_squareDepth) / m_squareDepth;
+	if (AlmostEqual(zCoord, REAL_ONE)) // zCoord should never be >= REAL_ONE, but due to floating-point errors this may happen.
+	{
+		zCoord = REAL_ZERO;
+	}
 	Real y;
 	if (xCoord <= (REAL_ONE - zCoord))
 	{

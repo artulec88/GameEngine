@@ -1310,10 +1310,11 @@ void SurfaceTest()
 	std::array<Real, SIMPLE_HORIZONTAL_VERTICES_COUNT * SIMPLE_VERTICAL_VERTICES_COUNT> simpleHeights = { 0, 1, 2, 3 };
 	Surface surface1(Vector2D(0.0f, 0.0f), SIMPLE_SURFACE_WIDTH, SIMPLE_SURFACE_DEPTH, SIMPLE_HORIZONTAL_VERTICES_COUNT, SIMPLE_VERTICAL_VERTICES_COUNT, simpleHeights.data());
 
-	constexpr int SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT = 18;
+	constexpr int SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT = 19;
 	std::array<Vector3D, SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT> surfacePositions = { Vector3D(0.0f, 0.0f, 0.0f), Vector3D(5.0f, 0.5f, 0.0f), Vector3D(10.0f, 1.0f, 0.0f), Vector3D(0.0f, 1.0f, 5.0f),
 		Vector3D(5.0f, 1.5f, 5.0f), Vector3D(10.0f, 2.0f, 5.0f), Vector3D(2.5f, 0.25f, 0.0f), Vector3D(2.5f, 0.75f, 2.5f), Vector3D(2.5f, 1.25f, 5.0f), Vector3D(2.5f, 1.75f, 7.5f), Vector3D(2.5f, 2.25f, 10.0f),
-		Vector3D(4.0f, 1.7f, 6.5f), Vector3D(1.3f, 0.862f, 3.66f), Vector3D(7.2f, 1.42f, 3.5f), Vector3D(9.8f, 2.88f, 9.5f), Vector3D(9.9f, 0.998f, 0.04f), Vector3D(1.2f, 1.82f, 8.5f), Vector3D(3.5f, 1.608f, 6.29f) };
+		Vector3D(4.0f, 1.7f, 6.5f), Vector3D(1.3f, 0.862f, 3.66f), Vector3D(7.2f, 1.42f, 3.5f), Vector3D(9.8f, 2.88f, 9.5f), Vector3D(9.9f, 0.998f, 0.04f), Vector3D(1.2f, 1.82f, 8.5f), Vector3D(3.5f, 1.608f, 6.29f),
+		Vector3D(8.5f, 0.85f, 0.0f)};
 	for (int i = 0; i < SIMPLE_SURFACE_HEIGHT_CALCULATION_TESTS_COUNT; ++i)
 	{
 		Real height = surface1.GetHeightAt(surfacePositions[i].GetXZ());
@@ -1376,8 +1377,8 @@ void SurfaceTest()
 	Surface surface4(positions4.data(), RANDOM_POSITIONS_COUNT_4);
 
 	constexpr int SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4 = 10;
-	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4> surfacePositions4 = { Vector3D(5.0f, 9.75358249f, 5.0f), Vector3D(1.0f, 3.71893555f, 2.5f), Vector3D(5.0f, 8.17587081f, 4.9f),
-		Vector3D(5.0f, 2.52f, 5.1f), Vector3D(15.0f, 1.0f, 5.0f), Vector3D(19.0f, 1.4f, 5.0f), Vector3D(32.2f, 8.12f, 14.0f), Vector3D(32.2f, 9.98f, 17.1f), Vector3D(32.2f, 10.94f, 18.7f), Vector3D(40.0f, 12.56f, 20.1f) };
+	std::array<Vector3D, SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4> surfacePositions4 = { Vector3D(5.0f, 9.75358249f, 5.0f), Vector3D(1.0f, 3.71893555f, 2.5f), Vector3D(5.0f, 9.702269898f, 4.9f),
+		Vector3D(5.0f, 9.825219501f, 5.1f), Vector3D(1.5f, 9.04133601f, 5.7f), Vector3D(5.7f, 2.386133103f, 1.25f), Vector3D(3.2f, 2.53062155f, 1.44f), Vector3D(4.75f, 6.227233357f, 2.99f), Vector3D(5.9f, 7.701587344f, 4.0f), Vector3D(0.9f, 6.761328315f, 4.1f) };
 	for (int i = 0; i < SURFACE_HEIGHT_CALCULATION_TESTS_COUNT_4; ++i)
 	{
 		Real height = surface4.GetHeightAt(surfacePositions4[i].GetXZ());
