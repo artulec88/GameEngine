@@ -2,6 +2,9 @@
 #define __MATH_TEST_TEST_GROUP_H__
 
 #include "Utility\Time.h"
+
+#include "Math\Math.h"
+
 #include <vector>
 
 namespace MathTest
@@ -21,8 +24,8 @@ namespace MathTest
 		virtual void AfterTest();
 		virtual void StartTest() = 0;
 		virtual void BeforeTimeTest();
-		virtual void AfterTimeTest();
-		virtual void StartTimeTest() = 0;
+		virtual Utility::Timing::TimeSpan AfterTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount) = 0;
 		bool IsTestEnabled() const;
 		/* ==================== Non-static member functions end ==================== */
 
@@ -37,12 +40,13 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		TestGroup(void);
+		TestGroup(const std::string& testGroupName, int testTimeIterationsCount);
 		virtual ~TestGroup(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		void AddTestGroup(TestGroup* testGroup);
 		void AddTest(Test* test);
 		void StartTests();
 		void StartTimeTests();
@@ -51,8 +55,11 @@ namespace MathTest
 
 		/* ==================== Non-static member variables begin ==================== */
 	protected:
+		const std::string m_testGroupName;
+		const int m_testTimeIterationsCount;
+		std::vector<TestGroup*> m_testGroups;
 		std::vector<Test*> m_tests;
-		Utility::Timing::Timer m_timer;
+		std::vector<Math::Real> m_testTimeSpans;
 		bool m_isTestGroupEnabled;
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class TestGroup */

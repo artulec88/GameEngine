@@ -81,111 +81,6 @@ void TimeReport(const std::string& reportStr, Timing::Timer& timer, Timing::Time
 	NOTICE_LOG_MATH_TEST(reportStr, ":\t", elapsedTime, " ", Timing::DateTime::ConvertTimeUnitToString(timeUnit));
 }
 
-void TestAngleConstructionTime(const unsigned int NUMBER_OF_ITERATIONS)
-{
-	Timing::Timer timer;
-	timer.Start();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-	}
-	timer.Stop();
-	TimeReport("Average time for angle creation:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-}
-
-void TestAngleSinCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
-{
-	Timing::Timer timer;
-	timer.Start();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.Sin();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle sinus calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastSin1();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle sinus calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastSin2();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle sinus calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-}
-
-void TestAngleCosCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
-{
-	Timing::Timer timer;
-	timer.Start();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.Cos();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle cosinus calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastCos1();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle cosinus calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastCos2();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle cosinus calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-}
-
-void TestAngleTanCalculationTime(const unsigned int NUMBER_OF_ITERATIONS)
-{
-	Timing::Timer timer;
-	timer.Start();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.Tan();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle tangent calculation #1:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastTan1();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle tangent calculation #2:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-
-	timer.Reset();
-	for (unsigned int i = 0; i < NUMBER_OF_ITERATIONS; ++i)
-	{
-		Angle angle(34.0f);
-		angle.FastTan2();
-	}
-	timer.Stop();
-	TimeReport("Average time for angle tangent calculation #3:\t", timer, Timing::NANOSECOND, NUMBER_OF_ITERATIONS);
-}
-
 void AngleTest()
 {
 	if (!angleTestEnabled)
@@ -193,44 +88,94 @@ void AngleTest()
 		return;
 	}
 
-	MathTest::AngleTestGroup angleTests;
+	MathTest::AngleTestGroup angleTests("Angle tests", 100000);
+	//MathTest::AngleTestGroup* angleCompareTests = new MathTest::AngleTestGroup();
 	const Angle angle1(90.0);
 	const Angle angle2(90.0, Unit::DEGREE);
 	const Angle angle3(PI / 2.0f, Unit::RADIAN);
 	const Angle angle4(PI / 2.0f, Unit::DEGREE);
 	const Angle angle5(45.0f);
 	const Angle angle6(PI / 4.0f, Unit::RADIAN);
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle2, true, false, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle3, true, false, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle2, angle3, true, false, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle1, angle4, false, false, true));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle1, false, true, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle2, angle4, false, false, true));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle2, false, true, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle3, angle4, false, false, true));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle4, angle3, false, true, false));
-	angleTests.AddTest(new MathTest::AngleTestCompare(angle5, angle6, true, false, false));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle1, REAL_ONE, REAL_ZERO, REAL_ZERO));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle2, REAL_ONE, REAL_ZERO, REAL_ZERO));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle3, REAL_ONE, REAL_ZERO, REAL_ZERO));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle4, 0.027412f, 0.999624f, 0.027422f));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle5, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
-	angleTests.AddTest(new MathTest::AngleTestTrigonometry(angle6, static_cast<Math::Real>(sqrt(2.0) / 2.0), static_cast<Math::Real>(sqrt(2.0) / 2.0), REAL_ONE));
-	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle2, 0.3f, Angle(180.0f), Angle(0.0f), Angle(27.0f), Angle(300.0f), Angle(27.0f), Angle(300.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle3, 2.0f, Angle(180.0f), Angle(0.0f), Angle(180.0f), Angle(45.0f), Angle(180.0f), Angle(45.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle4, 5.0f, Angle(91.5708f), Angle(88.4292037f), Angle(450.0f), Angle(18.0f), Angle(PI * 5.0f / 2.0f), Angle(PI / 10.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle5, 0.5f, Angle(135.0f), Angle(45.0f), Angle(45.0f), Angle(180.0f), Angle(22.5f), Angle(90.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(angle1, angle6, 0.3f, Angle(135.0f), Angle(45.0f), Angle(27.0f), Angle(300.0f), Angle(13.5f), Angle(150.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(Angle(30.0f), Angle(60.0f), 3.0f, Angle(90.0f), Angle(-30.0f), Angle(90.0f), Angle(10.0f), Angle(180.0f), Angle(20.0f)));
-	angleTests.AddTest(new MathTest::AngleTestOperators(Angle(40.0f), Angle(20.0f), 0.1f, Angle(60.0f), Angle(20.0f), Angle(4.0f), Angle(400.0f), Angle(2.0f), Angle(200.0f)));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle1, angle2, true, false, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle1, angle3, true, false, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle2, angle3, true, false, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle1, angle4, false, false, true));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle4, angle1, false, true, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle2, angle4, false, false, true));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle4, angle2, false, true, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle3, angle4, false, false, true));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle4, angle3, false, true, false));
+	//angleCompareTests->AddTest(new MathTest::AngleTestCompare(angle5, angle6, true, false, false));
+	//angleTests.AddTestGroup(angleCompareTests);
 
+	MathTest::AngleTestGroup* angleTrigonometryTests = new MathTest::AngleTestGroup("Trigonometry tests", 10000);
+	MathTest::AngleTestGroup* angleSinTests = new MathTest::AngleTestGroup("Sinus tests", 10000000);
+	MathTest::AngleTestGroup* angleCosTests = new MathTest::AngleTestGroup("Cosinus tests", 10000000);
+	MathTest::AngleTestGroup* angleTanTests = new MathTest::AngleTestGroup("Tangent tests", 10000000);
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(90.0f), REAL_ONE));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(90.0f), REAL_ZERO));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(90.0f), REAL_ZERO));
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(90.0f, Unit::DEGREE), REAL_ONE));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(90.0f, Unit::DEGREE), REAL_ZERO));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(90.0f, Unit::DEGREE), REAL_ZERO));
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(PI / 2.0f, Unit::RADIAN), REAL_ONE));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(PI / 2.0f, Unit::RADIAN), REAL_ZERO));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(PI / 2.0f, Unit::RADIAN), REAL_ZERO));
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(PI / 2.0f, Unit::DEGREE), 0.027412f));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(PI / 2.0f, Unit::DEGREE), 0.999624f));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(PI / 2.0f, Unit::DEGREE), 0.027422f));
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(45.0f), static_cast<Math::Real>(sqrt(2.0) / 2.0)));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(45.0f), static_cast<Math::Real>(sqrt(2.0) / 2.0)));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(45.0f), REAL_ONE));
+	angleSinTests->AddTest(new MathTest::AngleTestSin(Angle(PI / 4.0f, Unit::RADIAN), static_cast<Math::Real>(sqrt(2.0) / 2.0)));
+	angleCosTests->AddTest(new MathTest::AngleTestCos(Angle(PI / 4.0f, Unit::RADIAN), static_cast<Math::Real>(sqrt(2.0) / 2.0)));
+	angleTanTests->AddTest(new MathTest::AngleTestTan(Angle(PI / 4.0f, Unit::RADIAN), REAL_ONE));
+	angleTrigonometryTests->AddTestGroup(angleSinTests);
+	angleTrigonometryTests->AddTestGroup(angleCosTests);
+	angleTrigonometryTests->AddTestGroup(angleTanTests);
+	angleTests.AddTestGroup(angleTrigonometryTests);
+
+	//MathTest::AngleTestGroup* angleOperatorsTests = new MathTest::AngleTestGroup();
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(angle1, angle2, Angle(180.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(angle1, angle3, Angle(180.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(angle1, angle4, Angle(91.5708f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(angle1, angle5, Angle(135.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(angle1, angle6, Angle(135.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(Angle(30.0f), Angle(60.0f), Angle(90.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestSum(Angle(40.0f), Angle(20.0f), Angle(60.0f)));
+
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(angle1, angle2, Angle(0.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(angle1, angle3, Angle(0.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(angle1, angle4, Angle(88.4292037f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(angle1, angle5, Angle(45.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(angle1, angle6, Angle(45.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(Angle(30.0f), Angle(60.0f), Angle(-30.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDiff(Angle(40.0f), Angle(20.0f), Angle(20.0f)));
+
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(angle1, 0.3f, Angle(27.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(angle1, 2.0f, Angle(180.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(angle1, 5.0f, Angle(450.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(angle1, 0.5f, Angle(45.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(angle1, 0.2f, Angle(18.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(Angle(-30.0f), 0.5f, Angle(-15.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestMultiplyByValue(Angle(40.0f), 0.75f, Angle(30.0f)));
+
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(angle1, 0.3f, Angle(300.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(angle1, 2.0f, Angle(45.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(angle1, 5.0f, Angle(18.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(angle1, 0.5f, Angle(180.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(angle1, 0.2f, Angle(450.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(Angle(-30.0f), 0.5f, Angle(-60.0f)));
+	//angleOperatorsTests->AddTest(new MathTest::AngleTestDivideByValue(Angle(40.0f), 0.8f, Angle(50.0f)));
+
+	//angleTests.AddTestGroup(angleOperatorsTests);
+
+	NOTICE_LOG_MATH_TEST("Angle tests started");
 	angleTests.StartTests();
+	NOTICE_LOG_MATH_TEST("Angle tests finished");
+	NOTICE_LOG_MATH_TEST("Angle time tests started");
 	angleTests.StartTimeTests();
-
-	TestAngleConstructionTime(100000);
-	TestAngleSinCalculationTime(10000);
-	TestAngleCosCalculationTime(10000);
-	TestAngleTanCalculationTime(10000);
+	NOTICE_LOG_MATH_TEST("Angle time tests finished");
 }
 
 void VectorTest()
@@ -239,7 +184,7 @@ void VectorTest()
 	{
 		return;
 	}
-	MathTest::VectorTestGroup vectorTests;
+	MathTest::VectorTestGroup vectorTests("Vector tests", 1000);
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, ZERO_VECTOR_2D, true));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(0.0f, 1.0f), false));
 	vectorTests.AddTest(new MathTest::VectorTestCompare<Math::Vector2D>(ZERO_VECTOR_2D, Math::Vector2D(1.0f, 0.0f), false));
@@ -360,7 +305,7 @@ void QuaternionTest()
 	{
 		return;
 	}
-	MathTest::QuaternionTestGroup quaternionTests;
+	MathTest::QuaternionTestGroup quaternionTests("Quaternion tests", 1000);
 	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 1.0f), Quaternion(0.0f, 0.0f, 0.0f, 0.0f), false));
 	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 0.0f), Quaternion(1.0f, 1.0f, 1.0f, 1.0f), false));
 	quaternionTests.AddTest(new MathTest::QuaternionTestCompare(Quaternion(0.0f, 0.0f, 0.0f, 0.0f), Quaternion(1.0f, 1.0f, 1.0f, 1.0f), false));
@@ -515,7 +460,7 @@ void MatrixTest()
 	{
 		return;
 	}
-	MathTest::MatrixTestGroup matrixTests;
+	MathTest::MatrixTestGroup matrixTests("Matrix tests", 1000);
 
 	Matrix4D matrix1;
 	Matrix4D matrix2(REAL_ONE); // the scale matrix with scaleFactor = REAL_ONE is indeed an identity matrix
@@ -682,7 +627,7 @@ void TransformTest()
 	{
 		return;
 	}
-	MathTest::TransformTestGroup transformTests;
+	MathTest::TransformTestGroup transformTests("Transform tests", 1000);
 
 	transformTests.AddTest(new MathTest::TransformTestCompare(Transform(), Transform(), true));
 	transformTests.AddTest(new MathTest::TransformTestParent(Transform(Vector3D(1.0f, 2.0f, 3.0f), Math::NO_ROTATION_QUATERNION, 1.0f),
@@ -729,7 +674,7 @@ void SortTest()
 	{
 		initialVectors[i].x = g_randomGenerator.NextFloat(LOWER_BOUND_X, HIGHER_BOUND_X);
 		initialVectors[i].y = g_randomGenerator.NextFloat(LOWER_BOUND_Y, HIGHER_BOUND_Y);
-		DEBUG_LOG_MATH_TEST("initialVectors[", i, "] = ", initialVectors[i]);
+		DELOCUST_LOG_MATH_TEST("initialVectors[", i, "] = ", initialVectors[i]);
 	}
 
 	constexpr int NUMBER_OF_SORTING_METHODS = 1; /* the number of sorting methods in the Math library we want to check (10 means we want to check all of them) */
@@ -1457,18 +1402,18 @@ int main(int argc, char* argv[])
 
 	STATS_STORAGE.StartTimer();
 
-	//AngleTest();
+	AngleTest();
 	//VectorTest();
 	//QuaternionTest();
-	MatrixTest();
-	NewMatrixTest();
-	TransformTest();
-	SortTest();
+	//MatrixTest();
+	//NewMatrixTest();
+	//TransformTest();
+	//SortTest();
 	//SortTestTime();
-	InterpolationTest();
-	SurfaceTest();
+	//InterpolationTest();
+	//SurfaceTest();
 
-	KDTreeTest();
+	//KDTreeTest();
 
 	//StatsTest();
 

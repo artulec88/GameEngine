@@ -93,6 +93,16 @@ void ReadSettingsAndParameters(int argc, char* argv[], std::string* configDirect
 
 int main(int argc, char* argv[])
 {
+	//FILE *f = fopen("C:\\Users\\aosesik\\Documents\\Visual Studio 2015\\Projects\\GameEngine\\Textures\\waterDUDV2.png", "rb");
+	//if (!f)
+	//{
+	//	printf("ERRRORRRR!!");
+	//	return 0;
+	//}
+	//else
+	//{
+	//	printf("NO ERRORRR");
+	//}
 	//LPWSTR pBuff;
 	//DWORD len;
 	//int bytes = GetModuleFileName(NULL, pBuff, len);

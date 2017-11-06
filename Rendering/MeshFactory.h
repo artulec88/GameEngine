@@ -62,7 +62,7 @@ namespace Rendering
 		/// <summary>
 		/// Creates a mesh from the specified height map file (given in <paramref name="heightMapFileName"/>).
 		/// The result is a procedurally generated mesh with vertices uniformly laid out on the XZ plane.
-		/// The height map is an image of size <code>heightMapWidth</code>x<code>heightMapHeight</code>.
+		/// The height map is an image of size <code>heightMapWidth</code> x <code>heightMapHeight</code>.
 		/// The final mesh will consist of exactly <code>heightMapWidth * heightMapHeight</code> vertices.
 		/// The bottom left corner of the height map is represented in the mesh as the vertex with both X and Z components equal to <code>0</code>.
 		/// Each pixel in the heightmap represents a single vertex on the XZ plane in the final mesh. The red component of the heightmap

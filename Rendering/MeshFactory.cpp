@@ -129,28 +129,26 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight /* = 5.0f */)
 {
 	/* Loading heightmap begin */
-	std::string name = heightMapFileName;
-	const char *tmp = strrchr(heightMapFileName.c_str(), '\\');
-	if (tmp != nullptr)
-	{
-		name.assign(tmp + 1);
-	}
+	std::string name = m_texturesDirectory + heightMapFileName;
 	int bytesPerPixel, heightMapWidth, heightMapHeight;
-	unsigned char* heightMapData = stbi_load(heightMapFileName.c_str(), &heightMapWidth, &heightMapHeight, &bytesPerPixel,
+	ERROR_LOG_RENDERING("Failure reason before = \"", stbi_failure_reason(), "\".");
+	unsigned char* heightMapData = stbi_load(name.c_str(), &heightMapWidth, &heightMapHeight, &bytesPerPixel,
 		1 /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
+	ERROR_LOG_RENDERING("Failure reason after = \"", stbi_failure_reason(), "\".");
 	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
 	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
 	//for (int i = 0; i < heightMapWidth; ++i)
 	//{
 	//	for (int j = 0; j < heightMapHeight; ++j)
 	//	{
-	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = ", heightMapData[i * heightMapWidth + j]);
+	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = \"",
+	//			static_cast<int>(heightMapData[i * heightMapWidth + j]), "\".");
 	//	}
 	//}
 	/* Loading heightmap finished */
 
-	std::vector<Math::Real> heights(heightMapWidth * heightMapHeight);
-
+	std::vector<Math::Real> heights;
+	heights.reserve(heightMapWidth * heightMapHeight);
 	std::vector<Math::Vector3D> positions;
 	positions.reserve(heightMapWidth * heightMapHeight);
 	std::vector<Math::Vector2D> textureCoordinates;
@@ -166,6 +164,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshI
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData);
+			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			heights.push_back(terrainHeight);
 			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
 			positions.emplace_back(xReal / (heightMapWidth - 1), terrainHeight, zReal / (heightMapHeight - 1));
@@ -194,6 +193,11 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshI
 			indices.push_back(bottomRight);
 		}
 	}
+
+	//for (size_t i = 0; i < indices.size(); ++i)
+	//{
+	//	ERROR_LOG_RENDERING("index[", i, "]: ", indices[i]);
+	//}
 
 	//#ifdef DELOCUST_ENABLED
 	//int i = 0;
@@ -227,8 +231,9 @@ Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMap
 	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < heightMapWidth * heightMapHeight, Utility::Logging::ERR,
 		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", heightMapWidth * heightMapHeight, ")");
 	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]);
-	height = ((height / MAX_PIXEL_COLOR) - 0.5f) * 2.0f * heightMapMaxHeight;
+	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]) / MAX_PIXEL_COLOR;
+	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
+	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
 	return height;
 }
 

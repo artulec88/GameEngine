@@ -11,12 +11,11 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestGroup(void);
+		AngleTestGroup(const std::string& angleTestGroupName, int testTimeIterationsCount);
 		virtual ~AngleTestGroup(void);
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
-	public:
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -40,16 +39,81 @@ namespace MathTest
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestBase */
 
+	class AngleTestTrigonometry : public AngleTestBase
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestTrigonometry(const Math::Angle& angle, Math::Real expectedTrigonometryOperatorValue);
+		virtual ~AngleTestTrigonometry();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+	protected:
+		Math::Real m_expectedTrigonometryOperatorValue;
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestTrigonometry */
+
+	class AngleTestSin : public AngleTestTrigonometry
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestSin(const Math::Angle& angle, Math::Real expectedSinValue);
+		virtual ~AngleTestSin();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestSin */
+
+	class AngleTestCos : public AngleTestTrigonometry
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestCos(const Math::Angle& angle, Math::Real expectedCosValue);
+		virtual ~AngleTestCos();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestCos */
+
+	class AngleTestTan : public AngleTestTrigonometry
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestTan(const Math::Angle& angle, Math::Real expectedTanValue);
+		virtual ~AngleTestTan();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestTan */
+
 
 	class AngleTestCompare : public AngleTestBase
 	{
 		/* ==================== Static variables and functions begin ==================== */
-	private:
-		// TODO: Replace with Math::Statistics::Stats<TimeSpan> objects
-		static std::vector<Utility::Timing::TimeSpan> s_equalOperatorTimeSpans;
-		static std::vector<Utility::Timing::TimeSpan> s_diffOperatorTimeSpans;
-		static std::vector<Utility::Timing::TimeSpan> s_lessOperatorTimeSpans;
-		static std::vector<Utility::Timing::TimeSpan> s_greaterOperatorTimeSpans;
 		/* ==================== Static variables and functions end ==================== */
 
 		/* ==================== Constructors and destructors begin ==================== */
@@ -61,7 +125,7 @@ namespace MathTest
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
@@ -73,55 +137,106 @@ namespace MathTest
 		/* ==================== Non-static member variables end ==================== */
 	}; /* end class AngleTestCompare */
 
-	class AngleTestTrigonometry : public AngleTestBase
+	template <class T>
+	class AngleTestOperator : public AngleTestBase
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestTrigonometry(const Math::Angle& angle1, Math::Real expectedSinValue, Math::Real expectedCosValue, Math::Real expectedTanValue);
-		virtual ~AngleTestTrigonometry();
+		//AngleTestOperator(const Math::Angle& angle1, const Math::Angle& angle2, Math::Real value, Math::Angle& expectedAnglesSum, const Math::Angle& expectedAnglesDiff,
+		//	const Math::Angle& expectedAngle1TimesValue, const Math::Angle& expectedAngle1OverValue, const Math::Angle& expectedAngle2TimesValue, const Math::Angle& expectedAngle2OverValue);
+		AngleTestOperator(const Math::Angle& angle1, const T& value, const Math::Angle& expectedResult) :
+			AngleTestBase(angle1),
+			m_value(value),
+			m_expectedResult(expectedResult)
+		{
+		}
+		virtual ~AngleTestOperator()
+		{
+		}
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+	protected:
+		const T m_value;
+		const Math::Angle m_expectedResult;
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestOperator */
+
+	class AngleTestSum : public AngleTestOperator<Math::Angle>
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestSum(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesSum);
+		virtual ~AngleTestSum();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		Math::Real m_expectedSinValue;
-		Math::Real m_expectedCosValue;
-		Math::Real m_expectedTanValue;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class AngleTestTrigonometry */
+	}; /* end class AngleTestSum */
 
-	class AngleTestOperators : public AngleTestBase
+	class AngleTestDiff : public AngleTestOperator<Math::Angle>
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		AngleTestOperators(const Math::Angle& angle1, const Math::Angle& angle2, Math::Real value, Math::Angle& expectedAnglesSum, const Math::Angle& expectedAnglesDiff,
-			const Math::Angle& expectedAngle1TimesValue, const Math::Angle& expectedAngle1OverValue, const Math::Angle& expectedAngle2TimesValue, const Math::Angle& expectedAngle2OverValue);
-		virtual ~AngleTestOperators();
+		AngleTestDiff(const Math::Angle& angle1, const Math::Angle& angle2, const Math::Angle& expectedAnglesDiff);
+		virtual ~AngleTestDiff();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
-		Math::Angle m_angle2;
-		Math::Real m_value;
-		const Math::Angle m_expectedAnglesSum;
-		const Math::Angle m_expectedAnglesDiff;
-		const Math::Angle m_expectedAngle1TimesValue;
-		const Math::Angle m_expectedAngle1OverValue;
-		const Math::Angle m_expectedAngle2TimesValue;
-		const Math::Angle m_expectedAngle2OverValue;
 		/* ==================== Non-static member variables end ==================== */
-	}; /* end class AngleTestOperators */
+	}; /* end class AngleTestDiff */
+
+	class AngleTestMultiplyByValue : public AngleTestOperator<Math::Real>
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestMultiplyByValue(const Math::Angle& angle1, Math::Real multValue, const Math::Angle& expectedMultResult);
+		virtual ~AngleTestMultiplyByValue();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestMultiplyByValue */
+
+	class AngleTestDivideByValue : public AngleTestOperator<Math::Real>
+	{
+		/* ==================== Constructors and destructors begin ==================== */
+	public:
+		AngleTestDivideByValue(const Math::Angle& angle1, Math::Real divValue, const Math::Angle& expectedDivResult);
+		virtual ~AngleTestDivideByValue();
+		/* ==================== Constructors and destructors end ==================== */
+
+		/* ==================== Non-static member functions begin ==================== */
+	public:
+		virtual void StartTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
+		/* ==================== Non-static member functions end ==================== */
+
+		/* ==================== Non-static member variables begin ==================== */
+		/* ==================== Non-static member variables end ==================== */
+	}; /* end class AngleTestDivideByValue */
 
 } /* end namespace MathTest */
 

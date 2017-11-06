@@ -5,8 +5,8 @@
 using namespace MathTest;
 
 /* ==================== class QuaternionTestGroup begin ==================== */
-QuaternionTestGroup::QuaternionTestGroup(void) :
-	TestGroup()
+QuaternionTestGroup::QuaternionTestGroup(const std::string& quaternionTestGroupName, int testTimeIterationsCount) :
+	TestGroup(quaternionTestGroupName, testTimeIterationsCount)
 {
 	NOTICE_LOG_MATH_TEST("Quaternion test started");
 }
@@ -51,7 +51,7 @@ void QuaternionTestCompare::StartTest()
 		"The quaternion ", m_quaternion, " and quaternion ", m_compareQuaternion, " comparison result is not as expected.");
 }
 
-void QuaternionTestCompare::StartTimeTest()
+void QuaternionTestCompare::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestCompare end ==================== */
@@ -79,7 +79,7 @@ void QuaternionTestLength::StartTest()
 		m_expectedLength * m_expectedLength);
 }
 
-void QuaternionTestLength::StartTimeTest()
+void QuaternionTestLength::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestLength end ==================== */
@@ -106,7 +106,7 @@ void QuaternionTestConjugate::StartTest()
 		") is not an original quaternion (", m_quaternion, ").");
 }
 
-void QuaternionTestConjugate::StartTimeTest()
+void QuaternionTestConjugate::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestConjugate end ==================== */
@@ -132,7 +132,7 @@ void QuaternionTestAddOperator::StartTest()
 		sumQuaternion, ". It is different than expected ", m_expectedSumQuaternion);
 }
 
-void QuaternionTestAddOperator::StartTimeTest()
+void QuaternionTestAddOperator::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestAddOperator end ==================== */
@@ -158,7 +158,7 @@ void QuaternionTestSubtractOperator::StartTest()
 		subtractQuaternion, ". It is different than expected ", m_expectedSubtractQuaternion);
 }
 
-void QuaternionTestSubtractOperator::StartTimeTest()
+void QuaternionTestSubtractOperator::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestSubtractOperator end ==================== */
@@ -184,7 +184,7 @@ void QuaternionTestDivideOperator::StartTest()
 		divideQuaternion, ". It is different than expected ", m_expectedDivideQuaternion);
 }
 
-void QuaternionTestDivideOperator::StartTimeTest()
+void QuaternionTestDivideOperator::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestDivideOperator end ==================== */
@@ -225,7 +225,7 @@ void QuaternionTestNormalize::StartTest()
 		"Calculated normalized quaternion ", m_quaternion, " is in fact not normalized.");
 }
 
-void QuaternionTestNormalize::StartTimeTest()
+void QuaternionTestNormalize::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestNormalize end ==================== */
@@ -250,7 +250,7 @@ void QuaternionTestDot::StartTest()
 		"The dot product of quaternions ", m_quaternion, " and ", m_quaternion2, " equals ", dotResult, ". It is different than expected ", m_expectedDotResult);
 }
 
-void QuaternionTestDot::StartTimeTest()
+void QuaternionTestDot::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestDot end ==================== */
@@ -278,7 +278,7 @@ void QuaternionTestNlerp::StartTest()
 		m_nlerpFactor, " is a quaternion ", nlerpQuaternion, ". It is different than expected ", m_expectedNlerpQuaternion);
 }
 
-void QuaternionTestNlerp::StartTimeTest()
+void QuaternionTestNlerp::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestNlerp end ==================== */
@@ -305,7 +305,7 @@ void QuaternionTestSlerp::StartTest()
 		m_slerpFactor, " is a quaternion ", slerpQuaternion, ". It is different than expected ", m_expectedSlerpQuaternion);
 }
 
-void QuaternionTestSlerp::StartTimeTest()
+void QuaternionTestSlerp::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestSlerp end ==================== */
@@ -328,7 +328,7 @@ void QuaternionTestForward::StartTest()
 		"The forward vector for quaternion ", m_quaternion, " is ", forwardVector, ". It is different than expected ", m_expectedForwardVector);
 }
 
-void QuaternionTestForward::StartTimeTest()
+void QuaternionTestForward::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestForward end ==================== */
@@ -351,7 +351,7 @@ void QuaternionTestUp::StartTest()
 		"The up vector for quaternion ", m_quaternion, " is ", upVector, ". It is different than expected ", m_expectedUpVector);
 }
 
-void QuaternionTestUp::StartTimeTest()
+void QuaternionTestUp::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestUp end ==================== */
@@ -374,7 +374,7 @@ void QuaternionTestRight::StartTest()
 		"The right vector for quaternion ", m_quaternion, " is ", rightVector, ". It is different than expected ", m_expectedRightVector);
 }
 
-void QuaternionTestRight::StartTimeTest()
+void QuaternionTestRight::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestRight end ==================== */
@@ -397,7 +397,7 @@ void QuaternionTestBack::StartTest()
 		"The back vector for quaternion ", m_quaternion, " is ", backVector, ". It is different than expected ", m_expectedBackVector);
 }
 
-void QuaternionTestBack::StartTimeTest()
+void QuaternionTestBack::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestBack end ==================== */
@@ -420,7 +420,7 @@ void QuaternionTestDown::StartTest()
 		"The down vector for quaternion ", m_quaternion, " is ", downVector, ". It is different than expected ", m_expectedDownVector);
 }
 
-void QuaternionTestDown::StartTimeTest()
+void QuaternionTestDown::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestDown end ==================== */
@@ -443,7 +443,7 @@ void QuaternionTestLeft::StartTest()
 		"The left vector for quaternion ", m_quaternion, " is ", leftVector, ". It is different than expected ", m_expectedLeftVector);
 }
 
-void QuaternionTestLeft::StartTimeTest()
+void QuaternionTestLeft::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestLeft end ==================== */
@@ -466,7 +466,7 @@ void QuaternionTestRotationMatrix::StartTest()
 		"The rotation matrix for quaternion ", m_quaternion, " is ", rotationMatrix, ". It is different than expected ", m_expectedRotationMatrix);
 }
 
-void QuaternionTestRotationMatrix::StartTimeTest()
+void QuaternionTestRotationMatrix::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class QuaternionTestRotationMatrix end ==================== */

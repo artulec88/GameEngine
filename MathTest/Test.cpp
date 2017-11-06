@@ -24,12 +24,13 @@ void Test::AfterTest()
 
 void Test::BeforeTimeTest()
 {
-	//m_timer.Start(); // TODO: m_timer.Reset()?
+	m_timer.Start(); // TODO: m_timer.Reset()?
 }
 
-void Test::AfterTimeTest()
+Utility::Timing::TimeSpan Test::AfterTimeTest()
 {
-	//m_timer.Stop();
+	m_timer.Stop();
+	return m_timer.GetTimeSpan();
 }
 
 bool Test::IsTestEnabled() const
@@ -41,20 +42,53 @@ bool Test::IsTestEnabled() const
 
 
 /* ==================== class TestGroup begin ==================== */
-TestGroup::TestGroup() :
-	m_timer(),
+TestGroup::TestGroup(const std::string& testGroupName, int testTimeIterationsCount) :
+	m_testGroupName(testGroupName),
+	m_testTimeIterationsCount(testTimeIterationsCount),
 	m_isTestGroupEnabled(true)
 {
 }
 
 TestGroup::~TestGroup()
 {
+	if (!m_testTimeSpans.empty())
+	{
+		Math::Real testsTotalTimeSpan = 0.0f;
+		Math::Real minTimeSpan = REAL_MAX;
+		Math::Real maxTimeSpan = 0.0f;
+		for (auto testTimeSpanItr = m_testTimeSpans.begin(); testTimeSpanItr != m_testTimeSpans.end(); ++testTimeSpanItr)
+		{
+			testsTotalTimeSpan += *testTimeSpanItr;
+			if (*testTimeSpanItr < minTimeSpan)
+			{
+				minTimeSpan = *testTimeSpanItr;
+			}
+			if (*testTimeSpanItr > maxTimeSpan)
+			{
+				maxTimeSpan = *testTimeSpanItr;
+			}
+		}
+		INFO_LOG_MATH_TEST("Test group \"", m_testGroupName + "\" summary:");
+		INFO_LOG_MATH_TEST("Minimum time: ", minTimeSpan, " [ns]");
+		INFO_LOG_MATH_TEST("Maximum time: ", maxTimeSpan, " [ns]");
+		INFO_LOG_MATH_TEST("Average time: ", testsTotalTimeSpan / m_testTimeSpans.size(), " [ns]");
+	}
+
+	for (std::vector<TestGroup*>::iterator testGroupItr = m_testGroups.begin(); testGroupItr != m_testGroups.end(); ++testGroupItr)
+	{
+		SAFE_DELETE(*testGroupItr);
+	}
 	for (std::vector<Test*>::iterator testItr = m_tests.begin(); testItr != m_tests.end(); ++testItr)
 	{
 		SAFE_DELETE(*testItr);
 	}
+	m_testGroups.clear();
 	m_tests.clear();
-	m_timer.Stop();
+}
+
+void TestGroup::AddTestGroup(TestGroup* testGroup)
+{
+	m_testGroups.push_back(testGroup);
 }
 
 void TestGroup::AddTest(Test* test)
@@ -70,6 +104,10 @@ void TestGroup::StartTests()
 		(*testItr)->StartTest();
 		(*testItr)->AfterTest();
 	}
+	for (std::vector<TestGroup*>::iterator testGroupItr = m_testGroups.begin(); testGroupItr != m_testGroups.end(); ++testGroupItr)
+	{
+		(*testGroupItr)->StartTests();
+	}
 }
 
 void TestGroup::StartTimeTests()
@@ -77,8 +115,13 @@ void TestGroup::StartTimeTests()
 	for (std::vector<Test*>::iterator testItr = m_tests.begin(); testItr != m_tests.end(); ++testItr)
 	{
 		(*testItr)->BeforeTimeTest();
-		(*testItr)->StartTimeTest();
-		(*testItr)->AfterTimeTest();
+		(*testItr)->StartTimeTest(m_testTimeIterationsCount);
+		Utility::Timing::TimeSpan timeSpan = (*testItr)->AfterTimeTest();
+		m_testTimeSpans.push_back(static_cast<Math::Real>(timeSpan.GetValue()) / m_testTimeIterationsCount);
+	}
+	for (std::vector<TestGroup*>::iterator testGroupItr = m_testGroups.begin(); testGroupItr != m_testGroups.end(); ++testGroupItr)
+	{
+		(*testGroupItr)->StartTimeTests();
 	}
 }
 

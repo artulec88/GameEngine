@@ -11,7 +11,7 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		TransformTestGroup(void);
+		TransformTestGroup(const std::string& transformTestGroupName, int testTimeIterationsCount);
 		virtual ~TransformTestGroup(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -47,7 +47,7 @@ namespace MathTest
 		virtual ~TransformTestCompare();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Transform m_compareTransform;
 		bool m_expectedCompareResult;
@@ -60,7 +60,7 @@ namespace MathTest
 		virtual ~TransformTestParent();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Transform m_childTransform;
 		Math::Transform m_expectedChildFinalTransform;

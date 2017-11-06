@@ -13,7 +13,7 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		VectorTestGroup(void);
+		VectorTestGroup(const std::string& vectorTestGroupName, int testTimeIterationsCount);
 		virtual ~VectorTestGroup(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -74,10 +74,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(diffCompareResult != compareResult, Utility::Logging::ERR,
 				"The operators == and != should always give opposite results.");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				bool compareResult = (m_vector == m_compareVector);
 			}
@@ -109,10 +108,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(lengthSquared, m_expectedLength * m_expectedLength), Utility::Logging::ERR,
 				"The vector ", m_vector, " has squared length ", lengthSquared, ", but expected to have squared length ", m_expectedLength * m_expectedLength);
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				Math::Real length = m_vector.Length();
 			}
@@ -146,10 +144,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSumVector, Utility::Logging::ERR,
 				"The operator += returned different result than operator + (", m_vector, " != ", m_expectedSumVector, ")");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				T sumVector = m_vector + m_vector2;
 			}
@@ -184,10 +181,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedSubtractVector, Utility::Logging::ERR,
 				"The operator -= returned different result than operator - (", m_vector, " != ", m_expectedSubtractVector, ")");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				T subtractVector = m_vector - m_vector2;
 			}
@@ -234,10 +230,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedMultiplyVector2, Utility::Logging::ERR,
 				"The operator *= returned different result than operator * (", m_vector, " != ", m_expectedMultiplyVector2, ")");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				T multiplyVector1 = m_vector * m_vector2;
 			}
@@ -285,10 +280,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector == m_expectedDivideVector2, Utility::Logging::ERR,
 				"The operator /= returned different result than operator / (", m_vector, " != ", m_expectedDivideVector2, ")");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				T divideVector1 = m_vector / m_vector2;
 			}
@@ -335,10 +329,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(m_vector.IsNormalized(), Utility::Logging::ERR,
 				"Calculated normalized vector ", m_vector, " is in fact not normalized.");
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				T normalizedVector = m_vector.Normalized();
 			}
@@ -355,7 +348,7 @@ namespace MathTest
 		virtual ~Vector2DTestCross();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Vector2D m_vector2;
 		Math::Real m_expectedCrossResult;
@@ -368,7 +361,7 @@ namespace MathTest
 		virtual ~Vector3DTestCross();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Vector3D m_vector2;
 		Math::Vector3D m_expectedCrossResult;
@@ -394,10 +387,9 @@ namespace MathTest
 			CHECK_CONDITION_ALWAYS_MATH_TEST(Math::AlmostEqual(dotResult, m_expectedDotResult), Utility::ERR,
 				"The dot product of vectors ", m_vector.ToString(), " and ", m_vector2.ToString(), " equals ", dotResult, ". It is different than expected ", m_expectedDotResult);
 		}
-		virtual void StartTimeTest()
+		virtual void StartTimeTest(unsigned int iterationsCount)
 		{
-			const unsigned int ITERATIONS = 1000000;
-			for (unsigned int i = 0; i < ITERATIONS; ++i)
+			for (unsigned int i = 0; i < iterationsCount; ++i)
 			{
 				Math::Real dotResult = m_vector.Dot(m_vector2);
 			}

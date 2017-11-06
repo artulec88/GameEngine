@@ -23,7 +23,9 @@ Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureT
 
 	INFO_LOG_RENDERING("Loading texture from file \"", fileName, "\".");
 	int bytesPerPixel;
-	unsigned char* data = stbi_load(fileName.c_str(), &m_width, &m_height, &bytesPerPixel, 4 /* req_comp */);
+	CHECK_CONDITION_RENDERING(stbi_failure_reason() == NULL, Utility::Logging::ERR, "Texture loading failure reason: \"", stbi_failure_reason(), "\".");
+	unsigned char* data = stbi_load(fileName.c_str(), &m_width, &m_height, &bytesPerPixel, STBI_rgb_alpha);
+	ERROR_LOG_RENDERING("Failure reason after = \"", (stbi_failure_reason() == NULL ? "null" : stbi_failure_reason()), "\".");
 	CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::Logging::ERR, "Unable to load texture from the file \"", fileName, "\"");
 	InitTextures(&data, &filter, &internalFormat, &format, wrapping);
 	if (attachment != GL_NONE)
@@ -71,7 +73,7 @@ Rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	std::array<const std::string, NUMBER_OF_CUBE_MAP_FACES> filenames = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		cubeMapData[i] = stbi_load(filenames[i].c_str(), &x[i], &y[i], &bytesPerPixel[i], 4 /* req_comp */);
+		cubeMapData[i] = stbi_load(filenames[i].c_str(), &x[i], &y[i], &bytesPerPixel[i], STBI_rgb_alpha);
 		if (cubeMapData[i] == NULL)
 		{
 			std::string name = filenames[i];

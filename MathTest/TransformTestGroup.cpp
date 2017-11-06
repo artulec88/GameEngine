@@ -4,8 +4,8 @@
 using namespace MathTest;
 
 /* ==================== class TransformTestGroup begin ==================== */
-TransformTestGroup::TransformTestGroup(void) :
-	TestGroup()
+TransformTestGroup::TransformTestGroup(const std::string& transformTestGroupName, int testTimeIterationsCount) :
+	TestGroup(transformTestGroupName, testTimeIterationsCount)
 {
 	NOTICE_LOG_MATH_TEST("Transform tests started");
 }
@@ -56,7 +56,7 @@ void TransformTestCompare::StartTest()
 		"The transform ", m_transform, " and transform ", m_compareTransform, " equality and inequality comparisons results are the same.");
 }
 
-void TransformTestCompare::StartTimeTest()
+void TransformTestCompare::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class TransformTestCompare end ==================== */
@@ -88,7 +88,7 @@ void TransformTestParent::StartTest()
 	// TODO: GetTransformedScale
 }
 
-void TransformTestParent::StartTimeTest()
+void TransformTestParent::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class TransformTestParent end ==================== */

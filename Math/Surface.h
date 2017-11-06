@@ -8,7 +8,6 @@
 
 namespace Math
 {
-
 	/// <summary>
 	/// The mathematical representation of a surface. The vertices on the surface are always laid out uniformly.
 	/// </summary>

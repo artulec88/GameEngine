@@ -11,7 +11,7 @@ namespace MathTest
 	{
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		MatrixTestGroup(void);
+		MatrixTestGroup(const std::string& quaternionTestGroupName, int testTimeIterationsCount);
 		virtual ~MatrixTestGroup(void);
 		/* ==================== Constructors and destructors end ==================== */
 
@@ -47,7 +47,7 @@ namespace MathTest
 		virtual ~MatrixTestCompare();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Matrix4D m_compareMatrix;
 		bool m_expectedCompareResult;
@@ -60,7 +60,7 @@ namespace MathTest
 		virtual ~MatrixTestMultiplyByMatrixOperator();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Matrix4D m_matrix2;
 		Math::Matrix4D m_expectedMultiplyResultMatrix;
@@ -73,7 +73,7 @@ namespace MathTest
 		virtual ~MatrixTestMultiplyByVectorOperator();
 	public:
 		virtual void StartTest();
-		virtual void StartTimeTest();
+		virtual void StartTimeTest(unsigned int iterationsCount);
 	protected:
 		Math::Vector3D m_vector;
 		Math::Vector3D m_expectedMultiplyResultVector;

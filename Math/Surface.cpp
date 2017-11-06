@@ -11,12 +11,12 @@ Math::Surface::Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWid
 	m_horizontalVerticesCount(surfaceHorizontalVerticesCount),
 	m_verticalVerticesCount(surfaceVerticalVerticesCount),
 	m_squareWidth(surfaceWidth / (surfaceHorizontalVerticesCount - 1)),
-	m_squareDepth(surfaceDepth / (surfaceVerticalVerticesCount - 1)),
-	m_heights(heights, heights + (m_horizontalVerticesCount * m_verticalVerticesCount))
+	m_squareDepth(surfaceDepth / (surfaceVerticalVerticesCount - 1))//,
+	//m_heights(heights, heights + (m_horizontalVerticesCount * m_verticalVerticesCount))
 {
-	for (auto i = 0; i < m_heights.size(); ++i)
+	for (auto i = 0; i < m_horizontalVerticesCount * m_verticalVerticesCount; ++i)
 	{
-		m_heights[i] = static_cast<Real>(i);
+		m_heights.push_back(heights[i]);
 	}
 }
 
@@ -28,7 +28,7 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	m_squareDepth(REAL_ZERO),
 	m_heights()
 {
-	CHECK_CONDITION_MATH(positionsCount > 0, Utility::Logging::ERR, "Cannot intialize the surface. Number of given positions equals: ", positionsCount);
+	CHECK_CONDITION_MATH(positionsCount > 0, Utility::Logging::ERR, "Cannot intialize the surface with negative number of positions: ", positionsCount);
 
 	// TODO: Implement
 	// 1. Find the lowest X and Z and greatest X and Z values within all vertices (minX, minZ, maxX and maxZ respectively). Each of these four values may come from the different position.

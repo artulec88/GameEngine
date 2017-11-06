@@ -17,7 +17,9 @@
 
 namespace Rendering
 {
-
+	/// <summary>
+	/// Rendering engine representation of the terrain.
+	/// </summary>
 	class Terrain
 	{
 		/* ==================== Static variables begin ==================== */
@@ -36,9 +38,13 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Terrain mesh constructor. </summary>
-		/// <param name="terrainMesh"> The terrain mesh. </param>
+		/// <param name="heights"> The terrain mesh positions. </param>
+		/// <param name="heightsCount">
+		/// Number of mesh positions.
+		/// In other words, this value represents how many elements the <paramref name="heights"/> array contains.
+		/// </param>
 		/// <param name="terrainTransform"> The world transform of the terrain. </param>
-		RENDERING_API explicit Terrain(const Mesh* terrainMesh, const Math::Transform& terrainTransform);
+		RENDERING_API Terrain(Math::Real* heights, int heightsCount, const Math::Transform& terrainTransform);
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="gridX"> The X position on the grid. </param>
 		/// <param name="gridZ"> The Z position on the grid. </param>
@@ -55,7 +61,7 @@ namespace Rendering
 		/// <param name="mode"> The mode in which the mesh will be stored. </param>
 		//Terrain(int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount, GLenum mode = GL_TRIANGLES);
 		/// <summary> Terrain mesh destructor. </summary>
-		RENDERING_API virtual ~Terrain(void);
+		RENDERING_API ~Terrain(void);
 		/// <summary> Terrain mesh copy constructor. </summary>
 		Terrain(const Terrain& Terrain) = delete;
 		/// <summary> Terrain mesh move constructor. </summary>

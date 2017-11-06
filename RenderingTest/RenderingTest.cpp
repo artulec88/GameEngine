@@ -127,27 +127,31 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	Real runModeSpeed = (mods == GLFW_MOD_SHIFT) ? 10.0f : 1.0f;
+	Vector3D dirVector;
 	switch (key)
 	{
 	case GLFW_KEY_A:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetLeft() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetLeft();
 		break;
 	case GLFW_KEY_W:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetForward() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetForward();
 		break;
 	case GLFW_KEY_S:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetBack() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetBack();
 		break;
 	case GLFW_KEY_D:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetRight() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetRight();
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetDown() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetDown();
 		break;
 	case GLFW_KEY_SPACE:
-		camera.GetTransform().IncreasePos(camera.GetTransform().GetRot().GetUp() * camera.GetSensitivity() * runModeSpeed);
+		dirVector = camera.GetTransform().GetRot().GetUp();
 		break;
 	}
+	camera.GetTransform().IncreasePos( dirVector *camera.GetSensitivity() * runModeSpeed);
+	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
+	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
 	NOTICE_LOG_RENDERING_TEST(camera);
 }
 
@@ -535,10 +539,10 @@ void CreateScene()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
 	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
-		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.5f);
+		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	PerspectiveCameraBuilder perspectiveCameraBuilder;
 	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.5f);
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
@@ -552,10 +556,13 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
 	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
-	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug2.png", 5.0f);
+	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug2.png", 0.1f);
 	//terrainTransform.SetScale(2.0f);
 
-	terrain = std::make_unique<Terrain>(terrainMesh, terrainTransform);
+	int bufferEntriesCount;
+	void* data = terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, &bufferEntriesCount);
+
+	terrain = std::make_unique<Terrain>(static_cast<Real*>(data), bufferEntriesCount, terrainTransform);
 	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 4;
 	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f };
 	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -1.0f, 1.0f, -3.0f, 3.0f };
@@ -585,8 +592,9 @@ void CreateScene()
 		}
 	}
 
-	int bufferEntriesCount;
-	void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
+	//int bufferEntriesCount;
+	//void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
+	data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
 	CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
 	Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
 	for (int i = 0; i < bufferEntriesCount; ++i)
@@ -608,7 +616,7 @@ void UpdateScene(Math::Real frameTime)
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.1f);
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
 }
 
 void RenderScene()

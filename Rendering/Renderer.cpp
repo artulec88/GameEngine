@@ -97,8 +97,8 @@ Rendering::Renderer::Renderer(int windowWidth, int windowHeight, const std::stri
 	m_waterReflectionClippingPlane(GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_x", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_y", REAL_ONE), GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneNormal_z", REAL_ZERO),
 		GET_CONFIG_VALUE_RENDERING("waterReflectionClippingPlaneOriginDistance", REAL_ZERO)),
-	m_waterDUDVTexture(GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")),
-	m_waterNormalMap(GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")),
+	m_waterDUDVTexture(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterDUDVMap", "waterDUDV.png")), // TODO: This texture will not be available from the textures factory.
+	m_waterNormalMap(texturesDirectory + GET_CONFIG_VALUE_STR_RENDERING("waterNormalMap", "waterNormalMap.png")), // TODO: This texture will not be available from the textures factory.
 	m_waterRefractionTexture(2, GET_CONFIG_VALUE_RENDERING("waterRefractionTextureWidth", 1280), GET_CONFIG_VALUE_RENDERING("waterRefractionTextureHeight", 720), std::vector<unsigned char*>{ NULL, NULL }.data(), GL_TEXTURE_2D, std::vector<GLfloat>{ GL_LINEAR, GL_LINEAR }.data(), std::vector<GLenum>{ GL_RGB, GL_DEPTH_COMPONENT32 }.data(), std::vector<GLenum>{ GL_RGBA, GL_DEPTH_COMPONENT }.data(), GL_REPEAT, std::vector<GLenum>{ GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT }.data()),
 	m_waterReflectionTexture(GET_CONFIG_VALUE_RENDERING("waterReflectionTextureWidth", 320), GET_CONFIG_VALUE_RENDERING("waterReflectionTextureHeight", 180), NULL, GL_TEXTURE_2D, GL_LINEAR, GL_RGB, GL_RGBA, GL_REPEAT, GL_COLOR_ATTACHMENT0),
 	m_waterLightReflectionEnabled(false),

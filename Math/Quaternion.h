@@ -41,7 +41,7 @@ namespace Math
 		}
 
 		/// <summary>
-		/// Creates a new quaternion based on the axis given as parameter <paramref name="axis"/> around we want to rotate by the angle <paramref name="angle"/>.
+		/// Creates a new quaternion based on the axis given as parameter <paramref name="axis"/> around which we want to rotate by the angle <paramref name="angle"/>.
 		/// </summary>
 		/// <param name="axis">An axis around which we want to rotate.</param>
 		/// <param name="angle">An angle by which we want to rotate.</param>
@@ -55,11 +55,37 @@ namespace Math
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		/// <summary>
+		/// Returns the imaginary X component of the quaternion.
+		/// </summary>
+		/// <returns> The value of the imaginary X component of the quaternion. </returns>
 		inline constexpr Real GetX() const noexcept { return m_x; };
+
+		/// <summary>
+		/// Returns the imaginary Y component of the quaternion.
+		/// </summary>
+		/// <returns> The value of the imaginary Y component of the quaternion. </returns>
 		inline constexpr Real GetY() const noexcept { return m_y; };
+
+		/// <summary>
+		/// Returns the imaginary Z component of the quaternion.
+		/// </summary>
+		/// <returns> The value of the imaginary Z component of the quaternion. </returns>
 		inline constexpr Real GetZ() const noexcept { return m_z; };
+
+		/// <summary>
+		/// Returns the real W component of the quaternion.
+		/// </summary>
+		/// <returns> The value of the real W component of the quaternion. </returns>
 		inline constexpr Real GetW() const noexcept { return m_w; };
 
+		/// <summary>
+		/// A simple setter for the quaternion's components.
+		/// </summary>
+		/// <param name="x">New value for the X component of the quaternion. </param>
+		/// <param name="y">New value for the Y component of the quaternion. </param>
+		/// <param name="z">New value for the Z component of the quaternion. </param>
+		/// <param name="w">New value for the W component of the quaternion. </param>
 		inline void Set(Math::Real x, Math::Real y, Math::Real z, Math::Real w)
 		{
 			m_x = x;
@@ -68,7 +94,16 @@ namespace Math
 			m_w = w;
 		}
 
+		/// <summary>
+		/// Calculates the length of the quaternion and returns it.
+		/// </summary>
+		/// <returns> The length of the quaternion. </returns>
 		MATH_API Real Length() const;
+
+		/// <summary>
+		/// Calculates the squared length of the quaternion and returns it.
+		/// </summary>
+		/// <returns> The squared length of the quaternion. </returns>
 		MATH_API constexpr Real LengthSquared() const
 		{
 			return static_cast<Real>(m_x * m_x + m_y * m_y + m_z * m_z + m_w * m_w);
@@ -79,12 +114,13 @@ namespace Math
 		/// </summary>
 		/// <remarks>
 		/// The pitch is described in the video: https://www.youtube.com/watch?v=PoxDDZmctnU&list=PLRIWtICgwaX0u7Rf9zkZhLoLuZVfUksDP&index=19.
-		/// </remarks
+		/// </remarks>
 		MATH_API void InvertPitch();
 
 		/// <summary>
-		/// Calculates the conjugate of the quaternion.
+		/// Calculates the conjugate of the quaternion and returns it.
 		/// </summary>
+		/// <returns> The conjugate of the quaternion. </returns>
 		MATH_API inline constexpr Quaternion Conjugate() const { return Quaternion(-m_x, -m_y, -m_z, m_w); };
 
 		// See http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/arithmetic/index.htm for quaternion arithmetics.
@@ -133,8 +169,22 @@ namespace Math
 		/// <summary>
 		/// Converts the quaternion to the respective matrix representing the same rotation.
 		/// </summary>
+		/// <returns> The matrix representing the same rotation as the quaternion itself. </returns>
 		MATH_API Matrix4D ToRotationMatrix() const;
 
+		/// <summary>
+		/// Simplifies logging procedure.
+		/// </summary>
+		/// <param name="out">
+		/// The stream that will be used to output the specified quaternion values.
+		/// The same stream will then be returned by the function to allow chaining the logging calls in one go.
+		/// </param>
+		/// <param name="q">
+		/// The quaternion whose values will be put into the stream given in parameter <paramref name="out"/>.
+		/// </param>
+		/// <returns>
+		/// The stream used to log the values of the quaternion. This allows for chaining the logging operations in one call.
+		/// </returns>
 		friend std::ostream& operator<<(std::ostream& out, const Quaternion& q)
 		{
 			out << std::setprecision(4) << "(x=" << q.m_x << "; y=" << q.m_y << "; z=" << q.m_z << "; w=" << q.m_w << ")";

@@ -4,8 +4,8 @@
 using namespace MathTest;
 
 /* ==================== class MatrixTestGroup begin ==================== */
-MatrixTestGroup::MatrixTestGroup(void) :
-	TestGroup()
+MatrixTestGroup::MatrixTestGroup(const std::string& matrixTestGroupName, int testTimeIterationsCount) :
+	TestGroup(matrixTestGroupName, testTimeIterationsCount)
 {
 	NOTICE_LOG_MATH_TEST("Matrix tests started");
 }
@@ -51,7 +51,7 @@ void MatrixTestCompare::StartTest()
 	// TODO: Test != operator
 }
 
-void MatrixTestCompare::StartTimeTest()
+void MatrixTestCompare::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class MatrixTestCompare end ==================== */
@@ -76,7 +76,7 @@ void MatrixTestMultiplyByMatrixOperator::StartTest()
 		". It is different than expected:\n", m_expectedMultiplyResultMatrix);
 }
 
-void MatrixTestMultiplyByMatrixOperator::StartTimeTest()
+void MatrixTestMultiplyByMatrixOperator::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class MatrixTestMultiplyByMatrixOperator end ==================== */
@@ -101,7 +101,7 @@ void MatrixTestMultiplyByVectorOperator::StartTest()
 		". It is different than expected ", m_expectedMultiplyResultVector, ".");
 }
 
-void MatrixTestMultiplyByVectorOperator::StartTimeTest()
+void MatrixTestMultiplyByVectorOperator::StartTimeTest(unsigned int iterationsCount)
 {
 }
 /* ==================== class MatrixTestMultiplyByVectorOperator end ==================== */

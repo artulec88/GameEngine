@@ -4,8 +4,8 @@
 using namespace MathTest;
 
 /* ==================== class VectorTestGroup begin ==================== */
-VectorTestGroup::VectorTestGroup(void) :
-	TestGroup()
+VectorTestGroup::VectorTestGroup(const std::string& vectorTestGroupName, int testTimeIterationsCount) :
+	TestGroup(vectorTestGroupName, testTimeIterationsCount)
 {
 	NOTICE_LOG_MATH_TEST("Vector tests started");
 }
@@ -36,10 +36,9 @@ void Vector2DTestCross::StartTest()
 		"The cross product of vectors ", m_vector, " and ", m_vector2, " equals ", crossResult, ". It is different than expected ", m_expectedCrossResult);
 }
 
-void Vector2DTestCross::StartTimeTest()
+void Vector2DTestCross::StartTimeTest(unsigned int iterationsCount)
 {
-	const unsigned int ITERATIONS = 1000000;
-	for (unsigned int i = 0; i < ITERATIONS; ++i)
+	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
 		Math::Real crossResult = m_vector.Cross(m_vector2);
 	}
@@ -67,10 +66,9 @@ void Vector3DTestCross::StartTest()
 		". It is different than expected ", m_expectedCrossResult);
 }
 
-void Vector3DTestCross::StartTimeTest()
+void Vector3DTestCross::StartTimeTest(unsigned int iterationsCount)
 {
-	const unsigned int ITERATIONS = 1000000;
-	for (unsigned int i = 0; i < ITERATIONS; ++i)
+	for (unsigned int i = 0; i < iterationsCount; ++i)
 	{
 		Math::Vector3D crossResult = m_vector.Cross(m_vector2);
 	}
