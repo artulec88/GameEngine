@@ -2,6 +2,7 @@
 #include "Texture.h"
 //#include "CoreEngine.h"
 #include "stb_image.h"
+#include "Image.h"
 #include "Utility\Utility.h"
 #include "Utility\ILogger.h"
 #include "Math\Math.h"
@@ -21,18 +22,15 @@ Rendering::TextureData::TextureData(const std::string& fileName, GLenum textureT
 	CHECK_CONDITION_EXIT_RENDERING(m_texturesCount <= MAX_BOUND_TEXTURES_COUNT, Utility::Logging::ERR, "Maximum number of bound textures (", MAX_BOUND_TEXTURES_COUNT, ") exceeded. Buffer overrun might occur.");
 	CheckErrorCode(__FUNCTION__, "Creating texture data");
 
-	INFO_LOG_RENDERING("Loading texture from file \"", fileName, "\".");
-	int bytesPerPixel;
-	CHECK_CONDITION_RENDERING(stbi_failure_reason() == NULL, Utility::Logging::ERR, "Texture loading failure reason: \"", stbi_failure_reason(), "\".");
-	unsigned char* data = stbi_load(fileName.c_str(), &m_width, &m_height, &bytesPerPixel, STBI_rgb_alpha);
-	ERROR_LOG_RENDERING("Failure reason after = \"", (stbi_failure_reason() == NULL ? "null" : stbi_failure_reason()), "\".");
-	CHECK_CONDITION_EXIT_RENDERING(data != NULL, Utility::Logging::ERR, "Unable to load texture from the file \"", fileName, "\"");
-	InitTextures(&data, &filter, &internalFormat, &format, wrapping);
+	Image image(fileName, STBI_rgb_alpha);
+	m_width = image.GetWidth();
+	m_height = image.GetHeight();
+	unsigned char* imageData = image.GetData();
+	InitTextures(&imageData, &filter, &internalFormat, &format, wrapping);
 	if (attachment != GL_NONE)
 	{
 		InitRenderTargets(&attachment);
 	}
-	stbi_image_free(data);
 	DEBUG_LOG_RENDERING("Loading texture from file \"", fileName, "\" finished successfully");
 }
 
@@ -67,41 +65,30 @@ Rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 {
 	constexpr int NUMBER_OF_CUBE_MAP_FACES = 6;
 
-	std::array<unsigned char*, NUMBER_OF_CUBE_MAP_FACES> cubeMapData;
-	std::array<int, NUMBER_OF_CUBE_MAP_FACES> x, y, bytesPerPixel;
-
-	std::array<const std::string, NUMBER_OF_CUBE_MAP_FACES> filenames = { posXFileName, negXFileName, posYFileName, negYFileName, posZFileName, negZFileName };
+	std::array<Image, NUMBER_OF_CUBE_MAP_FACES> cubeMapImages = { Image(posXFileName, STBI_rgb_alpha), Image(negXFileName, STBI_rgb_alpha), Image(posYFileName, STBI_rgb_alpha), Image(negYFileName, STBI_rgb_alpha), Image(posZFileName, STBI_rgb_alpha), Image(negZFileName, STBI_rgb_alpha) };
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		cubeMapData[i] = stbi_load(filenames[i].c_str(), &x[i], &y[i], &bytesPerPixel[i], STBI_rgb_alpha);
-		if (cubeMapData[i] == NULL)
-		{
-			std::string name = filenames[i];
-			const char *tmp = strrchr(filenames[i].c_str(), '\\');
-			if (tmp != NULL)
-			{
-				name.assign(tmp + 1);
-			}
-			ERROR_LOG_RENDERING("Unable to load texture from the file \"", name, "\"");
-			exit(EXIT_FAILURE);
-		}
+		CHECK_CONDITION_EXIT_ALWAYS_RENDERING(cubeMapImages[i].GetData() != nullptr, Utility::Logging::EMERGENCY,
+			"Unable to load texture #", i, " for the cube map");
 		if (i > 0)
 		{
-			if (x[i] != x[i - 1])
+			if (cubeMapImages[i].GetWidth() != cubeMapImages[i - 1].GetWidth())
 			{
-				ERROR_LOG_RENDERING("All cube map texture's faces must have the same width, but face ", i, " has width=", x[i], " and face ", i + 1, " has width=", x[i + 1]);
+				ERROR_LOG_RENDERING("All cube map texture's faces must have the same width, but face ", i, " has width=",
+					cubeMapImages[i].GetWidth(), " and face ", i - 1, " has width=", cubeMapImages[i - 1].GetWidth());
 			}
-			if (y[i] != y[i - 1])
+			if (cubeMapImages[i].GetHeight() != cubeMapImages[i - 1].GetHeight())
 			{
-				ERROR_LOG_RENDERING("All cube map texture's faces must have the same height, but face ", i, " has height=", y[i], " and face ", i + 1, " has height=", y[i + 1]);
+				ERROR_LOG_RENDERING("All cube map texture's faces must have the same height, but face ", i, " has height=",
+					cubeMapImages[i].GetHeight(), " and face ", i - 1, " has height=", cubeMapImages[i - 1].GetHeight());
 			}
 		}
 	}
 
 	// TODO: Pass correct values for width, height and depth. The values below will only work for square textures with each face having the same size.
-	m_width = x[0];
-	m_height = x[0];
-	int depth = x[0];
+	m_width = cubeMapImages[0].GetWidth();
+	m_height = cubeMapImages[0].GetHeight();
+	int depth = cubeMapImages[0].GetWidth();
 	
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(m_texturesCount, &m_textureIDs[0]);
@@ -118,8 +105,7 @@ Rendering::TextureData::TextureData(const std::string& posXFileName, const std::
 	};
 	for (int i = 0; i < NUMBER_OF_CUBE_MAP_FACES; ++i)
 	{
-		glTexImage2D(targets[i], 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapData[i]);
-		stbi_image_free(cubeMapData[i]);
+		glTexImage2D(targets[i], 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, cubeMapImages[i].GetData());
 	}
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

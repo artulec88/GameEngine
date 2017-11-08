@@ -3,6 +3,7 @@
 
 #include "Rendering.h"
 #include "Mesh.h"
+#include "Image.h"
 
 #include "Utility\ILogger.h"
 
@@ -97,9 +98,9 @@ namespace Rendering
 		{
 			return zIndex * horizontalVerticesCount + xIndex;
 		}
-		Math::Real CalculateHeightAt(int x, int z, int heightMapWidth, int heightMapHeight, Math::Real heightMapMaxHeight, unsigned char* heightMapData) const;
+		Math::Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const;
 		Math::Real CalculateHeightAt(int x, int z, int heightMapWidth, const Math::HeightsGenerator& heightsGenerator) const;
-		Math::Vector3D CalculateNormal(int x, int z, int heightMapWidth, int heightMapHeight, Math::Real heightMapMaxHeight, unsigned char* heightMapData) const;
+		Math::Vector3D CalculateNormal(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

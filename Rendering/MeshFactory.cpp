@@ -129,61 +129,57 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight /* = 5.0f */)
 {
 	/* Loading heightmap begin */
-	std::string name = m_texturesDirectory + heightMapFileName;
-	int bytesPerPixel, heightMapWidth, heightMapHeight;
-	ERROR_LOG_RENDERING("Failure reason before = \"", stbi_failure_reason(), "\".");
-	unsigned char* heightMapData = stbi_load(name.c_str(), &heightMapWidth, &heightMapHeight, &bytesPerPixel,
-		1 /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
-	ERROR_LOG_RENDERING("Failure reason after = \"", stbi_failure_reason(), "\".");
-	CHECK_CONDITION_EXIT_RENDERING(heightMapData != nullptr, Utility::Logging::ERR, "Unable to load terrain height map from the file \"", name, "\"");
-	CHECK_CONDITION_RENDERING(m_heightMapWidth < 32768 && m_heightMapHeight < 32768, Utility::Logging::EMERGENCY, "The heightmap's size is too big to be used in the rendering engine.");
-	//for (int i = 0; i < heightMapWidth; ++i)
-	//{
-	//	for (int j = 0; j < heightMapHeight; ++j)
-	//	{
-	//		CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapWidth + j, "] ([", i, "][", j, "]) = \"",
-	//			static_cast<int>(heightMapData[i * heightMapWidth + j]), "\".");
-	//	}
-	//}
+	Image heightMapImage(m_texturesDirectory + heightMapFileName, 1 /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
+	CHECK_CONDITION_RENDERING(heightMapImage.GetWidth() < 32768 && heightMapImage.GetHeight() < 32768, Utility::Logging::EMERGENCY,
+		"The heightmap's size is too big to be used in the rendering engine.");
+	for (int i = 0; i < heightMapImage.GetHeight(); ++i)
+	{
+		for (int j = 0; j < heightMapImage.GetWidth(); ++j)
+		{
+			//CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapImage.GetWidth() + j, "] ([", i, "][", j, "]) = \"",
+			//	static_cast<int>(heightMapImage.GetPixelAt(i, j), "\"."));
+			CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapImage.GetWidth() + j, "] ([", i, "][", j, "]) = \"",
+				static_cast<int>(heightMapImage.GetPixelAt(i, j)), "\"");
+		}
+	}
 	/* Loading heightmap finished */
 
 	std::vector<Math::Real> heights;
-	heights.reserve(heightMapWidth * heightMapHeight);
+	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	std::vector<Math::Vector3D> positions;
-	positions.reserve(heightMapWidth * heightMapHeight);
+	positions.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	std::vector<Math::Vector2D> textureCoordinates;
-	textureCoordinates.reserve(heightMapWidth * heightMapHeight);
+	textureCoordinates.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	std::vector<Math::Vector3D> normals;
-	normals.reserve(heightMapWidth * heightMapHeight);
+	normals.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	std::vector<Math::Vector3D> tangents;
-	tangents.reserve(heightMapWidth * heightMapHeight);
-	for (int z = heightMapHeight - 1; z >= 0; --z)
+	tangents.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
+	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
 	{
 		const Math::Real zReal = static_cast<Math::Real>(z);
-		for (int x = 0; x < heightMapWidth; ++x)
+		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
-			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData);
+			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
 			heights.push_back(terrainHeight);
-			//DEBUG_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", position);
-			positions.emplace_back(xReal / (heightMapWidth - 1), terrainHeight, zReal / (heightMapHeight - 1));
-			textureCoordinates.emplace_back(xReal / (heightMapWidth - 1), zReal / (heightMapHeight - 1));
-			normals.push_back(CalculateNormal(x, z, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData));
+			positions.emplace_back(xReal / (heightMapImage.GetWidth() - 1), terrainHeight, zReal / (heightMapImage.GetHeight() - 1));
+			CRITICAL_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", positions.back());
+			textureCoordinates.emplace_back(xReal / (heightMapImage.GetWidth() - 1), zReal / (heightMapImage.GetHeight() - 1));
+			normals.push_back(CalculateNormal(x, z, heightMapImage, heightMapMaxHeight));
 			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
 		}
 	}
-	stbi_image_free(heightMapData);
 
 	std::vector<int> indices;
-	indices.reserve((heightMapWidth - 1) * (heightMapHeight - 1) * 6);
-	for (int gz = 0; gz < heightMapHeight - 1; ++gz)
+	indices.reserve((heightMapImage.GetWidth() - 1) * (heightMapImage.GetHeight() - 1) * 6);
+	for (int gz = 0; gz < heightMapImage.GetHeight() - 1; ++gz)
 	{
-		for (int gx = 0; gx < heightMapWidth - 1; ++gx)
+		for (int gx = 0; gx < heightMapImage.GetWidth() - 1; ++gx)
 		{
-			int topLeft = (gz * heightMapHeight) + gx;
+			int topLeft = (gz * heightMapImage.GetHeight()) + gx;
 			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * heightMapHeight) + gx;
+			int bottomLeft = ((gz + 1) * heightMapImage.GetHeight()) + gx;
 			int bottomRight = bottomLeft + 1;
 			indices.push_back(topLeft);
 			indices.push_back(topRight);
@@ -220,18 +216,11 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshI
 	DEBUG_LOG_RENDERING("Terrain mesh has been created.");
 }
 
-Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMapWidth, int heightMapHeight, Math::Real heightMapMaxHeight, unsigned char* heightMapData) const
+Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const
 {
 	constexpr Math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
 
-	// TODO: Range checking
-	CHECK_CONDITION_RETURN_RENDERING(x >= 0 && x < heightMapWidth && z >= 0 && z < heightMapHeight, REAL_ZERO,
-		Utility::Logging::ERR, "Cannot determine the height of the terrain on (", x, ", ", z, ") position. It is out of range.");
-	const int heightMapIndex = GetHeightMapIndex(x, z, heightMapWidth);
-	CHECK_CONDITION_RENDERING(heightMapIndex >= 0 && heightMapIndex < heightMapWidth * heightMapHeight, Utility::Logging::ERR,
-		"The heightmap index calculation is incorrect. Calculated index (", heightMapIndex, ") is out of range [0; ", heightMapWidth * heightMapHeight, ")");
-	//DEBUG_LOG_RENDERING("Heightmap index for [", x, ", ", z, "] = ", heightMapIndex);
-	Math::Real height = static_cast<Math::Real>(heightMapData[heightMapIndex]) / MAX_PIXEL_COLOR;
+	Math::Real height = static_cast<Math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
 	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
 	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
 	return height;
@@ -250,12 +239,12 @@ Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMap
 	return height;
 }
 
-Math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, int heightMapWidth, int heightMapHeight, Math::Real heightMapMaxHeight, unsigned char* heightMapData) const
+Math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const
 {
-	Math::Real heightLeft = ((x - 1) >= 0) ? CalculateHeightAt(x - 1, z, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData) : REAL_ZERO;
-	Math::Real heightRight = ((x + 1) < heightMapWidth) ? CalculateHeightAt(x + 1, z, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData) : REAL_ZERO;
-	Math::Real heightDown = ((z - 1) >= 0) ? CalculateHeightAt(x, z - 1, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData) : REAL_ZERO;
-	Math::Real heightUp = ((z + 1) < heightMapHeight) ? CalculateHeightAt(x, z + 1, heightMapWidth, heightMapHeight, heightMapMaxHeight, heightMapData) : REAL_ZERO;
+	Math::Real heightLeft = ((x - 1) >= 0) ? CalculateHeightAt(x - 1, z, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
+	Math::Real heightRight = ((x + 1) < heightMapImage.GetWidth()) ? CalculateHeightAt(x + 1, z, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
+	Math::Real heightDown = ((z - 1) >= 0) ? CalculateHeightAt(x, z - 1, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
+	Math::Real heightUp = ((z + 1) < heightMapImage.GetHeight()) ? CalculateHeightAt(x, z + 1, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
 	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;

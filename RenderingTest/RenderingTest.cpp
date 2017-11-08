@@ -127,29 +127,30 @@ void WindowResizeCallback(GLFWwindow* window, int width, int height)
 void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	Real runModeSpeed = (mods == GLFW_MOD_SHIFT) ? 10.0f : 1.0f;
+	const Quaternion rotation = camera.GetTransform().GetRot();
 	Vector3D dirVector;
 	switch (key)
 	{
 	case GLFW_KEY_A:
-		dirVector = camera.GetTransform().GetRot().GetLeft();
+		dirVector = rotation.GetLeft();
 		break;
 	case GLFW_KEY_W:
-		dirVector = camera.GetTransform().GetRot().GetForward();
+		dirVector = rotation.GetForward();
 		break;
 	case GLFW_KEY_S:
-		dirVector = camera.GetTransform().GetRot().GetBack();
+		dirVector = rotation.GetBack();
 		break;
 	case GLFW_KEY_D:
-		dirVector = camera.GetTransform().GetRot().GetRight();
+		dirVector = rotation.GetRight();
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
-		dirVector = camera.GetTransform().GetRot().GetDown();
+		dirVector = rotation.GetDown();
 		break;
 	case GLFW_KEY_SPACE:
-		dirVector = camera.GetTransform().GetRot().GetUp();
+		dirVector = rotation.GetUp();
 		break;
 	}
-	camera.GetTransform().IncreasePos( dirVector *camera.GetSensitivity() * runModeSpeed);
+	camera.GetTransform().IncreasePos(dirVector *camera.GetSensitivity() * runModeSpeed);
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
 	NOTICE_LOG_RENDERING_TEST(camera);
@@ -167,7 +168,7 @@ void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int
 #else
 	KeyEvent(window, key, scancode, action, mods);
 #endif
-}
+	}
 
 void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
@@ -194,7 +195,7 @@ void MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 #else
 	MouseButtonEvent(window, button, action, mods);
 #endif
-}
+	}
 
 void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
@@ -236,7 +237,7 @@ void MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 	MousePosEvent(window, xPos, yPos);
 #endif
 	//GetCoreEngine()->CentralizeCursor();
-}
+	}
 
 void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
@@ -255,7 +256,7 @@ void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 #else
 	ScrollEvent(window, xOffset, yOffset);
 #endif
-}
+	}
 
 void ErrorCallback(int errorCode, const char* description)
 {
@@ -547,7 +548,7 @@ void CreateScene()
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
 	NOTICE_LOG_RENDERING_TEST(camera);
-	
+
 	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
 		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
 		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
@@ -556,16 +557,16 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
 	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
-	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug2.png", 0.1f);
+	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug7.png", 0.1f);
 	//terrainTransform.SetScale(2.0f);
 
 	int bufferEntriesCount;
 	void* data = terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, &bufferEntriesCount);
 
 	terrain = std::make_unique<Terrain>(static_cast<Real*>(data), bufferEntriesCount, terrainTransform);
-	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 4;
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f };
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -1.0f, 1.0f, -3.0f, 3.0f };
+	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f};
 	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
 	{
 		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
