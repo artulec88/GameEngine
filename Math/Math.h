@@ -102,6 +102,12 @@ namespace Math
 	}
 
 	template<typename Type>
+	constexpr Type Avg(Type value1, Type value2) noexcept
+	{
+		return (value1 + value2) / 2;
+	}
+
+	template<typename Type>
 	constexpr int Floor(Type value)
 	{
 		return static_cast<int>(floor(value));

@@ -154,7 +154,8 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * runModeSpeed);
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
-	NOTICE_LOG_RENDERING_TEST(camera);
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.02f);
+	//NOTICE_LOG_RENDERING_TEST(camera);
 }
 
 void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -549,8 +550,8 @@ Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real hei
 
 void CreateTerrain()
 {
-	constexpr Real heightMapMaxHeight = 0.5f;
 	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
+	const Real heightMapMaxHeight = (heightMapImage.GetWidth() + heightMapImage.GetHeight()) / 40.0f;
 	std::vector<Math::Real> heights;
 	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
@@ -571,32 +572,21 @@ void CreateTerrain()
 	//terrainTransform.SetScale(2.0f);
 
 	terrain = std::make_unique<Terrain>(surface, terrainTransform);
-	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f };
-	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
-	{
-		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
-		{
-			Real height = terrain->GetHeightAt(xPositions[i], zPositions[j]);
-			ERROR_LOG_RENDERING_TEST("Height at position [", xPositions[i], "; ", zPositions[j], "] = ", height);
-		}
-	}
+	//constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
+	//std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
+	//std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f };
+	//for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
+	//{
+	//	for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
+	//	{
+	//		Real height = terrain->GetHeightAt(xPositions[i], zPositions[j]);
+	//		ERROR_LOG_RENDERING_TEST("Height at position [", xPositions[i], "; ", zPositions[j], "] = ", height);
+	//	}
+	//}
 }
 
 void CreateScene()
 {
-	OrthoCameraBuilder orthoCameraBuilder;
-	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
-		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
-	PerspectiveCameraBuilder perspectiveCameraBuilder;
-	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
-		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(0.0f, 0.0f, -3.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
-	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
-	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
-	camera = cameraBuilderDirector.Construct();
-	NOTICE_LOG_RENDERING_TEST(camera);
-
 	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
 		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
 		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
@@ -607,6 +597,18 @@ void CreateScene()
 
 	CreateTerrain();
 
+	OrthoCameraBuilder orthoCameraBuilder;
+	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
+		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+	PerspectiveCameraBuilder perspectiveCameraBuilder;
+	perspectiveCameraBuilder.SetAspectRatio(WINDOW_WIDTH / WINDOW_HEIGHT).SetFieldOfView(Math::Angle(70.0f)).
+		SetFarPlane(1000.0f).SetNearPlane(0.1f).SetPos(1.0f, 0.0f, 0.0f).SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
+	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
+	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
+	camera = cameraBuilderDirector.Construct();
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
+	NOTICE_LOG_RENDERING_TEST(camera);
+
 	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
@@ -615,12 +617,13 @@ void CreateScene()
 	{
 		for (int j = 0; j < CUBE_MESHES_COLS; ++j)
 		{
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(2.5f * static_cast<Math::Real>(j), 0.0f, 2.5f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPos(0.1f * static_cast<Math::Real>(j), 0.0f, 0.1f * static_cast<Math::Real>(i));
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetPosY(terrain->GetHeightAt(cubeTransforms[i * CUBE_MESHES_ROWS + j].GetPos().GetXZ()));
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetRot(Math::Quaternion(REAL_ZERO, sqrtf(2.0f) / 2, sqrtf(2.0f) / 2, REAL_ZERO)
 				/* to make the plane face towards the camera.
 				See "OpenGL Game Rendering Tutorial: Shadow Mapping Preparations"
 				https://www.youtube.com/watch?v=kyjDP68s9vM&index=8&list=PLEETnX-uPtBVG1ao7GCESh2vOayJXDbAl (starts around 14:10) */);
-			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(0.5f + i * j * 0.01f);
+			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(0.005f + i * j * 0.00001f);
 		}
 	}
 
@@ -646,8 +649,7 @@ void UpdateScene(Math::Real frameTime)
 {
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
-
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
+	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
 }
 
 void RenderScene()
@@ -658,12 +660,12 @@ void RenderScene()
 	renderer->BindDisplayTexture();
 	renderer->ClearScreen();
 
-	//renderer->BindShader(ShaderIDs::AMBIENT);
-	//renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
-	//for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
-	//{
-	//	renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
-	//}
+	renderer->BindShader(ShaderIDs::AMBIENT);
+	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT);
+	for (int i = 0; i < CUBE_MESHES_ROWS * CUBE_MESHES_COLS; ++i)
+	{
+		renderer->Render(TestMeshIDs::CUBE, cubeMaterial.get(), cubeTransforms[i], ShaderIDs::AMBIENT);
+	}
 	renderer->BindShader(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->Render(TestMeshIDs::TERRAIN, terrainMaterial.get(), terrainTransform, ShaderIDs::AMBIENT_TERRAIN);

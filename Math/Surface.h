@@ -65,11 +65,11 @@ namespace Math
 	public:
 		/// <summary> Returns the number of vertices in the surface along the X axis. </summary>
 		/// <returns> The number of vertices in the surface along the X axis. </returns>
-		MATH_API int GetHorizontalVerticesCount() const { return m_horizontalVerticesCount; }
+		MATH_API int GetHorizontalVerticesCount() const noexcept { return m_horizontalVerticesCount; }
 
 		/// <summary> Returns the number of vertices in the surface along the Z axis. </summary>
 		/// <returns> The number of vertices in the surface along the Z axis. </returns>
-		MATH_API int GetVerticalVerticesCount() const { return m_verticalVerticesCount; }
+		MATH_API int GetVerticalVerticesCount() const noexcept { return m_verticalVerticesCount; }
 
 		/// <summary> Calculates and returns the width of the whole surface. </summary>
 		/// <returns> The width of the whole surface. </returns>

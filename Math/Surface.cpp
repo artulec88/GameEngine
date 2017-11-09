@@ -91,7 +91,8 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 
 Math::Real Math::Surface::GetHeightAt(int x, int z) const
 {
-	return m_heights[GetHeightsIndex(x, z)];
+	return (x < 0 || x >= m_horizontalVerticesCount || z < 0 || z >= m_verticalVerticesCount) ?
+		REAL_ZERO : m_heights[GetHeightsIndex(x, z)];
 }
 
 Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
