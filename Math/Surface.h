@@ -71,6 +71,21 @@ namespace Math
 		/// <returns> The number of vertices in the surface along the Z axis. </returns>
 		MATH_API int GetVerticalVerticesCount() const { return m_verticalVerticesCount; }
 
+		/// <summary> Calculates and returns the width of the whole surface. </summary>
+		/// <returns> The width of the whole surface. </returns>
+		MATH_API Real GetWidth() const { return m_horizontalVerticesCount * m_squareWidth; }
+
+		/// <summary> Calculates and returns the depth of the whole surface. </summary>
+		/// <returns> The depth of the whole surface. </returns>
+		MATH_API Real GetDepth() const { return m_verticalVerticesCount * m_squareDepth; }
+
+		/// <summary>
+		/// </summary>
+		/// <param name="x"> The index of the vertex along the X axis. Must be in range [0; m_horizontalVerticesCount). </param>
+		/// <param name="z"> The index of the vertex along the Z axis. Must be in range [0; m_verticalVerticesCount). </param>
+		/// <returns>
+		/// </returns>
+		MATH_API Vector3D GetPositionAt(int x, int z) const { return Vector3D(m_position.x + x * m_squareWidth, GetHeightAt(x, z), m_position.y + z * m_squareDepth); }
 
 		/// <summary>
 		/// Returns the height at given location specified by the index of the vertex along X and Z axis respectively.

@@ -143,7 +143,7 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID,
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
-			positions.emplace_back(xReal / (surface.GetHorizontalVerticesCount() - 1), surface.GetHeightAt(x, z), zReal / (surface.GetVerticalVerticesCount() - 1));
+			positions.emplace_back(surface.GetPositionAt(x, z));
 			CRITICAL_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", positions.back());
 			textureCoordinates.emplace_back(xReal / (surface.GetHorizontalVerticesCount() - 1), zReal / (surface.GetVerticalVerticesCount() - 1));
 			normals.push_back(CalculateNormal(x, z, surface));

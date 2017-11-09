@@ -564,11 +564,24 @@ void CreateTerrain()
 			heights.push_back(terrainHeight);
 		}
 	}
-	Surface surface(Vector2D(REAL_ZERO, REAL_ZERO), 1, 1, heightMapImage.GetWidth(), heightMapImage.GetHeight(), heights.data());
+	Surface surface(Vector2D(REAL_ZERO, REAL_ZERO), heightMapImage.GetWidth() - 1, heightMapImage.GetHeight() - 1, heightMapImage.GetWidth(), heightMapImage.GetHeight(), heights.data());
 
 	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
 	terrainMesh = renderer->CreateMeshFromSurface(TestMeshIDs::TERRAIN, surface);
 	//terrainTransform.SetScale(2.0f);
+
+	terrain = std::make_unique<Terrain>(surface, terrainTransform);
+	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f };
+	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
+	{
+		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
+		{
+			Real height = terrain->GetHeightAt(xPositions[i], zPositions[j]);
+			ERROR_LOG_RENDERING_TEST("Height at position [", xPositions[i], "; ", zPositions[j], "] = ", height);
+		}
+	}
 }
 
 void CreateScene()
@@ -594,22 +607,6 @@ void CreateScene()
 
 	CreateTerrain();
 
-	int bufferEntriesCount;
-	void* data = terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, &bufferEntriesCount);
-
-	terrain = std::make_unique<Terrain>(static_cast<Real*>(data), bufferEntriesCount, terrainTransform);
-	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f };
-	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
-	{
-		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
-		{
-			Real height = terrain->GetHeightAt(xPositions[i], zPositions[j]);
-			ERROR_LOG_RENDERING_TEST("Height at position [", xPositions[i], "; ", zPositions[j], "] = ", height);
-		}
-	}
-
 	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
@@ -627,9 +624,8 @@ void CreateScene()
 		}
 	}
 
-	//int bufferEntriesCount;
-	//void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
-	data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
+	int bufferEntriesCount;
+	void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
 	CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
 	Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
 	for (int i = 0; i < bufferEntriesCount; ++i)
@@ -651,7 +647,7 @@ void UpdateScene(Math::Real frameTime)
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
-	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
 }
 
 void RenderScene()

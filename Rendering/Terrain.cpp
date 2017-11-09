@@ -2,7 +2,7 @@
 #include "Terrain.h"
 
 
-Rendering::Terrain::Terrain(Math::Real* heights, int heightsCount, const Math::Transform& terrainTransform) :
+Rendering::Terrain::Terrain(const Math::Surface& surface, const Math::Transform& terrainTransform) :
 	//m_terrainMesh(terrainMesh),
 	m_x(0),
 	m_z(0),
@@ -10,8 +10,7 @@ Rendering::Terrain::Terrain(Math::Real* heights, int heightsCount, const Math::T
 	m_kdTree(transformationMatrix.TransformPositions(static_cast<Math::Vector3D*>(terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, nullptr)), terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D)),
 		terrainMesh->GetBufferSize(MeshBufferTypes::POSITIONS) / sizeof(Math::Vector3D), 2, 0)
 #elif defined HEIGHTS_SURFACE
-	// TODO: Pass data of the mesh instead of nullptr.
-	m_surface(terrainTransform.GetPos().GetXZ(), 50, 50, heightsCount / 2, heightsCount / 2, heights)
+	m_surface(surface)
 #endif
 {
 }

@@ -38,13 +38,11 @@ namespace Rendering
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		/// <summary> Terrain mesh constructor. </summary>
-		/// <param name="heights"> The terrain mesh positions. </param>
-		/// <param name="heightsCount">
-		/// Number of mesh positions.
-		/// In other words, this value represents how many elements the <paramref name="heights"/> array contains.
+		/// <param name="surface">
+		/// The surface of the terrain storing the information about each vertex on the grid and its respective height.
 		/// </param>
 		/// <param name="terrainTransform"> The world transform of the terrain. </param>
-		RENDERING_API Terrain(Math::Real* heights, int heightsCount, const Math::Transform& terrainTransform);
+		RENDERING_API Terrain(const Math::Surface& surface, const Math::Transform& terrainTransform);
 		/// <summary> Terrain mesh constructor. </summary>
 		/// <param name="gridX"> The X position on the grid. </param>
 		/// <param name="gridZ"> The Z position on the grid. </param>
