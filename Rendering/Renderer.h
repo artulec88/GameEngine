@@ -132,7 +132,7 @@ namespace Rendering
 		RENDERING_API void SetWindowHeight(int windowHeight) { m_windowHeight = windowHeight; }
 
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
-		RENDERING_API const Mesh* CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight = 5.0f);
+		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const Math::Surface& surface);
 		RENDERING_API const Mesh* GetMesh(int meshID) const { return m_meshFactory.GetMesh(meshID); }
 
 		RENDERING_API const Rendering::Texture* CreateTexture(int textureID, const std::string& textureFileName)
@@ -147,6 +147,7 @@ namespace Rendering
 		{
 			return m_textureFactory.CreateParticleTexture(textureID, particleTextureFileName, rowsCount, isAdditive);
 		}
+		RENDERING_API const std::string& GetTexturesDirectory() const { return m_textureFactory.GetTexturesDirectory(); }
 		RENDERING_API const Texture* GetTexture(int textureID) const { return m_textureFactory.GetTexture(textureID); }
 
 		RENDERING_API const Shader* CreateShader(int shaderID, const std::string& shaderFileName);

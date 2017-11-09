@@ -11,6 +11,7 @@
 #include "Rendering\MeshIDs.h"
 #include "Rendering\Material.h"
 #include "Rendering\Terrain.h"
+#include "Rendering\stb_image.h"
 
 #include "Math\Transform.h"
 #include "Math\HeightsGenerator.h"
@@ -150,7 +151,7 @@ void KeyEvent(GLFWwindow* window, int key, int scancode, int action, int mods)
 		dirVector = rotation.GetUp();
 		break;
 	}
-	camera.GetTransform().IncreasePos(dirVector *camera.GetSensitivity() * runModeSpeed);
+	camera.GetTransform().IncreasePos(dirVector * camera.GetSensitivity() * runModeSpeed);
 	//ERROR_LOG_RENDERING("camera.Pos = ", camera.GetTransform().GetPos().GetXZ(), "; height = ",
 	//	terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
 	NOTICE_LOG_RENDERING_TEST(camera);
@@ -168,7 +169,7 @@ void KeyEventCallback(GLFWwindow* window, int key, int scancode, int action, int
 #else
 	KeyEvent(window, key, scancode, action, mods);
 #endif
-	}
+}
 
 void MouseButtonEvent(GLFWwindow* window, int button, int action, int mods)
 {
@@ -195,7 +196,7 @@ void MouseEventCallback(GLFWwindow* window, int button, int action, int mods)
 #else
 	MouseButtonEvent(window, button, action, mods);
 #endif
-	}
+}
 
 void MousePosEvent(GLFWwindow* window, double xPos, double yPos)
 {
@@ -237,7 +238,7 @@ void MousePosCallback(GLFWwindow* window, double xPos, double yPos)
 	MousePosEvent(window, xPos, yPos);
 #endif
 	//GetCoreEngine()->CentralizeCursor();
-	}
+}
 
 void ScrollEvent(GLFWwindow* window, double xOffset, double yOffset)
 {
@@ -256,7 +257,7 @@ void ScrollEventCallback(GLFWwindow* window, double xOffset, double yOffset)
 #else
 	ScrollEvent(window, xOffset, yOffset);
 #endif
-	}
+}
 
 void ErrorCallback(int errorCode, const char* description)
 {
@@ -536,6 +537,40 @@ void InitializeTestTweakBars()
 }
 #endif
 
+Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight)
+{
+	constexpr Math::Real MAX_PIXEL_COLOR = 255.0f; // The maximum value for color of the single pixel in the height map.
+
+	Math::Real height = static_cast<Math::Real>(heightMapImage.GetPixelAt(z, x)) / MAX_PIXEL_COLOR;
+	//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", height);
+	height = (height - 0.5f) * 2.0f * heightMapMaxHeight; // rescaling the height so that it is within range [-heightMapMaxHeight; heightMapMaxHeight].
+	return height;
+}
+
+void CreateTerrain()
+{
+	constexpr Real heightMapMaxHeight = 0.5f;
+	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
+	std::vector<Math::Real> heights;
+	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
+	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
+	{
+		const Math::Real zReal = static_cast<Math::Real>(z);
+		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
+		{
+			const Math::Real xReal = static_cast<Math::Real>(x);
+			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
+			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
+			heights.push_back(terrainHeight);
+		}
+	}
+	Surface surface(Vector2D(REAL_ZERO, REAL_ZERO), 1, 1, heightMapImage.GetWidth(), heightMapImage.GetHeight(), heights.data());
+
+	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
+	terrainMesh = renderer->CreateMeshFromSurface(TestMeshIDs::TERRAIN, surface);
+	//terrainTransform.SetScale(2.0f);
+}
+
 void CreateScene()
 {
 	OrthoCameraBuilder orthoCameraBuilder;
@@ -556,9 +591,8 @@ void CreateScene()
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
 	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
-	//terrainMesh = renderer->CreateMesh(TestMeshIDs::TERRAIN, "plane.obj");
-	terrainMesh = renderer->CreateMeshFromHeightMap(TestMeshIDs::TERRAIN, "terrainHeightMapDebug7.png", 0.1f);
-	//terrainTransform.SetScale(2.0f);
+
+	CreateTerrain();
 
 	int bufferEntriesCount;
 	void* data = terrainMesh->GetBufferData(MeshBufferTypes::POSITIONS, &bufferEntriesCount);
@@ -566,7 +600,7 @@ void CreateScene()
 	terrain = std::make_unique<Terrain>(static_cast<Real*>(data), bufferEntriesCount, terrainTransform);
 	constexpr int NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS = 11;
 	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> xPositions = { -8, 8, -2.0f, 2.0f, 0.0f, -1.0f, 1.0f, -0.5f, 0.5f, -0.2f, 0.2f };
-	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f};
+	std::array<Real, NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS> zPositions = { -3.0f, 3.0f, -1.0f, 1.0f, 0.0f, -0.5f, 0.5f, -0.2f, 0.2f, -0.25f, 0.25f };
 	for (int i = 0; i < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++i)
 	{
 		for (int j = 0; j < NUMBER_OF_TERRAIN_HEIGHT_TEST_POSITIONS; ++j)
@@ -617,7 +651,7 @@ void UpdateScene(Math::Real frameTime)
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
+	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
 }
 
 void RenderScene()

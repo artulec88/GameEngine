@@ -5,6 +5,8 @@
 #include "Mesh.h"
 #include "Image.h"
 
+#include "Math\Surface.h"
+
 #include "Utility\ILogger.h"
 
 #include <map>
@@ -61,26 +63,16 @@ namespace Rendering
 		RENDERING_API const Mesh* CreateMesh(int meshID, const std::string& meshFileName);
 
 		/// <summary>
-		/// Creates a mesh from the specified height map file (given in <paramref name="heightMapFileName"/>).
+		/// Creates a uniform mesh from the specified surface given in <paramref name="surface"/>.
 		/// The result is a procedurally generated mesh with vertices uniformly laid out on the XZ plane.
-		/// The height map is an image of size <code>heightMapWidth</code> x <code>heightMapHeight</code>.
-		/// The final mesh will consist of exactly <code>heightMapWidth * heightMapHeight</code> vertices.
-		/// The bottom left corner of the height map is represented in the mesh as the vertex with both X and Z components equal to <code>0</code>.
-		/// Each pixel in the heightmap represents a single vertex on the XZ plane in the final mesh. The red component of the heightmap
-		/// determines the Y value for that vertex. The greater the red component's value is the higher the vertex will be.
-		/// A pixel with no red component at all will make the mesh vertex Y component equal to -<paramref name="heightMapMaxHeight"/>.
-		/// A pixel with the red component equal to <code>1.0</code> will make the mesh vertex Y component equal to <paramref name="heightMapMaxHeight"/>.
+		/// The final mesh will consist of exactly the same number of vertices as the number of heights values stored by the surface.
 		/// </summary>
 		/// <param name="meshID"> The ID of the mesh. This ID might later be used to access that particular mesh. </param>
-		/// <param name="heightMapFileName">
-		/// The system path where the height map texture is stored. The texture will be used to create mesh positions, texture coordinates, normals etc.
+		/// <param name="surface">
+		/// The surface. It will be used to create mesh positions, texture coordinates, normals etc.
 		/// </param>
-		/// <param name="heightMapMaxHeight">
-		/// Defines the amplitude of the mesh. The greater this value is the steeper the mesh will be. Final positions of the mesh will have
-		/// their Y components in range from [-<paramref name="heightMapMaxHeight"/>; <paramref name="heightMapMaxHeight"/>].
-		/// </param>
-		/// <returns> The procedurally generated mesh from the specified heightmap. </returns>
-		RENDERING_API const Mesh* CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight = 5.0f);
+		/// <returns> The procedurally generated mesh from the specified surface. </returns>
+		RENDERING_API const Mesh* CreateMeshFromSurface(int meshID, const Math::Surface& surface);
 
 		//RENDERING_API const TerrainMesh* CreateTerrainMesh(int meshID, int gridX, int gridZ, const Math::HeightsGenerator& heightsGenerator, int vertexCount);
 		//RENDERING_API const Mesh* CreateBillboardMesh(int meshID, const std::string& meshFileName);
@@ -100,7 +92,7 @@ namespace Rendering
 		}
 		Math::Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const;
 		Math::Real CalculateHeightAt(int x, int z, int heightMapWidth, const Math::HeightsGenerator& heightsGenerator) const;
-		Math::Vector3D CalculateNormal(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const;
+		Math::Vector3D CalculateNormal(int x, int z, const Math::Surface& surface) const;
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

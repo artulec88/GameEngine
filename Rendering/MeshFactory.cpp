@@ -126,67 +126,47 @@ const Rendering::Mesh* Rendering::MeshFactory::CreateMesh(int meshID, const std:
 	return meshPair.first->second.get();
 }
 
-const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight /* = 5.0f */)
+const Rendering::Mesh* Rendering::MeshFactory::CreateMeshFromSurface(int meshID, const Math::Surface& surface)
 {
-	/* Loading heightmap begin */
-	Image heightMapImage(m_texturesDirectory + heightMapFileName, 1 /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
-	CHECK_CONDITION_RENDERING(heightMapImage.GetWidth() < 32768 && heightMapImage.GetHeight() < 32768, Utility::Logging::EMERGENCY,
-		"The heightmap's size is too big to be used in the rendering engine.");
-	for (int i = 0; i < heightMapImage.GetHeight(); ++i)
-	{
-		for (int j = 0; j < heightMapImage.GetWidth(); ++j)
-		{
-			//CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapImage.GetWidth() + j, "] ([", i, "][", j, "]) = \"",
-			//	static_cast<int>(heightMapImage.GetPixelAt(i, j), "\"."));
-			CRITICAL_LOG_RENDERING("HeightMap[", i * heightMapImage.GetWidth() + j, "] ([", i, "][", j, "]) = \"",
-				static_cast<int>(heightMapImage.GetPixelAt(i, j)), "\"");
-		}
-	}
-	/* Loading heightmap finished */
-
-	std::vector<Math::Real> heights;
-	heights.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
 	std::vector<Math::Vector3D> positions;
-	positions.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
+	positions.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
 	std::vector<Math::Vector2D> textureCoordinates;
-	textureCoordinates.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
+	textureCoordinates.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
 	std::vector<Math::Vector3D> normals;
-	normals.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
+	normals.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
 	std::vector<Math::Vector3D> tangents;
-	tangents.reserve(heightMapImage.GetWidth() * heightMapImage.GetHeight());
-	for (int z = heightMapImage.GetHeight() - 1; z >= 0; --z)
+	tangents.reserve(surface.GetHorizontalVerticesCount() * surface.GetVerticalVerticesCount());
+	for (int z = 0; z < surface.GetVerticalVerticesCount(); ++z)
 	{
 		const Math::Real zReal = static_cast<Math::Real>(z);
-		for (int x = 0; x < heightMapImage.GetWidth(); ++x)
+		for (int x = 0; x < surface.GetHorizontalVerticesCount(); ++x)
 		{
 			const Math::Real xReal = static_cast<Math::Real>(x);
-			Math::Real terrainHeight = CalculateHeightAt(x, z, heightMapImage, heightMapMaxHeight);
 			//CRITICAL_LOG_RENDERING("Height[", x, "][", z, "] = ", terrainHeight);
-			heights.push_back(terrainHeight);
-			positions.emplace_back(xReal / (heightMapImage.GetWidth() - 1), terrainHeight, zReal / (heightMapImage.GetHeight() - 1));
+			positions.emplace_back(xReal / (surface.GetHorizontalVerticesCount() - 1), surface.GetHeightAt(x, z), zReal / (surface.GetVerticalVerticesCount() - 1));
 			CRITICAL_LOG_RENDERING("counter = ", positions.size(), "; x = ", x, "; z = ", z, "; Position = ", positions.back());
-			textureCoordinates.emplace_back(xReal / (heightMapImage.GetWidth() - 1), zReal / (heightMapImage.GetHeight() - 1));
-			normals.push_back(CalculateNormal(x, z, heightMapImage, heightMapMaxHeight));
+			textureCoordinates.emplace_back(xReal / (surface.GetHorizontalVerticesCount() - 1), zReal / (surface.GetVerticalVerticesCount() - 1));
+			normals.push_back(CalculateNormal(x, z, surface));
 			tangents.emplace_back(REAL_ONE, REAL_ZERO, REAL_ZERO); // TODO: Calculate tangent
 		}
 	}
 
 	std::vector<int> indices;
-	indices.reserve((heightMapImage.GetWidth() - 1) * (heightMapImage.GetHeight() - 1) * 6);
-	for (int gz = 0; gz < heightMapImage.GetHeight() - 1; ++gz)
+	indices.reserve((surface.GetHorizontalVerticesCount() - 1) * (surface.GetVerticalVerticesCount() - 1) * 6);
+	for (int gz = 0; gz < surface.GetVerticalVerticesCount() - 1; ++gz)
 	{
-		for (int gx = 0; gx < heightMapImage.GetWidth() - 1; ++gx)
+		for (int gx = 0; gx < surface.GetHorizontalVerticesCount() - 1; ++gx)
 		{
-			int topLeft = (gz * heightMapImage.GetHeight()) + gx;
-			int topRight = topLeft + 1;
-			int bottomLeft = ((gz + 1) * heightMapImage.GetHeight()) + gx;
+			int bottomLeft = (gz * surface.GetVerticalVerticesCount()) + gx;
 			int bottomRight = bottomLeft + 1;
+			int topLeft = ((gz + 1) * surface.GetVerticalVerticesCount()) + gx;
+			int topRight = topLeft + 1;
+			indices.push_back(bottomLeft);
+			indices.push_back(topLeft);
+			indices.push_back(bottomRight);
+			indices.push_back(bottomRight);
 			indices.push_back(topLeft);
 			indices.push_back(topRight);
-			indices.push_back(bottomLeft);
-			indices.push_back(bottomLeft);
-			indices.push_back(topRight);
-			indices.push_back(bottomRight);
 		}
 	}
 
@@ -239,12 +219,12 @@ Math::Real Rendering::MeshFactory::CalculateHeightAt(int x, int z, int heightMap
 	return height;
 }
 
-Math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const Image& heightMapImage, Math::Real heightMapMaxHeight) const
+Math::Vector3D Rendering::MeshFactory::CalculateNormal(int x, int z, const Math::Surface& surface) const
 {
-	Math::Real heightLeft = ((x - 1) >= 0) ? CalculateHeightAt(x - 1, z, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
-	Math::Real heightRight = ((x + 1) < heightMapImage.GetWidth()) ? CalculateHeightAt(x + 1, z, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
-	Math::Real heightDown = ((z - 1) >= 0) ? CalculateHeightAt(x, z - 1, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
-	Math::Real heightUp = ((z + 1) < heightMapImage.GetHeight()) ? CalculateHeightAt(x, z + 1, heightMapImage, heightMapMaxHeight) : REAL_ZERO;
+	Math::Real heightLeft = ((x - 1) >= 0) ? surface.GetHeightAt(x - 1, z) : REAL_ZERO;
+	Math::Real heightRight = ((x + 1) < surface.GetHorizontalVerticesCount()) ? surface.GetHeightAt(x + 1, z) : REAL_ZERO;
+	Math::Real heightDown = ((z - 1) >= 0) ? surface.GetHeightAt(x, z - 1) : REAL_ZERO;
+	Math::Real heightUp = ((z + 1) < surface.GetVerticalVerticesCount()) ? surface.GetHeightAt(x, z + 1) : REAL_ZERO;
 	Math::Vector3D normal(heightLeft - heightRight, 2.0f, heightDown - heightUp);
 	normal.Normalize();
 	return normal;

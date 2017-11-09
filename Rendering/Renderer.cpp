@@ -207,9 +207,9 @@ const Rendering::Mesh* Rendering::Renderer::CreateMesh(int meshID, const std::st
 	return m_meshFactory.CreateMesh(meshID, meshFileName);
 }
 
-const Rendering::Mesh* Rendering::Renderer::CreateMeshFromHeightMap(int meshID, const std::string& heightMapFileName, Math::Real heightMapMaxHeight /* = 5.0f */)
+const Rendering::Mesh* Rendering::Renderer::CreateMeshFromSurface(int meshID, const Math::Surface& surface)
 {
-	return m_meshFactory.CreateMeshFromHeightMap(meshID, heightMapFileName, heightMapMaxHeight);
+	return m_meshFactory.CreateMeshFromSurface(meshID, surface);
 }
 
 const Rendering::Shader* Rendering::Renderer::CreateShader(int shaderID, const std::string& shaderFileName)

@@ -48,6 +48,7 @@ namespace Rendering
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
+		RENDERING_API const std::string& GetTexturesDirectory() const { return m_texturesDirectory; }
 		RENDERING_API const Texture* CreateTexture(int textureID, const std::string& textureFileName);
 		RENDERING_API const Texture* CreateCubeTexture(int textureID, const std::string& cubeTextureDirectory);
 		RENDERING_API const Particles::ParticleTexture* CreateParticleTexture(int textureID, const std::string& textureFileName, int rowsCount, bool isAdditive);

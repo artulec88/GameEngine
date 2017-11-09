@@ -19,25 +19,25 @@ namespace Rendering
 
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
-		explicit Image(const std::string& fileName, int desiredComponentsCount = 0);
-		~Image(void);
+		RENDERING_API explicit Image(const std::string& fileName, int desiredComponentsCount = 0);
+		RENDERING_API ~Image(void);
 		Image(const Image& image) = delete;
 		/// <summary>
 		/// Image move constructor that initializes its member variables using the specified image <paramref name="image"/>.
 		/// </summary>
 		/// <param name="image"> The r-value reference to the image that will be used to move construct new image. </param>
-		Image(Image&& image);
+		RENDERING_API Image(Image&& image);
 		Image& operator=(const Image& image) = delete;
 		Image& operator=(Image&& image) = delete;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
 	public:
-		unsigned char GetPixelAt(int row, int column) const;
-		unsigned char* GetData() const { return m_data; }
-		inline int GetWidth() const { return m_width; }
-		inline int GetHeight() const { return m_height; }
-		inline int GetComponentsCount() const { return m_componentsCount; }
+		RENDERING_API unsigned char GetPixelAt(int row, int column) const;
+		RENDERING_API unsigned char* GetData() const { return m_data; }
+		RENDERING_API inline int GetWidth() const { return m_width; }
+		RENDERING_API inline int GetHeight() const { return m_height; }
+		RENDERING_API inline int GetComponentsCount() const { return m_componentsCount; }
 	private:
 		/* ==================== Non-static member functions end ==================== */
 

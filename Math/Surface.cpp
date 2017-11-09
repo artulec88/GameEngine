@@ -10,8 +10,8 @@ Math::Surface::Surface(const Vector2D& surfaceBottomLeftPosition, int surfaceWid
 	m_position(surfaceBottomLeftPosition),
 	m_horizontalVerticesCount(surfaceHorizontalVerticesCount),
 	m_verticalVerticesCount(surfaceVerticalVerticesCount),
-	m_squareWidth(surfaceWidth / (surfaceHorizontalVerticesCount - 1)),
-	m_squareDepth(surfaceDepth / (surfaceVerticalVerticesCount - 1))//,
+	m_squareWidth(static_cast<Real>(surfaceWidth) / (surfaceHorizontalVerticesCount - 1)),
+	m_squareDepth(static_cast<Real>(surfaceDepth) / (surfaceVerticalVerticesCount - 1))//,
 	//m_heights(heights, heights + (m_horizontalVerticesCount * m_verticalVerticesCount))
 {
 	for (auto i = 0; i < m_horizontalVerticesCount * m_verticalVerticesCount; ++i)
@@ -89,6 +89,11 @@ Math::Surface::Surface(Vector3D* positions, unsigned int positionsCount) :
 	}
 }
 
+Math::Real Math::Surface::GetHeightAt(int x, int z) const
+{
+	return m_heights[GetHeightsIndex(x, z)];
+}
+
 Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 {
 	Real surfaceX = x - m_position.x;
@@ -114,18 +119,18 @@ Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 	{
 		DEBUG_LOG_MATH("Left triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = Math::Interpolation::BarycentricInterpolation(0.0f, m_heights[GetHeightsIndex(gridX, gridZ)], 0.0f,
-			1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ)], 0.0f,
-			0.0f, m_heights[GetHeightsIndex(gridX, gridZ + 1)], 1.0f,
+		y = Math::Interpolation::BarycentricInterpolation(0.0f, GetHeightAt(gridX, gridZ), 0.0f,
+			1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
+			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
 	}
 	else
 	{
 		DEBUG_LOG_MATH("Right triangle indices for position [", x, "; ", z, "] are: ", GetHeightsIndex(gridX + 1, gridZ), "; ", GetHeightsIndex(gridX + 1, gridZ + 1),
 			"; ", GetHeightsIndex(gridX, gridZ + 1));
-		y = Math::Interpolation::BarycentricInterpolation(1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ)], 0.0f,
-			1.0f, m_heights[GetHeightsIndex(gridX + 1, gridZ + 1)], 1.0f,
-			0.0f, m_heights[GetHeightsIndex(gridX, gridZ + 1)], 1.0f,
+		y = Math::Interpolation::BarycentricInterpolation(1.0f, GetHeightAt(gridX + 1, gridZ), 0.0f,
+			1.0f, GetHeightAt(gridX + 1, gridZ + 1), 1.0f,
+			0.0f, GetHeightAt(gridX, gridZ + 1), 1.0f,
 			xCoord, zCoord);
 	}
 	return y;

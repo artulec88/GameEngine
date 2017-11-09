@@ -26,7 +26,7 @@ namespace Math
 		/// <param name="surfaceDepth"> The depth of the whole surface. It is equal to the size of the surface along the Z axis. </param>
 		/// <param name="surfaceHorizontalVerticesCount"> The number of vertices along the X axis of the surface. </param>
 		/// <param name="surfaceVerticalVerticesCount"> The number of vertices along the Z axis of the surface. </param>
-		/// <param name"heights">
+		/// <param name="heights">
 		/// The pointer to heights values. The array must consist of exactly
 		/// <paramref name="surfaceHorizontalVerticesCount"/> * <paramref name="surfaceVerticalVerticesCount"/> elements.
 		/// </param>
@@ -63,6 +63,23 @@ namespace Math
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
+		/// <summary> Returns the number of vertices in the surface along the X axis. </summary>
+		/// <returns> The number of vertices in the surface along the X axis. </returns>
+		MATH_API int GetHorizontalVerticesCount() const { return m_horizontalVerticesCount; }
+
+		/// <summary> Returns the number of vertices in the surface along the Z axis. </summary>
+		/// <returns> The number of vertices in the surface along the Z axis. </returns>
+		MATH_API int GetVerticalVerticesCount() const { return m_verticalVerticesCount; }
+
+
+		/// <summary>
+		/// Returns the height at given location specified by the index of the vertex along X and Z axis respectively.
+		/// </summary>
+		/// <param name="x"> The location along the X axis of the vertex we want to get height of. </param>
+		/// <param name="z"> The location along the Z axis of the vertex we want to get height of. </param>
+		/// <returns> The height of the exact given location. </returns>
+		MATH_API Real GetHeightAt(int x, int z) const;
+
 		/// <summary>
 		/// Finds and returns the height of the surface at given location <paramref name="xz"/>.
 		/// </summary>
