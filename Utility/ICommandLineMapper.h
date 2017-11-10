@@ -2,7 +2,6 @@
 #define __UTILITY_ICOMMAND_LINE_MAPPER_H__
 
 #include "Utility.h"
-#include <iostream>
 #include <memory>
 
 namespace Utility
@@ -84,7 +83,7 @@ namespace Utility
 		UTILITY_API virtual const std::string& Get(const std::string& opt, const std::string& defaultValue) const = 0;
 
 		//UTILITY_API virtual bool DoesContainRedundantArgs(const std::string* acceptableArgs, const int acceptableArgsCount) const = 0;
-	protected:
+	//protected:
 		//template<typename Type> Type Get(int number, const Type& defaultValue) const;
 	/* ==================== Non-static member functions end ==================== */
 	}; /* end class ICommandLineMapper */

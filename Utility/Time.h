@@ -102,9 +102,9 @@ namespace Utility {
 			UTILITY_API DateTime(const std::chrono::system_clock::time_point& timePoint);
 			UTILITY_API ~DateTime();
 			UTILITY_API DateTime(const DateTime& dateTime);
-			UTILITY_API DateTime(DateTime&& dateTime);
+			UTILITY_API DateTime(DateTime&& dateTime) noexcept;
 			UTILITY_API DateTime& operator=(const DateTime& dateTime);
-			UTILITY_API DateTime& operator=(DateTime&& dateTime);
+			UTILITY_API DateTime& operator=(DateTime&& dateTime) noexcept;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -113,11 +113,11 @@ namespace Utility {
 			//DateTime operator-(const DateTime& dateTime);
 			//DateTime& operator+=(const DateTime& dateTime);
 
-			DateTime operator+(const TimeSpan& timeSpan)
+			DateTime operator+(const TimeSpan& timeSpan) const
 			{
 				return DateTime(*this) += timeSpan;
 			}
-			DateTime operator-(const TimeSpan& timeSpan)
+			DateTime operator-(const TimeSpan& timeSpan) const
 			{
 				return DateTime(*this) -= timeSpan;
 			}
@@ -156,7 +156,6 @@ namespace Utility {
 			/// Visit the page http://www.cplusplus.com/reference/ctime/strftime/ for additional supported formats.
 			/// </remarks>
 			UTILITY_API std::string ToString(const char *format = "%Y-%m-%d %H:%M:%S") const;
-		private:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
@@ -219,7 +218,6 @@ namespace Utility {
 				ss << GetDuration(timeUnit) << " " << DateTime::ConvertTimeUnitToString(timeUnit);
 				return ss.str();
 			}
-		private:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

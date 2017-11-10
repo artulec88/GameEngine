@@ -97,7 +97,7 @@ namespace Utility
 			/// <summary>
 			/// The time span move constructor.
 			/// </summary>
-			TimeSpan(TimeSpan&& timeSpan) :
+			TimeSpan(TimeSpan&& timeSpan) noexcept:
 				m_duration(std::move(timeSpan.m_duration))
 			{
 			}

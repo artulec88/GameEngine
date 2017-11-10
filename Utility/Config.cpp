@@ -66,7 +66,7 @@ void Utility::Config::LoadFromFile(const std::string& fileName)
 
 std::string Utility::Config::GetArg(const std::string& name, const std::string& defValue) const
 {
-	ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
+	const ValuesMap::const_iterator valueMapIt = m_cfgValues.find(name);
 	if (valueMapIt == m_cfgValues.end())
 	{
 		WARNING_LOG_UTILITY("The parameter \"", name, "\" has not been specified. Using default value \"", defValue, "\"");

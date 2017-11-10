@@ -25,7 +25,7 @@ namespace Utility
 		{
 		}
 		/// <summary> Builder director destructor. </summary>
-		~BuilderDirector(void)
+		~BuilderDirector()
 		{
 		}
 		/// <summary> Builder director copy constructor. </summary>

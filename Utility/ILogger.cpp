@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "ILogger.h"
 #include "LoggerWindows.h"
-#include <iostream>
 #include <fstream>
 
 /* static */ std::map<std::string, std::unique_ptr<Utility::Logging::ILogger>> Utility::Logging::ILogger::loggers;
@@ -37,7 +36,7 @@ Utility::Logging::ILogger::ILogger(const char* fileName /* = nullptr */) :
 }
 
 
-Utility::Logging::ILogger::~ILogger(void)
+Utility::Logging::ILogger::~ILogger()
 {
 	for (Outs::iterator outItr = m_outs.begin(); outItr != m_outs.end(); ++outItr)
 	{

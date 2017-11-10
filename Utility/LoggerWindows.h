@@ -4,14 +4,8 @@
 
 #include "Utility.h"
 #include "ILogger.h"
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
 #include <string>
-#include <sstream>
-#include <iostream>
 #include <Windows.h>
-#include <list>
 
 namespace Utility
 {
@@ -47,7 +41,6 @@ namespace Utility
 		protected:
 			virtual void SetConsoleColor(LogLevel level) const override;
 			virtual void ReadConsoleColorsFromConfigFile() override;
-		private:
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */

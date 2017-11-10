@@ -31,6 +31,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	case DLL_PROCESS_DETACH:
 		DEBUG_LOG_UTILITY("The Utility DLL is being detached from the current process. ", ((lpReserved == NULL) ? "" : "The process is terminating."));
 		break;
+	default:
+		CRITICAL_LOG_UTILITY("Critical error occured during Utility DLL processing.");
 	}
 	return TRUE;
 }

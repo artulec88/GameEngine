@@ -10,12 +10,12 @@
 #endif
 //#include <dirent.h>
 
-Utility::FileManager::FileManager(void)
+Utility::FileManager::FileManager()
 {
 }
 
 
-Utility::FileManager::~FileManager(void)
+Utility::FileManager::~FileManager()
 {
 }
 

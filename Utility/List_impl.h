@@ -42,13 +42,13 @@ void Utility::Container::List<T>::SetTail(List<T>* tailList)
 }
 
 template <class T>
-List<T>* Utility::Container::List<T>::GetTail()
+Utility::Container::List<T>* Utility::Container::List<T>::GetTail()
 {
 	return m_tailList;
 }
 
 template <class T>
-const List<T>* Utility::Container::List<T>::GetTail() const
+const Utility::Container::List<T>* Utility::Container::List<T>::GetTail() const
 {
 	return m_tailList;
 }

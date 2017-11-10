@@ -10,10 +10,10 @@ namespace Utility
 	class ISerializable
 	{
 	public:
-		UTILITY_API ISerializable(void)
+		UTILITY_API ISerializable()
 		{
 		}
-		UTILITY_API virtual ~ISerializable(void)
+		UTILITY_API virtual ~ISerializable()
 		{
 		}
 	public:

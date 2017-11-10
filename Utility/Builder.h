@@ -4,8 +4,6 @@
 #include "Utility.h"
 #include "BuilderDirector.h"
 
-#include <memory>
-
 namespace Utility {
 
 	/// <summary>
@@ -26,7 +24,7 @@ namespace Utility {
 		}
 
 		/// <summary> Builder destructor. </summary>
-		virtual ~Builder(void)
+		virtual ~Builder()
 		{
 		}
 

@@ -1,10 +1,6 @@
 #include "stdafx.h"
 #include "Time.h"
-#include "ILogger.h"
-#include <stdio.h>
 #include <sstream>
-#include <limits>
-#include <math.h>
 #include "ILogger.h"
 
 #include <ctime>
@@ -93,7 +89,7 @@ Utility::Timing::DateTime::DateTime(const DateTime& dateTime) :
 {
 }
 
-Utility::Timing::DateTime::DateTime(DateTime&& dateTime) :
+Utility::Timing::DateTime::DateTime(DateTime&& dateTime) noexcept :
 	m_timePoint(std::move(dateTime.m_timePoint))
 {
 }
@@ -104,7 +100,7 @@ Utility::Timing::DateTime& Utility::Timing::DateTime::operator=(const DateTime& 
 	return *this;
 }
 
-Utility::Timing::DateTime& Utility::Timing::DateTime::operator=(DateTime&& dateTime)
+Utility::Timing::DateTime& Utility::Timing::DateTime::operator=(DateTime&& dateTime) noexcept
 {
 	m_timePoint = std::move(dateTime.m_timePoint);
 	return *this;

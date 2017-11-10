@@ -33,7 +33,7 @@ namespace Utility
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		UTILITY_API FileManager();
-		UTILITY_API ~FileManager(void);
+		UTILITY_API ~FileManager();
 		FileManager(const FileManager& fileManager) = delete;
 		FileManager(FileManager&& fileManager) = delete;
 		FileManager& operator=(const FileManager& fileManager) = delete;

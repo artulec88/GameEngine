@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "CommandLineMapper.h"
-#include <iostream>
-#include <sstream>
 #include "Time.h"
 
 //#define LOGMODULE "Command"
@@ -27,6 +25,6 @@ Utility::CommandLineMapper::~CommandLineMapper()
 
 const std::string& Utility::CommandLineMapper::Get(const std::string& opt, const std::string& defaultValue) const
 {
-	ArgsToValuesMap::const_iterator argToValueItr = m_argsToValuesMap.find(opt);
+	const ArgsToValuesMap::const_iterator argToValueItr = m_argsToValuesMap.find(opt);
 	return (argToValueItr != m_argsToValuesMap.end()) ? argToValueItr->second : defaultValue;
 }

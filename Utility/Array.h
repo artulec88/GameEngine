@@ -29,19 +29,19 @@ namespace Utility {
 			}
 
 			/// <summary> Array copy constructor. </summary>
-			/// <param name="arr"> Array to copy construct from. </summary>
+			/// <param name="arr"> Array to copy construct from. </param>
 			Array(const Array& arr) = default;
 
 			/// <summary> Array move constructor. </summary>
-			/// <param name="arr"> Array to move construct from. </summary>
+			/// <param name="arr"> Array to move construct from. </param>
 			Array(Array&& arr) = default;
 
 			/// <summary> Array copy assignment operator. </summary>
-			/// <param name="arr"> Array to copy assign from. </summary>
+			/// <param name="arr"> Array to copy assign from. </param>
 			Array& operator=(const Array& arr) = default;
 
 			/// <summary> Array move assignment operator. </summary>
-			/// <param name="arr"> Array to move assign from. </summary>
+			/// <param name="arr"> Array to move assign from. </param>
 			Array& operator=(Array&& arr) = default;
 			/* ==================== Constructors and destructors end ==================== */
 

@@ -4,7 +4,6 @@
 #include "Utility.h"
 #include "IConfig.h"
 #include <string>
-#include <sstream>
 #include <map>
 
 namespace Utility

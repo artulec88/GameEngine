@@ -35,26 +35,26 @@ namespace Utility {
 			}
 
 			/// <summary> Vector copy constructor. </summary>
-			/// <param name="vector"> Vector to copy construct from. </summary>
+			/// <param name="vector"> Vector to copy construct from. </param>
 			Vector(const Vector& vector) = delete;
 
 			/// <summary> Vector move constructor. </summary>
-			/// <param name="vector"> Vector to move construct from. </summary>
+			/// <param name="vector"> Vector to move construct from. </param>
 			Vector(Vector&& vector) = default;
 
 			/// <summary> Vector copy assignment operator. </summary>
-			/// <param name="vector"> Vector to copy assign from. </summary>
+			/// <param name="vector"> Vector to copy assign from. </param>
 			Vector& operator=(const Vector& vector) = delete;
 
 			/// <summary> Vector move assignment operator. </summary>
-			/// <param name="vector"> Vector to move assign from. </summary>
+			/// <param name="vector"> Vector to move assign from. </param>
 			Vector& operator=(Vector&& vector) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
-			T* GetData() { &m_data[0]; }
-			const T* GetData() const { &m_data[0]; }
+			T* GetData() { return &m_data[0]; }
+			const T* GetData() const { return &m_data[0]; }
 			T& operator[](unsigned int i);
 			const T& operator[](unsigned int i) const;
 

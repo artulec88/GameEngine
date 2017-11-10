@@ -12,7 +12,7 @@ Utility::Logging::LoggerWindows::LoggerWindows(const char* fileName /* = nullptr
 	m_modified(false)
 {
 	m_console = GetStdHandle(STD_OUTPUT_HANDLE); // For use of SetConsoleTextAttribute()
-	ReadConsoleColorsFromConfigFile();
+	ReadConsoleColorsFromConfigFile(); // TODO: Beware of calling the virtual function in the constructor.
 }
 
 Utility::Logging::LoggerWindows::~LoggerWindows()
@@ -33,7 +33,7 @@ void Utility::Logging::LoggerWindows::Fill(const std::string& strLevel /* = Empt
 	{
 		if ((*levelNameItr) == strLevel)
 		{
-			SetLevel((LogLevel)i);
+			SetLevel(static_cast<LogLevel>(i));
 			return;
 		}
 	}

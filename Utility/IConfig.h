@@ -47,7 +47,10 @@ namespace Utility
 		/// <summary>
 		/// Returns the value (in a string) of given config parameter, or defValue
 		/// if the parameter has not been specified in the configuration file.
-		///
+		/// </summary>
+		/// <param name="name"> Name of the configuration parameter. </param>
+		/// <param name="defValue"> Default value for the configuration parameter <paramref name="name"/> if no specified value has been defined for it. </param>
+		/// <returns> The value specified for the configuration parameter <paramref name="name"/> and <paramref name="defValue"/> if no such value has been defined. </returns>
 		virtual std::string GetArg(const std::string& name, const std::string& defValue) const = 0;
 
 		/// <summary>
@@ -79,7 +82,7 @@ namespace Utility
 		/* ==================== Non-static member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */
-	protected:
+	//protected:
 		/* ==================== Non-static member functions end ==================== */
 	}; /* end class IConfig */
 

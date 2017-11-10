@@ -25,10 +25,10 @@ std::string Utility::StringUtility::Trim(const std::string& str, const std::stri
 		return str;
 	}
 
-	std::string::size_type begPos = str.find_first_not_of(trimStr);
+	const std::string::size_type begPos = str.find_first_not_of(trimStr);
 	if (begPos != std::string::npos)
 	{
-		std::string::size_type endPos = str.find_last_not_of(trimStr);
+		const std::string::size_type endPos = str.find_last_not_of(trimStr);
 		return str.substr(begPos, endPos - begPos + 1);
 	}
 	return "";
@@ -59,7 +59,7 @@ std::string Utility::StringUtility::MakeLowercase(const std::string& str)
 
 bool Utility::StringUtility::Contains(const std::string& source, const char* find)
 {
-	return (strstr(source.c_str(), find) != 0);
+	return (strstr(source.c_str(), find) != nullptr);
 }
 
 std::string Utility::StringUtility::Pad(const std::string& str, char padChar, int length)
@@ -82,7 +82,7 @@ int Utility::StringUtility::ToInt(const std::string& str)
 		return 0;
 	}
 
-	bool isPositive = (inString[0] != '-');
+	const bool isPositive = (inString[0] != '-');
 	for (unsigned int j = 0; j < inString.length(); ++j)
 	{
 		if ((j != 0 || isPositive) && !IsNumeric(inString[j]))
@@ -107,8 +107,8 @@ float Utility::StringUtility::ToFloat(const std::string& str)
 	}
 
 	const char decimalMark = '.';
-	bool decimalMarkFound = false;
-	bool isNegative = (inString[0] == '-');
+	const bool decimalMarkFound = false; // TODO: This is weird. It causes the below else if statement unreachable.
+	const bool isNegative = (inString[0] == '-');
 	for (unsigned int j = 0; j < inString.length(); ++j)
 	{
 		if (!IsNumeric(inString[j]))
@@ -182,7 +182,7 @@ void Utility::StringUtility::CutToTokens(const std::string& str, std::vector<std
 
 	const char QUOTE_SIGN = '"';
 	const char* cstr = str.c_str();
-	unsigned int strLength = static_cast<unsigned int>(str.length());
+	const unsigned int strLength = static_cast<unsigned int>(str.length());
 	unsigned int start = 0;
 	unsigned int end = 0;
 

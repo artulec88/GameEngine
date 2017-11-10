@@ -9,7 +9,6 @@
 #include <memory>
 #include <iostream>
 #include <sstream>
-#include <list>
 #include <array>
 
 #define LOGGING_ENABLED
@@ -169,7 +168,7 @@ namespace Utility
 			/// <summary>
 			/// Base logger destructor.
 			/// </summary>
-			virtual ~ILogger(void);
+			virtual ~ILogger();
 
 			/// <summary> Base logger copy constructor. </summary>
 			ILogger(const ILogger& logger) = delete;
