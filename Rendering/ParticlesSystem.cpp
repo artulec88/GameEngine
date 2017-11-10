@@ -13,7 +13,7 @@ Rendering::Particles::ParticlesSystem::ParticlesSystem() :
 }
 
 Rendering::Particles::ParticlesSystem::ParticlesSystem(size_t maxCount, Attributes::AttributesMask attributesMask, int particleTextureID, int particleShaderID) :
-	m_count(maxCount),
+	m_maxCount(maxCount),
 	m_particles(maxCount, attributesMask),
 	m_emitters(),
 	m_updaters(),

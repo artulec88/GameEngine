@@ -24,11 +24,15 @@ namespace Rendering
 		/// Creates a new material based on the given parameters.
 		/// </summary>
 		/// <param name="diffuseTexture">The diffuse texture to be used by the material.</param>
-		/// <param name="specularIntensity">The measure of how intensive the reflection of the material is.
-		/// For example, the metal reflect more light, whereas wood reflects almost no light.</param>
-		/// <param name="specularPower>Defines the "width" of the reflection, in common sense.
-		/// When a small value is specified the reflection is just a tiny focused beam and otherwise a wide-spreaded reflection.</param>
-		/// <param name="normalMap>The normal map for the material.</param>
+		/// <param name="specularIntensity">
+		/// The measure of how intensive the reflection of the material is.
+		/// For example, the metal reflect more light, whereas wood reflects almost no light.
+		/// </param>
+		/// <param name="specularPower">
+		/// Defines the "width" of the reflection, in common sense.
+		/// When a small value is specified the reflection is just a tiny focused beam and otherwise a wide-spreaded reflection.
+		/// </param>
+		/// <param name="normalMap">The normal map for the material.</param>
 		/// <param name="displacementMap">The dispacement map of the material.</param>
 		/// <param name="displacementScale">The displacement scale.</param>
 		/// <param name="displacementOffset">The displacement offset.</param>

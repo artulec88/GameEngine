@@ -25,19 +25,26 @@ namespace Rendering
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
+			/// <summary> Default constructor. </summary>
 			RENDERING_API ParticlesUpdater();
+
+			/// <summary> Destructor. </summary>
 			RENDERING_API virtual ~ParticlesUpdater();
 
 			/// <summary> Particle updater copy constructor. </summary>
+			/// <param name="particlesUpdater"> The particles updater to copy-construct from. </param>
 			ParticlesUpdater(const ParticlesUpdater& particlesUpdater) = delete;
 
 			/// <summary> Particle updater move constructor. </summary>
+			/// <param name="particlesUpdater"> The particles updater to move-construct from. </param>
 			ParticlesUpdater(ParticlesUpdater&& particlesUpdater) = default;
 
 			/// <summary> Particle updater copy assignment operator. </summary>
+			/// <param name="particlesUpdater"> The particles updater to copy-assign from. </param>
 			ParticlesUpdater& operator=(const ParticlesUpdater& particlesUpdater) = delete;
 
 			/// <summary> Particle updater move assignment operator. </summary>
+			/// <param name="particlesUpdater"> The particles updater to move-assign from. </param>
 			ParticlesUpdater& operator=(ParticlesUpdater&& particlesUpdater) = default;
 			/* ==================== Constructors and destructors end ==================== */
 

@@ -15,7 +15,7 @@ namespace Rendering
 	{
 		/// <summary>
 		/// Particles emitter. A particle emitter holds one or more particles property generators.
-		/// Each frame, the emitter should emit a number of particles. The pace of emission
+		/// Each frame, the emitter should emit specific number of particles. The pace of emission
 		/// depends on emission rate that is specified when particles emitter is created.
 		/// The emitter should generate all needed particle attributes, but each attribute can be
 		/// set by a different generator.
@@ -40,22 +40,26 @@ namespace Rendering
 			RENDERING_API ~ParticlesEmitter();
 
 			/// <summary> Particles emitter copy constructor. </summary>
+			/// <param name="particlesEmitter"> The particles emitter to copy-construct from. </param>
 			ParticlesEmitter(const ParticlesEmitter& particlesEmitter) = default;
 
 			/// <summary> Particles emitter move constructor. </summary>
+			/// <param name="particlesEmitter"> The particles emitter to move-construct from. </param>
 			ParticlesEmitter(ParticlesEmitter&& particlesEmitter) = default;
 
 			/// <summary> Particles emitter copy assignment operator. </summary>
+			/// <param name="particlesEmitter"> The particles emitter to copy-assign from. </param>
 			ParticlesEmitter& operator=(const ParticlesEmitter& particlesEmitter) = delete;
 
 			/// <summary> Particles emitter move assignment operator. </summary>
+			/// <param name="particlesEmitter"> The particles emitter to move-assign from. </param>
 			ParticlesEmitter& operator=(ParticlesEmitter&& particlesEmitter) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary>
-			/// Based on the given <paramref name="numberOfParticlesToGeneratePerSecond"> the time for one particle to be generated is calculated.
+			/// Based on the given <paramref name="numberOfParticlesToGeneratePerSecond"/> the time for one particle to be generated is calculated.
 			/// </summary>
 			/// <param name="numberOfParticlesToGeneratePerSecond">
 			/// The number of particles to generate per second.
@@ -67,7 +71,7 @@ namespace Rendering
 			}
 
 			/// <summary>
-			/// Simulates the emitter by the specified <paramref name="deltaTime/> time.
+			/// Simulates the emitter by the specified <paramref name="deltaTime"/> time.
 			/// It emits <code>P = floor(deltaTime / m_timeToEmitOneParticle)</code> particles in the given <paramref name="particleContainer"/>.
 			/// Emission of a single particle means setting its properties by the particles generators and reviving it.
 			/// </summary>
@@ -76,7 +80,9 @@ namespace Rendering
 			RENDERING_API void Emit(Math::Real deltaTime, ParticlesContainer* particleContainer);
 
 			/// <summary>
-			/// Adds additional particle attribute generator to the emitter. The generator will be used when new particles are emitted by this specific particles emitter.
+			/// Adds additional particle attribute generator to the emitter.
+			/// The generator will be used when new particles are emitted by this specific particles emitter.
+			/// </summary>
 			/// <param name="particleAttributeGenerator"> The specific particle attribute generator. </param>
 			RENDERING_API void AddGenerator(ParticleAttributeGenerator* particleAttributeGenerator) { m_generators.push_back(particleAttributeGenerator); }
 			/* ==================== Non-static member functions end ==================== */
@@ -94,7 +100,7 @@ namespace Rendering
 			Math::Real m_timeToEmitOneParticle;
 
 			/// <summary>
-			/// The generatos that particles emitter uses 
+			/// The generators that particles emitter uses.
 			/// </summary>
 			std::vector<ParticleAttributeGenerator*> m_generators;
 			/* ==================== Non-static member variables end ==================== */

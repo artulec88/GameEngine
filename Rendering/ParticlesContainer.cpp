@@ -21,7 +21,7 @@ Rendering::Particles::ParticlesContainer::ParticlesContainer(size_t maxCount, co
 	m_masses(nullptr),
 	m_aliveFlags(nullptr),
 	m_IDs(nullptr),
-	m_count(maxCount),
+	m_maxCount(maxCount),
 	m_countAlive(0)
 {
 	SetAttributesMask(m_attributesMask);
@@ -47,7 +47,7 @@ void Rendering::Particles::ParticlesContainer::Kill(size_t id)
 
 void Rendering::Particles::ParticlesContainer::Revive(size_t id)
 {
-	if (m_countAlive < m_count)
+	if (m_countAlive < m_maxCount)
 	{
 		//DEBUG_LOG_RENDERING("Reviving particle #", id);
 		//m_alive[id] = true;
@@ -147,69 +147,69 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 
 	if (m_attributesMask.IsAttributeEnabled(Attributes::POSITION))
 	{
-		m_positions.reset(new Math::Vector3D[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_positions.reset(new Math::Vector3D[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_positions[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::VELOCITY))
 	{
-		m_velocities.reset(new Math::Vector3D[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_velocities.reset(new Math::Vector3D[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_velocities[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ACCELERATION))
 	{
-		m_accelerations.reset(new Math::Vector3D[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_accelerations.reset(new Math::Vector3D[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_accelerations[i].Zero();
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::GRAVITY_EFFECT_FACTOR))
 	{
-		m_gravityEffectFactors.reset(new Math::Real[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_gravityEffectFactors.reset(new Math::Real[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_gravityEffectFactors[i] = REAL_ZERO;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::LIFE_SPAN))
 	{
-		m_lifeSpanLimits.reset(new Math::Real[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_lifeSpanLimits.reset(new Math::Real[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_lifeSpanLimits[i] = REAL_ZERO;
 		}
-		m_lifeSpans.reset(new Math::Real[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_lifeSpans.reset(new Math::Real[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_lifeSpans[i] = REAL_ZERO;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ROTATION))
 	{
-		m_rotations.reset(new Math::Angle[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_rotations.reset(new Math::Angle[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_rotations[i].Set(REAL_ZERO, Math::Unit::RADIAN);
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::SCALE))
 	{
-		m_scales.reset(new Math::Real[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_scales.reset(new Math::Real[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_scales[i] = REAL_ONE;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::TEXTURE_OFFSET))
 	{
-		m_textureOffsets.reset(new Math::Vector2D[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_textureOffsets.reset(new Math::Vector2D[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_textureOffsets[i].x = REAL_ZERO;
 			m_textureOffsets[i].y = REAL_ZERO;
@@ -217,32 +217,32 @@ void Rendering::Particles::ParticlesContainer::SetAttributesMask(Attributes::Att
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::COLOR))
 	{
-		m_colors.reset(new Color[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_colors.reset(new Color[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_colors[i].Set(REAL_ONE, REAL_ONE, REAL_ONE, REAL_ONE);
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::MASS))
 	{
-		m_masses.reset(new Math::Real[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_masses.reset(new Math::Real[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_masses[i] = REAL_ZERO;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ALIVE))
 	{
-		m_aliveFlags.reset(new bool[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_aliveFlags.reset(new bool[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_aliveFlags[i] = false;
 		}
 	}
 	if (m_attributesMask.IsAttributeEnabled(Attributes::ID))
 	{
-		m_IDs.reset(new int[m_count]);
-		for (size_t i = 0; i < m_count; ++i)
+		m_IDs.reset(new int[m_maxCount]);
+		for (size_t i = 0; i < m_maxCount; ++i)
 		{
 			m_IDs[i] = -1; // some invalid ID
 		}

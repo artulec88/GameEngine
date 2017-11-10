@@ -58,11 +58,12 @@ namespace Rendering
 			/// <summary>
 			/// Updates the particles system. The simulation moves forward in time by the specified <paramref name="deltaTime"/> value.
 			/// </summary>
+			/// <param name="deltaTime"> The amount of time passed since the last update. </param>
 			RENDERING_API void Update(Math::Real deltaTime);
 			RENDERING_API void Reset();
 			RENDERING_API int GetTextureID() const { return m_textureID; }
 			RENDERING_API int GetShaderID() const { return m_shaderID; }
-			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetCount(); }
+			RENDERING_API size_t GetParticlesCount() const { return m_particles.GetMaxCount(); }
 			RENDERING_API size_t GetAliveParticlesCount() const { return m_particles.GetAliveCount(); }
 			RENDERING_API void AddEmitter(const ParticlesEmitter& emitter) { m_emitters.push_back(emitter); }
 			RENDERING_API void AddUpdater(ParticlesUpdater* updater) { m_updaters.push_back(updater); }
@@ -96,7 +97,7 @@ namespace Rendering
 
 			friend std::ostream& operator<<(std::ostream& out, const ParticlesSystem& particlesSystem)
 			{
-				out << "Particles system: count: " << particlesSystem.m_count << std::endl << particlesSystem.m_particles <<
+				out << "Particles system: count: " << particlesSystem.m_maxCount << std::endl << particlesSystem.m_particles <<
 					std::endl << "Emitters count: " << particlesSystem.m_emitters.size() << std::endl << "Updaters count: " <<
 					particlesSystem.m_updaters.size() << std::endl << "TextureID: " << particlesSystem.m_textureID << "; shaderID: " << particlesSystem.m_shaderID;
 				return out;
@@ -108,7 +109,7 @@ namespace Rendering
 			/// <summary>
 			/// The maximum number of particles the system may store.
 			/// </summary>
-			size_t m_count;
+			size_t m_maxCount;
 
 			/// <summary>
 			/// The particles container.

@@ -3,16 +3,19 @@
 
 namespace Rendering
 {
-	namespace ParticleEffects
+	namespace Particles
 	{
-		enum ParticleEffect
+		namespace ParticleEffects
 		{
-			RAIN = 0,
-			FIRE,
-			FOUNTAIN,
-			SMOKE
-		}; /* end enum ParticleEffect */
-	} /* end namespace ParticleEffects */
+			enum ParticleEffect
+			{
+				RAIN = 0,
+				FIRE,
+				FOUNTAIN,
+				SMOKE
+			}; /* end enum ParticleEffect */
+		} /* end namespace ParticleEffects */
+	} /* end namespace Particles */
 } /* end namespace Rendering */
 
 #endif /* __RENDERING_PARTICLE_EFFECTS_H__ */

@@ -42,26 +42,44 @@ namespace Rendering
 
 				/* ==================== Constructors and destructors begin ==================== */
 			public:
+				/// <summary> The constructor of the attributes mask. </summary>
+				/// <param name="attributesMask">
+				/// The simple integer value whose binary representation indicates which particle attributes
+				/// are supposed to be enabled and which not.
+				/// </param>
 				constexpr AttributesMask(int attributesMask) :
 					m_attributesMask(attributesMask)
 				{
 				}
 
 				/// <summary> Attributes mask copy constructor. </summary>
+				/// <param name="attributesMask"> The attributes mask to copy-construct from. </param>
 				AttributesMask(const AttributesMask& attributesMask) = default;
 
 				/// <summary> Attributes mask move constructor. </summary>
+				/// <param name="attributesMask"> The attributes mask to move-construct from. </param>
 				AttributesMask(AttributesMask&& attributesMask) = default;
 
 				/// <summary> Attributes mask copy assignment operator. </summary>
+				/// <param name="attributesMask"> The attributes mask to copy-assign from. </param>
 				AttributesMask& operator=(const AttributesMask& attributesMask) = default;
 
 				/// <summary> Attributes mask move assignment operator. </summary>
+				/// <param name="attributesMask"> The attributes mask to move-assign from. </param>
 				AttributesMask& operator=(AttributesMask&& attributesMask) = default;
 				/* ==================== Constructors and destructors end ==================== */
 
 				/* ==================== Non-static member functions begin ==================== */
 			public:
+				/// <summary>
+				/// Simple function returning <code>true</code> when specified <paramref name="attribute"/>
+				/// is enabled in the attributes mask and <code>false</code> otherwise.
+				/// </summary>
+				/// <param name="attribute">The attribute to be checked if it is enabled or not. </param>
+				/// <returns>
+				/// <code>true</code> when specified <paramref name="attribute"/> is enabled in the attributes mask
+				/// and <code>false</code> otherwise.
+				/// </returns>
 				inline constexpr bool IsAttributeEnabled(Attribute attribute) const
 				{
 					return ((m_attributesMask & attribute) == attribute);

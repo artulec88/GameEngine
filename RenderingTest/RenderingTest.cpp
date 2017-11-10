@@ -550,6 +550,14 @@ Real CalculateHeightAt(int x, int z, const Image& heightMapImage, Math::Real hei
 
 void CreateTerrain()
 {
+	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
+		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
+		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_BLEND_MAP, "terrainBlendMap.png"), "blendMap");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
+	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
+
 	Image heightMapImage(renderer->GetTexturesDirectory() + "terrainHeightMapDebug7.png", STBI_grey /* we only care about one RED component for now (the heightmap is grayscale, so we could use GREEN or BLUE components as well) */);
 	const Real heightMapMaxHeight = (heightMapImage.GetWidth() + heightMapImage.GetHeight()) / 40.0f;
 	std::vector<Math::Real> heights;
@@ -585,18 +593,8 @@ void CreateTerrain()
 	//}
 }
 
-void CreateScene()
+void CreateCamera()
 {
-	terrainMaterial = std::make_unique<Material>(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE, "grass4.jpg"), 1.0f,
-		8.0f, renderer->CreateTexture(TestTextureIDs::TERRAIN_NORMAL_MAP, "grass_normal.jpg"),
-		renderer->CreateTexture(TestTextureIDs::TERRAIN_DISPLACEMENT_MAP, "grass_disp.jpg"), 0.02f, -0.5f);
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_BLEND_MAP, "terrainBlendMap.png"), "blendMap");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_2, "rocks2.jpg"), "diffuse2");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_3, "mud.png"), "diffuse3");
-	terrainMaterial->SetAdditionalTexture(renderer->CreateTexture(TestTextureIDs::TERRAIN_DIFFUSE_4, "path.png"), "diffuse4");
-
-	CreateTerrain();
-
 	OrthoCameraBuilder orthoCameraBuilder;
 	orthoCameraBuilder.SetBottom(-10.0f).SetTop(10.0f).SetLeft(-10.0f).SetRight(10.0f).SetNearPlane(0.1f).SetFarPlane(100.0f).SetPos(0.0f, 0.0f, -3.0f).
 		SetRot(Math::Quaternion(REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)).SetSensitivity(0.05f);
@@ -606,9 +604,12 @@ void CreateScene()
 	BuilderDirector<Camera> cameraBuilderDirector(&perspectiveCameraBuilder);
 	//BuilderDirector<Camera> cameraBuilderDirector(&orthoCameraBuilder);
 	camera = cameraBuilderDirector.Construct();
-	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()));
+	camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.02f);
 	NOTICE_LOG_RENDERING_TEST(camera);
+}
 
+void CreateCubes()
+{
 	renderer->CreateTexture(TestTextureIDs::CUBE_DIFFUSE, "chessboard3.jpg");
 	cubeMaterial = std::make_unique<Material>(renderer->GetTexture(TestTextureIDs::CUBE_DIFFUSE), 8.0f, 1.0f,
 		renderer->GetTexture(TextureIDs::DEFAULT_NORMAL_MAP), renderer->GetTexture(TextureIDs::DEFAULT_DISPLACEMENT_MAP));
@@ -626,21 +627,28 @@ void CreateScene()
 			cubeTransforms[i * CUBE_MESHES_ROWS + j].SetScale(0.005f + i * j * 0.00001f);
 		}
 	}
+}
 
-	int bufferEntriesCount;
-	void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
-	CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
-	Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
-	for (int i = 0; i < bufferEntriesCount; ++i)
-	{
-		ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
-	}
+void CreateScene()
+{
+	CreateTerrain();
+	CreateCamera();
+	CreateCubes();
 
-	//Particles::ParticlesSystemBuilder particlesSystemBuilder;
-	//particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).
-	//	SetShaderID(ShaderIDs::PARTICLES_COLORS);
-	//Utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
-	//particlesSystem = particlesSystemBuilderDirector.Construct();
+	//int bufferEntriesCount;
+	//void* data = renderer->GetMesh(TestMeshIDs::CUBE)->GetBufferData(MeshBufferTypes::TEXTURE_COORDINATES, &bufferEntriesCount);
+	//CHECK_CONDITION_ALWAYS_RENDERING_TEST(data != nullptr, Utility::Logging::ERR, "Data is nullptr.");
+	//Math::Vector2D* dataValues = static_cast<Math::Vector2D*>(data);
+	//for (int i = 0; i < bufferEntriesCount; ++i)
+	//{
+	//	ERROR_LOG_RENDERING("DataValues[", i, "] = ", dataValues[i], ".");
+	//}
+
+	Particles::ParticlesSystemBuilder particlesSystemBuilder;
+	particlesSystemBuilder.SetAttributesMask(Particles::Attributes::POSITION | Particles::Attributes::COLOR).SetMaxCount(10).SetShaderID(ShaderIDs::PARTICLES_COLORS);
+	//particlesSystemBuilder.
+	Utility::BuilderDirector<Particles::ParticlesSystem> particlesSystemBuilderDirector(&particlesSystemBuilder);
+	particlesSystem = particlesSystemBuilderDirector.Construct();
 }
 
 //Math::Angle angleStep(1.0f);
@@ -650,6 +658,20 @@ void UpdateScene(Math::Real frameTime)
 	//camera.GetTransform().Rotate(Math::Vector3D(0.0f, 1.0f, 0.0f), angleStep);
 	//NOTICE_LOG_RENDERING_TEST(camera);
 	//camera.GetTransform().SetPosY(terrain->GetHeightAt(camera.GetTransform().GetPos().GetXZ()) + 0.01f);
+	particlesSystem.Update(frameTime);
+}
+
+void RenderParticles()
+{
+	DEBUG_LOG_RENDERING_TEST("Rendering particles started");
+	const int particlesShaderID = Rendering::ShaderIDs::PARTICLES;
+	renderer->BindShader(particlesShaderID);
+	renderer->UpdateRendererUniforms(particlesShaderID);
+	//if (!particlesSystem.GetTexture()->IsAdditive())
+	//{
+	//particlesSystem.SortParticles(renderer->GetCurrentCamera().GetPos());
+	//}
+	renderer->RenderParticles(particlesShaderID, particlesSystem);
 }
 
 void RenderScene()
@@ -669,6 +691,8 @@ void RenderScene()
 	renderer->BindShader(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->UpdateRendererUniforms(ShaderIDs::AMBIENT_TERRAIN);
 	renderer->Render(TestMeshIDs::TERRAIN, terrainMaterial.get(), terrainTransform, ShaderIDs::AMBIENT_TERRAIN);
+
+	RenderParticles();
 
 	renderer->FinalizeRenderScene((renderer->GetAntiAliasingMethod() == Rendering::Aliasing::FXAA) ?
 		Rendering::ShaderIDs::FILTER_FXAA :

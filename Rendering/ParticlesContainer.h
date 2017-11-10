@@ -18,7 +18,7 @@ namespace Rendering
 		/// Particles container. It allocates and manages memory for a given maximum number of particles.
 		/// The container can kill and activate (revive) a particle when necessary.
 		/// The container always makes sure that alive particles are in the front of the allocated buffer, stored continuously.
-		/// The parameters of the particles are stored in a separate array.
+		/// The parameters of the particles are stored each in a separate array.
 		/// Struct of Arrays style object gives a possibility to create various ParticlesContainer configurations.
 		/// The simple idea is to define a mask (<code>Attributes::AttributesMask</code>) and in the constructor memory for only selected attributes are allocated.
 		/// </summary>
@@ -44,23 +44,38 @@ namespace Rendering
 			~ParticlesContainer();
 
 			/// <summary> Particles container copy constructor. </summary>
+			/// <param name="particlesContainer"> The particles container new particles container will be copy-constructed from. </param>
 			ParticlesContainer(const ParticlesContainer& particlesContainer) = delete;
 
 			/// <summary> Particles container move constructor. </summary>
+			/// <param name="particlesContainer"> The particles container new particles container will be move-constructed from. </param>
 			ParticlesContainer(ParticlesContainer&& particlesContainer) = default;
 
 			/// <summary> Particles container copy assignment operator. </summary>
+			/// <param name="particlesContainer"> The particles container current particles container will be copy-assigned from. </param>
 			ParticlesContainer& operator=(const ParticlesContainer& particlesContainer) = delete;
 
 			/// <summary> Particles container move assignment operator. </summary>
+			/// <param name="particlesContainer"> The particles container current particles container will be move-assigned from. </param>
 			ParticlesContainer& operator=(ParticlesContainer&& particlesContainer) = default;
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
 		public:
+			/// <summary>
+			/// Resets the particles container by killing all particles instantly.
+			/// The killing procedure is simply done by resetting the number of alive particles to <code>0</code>.
+			/// </summary>
 			inline void Reset() { m_countAlive = 0; }
-			inline size_t GetCount() const { return m_count; }
+
+			/// <summary> Returns the maximum number of particles that the container is able to maintain. </summary>
+			/// <returns> The maximum number of particles that the container is able to maintain. </summary>
+			inline size_t GetMaxCount() const { return m_maxCount; }
+
+			/// <summary> Returns the number of alive particles currently maintained by the container. </summary>
+			/// <returns> The number of alive particles currently maintained by the container. </summary>
 			inline size_t GetAliveCount() const { return m_countAlive; }
+
 			inline bool IsAlive(size_t i) const { return m_lifeSpans[i] < m_lifeSpanLimits[i]; }
 			inline const Math::Vector3D& GetPosition(size_t i) const { return m_positions[i]; }
 			inline const Math::Vector3D& GetVelocity(size_t i) const { return m_velocities[i]; }
@@ -107,18 +122,30 @@ namespace Rendering
 			inline void IncreaseLifeSpan(size_t i, Math::Real lifeSpanIncrease) { m_lifeSpans[i] += lifeSpanIncrease; }
 			inline void IncreaseRotation(size_t i, const Math::Angle& rotationIncrease) { m_rotations[i] += rotationIncrease; }
 			inline void IncreaseScale(size_t i, Math::Real scaleIncrease) { m_scales[i] += scaleIncrease; }
+			
+			/// <summary>
+			/// Kills the particle stored under the specified index <paramref name="id"/>.
+			/// The function does nothing when no alive particles exist.
+			/// </summary>
+			/// <param name="id"> The index of the particle requested to be killed. </param>
 			void Kill(size_t id);
+			
+			/// <summary>
+			/// Revives the particle stored under the specified index <paramref name="id"/>.
+			/// The function does nothing if the number of alive particles already reached the maximum number of alive particles.
+			/// </summary>
+			/// <param name="id"> The index of the particle requested to be revived. </param>
 			void Revive(size_t id);
 			void SwapData(size_t a, size_t b);
 			Math::Real CalculateLifeStageFactor(size_t i) const { return m_lifeSpans[i] / m_lifeSpanLimits[i]; }
 			bool IsAttributeEnabled(Attributes::Attribute attribute) const { return m_attributesMask.IsAttributeEnabled(attribute); }
-			inline void SetMaxParticlesCount(size_t maxCount) { m_count = maxCount; }
+			inline void SetMaxParticlesCount(size_t maxCount) { m_maxCount = maxCount; }
 			void SetAttributesMask(Attributes::AttributesMask attributesMask);
 			
 			friend std::ostream& operator<<(std::ostream& out, const ParticlesContainer& particlesContainer)
 			{
 				out << "Particles container: " << std::endl << "Attributes mask: " << particlesContainer.m_attributesMask <<
-					"; count: " << particlesContainer.m_count << "; alive: " << particlesContainer.m_countAlive;
+					"; max count: " << particlesContainer.m_maxCount << "; alive: " << particlesContainer.m_countAlive;
 				return out;
 			}
 			/* ==================== Non-static member functions end ==================== */
@@ -140,7 +167,7 @@ namespace Rendering
 			std::unique_ptr<bool[]> m_aliveFlags;
 			std::unique_ptr<int[]> m_IDs;
 
-			size_t m_count;
+			size_t m_maxCount;
 			size_t m_countAlive;
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class ParticlesContainer */

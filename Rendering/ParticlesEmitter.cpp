@@ -26,7 +26,7 @@ void Rendering::Particles::ParticlesEmitter::Emit(Math::Real deltaTime, Particle
 		const size_t maxNewParticles = static_cast<size_t>(m_currentTimer / m_timeToEmitOneParticle);
 		m_currentTimer = std::fmod(m_currentTimer, m_timeToEmitOneParticle); // see http://en.cppreference.com/w/cpp/numeric/math/fmod.
 		const size_t startId = particleContainer->GetAliveCount();
-		const size_t endId = std::min(startId + maxNewParticles, particleContainer->GetCount());
+		const size_t endId = std::min(startId + maxNewParticles, particleContainer->GetMaxCount());
 
 		//ERROR_LOG_RENDERING("Delta time = ", deltaTime, "[ms]. MaxNewParticles = ", maxNewParticles, ". StartId = ", startId, ". EndId = ",
 		//	endId, ". Alive = ", particleContainer->GetAliveCount(), ". All = ", particleContainer->GetCount());
