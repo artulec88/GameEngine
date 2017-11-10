@@ -201,6 +201,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="ParticleAccelerationGenerator.h" />
     <ClInclude Include="ParticleAttributes.h" />
+    <ClInclude Include="ParticleColorGenerator.h" />
     <ClInclude Include="ParticleEffects.h" />
     <ClInclude Include="ParticleLifeSpanGenerator.h" />
     <ClInclude Include="ParticlePositionGenerator.h" />
@@ -271,6 +272,7 @@
     <ClCompile Include="MeshFactory.cpp" />
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="ParticleAccelerationGenerator.cpp" />
+    <ClCompile Include="ParticleColorGenerator.cpp" />
     <ClCompile Include="ParticleLifeSpanGenerator.cpp" />
     <ClCompile Include="ParticlePositionGenerator.cpp" />
     <ClCompile Include="ParticleRotationGenerator.cpp" />

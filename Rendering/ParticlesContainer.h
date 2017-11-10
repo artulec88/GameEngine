@@ -113,6 +113,8 @@ namespace Rendering
 			inline void SetRotation(size_t i, const Math::Angle& newRotation) { m_rotations[i] = newRotation; }
 			inline void SetRotation(size_t i, Math::Real angle, Math::Unit::UnitType angleUnit = Math::Unit::RADIAN) { m_rotations[i].Set(angle, angleUnit); }
 			inline void SetScale(size_t i, Math::Real newScale) { m_scales[i] = newScale; }
+			inline void SetTextureOffset(size_t i, const Math::Vector2D& newTextureOffset) { m_textureOffsets[i] = newTextureOffset; }
+			inline void SetColor(size_t i, const Color& newColor) { m_colors[i] = newColor; }
 			inline void SetID(size_t i, int ID) { m_IDs[i] = ID; }
 			inline void IncreasePosition(size_t i, const Math::Vector3D& positionIncrease) { m_positions[i] += positionIncrease; }
 			inline void IncreaseVelocity(size_t i, const Math::Vector3D& velocityIncrease) { m_velocities[i] += velocityIncrease; }
