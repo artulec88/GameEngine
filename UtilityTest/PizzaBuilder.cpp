@@ -23,7 +23,7 @@ UtilityTest::HawaiianPizzaBuilder::HawaiianPizzaBuilder() :
 {
 }
 
-UtilityTest::HawaiianPizzaBuilder::~HawaiianPizzaBuilder(void)
+UtilityTest::HawaiianPizzaBuilder::~HawaiianPizzaBuilder()
 {
 }
 
@@ -58,7 +58,7 @@ UtilityTest::SpicyPizzaBuilder::SpicyPizzaBuilder() :
 {
 }
 
-UtilityTest::SpicyPizzaBuilder::~SpicyPizzaBuilder(void)
+UtilityTest::SpicyPizzaBuilder::~SpicyPizzaBuilder()
 {
 }
 

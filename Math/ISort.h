@@ -87,7 +87,7 @@ namespace Math {
 			}
 
 			/// <summary> The destructor of the sorting object. </summary>
-			MATH_API virtual ~ISort(void)
+			MATH_API virtual ~ISort()
 			{
 			}
 			
@@ -137,7 +137,6 @@ namespace Math {
 				default:
 					ERROR_LOG_MATH("Unknown sorting direction specified.");
 					return false;
-					break;
 				}
 			}
 
@@ -156,7 +155,7 @@ namespace Math {
 				Math::Real v1 = CollectValueByKey(vec1, sortingKey);
 				Math::Real v2 = CollectValueByKey(vec2, sortingKey);
 
-				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != NULL)
+				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{
 					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 				}
@@ -172,7 +171,7 @@ namespace Math {
 				Math::Real v1 = CollectValueByKey(vec1, sortingKey);
 				Math::Real v2 = CollectValueByKey(vec2, sortingKey);
 
-				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != NULL)
+				if (AlmostEqual(v1, v2) && sortingParameters.GetSortingParametersChain() != nullptr)
 				{
 					return NeedSwapping(vec1, vec2, *sortingParameters.GetSortingParametersChain());
 				}
@@ -197,7 +196,6 @@ namespace Math {
 				default:
 					EMERGENCY_LOG_MATH("Unknown sorting key specified. Returning X component value by default.");
 					return v.x;
-					break;
 				}
 			}
 

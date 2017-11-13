@@ -35,7 +35,7 @@ namespace Math
 		MATH_API Plane(const Vector3D& normal, Real distance);
 		
 		/// <summary> Plane destructor. </summary>
-		MATH_API ~Plane(void);
+		MATH_API ~Plane();
 
 		/// <summary> Plane copy constructor. </summary>
 		MATH_API Plane(const Plane& plane) = default;

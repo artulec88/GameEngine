@@ -296,7 +296,7 @@ void BuilderTest()
 
 int main(int argc, char* argv[])
 {
-	srand((unsigned int)time(NULL));
+	srand(static_cast<unsigned int>(time(nullptr)));
 	std::unique_ptr<ICommandLineMapper> commandLineMapper = ICommandLineMapper::CreateCommandLineMapper(argc, argv);
 	if (commandLineMapper->IsPresent("-help"))
 	{

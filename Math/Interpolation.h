@@ -26,7 +26,6 @@ namespace Math
 		class Interpolator
 		{
 			/* ==================== Static variables and functions begin ==================== */
-		public:
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
@@ -317,7 +316,6 @@ namespace Math
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BarycentricInterpolator */
 

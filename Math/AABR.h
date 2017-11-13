@@ -30,8 +30,8 @@ namespace Math
 		/// The constructor of the axis-aligned bounding rectangle. It takes two parameters representing the bottom-left and top-right positions of the AABR object
 		/// (<paramref name="bottomLeftPos"/> and <paramref name="topRightPos"/> respectively).
 		/// </summary>
-		/// <param name='bottomLeftPos'>The bottom-left vertex of the AABR.</param>
-		/// <param name='topRightPos'>The top-right vertex of the AABR.</param>
+		/// <param name="bottomLeftPos">The bottom-left vertex of the AABR.</param>
+		/// <param name="topRightPos">The top-right vertex of the AABR.</param>
 		MATH_API AABR(const Vector2D& bottomLeftPos, const Vector2D& topRightPos) noexcept;
 
 		/// <summary>
@@ -63,7 +63,7 @@ namespace Math
 		/// <summary>
 		/// The destructor of the axis-aligned bounding rectangle.
 		/// </summary>
-		MATH_API ~AABR(void);
+		MATH_API ~AABR();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */

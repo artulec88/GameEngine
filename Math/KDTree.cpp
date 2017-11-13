@@ -2,11 +2,8 @@
 #include "KDTree.h"
 #include "ISort.h"
 #include "SortingParameters.h"
-//#include "Triangle.h"
 
 #include "Utility\ILogger.h"
-
-#include <math.h>
 
 Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numberOfSamples /* = 1 */, int depth /* = 0 */) :
 	m_leftTree(nullptr),
@@ -67,7 +64,7 @@ Math::KDTree::KDTree(Math::Vector3D* positions, size_t positionsCount, int numbe
 	STOP_PROFILING_MATH("");
 }
 
-Math::KDTree::~KDTree(void)
+Math::KDTree::~KDTree()
 {
 }
 
@@ -166,44 +163,44 @@ void Math::KDTree::SearchNearestValue(Math::Real x, Math::Real z, int depth, std
 		return;
 	}
 
-	Real positionComponentValue = ((depth % 2) == 0) ? x : z;
-	Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.x : m_position.y;
-	bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
+	const Real positionComponentValue = ((depth % 2) == 0) ? x : z;
+	const Real nodePositionComponentValue = ((depth % 2) == 0) ? m_position.x : m_position.y;
+	const bool searchLeftTreeFirst = positionComponentValue < nodePositionComponentValue; // false means we will search the right tree first
 
 	if (searchLeftTreeFirst)
 	{
-		if (((m_leftTree != NULL)) && (positionComponentValue - minDistances[m_numberOfSamples - 1] <= nodePositionComponentValue))
+		if (((m_leftTree != nullptr)) && (positionComponentValue - minDistances[m_numberOfSamples - 1] <= nodePositionComponentValue))
 		{
 			m_leftTree->SearchNearestValue(x, z, depth + 1, minDistanceValues, minDistances);
 		}
-		else if (m_leftTree != NULL)
+		else if (m_leftTree != nullptr)
 		{
 			//DELOCUST_LOG_MATH("Left tree of node (", m_position.ToString(), ") pruned");
 		}
-		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
+		if ((m_rightTree != nullptr) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
 			m_rightTree->SearchNearestValue(x, z, depth + 1, minDistanceValues, minDistances);
 		}
-		else if (m_rightTree != NULL)
+		else if (m_rightTree != nullptr)
 		{
 			//DELOCUST_LOG_MATH("Right tree of node (", m_position.ToString(), ") pruned");
 		}
 	}
 	else
 	{
-		if ((m_rightTree != NULL) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
+		if ((m_rightTree != nullptr) && ((positionComponentValue + minDistances[m_numberOfSamples - 1]) > nodePositionComponentValue))
 		{
 			m_rightTree->SearchNearestValue(x, z, depth + 1, minDistanceValues, minDistances);
 		}
-		else if (m_rightTree != NULL)
+		else if (m_rightTree != nullptr)
 		{
 			//DELOCUST_LOG_MATH("Right tree of node (", m_position.ToString(), ") pruned");
 		}
-		if ((m_leftTree != NULL) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
+		if ((m_leftTree != nullptr) && ((positionComponentValue - minDistances[m_numberOfSamples - 1]) <= nodePositionComponentValue))
 		{
 			m_leftTree->SearchNearestValue(x, z, depth + 1, minDistanceValues, minDistances);
 		}
-		else if (m_leftTree != NULL)
+		else if (m_leftTree != nullptr)
 		{
 			//DELOCUST_LOG_MATH("Left tree of node (", m_position.ToString(), ") pruned");
 		}
@@ -270,7 +267,7 @@ std::string Math::KDTree::ToString(int depth) const
 	{
 		s << INDENTATION_STRING;
 	}
-	if (m_leftTree == NULL)
+	if (m_leftTree == nullptr)
 	{
 		//s << "\t1. NULL" << std::endl;
 		s << "1. NULL" << std::endl;
@@ -284,7 +281,7 @@ std::string Math::KDTree::ToString(int depth) const
 	{
 		s << INDENTATION_STRING;
 	}
-	if (m_rightTree == NULL)
+	if (m_rightTree == nullptr)
 	{
 		//s << "\t2. NULL" << std::endl;
 		s << "2. NULL" << std::endl;

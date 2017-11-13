@@ -46,7 +46,7 @@ namespace Math
 		/// <summary>
 		/// The destructor of the triangle.
 		/// </summary>
-		MATH_API ~Triangle(void);
+		MATH_API ~Triangle();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */

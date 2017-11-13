@@ -5,7 +5,6 @@
 
 #include "Utility\Builder.h"
 
-#include <array>
 #include <vector>
 
 namespace UtilityTest
@@ -19,7 +18,7 @@ namespace UtilityTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		PizzaBuilder();
-		virtual ~PizzaBuilder(void);
+		virtual ~PizzaBuilder();
 		PizzaBuilder(PizzaBuilder& pizzaBuilder) = delete;
 		PizzaBuilder(PizzaBuilder&& pizzaBuilder) = delete;
 		PizzaBuilder& operator=(const PizzaBuilder& pizzaBuilder) = delete;
@@ -98,7 +97,7 @@ namespace UtilityTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		HawaiianPizzaBuilder();
-		virtual ~HawaiianPizzaBuilder(void);
+		virtual ~HawaiianPizzaBuilder();
 		HawaiianPizzaBuilder(HawaiianPizzaBuilder& hawaiianPizzaBuilder) = delete;
 		HawaiianPizzaBuilder(HawaiianPizzaBuilder&& hawaiianPizzaBuilder) = delete;
 		HawaiianPizzaBuilder& operator=(const HawaiianPizzaBuilder& hawaiianPizzaBuilder) = delete;
@@ -139,7 +138,7 @@ namespace UtilityTest
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		SpicyPizzaBuilder();
-		virtual ~SpicyPizzaBuilder(void);
+		virtual ~SpicyPizzaBuilder();
 		SpicyPizzaBuilder(SpicyPizzaBuilder& spicyPizzaBuilder) = delete;
 		SpicyPizzaBuilder(SpicyPizzaBuilder&& spicyPizzaBuilder) = delete;
 		SpicyPizzaBuilder& operator=(const SpicyPizzaBuilder& spicyPizzaBuilder) = delete;

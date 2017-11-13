@@ -1,4 +1,7 @@
 #include "stdafx.h"
+#ifndef __MATH_UTMOST_TIME_SAMPLES_IMPL_H__
+#define __MATH_UTMOST_TIME_SAMPLES_IMPL_H__
+
 #include "UtmostSamples.h"
 #include <sstream>
 
@@ -66,3 +69,5 @@ std::string Math::Statistics::UtmostSamples<T>::ToString()
 	ss << " }";
 	return ss.str();
 }
+
+#endif /* __MATH_UTMOST_TIME_SAMPLES_IMPL_H__ */

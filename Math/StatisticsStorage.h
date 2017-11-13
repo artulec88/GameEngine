@@ -31,7 +31,7 @@ namespace Math {
 			/* ==================== Constructors and destructors begin ==================== */
 		public: // TODO: It would be more appropriate to make all constructors private and prevent any more instances of that class to be created.
 			StatisticsStorage();
-			~StatisticsStorage(void);
+			~StatisticsStorage();
 			StatisticsStorage(const StatisticsStorage& statsStorage) = delete;
 			StatisticsStorage(StatisticsStorage&& statsStorage) = delete;
 			StatisticsStorage& operator=(const StatisticsStorage& statsStorage) = delete;

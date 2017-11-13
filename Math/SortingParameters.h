@@ -34,14 +34,13 @@ namespace Math
 
 		class SortingParametersChain
 		{
-		public:
 			/* ==================== Static variables and functions begin ==================== */
 			/* ==================== Static variables and functions end ==================== */
 
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			MATH_API SortingParametersChain(Keys::Key sortingKey, Orders::Order sortingOrder);
-			MATH_API ~SortingParametersChain(void);
+			MATH_API ~SortingParametersChain();
 			SortingParametersChain(const SortingParametersChain& sortingParametersChain) = delete;
 			SortingParametersChain(SortingParametersChain&& sortingParametersChain) = delete;
 			SortingParametersChain& operator=(const SortingParametersChain& sortingParametersChain) = delete;

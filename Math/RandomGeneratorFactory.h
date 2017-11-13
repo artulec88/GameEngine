@@ -57,7 +57,7 @@ namespace Math
 			/// <summary>
 			/// The destructor of the random number generator factory.
 			/// </summary>
-			~RandomGeneratorFactory(void);
+			~RandomGeneratorFactory();
 
 			/// <summary> Random generator factory copy constructor. </summary>
 			/// <param name="randomGeneratorFactory"> The random generator factory to copy construct from. </param>
@@ -88,7 +88,7 @@ namespace Math
 			/// <returns>
 			/// The unmodifiable reference of the random generator stored for the specified <paramref name="randomGeneratorID"/> and initialized with the given <paramref name="seed"/>.
 			/// </returns>
-			MATH_API const RandomGenerator& GetRandomGenerator(GeneratorIDs::GeneratorID randomGeneratorID, unsigned seed = ((unsigned int)time(NULL)));
+			MATH_API const RandomGenerator& GetRandomGenerator(GeneratorIDs::GeneratorID randomGeneratorID, unsigned seed = (static_cast<unsigned int>(time(nullptr))));
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

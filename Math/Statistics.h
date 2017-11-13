@@ -5,7 +5,6 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <fstream>
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
 
@@ -51,7 +50,7 @@ namespace Math {
 			MATH_API Stats(int level = 0);
 
 			/// <summary> Stats destructor. </summary>
-			MATH_API ~Stats(void);
+			MATH_API ~Stats();
 
 			/// <summary> Stats copy constructor. </summary>
 			/// <param name="stats"> The stats to copy construct from. </param>
@@ -95,7 +94,7 @@ namespace Math {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			MATH_API MethodStats();
-			MATH_API virtual ~MethodStats(void);
+			MATH_API virtual ~MethodStats();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -141,7 +140,7 @@ namespace Math {
 			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			MATH_API ClassStats(const std::string& className);
-			MATH_API ~ClassStats(void);
+			MATH_API ~ClassStats();
 			/* ==================== Constructors and destructors end ==================== */
 
 			/* ==================== Non-static member functions begin ==================== */
@@ -160,12 +159,8 @@ namespace Math {
 
 			MATH_API bool IsProfiling(const std::string& methodName) const
 			{
-				std::map<std::string, MethodStats>::const_iterator methodStatsIterator = m_methodsStats.find(methodName);
-				if (methodStatsIterator == m_methodsStats.end())
-				{
-					return false;
-				}
-				return methodStatsIterator->second.IsProfiling();
+				const auto methodStatsIterator = m_methodsStats.find(methodName);
+				return (methodStatsIterator == m_methodsStats.end()) ? false : methodStatsIterator->second.IsProfiling();
 			}
 
 			MATH_API bool IsEmpty() const

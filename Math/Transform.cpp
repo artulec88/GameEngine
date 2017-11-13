@@ -1,10 +1,6 @@
 #include "StdAfx.h"
 #include "Transform.h"
 
-#include "Utility\ILogger.h"
-
-#include <sstream>
-
 Math::Transform::Transform(const Vector3D& pos /* = Vector3D(REAL_ZERO, REAL_ZERO, REAL_ZERO) */,
 	const Quaternion& rotation /* = Math::NO_ROTATION_QUATERNION */,
 	Real scale /* = REAL_ONE */) :
@@ -147,7 +143,7 @@ Math::Matrix4D Math::Transform::GetTransformation() const
 		//}
 	}
 
-	if (m_parentTransform == NULL)
+	if (m_parentTransform == nullptr)
 	{
 		return m_transformation;
 	}

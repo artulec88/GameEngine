@@ -1,7 +1,6 @@
 #include "StdAfx.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
-#include <sstream>
 
 Math::Quaternion::Quaternion(const Vector3D& axis, const Angle& angle)
 {

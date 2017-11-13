@@ -2,11 +2,6 @@
 #define __MATH_EFFECTS_EFFECT_FACTORY_H__
 
 #include "Math.h"
-#include "Effect.h"
-#include "EffectIDs.h"
-#include "Vector.h"
-
-#include <array>
 
 namespace Math
 {
@@ -22,10 +17,10 @@ namespace Math
 
 		class EffectFactory
 		{
-		/* ==================== Static variables begin ==================== */
-		/* ==================== Static variables end ==================== */
+			/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary> Creates a new effect factory. </summary>
 			MATH_API EffectFactory();
@@ -50,20 +45,19 @@ namespace Math
 			/// <param name="effectFactory"> The effect factory to move assign from. </param>
 			/// <returns> The newly move-assigned effect factory. </returns>
 			EffectFactory& operator=(EffectFactory&& effectFactory) = delete;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+			/* ==================== Non-static member functions begin ==================== */
 		public:
 			//template <typename T>
 			//MATH_API std::unique_ptr<Effect<T>> CreateEffect(const std::string& effectConfigurationFileName)
 			//{
 
 			//}
-		/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
-		private:
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class EffectFactory */
 	} /* end namespace Effects */
 } /* end namespace Math */

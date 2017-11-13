@@ -4,8 +4,6 @@
 
 #include "Utility\Utility.h"
 
-#include <sstream>
-#include <iostream>
 #include <utility>
 
 #include <xmmintrin.h>
@@ -138,7 +136,7 @@ Math::Matrix4D::Matrix4D(const Matrix4D& mat) :
 	STOP_PROFILING_MATH("13");
 }
 
-Math::Matrix4D::Matrix4D(Matrix4D&& mat) :
+Math::Matrix4D::Matrix4D(Matrix4D&& mat) noexcept:
 	m_values(std::move(mat.m_values))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Matrix4D"))
@@ -166,7 +164,7 @@ Math::Matrix4D& Math::Matrix4D::operator=(const Matrix4D& mat)
 	return *this;
 }
 
-Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat)
+Math::Matrix4D& Math::Matrix4D::operator=(Matrix4D&& mat) noexcept
 {
 	START_PROFILING_MATH(false, "");
 	m_values = std::move(mat.m_values);
@@ -714,9 +712,9 @@ void Math::Matrix4D::SetRotationFromVectors(const Vector3D& forward, const Vecto
 	m_values[2][0] = r.GetZ();		m_values[2][1] = u.GetZ();		m_values[2][2] = f.GetZ();		m_values[2][3] = REAL_ZERO;
 	m_values[3][0] = REAL_ZERO;	m_values[3][1] = REAL_ZERO;	m_values[3][2] = REAL_ZERO;	m_values[3][3] = REAL_ONE;
 #else
-	m_values[0] = right.x;		m_values[1] = up.x;			m_values[2] = forward.x;	m_values[3] = REAL_ZERO;
-	m_values[4] = right.y;		m_values[5] = up.y;			m_values[6] = forward.y;	m_values[7] = REAL_ZERO;
-	m_values[8] = right.z;		m_values[9] = up.z;			m_values[10] = forward.z;	m_values[11] = REAL_ZERO;
+	m_values[0] = r.x;	m_values[1] = u.x;	m_values[2] = f.x;	m_values[3] = REAL_ZERO;
+	m_values[4] = r.y;	m_values[5] = u.y;	m_values[6] = f.y;	m_values[7] = REAL_ZERO;
+	m_values[8] = r.z;	m_values[9] = u.z;	m_values[10] = f.z;	m_values[11] = REAL_ZERO;
 	m_values[12] = REAL_ZERO;	m_values[13] = REAL_ZERO;	m_values[14] = REAL_ZERO;	m_values[15] = REAL_ONE;
 #endif
 }

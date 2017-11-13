@@ -43,7 +43,7 @@ namespace Math
 		/// <summary>
 		/// k-d tree destructor.
 		/// </summary>
-		MATH_API ~KDTree(void);
+		MATH_API ~KDTree();
 
 		/// <summary> K-d tree copy constructor. </summary>
 		/// <param name="kdTree"> The k-d tree to copy construct from. </param>

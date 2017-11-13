@@ -30,34 +30,40 @@ namespace Math
 		/// The constructor of the axis-aligned bounding box. It takes two parameters representing the bottom-left and top-right positions of the AABB object
 		/// (<paramref name="bottomLeftPos"/> and <paramref name="topRightPos"/> respectively).
 		/// </summary>
-		/// <param name='bottomLeftPos'>The bottom-left vertex of the AABB.</param>
-		/// <param name='topRightPos'>The top-right vertex of the AABB.</param>
+		/// <param name="bottomLeftPos">The bottom-left vertex of the AABB.</param>
+		/// <param name="topRightPos">The top-right vertex of the AABB.</param>
 		MATH_API AABB(const Vector3D& bottomLeftPos, const Vector3D& topRightPos) noexcept;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy constructor.
 		/// </summary>
+		/// <param name="aabb"> The axis-aligned bounding box to copy construct from. </param>
 		MATH_API AABB(const AABB& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move constructor.
 		/// </summary>
+		/// <param name="aabb"> The axis-aligned bounding box to move construct from. </param>
 		MATH_API AABB(AABB&& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box copy assignment operator.
 		/// </summary>
+		/// <param name="aabb"> The axis-aligned bounding box to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned axis-aligned bounding box. </returns>
 		MATH_API AABB& operator=(const AABB& aabb) noexcept = default;
 
 		/// <summary>
 		/// Axis-aligned bounding box move assignment operator.
 		/// </summary>
+		/// <param name="aabb"> The axis-aligned bounding box to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned axis-aligned bounding box. </returns>
 		MATH_API AABB& operator=(AABB&& aabb) noexcept = default;
 
 		/// <summary>
 		/// The destructor of the axis-aligned bounding box.
 		/// </summary>
-		MATH_API ~AABB(void);
+		MATH_API ~AABB();
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */

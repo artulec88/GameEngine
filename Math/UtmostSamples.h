@@ -2,7 +2,6 @@
 #define __MATH_UTMOST_TIME_SAMPLES_H__
 
 #include "Math.h"
-#include "Utility\Time.h"
 
 #include <string>
 #include <array>

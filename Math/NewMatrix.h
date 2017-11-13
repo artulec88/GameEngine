@@ -2,18 +2,12 @@
 #define __MATH_NEW_MATRIX_H__
 
 #include "Math.h"
-#include "Angle.h"
-#include "Vector.h"
 #ifdef PROFILING_MATH_MODULE_ENABLED
 #include "Statistics.h"
 #include "StatisticsStorage.h"
 #endif
 
-#include "Utility\ILogger.h"
-
-#include <iostream>
-#include <type_traits> // for static_assert
-#include <string>
+//#include <type_traits> // for static_assert
 #include <array>
 
 namespace Math
@@ -50,6 +44,7 @@ namespace Math
 
 			constexpr T operator[] (std::size_t j) const
 			{
+				// TODO: unreachable code
 				return m_i < ROWS && j < COLS ? j == m_i : (throw "out of range", -1);
 				//return m_i == j;
 			}

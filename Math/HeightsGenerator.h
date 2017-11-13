@@ -31,7 +31,7 @@ namespace Math
 		/// <summary>
 		/// Destroys the heights generator.
 		/// </summary>
-		MATH_API ~HeightsGenerator(void);
+		MATH_API ~HeightsGenerator();
 
 		/// <summary> Heights generator copy constructor. </summary>
 		/// <param name="heightsGenerator"> The heights generator to copy construct from. </param>
@@ -43,10 +43,12 @@ namespace Math
 
 		/// <summary> Heights generator copy assignment operator. </summary>
 		/// <param name="heightsGenerator"> The heights generator to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned heights generator. </returns>
 		MATH_API HeightsGenerator& operator=(const HeightsGenerator& heightsGenerator) = delete;
 
 		/// <summary> Heights generator move assignment operator. </summary>
 		/// <param name="heightsGenerator"> The heights generator to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned heights generator. </returns>
 		MATH_API HeightsGenerator& operator=(HeightsGenerator&& heightsGenerator) = delete;
 	/* ==================== Constructors and destructors end ==================== */
 

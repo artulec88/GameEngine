@@ -13,7 +13,7 @@ Math::Statistics::StatisticsStorage::StatisticsStorage() :
 	//CRITICAL_LOG_MATH("Creating new statistics storage");
 }
 
-Math::Statistics::StatisticsStorage::~StatisticsStorage(void)
+Math::Statistics::StatisticsStorage::~StatisticsStorage()
 {
 	//m_timer.Stop();
 	//PrintReport();

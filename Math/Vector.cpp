@@ -2,7 +2,6 @@
 #include "Vector.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
-#include <math.h>
 
 Math::Vector2D& Math::Vector2D::operator+=(const Vector2D& v) noexcept
 {

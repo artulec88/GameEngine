@@ -3,12 +3,12 @@
 #include "ISort.h"
 #include "Utility\ILogger.h"
 #include "Utility\Time.h"
-#include <iostream>
 #include <algorithm>
 #include <iterator>
 #include <iomanip>
 #include <fstream>
 #include <sstream>
+#include <mutex>
 
 /* ==================== Stats begin ==================== */
 template <typename T>
@@ -19,7 +19,7 @@ Math::Statistics::Stats<T>::Stats(int level /* = 0 */) :
 }
 
 template <typename T>
-Math::Statistics::Stats<T>::~Stats(void)
+Math::Statistics::Stats<T>::~Stats()
 {
 }
 
@@ -55,7 +55,7 @@ template <typename T>
 int Math::Statistics::Stats<T>::Size() const
 {
 	int totalSize = 0;
-	for (std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.begin(); mapItr != m_samples.end(); ++mapItr)
+	for (auto mapItr = m_samples.begin(); mapItr != m_samples.end(); ++mapItr)
 	{
 		totalSize += static_cast<int>(mapItr->second.size());
 	}
@@ -65,18 +65,14 @@ int Math::Statistics::Stats<T>::Size() const
 template <typename T>
 int Math::Statistics::Stats<T>::Size(StatsID statsID) const
 {
-	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
-	if (mapItr == m_samples.end())
-	{
-		return 0;
-	}
-	return static_cast<int>(mapItr->second.size());
+	auto mapItr = m_samples.find(statsID);
+	return (mapItr == m_samples.end()) ? 0 : static_cast<int>(mapItr->second.size());
 }
 
 template <typename T>
 T Math::Statistics::Stats<T>::CalculateSum(StatsID statsID) const
 {
-	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
 		WARNING_LOG_MATH("Sum cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
@@ -84,12 +80,12 @@ T Math::Statistics::Stats<T>::CalculateSum(StatsID statsID) const
 	}
 	
 	T childSum = 0;
-	if (m_child != NULL)
+	if (m_child != nullptr)
 	{
 		childSum = m_child->CalculateSum(statsID);
 	}
 	T sum = 0;
-	for (std::vector<T>::const_iterator samplesItr = mapItr->second.begin(); samplesItr != mapItr->second.end(); ++samplesItr)
+	for (auto samplesItr = mapItr->second.begin(); samplesItr != mapItr->second.end(); ++samplesItr)
 	{
 		sum += (*samplesItr);
 	}
@@ -100,7 +96,7 @@ T Math::Statistics::Stats<T>::CalculateSum(StatsID statsID) const
 template <typename T>
 int Math::Statistics::Stats<T>::CalculateSamplesCount(StatsID statsID) const
 {
-	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
 		DEBUG_LOG_MATH("Samples cannot be counted for statsID", statsID, ". The specific entry in statistics map has not been created.");
@@ -108,7 +104,7 @@ int Math::Statistics::Stats<T>::CalculateSamplesCount(StatsID statsID) const
 	}
 	
 	int childSamplesCount = 0;
-	if (m_child != NULL)
+	if (m_child != nullptr)
 	{
 		childSamplesCount = m_child->CalculateSamplesCount(statsID);
 	}
@@ -119,7 +115,7 @@ int Math::Statistics::Stats<T>::CalculateSamplesCount(StatsID statsID) const
 template <typename T>
 T Math::Statistics::Stats<T>::CalculateMean(StatsID statsID) const
 {
-	std::map<StatsID, std::vector<T>>::const_iterator mapItr = m_samples.find(statsID);
+	auto mapItr = m_samples.find(statsID);
 	if (mapItr == m_samples.end())
 	{
 		WARNING_LOG_MATH("Mean cannot be calculated for statsID = ", statsID, ". The specific entry in statistics map has not been created.");
@@ -175,13 +171,14 @@ template class Math::Statistics::Stats<int>;
 
 
 /* ==================== MethodStats begin ==================== */
-Math::Statistics::MethodStats::MethodStats(void) :
-	m_totalTime(),
+Math::Statistics::MethodStats::MethodStats() :
 #ifdef METHOD_STATS_VARIANT_1
+	//m_timeSamples(),
 #else
 	m_totalTimeNestedProfiling(),
 	m_invocationsCountNestedProfiling(0),
 #endif
+	m_totalTime(),
 	m_invocationsCount(0),
 	m_isProfiling(false),
 	m_isNestedWithinAnotherProfiledMethod(false),
@@ -190,7 +187,7 @@ Math::Statistics::MethodStats::MethodStats(void) :
 	DELOCUST_LOG_MATH("MethodStats constructor");
 }
 
-Math::Statistics::MethodStats::~MethodStats(void)
+Math::Statistics::MethodStats::~MethodStats()
 {
 }
 

@@ -25,14 +25,14 @@ namespace Math
 		/* ==================== Constructors and destructors begin ==================== */
 	public:
 		MATH_API Sphere(const Vector3D& center, Real radius);
-		MATH_API ~Sphere(void);
+		MATH_API ~Sphere();
 	/* ==================== Constructors and destructors end ==================== */
 
 	/* ==================== Non-static, non-virtual member functions begin ==================== */
 	public:
 		MATH_API IntersectInfo DoesIntersectSphere(const Sphere& sphere) const;
 		MATH_API inline const Math::Vector3D& GetCenter() const { return m_center; }
-		MATH_API inline const Math::Real GetRadius() const { return m_radius; }
+		MATH_API inline Math::Real GetRadius() const { return m_radius; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

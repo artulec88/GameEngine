@@ -54,7 +54,7 @@ namespace Math
 
 		Vector3D GetTransformedPos() const
 		{
-			if (m_parentTransform == NULL)
+			if (m_parentTransform == nullptr)
 			{
 				return m_pos;
 			}
@@ -64,7 +64,7 @@ namespace Math
 		}
 		Quaternion GetTransformedRot() const
 		{
-			if (m_parentTransform == NULL)
+			if (m_parentTransform == nullptr)
 			{
 				return m_rotation;
 			}

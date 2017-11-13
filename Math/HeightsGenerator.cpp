@@ -5,7 +5,6 @@
 
 #include "Utility\ILogger.h"
 
-#include <math.h>
 
 Math::HeightsGenerator::HeightsGenerator(int gridX, int gridZ, int vertexCount, Math::Real heightAmplitude, int octaves, Math::Real roughness) :
 	m_offsetX(gridX * (vertexCount - 1)),
@@ -49,8 +48,8 @@ Math::Real Math::HeightsGenerator::GenerateHeight(Real x, Real z) const
 	Real d = pow(m_freqFactor, m_octaves - 1);
 	for (int i = 0; i < m_octaves; ++i)
 	{
-		Real freq = pow(m_freqFactor, i) / d;
-		Real amplitude = pow(m_roughness, i) * m_heightAmplitude;
+		const Real freq = pow(m_freqFactor, i) / d;
+		const Real amplitude = pow(m_roughness, i) * m_heightAmplitude;
 		totalHeight += GetInterpolatedNoise((x + m_offsetX) * freq, (z + m_offsetZ) * freq) * amplitude;
 	}
 	return totalHeight;
@@ -60,28 +59,28 @@ Math::Real Math::HeightsGenerator::GetInterpolatedNoise(Real x, Real z) const
 {
 	// Watch: https://www.youtube.com/watch?v=qChQrNWU9Xw
 	Real intPartX, intPartZ;
-	Real fractX = modf(x, &intPartX);
-	Real fractZ = modf(z, &intPartZ);
+	const Real fractX = modf(x, &intPartX);
+	const Real fractZ = modf(z, &intPartZ);
 
-	int intX = static_cast<int>(intPartX);
-	int intZ = static_cast<int>(intPartZ);
+	const int intX = static_cast<int>(intPartX);
+	const int intZ = static_cast<int>(intPartZ);
 	
-	Real height1 = GetSmoothNoise(intX, intZ);
-	Real height2 = GetSmoothNoise(intX + 1, intZ);
-	Real height3 = GetSmoothNoise(intX, intZ + 1);
-	Real height4 = GetSmoothNoise(intX + 1, intZ + 1);
+	const Real height1 = GetSmoothNoise(intX, intZ);
+	const Real height2 = GetSmoothNoise(intX + 1, intZ);
+	const Real height3 = GetSmoothNoise(intX, intZ + 1);
+	const Real height4 = GetSmoothNoise(intX + 1, intZ + 1);
 
-	Math::Real i1 = Interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
-	Math::Real i2 = Interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
+	const Math::Real i1 = Interpolation::Interpolate<Real>(m_interpolationType, height1, height2, fractX);
+	const Math::Real i2 = Interpolation::Interpolate<Real>(m_interpolationType, height3, height4, fractX);
 	return Interpolation::Interpolate<Real>(m_interpolationType, i1, i2, fractZ);
 }
 
 Math::Real Math::HeightsGenerator::GetSmoothNoise(int x, int z) const
 {
 	// TODO: Place for an improvement. Create a GaussianBlur class which would be able to smooth noise values a little bit more efficiently.
-	Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
-	Real sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / m_smoothSidesFactor;
-	Real center = GetNoise(x, z) / m_smoothCenterFactor;
+	const Real corners = (GetNoise(x - 1, z - 1) + GetNoise(x + 1, z - 1) + GetNoise(x - 1, z + 1) + GetNoise(x + 1, z + 1)) / m_smoothCornersFactor;
+	const Real sides = (GetNoise(x - 1, z) + GetNoise(x + 1, z) + GetNoise(x, z - 1) + GetNoise(x, z + 1)) / m_smoothSidesFactor;
+	const Real center = GetNoise(x, z) / m_smoothCenterFactor;
 	return corners + sides + center;
 }
 

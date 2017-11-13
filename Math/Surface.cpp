@@ -97,8 +97,8 @@ Math::Real Math::Surface::GetHeightAt(int x, int z) const
 
 Math::Real Math::Surface::GetHeightAt(Real x, Real z) const
 {
-	Real surfaceX = x - m_position.x;
-	Real surfaceZ = z - m_position.y;
+	const Real surfaceX = x - m_position.x;
+	const Real surfaceZ = z - m_position.y;
 	int gridX = Math::Floor(surfaceX / m_squareWidth);
 	int gridZ = Math::Floor(surfaceZ / m_squareDepth);
 	if (gridX < 0 || gridX >= m_horizontalVerticesCount || gridZ < 0 || gridZ >= m_verticalVerticesCount)
@@ -173,6 +173,7 @@ Math::Real Math::Surface::FindMinimumDistanceBetweenPairOfPositions(std::vector<
 	{
 		return FindMinimumDistanceBetweenPairOfPositionsBruteForce(vectorsSortedByX);
 	}
+	// TODO: Improve the implementation. Use better algoritm than brute force.
 	return FindMinimumDistanceBetweenPairOfPositionsBruteForce(vectorsSortedByX);
 
 	// Find the middle point

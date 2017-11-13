@@ -1,3 +1,6 @@
+#ifndef __MATH_EFFECTS_EFFECT_IMPL_H__
+#define __MATH_EFFECTS_EFFECT_IMPL_H__
+
 #include "stdafx.h"
 #include "Effect.h"
 
@@ -124,3 +127,5 @@ void Math::Effects::BlinkEffect<T>::Update(Real deltaTime)
 	}
 }
 /* ==================== BlinkEffect<T> class end ==================== */
+
+#endif /* __MATH_EFFECTS_EFFECT_IMPL_H__ */

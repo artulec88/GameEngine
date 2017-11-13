@@ -58,7 +58,7 @@ namespace Math
 		/// <summary>
 		/// The destructor of the surface.
 		/// </summary>
-		MATH_API ~Surface(void) = default;
+		MATH_API ~Surface() = default;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static, non-virtual member functions begin ==================== */

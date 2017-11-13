@@ -16,10 +16,10 @@ namespace Math
 		template <class T>
 		class Effect
 		{
-		/* ==================== Static variables begin ==================== */
-		/* ==================== Static variables end ==================== */
+			/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary> Creates a new effect with a given initial value. </summary>
 			explicit Effect(const T& initialValue);
@@ -44,9 +44,9 @@ namespace Math
 			/// <param name="effect"> The effect to move assign from. </param>
 			/// <returns> The newly move-assigned effect. </returns>
 			Effect& operator=(Effect<T>&& effect) = delete;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary> Applies the current value of the effect to the specified <paramref name="attribute"/>. </summary>
 			/// <param name="attribute"> The attribute for which the effect will be applied. </param>
@@ -66,7 +66,7 @@ namespace Math
 		/* ==================== Non-static member variables begin ==================== */
 		protected:
 			T m_value;
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class Effect<T> */
 
 		/// <summary>
@@ -118,7 +118,6 @@ namespace Math
 			/* ==================== Non-static member functions end ==================== */
 
 			/* ==================== Non-static member variables begin ==================== */
-		private:
 			/* ==================== Non-static member variables end ==================== */
 		}; /* end class NoEffect */
 
@@ -128,10 +127,10 @@ namespace Math
 		template <class T>
 		class SmoothTransitionEffect : public Effect<T>
 		{
-		/* ==================== Static variables begin ==================== */
-		/* ==================== Static variables end ==================== */
+			/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
 			/// Creates a new smooth effect.
@@ -161,24 +160,24 @@ namespace Math
 			/// <param name="smoothTransitionEffect"> The smooth transition effect to move assign from. </param>
 			/// <returns> The newly move-assigned smooth transition effect. </returns>
 			SmoothTransitionEffect& operator=(SmoothTransitionEffect<T>&& smoothTransitionEffect) = delete;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
 			/// <param name="deltaTime"> The time passed since the last update. </param>
 			virtual void Update(Real deltaTime) override;
-		/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables begin ==================== */
 		private:
 			Interpolation::LinearInterpolator<T> m_valuesInterpolator;
 			Real m_timer;
 			bool m_isGoingBackAndForthEnabled;
 			bool m_isTimerIncreasing;
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class SmoothTransitionEffect */
 
 		/// <summary>
@@ -188,12 +187,12 @@ namespace Math
 		template <class T>
 		class BlinkEffect : public Effect<T>
 		{
-		/* ==================== Static variables begin ==================== */
+			/* ==================== Static variables begin ==================== */
 		private:
 			static constexpr Real DEFAULT_DURATION = 0.5f;
-		/* ==================== Static variables end ==================== */
+			/* ==================== Static variables end ==================== */
 
-		/* ==================== Constructors and destructors begin ==================== */
+			/* ==================== Constructors and destructors begin ==================== */
 		public:
 			/// <summary>
 			/// Creates a new blinking effect.
@@ -202,7 +201,7 @@ namespace Math
 			/// <param name="durations"> The time durations each value is applied for. </param>
 			/// <param name="valuesCount"> The number of values (and durations too). </param>
 			BlinkEffect(const T* values, const Real* durations, unsigned int valuesCount);
-			
+
 			/// <summary> Blinking effect destructor. </summary>
 			virtual ~BlinkEffect();
 
@@ -223,24 +222,24 @@ namespace Math
 			/// <param name="blinkEffect"> The blinking effect to move assign from. </param>
 			/// <returns> The newly move-assigned blinking effect. </returns>
 			BlinkEffect& operator=(BlinkEffect<T>&& blinkEffect) = delete;
-		/* ==================== Constructors and destructors end ==================== */
+			/* ==================== Constructors and destructors end ==================== */
 
-		/* ==================== Non-static member functions begin ==================== */
+			/* ==================== Non-static member functions begin ==================== */
 		public:
 			/// <summary>
 			/// Updates the effect.
 			/// </summary>
 			/// <param name="deltaTime"> The time passed since the last update. </param>
 			virtual void Update(Real deltaTime) override;
-		/* ==================== Non-static member functions end ==================== */
+			/* ==================== Non-static member functions end ==================== */
 
-		/* ==================== Non-static member variables begin ==================== */
+			/* ==================== Non-static member variables begin ==================== */
 		private:
 			std::vector<T> m_values;
 			std::vector<Real> m_durations;
 			size_t m_currentIndex;
 			Real m_timer;
-		/* ==================== Non-static member variables end ==================== */
+			/* ==================== Non-static member variables end ==================== */
 		}; /* end class BlinkEffect */
 
 	} /* end namespace Effects */

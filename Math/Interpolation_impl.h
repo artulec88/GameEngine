@@ -1,10 +1,11 @@
 #include "stdafx.h"
+#ifndef __MATH_INTERPOLATION_IMPL_H__
+#define __MATH_INTERPOLATION_IMPL_H__
+
 #include "Interpolation.h"
-#include "Vector.h"
 #include "Quaternion.h"
 #include "FloatingPoint.h"
 #include "Utility\ILogger.h"
-#include <sstream>
 
 /* ==================== class Interpolator begin ==================== */
 template <class T>
@@ -334,3 +335,5 @@ T Math::Interpolation::InterpolateBarycentric(const T& value1, const T& value2, 
 {
 	return value1;
 }
+
+#endif /* __MATH_INTERPOLATION_IMPL_H__ */

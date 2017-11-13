@@ -2,7 +2,6 @@
 #include "Angle.h"
 #include "FloatingPoint.h"
 #include "Utility\ILogger.h"
-#include <sstream>
 #include <algorithm>
 
 Math::Angle::Angle(const Angle& angle) :
@@ -15,7 +14,7 @@ Math::Angle::Angle(const Angle& angle) :
 	STOP_PROFILING_MATH("2");
 }
 
-Math::Angle::Angle(Angle&& angle) :
+Math::Angle::Angle(Angle&& angle) noexcept:
 	m_angle(std::move(angle.m_angle))
 #ifdef PROFILING_MATH_MODULE_ENABLED
 	, m_classStats(STATS_STORAGE.GetClassStats("Angle")) // TODO: Maybe use angle.m_classStats?
@@ -33,7 +32,7 @@ Math::Angle& Math::Angle::operator=(const Angle& angle)
 	return (*this);
 }
 
-Math::Angle& Math::Angle::operator=(Angle&& angle)
+Math::Angle& Math::Angle::operator=(Angle&& angle) noexcept
 {
 	START_PROFILING_MATH(false, "");
 	m_angle = std::move(angle.m_angle);

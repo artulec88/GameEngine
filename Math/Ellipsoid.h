@@ -41,7 +41,7 @@ namespace Math
 		MATH_API Ellipsoid(const Vector3D& center, Real a, Real b, Real c);
 
 		/// <summary> Ellipsoid destructor. </summary>
-		MATH_API ~Ellipsoid(void);
+		MATH_API ~Ellipsoid();
 
 		/// <summary> Ellipsoid copy constructor. </summary>
 		/// <param name="ellipsoid"> The ellipsoid to copy construct from. </param>
@@ -72,19 +72,19 @@ namespace Math
 		/// Returns the length of the semi-principal axis X. It is the distance from the center of the ellipsoid to its surface along the X axis.
 		/// </summary>
 		/// <returns> The distance from the center of the ellipsoid to its surface along the X axis. </returns>
-		MATH_API inline const Real GetA() const { return m_a; }
+		MATH_API inline Real GetA() const { return m_a; }
 
 		/// <summary>
 		/// Returns the length of the semi-principal axis Y. It is the distance from the center of the ellipsoid to its surface along the Y axis.
 		/// </summary>
 		/// <returns> The distance from the center of the ellipsoid to its surface along the Y axis. </returns>
-		MATH_API inline const Real GetB() const { return m_b; }
+		MATH_API inline Real GetB() const { return m_b; }
 
 		/// <summary>
 		/// Returns the length of the semi-principal axis Z. It is the distance from the center of the ellipsoid to its surface along the Z axis.
 		/// </summary>
 		/// <returns> The distance from the center of the ellipsoid to its surface along the Z axis. </returns>
-		MATH_API inline const Real GetC() const { return m_c; }
+		MATH_API inline Real GetC() const { return m_c; }
 		/* ==================== Non-static, non-virtual member functions end ==================== */
 
 		/* ==================== Non-static member variables begin ==================== */

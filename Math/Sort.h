@@ -2,9 +2,6 @@
 #define __MATH_SORT_H__
 
 #include "Math.h"
-//#include <string>
-//#include <sstream>
-//#include <map>
 #include "ISort.h"
 #include <vector>
 
@@ -28,7 +25,7 @@ namespace Math {
 			BubbleSort();
 
 			/// <summary> Bubble sort object destructor. </summary>
-			virtual ~BubbleSort(void);
+			virtual ~BubbleSort();
 
 			/// <summary> Bubble sort object copy constructor. </summary>
 			/// <param name="bubbleSort"> The bubble sort object to copy construct from. </param>
@@ -59,7 +56,7 @@ namespace Math {
 			virtual void Sort(Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -70,7 +67,7 @@ namespace Math {
 				CHECK_CONDITION_RETURN_VOID_MATH(vectors != nullptr, Utility::Logging::EMERGENCY,
 					"Cannot sort the table. The specified table is nullptr");
 
-				bool swapOccured = false;
+				bool swapOccured;
 				size_t n = vectorSize;
 				do
 				{
@@ -109,7 +106,7 @@ namespace Math {
 			InsertionSort();
 
 			/// <summary> Insertion sort object destructor. </summary>
-			virtual ~InsertionSort(void);
+			virtual ~InsertionSort();
 
 			/// <summary> Insertion sort object copy constructor. </summary>
 			/// <param name="insertionSort"> The insertion sort object to copy construct from. </param>
@@ -140,7 +137,7 @@ namespace Math {
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -186,7 +183,7 @@ namespace Math {
 			SelectionSort();
 
 			/// <summary> Selection sort object destructor. </summary>
-			virtual ~SelectionSort(void);
+			virtual ~SelectionSort();
 
 			/// <summary> Selection sort object copy constructor. </summary>
 			/// <param name="selectionSort"> The selection sort object to copy construct from. </param>
@@ -217,7 +214,7 @@ namespace Math {
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -271,7 +268,7 @@ namespace Math {
 			MergeSort();
 
 			/// <summary> Merge sort object destructor. </summary>
-			virtual ~MergeSort(void);
+			virtual ~MergeSort();
 
 			/// <summary> Merge sort object copy constructor. </summary>
 			/// <param name="mergeSort"> The merge sort object to copy construct from. </param>
@@ -302,7 +299,7 @@ namespace Math {
 			virtual void Sort(Math::Vector3D* vectors, size_t vectorSize, const SortingParametersChain& sortingParameters) override;
 		private:
 			template <typename T>
-			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = COMPONENT_X, Orders::Order sortingOrder = ASCENDING)
+			void Sort(T* vectors, size_t vectorSize, Keys::Key sortingKey = Keys::COMPONENT_X, Orders::Order sortingOrder = Orders::ASCENDING)
 			{
 				Sort(vectors, vectorSize, SortingParametersChain(sortingKey, sortingOrder));
 			}
@@ -332,7 +329,9 @@ namespace Math {
 			template <typename T>
 			void Merge(T* values, size_t left, size_t pivot, size_t right, const SortingParametersChain& sortingParameters, T* auxiliaryTable)
 			{
-				size_t i, j, q;
+				size_t j = pivot + 1 - left;
+				size_t q = left;
+				size_t i;
 				//Math::Vector2D* t = new Math::Vector2D [right - left + 1];
 				size_t k = 0;
 				for (i = left; i <= right; ++i, ++k)
@@ -340,8 +339,6 @@ namespace Math {
 					auxiliaryTable[k] = values[i]; // copying the data to auxiliary table
 				}
 				i = 0;
-				j = pivot + 1 - left;
-				q = left;
 				while ((i <= pivot - left) && (j <= right - left)) // transferring the data with sorting from auxiliary tables to the result table
 				{
 					if (NeedSwapping(auxiliaryTable[j], auxiliaryTable[i], sortingParameters))
@@ -385,7 +382,7 @@ namespace Math {
 			HeapSort();
 
 			/// <summary> Heap sort object destructor. </summary>
-			virtual ~HeapSort(void);
+			virtual ~HeapSort();
 
 			/// <summary> Heap sort object copy constructor. </summary>
 			/// <param name="heapSort"> The heap sort object to copy construct from. </param>
@@ -507,7 +504,7 @@ namespace Math {
 			QuickSort();
 
 			/// <summary> Quick sort object destructor. </summary>
-			virtual ~QuickSort(void);
+			virtual ~QuickSort();
 
 			/// <summary> Quick sort object copy constructor. </summary>
 			/// <param name="quickSort"> The quick sort object to copy construct from. </param>
@@ -605,7 +602,7 @@ namespace Math {
 			ShellSort();
 
 			/// <summary> Shell sort object destructor. </summary>
-			virtual ~ShellSort(void);
+			virtual ~ShellSort();
 
 			/// <summary> Shell sort object copy constructor. </summary>
 			/// <param name="quickSort"> The shell sort object to copy construct from. </param>
@@ -713,7 +710,7 @@ namespace Math {
 			CombSort();
 
 			/// <summary> Comb sort object destructor. </summary>
-			virtual ~CombSort(void);
+			virtual ~CombSort();
 
 			/// <summary> Comb sort object copy constructor. </summary>
 			/// <param name="combSort"> The comb sort object to copy construct from. </param>
@@ -773,7 +770,6 @@ namespace Math {
 						gap = 1;
 					}
 
-					int i = 0;
 					swapOccured = false;
 					for (int i = 0; i + gap < vectorSize; ++i)
 					{
@@ -805,7 +801,7 @@ namespace Math {
 			CountingSort();
 
 			/// <summary> Counting sort object destructor. </summary>
-			virtual ~CountingSort(void);
+			virtual ~CountingSort();
 
 			/// <summary> Counting sort object copy constructor. </summary>
 			/// <param name="countingSort"> The counting sort object to copy construct from. </param>
@@ -857,7 +853,7 @@ namespace Math {
 			RadixSort();
 
 			/// <summary> Radix sort object destructor. </summary>
-			virtual ~RadixSort(void);
+			virtual ~RadixSort();
 
 			/// <summary> Radix sort object copy constructor. </summary>
 			/// <param name="radixSort"> The radix sort object to copy construct from. </param>
@@ -942,7 +938,7 @@ namespace Math {
 			BucketSort();
 
 			/// <summary> Bucket sort object destructor. </summary>
-			virtual ~BucketSort(void);
+			virtual ~BucketSort();
 
 			/// <summary> Bucket sort object copy constructor. </summary>
 			/// <param name="bucketSort"> The bucket sort object to copy construct from. </param>

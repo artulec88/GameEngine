@@ -19,7 +19,7 @@ namespace UtilityTest {
 		{
 		}
 		/// <summary> Pizza destructor. </summary>
-		virtual ~Pizza(void)
+		virtual ~Pizza()
 		{
 		}
 		/// <summary> Pizza copy constructor. </summary>

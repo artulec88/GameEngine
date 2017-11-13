@@ -19,7 +19,7 @@ namespace UtilityTest {
 		{
 		}
 		/// <summary> Spaghetti destructor. </summary>
-		virtual ~Spaghetti(void)
+		virtual ~Spaghetti()
 		{
 		}
 		/// <summary> Spaghetti copy constructor. </summary>

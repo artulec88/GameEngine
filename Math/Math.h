@@ -12,8 +12,6 @@
 #define REAL_ONE	static_cast<Math::Real>(1)
 
 //#define NOMINMAX
-#include <iostream>
-#include <limits>
 
 #undef min
 #undef max

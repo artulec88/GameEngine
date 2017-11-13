@@ -11,8 +11,7 @@
 
 #include "Utility\ILogger.h"
 
-#include <iostream>
-#include <type_traits> // for static_assert
+//#include <type_traits> // for static_assert
 
 //#define MATRIX_MODE_TWO_DIMENSIONS // if disabled one dimensional array will be used to store the matrix's values.
 
@@ -73,9 +72,9 @@ namespace Math
 		}
 
 		/// <summary> Creates a matrix based on the screen position and the scale. </summary>
-		/// <param name='screenPosition'> The position on the screen </param>
+		/// <param name="screenPosition"> The position on the screen. </param>
 		/// <param name="screenRotationAngle"> The rotation angle. </param>
-		/// <param name='scale'> The scale </param>
+		/// <param name="scale"> The scale. </param>
 		/// <remarks> The function is used for the gui textures. </remarks>
 		MATH_API Matrix4D(const Vector2D& screenPosition, const Angle& screenRotationAngle, const Vector2D& scale) :
 			Matrix4D(screenRotationAngle.Cos() * scale.x, screenRotationAngle.Sin() * scale.y, REAL_ZERO, REAL_ZERO,
@@ -87,8 +86,7 @@ namespace Math
 			STOP_PROFILING_MATH("3");
 		}
 		/// <summary>Creates scale matrix based on the specified parameter.</summary>
-		/// <param name='scale'>The scale in all dimensions: X, Y and Z.</param>
-		/// <returns>Scale matrix.</returns>
+		/// <param name="scale">The scale in all dimensions: X, Y and Z.</param>
 		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real scale) :
 			Matrix4D(scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, scale, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE)
 		{
@@ -96,10 +94,9 @@ namespace Math
 			STOP_PROFILING_MATH("4");
 		}
 		/// <summary>Creates translation matrix based on the specified parameters.</summary>
-		/// <param name='posX'>The X coordinate of the translation.</param>
-		/// <param name='posY'>The Y coordinate of the translation.</param>
-		/// <param name='posZ'>The Z coordinate of the translation.</param>
-		/// <returns>Translation matrix.</returns>
+		/// <param name="posX">The X coordinate of the translation.</param>
+		/// <param name="posY">The Y coordinate of the translation.</param>
+		/// <param name="posZ">The Z coordinate of the translation.</param>
 		MATH_API CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(Real posX, Real posY, Real posZ) :
 			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, posX, posY, posZ, REAL_ONE)
 		{
@@ -107,8 +104,7 @@ namespace Math
 			STOP_PROFILING_MATH("5");
 		}
 		/// <summary>Creates translation matrix based on the specified parameter.</summary>
-		/// <param name='pos'>The 3D translation vector.</param>
-		/// <returns>Translation matrix.</returns>
+		/// <param name="pos">The 3D translation vector.</param>
 		MATH_API explicit CONSTEXPR_IF_PROFILING_DISABLED_MATH Matrix4D(const Vector3D& pos) :
 			Matrix4D(REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ZERO, REAL_ONE, REAL_ZERO, pos.x, pos.y, pos.z, REAL_ONE)
 		{
@@ -116,58 +112,56 @@ namespace Math
 			STOP_PROFILING_MATH("6");
 		}
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='angleX'>The rotation angle around X axis.</param>
-		/// <param name='angleY'>The rotation angle around Y axis.</param>
-		/// <returns>Rotation matrix.</returns>
+		/// <param name="angleX">The rotation angle around X axis.</param>
+		/// <param name="angleY">The rotation angle around Y axis.</param>
 		MATH_API Matrix4D(const Angle& angleX, const Angle& angleY);
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='angleX'>The rotation angle around X axis.</param>
-		/// <param name='angleY'>The rotation angle around Y axis.</param>
-		/// <param name='angleZ'>The rotation angle around Z axis.</param>
-		/// <returns>Rotation matrix.</returns>
+		/// <param name="angleX">The rotation angle around X axis.</param>
+		/// <param name="angleY">The rotation angle around Y axis.</param>
+		/// <param name="angleZ">The rotation angle around Z axis.</param>
 		/// <remarks> See http://planning.cs.uiuc.edu/node102.html </remarks>
 		MATH_API Matrix4D(const Angle& angleX, const Angle& angleY, const Angle& angleZ);
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='forward'>The forward vector. It must be normalized.</param>
-		/// <param name='up'>The up vector. It must be normalized.</param>
-		/// <returns>Rotation matrix.</returns>
+		/// <param name="forward">The forward vector. It must be normalized.</param>
+		/// <param name="up">The up vector. It must be normalized.</param>
 		MATH_API Matrix4D(const Vector3D& forward, const Vector3D& up);
 		/// <summary>Creates rotation matrix based on the specified parameters.</summary>
-		/// <param name='forward'>The forward vector. It must be normalized.</param>
-		/// <param name='up'>The up vector. It must be normalized.</param>
-		/// <param name='right'>The right vector. It must be normalized.</param>
-		/// <returns>Rotation matrix.</returns>
+		/// <param name="forward">The forward vector. It must be normalized.</param>
+		/// <param name="up">The up vector. It must be normalized.</param>
+		/// <param name="right">The right vector. It must be normalized.</param>
 		MATH_API Matrix4D(const Vector3D& forward, const Vector3D& up, const Vector3D& right);
 		/// <summary>Creates perspective projection matrix based on the specified parameters.</summary>
-		/// <param name='fov'>Field of view</param>
-		/// <param name='aspect'>Aspect ratio</param>
-		/// <param name='nearPlane'>Near plane</param>
-		/// <param name='farPlane'>Far plane</param>
-		/// <returns>Perspective projection matrix.</returns>
+		/// <param name="fov">Field of view</param>
+		/// <param name="aspect">Aspect ratio</param>
+		/// <param name="nearPlane">Near plane</param>
+		/// <param name="farPlane">Far plane</param>
 		MATH_API Matrix4D(const Angle& fov, Real aspect, Real nearPlane, Real farPlane);
 		/// <summary>Creates ortographic projection matrix based on the specified parameters.</summary>
-		/// <param name='left'>The left coordinate for the vertical clipping planes.</param>
-		/// <param name='right'>The right coordinate for the vertical clipping planes.</param>
-		/// <param name='bottom'>The bottom coordinate for the horizontal clipping planes.</param>
-		/// <param name='top'>The top coordinate for the horizontal clipping planes.</param>
-		/// <param name='nearPlane'>The distance to the nearer depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
-		/// <param name='farPlane'>The distance to the farther depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
-		/// <returns>Ortographic projection matrix.</returns>
+		/// <param name="left">The left coordinate for the vertical clipping planes.</param>
+		/// <param name="right">The right coordinate for the vertical clipping planes.</param>
+		/// <param name="bottom">The bottom coordinate for the horizontal clipping planes.</param>
+		/// <param name="top">The top coordinate for the horizontal clipping planes.</param>
+		/// <param name="nearPlane">The distance to the nearer depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
+		/// <param name="farPlane">The distance to the farther depth clipping planes. The value is negative if the plane is to be behind the viewer.</param>
 		MATH_API Matrix4D(Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane);
 
 		/// <summary>A simple matrix copy-constructor.</summary>
-		/// <param name='mat'>A matrix which is to be copied.</param>
-		/// <returns>A deep copy of the given matrix.</returns>
+		/// <param name="mat">A matrix which is to be copied.</param>
 		MATH_API Matrix4D(const Matrix4D& mat);
 
 		/// <summary>A simple matrix move-constructor.</summary>
-		/// <param name='mat'>A matrix which is to be moved.</param>
-		MATH_API Matrix4D(Matrix4D&& mat);
+		/// <param name="mat">A matrix which is to be moved.</param>
+		MATH_API Matrix4D(Matrix4D&& mat) noexcept;
 
 		/// <summary> Matrix copy assignment operator. </summary>
+		/// <param name="mat"> The matrix to copy-assign from. </param>
+		/// <returns> The reference to the newly copy-assigned matrix. </returns>
 		MATH_API Matrix4D& operator=(const Matrix4D& mat);
+		
 		/// <summary> Matrix move assignment operator. </summary>
-		MATH_API Matrix4D& operator=(Matrix4D&& mat);
+		/// <param name="mat"> The matrix to move-assign from. </param>
+		/// <returns> The reference to the newly move-assigned matrix. </returns>
+		MATH_API Matrix4D& operator=(Matrix4D&& mat) noexcept;
 
 		/// <summary>A simple matrix destructor.</summary>
 		MATH_API ~Matrix4D();

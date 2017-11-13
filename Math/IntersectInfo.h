@@ -22,7 +22,7 @@ namespace Math
 		MATH_API IntersectInfo(Real distance);
 
 		/// <summary> Intersection information object destructor. </summary>
-		MATH_API ~IntersectInfo(void);
+		MATH_API ~IntersectInfo();
 
 		/// <summary> Intersection information copy constructor. </summary>
 		/// <param name="intersectInfo"> The intersection information object to copy construct from. </param>

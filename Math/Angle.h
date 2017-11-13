@@ -71,8 +71,8 @@ namespace Math
 		MATH_API Angle(const Angle& angle);
 
 		/// <summary> The angle move constructor. </summary>
-		/// <param name="angle"> The angle we move construct from. </param>
-		MATH_API Angle(Angle&& angle);
+		/// <param name="angle"> The angle to move construct from. </param>
+		MATH_API Angle(Angle&& angle) noexcept;
 
 		/// <summary> The angle destructor. </summary>
 		MATH_API ~Angle()
@@ -82,11 +82,17 @@ namespace Math
 		}
 
 		/// <summary> Angle copy assignment operator. </summary>
+		/// <param name="angle"> The angle object to copy construct from. </param>
+		/// <returns> The reference to the newly copy-assigned angle. </returns>
 		//MATH_API Angle& operator=(Angle angle);
 		/// <summary> Angle copy assignment operator. </summary>
+		/// <param name="angle"> The reference to an angle object to copy assign from. </param>
+		/// <returns> The reference to the newly copy-assigned angle. </returns>
 		MATH_API Angle& operator=(const Angle& angle);
 		/// <summary> Angle move assignment operator. </summary>
-		MATH_API Angle& operator=(Angle&& angle);
+		/// <param name="angle"> The r-value reference of the angle object to move assign from. </param>
+		/// <returns> The reference to the newly move-assigned angle. </returns>
+		MATH_API Angle& operator=(Angle&& angle) noexcept;
 		/* ==================== Constructors and destructors end ==================== */
 
 		/* ==================== Non-static member functions begin ==================== */
